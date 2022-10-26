@@ -22,7 +22,7 @@ import { QueueHealth } from './QueueHealth'
 
 import { QUEUE, UPGRADE_QUEUE_SUB, UPGRADE_SUB } from './queries'
 
-function DeliveryProgress({ delivered }) {
+function DeliveryProgress({ delivered }: any) {
   return (
     <Box
       flex={false}
@@ -44,7 +44,7 @@ function DeliveryProgress({ delivered }) {
   )
 }
 
-function Upgrade({ upgrade, acked }) {
+function Upgrade({ upgrade, acked }: any) {
   return (
     <Box
       direction="row"

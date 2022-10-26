@@ -39,7 +39,7 @@ import TypeaheadEditor from '../utils/TypeaheadEditor'
 
 export default function Editor({
   incidentId, editorState, editor, handlers, disableSubmit, setEditorState,
-}) {
+}: any) {
   const client = useApolloClient()
 
   return (

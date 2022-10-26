@@ -4,7 +4,7 @@ import { Switch } from 'pluralsh-design-system'
 import { useState } from 'react'
 import { Div } from 'honorable'
 
-import { Placeholder } from 'components/utils/Placeholder'
+import { Placeholder } from '../utils/Placeholder'
 
 import { extendConnection, removeConnection, updateCache } from '../../utils/graphql'
 
@@ -20,7 +20,7 @@ import { UserInfo } from './User'
 
 function GroupMember({
   user, group, first, last, edit,
-}) {
+}: any) {
   const [mutation] = useMutation(DELETE_GROUP_MEMBER, {
     variables: { groupId: group.id, userId: user.id },
     update: (cache, { data: { deleteGroupMember } }) => updateCache(cache, {
@@ -59,7 +59,7 @@ function GroupMember({
   )
 }
 
-export function GroupMembers({ group, edit }) {
+export function GroupMembers({ group, edit }: any) {
   const [listRef, setListRef] = useState(null)
   const { data, loading, fetchMore } = useQuery(GROUP_MEMBERS, {
     variables: { id: group.id },
@@ -106,7 +106,7 @@ export function GroupMembers({ group, edit }) {
   )
 }
 
-export function ViewGroup({ group }) {
+export function ViewGroup({ group }: any) {
   return (
     <Box
       fill

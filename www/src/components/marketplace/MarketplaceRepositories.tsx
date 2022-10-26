@@ -69,8 +69,8 @@ const StyledTabPanel = styled(TabPanel)(() => ({
   flexGrow: 1,
 }))
 
-function MarketplaceRepositories({ installed, publisher }) {
-  const scrollRef = useRef()
+function MarketplaceRepositories({ installed, publisher }: any) {
+  const scrollRef = useRef<HTMLDivElement>(null)
   const [searchParams, setSearchParams] = useSearchParams()
   const categories = searchParams.getAll('category')
   const tags = searchParams.getAll('tag')
@@ -78,7 +78,7 @@ function MarketplaceRepositories({ installed, publisher }) {
   const backRepositoryId = searchParams.get('backRepositoryId')
   const [search, setSearch] = useState('')
   const [areFiltersOpen, setAreFiltersOpen] = useState(true)
-  const tabStateRef = useRef()
+  const tabStateRef = useRef<any>(null)
 
   const [repositories, loadingRepositories, hasMoreRepositories, fetchMoreRepositories] = usePaginatedQuery(MARKETPLACE_QUERY,
     {

@@ -9,10 +9,9 @@ import {
 } from 'honorable'
 import moment from 'moment'
 import { useState } from 'react'
-
-import { Placeholder } from 'components/utils/Placeholder'
-
 import { ArrowLeftIcon } from 'pluralsh-design-system'
+
+import { Placeholder } from '../utils/Placeholder'
 
 import {
   deepUpdate,
@@ -30,7 +29,7 @@ import { DELETE_DNS_RECORD, DNS_RECORDS } from './queries'
 
 import { Confirm } from './Confirm'
 
-function DeleteRecord({ record, domain }) {
+function DeleteRecord({ record, domain }: any) {
   const [confirm, setConfirm] = useState(false)
   const [mutation, { loading, error }] = useMutation(DELETE_DNS_RECORD, {
     variables: { name: record.name, type: record.type },
@@ -38,8 +37,8 @@ function DeleteRecord({ record, domain }) {
       query: DNS_RECORDS,
       variables: { id: domain.id },
       update: prev => deepUpdate(prev, 'dnsDomain', domain => removeConnection(domain, deleteDnsRecord, 'dnsRecords')),
-      onCompleted: () => setConfirm(false),
     }),
+    onCompleted: () => setConfirm(false),
   })
 
   return (
@@ -62,7 +61,7 @@ function DeleteRecord({ record, domain }) {
   )
 }
 
-export function DnsRecords({ domain, setDomain }) {
+export function DnsRecords({ domain, setDomain }: any) {
   const [listRef, setListRef] = useState(null)
   const { data, loading, fetchMore } = useQuery(DNS_RECORDS, {
     variables: { id: domain.id },

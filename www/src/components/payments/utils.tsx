@@ -9,7 +9,7 @@ export function pivotByDimension(items) {
   }, {})
 }
 
-export function subscriptionCost({ lineItems: { items } }, { cost, lineItems }) {
+export function subscriptionCost({ lineItems: { items } }, { cost, lineItems }: any) {
   const planLineItems = pivotByDimension(lineItems.items)
 
   return items.reduce((total, { dimension, quantity }) => total + planLineItems[dimension].cost * quantity,

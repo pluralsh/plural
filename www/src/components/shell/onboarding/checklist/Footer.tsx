@@ -13,7 +13,7 @@ import {
   shouldOnboardingChecklistReappear,
 } from '../../persistance'
 
-export function ChecklistFooter({ refetch, setDismiss }) {
+export function ChecklistFooter({ refetch, setDismiss }: any) {
   const { setDismissed: setDismissedFromContext } = useContext(OnboardingChecklistContext)
   const [updateChecklist, { loading }] = useMutation(UPDATE_ONBOARDING_CHECKLIST, {
     variables: {

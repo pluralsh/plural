@@ -15,7 +15,7 @@ const FILE_DROP_PROPS = {
 
 export const AttachmentContext = createContext({})
 
-export function Dropzone({ children, loaded }) {
+export function Dropzone({ children, loaded }: any) {
   const { setAttachment } = useContext(AttachmentContext)
 
   const [{ canDrop, isOver }, drop] = useDrop({
@@ -42,7 +42,7 @@ export function Dropzone({ children, loaded }) {
   )
 }
 
-export function AttachmentProvider({ children }) {
+export function AttachmentProvider({ children }: any) {
   const [attachment, setAttachment] = useState(null)
   const value = useMemo(() => ({ attachment, setAttachment }), [attachment, setAttachment])
 

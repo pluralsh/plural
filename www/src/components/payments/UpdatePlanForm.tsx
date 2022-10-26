@@ -9,7 +9,7 @@ import { prune } from '../../utils/graphql'
 import { SlaForm } from './CreatePlan'
 import { UPDATE_PLAN_ATTRS } from './queries'
 
-export function UpdatePlanForm({ plan: { id, serviceLevels } }) {
+export function UpdatePlanForm({ plan: { id, serviceLevels } }: any) {
   const [attributes, setAttributes] = useState({ serviceLevels: serviceLevels.map(prune) })
   const [mutation, { loading }] = useMutation(UPDATE_PLAN_ATTRS, { variables: { id, attributes } })
   const [serviceLevel, setServiceLevel] = useState({ minSeverity: 0, maxSeverity: 3, responseTime: 30 })

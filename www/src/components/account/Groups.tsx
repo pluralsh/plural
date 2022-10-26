@@ -10,9 +10,9 @@ import {
 } from 'pluralsh-design-system'
 import { useContext, useState } from 'react'
 
-import ListInput from 'components/utils/ListInput'
+import ListInput from '../utils/ListInput'
 
-import { List } from 'components/utils/List'
+import { List } from '../utils/List'
 
 import CurrentUserContext from '../../contexts/CurrentUserContext'
 
@@ -33,7 +33,7 @@ import { Info } from './Info'
 import { hasRbac } from './utils'
 import { GroupsList } from './GroupsList'
 
-function Header({ q, setQ }) {
+function Header({ q, setQ }: any) {
   return (
     <ListInput
       width="100%"
@@ -46,7 +46,7 @@ function Header({ q, setQ }) {
   )
 }
 
-export function Group({ group, q }) {
+export function Group({ group, q }: any) {
   const { account, ...me } = useContext(CurrentUserContext)
   const editable = canEdit(me, account) || hasRbac(me, Permissions.USERS)
   const [edit, setEdit] = useState(false)

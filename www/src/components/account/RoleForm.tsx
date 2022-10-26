@@ -17,7 +17,7 @@ function PermissionToggle({
   setAttributes,
   first,
   last,
-}) {
+}: any) {
   const toggle = useCallback(enable => {
     if (enable) {
       setAttributes({
@@ -65,11 +65,11 @@ export function RoleForm({
   bindings,
   setBindings,
   ...box
-}) {
+}): any {
   const [view, setView] = useState('General')
   const permissions = Object.entries(PermissionTypes)
   const len = permissions.length
-  const tabStateRef = useRef()
+  const tabStateRef = useRef<any>(null)
 
   return (
     <Box

@@ -30,7 +30,7 @@ import { ActionInput, ActionTab } from './CreateWebhook'
 
 export function Container({
   title, children, modifier, ...props
-}) {
+}: any) {
   return (
     <Box
       {...props}
@@ -63,7 +63,7 @@ export function Container({
 
 function WebhookLogs({
   webhook: { logs: { pageInfo, edges } }, loading, fetchMore, refetch,
-}) {
+}: any) {
   const [listRef, setListRef] = useState(null)
 
   return (
@@ -100,7 +100,7 @@ function WebhookLogs({
   )
 }
 
-export function Attribute({ name, width, children }) {
+export function Attribute({ name, width, children }: any) {
   return (
     <Box
       direction="row"
@@ -122,7 +122,7 @@ export function Attribute({ name, width, children }) {
   )
 }
 
-export function Attributes({ children, ...props }) {
+export function Attributes({ children, ...props }: any) {
   return (
     <Box
       border
@@ -139,7 +139,7 @@ export function Attributes({ children, ...props }) {
   )
 }
 
-function WebhookHeader({ webhook, setEdit }) {
+function WebhookHeader({ webhook, setEdit }: any) {
   return (
     <Container
       flex={false}
@@ -196,7 +196,7 @@ function WebhookHeader({ webhook, setEdit }) {
   )
 }
 
-function Control({ icon, onClick }) {
+function Control({ icon, onClick }: any) {
   return (
     <Box
       flex={false}
@@ -214,7 +214,7 @@ function Control({ icon, onClick }) {
   )
 }
 
-function WebhookControls({ webhook, setEdit }) {
+function WebhookControls({ webhook, setEdit }: any) {
   const navigate = useNavigate()
   const [open, setOpen] = useState(false)
   const [mutation, { loading }] = useMutation(DELETE_WEBHOOK, {
@@ -280,7 +280,7 @@ function WebhookControls({ webhook, setEdit }) {
   )
 }
 
-function EditWebhook({ webhook, setEdit }) {
+function EditWebhook({ webhook, setEdit }: any) {
   const [attributes, setAttributes] = useState({ name: webhook.name, url: webhook.url, actions: webhook.actions })
   const [mutation, { loading }] = useMutation(UPDATE_WEBHOOK, {
     variables: { id: webhook.id, attributes },

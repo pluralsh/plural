@@ -30,7 +30,7 @@ export const LinkTabWrap = styled(forwardRef(({
 /* DEPRECATED */
 const BORDER_ATTRS = { side: 'top', size: '2px' }
 
-export function Tab({ name, setTab, selected }) {
+export function Tab({ name, setTab, selected }: any) {
   const active = selected === name
 
   return (
@@ -62,7 +62,7 @@ function TabFiller() {
   )
 }
 
-export function Tabs({ children }) {
+export function Tabs({ children }: any) {
   return (
     <Box
       flex={false}
@@ -75,7 +75,7 @@ export function Tabs({ children }) {
   )
 }
 
-export function TabContent({ children }) {
+export function TabContent({ children }: any) {
   return (
     <Box className="installation-container">
       {children}

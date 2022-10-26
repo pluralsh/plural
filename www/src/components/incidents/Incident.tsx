@@ -64,7 +64,7 @@ import { SlaTimer } from './SlaTimer'
 
 export const canEdit = ({ creator, owner }, { id }) => (creator || {}).id === id || (owner || {}).id === id
 
-function EditButton({ editing, setEditing }) {
+function EditButton({ editing, setEditing }: any) {
   return (
     <Box
       pad="xsmall"
@@ -104,7 +104,7 @@ function Empty() {
   )
 }
 
-function DeleteIncident({ incident }) {
+function DeleteIncident({ incident }: any) {
   const [mutation, { loading }] = useMutation(DELETE_INCIDENT, { variables: { id: incident.id } })
 
   return (
@@ -119,7 +119,7 @@ function DeleteIncident({ incident }) {
 
 function IncidentHeader({
   incident, editable, editing, setEditing, mutation, attributes, setAttributes, updating,
-}) {
+}: any) {
   const [editorState, setEditorState] = useState(plainDeserialize(incident.description || ''))
   const editor = useEditor()
   const setDescription = useCallback(editorState => {
@@ -241,7 +241,7 @@ function IncidentHeader({
 
 export function Messages({
   incident, loading, fetchMore, subscribeToMore,
-}) {
+}: any) {
   const { setListRef, listRef } = useContext(MessageScrollContext)
   const { messages: { pageInfo: { hasNextPage, endCursor }, edges } } = incident
 
@@ -296,7 +296,7 @@ function NoFiles() {
   )
 }
 
-function Files({ incident, fetchMore }) {
+function Files({ incident, fetchMore }: any) {
   const { files: { pageInfo: { hasNextPage, endCursor }, edges } } = incident
 
   return (
@@ -323,7 +323,7 @@ function Files({ incident, fetchMore }) {
   )
 }
 
-function IncidentOwner({ incident: { owner } }) {
+function IncidentOwner({ incident: { owner } }: any) {
   return (
     <Box
       flex={false}
@@ -351,7 +351,7 @@ const canDelete = (incident, me) => (
 
 function IncidentInner({
   incident, fetchMore, subscribeToMore, loading, editing, setEditing,
-}) {
+}: any) {
   const [view, setView] = useState(IncidentView.MSGS)
   const [listRef, setListRef] = useState(null)
   const currentUser = useContext(CurrentUserContext)
@@ -491,7 +491,7 @@ function IncidentInner({
   )
 }
 
-export function Incident({ editing }) {
+export function Incident({ editing }: any) {
   const navigate = useNavigate()
   const [deleted, setDeleted] = useState(false)
   const { incidentId } = useParams()

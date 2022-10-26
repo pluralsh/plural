@@ -1,10 +1,11 @@
 import { useMutation, useQuery } from '@apollo/client'
-import { Confirm } from 'components/account/Confirm'
 
-import { OnboardingStatus } from 'components/profile/types'
 import { Button, CloudIcon } from 'pluralsh-design-system'
 import { useContext, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
+
+import { OnboardingStatus } from '../profile/types'
+import { Confirm } from '../account/Confirm'
 
 import CurrentUserContext from '../../contexts/CurrentUserContext'
 

@@ -4,7 +4,7 @@ import { ArrowTopRightIcon } from 'pluralsh-design-system'
 
 import { QUEUES } from './queries'
 
-export function ConsoleButton({ q = {}, text, ...props }) {
+export function ConsoleButton({ q = {}, text, ...props }: any) {
   return (
     <Button
       secondary

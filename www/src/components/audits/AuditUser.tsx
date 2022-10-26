@@ -3,7 +3,7 @@ import { Span } from 'honorable'
 
 import Avatar from '../users/Avatar'
 
-export function AuditUser({ user }) {
+export function AuditUser({ user }: any) {
   return (
     <Box
       flex={false}

@@ -7,7 +7,7 @@ function estimateWidth(current) {
   return 35 + (len * 10)
 }
 
-export function NumericInput({ value, onChange, ...rest }) {
+export function NumericInput({ value, onChange, ...rest }: any) {
   const [current, setCurrent] = useState(value || 0)
   const [blur, setBlur] = useState(false)
 

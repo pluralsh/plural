@@ -9,8 +9,8 @@ import { IncidentStatus, IncidentView } from './types'
 
 export function ViewOption({
   icon, selected, view, setView, text, side, size, width,
-}) {
-  const ref = useRef()
+}: any) {
+  const ref = useRef<HTMLDivElement>(null)
   const [hover, setHover] = useState(false)
   const props = { size: size || '20px' }
 
@@ -52,7 +52,7 @@ export function ViewOption({
   )
 }
 
-export function ViewSwitcher({ incident, view, setView }) {
+export function ViewSwitcher({ incident, view, setView }: any) {
   return (
     <Box
       width="50px"

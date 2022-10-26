@@ -48,7 +48,7 @@ function Placeholder() {
   )
 }
 
-function Repositories({ repository, setRepository }) {
+function Repositories({ repository, setRepository }: any) {
   const [listRef, setListRef] = useState(null)
   const { data, fetchMore } = useQuery(REPOS_Q, { fetchPolicy: 'cache-and-network' })
 
@@ -110,8 +110,8 @@ function EmptyState() {
   )
 }
 
-function StatusSelector({ statuses, setStatuses }) {
-  const ref = useRef()
+function StatusSelector({ statuses, setStatuses }: any) {
+  const ref = useRef<HTMLDivElement>(null)
   const [open, setOpen] = useState(false)
   const hasStatus = useMemo(() => new Set(statuses), [statuses])
   const onClick = useCallback(status => {
@@ -185,7 +185,7 @@ function StatusSelector({ statuses, setStatuses }) {
   )
 }
 
-function Incidents({ repository, setSelect, select }) {
+function Incidents({ repository, setSelect, select }: any) {
   const [listRef, setListRef] = useState(null)
   const [scrolled, setScrolled] = useState(false)
   const {

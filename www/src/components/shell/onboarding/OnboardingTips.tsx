@@ -22,7 +22,7 @@ function TipCode(props) {
   )
 }
 
-function OnboardingTips({ autoAdvanceTime = 10000, ...props }) {
+function OnboardingTips({ autoAdvanceTime = 10000, ...props }: any) {
   return (
     <Div {...props}>
       <TipCarousel

@@ -9,7 +9,7 @@ export function GeneralAttributes({
   setAttributes,
   bindings,
   setBindings,
-}) {
+}: any) {
   const [repositories, setRepositories] = useState(attributes.repositories.join(', '))
 
   return (

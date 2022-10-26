@@ -47,7 +47,7 @@ import { DEFAULT_CHART_ICON } from './constants'
 
 import { DetailContainer } from './Installation'
 
-function ChartInfo({ version: { helm, insertedAt } }) {
+function ChartInfo({ version: { helm, insertedAt } }: any) {
   return (
     <DetailContainer
       title="chart.yaml"
@@ -84,7 +84,7 @@ function ChartInfo({ version: { helm, insertedAt } }) {
   )
 }
 
-function ChartInstaller({ chart, version }) {
+function ChartInstaller({ chart, version }: any) {
   const [mutation, { error }] = useMutation(chart.installation ? UPDATE_CHART_INST : INSTALL_CHART, {
     variables: {
       id: chart.installation ? chart.installation.id : chart.repository.installation.id,
@@ -112,7 +112,7 @@ function ChartInstaller({ chart, version }) {
   )
 }
 
-export function ChartActions({ chart, currentVersion, ...props }) {
+export function ChartActions({ chart, currentVersion, ...props }: any) {
   if (chart.installation?.version?.id === currentVersion.id || !chart.repository.installation) {
     return null
   }
@@ -126,7 +126,7 @@ export function ChartActions({ chart, currentVersion, ...props }) {
   )
 }
 
-function ImageDependencies({ version: { imageDependencies } }) {
+function ImageDependencies({ version: { imageDependencies } }: any) {
   const { registry } = useContext(PluralConfigurationContext)
 
   if (!imageDependencies || imageDependencies.length === 0) return null
@@ -159,7 +159,7 @@ export default function Chart() {
   const { pathname } = useLocation()
   const [version, setVersion] = useState(null)
   const { data, fetchMore } = useQuery(CHART_Q, { variables: { chartId }, fetchPolicy: 'cache-and-network' })
-  const tabStateRef = useRef()
+  const tabStateRef = useRef<any>(null)
 
   if (!data) return null
 

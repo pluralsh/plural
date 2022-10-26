@@ -34,7 +34,7 @@ const ChipList = styled(ListBoxItemChipList)(({ theme }) => ({
 
 function userSuggestion({
   name, email, avatar, id,
-}) {
+}: any) {
   return (
     <ListBoxItem
       key={id}
@@ -54,7 +54,7 @@ function userSuggestion({
   )
 }
 
-function groupSuggestion({ name, description, id }) {
+function groupSuggestion({ name, description, id }: any) {
   return (
     <ListBoxItem
       key={id}
@@ -77,7 +77,7 @@ function TagInput({
   onAdd,
   width,
   onChange,
-}) {
+}: any) {
   const [inputValue, setInputValue] = useState('')
 
   // Run only on first render. Make sure there will be data in Combo Box to start with.

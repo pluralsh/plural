@@ -5,7 +5,7 @@ import { Flex } from 'honorable'
 import { EmptyState, PageTitle, SearchIcon } from 'pluralsh-design-system'
 import { useContext, useState } from 'react'
 
-import { Placeholder } from 'components/utils/Placeholder'
+import { Placeholder } from '../utils/Placeholder'
 
 import CurrentUserContext from '../../contexts/CurrentUserContext'
 
@@ -30,7 +30,7 @@ import { Info } from './Info'
 import { EditRole } from './EditRole'
 import { CreateRole } from './CreateRole'
 
-function Header({ q, setQ }) {
+function Header({ q, setQ }: any) {
   return (
     <ListInput
       width="100%"
@@ -43,7 +43,7 @@ function Header({ q, setQ }) {
   )
 }
 
-function Role({ role, q }) {
+function Role({ role, q }: any) {
   const [confirm, setConfirm] = useState(false)
   const { account, ...me } = useContext(CurrentUserContext)
   const editable = canEdit(me, account) || hasRbac(me, Permissions.USERS)
@@ -53,8 +53,8 @@ function Role({ role, q }) {
       query: ROLES_Q,
       variables: { q },
       update: prev => removeConnection(prev, data.deleteRole, 'roles'),
-      onCompleted: () => setConfirm(false),
     }),
+    onCompleted: () => setConfirm(false),
   })
 
   return (
@@ -96,7 +96,7 @@ function Role({ role, q }) {
   )
 }
 
-function RolesInner({ q }) {
+function RolesInner({ q }: any) {
   const [listRef, setListRef] = useState(null)
   const { data, loading, fetchMore } = useQuery(ROLES_Q, {
     variables: { q },

@@ -10,7 +10,7 @@ import { CloseIcon, ErrorIcon, ReloadIcon } from 'pluralsh-design-system'
 import moment from 'moment'
 import { useParams } from 'react-router-dom'
 
-import { Icon } from 'components/utils/IconOld'
+import { Icon } from '../utils/IconOld'
 
 import { useIsCurrentlyOnboarding } from '../shell/onboarding/useOnboarded'
 import { CurrentUserContext } from '../login/CurrentUser'

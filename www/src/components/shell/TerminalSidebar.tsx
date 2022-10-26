@@ -47,7 +47,7 @@ const steps = [
   SIDEBAR
 --- */
 
-function TerminalSidebar({ shell, showCheatsheet, ...props }) {
+function TerminalSidebar({ shell, showCheatsheet, ...props }: any) {
   const [, refresh] = useState(true) // See below
   const { mutation, fresh } = useOnboarded()
   const shouldUseTerminalSidebar = retrieveShouldUseOnboardingTerminalSidebar()
@@ -370,7 +370,7 @@ function Callout1() {
   )
 }
 
-function Step1({ shell }) {
+function Step1({ shell }: any) {
   return (
     <>
       <div>
@@ -403,7 +403,7 @@ function Step1({ shell }) {
   DEMO STEP 2
 --- */
 
-function Step2({ command, quick }) {
+function Step2({ command, quick }: any) {
   return (
     <>
       <div>
@@ -434,7 +434,7 @@ function Step2({ command, quick }) {
   DEMO STEP 3
 --- */
 
-function Step3({ appCount }) {
+function Step3({ appCount }: any) {
   return (
     <>
       <div>
@@ -470,7 +470,7 @@ function Step3({ appCount }) {
   DEMO STEP 4
 --- */
 
-function Step4({ appCount }) {
+function Step4({ appCount }: any) {
   return (
     <>
       <div>
@@ -600,7 +600,7 @@ function CheatsheetCommands() {
   )
 }
 
-function CheatsheetCommand({ command, description }) {
+function CheatsheetCommand({ command, description }: any) {
   return (
     <Flex
       borderBottom="1px solid border"

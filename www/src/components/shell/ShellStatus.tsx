@@ -9,7 +9,7 @@ const SIZE = '25px'
 
 function StatusContainer({
   children, background, base, size,
-}) {
+}: any) {
   return (
     <Box
       flex={false}
@@ -43,7 +43,7 @@ function ReadyStatus() {
   )
 }
 
-export function Status({ name, state }) {
+export function Status({ name, state }: any) {
   return (
     <Box
       background="card"
@@ -66,7 +66,7 @@ export function Status({ name, state }) {
   )
 }
 
-export function ShellStatus({ shell: { status } }) {
+export function ShellStatus({ shell: { status } }: any) {
   if (!status) return <LoopingLogo />
 
   return (

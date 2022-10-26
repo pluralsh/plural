@@ -3,7 +3,7 @@ import { Box } from 'grommet'
 
 export function ListItem({
   first, last, children, background,
-}) {
+}: any) {
   const theme = useTheme()
 
   const BORDER_RADIUS = `${theme.borderRadiuses.large}px`

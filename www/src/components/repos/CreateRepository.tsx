@@ -21,7 +21,7 @@ import { TagInput } from './Tags'
 
 const LABEL_WIDTH = '90px'
 
-export function LabeledInput({ label, children }) {
+export function LabeledInput({ label, children }: any) {
   return (
     <Box gap="xsmall">
       <Text
@@ -36,7 +36,7 @@ export function LabeledInput({ label, children }) {
 
 function ImagePicker({
   image, setImage, background, label,
-}) {
+}: any) {
   return (
     <Box
       direction="row"
@@ -83,7 +83,7 @@ function ImagePicker({
 
 export function RepoForm({
   image, setImage, darkImage, setDarkImage, state, setState, mutation, loading, update, error,
-}) {
+}: any) {
   const setOauthSettings = useCallback((key, value) => (
     setState({ ...state, oauthSettings: { ...state.oauthSettings, [key]: value } })
   ), [setState, state])
@@ -199,7 +199,7 @@ export function RepoForm({
   )
 }
 
-export default function CreateRepository({ publisher }) {
+export default function CreateRepository({ publisher }: any) {
   const navigate = useNavigate()
   const [state, setState] = useState({
     name: '',

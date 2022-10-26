@@ -17,7 +17,7 @@ const TEXT = {
 
 export function BindingInput({
   type, fetcher, bindings, remove, add,
-}) {
+}: any) {
   const client = useApolloClient()
   const [suggestions, setSuggestions] = useState([])
   const { placeholder, label } = TEXT[type]
@@ -57,4 +57,3 @@ export function BindingInput({
 }
 
 export const sanitize = ({ id, user, group }) => ({ id, userId: user && user.id, groupId: group && group.id })
-

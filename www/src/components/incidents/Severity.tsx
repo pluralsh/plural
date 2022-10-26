@@ -14,7 +14,7 @@ import { SeverityColorMap } from './types'
 const sevOptions = sev => ({ value: sev, label: `SEV ${sev}` })
 const severityOptions = [0, 1, 2, 3, 4, 5].map(sevOptions)
 
-export function SeverityNub({ severity }) {
+export function SeverityNub({ severity }: any) {
   const color = severityColor(severity)
 
   return (
@@ -55,7 +55,7 @@ function dot(color, theme) {
   }
 }
 
-export function SeveritySelect({ severity, setSeverity }) {
+export function SeveritySelect({ severity, setSeverity }: any) {
   const theme = useContext(ThemeContext)
 
   return (
@@ -78,7 +78,7 @@ export function SeveritySelect({ severity, setSeverity }) {
 
 export const severityColor = severity => SeverityColorMap[severity]
 
-export function Severity({ incident: { severity, ...incident }, setSeverity }) {
+export function Severity({ incident: { severity, ...incident }, setSeverity }: any) {
   const user = useContext(CurrentUserContext)
   const editable = canEdit(incident, user) && setSeverity
 

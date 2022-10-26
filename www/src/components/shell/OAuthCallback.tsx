@@ -10,7 +10,7 @@ import { DEBUG_SCM_TOKENS } from './debug-tokens'
 
 import OnboardingFlow from './onboarding/OnboardingFlow'
 
-function OAuthCallback({ provider }) {
+function OAuthCallback({ provider }: any) {
   const history = useHistory()
   const [searchParams] = useSearchParams()
 

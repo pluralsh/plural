@@ -45,7 +45,7 @@ import {
 import { useResizeDetector } from 'react-resize-detector'
 import useScript from 'react-script-hook'
 
-import { WelcomeHeader } from 'components/utils/WelcomeHeader'
+import { WelcomeHeader } from '../utils/WelcomeHeader'
 
 import { fetchToken, setToken } from '../../helpers/authentication'
 import { Alert, AlertStatus, GqlError } from '../utils/Alert'
@@ -111,7 +111,7 @@ export function LabelledInput({
 
 const RIGHT_CONTENT_MAX_WIDTH = 480
 
-export function LoginPortal({ children }) {
+export function LoginPortal({ children }: any) {
   return (
     <Flex height="100vh">
       {/* LEFT SIDE */}
@@ -187,7 +187,7 @@ export function LoginPortal({ children }) {
   )
 }
 
-function LoginHighlight({ title, children, ...props }) {
+function LoginHighlight({ title, children, ...props }: any) {
   return (
     <Flex
       align="flex-start"
@@ -283,7 +283,7 @@ export function handleOauthChallenge(client, challenge) {
   })
 }
 
-function LoginPoller({ challenge, token, deviceToken }) {
+function LoginPoller({ challenge, token, deviceToken }: any) {
   const history = useHistory()
   const client = useApolloClient()
   const [success, setSuccess] = useState(false)
@@ -330,7 +330,7 @@ function LoginPoller({ challenge, token, deviceToken }) {
   )
 }
 
-function OAuthOptions({ oauthUrls }) {
+function OAuthOptions({ oauthUrls }: any) {
   const { ref, width } = useResizeDetector({
     handleHeight: false,
   })
@@ -529,7 +529,7 @@ const providerToName = {
   gitlab: 'GitLab',
 }
 
-function OAuthOption({ url: { authorizeUrl, provider }, ...props }) {
+function OAuthOption({ url: { authorizeUrl, provider }, ...props }: any) {
   const icon = METHOD_ICONS[provider]
 
   return (

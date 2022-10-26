@@ -47,7 +47,7 @@ export const GCP_VALIDATIONS = [
   },
 ]
 
-function FileInput({ updateCreds, gcp, setProject }) {
+function FileInput({ updateCreds, gcp, setProject }: any) {
   const { attachment } = useContext(AttachmentContext) as any
   const prevAttachment = usePrevious(attachment)
   const theme = useTheme()
@@ -136,7 +136,7 @@ export function GcpForm({
   setWorkspace,
   credentials,
   setCredentials,
-}) {
+}: any) {
   const gcp = credentials.gcp || {}
   const updateCreds = useCallback((field, val) => setCredentials({
     ...credentials,

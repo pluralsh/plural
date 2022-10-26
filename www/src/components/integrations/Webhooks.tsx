@@ -14,7 +14,7 @@ import { ActionTab, CreateWebhook } from './CreateWebhook'
 
 import { WEBHOOKS_Q } from './queries'
 
-function Webhook({ webhook }) {
+function Webhook({ webhook }: any) {
   const navigate = useNavigate()
 
   return (

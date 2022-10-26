@@ -21,7 +21,7 @@ import { DeleteIconButton } from '../utils/IconButtons'
 const TOOLTIP = 'EAB credentials are used to generate an ACME account for certificate issuance in your clusters. '
   + 'These should be recycled on `plural destroy`.'
 
-function EabCredential({ credential, last }) {
+function EabCredential({ credential, last }: any) {
   const [confirm, setConfirm] = useState(false)
   const [mutation, { loading, error }] = useMutation(DELETE_EAB_CREDENTIALS, {
     variables: { id: credential.id },

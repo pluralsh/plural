@@ -8,8 +8,8 @@ const SIDEBAR_ICON_HEIGHT = '35px'
 
 export function Icon({
   icon, text, selected, path, onClick, size, align,
-}) {
-  const dropRef = useRef()
+}: any) {
+  const dropRef = useRef<HTMLDivElement>(null)
   const navigate = useNavigate()
   const [hover, setHover] = useState(false)
 

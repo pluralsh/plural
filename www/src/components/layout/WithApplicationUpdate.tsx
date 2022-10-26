@@ -16,7 +16,7 @@ export const DEFAULT_COMMIT = 'plural-default-commit'
 export const getCommit = () => sessionStorage.getItem(COMMIT_KEY) || DEFAULT_COMMIT
 export const setCommit = sha => sessionStorage.setItem(COMMIT_KEY, sha)
 
-function WithApplicationUpdate({ children }) {
+function WithApplicationUpdate({ children }: any) {
   const [time, setTime] = useState(Date.now())
   const config = useContext(PluralConfigurationContext)
   const commit = getCommit()

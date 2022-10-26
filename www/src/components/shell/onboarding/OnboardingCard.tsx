@@ -1,6 +1,6 @@
 import { Flex, H2 } from 'honorable'
 
-function OnboardingCard({ children, title = '', ...props }) {
+function OnboardingCard({ children, title = '', ...props }: any) {
   return (
     <Flex
       direction="column"

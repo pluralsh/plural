@@ -1,6 +1,6 @@
 import { Box, Text } from 'grommet'
 
-export function Attribute({ name, children, size }) {
+export function Attribute({ name, children, size }: any) {
   return (
     <Box
       direction="row"
@@ -22,7 +22,7 @@ export function Attribute({ name, children, size }) {
   )
 }
 
-export function Attributes({ children, ...props }) {
+export function Attributes({ children, ...props }: any) {
   return (
     <Box
       border

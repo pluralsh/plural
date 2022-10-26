@@ -11,7 +11,7 @@ import { Actions } from './Actions'
 import { sanitize } from './utils'
 import { RoleForm } from './RoleForm'
 
-export function EditRole({ role }) {
+export function EditRole({ role }: any) {
   const [open, setOpen] = useState(false)
   const [attributes, setAttributes] = useState({
     name: role.name,
@@ -28,7 +28,7 @@ export function EditRole({ role }) {
       id: role.id,
       attributes: { ...attributes, roleBindings: roleBindings.map(sanitize) },
     },
-    onCompleted: () => setOpen(null),
+    onCompleted: () => setOpen(false),
   })
 
   return (

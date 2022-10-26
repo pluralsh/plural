@@ -3,7 +3,7 @@ import { useContext } from 'react'
 
 import { DEFAULT_CHART_ICON, DarkProviderIcons, ProviderIcons } from './constants'
 
-export function Provider({ provider, width }) {
+export function Provider({ provider, width }: any) {
   const { dark } = useContext(ThemeContext)
   const url = providerToURL(provider, dark)
 

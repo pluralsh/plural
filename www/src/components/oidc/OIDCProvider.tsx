@@ -24,7 +24,7 @@ import { Copyable } from '../utils/Copyable'
 import { AuthMethod } from './types'
 import { CREATE_PROVIDER, UPDATE_PROVIDER } from './queries'
 
-function UrlTab({ url, onClick }) {
+function UrlTab({ url, onClick }: any) {
   const theme = useContext(ThemeContext)
 
   return (
@@ -44,7 +44,7 @@ function UrlTab({ url, onClick }) {
   )
 }
 
-function UrlsInput({ uriFormat, urls, setUrls }) {
+function UrlsInput({ uriFormat, urls, setUrls }: any) {
   const [value, setValue] = useState('')
   const addUrl = useCallback(() => {
     const url = uriFormat ? uriFormat.replace('{domain}', value) : value
@@ -103,7 +103,7 @@ function UrlsInput({ uriFormat, urls, setUrls }) {
 
 export function ProviderForm({
   attributes, setAttributes, bindings, setBindings, repository,
-}) {
+}: any) {
   const settings = repository.oauthSettings || {}
 
   return (
@@ -182,7 +182,7 @@ export function ProviderForm({
   )
 }
 
-export function CreateProvider({ installation }) {
+export function CreateProvider({ installation }: any) {
   const settings = installation.repository.oauthSettings || {}
   const [attributes, setAttributes] = useState({ redirectUris: [], authMethod: settings.authMethod || AuthMethod.POST })
   const [bindings, setBindings] = useState([])
@@ -228,7 +228,7 @@ export function CreateProvider({ installation }) {
   )
 }
 
-export function UpdateProvider({ installation }) {
+export function UpdateProvider({ installation }: any) {
   const provider = installation.oidcProvider
   const [attributes, setAttributes] = useState({
     redirectUris: provider.redirectUris,
@@ -304,7 +304,7 @@ export function UpdateProvider({ installation }) {
   )
 }
 
-export function OIDCProvider({ installation }) {
+export function OIDCProvider({ installation }: any) {
   if (installation.oidcProvider) return <UpdateProvider installation={installation} />
 
   return <CreateProvider installation={installation} />

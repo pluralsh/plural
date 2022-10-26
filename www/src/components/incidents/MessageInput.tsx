@@ -182,7 +182,7 @@ const insertEmoji = (editor, emoji) => {
   Transforms.move(editor)
 }
 
-function SendMsg({ loading, empty, onClick }) {
+function SendMsg({ loading, empty, onClick }: any) {
   return (
     <Box
       flex={false}
@@ -233,8 +233,8 @@ function FileInput() {
   )
 }
 
-function EmojiInput({ editor }) {
-  const ref = useRef()
+function EmojiInput({ editor }: any) {
+  const ref = useRef<HTMLDivElement>(null)
   const [open, setOpen] = useState(false)
 
   return (
@@ -269,7 +269,7 @@ function EmojiInput({ editor }) {
 
 function UploadProgress({
   attachment, uploadProgress, setAttachment, empty,
-}) {
+}: any) {
   return (
     <Layer
       plain

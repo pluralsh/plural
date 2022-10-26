@@ -4,7 +4,7 @@ import { Outlet, useParams, useSearchParams } from 'react-router-dom'
 import { Flex } from 'honorable'
 import { TabPanel } from 'pluralsh-design-system'
 
-import { GoBack } from 'components/utils/GoBack'
+import { GoBack } from '../utils/GoBack'
 
 import RepositoryContext from '../../contexts/RepositoryContext.ts'
 
@@ -28,7 +28,7 @@ function Repository() {
   const [searchParams] = useSearchParams()
   const { data } = useQuery(REPOSITORY_QUERY, { variables: { repositoryId: id } })
   const backStackName = searchParams.get('backStackName')
-  const tabStateRef = useRef()
+  const tabStateRef = useRef<any>(null)
 
   if (!data) {
     return (

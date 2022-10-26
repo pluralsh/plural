@@ -10,7 +10,7 @@ import moment from 'moment'
 
 const DEFAULT_SIZE = '20px'
 
-export function QueueHealth({ queue, size }) {
+export function QueueHealth({ queue, size }: any) {
   const theme = useContext(ThemeContext)
   const [now, setNow] = useState(moment())
   const pinged = useMemo(() => moment(queue.pingedAt), [queue.pingedAt])

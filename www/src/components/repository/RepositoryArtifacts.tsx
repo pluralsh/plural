@@ -39,7 +39,7 @@ const platformToIcon = {
   />,
 }
 
-function ArtifactIcon({ Icon, tooltip, ...props }) {
+function ArtifactIcon({ Icon, tooltip, ...props }: any) {
   return (
     <Tooltip label={tooltip}>
       <Flex
@@ -57,7 +57,7 @@ function ArtifactIcon({ Icon, tooltip, ...props }) {
   )
 }
 
-function Artifacts({ artifact }) {
+function Artifacts({ artifact }: any) {
   const [readmeOpen, setReadmeOpen] = useState(false)
   const [detailsOpen, setDetailsOpen] = useState(false)
 

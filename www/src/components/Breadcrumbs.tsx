@@ -6,7 +6,7 @@ import { lookahead } from '../utils/array'
 
 import BreadcrumbsContext, { BreadcrumbsContextType } from '../contexts/BreadcrumbsContext'
 
-function CrumbLink({ crumb: { url, text, disable } }) {
+function CrumbLink({ crumb: { url, text, disable } }: any) {
   const navigate = useNavigate()
 
   // TODO: new design does not cover the "disabled" state. Should it be removed?
@@ -74,7 +74,7 @@ export function Breadcrumbs() {
   )
 }
 
-export default function BreadcrumbProvider({ children }) {
+export default function BreadcrumbProvider({ children }: any) {
   const [breadcrumbs, setBreadcrumbs] = useState<any[]>([])
   const value = useMemo<BreadcrumbsContextType>(() => ({ breadcrumbs, setBreadcrumbs }), [breadcrumbs])
 

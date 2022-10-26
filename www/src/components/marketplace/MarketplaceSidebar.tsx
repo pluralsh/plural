@@ -15,7 +15,7 @@ import usePaginatedQuery from '../../hooks/usePaginatedQuery'
 
 import { CATEGORIES_QUERY, TAGS_QUERY } from './queries'
 
-function AccordionWithExpanded({ children, ...props }) {
+function AccordionWithExpanded({ children, ...props }: any) {
   const [expanded, setExpanded] = useState(true)
 
   return (
@@ -31,7 +31,7 @@ function AccordionWithExpanded({ children, ...props }) {
 
 function MarketplaceSidebarCheckbox({
   toggled, onClick, label, trapFocus = false,
-}) {
+}: any) {
   return (
     <Checkbox
       mb={0.25}

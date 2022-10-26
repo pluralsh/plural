@@ -25,7 +25,7 @@ const BOX_ATTRS = {
 
 function Reaction({
   name, reactions, me, messageId,
-}) {
+}: any) {
   const prolog = reactions.slice(0, 3).map(({ creator: { email } }) => email)
   const text = prolog.length > 2 ? `${prolog.join(', ')} and ${reactions.length - prolog.length} more`
     : prolog.length === 2 ? `${prolog[0]} and ${prolog[1]}` : prolog[0]
@@ -61,7 +61,7 @@ function Reaction({
   )
 }
 
-export default function MessageReactions({ message, setHover }) {
+export default function MessageReactions({ message, setHover }: any) {
   const me = useContext(CurrentUserContext)
   const grouped = groupBy(message.reactions, reaction => reaction.name)
   const sorted = Object.entries(grouped).sort(([name, reactions], [other_name, other_reactions]) => {

@@ -4,7 +4,7 @@ import { SIDEBAR_ICON_HEIGHT } from '../layout/Sidebar'
 
 export function SectionChoice({
   label, selected, icon, onClick,
-}) {
+}: any) {
   return (
     <Box
       background={selected ? 'sidebarHover' : null}

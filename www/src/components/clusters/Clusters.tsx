@@ -34,7 +34,7 @@ import {
   UPGRADE_SUB,
 } from './queries'
 
-function QueueItem({ q }) {
+function QueueItem({ q }: any) {
   return (
     <Flex
       align="center"
@@ -56,7 +56,7 @@ function QueueItem({ q }) {
   )
 }
 
-function DataEntry({ name, value, children }) {
+function DataEntry({ name, value, children }: any) {
   return (
     <Box gap="2px">
       <Span color="text-light">{name}</Span>
@@ -66,7 +66,7 @@ function DataEntry({ name, value, children }) {
   )
 }
 
-function ClusterDescription({ q }) {
+function ClusterDescription({ q }: any) {
   return (
     <Box
       flex={false}
@@ -117,7 +117,7 @@ function ClusterDescription({ q }) {
   )
 }
 
-function Upgrade({ upgrade, acked, last }) {
+function Upgrade({ upgrade, acked, last }: any) {
   const delivered = acked && upgrade.id <= acked
 
   return (
@@ -164,7 +164,7 @@ function Upgrade({ upgrade, acked, last }) {
   )
 }
 
-function Upgrades({ q }) {
+function Upgrades({ q }: any) {
   const [listRef, setListRef] = useState(null)
   const {
     data, loading, fetchMore, subscribeToMore, refetch,
@@ -240,7 +240,7 @@ function Upgrades({ q }) {
   )
 }
 
-function QueueHealth({ q, background }) {
+function QueueHealth({ q, background }: any) {
   const [now, setNow] = useState(moment())
   const pinged = useMemo(() => moment(q.pingedAt), [q.pingedAt])
 

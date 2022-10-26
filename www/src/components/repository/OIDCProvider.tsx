@@ -31,7 +31,7 @@ import { AuthMethod } from '../oidc/types'
 import RepositoryContext from '../../contexts/RepositoryContext'
 import usePrevious from '../../hooks/usePrevious'
 
-function UrlsInput({ uriFormat = '', urls, setUrls }) {
+function UrlsInput({ uriFormat = '', urls, setUrls }: any) {
   const [baseScheme, basePath] = ['https://', '/oauth2/callback']
   const [value, setValue] = useState('')
   const [scheme = baseScheme, path = basePath] = uriFormat.split('{domain}').filter(v => !!v)
@@ -111,12 +111,12 @@ export function ProviderForm({
   repository,
   onSave,
   loading,
-}) {
+}: any) {
   const settings = repository.oauthSettings || {}
   const [toast, setToast] = useState(null)
   const [dirty, setDirty] = useState(false)
   const [saved, setSaved] = useState(false)
-  const isMountRef = useRef(true)
+  const isMountRef = useRef<HTMLDivElement>(null)(true)
   const prevAttributes = usePrevious(attributes)
   const prevBindings = usePrevious(bindings)
   const prevLoading = usePrevious(loading)
@@ -237,7 +237,7 @@ export function ProviderForm({
 
 export function CreateProvider({
   installation,
-}) {
+}: any) {
   const settings = installation.repository.oauthSettings || {}
   const [attributes, setAttributes] = useState({
     redirectUris: [],
@@ -283,7 +283,7 @@ export function CreateProvider({
 
 export function UpdateProvider({
   installation,
-}) {
+}: any) {
   const provider = installation.oidcProvider
   const [attributes, setAttributes] = useState({
     redirectUris: provider.redirectUris,

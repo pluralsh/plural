@@ -7,7 +7,7 @@ import Avatar from '../users/Avatar'
 
 import { PresenceContext, PresenceIndicator } from './Presence'
 
-function Follower({ follower: { user } }) {
+function Follower({ follower: { user } }: any) {
   const { present } = useContext(PresenceContext)
   const isPresent = present[user.id]
 
@@ -34,7 +34,7 @@ function Follower({ follower: { user } }) {
   )
 }
 
-export function Followers({ incident: { followers: { edges, pageInfo } }, fetchMore }) {
+export function Followers({ incident: { followers: { edges, pageInfo } }, fetchMore }: any) {
   return (
     <Box fill>
       <Scroller

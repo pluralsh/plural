@@ -43,7 +43,7 @@ function Header() {
 
 const truncate = str => (str && str.length > 20 ? `${str.substring(0, 17)}...` : str)
 
-function Row({ name, value }) {
+function Row({ name, value }: any) {
   return (
     <TableRow>
       <TableCell scope="row">
@@ -54,7 +54,7 @@ function Row({ name, value }) {
   )
 }
 
-export function ClusterInformation({ incident: { clusterInformation } }) {
+export function ClusterInformation({ incident: { clusterInformation } }: any) {
   if (!clusterInformation) return <NoInformation />
 
   // eslint-disable-next-line

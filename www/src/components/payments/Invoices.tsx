@@ -24,7 +24,7 @@ import { SUBSCRIPTIONS_Q, SUBSCRIPTION_Q } from './queries'
 const TOOLBAR_SIZE = 55
 const ICON_SIZE = '30px'
 
-function Subscription({ current, subscription, setCurrent }) {
+function Subscription({ current, subscription, setCurrent }: any) {
   const { installation: { repository }, plan } = subscription
   const totalCost = subscriptionCost(subscription, plan)
 
@@ -69,7 +69,7 @@ function Invoice({
   invoice: {
     number, hostedInvoiceUrl, amountPaid, createdAt, currency,
   },
-}) {
+}: any) {
   return (
     <TableRow>
       <TableCell>{moment(createdAt).format('LLL')}</TableCell>
@@ -87,7 +87,7 @@ function Invoice({
   )
 }
 
-function SubscriptionBar({ edges, current, setCurrent }) {
+function SubscriptionBar({ edges, current, setCurrent }: any) {
   return edges.map(({ node }) => (
     <Subscription
       key={node.id}
@@ -98,7 +98,7 @@ function SubscriptionBar({ edges, current, setCurrent }) {
   ))
 }
 
-function InvoicesInner({ current: { id } }) {
+function InvoicesInner({ current: { id } }: any) {
   const navigate = useNavigate()
   const { loading, data } = useQuery(SUBSCRIPTION_Q, { variables: { id } })
 

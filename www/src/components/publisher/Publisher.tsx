@@ -2,7 +2,7 @@ import { useQuery } from '@apollo/client'
 import { useParams } from 'react-router-dom'
 import { Flex } from 'honorable'
 
-import Marketplace from 'components/marketplace/Marketplace'
+import Marketplace from '../marketplace/Marketplace'
 
 import { LoopingLogo } from '../utils/AnimatedLogo'
 

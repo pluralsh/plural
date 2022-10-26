@@ -20,7 +20,7 @@ import { useOutletContext } from 'react-router-dom'
 import { ChartActions } from '../Chart'
 import { TerraformActions } from '../Terraform'
 
-export function dockerPull(registry, { tag, dockerRepository: { name, repository } }) {
+export function dockerPull(registry, { tag, dockerRepository: { name, repository } }: any) {
   return `${registry}/${repository.name}/${name}:${tag}`
 }
 
@@ -40,7 +40,7 @@ const gradeToColor = {
   F: '#ED456A',
 }
 
-export function PackageGrade({ grade, large }) {
+export function PackageGrade({ grade, large }: any) {
   return (
     <Chip
       size={large ? 'large' : 'medium'}
@@ -53,7 +53,7 @@ export function PackageGrade({ grade, large }) {
   )
 }
 
-export function PackageHeader({ name, icon }) {
+export function PackageHeader({ name, icon }: any) {
   return (
     <Box
       direction="row"
@@ -89,7 +89,7 @@ export function PackageHeader({ name, icon }) {
 
 export function PackageVersionPicker({
   edges, installed, version, setVersion, pageInfo, fetchMore,
-}) {
+}: any) {
   const versions = edges.map(({ node }) => node)
 
   return (
@@ -171,7 +171,7 @@ export function PackageVersionPicker({
   )
 }
 
-export function PackageProperty({ children, header, ...props }) {
+export function PackageProperty({ children, header, ...props }: any) {
   return (
     <>
       <Div

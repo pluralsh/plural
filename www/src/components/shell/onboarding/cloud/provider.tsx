@@ -33,7 +33,7 @@ export function CloudOption({
   description,
   selected,
   ...props
-}) {
+}: any) {
   return (
     <OnboardingCardButton
       position="relative"
@@ -65,7 +65,7 @@ export function CloudOption({
   )
 }
 
-export function ChooseAShell({ options, selected, setSelected }) {
+export function ChooseAShell({ options, selected, setSelected }: any) {
   return (
     <Div
       width="100%"

@@ -34,7 +34,7 @@ const LEGEND = {
 
 function asDep({
   __typename, name: depname, version, children,
-}) {
+}: any) {
   const name = `${depname} ${version || ''}`
 
   switch (__typename) {
@@ -45,7 +45,7 @@ function asDep({
   }
 }
 
-function depType({ __typename }) {
+function depType({ __typename }: any) {
   switch (__typename) {
   case 'Terraform':
     return Tools.TERRAFORM
@@ -164,7 +164,7 @@ export default function PackageDependencies() {
   const current = currentHelmChart || currentTerraformChart
   const [full, setFull] = useState(false)
 
-  const tabStateRef = useRef()
+  const tabStateRef = useRef<any>(null)
   const selectedTabKey = full ? 'full' : 'immediate'
 
   return (

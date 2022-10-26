@@ -1,10 +1,14 @@
 import { useQuery } from '@apollo/client'
-import { List, ListItem } from 'components/utils/List'
-import ListInput from 'components/utils/ListInput'
-import { Placeholder } from 'components/utils/Placeholder'
+
 import { Div } from 'honorable'
+
 import { SearchIcon } from 'pluralsh-design-system'
+
 import { useCallback, useEffect, useState } from 'react'
+
+import { List, ListItem } from '../utils/List'
+import ListInput from '../utils/ListInput'
+import { Placeholder } from '../utils/Placeholder'
 
 import { extendConnection, removeConnection, updateCache } from '../../utils/graphql'
 

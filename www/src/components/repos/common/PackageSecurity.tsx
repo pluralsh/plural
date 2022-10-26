@@ -30,7 +30,7 @@ import {
   chipSeverity,
 } from './misc'
 
-function ScanViolation({ violation, last }) {
+function ScanViolation({ violation, last }: any) {
   const [open, setOpen] = useState(false)
 
   return (

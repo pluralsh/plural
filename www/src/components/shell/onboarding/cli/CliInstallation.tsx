@@ -63,7 +63,7 @@ mv plural /usr/local/bin/plural`,
 function CliInstallation() {
   const { previous, next } = useContext(CreateShellContext)
   const [tab, setTab] = useState(TAB_MAC)
-  const tabStateRef = useRef()
+  const tabStateRef = useRef<any>(null)
   const currentTab = useMemo(() => DIRECTORY.find(t => t.key === tab), [tab])
 
   return (

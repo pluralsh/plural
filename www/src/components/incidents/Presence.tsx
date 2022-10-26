@@ -12,7 +12,7 @@ import TimedCache from '../utils/TimedCache'
 
 export const PresenceContext = createContext({})
 
-export function PresenceIndicator({ border, margin }) {
+export function PresenceIndicator({ border, margin }: any) {
   const width = border ? '12px' : '8px'
 
   return (
@@ -28,7 +28,7 @@ export function PresenceIndicator({ border, margin }) {
   )
 }
 
-export function PresenceProvider({ incidentId, children }) {
+export function PresenceProvider({ incidentId, children }: any) {
   const [channel, setChannel] = useState(null)
   const [present, setPresent] = useState({})
   const [typists, setTypists] = useState([])

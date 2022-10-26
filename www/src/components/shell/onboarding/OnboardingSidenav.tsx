@@ -1,4 +1,3 @@
-import { OnboardingStatus } from 'components/profile/types'
 import { A } from 'honorable'
 import {
   BrowserIcon,
@@ -12,6 +11,8 @@ import {
 } from 'pluralsh-design-system'
 import { useContext } from 'react'
 import styled from 'styled-components'
+
+import { OnboardingStatus } from '../profile/types'
 
 import CurrentUserContext from '../../../contexts/CurrentUserContext'
 

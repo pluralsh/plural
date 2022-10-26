@@ -67,7 +67,7 @@ const BouncyDiv = styled.div`
   animation: 1s ${pulseAnimation} infinite;
 `
 
-function Tags({ tags }) {
+function Tags({ tags }: any) {
   return (
     <Box
       direction="row"
@@ -88,7 +88,7 @@ function Tags({ tags }) {
   )
 }
 
-export function NotificationBadge({ size, color, count }) {
+export function NotificationBadge({ size, color, count }: any) {
   const theme = useContext(ThemeContext)
   const background = color || 'error'
 
@@ -108,7 +108,7 @@ export function NotificationBadge({ size, color, count }) {
   )
 }
 
-function SubscriptionBadge({ incident: { subscription } }) {
+function SubscriptionBadge({ incident: { subscription } }: any) {
   if (!subscription) return null
 
   return (
@@ -128,7 +128,7 @@ export function IncidentRow({
   incident: {
     id, repository, title, insertedAt, owner, ...incident
   }, selected,
-}) {
+}: any) {
   const navigate = useNavigate()
 
   return (
@@ -193,7 +193,7 @@ export function IncidentRow({
 
 function FilterOption({
   icon, filter, onClick, next,
-}) {
+}: any) {
   return (
     <Box
       direction="row"
@@ -219,7 +219,7 @@ function FilterOption({
 
 const FILTER_DROP_WIDTH = '200px'
 
-function TagInput({ setAlternate }) {
+function TagInput({ setAlternate }: any) {
   const { setFilters, filters } = useContext(IncidentViewContext)
   const [tag, setTag] = useState('')
   const accept = useCallback(() => {
@@ -274,7 +274,7 @@ function TagInput({ setAlternate }) {
 
 export function FilterSelect() {
   const { filters, setFilters } = useContext(IncidentViewContext)
-  const ref = useRef()
+  const ref = useRef<HTMLDivElement>(null)
   const [open, setOpen] = useState(false)
 
   return (
@@ -384,7 +384,7 @@ function Checked() {
   )
 }
 
-function DropdownItem({ icon, text, onClick }) {
+function DropdownItem({ icon, text, onClick }: any) {
   return (
     <Box
       direction="row"
@@ -403,7 +403,7 @@ function DropdownItem({ icon, text, onClick }) {
 }
 
 function SortOptions() {
-  const ref = useRef()
+  const ref = useRef<HTMLDivElement>(null)
   const [open, setOpen] = useState(false)
   const {
     sort, order, setSort, setOrder,
@@ -468,7 +468,7 @@ function SortOptions() {
   )
 }
 
-export function IncidentToolbar({ children }) {
+export function IncidentToolbar({ children }: any) {
   return (
     <Box
       flex={false}

@@ -22,7 +22,7 @@ const countDetails = ({ edges, pageInfo }) => {
   return { count: len, more: pageInfo.hasNextPage }
 }
 
-function Badge({ notifications }) {
+function Badge({ notifications }: any) {
   const { count, more } = countDetails(notifications)
 
   return (
@@ -36,19 +36,19 @@ function Badge({ notifications }) {
   )
 }
 
-function notifUrl({ type, repository, incident }) {
+function notifUrl({ type, repository, incident }: any) {
   if (type === NotificationType.LOCKED) return `/repositories/${repository.id}`
 
   return `/incidents/${incident.id}`
 }
 
-function notifMessage({ type, incident }) {
+function notifMessage({ type, incident }: any) {
   if (type === NotificationType.LOCKED) return null
 
   return incident.title
 }
 
-function NotificationRow({ notification, next }) {
+function NotificationRow({ notification, next }: any) {
   const navigate = useNavigate()
   const { incident, repository } = notification
 
@@ -92,7 +92,7 @@ function NotificationRow({ notification, next }) {
 
 function FlyoutBody({
   edges, pageInfo, fetchMore, setOpen,
-}) {
+}: any) {
   return (
     <Flyout
       width="30vw"

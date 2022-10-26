@@ -33,7 +33,7 @@ function historyModifier(action) {
 
 const yamlDump = val => yaml.safeDump(val || {}, null, 2)
 
-function HistoryChanges({ changes }) {
+function HistoryChanges({ changes }: any) {
   const { previous, next } = useMemo(() => {
     const sorted = sortBy(changes, ['key'])
     const prev = yamlDump(sorted.reduce((acc, { key, prev }) => ({ ...acc, [key]: prev }), {}))
@@ -66,7 +66,7 @@ function HistoryItem({
   history: {
     action, actor, insertedAt, changes,
   },
-}) {
+}: any) {
   const [open, setOpen] = useState(false)
   const openable = action !== Action.CREATE
 
@@ -124,7 +124,7 @@ function HistoryItem({
   )
 }
 
-export function IncidentHistory({ incident: { history: { edges, pageInfo } }, fetchMore }) {
+export function IncidentHistory({ incident: { history: { edges, pageInfo } }, fetchMore }: any) {
   return (
     <Box
       flex={false}

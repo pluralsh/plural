@@ -4,7 +4,7 @@ import { useIntercom } from 'react-use-intercom'
 
 import OnboardingSidecarApplications from './OnboardingSidecarApplications'
 
-function OnboardingSidecar({ areApplicationsDisplayed = false }) {
+function OnboardingSidecar({ areApplicationsDisplayed = false }: any) {
   const { show } = useIntercom()
 
   return (

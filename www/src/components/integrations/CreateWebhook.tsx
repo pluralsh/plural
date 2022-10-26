@@ -18,7 +18,7 @@ const TAB_COLORS = {
   hover: 'border',
 }
 
-export function ActionTab({ action, onClick, colors }) {
+export function ActionTab({ action, onClick, colors }: any) {
   const { bg, hover } = colors || TAB_COLORS
 
   return (
@@ -39,7 +39,7 @@ export function ActionTab({ action, onClick, colors }) {
   )
 }
 
-export function ActionInput({ actions, setActions, colors }) {
+export function ActionInput({ actions, setActions, colors }: any) {
   const [value, setValue] = useState('')
 
   return (
@@ -83,7 +83,7 @@ export function ActionInput({ actions, setActions, colors }) {
   )
 }
 
-export function CreateWebhook({ cancel }) {
+export function CreateWebhook({ cancel }: any) {
   const [attributes, setAttributes] = useState({ name: '', url: '', actions: ['incident.create'] })
   const [mutation, { loading }] = useMutation(CREATE_WEBHOOK, {
     variables: { attributes },

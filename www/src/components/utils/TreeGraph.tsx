@@ -65,8 +65,8 @@ function renderTree(
 
 export default function TreeGraph({
   id, tree, width, height, legend,
-}) {
-  const boxRef = useRef()
+}: any) {
+  const boxRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (!boxRef.current) return

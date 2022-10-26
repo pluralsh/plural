@@ -1,10 +1,11 @@
-import { InferredConsoleButton } from 'components/clusters/ConsoleButton'
-import InstallDropdownButton from 'components/utils/InstallDropdownButton'
 import RepositoryContext from 'contexts/RepositoryContext'
 import { Flex } from 'honorable'
 import usePaginatedQuery from 'hooks/usePaginatedQuery'
 import { Button, GearTrainIcon } from 'pluralsh-design-system'
 import { useContext, useState } from 'react'
+
+import InstallDropdownButton from '../utils/InstallDropdownButton'
+import { InferredConsoleButton } from '../clusters/ConsoleButton'
 
 import { InstallationConfiguration } from './InstallationConfiguration'
 

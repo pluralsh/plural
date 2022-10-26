@@ -17,7 +17,7 @@ const textColor = status => StatusColorMap[status]
 
 const options = Object.keys(IncidentStatus).map(status => ({ value: status, label: normalize(status) }))
 
-export function StatusSelector({ status, setStatus }) {
+export function StatusSelector({ status, setStatus }: any) {
   const theme = useContext(ThemeContext)
 
   return (
@@ -35,7 +35,7 @@ export function StatusSelector({ status, setStatus }) {
   )
 }
 
-export function Status({ incident: { status, ...incident }, setActive }) {
+export function Status({ incident: { status, ...incident }, setActive }: any) {
   const user = useContext(CurrentUserContext)
   const editable = canEdit(incident, user) && setActive
 

@@ -26,7 +26,7 @@ const versionLink = ({ chart, terraform }) => (chart ? `/charts/${chart.id}` : `
 
 function resourceInfo({
   version, group, role, integrationWebhook, repository, image,
-}) {
+}: any) {
   if (version) {
     return ({
       link: versionLink(version),
@@ -49,7 +49,7 @@ function resourceInfo({
   return { link: null, text: '' }
 }
 
-function Resource({ audit }) {
+function Resource({ audit }: any) {
   const { link, text } = resourceInfo(audit)
 
   if (!link) return null
@@ -75,7 +75,7 @@ export function Placeholder() {
   )
 }
 
-function Audit({ audit, last }) {
+function Audit({ audit, last }: any) {
   return (
     <TableRow last={last}>
       <TableData>

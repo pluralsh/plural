@@ -7,7 +7,7 @@ import { ModalHeader } from '../ModalHeader'
 
 import { UPDATE_VERSION } from './queries'
 
-export function VersionTag({ tag: { tag }, onClick }) {
+export function VersionTag({ tag: { tag }, onClick }: any) {
   return (
     <Box
       round="xsmall"
@@ -28,7 +28,7 @@ export const TAGS = [
   'warm',
 ]
 
-export function EditTags({ version, setOpen, refetch }) {
+export function EditTags({ version, setOpen, refetch }: any) {
   const [value, setValue] = useState('stable')
   const [current, setCurrent] = useState((version.tags || []).map(({ tag }) => ({ tag })))
   const addTag = useCallback(tag => {

@@ -1,8 +1,9 @@
-import { LinkTabWrap } from 'components/utils/Tabs'
 import { PageCard, Tab, TabList } from 'pluralsh-design-system'
 import { useContext } from 'react'
 import { useLocation } from 'react-router-dom'
 import { Div } from 'honorable'
+
+import { LinkTabWrap } from '../utils/Tabs'
 
 import CurrentUserContext from '../../contexts/CurrentUserContext'
 

@@ -31,7 +31,7 @@ const ICON_SIZE = 50
 
 function Integration({
   name, description, icon, tags, sourceUrl, publisher, width,
-}) {
+}: any) {
   const navigate = useNavigate()
   const [hover, setHover] = useState(false)
 
@@ -163,7 +163,7 @@ export function Container({
   )
 }
 
-function SourceLink({ sourceUrl }) {
+function SourceLink({ sourceUrl }: any) {
   return (
     <Box
       direction="row"
@@ -194,7 +194,7 @@ function SourceLink({ sourceUrl }) {
   )
 }
 
-function IntegrationGrid({ integrations: { edges, pageInfo }, fetchMore }) {
+function IntegrationGrid({ integrations: { edges, pageInfo }, fetchMore }: any) {
   return (
     <Scroller
       style={{ overflow: 'auto', height: '100%', width: '100%' }}
@@ -224,7 +224,7 @@ function IntegrationGrid({ integrations: { edges, pageInfo }, fetchMore }) {
   )
 }
 
-export function TagHeader({ tag, setTag }) {
+export function TagHeader({ tag, setTag }: any) {
   return (
     <HoveredBackground>
       <Box
@@ -309,7 +309,7 @@ export function IntegrationPage() {
   )
 }
 
-function ViewAll({ repositoryId }) {
+function ViewAll({ repositoryId }: any) {
   const navigate = useNavigate()
 
   return (
@@ -339,7 +339,7 @@ function ViewAll({ repositoryId }) {
   )
 }
 
-export default function Integrations({ integrations: { edges, pageInfo }, fetchMore, repository }) {
+export default function Integrations({ integrations: { edges, pageInfo }, fetchMore, repository }: any) {
   return (
     <DetailContainer>
       <Box>

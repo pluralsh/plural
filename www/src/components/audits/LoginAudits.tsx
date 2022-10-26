@@ -6,7 +6,7 @@ import { PageTitle } from 'pluralsh-design-system'
 
 import { Span } from 'honorable'
 
-import { Placeholder } from 'components/utils/Placeholder'
+import { Placeholder } from '../utils/Placeholder'
 
 import { RepoIcon } from '../repos/Repositories'
 
@@ -24,7 +24,7 @@ import { Location } from './Location'
 
 import { LOGINS_Q } from './queries'
 
-function LoginRow({ login, last }) {
+function LoginRow({ login, last }: any) {
   return (
     <TableRow last={last}>
       <TableData>

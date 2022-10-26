@@ -14,7 +14,7 @@ function redirectUrl(format, service) {
 
 function Integration({
   icon, installUrl, integrations, service, children,
-}) {
+}: any) {
   const connected = !!integrations[service]
   const onClick = connected ? null : () => window.location = redirectUrl(installUrl, service)
 

@@ -28,7 +28,7 @@ function OnboardingWrapper({
   cliMode = false,
   onRestart = () => {},
   children,
-}) {
+}: any) {
   const theme = useTheme()
   const [selectedApplications, setSelectedApplications] = useState<any[]>(retrieveApplications())
   const selectedApplicationsContextValue = useMemo<SelectedApplicationsContextType>(() => ({ selectedApplications, setSelectedApplications }), [selectedApplications])

@@ -1,7 +1,7 @@
 import { Div, Flex, P } from 'honorable'
 import { CloseIcon } from 'pluralsh-design-system'
 
-export function ModalHeader({ text, setOpen }) {
+export function ModalHeader({ text, setOpen }: any) {
   return (
     <Flex
       align="center"

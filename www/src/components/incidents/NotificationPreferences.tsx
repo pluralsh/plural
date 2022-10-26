@@ -1,6 +1,6 @@
 import { Box, CheckBox, Text } from 'grommet'
 
-export function NotificationPreferences({ preferences, setPreferences }) {
+export function NotificationPreferences({ preferences, setPreferences }: any) {
   return (
     <Box
       pad="small"

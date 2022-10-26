@@ -31,7 +31,7 @@ const searchOptions = {
   threshold: 0.25,
 }
 
-function Chart({ chart, first, last }) {
+function Chart({ chart, first, last }: any) {
   return (
     <Flex
       as={Link}

@@ -25,9 +25,9 @@ import { normalizeColor } from 'grommet/utils'
 import fs from 'filesize'
 import moment from 'moment'
 
-import { HeaderItem } from 'components/utils/Header'
+import { HeaderItem } from '../utils/Header'
 
-import { Icon } from 'components/utils/IconOld'
+import { Icon } from '../utils/IconOld'
 
 import { download } from '../../utils/file'
 
@@ -35,7 +35,7 @@ import { DetailContainer } from './Installation'
 
 const SMALL_ICON_SIZE = 13
 
-function ArtifactPlatform({ platform }) {
+function ArtifactPlatform({ platform }: any) {
   switch (platform) {
   case 'MAC':
     return (
@@ -63,7 +63,7 @@ function ArtifactPlatform({ platform }) {
   }
 }
 
-function Readme({ readme }) {
+function Readme({ readme }: any) {
   return (
     <Box
       pad={{ horizontal: 'small', bottom: 'small' }}
@@ -95,7 +95,7 @@ const optionHover = styled.div`
 
 function ArtifactOption({
   onClick, text, border, round,
-}) {
+}: any) {
   return (
     <Box
       as={optionHover}
@@ -109,7 +109,7 @@ function ArtifactOption({
   )
 }
 
-function WithBack({ children, setAlternate }) {
+function WithBack({ children, setAlternate }: any) {
   return (
     <Box animation="fadeIn">
       <Box pad="small">
@@ -134,7 +134,7 @@ function WithBack({ children, setAlternate }) {
 
 function ArtifactDetails({
   sha, filesize, arch, platform,
-}) {
+}: any) {
   return (
     <Table>
       <TableBody>
@@ -166,7 +166,7 @@ function ArtifactDetails({
 
 function ArtifactDetail({
   dropRef, setOpen, blob, readme, sha, filesize,
-}) {
+}: any) {
   const [alternate, setAlternate] = useState(null)
 
   return (
@@ -211,9 +211,9 @@ function ArtifactDetail({
 export function Artifact({
   // eslint-disable-next-line
   name, type, platform, filesize, ...artifact
-}) {
+}: any) {
   const [open, setOpen] = useState(false)
-  const dropRef = useRef()
+  const dropRef = useRef<HTMLDivElement>(null)
 
   return (
     <>
@@ -261,7 +261,7 @@ export function Artifact({
   )
 }
 
-export function DetailHeader({ text, modifier }) {
+export function DetailHeader({ text, modifier }: any) {
   return (
     <Box
       direction="row"
@@ -284,7 +284,7 @@ export function DetailHeader({ text, modifier }) {
 
 const ROW_HEIGHT = '50px'
 
-function ArtifactRow({ artifact }) {
+function ArtifactRow({ artifact }: any) {
   const [open, setOpen] = useState(null)
   const doSetOpen = useCallback(tab => (open === tab ? setOpen(null) : setOpen(tab)), [setOpen, open])
 
@@ -405,7 +405,7 @@ function ArtifactHeader() {
   )
 }
 
-export function ArtifactTable({ artifacts }) {
+export function ArtifactTable({ artifacts }: any) {
   return (
     <Box
       fill
@@ -424,7 +424,7 @@ export function ArtifactTable({ artifacts }) {
   )
 }
 
-export default function Artifacts({ artifacts }) {
+export default function Artifacts({ artifacts }: any) {
   if (!artifacts || artifacts.length === 0) return null
 
   return (

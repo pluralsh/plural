@@ -16,7 +16,7 @@ import { extendConnection } from '../../utils/graphql'
 import { DELETE_REPO, REPOS_Q } from './queries'
 import { Container } from './Integrations'
 
-function DeleteRepository({ repo, publisherId }) {
+function DeleteRepository({ repo, publisherId }: any) {
   const [mutation] = useMutation(DELETE_REPO, {
     variables: { id: repo.id },
     update: (cache, { data: { deleteRepository } }) => {
@@ -75,7 +75,7 @@ export function RepoIcon({ repo: { icon, darkIcon }, round, size }: any) {
   )
 }
 
-export function RepoName({ repo: { name, private: priv } }) {
+export function RepoName({ repo: { name, private: priv } }: any) {
   return (
     <Box
       direction="row"
@@ -93,7 +93,7 @@ export function RepoName({ repo: { name, private: priv } }) {
   )
 }
 
-export function RepositoryInner({ repo }) {
+export function RepositoryInner({ repo }: any) {
   return (
     <Box
       direction="row"
@@ -117,7 +117,7 @@ export function RepositoryInner({ repo }) {
 
 function RepositoryCell({
   repo, deletable, publisherId, width,
-}) {
+}: any) {
   const navigate = useNavigate()
 
   return (
@@ -139,7 +139,7 @@ function RepositoryCell({
 
 export function Repository({
   repo, hasNext, deletable, publisherId,
-}) {
+}: any) {
   return (
     <Box
       pad="small"
@@ -232,7 +232,7 @@ export function RepositoryList({
   )
 }
 
-export default function Repositories({ publisher, deletable, columns }) {
+export default function Repositories({ publisher, deletable, columns }: any) {
   const { loading, data, fetchMore } = useQuery(REPOS_Q, { variables: { publisherId: publisher.id } })
 
   if (loading || !data) return null

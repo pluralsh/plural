@@ -15,7 +15,7 @@ const COLOR_MAP = [
   'blue-dark-2',
 ]
 
-function Tooltip({ feature }) {
+function Tooltip({ feature }: any) {
   if (!feature.data) return null
 
   const { id, value } = feature.data
@@ -47,7 +47,7 @@ function Tooltip({ feature }) {
   )
 }
 
-export function Chloropleth({ data }) {
+export function Chloropleth({ data }: any) {
   const maximum = max(data.map(({ value }) => value))
   const theme = useContext(ThemeContext)
   const colors = useColorMap(theme, COLOR_MAP)

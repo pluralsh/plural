@@ -14,8 +14,6 @@ import {
   PageTitle,
 } from 'pluralsh-design-system'
 
-import { Table, TableData, TableRow } from 'components/utils/Table'
-
 import {
   A,
   Flex,
@@ -25,13 +23,15 @@ import {
 
 import capitalize from 'lodash/capitalize'
 
+import { Table, TableData, TableRow } from '../utils/Table'
+
 import { AttackVector } from '../constants'
 
 import { PackageGrade, chipSeverity } from './misc'
 
 function CVSSRow({
   text, value, options, colorMap,
-}) {
+}: any) {
   return (
     <Box
       direction="column"
@@ -67,7 +67,7 @@ function CVSSRow({
   )
 }
 
-function VulnerabilityDetail({ v, last }) {
+function VulnerabilityDetail({ v, last }: any) {
   if (!v.title && !v.description && !v.source && !v.score && !v.cvss) {
     return (
       <Box
@@ -226,7 +226,7 @@ function VulnerabilityDetail({ v, last }) {
   )
 }
 
-function Vulnerability({ v, last }) {
+function Vulnerability({ v, last }: any) {
   const [open, setOpen] = useState(false)
 
   return (

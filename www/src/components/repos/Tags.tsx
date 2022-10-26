@@ -11,7 +11,7 @@ import { extendConnection } from '../../utils/graphql'
 
 export function TagInput({
   addTag, removeTag, tags, round, ...rest
-}) {
+}: any) {
   const [current, setCurrent] = useState('')
 
   return (
@@ -61,7 +61,7 @@ export function TagInput({
 
 export function TagContainer({
   enabled, children, gap, pad, onClick,
-}) {
+}: any) {
   const border = enabled ? { side: 'right', color: 'focus', size: '2px' } : null
 
   return (
@@ -85,7 +85,7 @@ export function TagContainer({
   )
 }
 
-export function Tag({ tag: { tag, count }, setTag, enabled }) {
+export function Tag({ tag: { tag, count }, setTag, enabled }: any) {
   return (
     <TagContainer
       enabled={enabled}
@@ -100,7 +100,7 @@ export function Tag({ tag: { tag, count }, setTag, enabled }) {
 
 export default function Tags({
   tags: { pageInfo, edges }, fetchMore, tag, setTag, pad,
-}) {
+}: any) {
   return (
     <Box
       pad={pad || { vertical: 'medium' }}

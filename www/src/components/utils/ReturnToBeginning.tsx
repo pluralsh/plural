@@ -1,7 +1,7 @@
 import { Layer } from 'grommet'
 import { Button, CaretUpIcon } from 'pluralsh-design-system'
 
-export function ReturnToBeginning({ beginning }) {
+export function ReturnToBeginning({ beginning }: any) {
   return (
     <Layer
       position="bottom-right"

@@ -93,7 +93,7 @@ function TerminalThemeSelector() {
   )
 }
 
-function TerminalThemePreview({ theme, ...props }) {
+function TerminalThemePreview({ theme, ...props }: any) {
   return (
     <Flex {...props}>
       {Object.entries(theme).map(([key, hex]) => (

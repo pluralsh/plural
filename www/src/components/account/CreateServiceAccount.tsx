@@ -69,7 +69,7 @@ function ServiceAccountForm({
   )
 }
 
-export function EditServiceAccount({ user, update }) {
+export function EditServiceAccount({ user, update }: any) {
   const [confirm, setConfirm] = useState(false)
   const [edit, setEdit] = useState(false)
   const [attributes, setAttributes] = useState({

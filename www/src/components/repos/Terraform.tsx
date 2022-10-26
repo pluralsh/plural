@@ -12,11 +12,11 @@ import {
   ResponsiveLayoutSidecarContainer,
   ResponsiveLayoutSidenavContainer,
   ResponsiveLayoutSpacer,
-} from 'components/layout/ResponsiveLayout'
+} from '../layout/ResponsiveLayout'
 
-import { GoBack } from 'components/utils/GoBack'
+import { GoBack } from '../utils/GoBack'
 
-import { LinkTabWrap } from 'components/utils/Tabs'
+import { LinkTabWrap } from '../utils/Tabs'
 
 import TopBar from '../layout/TopBar'
 
@@ -29,7 +29,7 @@ import { DEFAULT_TF_ICON } from './constants'
 
 import { PackageGrade, PackageHeader, PackageVersionPicker } from './common/misc'
 
-function TerraformInstaller({ terraformModule, version }) {
+function TerraformInstaller({ terraformModule, version }: any) {
   const installed = terraformModule?.installation?.version.id === version.id
   const [mutation, { error }] = useMutation(installed ? UNINSTALL_TF : INSTALL_TF, {
     variables: {
@@ -67,7 +67,7 @@ function TerraformInstaller({ terraformModule, version }) {
   )
 }
 
-export function TerraformActions({ terraformModule, currentVersion, ...props }) {
+export function TerraformActions({ terraformModule, currentVersion, ...props }: any) {
   if (!terraformModule.installation) return null
 
   return (
@@ -85,7 +85,7 @@ export default function Terraform() {
   const [version, setVersion] = useState(null)
   const { tfId } = useParams()
   const { data, fetchMore } = useQuery(TF_Q, { variables: { tfId }, fetchPolicy: 'cache-and-network' })
-  const tabStateRef = useRef()
+  const tabStateRef = useRef<any>(null)
 
   if (!data) return null
 

@@ -32,7 +32,7 @@ function LoadingSpinner() {
   return showLogo ? <LoopingLogo /> : null
 }
 
-export default function CurrentUser({ children }) {
+export default function CurrentUser({ children }: any) {
   const { loading, error, data } = useQuery(ME_Q)
 
   useNotificationSubscription()
@@ -66,13 +66,13 @@ export default function CurrentUser({ children }) {
   )
 }
 
-export function handlePreviousUserClick({ jwt }) {
+export function handlePreviousUserClick({ jwt }: any) {
   setToken(jwt)
   setPreviousUserData(null)
   window.location.reload()
 }
 
-export function PluralProvider({ children }) {
+export function PluralProvider({ children }: any) {
   const location = useLocation()
   const { loading, error, data } = useQuery(ME_Q, { pollInterval: 60000 })
   const { boot, update } = useIntercom()

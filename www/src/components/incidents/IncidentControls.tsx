@@ -38,7 +38,7 @@ import { NotificationPreferences } from './NotificationPreferences'
 
 import { Attribute, Attributes } from './utils'
 
-function Control({ icon, onClick }) {
+function Control({ icon, onClick }: any) {
   return (
     <Box
       pad="xsmall"
@@ -52,7 +52,7 @@ function Control({ icon, onClick }) {
   )
 }
 
-function AcceptIncident({ incident: { id } }) {
+function AcceptIncident({ incident: { id } }: any) {
   const [mutation] = useMutation(ACCEPT_INCIDENT, { variables: { id } })
 
   return (
@@ -63,7 +63,7 @@ function AcceptIncident({ incident: { id } }) {
   )
 }
 
-function CompleteIncident({ incident: { id } }) {
+function CompleteIncident({ incident: { id } }: any) {
   const [open, setOpen] = useState(false)
   const [attributes, setAttributes] = useState({ content: '' })
   const [editorState, setEditorState] = useState(plainDeserialize(attributes.content))
@@ -143,7 +143,7 @@ const followerPreferences = follower => {
   return { message, incidentUpdate, mention }
 }
 
-function Follower({ incident: { id, follower } }) {
+function Follower({ incident: { id, follower } }: any) {
   const [open, setOpen] = useState(false)
   const [preferences, setPreferences] = useState(followerPreferences(follower))
   const [mutation, { loading }] = useMutation(FOLLOW, {
@@ -218,7 +218,7 @@ function Follower({ incident: { id, follower } }) {
   )
 }
 
-function ZoomMeeting({ incident: { id, title } }) {
+function ZoomMeeting({ incident: { id, title } }: any) {
   const [open, setOpen] = useState(true)
   const [mutation, { data }] = useMutation(ZOOM_MEETING, {
     variables: { attributes: { incidentId: id, topic: title } },
@@ -270,7 +270,7 @@ function ZoomMeeting({ incident: { id, title } }) {
   )
 }
 
-export function IncidentControls({ incident }) {
+export function IncidentControls({ incident }: any) {
   return (
     <Box
       flex={false}

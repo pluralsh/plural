@@ -5,7 +5,7 @@ const slideAnimate = type => ({
   type, duration: 150, delay: 0, size: 'xlarge',
 })
 
-function Content({ children, slide }) {
+function Content({ children, slide }: any) {
   return (
     <Box
       flex={false}
@@ -16,7 +16,7 @@ function Content({ children, slide }) {
   )
 }
 
-export function AlternatingBox({ children }) {
+export function AlternatingBox({ children }: any) {
   const [opened, setOpened] = useState(false)
   const [alternate, setAlternate] = useState(null)
   const doSetAlternate = useCallback(alternate => {

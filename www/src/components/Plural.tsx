@@ -82,7 +82,7 @@ function EditBilling(props) {
   )
 }
 
-function WrapStripe({ children }) {
+function WrapStripe({ children }: any) {
   const { stripePublishableKey } = useContext(PluralConfigurationContext)
 
   if (!stripePublishableKey) return children

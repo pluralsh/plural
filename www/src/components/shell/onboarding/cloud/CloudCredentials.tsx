@@ -9,10 +9,11 @@ import {
 import { Box, Drop } from 'grommet'
 import { MenuItem, Select } from 'honorable'
 import { Button, FormField } from 'pluralsh-design-system'
-import { persistProvider } from 'components/shell/persistance'
-import { providerToDisplayName } from 'components/utils/InstallDropdownButton'
 
 import { growthbook } from 'helpers/growthbook'
+
+import { persistProvider } from '../shell/persistance'
+import { providerToDisplayName } from '../utils/InstallDropdownButton'
 
 import CreateShellContext from '../../../../contexts/CreateShellContext'
 import { CLOUDS } from '../../constants'
@@ -38,7 +39,7 @@ function CloudCredentials() {
     exceptions,
   } = useContext(CreateShellContext)
 
-  const ref = useRef()
+  const ref = useRef<HTMLDivElement>(null)
   const [open, setOpen] = useState(false)
   const close = useCallback(() => setOpen(false), [setOpen])
   const form = ProviderForms[provider]

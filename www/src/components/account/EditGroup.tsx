@@ -27,7 +27,7 @@ const TABS = {
   Users: { label: 'Users' },
 }
 
-export function EditGroup({ group, edit, setEdit }) {
+export function EditGroup({ group, edit, setEdit }: any) {
   const client = useApolloClient()
   const [value, setValue] = useState('')
   const [name, setName] = useState(group.name)
@@ -46,7 +46,7 @@ export function EditGroup({ group, edit, setEdit }) {
     }),
   })
   const [suggestions, setSuggestions] = useState([])
-  const tabStateRef = useRef()
+  const tabStateRef = useRef<any>(null)
   const [view, setView] = useState('Attributes')
 
   return (
@@ -127,9 +127,11 @@ export function EditGroup({ group, edit, setEdit }) {
               >
                 <ComboBox
                   inputValue={value}
+                  // @ts-expect-error
                   placeholder="Search a user"
                   onSelectionChange={key => {
                     setValue('')
+                    // @ts-expect-error
                     addMut({ variables: { userId: key } })
                   }}
                   onInputChange={value => {

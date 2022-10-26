@@ -12,7 +12,7 @@ import { FileTypes } from './types'
 
 const extension = file => file.split('.').pop()
 
-function DownloadAffordance({ blob }) {
+function DownloadAffordance({ blob }: any) {
   return (
     <Tooltip align={{ bottom: 'top' }}>
       <HoveredBackground>
@@ -38,7 +38,7 @@ function DownloadAffordance({ blob }) {
   )
 }
 
-function Image({ height, blob, filename }) {
+function Image({ height, blob, filename }: any) {
   const [hover, setHover] = useState(false)
 
   return (
@@ -62,7 +62,7 @@ function Image({ height, blob, filename }) {
   )
 }
 
-function Video({ blob, filename }) {
+function Video({ blob, filename }: any) {
   return (
     <video
       controls
@@ -73,7 +73,7 @@ function Video({ blob, filename }) {
   )
 }
 
-function MediaFile({ file }) {
+function MediaFile({ file }: any) {
   const { filename, mediaType } = file
 
   return (
@@ -103,7 +103,7 @@ function MediaFile({ file }) {
   )
 }
 
-export function Icon({ size, name }) {
+export function Icon({ size, name }: any) {
   const ext = extension(name)
   const styles = defaultStyles[ext] || {}
 
@@ -119,7 +119,7 @@ export function Icon({ size, name }) {
 
 const MEDIA_STYLES = { maxWidth: 50, maxHeight: 50 }
 
-export function FileEntry({ file }) {
+export function FileEntry({ file }: any) {
   const [hover, setHover] = useState(false)
 
   return (
@@ -190,7 +190,7 @@ export function StandardFile({
   file: {
     filename, blob, insertedAt, ...file
   },
-}) {
+}: any) {
   const [hover, setHover] = useState(false)
 
   return (
@@ -233,7 +233,7 @@ export function StandardFile({
   )
 }
 
-export default function File({ file }) {
+export default function File({ file }: any) {
   switch (file.mediaType) {
   case FileTypes.IMAGE:
   case FileTypes.VIDEO:

@@ -6,7 +6,7 @@ import truncate from 'lodash/truncate'
 
 export function Copyable({
   text, pillText, displayText, onCopy,
-}) {
+}: any) {
   const [display, setDisplay] = useState(false)
   const [hover, setHover] = useState(false)
 

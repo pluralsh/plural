@@ -13,11 +13,11 @@ import { PUBLISHER_QUERY } from './queries'
 
 function formatAddress({
   line1, line2, city, state, country, zip,
-}) {
+}: any) {
   return `${line1}, ${line2} ${city}, ${state}, ${country} ${zip}`
 }
 
-export function PublisherHeader({ publisher: { name, description, ...publisher }, size }) {
+export function PublisherHeader({ publisher: { name, description, ...publisher }, size }: any) {
   return (
     <Box
       direction="row"
@@ -47,7 +47,7 @@ function PublisherView({
   publisher: {
     name, description, address, ...publisher
   },
-}) {
+}: any) {
   const showDetails = !!address
 
   return (

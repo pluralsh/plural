@@ -3,8 +3,8 @@ import { Div } from 'honorable'
 
 function InfiniteScroller({
   loading = false, hasMore = false, loadMore, children, ...props
-}) {
-  const scrollRef = useRef()
+}: any) {
+  const scrollRef = useRef<HTMLDivElement>(null)
   const isScrollbarVisible = el => el.scrollHeight > el.clientHeight
 
   useEffect(() => {

@@ -10,7 +10,7 @@ import { LoopingLogo } from '../utils/AnimatedLogo'
 import { CREATE_OAUTH } from './queries'
 import { ParamToService } from './types'
 
-function OauthError({ error, service }) {
+function OauthError({ error, service }: any) {
   return (
     <Box
       fill

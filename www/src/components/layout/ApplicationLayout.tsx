@@ -14,7 +14,7 @@ import { CurrentUserContext, handlePreviousUserClick } from '../login/CurrentUse
 import Sidebar from './Sidebar'
 import WithApplicationUpdate from './WithApplicationUpdate'
 
-function ServiceAccountBanner({ previousUser }) {
+function ServiceAccountBanner({ previousUser }: any) {
   const me = useContext(CurrentUserContext)
   const theme = useTheme()
 
@@ -44,7 +44,7 @@ function ServiceAccountBanner({ previousUser }) {
   )
 }
 
-function ApplicationLayout({ children }) {
+function ApplicationLayout({ children }: any) {
   const previousUser = getPreviousUserData()
   const isProduction = process.env.NODE_ENV === 'production'
 

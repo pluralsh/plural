@@ -15,7 +15,7 @@ const StatusToColor = {
   in: 'progress',
 }
 
-function AlertIcon({ status, color }) {
+function AlertIcon({ status, color }: any) {
   switch (status) {
   case AlertStatus.SUCCESS:
     return (
@@ -55,7 +55,7 @@ export function GqlError({ header, error }: any) {
   )
 }
 
-export function Alert({ status, header, description }) {
+export function Alert({ status, header, description }: any) {
   const color = StatusToColor[status]
   const theme = useContext(ThemeContext)
 

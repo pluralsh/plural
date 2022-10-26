@@ -55,7 +55,7 @@ function getValidations(provider, scmProvider, section) {
   return VALIDATIONS[section]
 }
 
-function OnboardingFlow({ accessToken, provider: scmProvider, authUrlData }) {
+function OnboardingFlow({ accessToken, provider: scmProvider, authUrlData }: any) {
   const [demoId, setDemoId] = useState(null)
   const [section, setSection] = useState(SECTION_GIT_PROVIDER)
   const [providerName, setProvider] = useState('AWS')

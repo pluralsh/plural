@@ -112,7 +112,7 @@ export function getExceptions(validations, object) {
 }
 
 // Should probably pull this into the design system at some point
-function Exception({ field, message }) {
+function Exception({ field, message }: any) {
   return (
     <Flex
       width="100%"
@@ -140,7 +140,7 @@ function Exception({ field, message }) {
   )
 }
 
-export function Exceptions({ exceptions, filterEmpty = true }) {
+export function Exceptions({ exceptions, filterEmpty = true }: any) {
   if (filterEmpty) {
     exceptions = exceptions.filter(({ empty }) => !empty)
   }

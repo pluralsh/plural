@@ -14,7 +14,7 @@ import { dateFormat } from '../../utils/date'
 
 import { StateToColor } from './types'
 
-function WebhookLogStatus({ state }) {
+function WebhookLogStatus({ state }: any) {
   return (
     <Box
       flex={false}
@@ -29,7 +29,7 @@ function WebhookLogStatus({ state }) {
   )
 }
 
-function WebhookResponse({ log: { response, payload } }) {
+function WebhookResponse({ log: { response, payload } }: any) {
   return (
     <Box flex={false}>
       <Tabs defaultTab="request">
@@ -72,7 +72,7 @@ function WebhookResponse({ log: { response, payload } }) {
   )
 }
 
-export function WebhookLog({ log, next }) {
+export function WebhookLog({ log, next }: any) {
   const [open, setOpen] = useState(false)
 
   return (

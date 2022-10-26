@@ -49,7 +49,7 @@ export default function RepositoryPackages() {
   const repository = useContext(RepositoryContext)
   const [q, setQ] = useState('')
   const { pathname } = useLocation()
-  const tabStateRef = useRef()
+  const tabStateRef = useRef<any>(null)
   const pathPrefix = `/repository/${repository.id}/packages`
 
   const currentTab = DIRECTORY.find(tab => pathname?.startsWith(`${pathPrefix}${tab.path}`))

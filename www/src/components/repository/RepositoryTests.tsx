@@ -45,7 +45,7 @@ const statusAttrs = {
   FAILED: { severity: 'error', icon: <ErrorIcon /> },
 }
 
-function Status({ status }) {
+function Status({ status }: any) {
   return (
     <Chip
       {...statusAttrs[status]}
@@ -71,9 +71,9 @@ async function fetchLogs(
   }
 }
 
-function TestLogs({ step: { id, hasLogs }, testId }) {
+function TestLogs({ step: { id, hasLogs }, testId }: any) {
   const client = useApolloClient()
-  const xterm = useRef(null)
+  const xterm = useRef<HTMLDivElement>(null)(null)
   const fitAddon = useMemo(() => new FitAddon(), [])
   const { data } = useSubscription(LOGS_SUB, {
     variables: { testId },
@@ -127,7 +127,7 @@ function TestLogs({ step: { id, hasLogs }, testId }) {
   )
 }
 
-function Test({ test, last, setTest }) {
+function Test({ test, last, setTest }: any) {
   return (
     <TableRow
       last={last}
@@ -165,7 +165,7 @@ function Test({ test, last, setTest }) {
   )
 }
 
-function TestStep({ step, test, last }) {
+function TestStep({ step, test, last }: any) {
   const [open, setOpen] = useState(false)
 
   return (
@@ -213,7 +213,7 @@ function TestStep({ step, test, last }) {
   )
 }
 
-function TestDetail({ test, setTest }) {
+function TestDetail({ test, setTest }: any) {
   const len = test.steps.length
 
   return (

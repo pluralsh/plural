@@ -31,7 +31,7 @@ import { RECIPES_QUERY } from './queries'
 import InstallDropdownButton from './InstallDropdownButton'
 import { InstallationConfiguration } from './InstallationConfiguration'
 
-function InstalledActions({ installation, ...props }) {
+function InstalledActions({ installation, ...props }: any) {
   const [open, setOpen] = useState(false)
 
   return (

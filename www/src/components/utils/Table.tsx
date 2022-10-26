@@ -2,9 +2,11 @@ import { Flex, P, Span } from 'honorable'
 import { createContext, useContext, useMemo } from 'react'
 import toUpper from 'lodash/toUpper'
 
-const TableContext = createContext({})
+const TableContext = createContext<any>({})
 
-function HeaderItem({ label, index }) {
+function HeaderItem({
+  label, index,
+}: any) {
   const { sizes } = useContext(TableContext)
 
   return (
@@ -19,7 +21,7 @@ function HeaderItem({ label, index }) {
 
 export function TableRow({
   children, suffix, last, ...flex
-}) {
+}: any) {
   const { sizes } = useContext(TableContext)
 
   const len = children.length
@@ -51,7 +53,7 @@ export function TableRow({
   )
 }
 
-export function TableData({ children }) {
+export function TableData({ children }: any) {
   return (
     <Span color="text-light">
       {children}
@@ -61,7 +63,7 @@ export function TableData({ children }) {
 
 export function Table({
   sizes, headers, children, background, heading, ...flex
-}) {
+}: any) {
   const value = useMemo(() => ({
     sizes, background,
   }), [sizes, background])

@@ -11,7 +11,7 @@ import { CreditCardIcon, PlusIcon } from 'pluralsh-design-system'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useFilePicker } from 'react-sage'
 
-import { SectionChoice } from 'components/utils/SectionChoice'
+import { SectionChoice } from '../utils/SectionChoice'
 
 import { STRIPE_BLUE } from '../payments/constants'
 import BreadcrumbsContext from '../../contexts/BreadcrumbsContext'
@@ -33,7 +33,7 @@ import { EDIT_PUBLISHER, FULL_PUBLISHER_Q, LINK_ACCOUNT } from './queries'
 
 function EditSelect({
   name, edit, icon, base,
-}) {
+}: any) {
   const { editing } = useParams()
   const navigate = useNavigate()
 
@@ -48,7 +48,7 @@ function EditSelect({
   )
 }
 
-function EditContent({ edit, name, children }) {
+function EditContent({ edit, name, children }: any) {
   const { editing } = useParams()
 
   if (editing !== edit) return null
@@ -82,7 +82,7 @@ function AccountConnected() {
   )
 }
 
-function PublisherPayments({ publisher: { billingAccountId } }) {
+function PublisherPayments({ publisher: { billingAccountId } }: any) {
   const { stripeConnectId } = useContext(PluralConfigurationContext)
   const [mutation] = useMutation(LINK_ACCOUNT, {
     update: (cache, { data: { linkPublisher } }) => updateCache(cache, {
@@ -114,7 +114,7 @@ function PublisherPayments({ publisher: { billingAccountId } }) {
   )
 }
 
-function EditPublisher({ publisher: { description, phone } }) {
+function EditPublisher({ publisher: { description, phone } }: any) {
   const [attributes, setAttributes] = useState({ description, phone })
   const [mutation, { loading }] = useMutation(EDIT_PUBLISHER, { variables: { attributes } })
 
@@ -151,7 +151,7 @@ function EditPublisher({ publisher: { description, phone } }) {
   )
 }
 
-function EditAvatar({ publisher }) {
+function EditAvatar({ publisher }: any) {
   const { files, onClick, HiddenFileInput } = useFilePicker({})
   const [mutation] = useMutation(EDIT_PUBLISHER)
 

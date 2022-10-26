@@ -11,7 +11,7 @@ export function dateFormat(date) {
   return moment(date).format('MM/DD h:mm:ss A')
 }
 
-export function GraphHeader({ text }) {
+export function GraphHeader({ text }: any) {
   return (
     <Box
       direction="row"
@@ -27,7 +27,7 @@ export function GraphHeader({ text }) {
   )
 }
 
-function SliceTooltip({ point: { serieColor, serieId, data } }) {
+function SliceTooltip({ point: { serieColor, serieId, data } }: any) {
   return (
     <Flex
       background="fill-one"
@@ -101,7 +101,7 @@ export function useColorMap(theme, colors) {
   return useMemo(() => (colors || COLOR_MAP).map(c => normalizeColor(c, theme)), [theme, colors])
 }
 
-export function Graph({ data, yFormat, tick }) {
+export function Graph({ data, yFormat, tick }: any) {
   const [selected, setSelected] = useState(null)
   const graph = useMemo(() => {
     if (data.find(({ id }) => id === selected)) {

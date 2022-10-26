@@ -43,7 +43,7 @@ export function WithNotifications({ children }: WithNotificationsProps) {
   })
 }
 
-export function NotificationsPanel({ closePanel }) {
+export function NotificationsPanel({ closePanel }: any) {
   const [
     notifications,
     loadingNotifications,
@@ -95,7 +95,7 @@ export function NotificationsPanel({ closePanel }) {
   )
 }
 
-function OnboardingChecklistNotification({ closePanel }) {
+function OnboardingChecklistNotification({ closePanel }: any) {
   const { setDismissed } = useContext(OnboardingChecklistContext)
   const [updateChecklist, { loading }] = useMutation(UPDATE_ONBOARDING_CHECKLIST, {
     variables: {
@@ -163,7 +163,7 @@ const getUrl = (notification: NotificationT) => {
   // return `/incident/${notification?.incident?.id}`
 }
 
-function HeaderNotificationType({ type }: { type: NotificationType }) {
+function HeaderNotificationType({ type }: { type: NotificationType }: any) {
   let text
 
   switch (type) {
@@ -196,7 +196,7 @@ function NotificationContent({
   notification,
 }: {
   notification: NotificationT
-}) {
+}: any) {
   if (hasMessage(notification)) {
     return (
       <Div
@@ -217,7 +217,7 @@ function NotificationContent({
   return null
 }
 
-function Notification({ notification, closePanel }) {
+function Notification({ notification, closePanel }: any) {
   const { actor, incident, insertedAt } = notification
   const theme = useTheme()
 

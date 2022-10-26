@@ -4,8 +4,8 @@ import { TooltipContent } from 'forge-core'
 
 export function Icon({
   icon, iconAttrs, tooltip, onClick, hover,
-}) {
-  const dropRef = useRef()
+}: any) {
+  const dropRef = useRef<HTMLDivElement>(null)
   const [open, setOpen] = useState(false)
 
   return (

@@ -42,7 +42,7 @@ const searchOptions = {
   threshold: 0.25,
 }
 
-function Terraform({ terraform, first, last }) {
+function Terraform({ terraform, first, last }: any) {
   return (
     <Flex
       as={Link}

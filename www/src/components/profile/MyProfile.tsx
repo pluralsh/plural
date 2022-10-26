@@ -25,7 +25,7 @@ const DIRECTORY = [
 export function MyProfile() {
   const me = useContext(CurrentUserContext)
   const { pathname } = useLocation()
-  const tabStateRef = useRef()
+  const tabStateRef = useRef<any>(null)
   const currentTab = DIRECTORY.find(tab => pathname?.startsWith(tab.path))
 
   return (

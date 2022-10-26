@@ -2,7 +2,7 @@ import { Box, Drop } from 'grommet'
 
 export function Tooltip({
   children, background, align, target, side, ...props
-}) {
+}: any) {
   return (
     <Drop
       plain

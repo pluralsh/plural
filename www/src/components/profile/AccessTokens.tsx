@@ -19,7 +19,7 @@ import {
   Tooltip,
 } from 'pluralsh-design-system'
 
-import { Placeholder } from 'components/utils/Placeholder'
+import { Placeholder } from '../utils/Placeholder'
 
 import {
   appendConnection,
@@ -53,7 +53,7 @@ import { ListItem } from './ListItem'
 
 const TOOLTIP = 'Access tokens allow you to access the Plural API for automation and active Plural clusters.'
 
-function TokenAudits({ token }) {
+function TokenAudits({ token }: any) {
   const [listRef, setListRef] = useState(null)
   const { data, loading, fetchMore } = useQuery(TOKEN_AUDITS, { variables: { id: token.id }, fetchPolicy: 'cache-and-network' })
 
@@ -105,7 +105,7 @@ function TokenAudits({ token }) {
   )
 }
 
-function TokenMetrics({ token }) {
+function TokenMetrics({ token }: any) {
   const { data } = useQuery(TOKEN_METRICS, {
     variables: { id: token.id },
     fetchPolicy: 'cache-and-network',
@@ -128,7 +128,7 @@ function TokenMetrics({ token }) {
   )
 }
 
-function AccessToken({ token, first, last }) {
+function AccessToken({ token, first, last }: any) {
   const [displayCopyBanner, setDisplayCopyBanner] = useState(false)
   const [confirm, setConfirm] = useState(false)
   const [audits, setAudits] = useState(false)

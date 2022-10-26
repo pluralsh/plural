@@ -22,7 +22,7 @@ export function formatDate(dt) {
   })
 }
 
-export function DateDivider({ message, next, setSize }) {
+export function DateDivider({ message, next, setSize }: any) {
   const same = sameDay(message, next)
   const [painted, setPainted] = useState(!same)
 

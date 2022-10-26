@@ -10,7 +10,7 @@ import { CREATE_PUBLISHER_MUTATION } from './queries'
 
 function Input({
   label, header, placeholder, value, setValue,
-}) {
+}: any) {
   return (
     <Box>
       <Text
@@ -28,7 +28,7 @@ function Input({
   )
 }
 
-export default function CreatePublisher({ onCreate }) {
+export default function CreatePublisher({ onCreate }: any) {
   const [attributes, setAttributes] = useState({ description: '', name: '' })
   const [mutation, { loading }] = useMutation(CREATE_PUBLISHER_MUTATION, {
     variables: { attributes },

@@ -37,7 +37,7 @@ import capitalize from 'lodash/capitalize'
 
 import { Repository } from 'generated/graphql'
 
-import { GqlError } from 'components/utils/Alert'
+import { GqlError } from '../utils/Alert'
 
 import RepositoryContext from '../../contexts/RepositoryContext'
 import { isValidUrl } from '../../utils/string'
@@ -154,7 +154,7 @@ function RepositoryEdit() {
     previewUrl: string | null;
   }>({ file: null, previewUrl: icon || null })
 
-  const tagSearchRef = useRef<any>(null)
+  const tagSearchRef = useRef<HTMLDivElement>(null)<any>(null)
 
   const [mutation, { loading, error }] = useMutation(UPDATE_REPOSITORY_MUTATION, {
     variables: {

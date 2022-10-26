@@ -20,7 +20,7 @@ import { LineItemIcon } from './Plan'
 
 function LineItemUpdate({
   lineItem: { cost }, dimension, quantity, subscription, repository, setOpen,
-}) {
+}: any) {
   const [value, setValue] = useState(quantity)
   const [mutation, { loading }] = useMutation(UPDATE_LINE_ITEM, {
     variables: { subscriptionId: subscription.id, attributes: { dimension, quantity: value } },
@@ -79,7 +79,7 @@ function LineItemUpdate({
 
 export function LineItemNub({
   dimension, quantity, subscription, repository, lineItem,
-}) {
+}: any) {
   const [open, setOpen] = useState(false)
   const [hover, setHover] = useState(false)
   const metered = lineItem.type === PlanType.METERED
@@ -117,7 +117,7 @@ export function LineItemNub({
   )
 }
 
-export function SubscriptionBadge({ repository, subscription }) {
+export function SubscriptionBadge({ repository, subscription }: any) {
   const { plan: { name, period, lineItems }, lineItems: { items } } = subscription
   const totalCost = subscriptionCost(subscription, subscription.plan)
   const itemsByDim = pivotByDimension(lineItems.items)

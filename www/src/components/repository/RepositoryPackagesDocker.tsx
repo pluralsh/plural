@@ -29,7 +29,7 @@ const searchOptions = {
   threshold: 0.25,
 }
 
-function DockerRepository({ dockerRepository, first, last }) {
+function DockerRepository({ dockerRepository, first, last }: any) {
   const { registry } = useContext(PluralConfigurationContext)
   const { name } = useContext(RepositoryContext)
 

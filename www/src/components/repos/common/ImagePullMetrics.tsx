@@ -2,7 +2,6 @@ import { Box } from 'grommet'
 
 import { useOutletContext } from 'react-router-dom'
 
-import { DURATIONS, Graph } from 'components/utils/Graph'
 import { useMemo, useRef } from 'react'
 import moment from 'moment'
 import {
@@ -12,10 +11,12 @@ import {
   TabList,
   TabPanel,
 } from 'pluralsh-design-system'
-import { generateColor } from 'components/utils/colors'
 
-function RangePicker({ duration, setDuration }) {
-  const tabStateRef = useRef()
+import { DURATIONS, Graph } from '../utils/Graph'
+import { generateColor } from '../utils/colors'
+
+function RangePicker({ duration, setDuration }: any) {
+  const tabStateRef = useRef<any>(null)
   const selectedKey = `${duration.offset}+${duration.step}`
 
   return (
@@ -57,7 +58,7 @@ export default function ImagePullMetrics() {
     }
   }),
   [dockerRepository.metrics, dockerRepository.name])
-  const tabStateRef = useRef()
+  const tabStateRef = useRef<any>(null)
 
   return (
     <Box

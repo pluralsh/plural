@@ -8,9 +8,9 @@ import { useMutation, useQuery } from '@apollo/client'
 import { Button, PaymentMethods, Trash } from 'forge-core'
 import { CreditCardIcon as Amex, CreditCardIcon as Mastercard, CreditCardIcon as Visa } from 'pluralsh-design-system'
 
-import { HeaderItem } from 'components/utils/Header'
+import { HeaderItem } from '../utils/Header'
 
-import { Icon } from 'components/utils/IconOld'
+import { Icon } from '../utils/IconOld'
 
 import { ModalHeader } from '../ModalHeader'
 import { TagContainer } from '../repos/Tags'
@@ -20,7 +20,7 @@ import { CurrentUserContext } from '../login/CurrentUser'
 
 import { CARDS, DELETE_CARD, REGISTER_CARD } from './queries'
 
-function _CardForm({ stripe, onCompleted }) {
+function _CardForm({ stripe, onCompleted }: any) {
   const [stripeError, setStripeError] = useState(null)
   const [mutation, { loading, error }] = useMutation(REGISTER_CARD, {
     refetchQueries: [{ query: CARDS }],
@@ -76,7 +76,7 @@ function _CardForm({ stripe, onCompleted }) {
 
 const CardForm = injectStripe(_CardForm)
 
-function CardInputForm({ me, onCompleted }) {
+function CardInputForm({ me, onCompleted }: any) {
   return (
     <Elements>
       <CardForm
@@ -90,7 +90,7 @@ function CardInputForm({ me, onCompleted }) {
 const cardNumber = last4 => `**** **** **** ${last4}`
 const expiry = (expMonth, expYear) => `${expMonth > 10 ? expMonth : `0${expMonth}`}/${expYear}`
 
-export function CardIcon({ brand }) {
+export function CardIcon({ brand }: any) {
   switch (brand.toLowerCase()) {
   case 'visa':
     return (
@@ -147,7 +147,7 @@ function CardHeader() {
   )
 }
 
-function CardRow({ card, noDelete }) {
+function CardRow({ card, noDelete }: any) {
   const [mutation] = useMutation(DELETE_CARD, {
     variables: { id: card.id },
     refetchQueries: [{ query: CARDS }],
@@ -203,7 +203,7 @@ function CardRow({ card, noDelete }) {
   )
 }
 
-export function CardOption({ card, current, setCurrent }) {
+export function CardOption({ card, current, setCurrent }: any) {
   return (
     <TagContainer
       pad="small"

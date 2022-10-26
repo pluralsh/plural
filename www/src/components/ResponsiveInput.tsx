@@ -1,6 +1,6 @@
 import { Flex, Input } from 'honorable'
 
-function ResponsiveInput({ label, labelWidth, ...props }) {
+function ResponsiveInput({ label, labelWidth, ...props }: any) {
   return (
     <Flex>
       <Flex

@@ -5,9 +5,9 @@ import { Div, Flex, Text } from 'honorable'
 import { useTheme } from 'styled-components'
 import { LoopingLogo, SearchIcon } from 'pluralsh-design-system'
 
-import ListInput from 'components/utils/ListInput'
+import ListInput from '../utils/ListInput'
 
-import { Placeholder } from 'components/utils/Placeholder'
+import { Placeholder } from '../utils/Placeholder'
 
 import CopyableButton from '../utils/CopyableButton'
 import { List, ListItem } from '../utils/List'
@@ -22,13 +22,14 @@ import { DELETE_INVITE, INVITES_Q } from './queries'
 import { Confirm } from './Confirm'
 import { inviteLink } from './utils'
 
-function DeleteInvite({ invite }) {
+function DeleteInvite({ invite }: any) {
   const [confirm, setConfirm] = useState(false)
   const [mutation, { loading, error }] = useMutation(DELETE_INVITE, {
     variables: { id: invite.id },
     onCompleted: () => setConfirm(false),
     update: (cache, { data: { deleteInvite } }) => updateCache(cache, {
       query: INVITES_Q,
+      variables: {},
       update: invites => removeConnection(invites, deleteInvite, 'invites'),
     }),
   })
@@ -50,7 +51,7 @@ function DeleteInvite({ invite }) {
   )
 }
 
-function InviteLink({ invite }) {
+function InviteLink({ invite }: any) {
   if (!invite.secureId) return <Div>Email sent to user</Div>
 
   return (
@@ -64,7 +65,7 @@ function InviteLink({ invite }) {
   )
 }
 
-function Invite(invite) {
+function Invite(invite: any) {
   const theme = useTheme()
   const { email, insertedAt } = invite
 
@@ -76,7 +77,7 @@ function Invite(invite) {
       alignItems="center"
     >
       <Text
-        {...theme.partials.text.body1Bold}
+        {...(theme.partials.text.body1Bold as any)}
         flexGrow={1}
       >
         {email}

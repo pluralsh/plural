@@ -99,7 +99,7 @@ const splashTextTransitions = {
   },
 }
 
-export default function SplashToLogoTransition({ showSplashScreen = false, ...props }) {
+export default function SplashToLogoTransition({ showSplashScreen = false, ...props }: any) {
   if (showSplashScreen) {
     return (
       <LogoAndSplash {...props} />
@@ -113,7 +113,7 @@ export default function SplashToLogoTransition({ showSplashScreen = false, ...pr
   )
 }
 
-function LogoOnly({ children }) {
+function LogoOnly({ children }: any) {
   return (
     <>
       <Div
@@ -141,7 +141,7 @@ function LogoOnly({ children }) {
   )
 }
 
-export function LogoAndSplash({ splashTimeout = 1200, childIsReady = false, children }) {
+export function LogoAndSplash({ splashTimeout = 1200, childIsReady = false, children }: any) {
   const [splashTimerDone, setSplashTimerDone] = useState(false)
 
   useEffect(() => {

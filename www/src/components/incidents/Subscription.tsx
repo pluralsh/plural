@@ -13,7 +13,7 @@ function NoPlan() {
   )
 }
 
-function Feature({ feature: { name, description } }) {
+function Feature({ feature: { name, description } }: any) {
   return (
     <Box
       direction="row"
@@ -36,7 +36,7 @@ function Feature({ feature: { name, description } }) {
   )
 }
 
-export function ServiceLevel({ level: { minSeverity, maxSeverity, responseTime } }) {
+export function ServiceLevel({ level: { minSeverity, maxSeverity, responseTime } }: any) {
   return (
     <Box
       direction="row"
@@ -55,7 +55,7 @@ export function ServiceLevel({ level: { minSeverity, maxSeverity, responseTime }
   )
 }
 
-function LineItemIcon({ dimension, size }) {
+function LineItemIcon({ dimension, size }: any) {
   switch (dimension) {
   case 'user':
     return (
@@ -74,7 +74,7 @@ function LineItemIcon({ dimension, size }) {
   }
 }
 
-function LineItem({ item: { name, dimension }, included: { quantity }, consumed }) {
+function LineItem({ item: { name, dimension }, included: { quantity }, consumed }: any) {
   return (
     <Box
       direction="row"
@@ -97,7 +97,7 @@ function LineItem({ item: { name, dimension }, included: { quantity }, consumed 
   )
 }
 
-function FeatureSection({ title, children }) {
+function FeatureSection({ title, children }: any) {
   return (
     <Box gap="xsmall">
       <Text
@@ -110,7 +110,7 @@ function FeatureSection({ title, children }) {
   )
 }
 
-export function Subscription({ incident: { repository, subscription } }) {
+export function Subscription({ incident: { repository, subscription } }: any) {
   if (!subscription) return <NoPlan />
 
   const { lineItems: { items } } = subscription

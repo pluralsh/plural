@@ -10,7 +10,7 @@ import {
 import { createElement, useContext, useState } from 'react'
 import { Password } from 'forge-core'
 
-import { METHOD_ICONS } from 'components/users/utils'
+import { METHOD_ICONS } from '../users/utils'
 
 import { host } from '../../helpers/hostname'
 
@@ -19,7 +19,7 @@ import { OAUTH_URLS, UPDATE_USER } from '../users/queries'
 
 import { LoginMethod as Method } from './types'
 
-function Section({ header, description, children }) {
+function Section({ header, description, children }: any) {
   return (
     <Div>
       <Div marginBottom="small">
@@ -38,7 +38,7 @@ function Section({ header, description, children }) {
 
 const validPassword = pass => (pass.length < 8 ? { error: true, message: 'password is too short' } : { error: false, message: 'valid password!' })
 
-function UpdatePassword({ cancel }) {
+function UpdatePassword({ cancel }: any) {
   const [password, setPassword] = useState('')
   const [confirm, setConfirm] = useState('')
   const [second, setSecond] = useState('')
@@ -100,7 +100,7 @@ function UpdatePassword({ cancel }) {
 
 function LoginMethod({
   icon, name, onClick, active,
-}) {
+}: any) {
   return (
     <Box
       border

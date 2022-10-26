@@ -28,7 +28,7 @@ function progress(cursor) {
   return Math.floor((prog / MAX_UUID) * 10000) / 100
 }
 
-function statusAttributes({ status, cursor }) {
+function statusAttributes({ status, cursor }: any) {
   switch (status) {
   case 'QUEUED':
     return { icon: <StatusIpIcon />, text: 'queued', severity: 'neutral' }
@@ -41,7 +41,7 @@ function statusAttributes({ status, cursor }) {
   }
 }
 
-function Status({ rollout }) {
+function Status({ rollout }: any) {
   const { text, ...rest } = statusAttributes(rollout)
 
   return (
@@ -54,7 +54,7 @@ function Status({ rollout }) {
   )
 }
 
-function Rollout({ rollout, last }) {
+function Rollout({ rollout, last }: any) {
   return (
     <TableRow last={last}>
       <TableData>{rollout.event}</TableData>

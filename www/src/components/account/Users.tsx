@@ -25,7 +25,7 @@ const DIRECTORY = [
 
 export function Users() {
   const [selectedKey, setSelectedKey] = useState('Users')
-  const tabStateRef = useRef()
+  const tabStateRef = useRef<any>(null)
 
   return (
     <Flex

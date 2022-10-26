@@ -10,7 +10,7 @@ export function disableState(password, confirm) {
   return { disabled: false, reason: '' }
 }
 
-export function PasswordStatus({ disabled, reason }) {
+export function PasswordStatus({ disabled, reason }: any) {
   return (
     <Box
       direction="row"

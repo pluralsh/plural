@@ -28,7 +28,7 @@ import { PlanType } from './types'
 import { ServiceLevel } from './CreatePlan'
 import { UpdatePlanForm } from './UpdatePlanForm'
 
-export function LineItemIcon({ dimension, size }) {
+export function LineItemIcon({ dimension, size }: any) {
   switch (dimension) {
   case 'user':
     return (
@@ -51,7 +51,7 @@ export function LineItem({
   item: {
     cost, name, dimension, type,
   }, included: { quantity },
-}) {
+}: any) {
   const metered = type === PlanType.METERED
 
   return (
@@ -91,7 +91,7 @@ export function LineItem({
   )
 }
 
-function Feature({ name, description }) {
+function Feature({ name, description }: any) {
   return (
     <Box
       direction="row"
@@ -129,7 +129,7 @@ function SubscribedBadge() {
   )
 }
 
-function FeatureSection({ title, children }) {
+function FeatureSection({ title, children }: any) {
   return (
     <Box gap="xsmall">
       <Text
@@ -142,7 +142,7 @@ function FeatureSection({ title, children }) {
   )
 }
 
-function Features({ features, serviceLevels, open }) {
+function Features({ features, serviceLevels, open }: any) {
   const hasServiceLevels = serviceLevels && serviceLevels.length > 0
   const hasFeatures = features.length > 0
 
@@ -175,7 +175,7 @@ export const hover = styled.div`
   }
 `
 
-function EditPlan({ plan }) {
+function EditPlan({ plan }: any) {
   const [open, setOpen] = useState(false)
   const doSetOpen = useCallback((val, e) => {
     ignoreEvent(e); setOpen(val)
@@ -215,7 +215,7 @@ function EditPlan({ plan }) {
 
 export default function Plan({
   approvePlan, subscription, repository, plan,
-}) {
+}: any) {
   const me = useContext(CurrentUserContext)
   const {
     name, cost, period, lineItems: { items, included }, metadata,

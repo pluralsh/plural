@@ -5,7 +5,7 @@ import { useState } from 'react'
 
 import { Div } from 'honorable'
 
-import { Placeholder } from 'components/utils/Placeholder'
+import { Placeholder } from '../utils/Placeholder'
 
 import { extendConnection } from '../../utils/graphql'
 
@@ -18,7 +18,7 @@ import { GROUPS_Q } from './queries'
 import { CreateGroup } from './CreateGroup'
 import { Group } from './Groups'
 
-export function GroupsList({ q }) {
+export function GroupsList({ q }: any) {
   const [listRef, setListRef] = useState(null)
   const { data, loading, fetchMore } = useQuery(GROUPS_Q, { variables: { q } })
 

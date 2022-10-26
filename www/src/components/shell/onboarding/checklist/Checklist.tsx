@@ -39,7 +39,7 @@ function statusToIndex(status: OnboardingChecklistState) : number {
 export function OnboardingChecklist() {
   const navigate = useNavigate()
   const { dismissed: dismissedFromContext, setDismissed: setDismissedFromContext } = useContext(OnboardingChecklistContext)
-  const prevDismissedRef = useRef(dismissedFromContext)
+  const prevDismissedRef = useRef<HTMLDivElement>(null)(dismissedFromContext)
 
   // State
   const [status, setStatus] = useState<OnboardingChecklistState>(OnboardingChecklistState.New)
@@ -235,7 +235,7 @@ export function OnboardingChecklist() {
   )
 }
 
-export function ChecklistProvider({ children }) {
+export function ChecklistProvider({ children }: any) {
   const [dismissed, setDismissed] = useState<boolean>(false)
   const value = useMemo(() => ({ dismissed, setDismissed }), [dismissed, setDismissed])
 

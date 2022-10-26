@@ -28,16 +28,16 @@ import {
 } from 'pluralsh-design-system'
 import { Flex } from 'honorable'
 
-import { GoBack } from 'components/utils/GoBack'
+import { GoBack } from '../utils/GoBack'
 
 import {
   ResponsiveLayoutContentContainer,
   ResponsiveLayoutSidecarContainer,
   ResponsiveLayoutSidenavContainer,
   ResponsiveLayoutSpacer,
-} from 'components/layout/ResponsiveLayout'
+} from '../layout/ResponsiveLayout'
 
-import { LinkTabWrap } from 'components/utils/Tabs'
+import { LinkTabWrap } from '../utils/Tabs'
 
 import TopBar from '../layout/TopBar'
 
@@ -56,7 +56,7 @@ import { DetailContainer } from './Installation'
 import { DEFAULT_DKR_ICON } from './constants'
 import { DOCKER_IMG_Q, DOCKER_Q, UPDATE_DOCKER } from './queries'
 
-function PrivateControl({ dockerRepo }) {
+function PrivateControl({ dockerRepo }: any) {
   const [mutation] = useMutation(UPDATE_DOCKER, { variables: { id: dockerRepo.id } })
 
   if (!dockerRepo?.repository?.editable) {
@@ -102,7 +102,7 @@ const DEFAULT_FILTER = {
   tag: null, precision: '2h', offset: '7d', tick: 'every 12 hours',
 }
 
-function ImageVersionPicker({ image }) {
+function ImageVersionPicker({ image }: any) {
   const navigate = useNavigate()
   const { pathname } = useLocation()
   const { dockerRepository } = image
@@ -171,7 +171,7 @@ export function Docker() {
   const { id } = useParams()
   const [filter, setFilter] = useState(DEFAULT_FILTER)
   const { registry } = useContext(PluralConfigurationContext)
-  const tabStateRef = useRef()
+  const tabStateRef = useRef<any>(null)
 
   const { data } = useQuery(DOCKER_Q, {
     variables: { id, ...filter },

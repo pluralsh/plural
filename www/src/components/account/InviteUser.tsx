@@ -18,7 +18,7 @@ import { inviteLink } from './utils'
 export function InviteUser() {
   const [open, setOpen] = useState(false)
   const [email, setEmail] = useState('')
-  const [invite, setInvite] = useState(null)
+  const [invite, setInvite] = useState<any>(null)
   const resetAndClose = useCallback(() => {
     setEmail('')
     setInvite(null)

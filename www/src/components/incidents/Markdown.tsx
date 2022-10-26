@@ -21,7 +21,7 @@ import Avatar from '../users/Avatar'
 
 import { EntityType } from './types'
 
-function Blockquote({ children }) {
+function Blockquote({ children }: any) {
   return (
     <Box
       border={{ side: 'left', size: '2px', color: 'border' }}
@@ -32,7 +32,7 @@ function Blockquote({ children }) {
   )
 }
 
-function Preformat({ children }) {
+function Preformat({ children }: any) {
   return (
     <Box
       flex={false}
@@ -43,8 +43,8 @@ function Preformat({ children }) {
   )
 }
 
-function Mention({ text, user }) {
-  const ref = useRef()
+function Mention({ text, user }: any) {
+  const ref = useRef<HTMLDivElement>(null)
   const [open, setOpen] = useState(false)
 
   return (
@@ -100,8 +100,8 @@ function Mention({ text, user }) {
 
 const RIGHT_MARGIN = '3px'
 
-function Emoji({ name }) {
-  const ref = useRef()
+function Emoji({ name }: any) {
+  const ref = useRef<HTMLDivElement>(null)
   const [open, setOpen] = useState(false)
 
   return (
@@ -136,7 +136,7 @@ function Emoji({ name }) {
   )
 }
 
-function MessageEntity({ entity }) {
+function MessageEntity({ entity }: any) {
   switch (entity.type) {
   case EntityType.MENTION:
     return (
@@ -175,7 +175,7 @@ export default memo(({ text, entities }) => {
   const parsed = [...splitText(text, entities || [])].join('')
   const entityMap = (entities || []).reduce((map, entity) => ({ ...map, [entity.id]: entity }), {})
 
-  function Entity({ id }) {
+  function Entity({ id }: any) {
     return <MessageEntity entity={entityMap[id]} />
   }
 

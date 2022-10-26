@@ -4,7 +4,7 @@ import { useCallback, useRef, useState } from 'react'
 
 function OrgOption({
   org, current, setOrg, render,
-}) {
+}: any) {
   const isCurrent = org.id === current.id
 
   return (
@@ -28,8 +28,8 @@ function OrgOption({
 
 export function OrgInput({
   name, setName, org, orgs, setOrg, render,
-}) {
-  const ref = useRef()
+}: any) {
+  const ref = useRef<HTMLDivElement>(null)
   const [open, setOpen] = useState(false)
   const close = useCallback(() => setOpen(false), [setOpen])
   const doSetOrg = useCallback(org => {

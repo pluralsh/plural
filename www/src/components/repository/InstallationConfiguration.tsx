@@ -21,7 +21,7 @@ import { GqlError } from '../utils/Alert'
 
 import { DELETE_INSTALLATION_MUTATION, UPDATE_INSTALLATION } from './queries'
 
-function MiniHeader({ header, description }) {
+function MiniHeader({ header, description }: any) {
   return (
     <Flex
       direction="column"
@@ -43,7 +43,7 @@ function MiniHeader({ header, description }) {
 
 function UpdateUpgrades({
   autoUpgrade, setAutoUpgrade, trackTag, setTrackTag,
-}) {
+}: any) {
   const doSetTrackTag = useCallback(tag => {
     if (tag === 'none') {
       setAutoUpgrade(false)
@@ -92,7 +92,7 @@ function UpdateUpgrades({
 
 function UninstallApp({
   installation, deleteMutation, deleteError, confirm, setConfirm,
-}) {
+}: any) {
   return (
     <Keyboard onEnter={confirm !== installation.repository.name ? null : deleteMutation}>
       <Flex
@@ -119,8 +119,8 @@ function UninstallApp({
   )
 }
 
-export function InstallationConfiguration({ installation, open, setOpen }) {
-  const tabStateRef = useRef()
+export function InstallationConfiguration({ installation, open, setOpen }: any) {
+  const tabStateRef = useRef<any>(null)
   const [selectedTabKey, setSelectedKey] = useState()
 
   // Update tab controls.

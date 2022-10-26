@@ -3,7 +3,7 @@ import { Span } from 'honorable'
 
 import { formatLocation } from '../../utils/geo'
 
-export function Location({ ip, city, country }) {
+export function Location({ ip, city, country }: any) {
   if (!ip) return (<Span>n/a</Span>)
 
   return (

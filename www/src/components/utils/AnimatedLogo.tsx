@@ -22,7 +22,7 @@ export function LoopingLogo({
   scale = null,
   dark = false,
   still = false,
-}) {
+}: any) {
   return (
     <Box
       fill={!nofill}

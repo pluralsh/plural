@@ -49,7 +49,7 @@ export const AWS_VALIDATIONS = [
 
 export function AwsForm({
   credentials, setCredentials, workspace, setWorkspace,
-}) {
+}: any) {
   const aws = useMemo(() => credentials.aws || {}, [credentials])
 
   const update = useCallback((field, val) => (

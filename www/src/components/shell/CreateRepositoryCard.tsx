@@ -22,7 +22,7 @@ const providerToDisplayName = {
   gitlab: 'GitLab',
 }
 
-function CreateRepositoryCard({ data, onPrevious = () => {} }) {
+function CreateRepositoryCard({ data, onPrevious = () => {} }: any) {
   return (
     <OnboardingCard title="Create a repository">
       <P marginBottom="medium">

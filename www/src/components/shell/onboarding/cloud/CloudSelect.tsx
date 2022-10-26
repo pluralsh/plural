@@ -2,9 +2,9 @@ import { useContext, useState } from 'react'
 import { Flex, Img, P } from 'honorable'
 import { Button, CloudIcon } from 'pluralsh-design-system'
 
-import { persistProvider } from 'components/shell/persistance'
+import { persistProvider } from '../shell/persistance'
 
-import { OnboardingStatus } from 'components/profile/types'
+import { OnboardingStatus } from '../profile/types'
 
 import CurrentUserContext from '../../contexts/CurrentUserContext'
 

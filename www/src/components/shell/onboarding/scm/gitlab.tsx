@@ -12,7 +12,7 @@ export const GITLAB_VALIDATIONS = [
   { field: 'scm.name', name: 'repository', func: isValidGitlabName },
 ]
 
-export function useGitlabState({ scm, setScm, accessToken }) {
+export function useGitlabState({ scm, setScm, accessToken }: any) {
   const client = useMemo(() => new Gitlab({ oauthToken: accessToken }), [accessToken])
   const [orgs, setOrgs] = useState(null)
   const [org, setOrg] = useState(null)

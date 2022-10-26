@@ -23,7 +23,7 @@ const animation = {
   transition: 'width 0.75s cubic-bezier(0.000, 0.795, 0.000, 1.000)',
 }
 
-function NotificationIcon({ incident, ...props }) {
+function NotificationIcon({ incident, ...props }: any) {
   return (
     <Stack anchor="top-right">
       <Notification {...props} />
@@ -32,7 +32,7 @@ function NotificationIcon({ incident, ...props }) {
   )
 }
 
-function SmallSidebar({ incident, setOpen, setView }) {
+function SmallSidebar({ incident, setOpen, setView }: any) {
   const doOpen = useCallback(view => {
     setView(view)
     setOpen(true)
@@ -94,7 +94,7 @@ function SmallSidebar({ incident, setOpen, setView }) {
 
 function SidebarContent({
   view, setView, incident, fetchMore, setOpen,
-}) {
+}: any) {
   return (
     <Box fill>
       <Box
@@ -205,7 +205,7 @@ function SidebarContent({
   )
 }
 
-export function Sidebar({ incident, fetchMore }) {
+export function Sidebar({ incident, fetchMore }: any) {
   const [open, setOpen] = useState(false)
   const [view, setView] = useState(SidebarView.HISTORY)
 

@@ -54,7 +54,7 @@ function InvalidInvite() {
   )
 }
 
-function ExistingInvite({ invite: { account }, id }) {
+function ExistingInvite({ invite: { account }, id }: any) {
   const [mutation, { loading, error }] = useMutation(REALIZE, {
     variables: { id },
     onCompleted: ({ realizeInvite: { jwt } }) => {

@@ -13,7 +13,7 @@ import { Box, Text } from 'grommet'
 const StepContext = createContext({})
 const ICON_SIZE = '25px'
 
-function BetweenStep({ step, width }) {
+function BetweenStep({ step, width }: any) {
   const { current } = useContext(StepContext)
 
   return (
@@ -24,8 +24,8 @@ function BetweenStep({ step, width }) {
   )
 }
 
-function StepProvider({ step, children }) {
-  const steps = useRef({})
+function StepProvider({ step, children }: any) {
+  const steps = useRef<HTMLDivElement>(null)({})
   const [current, setCurrent] = useState(0)
   const register = useCallback((name, ind) => {
     steps.current = { ...steps.current, [name]: ind }
@@ -44,7 +44,7 @@ function StepProvider({ step, children }) {
   )
 }
 
-export function Step({ step, name, onStep }) {
+export function Step({ step, name, onStep }: any) {
   const { current, setCurrent, register } = useContext(StepContext)
 
   const onSelect = useCallback(() => {
@@ -107,7 +107,7 @@ function* intersperse(steps) {
   }
 }
 
-export function Steps({ step, children }) {
+export function Steps({ step, children }: any) {
   return (
     <StepProvider step={step}>
       <Box

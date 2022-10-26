@@ -14,7 +14,7 @@ const CLOUDS = {
   AZURE: 'Microsoft Azure',
 }
 
-function Attribute({ name, value }) {
+function Attribute({ name, value }: any) {
   return (
     <Flex
       gap="2px"
@@ -29,7 +29,7 @@ function Attribute({ name, value }) {
 
 function ShellHint({
   name, hint, code, ...flex
-}) {
+}: any) {
   return (
     <Flex
       direction="column"
@@ -55,7 +55,7 @@ function ShellHint({
   )
 }
 
-function TerminalInformation({ shell }) {
+function TerminalInformation({ shell }: any) {
   const [open, setOpen] = useState(false)
 
   return (

@@ -1,7 +1,7 @@
 import { Box, Text } from 'grommet'
 import { Flex, H1, Span } from 'honorable'
 
-export function Header({ header, description, children }) {
+export function Header({ header, description, children }: any) {
   return (
     <Flex
       borderBottom="1px solid border"
@@ -27,7 +27,7 @@ export function Header({ header, description, children }) {
 
 export function HeaderItem({
   text, width, nobold, truncate,
-}) {
+}: any) {
   return (
     <Box width={width}>
       <Text

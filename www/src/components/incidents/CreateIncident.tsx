@@ -31,7 +31,7 @@ import { IncidentViewContext } from './Incidents'
 
 export function IncidentForm({
   attributes, setAttributes, statusEdit, children,
-}) {
+}: any) {
   const [editorState, setEditorState] = useState(plainDeserialize(attributes.description || ''))
   const editor = useEditor()
   const setDescription = useCallback(editorState => {
@@ -107,7 +107,7 @@ export function IncidentForm({
   )
 }
 
-export function RepoOption({ repo, selected, setRepository }) {
+export function RepoOption({ repo, selected, setRepository }: any) {
   return (
     <Box
       flex={false}
@@ -138,7 +138,7 @@ export function RepoOption({ repo, selected, setRepository }) {
   )
 }
 
-export function RepositorySelect({ repository, setRepository }) {
+export function RepositorySelect({ repository, setRepository }: any) {
   const { data } = useQuery(INSTALLATIONS_Q, { fetchPolicy: 'cache-and-network' })
 
   useEffect(() => {
@@ -167,7 +167,7 @@ export function RepositorySelect({ repository, setRepository }) {
   )
 }
 
-export function CreateIncident({ onCompleted }) {
+export function CreateIncident({ onCompleted }: any) {
   const { clusterInformation } = useContext(IncidentContext)
   const { sort, order, filters } = useContext(IncidentViewContext)
   const [repository, setRepository] = useState(null)

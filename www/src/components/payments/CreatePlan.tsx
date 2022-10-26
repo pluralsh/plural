@@ -34,7 +34,7 @@ import { hover } from './Plan'
 
 function LineItem({
   item: { cost, name, dimension }, included, state, setState,
-}) {
+}: any) {
   const { quantity } = included.find(inc => inc.dimension === dimension)
 
   function removeItem() {
@@ -74,7 +74,7 @@ function LineItem({
   )
 }
 
-function Feature({ name, description, removeFeature }) {
+function Feature({ name, description, removeFeature }: any) {
   return (
     <Box
       direction="row"
@@ -104,7 +104,7 @@ function Feature({ name, description, removeFeature }) {
 
 function NumericInput({
   value, onChange, placeholder, ...props
-}) {
+}: any) {
   return (
     <TextInput
       {...props}
@@ -124,7 +124,7 @@ function NumericInput({
   )
 }
 
-function DollarInput({ value, onChange, ...props }) {
+function DollarInput({ value, onChange, ...props }: any) {
   return (
     <NumericInput
       {...props}
@@ -137,7 +137,7 @@ function DollarInput({ value, onChange, ...props }) {
 
 function FeatureCreator({
   state, setState, setDisplay, loading,
-}) {
+}: any) {
   const [feature, setFeature] = useState({ name: '', description: '' })
   const { metadata: { features } } = state
 
@@ -227,7 +227,7 @@ function FeatureCreator({
 
 function ItemCreator({
   state, setState, setDisplay, loading,
-}) {
+}: any) {
   const [lineItem, setLineItem] = useState({
     name: '',
     dimension: '',
@@ -354,7 +354,7 @@ function ItemCreator({
 
 function PlanForm({
   state, setState, setDisplay, loading,
-}) {
+}: any) {
   const updatePeriod = period => deepUpdate({ ...state, period },
     'lineItems.items',
     items => items.map(item => ({ ...item, period })))
@@ -403,7 +403,7 @@ function PlanForm({
   )
 }
 
-export function ServiceLevel({ level: { minSeverity, maxSeverity, responseTime }, deleteLevel }) {
+export function ServiceLevel({ level: { minSeverity, maxSeverity, responseTime }, deleteLevel }: any) {
   return (
     <Box
       direction="row"
@@ -436,7 +436,7 @@ export function ServiceLevel({ level: { minSeverity, maxSeverity, responseTime }
 
 export function SlaForm({
   attributes, setAttributes, serviceLevel: { minSeverity, maxSeverity, responseTime }, setServiceLevel,
-}) {
+}: any) {
   const deleteSla = useCallback(({ minSeverity, maxSeverity }) => {
     const serviceLevels = attributes.serviceLevels.filter(l => (
       l.minSeverity !== minSeverity || l.maxSeverity !== maxSeverity
@@ -512,7 +512,7 @@ export function SlaForm({
 
 function NavigableSlaForm({
   state, setState, mutation, loading,
-}) {
+}: any) {
   const [serviceLevel, setServiceLevel] = useState({ minSeverity: 0, maxSeverity: 3, responseTime: 30 })
 
   return (
@@ -549,7 +549,7 @@ function NavigableSlaForm({
   )
 }
 
-function FormSwitch({ display, ...rest }) {
+function FormSwitch({ display, ...rest }: any) {
   switch (display) {
   case 'items':
     return <ItemCreator {...rest} />
@@ -562,7 +562,7 @@ function FormSwitch({ display, ...rest }) {
   }
 }
 
-export function CreateAnchor({ onClick }) {
+export function CreateAnchor({ onClick }: any) {
   return (
     <Box
       as={hover}
@@ -580,7 +580,7 @@ export function CreateAnchor({ onClick }) {
   )
 }
 
-export default function CreatePlan({ repository, setOpen }) {
+export default function CreatePlan({ repository, setOpen }: any) {
   const repositoryId = repository.id
   const [state, setState] = useState({
     name: '',

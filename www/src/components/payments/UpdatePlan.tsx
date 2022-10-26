@@ -8,7 +8,7 @@ import { REPO_Q } from '../repos/queries'
 
 import { UPDATE_PLAN } from './queries'
 
-export default function UpdatePlan({ plan, repository: { id, installation: { subscription } }, setOpen }) {
+export default function UpdatePlan({ plan, repository: { id, installation: { subscription } }, setOpen }: any) {
   const [mutation, { loading }] = useMutation(UPDATE_PLAN, {
     variables: { subscriptionId: subscription.id, planId: plan.id },
     refetchQueries: [{ query: REPO_Q, variables: { repositoryId: id } }],

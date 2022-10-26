@@ -20,7 +20,7 @@ function update(cache, repositoryId, installation) {
   })
 }
 
-export function UpdateInstallation({ installation = {} }) {
+export function UpdateInstallation({ installation = {} }: any) {
   const [autoUpgrade, setAutoUpgrade] = useState(installation.autoUpgrade || false)
   const [trackTag, setTrackTag] = useState(installation.trackTag || '')
 
@@ -77,7 +77,7 @@ export function UpdateInstallation({ installation = {} }) {
   )
 }
 
-export function EditInstallation({ installation, repository, onUpdate }) {
+export function EditInstallation({ installation, repository, onUpdate }: any) {
   const [autoUpgrade, setAutoUpgrade] = useState(installation.autoUpgrade)
   const [trackTag, setTrackTag] = useState(installation.trackTag)
   const [notif, setNotif] = useState(false)

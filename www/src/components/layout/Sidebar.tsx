@@ -103,7 +103,7 @@ function SidebarWrapper() {
   )
 }
 
-function TransitionText({ collapsed, ...props }) {
+function TransitionText({ collapsed, ...props }: any) {
   return (
     <P
       display="block"
@@ -254,10 +254,10 @@ function Sidebar({
   userName,
   userAccount,
   ...props
-}) {
-  const menuItemRef = useRef()
-  const menuRef = useRef()
-  const notificationsPanelRef = useRef()
+}: any) {
+  const menuItemRef = useRef<HTMLDivElement>(null)
+  const menuRef = useRef<HTMLDivElement>(null)
+  const notificationsPanelRef = useRef<HTMLDivElement>(null)
   const [isMenuOpen, setIsMenuOpened] = useState(false)
   const [collapsed, _setCollapsed] = useState(true)
   const [isNotificationsPanelOpen, setIsNotificationsPanelOpen] = useState(false)

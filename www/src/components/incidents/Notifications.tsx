@@ -41,7 +41,7 @@ function notificationModifier(type) {
   }
 }
 
-function NotificationContent({ type, notification }) {
+function NotificationContent({ type, notification }: any) {
   if (type === NotificationTypes.MESSAGE) {
     return (
       <Text
@@ -68,7 +68,7 @@ export function Notification({
   notification: {
     actor, type, insertedAt, ...notif
   },
-}) {
+}: any) {
   return (
     <Box
       flex={false}
@@ -152,7 +152,7 @@ export function useNotificationSubscription() {
   })
 }
 
-export function Notifications({ incident: { id } }) {
+export function Notifications({ incident: { id } }: any) {
   const { data, fetchMore } = useQuery(NOTIFICATIONS_Q, {
     variables: { incidentId: id },
     fetchPolicy: 'cache-and-network',

@@ -45,7 +45,7 @@ function EmptyState() {
   )
 }
 
-function RepoTag({ tag, setTag }) {
+function RepoTag({ tag, setTag }: any) {
   return (
     <Box
       round="xsmall"
@@ -68,7 +68,7 @@ function RepoTag({ tag, setTag }) {
   )
 }
 
-function Repo({ repo, setTag }) {
+function Repo({ repo, setTag }: any) {
   const navigate = useNavigate()
 
   return (
@@ -190,7 +190,7 @@ function Repositories({
   )
 }
 
-function CategoryTags({ category, tag, setTag }) {
+function CategoryTags({ category, tag, setTag }: any) {
   const { data, fetchMore } = useQuery(CATEGORY, { variables: { category: category.category } })
   const loadMore = useCallback(() => fetchMore({
     variables: { cursor: data.category.tags.pageInfo.endCursor },
@@ -236,7 +236,7 @@ function CategoryTags({ category, tag, setTag }) {
 
 function Category({
   category, tag, setTag, unfurl,
-}) {
+}: any) {
   const [open, setOpen] = useState(unfurl)
 
   return (
@@ -291,7 +291,7 @@ function Category({
   )
 }
 
-function TagSidebar({ tag, setTag }) {
+function TagSidebar({ tag, setTag }: any) {
   const { data } = useQuery(CATEGORIES)
 
   if (!data) return null
@@ -329,7 +329,7 @@ function filters(tab, me) {
 
 export const SectionContext = createContext<any>({})
 
-export function SectionPortal({ children }) {
+export function SectionPortal({ children }: any) {
   const { ref } = useContext(SectionContext)
 
   return (
@@ -381,7 +381,7 @@ export function SectionContentContainer({ header: h, children, borderLeft }: any
 
 export function SectionItemContainer({
   label, icon, selected, location, ...props
-}) {
+}: any) {
   const navigate = useNavigate()
 
   return (
@@ -408,7 +408,7 @@ export function SectionItemContainer({
   )
 }
 
-export function SectionItem({ name, label, icon }) {
+export function SectionItem({ name, label, icon }: any) {
   const { group } = useParams()
 
   return (
@@ -421,7 +421,7 @@ export function SectionItem({ name, label, icon }) {
   )
 }
 
-export function SectionContent({ name, header, children }) {
+export function SectionContent({ name, header, children }: any) {
   const { group } = useParams()
 
   if (group !== name) return null

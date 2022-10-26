@@ -17,7 +17,7 @@ import { Tab, TabContent, Tabs } from '../utils/Tabs'
 
 import { EditInstallation } from './EditInstallation'
 
-export function Plans({ repository, nocreate }) {
+export function Plans({ repository, nocreate }: any) {
   const [open, setOpen] = useState(false)
   const [modal, setModal] = useState(null)
   const { plans, editable, installation } = repository
@@ -72,7 +72,7 @@ export function Plans({ repository, nocreate }) {
   )
 }
 
-export function DetailContainer({ children, title, ...rest }) {
+export function DetailContainer({ children, title, ...rest }: any) {
   return (
     <Box
       border
@@ -93,7 +93,7 @@ export function DetailContainer({ children, title, ...rest }) {
   )
 }
 
-export function InstallationInner({ installation, repository }) {
+export function InstallationInner({ installation, repository }: any) {
   const theme = useTheme()
 
   if (installation) {
@@ -123,7 +123,7 @@ export function InstallationInner({ installation, repository }) {
 
 export default function Installation({
   repository, onUpdate, noHelm, open,
-}) {
+}: any) {
   const { installation } = repository
   const hasPlans = repository.plans && repository.plans.length > 0
   const [tab, setTab] = useState((noHelm && !installation) ? 'Configuration' : 'Installation')

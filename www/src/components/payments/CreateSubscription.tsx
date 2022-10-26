@@ -14,7 +14,7 @@ import { CREATE_SUBSCRIPTION } from './queries'
 import { pivotByDimension, subscriptionCost } from './utils'
 import { PlanType } from './types'
 
-function LineItemInput({ item: { dimension, name, cost }, included, updateItem }) {
+function LineItemInput({ item: { dimension, name, cost }, included, updateItem }: any) {
   return (
     <Box
       direction="row"
@@ -46,7 +46,7 @@ function PlanForm({
   plan: {
     name, cost, period, lineItems: { items, included },
   }, attributes, setAttributes,
-}) {
+}: any) {
   const includedByDimension = pivotByDimension(included)
 
   function updateItem(dimension, quantity) {
@@ -89,7 +89,7 @@ function PlanForm({
 
 export function Subscriber({
   plan, installationId, repositoryId, setOpen,
-}) {
+}: any) {
   const [attributes, setAttributes] = useState({
     lineItems: { items: plan.lineItems.items.map(({ dimension }) => ({ dimension, quantity: 0 })) },
   })
@@ -132,7 +132,7 @@ export function Subscriber({
 
 export default function SubscribeModal({
   plan, installationId, repositoryId, setOpen,
-}) {
+}: any) {
   return (
     <Layer
       modal

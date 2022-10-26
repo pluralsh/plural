@@ -1,11 +1,13 @@
 import { useQuery } from '@apollo/client'
-import { List, ListItem } from 'components/utils/List'
-import ListInput from 'components/utils/ListInput'
-import { Placeholder } from 'components/utils/Placeholder'
+
 import { Div, Flex } from 'honorable'
 import isEmpty from 'lodash/isEmpty'
 import { EmptyState, PageTitle, SearchIcon } from 'pluralsh-design-system'
 import { useCallback, useEffect, useState } from 'react'
+
+import { Placeholder } from '../utils/Placeholder'
+import ListInput from '../utils/ListInput'
+import { List, ListItem } from '../utils/List'
 
 import { extendConnection, removeConnection, updateCache } from '../../utils/graphql'
 
@@ -18,7 +20,7 @@ import { CreateServiceAccount } from './CreateServiceAccount'
 
 import { ServiceAccount } from './User'
 
-function Header({ q, setQ }) {
+function Header({ q, setQ }: any) {
   return (
     <ListInput
       width="100%"
@@ -31,7 +33,7 @@ function Header({ q, setQ }) {
   )
 }
 
-function ServiceAccountsInner({ q }) {
+function ServiceAccountsInner({ q }: any) {
   const [listRef, setListRef] = useState(null)
   const { data, loading, fetchMore } = useQuery(USERS_Q, {
     variables: { q, serviceAccount: true },

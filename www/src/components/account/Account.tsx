@@ -33,7 +33,7 @@ export type Account = {
 }
 
 export function Account() {
-  const tabStateRef = useRef<any>()
+  const tabStateRef = useRef<any>(null)<any>()
 
   return (
     <Flex

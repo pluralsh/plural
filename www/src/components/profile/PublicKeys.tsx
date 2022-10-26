@@ -8,7 +8,7 @@ import { InfoIcon, PageTitle, Tooltip } from 'pluralsh-design-system'
 
 import isEmpty from 'lodash/isEmpty'
 
-import { Placeholder } from 'components/utils/Placeholder'
+import { Placeholder } from '../utils/Placeholder'
 
 import { extendConnection } from '../../utils/graphql'
 import { Confirm } from '../account/Confirm'
@@ -23,7 +23,7 @@ import { ListItem } from './ListItem'
 
 const TOOLTIP = 'Public keys are used to share access to an encrypted repository.'
 
-function PublicKey({ pubkey: key, first, last }) {
+function PublicKey({ pubkey: key, first, last }: any) {
   const [confirm, setConfirm] = useState(false)
   const [mutation, { loading, error }] = useMutation(DELETE_KEY, {
     variables: { id: key.id },

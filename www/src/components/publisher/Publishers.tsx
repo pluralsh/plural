@@ -22,8 +22,8 @@ import { PUBLISHERS_Q } from './queries'
 
 const STUB_ICON_SIZE = '20px'
 
-function RepoStub({ id, icon, name }) {
-  const dropRef = useRef()
+function RepoStub({ id, icon, name }: any) {
+  const dropRef = useRef<HTMLDivElement>(null)
   const [hover, setHover] = useState(false)
   const navigate = useNavigate()
 
@@ -66,7 +66,7 @@ function Publisher({
   publisher: {
     id, name, description, repositories, ...publisher
   },
-}) {
+}: any) {
   const navigate = useNavigate()
 
   return (

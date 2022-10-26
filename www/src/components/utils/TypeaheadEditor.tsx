@@ -17,14 +17,14 @@ import { Emoji } from 'emoji-mart'
 
 import { EntityType } from '../incidents/types'
 
-function Portal({ children }) {
+function Portal({ children }: any) {
   return ReactDOM.createPortal(children, document.body)
 }
 
 export default function TypeaheadEditor({
   editor, value, setValue, style, onOpen, searchQuery, handlers,
-}) {
-  const ref = useRef()
+}: any) {
+  const ref = useRef<HTMLDivElement>(null)
   const [target, setTarget] = useState(null)
   const [index, setIndex] = useState(0)
   const [suggestions, setSuggestions] = useState([])
@@ -196,7 +196,7 @@ function Element(props) {
   }
 }
 
-function EmojiElement({ element: { emoji } }) {
+function EmojiElement({ element: { emoji } }: any) {
   return (
     <Emoji
       forceSize
@@ -208,7 +208,7 @@ function EmojiElement({ element: { emoji } }) {
   )
 }
 
-function MentionElement({ attributes, children, element }) {
+function MentionElement({ attributes, children, element }: any) {
   const selected = useSelected()
   const focused = useFocused()
 

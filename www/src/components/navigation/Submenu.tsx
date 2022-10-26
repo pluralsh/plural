@@ -11,7 +11,7 @@ import { Portal } from 'react-portal'
 
 export const SubmenuContext = createContext({})
 
-export function SubmenuPortal({ children, name }) {
+export function SubmenuPortal({ children, name }: any) {
   const { ref, setName } = useContext(SubmenuContext)
 
   useEffect(() => setName(name), [name, setName])
@@ -42,7 +42,7 @@ const ignore = e => {
 
 export function SubmenuItem({
   icon, label, selected, url,
-}) {
+}: any) {
   const navigate = useNavigate()
 
   return (
@@ -66,7 +66,7 @@ export function SubmenuItem({
   )
 }
 
-export function NavigationContext({ children }) {
+export function NavigationContext({ children }: any) {
   const [ref, setRef] = useState(null)
   const [name, setName] = useState('')
   const value = useMemo(() => ({

@@ -26,7 +26,7 @@ import { EditServiceAccount } from './CreateServiceAccount'
 import { MoreMenu } from './MoreMenu'
 import { hasRbac } from './utils'
 
-export function UserInfo({ user: { email, name, avatar }, hue = 'lighter', ...box }) {
+export function UserInfo({ user: { email, name, avatar }, hue = 'lighter', ...box }: any) {
   return (
     <Box
       {...box}
@@ -49,7 +49,7 @@ export function UserInfo({ user: { email, name, avatar }, hue = 'lighter', ...bo
   )
 }
 
-function UserEdit({ user, update }) {
+function UserEdit({ user, update }: any) {
   const [confirm, setConfirm] = useState(false)
   const [mutation] = useMutation(EDIT_USER, {
     variables: { id: user.id },
@@ -108,7 +108,7 @@ function UserEdit({ user, update }) {
   )
 }
 
-export function User({ user, update }) {
+export function User({ user, update }: any) {
   const { account, ...me } = useContext(CurrentUserContext)
 
   const editable = canEdit(me, account) || hasRbac(me, Permissions.USERS)
@@ -155,7 +155,7 @@ export function User({ user, update }) {
   )
 }
 
-export function ServiceAccount({ user, update }) {
+export function ServiceAccount({ user, update }: any) {
   const { account, ...me } = useContext(CurrentUserContext)
   const editable = canEdit(me, account) || hasRbac(me, Permissions.USERS)
   const [mutation, { error }] = useMutation(IMPERSONATE_SERVICE_ACCOUNT, {

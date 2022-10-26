@@ -33,11 +33,11 @@ function RepositorySideNav({
   ...props
 }: {
   tabStateRef: MutableRefObject<any>
-}) {
+}: any) {
   const repository = useContext(RepositoryContext)
 
   const { pathname } = useLocation()
-  const tabStateRef = useRef<any>()
+  const tabStateRef = useRef<any>(null)<any>()
 
   useImperativeHandle(outerTabStateRef, () => ({ ...(tabStateRef.current || {}) }))
   const pathPrefix = `/repository/${repository.id}`

@@ -13,7 +13,7 @@ import { LoopingLogo } from '../utils/AnimatedLogo'
 import { QueueHealth } from './QueueHealth'
 import { QUEUES, UPGRADE_QUEUE_SUB } from './queries'
 
-function Queue({ q }) {
+function Queue({ q }: any) {
   const navigate = useNavigate()
 
   return (

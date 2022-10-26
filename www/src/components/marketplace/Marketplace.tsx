@@ -4,7 +4,7 @@ import { ResponsiveLayoutSpacer } from '../layout/ResponsiveLayout'
 
 import MarketplaceRepositories from './MarketplaceRepositories'
 
-function Marketplace({ installed = false, publisher = null }) {
+function Marketplace({ installed = false, publisher = null }: any) {
   return (
     <Flex
       direction="column"

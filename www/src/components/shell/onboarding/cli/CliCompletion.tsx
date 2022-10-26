@@ -8,7 +8,7 @@ import {
   retrieveConsole,
   retrieveProvider,
   retrieveStack,
-} from 'components/shell/persistance'
+} from '../shell/persistance'
 
 import CreateShellContext from '../../../../contexts/CreateShellContext'
 

@@ -4,7 +4,7 @@ import { DiscordIcon, GitHubLogoIcon, TwitterIcon } from 'pluralsh-design-system
 const ICON_SIZE = 22
 const BOX_SIZE = 28
 
-function SocialLink({ icon, url }) {
+function SocialLink({ icon, url }: any) {
   return (
     <A
       href={url}

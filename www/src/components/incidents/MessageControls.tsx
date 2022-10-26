@@ -37,8 +37,8 @@ const OUTER = {
 
 export function Control({
   children, tooltip, pad, closed, ...rest
-}) {
-  const ref = useRef()
+}: any) {
+  const ref = useRef<HTMLDivElement>(null)
   const [hover, setHover] = useState(false)
 
   return (
@@ -67,8 +67,8 @@ export function Control({
 
 export function Reaction({
   message, setHover, align, width, label, ...props
-}) {
-  const ref = useRef()
+}: any) {
+  const ref = useRef<HTMLDivElement>(null)
   const [open, setOpen] = useState(false)
   const toggleOpen = useCallback(value => {
     if (setHover) setHover(value)
@@ -122,7 +122,7 @@ function EditMsg() {
   )
 }
 
-function Delete({ message }) {
+function Delete({ message }: any) {
   const { incidentId } = useParams()
   const [mutation] = useMutation(DELETE_MESSAGE, {
     variables: { id: message.id },
@@ -155,7 +155,7 @@ function Delete({ message }) {
   )
 }
 
-export function MessageControls({ message, setHover }) {
+export function MessageControls({ message, setHover }: any) {
   const me = useContext(CurrentUserContext)
 
   return (

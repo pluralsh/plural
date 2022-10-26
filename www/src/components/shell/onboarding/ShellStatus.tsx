@@ -5,7 +5,7 @@ import OnboardingCard from './OnboardingCard'
 
 function StatusChip({
   loading, error, progressMessage, ...chip
-}) {
+}: any) {
   return (
     <Chip
       loading={loading && !error}
@@ -25,7 +25,7 @@ export function ShellStatus({
       initialized, podScheduled, containersReady, ready,
     },
   }, error,
-}) {
+}: any) {
   return (
     <OnboardingCard
       paddingTop="xlarge"

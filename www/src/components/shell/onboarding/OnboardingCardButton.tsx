@@ -1,7 +1,7 @@
 import { StatusOkIcon } from 'pluralsh-design-system'
 import { Button, Div } from 'honorable'
 
-function OnboardingCardButton({ selected = false, children, ...props }) {
+function OnboardingCardButton({ selected = false, children, ...props }: any) {
   const checkMark = (
     <Div
       position="absolute"

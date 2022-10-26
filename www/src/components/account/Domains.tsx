@@ -9,10 +9,10 @@ import {
   SearchIcon,
 } from 'pluralsh-design-system'
 import { useCallback, useMemo, useState } from 'react'
-
 import isEqual from 'lodash/isEqual'
 import uniqWith from 'lodash/uniqWith'
-import { Placeholder } from 'components/utils/Placeholder'
+
+import { Placeholder } from '../utils/Placeholder'
 
 import { extendConnection, removeConnection, updateCache } from '../../utils/graphql'
 import { GqlError } from '../utils/Alert'
@@ -30,7 +30,7 @@ import { BindingInput } from './Typeaheads'
 import { sanitize } from './utils'
 import { DnsRecords } from './DnsRecords'
 
-function Header({ q, setQ }) {
+function Header({ q, setQ }: any) {
   return (
     <ListInput
       width="100%"
@@ -43,7 +43,7 @@ function Header({ q, setQ }) {
   )
 }
 
-function DomainOptions({ domain, setDomain }) {
+function DomainOptions({ domain, setDomain }: any) {
   const [confirm, setConfirm] = useState(false)
   const [edit, setEdit] = useState(false)
   const [mutation, { loading, error }] = useMutation(DELETE_DOMAIN, {
@@ -52,6 +52,7 @@ function DomainOptions({ domain, setDomain }) {
       updateCache(cache, {
         query: DNS_DOMAINS,
         update: prev => removeConnection(prev, deleteDomain, 'dnsDomains'),
+        variables: {},
       })
     },
     onCompleted: () => setEdit(false),
@@ -66,6 +67,7 @@ function DomainOptions({ domain, setDomain }) {
     editAccessPolicy: {
       label: 'Edit Access Policy',
       onSelect: () => setEdit(true),
+      props: {},
     },
     delete: {
       label: 'Delete',
@@ -111,7 +113,7 @@ function DomainOptions({ domain, setDomain }) {
   )
 }
 
-function AccessPolicy({ domain: { id, accessPolicy }, edit, setEdit }) {
+function AccessPolicy({ domain: { id, accessPolicy }, edit, setEdit }: any) {
   const [bindings, setBindings] = useState(accessPolicy ? accessPolicy.bindings : [])
   const uniqueBindings = useMemo(() => uniqWith(bindings, isEqual), [bindings])
   const [mutation, { loading, error }] = useMutation(UPDATE_DOMAIN, {
@@ -179,7 +181,7 @@ function AccessPolicy({ domain: { id, accessPolicy }, edit, setEdit }) {
   )
 }
 
-function Domain({ node, last, setDomain }) {
+function Domain({ node, last, setDomain }: any) {
   return (
     <TableRow
       last={last}
@@ -210,7 +212,7 @@ function Domain({ node, last, setDomain }) {
   )
 }
 
-function DomainsInner({ q, setDomainSelected }) {
+function DomainsInner({ q, setDomainSelected }: any) {
   const [listRef, setListRef] = useState(null)
   const [domain, setDomain] = useState(null)
   const { data, loading, fetchMore } = useQuery(DNS_DOMAINS, {

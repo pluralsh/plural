@@ -19,7 +19,7 @@ const pad = v => (v < 10 ? `0${v}` : v)
 
 function RenderCountdown({
   hours, minutes, seconds, completed,
-}) {
+}: any) {
   if (completed) return <SlaBreached />
 
   return (
@@ -42,7 +42,7 @@ function RenderCountdown({
   )
 }
 
-export function SlaTimer({ incident: { nextResponseAt } }) {
+export function SlaTimer({ incident: { nextResponseAt } }: any) {
   if (!nextResponseAt) return null
 
   const converted = moment(nextResponseAt).toDate()

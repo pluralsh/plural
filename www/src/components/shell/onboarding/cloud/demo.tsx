@@ -13,7 +13,7 @@ import { DemoStatus } from './types'
 
 function PollProject({
   demo, setDemo, setProvider, workspace, setWorkspace, credentials, setCredentials, next,
-}) {
+}: any) {
   const { data } = useQuery(POLL_DEMO_PROJECT_QUERY, { variables: { id: demo.id }, pollInterval: 10000 })
 
   useEffect(() => {
@@ -53,7 +53,7 @@ function PollProject({
 
 export function DemoProject({
   setProvider, workspace, setWorkspace, credentials, setCredentials, next, setDemo,
-}) {
+}: any) {
   const [mutation, { data, error }] = useMutation(CREATE_DEMO_PROJECT_MUTATION)
 
   useEffect(() => {

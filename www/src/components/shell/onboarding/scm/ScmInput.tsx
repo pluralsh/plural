@@ -27,7 +27,7 @@ export const SCM_VALIDATIONS = {
   [Provider.GITLAB]: GITLAB_VALIDATIONS,
 }
 
-function OrgDisplay({ name, avatarUrl }) {
+function OrgDisplay({ name, avatarUrl }: any) {
   return (
     <Flex
       direction="row"
@@ -52,7 +52,7 @@ function OrgDisplay({ name, avatarUrl }) {
   )
 }
 
-function OrgInput({ org, orgs, doSetOrg }) {
+function OrgInput({ org, orgs, doSetOrg }: any) {
   const { scm: { provider }, authUrlData } = useContext(CreateShellContext)
 
   const altProvider = provider === Provider.GITHUB ? Provider.GITLAB : Provider.GITHUB
@@ -119,7 +119,7 @@ function OrgInput({ org, orgs, doSetOrg }) {
   )
 }
 
-function RepositoryInput({ scmState }) {
+function RepositoryInput({ scmState }: any) {
   const { scm, setScm } = useContext(CreateShellContext)
 
   function setName(name) {

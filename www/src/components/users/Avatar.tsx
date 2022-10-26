@@ -13,7 +13,7 @@ export function initials(name) {
 
 export default function Avatar({
   size, user, round, ...rest
-}) {
+}: any) {
   return (
     <Box
       flex={false}

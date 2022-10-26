@@ -57,7 +57,7 @@ const visuallyHideMaintainWidth = {
   pointerEvents: 'none',
 }
 
-function extendedTheme({ minMenuWidth = 400 }) {
+function extendedTheme({ minMenuWidth = 400 }: any) {
   return {
     A: {
       Root: [
@@ -90,7 +90,7 @@ function extendedTheme({ minMenuWidth = 400 }) {
   }
 }
 
-function RecipeMenuItem({ recipe }: { recipe: Recipe }) {
+function RecipeMenuItem({ recipe }: { recipe: Recipe }: any) {
   return (
     <MenuItem
       value={recipe}

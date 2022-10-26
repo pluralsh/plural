@@ -1,10 +1,11 @@
 import { LinkTabWrap } from 'components/utils/Tabs'
 import {
-  PageCard, Tab, TabList,
+  PageCard,
+  Tab,
+  TabList,
 } from 'pluralsh-design-system'
 import { useContext } from 'react'
 import { useLocation } from 'react-router-dom'
-
 import { Div } from 'honorable'
 
 import CurrentUserContext from '../../contexts/CurrentUserContext'
@@ -18,7 +19,7 @@ const DIRECTORY = [
   { path: '/account/domains', label: 'Domains' },
 ]
 
-function AccountTabList({ tabStateRef }) {
+function AccountTabList({ tabStateRef }: any) {
   const { pathname } = useLocation()
   const currentTab = DIRECTORY.find(tab => pathname?.startsWith(tab.path))
 
@@ -43,7 +44,7 @@ function AccountTabList({ tabStateRef }) {
   )
 }
 
-export default function AccountSideNav({ tabStateRef = {} }) {
+export default function AccountSideNav({ tabStateRef = {} }: any) {
   const me = useContext(CurrentUserContext) as Record<string, any>
 
   return (

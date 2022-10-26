@@ -1,6 +1,9 @@
 import { useMutation } from '@apollo/client'
 import {
-  Div, Flex, Form, Span,
+  Div,
+  Flex,
+  Form,
+  Span,
 } from 'honorable'
 import {
   Button,
@@ -14,19 +17,18 @@ import {
 import { useContext, useMemo, useState } from 'react'
 import { useTheme } from 'styled-components'
 
-import CurrentUserContext from '../../contexts/CurrentUserContext'
-import { DeleteIconButton } from '../utils/IconButtons'
-import { GqlError } from '../utils/Alert'
 import { useUpdateState } from '../../hooks/useUpdateState'
 
-import SaveButton from '../utils/SaveButton'
+import CurrentUserContext from '../../contexts/CurrentUserContext'
 
+import SaveButton from '../utils/SaveButton'
+import { GqlError } from '../utils/Alert'
+import { DeleteIconButton } from '../utils/IconButtons'
 import { List, ListItem } from '../utils/List'
 
 import { UPDATE_ACCOUNT } from './queries'
 
 import { Confirm } from './Confirm'
-
 import { Account } from './Account'
 
 function sanitize<T extends { [key: string]: any }>({
@@ -37,7 +39,10 @@ function sanitize<T extends { [key: string]: any }>({
 }
 
 function DomainMapping({
-  mapping, remove, first, last,
+  mapping,
+  remove,
+  first,
+  last,
 }: any) {
   const theme = useTheme()
   const [confirm, setConfirm] = useState(false)

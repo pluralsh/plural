@@ -66,7 +66,7 @@ export default function CreatePublisher({ onCreate }) {
           round="xsmall"
           label="create"
           loading={loading}
-          onClick={mutation}
+          onClick={() => mutation()}
         />
       </Box>
     </Box>

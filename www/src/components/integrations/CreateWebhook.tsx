@@ -126,7 +126,7 @@ export function CreateWebhook({ cancel }) {
         />
         <Button
           label="Create"
-          onClick={mutation}
+          onClick={() => mutation()}
           loading={loading}
         />
       </Box>

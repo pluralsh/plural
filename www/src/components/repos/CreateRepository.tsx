@@ -190,7 +190,7 @@ export function RepoForm({
               loading={loading}
               round="xsmall"
               label={update ? 'Update' : 'Create'}
-              onClick={mutation}
+              onClick={() => mutation()}
             />
           </Box>
         </SectionPortal>

@@ -105,7 +105,7 @@ function ChartInstaller({ chart, version }) {
     <Button
       secondary
       error={error}
-      onClick={mutation}
+      onClick={() => mutation()}
     >
       Install
     </Button>

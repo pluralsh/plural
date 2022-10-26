@@ -59,7 +59,7 @@ function TerraformInstaller({ terraformModule, version }) {
       )}
       <Button
         secondary
-        onClick={mutation}
+        onClick={() => mutation()}
       >
         {installed ? 'Uninstall' : 'Install'}
       </Button>

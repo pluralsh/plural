@@ -74,7 +74,7 @@ export function OAuthConsent() {
           )}
           <Button
             loading={loading}
-            onClick={mutation}
+            onClick={() => mutation()}
             label="Allow"
           />
         </Box>

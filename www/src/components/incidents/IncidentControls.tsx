@@ -58,7 +58,7 @@ function AcceptIncident({ incident: { id } }) {
   return (
     <Control
       icon={<OwnerIcon size={12} />}
-      onClick={mutation}
+      onClick={() => mutation()}
     />
   )
 }
@@ -125,7 +125,7 @@ function CompleteIncident({ incident: { id } }) {
                   label="Complete"
                   disabled={attributes.content.length === 0}
                   loading={loading}
-                  onClick={mutation}
+                  onClick={() => mutation()}
                 />
               </Box>
             </Box>
@@ -207,7 +207,7 @@ function Follower({ incident: { id, follower } }) {
                 <Button
                   label={follower ? 'Update' : 'Follow'}
                   loading={loading}
-                  onClick={mutation}
+                  onClick={() => mutation()}
                 />
               </Box>
             </Box>
@@ -232,7 +232,7 @@ function ZoomMeeting({ incident: { id, title } }) {
       <Box
         flex={false}
         pad={{ horizontal: 'xsmall' }}
-        onClick={mutation}
+        onClick={() => mutation()}
       >
         <CameraIcon
           size={17}

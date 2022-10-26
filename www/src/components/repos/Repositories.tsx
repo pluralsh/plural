@@ -46,7 +46,7 @@ function DeleteRepository({ repo, publisherId }) {
       >
         <Trash
           size="15px"
-          onClick={mutation}
+          onClick={() => mutation()}
         />
       </Box>
     </HoveredBackground>

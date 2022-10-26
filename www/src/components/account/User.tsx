@@ -201,7 +201,7 @@ export function ServiceAccount({ user, update }) {
           <Button
             small
             secondary
-            onClick={mutation}
+            onClick={() => mutation()}
           >
             Impersonate
           </Button>

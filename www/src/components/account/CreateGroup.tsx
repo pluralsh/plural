@@ -1,7 +1,7 @@
+import { useCallback, useState } from 'react'
 import { useMutation } from '@apollo/client'
 import { Box } from 'grommet'
 import { Button, Modal, ValidatedInput } from 'pluralsh-design-system'
-import { useCallback, useState } from 'react'
 
 import { appendConnection, updateCache } from '../../utils/graphql'
 

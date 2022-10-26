@@ -89,7 +89,7 @@ function UpdatePassword({ cancel }) {
           small
           loading={loading}
           disabled={password.length < 8 || password !== second}
-          onClick={mutation}
+          onClick={() => mutation()}
         >
           Update password
         </Button>

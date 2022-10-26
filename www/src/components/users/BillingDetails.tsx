@@ -195,7 +195,7 @@ function CardRow({ card, noDelete }) {
           <Icon
             icon={Trash}
             tooltip="delete"
-            onClick={mutation}
+            onClick={() => mutation()}
           />
         </Box>
       )}

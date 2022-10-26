@@ -542,7 +542,7 @@ function NavigableSlaForm({
           loading={loading}
           label="Create"
           round="xsmall"
-          onClick={mutation}
+          onClick={() => mutation()}
         />
       </Box>
     </Box>

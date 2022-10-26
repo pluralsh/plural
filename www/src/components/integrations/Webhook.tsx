@@ -268,7 +268,7 @@ function WebhookControls({ webhook, setEdit }) {
                 <Button
                   label="Delete"
                   background="error"
-                  onClick={mutation}
+                  onClick={() => mutation()}
                   loading={loading}
                 />
               </Box>
@@ -322,7 +322,7 @@ function EditWebhook({ webhook, setEdit }) {
           <Button
             label="update"
             loading={loading}
-            onClick={mutation}
+            onClick={() => mutation()}
           />
           <Control
             icon={<Close size="small" />}

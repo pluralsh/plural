@@ -123,7 +123,7 @@ export function Subscriber({
           loading={loading}
           round="xsmall"
           label="Subscribe"
-          onClick={mutation}
+          onClick={() => mutation()}
         />
       </Box>
     </Box>

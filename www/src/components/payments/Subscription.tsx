@@ -68,7 +68,7 @@ function LineItemUpdate({
             <Button
               loading={loading}
               label="Update"
-              onClick={mutation}
+              onClick={() => mutation()}
             />
           </Box>
         </Box>

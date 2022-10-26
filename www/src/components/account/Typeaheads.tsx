@@ -158,7 +158,7 @@ export function BindingInput({
   hint,
   placeholder = TEXT[type]?.placeholder,
   label = TEXT[type]?.label,
-}) {
+}: any) {
   const client = useApolloClient()
   const [suggestions, setSuggestions] = useState([])
   const fetch = fetcher || FETCHER[type]

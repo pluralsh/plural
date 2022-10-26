@@ -648,7 +648,7 @@ export function Signup() {
             width="100%"
             disabled={disabled}
             loading={loading}
-            onClick={mutation}
+            onClick={() => mutation()}
           >
             Create account
           </Button>

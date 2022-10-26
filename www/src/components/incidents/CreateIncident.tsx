@@ -227,7 +227,7 @@ export function CreateIncident({ onCompleted }) {
               <Button
                 loading={loading}
                 label="Create"
-                onClick={mutation}
+                onClick={() => mutation()}
               />
             </Box>
           </IncidentForm>

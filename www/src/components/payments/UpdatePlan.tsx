@@ -38,7 +38,7 @@ export default function UpdatePlan({ plan, repository: { id, installation: { sub
             <Button
               loading={loading}
               label="Update"
-              onClick={mutation}
+              onClick={() => mutation()}
             />
           </Box>
         </Box>

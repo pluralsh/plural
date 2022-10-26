@@ -50,7 +50,7 @@ function GroupMember({
         />
         {edit && (
           <DeleteIconButton
-            onClick={mutation}
+            onClick={() => mutation()}
             hue="lighter"
           />
         )}

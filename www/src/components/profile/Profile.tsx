@@ -144,7 +144,7 @@ export function Profile() {
           marginTop="small"
         >
           <Button
-            onClick={mutation}
+            onClick={() => mutation()}
             loading={loading}
           >
             Save

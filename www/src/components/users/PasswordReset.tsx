@@ -110,7 +110,7 @@ export function ResetPassword() {
             />
             <Button
               width="100%"
-              onClick={mutation}
+              onClick={() => mutation()}
               loading={loading}
               disabled={disabled}
             >
@@ -166,7 +166,7 @@ export function PasswordReset() {
           />
           <Button
             width="100%"
-            onClick={mutation}
+            onClick={() => mutation()}
             loading={loading}
           >
             Reset Password

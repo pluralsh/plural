@@ -111,7 +111,7 @@ function DeleteIncident({ incident }) {
     <Button
       label="Delete"
       background="red-dark"
-      onClick={mutation}
+      onClick={() => mutation()}
       loading={loading}
     />
   )

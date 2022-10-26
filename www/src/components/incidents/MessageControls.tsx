@@ -147,7 +147,7 @@ function Delete({ message }) {
     <Control tooltip="delete">
       <Box
         {...CONTROL_ATTRS}
-        onClick={mutation}
+        onClick={() => mutation()}
       >
         <Trash size="small" />
       </Box>

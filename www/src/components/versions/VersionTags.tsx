@@ -90,7 +90,7 @@ export function EditTags({ version, setOpen, refetch }) {
         >
           <Button
             label="Update"
-            onClick={mutation}
+            onClick={() => mutation()}
             loading={loading}
           />
         </Box>

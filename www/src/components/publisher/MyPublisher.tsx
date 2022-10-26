@@ -144,7 +144,7 @@ function EditPublisher({ publisher: { description, phone } }) {
           pad={{ horizontal: 'medium', vertical: 'xsmall' }}
           round="xsmall"
           label="Update"
-          onClick={mutation}
+          onClick={() => mutation()}
         />
       </SectionPortal>
     </Box>

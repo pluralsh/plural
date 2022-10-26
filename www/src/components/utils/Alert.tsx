@@ -45,7 +45,7 @@ function AlertIcon({ status, color }) {
   return null
 }
 
-export function GqlError({ header, error }) {
+export function GqlError({ header, error }: any) {
   return (
     <Alert
       status={AlertStatus.ERROR}

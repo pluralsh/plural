@@ -70,7 +70,7 @@ export function UpdateInstallation({ installation = {} }) {
         <Button
           loading={loading}
           label="Update"
-          onClick={mutation}
+          onClick={() => mutation()}
         />
       </SectionPortal>
     </Box>
@@ -147,7 +147,7 @@ export function EditInstallation({ installation, repository, onUpdate }) {
             pad={{ horizontal: 'medium', vertical: 'xsmall' }}
             loading={loading}
             label="Save"
-            onClick={mutation}
+            onClick={() => mutation()}
             round="xsmall"
           />
         </Box>

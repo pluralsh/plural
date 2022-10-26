@@ -221,7 +221,7 @@ export function CreateProvider({ installation }) {
         <Button
           label="Create"
           loading={loading}
-          onClick={mutation}
+          onClick={() => mutation()}
         />
       </SectionPortal>
     </Box>
@@ -297,7 +297,7 @@ export function UpdateProvider({ installation }) {
         <Button
           label="Update"
           loading={loading}
-          onClick={mutation}
+          onClick={() => mutation()}
         />
       </SectionPortal>
     </Box>

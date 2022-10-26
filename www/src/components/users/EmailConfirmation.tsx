@@ -121,7 +121,7 @@ export function VerifyEmailConfirmed() {
           <Icon
             icon={ReloadIcon}
             tooltip="Resend"
-            onClick={mutation}
+            onClick={() => mutation()}
           />
           <Icon
             icon={CloseIcon}

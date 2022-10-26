@@ -1,7 +1,7 @@
+import { useCallback, useMemo, useState } from 'react'
 import { useMutation } from '@apollo/client'
 import { Button } from 'honorable'
 import { Modal } from 'pluralsh-design-system'
-import { useCallback, useMemo, useState } from 'react'
 import uniqWith from 'lodash/uniqWith'
 import isEqual from 'lodash/isEqual'
 
@@ -20,7 +20,7 @@ const defaultAttributes = {
   permissions: [],
 }
 
-export function CreateRole({ q }) {
+export function CreateRole({ q }: any) {
   const [open, setOpen] = useState(false)
   const [attributes, setAttributes] = useState(defaultAttributes)
   const [roleBindings, setRoleBindings] = useState([])

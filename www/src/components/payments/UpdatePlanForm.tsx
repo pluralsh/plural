@@ -37,7 +37,7 @@ export function UpdatePlanForm({ plan: { id, serviceLevels } }) {
           loading={loading}
           label="Update"
           round="xsmall"
-          onClick={mutation}
+          onClick={() => mutation()}
         />
       </Box>
     </Box>

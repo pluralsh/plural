@@ -57,7 +57,7 @@ export function InviteUser() {
               Cancel
             </Button>
             <Button
-              onClick={mutation}
+              onClick={() => mutation()}
               loading={loading}
               disabled={email.length === 0}
               marginLeft="medium"

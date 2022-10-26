@@ -1,8 +1,8 @@
+import { useCallback, useState } from 'react'
 import { useMutation } from '@apollo/client'
 import { Box } from 'grommet'
 import { Button, Div } from 'honorable'
 import { ListBoxItem, Modal, ValidatedInput } from 'pluralsh-design-system'
-import { useCallback, useState } from 'react'
 
 import { appendConnection, updateCache } from '../../utils/graphql'
 
@@ -24,7 +24,7 @@ function ServiceAccountForm({
   bindings,
   setBindings,
   ...box
-}) {
+}: any) {
   return (
     <Box
       fill
@@ -153,7 +153,7 @@ export function EditServiceAccount({ user, update }) {
               Cancel
             </Button>
             <Button
-              onClick={mutation}
+              onClick={() => mutation()}
               loading={eloading}
               marginLeft="medium"
             >
@@ -182,7 +182,7 @@ export function EditServiceAccount({ user, update }) {
 
 const defaultAttributes = { name: '', email: '' }
 
-export function CreateServiceAccount({ q }) {
+export function CreateServiceAccount({ q }: any) {
   const [open, setOpen] = useState(false)
   const [attributes, setAttributes] = useState(defaultAttributes)
   const [bindings, setBindings] = useState([])
@@ -237,7 +237,7 @@ export function CreateServiceAccount({ q }) {
               Cancel
             </Button>
             <Button
-              onClick={mutation}
+              onClick={() => mutation()}
               loading={loading}
               marginLeft="medium"
             >

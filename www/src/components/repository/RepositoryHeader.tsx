@@ -1,37 +1,197 @@
+import { useContext, useState } from 'react'
 import {
-  Div, Flex, Hr, P,
+  A, Button, Div, Flex, H1, Img, P, Span,
 } from 'honorable'
+import {
+  Chip, GearTrainIcon, GitHubIcon, InvoicesIcon, LinksIcon,
+} from 'pluralsh-design-system'
+import capitalize from 'lodash/capitalize'
 
-import { RepositorySideCarCollapsed } from './RepositorySideCar'
+import RepositoryContext from '../../contexts/RepositoryContext'
 
-function RepositoryHeader({ children, ...props }: any) {
+import usePaginatedQuery from '../../hooks/usePaginatedQuery'
+
+import { InferredConsoleButton } from '../clusters/ConsoleButton'
+
+import { providerToIcon, providerToIconHeight } from '../utils/InstallDropdownButton'
+
+import { RECIPES_QUERY } from './queries'
+
+import InstallDropdownButton from './InstallDropdownButton'
+import { InstallationConfiguration } from './InstallationConfiguration'
+
+function InstalledActions({ installation, ...props }) {
+  const [open, setOpen] = useState(false)
+
   return (
-    <Div
-      width="100%"
-      position="sticky"
-      top={0}
+    <>
+      <Flex
+        align="center"
+        gap="small"
+        {...props}
+      >
+        <Button
+          secondary
+          endIcon={<GearTrainIcon size={16} />}
+          onClick={() => setOpen(true)}
+        >
+          Configuration
+        </Button>
+        <InferredConsoleButton />
+      </Flex>
+      <InstallationConfiguration
+        open={open}
+        setOpen={setOpen}
+        installation={installation}
+      />
+    </>
+  )
+}
+
+function RepositoryHeader(props) {
+  const repository = useContext(RepositoryContext)
+  const [recipes] = usePaginatedQuery(RECIPES_QUERY,
+    {
+      variables: {
+        repositoryId: repository.id,
+      },
+    },
+    data => data.recipes)
+
+  return (
+    <Flex
+      py={2}
+      marginLeft="xlarge"
+      marginRight="xlarge"
+      align="flex-start"
+      borderBottom="1px solid border"
       {...props}
     >
-      <Div
-        width="100%"
-        backgroundColor="fill-zero"
-        paddingTop="medium"
+      <Flex
+        p={1}
+        align="center"
+        justify="center"
+        backgroundColor="fill-one"
+        border="1px solid border"
+        borderRadius={4}
       >
-        <Flex
-          align="center"
-          justifyContent="space-between"
-        >
-          <P title1>
-            {children}
-          </P>
-          <RepositorySideCarCollapsed display-desktop-up="none" />
-        </Flex>
-        <Hr
-          marginTop={18}
-          marginBottom={0}
+        <Img
+          src={repository.darkIcon || repository.icon}
+          alt={repository.name}
+          width={106}
         />
+      </Flex>
+      <Div
+        ml={2}
+      >
+        <H1
+          fontSize={32}
+          lineHeight="32px"
+        >
+          {capitalize(repository.name)}
+        </H1>
+        <Flex
+          mt={0.5}
+          align="center"
+          color="text-xlight"
+        >
+          <P>
+            Published by {capitalize(repository.publisher?.name)}
+          </P>
+          <P ml={1}>
+            Available bundles
+          </P>
+          <Div
+            mt={0.25}
+          >
+            {recipes
+              .filter((recipe, i, a) => a.findIndex(r => r.provider === recipe.provider) === i)
+              .map(recipe => (
+                <Img
+                  key={recipe.id}
+                  alt={recipe.name}
+                  src={providerToIcon[recipe.provider]}
+                  height={providerToIconHeight[recipe.provider]}
+                  ml={0.5}
+                />
+              ))}
+          </Div>
+        </Flex>
+        <Flex
+          mt={0.5}
+          align="center"
+          gap="16px"
+        >
+          {repository.homepage && (
+            <A
+              target="_blank"
+              href={repository.homepage}
+            >
+              <LinksIcon
+                color="text"
+                size={12}
+              />
+              <Span ml={0.25}>
+                {repository.homepage && repository.homepage.replaceAll(/(^https?:\/\/)|(\/+$)/g, '')}
+              </Span>
+            </A>
+          )}
+          {repository.gitUrl && (
+            <A
+              target="_blank"
+              href={repository.gitUrl}
+            >
+              <GitHubIcon
+                color="text"
+                size={12}
+              />
+              <Span ml={0.25}>
+                {repository.gitUrl && repository.gitUrl.replaceAll(/(^https?:\/\/)|(\/+$)/g, '')}
+              </Span>
+            </A>
+          )}
+          {repository.license && (
+            <A
+              target="_blank"
+              href={repository.license.url}
+            >
+              <InvoicesIcon
+                color="text"
+                size={12}
+              />
+              <Span ml={0.25}>
+                {repository.license.name}
+              </Span>
+            </A>
+          )}
+        </Flex>
+        <Flex
+          mt={1}
+          align="flex-start"
+          wrap="wrap"
+        >
+          {repository.tags.map(({ tag }) => (
+            <Chip
+              key={tag}
+              mr={0.5}
+              mb={0.5}
+            >
+              <Span fontWeight="400">{tag}</Span>
+            </Chip>
+          ))}
+        </Flex>
       </Div>
-    </Div>
+      <Div flexGrow={1} />
+      <Flex align="center">
+        {!repository.installation && <InstallDropdownButton recipes={recipes} />}
+        {!!repository.installation && (
+          <InstalledActions
+            installation={repository.installation}
+            ml={1}
+          />
+        )}
+      </Flex>
+    </Flex>
   )
 }
 

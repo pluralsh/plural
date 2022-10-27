@@ -13,13 +13,18 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap" rel="stylesheet">
     <style>
       /* Globals */
-      body {
+      body,
+      .email-full-container {
         margin: 0;
-        padding-top: 48px;
-        padding-bottom: 48px;
+        padding: 0;
+        width: 100%;
         color: white;
         background-color: #171A21;
-        font-family: 'Inter', sans-serif;
+        font-family: "Inter", sans-serif;
+      }
+      .email-full-container {
+        padding-top: 48px;
+        padding-bottom: 48px;
       }
       a {
         text-decoration: none;
@@ -54,19 +59,11 @@
         padding-left: 24px;
         padding-right: 24px;
       }
-      .logo-1 {
-        width: 34px;
-        height: 34px;
-        margin-top: 4px;
-      }
-      .logo-2 {
-        width: 122px;
-        height: 43px;
-        margin-top: 3px;
-      }
-      .logo-title {
-        font-size: 43px;
-        line-height: 43px;
+      .header-logo {
+        width: 249px;
+        height: 40px;
+        margin-left: auto;
+        margin-right: auto;
       }
       .company-info {
         font-family: monospace;
@@ -94,6 +91,7 @@
         padding: 32px;
       }
       .text-lead {
+        color: #C5C9D3;
         font-size: 24px;
         line-height: 32px;
         letter-spacing: -0.25px;
@@ -104,6 +102,8 @@
         line-height: 24px;
         letter-spacing: 0.5px;
       }
+      a.button,
+      a:any-link.button,
       .button {
         display: block;
         padding: 12px 24px;
@@ -118,41 +118,38 @@
       }
     </style>
   </head>
-  <body>
+  <body bgcolor="#171A21" style="background-color: #171A21">
+    <div class="email-full-container" bgcolor="#171A21" style="background-color: #171A21">
     <div class="email-container margin-horizontal-auto">
       <div class="margin-horizontal-auto">
         <div class="flex margin-horizontal-auto fit-content">
-          <img src="https://app.plural.sh/plural-white-cropped.png" class="logo-1" />
-          <img src="https://app.plural.sh/plural-white-word-cropped.png" class="logo-2 margin-left-medium" />
-          <p class="logo-title margin-left-medium">app</p>
+          <img alt="Plural app" src="https://app.plural.sh/plural-email-header@2x.png" width="249" height="40" class="header-logo" />
         </div>
       </div>
       <div class="content-container margin-horizontal-auto">
         <div class="top-gradient"></div>
         <div class="content-wrapper">
           <%= @inner_content %>
-        </div>
       </div>
       <div class="margin-horizontal-auto fit-content">
         <div class="company-info margin-horizontal-auto text-align-center fit-content">
-          © Plural 2022
-          <br />
-          19 W 24th St FL 3
-          <br />
-          New York, NY 10010
+          <div>© Plural 2022</div>
+          <div>19 W 24th St FL 3</div>
+          <div>New York, NY 10010</div>
         </div>
         <div class="margin-horizontal-auto flex fit-content">
           <a href="https://github.com/pluralsh/plural" target="_blank">
-            <img src="https://app.plural.sh/github_logo@2x.png" class="social-icon" />
+            <img alt="GitHub" src="https://app.plural.sh/github_logo@2x.png" class="social-icon" />
           </a>
           <a href="https://discord.gg/pluralsh" target="_blank">
-            <img src="https://app.plural.sh/discord_logo@2x.png" class="social-icon" />
+            <img alt="Discord" src="https://app.plural.sh/discord_logo@2x.png" class="social-icon" />
           </a>
           <a href="https://twitter.com/plural_sh" target="_blank">
-            <img src="https://app.plural.sh/twitter_logo@2x.png" class="social-icon" />
+            <img alt="Twitter" src="https://app.plural.sh/twitter_logo@2x.png" class="social-icon" />
           </a>
         </div>
       </div>
+    </div>
     </div>
   </body>
 </html>

@@ -150,9 +150,9 @@ function CliInstallation() {
           <>
             <Div marginTop="small">
               {tab === TAB_MAC
-                ? <Codeline>{currentTab.command}</Codeline> : (
+                ? <Codeline>{currentTab?.command}</Codeline> : (
                   <Code>
-                    {currentTab.command}
+                    {currentTab?.command || ''}
                   </Code>
                 )}
             </Div>

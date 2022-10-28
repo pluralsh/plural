@@ -69,8 +69,9 @@ function CloudBuild() {
         </P>
         <ProgressBar
           mode={error || status === 'ENABLED' ? 'determinate' : 'indeterminate'}
+          // @ts-expect-error
           marginTop="medium"
-          progress={error ? 0 : status === 'ENABLED' ? 100 : null}
+          progress={error ? 0 : status === 'ENABLED' ? 100 : undefined}
           backgroundColor={error ? 'icon-error' : 'fill-two'}
         />
         <Flex
@@ -104,9 +105,9 @@ function CloudBuild() {
             loading={status === 'CREATED'}
             backgroundColor="fill-two"
             borderColor="border-fill-two"
-            severity={status === 'CREATED' ? 'info' : status === 'ENABLED' | status === 'READY' ? 'success' : 'neutral'}
+            severity={status === 'CREATED' ? 'info' : status === 'ENABLED' || status === 'READY' ? 'success' : 'neutral'}
           >
-            {status === 'CREATED' ? 'Running' : status === 'ENABLED' | status === 'READY' ? 'Success' : 'Pending'}
+            {status === 'CREATED' ? 'Running' : status === 'ENABLED' || status === 'READY' ? 'Success' : 'Pending'}
           </Chip>
         </Flex>
         <OnboardingNavSection>

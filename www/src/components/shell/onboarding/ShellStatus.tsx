@@ -59,8 +59,9 @@ export function ShellStatus({
       </Flex>
       <ProgressBar
         mode={error || alive ? 'determinate' : 'indeterminate'}
+        // @ts-expect-error
         marginTop="medium"
-        progress={error ? 0 : alive ? 100 : null}
+        progress={error ? 0 : alive ? 100 : undefined}
         backgroundColor={error ? 'icon-error' : 'fill-two'}
       />
       <Flex

@@ -29,7 +29,7 @@ import Fuse from 'fuse.js'
 
 import SelectedApplicationsContext from 'contexts/SelectedApplicationsContext'
 
-import { persistConsole, persistProvider, persistStack } from '../shell/persistance'
+import { persistConsole, persistProvider, persistStack } from '../../persistance'
 
 import { APPLICATIONS_QUERY, STACKS_QUERY, STACK_QUERY } from '../../queries'
 import { MAX_SELECTED_APPLICATIONS } from '../../constants'

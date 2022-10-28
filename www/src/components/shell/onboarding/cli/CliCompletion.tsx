@@ -8,7 +8,7 @@ import {
   retrieveConsole,
   retrieveProvider,
   retrieveStack,
-} from '../shell/persistance'
+} from '../../persistance'
 
 import CreateShellContext from '../../../../contexts/CreateShellContext'
 
@@ -42,7 +42,7 @@ function CliCompletion() {
   const shouldInstallConsole = retrieveConsole()
   const isConsoleInApps = filteredApplications.find(app => app.name === 'console')
   const consoleInstallCmd = shouldInstallConsole && !isConsoleInApps
-    ? <Codeline>{`plural bundle install console console-${provider.toLowerCase()}`}</Codeline>
+    ? <Codeline>{`plural bundle install console console-${provider?.toLowerCase()}`}</Codeline>
     : null
 
   const stackInstallCmd = isStackComplete

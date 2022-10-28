@@ -12,8 +12,8 @@ import { Button, FormField } from 'pluralsh-design-system'
 
 import { growthbook } from 'helpers/growthbook'
 
-import { persistProvider } from '../shell/persistance'
-import { providerToDisplayName } from '../utils/InstallDropdownButton'
+import { persistProvider } from '../../persistance'
+import { providerToDisplayName } from '../../../utils/InstallDropdownButton'
 
 import CreateShellContext from '../../../../contexts/CreateShellContext'
 import { CLOUDS } from '../../constants'
@@ -88,7 +88,7 @@ function CloudCredentials() {
         </Box>
         {open && (
           <Drop
-            target={ref.current}
+            target={ref.current as any}
             onClickOutside={close}
             onEsc={close}
           >

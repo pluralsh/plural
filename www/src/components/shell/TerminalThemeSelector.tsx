@@ -102,7 +102,7 @@ function TerminalThemePreview({ theme, ...props }: any) {
           style={{
             width: 10,
             height: 10,
-            backgroundColor: hex,
+            backgroundColor: hex as any,
           }}
         />
       ))}

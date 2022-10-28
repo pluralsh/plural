@@ -32,9 +32,9 @@ const decodeBase64 = str => Buffer.from(str, 'base64').toString('utf-8')
 const detachedMessage = '[detached (from session workspace)]'
 
 function Shell({ shell }: any) {
-  const xterm = useRef<HTMLDivElement>(null)(null)
-  const [channel, setChannel] = useState(null)
-  const [dimensions, setDimensions] = useState({})
+  const xterm = useRef<any>(null)
+  const [channel, setChannel] = useState<any>(null)
+  const [dimensions, setDimensions] = useState<any>({})
   const [showCheatsheet, setShowCheatsheet] = useState(true)
   const fitAddon = useMemo(() => new FitAddon(), [])
   const [terminalTheme] = useContext(TerminalThemeContext)
@@ -76,7 +76,7 @@ function Shell({ shell }: any) {
     let rows = 24
 
     try {
-      ({ cols, rows } = fitAddon.proposeDimensions())
+      ({ cols, rows } = fitAddon.proposeDimensions() as any)
 
       setDimensions({ cols, rows })
     }
@@ -112,7 +112,7 @@ function Shell({ shell }: any) {
     onResize: debounce(() => {
       if (!channel) return
       fitAddon.fit()
-      handleResize(fitAddon.proposeDimensions())
+      handleResize(fitAddon.proposeDimensions() as any as any)
     }, 500, { leading: true }),
   })
 
@@ -184,6 +184,7 @@ function Shell({ shell }: any) {
             options={{ theme: normalizedThemes[terminalTheme] }}
             onResize={handleResize}
             onData={handleData}
+            // @ts-expect-error
             style={{
               width: '100%',
               height: '100%',

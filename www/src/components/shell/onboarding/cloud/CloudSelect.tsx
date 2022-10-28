@@ -2,12 +2,11 @@ import { useContext, useState } from 'react'
 import { Flex, Img, P } from 'honorable'
 import { Button, CloudIcon } from 'pluralsh-design-system'
 
-import { persistProvider } from '../shell/persistance'
+import { persistProvider } from '../../persistance'
 
-import { OnboardingStatus } from '../profile/types'
+import { OnboardingStatus } from '../../../profile/types'
 
-import CurrentUserContext from '../../contexts/CurrentUserContext'
-
+import CurrentUserContext from '../../../../contexts/CurrentUserContext'
 import CreateShellContext from '../../../../contexts/CreateShellContext'
 
 import { SECTION_CLI_INSTALLATION, SECTION_CLOUD_BUILD, SECTION_CLOUD_CREDENTIALS } from '../../constants'
@@ -18,7 +17,7 @@ import OnboardingCard from '../OnboardingCard'
 import { ChooseAShell, CloudOption } from './provider'
 
 function ChooseShell() {
-  const [shell, setShell] = useState()
+  const [shell, setShell] = useState<any>()
   const { previous, setSection } = useContext(CreateShellContext)
 
   return (

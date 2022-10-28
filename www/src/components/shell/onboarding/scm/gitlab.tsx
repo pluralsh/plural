@@ -14,8 +14,8 @@ export const GITLAB_VALIDATIONS = [
 
 export function useGitlabState({ scm, setScm, accessToken }: any) {
   const client = useMemo(() => new Gitlab({ oauthToken: accessToken }), [accessToken])
-  const [orgs, setOrgs] = useState(null)
-  const [org, setOrg] = useState(null)
+  const [orgs, setOrgs] = useState<any>(null)
+  const [org, setOrg] = useState<any>(null)
   const doSetOrg = useCallback(org => {
     if (org.type === 'user') {
       setScm({ ...scm, org: null })

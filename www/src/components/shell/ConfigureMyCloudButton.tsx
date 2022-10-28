@@ -26,7 +26,7 @@ export default function ConfigureMyCloudButton() {
     },
   })
 
-  if (!data || !isOnboarded) return
+  if (!data || !isOnboarded) return null
 
   return (
     <>

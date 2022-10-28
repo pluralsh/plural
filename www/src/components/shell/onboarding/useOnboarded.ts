@@ -2,7 +2,7 @@ import { useMutation } from '@apollo/client'
 import { useContext } from 'react'
 import { useLocation } from 'react-router-dom'
 
-import { CurrentUserContext } from '../../login/CurrentUser'
+import CurrentUserContext from '../../../contexts/CurrentUserContext'
 import { OnboardingStatus } from '../../profile/types'
 import { UPDATE_USER } from '../../users/queries'
 

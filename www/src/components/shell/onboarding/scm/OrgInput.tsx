@@ -13,7 +13,7 @@ function OrgOption({
       gap="small"
       align="center"
       hoverIndicator="tone-light"
-      onClick={isCurrent ? null : () => setOrg(org)}
+      onClick={isCurrent ? undefined : () => setOrg(org)}
     >
       {render(org)}
       {isCurrent && (
@@ -64,7 +64,7 @@ export function OrgInput({
           </Box>
           {open && (
             <Drop
-              target={ref.current}
+              target={ref.current as any}
               align={{ top: 'bottom' }}
               onClickOutside={close}
               onEsc={close}

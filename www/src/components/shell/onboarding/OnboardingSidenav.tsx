@@ -12,7 +12,7 @@ import {
 import { useContext } from 'react'
 import styled from 'styled-components'
 
-import { OnboardingStatus } from '../profile/types'
+import { OnboardingStatus } from '../../profile/types'
 
 import CurrentUserContext from '../../../contexts/CurrentUserContext'
 

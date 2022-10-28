@@ -15,8 +15,8 @@ export const GITHUB_VALIDATIONS = [
 
 export function useGithubState({ scm, setScm, accessToken }: any) {
   const client = useMemo(() => new Octokit({ auth: accessToken }), [accessToken])
-  const [orgs, setOrgs] = useState(null)
-  const [org, setOrg] = useState(null)
+  const [orgs, setOrgs] = useState<any>(null)
+  const [org, setOrg] = useState<any>(null)
 
   const doSetOrg = useCallback(org => {
     if (org.type === 'User') {

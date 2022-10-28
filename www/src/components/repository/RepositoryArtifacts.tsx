@@ -25,18 +25,27 @@ import InfiniteScroller from '../utils/InfiniteScroller'
 import { download } from '../../utils/file'
 
 const platformToIcon = {
-  MAC: <AppleLogoIcon
-    size="14px"
-    fullColor
-  />,
-  WINDOWS: <WindowsLogoIcon
-    size="14px"
-    fullColor
-  />,
-  LINUX: <UbuntuLogoIcon
-    size="14px"
-    fullColor
-  />,
+  MAC: (
+    // @ts-expect-error
+    <AppleLogoIcon
+      size="14px"
+      fullColor
+    />
+  ),
+  WINDOWS: (
+    // @ts-expect-error
+    <WindowsLogoIcon
+      size="14px"
+      fullColor
+    />
+  ),
+  LINUX: (
+    // @ts-expect-error
+    <UbuntuLogoIcon
+      size="14px"
+      fullColor
+    />
+  ),
 }
 
 function ArtifactIcon({ Icon, tooltip, ...props }: any) {

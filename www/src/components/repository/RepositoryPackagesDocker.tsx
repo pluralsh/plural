@@ -14,7 +14,7 @@ import RepositoryContext from '../../contexts/RepositoryContext'
 
 import usePaginatedQuery from '../../hooks/usePaginatedQuery'
 
-import { PluralConfigurationContext } from '../login/CurrentUser'
+import PluralConfigurationContext from '../../contexts/PluralConfigurationContext'
 
 import { LoopingLogo } from '../utils/AnimatedLogo'
 import InfiniteScroller from '../utils/InfiniteScroller'
@@ -70,7 +70,7 @@ function DockerRepository({ dockerRepository, first, last }: any) {
 
 function RepositoryPackagesDocker() {
   const { id } = useContext(RepositoryContext)
-  const [q] = useOutletContext()
+  const [q] = useOutletContext() as any
   const [dockerRepositories, loadingCharts, hasMoreCharts, fetchMoreCharts] = usePaginatedQuery(DOCKER_QUERY,
     {
       variables: {

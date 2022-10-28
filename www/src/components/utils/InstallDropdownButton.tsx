@@ -136,7 +136,7 @@ function RecipeMenuItem({ recipe }: { recipe: Recipe }) {
 
 type InstallDropDownButtonProps = {
   recipes: Recipe[],
-  name: string,
+  name?: string,
   type?: string,
   [x: string]: any
 }

@@ -7,7 +7,7 @@ import {
 
 import * as serviceWorker from '../../serviceWorkerRegistration'
 
-import { PluralConfigurationContext } from '../login/CurrentUser'
+import PluralConfigurationContext from '../../contexts/PluralConfigurationContext'
 
 const COMMIT_KEY = 'git-commit'
 

@@ -116,7 +116,7 @@ export function ProviderForm({
   const [toast, setToast] = useState(null)
   const [dirty, setDirty] = useState(false)
   const [saved, setSaved] = useState(false)
-  const isMountRef = useRef<HTMLDivElement>(null)(true)
+  const isMountRef = useRef(true)
   const prevAttributes = usePrevious(attributes)
   const prevBindings = usePrevious(bindings)
   const prevLoading = usePrevious(loading)
@@ -131,7 +131,7 @@ export function ProviderForm({
     if (!isEqual(attributes, prevAttributes) || !isEqual(bindings, prevBindings)) {
       setDirty(true)
     }
-  }, [attributes, prevAttributes, bindings, prevBindings])
+  }, [attributes, prevAttributes, bindings, prevBindings, isMountRef])
 
   useEffect(() => {
     if (prevLoading !== undefined && !loading && loading !== prevLoading) {

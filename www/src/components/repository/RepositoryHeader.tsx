@@ -24,11 +24,10 @@ import usePaginatedQuery from '../../hooks/usePaginatedQuery'
 
 import { InferredConsoleButton } from '../clusters/ConsoleButton'
 
-import { providerToIcon, providerToIconHeight } from '../utils/InstallDropdownButton'
+import InstallDropdownButton, { providerToIcon, providerToIconHeight } from '../utils/InstallDropdownButton'
 
 import { RECIPES_QUERY } from './queries'
 
-import InstallDropdownButton from './InstallDropdownButton'
 import { InstallationConfiguration } from './InstallationConfiguration'
 
 function InstalledActions({ installation, ...props }: any) {

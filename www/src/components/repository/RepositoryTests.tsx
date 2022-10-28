@@ -73,7 +73,7 @@ async function fetchLogs(
 
 function TestLogs({ step: { id, hasLogs }, testId }: any) {
   const client = useApolloClient()
-  const xterm = useRef<HTMLDivElement>(null)(null)
+  const xterm = useRef<any>(null)
   const fitAddon = useMemo(() => new FitAddon(), [])
   const { data } = useSubscription(LOGS_SUB, {
     variables: { testId },
@@ -331,7 +331,7 @@ function RepositoryTests() {
             >
               {Array.from(new Set(tests)).map((test, id) => (
                 <Test
-                  key={`${test.id}${id}`}
+                  key={`${(test as any).id}${id}`}
                   test={test}
                   setTest={setTest}
                 />

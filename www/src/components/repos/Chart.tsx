@@ -32,7 +32,7 @@ import TopBar from '../layout/TopBar'
 import { GoBack } from '../utils/GoBack'
 import { LinkTabWrap } from '../utils/Tabs'
 
-import { PluralConfigurationContext } from '../login/CurrentUser'
+import PluralConfigurationContext from '../../contexts/PluralConfigurationContext'
 
 import {
   PackageGrade,

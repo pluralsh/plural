@@ -74,7 +74,7 @@ function Chart({ chart, first, last }: any) {
 
 function RepositoryPackagesHelm() {
   const { id } = useContext(RepositoryContext)
-  const [q] = useOutletContext()
+  const [q] = useOutletContext() as any
   const [charts, loadingCharts, hasMoreCharts, fetchMoreCharts] = usePaginatedQuery(CHARTS_QUERY,
     {
       variables: {

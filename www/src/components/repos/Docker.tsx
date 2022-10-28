@@ -41,7 +41,7 @@ import { LinkTabWrap } from '../utils/Tabs'
 
 import TopBar from '../layout/TopBar'
 
-import { PluralConfigurationContext } from '../login/CurrentUser'
+import PluralConfigurationContext from '../../contexts/PluralConfigurationContext'
 
 import { LoopingLogo } from '../utils/AnimatedLogo'
 

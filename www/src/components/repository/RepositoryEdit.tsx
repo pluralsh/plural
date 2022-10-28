@@ -154,7 +154,7 @@ function RepositoryEdit() {
     previewUrl: string | null;
   }>({ file: null, previewUrl: icon || null })
 
-  const tagSearchRef = useRef<HTMLDivElement>(null)<any>(null)
+  const tagSearchRef = useRef<any>(null)
 
   const [mutation, { loading, error }] = useMutation(UPDATE_REPOSITORY_MUTATION, {
     variables: {

@@ -97,7 +97,7 @@ function Terraform({ terraform, first, last }: any) {
 
 function RepositoryPackagesTerraform() {
   const { id } = useContext(RepositoryContext)
-  const [q] = useOutletContext()
+  const [q] = useOutletContext() as any
   const [terraforms, loadingTerraforms, hasMoreTerraforms, fetchMoreTerraforms] = usePaginatedQuery(TERRAFORM_QUERY,
     {
       variables: {

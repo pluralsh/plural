@@ -46,7 +46,7 @@ function Sidenav({ stack }: StackContext) {
   const currentTab = DIRECTORY
     .sort((a, b) => b.path.length - a.path.length)
     .find(tab => pathname?.startsWith(`${pathPrefix}${tab.path}`))
-  const tabStateRef = useRef<any>(null)<any>()
+  const tabStateRef = useRef<any>(null)
 
   return (
     <Flex

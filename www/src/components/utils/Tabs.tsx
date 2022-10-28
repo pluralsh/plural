@@ -9,8 +9,9 @@ export const LinkTabWrap = styled(forwardRef(({
   className, active, vertical, children, textValue: _textValue, subTab: _, ...props
 }, ref) => (
   <UnstyledLink
-    ref={ref}
+    ref={ref as any}
     className={className}
+    // @ts-expect-error
     $extendStyle={{ display: 'block' }}
     {...props}
   >
@@ -40,9 +41,9 @@ export function Tab({ name, setTab, selected }: any) {
       className={`installation-tab${active ? ' selected' : ' unselected'}`}
       pad="small"
       focusIndicator={false}
-      border={active ? { ...BORDER_ATTRS, color: 'brand' } : null}
+      border={active ? { ...BORDER_ATTRS, color: 'brand' } as any : undefined}
       hoverIndicator="light-2"
-      onClick={active ? null : () => setTab(name)}
+      onClick={active ? undefined : () => setTab(name)}
     >
       <Text
         size="small"

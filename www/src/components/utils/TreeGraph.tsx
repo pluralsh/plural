@@ -73,12 +73,14 @@ export default function TreeGraph({
     const { width, height } = boxRef.current.getBoundingClientRect()
 
     renderTree(
-      id, tree, height, width, legend
+      id, tree, height, width
     )
     const { current } = boxRef
 
-    return () => current.removeChild(current.children[0])
-  }, [id, boxRef, tree, legend])
+    return () => {
+      current.removeChild(current.children[0])
+    }
+  }, [id, boxRef, tree])
 
   return (
     <Box
@@ -87,6 +89,7 @@ export default function TreeGraph({
       id={id}
       width={width}
       height={height}
+      // @ts-expect-error
       position="relative"
     >
       {legend && (
@@ -120,8 +123,8 @@ export default function TreeGraph({
                     y1="16"
                     x2="28"
                     y2="16"
-                    stroke={v.color}
-                    strokeDasharray={v.dasharray}
+                    stroke={(v as any).color}
+                    strokeDasharray={(v as any).dasharray}
                   />
                 </svg>
               </Div>

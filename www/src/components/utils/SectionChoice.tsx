@@ -7,7 +7,7 @@ export function SectionChoice({
 }: any) {
   return (
     <Box
-      background={selected ? 'sidebarHover' : null}
+      background={selected ? 'sidebarHover' : undefined}
       focusIndicator={false}
       hoverIndicator="sidebarHover"
       direction="row"

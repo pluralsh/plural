@@ -102,7 +102,7 @@ export function useColorMap(theme, colors) {
 }
 
 export function Graph({ data, yFormat, tick }: any) {
-  const [selected, setSelected] = useState(null)
+  const [selected, setSelected] = useState<any>(null)
   const graph = useMemo(() => {
     if (data.find(({ id }) => id === selected)) {
       return data.filter(({ id }) => id === selected)
@@ -143,15 +143,15 @@ export function Graph({ data, yFormat, tick }: any) {
         tickRotation: 0,
         legendOffset: -50,
         legendPosition: 'start',
-      }}
+      } as any}
       axisBottom={{
         format: '%H:%M',
         tickValues: tick || 'every 5 minutes',
         orient: 'bottom',
         legendPosition: 'middle',
-        legend: hasData ? `${dateFormat(data[0].data[0].x)} to ${dateFormat(last(data[0].data).x)}` : null,
+        legend: hasData ? `${dateFormat(data[0].data[0].x)} to ${dateFormat((last(data[0].data) as any).x)}` : null,
         legendOffset: 46,
-      }}
+      } as any}
       pointLabel="y"
       pointLabelYOffset={-15}
       legends={[

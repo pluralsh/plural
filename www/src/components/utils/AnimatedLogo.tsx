@@ -8,7 +8,7 @@ const TOP_RIGHT = `${process.env.PUBLIC_URL}/plural-logomark-mechanical-for-anim
 const DOT = `${process.env.PUBLIC_URL}/plural-logomark-mechanical-for-animation-{color}_dot_100px.svg`
 
 function scaling(scale) {
-  if (!scale) return null
+  if (!scale) return undefined
 
   return { transform: `scale(${scale})` }
 }
@@ -26,7 +26,7 @@ export function LoopingLogo({
   return (
     <Box
       fill={!nofill}
-      background={darkbg ? 'background' : null}
+      background={darkbg ? 'background' : undefined}
       height={height}
       align="center"
       justify="center"

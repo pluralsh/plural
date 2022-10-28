@@ -29,7 +29,7 @@ export function Icon({
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}
         onClick={() => (onClick ? onClick() : navigate(path))}
-        background={selected ? 'sidebarHover' : null}
+        background={selected ? 'sidebarHover' : undefined}
         direction="row"
       >
         {icon}

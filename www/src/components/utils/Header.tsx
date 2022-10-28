@@ -32,7 +32,7 @@ export function HeaderItem({
     <Box width={width}>
       <Text
         size="small"
-        weight={nobold ? null : 500}
+        weight={nobold ? undefined : 500}
         truncate={truncate}
       >
         {text}

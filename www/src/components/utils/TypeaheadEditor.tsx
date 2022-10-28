@@ -25,9 +25,9 @@ export default function TypeaheadEditor({
   editor, value, setValue, style, onOpen, searchQuery, handlers,
 }: any) {
   const ref = useRef<HTMLDivElement>(null)
-  const [target, setTarget] = useState(null)
+  const [target, setTarget] = useState<any>(null)
   const [index, setIndex] = useState(0)
-  const [suggestions, setSuggestions] = useState([])
+  const [suggestions, setSuggestions] = useState<any[]>([])
   const renderElement = useCallback(props => <Element {...props} />, [])
 
   const onKeyDown = useCallback(event => {
@@ -70,7 +70,7 @@ export default function TypeaheadEditor({
 
   useEffect(() => {
     if (target && suggestions.length > 0) {
-      const el = ref.current
+      const el = ref.current as HTMLElement
       const domRange = ReactEditor.toDOMRange(editor, target)
       const rect = domRange.getBoundingClientRect()
 

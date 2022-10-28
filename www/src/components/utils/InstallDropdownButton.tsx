@@ -90,7 +90,7 @@ function extendedTheme({ minMenuWidth = 400 }: any) {
   }
 }
 
-function RecipeMenuItem({ recipe }: { recipe: Recipe }: any) {
+function RecipeMenuItem({ recipe }: { recipe: Recipe }) {
   return (
     <MenuItem
       value={recipe}

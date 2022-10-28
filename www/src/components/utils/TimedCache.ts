@@ -1,4 +1,10 @@
 class TimedCache {
+  cache: any
+
+  timeout: any
+
+  subscription: any
+
   constructor(timeout, subscription) {
     this.cache = {}
     this.timeout = timeout
@@ -19,7 +25,7 @@ class TimedCache {
 
   clear() {
     for (const timeout of Object.values(this.cache)) {
-      clearTimeout(timeout)
+      clearTimeout(timeout as any)
     }
   }
 }

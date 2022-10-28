@@ -10,7 +10,7 @@ import {
 } from 'react'
 import { Box, Text } from 'grommet'
 
-const StepContext = createContext({})
+const StepContext = createContext<any>({})
 const ICON_SIZE = '25px'
 
 function BetweenStep({ step, width }: any) {
@@ -25,7 +25,7 @@ function BetweenStep({ step, width }: any) {
 }
 
 function StepProvider({ step, children }: any) {
-  const steps = useRef<HTMLDivElement>(null)({})
+  const steps = useRef<any>({})
   const [current, setCurrent] = useState(0)
   const register = useCallback((name, ind) => {
     steps.current = { ...steps.current, [name]: ind }
@@ -76,13 +76,13 @@ export function Step({ step, name, onStep }: any) {
       >
         <Text
           size="small"
-          color={current >= step ? null : 'border'}
+          color={current >= step ? undefined : 'border'}
         >{step + 1}
         </Text>
       </Box>
       <Text
         size="small"
-        color={current >= step ? null : 'border'}
+        color={current >= step ? undefined : 'border'}
       >{name}
       </Text>
     </Box>

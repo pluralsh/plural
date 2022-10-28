@@ -174,7 +174,7 @@ const buildItemData = memoize((setSize, mapper, isItemLoaded, items, parentRef, 
 
 export default function SmoothScroller({
   hasNextPage, placeholder, loading, items, loadNextPage, mapper, listRef, setListRef, handleScroll, refreshKey, setLoader, ...props }: any) {
-  const sizeMap = useRef<HTMLDivElement>(null)({})
+  const sizeMap = useRef<any>({})
   const setSize = useCallback((index, size) => {
     sizeMap.current = { ...sizeMap.current, [index]: size }
     listRef && listRef.resetAfterIndex(index, true)
@@ -239,7 +239,7 @@ export function StandardScroller({
            setLoader,
             ...props
            }: any) {
-  const sizeMap = useRef<HTMLDivElement>(null)({})
+  const sizeMap = useRef<any>({})
   const setSize = useCallback((index, size) => {
     sizeMap.current = { ...sizeMap.current, [index]: size }
     listRef && listRef.resetAfterIndex(index, true)

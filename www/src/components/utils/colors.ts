@@ -4,6 +4,7 @@ import {
   red,
   yellow,
 } from 'pluralsh-design-system/dist/theme/colors'
+// @ts-expect-error
 import { randomColor } from 'randomcolor'
 
 const COLORS = [

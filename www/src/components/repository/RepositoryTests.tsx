@@ -80,9 +80,19 @@ function TestLogs({ step: { id, hasLogs }, testId }: any) {
   })
 
   useEffect(() => {
-    if (!xterm || !xterm.current || !xterm.current.terminal) return
-    xterm.current.terminal.setOption('disableStdin', true)
-    fitAddon.fit()
+    if (!xterm?.current?.terminal) return
+
+    const { current: { terminal } } = xterm
+
+    terminal.setOption('disableStdin', true)
+    terminal.loadAddon(fitAddon)
+
+    try {
+      fitAddon.fit()
+    }
+    catch (error) {
+      console.error(error)
+    }
 
     if (data && data.testLogs && data.testLogs.step.id === id) {
       for (const l of data.testLogs.logs) {
@@ -115,7 +125,6 @@ function TestLogs({ step: { id, hasLogs }, testId }: any) {
         borderColor="border-fill-two"
       >
         <XTerm
-          className="test"
           ref={xterm}
           addons={[fitAddon]}
           options={{ theme: XTermTheme }}

@@ -48,7 +48,7 @@ function Tooltip({ feature }: any) {
 }
 
 export function Chloropleth({ data }: any) {
-  const maximum = max(data.map(({ value }) => value))
+  const maximum = max(data.map(({ value }) => value)) as number
   const theme = useContext(ThemeContext)
   const colors = useColorMap(theme, COLOR_MAP)
 

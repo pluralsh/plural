@@ -9,7 +9,7 @@ function Content({ children, slide }: any) {
   return (
     <Box
       flex={false}
-      animation={slideAnimate(slide)}
+      animation={slideAnimate(slide) as any}
     >
       {children}
     </Box>

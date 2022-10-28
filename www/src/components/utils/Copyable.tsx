@@ -25,7 +25,11 @@ export function Copyable({
           round="xsmall"
           gap="xsmall"
         >
-          <Text size="small">{truncate(displayText || text, 40)}</Text>
+          <Text size="small">
+            {truncate(displayText || text, {
+              length: 40,
+            })}
+          </Text>
           {hover && (
             <Box animation={{ type: 'fadeIn', duration: 200 }}>
               <CopyIcon

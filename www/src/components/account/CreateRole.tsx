@@ -60,7 +60,7 @@ export function CreateRole({ q }: any) {
         actions={(
           <Actions
             cancel={() => resetAndClose()}
-            submit={mutation}
+            submit={() => mutation()}
             loading={loading}
           />
         )}

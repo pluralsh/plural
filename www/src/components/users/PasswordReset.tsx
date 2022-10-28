@@ -27,7 +27,7 @@ export function ResetPassword() {
     variables: { id, attributes },
     onCompleted: () => {
       wipeToken()
-      window.location = '/login'
+      window.location = '/login' as any as Location
     },
   })
 
@@ -59,8 +59,8 @@ export function ResetPassword() {
             error={error}
           />
         )}
-        <Keyboard onEnter={mutation}>
-          <Form onSubmit={mutation}>
+        <Keyboard onEnter={() => mutation()}>
+          <Form onSubmit={() => mutation()}>
             <Box
               margin={{ bottom: 'small' }}
               gap="small"
@@ -153,8 +153,8 @@ export function PasswordReset() {
           />
         </Div>
       )}
-      <Keyboard onEnter={mutation}>
-        <Form onSubmit={mutation}>
+      <Keyboard onEnter={() => mutation()}>
+        <Form onSubmit={() => mutation()}>
 
           <LabelledInput
             width="100%"

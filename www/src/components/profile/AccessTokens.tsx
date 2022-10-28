@@ -225,7 +225,7 @@ function AccessToken({ token, first, last }: any) {
         title="Delete Access Token"
         text="Are you sure you want to delete this api access token?"
         close={() => setConfirm(false)}
-        submit={mutation}
+        submit={() => mutation()}
         loading={loading}
         destructive
         error={error}

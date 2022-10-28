@@ -117,7 +117,7 @@ export function Group({ group, q }: any) {
           open={confirm}
           text="Deleting groups cannot be undone and permissions attached to this group will be removed."
           close={() => setConfirm(false)}
-          submit={mutation}
+          submit={() => mutation()}
           loading={loading}
           destructive
           error={error}

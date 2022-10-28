@@ -43,7 +43,7 @@ export default function ConfigureMyCloudButton() {
         title="Configure my cloud"
         text="Restart the onboarding process on your own cloud. This will delete your GCP cloud demo."
         close={() => setOpen(false)}
-        submit={mutation}
+        submit={() => mutation()}
         loading={loading}
         error={error}
         destructive

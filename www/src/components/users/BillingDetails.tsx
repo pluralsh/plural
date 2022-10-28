@@ -16,12 +16,12 @@ import { ModalHeader } from '../ModalHeader'
 import { TagContainer } from '../repos/Tags'
 import { Alert, AlertStatus, GqlError } from '../utils/Alert'
 import { SectionPortal } from '../Explore'
-import { CurrentUserContext } from '../login/CurrentUser'
+import CurrentUserContext from '../../contexts/CurrentUserContext'
 
 import { CARDS, DELETE_CARD, REGISTER_CARD } from './queries'
 
 function _CardForm({ stripe, onCompleted }: any) {
-  const [stripeError, setStripeError] = useState(null)
+  const [stripeError, setStripeError] = useState<any>(null)
   const [mutation, { loading, error }] = useMutation(REGISTER_CARD, {
     refetchQueries: [{ query: CARDS }],
     onCompleted,
@@ -94,6 +94,7 @@ export function CardIcon({ brand }: any) {
   switch (brand.toLowerCase()) {
   case 'visa':
     return (
+      // @ts-expect-error
       <Visa
         color="plain"
         size="medium"
@@ -101,6 +102,7 @@ export function CardIcon({ brand }: any) {
     )
   case 'mastercard':
     return (
+      // @ts-expect-error
       <Mastercard
         color="plain"
         size="medium"
@@ -108,6 +110,7 @@ export function CardIcon({ brand }: any) {
     )
   case 'amex':
     return (
+      // @ts-expect-error
       <Amex
         color="plain"
         size="medium"

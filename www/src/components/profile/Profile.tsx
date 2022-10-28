@@ -12,7 +12,7 @@ import {
 import { useContext, useEffect, useState } from 'react'
 import { useFilePicker } from 'react-sage'
 
-import { CurrentUserContext } from '../login/CurrentUser'
+import CurrentUserContext from '../../contexts/CurrentUserContext'
 import { UPDATE_USER } from '../users/queries'
 import { DEFAULT_CHART_ICON, DarkProviderIcons, ProviderIcons } from '../repos/constants'
 

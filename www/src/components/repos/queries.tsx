@@ -22,7 +22,7 @@ import {
   DockerRepoFragment,
   DockerRepository,
   VulnerabilityFragment,
-} from '../../models/docker.ts'
+} from '../../models/docker'
 import { RecipeFragment, RecipeSectionFragment } from '../../models/recipe'
 import { PlanFragment, SubscriptionFragment } from '../../models/payments'
 import { PageInfo } from '../../models/misc'

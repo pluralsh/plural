@@ -9,7 +9,7 @@ import {
 } from '../../models/repo'
 import { ChartFragment } from '../../models/chart'
 import { TerraformFragment } from '../../models/terraform'
-import { DockerRepoFragment } from '../../models/docker.ts'
+import { DockerRepoFragment } from '../../models/docker'
 import { RecipeFragment } from '../../models/recipe'
 import { PageInfo } from '../../models/misc'
 import { RolloutFragment } from '../../models/upgrades'

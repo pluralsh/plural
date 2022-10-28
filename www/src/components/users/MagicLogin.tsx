@@ -50,7 +50,7 @@ import { WelcomeHeader } from '../utils/WelcomeHeader'
 import { fetchToken, setToken } from '../../helpers/authentication'
 import { Alert, AlertStatus, GqlError } from '../utils/Alert'
 import { disableState } from '../Login'
-import { PLURAL_FULL_LOGO_WHITE, PLURAL_MARK_WHITE } from '../constants.ts'
+import { PLURAL_FULL_LOGO_WHITE, PLURAL_MARK_WHITE } from '../constants'
 import { ACCEPT_LOGIN } from '../oidc/queries'
 import { host } from '../../helpers/hostname'
 import { useHistory } from '../../router'
@@ -334,7 +334,7 @@ function OAuthOptions({ oauthUrls }: any) {
   const { ref, width } = useResizeDetector({
     handleHeight: false,
   })
-  const singleColumn = width < RIGHT_CONTENT_MAX_WIDTH
+  const singleColumn = (width as number) < RIGHT_CONTENT_MAX_WIDTH
 
   return (
     <Div
@@ -579,13 +579,13 @@ export function Signup() {
   }, [history])
   useScript({ src: 'https://js.hs-scripts.com/22363579.js' })
 
-  const { disabled, reason } = disableState(password, confirm, email)
+  const { disabled, reason } = disableState(password, confirm)
 
   return (
     <LoginPortal>
       <WelcomeHeader marginBottom="xxlarge" />
-      <Keyboard onEnter={mutation}>
-        <Form onSubmit={mutation}>
+      <Keyboard onEnter={() => mutation()}>
+        <Form onSubmit={() => mutation()}>
           {error && (
             <Div marginBottom="medium">
               <GqlError
@@ -676,7 +676,7 @@ export function Signup() {
         <A
           inline
           onClick={() => {
-            window?._hsp?.push(['showBanner'])
+            (window as any)?._hsp?.push(['showBanner'])
           }}
         >
           Cookie settings

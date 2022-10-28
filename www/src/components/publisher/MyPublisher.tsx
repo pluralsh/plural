@@ -15,7 +15,7 @@ import { SectionChoice } from '../utils/SectionChoice'
 
 import { STRIPE_BLUE } from '../payments/constants'
 import BreadcrumbsContext from '../../contexts/BreadcrumbsContext'
-import { SIDEBAR_WIDTH } from '../constants.ts'
+import { SIDEBAR_WIDTH } from '../constants'
 
 import ResponsiveInput from '../ResponsiveInput'
 import { ME_Q } from '../users/queries'

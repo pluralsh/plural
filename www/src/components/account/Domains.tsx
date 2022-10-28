@@ -104,7 +104,7 @@ function DomainOptions({ domain, setDomain }: any) {
         open={confirm}
         text="Make sure the domain is empty before deleting"
         close={() => setConfirm(false)}
-        submit={mutation}
+        submit={() => mutation()}
         loading={loading}
         destructive
         error={error}
@@ -142,7 +142,7 @@ function AccessPolicy({ domain: { id, accessPolicy }, edit, setEdit }: any) {
       actions={(
         <Actions
           cancel={() => setEdit(false)}
-          submit={mutation}
+          submit={() => mutation()}
           loading={loading}
           action="Update"
         />

@@ -14,7 +14,7 @@ import { METHOD_ICONS } from '../users/utils'
 
 import { host } from '../../helpers/hostname'
 
-import { CurrentUserContext } from '../login/CurrentUser'
+import CurrentUserContext from '../../contexts/CurrentUserContext'
 import { OAUTH_URLS, UPDATE_USER } from '../users/queries'
 
 import { LoginMethod as Method } from './types'

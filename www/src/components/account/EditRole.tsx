@@ -49,7 +49,7 @@ export function EditRole({ role }: any) {
         actions={(
           <Actions
             cancel={() => setOpen(false)}
-            submit={mutation}
+            submit={() => mutation()}
             loading={loading}
             action="Update"
           />

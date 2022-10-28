@@ -21,7 +21,7 @@ import { providerToURL } from '../repos/misc'
 
 // TODO: This should not be needed once Clusters.js file gets removed
 // @ts-ignore
-import { Queue } from './Clusters.tsx'
+import { Queue } from './Clusters'
 
 export function ClustersSidenav({
   onQueueChange,

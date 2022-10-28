@@ -35,7 +35,7 @@ import { appendConnection, updateCache } from '../../utils/graphql'
 
 import { isEmpty, plainDeserialize, plainSerialize } from '../../utils/slate'
 import { useEditor } from '../utils/hooks'
-import { CurrentUserContext } from '../login/CurrentUser'
+import CurrentUserContext from '../../contexts/CurrentUserContext'
 
 import { PresenceContext } from './Presence'
 import { EmojiPicker } from './Emoji'

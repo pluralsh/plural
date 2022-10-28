@@ -632,7 +632,7 @@ export default function CreatePlan({ repository, setOpen }: any) {
             setDisplay={setDisplay}
             state={state}
             setState={setState}
-            mutation={mutation}
+            mutation={() => mutation()}
             loading={loading}
           />
         </Box>

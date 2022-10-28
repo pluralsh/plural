@@ -13,7 +13,7 @@ import { useParams } from 'react-router-dom'
 import { Icon } from '../utils/IconOld'
 
 import { useIsCurrentlyOnboarding } from '../shell/onboarding/useOnboarded'
-import { CurrentUserContext } from '../login/CurrentUser'
+import CurrentUserContext from '../../contexts/CurrentUserContext'
 import { Alert, AlertStatus, GqlError } from '../utils/Alert'
 import { LoopingLogo } from '../utils/AnimatedLogo'
 
@@ -27,7 +27,7 @@ export function EmailConfirmed() {
     variables: { id, attributes: {} },
     onCompleted: () => {
       setTimeout(() => {
-        window.location = '/'
+        window.location = '/' as any as Location
       }, 2000)
     },
   })

@@ -86,7 +86,7 @@ function Role({ role, q }: any) {
           open={confirm}
           text="Deleting roles cannot be undone."
           close={() => setConfirm(false)}
-          submit={mutation}
+          submit={() => mutation()}
           loading={loading}
           destructive
           error={error}

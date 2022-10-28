@@ -31,7 +31,7 @@ import { plainDeserialize, plainSerialize } from '../../utils/slate'
 import { useEditor } from '../utils/hooks'
 
 import { TagInput } from '../repos/Tags'
-import { CurrentUserContext } from '../login/CurrentUser'
+import CurrentUserContext from '../../contexts/CurrentUserContext'
 import BreadcrumbsContext from '../../contexts/BreadcrumbsContext'
 import Avatar from '../users/Avatar'
 
@@ -443,7 +443,7 @@ function IncidentInner({
                   editing={editing}
                   setEditing={setEditing}
                   updating={updating}
-                  mutation={mutation}
+                  mutation={() => mutation()}
                 />
               </Box>
               <Box
@@ -468,7 +468,7 @@ function IncidentInner({
                       <Messages
                         updating={updating}
                         editing={editing}
-                        mutation={mutation}
+                        mutation={() => mutation()}
                         incident={incident}
                         fetchMore={fetchMore}
                         subscribeToMore={subscribeToMore}

@@ -14,7 +14,7 @@ import {
 import { useMutation } from '@apollo/client'
 import { useParams } from 'react-router-dom'
 
-import { CurrentUserContext } from '../login/CurrentUser'
+import CurrentUserContext from '../../contexts/CurrentUserContext'
 
 import { updateCache } from '../../utils/graphql'
 

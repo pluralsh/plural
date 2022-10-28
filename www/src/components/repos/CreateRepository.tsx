@@ -238,7 +238,7 @@ export default function CreateRepository({ publisher }: any) {
       setDarkImage={setDarkImage}
       state={state}
       setState={setState}
-      mutation={mutation}
+      mutation={() => mutation()}
       loading={loading}
     />
   )

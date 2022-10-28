@@ -76,7 +76,7 @@ function PublicKey({ pubkey: key, first, last }: any) {
         title="Delete Public Key"
         text="Are you sure you want to delete this public key?"
         close={() => setConfirm(false)}
-        submit={mutation}
+        submit={() => mutation()}
         loading={loading}
         destructive
         error={error}

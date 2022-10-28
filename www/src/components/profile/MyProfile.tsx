@@ -12,7 +12,7 @@ import { useContext, useRef } from 'react'
 import { LinkTabWrap } from '../utils/Tabs'
 
 import { ResponsiveLayoutContentContainer, ResponsiveLayoutSidenavContainer, ResponsiveLayoutSpacer } from '../layout/ResponsiveLayout'
-import { CurrentUserContext } from '../login/CurrentUser'
+import CurrentUserContext from '../../contexts/CurrentUserContext'
 
 const DIRECTORY = [
   { path: '/profile/me', label: 'Profile' },

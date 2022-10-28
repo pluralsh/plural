@@ -43,7 +43,7 @@ function DeleteInvite({ invite }: any) {
         title="Delete Invite?"
         text="You can always recreate it if you want"
         destructive
-        submit={mutation}
+        submit={() => mutation()}
         loading={loading}
         error={error}
       />

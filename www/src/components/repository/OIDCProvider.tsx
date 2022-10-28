@@ -274,7 +274,7 @@ export function CreateProvider({
         setAttributes={setAttributes}
         bindings={bindings}
         setBindings={setBindings}
-        onSave={mutation}
+        onSave={() => mutation()}
         loading={loading}
       />
     </Box>
@@ -320,7 +320,7 @@ export function UpdateProvider({
         setAttributes={setAttributes}
         bindings={bindings}
         setBindings={setBindings}
-        onSave={mutation}
+        onSave={() => mutation()}
         loading={loading}
       />
     </Box>

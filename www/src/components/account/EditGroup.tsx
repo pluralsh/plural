@@ -59,7 +59,7 @@ export function EditGroup({ group, edit, setEdit }: any) {
       actions={(
         <Actions
           cancel={() => setEdit(false)}
-          submit={mutation}
+          submit={() => mutation()}
           loading={loading}
           action="Update"
         />

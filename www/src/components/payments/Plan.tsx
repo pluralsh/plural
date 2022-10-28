@@ -20,7 +20,7 @@ import {
 import { CreditCardIcon } from 'pluralsh-design-system'
 import { normalizeColor } from 'grommet/utils'
 
-import { CurrentUserContext } from '../login/CurrentUser'
+import CurrentUserContext from '../../contexts/CurrentUserContext'
 import { ignoreEvent } from '../../utils/ignore-event'
 import { ModalHeader } from '../ModalHeader'
 

@@ -8,7 +8,7 @@ import { Emoji } from 'emoji-mart'
 
 import { groupBy } from '../../utils/array'
 
-import { CurrentUserContext } from '../login/CurrentUser'
+import CurrentUserContext from '../../contexts/CurrentUserContext'
 
 import { CREATE_REACTION, DELETE_REACTION } from './queries'
 import { Reaction as MessageReaction } from './MessageControls'

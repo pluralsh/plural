@@ -48,7 +48,7 @@ function EabCredential({ credential, last }: any) {
         title="Delete these EAB Credentials"
         text="Are you sure you want to remove this EAB credential set?  This action is permanent."
         close={() => setConfirm(false)}
-        submit={mutation}
+        submit={() => mutation()}
         loading={loading}
         destructive
         error={error}

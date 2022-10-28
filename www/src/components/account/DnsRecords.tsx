@@ -52,7 +52,7 @@ function DeleteRecord({ record, domain }: any) {
         error={error}
         title={`Delete ${record.name}?`}
         text={`This will delete the ${record.type} record for ${record.name} permanently`}
-        submit={mutation}
+        submit={() => mutation()}
         close={() => setConfirm(false)}
         label="Delete"
         loading={loading}

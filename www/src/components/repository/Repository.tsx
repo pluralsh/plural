@@ -6,7 +6,7 @@ import { TabPanel } from 'pluralsh-design-system'
 
 import { GoBack } from '../utils/GoBack'
 
-import RepositoryContext from '../../contexts/RepositoryContext.ts'
+import RepositoryContext from '../../contexts/RepositoryContext'
 
 import { LoopingLogo } from '../utils/AnimatedLogo'
 
@@ -15,11 +15,11 @@ import {
   ResponsiveLayoutSidecarContainer,
   ResponsiveLayoutSidenavContainer,
   ResponsiveLayoutSpacer,
-} from '../layout/ResponsiveLayout.tsx'
+} from '../layout/ResponsiveLayout'
 import TopBar from '../layout/TopBar'
 
-import RepositorySideNav from './RepositorySideNav.tsx'
-import { RepositorySideCar } from './RepositorySideCar.tsx'
+import RepositorySideNav from './RepositorySideNav'
+import { RepositorySideCar } from './RepositorySideCar'
 
 import { REPOSITORY_QUERY } from './queries'
 

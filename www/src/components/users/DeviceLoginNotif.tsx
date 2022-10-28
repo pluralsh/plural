@@ -6,7 +6,7 @@ import { ModalHeader } from '../ModalHeader'
 
 const LOGIN_KEY = 'dli-key'
 
-export const finishedDeviceLogin = () => localStorage.setItem(LOGIN_KEY, true)
+export const finishedDeviceLogin = () => localStorage.setItem(LOGIN_KEY, 'true')
 
 export const deviceLoginCompleted = () => localStorage.getItem(LOGIN_KEY)
 

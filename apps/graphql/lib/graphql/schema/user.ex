@@ -296,7 +296,7 @@ defmodule GraphQl.Schema.User do
 
     field :reset_token, :reset_token do
       arg :id, non_null(:id)
-      resolve &User.resolve_reset_token/2
+      safe_resolve &User.resolve_reset_token/2
     end
 
     connection field :tokens, node_type: :persisted_token do
@@ -383,6 +383,7 @@ defmodule GraphQl.Schema.User do
 
     field :device_login, :device_login do
       middleware RateLimit, limit: 5, time: 60_000
+
       resolve &User.device_login/2
     end
 
@@ -429,6 +430,7 @@ defmodule GraphQl.Schema.User do
     field :create_token, :persisted_token do
       middleware Authenticated
       middleware RateLimit, limit: 5, time: 60_000
+
       safe_resolve &User.create_token/2
     end
 

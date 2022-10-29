@@ -31,6 +31,9 @@ defmodule Worker.Conduit.Subscribers.Docker do
       {output, 0} ->
         case Jason.decode(output) do
           {:ok, [%{"Vulnerabilities" => vulns} | _]} -> insert_vulns(vulns, img)
+          {:ok, %{"Results" => [_ | _] = res, "SchemaVersion" => 2}} ->
+            Enum.flat_map(res, &Map.get(&1, "Vulnerabilities", []))
+            |> insert_vulns(img)
           res ->
             Logger.info "irregular trivy output #{inspect(res)}"
             insert_vulns([], img)

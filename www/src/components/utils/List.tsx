@@ -21,7 +21,7 @@ const LiBare = styled.li(({ $extendStyle }: { $extendStyle?: Record<string, any>
   ...$extendStyle,
 }))
 
-const hueToBorderColor: Record<Hue, string> = {
+const hueToBorderColor: Record<Hue | 'none', string> = {
   none: 'border',
   default: 'border',
   lighter: 'border-fill-two',

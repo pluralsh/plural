@@ -8,7 +8,7 @@ export const DeleteIconButton = forwardRef<HTMLDivElement, Partial<IconFrameProp
     ref={ref}
     size={size || 'medium'}
     clickable={clickable === undefined ? true : clickable}
-    icon={<TrashCanIcon color="error" />}
+    icon={<TrashCanIcon color="icon-danger" />}
     textValue={textValue || 'Delete'}
     {...props}
   />

@@ -14,8 +14,11 @@ defimpl Core.PubSub.Fanout, for: [Core.PubSub.VersionCreated, Core.PubSub.Versio
   def fanout(%{item: version} = event) do
     Logger.info "Creating rollout for event #{@for}"
     version = Core.Repo.preload(version, [:terraform, :tags, [chart: :repository]])
-    Core.broker().publish(%Conduit.Message{body: version}, :scan)
-    Core.Services.Rollouts.create_rollout(repo_id(version), %{event | item: version})
+    # ensure rollout is created here
+    with {:ok, _} = res <- Core.Services.Rollouts.create_rollout(repo_id(version), %{event | item: version}) do
+      Core.broker().publish(%Conduit.Message{body: version}, :scan)
+      res
+    end
   end
 
   defp repo_id(%{chart: %{repository_id: repo_id}}), do: repo_id

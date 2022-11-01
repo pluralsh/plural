@@ -89,7 +89,7 @@ function ExistingInvite({ invite: { account }, id }: any) {
             Join {account.name}
           </Button>
         </Box>
-      </Box>mo
+      </Box>
     </LoginPortal>
   )
 }

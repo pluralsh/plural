@@ -9,7 +9,7 @@ import { Box, Text } from 'grommet'
 import { useNavigate } from 'react-router-dom'
 import { Portal } from 'react-portal'
 
-export const SubmenuContext = createContext({})
+export const SubmenuContext = createContext<any>({})
 
 export function SubmenuPortal({ children, name }: any) {
   const { ref, setName } = useContext(SubmenuContext)
@@ -47,7 +47,7 @@ export function SubmenuItem({
 
   return (
     <Box
-      background={selected ? 'sidebarHover' : null}
+      background={selected ? 'sidebarHover' : undefined}
       focusIndicator={false}
       hoverIndicator="sidebarHover"
       direction="row"

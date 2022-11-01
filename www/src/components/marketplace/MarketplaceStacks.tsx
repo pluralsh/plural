@@ -16,7 +16,7 @@ export default function MarketplaceStacks() {
   const navigate = useNavigate()
   const { data } = useQuery(STACKS_QUERY, { variables: { featured: true } })
 
-  if (isEmpty(data?.stacks?.edges)) return
+  if (isEmpty(data?.stacks?.edges)) return null
 
   const { stacks: { edges } } = data
   const apps = ({ collections: c }) => (c?.length > 0

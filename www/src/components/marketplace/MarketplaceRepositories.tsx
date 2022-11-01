@@ -63,6 +63,7 @@ const chipProps = {
 
 const sidebarWidth = 256 - 32
 
+// @ts-expect-error
 const StyledTabPanel = styled(TabPanel)(() => ({
   display: 'flex',
   flexDirection: 'column',

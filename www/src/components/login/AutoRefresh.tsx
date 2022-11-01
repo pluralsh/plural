@@ -8,7 +8,7 @@ import * as serviceWorker from '../../serviceWorkerRegistration'
 
 import { Icon } from '../utils/Icon'
 
-import { PluralConfigurationContext } from './CurrentUser'
+import PluralConfigurationContext from '../../contexts/PluralConfigurationContext'
 
 const COMMIT_KEY = 'git-commit'
 

@@ -19,6 +19,7 @@ function Input({
       >{header}
       </Text>
       <TextInput
+        // @ts-expect-error
         label={label}
         placeholder={placeholder}
         value={value}
@@ -32,6 +33,7 @@ export default function CreatePublisher({ onCreate }: any) {
   const [attributes, setAttributes] = useState({ description: '', name: '' })
   const [mutation, { loading }] = useMutation(CREATE_PUBLISHER_MUTATION, {
     variables: { attributes },
+    // @ts-expect-error
     update: (cache, { data: { createPublisher } }) => updateCache(cache, {
       query: ME_Q,
       update: prev => deepUpdate(prev, 'me.publisher', () => createPublisher),

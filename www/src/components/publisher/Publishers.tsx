@@ -45,6 +45,7 @@ function RepoStub({ id, icon, name }: any) {
       />
       {hover && (
         <Drop
+          // @ts-expect-error
           target={dropRef.current}
           align={{ bottom: 'top' }}
           plain

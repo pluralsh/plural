@@ -19,7 +19,8 @@ import { SIDEBAR_WIDTH } from '../constants'
 
 import ResponsiveInput from '../ResponsiveInput'
 import { ME_Q } from '../users/queries'
-import { CurrentUserContext, PluralConfigurationContext } from '../login/CurrentUser'
+import CurrentUserContext from '../../contexts/CurrentUserContext'
+import PluralConfigurationContext from '../../contexts/PluralConfigurationContext'
 import CreateRepository from '../repos/CreateRepository'
 import Repositories from '../repos/Repositories'
 import { deepUpdate, updateCache } from '../../utils/graphql'
@@ -85,6 +86,7 @@ function AccountConnected() {
 function PublisherPayments({ publisher: { billingAccountId } }: any) {
   const { stripeConnectId } = useContext(PluralConfigurationContext)
   const [mutation] = useMutation(LINK_ACCOUNT, {
+    // @ts-expect-error
     update: (cache, { data: { linkPublisher } }) => updateCache(cache, {
       query: ME_Q,
       update: prev => deepUpdate(prev, 'me.publisher', () => linkPublisher),
@@ -156,7 +158,7 @@ function EditAvatar({ publisher }: any) {
   const [mutation] = useMutation(EDIT_PUBLISHER)
 
   useEffect(() => {
-    if (files.length > 0) {
+    if (files && files.length > 0) {
       mutation({ variables: { attributes: { avatar: files[0] } } })
     }
   }, [files, mutation])

@@ -10,7 +10,7 @@ import {
 import { useMutation } from '@apollo/client'
 
 import { BindingInput, sanitize } from '../utils/BindingInput'
-import { fetchGroups, fetchUsers } from '../accounts/Typeaheads'
+import { fetchGroups, fetchUsers } from '../account/Typeaheads'
 
 import { SectionPortal } from '../Explore'
 import { GqlError } from '../utils/Alert'
@@ -25,7 +25,7 @@ import { AuthMethod } from './types'
 import { CREATE_PROVIDER, UPDATE_PROVIDER } from './queries'
 
 function UrlTab({ url, onClick }: any) {
-  const theme = useContext(ThemeContext)
+  const theme = useContext(ThemeContext) as any
 
   return (
     <Box

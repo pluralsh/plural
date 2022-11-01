@@ -16,7 +16,7 @@ function Integration({
   icon, installUrl, integrations, service, children,
 }: any) {
   const connected = !!integrations[service]
-  const onClick = connected ? null : () => window.location = redirectUrl(installUrl, service)
+  const onClick = connected ? undefined : () => window.location = redirectUrl(installUrl, service)
 
   return (
     <Box

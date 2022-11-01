@@ -87,6 +87,7 @@ export function CreateWebhook({ cancel }: any) {
   const [attributes, setAttributes] = useState({ name: '', url: '', actions: ['incident.create'] })
   const [mutation, { loading }] = useMutation(CREATE_WEBHOOK, {
     variables: { attributes },
+    // @ts-expect-error
     update: (cache, { data: { createIntegrationWebhook } }) => updateCache(cache, {
       query: WEBHOOKS_Q,
       update: prev => appendConnection(prev, createIntegrationWebhook, 'integrationWebhooks'),

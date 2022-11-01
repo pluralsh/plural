@@ -30,7 +30,7 @@ function OauthError({ error, service }: any) {
 export function OauthCreator() {
   const navigate = useNavigate()
   const location = useLocation()
-  const { service } = useParams()
+  const { service = '' } = useParams()
   const { redirectUri, code } = useMemo(() => {
     const params = new URLSearchParams(location.search)
 

@@ -127,6 +127,7 @@ export function Integrations() {
         />
         {open && (
           <Layer
+            // @ts-expect-error
             model
             onClickOutside={() => setOpen(false)}
           >

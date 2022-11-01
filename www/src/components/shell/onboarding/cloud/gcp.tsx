@@ -1,18 +1,22 @@
 import {
-  useCallback, useContext, useEffect, useState,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
 } from 'react'
 import {
-  Flex, MenuItem, Select, Text,
+  Flex,
+  MenuItem,
+  Select,
+  Text,
 } from 'honorable'
 import { FileIcon, FormField } from 'pluralsh-design-system'
-import usePrevious from 'hooks/usePrevious'
+
 import { useTheme } from 'styled-components'
 
-import {
-  AttachmentContext,
-  AttachmentProvider,
-  Dropzone,
-} from '../../../incidents/AttachmentProvider'
+import usePrevious from '../../../../hooks/usePrevious'
+
+import { AttachmentContext, AttachmentProvider, Dropzone } from '../../../incidents/AttachmentProvider'
 import { isAlphanumeric, stringExists } from '../../validation'
 
 const ZONES = [
@@ -45,7 +49,7 @@ export const GCP_VALIDATIONS = [
   },
 ]
 
-function FileInput({ updateCreds, gcp, setProject }) {
+function FileInput({ updateCreds, gcp, setProject }: any) {
   const { attachment } = useContext(AttachmentContext) as any
   const prevAttachment = usePrevious(attachment)
   const theme = useTheme()
@@ -134,7 +138,7 @@ export function GcpForm({
   setWorkspace,
   credentials,
   setCredentials,
-}) {
+}: any) {
   const gcp = credentials.gcp || {}
   const updateCreds = useCallback((field, val) => setCredentials({
     ...credentials,

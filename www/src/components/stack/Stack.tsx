@@ -1,22 +1,32 @@
 import { useQuery } from '@apollo/client'
 import { Outlet, useLocation, useParams } from 'react-router-dom'
 import {
-  Div, Flex, P, Span,
+  Div,
+  Flex,
+  P,
+  Span,
 } from 'honorable'
 
-import { GoBack } from 'components/utils/GoBack'
-
 import {
-  ResponsiveLayoutContentContainer, ResponsiveLayoutSidecarContainer, ResponsiveLayoutSidenavContainer, ResponsiveLayoutSpacer,
-} from 'components/layout/ResponsiveLayout'
-
-import {
-  StackIcon, Tab, TabList, TabPanel, VerifiedIcon,
+  StackIcon,
+  Tab,
+  TabList,
+  TabPanel,
+  VerifiedIcon,
 } from 'pluralsh-design-system'
 
 import { useRef } from 'react'
 
-import { LinkTabWrap } from 'components/utils/Tabs'
+import { GoBack } from '../utils/GoBack'
+
+import {
+  ResponsiveLayoutContentContainer,
+  ResponsiveLayoutSidecarContainer,
+  ResponsiveLayoutSidenavContainer,
+  ResponsiveLayoutSpacer,
+} from '../layout/ResponsiveLayout'
+
+import { LinkTabWrap } from '../utils/Tabs'
 
 import { LoopingLogo } from '../utils/AnimatedLogo'
 
@@ -36,7 +46,7 @@ function Sidenav({ stack }: StackContext) {
   const currentTab = DIRECTORY
     .sort((a, b) => b.path.length - a.path.length)
     .find(tab => pathname?.startsWith(`${pathPrefix}${tab.path}`))
-  const tabStateRef = useRef<any>()
+  const tabStateRef = useRef<any>(null)
 
   return (
     <Flex
@@ -133,7 +143,7 @@ function Sidecar({ stack }: StackContext) {
 export default function Stack() {
   const { name } = useParams()
   const { data } = useQuery(STACK_QUERY, { variables: { name, provider: 'AWS' } })
-  const tabStateRef = useRef()
+  const tabStateRef = useRef<any>(null)
 
   if (!data) {
     return (

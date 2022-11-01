@@ -35,9 +35,9 @@ import filter from 'lodash/filter'
 import styled from '@emotion/styled'
 import capitalize from 'lodash/capitalize'
 
-import { Repository } from 'generated/graphql'
+import { Repository } from '../../generated/graphql'
 
-import { GqlError } from 'components/utils/Alert'
+import { GqlError } from '../utils/Alert'
 
 import RepositoryContext from '../../contexts/RepositoryContext'
 import { isValidUrl } from '../../utils/string'

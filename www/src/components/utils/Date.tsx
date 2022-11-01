@@ -3,7 +3,7 @@ import { Span } from 'honorable'
 
 import moment from 'moment'
 
-export function Date({ date }) {
+export function Date({ date }: any) {
   if (!date) return (<Span>n/a</Span>)
 
   return (

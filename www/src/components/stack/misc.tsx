@@ -1,4 +1,4 @@
-import InstallDropdownButton, { Recipe } from 'components/utils/InstallDropdownButton'
+import InstallDropdownButton, { Recipe } from '../utils/InstallDropdownButton'
 
 import { StackContext } from './types'
 

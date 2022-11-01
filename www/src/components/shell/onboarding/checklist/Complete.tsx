@@ -1,12 +1,16 @@
 import { useMutation } from '@apollo/client'
 import {
-  A, Button, Div, Flex, Span,
+  A,
+  Button,
+  Div,
+  Flex,
+  Span,
 } from 'honorable'
 import { GitHubLogoIcon, SourcererIcon } from 'pluralsh-design-system'
 
 import { UPDATE_ONBOARDING_CHECKLIST } from '../../../users/queries'
 
-export function ChecklistComplete({ refetch }) {
+export function ChecklistComplete({ refetch }: any) {
   const [updateChecklist, { loading }] = useMutation(UPDATE_ONBOARDING_CHECKLIST)
 
   return (

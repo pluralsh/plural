@@ -1,6 +1,4 @@
-import {
-  ExtendTheme, Input, InputProps,
-} from 'honorable'
+import { ExtendTheme, Input, InputProps } from 'honorable'
 import { forwardRef, useContext } from 'react'
 import { useTheme } from 'styled-components'
 

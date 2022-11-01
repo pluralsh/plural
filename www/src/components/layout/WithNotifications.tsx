@@ -1,15 +1,23 @@
 import { useMutation, useQuery } from '@apollo/client'
-import {
-  Notification as NotificationT, NotificationType, OnboardingChecklistState, User,
-} from 'generated/graphql'
+
 import { Div, Flex, P } from 'honorable'
 import moment from 'moment'
 import {
-  AppIcon, Button, Card, Markdown,
+  AppIcon,
+  Button,
+  Card,
+  Markdown,
 } from 'pluralsh-design-system'
 import { ReactElement, useCallback, useContext } from 'react'
 import { Link } from 'react-router-dom'
 import { useTheme } from 'styled-components'
+
+import {
+  Notification as NotificationT,
+  NotificationType,
+  OnboardingChecklistState,
+  User,
+} from '../../generated/graphql'
 
 import { OnboardingChecklistContext } from '../../contexts/OnboardingChecklistContext'
 import usePaginatedQuery from '../../hooks/usePaginatedQuery'
@@ -37,7 +45,7 @@ export function WithNotifications({ children }: WithNotificationsProps) {
   })
 }
 
-export function NotificationsPanel({ closePanel }) {
+export function NotificationsPanel({ closePanel }: any) {
   const [
     notifications,
     loadingNotifications,
@@ -89,7 +97,7 @@ export function NotificationsPanel({ closePanel }) {
   )
 }
 
-function OnboardingChecklistNotification({ closePanel }) {
+function OnboardingChecklistNotification({ closePanel }: any) {
   const { setDismissed } = useContext(OnboardingChecklistContext)
   const [updateChecklist, { loading }] = useMutation(UPDATE_ONBOARDING_CHECKLIST, {
     variables: {
@@ -211,7 +219,7 @@ function NotificationContent({
   return null
 }
 
-function Notification({ notification, closePanel }) {
+function Notification({ notification, closePanel }: any) {
   const { actor, incident, insertedAt } = notification
   const theme = useTheme()
 

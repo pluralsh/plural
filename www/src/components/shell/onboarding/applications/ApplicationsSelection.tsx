@@ -5,11 +5,7 @@ import {
   useMemo,
   useState,
 } from 'react'
-import {
-  Link,
-  useNavigate,
-  useSearchParams,
-} from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { useQuery } from '@apollo/client'
 import {
   Button,
@@ -31,9 +27,9 @@ import {
 import capitalize from 'lodash/capitalize'
 import Fuse from 'fuse.js'
 
-import SelectedApplicationsContext from 'contexts/SelectedApplicationsContext'
+import SelectedApplicationsContext from '../../../../contexts/SelectedApplicationsContext'
 
-import { persistConsole, persistProvider, persistStack } from 'components/shell/persistance'
+import { persistConsole, persistProvider, persistStack } from '../../persistance'
 
 import { APPLICATIONS_QUERY, STACKS_QUERY, STACK_QUERY } from '../../queries'
 import { MAX_SELECTED_APPLICATIONS } from '../../constants'

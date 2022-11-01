@@ -4,7 +4,7 @@ import { ArrowLeftIcon } from 'pluralsh-design-system'
 
 export function GoBack({
   text, link,
-}) {
+}: any) {
   return (
     <Button
       tertiary

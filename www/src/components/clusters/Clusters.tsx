@@ -1,7 +1,10 @@
 import { useQuery } from '@apollo/client'
 import { Box } from 'grommet'
 import {
-  A, Br, Flex, Span,
+  A,
+  Br,
+  Flex,
+  Span,
 } from 'honorable'
 import { Button, EmptyState, LoopingLogo } from 'pluralsh-design-system'
 import { ReactElement, useEffect, useState } from 'react'
@@ -9,7 +12,10 @@ import { Link } from 'react-router-dom'
 
 import QueueContext from '../../contexts/QueueContext'
 import {
-  ResponsiveLayoutContentContainer, ResponsiveLayoutSidecarContainer, ResponsiveLayoutSidenavContainer, ResponsiveLayoutSpacer,
+  ResponsiveLayoutContentContainer,
+  ResponsiveLayoutSidecarContainer,
+  ResponsiveLayoutSidenavContainer,
+  ResponsiveLayoutSpacer,
 } from '../layout/ResponsiveLayout'
 
 import { ClustersContent, Upgrade } from './ClustersContent'
@@ -40,7 +46,7 @@ export interface Queue {
 }
 
 export function Clusters(): ReactElement | null {
-  const [queue, setQueue] = useState({} as Queue)
+  const [queue, setQueue] = useState<Queue | undefined>({} as Queue)
   const {
     data,
     subscribeToMore,

@@ -1,9 +1,10 @@
 import {
-  Ref, forwardRef, useEffect, useState,
+  Ref,
+  forwardRef,
+  useEffect,
+  useState,
 } from 'react'
-import {
-  Button, ButtonProps,
-} from 'honorable'
+import { Button, ButtonProps } from 'honorable'
 
 import { Tooltip } from 'pluralsh-design-system'
 

@@ -1,9 +1,5 @@
 import { MouseEventHandler } from 'react'
-import {
-  Flex,
-  Img,
-  P,
-} from 'honorable'
+import { Flex, Img, P } from 'honorable'
 
 type IconUploadPreviewProps = {
   src: string | null;

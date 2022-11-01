@@ -72,7 +72,7 @@ export function AzureForm({
   setCredentials,
   workspace,
   setWorkspace,
-}) {
+}: any) {
   const azure = useMemo(() => credentials.azure || {}, [credentials])
 
   const update = useCallback((field, val) => setCredentials({

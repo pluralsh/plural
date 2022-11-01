@@ -172,7 +172,7 @@ export function ServiceAccount({ user, update }: any) {
         jwt: fetchToken(),
       })
       setToken(jwt)
-      window.location = '/' as any as Location
+      ;(window as Window).location = '/'
     },
   })
 

@@ -280,7 +280,7 @@ function Sidebar({
 
   function handleLogout() {
     clearLocalStorage()
-    window.location = '/' as any as Location
+    ;(window as Window).location = '/'
   }
 
   return (

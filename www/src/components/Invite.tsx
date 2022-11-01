@@ -59,7 +59,7 @@ function ExistingInvite({ invite: { account }, id }: any) {
     variables: { id },
     onCompleted: ({ realizeInvite: { jwt } }) => {
       setToken(jwt)
-      window.location = '/' as any as Location
+      ;(window as Window).location = '/'
     },
   })
 
@@ -102,7 +102,7 @@ export default function Invite() {
     variables: { inviteId, attributes },
     onCompleted: ({ signup: { jwt } }) => {
       setToken(jwt)
-      window.location = '/' as any as Location
+      ;(window as Window).location = '/'
     },
   })
 

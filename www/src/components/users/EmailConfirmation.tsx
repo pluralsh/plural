@@ -27,7 +27,7 @@ export function EmailConfirmed() {
     variables: { id, attributes: {} },
     onCompleted: () => {
       setTimeout(() => {
-        window.location = '/' as any as Location
+        (window as Window).location = '/'
       }, 2000)
     },
   })

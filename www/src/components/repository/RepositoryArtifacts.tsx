@@ -26,23 +26,20 @@ import { download } from '../../utils/file'
 
 const platformToIcon = {
   MAC: (
-    // @ts-expect-error
     <AppleLogoIcon
-      size="14px"
+      size={14}
       fullColor
     />
   ),
   WINDOWS: (
-    // @ts-expect-error
     <WindowsLogoIcon
-      size="14px"
+      size={14}
       fullColor
     />
   ),
   LINUX: (
-    // @ts-expect-error
     <UbuntuLogoIcon
-      size="14px"
+      size={14}
       fullColor
     />
   ),

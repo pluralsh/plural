@@ -64,6 +64,7 @@ function UserEdit({ user, update }: any) {
   const menuItems = {
     addAdmin: {
       label: isAdmin ? 'Remove admin role' : 'Add admin role',
+      // @ts-expect-error
       onSelect: () => mutation({ variables: { attributes: { roles: { admin: !isAdmin } } } }),
       props: {},
     },
@@ -171,7 +172,7 @@ export function ServiceAccount({ user, update }: any) {
         jwt: fetchToken(),
       })
       setToken(jwt)
-      window.location = '/'
+      window.location = '/' as any as Location
     },
   })
 
@@ -217,6 +218,7 @@ export function ServiceAccount({ user, update }: any) {
         <GraphQLToast
           marginBottom="medium"
           marginRight="xxxxlarge"
+          // @ts-expect-error
           error={error}
           header="Failed to impersonate"
         />

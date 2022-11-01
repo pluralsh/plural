@@ -126,7 +126,7 @@ function Upgrade({ upgrade, acked, last }: any) {
       direction="row"
       align="center"
       gap="small"
-      border={last ? null : { side: 'bottom' }}
+      border={last ? undefined : { side: 'bottom' }}
       flex={false}
     >
       <Box
@@ -196,7 +196,6 @@ function Upgrades({ q }: any) {
         direction="row"
         align="center"
         pad={{ vertical: 'xsmall', horizontal: 'small' }}
-        x
         border={{ side: 'bottom' }}
       >
         <Box fill="horizontal">
@@ -208,8 +207,9 @@ function Upgrades({ q }: any) {
             icon={<ReloadIcon size={16} />}
             secondary
             color="text-xlight"
-            onClick={refetch}
-          >Refresh
+            onClick={() => refetch()}
+          >
+            Refresh
           </Button>
         </Box>
       </Box>

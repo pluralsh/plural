@@ -86,7 +86,7 @@ function ProfileCard({ queue }: { queue: Queue }): ReactElement {
   )
 }
 
-function QueueHealth({ queue }: { queue: Queue }: any) {
+function QueueHealth({ queue }: { queue: Queue }) {
   const [now, setNow] = useState(moment())
   const pinged = useMemo(() => moment(queue.pingedAt), [queue.pingedAt])
 

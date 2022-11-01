@@ -31,6 +31,7 @@ function historyModifier(action) {
   }
 }
 
+// @ts-expect-error
 const yamlDump = val => yaml.safeDump(val || {}, null, 2)
 
 function HistoryChanges({ changes }: any) {

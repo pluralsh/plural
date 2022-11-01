@@ -13,12 +13,12 @@ const FILE_DROP_PROPS = {
   background: 'fill-two-hover',
 }
 
-export const AttachmentContext = createContext({})
+export const AttachmentContext = createContext<any>({})
 
 export function Dropzone({ children, loaded }: any) {
   const { setAttachment } = useContext(AttachmentContext)
 
-  const [{ canDrop, isOver }, drop] = useDrop({
+  const [{ canDrop, isOver }, drop] = useDrop<any, any, any>({
     accept: [NativeTypes.FILE],
     drop: ({ files }) => setAttachment(files[0]),
     collect: monitor => ({
@@ -34,6 +34,7 @@ export function Dropzone({ children, loaded }: any) {
       backgroundColor="fill-two"
       border="1px solid border-fill-two"
       borderRadius="medium"
+      // @ts-expect-error
       borderColor={loaded ? 'border-success' : 'border-fill-two'}
       {...(dragActive ? FILE_DROP_PROPS : {})}
     >

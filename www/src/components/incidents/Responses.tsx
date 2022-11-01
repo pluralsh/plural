@@ -13,7 +13,7 @@ import {
   TextInput,
 } from 'grommet'
 import { Bundle, Incidents as IncidentsI, Explore as Search } from 'forge-core'
-import { Checkmark as CheckIcon } from 'pluralsh-design-system'
+import { CheckIcon } from 'pluralsh-design-system'
 
 import { extendConnection } from '../../utils/graphql'
 
@@ -139,6 +139,7 @@ function StatusSelector({ statuses, setStatuses }: any) {
       </Box>
       {open && (
         <Drop
+          // @ts-expect-error
           target={ref.current}
           align={{ top: 'bottom' }}
           onEsc={() => setOpen(false)}

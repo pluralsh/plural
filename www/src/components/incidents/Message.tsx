@@ -113,7 +113,7 @@ function MessageBody({
   )
 }
 
-export const Message = memo(({ message, next, setSize }) => {
+export const Message = memo(({ message, next, setSize }: any) => {
   const [hover, setHover] = useState(false)
   const additionalClasses = hover ? ' hovered' : ''
 

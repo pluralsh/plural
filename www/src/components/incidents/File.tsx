@@ -17,6 +17,7 @@ function DownloadAffordance({ blob }: any) {
     <Tooltip align={{ bottom: 'top' }}>
       <HoveredBackground>
         <Box
+          // @ts-expect-error
           accentable
           margin={{ right: 'xsmall', top: 'xsmall' }}
           focusIndicator={false}
@@ -68,6 +69,7 @@ function Video({ blob, filename }: any) {
       controls
       style={{ height: 300 }}
       src={blob}
+      // @ts-expect-error
       alt={filename}
     />
   )
@@ -79,6 +81,7 @@ function MediaFile({ file }: any) {
   return (
     <Box gap="xsmall">
       <Box
+        // @ts-expect-error
         focusindicator={false}
         direction="row"
         align="center"
@@ -135,7 +138,7 @@ export function FileEntry({ file }: any) {
           height="80px"
           align="center"
           gap="small"
-          background={hover ? 'light-2' : null}
+          background={hover ? 'light-2' : undefined}
           border={{ side: 'bottom', color: 'light-4' }}
           pad={{ left: 'small' }}
         >
@@ -149,6 +152,7 @@ export function FileEntry({ file }: any) {
               <video
                 src={file.blob}
                 style={MEDIA_STYLES}
+                // @ts-expect-error
                 alt={file.filename}
               />
             )

@@ -67,6 +67,7 @@ function Mention({ text, user }: any) {
       </Box>
       {open && (
         <Drop
+          // @ts-expect-error
           target={ref.current}
           align={{ bottom: 'top' }}
           onClickOutside={() => setOpen(false)}
@@ -171,7 +172,7 @@ function* splitText(text, entities) {
   }
 }
 
-export default memo(({ text, entities }) => {
+export default memo(({ text, entities }: any) => {
   const parsed = [...splitText(text, entities || [])].join('')
   const entityMap = (entities || []).reduce((map, entity) => ({ ...map, [entity.id]: entity }), {})
 

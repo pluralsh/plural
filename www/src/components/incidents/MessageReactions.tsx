@@ -35,10 +35,12 @@ function Reaction({
 
   return (
     <Tooltip>
+      {/* @ts-expect-error */}
       <Box
         {...BOX_ATTRS}
         background="highlight"
         gap="xsmall"
+        // @ts-expect-error
         onClick={() => mutation({ variables: { name } })}
       >
         <Text size="10px">
@@ -65,6 +67,7 @@ export default function MessageReactions({ message, setHover }: any) {
   const me = useContext(CurrentUserContext)
   const grouped = groupBy(message.reactions, reaction => reaction.name)
   const sorted = Object.entries(grouped).sort(([name, reactions], [other_name, other_reactions]) => {
+    // @ts-expect-error
     const byLength = other_reactions.length - reactions.length
 
     if (byLength === 0) return other_name.localeCompare(name)
@@ -105,13 +108,10 @@ export default function MessageReactions({ message, setHover }: any) {
         <MessageReaction
           message={message}
           setHover={setHover}
-          align={{ bottom: 'top' }}
           label="+"
-          direction="row"
           gap="2px"
           background="white"
           border={{ color: 'border' }}
-          round="xsmall"
           {...BOX_ATTRS}
         />
       </Box>

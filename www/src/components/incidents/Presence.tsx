@@ -10,7 +10,7 @@ import { Box } from 'grommet'
 import { socket } from '../../helpers/client'
 import TimedCache from '../utils/TimedCache'
 
-export const PresenceContext = createContext({})
+export const PresenceContext = createContext<any>({})
 
 export function PresenceIndicator({ border, margin }: any) {
   const width = border ? '12px' : '8px'
@@ -19,7 +19,7 @@ export function PresenceIndicator({ border, margin }: any) {
     <Box
       flex={false}
       background="presence"
-      border={border ? { color: 'white', size: '2px' } : null}
+      border={border ? { color: 'white', size: '2px' } : undefined}
       width={width}
       height={width}
       round="full"
@@ -59,7 +59,7 @@ export function PresenceProvider({ incidentId, children }: any) {
       channel.leave()
       setPresent({})
     }
-// eslint-disable-next-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [incidentId])
 
   const value = useMemo(() => ({ present, channel, typists }), [present, channel, typists])

@@ -392,6 +392,7 @@ function IncidentInner({
           >
             <Severity
               incident={incident}
+              // @ts-expect-error
               setSeverity={severity => mutation({ variables: { attributes: { severity } } })}
             />
             {!editing && (
@@ -421,6 +422,7 @@ function IncidentInner({
             {incident.nextResponseAt && <SlaTimer incident={incident} />}
             <Status
               incident={incident}
+              // @ts-expect-error
               setActive={status => mutation({ variables: { attributes: { status } } })}
             />
             {canDelete(incident, currentUser) && <DeleteIncident incident={incident} />}

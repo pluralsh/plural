@@ -94,12 +94,14 @@ export function Reaction({
       </Control>
       {open && (
         <Drop
+          // @ts-expect-error
           target={ref.current}
           align={align || { right: 'left' }}
           onClickOutside={() => toggleOpen(false)}
           onEsc={() => toggleOpen(false)}
         >
           <EmojiPicker onSelect={emoji => {
+            // @ts-expect-error
             mutation({ variables: { name: emoji.id } })
           }}
           />
@@ -112,6 +114,7 @@ export function Reaction({
 function EditMsg() {
   return (
     <Control tooltip="edit">
+      {/* @ts-expect-error */}
       <Box
         {...CONTROL_ATTRS}
         onClick={() => null}
@@ -145,6 +148,7 @@ function Delete({ message }: any) {
 
   return (
     <Control tooltip="delete">
+      {/* @ts-expect-error */}
       <Box
         {...CONTROL_ATTRS}
         onClick={() => mutation()}
@@ -174,7 +178,7 @@ export function MessageControls({ message, setHover }: any) {
         message={message}
         setHover={setHover}
       />
-      {me.id === message.creator.id && <EditMsg message={message} />}
+      {me.id === message.creator.id && <EditMsg />}
       {me.id === message.creator.id && <Delete message={message} />}
     </Box>
   )

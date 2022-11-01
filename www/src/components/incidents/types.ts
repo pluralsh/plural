@@ -13,6 +13,7 @@ export const IncidentStatus = {
 export const FileTypes = {
   OTHER: 'OTHER',
   IMAGE: 'IMAGE',
+  VIDEO: 'VIDEO',
 }
 
 export const IncidentView = {

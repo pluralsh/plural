@@ -57,6 +57,7 @@ export function IncidentForm({
           >Title
           </Text>
           <TextInput
+            // @ts-expect-error
             label="title"
             value={attributes.title}
             placeholder="Short Incident Title"

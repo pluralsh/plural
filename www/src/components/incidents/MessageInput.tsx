@@ -48,7 +48,7 @@ import Editor from './Editor'
 
 import { CREATE_MESSAGE, INCIDENT_Q, SEARCH_USERS } from './queries'
 
-export const MessageScrollContext = createContext({})
+export const MessageScrollContext = createContext<any>({})
 
 export function fetchUsers(client, query, incidentId) {
   if (!query) return
@@ -194,7 +194,7 @@ function SendMsg({ loading, empty, onClick }: any) {
       align="center"
       justify="center"
       onClick={empty ? null : onClick}
-      background={loading ? null : (empty ? null : 'success')}
+      background={loading ? undefined : (empty ? undefined : 'success')}
     >
       {loading
         ? <MoonLoader size={20} /> : (
@@ -256,6 +256,7 @@ function EmojiInput({ editor }: any) {
       </Box>
       {open && (
         <Drop
+          // @ts-expect-error
           target={ref.current}
           align={{ bottom: 'top' }}
           onClickOutside={() => setOpen(false)}
@@ -277,6 +278,7 @@ function UploadProgress({
       position="top-right"
     >
       <Stack
+        // @ts-expect-error
         width="400px"
         margin={{ right: '20px', top: '70px' }}
         anchor="top-right"
@@ -418,6 +420,7 @@ export function MessageInput() {
     const entities = [...extractEntities(editorState)]
     const file = attachment ? { blob: attachment } : null
 
+    // @ts-expect-error
     mutation({ variables: { attributes: { text: plainSerialize(editorState), file, entities } } })
     Transforms.select(editor, SlateEditor.start(editor, []))
     setEditorState(plainDeserialize(''))

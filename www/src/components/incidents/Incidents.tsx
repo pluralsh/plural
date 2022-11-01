@@ -59,7 +59,7 @@ import {
 import { SlaTimer } from './SlaTimer'
 import { INCIDENTS_Q } from './queries'
 
-export const IncidentViewContext = createContext({})
+export const IncidentViewContext = createContext<any>({})
 
 const pulseAnimation = keyframes`${pulse}`
 
@@ -297,6 +297,7 @@ export function FilterSelect() {
       </Box>
       {open && (
         <Drop
+          // @ts-expect-error
           target={ref.current}
           onClickOutside={() => setOpen(false)}
           align={{ top: 'bottom' }}
@@ -426,6 +427,7 @@ function SortOptions() {
       </Box>
       {open && (
         <Drop
+          // @ts-expect-error
           target={ref.current}
           onClickOutside={() => setOpen(false)}
           align={{ top: 'bottom' }}

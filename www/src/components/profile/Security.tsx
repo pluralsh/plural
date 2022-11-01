@@ -109,7 +109,7 @@ function LoginMethod({
       round="xsmall"
       onClick={active ? null : onClick}
       hoverIndicator="fill-one-hover"
-      background={active ? 'fill-one-hover' : null}
+      background={active ? 'fill-one-hover' : undefined}
       direction="row"
       align="center"
       gap="small"

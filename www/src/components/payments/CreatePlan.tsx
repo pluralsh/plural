@@ -62,6 +62,7 @@ function LineItem({
       </Text>
       <HoveredBackground>
         <Box
+          // @ts-expect-error
           accentable
           focusIndicator={false}
           margin={{ left: 'small' }}
@@ -91,6 +92,7 @@ function Feature({ name, description, removeFeature }: any) {
       </Box>
       <HoveredBackground>
         <Box
+          // @ts-expect-error
           accentable
           focusIndicator={false}
           onClick={() => removeFeature(name)}
@@ -492,6 +494,7 @@ export function SlaForm({
               round="small"
               color="border"
               values={[minSeverity, maxSeverity]}
+              // @ts-expect-error
               onChange={([minSeverity, maxSeverity]) => setServiceLevel({ responseTime, minSeverity, maxSeverity })}
             />
           </Stack>
@@ -590,7 +593,7 @@ export default function CreatePlan({ repository, setOpen }: any) {
     metadata: { features: [] },
     serviceLevels: [],
   })
-  const [display, setDisplay] = useState(true)
+  const [display, setDisplay] = useState<any>(true)
   const [mutation, { loading }] = useMutation(CREATE_PLAN, {
     variables: { repositoryId, attributes: state },
     update: (cache, { data: { createPlan } }) => {

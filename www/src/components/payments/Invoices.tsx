@@ -203,6 +203,7 @@ export default function Invoices() {
       <Box
         flex={false}
         width="250px"
+        // @ts-expect-error
         style={{ height: '100%', scroll: 'auto' }}
         border={{ side: 'right', color: 'border' }}
       >

@@ -185,6 +185,7 @@ function EditPlan({ plan }: any) {
     <>
       <HoveredBackground>
         <Box
+          // @ts-expect-error
           accentable
           className="edit"
           round="xsmall"
@@ -235,6 +236,7 @@ export default function Plan({
 
   return (
     <Stack
+      // @ts-expect-error
       width="70%"
       anchor="top-right"
     >
@@ -244,7 +246,7 @@ export default function Plan({
         pad="small"
         focusIndicator={false}
         border={{ color: subscribed ? 'brand' : 'border' }}
-        onClick={subscribed ? null : () => approvePlan(plan)}
+        onClick={subscribed ? undefined : () => approvePlan(plan)}
         gap="small"
       >
         <Box

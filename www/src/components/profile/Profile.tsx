@@ -37,11 +37,11 @@ function Attribute({ header, children }: any) {
 export function Profile() {
   const { files, onClick, HiddenFileInput } = useFilePicker({})
   const me = useContext(CurrentUserContext)
-  const { dark } = useContext(ThemeContext)
+  const { dark } = useContext(ThemeContext) as any
   const [name, setName] = useState(me.name)
   const [email, setEmail] = useState(me.email)
   const [avatar, setAvatar] = useState(me.avatar)
-  const [avatarFile, setAvatarFile] = useState()
+  const [avatarFile, setAvatarFile] = useState<any>()
   const [mutation, { loading }] = useMutation(UPDATE_USER, {
     variables: { attributes: { name, email, avatar: avatarFile } },
   })
@@ -53,7 +53,7 @@ export function Profile() {
   }
 
   useEffect(() => {
-    if (files.length > 0) {
+    if (files && files.length > 0) {
       setAvatar(URL.createObjectURL(files[0]))
       setAvatarFile(files[0])
     }

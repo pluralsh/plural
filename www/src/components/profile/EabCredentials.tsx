@@ -25,6 +25,7 @@ function EabCredential({ credential, last }: any) {
   const [confirm, setConfirm] = useState(false)
   const [mutation, { loading, error }] = useMutation(DELETE_EAB_CREDENTIALS, {
     variables: { id: credential.id },
+    // @ts-expect-error
     update: (cache, { data: { deleteEabKey } }) => updateCache(cache, {
       query: EAB_CREDENTIALS,
       update: prev => ({ ...prev, eabCredentials: prev.eabCredentials.filter(({ id }) => id !== deleteEabKey.id) }),
@@ -77,7 +78,6 @@ export function EabCredentials() {
             pad="6px"
             round="xxsmall"
             hoverIndicator="fill-two"
-            onClick
           >
             <InfoIcon />
           </Box>

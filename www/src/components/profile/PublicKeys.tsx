@@ -108,7 +108,6 @@ export function PublicKeys() {
             pad="6px"
             round="xxsmall"
             hoverIndicator="fill-two"
-            onClick
           >
             <InfoIcon />
           </Box>

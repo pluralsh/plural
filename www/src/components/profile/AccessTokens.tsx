@@ -62,7 +62,11 @@ function TokenAudits({ token }: any) {
   const { audits: { pageInfo, edges } } = data.token
 
   if (edges.length === 0) {
-    return 'Token has yet to be used'
+    return (
+      <>
+        Token has yet to be used
+      </>
+    )
   }
 
   return (
@@ -114,6 +118,7 @@ function TokenMetrics({ token }: any) {
   if (!data) return null
 
   const metrics = data.token.metrics.map(({ country, count }) => ({
+    // @ts-expect-error
     id: lookup.byIso(country).iso3, value: count,
   }))
 
@@ -135,6 +140,7 @@ function AccessToken({ token, first, last }: any) {
   const [graph, setGraph] = useState(false)
   const [mutation, { loading, error }] = useMutation(DELETE_TOKEN, {
     variables: { id: token.id },
+    // @ts-expect-error
     update: (cache, { data: { deleteToken } }) => updateCache(cache, {
       query: TOKENS_Q,
       update: prev => removeConnection(prev, deleteToken, 'tokens'),
@@ -187,6 +193,7 @@ function AccessToken({ token, first, last }: any) {
           </CopyToClipboard>
           <>
             <IconFrame
+              textValue=""
               clickable
               size="medium"
               icon={<GraphIcon />}
@@ -203,6 +210,7 @@ function AccessToken({ token, first, last }: any) {
           </>
           <>
             <IconFrame
+              textValue=""
               clickable
               size="medium"
               icon={<ListIcon />}
@@ -239,6 +247,7 @@ export function AccessTokens() {
   const [listRef, setListRef] = useState<any>(null)
   const { data, loading: loadingTokens, fetchMore } = useQuery(TOKENS_Q)
   const [mutation, { loading }] = useMutation(CREATE_TOKEN, {
+    // @ts-expect-error
     update: (cache, { data: { createToken } }) => updateCache(cache, {
       query: TOKENS_Q,
       update: prev => appendConnection(prev, createToken, 'tokens'),
@@ -269,7 +278,6 @@ export function AccessTokens() {
               pad="6px"
               round="xxsmall"
               hoverIndicator="fill-two"
-              onClick
             >
               <InfoIcon />
             </Box>

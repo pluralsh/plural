@@ -17,6 +17,7 @@ export function ListItem({
       align="center"
       pad="16px"
       border={first ? { side: 'all' } : [{ side: 'vertical' }, { side: 'bottom' }]}
+      // @ts-expect-error
       round={(first && last) ? BORDER_RADIUS : (first ? r('top') : ((last ? r('bottom') : null)))}
     >{children}
     </Box>

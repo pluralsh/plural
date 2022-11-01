@@ -15,6 +15,7 @@ defmodule Worker.Application do
       Worker.conf(:rollout_pipeline) ++
       Worker.conf(:upgrade_pipeline) ++
       Worker.conf(:demo_projects_pipeline) ++
+      Worker.conf(:docker_pipeline) ++
       broker()
 
     # See https://hexdocs.pm/elixir/Supervisor.html

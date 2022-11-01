@@ -3,7 +3,7 @@ defmodule Core.Services.Repositories do
   import Core.Policies.Repository
 
   alias Core.PubSub
-  alias Core.Services.Users
+  alias Core.Services.{Users, Locks}
   alias Core.Auth.Jwt
   alias Core.Clients.Hydra
   alias Core.Schema.{
@@ -190,7 +190,7 @@ defmodule Core.Services.Repositories do
   Persists a given docker image with the given tag.  Called by the docker
   registry notification webhook.
   """
-  @spec create_docker_image(binary, binary, binary, User.t) :: {:ok, DockerImage.t} | {:error, term}
+  @spec create_docker_image(binary, binary, binary, User.t) :: {:ok, DockerImage.t} | error
   def create_docker_image(repo, tag, digest, user) do
     [cm_repo | rest] = String.split(repo, "/")
     cm_repo = get_repository_by_name!(cm_repo)
@@ -208,9 +208,35 @@ defmodule Core.Services.Repositories do
   end
 
   @doc """
+  Used to atomically fetch a list of docker images while continuously scanning
+  """
+  @spec poll_docker_images(integer, integer) :: {:ok, [DockerImage.t]} | error
+  def poll_docker_images(scan_interval, limit) do
+    owner = Ecto.UUID.generate()
+    start_transaction()
+    |> add_operation(:lock, fn _ -> Locks.acquire("rollout", owner) end)
+    |> add_operation(:fetch, fn _ ->
+      DockerImage.scanned_before(scan_interval)
+      |> DockerImage.with_limit(limit)
+      |> Core.Repo.all()
+      |> ok()
+    end)
+    |> add_operation(:imgs, fn %{fetch: fetch} ->
+      Enum.map(fetch, & &1.id)
+      |> DockerImage.for_ids()
+      |> DockerImage.selected()
+      |> Core.Repo.update_all(set: [scanned_at: Timex.now()])
+      |> elem(1)
+      |> ok()
+    end)
+    |> add_operation(:release, fn _ -> Locks.release("rollout") end)
+    |> execute(extract: :imgs)
+  end
+
+  @doc """
   Appends vulnerabilities to a docker image
   """
-  @spec add_vulnerabilities(list, Image.t) :: {:ok, DockerImage.t} | {:error, term}
+  @spec add_vulnerabilities(list, Image.t) :: {:ok, DockerImage.t} | error
   def add_vulnerabilities(vulns, image) do
     Core.Repo.preload(image, [:vulnerabilities])
     |> DockerImage.vulnerability_changeset(%{

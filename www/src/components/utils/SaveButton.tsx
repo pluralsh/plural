@@ -2,7 +2,8 @@ import { ButtonProps, Flex } from 'honorable'
 import { Button, CheckIcon } from 'pluralsh-design-system'
 import { ReactNode, useEffect, useState } from 'react'
 import { useTheme } from 'styled-components'
-import usePrevious from 'hooks/usePrevious'
+
+import usePrevious from '../../hooks/usePrevious'
 
 export type SaveButtonProps = ButtonProps & {
   dirty?: boolean

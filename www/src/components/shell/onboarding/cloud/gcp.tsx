@@ -11,8 +11,10 @@ import {
   Text,
 } from 'honorable'
 import { FileIcon, FormField } from 'pluralsh-design-system'
-import usePrevious from 'hooks/usePrevious'
+
 import { useTheme } from 'styled-components'
+
+import usePrevious from '../../../../hooks/usePrevious'
 
 import { AttachmentContext, AttachmentProvider, Dropzone } from '../../../incidents/AttachmentProvider'
 import { isAlphanumeric, stringExists } from '../../validation'

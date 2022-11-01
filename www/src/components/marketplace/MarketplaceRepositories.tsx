@@ -27,7 +27,7 @@ import isEmpty from 'lodash/isEmpty'
 import capitalize from 'lodash/capitalize'
 import orderBy from 'lodash/orderBy'
 
-import { growthbook } from 'helpers/growthbook'
+import { growthbook } from '../../helpers/growthbook'
 
 import usePaginatedQuery from '../../hooks/usePaginatedQuery'
 

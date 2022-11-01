@@ -1,8 +1,10 @@
-import RepositoryContext from 'contexts/RepositoryContext'
 import { Flex } from 'honorable'
-import usePaginatedQuery from 'hooks/usePaginatedQuery'
+
 import { Button, GearTrainIcon } from 'pluralsh-design-system'
 import { useContext, useState } from 'react'
+
+import usePaginatedQuery from '../../hooks/usePaginatedQuery'
+import RepositoryContext from '../../contexts/RepositoryContext'
 
 import InstallDropdownButton from '../utils/InstallDropdownButton'
 import { InferredConsoleButton } from '../clusters/ConsoleButton'

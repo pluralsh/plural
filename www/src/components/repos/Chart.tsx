@@ -19,7 +19,7 @@ import moment from 'moment'
 
 import { A, Flex } from 'honorable'
 
-import { updateCache } from 'utils/graphql'
+import { updateCache } from '../../utils/graphql'
 
 import {
   ResponsiveLayoutContentContainer,

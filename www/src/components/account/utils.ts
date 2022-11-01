@@ -1,4 +1,4 @@
-import { apiHost } from 'helpers/hostname'
+import { apiHost } from '../../helpers/hostname'
 
 export const inviteLink = invite => `https://${apiHost()}/invite/${invite.secureId}`
 

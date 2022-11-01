@@ -27,7 +27,7 @@ import {
 import capitalize from 'lodash/capitalize'
 import Fuse from 'fuse.js'
 
-import SelectedApplicationsContext from 'contexts/SelectedApplicationsContext'
+import SelectedApplicationsContext from '../../../../contexts/SelectedApplicationsContext'
 
 import { persistConsole, persistProvider, persistStack } from '../../persistance'
 

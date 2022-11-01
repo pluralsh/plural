@@ -10,7 +10,7 @@ import { Box, Drop } from 'grommet'
 import { MenuItem, Select } from 'honorable'
 import { Button, FormField } from 'pluralsh-design-system'
 
-import { growthbook } from 'helpers/growthbook'
+import { growthbook } from '../../../../helpers/growthbook'
 
 import { persistProvider } from '../../persistance'
 import { providerToDisplayName } from '../../../utils/InstallDropdownButton'

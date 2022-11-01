@@ -1,10 +1,5 @@
 import { useMutation, useQuery } from '@apollo/client'
-import {
-  Notification as NotificationT,
-  NotificationType,
-  OnboardingChecklistState,
-  User,
-} from 'generated/graphql'
+
 import { Div, Flex, P } from 'honorable'
 import moment from 'moment'
 import {
@@ -16,6 +11,13 @@ import {
 import { ReactElement, useCallback, useContext } from 'react'
 import { Link } from 'react-router-dom'
 import { useTheme } from 'styled-components'
+
+import {
+  Notification as NotificationT,
+  NotificationType,
+  OnboardingChecklistState,
+  User,
+} from '../../generated/graphql'
 
 import { OnboardingChecklistContext } from '../../contexts/OnboardingChecklistContext'
 import usePaginatedQuery from '../../hooks/usePaginatedQuery'

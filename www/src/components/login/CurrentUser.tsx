@@ -5,11 +5,11 @@ import { Box } from 'grommet'
 
 import { useIntercom } from 'react-use-intercom'
 
-import { growthbook } from 'helpers/growthbook'
+import PluralConfigurationContext from '../../contexts/PluralConfigurationContext'
 
-import PluralConfigurationContext from 'contexts/PluralConfigurationContext'
+import CurrentUserContext from '../../contexts/CurrentUserContext'
 
-import CurrentUserContext from 'contexts/CurrentUserContext'
+import { growthbook } from '../../helpers/growthbook'
 
 import { ME_Q } from '../users/queries'
 import { setPreviousUserData, setToken, wipeToken } from '../../helpers/authentication'

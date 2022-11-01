@@ -83,7 +83,7 @@ function Upgrade({ upgrade, acked }: any) {
 }
 
 export function UpgradeQueue() {
-  const [listRef, setListRef] = useState(null)
+  const [listRef, setListRef] = useState<any>(null)
   const { id } = useParams()
   const {
     data, loading, fetchMore, subscribeToMore, refetch,

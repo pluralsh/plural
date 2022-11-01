@@ -75,6 +75,7 @@ function ScanViolation({ violation, last }: any) {
           direction="row"
           pad={{ horizontal: 'large', vertical: 'medium' }}
           gap="small"
+          // @ts-expect-error
           borderBottom={last ? null : '1px solid border'}
           background="fill-two"
           round={{ corner: 'bottom', size: '4px' }}
@@ -94,7 +95,7 @@ function ScanViolation({ violation, last }: any) {
 }
 
 export default function PackageSecurity() {
-  const { currentHelmChart, currentTerraformChart } = useOutletContext()
+  const { currentHelmChart, currentTerraformChart } = useOutletContext() as any
   const current = currentHelmChart || currentTerraformChart
 
   return (
@@ -142,6 +143,7 @@ export default function PackageSecurity() {
                 pad={{ horizontal: 'medium', vertical: 'small' }}
                 height={{ min: '60px' }}
                 flex="grow"
+                // @ts-expect-error
                 border={i === current.scan.errors.length - 1 ? null : 'bottom'}
               >
                 <ErrorIcon

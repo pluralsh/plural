@@ -86,7 +86,7 @@ function PublicKey({ pubkey: key, first, last }: any) {
 }
 
 export function PublicKeys() {
-  const [listRef, setListRef] = useState(null)
+  const [listRef, setListRef] = useState<any>(null)
   const { data, loading, fetchMore } = useQuery(LIST_KEYS)
 
   if (!data) return <LoopingLogo />

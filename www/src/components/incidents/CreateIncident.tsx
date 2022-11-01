@@ -170,7 +170,7 @@ export function RepositorySelect({ repository, setRepository }: any) {
 export function CreateIncident({ onCompleted }: any) {
   const { clusterInformation } = useContext(IncidentContext)
   const { sort, order, filters } = useContext(IncidentViewContext)
-  const [repository, setRepository] = useState(null)
+  const [repository, setRepository] = useState<any>(null)
   const [attributes, setAttributes] = useState({
     title: '', description: '', severity: 4, tags: [],
   })

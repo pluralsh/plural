@@ -353,7 +353,7 @@ function IncidentInner({
   incident, fetchMore, subscribeToMore, loading, editing, setEditing,
 }: any) {
   const [view, setView] = useState(IncidentView.MSGS)
-  const [listRef, setListRef] = useState(null)
+  const [listRef, setListRef] = useState<any>(null)
   const currentUser = useContext(CurrentUserContext)
   const editable = canEdit(incident, currentUser)
   const [attributes, setAttributes] = useState({

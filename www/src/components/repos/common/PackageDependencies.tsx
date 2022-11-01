@@ -5,16 +5,13 @@ import cloneDeep from 'lodash/cloneDeep'
 import groupBy from 'lodash/groupBy'
 import remove from 'lodash/remove'
 import uniqueId from 'lodash/uniqueId'
-
 import { useOutletContext } from 'react-router-dom'
-
 import {
   PageTitle,
   SubTab,
   TabList,
   TabPanel,
 } from 'pluralsh-design-system'
-
 import { Flex } from 'honorable'
 
 import TreeGraph from '../../utils/TreeGraph'
@@ -93,7 +90,7 @@ function compileGraph(res, closure) {
   return closureDep(res, children)
 }
 
-const FullDependencies = memo(({ resource }) => {
+const FullDependencies = memo(({ resource }: any) => {
   const type = depType(resource)
   const { data, loading } = useQuery(CLOSURE_Q, {
     variables: { id: resource.id, type },
@@ -113,7 +110,7 @@ const FullDependencies = memo(({ resource }) => {
   )
 })
 
-const Dependencies = memo(({ name, dependencies, resource }) => {
+const Dependencies = memo(({ name, dependencies, resource }: any) => {
   if (!dependencies || !dependencies.dependencies) {
     return (
       <Box pad="small">
@@ -158,8 +155,7 @@ const DIRECTORY = [
 export default function PackageDependencies() {
   const {
     helmChart, terraformChart, currentHelmChart, currentTerraformChart,
-  }
-    = useOutletContext()
+  } = useOutletContext() as any
   const chart = helmChart || terraformChart
   const current = currentHelmChart || currentTerraformChart
   const [full, setFull] = useState(false)

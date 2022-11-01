@@ -54,7 +54,7 @@ import { ListItem } from './ListItem'
 const TOOLTIP = 'Access tokens allow you to access the Plural API for automation and active Plural clusters.'
 
 function TokenAudits({ token }: any) {
-  const [listRef, setListRef] = useState(null)
+  const [listRef, setListRef] = useState<any>(null)
   const { data, loading, fetchMore } = useQuery(TOKEN_AUDITS, { variables: { id: token.id }, fetchPolicy: 'cache-and-network' })
 
   if (!data) return null
@@ -236,7 +236,7 @@ function AccessToken({ token, first, last }: any) {
 
 export function AccessTokens() {
   const [displayNewBanner, setDisplayNewBanner] = useState(false)
-  const [listRef, setListRef] = useState(null)
+  const [listRef, setListRef] = useState<any>(null)
   const { data, loading: loadingTokens, fetchMore } = useQuery(TOKENS_Q)
   const [mutation, { loading }] = useMutation(CREATE_TOKEN, {
     update: (cache, { data: { createToken } }) => updateCache(cache, {

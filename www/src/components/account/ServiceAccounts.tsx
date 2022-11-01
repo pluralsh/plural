@@ -34,7 +34,7 @@ function Header({ q, setQ }: any) {
 }
 
 function ServiceAccountsInner({ q }: any) {
-  const [listRef, setListRef] = useState(null)
+  const [listRef, setListRef] = useState<any>(null)
   const { data, loading, fetchMore } = useQuery(USERS_Q, {
     variables: { q, serviceAccount: true },
     fetchPolicy: 'cache-and-network',

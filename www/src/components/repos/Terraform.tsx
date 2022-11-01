@@ -82,7 +82,7 @@ export function TerraformActions({ terraformModule, currentVersion, ...props }: 
 
 export default function Terraform() {
   const { pathname } = useLocation()
-  const [version, setVersion] = useState(null)
+  const [version, setVersion] = useState<any>(null)
   const { tfId } = useParams()
   const { data, fetchMore } = useQuery(TF_Q, { variables: { tfId }, fetchPolicy: 'cache-and-network' })
   const tabStateRef = useRef<any>(null)

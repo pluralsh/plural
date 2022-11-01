@@ -67,7 +67,7 @@ export function SubmenuItem({
 }
 
 export function NavigationContext({ children }: any) {
-  const [ref, setRef] = useState(null)
+  const [ref, setRef] = useState<any>(null)
   const [name, setName] = useState('')
   const value = useMemo(() => ({
     ref, setRef, name, setName,

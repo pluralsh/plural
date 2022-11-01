@@ -22,11 +22,11 @@ import { Date } from '../../utils/Date'
 import { PackageActions } from './misc'
 
 export default function PackageUpdateQueue() {
-  const { helmChart, terraformChart } = useOutletContext()
+  const { helmChart, terraformChart } = useOutletContext() as any
   const chartInst = helmChart?.installation?.id
   const tfInst = terraformChart?.installation?.id
 
-  const [listRef, setListRef] = useState(null)
+  const [listRef, setListRef] = useState<any>(null)
   const { data, loading, fetchMore } = useQuery(DEFERRED_UPDATES, {
     variables: { chartInst, tfInst },
     fetchPolicy: 'cache-and-network',

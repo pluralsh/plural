@@ -267,7 +267,7 @@ function TestDetail({ test, setTest }: any) {
 
 function RepositoryTests() {
   const { id } = useContext(RepositoryContext)
-  const [test, setTest] = useState(null)
+  const [test, setTest] = useState<any>(null)
   const [tests, loadingTests, hasMoreTests, fetchMoreTests] = usePaginatedQuery(TESTS_QUERY,
     {
       variables: {

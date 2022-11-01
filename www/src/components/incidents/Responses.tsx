@@ -49,7 +49,7 @@ function Placeholder() {
 }
 
 function Repositories({ repository, setRepository }: any) {
-  const [listRef, setListRef] = useState(null)
+  const [listRef, setListRef] = useState<any>(null)
   const { data, fetchMore } = useQuery(REPOS_Q, { fetchPolicy: 'cache-and-network' })
 
   if (!data) return null
@@ -186,7 +186,7 @@ function StatusSelector({ statuses, setStatuses }: any) {
 }
 
 function Incidents({ repository, setSelect, select }: any) {
-  const [listRef, setListRef] = useState(null)
+  const [listRef, setListRef] = useState<any>(null)
   const [scrolled, setScrolled] = useState(false)
   const {
     q, setQ, sort, order, filters,
@@ -280,11 +280,11 @@ function Incidents({ repository, setSelect, select }: any) {
 }
 
 export function Responses() {
-  const [q, setQ] = useState(null)
+  const [q, setQ] = useState<any>(null)
   const [sort, setSort] = useState(IncidentSort.INSERTED_AT)
   const [order, setOrder] = useState(Order.DESC)
   const [filters, setFilters] = useState([])
-  const [repository, setRepository] = useState(null)
+  const [repository, setRepository] = useState<any>(null)
   const [select, setSelect] = useState(false)
   const doSetRepository = useCallback(repo => {
     setRepository(repo.id === (repository && repository.id) ? null : repo)

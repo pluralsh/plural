@@ -1,3 +1,5 @@
+import { Box } from 'grommet'
+import { useOutletContext } from 'react-router-dom'
 import {
   Div,
   Flex,
@@ -5,7 +7,6 @@ import {
   Img,
   Span,
 } from 'honorable'
-import { Box } from 'grommet'
 import {
   Chip,
   ListBoxFooterPlus,
@@ -13,9 +14,8 @@ import {
   ListBoxItemChipList,
   Select,
 } from 'pluralsh-design-system'
-import { extendConnection } from 'utils/graphql'
 
-import { useOutletContext } from 'react-router-dom'
+import { extendConnection } from '../../../utils/graphql'
 
 import { ChartActions } from '../Chart'
 import { TerraformActions } from '../Terraform'
@@ -189,7 +189,7 @@ export function PackageProperty({ children, header, ...props }: any) {
 export function PackageActions() {
   const {
     helmChart, currentHelmChart, terraformChart, currentTerraformChart,
-  } = useOutletContext()
+  } = useOutletContext() as any
 
   if (helmChart && currentHelmChart) {
     return (

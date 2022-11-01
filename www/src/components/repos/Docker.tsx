@@ -74,6 +74,7 @@ function PrivateControl({ dockerRepo }: any) {
   return (
     <Switch
       checked={!dockerRepo.public}
+      // @ts-expect-error
       onChange={() => mutation({ variables: { attributes: { public: !dockerRepo.public } } })}
     >
       {dockerRepo.public ? 'Public' : 'Private'}
@@ -218,7 +219,7 @@ export function Docker() {
               selectedKey: currentTab?.path,
             }}
           >
-            {DIRECTORY.map(({ label, textValue, path }) => (
+            {DIRECTORY.map(({ label, textValue, path }: any) => (
               <LinkTabWrap
                 key={path}
                 textValue={typeof label === 'string' ? label : textValue || ''}

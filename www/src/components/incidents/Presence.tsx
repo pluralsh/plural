@@ -29,7 +29,7 @@ export function PresenceIndicator({ border, margin }: any) {
 }
 
 export function PresenceProvider({ incidentId, children }: any) {
-  const [channel, setChannel] = useState(null)
+  const [channel, setChannel] = useState<any>(null)
   const [present, setPresent] = useState({})
   const [typists, setTypists] = useState([])
   const cache = useMemo(() => new TimedCache(2000, setTypists), [])

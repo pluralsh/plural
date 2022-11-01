@@ -9,7 +9,7 @@ import { Flex } from 'honorable'
 import { PackageActions } from './misc'
 
 export default function PackageReadme() {
-  const { currentHelmChart, currentTerraformChart } = useOutletContext()
+  const { currentHelmChart, currentTerraformChart } = useOutletContext() as any
   const readme = (currentHelmChart || currentTerraformChart)?.readme || 'This package does not have a Readme yet.'
 
   return (

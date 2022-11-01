@@ -64,7 +64,7 @@ export function Container({
 function WebhookLogs({
   webhook: { logs: { pageInfo, edges } }, loading, fetchMore, refetch,
 }: any) {
-  const [listRef, setListRef] = useState(null)
+  const [listRef, setListRef] = useState<any>(null)
 
   return (
     <Container

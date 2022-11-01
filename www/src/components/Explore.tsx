@@ -163,7 +163,7 @@ function Repositories({
   fetchMore,
   setTag,
 }: any) {
-  const [listRef, setListRef] = useState(null)
+  const [listRef, setListRef] = useState<any>(null)
 
   return (
     <Box fill>

@@ -518,7 +518,7 @@ function Placeholder() {
 export function Incidents() {
   const [open, setOpen] = useState(false)
   const { incidentId } = useParams()
-  const [q, setQ] = useState(null)
+  const [q, setQ] = useState<any>(null)
   const [filters, setFilters] = useState([])
   const [sort, setSort] = useState(IncidentSort.INSERTED_AT)
   const [order, setOrder] = useState(Order.DESC)

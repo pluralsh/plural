@@ -43,7 +43,7 @@ export function Dropzone({ children, loaded }: any) {
 }
 
 export function AttachmentProvider({ children }: any) {
-  const [attachment, setAttachment] = useState(null)
+  const [attachment, setAttachment] = useState<any>(null)
   const value = useMemo(() => ({ attachment, setAttachment }), [attachment, setAttachment])
 
   return (

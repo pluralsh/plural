@@ -123,6 +123,7 @@ export function RepoForm({
         </LabeledInput>
         <LabeledInput label="2. Give it a name">
           <TextInput
+            // @ts-expect-error
             labelWidth={LABEL_WIDTH}
             placeholder="a good name"
             value={state.name}
@@ -131,6 +132,7 @@ export function RepoForm({
         </LabeledInput>
         <LabeledInput label="3. Give it a quick description">
           <TextInput
+            // @ts-expect-error
             label="description"
             labelWidth={LABEL_WIDTH}
             placeholder="a helpful description"
@@ -153,6 +155,7 @@ export function RepoForm({
             gap="xsmall"
           >
             <TextInput
+              // @ts-expect-error
               label="uri format"
               labelWidth={LABEL_WIDTH}
               placeholder="https://{domain}/oauth/callback"
@@ -209,8 +212,8 @@ export default function CreateRepository({ publisher }: any) {
     category: Categories.DEVOPS,
     oauthSettings: { uriFormat: null, authMethod: AuthMethod.POST },
   })
-  const [image, setImage] = useState(null)
-  const [darkImage, setDarkImage] = useState(null)
+  const [image, setImage] = useState<any>(null)
+  const [darkImage, setDarkImage] = useState<any>(null)
   const { oauthSettings, ...base } = state
   const attributes = { ...base, tags: state.tags.map(t => ({ tag: t })), oauthSettings: oauthSettings.uriFormat ? oauthSettings : null }
   const [mutation, { loading, error }] = useMutation(CREATE_REPO, {

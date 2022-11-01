@@ -110,13 +110,13 @@ function Integration({
 }
 
 const containerStyling = styled.div`
-  border-color: ${props => props.borderColor};
+  border-color: ${(props: any) => props.borderColor};
   border-width: 1px;
   border-style: solid;
-  border-radius: ${props => props.theme.global.edgeSize[props.round || 'medium']} !important;
-  ${props => props.width && `width: ${props.width} !important;`}
+  border-radius: ${(props: any) => props.theme.global.edgeSize[props.round || 'medium']} !important;
+  ${(props: any) => props.width && `width: ${props.width} !important;`}
 
-  ${props => !props.noHover && `&:hover {
+  ${(props: any) => !props.noHover && `&:hover {
       border-color: ${props.brandColor};
       box-shadow: ${props.elevation};
     }`
@@ -133,6 +133,7 @@ export function Container({
 
   return (
     <Stack
+      // @ts-expect-error
       as={containerStyling}
       width={width}
       noHover={noHover}
@@ -175,6 +176,7 @@ function SourceLink({ sourceUrl }: any) {
       <Anchor
         href={sourceUrl}
         color="focus"
+        // @ts-expect-error
         _target="blank"
       >
         <Box
@@ -228,6 +230,7 @@ export function TagHeader({ tag, setTag }: any) {
   return (
     <HoveredBackground>
       <Box
+        // @ts-expect-error
         accentable
         focusIndicator={false}
         align="center"
@@ -244,7 +247,7 @@ export function TagHeader({ tag, setTag }: any) {
 const WIDTH = 15
 
 export function IntegrationPage() {
-  const [tag, setTag] = useState(null)
+  const [tag, setTag] = useState<any>(null)
   const { repositoryId } = useParams()
   const { data, fetchMore } = useQuery(INTEGRATIONS_Q, {
     variables: { id: repositoryId, tag },

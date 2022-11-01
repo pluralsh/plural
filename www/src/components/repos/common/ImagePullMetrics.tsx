@@ -1,8 +1,6 @@
-import { Box } from 'grommet'
-
-import { useOutletContext } from 'react-router-dom'
-
 import { useMemo, useRef } from 'react'
+import { useOutletContext } from 'react-router-dom'
+import { Box } from 'grommet'
 import moment from 'moment'
 import {
   Codeline,
@@ -12,8 +10,8 @@ import {
   TabPanel,
 } from 'pluralsh-design-system'
 
-import { DURATIONS, Graph } from '../utils/Graph'
-import { generateColor } from '../utils/colors'
+import { DURATIONS, Graph } from '../../utils/Graph'
+import { generateColor } from '../../utils/colors'
 
 function RangePicker({ duration, setDuration }: any) {
   const tabStateRef = useRef<any>(null)
@@ -47,7 +45,7 @@ function RangePicker({ duration, setDuration }: any) {
 export default function ImagePullMetrics() {
   const {
     image: { dockerRepository }, imageName, filter, setFilter,
-  } = useOutletContext()
+  } = useOutletContext() as any
   const data = useMemo(() => dockerRepository.metrics.map(({ tags, values }, i) => {
     const tag = tags.find(({ name }) => name === 'tag')
 

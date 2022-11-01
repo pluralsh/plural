@@ -67,6 +67,7 @@ export function TagContainer({
   return (
     <Box
       pad={pad || { horizontal: 'xsmall' }}
+      // @ts-expect-error
       border={border}
     >
       <Box

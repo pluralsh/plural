@@ -21,7 +21,7 @@ import { User } from './User'
 
 export function UsersList() {
   const [q, setQ] = useState('')
-  const [listRef, setListRef] = useState(null)
+  const [listRef, setListRef] = useState<any>(null)
   const { data, loading, fetchMore } = useQuery(USERS_Q, {
     variables: { q },
     fetchPolicy: 'cache-and-network',

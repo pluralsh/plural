@@ -19,7 +19,7 @@ import { EditInstallation } from './EditInstallation'
 
 export function Plans({ repository, nocreate }: any) {
   const [open, setOpen] = useState(false)
-  const [modal, setModal] = useState(null)
+  const [modal, setModal] = useState<any>(null)
   const { plans, editable, installation } = repository
   const { subscription, id } = installation || {}
 
@@ -110,7 +110,7 @@ export function InstallationInner({ installation, repository }: any) {
         )}
         <Codeline
           language="bash"
-          style={{ backgroundColor: theme.utils.resolveColor('fill-two') }}
+          style={{ backgroundColor: theme.utils?.resolveColorString('fill-two') }}
         >
           {[`plural build --only ${repository.name}`, `plural deploy ${repository.name}`].join('\n')}
         </Codeline>

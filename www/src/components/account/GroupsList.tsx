@@ -19,7 +19,7 @@ import { CreateGroup } from './CreateGroup'
 import { Group } from './Groups'
 
 export function GroupsList({ q }: any) {
-  const [listRef, setListRef] = useState(null)
+  const [listRef, setListRef] = useState<any>(null)
   const { data, loading, fetchMore } = useQuery(GROUPS_Q, { variables: { q } })
 
   if (!data) {

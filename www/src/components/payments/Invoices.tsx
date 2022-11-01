@@ -179,7 +179,7 @@ function EmptyState() {
 }
 
 export default function Invoices() {
-  const [current, setCurrent] = useState(null)
+  const [current, setCurrent] = useState<any>(null)
   const { loading, data } = useQuery(SUBSCRIPTIONS_Q)
   const { setBreadcrumbs } = useContext(BreadcrumbsContext)
 

@@ -1,9 +1,12 @@
-import { Box, Collapsible } from 'grommet'
-
-import { useOutletContext } from 'react-router-dom'
-
 import { useState } from 'react'
-
+import { Box, Collapsible } from 'grommet'
+import { useOutletContext } from 'react-router-dom'
+import {
+  A,
+  Flex,
+  P,
+  Span,
+} from 'honorable'
 import {
   ArrowTopRightIcon,
   Chip,
@@ -13,17 +16,9 @@ import {
   EmptyState,
   PageTitle,
 } from 'pluralsh-design-system'
-
-import {
-  A,
-  Flex,
-  P,
-  Span,
-} from 'honorable'
-
 import capitalize from 'lodash/capitalize'
 
-import { Table, TableData, TableRow } from '../utils/Table'
+import { Table, TableData, TableRow } from '../../utils/Table'
 
 import { AttackVector } from '../constants'
 
@@ -71,7 +66,8 @@ function VulnerabilityDetail({ v, last }: any) {
   if (!v.title && !v.description && !v.source && !v.score && !v.cvss) {
     return (
       <Box
-        borderBottom={last ? null : '1px solid border'}
+        // @ts-expect-error
+        borderBottom={last ? undefined : '1px solid border'}
         background="fill-two"
         pad={{ horizontal: 'large', vertical: 'medium' }}
       >
@@ -85,7 +81,8 @@ function VulnerabilityDetail({ v, last }: any) {
       direction="column"
       pad={{ horizontal: 'large', vertical: 'medium' }}
       gap="small"
-      borderBottom={last ? null : '1px solid border'}
+      // @ts-expect-error
+      borderBottom={last ? undefined : '1px solid border'}
       background="fill-two"
       round={{ corner: 'bottom', size: '4px' }}
     >
@@ -300,7 +297,7 @@ function Vulnerability({ v, last }: any) {
 }
 
 export default function ImageVulnerabilities() {
-  const { image, imageName } = useOutletContext()
+  const { image, imageName } = useOutletContext() as any
   const { vulnerabilities } = image
 
   return (

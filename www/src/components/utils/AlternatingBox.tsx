@@ -18,7 +18,7 @@ function Content({ children, slide }: any) {
 
 export function AlternatingBox({ children }: any) {
   const [opened, setOpened] = useState(false)
-  const [alternate, setAlternate] = useState(null)
+  const [alternate, setAlternate] = useState<any>(null)
   const doSetAlternate = useCallback(alternate => {
     setOpened(true)
     setAlternate(alternate)

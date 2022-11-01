@@ -101,7 +101,7 @@ function Audit({ audit, last }: any) {
 }
 
 export function Audits() {
-  const [listRef, setListRef] = useState(null)
+  const [listRef, setListRef] = useState<any>(null)
   const [scrolled, setScrolled] = useState(false)
   const { data, loading, fetchMore } = useQuery(AUDITS_Q, { fetchPolicy: 'cache-and-network' })
 

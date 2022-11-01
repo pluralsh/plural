@@ -113,7 +113,7 @@ export function ProviderForm({
   loading,
 }: any) {
   const settings = repository.oauthSettings || {}
-  const [toast, setToast] = useState(null)
+  const [toast, setToast] = useState<any>(null)
   const [dirty, setDirty] = useState(false)
   const [saved, setSaved] = useState(false)
   const isMountRef = useRef(true)

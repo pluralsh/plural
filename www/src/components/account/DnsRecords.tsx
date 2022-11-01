@@ -62,7 +62,7 @@ function DeleteRecord({ record, domain }: any) {
 }
 
 export function DnsRecords({ domain, setDomain }: any) {
-  const [listRef, setListRef] = useState(null)
+  const [listRef, setListRef] = useState<any>(null)
   const { data, loading, fetchMore } = useQuery(DNS_RECORDS, {
     variables: { id: domain.id },
     fetchPolicy: 'cache-and-network',

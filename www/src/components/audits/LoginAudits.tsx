@@ -63,7 +63,7 @@ function LoginRow({ login, last }: any) {
 }
 
 export function LoginAudits() {
-  const [listRef, setListRef] = useState(null)
+  const [listRef, setListRef] = useState<any>(null)
   const [scrolled, setScrolled] = useState(false)
   const { data, loading, fetchMore } = useQuery(LOGINS_Q, { fetchPolicy: 'cache-and-network' })
   const returnToBeginning = useCallback(() => listRef.scrollToItem(0), [listRef])

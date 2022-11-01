@@ -167,7 +167,7 @@ function ArtifactDetails({
 function ArtifactDetail({
   dropRef, setOpen, blob, readme, sha, filesize,
 }: any) {
-  const [alternate, setAlternate] = useState(null)
+  const [alternate, setAlternate] = useState<any>(null)
 
   return (
     <Drop
@@ -285,7 +285,7 @@ export function DetailHeader({ text, modifier }: any) {
 const ROW_HEIGHT = '50px'
 
 function ArtifactRow({ artifact }: any) {
-  const [open, setOpen] = useState(null)
+  const [open, setOpen] = useState<any>(null)
   const doSetOpen = useCallback(tab => (open === tab ? setOpen(null) : setOpen(tab)), [setOpen, open])
 
   return (
@@ -307,8 +307,10 @@ function ArtifactRow({ artifact }: any) {
         >
           <Text
             size="small"
+            // @ts-expect-error
             weigth={500}
-          >{artifact.name}
+          >
+            {artifact.name}
           </Text>
         </Box>
         <Box

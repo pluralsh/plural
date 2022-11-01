@@ -97,7 +97,7 @@ export function ClustersContent(): ReactElement | null {
 function UpgradesList({
   upgrades, acked, loading, fetchMore,
 }): ReactElement {
-  const [listRef, setListRef] = useState(null)
+  const [listRef, setListRef] = useState<any>(null)
   const { edges, pageInfo } = upgrades
 
   return (

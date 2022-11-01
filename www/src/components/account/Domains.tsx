@@ -213,8 +213,8 @@ function Domain({ node, last, setDomain }: any) {
 }
 
 function DomainsInner({ q, setDomainSelected }: any) {
-  const [listRef, setListRef] = useState(null)
-  const [domain, setDomain] = useState(null)
+  const [listRef, setListRef] = useState<any>(null)
+  const [domain, setDomain] = useState<any>(null)
   const { data, loading, fetchMore } = useQuery(DNS_DOMAINS, {
     fetchPolicy: 'cache-and-network',
   })

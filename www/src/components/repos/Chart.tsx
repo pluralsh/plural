@@ -157,7 +157,7 @@ function ImageDependencies({ version: { imageDependencies } }: any) {
 export default function Chart() {
   const { chartId } = useParams()
   const { pathname } = useLocation()
-  const [version, setVersion] = useState(null)
+  const [version, setVersion] = useState<any>(null)
   const { data, fetchMore } = useQuery(CHART_Q, { variables: { chartId }, fetchPolicy: 'cache-and-network' })
   const tabStateRef = useRef<any>(null)
 

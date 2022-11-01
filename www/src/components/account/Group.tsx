@@ -60,7 +60,7 @@ function GroupMember({
 }
 
 export function GroupMembers({ group, edit }: any) {
-  const [listRef, setListRef] = useState(null)
+  const [listRef, setListRef] = useState<any>(null)
   const { data, loading, fetchMore } = useQuery(GROUP_MEMBERS, {
     variables: { id: group.id },
     fetchPolicy: 'cache-and-network',

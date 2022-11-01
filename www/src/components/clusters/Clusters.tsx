@@ -165,7 +165,7 @@ function Upgrade({ upgrade, acked, last }: any) {
 }
 
 function Upgrades({ q }: any) {
-  const [listRef, setListRef] = useState(null)
+  const [listRef, setListRef] = useState<any>(null)
   const {
     data, loading, fetchMore, subscribeToMore, refetch,
   } = useQuery(QUEUE, {
@@ -263,7 +263,7 @@ function QueueHealth({ q, background }: any) {
 }
 
 export function Clusters() {
-  const [cluster, setCluster] = useState(null)
+  const [cluster, setCluster] = useState<any>(null)
   const { data, subscribeToMore } = useQuery(QUEUES, { fetchPolicy: 'cache-and-network' })
 
   useEffect(() => subscribeToMore({

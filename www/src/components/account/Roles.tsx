@@ -97,7 +97,7 @@ function Role({ role, q }: any) {
 }
 
 function RolesInner({ q }: any) {
-  const [listRef, setListRef] = useState(null)
+  const [listRef, setListRef] = useState<any>(null)
   const { data, loading, fetchMore } = useQuery(ROLES_Q, {
     variables: { q },
     fetchPolicy: 'cache-and-network',

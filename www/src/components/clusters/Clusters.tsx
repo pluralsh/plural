@@ -46,7 +46,7 @@ export interface Queue {
 }
 
 export function Clusters(): ReactElement | null {
-  const [queue, setQueue] = useState({} as Queue)
+  const [queue, setQueue] = useState<Queue | undefined>({} as Queue)
   const {
     data,
     subscribeToMore,

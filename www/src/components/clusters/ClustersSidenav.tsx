@@ -26,9 +26,9 @@ import { Queue } from './Clusters'
 export function ClustersSidenav({
   onQueueChange,
   queues,
-}: { onQueueChange: Dispatch<Queue>, queues: Array<Queue> }): ReactElement {
+}: { onQueueChange: Dispatch<Queue | undefined>, queues: Array<Queue> }): ReactElement {
   const queue: Queue = useContext(QueueContext)
-  const [selectedKey, setSelectedKey] = useState<Queue>(queues.length > 0 ? queues[0] : undefined)
+  const [selectedKey, setSelectedKey] = useState<Queue | undefined>(queues.length > 0 ? queues[0] : undefined)
 
   const onSelectionChange = id => {
     const queue = queues.find(q => q.id === id)
@@ -39,7 +39,7 @@ export function ClustersSidenav({
 
   // Update selected queue if queues are updated
   useEffect(() => {
-    const queue = queues.find(q => q.id === selectedKey.id)
+    const queue = queues.find(q => q.id === selectedKey?.id)
 
     setSelectedKey(queue)
   }, [queues, selectedKey, setSelectedKey])

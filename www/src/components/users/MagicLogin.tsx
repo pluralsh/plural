@@ -75,16 +75,7 @@ import {
 import { finishedDeviceLogin } from './DeviceLoginNotif'
 
 export function LabelledInput({
-  label,
-  value,
-  onChange,
-  placeholder,
-  type,
-  caption,
-  hint,
-  error = undefined,
-  required = false,
-  disabled = false,
+  label, value, onChange, placeholder, type, caption, hint, error = undefined, required = false, disabled = false,
 }: any) {
   return (
     <FormField
@@ -579,7 +570,8 @@ export function Signup() {
   }, [history])
   useScript({ src: 'https://js.hs-scripts.com/22363579.js' })
 
-  const { disabled, reason } = disableState(password, confirm)
+  // @ts-expect-error
+  const { disabled, reason } = disableState(password, confirm, email)
 
   return (
     <LoginPortal>

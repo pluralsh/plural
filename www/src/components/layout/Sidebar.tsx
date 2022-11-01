@@ -34,7 +34,8 @@ import {
 } from 'pluralsh-design-system'
 
 import { getPreviousUserData } from '../../helpers/authentication'
-import { CurrentUserContext, handlePreviousUserClick } from '../login/CurrentUser'
+import { handlePreviousUserClick } from '../login/CurrentUser'
+import CurrentUserContext from '../../contexts/CurrentUserContext'
 import { useIsCurrentlyOnboarding } from '../shell/onboarding/useOnboarded'
 
 import CreatePublisherModal from '../publisher/CreatePublisherModal'
@@ -266,7 +267,7 @@ function Sidebar({
   const previousUserData = getPreviousUserData()
 
   useOutsideClick(menuRef, event => {
-    if (!menuItemRef.current.contains(event.target)) {
+    if (!menuItemRef.current?.contains(event.target as any)) {
       setIsMenuOpened(false)
     }
   })
@@ -279,7 +280,7 @@ function Sidebar({
 
   function handleLogout() {
     clearLocalStorage()
-    window.location = '/'
+    window.location = '/' as any as Location
   }
 
   return (
@@ -347,6 +348,7 @@ function Sidebar({
           {items.map(({
             name, Icon, url, urlRegexp,
           }) => (
+            // @ts-expect-error
             <SidebarItem
               key={name}
               marginBottom="xsmall"
@@ -368,6 +370,7 @@ function Sidebar({
           flexShrink={0}
           borderBottom="1px solid border"
         >
+          {/* @ts-expect-error */}
           <SidebarItem
             mb={0.25}
             collapsed={collapsed}
@@ -379,6 +382,7 @@ function Sidebar({
             tooltip="Discord"
             linkTo="https://discord.gg/pluralsh"
           />
+          {/* @ts-expect-error */}
           <SidebarItem
             collapsed={collapsed}
             startIcon={<GitHubLogoIcon />}
@@ -398,6 +402,7 @@ function Sidebar({
           px={0.75}
           flexShrink={0}
         >
+          {/* @ts-expect-error */}
           <SidebarItem
             active={isNotificationsPanelOpen}
             collapsed={collapsed}
@@ -419,6 +424,7 @@ function Sidebar({
           px={0.5}
           flexShrink={0}
         >
+          {/* @ts-expect-error */}
           <SidebarItem
             ref={menuItemRef}
             py={0.25 / 2}

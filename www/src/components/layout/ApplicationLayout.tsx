@@ -9,7 +9,8 @@ import { useContext } from 'react'
 import { useTheme } from 'styled-components'
 
 import { getPreviousUserData } from '../../helpers/authentication'
-import { CurrentUserContext, handlePreviousUserClick } from '../login/CurrentUser'
+import { handlePreviousUserClick } from '../login/CurrentUser'
+import CurrentUserContext from '../../contexts/CurrentUserContext'
 
 import Sidebar from './Sidebar'
 import WithApplicationUpdate from './WithApplicationUpdate'

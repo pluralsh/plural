@@ -163,7 +163,7 @@ const getUrl = (notification: NotificationT) => {
   // return `/incident/${notification?.incident?.id}`
 }
 
-function HeaderNotificationType({ type }: { type: NotificationType }: any) {
+function HeaderNotificationType({ type }: { type: NotificationType }) {
   let text
 
   switch (type) {
@@ -196,7 +196,7 @@ function NotificationContent({
   notification,
 }: {
   notification: NotificationT
-}: any) {
+}) {
   if (hasMessage(notification)) {
     return (
       <Div

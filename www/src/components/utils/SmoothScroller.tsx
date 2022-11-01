@@ -228,17 +228,17 @@ export default function SmoothScroller({
 export function StandardScroller({
   hasNextPage,
   placeholder,
-   loading,
-    items,
-     loadNextPage,
-      mapper,
-       listRef,
-        setListRef,
-         handleScroll,
-          refreshKey,
-           setLoader,
-            ...props
-           }: any) {
+  loading,
+  items,
+  loadNextPage,
+  mapper,
+  listRef,
+  setListRef,
+  handleScroll,
+  refreshKey,
+  setLoader,
+  ...props
+}: any) {
   const sizeMap = useRef<any>({})
   const setSize = useCallback((index, size) => {
     sizeMap.current = { ...sizeMap.current, [index]: size }

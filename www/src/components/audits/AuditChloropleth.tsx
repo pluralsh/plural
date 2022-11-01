@@ -25,6 +25,7 @@ export function AuditChloropleth() {
 
   const results = data.auditMetrics || data.loginMetrics
   const metrics = results.map(({ country, count }) => ({
+    // @ts-expect-error
     id: lookup.byIso(country).iso3, value: count,
   }))
 

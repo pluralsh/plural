@@ -24,6 +24,7 @@ defmodule GraphQl do
   import_types GraphQl.Schema.Shell
   import_types GraphQl.Schema.Scaffold
   import_types GraphQl.Schema.Test
+  import_types GraphQl.Schema.AI
 
   alias GraphQl.Resolvers.{
     User,
@@ -112,6 +113,7 @@ defmodule GraphQl do
     import_fields :metric_queries
     import_fields :provider_queries
     import_fields :test_queries
+    import_fields :ai_queries
   end
 
   mutation do

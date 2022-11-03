@@ -26,10 +26,8 @@ jobs:
           yarn install --immutable
           yarn graphql:codegen
       - name: 'Commit and push'
-        uses: EndBug/add-and-commit@v9 # You can change this to use a specific version.
+        uses: EndBug/add-and-commit@v9
         with:
-          # The arguments for the `git add` command (see the paragraph below for more info)
-          # Default: '.'
           add: 'www'
           author_name: Plural Bot
           author_email: gh-bot@plural.sh

@@ -1,0 +1,33 @@
+fragment UpgradeQueueFragment on UpgradeQueue {
+  id
+  acked
+  name
+  domain
+  git
+  pingedAt
+  provider
+}
+
+fragment RolloutFragment on Rollout {
+  id
+  event
+  cursor
+  count
+  status
+  heartbeat
+}
+
+fragment UpgradeFragment on Upgrade {
+  id
+  message
+  repository { ...RepoFragment }
+  insertedAt
+}
+
+fragment DeferredUpdateFragment on DeferredUpdate {
+  id
+  dequeueAt
+  attempts
+  version { version }
+  insertedAt
+}

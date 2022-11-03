@@ -1,52 +1,118 @@
+fragment ApplyLockFragment on ApplyLock {
+  id
+  lock
+}
+
+fragment CategoryFragment on CategoryInfo {
+  category
+  count
+}
+
+fragment RepoFragment on Repository {
+  id
+  name
+  notes
+  description
+  documentation
+  icon
+  darkIcon
+  private
+  trending
+  verified
+  category
+  oauthSettings { uriFormat authMethod }
+  publisher { ...PublisherFragment }
+  recipes { name }
+}
+
+fragment RepositoryFragment on Repository {
+  id
+  name
+  notes
+  icon
+  darkIcon
+  description
+  publisher { name }
+  recipes { name }
+}
+
+fragment DependenciesFragment on Dependencies {
+  dependencies {
+    name
+    repo
+    type
+    version
+    optional
+  }
+  wait
+  application
+  providers
+  secrets
+  wirings { terraform helm }
+  providerWirings
+  outputs
+}
+
+
+fragment IntegrationFragment on Integration {
+  id
+  name
+  icon
+  sourceUrl
+  description
+  tags { tag }
+  publisher { ...PublisherFragment }
+}
+
 query GetRepository($name: String) {
-    repository(name: $name) { ...RepositoryFragment }
+  repository(name: $name) { ...RepositoryFragment }
 }
 
 mutation CreateResourceDefinition($name: String!, $input: ResourceDefinitionAttributes!) {
-    updateRepository(repositoryName: $name, attributes: {integrationResourceDefinition: $input}) {
-        id
-    }
+  updateRepository(repositoryName: $name, attributes: {integrationResourceDefinition: $input}) {
+    id
+  }
 }
 
 mutation CreateIntegration($name: String!, $attrs: IntegrationAttributes!) {
-    createIntegration(repositoryName: $name, attributes: $attrs) { id }
+  createIntegration(repositoryName: $name, attributes: $attrs) { id }
 }
 
 mutation UpdateRepository($name: String!, $attrs: RepositoryAttributes!) {
-    updateRepository(repositoryName: $name, attributes: $attrs) { id }
+  updateRepository(repositoryName: $name, attributes: $attrs) { id }
 }
 
 mutation CreateRepository($name: String!, $publisher: String!, $attributes: RepositoryAttributes!) {
-    upsertRepository(name: $name, publisher: $publisher, attributes: $attributes) { id }
+  upsertRepository(name: $name, publisher: $publisher, attributes: $attributes) { id }
 }
 
 mutation AcquireLock($name: String!) {
-    acquireLock(repository: $name) { ...ApplyLockFragment }
+  acquireLock(repository: $name) { ...ApplyLockFragment }
 }
 
 mutation ReleaseLock($name: String!, $attrs: LockAttributes!) {
-    releaseLock(repository: $name, attributes: $attrs) { ...ApplyLockFragment	}
+  releaseLock(repository: $name, attributes: $attrs) { ...ApplyLockFragment	}
 }
 
 mutation UnlockRepository($name: String!) {
-    unlockRepository(name: $name)
+  unlockRepository(name: $name)
 }
 
 query ListRepositories($q: String) {
-    repositories(q: $q, first: 100) {
-        edges { node { ...RepositoryFragment } }
-    }
+  repositories(q: $q, first: 100) {
+    edges { node { ...RepositoryFragment } }
+  }
 }
 
 query Scaffolds($app: String!, $pub: String!, $cat: Category!, $ing: Boolean, $pg: Boolean) {
-    scaffold(application: $app, publisher: $pub, category: $cat, ingress: $ing, postgres: $pg) {
-        path
-        content
-    }
+  scaffold(application: $app, publisher: $pub, category: $cat, ingress: $ing, postgres: $pg) {
+    path
+    content
+  }
 }
 
 mutation DeleteRepository($id: ID!) {
-    deleteRepository(repositoryId: $id){
-        id
-    }
+  deleteRepository(repositoryId: $id){
+    id
+  }
 }

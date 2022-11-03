@@ -1,44 +1,91 @@
+fragment ChartFragment on Chart {
+  id
+  name
+  description
+  latestVersion
+  dependencies { ...DependenciesFragment }
+  insertedAt
+}
+
+fragment CrdFragment on Crd {
+  id
+  name
+  blob
+}
+
+fragment ChartInstallationFragment on ChartInstallation {
+  id
+  chart {
+    ...ChartFragment
+    dependencies { ...DependenciesFragment }
+  }
+  version { ...VersionFragment }
+}
+
+fragment ScanViolation on ScanViolation {
+  ruleName
+  description
+  ruleId
+  severity
+  category
+  resourceName
+  resourceType
+  file
+  line
+}
+
+fragment ScanError on ScanError {
+    message
+}
+
+fragment PackageScan on PackageScan {
+  id
+  grade
+  violations { ...ScanViolation }
+  errors { ...ScanError }
+}
+
 query GetCharts($id: ID!) {
-    charts(repositoryId: $id, first: 100) {
-        edges {
-            node {
-                ...ChartFragment
-            }
-        }
+  charts(repositoryId: $id, first: 100) {
+    edges {
+      node {
+          ...ChartFragment
+      }
     }
+  }
 }
 
 query GetVersions($id: ID!) {
-    versions(chartId: $id, first: 100) {
-        edges {
-            node {
-                ...VersionFragment
-            }
-        }
+  versions(chartId: $id, first: 100) {
+    edges {
+      node {
+          ...VersionFragment
+      }
     }
+  }
 }
 
 query GetChartInstallations($id: ID!) {
-    chartInstallations(repositoryId: $id, first: 100) {
-        edges { node { ...ChartInstallationFragment } }
-    }
+  chartInstallations(repositoryId: $id, first: 100) {
+    edges { node { ...ChartInstallationFragment } }
+  }
 }
 
 query GetPackageInstallations($id: ID!) {
-    chartInstallations(repositoryId: $id, first: 100) {
-        edges { node { ...ChartInstallationFragment } }
-    }
-    terraformInstallations(repositoryId: $id, first: 100) {
-        edges { node { ...TerraformInstallationFragment } }
-    }
+  chartInstallations(repositoryId: $id, first: 100) {
+    edges { node { ...ChartInstallationFragment } }
+  }
+  terraformInstallations(repositoryId: $id, first: 100) {
+    edges { node { ...TerraformInstallationFragment } }
+  }
 }
 
 mutation CreateCrd($chartName: ChartName!, $name: String!, $blob: UploadOrUrl!) {
-    createCrd(chartName: $chartName, attributes: {name:$name, blob:$blob}) {
-        id
-    }
+  createCrd(chartName: $chartName, attributes: {name:$name, blob:$blob}) {
+    id
+  }
 }
 
 mutation UninstallChart($id: ID!) {
-    deleteChartInstallation(id: $id) { id }
+  deleteChartInstallation(id: $id) { id }
 }

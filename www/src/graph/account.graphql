@@ -1,0 +1,53 @@
+fragment AuditFragment on Audit {
+  id
+  action
+  ip
+  country
+  city
+  latitude
+  longitude
+  actor { ...UserFragment }
+  repository { ...RepoFragment }
+  group { ...GroupFragment }
+  integrationWebhook { ...IntegrationWebhookFragment }
+  role { ...RoleFragment }
+  version { ...VersionFragment }
+  image { id tag dockerRepository { name } }
+  insertedAt
+}
+
+fragment PolicyBindingFragment on PolicyBinding {
+  id
+  group { id name }
+  user { id name email }
+}
+
+fragment DnsDomainFragment on DnsDomain {
+  id
+  name
+  creator { ...UserFragment }
+  accessPolicy {
+    id
+    bindings { ...PolicyBindingFragment }
+  }
+  insertedAt
+}
+
+fragment InviteFragment on Invite {
+  id
+  secureId
+  email
+  insertedAt
+}
+
+fragment OidcLoginFragment on OidcLogin {
+  ip
+  country
+  city
+  latitude
+  longitude
+  user { ...UserFragment }
+  owner { ...UserFragment }
+  repository { ...RepoFragment }
+  insertedAt
+}

@@ -1,0 +1,82 @@
+fragment PostmortemFragment on Postmortem {
+  id
+  content
+  actionItems { type link }
+}
+
+fragment FollowerFragment on Follower {
+  id
+  incident { id }
+  user { ...UserFragment }
+  preferences { message incidentUpdate mention }
+}
+
+#TODO: not that this was changed as it needs to be unique. Whatever queries/mutations use this fragment needs to be updated
+fragment SlimSubscriptionFragment on SlimSubscription {
+  id
+  lineItems { items { dimension quantity } }
+  plan { ...PlanFragment }
+}
+
+
+fragment ClusterInformation on ClusterInformation {
+  version
+  gitCommit
+  platform
+}
+
+
+fragment IncidentFragment on Incident {
+  id
+  title
+  description
+  severity
+  status
+  notificationCount
+  nextResponseAt
+  creator { ...UserFragment }
+  owner { ...UserFragment }
+  repository { ...RepoFragment }
+  subscription { ...SlimSubscriptionFragment }
+  clusterInformation { ...ClusterInformation }
+  tags { tag }
+  insertedAt
+}
+
+fragment IncidentHistoryFragment on IncidentHistory {
+  id
+  action
+  changes { key prev next }
+  actor { ...UserFragment }
+  insertedAt
+}
+
+fragment FileFragment on File {
+  id
+  blob
+  mediaType
+  contentType
+  filesize
+  filename
+}
+
+fragment IncidentMessageFragment on IncidentMessage {
+  id
+  text
+  creator { ...UserFragment }
+  reactions { name creator { id email } }
+  file { ...FileFragment }
+  entities { type user { ...UserFragment } text startIndex endIndex }
+  insertedAt
+}
+
+fragment NotificationFragment on Notification {
+  id
+  type
+  msg
+  actor { ...UserFragment }
+  incident { id title repository { id name icon darkIcon } }
+  message { text }
+  repository { id name icon darkIcon }
+  insertedAt
+}

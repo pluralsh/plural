@@ -1,10 +1,10 @@
 query GetTfProviders{
-    terraformProviders
+  terraformProviders
 }
 
 query GetTfProviderScaffold($name: Provider!, $vsn: String) {
-    terraformProvider(name: $name, vsn: $vsn) {
-        name
-        content
-    }
+  terraformProvider(name: $name, vsn: $vsn) {
+    name
+    content
+  }
 }

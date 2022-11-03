@@ -1,29 +1,47 @@
+fragment TerraformFragment on Terraform {
+  id
+  name
+  readme
+  package
+  description
+  latestVersion
+  dependencies { ...DependenciesFragment }
+  valuesTemplate
+  insertedAt
+}
+
+fragment TerraformInstallationFragment on TerraformInstallation {
+  id
+  terraform { ...TerraformFragment }
+  version { ...VersionFragment }
+}
+
 query GetTerraform($id: ID!) {
-    terraform(repositoryId: $id, first: 100) {
-        edges {
-            node {
-                ...TerraformFragment
-            }
-        }
+  terraform(repositoryId: $id, first: 100) {
+    edges {
+      node {
+          ...TerraformFragment
+      }
     }
+  }
 }
 
 query GetTerraformInstallations($id: ID!) {
-    terraformInstallations(repositoryId: $id, first: 100) {
-        edges {
-            node {
-                ...TerraformInstallationFragment
-            }
-        }
+  terraformInstallations(repositoryId: $id, first: 100) {
+    edges {
+      node {
+        ...TerraformInstallationFragment
+      }
     }
+  }
 }
 
 mutation UploadTerraform($repoName: String!, $name: String!, $uploadOrUrl: UploadOrUrl!) {
-    uploadTerraform(repositoryName: $repoName, name: $name, attributes: {name: $name, package: $uploadOrUrl}) {
-        ...TerraformFragment
-    }
+  uploadTerraform(repositoryName: $repoName, name: $name, attributes: {name: $name, package: $uploadOrUrl}) {
+    ...TerraformFragment
+  }
 }
 
 mutation UninstallTerraform($id: ID!) {
-    uninstallTerraform(id: $id) { id }
+  uninstallTerraform(id: $id) { id }
 }

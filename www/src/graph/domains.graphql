@@ -1,5 +1,5 @@
 mutation CreateDomain($name: String!) {
-    provisionDomain(name: $name) {
-        ...DnsDomainFragment
-    }
+  provisionDomain(name: $name) {
+    ...DnsDomainFragment
+  }
 }

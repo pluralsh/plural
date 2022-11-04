@@ -30,6 +30,7 @@ defmodule Core.Schema.Repository do
     field :icon_id,       :binary_id
     field :icon,          Core.Storage.Type
     field :dark_icon,     Core.Storage.Type
+    field :docs,          Core.Storage.Type
     field :description,   :string
     field :documentation, :binary
     field :public_key,    Piazza.Ecto.EncryptedString
@@ -209,7 +210,7 @@ defmodule Core.Schema.Repository do
     |> unique_constraint(:name)
     |> validate_required([:name, :category])
     |> generate_uuid(:icon_id)
-    |> cast_attachments(attrs, [:icon, :dark_icon], allow_urls: true)
+    |> cast_attachments(attrs, [:icon, :dark_icon, :docs], allow_urls: true)
   end
 
   @keyvalid ~w(public_key private_key)a

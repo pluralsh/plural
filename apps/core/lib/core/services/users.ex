@@ -619,9 +619,9 @@ defmodule Core.Services.Users do
   def notify({:ok, %PasswordlessLogin{} = l}, :create),
     do: handle_notify(PubSub.PasswordlessLoginCreated, l)
   def notify({:ok, %User{} = u}, :update),
-  do: handle_notify(PubSub.UserUpdated, u)
+    do: handle_notify(PubSub.UserUpdated, u)
   def notify({:ok, %User{} = u}, :create),
-  do: handle_notify(PubSub.UserCreated, u)
+    do: handle_notify(PubSub.UserCreated, u)
   def notify({:ok, %User{} = u}, :confirmed),
     do: handle_notify(PubSub.EmailConfirmed, u)
 

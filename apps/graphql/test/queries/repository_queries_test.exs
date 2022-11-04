@@ -2,6 +2,8 @@ defmodule GraphQl.RepositoryQueriesTest do
   use Core.SchemaCase, async: true
   import GraphQl.TestHelpers
 
+  use Mimic
+
   describe "repositories" do
     test "It can list repositories for a publisher" do
       publisher = insert(:publisher)
@@ -228,6 +230,29 @@ defmodule GraphQl.RepositoryQueriesTest do
 
       assert found["id"] == repo.id
       assert found["editable"]
+    end
+
+    test "It can fetch repository documentation" do
+      user = insert(:user)
+      repo = insert(:repository, publisher: build(:publisher, owner: user), docs: %{file_name: "f", updated_at: nil})
+
+      contents = priv_file(:core, "docs.tgz") |> File.read!()
+      expect(HTTPoison, :get, fn _, _, _ -> {:ok, %HTTPoison.Response{status_code: 200, body: contents}} end)
+
+      {:ok, %{data: %{"repository" => found}}} = run_query("""
+        query Repo($repoId: ID!) {
+          repository(id: $repoId) {
+            id
+            documentation { path content }
+          }
+        }
+      """, %{"repoId" => repo.id}, %{current_user: user})
+
+      assert found["id"] == repo.id
+      by_name = Enum.into(found["documentation"], %{}, & {&1["path"], &1["content"]})
+
+      assert by_name["test.md"] == "hello world"
+      assert by_name["other.md"] == "another file"
     end
 
     test "It will respect privacy" do

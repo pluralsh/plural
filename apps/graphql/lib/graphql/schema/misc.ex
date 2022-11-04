@@ -45,6 +45,11 @@ defmodule GraphQl.Schema.Misc do
     field :count, non_null(:integer)
   end
 
+  object :file_content do
+    field :path,    non_null(:string)
+    field :content, non_null(:string)
+  end
+
   object :plural_configuration do
     field :stripe_connect_id,      :string
     field :stripe_publishable_key, :string

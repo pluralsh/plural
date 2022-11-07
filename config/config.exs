@@ -136,6 +136,7 @@ config :worker, rollout_pipeline: [
 
 config :worker, upgrade_pipeline: []
 config :worker, demo_projects_pipeline: []
+config :worker, docker_pipeline: []
 
 config :core, Core.Clients.Hydra,
   hydra_admin: "http://plural-hydra-admin:4445",

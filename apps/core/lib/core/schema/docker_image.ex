@@ -38,6 +38,8 @@ defmodule Core.Schema.DockerImage do
   def ordered(query \\ __MODULE__, order \\ [desc: :inserted_at]),
     do: from(di in query, order_by: ^order)
 
+  def with_limit(query \\ __MODULE__, limit), do: from(di in query, limit: ^limit)
+
   @valid ~w(tag digest)a
 
   def changeset(model, attrs \\ %{}) do

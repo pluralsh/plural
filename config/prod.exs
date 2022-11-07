@@ -68,6 +68,11 @@ config :worker, rollout_pipeline: [
   {Worker.Rollouts.Pipeline, Worker.Rollouts.Producer}
 ]
 
+config :worker, docker_pipeline: [
+  Worker.Docker.Producer,
+  {Worker.Docker.Pipeline, Worker.Docker.Producer},
+]
+
 config :goth,
   disabled: true
 

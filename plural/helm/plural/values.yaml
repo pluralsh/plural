@@ -419,10 +419,6 @@ dbPasswordSecret: plural.plural-plural.credentials.postgresql.acid.zalan.do
 rabbitPasswordSecret: plural-rabbitmq
 
 crons:
-- cronName: plural-dkr-scan
-  cronModule: Task.Docker
-  crontab: "0 0 * * *"
-  envVars: []
 - cronName: plrl-login-prune
   cronModule: Prune.Passwordless
   crontab: "10 0 * * *"

@@ -112,7 +112,7 @@ export default function Invite() {
   if (!data) return null
 
   const isNameValid = attributes.name.length > 0
-  const isPasswordValid = attributes.password.length > 10
+  const isPasswordValid = attributes.password.length >= 10
   const passwordMatch = attributes.password === passwordConfirmation
   const isValid = isNameValid && isPasswordValid && passwordMatch
 

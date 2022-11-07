@@ -493,7 +493,7 @@ export function Login() {
                   )}
                   value={password}
                   onChange={setPassword}
-                  placeholder="a strong password"
+                  placeholder="Enter password"
                 />
               </Collapsible>
               <Button

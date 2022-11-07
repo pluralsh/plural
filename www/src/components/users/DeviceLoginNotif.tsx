@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Text } from 'grommet'
-import { FingerPrintIcon, Modal } from 'pluralsh-design-system'
+import { Modal } from 'pluralsh-design-system'
 
 const LOGIN_KEY = 'dli-key'
 
@@ -11,7 +10,7 @@ export const deviceLoginCompleted = () => localStorage.getItem(LOGIN_KEY)
 export const wipeDeviceLogin = () => localStorage.removeItem(LOGIN_KEY)
 
 export function DeviceLoginNotif() {
-  const [open, setOpen] = useState(!!deviceLoginCompleted())
+  const [open, setOpen] = useState(!deviceLoginCompleted())
 
   useEffect(() => {
     if (open) wipeDeviceLogin()
@@ -27,7 +26,7 @@ export function DeviceLoginNotif() {
       width="512px"
       portal
     >
-      <Text size="small">The device you requested on should now have access.</Text>
+      The device you requested on should now have access.
     </Modal>
   )
 }

@@ -1,0 +1,44 @@
+fragment DockerRepo on DockerRepository {
+  id
+  name
+  public
+  repository { id name }
+  insertedAt
+  updatedAt
+}
+
+fragment DockerRepository on DockerRepository {
+  id
+  name
+  public
+  repository { id name editable }
+  insertedAt
+  updatedAt
+}
+
+fragment DockerImage on DockerImage {
+  id
+  tag
+  digest
+  scannedAt
+  grade
+  insertedAt
+  updatedAt
+}
+
+
+fragment Vulnerability on Vulnerability {
+  id
+  title
+  description
+  vulnerabilityId
+  package
+  installedVersion
+  fixedVersion
+  source
+  url
+  severity
+  score
+  cvss { attackVector attackComplexity privilegesRequired userInteraction confidentiality integrity availability }
+  layer { digest diffId }
+}

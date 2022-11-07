@@ -1,23 +1,38 @@
+fragment Installation on Installation {
+  id
+  context
+  license
+  licenseKey
+  acmeKeyId
+  acmeSecret
+  autoUpgrade
+  trackTag
+  repository { ...Repo }
+  # repository { ...Repository }
+  user { ...User }
+  oidcProvider { ...OIDCProvider }
+}
+
 query GetInstallation($name: String) {
-    installation(name: $name) {
-        ...InstallationFragment
-    }
+  installation(name: $name) {
+    ...Installation
+  }
 }
 
 query GetInstallationById($id: ID) {
-    installation(id: $id) {
-        ...InstallationFragment
-    }
+  installation(id: $id) {
+    ...Installation
+  }
 }
 
 query GetInstallations($first: Int) {
-    installations(first: $first) {
-        edges { node { ...InstallationFragment } }
-    }
+  installations(first: $first) {
+    edges { node { ...Installation } }
+  }
 }
 
 mutation UpsertOidcProvider($id: ID!, $attributes: OidcAttributes!) {
-    upsertOidcProvider(installationId: $id, attributes: $attributes) {
-        id
-    }
+  upsertOidcProvider(installationId: $id, attributes: $attributes) {
+    id
+  }
 }

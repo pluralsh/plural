@@ -1,7 +1,31 @@
+fragment CloudShell on CloudShell {
+  id
+  aesKey
+  gitUrl
+  alive
+  provider
+  subdomain
+  cluster
+  status {
+    ready
+    initialized
+    containersReady
+    podScheduled
+  }
+}
+
+fragment DemoProject on DemoProject {
+  id
+  projectId
+  credentials
+  ready
+  state
+}
+
 query GetShell {
-    shell { ...CloudShellFragment }
+  shell { ...CloudShell }
 }
 
 mutation DeleteShell {
-    deleteShell { ...CloudShellFragment }
+  deleteShell { ...CloudShell }
 }

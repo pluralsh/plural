@@ -1,0 +1,27 @@
+fragment IntegrationWebhook on IntegrationWebhook {
+  id
+  name
+  url
+  secret
+  actions
+}
+
+fragment WebhookLog on WebhookLog {
+  id
+  state
+  status
+  payload
+  response
+  insertedAt
+}
+
+fragment OauthIntegration on OauthIntegration {
+  id
+  service
+  insertedAt
+}
+
+fragment ZoomMeeting on ZoomMeeting {
+  joinUrl
+  password
+}

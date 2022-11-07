@@ -1,3 +1,23 @@
+fragment VersionTag on VersionTag {
+  id
+  tag
+  version { id }
+}
+
+fragment Version on Version {
+  id
+  helm
+  readme
+  valuesTemplate
+  version
+  insertedAt
+  package
+  crds { ...Crd }
+  chart { ...Chart }
+  terraform { id name }
+  dependencies { ...Dependencies }
+}
+
 mutation UpdateVersion($spec: VersionSpec, $attributes: VersionAttributes!) {
-    updateVersion(spec: $spec, attributes: $attributes) { id }
+  updateVersion(spec: $spec, attributes: $attributes) { id }
 }

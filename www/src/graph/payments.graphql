@@ -1,0 +1,65 @@
+fragment Limit on Limit {
+  dimension
+  quantity
+}
+
+fragment LineItem on LineItem {
+  name
+  dimension
+  cost
+  period
+  type
+}
+
+fragment ServiceLevel on ServiceLevel {
+  minSeverity
+  maxSeverity
+  responseTime
+}
+
+fragment Plan on Plan {
+  id
+  name
+  cost
+  period
+  serviceLevels { ...ServiceLevel }
+  lineItems {
+    included { ...Limit }
+    items { ...LineItem }
+  }
+  metadata { features { name description } }
+}
+
+fragment Subscription on RepositorySubscription {
+  id
+  plan { ...Plan }
+  lineItems { items { ...Limit } }
+}
+
+
+fragment InvoiceItem on InvoiceItem {
+  amount
+  currency
+  description
+}
+
+
+fragment Invoice on Invoice {
+  number
+  amountDue
+  amountPaid
+  currency
+  status
+  createdAt
+  hostedInvoiceUrl
+  lines { ...InvoiceItem }
+}
+
+fragment Card on Card {
+  id
+  last4
+  expMonth
+  expYear
+  name
+  brand
+}

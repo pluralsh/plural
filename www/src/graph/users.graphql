@@ -1,59 +1,178 @@
+fragment Account on Account {
+  id
+  name
+  billingCustomerId
+  backgroundColor
+}
+
+fragment Group on Group {
+  id
+  name
+  global
+  description
+}
+
+fragment User on User {
+  id
+  name
+  email
+  avatar
+  provider
+  onboarding
+  onboardingChecklist { dismissed status }
+  emailConfirmed
+  emailConfirmBy
+  backgroundColor
+  serviceAccount
+  roles { admin }
+}
+
+fragment ImpersonationPolicy on ImpersonationPolicy {
+  id
+  bindings {
+    id
+    group { id name }
+    user { id name email }
+  }
+}
+
+fragment GroupMember on GroupMember {
+  id
+  user { ...User }
+}
+
+fragment Token on PersistedToken {
+  id
+  token
+  insertedAt
+}
+
+fragment TokenAudit on PersistedTokenAudit {
+  ip
+  timestamp
+  count
+  country
+  city
+  latitude
+  longitude
+}
+
+fragment Address on Address {
+  line1
+  line2
+  city
+  country
+  state
+  zip
+}
+
+fragment Publisher on Publisher {
+  id
+  name
+  phone
+  avatar
+  description
+  backgroundColor
+  owner { ...User }
+  address { ...Address }
+}
+
+fragment Webhook on Webhook {
+  id
+  url
+  secret
+  insertedAt
+}
+
+fragment RoleBinding on RoleBinding {
+  id
+  user { ...User }
+  group { ...Group }
+}
+
+fragment Role on Role {
+  id
+  name
+  description
+  repositories
+  permissions
+  roleBindings { ...RoleBinding }
+}
+
+fragment PublicKey on PublicKey {
+  id
+  name
+  digest
+  insertedAt
+  content
+  user { ...User }
+}
+
+fragment EabCredential on EabCredential {
+  id
+  keyId
+  hmacKey
+  cluster
+  provider
+  insertedAt
+}
+
 query Me{
-    me { id email }
+  me { id email }
 }
 
 query GetLoginMethod($email: String!) {
-    loginMethod(email: $email) { loginMethod token }
+  loginMethod(email: $email) { loginMethod token }
 }
 
 query ListTokens{
-    tokens(first: 3) {
-        edges { node { token } }
-    }
+  tokens(first: 3) {
+    edges { node { token } }
+  }
 }
 
 query ListKeys($emails: [String]) {
-    publicKeys(emails: $emails, first: 1000) {
-        edges { node { ...PublicKeyFragment } }
-    }
+  publicKeys(emails: $emails, first: 1000) {
+    edges { node { ...PublicKey } }
+  }
 }
 
 query GetEabCredential($cluster: String!, $provider: Provider!) {
-    eabCredential(cluster: $cluster, provider: $provider) {
-        ...EabCredentialFragment
-    }
+  eabCredential(cluster: $cluster, provider: $provider) {
+    ...EabCredential
+  }
 }
 
 mutation PollLoginToken($token: String!) {
-    loginToken(token: $token) { jwt }
+  loginToken(token: $token) { jwt }
 }
 
 mutation DevLogin {
-    deviceLogin { loginUrl deviceToken }
+  deviceLogin { loginUrl deviceToken }
 }
 
 mutation Login($email: String!, $pwd: String!) {
-    login(email: $email, password: $pwd) { jwt }
+  login(email: $email, password: $pwd) { jwt }
 }
 
 mutation ImpersonateServiceAccount($email: String) {
-    impersonateServiceAccount(email: $email) { jwt email }
+  impersonateServiceAccount(email: $email) { jwt email }
 }
 
 mutation CreateAccessToken{
-    createToken { token }
+  createToken { token }
 }
 
 mutation CreateKey($key: String!, $name: String!) {
-    createPublicKey(attributes: {content: $key, name: $name}) { id }
+  createPublicKey(attributes: {content: $key, name: $name}) { id }
 }
 
 mutation DeleteEabCredential($cluster: String!, $provider: Provider!) {
-    deleteEabKey(cluster: $cluster, provider: $provider) {
-        id
-    }
+  deleteEabKey(cluster: $cluster, provider: $provider) {
+    id
+  }
 }
 
 mutation CreateEvent($attrs: UserEventAttributes!) {
-    createUserEvent(attributes: $attrs)
+  createUserEvent(attributes: $attrs)
 }

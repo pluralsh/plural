@@ -1,0 +1,24 @@
+fragment OIDCProvider on OidcProvider {
+  id
+  clientId
+  authMethod
+  clientSecret
+  redirectUris
+  bindings {
+    id
+    user { ...User }
+    group { ...Group }
+  }
+  configuration {
+    issuer
+    authorizationEndpoint
+    tokenEndpoint
+    jwksUri
+    userinfoEndpoint
+  }
+}
+
+fragment OAuthInfo on OauthInfo {
+  provider
+  authorizeUrl
+}

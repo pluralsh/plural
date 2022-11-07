@@ -1,42 +1,120 @@
-query GetRecipe($repo: String, $name: String) {
-    recipe(repo: $repo, name: $name) {
-        ...RecipeFragment
-        recipeDependencies { ...RecipeFragment }
+fragment Recipe on Recipe {
+  id
+  name
+  description
+  restricted
+  provider
+  tests {
+    type
+    name
+    message
+    args { name repo key }
+  }
+  repository { id name }
+  oidcSettings {
+    uriFormat
+    uriFormats
+    authMethod
+    domainKey
+    subdomain
+  }
+  recipeSections { ...RecipeSection }
+}
+
+fragment RecipeItem on RecipeItem {
+  id
+  chart { ...Chart }
+  terraform { ...Terraform }
+  configuration { ...RecipeConfiguration }
+}
+
+fragment RecipeSection on RecipeSection {
+  index
+  repository {
+    ...Repo
+    installation { ...Installation }
+  }
+  recipeItems { ...RecipeItem }
+  configuration { ...RecipeConfiguration }
+}
+
+fragment RecipeConfiguration on RecipeConfiguration {
+  name
+  type
+  default
+  documentation
+  optional
+  placeholder
+  functionName
+  condition { field operation value }
+  validation { type regex message }
+}
+
+fragment Stack on Stack {
+  id
+  name
+  displayName
+  description
+  featured
+  creator { 
+    id
+    name
+  }
+  collections {
+    id
+    provider
+    bundles {
+      recipe {
+        repository {
+          ...Repo
+          tags {
+            tag
+          }
+        }
+      }
     }
+  }
+}
+
+query GetRecipe($repo: String, $name: String) {
+  recipe(repo: $repo, name: $name) {
+    ...Recipe
+    recipeDependencies { ...Recipe }
+  }
 }
 
 query ListRecipes($repo: String, $provider: Provider) {
-    recipes(repositoryName: $repo, provider: $provider, first: 500) {
-        edges { node { ...RecipeFragment } }
-    }
+  recipes(repositoryName: $repo, provider: $provider, first: 500) {
+    edges { node { ...Recipe } }
+  }
 }
 
 mutation CreateRecipe($name: String!, $attributes: RecipeAttributes!) {
-    createRecipe(repositoryName: $name, attributes: $attributes) {
-        id
-    }
+  createRecipe(repositoryName: $name, attributes: $attributes) {
+    id
+  }
 }
 
 mutation InstallRecipe($id: ID!) {
-    installRecipe(recipeId: $id, context: "{}") {
-        id
-    }
+  installRecipe(recipeId: $id, context: "{}") {
+    id
+  }
 }
 
 mutation CreateStack($attributes: StackAttributes!) {
-    createStack(attributes: $attributes) {
-        id
-    }
+  createStack(attributes: $attributes) {
+    id
+  }
 }
 
 query GetStack($name: String!, $provider: Provider!) {
-    stack(name: $name, provider: $provider) {
-        ...StackFragment
-    }
+  stack(name: $name, provider: $provider) {
+    ...Stack
+  }
 }
 
 query ListStacks($featured: Boolean, $cursor: String) {
-    stacks(first: 100, after: $cursor, featured: $featured) {
-        edges { node { ...StackFragment } }
-    }
+  stacks(first: 100, after: $cursor, featured: $featured) {
+    edges { node { ...Stack } }
+  }
 }

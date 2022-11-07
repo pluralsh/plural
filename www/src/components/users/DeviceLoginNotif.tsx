@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react'
-import { Box, Layer, Text } from 'grommet'
-import { FingerPrintIcon } from 'pluralsh-design-system'
-
-import { ModalHeader } from '../ModalHeader'
+import { Text } from 'grommet'
+import { FingerPrintIcon, Modal } from 'pluralsh-design-system'
 
 const LOGIN_KEY = 'dli-key'
 
@@ -22,28 +20,14 @@ export function DeviceLoginNotif() {
   if (!open) return null
 
   return (
-    <Layer
-      modal
-      onEsc={() => setOpen(false)}
-      onClickOutside={() => setOpen(false)}
+    <Modal
+      header="Device Login Successful"
+      open={open}
+      onClose={() => setOpen(false)}
+      width="512px"
+      portal
     >
-      <Box width="30vw">
-        <ModalHeader
-          text="Device Login Successful"
-          setOpen={setOpen}
-        />
-        <Box
-          fill="horizontal"
-          direction="row"
-          align="center"
-          justify="center"
-          gap="small"
-          pad="medium"
-        >
-          <FingerPrintIcon size={15} />
-          <Text size="small">The device you requested on should now have access</Text>
-        </Box>
-      </Box>
-    </Layer>
+      <Text size="small">The device you requested on should now have access.</Text>
+    </Modal>
   )
 }

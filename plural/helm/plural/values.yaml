@@ -570,9 +570,20 @@ resources: {}
 
 nodeSelector: {}
 
-tolerations: []
+tolerations:
+- key: plural.sh/pluralReserved
+  operator: Exists
+  effect: "NoSchedule"
 
-affinity: {}
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: plural.sh/scalingGroup
+          operator: In
+          values:
+          - plural-small
 
 test-base:
   enabled: false

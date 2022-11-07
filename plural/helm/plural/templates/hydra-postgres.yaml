@@ -23,11 +23,6 @@ spec:
     hydra: hydra  # dbname: owner
   postgresql:
     version: "13"
-  livenessProbe:
-    exec:
-      command:
-      - echo
-      - 'hello world'
   {{- with .Values.postgres.hydra.nodeAffinity }}
   nodeAffinity:
     {{- toYaml . | nindent 4 }}

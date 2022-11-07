@@ -697,6 +697,12 @@ export type FileConnection = {
   pageInfo: PageInfo;
 };
 
+export type FileContent = {
+  __typename?: 'FileContent';
+  content: Scalars['String'];
+  path: Scalars['String'];
+};
+
 export type FileEdge = {
   __typename?: 'FileEdge';
   cursor?: Maybe<Scalars['String']>;
@@ -2005,6 +2011,7 @@ export type Repository = {
   darkIcon?: Maybe<Scalars['String']>;
   defaultTag?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
+  docs?: Maybe<Array<Maybe<FileContent>>>;
   documentation?: Maybe<Scalars['String']>;
   editable?: Maybe<Scalars['Boolean']>;
   gitUrl?: Maybe<Scalars['String']>;
@@ -2037,6 +2044,7 @@ export type RepositoryAttributes = {
   darkIcon?: InputMaybe<Scalars['UploadOrUrl']>;
   defaultTag?: InputMaybe<Scalars['String']>;
   description?: InputMaybe<Scalars['String']>;
+  docs?: InputMaybe<Scalars['UploadOrUrl']>;
   documentation?: InputMaybe<Scalars['String']>;
   gitUrl?: InputMaybe<Scalars['String']>;
   homepage?: InputMaybe<Scalars['String']>;
@@ -3007,6 +3015,7 @@ export type RootQueryType = {
   eabCredentials?: Maybe<Array<Maybe<EabCredential>>>;
   groupMembers?: Maybe<GroupMemberConnection>;
   groups?: Maybe<GroupConnection>;
+  helpQuestion?: Maybe<Scalars['String']>;
   incident?: Maybe<Incident>;
   incidents?: Maybe<IncidentConnection>;
   installation?: Maybe<Installation>;
@@ -3194,6 +3203,11 @@ export type RootQueryTypeGroupsArgs = {
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   q?: InputMaybe<Scalars['String']>;
+};
+
+
+export type RootQueryTypeHelpQuestionArgs = {
+  prompt: Scalars['String'];
 };
 
 
@@ -4300,17 +4314,17 @@ export type ZoomMeeting = {
   password?: Maybe<Scalars['String']>;
 };
 
-export type AuditFragmentFragment = { __typename?: 'Audit', id: string, action: string, ip?: string | null, country?: string | null, city?: string | null, latitude?: string | null, longitude?: string | null, insertedAt?: Date | null, actor?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, repository?: { __typename?: 'Repository', id: string, name: string, notes?: string | null, description?: string | null, documentation?: string | null, icon?: string | null, darkIcon?: string | null, private?: boolean | null, trending?: boolean | null, verified?: boolean | null, category?: Category | null, oauthSettings?: { __typename?: 'OauthSettings', uriFormat: string, authMethod: OidcAuthMethod } | null, publisher?: { __typename?: 'Publisher', id?: string | null, name: string, phone?: string | null, avatar?: string | null, description?: string | null, backgroundColor?: string | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, address?: { __typename?: 'Address', line1?: string | null, line2?: string | null, city?: string | null, country?: string | null, state?: string | null, zip?: string | null } | null } | null, recipes?: Array<{ __typename?: 'Recipe', name: string } | null> | null } | null, group?: { __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null, integrationWebhook?: { __typename?: 'IntegrationWebhook', id: string, name: string, url: string, secret: string, actions?: Array<string | null> | null } | null, role?: { __typename?: 'Role', id: string, name: string, description?: string | null, repositories?: Array<string | null> | null, permissions?: Array<Permission | null> | null, roleBindings?: Array<{ __typename?: 'RoleBinding', id: string, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, group?: { __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null } | null> | null } | null, version?: { __typename?: 'Version', id: string, helm?: Map<string, unknown> | null, readme?: string | null, valuesTemplate?: string | null, version: string, insertedAt?: Date | null, package?: string | null, crds?: Array<{ __typename?: 'Crd', id: string, name: string, blob?: string | null } | null> | null, chart?: { __typename?: 'Chart', id?: string | null, name: string, description?: string | null, latestVersion?: string | null, insertedAt?: Date | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', name?: string | null, repo?: string | null, type?: DependencyType | null, version?: string | null, optional?: boolean | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null } | null, terraform?: { __typename?: 'Terraform', id?: string | null, name?: string | null } | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', name?: string | null, repo?: string | null, type?: DependencyType | null, version?: string | null, optional?: boolean | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null } | null, image?: { __typename?: 'DockerImage', id: string, tag?: string | null, dockerRepository?: { __typename?: 'DockerRepository', name: string } | null } | null };
+export type AuditFragment = { __typename?: 'Audit', id: string, action: string, ip?: string | null, country?: string | null, city?: string | null, latitude?: string | null, longitude?: string | null, insertedAt?: Date | null, actor?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, repository?: { __typename?: 'Repository', id: string, name: string, notes?: string | null, description?: string | null, documentation?: string | null, icon?: string | null, darkIcon?: string | null, private?: boolean | null, trending?: boolean | null, verified?: boolean | null, category?: Category | null, oauthSettings?: { __typename?: 'OauthSettings', uriFormat: string, authMethod: OidcAuthMethod } | null, publisher?: { __typename?: 'Publisher', id?: string | null, name: string, phone?: string | null, avatar?: string | null, description?: string | null, backgroundColor?: string | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, address?: { __typename?: 'Address', line1?: string | null, line2?: string | null, city?: string | null, country?: string | null, state?: string | null, zip?: string | null } | null } | null, recipes?: Array<{ __typename?: 'Recipe', name: string } | null> | null } | null, group?: { __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null, integrationWebhook?: { __typename?: 'IntegrationWebhook', id: string, name: string, url: string, secret: string, actions?: Array<string | null> | null } | null, role?: { __typename?: 'Role', id: string, name: string, description?: string | null, repositories?: Array<string | null> | null, permissions?: Array<Permission | null> | null, roleBindings?: Array<{ __typename?: 'RoleBinding', id: string, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, group?: { __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null } | null> | null } | null, version?: { __typename?: 'Version', id: string, helm?: Map<string, unknown> | null, readme?: string | null, valuesTemplate?: string | null, version: string, insertedAt?: Date | null, package?: string | null, crds?: Array<{ __typename?: 'Crd', id: string, name: string, blob?: string | null } | null> | null, chart?: { __typename?: 'Chart', id?: string | null, name: string, description?: string | null, latestVersion?: string | null, insertedAt?: Date | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', name?: string | null, repo?: string | null, type?: DependencyType | null, version?: string | null, optional?: boolean | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null } | null, terraform?: { __typename?: 'Terraform', id?: string | null, name?: string | null } | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', name?: string | null, repo?: string | null, type?: DependencyType | null, version?: string | null, optional?: boolean | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null } | null, image?: { __typename?: 'DockerImage', id: string, tag?: string | null, dockerRepository?: { __typename?: 'DockerRepository', name: string } | null } | null };
 
-export type PolicyBindingFragmentFragment = { __typename?: 'PolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null };
+export type PolicyBindingFragment = { __typename?: 'PolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null };
 
-export type DnsDomainFragmentFragment = { __typename?: 'DnsDomain', id: string, name: string, insertedAt?: Date | null, creator?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, accessPolicy?: { __typename?: 'DnsAccessPolicy', id: string, bindings?: Array<{ __typename?: 'PolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null };
+export type DnsDomainFragment = { __typename?: 'DnsDomain', id: string, name: string, insertedAt?: Date | null, creator?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, accessPolicy?: { __typename?: 'DnsAccessPolicy', id: string, bindings?: Array<{ __typename?: 'PolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null };
 
-export type InviteFragmentFragment = { __typename?: 'Invite', id: string, secureId?: string | null, email?: string | null, insertedAt?: Date | null };
+export type InviteFragment = { __typename?: 'Invite', id: string, secureId?: string | null, email?: string | null, insertedAt?: Date | null };
 
-export type OidcLoginFragmentFragment = { __typename?: 'OidcLogin', ip?: string | null, country?: string | null, city?: string | null, latitude?: string | null, longitude?: string | null, insertedAt?: Date | null, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, repository?: { __typename?: 'Repository', id: string, name: string, notes?: string | null, description?: string | null, documentation?: string | null, icon?: string | null, darkIcon?: string | null, private?: boolean | null, trending?: boolean | null, verified?: boolean | null, category?: Category | null, oauthSettings?: { __typename?: 'OauthSettings', uriFormat: string, authMethod: OidcAuthMethod } | null, publisher?: { __typename?: 'Publisher', id?: string | null, name: string, phone?: string | null, avatar?: string | null, description?: string | null, backgroundColor?: string | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, address?: { __typename?: 'Address', line1?: string | null, line2?: string | null, city?: string | null, country?: string | null, state?: string | null, zip?: string | null } | null } | null, recipes?: Array<{ __typename?: 'Recipe', name: string } | null> | null } | null };
+export type OidcLoginFragment = { __typename?: 'OidcLogin', ip?: string | null, country?: string | null, city?: string | null, latitude?: string | null, longitude?: string | null, insertedAt?: Date | null, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, repository?: { __typename?: 'Repository', id: string, name: string, notes?: string | null, description?: string | null, documentation?: string | null, icon?: string | null, darkIcon?: string | null, private?: boolean | null, trending?: boolean | null, verified?: boolean | null, category?: Category | null, oauthSettings?: { __typename?: 'OauthSettings', uriFormat: string, authMethod: OidcAuthMethod } | null, publisher?: { __typename?: 'Publisher', id?: string | null, name: string, phone?: string | null, avatar?: string | null, description?: string | null, backgroundColor?: string | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, address?: { __typename?: 'Address', line1?: string | null, line2?: string | null, city?: string | null, country?: string | null, state?: string | null, zip?: string | null } | null } | null, recipes?: Array<{ __typename?: 'Recipe', name: string } | null> | null } | null };
 
-export type ArtifactFragmentFragment = { __typename?: 'Artifact', id?: string | null, name?: string | null, blob?: string | null, type?: ArtifactType | null, platform?: ArtifactPlatform | null, arch?: string | null, filesize?: number | null, sha?: string | null, readme?: string | null, insertedAt?: Date | null, updatedAt?: Date | null };
+export type ArtifactFragment = { __typename?: 'Artifact', id?: string | null, name?: string | null, blob?: string | null, type?: ArtifactType | null, platform?: ArtifactPlatform | null, arch?: string | null, filesize?: number | null, sha?: string | null, readme?: string | null, insertedAt?: Date | null, updatedAt?: Date | null };
 
 export type ListArtifactsQueryVariables = Exact<{
   id: Scalars['ID'];
@@ -4332,11 +4346,11 @@ export type CreateArtifactMutationVariables = Exact<{
 
 export type CreateArtifactMutation = { __typename?: 'RootMutationType', createArtifact?: { __typename?: 'Artifact', id?: string | null, name?: string | null, blob?: string | null, type?: ArtifactType | null, platform?: ArtifactPlatform | null, arch?: string | null, filesize?: number | null, sha?: string | null, readme?: string | null, insertedAt?: Date | null, updatedAt?: Date | null } | null };
 
-export type ChartFragmentFragment = { __typename?: 'Chart', id?: string | null, name: string, description?: string | null, latestVersion?: string | null, insertedAt?: Date | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', name?: string | null, repo?: string | null, type?: DependencyType | null, version?: string | null, optional?: boolean | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null };
+export type ChartFragment = { __typename?: 'Chart', id?: string | null, name: string, description?: string | null, latestVersion?: string | null, insertedAt?: Date | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', name?: string | null, repo?: string | null, type?: DependencyType | null, version?: string | null, optional?: boolean | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null };
 
-export type CrdFragmentFragment = { __typename?: 'Crd', id: string, name: string, blob?: string | null };
+export type CrdFragment = { __typename?: 'Crd', id: string, name: string, blob?: string | null };
 
-export type ChartInstallationFragmentFragment = { __typename?: 'ChartInstallation', id?: string | null, chart?: { __typename?: 'Chart', id?: string | null, name: string, description?: string | null, latestVersion?: string | null, insertedAt?: Date | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', name?: string | null, repo?: string | null, type?: DependencyType | null, version?: string | null, optional?: boolean | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null } | null, version?: { __typename?: 'Version', id: string, helm?: Map<string, unknown> | null, readme?: string | null, valuesTemplate?: string | null, version: string, insertedAt?: Date | null, package?: string | null, crds?: Array<{ __typename?: 'Crd', id: string, name: string, blob?: string | null } | null> | null, chart?: { __typename?: 'Chart', id?: string | null, name: string, description?: string | null, latestVersion?: string | null, insertedAt?: Date | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', name?: string | null, repo?: string | null, type?: DependencyType | null, version?: string | null, optional?: boolean | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null } | null, terraform?: { __typename?: 'Terraform', id?: string | null, name?: string | null } | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', name?: string | null, repo?: string | null, type?: DependencyType | null, version?: string | null, optional?: boolean | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null } | null };
+export type ChartInstallationFragment = { __typename?: 'ChartInstallation', id?: string | null, chart?: { __typename?: 'Chart', id?: string | null, name: string, description?: string | null, latestVersion?: string | null, insertedAt?: Date | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', name?: string | null, repo?: string | null, type?: DependencyType | null, version?: string | null, optional?: boolean | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null } | null, version?: { __typename?: 'Version', id: string, helm?: Map<string, unknown> | null, readme?: string | null, valuesTemplate?: string | null, version: string, insertedAt?: Date | null, package?: string | null, crds?: Array<{ __typename?: 'Crd', id: string, name: string, blob?: string | null } | null> | null, chart?: { __typename?: 'Chart', id?: string | null, name: string, description?: string | null, latestVersion?: string | null, insertedAt?: Date | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', name?: string | null, repo?: string | null, type?: DependencyType | null, version?: string | null, optional?: boolean | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null } | null, terraform?: { __typename?: 'Terraform', id?: string | null, name?: string | null } | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', name?: string | null, repo?: string | null, type?: DependencyType | null, version?: string | null, optional?: boolean | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null } | null };
 
 export type ScanViolationFragment = { __typename?: 'ScanViolation', ruleName?: string | null, description?: string | null, ruleId?: string | null, severity?: VulnGrade | null, category?: string | null, resourceName?: string | null, resourceType?: string | null, file?: string | null, line?: number | null };
 
@@ -4388,7 +4402,7 @@ export type UninstallChartMutationVariables = Exact<{
 
 export type UninstallChartMutation = { __typename?: 'RootMutationType', deleteChartInstallation?: { __typename?: 'ChartInstallation', id?: string | null } | null };
 
-export type DnsRecordFragmentFragment = { __typename?: 'DnsRecord', id: string, name: string, type: DnsRecordType, records?: Array<string | null> | null, cluster: string, provider: Provider, insertedAt?: Date | null, creator?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null };
+export type DnsRecordFragment = { __typename?: 'DnsRecord', id: string, name: string, type: DnsRecordType, records?: Array<string | null> | null, cluster: string, provider: Provider, insertedAt?: Date | null, creator?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null };
 
 export type GetDnsRecordsQueryVariables = Exact<{
   cluster: Scalars['String'];
@@ -4415,13 +4429,13 @@ export type DeleteDnsRecordMutationVariables = Exact<{
 
 export type DeleteDnsRecordMutation = { __typename?: 'RootMutationType', deleteDnsRecord?: { __typename?: 'DnsRecord', id: string, name: string, type: DnsRecordType, records?: Array<string | null> | null, cluster: string, provider: Provider, insertedAt?: Date | null, creator?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null } | null };
 
-export type DockerRepoFragmentFragment = { __typename?: 'DockerRepository', id: string, name: string, public?: boolean | null, insertedAt?: Date | null, updatedAt?: Date | null, repository?: { __typename?: 'Repository', id: string, name: string } | null };
+export type DockerRepoFragment = { __typename?: 'DockerRepository', id: string, name: string, public?: boolean | null, insertedAt?: Date | null, updatedAt?: Date | null, repository?: { __typename?: 'Repository', id: string, name: string } | null };
 
 export type DockerRepositoryFragment = { __typename?: 'DockerRepository', id: string, name: string, public?: boolean | null, insertedAt?: Date | null, updatedAt?: Date | null, repository?: { __typename?: 'Repository', id: string, name: string, editable?: boolean | null } | null };
 
-export type DockerImageFragmentFragment = { __typename?: 'DockerImage', id: string, tag?: string | null, digest: string, scannedAt?: Date | null, grade?: ImageGrade | null, insertedAt?: Date | null, updatedAt?: Date | null };
+export type DockerImageFragment = { __typename?: 'DockerImage', id: string, tag?: string | null, digest: string, scannedAt?: Date | null, grade?: ImageGrade | null, insertedAt?: Date | null, updatedAt?: Date | null };
 
-export type VulnerabilityFragmentFragment = { __typename?: 'Vulnerability', id: string, title?: string | null, description?: string | null, vulnerabilityId?: string | null, package?: string | null, installedVersion?: string | null, fixedVersion?: string | null, source?: string | null, url?: string | null, severity?: VulnGrade | null, score?: number | null, cvss?: { __typename?: 'Cvss', attackVector?: VulnVector | null, attackComplexity?: VulnGrade | null, privilegesRequired?: VulnGrade | null, userInteraction?: VulnRequirement | null, confidentiality?: VulnGrade | null, integrity?: VulnGrade | null, availability?: VulnGrade | null } | null, layer?: { __typename?: 'ImageLayer', digest?: string | null, diffId?: string | null } | null };
+export type VulnerabilityFragment = { __typename?: 'Vulnerability', id: string, title?: string | null, description?: string | null, vulnerabilityId?: string | null, package?: string | null, installedVersion?: string | null, fixedVersion?: string | null, source?: string | null, url?: string | null, severity?: VulnGrade | null, score?: number | null, cvss?: { __typename?: 'Cvss', attackVector?: VulnVector | null, attackComplexity?: VulnGrade | null, privilegesRequired?: VulnGrade | null, userInteraction?: VulnRequirement | null, confidentiality?: VulnGrade | null, integrity?: VulnGrade | null, availability?: VulnGrade | null } | null, layer?: { __typename?: 'ImageLayer', digest?: string | null, diffId?: string | null } | null };
 
 export type CreateDomainMutationVariables = Exact<{
   name: Scalars['String'];
@@ -4430,25 +4444,25 @@ export type CreateDomainMutationVariables = Exact<{
 
 export type CreateDomainMutation = { __typename?: 'RootMutationType', provisionDomain?: { __typename?: 'DnsDomain', id: string, name: string, insertedAt?: Date | null, creator?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, accessPolicy?: { __typename?: 'DnsAccessPolicy', id: string, bindings?: Array<{ __typename?: 'PolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null };
 
-export type PostmortemFragmentFragment = { __typename?: 'Postmortem', id: string, content: string, actionItems?: Array<{ __typename?: 'ActionItem', type: ActionItemType, link: string } | null> | null };
+export type PostmortemFragment = { __typename?: 'Postmortem', id: string, content: string, actionItems?: Array<{ __typename?: 'ActionItem', type: ActionItemType, link: string } | null> | null };
 
-export type FollowerFragmentFragment = { __typename?: 'Follower', id: string, incident?: { __typename?: 'Incident', id: string } | null, user: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null }, preferences?: { __typename?: 'NotificationPreferences', message?: boolean | null, incidentUpdate?: boolean | null, mention?: boolean | null } | null };
+export type FollowerFragment = { __typename?: 'Follower', id: string, incident?: { __typename?: 'Incident', id: string } | null, user: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null }, preferences?: { __typename?: 'NotificationPreferences', message?: boolean | null, incidentUpdate?: boolean | null, mention?: boolean | null } | null };
 
-export type SlimSubscriptionFragmentFragment = { __typename?: 'SlimSubscription', id: string, lineItems?: { __typename?: 'SubscriptionLineItems', items?: Array<{ __typename?: 'Limit', dimension: string, quantity: number } | null> | null } | null, plan?: { __typename?: 'Plan', id: string, name: string, cost: number, period?: string | null, serviceLevels?: Array<{ __typename?: 'ServiceLevel', minSeverity?: number | null, maxSeverity?: number | null, responseTime?: number | null } | null> | null, lineItems?: { __typename?: 'PlanLineItems', included?: Array<{ __typename?: 'Limit', dimension: string, quantity: number } | null> | null, items?: Array<{ __typename?: 'LineItem', name: string, dimension: string, cost: number, period?: string | null, type?: PlanType | null } | null> | null } | null, metadata?: { __typename?: 'PlanMetadata', features?: Array<{ __typename?: 'PlanFeature', name: string, description: string } | null> | null } | null } | null };
+export type SlimSubscriptionFragment = { __typename?: 'SlimSubscription', id: string, lineItems?: { __typename?: 'SubscriptionLineItems', items?: Array<{ __typename?: 'Limit', dimension: string, quantity: number } | null> | null } | null, plan?: { __typename?: 'Plan', id: string, name: string, cost: number, period?: string | null, serviceLevels?: Array<{ __typename?: 'ServiceLevel', minSeverity?: number | null, maxSeverity?: number | null, responseTime?: number | null } | null> | null, lineItems?: { __typename?: 'PlanLineItems', included?: Array<{ __typename?: 'Limit', dimension: string, quantity: number } | null> | null, items?: Array<{ __typename?: 'LineItem', name: string, dimension: string, cost: number, period?: string | null, type?: PlanType | null } | null> | null } | null, metadata?: { __typename?: 'PlanMetadata', features?: Array<{ __typename?: 'PlanFeature', name: string, description: string } | null> | null } | null } | null };
 
 export type ClusterInformationFragment = { __typename?: 'ClusterInformation', version?: string | null, gitCommit?: string | null, platform?: string | null };
 
-export type IncidentFragmentFragment = { __typename?: 'Incident', id: string, title: string, description?: string | null, severity: number, status: IncidentStatus, notificationCount?: number | null, nextResponseAt?: Date | null, insertedAt?: Date | null, creator: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null }, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, repository: { __typename?: 'Repository', id: string, name: string, notes?: string | null, description?: string | null, documentation?: string | null, icon?: string | null, darkIcon?: string | null, private?: boolean | null, trending?: boolean | null, verified?: boolean | null, category?: Category | null, oauthSettings?: { __typename?: 'OauthSettings', uriFormat: string, authMethod: OidcAuthMethod } | null, publisher?: { __typename?: 'Publisher', id?: string | null, name: string, phone?: string | null, avatar?: string | null, description?: string | null, backgroundColor?: string | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, address?: { __typename?: 'Address', line1?: string | null, line2?: string | null, city?: string | null, country?: string | null, state?: string | null, zip?: string | null } | null } | null, recipes?: Array<{ __typename?: 'Recipe', name: string } | null> | null }, subscription?: { __typename?: 'SlimSubscription', id: string, lineItems?: { __typename?: 'SubscriptionLineItems', items?: Array<{ __typename?: 'Limit', dimension: string, quantity: number } | null> | null } | null, plan?: { __typename?: 'Plan', id: string, name: string, cost: number, period?: string | null, serviceLevels?: Array<{ __typename?: 'ServiceLevel', minSeverity?: number | null, maxSeverity?: number | null, responseTime?: number | null } | null> | null, lineItems?: { __typename?: 'PlanLineItems', included?: Array<{ __typename?: 'Limit', dimension: string, quantity: number } | null> | null, items?: Array<{ __typename?: 'LineItem', name: string, dimension: string, cost: number, period?: string | null, type?: PlanType | null } | null> | null } | null, metadata?: { __typename?: 'PlanMetadata', features?: Array<{ __typename?: 'PlanFeature', name: string, description: string } | null> | null } | null } | null } | null, clusterInformation?: { __typename?: 'ClusterInformation', version?: string | null, gitCommit?: string | null, platform?: string | null } | null, tags?: Array<{ __typename?: 'Tag', tag: string } | null> | null };
+export type IncidentFragment = { __typename?: 'Incident', id: string, title: string, description?: string | null, severity: number, status: IncidentStatus, notificationCount?: number | null, nextResponseAt?: Date | null, insertedAt?: Date | null, creator: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null }, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, repository: { __typename?: 'Repository', id: string, name: string, notes?: string | null, description?: string | null, documentation?: string | null, icon?: string | null, darkIcon?: string | null, private?: boolean | null, trending?: boolean | null, verified?: boolean | null, category?: Category | null, oauthSettings?: { __typename?: 'OauthSettings', uriFormat: string, authMethod: OidcAuthMethod } | null, publisher?: { __typename?: 'Publisher', id?: string | null, name: string, phone?: string | null, avatar?: string | null, description?: string | null, backgroundColor?: string | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, address?: { __typename?: 'Address', line1?: string | null, line2?: string | null, city?: string | null, country?: string | null, state?: string | null, zip?: string | null } | null } | null, recipes?: Array<{ __typename?: 'Recipe', name: string } | null> | null }, subscription?: { __typename?: 'SlimSubscription', id: string, lineItems?: { __typename?: 'SubscriptionLineItems', items?: Array<{ __typename?: 'Limit', dimension: string, quantity: number } | null> | null } | null, plan?: { __typename?: 'Plan', id: string, name: string, cost: number, period?: string | null, serviceLevels?: Array<{ __typename?: 'ServiceLevel', minSeverity?: number | null, maxSeverity?: number | null, responseTime?: number | null } | null> | null, lineItems?: { __typename?: 'PlanLineItems', included?: Array<{ __typename?: 'Limit', dimension: string, quantity: number } | null> | null, items?: Array<{ __typename?: 'LineItem', name: string, dimension: string, cost: number, period?: string | null, type?: PlanType | null } | null> | null } | null, metadata?: { __typename?: 'PlanMetadata', features?: Array<{ __typename?: 'PlanFeature', name: string, description: string } | null> | null } | null } | null } | null, clusterInformation?: { __typename?: 'ClusterInformation', version?: string | null, gitCommit?: string | null, platform?: string | null } | null, tags?: Array<{ __typename?: 'Tag', tag: string } | null> | null };
 
-export type IncidentHistoryFragmentFragment = { __typename?: 'IncidentHistory', id: string, action: IncidentAction, insertedAt?: Date | null, changes?: Array<{ __typename?: 'IncidentChange', key: string, prev?: string | null, next?: string | null } | null> | null, actor: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } };
+export type IncidentHistoryFragment = { __typename?: 'IncidentHistory', id: string, action: IncidentAction, insertedAt?: Date | null, changes?: Array<{ __typename?: 'IncidentChange', key: string, prev?: string | null, next?: string | null } | null> | null, actor: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } };
 
-export type FileFragmentFragment = { __typename?: 'File', id: string, blob: string, mediaType?: MediaType | null, contentType?: string | null, filesize?: number | null, filename?: string | null };
+export type FileFragment = { __typename?: 'File', id: string, blob: string, mediaType?: MediaType | null, contentType?: string | null, filesize?: number | null, filename?: string | null };
 
-export type IncidentMessageFragmentFragment = { __typename?: 'IncidentMessage', id: string, text: string, insertedAt?: Date | null, creator: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null }, reactions?: Array<{ __typename?: 'Reaction', name: string, creator: { __typename?: 'User', id: string, email: string } } | null> | null, file?: { __typename?: 'File', id: string, blob: string, mediaType?: MediaType | null, contentType?: string | null, filesize?: number | null, filename?: string | null } | null, entities?: Array<{ __typename?: 'MessageEntity', type: MessageEntityType, text?: string | null, startIndex?: number | null, endIndex?: number | null, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null } | null> | null };
+export type IncidentMessageFragment = { __typename?: 'IncidentMessage', id: string, text: string, insertedAt?: Date | null, creator: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null }, reactions?: Array<{ __typename?: 'Reaction', name: string, creator: { __typename?: 'User', id: string, email: string } } | null> | null, file?: { __typename?: 'File', id: string, blob: string, mediaType?: MediaType | null, contentType?: string | null, filesize?: number | null, filename?: string | null } | null, entities?: Array<{ __typename?: 'MessageEntity', type: MessageEntityType, text?: string | null, startIndex?: number | null, endIndex?: number | null, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null } | null> | null };
 
-export type NotificationFragmentFragment = { __typename?: 'Notification', id: string, type: NotificationType, msg?: string | null, insertedAt?: Date | null, actor: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null }, incident?: { __typename?: 'Incident', id: string, title: string, repository: { __typename?: 'Repository', id: string, name: string, icon?: string | null, darkIcon?: string | null } } | null, message?: { __typename?: 'IncidentMessage', text: string } | null, repository?: { __typename?: 'Repository', id: string, name: string, icon?: string | null, darkIcon?: string | null } | null };
+export type NotificationFragment = { __typename?: 'Notification', id: string, type: NotificationType, msg?: string | null, insertedAt?: Date | null, actor: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null }, incident?: { __typename?: 'Incident', id: string, title: string, repository: { __typename?: 'Repository', id: string, name: string, icon?: string | null, darkIcon?: string | null } } | null, message?: { __typename?: 'IncidentMessage', text: string } | null, repository?: { __typename?: 'Repository', id: string, name: string, icon?: string | null, darkIcon?: string | null } | null };
 
-export type InstallationFragmentFragment = { __typename?: 'Installation', id: string, context?: Map<string, unknown> | null, license?: string | null, licenseKey?: string | null, acmeKeyId?: string | null, acmeSecret?: string | null, autoUpgrade?: boolean | null, trackTag: string, repository?: { __typename?: 'Repository', id: string, name: string, notes?: string | null, description?: string | null, documentation?: string | null, icon?: string | null, darkIcon?: string | null, private?: boolean | null, trending?: boolean | null, verified?: boolean | null, category?: Category | null, oauthSettings?: { __typename?: 'OauthSettings', uriFormat: string, authMethod: OidcAuthMethod } | null, publisher?: { __typename?: 'Publisher', id?: string | null, name: string, phone?: string | null, avatar?: string | null, description?: string | null, backgroundColor?: string | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, address?: { __typename?: 'Address', line1?: string | null, line2?: string | null, city?: string | null, country?: string | null, state?: string | null, zip?: string | null } | null } | null, recipes?: Array<{ __typename?: 'Recipe', name: string } | null> | null } | null, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, oidcProvider?: { __typename?: 'OidcProvider', id: string, clientId: string, authMethod: OidcAuthMethod, clientSecret: string, redirectUris?: Array<string | null> | null, bindings?: Array<{ __typename?: 'OidcProviderBinding', id: string, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, group?: { __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null } | null> | null, configuration?: { __typename?: 'OuathConfiguration', issuer?: string | null, authorizationEndpoint?: string | null, tokenEndpoint?: string | null, jwksUri?: string | null, userinfoEndpoint?: string | null } | null } | null };
+export type InstallationFragment = { __typename?: 'Installation', id: string, context?: Map<string, unknown> | null, license?: string | null, licenseKey?: string | null, acmeKeyId?: string | null, acmeSecret?: string | null, autoUpgrade?: boolean | null, trackTag: string, repository?: { __typename?: 'Repository', id: string, name: string, notes?: string | null, description?: string | null, documentation?: string | null, icon?: string | null, darkIcon?: string | null, private?: boolean | null, trending?: boolean | null, verified?: boolean | null, category?: Category | null, oauthSettings?: { __typename?: 'OauthSettings', uriFormat: string, authMethod: OidcAuthMethod } | null, publisher?: { __typename?: 'Publisher', id?: string | null, name: string, phone?: string | null, avatar?: string | null, description?: string | null, backgroundColor?: string | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, address?: { __typename?: 'Address', line1?: string | null, line2?: string | null, city?: string | null, country?: string | null, state?: string | null, zip?: string | null } | null } | null, recipes?: Array<{ __typename?: 'Recipe', name: string } | null> | null } | null, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, oidcProvider?: { __typename?: 'OidcProvider', id: string, clientId: string, authMethod: OidcAuthMethod, clientSecret: string, redirectUris?: Array<string | null> | null, bindings?: Array<{ __typename?: 'OidcProviderBinding', id: string, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, group?: { __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null } | null> | null, configuration?: { __typename?: 'OuathConfiguration', issuer?: string | null, authorizationEndpoint?: string | null, tokenEndpoint?: string | null, jwksUri?: string | null, userinfoEndpoint?: string | null } | null } | null };
 
 export type GetInstallationQueryVariables = Exact<{
   name?: InputMaybe<Scalars['String']>;
@@ -4479,15 +4493,15 @@ export type UpsertOidcProviderMutationVariables = Exact<{
 
 export type UpsertOidcProviderMutation = { __typename?: 'RootMutationType', upsertOidcProvider?: { __typename?: 'OidcProvider', id: string } | null };
 
-export type IntegrationWebhookFragmentFragment = { __typename?: 'IntegrationWebhook', id: string, name: string, url: string, secret: string, actions?: Array<string | null> | null };
+export type IntegrationWebhookFragment = { __typename?: 'IntegrationWebhook', id: string, name: string, url: string, secret: string, actions?: Array<string | null> | null };
 
-export type WebhookLogFragmentFragment = { __typename?: 'WebhookLog', id: string, state: WebhookLogState, status?: number | null, payload?: Map<string, unknown> | null, response?: string | null, insertedAt?: Date | null };
+export type WebhookLogFragment = { __typename?: 'WebhookLog', id: string, state: WebhookLogState, status?: number | null, payload?: Map<string, unknown> | null, response?: string | null, insertedAt?: Date | null };
 
 export type OauthIntegrationFragment = { __typename?: 'OauthIntegration', id: string, service: OauthService, insertedAt?: Date | null };
 
 export type ZoomMeetingFragment = { __typename?: 'ZoomMeeting', joinUrl: string, password?: string | null };
 
-export type MetricFragmentFragment = { __typename?: 'Metric', name: string, tags?: Array<{ __typename?: 'MetricTag', name: string, value: string } | null> | null, values?: Array<{ __typename?: 'MetricValue', time?: Date | null, value?: number | null } | null> | null };
+export type MetricFragment = { __typename?: 'Metric', name: string, tags?: Array<{ __typename?: 'MetricTag', name: string, value: string } | null> | null, values?: Array<{ __typename?: 'MetricValue', time?: Date | null, value?: number | null } | null> | null };
 
 export type PageInfoFragment = { __typename?: 'PageInfo', endCursor?: string | null, hasNextPage: boolean };
 
@@ -4495,31 +4509,31 @@ export type OidcProviderFragment = { __typename?: 'OidcProvider', id: string, cl
 
 export type OAuthInfoFragment = { __typename?: 'OauthInfo', provider: OauthProvider, authorizeUrl: string };
 
-export type LimitFragmentFragment = { __typename?: 'Limit', dimension: string, quantity: number };
+export type LimitFragment = { __typename?: 'Limit', dimension: string, quantity: number };
 
 export type LineItemFragment = { __typename?: 'LineItem', name: string, dimension: string, cost: number, period?: string | null, type?: PlanType | null };
 
 export type ServiceLevelFragment = { __typename?: 'ServiceLevel', minSeverity?: number | null, maxSeverity?: number | null, responseTime?: number | null };
 
-export type PlanFragmentFragment = { __typename?: 'Plan', id: string, name: string, cost: number, period?: string | null, serviceLevels?: Array<{ __typename?: 'ServiceLevel', minSeverity?: number | null, maxSeverity?: number | null, responseTime?: number | null } | null> | null, lineItems?: { __typename?: 'PlanLineItems', included?: Array<{ __typename?: 'Limit', dimension: string, quantity: number } | null> | null, items?: Array<{ __typename?: 'LineItem', name: string, dimension: string, cost: number, period?: string | null, type?: PlanType | null } | null> | null } | null, metadata?: { __typename?: 'PlanMetadata', features?: Array<{ __typename?: 'PlanFeature', name: string, description: string } | null> | null } | null };
+export type PlanFragment = { __typename?: 'Plan', id: string, name: string, cost: number, period?: string | null, serviceLevels?: Array<{ __typename?: 'ServiceLevel', minSeverity?: number | null, maxSeverity?: number | null, responseTime?: number | null } | null> | null, lineItems?: { __typename?: 'PlanLineItems', included?: Array<{ __typename?: 'Limit', dimension: string, quantity: number } | null> | null, items?: Array<{ __typename?: 'LineItem', name: string, dimension: string, cost: number, period?: string | null, type?: PlanType | null } | null> | null } | null, metadata?: { __typename?: 'PlanMetadata', features?: Array<{ __typename?: 'PlanFeature', name: string, description: string } | null> | null } | null };
 
-export type SubscriptionFragmentFragment = { __typename?: 'RepositorySubscription', id: string, plan?: { __typename?: 'Plan', id: string, name: string, cost: number, period?: string | null, serviceLevels?: Array<{ __typename?: 'ServiceLevel', minSeverity?: number | null, maxSeverity?: number | null, responseTime?: number | null } | null> | null, lineItems?: { __typename?: 'PlanLineItems', included?: Array<{ __typename?: 'Limit', dimension: string, quantity: number } | null> | null, items?: Array<{ __typename?: 'LineItem', name: string, dimension: string, cost: number, period?: string | null, type?: PlanType | null } | null> | null } | null, metadata?: { __typename?: 'PlanMetadata', features?: Array<{ __typename?: 'PlanFeature', name: string, description: string } | null> | null } | null } | null, lineItems?: { __typename?: 'SubscriptionLineItems', items?: Array<{ __typename?: 'Limit', dimension: string, quantity: number } | null> | null } | null };
+export type SubscriptionFragment = { __typename?: 'RepositorySubscription', id: string, plan?: { __typename?: 'Plan', id: string, name: string, cost: number, period?: string | null, serviceLevels?: Array<{ __typename?: 'ServiceLevel', minSeverity?: number | null, maxSeverity?: number | null, responseTime?: number | null } | null> | null, lineItems?: { __typename?: 'PlanLineItems', included?: Array<{ __typename?: 'Limit', dimension: string, quantity: number } | null> | null, items?: Array<{ __typename?: 'LineItem', name: string, dimension: string, cost: number, period?: string | null, type?: PlanType | null } | null> | null } | null, metadata?: { __typename?: 'PlanMetadata', features?: Array<{ __typename?: 'PlanFeature', name: string, description: string } | null> | null } | null } | null, lineItems?: { __typename?: 'SubscriptionLineItems', items?: Array<{ __typename?: 'Limit', dimension: string, quantity: number } | null> | null } | null };
 
-export type InvoiceItemFragmentFragment = { __typename?: 'InvoiceItem', amount: number, currency: string, description?: string | null };
+export type InvoiceItemFragment = { __typename?: 'InvoiceItem', amount: number, currency: string, description?: string | null };
 
-export type InvoiceFragmentFragment = { __typename?: 'Invoice', number: string, amountDue: number, amountPaid: number, currency: string, status?: string | null, createdAt?: Date | null, hostedInvoiceUrl?: string | null, lines?: Array<{ __typename?: 'InvoiceItem', amount: number, currency: string, description?: string | null } | null> | null };
+export type InvoiceFragment = { __typename?: 'Invoice', number: string, amountDue: number, amountPaid: number, currency: string, status?: string | null, createdAt?: Date | null, hostedInvoiceUrl?: string | null, lines?: Array<{ __typename?: 'InvoiceItem', amount: number, currency: string, description?: string | null } | null> | null };
 
-export type CardFragmentFragment = { __typename?: 'Card', id: string, last4: string, expMonth: number, expYear: number, name?: string | null, brand: string };
+export type CardFragment = { __typename?: 'Card', id: string, last4: string, expMonth: number, expYear: number, name?: string | null, brand: string };
 
-export type RecipeFragmentFragment = { __typename?: 'Recipe', id: string, name: string, description?: string | null, restricted?: boolean | null, provider?: Provider | null, tests?: Array<{ __typename?: 'RecipeTest', type: TestType, name: string, message?: string | null, args?: Array<{ __typename?: 'TestArgument', name: string, repo: string, key: string } | null> | null } | null> | null, repository?: { __typename?: 'Repository', id: string, name: string } | null, oidcSettings?: { __typename?: 'OidcSettings', uriFormat?: string | null, uriFormats?: Array<string | null> | null, authMethod: OidcAuthMethod, domainKey?: string | null, subdomain?: boolean | null } | null, recipeSections?: Array<{ __typename?: 'RecipeSection', index?: number | null, repository?: { __typename?: 'Repository', id: string, name: string, notes?: string | null, description?: string | null, documentation?: string | null, icon?: string | null, darkIcon?: string | null, private?: boolean | null, trending?: boolean | null, verified?: boolean | null, category?: Category | null, installation?: { __typename?: 'Installation', id: string, context?: Map<string, unknown> | null, license?: string | null, licenseKey?: string | null, acmeKeyId?: string | null, acmeSecret?: string | null, autoUpgrade?: boolean | null, trackTag: string, repository?: { __typename?: 'Repository', id: string, name: string, notes?: string | null, description?: string | null, documentation?: string | null, icon?: string | null, darkIcon?: string | null, private?: boolean | null, trending?: boolean | null, verified?: boolean | null, category?: Category | null, oauthSettings?: { __typename?: 'OauthSettings', uriFormat: string, authMethod: OidcAuthMethod } | null, publisher?: { __typename?: 'Publisher', id?: string | null, name: string, phone?: string | null, avatar?: string | null, description?: string | null, backgroundColor?: string | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, address?: { __typename?: 'Address', line1?: string | null, line2?: string | null, city?: string | null, country?: string | null, state?: string | null, zip?: string | null } | null } | null, recipes?: Array<{ __typename?: 'Recipe', name: string } | null> | null } | null, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, oidcProvider?: { __typename?: 'OidcProvider', id: string, clientId: string, authMethod: OidcAuthMethod, clientSecret: string, redirectUris?: Array<string | null> | null, bindings?: Array<{ __typename?: 'OidcProviderBinding', id: string, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, group?: { __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null } | null> | null, configuration?: { __typename?: 'OuathConfiguration', issuer?: string | null, authorizationEndpoint?: string | null, tokenEndpoint?: string | null, jwksUri?: string | null, userinfoEndpoint?: string | null } | null } | null } | null, oauthSettings?: { __typename?: 'OauthSettings', uriFormat: string, authMethod: OidcAuthMethod } | null, publisher?: { __typename?: 'Publisher', id?: string | null, name: string, phone?: string | null, avatar?: string | null, description?: string | null, backgroundColor?: string | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, address?: { __typename?: 'Address', line1?: string | null, line2?: string | null, city?: string | null, country?: string | null, state?: string | null, zip?: string | null } | null } | null, recipes?: Array<{ __typename?: 'Recipe', name: string } | null> | null } | null, recipeItems?: Array<{ __typename?: 'RecipeItem', id?: string | null, chart?: { __typename?: 'Chart', id?: string | null, name: string, description?: string | null, latestVersion?: string | null, insertedAt?: Date | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', name?: string | null, repo?: string | null, type?: DependencyType | null, version?: string | null, optional?: boolean | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null } | null, terraform?: { __typename?: 'Terraform', id?: string | null, name?: string | null, readme?: string | null, package?: string | null, description?: string | null, latestVersion?: string | null, valuesTemplate?: string | null, insertedAt?: Date | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', name?: string | null, repo?: string | null, type?: DependencyType | null, version?: string | null, optional?: boolean | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null } | null, configuration?: Array<{ __typename?: 'RecipeConfiguration', name?: string | null, type?: Datatype | null, default?: string | null, documentation?: string | null, optional?: boolean | null, placeholder?: string | null, functionName?: string | null, condition?: { __typename?: 'RecipeCondition', field: string, operation: Operation, value?: string | null } | null, validation?: { __typename?: 'RecipeValidation', type: ValidationType, regex?: string | null, message: string } | null } | null> | null } | null> | null, configuration?: Array<{ __typename?: 'RecipeConfiguration', name?: string | null, type?: Datatype | null, default?: string | null, documentation?: string | null, optional?: boolean | null, placeholder?: string | null, functionName?: string | null, condition?: { __typename?: 'RecipeCondition', field: string, operation: Operation, value?: string | null } | null, validation?: { __typename?: 'RecipeValidation', type: ValidationType, regex?: string | null, message: string } | null } | null> | null } | null> | null };
+export type RecipeFragment = { __typename?: 'Recipe', id: string, name: string, description?: string | null, restricted?: boolean | null, provider?: Provider | null, tests?: Array<{ __typename?: 'RecipeTest', type: TestType, name: string, message?: string | null, args?: Array<{ __typename?: 'TestArgument', name: string, repo: string, key: string } | null> | null } | null> | null, repository?: { __typename?: 'Repository', id: string, name: string } | null, oidcSettings?: { __typename?: 'OidcSettings', uriFormat?: string | null, uriFormats?: Array<string | null> | null, authMethod: OidcAuthMethod, domainKey?: string | null, subdomain?: boolean | null } | null, recipeSections?: Array<{ __typename?: 'RecipeSection', index?: number | null, repository?: { __typename?: 'Repository', id: string, name: string, notes?: string | null, description?: string | null, documentation?: string | null, icon?: string | null, darkIcon?: string | null, private?: boolean | null, trending?: boolean | null, verified?: boolean | null, category?: Category | null, installation?: { __typename?: 'Installation', id: string, context?: Map<string, unknown> | null, license?: string | null, licenseKey?: string | null, acmeKeyId?: string | null, acmeSecret?: string | null, autoUpgrade?: boolean | null, trackTag: string, repository?: { __typename?: 'Repository', id: string, name: string, notes?: string | null, description?: string | null, documentation?: string | null, icon?: string | null, darkIcon?: string | null, private?: boolean | null, trending?: boolean | null, verified?: boolean | null, category?: Category | null, oauthSettings?: { __typename?: 'OauthSettings', uriFormat: string, authMethod: OidcAuthMethod } | null, publisher?: { __typename?: 'Publisher', id?: string | null, name: string, phone?: string | null, avatar?: string | null, description?: string | null, backgroundColor?: string | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, address?: { __typename?: 'Address', line1?: string | null, line2?: string | null, city?: string | null, country?: string | null, state?: string | null, zip?: string | null } | null } | null, recipes?: Array<{ __typename?: 'Recipe', name: string } | null> | null } | null, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, oidcProvider?: { __typename?: 'OidcProvider', id: string, clientId: string, authMethod: OidcAuthMethod, clientSecret: string, redirectUris?: Array<string | null> | null, bindings?: Array<{ __typename?: 'OidcProviderBinding', id: string, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, group?: { __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null } | null> | null, configuration?: { __typename?: 'OuathConfiguration', issuer?: string | null, authorizationEndpoint?: string | null, tokenEndpoint?: string | null, jwksUri?: string | null, userinfoEndpoint?: string | null } | null } | null } | null, oauthSettings?: { __typename?: 'OauthSettings', uriFormat: string, authMethod: OidcAuthMethod } | null, publisher?: { __typename?: 'Publisher', id?: string | null, name: string, phone?: string | null, avatar?: string | null, description?: string | null, backgroundColor?: string | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, address?: { __typename?: 'Address', line1?: string | null, line2?: string | null, city?: string | null, country?: string | null, state?: string | null, zip?: string | null } | null } | null, recipes?: Array<{ __typename?: 'Recipe', name: string } | null> | null } | null, recipeItems?: Array<{ __typename?: 'RecipeItem', id?: string | null, chart?: { __typename?: 'Chart', id?: string | null, name: string, description?: string | null, latestVersion?: string | null, insertedAt?: Date | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', name?: string | null, repo?: string | null, type?: DependencyType | null, version?: string | null, optional?: boolean | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null } | null, terraform?: { __typename?: 'Terraform', id?: string | null, name?: string | null, readme?: string | null, package?: string | null, description?: string | null, latestVersion?: string | null, valuesTemplate?: string | null, insertedAt?: Date | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', name?: string | null, repo?: string | null, type?: DependencyType | null, version?: string | null, optional?: boolean | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null } | null, configuration?: Array<{ __typename?: 'RecipeConfiguration', name?: string | null, type?: Datatype | null, default?: string | null, documentation?: string | null, optional?: boolean | null, placeholder?: string | null, functionName?: string | null, condition?: { __typename?: 'RecipeCondition', field: string, operation: Operation, value?: string | null } | null, validation?: { __typename?: 'RecipeValidation', type: ValidationType, regex?: string | null, message: string } | null } | null> | null } | null> | null, configuration?: Array<{ __typename?: 'RecipeConfiguration', name?: string | null, type?: Datatype | null, default?: string | null, documentation?: string | null, optional?: boolean | null, placeholder?: string | null, functionName?: string | null, condition?: { __typename?: 'RecipeCondition', field: string, operation: Operation, value?: string | null } | null, validation?: { __typename?: 'RecipeValidation', type: ValidationType, regex?: string | null, message: string } | null } | null> | null } | null> | null };
 
-export type RecipeItemFragmentFragment = { __typename?: 'RecipeItem', id?: string | null, chart?: { __typename?: 'Chart', id?: string | null, name: string, description?: string | null, latestVersion?: string | null, insertedAt?: Date | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', name?: string | null, repo?: string | null, type?: DependencyType | null, version?: string | null, optional?: boolean | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null } | null, terraform?: { __typename?: 'Terraform', id?: string | null, name?: string | null, readme?: string | null, package?: string | null, description?: string | null, latestVersion?: string | null, valuesTemplate?: string | null, insertedAt?: Date | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', name?: string | null, repo?: string | null, type?: DependencyType | null, version?: string | null, optional?: boolean | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null } | null, configuration?: Array<{ __typename?: 'RecipeConfiguration', name?: string | null, type?: Datatype | null, default?: string | null, documentation?: string | null, optional?: boolean | null, placeholder?: string | null, functionName?: string | null, condition?: { __typename?: 'RecipeCondition', field: string, operation: Operation, value?: string | null } | null, validation?: { __typename?: 'RecipeValidation', type: ValidationType, regex?: string | null, message: string } | null } | null> | null };
+export type RecipeItemFragment = { __typename?: 'RecipeItem', id?: string | null, chart?: { __typename?: 'Chart', id?: string | null, name: string, description?: string | null, latestVersion?: string | null, insertedAt?: Date | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', name?: string | null, repo?: string | null, type?: DependencyType | null, version?: string | null, optional?: boolean | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null } | null, terraform?: { __typename?: 'Terraform', id?: string | null, name?: string | null, readme?: string | null, package?: string | null, description?: string | null, latestVersion?: string | null, valuesTemplate?: string | null, insertedAt?: Date | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', name?: string | null, repo?: string | null, type?: DependencyType | null, version?: string | null, optional?: boolean | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null } | null, configuration?: Array<{ __typename?: 'RecipeConfiguration', name?: string | null, type?: Datatype | null, default?: string | null, documentation?: string | null, optional?: boolean | null, placeholder?: string | null, functionName?: string | null, condition?: { __typename?: 'RecipeCondition', field: string, operation: Operation, value?: string | null } | null, validation?: { __typename?: 'RecipeValidation', type: ValidationType, regex?: string | null, message: string } | null } | null> | null };
 
-export type RecipeSectionFragmentFragment = { __typename?: 'RecipeSection', index?: number | null, repository?: { __typename?: 'Repository', id: string, name: string, notes?: string | null, description?: string | null, documentation?: string | null, icon?: string | null, darkIcon?: string | null, private?: boolean | null, trending?: boolean | null, verified?: boolean | null, category?: Category | null, installation?: { __typename?: 'Installation', id: string, context?: Map<string, unknown> | null, license?: string | null, licenseKey?: string | null, acmeKeyId?: string | null, acmeSecret?: string | null, autoUpgrade?: boolean | null, trackTag: string, repository?: { __typename?: 'Repository', id: string, name: string, notes?: string | null, description?: string | null, documentation?: string | null, icon?: string | null, darkIcon?: string | null, private?: boolean | null, trending?: boolean | null, verified?: boolean | null, category?: Category | null, oauthSettings?: { __typename?: 'OauthSettings', uriFormat: string, authMethod: OidcAuthMethod } | null, publisher?: { __typename?: 'Publisher', id?: string | null, name: string, phone?: string | null, avatar?: string | null, description?: string | null, backgroundColor?: string | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, address?: { __typename?: 'Address', line1?: string | null, line2?: string | null, city?: string | null, country?: string | null, state?: string | null, zip?: string | null } | null } | null, recipes?: Array<{ __typename?: 'Recipe', name: string } | null> | null } | null, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, oidcProvider?: { __typename?: 'OidcProvider', id: string, clientId: string, authMethod: OidcAuthMethod, clientSecret: string, redirectUris?: Array<string | null> | null, bindings?: Array<{ __typename?: 'OidcProviderBinding', id: string, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, group?: { __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null } | null> | null, configuration?: { __typename?: 'OuathConfiguration', issuer?: string | null, authorizationEndpoint?: string | null, tokenEndpoint?: string | null, jwksUri?: string | null, userinfoEndpoint?: string | null } | null } | null } | null, oauthSettings?: { __typename?: 'OauthSettings', uriFormat: string, authMethod: OidcAuthMethod } | null, publisher?: { __typename?: 'Publisher', id?: string | null, name: string, phone?: string | null, avatar?: string | null, description?: string | null, backgroundColor?: string | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, address?: { __typename?: 'Address', line1?: string | null, line2?: string | null, city?: string | null, country?: string | null, state?: string | null, zip?: string | null } | null } | null, recipes?: Array<{ __typename?: 'Recipe', name: string } | null> | null } | null, recipeItems?: Array<{ __typename?: 'RecipeItem', id?: string | null, chart?: { __typename?: 'Chart', id?: string | null, name: string, description?: string | null, latestVersion?: string | null, insertedAt?: Date | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', name?: string | null, repo?: string | null, type?: DependencyType | null, version?: string | null, optional?: boolean | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null } | null, terraform?: { __typename?: 'Terraform', id?: string | null, name?: string | null, readme?: string | null, package?: string | null, description?: string | null, latestVersion?: string | null, valuesTemplate?: string | null, insertedAt?: Date | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', name?: string | null, repo?: string | null, type?: DependencyType | null, version?: string | null, optional?: boolean | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null } | null, configuration?: Array<{ __typename?: 'RecipeConfiguration', name?: string | null, type?: Datatype | null, default?: string | null, documentation?: string | null, optional?: boolean | null, placeholder?: string | null, functionName?: string | null, condition?: { __typename?: 'RecipeCondition', field: string, operation: Operation, value?: string | null } | null, validation?: { __typename?: 'RecipeValidation', type: ValidationType, regex?: string | null, message: string } | null } | null> | null } | null> | null, configuration?: Array<{ __typename?: 'RecipeConfiguration', name?: string | null, type?: Datatype | null, default?: string | null, documentation?: string | null, optional?: boolean | null, placeholder?: string | null, functionName?: string | null, condition?: { __typename?: 'RecipeCondition', field: string, operation: Operation, value?: string | null } | null, validation?: { __typename?: 'RecipeValidation', type: ValidationType, regex?: string | null, message: string } | null } | null> | null };
+export type RecipeSectionFragment = { __typename?: 'RecipeSection', index?: number | null, repository?: { __typename?: 'Repository', id: string, name: string, notes?: string | null, description?: string | null, documentation?: string | null, icon?: string | null, darkIcon?: string | null, private?: boolean | null, trending?: boolean | null, verified?: boolean | null, category?: Category | null, installation?: { __typename?: 'Installation', id: string, context?: Map<string, unknown> | null, license?: string | null, licenseKey?: string | null, acmeKeyId?: string | null, acmeSecret?: string | null, autoUpgrade?: boolean | null, trackTag: string, repository?: { __typename?: 'Repository', id: string, name: string, notes?: string | null, description?: string | null, documentation?: string | null, icon?: string | null, darkIcon?: string | null, private?: boolean | null, trending?: boolean | null, verified?: boolean | null, category?: Category | null, oauthSettings?: { __typename?: 'OauthSettings', uriFormat: string, authMethod: OidcAuthMethod } | null, publisher?: { __typename?: 'Publisher', id?: string | null, name: string, phone?: string | null, avatar?: string | null, description?: string | null, backgroundColor?: string | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, address?: { __typename?: 'Address', line1?: string | null, line2?: string | null, city?: string | null, country?: string | null, state?: string | null, zip?: string | null } | null } | null, recipes?: Array<{ __typename?: 'Recipe', name: string } | null> | null } | null, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, oidcProvider?: { __typename?: 'OidcProvider', id: string, clientId: string, authMethod: OidcAuthMethod, clientSecret: string, redirectUris?: Array<string | null> | null, bindings?: Array<{ __typename?: 'OidcProviderBinding', id: string, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, group?: { __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null } | null> | null, configuration?: { __typename?: 'OuathConfiguration', issuer?: string | null, authorizationEndpoint?: string | null, tokenEndpoint?: string | null, jwksUri?: string | null, userinfoEndpoint?: string | null } | null } | null } | null, oauthSettings?: { __typename?: 'OauthSettings', uriFormat: string, authMethod: OidcAuthMethod } | null, publisher?: { __typename?: 'Publisher', id?: string | null, name: string, phone?: string | null, avatar?: string | null, description?: string | null, backgroundColor?: string | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, address?: { __typename?: 'Address', line1?: string | null, line2?: string | null, city?: string | null, country?: string | null, state?: string | null, zip?: string | null } | null } | null, recipes?: Array<{ __typename?: 'Recipe', name: string } | null> | null } | null, recipeItems?: Array<{ __typename?: 'RecipeItem', id?: string | null, chart?: { __typename?: 'Chart', id?: string | null, name: string, description?: string | null, latestVersion?: string | null, insertedAt?: Date | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', name?: string | null, repo?: string | null, type?: DependencyType | null, version?: string | null, optional?: boolean | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null } | null, terraform?: { __typename?: 'Terraform', id?: string | null, name?: string | null, readme?: string | null, package?: string | null, description?: string | null, latestVersion?: string | null, valuesTemplate?: string | null, insertedAt?: Date | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', name?: string | null, repo?: string | null, type?: DependencyType | null, version?: string | null, optional?: boolean | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null } | null, configuration?: Array<{ __typename?: 'RecipeConfiguration', name?: string | null, type?: Datatype | null, default?: string | null, documentation?: string | null, optional?: boolean | null, placeholder?: string | null, functionName?: string | null, condition?: { __typename?: 'RecipeCondition', field: string, operation: Operation, value?: string | null } | null, validation?: { __typename?: 'RecipeValidation', type: ValidationType, regex?: string | null, message: string } | null } | null> | null } | null> | null, configuration?: Array<{ __typename?: 'RecipeConfiguration', name?: string | null, type?: Datatype | null, default?: string | null, documentation?: string | null, optional?: boolean | null, placeholder?: string | null, functionName?: string | null, condition?: { __typename?: 'RecipeCondition', field: string, operation: Operation, value?: string | null } | null, validation?: { __typename?: 'RecipeValidation', type: ValidationType, regex?: string | null, message: string } | null } | null> | null };
 
-export type RecipeConfigurationFragmentFragment = { __typename?: 'RecipeConfiguration', name?: string | null, type?: Datatype | null, default?: string | null, documentation?: string | null, optional?: boolean | null, placeholder?: string | null, functionName?: string | null, condition?: { __typename?: 'RecipeCondition', field: string, operation: Operation, value?: string | null } | null, validation?: { __typename?: 'RecipeValidation', type: ValidationType, regex?: string | null, message: string } | null };
+export type RecipeConfigurationFragment = { __typename?: 'RecipeConfiguration', name?: string | null, type?: Datatype | null, default?: string | null, documentation?: string | null, optional?: boolean | null, placeholder?: string | null, functionName?: string | null, condition?: { __typename?: 'RecipeCondition', field: string, operation: Operation, value?: string | null } | null, validation?: { __typename?: 'RecipeValidation', type: ValidationType, regex?: string | null, message: string } | null };
 
-export type StackFragmentFragment = { __typename?: 'Stack', id: string, name: string, displayName?: string | null, description?: string | null, featured?: boolean | null, creator?: { __typename?: 'User', id: string, name: string } | null, collections?: Array<{ __typename?: 'StackCollection', id: string, provider: Provider, bundles?: Array<{ __typename?: 'StackRecipe', recipe: { __typename?: 'Recipe', repository?: { __typename?: 'Repository', id: string, name: string, notes?: string | null, description?: string | null, documentation?: string | null, icon?: string | null, darkIcon?: string | null, private?: boolean | null, trending?: boolean | null, verified?: boolean | null, category?: Category | null, tags?: Array<{ __typename?: 'Tag', tag: string } | null> | null, oauthSettings?: { __typename?: 'OauthSettings', uriFormat: string, authMethod: OidcAuthMethod } | null, publisher?: { __typename?: 'Publisher', id?: string | null, name: string, phone?: string | null, avatar?: string | null, description?: string | null, backgroundColor?: string | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, address?: { __typename?: 'Address', line1?: string | null, line2?: string | null, city?: string | null, country?: string | null, state?: string | null, zip?: string | null } | null } | null, recipes?: Array<{ __typename?: 'Recipe', name: string } | null> | null } | null } } | null> | null } | null> | null };
+export type StackFragment = { __typename?: 'Stack', id: string, name: string, displayName?: string | null, description?: string | null, featured?: boolean | null, creator?: { __typename?: 'User', id: string, name: string } | null, collections?: Array<{ __typename?: 'StackCollection', id: string, provider: Provider, bundles?: Array<{ __typename?: 'StackRecipe', recipe: { __typename?: 'Recipe', repository?: { __typename?: 'Repository', id: string, name: string, notes?: string | null, description?: string | null, documentation?: string | null, icon?: string | null, darkIcon?: string | null, private?: boolean | null, trending?: boolean | null, verified?: boolean | null, category?: Category | null, tags?: Array<{ __typename?: 'Tag', tag: string } | null> | null, oauthSettings?: { __typename?: 'OauthSettings', uriFormat: string, authMethod: OidcAuthMethod } | null, publisher?: { __typename?: 'Publisher', id?: string | null, name: string, phone?: string | null, avatar?: string | null, description?: string | null, backgroundColor?: string | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, address?: { __typename?: 'Address', line1?: string | null, line2?: string | null, city?: string | null, country?: string | null, state?: string | null, zip?: string | null } | null } | null, recipes?: Array<{ __typename?: 'Recipe', name: string } | null> | null } | null } } | null> | null } | null> | null };
 
 export type GetRecipeQueryVariables = Exact<{
   repo?: InputMaybe<Scalars['String']>;
@@ -4575,17 +4589,17 @@ export type ListStacksQueryVariables = Exact<{
 
 export type ListStacksQuery = { __typename?: 'RootQueryType', stacks?: { __typename?: 'StackConnection', edges?: Array<{ __typename?: 'StackEdge', node?: { __typename?: 'Stack', id: string, name: string, displayName?: string | null, description?: string | null, featured?: boolean | null, creator?: { __typename?: 'User', id: string, name: string } | null, collections?: Array<{ __typename?: 'StackCollection', id: string, provider: Provider, bundles?: Array<{ __typename?: 'StackRecipe', recipe: { __typename?: 'Recipe', repository?: { __typename?: 'Repository', id: string, name: string, notes?: string | null, description?: string | null, documentation?: string | null, icon?: string | null, darkIcon?: string | null, private?: boolean | null, trending?: boolean | null, verified?: boolean | null, category?: Category | null, tags?: Array<{ __typename?: 'Tag', tag: string } | null> | null, oauthSettings?: { __typename?: 'OauthSettings', uriFormat: string, authMethod: OidcAuthMethod } | null, publisher?: { __typename?: 'Publisher', id?: string | null, name: string, phone?: string | null, avatar?: string | null, description?: string | null, backgroundColor?: string | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, address?: { __typename?: 'Address', line1?: string | null, line2?: string | null, city?: string | null, country?: string | null, state?: string | null, zip?: string | null } | null } | null, recipes?: Array<{ __typename?: 'Recipe', name: string } | null> | null } | null } } | null> | null } | null> | null } | null } | null> | null } | null };
 
-export type ApplyLockFragmentFragment = { __typename?: 'ApplyLock', id: string, lock?: string | null };
+export type ApplyLockFragment = { __typename?: 'ApplyLock', id: string, lock?: string | null };
 
-export type CategoryFragmentFragment = { __typename?: 'CategoryInfo', category?: Category | null, count?: number | null };
+export type CategoryFragment = { __typename?: 'CategoryInfo', category?: Category | null, count?: number | null };
 
-export type RepoFragmentFragment = { __typename?: 'Repository', id: string, name: string, notes?: string | null, description?: string | null, documentation?: string | null, icon?: string | null, darkIcon?: string | null, private?: boolean | null, trending?: boolean | null, verified?: boolean | null, category?: Category | null, oauthSettings?: { __typename?: 'OauthSettings', uriFormat: string, authMethod: OidcAuthMethod } | null, publisher?: { __typename?: 'Publisher', id?: string | null, name: string, phone?: string | null, avatar?: string | null, description?: string | null, backgroundColor?: string | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, address?: { __typename?: 'Address', line1?: string | null, line2?: string | null, city?: string | null, country?: string | null, state?: string | null, zip?: string | null } | null } | null, recipes?: Array<{ __typename?: 'Recipe', name: string } | null> | null };
+export type RepoFragment = { __typename?: 'Repository', id: string, name: string, notes?: string | null, description?: string | null, documentation?: string | null, icon?: string | null, darkIcon?: string | null, private?: boolean | null, trending?: boolean | null, verified?: boolean | null, category?: Category | null, oauthSettings?: { __typename?: 'OauthSettings', uriFormat: string, authMethod: OidcAuthMethod } | null, publisher?: { __typename?: 'Publisher', id?: string | null, name: string, phone?: string | null, avatar?: string | null, description?: string | null, backgroundColor?: string | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, address?: { __typename?: 'Address', line1?: string | null, line2?: string | null, city?: string | null, country?: string | null, state?: string | null, zip?: string | null } | null } | null, recipes?: Array<{ __typename?: 'Recipe', name: string } | null> | null };
 
-export type RepositoryFragmentFragment = { __typename?: 'Repository', id: string, name: string, notes?: string | null, icon?: string | null, darkIcon?: string | null, description?: string | null, publisher?: { __typename?: 'Publisher', name: string } | null, recipes?: Array<{ __typename?: 'Recipe', name: string } | null> | null };
+export type RepositoryFragment = { __typename?: 'Repository', id: string, name: string, notes?: string | null, icon?: string | null, darkIcon?: string | null, description?: string | null, publisher?: { __typename?: 'Publisher', name: string } | null, recipes?: Array<{ __typename?: 'Recipe', name: string } | null> | null };
 
-export type DependenciesFragmentFragment = { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', name?: string | null, repo?: string | null, type?: DependencyType | null, version?: string | null, optional?: boolean | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null };
+export type DependenciesFragment = { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', name?: string | null, repo?: string | null, type?: DependencyType | null, version?: string | null, optional?: boolean | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null };
 
-export type IntegrationFragmentFragment = { __typename?: 'Integration', id: string, name: string, icon?: string | null, sourceUrl?: string | null, description?: string | null, tags?: Array<{ __typename?: 'Tag', tag: string } | null> | null, publisher?: { __typename?: 'Publisher', id?: string | null, name: string, phone?: string | null, avatar?: string | null, description?: string | null, backgroundColor?: string | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, address?: { __typename?: 'Address', line1?: string | null, line2?: string | null, city?: string | null, country?: string | null, state?: string | null, zip?: string | null } | null } | null };
+export type IntegrationFragment = { __typename?: 'Integration', id: string, name: string, icon?: string | null, sourceUrl?: string | null, description?: string | null, tags?: Array<{ __typename?: 'Tag', tag: string } | null> | null, publisher?: { __typename?: 'Publisher', id?: string | null, name: string, phone?: string | null, avatar?: string | null, description?: string | null, backgroundColor?: string | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, address?: { __typename?: 'Address', line1?: string | null, line2?: string | null, city?: string | null, country?: string | null, state?: string | null, zip?: string | null } | null } | null };
 
 export type GetRepositoryQueryVariables = Exact<{
   name?: InputMaybe<Scalars['String']>;
@@ -4687,9 +4701,9 @@ export type GetTfProviderScaffoldQueryVariables = Exact<{
 
 export type GetTfProviderScaffoldQuery = { __typename?: 'RootQueryType', terraformProvider?: { __typename?: 'TerraformProvider', name?: Provider | null, content?: string | null } | null };
 
-export type CloudShellFragmentFragment = { __typename?: 'CloudShell', id: string, aesKey: string, gitUrl: string, alive: boolean, provider: Provider, subdomain: string, cluster: string, status?: { __typename?: 'ShellStatus', ready?: boolean | null, initialized?: boolean | null, containersReady?: boolean | null, podScheduled?: boolean | null } | null };
+export type CloudShellFragment = { __typename?: 'CloudShell', id: string, aesKey: string, gitUrl: string, alive: boolean, provider: Provider, subdomain: string, cluster: string, status?: { __typename?: 'ShellStatus', ready?: boolean | null, initialized?: boolean | null, containersReady?: boolean | null, podScheduled?: boolean | null } | null };
 
-export type DemoProjectFragmentFragment = { __typename?: 'DemoProject', id: string, projectId: string, credentials?: string | null, ready?: boolean | null, state?: DemoProjectState | null };
+export type DemoProjectFragment = { __typename?: 'DemoProject', id: string, projectId: string, credentials?: string | null, ready?: boolean | null, state?: DemoProjectState | null };
 
 export type GetShellQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -4701,9 +4715,9 @@ export type DeleteShellMutationVariables = Exact<{ [key: string]: never; }>;
 
 export type DeleteShellMutation = { __typename?: 'RootMutationType', deleteShell?: { __typename?: 'CloudShell', id: string, aesKey: string, gitUrl: string, alive: boolean, provider: Provider, subdomain: string, cluster: string, status?: { __typename?: 'ShellStatus', ready?: boolean | null, initialized?: boolean | null, containersReady?: boolean | null, podScheduled?: boolean | null } | null } | null };
 
-export type TerraformFragmentFragment = { __typename?: 'Terraform', id?: string | null, name?: string | null, readme?: string | null, package?: string | null, description?: string | null, latestVersion?: string | null, valuesTemplate?: string | null, insertedAt?: Date | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', name?: string | null, repo?: string | null, type?: DependencyType | null, version?: string | null, optional?: boolean | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null };
+export type TerraformFragment = { __typename?: 'Terraform', id?: string | null, name?: string | null, readme?: string | null, package?: string | null, description?: string | null, latestVersion?: string | null, valuesTemplate?: string | null, insertedAt?: Date | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', name?: string | null, repo?: string | null, type?: DependencyType | null, version?: string | null, optional?: boolean | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null };
 
-export type TerraformInstallationFragmentFragment = { __typename?: 'TerraformInstallation', id?: string | null, terraform?: { __typename?: 'Terraform', id?: string | null, name?: string | null, readme?: string | null, package?: string | null, description?: string | null, latestVersion?: string | null, valuesTemplate?: string | null, insertedAt?: Date | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', name?: string | null, repo?: string | null, type?: DependencyType | null, version?: string | null, optional?: boolean | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null } | null, version?: { __typename?: 'Version', id: string, helm?: Map<string, unknown> | null, readme?: string | null, valuesTemplate?: string | null, version: string, insertedAt?: Date | null, package?: string | null, crds?: Array<{ __typename?: 'Crd', id: string, name: string, blob?: string | null } | null> | null, chart?: { __typename?: 'Chart', id?: string | null, name: string, description?: string | null, latestVersion?: string | null, insertedAt?: Date | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', name?: string | null, repo?: string | null, type?: DependencyType | null, version?: string | null, optional?: boolean | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null } | null, terraform?: { __typename?: 'Terraform', id?: string | null, name?: string | null } | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', name?: string | null, repo?: string | null, type?: DependencyType | null, version?: string | null, optional?: boolean | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null } | null };
+export type TerraformInstallationFragment = { __typename?: 'TerraformInstallation', id?: string | null, terraform?: { __typename?: 'Terraform', id?: string | null, name?: string | null, readme?: string | null, package?: string | null, description?: string | null, latestVersion?: string | null, valuesTemplate?: string | null, insertedAt?: Date | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', name?: string | null, repo?: string | null, type?: DependencyType | null, version?: string | null, optional?: boolean | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null } | null, version?: { __typename?: 'Version', id: string, helm?: Map<string, unknown> | null, readme?: string | null, valuesTemplate?: string | null, version: string, insertedAt?: Date | null, package?: string | null, crds?: Array<{ __typename?: 'Crd', id: string, name: string, blob?: string | null } | null> | null, chart?: { __typename?: 'Chart', id?: string | null, name: string, description?: string | null, latestVersion?: string | null, insertedAt?: Date | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', name?: string | null, repo?: string | null, type?: DependencyType | null, version?: string | null, optional?: boolean | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null } | null, terraform?: { __typename?: 'Terraform', id?: string | null, name?: string | null } | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', name?: string | null, repo?: string | null, type?: DependencyType | null, version?: string | null, optional?: boolean | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null } | null };
 
 export type GetTerraformQueryVariables = Exact<{
   id: Scalars['ID'];
@@ -4735,9 +4749,9 @@ export type UninstallTerraformMutationVariables = Exact<{
 
 export type UninstallTerraformMutation = { __typename?: 'RootMutationType', uninstallTerraform?: { __typename?: 'TerraformInstallation', id?: string | null } | null };
 
-export type StepFragmentFragment = { __typename?: 'TestStep', id: string, name: string, status: TestStatus, hasLogs?: boolean | null, description: string, insertedAt?: Date | null, updatedAt?: Date | null };
+export type StepFragment = { __typename?: 'TestStep', id: string, name: string, status: TestStatus, hasLogs?: boolean | null, description: string, insertedAt?: Date | null, updatedAt?: Date | null };
 
-export type TestFragmentFragment = { __typename?: 'Test', id: string, name?: string | null, promoteTag: string, status: TestStatus, insertedAt?: Date | null, updatedAt?: Date | null, steps?: Array<{ __typename?: 'TestStep', id: string, name: string, status: TestStatus, hasLogs?: boolean | null, description: string, insertedAt?: Date | null, updatedAt?: Date | null } | null> | null };
+export type TestFragment = { __typename?: 'Test', id: string, name?: string | null, promoteTag: string, status: TestStatus, insertedAt?: Date | null, updatedAt?: Date | null, steps?: Array<{ __typename?: 'TestStep', id: string, name: string, status: TestStatus, hasLogs?: boolean | null, description: string, insertedAt?: Date | null, updatedAt?: Date | null } | null> | null };
 
 export type CreateTestMutationVariables = Exact<{
   name: Scalars['String'];
@@ -4771,41 +4785,41 @@ export type PublishLogsMutationVariables = Exact<{
 
 export type PublishLogsMutation = { __typename?: 'RootMutationType', publishLogs?: { __typename?: 'TestStep', id: string } | null };
 
-export type UpgradeQueueFragmentFragment = { __typename?: 'UpgradeQueue', id: string, acked?: string | null, name?: string | null, domain?: string | null, git?: string | null, pingedAt?: Date | null, provider?: Provider | null };
+export type UpgradeQueueFragment = { __typename?: 'UpgradeQueue', id: string, acked?: string | null, name?: string | null, domain?: string | null, git?: string | null, pingedAt?: Date | null, provider?: Provider | null };
 
-export type RolloutFragmentFragment = { __typename?: 'Rollout', id: string, event?: string | null, cursor?: string | null, count?: number | null, status: RolloutStatus, heartbeat?: Date | null };
+export type RolloutFragment = { __typename?: 'Rollout', id: string, event?: string | null, cursor?: string | null, count?: number | null, status: RolloutStatus, heartbeat?: Date | null };
 
-export type UpgradeFragmentFragment = { __typename?: 'Upgrade', id: string, message?: string | null, insertedAt?: Date | null, repository?: { __typename?: 'Repository', id: string, name: string, notes?: string | null, description?: string | null, documentation?: string | null, icon?: string | null, darkIcon?: string | null, private?: boolean | null, trending?: boolean | null, verified?: boolean | null, category?: Category | null, oauthSettings?: { __typename?: 'OauthSettings', uriFormat: string, authMethod: OidcAuthMethod } | null, publisher?: { __typename?: 'Publisher', id?: string | null, name: string, phone?: string | null, avatar?: string | null, description?: string | null, backgroundColor?: string | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, address?: { __typename?: 'Address', line1?: string | null, line2?: string | null, city?: string | null, country?: string | null, state?: string | null, zip?: string | null } | null } | null, recipes?: Array<{ __typename?: 'Recipe', name: string } | null> | null } | null };
+export type UpgradeFragment = { __typename?: 'Upgrade', id: string, message?: string | null, insertedAt?: Date | null, repository?: { __typename?: 'Repository', id: string, name: string, notes?: string | null, description?: string | null, documentation?: string | null, icon?: string | null, darkIcon?: string | null, private?: boolean | null, trending?: boolean | null, verified?: boolean | null, category?: Category | null, oauthSettings?: { __typename?: 'OauthSettings', uriFormat: string, authMethod: OidcAuthMethod } | null, publisher?: { __typename?: 'Publisher', id?: string | null, name: string, phone?: string | null, avatar?: string | null, description?: string | null, backgroundColor?: string | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, address?: { __typename?: 'Address', line1?: string | null, line2?: string | null, city?: string | null, country?: string | null, state?: string | null, zip?: string | null } | null } | null, recipes?: Array<{ __typename?: 'Recipe', name: string } | null> | null } | null };
 
-export type DeferredUpdateFragmentFragment = { __typename?: 'DeferredUpdate', id: string, dequeueAt?: Date | null, attempts?: number | null, insertedAt?: Date | null, version?: { __typename?: 'Version', version: string } | null };
+export type DeferredUpdateFragment = { __typename?: 'DeferredUpdate', id: string, dequeueAt?: Date | null, attempts?: number | null, insertedAt?: Date | null, version?: { __typename?: 'Version', version: string } | null };
 
-export type AccountFragmentFragment = { __typename?: 'Account', id: string, name?: string | null, billingCustomerId?: string | null, backgroundColor?: string | null };
+export type AccountFragment = { __typename?: 'Account', id: string, name?: string | null, billingCustomerId?: string | null, backgroundColor?: string | null };
 
-export type GroupFragmentFragment = { __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null };
+export type GroupFragment = { __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null };
 
-export type UserFragmentFragment = { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null };
+export type UserFragment = { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null };
 
 export type ImpersonationPolicyFragment = { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null };
 
-export type GroupMemberFragmentFragment = { __typename?: 'GroupMember', id: string, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null };
+export type GroupMemberFragment = { __typename?: 'GroupMember', id: string, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null };
 
-export type TokenFragmentFragment = { __typename?: 'PersistedToken', id?: string | null, token?: string | null, insertedAt?: Date | null };
+export type TokenFragment = { __typename?: 'PersistedToken', id?: string | null, token?: string | null, insertedAt?: Date | null };
 
-export type TokenAuditFragmentFragment = { __typename?: 'PersistedTokenAudit', ip?: string | null, timestamp?: Date | null, count?: number | null, country?: string | null, city?: string | null, latitude?: string | null, longitude?: string | null };
+export type TokenAuditFragment = { __typename?: 'PersistedTokenAudit', ip?: string | null, timestamp?: Date | null, count?: number | null, country?: string | null, city?: string | null, latitude?: string | null, longitude?: string | null };
 
-export type AddressFragmentFragment = { __typename?: 'Address', line1?: string | null, line2?: string | null, city?: string | null, country?: string | null, state?: string | null, zip?: string | null };
+export type AddressFragment = { __typename?: 'Address', line1?: string | null, line2?: string | null, city?: string | null, country?: string | null, state?: string | null, zip?: string | null };
 
-export type PublisherFragmentFragment = { __typename?: 'Publisher', id?: string | null, name: string, phone?: string | null, avatar?: string | null, description?: string | null, backgroundColor?: string | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, address?: { __typename?: 'Address', line1?: string | null, line2?: string | null, city?: string | null, country?: string | null, state?: string | null, zip?: string | null } | null };
+export type PublisherFragment = { __typename?: 'Publisher', id?: string | null, name: string, phone?: string | null, avatar?: string | null, description?: string | null, backgroundColor?: string | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, address?: { __typename?: 'Address', line1?: string | null, line2?: string | null, city?: string | null, country?: string | null, state?: string | null, zip?: string | null } | null };
 
-export type WebhookFragmentFragment = { __typename?: 'Webhook', id?: string | null, url?: string | null, secret?: string | null, insertedAt?: Date | null };
+export type WebhookFragment = { __typename?: 'Webhook', id?: string | null, url?: string | null, secret?: string | null, insertedAt?: Date | null };
 
-export type RoleBindingFragmentFragment = { __typename?: 'RoleBinding', id: string, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, group?: { __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null };
+export type RoleBindingFragment = { __typename?: 'RoleBinding', id: string, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, group?: { __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null };
 
-export type RoleFragmentFragment = { __typename?: 'Role', id: string, name: string, description?: string | null, repositories?: Array<string | null> | null, permissions?: Array<Permission | null> | null, roleBindings?: Array<{ __typename?: 'RoleBinding', id: string, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, group?: { __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null } | null> | null };
+export type RoleFragment = { __typename?: 'Role', id: string, name: string, description?: string | null, repositories?: Array<string | null> | null, permissions?: Array<Permission | null> | null, roleBindings?: Array<{ __typename?: 'RoleBinding', id: string, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, group?: { __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null } | null> | null };
 
-export type PublicKeyFragmentFragment = { __typename?: 'PublicKey', id: string, name: string, digest: string, insertedAt?: Date | null, content: string, user: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } };
+export type PublicKeyFragment = { __typename?: 'PublicKey', id: string, name: string, digest: string, insertedAt?: Date | null, content: string, user: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } };
 
-export type EabCredentialFragmentFragment = { __typename?: 'EabCredential', id: string, keyId: string, hmacKey: string, cluster: string, provider: Provider, insertedAt?: Date | null };
+export type EabCredentialFragment = { __typename?: 'EabCredential', id: string, keyId: string, hmacKey: string, cluster: string, provider: Provider, insertedAt?: Date | null };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -4894,9 +4908,9 @@ export type CreateEventMutationVariables = Exact<{
 
 export type CreateEventMutation = { __typename?: 'RootMutationType', createUserEvent?: boolean | null };
 
-export type VersionTagFragmentFragment = { __typename?: 'VersionTag', id: string, tag: string, version?: { __typename?: 'Version', id: string } | null };
+export type VersionTagFragment = { __typename?: 'VersionTag', id: string, tag: string, version?: { __typename?: 'Version', id: string } | null };
 
-export type VersionFragmentFragment = { __typename?: 'Version', id: string, helm?: Map<string, unknown> | null, readme?: string | null, valuesTemplate?: string | null, version: string, insertedAt?: Date | null, package?: string | null, crds?: Array<{ __typename?: 'Crd', id: string, name: string, blob?: string | null } | null> | null, chart?: { __typename?: 'Chart', id?: string | null, name: string, description?: string | null, latestVersion?: string | null, insertedAt?: Date | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', name?: string | null, repo?: string | null, type?: DependencyType | null, version?: string | null, optional?: boolean | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null } | null, terraform?: { __typename?: 'Terraform', id?: string | null, name?: string | null } | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', name?: string | null, repo?: string | null, type?: DependencyType | null, version?: string | null, optional?: boolean | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null };
+export type VersionFragment = { __typename?: 'Version', id: string, helm?: Map<string, unknown> | null, readme?: string | null, valuesTemplate?: string | null, version: string, insertedAt?: Date | null, package?: string | null, crds?: Array<{ __typename?: 'Crd', id: string, name: string, blob?: string | null } | null> | null, chart?: { __typename?: 'Chart', id?: string | null, name: string, description?: string | null, latestVersion?: string | null, insertedAt?: Date | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', name?: string | null, repo?: string | null, type?: DependencyType | null, version?: string | null, optional?: boolean | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null } | null, terraform?: { __typename?: 'Terraform', id?: string | null, name?: string | null } | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', name?: string | null, repo?: string | null, type?: DependencyType | null, version?: string | null, optional?: boolean | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null };
 
 export type UpdateVersionMutationVariables = Exact<{
   spec?: InputMaybe<VersionSpec>;
@@ -4906,8 +4920,8 @@ export type UpdateVersionMutationVariables = Exact<{
 
 export type UpdateVersionMutation = { __typename?: 'RootMutationType', updateVersion?: { __typename?: 'Version', id: string } | null };
 
-export const UserFragmentFragmentDoc = gql`
-    fragment UserFragment on User {
+export const UserFragmentDoc = gql`
+    fragment User on User {
   id
   name
   email
@@ -4927,8 +4941,8 @@ export const UserFragmentFragmentDoc = gql`
   }
 }
     `;
-export const AddressFragmentFragmentDoc = gql`
-    fragment AddressFragment on Address {
+export const AddressFragmentDoc = gql`
+    fragment Address on Address {
   line1
   line2
   city
@@ -4937,8 +4951,8 @@ export const AddressFragmentFragmentDoc = gql`
   zip
 }
     `;
-export const PublisherFragmentFragmentDoc = gql`
-    fragment PublisherFragment on Publisher {
+export const PublisherFragmentDoc = gql`
+    fragment Publisher on Publisher {
   id
   name
   phone
@@ -4946,16 +4960,16 @@ export const PublisherFragmentFragmentDoc = gql`
   description
   backgroundColor
   owner {
-    ...UserFragment
+    ...User
   }
   address {
-    ...AddressFragment
+    ...Address
   }
 }
-    ${UserFragmentFragmentDoc}
-${AddressFragmentFragmentDoc}`;
-export const RepoFragmentFragmentDoc = gql`
-    fragment RepoFragment on Repository {
+    ${UserFragmentDoc}
+${AddressFragmentDoc}`;
+export const RepoFragmentDoc = gql`
+    fragment Repo on Repository {
   id
   name
   notes
@@ -4972,23 +4986,23 @@ export const RepoFragmentFragmentDoc = gql`
     authMethod
   }
   publisher {
-    ...PublisherFragment
+    ...Publisher
   }
   recipes {
     name
   }
 }
-    ${PublisherFragmentFragmentDoc}`;
-export const GroupFragmentFragmentDoc = gql`
-    fragment GroupFragment on Group {
+    ${PublisherFragmentDoc}`;
+export const GroupFragmentDoc = gql`
+    fragment Group on Group {
   id
   name
   global
   description
 }
     `;
-export const IntegrationWebhookFragmentFragmentDoc = gql`
-    fragment IntegrationWebhookFragment on IntegrationWebhook {
+export const IntegrationWebhookFragmentDoc = gql`
+    fragment IntegrationWebhook on IntegrationWebhook {
   id
   name
   url
@@ -4996,39 +5010,39 @@ export const IntegrationWebhookFragmentFragmentDoc = gql`
   actions
 }
     `;
-export const RoleBindingFragmentFragmentDoc = gql`
-    fragment RoleBindingFragment on RoleBinding {
+export const RoleBindingFragmentDoc = gql`
+    fragment RoleBinding on RoleBinding {
   id
   user {
-    ...UserFragment
+    ...User
   }
   group {
-    ...GroupFragment
+    ...Group
   }
 }
-    ${UserFragmentFragmentDoc}
-${GroupFragmentFragmentDoc}`;
-export const RoleFragmentFragmentDoc = gql`
-    fragment RoleFragment on Role {
+    ${UserFragmentDoc}
+${GroupFragmentDoc}`;
+export const RoleFragmentDoc = gql`
+    fragment Role on Role {
   id
   name
   description
   repositories
   permissions
   roleBindings {
-    ...RoleBindingFragment
+    ...RoleBinding
   }
 }
-    ${RoleBindingFragmentFragmentDoc}`;
-export const CrdFragmentFragmentDoc = gql`
-    fragment CrdFragment on Crd {
+    ${RoleBindingFragmentDoc}`;
+export const CrdFragmentDoc = gql`
+    fragment Crd on Crd {
   id
   name
   blob
 }
     `;
-export const DependenciesFragmentFragmentDoc = gql`
-    fragment DependenciesFragment on Dependencies {
+export const DependenciesFragmentDoc = gql`
+    fragment Dependencies on Dependencies {
   dependencies {
     name
     repo
@@ -5048,20 +5062,20 @@ export const DependenciesFragmentFragmentDoc = gql`
   outputs
 }
     `;
-export const ChartFragmentFragmentDoc = gql`
-    fragment ChartFragment on Chart {
+export const ChartFragmentDoc = gql`
+    fragment Chart on Chart {
   id
   name
   description
   latestVersion
   dependencies {
-    ...DependenciesFragment
+    ...Dependencies
   }
   insertedAt
 }
-    ${DependenciesFragmentFragmentDoc}`;
-export const VersionFragmentFragmentDoc = gql`
-    fragment VersionFragment on Version {
+    ${DependenciesFragmentDoc}`;
+export const VersionFragmentDoc = gql`
+    fragment Version on Version {
   id
   helm
   readme
@@ -5070,24 +5084,24 @@ export const VersionFragmentFragmentDoc = gql`
   insertedAt
   package
   crds {
-    ...CrdFragment
+    ...Crd
   }
   chart {
-    ...ChartFragment
+    ...Chart
   }
   terraform {
     id
     name
   }
   dependencies {
-    ...DependenciesFragment
+    ...Dependencies
   }
 }
-    ${CrdFragmentFragmentDoc}
-${ChartFragmentFragmentDoc}
-${DependenciesFragmentFragmentDoc}`;
-export const AuditFragmentFragmentDoc = gql`
-    fragment AuditFragment on Audit {
+    ${CrdFragmentDoc}
+${ChartFragmentDoc}
+${DependenciesFragmentDoc}`;
+export const AuditFragmentDoc = gql`
+    fragment Audit on Audit {
   id
   action
   ip
@@ -5096,22 +5110,22 @@ export const AuditFragmentFragmentDoc = gql`
   latitude
   longitude
   actor {
-    ...UserFragment
+    ...User
   }
   repository {
-    ...RepoFragment
+    ...Repo
   }
   group {
-    ...GroupFragment
+    ...Group
   }
   integrationWebhook {
-    ...IntegrationWebhookFragment
+    ...IntegrationWebhook
   }
   role {
-    ...RoleFragment
+    ...Role
   }
   version {
-    ...VersionFragment
+    ...Version
   }
   image {
     id
@@ -5122,14 +5136,14 @@ export const AuditFragmentFragmentDoc = gql`
   }
   insertedAt
 }
-    ${UserFragmentFragmentDoc}
-${RepoFragmentFragmentDoc}
-${GroupFragmentFragmentDoc}
-${IntegrationWebhookFragmentFragmentDoc}
-${RoleFragmentFragmentDoc}
-${VersionFragmentFragmentDoc}`;
-export const PolicyBindingFragmentFragmentDoc = gql`
-    fragment PolicyBindingFragment on PolicyBinding {
+    ${UserFragmentDoc}
+${RepoFragmentDoc}
+${GroupFragmentDoc}
+${IntegrationWebhookFragmentDoc}
+${RoleFragmentDoc}
+${VersionFragmentDoc}`;
+export const PolicyBindingFragmentDoc = gql`
+    fragment PolicyBinding on PolicyBinding {
   id
   group {
     id
@@ -5142,53 +5156,53 @@ export const PolicyBindingFragmentFragmentDoc = gql`
   }
 }
     `;
-export const DnsDomainFragmentFragmentDoc = gql`
-    fragment DnsDomainFragment on DnsDomain {
+export const DnsDomainFragmentDoc = gql`
+    fragment DnsDomain on DnsDomain {
   id
   name
   creator {
-    ...UserFragment
+    ...User
   }
   accessPolicy {
     id
     bindings {
-      ...PolicyBindingFragment
+      ...PolicyBinding
     }
   }
   insertedAt
 }
-    ${UserFragmentFragmentDoc}
-${PolicyBindingFragmentFragmentDoc}`;
-export const InviteFragmentFragmentDoc = gql`
-    fragment InviteFragment on Invite {
+    ${UserFragmentDoc}
+${PolicyBindingFragmentDoc}`;
+export const InviteFragmentDoc = gql`
+    fragment Invite on Invite {
   id
   secureId
   email
   insertedAt
 }
     `;
-export const OidcLoginFragmentFragmentDoc = gql`
-    fragment OidcLoginFragment on OidcLogin {
+export const OidcLoginFragmentDoc = gql`
+    fragment OidcLogin on OidcLogin {
   ip
   country
   city
   latitude
   longitude
   user {
-    ...UserFragment
+    ...User
   }
   owner {
-    ...UserFragment
+    ...User
   }
   repository {
-    ...RepoFragment
+    ...Repo
   }
   insertedAt
 }
-    ${UserFragmentFragmentDoc}
-${RepoFragmentFragmentDoc}`;
-export const ArtifactFragmentFragmentDoc = gql`
-    fragment ArtifactFragment on Artifact {
+    ${UserFragmentDoc}
+${RepoFragmentDoc}`;
+export const ArtifactFragmentDoc = gql`
+    fragment Artifact on Artifact {
   id
   name
   blob
@@ -5202,22 +5216,22 @@ export const ArtifactFragmentFragmentDoc = gql`
   updatedAt
 }
     `;
-export const ChartInstallationFragmentFragmentDoc = gql`
-    fragment ChartInstallationFragment on ChartInstallation {
+export const ChartInstallationFragmentDoc = gql`
+    fragment ChartInstallation on ChartInstallation {
   id
   chart {
-    ...ChartFragment
+    ...Chart
     dependencies {
-      ...DependenciesFragment
+      ...Dependencies
     }
   }
   version {
-    ...VersionFragment
+    ...Version
   }
 }
-    ${ChartFragmentFragmentDoc}
-${DependenciesFragmentFragmentDoc}
-${VersionFragmentFragmentDoc}`;
+    ${ChartFragmentDoc}
+${DependenciesFragmentDoc}
+${VersionFragmentDoc}`;
 export const ScanViolationFragmentDoc = gql`
     fragment ScanViolation on ScanViolation {
   ruleName
@@ -5249,8 +5263,8 @@ export const PackageScanFragmentDoc = gql`
 }
     ${ScanViolationFragmentDoc}
 ${ScanErrorFragmentDoc}`;
-export const DnsRecordFragmentFragmentDoc = gql`
-    fragment DnsRecordFragment on DnsRecord {
+export const DnsRecordFragmentDoc = gql`
+    fragment DnsRecord on DnsRecord {
   id
   name
   type
@@ -5258,13 +5272,13 @@ export const DnsRecordFragmentFragmentDoc = gql`
   cluster
   provider
   creator {
-    ...UserFragment
+    ...User
   }
   insertedAt
 }
-    ${UserFragmentFragmentDoc}`;
-export const DockerRepoFragmentFragmentDoc = gql`
-    fragment DockerRepoFragment on DockerRepository {
+    ${UserFragmentDoc}`;
+export const DockerRepoFragmentDoc = gql`
+    fragment DockerRepo on DockerRepository {
   id
   name
   public
@@ -5290,8 +5304,8 @@ export const DockerRepositoryFragmentDoc = gql`
   updatedAt
 }
     `;
-export const DockerImageFragmentFragmentDoc = gql`
-    fragment DockerImageFragment on DockerImage {
+export const DockerImageFragmentDoc = gql`
+    fragment DockerImage on DockerImage {
   id
   tag
   digest
@@ -5301,8 +5315,8 @@ export const DockerImageFragmentFragmentDoc = gql`
   updatedAt
 }
     `;
-export const VulnerabilityFragmentFragmentDoc = gql`
-    fragment VulnerabilityFragment on Vulnerability {
+export const VulnerabilityFragmentDoc = gql`
+    fragment Vulnerability on Vulnerability {
   id
   title
   description
@@ -5329,8 +5343,8 @@ export const VulnerabilityFragmentFragmentDoc = gql`
   }
 }
     `;
-export const PostmortemFragmentFragmentDoc = gql`
-    fragment PostmortemFragment on Postmortem {
+export const PostmortemFragmentDoc = gql`
+    fragment Postmortem on Postmortem {
   id
   content
   actionItems {
@@ -5339,14 +5353,14 @@ export const PostmortemFragmentFragmentDoc = gql`
   }
 }
     `;
-export const FollowerFragmentFragmentDoc = gql`
-    fragment FollowerFragment on Follower {
+export const FollowerFragmentDoc = gql`
+    fragment Follower on Follower {
   id
   incident {
     id
   }
   user {
-    ...UserFragment
+    ...User
   }
   preferences {
     message
@@ -5354,7 +5368,7 @@ export const FollowerFragmentFragmentDoc = gql`
     mention
   }
 }
-    ${UserFragmentFragmentDoc}`;
+    ${UserFragmentDoc}`;
 export const ServiceLevelFragmentDoc = gql`
     fragment ServiceLevel on ServiceLevel {
   minSeverity
@@ -5362,8 +5376,8 @@ export const ServiceLevelFragmentDoc = gql`
   responseTime
 }
     `;
-export const LimitFragmentFragmentDoc = gql`
-    fragment LimitFragment on Limit {
+export const LimitFragmentDoc = gql`
+    fragment Limit on Limit {
   dimension
   quantity
 }
@@ -5377,8 +5391,8 @@ export const LineItemFragmentDoc = gql`
   type
 }
     `;
-export const PlanFragmentFragmentDoc = gql`
-    fragment PlanFragment on Plan {
+export const PlanFragmentDoc = gql`
+    fragment Plan on Plan {
   id
   name
   cost
@@ -5388,7 +5402,7 @@ export const PlanFragmentFragmentDoc = gql`
   }
   lineItems {
     included {
-      ...LimitFragment
+      ...Limit
     }
     items {
       ...LineItem
@@ -5402,10 +5416,10 @@ export const PlanFragmentFragmentDoc = gql`
   }
 }
     ${ServiceLevelFragmentDoc}
-${LimitFragmentFragmentDoc}
+${LimitFragmentDoc}
 ${LineItemFragmentDoc}`;
-export const SlimSubscriptionFragmentFragmentDoc = gql`
-    fragment SlimSubscriptionFragment on SlimSubscription {
+export const SlimSubscriptionFragmentDoc = gql`
+    fragment SlimSubscription on SlimSubscription {
   id
   lineItems {
     items {
@@ -5414,10 +5428,10 @@ export const SlimSubscriptionFragmentFragmentDoc = gql`
     }
   }
   plan {
-    ...PlanFragment
+    ...Plan
   }
 }
-    ${PlanFragmentFragmentDoc}`;
+    ${PlanFragmentDoc}`;
 export const ClusterInformationFragmentDoc = gql`
     fragment ClusterInformation on ClusterInformation {
   version
@@ -5425,8 +5439,8 @@ export const ClusterInformationFragmentDoc = gql`
   platform
 }
     `;
-export const IncidentFragmentFragmentDoc = gql`
-    fragment IncidentFragment on Incident {
+export const IncidentFragmentDoc = gql`
+    fragment Incident on Incident {
   id
   title
   description
@@ -5435,16 +5449,16 @@ export const IncidentFragmentFragmentDoc = gql`
   notificationCount
   nextResponseAt
   creator {
-    ...UserFragment
+    ...User
   }
   owner {
-    ...UserFragment
+    ...User
   }
   repository {
-    ...RepoFragment
+    ...Repo
   }
   subscription {
-    ...SlimSubscriptionFragment
+    ...SlimSubscription
   }
   clusterInformation {
     ...ClusterInformation
@@ -5454,12 +5468,12 @@ export const IncidentFragmentFragmentDoc = gql`
   }
   insertedAt
 }
-    ${UserFragmentFragmentDoc}
-${RepoFragmentFragmentDoc}
-${SlimSubscriptionFragmentFragmentDoc}
+    ${UserFragmentDoc}
+${RepoFragmentDoc}
+${SlimSubscriptionFragmentDoc}
 ${ClusterInformationFragmentDoc}`;
-export const IncidentHistoryFragmentFragmentDoc = gql`
-    fragment IncidentHistoryFragment on IncidentHistory {
+export const IncidentHistoryFragmentDoc = gql`
+    fragment IncidentHistory on IncidentHistory {
   id
   action
   changes {
@@ -5468,13 +5482,13 @@ export const IncidentHistoryFragmentFragmentDoc = gql`
     next
   }
   actor {
-    ...UserFragment
+    ...User
   }
   insertedAt
 }
-    ${UserFragmentFragmentDoc}`;
-export const FileFragmentFragmentDoc = gql`
-    fragment FileFragment on File {
+    ${UserFragmentDoc}`;
+export const FileFragmentDoc = gql`
+    fragment File on File {
   id
   blob
   mediaType
@@ -5483,12 +5497,12 @@ export const FileFragmentFragmentDoc = gql`
   filename
 }
     `;
-export const IncidentMessageFragmentFragmentDoc = gql`
-    fragment IncidentMessageFragment on IncidentMessage {
+export const IncidentMessageFragmentDoc = gql`
+    fragment IncidentMessage on IncidentMessage {
   id
   text
   creator {
-    ...UserFragment
+    ...User
   }
   reactions {
     name
@@ -5498,12 +5512,12 @@ export const IncidentMessageFragmentFragmentDoc = gql`
     }
   }
   file {
-    ...FileFragment
+    ...File
   }
   entities {
     type
     user {
-      ...UserFragment
+      ...User
     }
     text
     startIndex
@@ -5511,15 +5525,15 @@ export const IncidentMessageFragmentFragmentDoc = gql`
   }
   insertedAt
 }
-    ${UserFragmentFragmentDoc}
-${FileFragmentFragmentDoc}`;
-export const NotificationFragmentFragmentDoc = gql`
-    fragment NotificationFragment on Notification {
+    ${UserFragmentDoc}
+${FileFragmentDoc}`;
+export const NotificationFragmentDoc = gql`
+    fragment Notification on Notification {
   id
   type
   msg
   actor {
-    ...UserFragment
+    ...User
   }
   incident {
     id
@@ -5542,9 +5556,9 @@ export const NotificationFragmentFragmentDoc = gql`
   }
   insertedAt
 }
-    ${UserFragmentFragmentDoc}`;
-export const WebhookLogFragmentFragmentDoc = gql`
-    fragment WebhookLogFragment on WebhookLog {
+    ${UserFragmentDoc}`;
+export const WebhookLogFragmentDoc = gql`
+    fragment WebhookLog on WebhookLog {
   id
   state
   status
@@ -5566,8 +5580,8 @@ export const ZoomMeetingFragmentDoc = gql`
   password
 }
     `;
-export const MetricFragmentFragmentDoc = gql`
-    fragment MetricFragment on Metric {
+export const MetricFragmentDoc = gql`
+    fragment Metric on Metric {
   name
   tags {
     name
@@ -5591,29 +5605,29 @@ export const OAuthInfoFragmentDoc = gql`
   authorizeUrl
 }
     `;
-export const SubscriptionFragmentFragmentDoc = gql`
-    fragment SubscriptionFragment on RepositorySubscription {
+export const SubscriptionFragmentDoc = gql`
+    fragment Subscription on RepositorySubscription {
   id
   plan {
-    ...PlanFragment
+    ...Plan
   }
   lineItems {
     items {
-      ...LimitFragment
+      ...Limit
     }
   }
 }
-    ${PlanFragmentFragmentDoc}
-${LimitFragmentFragmentDoc}`;
-export const InvoiceItemFragmentFragmentDoc = gql`
-    fragment InvoiceItemFragment on InvoiceItem {
+    ${PlanFragmentDoc}
+${LimitFragmentDoc}`;
+export const InvoiceItemFragmentDoc = gql`
+    fragment InvoiceItem on InvoiceItem {
   amount
   currency
   description
 }
     `;
-export const InvoiceFragmentFragmentDoc = gql`
-    fragment InvoiceFragment on Invoice {
+export const InvoiceFragmentDoc = gql`
+    fragment Invoice on Invoice {
   number
   amountDue
   amountPaid
@@ -5622,12 +5636,12 @@ export const InvoiceFragmentFragmentDoc = gql`
   createdAt
   hostedInvoiceUrl
   lines {
-    ...InvoiceItemFragment
+    ...InvoiceItem
   }
 }
-    ${InvoiceItemFragmentFragmentDoc}`;
-export const CardFragmentFragmentDoc = gql`
-    fragment CardFragment on Card {
+    ${InvoiceItemFragmentDoc}`;
+export const CardFragmentDoc = gql`
+    fragment Card on Card {
   id
   last4
   expMonth
@@ -5646,10 +5660,10 @@ export const OidcProviderFragmentDoc = gql`
   bindings {
     id
     user {
-      ...UserFragment
+      ...User
     }
     group {
-      ...GroupFragment
+      ...Group
     }
   }
   configuration {
@@ -5660,10 +5674,10 @@ export const OidcProviderFragmentDoc = gql`
     userinfoEndpoint
   }
 }
-    ${UserFragmentFragmentDoc}
-${GroupFragmentFragmentDoc}`;
-export const InstallationFragmentFragmentDoc = gql`
-    fragment InstallationFragment on Installation {
+    ${UserFragmentDoc}
+${GroupFragmentDoc}`;
+export const InstallationFragmentDoc = gql`
+    fragment Installation on Installation {
   id
   context
   license
@@ -5673,20 +5687,20 @@ export const InstallationFragmentFragmentDoc = gql`
   autoUpgrade
   trackTag
   repository {
-    ...RepoFragment
+    ...Repo
   }
   user {
-    ...UserFragment
+    ...User
   }
   oidcProvider {
     ...OIDCProvider
   }
 }
-    ${RepoFragmentFragmentDoc}
-${UserFragmentFragmentDoc}
+    ${RepoFragmentDoc}
+${UserFragmentDoc}
 ${OidcProviderFragmentDoc}`;
-export const TerraformFragmentFragmentDoc = gql`
-    fragment TerraformFragment on Terraform {
+export const TerraformFragmentDoc = gql`
+    fragment Terraform on Terraform {
   id
   name
   readme
@@ -5694,14 +5708,14 @@ export const TerraformFragmentFragmentDoc = gql`
   description
   latestVersion
   dependencies {
-    ...DependenciesFragment
+    ...Dependencies
   }
   valuesTemplate
   insertedAt
 }
-    ${DependenciesFragmentFragmentDoc}`;
-export const RecipeConfigurationFragmentFragmentDoc = gql`
-    fragment RecipeConfigurationFragment on RecipeConfiguration {
+    ${DependenciesFragmentDoc}`;
+export const RecipeConfigurationFragmentDoc = gql`
+    fragment RecipeConfiguration on RecipeConfiguration {
   name
   type
   default
@@ -5721,44 +5735,44 @@ export const RecipeConfigurationFragmentFragmentDoc = gql`
   }
 }
     `;
-export const RecipeItemFragmentFragmentDoc = gql`
-    fragment RecipeItemFragment on RecipeItem {
+export const RecipeItemFragmentDoc = gql`
+    fragment RecipeItem on RecipeItem {
   id
   chart {
-    ...ChartFragment
+    ...Chart
   }
   terraform {
-    ...TerraformFragment
+    ...Terraform
   }
   configuration {
-    ...RecipeConfigurationFragment
+    ...RecipeConfiguration
   }
 }
-    ${ChartFragmentFragmentDoc}
-${TerraformFragmentFragmentDoc}
-${RecipeConfigurationFragmentFragmentDoc}`;
-export const RecipeSectionFragmentFragmentDoc = gql`
-    fragment RecipeSectionFragment on RecipeSection {
+    ${ChartFragmentDoc}
+${TerraformFragmentDoc}
+${RecipeConfigurationFragmentDoc}`;
+export const RecipeSectionFragmentDoc = gql`
+    fragment RecipeSection on RecipeSection {
   index
   repository {
-    ...RepoFragment
+    ...Repo
     installation {
-      ...InstallationFragment
+      ...Installation
     }
   }
   recipeItems {
-    ...RecipeItemFragment
+    ...RecipeItem
   }
   configuration {
-    ...RecipeConfigurationFragment
+    ...RecipeConfiguration
   }
 }
-    ${RepoFragmentFragmentDoc}
-${InstallationFragmentFragmentDoc}
-${RecipeItemFragmentFragmentDoc}
-${RecipeConfigurationFragmentFragmentDoc}`;
-export const RecipeFragmentFragmentDoc = gql`
-    fragment RecipeFragment on Recipe {
+    ${RepoFragmentDoc}
+${InstallationFragmentDoc}
+${RecipeItemFragmentDoc}
+${RecipeConfigurationFragmentDoc}`;
+export const RecipeFragmentDoc = gql`
+    fragment Recipe on Recipe {
   id
   name
   description
@@ -5786,12 +5800,12 @@ export const RecipeFragmentFragmentDoc = gql`
     subdomain
   }
   recipeSections {
-    ...RecipeSectionFragment
+    ...RecipeSection
   }
 }
-    ${RecipeSectionFragmentFragmentDoc}`;
-export const StackFragmentFragmentDoc = gql`
-    fragment StackFragment on Stack {
+    ${RecipeSectionFragmentDoc}`;
+export const StackFragmentDoc = gql`
+    fragment Stack on Stack {
   id
   name
   displayName
@@ -5807,7 +5821,7 @@ export const StackFragmentFragmentDoc = gql`
     bundles {
       recipe {
         repository {
-          ...RepoFragment
+          ...Repo
           tags {
             tag
           }
@@ -5816,21 +5830,21 @@ export const StackFragmentFragmentDoc = gql`
     }
   }
 }
-    ${RepoFragmentFragmentDoc}`;
-export const ApplyLockFragmentFragmentDoc = gql`
-    fragment ApplyLockFragment on ApplyLock {
+    ${RepoFragmentDoc}`;
+export const ApplyLockFragmentDoc = gql`
+    fragment ApplyLock on ApplyLock {
   id
   lock
 }
     `;
-export const CategoryFragmentFragmentDoc = gql`
-    fragment CategoryFragment on CategoryInfo {
+export const CategoryFragmentDoc = gql`
+    fragment Category on CategoryInfo {
   category
   count
 }
     `;
-export const RepositoryFragmentFragmentDoc = gql`
-    fragment RepositoryFragment on Repository {
+export const RepositoryFragmentDoc = gql`
+    fragment Repository on Repository {
   id
   name
   notes
@@ -5845,8 +5859,8 @@ export const RepositoryFragmentFragmentDoc = gql`
   }
 }
     `;
-export const IntegrationFragmentFragmentDoc = gql`
-    fragment IntegrationFragment on Integration {
+export const IntegrationFragmentDoc = gql`
+    fragment Integration on Integration {
   id
   name
   icon
@@ -5856,12 +5870,12 @@ export const IntegrationFragmentFragmentDoc = gql`
     tag
   }
   publisher {
-    ...PublisherFragment
+    ...Publisher
   }
 }
-    ${PublisherFragmentFragmentDoc}`;
-export const CloudShellFragmentFragmentDoc = gql`
-    fragment CloudShellFragment on CloudShell {
+    ${PublisherFragmentDoc}`;
+export const CloudShellFragmentDoc = gql`
+    fragment CloudShell on CloudShell {
   id
   aesKey
   gitUrl
@@ -5877,8 +5891,8 @@ export const CloudShellFragmentFragmentDoc = gql`
   }
 }
     `;
-export const DemoProjectFragmentFragmentDoc = gql`
-    fragment DemoProjectFragment on DemoProject {
+export const DemoProjectFragmentDoc = gql`
+    fragment DemoProject on DemoProject {
   id
   projectId
   credentials
@@ -5886,20 +5900,20 @@ export const DemoProjectFragmentFragmentDoc = gql`
   state
 }
     `;
-export const TerraformInstallationFragmentFragmentDoc = gql`
-    fragment TerraformInstallationFragment on TerraformInstallation {
+export const TerraformInstallationFragmentDoc = gql`
+    fragment TerraformInstallation on TerraformInstallation {
   id
   terraform {
-    ...TerraformFragment
+    ...Terraform
   }
   version {
-    ...VersionFragment
+    ...Version
   }
 }
-    ${TerraformFragmentFragmentDoc}
-${VersionFragmentFragmentDoc}`;
-export const StepFragmentFragmentDoc = gql`
-    fragment StepFragment on TestStep {
+    ${TerraformFragmentDoc}
+${VersionFragmentDoc}`;
+export const StepFragmentDoc = gql`
+    fragment Step on TestStep {
   id
   name
   status
@@ -5909,8 +5923,8 @@ export const StepFragmentFragmentDoc = gql`
   updatedAt
 }
     `;
-export const TestFragmentFragmentDoc = gql`
-    fragment TestFragment on Test {
+export const TestFragmentDoc = gql`
+    fragment Test on Test {
   id
   name
   promoteTag
@@ -5918,12 +5932,12 @@ export const TestFragmentFragmentDoc = gql`
   insertedAt
   updatedAt
   steps {
-    ...StepFragment
+    ...Step
   }
 }
-    ${StepFragmentFragmentDoc}`;
-export const UpgradeQueueFragmentFragmentDoc = gql`
-    fragment UpgradeQueueFragment on UpgradeQueue {
+    ${StepFragmentDoc}`;
+export const UpgradeQueueFragmentDoc = gql`
+    fragment UpgradeQueue on UpgradeQueue {
   id
   acked
   name
@@ -5933,8 +5947,8 @@ export const UpgradeQueueFragmentFragmentDoc = gql`
   provider
 }
     `;
-export const RolloutFragmentFragmentDoc = gql`
-    fragment RolloutFragment on Rollout {
+export const RolloutFragmentDoc = gql`
+    fragment Rollout on Rollout {
   id
   event
   cursor
@@ -5943,18 +5957,18 @@ export const RolloutFragmentFragmentDoc = gql`
   heartbeat
 }
     `;
-export const UpgradeFragmentFragmentDoc = gql`
-    fragment UpgradeFragment on Upgrade {
+export const UpgradeFragmentDoc = gql`
+    fragment Upgrade on Upgrade {
   id
   message
   repository {
-    ...RepoFragment
+    ...Repo
   }
   insertedAt
 }
-    ${RepoFragmentFragmentDoc}`;
-export const DeferredUpdateFragmentFragmentDoc = gql`
-    fragment DeferredUpdateFragment on DeferredUpdate {
+    ${RepoFragmentDoc}`;
+export const DeferredUpdateFragmentDoc = gql`
+    fragment DeferredUpdate on DeferredUpdate {
   id
   dequeueAt
   attempts
@@ -5964,8 +5978,8 @@ export const DeferredUpdateFragmentFragmentDoc = gql`
   insertedAt
 }
     `;
-export const AccountFragmentFragmentDoc = gql`
-    fragment AccountFragment on Account {
+export const AccountFragmentDoc = gql`
+    fragment Account on Account {
   id
   name
   billingCustomerId
@@ -5989,23 +6003,23 @@ export const ImpersonationPolicyFragmentDoc = gql`
   }
 }
     `;
-export const GroupMemberFragmentFragmentDoc = gql`
-    fragment GroupMemberFragment on GroupMember {
+export const GroupMemberFragmentDoc = gql`
+    fragment GroupMember on GroupMember {
   id
   user {
-    ...UserFragment
+    ...User
   }
 }
-    ${UserFragmentFragmentDoc}`;
-export const TokenFragmentFragmentDoc = gql`
-    fragment TokenFragment on PersistedToken {
+    ${UserFragmentDoc}`;
+export const TokenFragmentDoc = gql`
+    fragment Token on PersistedToken {
   id
   token
   insertedAt
 }
     `;
-export const TokenAuditFragmentFragmentDoc = gql`
-    fragment TokenAuditFragment on PersistedTokenAudit {
+export const TokenAuditFragmentDoc = gql`
+    fragment TokenAudit on PersistedTokenAudit {
   ip
   timestamp
   count
@@ -6015,28 +6029,28 @@ export const TokenAuditFragmentFragmentDoc = gql`
   longitude
 }
     `;
-export const WebhookFragmentFragmentDoc = gql`
-    fragment WebhookFragment on Webhook {
+export const WebhookFragmentDoc = gql`
+    fragment Webhook on Webhook {
   id
   url
   secret
   insertedAt
 }
     `;
-export const PublicKeyFragmentFragmentDoc = gql`
-    fragment PublicKeyFragment on PublicKey {
+export const PublicKeyFragmentDoc = gql`
+    fragment PublicKey on PublicKey {
   id
   name
   digest
   insertedAt
   content
   user {
-    ...UserFragment
+    ...User
   }
 }
-    ${UserFragmentFragmentDoc}`;
-export const EabCredentialFragmentFragmentDoc = gql`
-    fragment EabCredentialFragment on EabCredential {
+    ${UserFragmentDoc}`;
+export const EabCredentialFragmentDoc = gql`
+    fragment EabCredential on EabCredential {
   id
   keyId
   hmacKey
@@ -6045,8 +6059,8 @@ export const EabCredentialFragmentFragmentDoc = gql`
   insertedAt
 }
     `;
-export const VersionTagFragmentFragmentDoc = gql`
-    fragment VersionTagFragment on VersionTag {
+export const VersionTagFragmentDoc = gql`
+    fragment VersionTag on VersionTag {
   id
   tag
   version {
@@ -6058,11 +6072,11 @@ export const ListArtifactsDocument = gql`
     query ListArtifacts($id: ID!) {
   repository(id: $id) {
     artifacts {
-      ...ArtifactFragment
+      ...Artifact
     }
   }
 }
-    ${ArtifactFragmentFragmentDoc}`;
+    ${ArtifactFragmentDoc}`;
 
 /**
  * __useListArtifactsQuery__
@@ -6097,10 +6111,10 @@ export const CreateArtifactDocument = gql`
     repositoryName: $repoName
     attributes: {name: $name, blob: $blob, readme: $readme, type: $artifactType, platform: $platform, arch: $arch}
   ) {
-    ...ArtifactFragment
+    ...Artifact
   }
 }
-    ${ArtifactFragmentFragmentDoc}`;
+    ${ArtifactFragmentDoc}`;
 export type CreateArtifactMutationFn = Apollo.MutationFunction<CreateArtifactMutation, CreateArtifactMutationVariables>;
 
 /**
@@ -6138,12 +6152,12 @@ export const GetChartsDocument = gql`
   charts(repositoryId: $id, first: 100) {
     edges {
       node {
-        ...ChartFragment
+        ...Chart
       }
     }
   }
 }
-    ${ChartFragmentFragmentDoc}`;
+    ${ChartFragmentDoc}`;
 
 /**
  * __useGetChartsQuery__
@@ -6177,12 +6191,12 @@ export const GetVersionsDocument = gql`
   versions(chartId: $id, first: 100) {
     edges {
       node {
-        ...VersionFragment
+        ...Version
       }
     }
   }
 }
-    ${VersionFragmentFragmentDoc}`;
+    ${VersionFragmentDoc}`;
 
 /**
  * __useGetVersionsQuery__
@@ -6216,12 +6230,12 @@ export const GetChartInstallationsDocument = gql`
   chartInstallations(repositoryId: $id, first: 100) {
     edges {
       node {
-        ...ChartInstallationFragment
+        ...ChartInstallation
       }
     }
   }
 }
-    ${ChartInstallationFragmentFragmentDoc}`;
+    ${ChartInstallationFragmentDoc}`;
 
 /**
  * __useGetChartInstallationsQuery__
@@ -6255,20 +6269,20 @@ export const GetPackageInstallationsDocument = gql`
   chartInstallations(repositoryId: $id, first: 100) {
     edges {
       node {
-        ...ChartInstallationFragment
+        ...ChartInstallation
       }
     }
   }
   terraformInstallations(repositoryId: $id, first: 100) {
     edges {
       node {
-        ...TerraformInstallationFragment
+        ...TerraformInstallation
       }
     }
   }
 }
-    ${ChartInstallationFragmentFragmentDoc}
-${TerraformInstallationFragmentFragmentDoc}`;
+    ${ChartInstallationFragmentDoc}
+${TerraformInstallationFragmentDoc}`;
 
 /**
  * __useGetPackageInstallationsQuery__
@@ -6370,12 +6384,12 @@ export const GetDnsRecordsDocument = gql`
   dnsRecords(cluster: $cluster, provider: $provider, first: 500) {
     edges {
       node {
-        ...DnsRecordFragment
+        ...DnsRecord
       }
     }
   }
 }
-    ${DnsRecordFragmentFragmentDoc}`;
+    ${DnsRecordFragmentDoc}`;
 
 /**
  * __useGetDnsRecordsQuery__
@@ -6408,10 +6422,10 @@ export type GetDnsRecordsQueryResult = Apollo.QueryResult<GetDnsRecordsQuery, Ge
 export const CreateDnsRecordDocument = gql`
     mutation CreateDnsRecord($cluster: String!, $provider: Provider!, $attributes: DnsRecordAttributes!) {
   createDnsRecord(cluster: $cluster, provider: $provider, attributes: $attributes) {
-    ...DnsRecordFragment
+    ...DnsRecord
   }
 }
-    ${DnsRecordFragmentFragmentDoc}`;
+    ${DnsRecordFragmentDoc}`;
 export type CreateDnsRecordMutationFn = Apollo.MutationFunction<CreateDnsRecordMutation, CreateDnsRecordMutationVariables>;
 
 /**
@@ -6443,10 +6457,10 @@ export type CreateDnsRecordMutationOptions = Apollo.BaseMutationOptions<CreateDn
 export const DeleteDnsRecordDocument = gql`
     mutation DeleteDnsRecord($name: String!, $type: DnsRecordType!) {
   deleteDnsRecord(name: $name, type: $type) {
-    ...DnsRecordFragment
+    ...DnsRecord
   }
 }
-    ${DnsRecordFragmentFragmentDoc}`;
+    ${DnsRecordFragmentDoc}`;
 export type DeleteDnsRecordMutationFn = Apollo.MutationFunction<DeleteDnsRecordMutation, DeleteDnsRecordMutationVariables>;
 
 /**
@@ -6477,10 +6491,10 @@ export type DeleteDnsRecordMutationOptions = Apollo.BaseMutationOptions<DeleteDn
 export const CreateDomainDocument = gql`
     mutation CreateDomain($name: String!) {
   provisionDomain(name: $name) {
-    ...DnsDomainFragment
+    ...DnsDomain
   }
 }
-    ${DnsDomainFragmentFragmentDoc}`;
+    ${DnsDomainFragmentDoc}`;
 export type CreateDomainMutationFn = Apollo.MutationFunction<CreateDomainMutation, CreateDomainMutationVariables>;
 
 /**
@@ -6510,10 +6524,10 @@ export type CreateDomainMutationOptions = Apollo.BaseMutationOptions<CreateDomai
 export const GetInstallationDocument = gql`
     query GetInstallation($name: String) {
   installation(name: $name) {
-    ...InstallationFragment
+    ...Installation
   }
 }
-    ${InstallationFragmentFragmentDoc}`;
+    ${InstallationFragmentDoc}`;
 
 /**
  * __useGetInstallationQuery__
@@ -6545,10 +6559,10 @@ export type GetInstallationQueryResult = Apollo.QueryResult<GetInstallationQuery
 export const GetInstallationByIdDocument = gql`
     query GetInstallationById($id: ID) {
   installation(id: $id) {
-    ...InstallationFragment
+    ...Installation
   }
 }
-    ${InstallationFragmentFragmentDoc}`;
+    ${InstallationFragmentDoc}`;
 
 /**
  * __useGetInstallationByIdQuery__
@@ -6582,12 +6596,12 @@ export const GetInstallationsDocument = gql`
   installations(first: $first) {
     edges {
       node {
-        ...InstallationFragment
+        ...Installation
       }
     }
   }
 }
-    ${InstallationFragmentFragmentDoc}`;
+    ${InstallationFragmentDoc}`;
 
 /**
  * __useGetInstallationsQuery__
@@ -6653,13 +6667,13 @@ export type UpsertOidcProviderMutationOptions = Apollo.BaseMutationOptions<Upser
 export const GetRecipeDocument = gql`
     query GetRecipe($repo: String, $name: String) {
   recipe(repo: $repo, name: $name) {
-    ...RecipeFragment
+    ...Recipe
     recipeDependencies {
-      ...RecipeFragment
+      ...Recipe
     }
   }
 }
-    ${RecipeFragmentFragmentDoc}`;
+    ${RecipeFragmentDoc}`;
 
 /**
  * __useGetRecipeQuery__
@@ -6694,12 +6708,12 @@ export const ListRecipesDocument = gql`
   recipes(repositoryName: $repo, provider: $provider, first: 500) {
     edges {
       node {
-        ...RecipeFragment
+        ...Recipe
       }
     }
   }
 }
-    ${RecipeFragmentFragmentDoc}`;
+    ${RecipeFragmentDoc}`;
 
 /**
  * __useListRecipesQuery__
@@ -6832,10 +6846,10 @@ export type CreateStackMutationOptions = Apollo.BaseMutationOptions<CreateStackM
 export const GetStackDocument = gql`
     query GetStack($name: String!, $provider: Provider!) {
   stack(name: $name, provider: $provider) {
-    ...StackFragment
+    ...Stack
   }
 }
-    ${StackFragmentFragmentDoc}`;
+    ${StackFragmentDoc}`;
 
 /**
  * __useGetStackQuery__
@@ -6870,12 +6884,12 @@ export const ListStacksDocument = gql`
   stacks(first: 100, after: $cursor, featured: $featured) {
     edges {
       node {
-        ...StackFragment
+        ...Stack
       }
     }
   }
 }
-    ${StackFragmentFragmentDoc}`;
+    ${StackFragmentDoc}`;
 
 /**
  * __useListStacksQuery__
@@ -6908,10 +6922,10 @@ export type ListStacksQueryResult = Apollo.QueryResult<ListStacksQuery, ListStac
 export const GetRepositoryDocument = gql`
     query GetRepository($name: String) {
   repository(name: $name) {
-    ...RepositoryFragment
+    ...Repository
   }
 }
-    ${RepositoryFragmentFragmentDoc}`;
+    ${RepositoryFragmentDoc}`;
 
 /**
  * __useGetRepositoryQuery__
@@ -7083,10 +7097,10 @@ export type CreateRepositoryMutationOptions = Apollo.BaseMutationOptions<CreateR
 export const AcquireLockDocument = gql`
     mutation AcquireLock($name: String!) {
   acquireLock(repository: $name) {
-    ...ApplyLockFragment
+    ...ApplyLock
   }
 }
-    ${ApplyLockFragmentFragmentDoc}`;
+    ${ApplyLockFragmentDoc}`;
 export type AcquireLockMutationFn = Apollo.MutationFunction<AcquireLockMutation, AcquireLockMutationVariables>;
 
 /**
@@ -7116,10 +7130,10 @@ export type AcquireLockMutationOptions = Apollo.BaseMutationOptions<AcquireLockM
 export const ReleaseLockDocument = gql`
     mutation ReleaseLock($name: String!, $attrs: LockAttributes!) {
   releaseLock(repository: $name, attributes: $attrs) {
-    ...ApplyLockFragment
+    ...ApplyLock
   }
 }
-    ${ApplyLockFragmentFragmentDoc}`;
+    ${ApplyLockFragmentDoc}`;
 export type ReleaseLockMutationFn = Apollo.MutationFunction<ReleaseLockMutation, ReleaseLockMutationVariables>;
 
 /**
@@ -7183,12 +7197,12 @@ export const ListRepositoriesDocument = gql`
   repositories(q: $q, first: 100) {
     edges {
       node {
-        ...RepositoryFragment
+        ...Repository
       }
     }
   }
 }
-    ${RepositoryFragmentFragmentDoc}`;
+    ${RepositoryFragmentDoc}`;
 
 /**
  * __useListRepositoriesQuery__
@@ -7368,10 +7382,10 @@ export type GetTfProviderScaffoldQueryResult = Apollo.QueryResult<GetTfProviderS
 export const GetShellDocument = gql`
     query GetShell {
   shell {
-    ...CloudShellFragment
+    ...CloudShell
   }
 }
-    ${CloudShellFragmentFragmentDoc}`;
+    ${CloudShellFragmentDoc}`;
 
 /**
  * __useGetShellQuery__
@@ -7402,10 +7416,10 @@ export type GetShellQueryResult = Apollo.QueryResult<GetShellQuery, GetShellQuer
 export const DeleteShellDocument = gql`
     mutation DeleteShell {
   deleteShell {
-    ...CloudShellFragment
+    ...CloudShell
   }
 }
-    ${CloudShellFragmentFragmentDoc}`;
+    ${CloudShellFragmentDoc}`;
 export type DeleteShellMutationFn = Apollo.MutationFunction<DeleteShellMutation, DeleteShellMutationVariables>;
 
 /**
@@ -7436,12 +7450,12 @@ export const GetTerraformDocument = gql`
   terraform(repositoryId: $id, first: 100) {
     edges {
       node {
-        ...TerraformFragment
+        ...Terraform
       }
     }
   }
 }
-    ${TerraformFragmentFragmentDoc}`;
+    ${TerraformFragmentDoc}`;
 
 /**
  * __useGetTerraformQuery__
@@ -7475,12 +7489,12 @@ export const GetTerraformInstallationsDocument = gql`
   terraformInstallations(repositoryId: $id, first: 100) {
     edges {
       node {
-        ...TerraformInstallationFragment
+        ...TerraformInstallation
       }
     }
   }
 }
-    ${TerraformInstallationFragmentFragmentDoc}`;
+    ${TerraformInstallationFragmentDoc}`;
 
 /**
  * __useGetTerraformInstallationsQuery__
@@ -7516,10 +7530,10 @@ export const UploadTerraformDocument = gql`
     name: $name
     attributes: {name: $name, package: $uploadOrUrl}
   ) {
-    ...TerraformFragment
+    ...Terraform
   }
 }
-    ${TerraformFragmentFragmentDoc}`;
+    ${TerraformFragmentDoc}`;
 export type UploadTerraformMutationFn = Apollo.MutationFunction<UploadTerraformMutation, UploadTerraformMutationVariables>;
 
 /**
@@ -7584,10 +7598,10 @@ export type UninstallTerraformMutationOptions = Apollo.BaseMutationOptions<Unins
 export const CreateTestDocument = gql`
     mutation CreateTest($name: String!, $attrs: TestAttributes!) {
   createTest(name: $name, attributes: $attrs) {
-    ...TestFragment
+    ...Test
   }
 }
-    ${TestFragmentFragmentDoc}`;
+    ${TestFragmentDoc}`;
 export type CreateTestMutationFn = Apollo.MutationFunction<CreateTestMutation, CreateTestMutationVariables>;
 
 /**
@@ -7618,10 +7632,10 @@ export type CreateTestMutationOptions = Apollo.BaseMutationOptions<CreateTestMut
 export const UpdateTestDocument = gql`
     mutation UpdateTest($id: ID!, $attrs: TestAttributes!) {
   updateTest(id: $id, attributes: $attrs) {
-    ...TestFragment
+    ...Test
   }
 }
-    ${TestFragmentFragmentDoc}`;
+    ${TestFragmentDoc}`;
 export type UpdateTestMutationFn = Apollo.MutationFunction<UpdateTestMutation, UpdateTestMutationVariables>;
 
 /**
@@ -7831,12 +7845,12 @@ export const ListKeysDocument = gql`
   publicKeys(emails: $emails, first: 1000) {
     edges {
       node {
-        ...PublicKeyFragment
+        ...PublicKey
       }
     }
   }
 }
-    ${PublicKeyFragmentFragmentDoc}`;
+    ${PublicKeyFragmentDoc}`;
 
 /**
  * __useListKeysQuery__
@@ -7868,10 +7882,10 @@ export type ListKeysQueryResult = Apollo.QueryResult<ListKeysQuery, ListKeysQuer
 export const GetEabCredentialDocument = gql`
     query GetEabCredential($cluster: String!, $provider: Provider!) {
   eabCredential(cluster: $cluster, provider: $provider) {
-    ...EabCredentialFragment
+    ...EabCredential
   }
 }
-    ${EabCredentialFragmentFragmentDoc}`;
+    ${EabCredentialFragmentDoc}`;
 
 /**
  * __useGetEabCredentialQuery__

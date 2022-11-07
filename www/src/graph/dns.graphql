@@ -1,28 +1,28 @@
-fragment DnsRecordFragment on DnsRecord {
+fragment DnsRecord on DnsRecord {
   id
   name
   type
   records
   cluster
   provider
-  creator { ...UserFragment }
+  creator { ...User }
   insertedAt
 }
 
 query GetDnsRecords($cluster: String!, $provider: Provider!) {
   dnsRecords(cluster: $cluster, provider: $provider, first: 500) {
-    edges { node { ...DnsRecordFragment } }
+    edges { node { ...DnsRecord } }
   }
 }
 
 mutation CreateDnsRecord($cluster: String!, $provider: Provider!, $attributes: DnsRecordAttributes!) {
   createDnsRecord(cluster: $cluster, provider: $provider, attributes: $attributes) {
-    ...DnsRecordFragment
+    ...DnsRecord
   }
 }
 
 mutation DeleteDnsRecord($name: String!, $type: DnsRecordType!) {
   deleteDnsRecord(name: $name, type: $type) {
-    ...DnsRecordFragment
+    ...DnsRecord
   }
 }

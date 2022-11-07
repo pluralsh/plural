@@ -1,4 +1,4 @@
-fragment InstallationFragment on Installation {
+fragment Installation on Installation {
   id
   context
   license
@@ -7,27 +7,27 @@ fragment InstallationFragment on Installation {
   acmeSecret
   autoUpgrade
   trackTag
-  repository { ...RepoFragment }
-  # repository { ...RepositoryFragment }
-  user { ...UserFragment }
+  repository { ...Repo }
+  # repository { ...Repository }
+  user { ...User }
   oidcProvider { ...OIDCProvider }
 }
 
 query GetInstallation($name: String) {
   installation(name: $name) {
-    ...InstallationFragment
+    ...Installation
   }
 }
 
 query GetInstallationById($id: ID) {
   installation(id: $id) {
-    ...InstallationFragment
+    ...Installation
   }
 }
 
 query GetInstallations($first: Int) {
   installations(first: $first) {
-    edges { node { ...InstallationFragment } }
+    edges { node { ...Installation } }
   }
 }
 

@@ -1,4 +1,4 @@
-fragment IntegrationWebhookFragment on IntegrationWebhook {
+fragment IntegrationWebhook on IntegrationWebhook {
   id
   name
   url
@@ -6,7 +6,7 @@ fragment IntegrationWebhookFragment on IntegrationWebhook {
   actions
 }
 
-fragment WebhookLogFragment on WebhookLog {
+fragment WebhookLog on WebhookLog {
   id
   state
   status

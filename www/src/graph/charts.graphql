@@ -1,25 +1,25 @@
-fragment ChartFragment on Chart {
+fragment Chart on Chart {
   id
   name
   description
   latestVersion
-  dependencies { ...DependenciesFragment }
+  dependencies { ...Dependencies }
   insertedAt
 }
 
-fragment CrdFragment on Crd {
+fragment Crd on Crd {
   id
   name
   blob
 }
 
-fragment ChartInstallationFragment on ChartInstallation {
+fragment ChartInstallation on ChartInstallation {
   id
   chart {
-    ...ChartFragment
-    dependencies { ...DependenciesFragment }
+    ...Chart
+    dependencies { ...Dependencies }
   }
-  version { ...VersionFragment }
+  version { ...Version }
 }
 
 fragment ScanViolation on ScanViolation {
@@ -49,7 +49,7 @@ query GetCharts($id: ID!) {
   charts(repositoryId: $id, first: 100) {
     edges {
       node {
-          ...ChartFragment
+          ...Chart
       }
     }
   }
@@ -59,7 +59,7 @@ query GetVersions($id: ID!) {
   versions(chartId: $id, first: 100) {
     edges {
       node {
-          ...VersionFragment
+          ...Version
       }
     }
   }
@@ -67,16 +67,16 @@ query GetVersions($id: ID!) {
 
 query GetChartInstallations($id: ID!) {
   chartInstallations(repositoryId: $id, first: 100) {
-    edges { node { ...ChartInstallationFragment } }
+    edges { node { ...ChartInstallation } }
   }
 }
 
 query GetPackageInstallations($id: ID!) {
   chartInstallations(repositoryId: $id, first: 100) {
-    edges { node { ...ChartInstallationFragment } }
+    edges { node { ...ChartInstallation } }
   }
   terraformInstallations(repositoryId: $id, first: 100) {
-    edges { node { ...TerraformInstallationFragment } }
+    edges { node { ...TerraformInstallation } }
   }
 }
 

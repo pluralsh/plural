@@ -1,4 +1,4 @@
-fragment RecipeFragment on Recipe {
+fragment Recipe on Recipe {
   id
   name
   description
@@ -18,27 +18,27 @@ fragment RecipeFragment on Recipe {
     domainKey
     subdomain
   }
-  recipeSections { ...RecipeSectionFragment }
+  recipeSections { ...RecipeSection }
 }
 
-fragment RecipeItemFragment on RecipeItem {
+fragment RecipeItem on RecipeItem {
   id
-  chart { ...ChartFragment }
-  terraform { ...TerraformFragment }
-  configuration { ...RecipeConfigurationFragment }
+  chart { ...Chart }
+  terraform { ...Terraform }
+  configuration { ...RecipeConfiguration }
 }
 
-fragment RecipeSectionFragment on RecipeSection {
+fragment RecipeSection on RecipeSection {
   index
   repository {
-    ...RepoFragment
-    installation { ...InstallationFragment }
+    ...Repo
+    installation { ...Installation }
   }
-  recipeItems { ...RecipeItemFragment }
-  configuration { ...RecipeConfigurationFragment }
+  recipeItems { ...RecipeItem }
+  configuration { ...RecipeConfiguration }
 }
 
-fragment RecipeConfigurationFragment on RecipeConfiguration {
+fragment RecipeConfiguration on RecipeConfiguration {
   name
   type
   default
@@ -50,7 +50,7 @@ fragment RecipeConfigurationFragment on RecipeConfiguration {
   validation { type regex message }
 }
 
-fragment StackFragment on Stack {
+fragment Stack on Stack {
   id
   name
   displayName
@@ -66,7 +66,7 @@ fragment StackFragment on Stack {
     bundles {
       recipe {
         repository {
-          ...RepoFragment
+          ...Repo
           tags {
             tag
           }
@@ -78,14 +78,14 @@ fragment StackFragment on Stack {
 
 query GetRecipe($repo: String, $name: String) {
   recipe(repo: $repo, name: $name) {
-    ...RecipeFragment
-    recipeDependencies { ...RecipeFragment }
+    ...Recipe
+    recipeDependencies { ...Recipe }
   }
 }
 
 query ListRecipes($repo: String, $provider: Provider) {
   recipes(repositoryName: $repo, provider: $provider, first: 500) {
-    edges { node { ...RecipeFragment } }
+    edges { node { ...Recipe } }
   }
 }
 
@@ -109,12 +109,12 @@ mutation CreateStack($attributes: StackAttributes!) {
 
 query GetStack($name: String!, $provider: Provider!) {
   stack(name: $name, provider: $provider) {
-    ...StackFragment
+    ...Stack
   }
 }
 
 query ListStacks($featured: Boolean, $cursor: String) {
   stacks(first: 100, after: $cursor, featured: $featured) {
-    edges { node { ...StackFragment } }
+    edges { node { ...Stack } }
   }
 }

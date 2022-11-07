@@ -1,4 +1,4 @@
-fragment UpgradeQueueFragment on UpgradeQueue {
+fragment UpgradeQueue on UpgradeQueue {
   id
   acked
   name
@@ -8,7 +8,7 @@ fragment UpgradeQueueFragment on UpgradeQueue {
   provider
 }
 
-fragment RolloutFragment on Rollout {
+fragment Rollout on Rollout {
   id
   event
   cursor
@@ -17,14 +17,14 @@ fragment RolloutFragment on Rollout {
   heartbeat
 }
 
-fragment UpgradeFragment on Upgrade {
+fragment Upgrade on Upgrade {
   id
   message
-  repository { ...RepoFragment }
+  repository { ...Repo }
   insertedAt
 }
 
-fragment DeferredUpdateFragment on DeferredUpdate {
+fragment DeferredUpdate on DeferredUpdate {
   id
   dequeueAt
   attempts

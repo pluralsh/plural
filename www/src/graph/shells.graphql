@@ -1,4 +1,4 @@
-fragment CloudShellFragment on CloudShell {
+fragment CloudShell on CloudShell {
   id
   aesKey
   gitUrl
@@ -14,7 +14,7 @@ fragment CloudShellFragment on CloudShell {
   }
 }
 
-fragment DemoProjectFragment on DemoProject {
+fragment DemoProject on DemoProject {
   id
   projectId
   credentials
@@ -23,9 +23,9 @@ fragment DemoProjectFragment on DemoProject {
 }
 
 query GetShell {
-  shell { ...CloudShellFragment }
+  shell { ...CloudShell }
 }
 
 mutation DeleteShell {
-  deleteShell { ...CloudShellFragment }
+  deleteShell { ...CloudShell }
 }

@@ -1,4 +1,4 @@
-fragment StepFragment on TestStep {
+fragment Step on TestStep {
   id
   name
   status
@@ -9,25 +9,25 @@ fragment StepFragment on TestStep {
 }
 
 
-fragment TestFragment on Test {
+fragment Test on Test {
   id
   name
   promoteTag
   status
   insertedAt
   updatedAt
-  steps { ...StepFragment }
+  steps { ...Step }
 }
 
 mutation CreateTest($name: String!, $attrs: TestAttributes!) {
   createTest(name: $name, attributes: $attrs) {
-    ...TestFragment
+    ...Test
   }
 }
 
 mutation UpdateTest($id: ID!, $attrs: TestAttributes!) {
   updateTest(id: $id, attributes: $attrs) {
-    ...TestFragment
+    ...Test
   }
 }
 

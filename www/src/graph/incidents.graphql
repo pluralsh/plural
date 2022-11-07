@@ -1,21 +1,21 @@
-fragment PostmortemFragment on Postmortem {
+fragment Postmortem on Postmortem {
   id
   content
   actionItems { type link }
 }
 
-fragment FollowerFragment on Follower {
+fragment Follower on Follower {
   id
   incident { id }
-  user { ...UserFragment }
+  user { ...User }
   preferences { message incidentUpdate mention }
 }
 
 #TODO: not that this was changed as it needs to be unique. Whatever queries/mutations use this fragment needs to be updated
-fragment SlimSubscriptionFragment on SlimSubscription {
+fragment SlimSubscription on SlimSubscription {
   id
   lineItems { items { dimension quantity } }
-  plan { ...PlanFragment }
+  plan { ...Plan }
 }
 
 
@@ -26,7 +26,7 @@ fragment ClusterInformation on ClusterInformation {
 }
 
 
-fragment IncidentFragment on Incident {
+fragment Incident on Incident {
   id
   title
   description
@@ -34,24 +34,24 @@ fragment IncidentFragment on Incident {
   status
   notificationCount
   nextResponseAt
-  creator { ...UserFragment }
-  owner { ...UserFragment }
-  repository { ...RepoFragment }
-  subscription { ...SlimSubscriptionFragment }
+  creator { ...User }
+  owner { ...User }
+  repository { ...Repo }
+  subscription { ...SlimSubscription }
   clusterInformation { ...ClusterInformation }
   tags { tag }
   insertedAt
 }
 
-fragment IncidentHistoryFragment on IncidentHistory {
+fragment IncidentHistory on IncidentHistory {
   id
   action
   changes { key prev next }
-  actor { ...UserFragment }
+  actor { ...User }
   insertedAt
 }
 
-fragment FileFragment on File {
+fragment File on File {
   id
   blob
   mediaType
@@ -60,21 +60,21 @@ fragment FileFragment on File {
   filename
 }
 
-fragment IncidentMessageFragment on IncidentMessage {
+fragment IncidentMessage on IncidentMessage {
   id
   text
-  creator { ...UserFragment }
+  creator { ...User }
   reactions { name creator { id email } }
-  file { ...FileFragment }
-  entities { type user { ...UserFragment } text startIndex endIndex }
+  file { ...File }
+  entities { type user { ...User } text startIndex endIndex }
   insertedAt
 }
 
-fragment NotificationFragment on Notification {
+fragment Notification on Notification {
   id
   type
   msg
-  actor { ...UserFragment }
+  actor { ...User }
   incident { id title repository { id name icon darkIcon } }
   message { text }
   repository { id name icon darkIcon }

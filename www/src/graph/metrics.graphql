@@ -1,4 +1,4 @@
-fragment MetricFragment on Metric {
+fragment Metric on Metric {
   name
   tags { name value }
   values { time value }

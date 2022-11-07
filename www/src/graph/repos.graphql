@@ -1,14 +1,14 @@
-fragment ApplyLockFragment on ApplyLock {
+fragment ApplyLock on ApplyLock {
   id
   lock
 }
 
-fragment CategoryFragment on CategoryInfo {
+fragment Category on CategoryInfo {
   category
   count
 }
 
-fragment RepoFragment on Repository {
+fragment Repo on Repository {
   id
   name
   notes
@@ -21,11 +21,11 @@ fragment RepoFragment on Repository {
   verified
   category
   oauthSettings { uriFormat authMethod }
-  publisher { ...PublisherFragment }
+  publisher { ...Publisher }
   recipes { name }
 }
 
-fragment RepositoryFragment on Repository {
+fragment Repository on Repository {
   id
   name
   notes
@@ -36,7 +36,7 @@ fragment RepositoryFragment on Repository {
   recipes { name }
 }
 
-fragment DependenciesFragment on Dependencies {
+fragment Dependencies on Dependencies {
   dependencies {
     name
     repo
@@ -54,18 +54,18 @@ fragment DependenciesFragment on Dependencies {
 }
 
 
-fragment IntegrationFragment on Integration {
+fragment Integration on Integration {
   id
   name
   icon
   sourceUrl
   description
   tags { tag }
-  publisher { ...PublisherFragment }
+  publisher { ...Publisher }
 }
 
 query GetRepository($name: String) {
-  repository(name: $name) { ...RepositoryFragment }
+  repository(name: $name) { ...Repository }
 }
 
 mutation CreateResourceDefinition($name: String!, $input: ResourceDefinitionAttributes!) {
@@ -87,11 +87,11 @@ mutation CreateRepository($name: String!, $publisher: String!, $attributes: Repo
 }
 
 mutation AcquireLock($name: String!) {
-  acquireLock(repository: $name) { ...ApplyLockFragment }
+  acquireLock(repository: $name) { ...ApplyLock }
 }
 
 mutation ReleaseLock($name: String!, $attrs: LockAttributes!) {
-  releaseLock(repository: $name, attributes: $attrs) { ...ApplyLockFragment	}
+  releaseLock(repository: $name, attributes: $attrs) { ...ApplyLock	}
 }
 
 mutation UnlockRepository($name: String!) {
@@ -100,7 +100,7 @@ mutation UnlockRepository($name: String!) {
 
 query ListRepositories($q: String) {
   repositories(q: $q, first: 100) {
-    edges { node { ...RepositoryFragment } }
+    edges { node { ...Repository } }
   }
 }
 

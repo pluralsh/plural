@@ -1,26 +1,26 @@
-fragment TerraformFragment on Terraform {
+fragment Terraform on Terraform {
   id
   name
   readme
   package
   description
   latestVersion
-  dependencies { ...DependenciesFragment }
+  dependencies { ...Dependencies }
   valuesTemplate
   insertedAt
 }
 
-fragment TerraformInstallationFragment on TerraformInstallation {
+fragment TerraformInstallation on TerraformInstallation {
   id
-  terraform { ...TerraformFragment }
-  version { ...VersionFragment }
+  terraform { ...Terraform }
+  version { ...Version }
 }
 
 query GetTerraform($id: ID!) {
   terraform(repositoryId: $id, first: 100) {
     edges {
       node {
-          ...TerraformFragment
+          ...Terraform
       }
     }
   }
@@ -30,7 +30,7 @@ query GetTerraformInstallations($id: ID!) {
   terraformInstallations(repositoryId: $id, first: 100) {
     edges {
       node {
-        ...TerraformInstallationFragment
+        ...TerraformInstallation
       }
     }
   }
@@ -38,7 +38,7 @@ query GetTerraformInstallations($id: ID!) {
 
 mutation UploadTerraform($repoName: String!, $name: String!, $uploadOrUrl: UploadOrUrl!) {
   uploadTerraform(repositoryName: $repoName, name: $name, attributes: {name: $name, package: $uploadOrUrl}) {
-    ...TerraformFragment
+    ...Terraform
   }
 }
 

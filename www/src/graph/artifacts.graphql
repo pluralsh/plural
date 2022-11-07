@@ -1,4 +1,4 @@
-fragment ArtifactFragment on Artifact {
+fragment Artifact on Artifact {
   id
   name
   blob
@@ -14,7 +14,7 @@ fragment ArtifactFragment on Artifact {
 
 query ListArtifacts($id: ID!) {
   repository(id: $id) {
-    artifacts { ...ArtifactFragment }
+    artifacts { ...Artifact }
   }
 }
 
@@ -27,6 +27,6 @@ mutation CreateArtifact($repoName: String!, $name: String!, $readme: String!, $a
     platform: $platform,
     arch: $arch
   }) {
-    ...ArtifactFragment
+    ...Artifact
   }
 }

@@ -1,4 +1,4 @@
-fragment LimitFragment on Limit {
+fragment Limit on Limit {
   dimension
   quantity
 }
@@ -17,34 +17,34 @@ fragment ServiceLevel on ServiceLevel {
   responseTime
 }
 
-fragment PlanFragment on Plan {
+fragment Plan on Plan {
   id
   name
   cost
   period
   serviceLevels { ...ServiceLevel }
   lineItems {
-    included { ...LimitFragment }
+    included { ...Limit }
     items { ...LineItem }
   }
   metadata { features { name description } }
 }
 
-fragment SubscriptionFragment on RepositorySubscription {
+fragment Subscription on RepositorySubscription {
   id
-  plan { ...PlanFragment }
-  lineItems { items { ...LimitFragment } }
+  plan { ...Plan }
+  lineItems { items { ...Limit } }
 }
 
 
-fragment InvoiceItemFragment on InvoiceItem {
+fragment InvoiceItem on InvoiceItem {
   amount
   currency
   description
 }
 
 
-fragment InvoiceFragment on Invoice {
+fragment Invoice on Invoice {
   number
   amountDue
   amountPaid
@@ -52,10 +52,10 @@ fragment InvoiceFragment on Invoice {
   status
   createdAt
   hostedInvoiceUrl
-  lines { ...InvoiceItemFragment }
+  lines { ...InvoiceItem }
 }
 
-fragment CardFragment on Card {
+fragment Card on Card {
   id
   last4
   expMonth

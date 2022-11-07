@@ -1,4 +1,4 @@
-fragment AuditFragment on Audit {
+fragment Audit on Audit {
   id
   action
   ip
@@ -6,48 +6,48 @@ fragment AuditFragment on Audit {
   city
   latitude
   longitude
-  actor { ...UserFragment }
-  repository { ...RepoFragment }
-  group { ...GroupFragment }
-  integrationWebhook { ...IntegrationWebhookFragment }
-  role { ...RoleFragment }
-  version { ...VersionFragment }
+  actor { ...User }
+  repository { ...Repo }
+  group { ...Group }
+  integrationWebhook { ...IntegrationWebhook }
+  role { ...Role }
+  version { ...Version }
   image { id tag dockerRepository { name } }
   insertedAt
 }
 
-fragment PolicyBindingFragment on PolicyBinding {
+fragment PolicyBinding on PolicyBinding {
   id
   group { id name }
   user { id name email }
 }
 
-fragment DnsDomainFragment on DnsDomain {
+fragment DnsDomain on DnsDomain {
   id
   name
-  creator { ...UserFragment }
+  creator { ...User }
   accessPolicy {
     id
-    bindings { ...PolicyBindingFragment }
+    bindings { ...PolicyBinding }
   }
   insertedAt
 }
 
-fragment InviteFragment on Invite {
+fragment Invite on Invite {
   id
   secureId
   email
   insertedAt
 }
 
-fragment OidcLoginFragment on OidcLogin {
+fragment OidcLogin on OidcLogin {
   ip
   country
   city
   latitude
   longitude
-  user { ...UserFragment }
-  owner { ...UserFragment }
-  repository { ...RepoFragment }
+  user { ...User }
+  owner { ...User }
+  repository { ...Repo }
   insertedAt
 }

@@ -1,18 +1,18 @@
-fragment AccountFragment on Account {
+fragment Account on Account {
   id
   name
   billingCustomerId
   backgroundColor
 }
 
-fragment GroupFragment on Group {
+fragment Group on Group {
   id
   name
   global
   description
 }
 
-fragment UserFragment on User {
+fragment User on User {
   id
   name
   email
@@ -36,18 +36,18 @@ fragment ImpersonationPolicy on ImpersonationPolicy {
   }
 }
 
-fragment GroupMemberFragment on GroupMember {
+fragment GroupMember on GroupMember {
   id
-  user { ...UserFragment }
+  user { ...User }
 }
 
-fragment TokenFragment on PersistedToken {
+fragment Token on PersistedToken {
   id
   token
   insertedAt
 }
 
-fragment TokenAuditFragment on PersistedTokenAudit {
+fragment TokenAudit on PersistedTokenAudit {
   ip
   timestamp
   count
@@ -57,7 +57,7 @@ fragment TokenAuditFragment on PersistedTokenAudit {
   longitude
 }
 
-fragment AddressFragment on Address {
+fragment Address on Address {
   line1
   line2
   city
@@ -66,49 +66,49 @@ fragment AddressFragment on Address {
   zip
 }
 
-fragment PublisherFragment on Publisher {
+fragment Publisher on Publisher {
   id
   name
   phone
   avatar
   description
   backgroundColor
-  owner { ...UserFragment }
-  address { ...AddressFragment }
+  owner { ...User }
+  address { ...Address }
 }
 
-fragment WebhookFragment on Webhook {
+fragment Webhook on Webhook {
   id
   url
   secret
   insertedAt
 }
 
-fragment RoleBindingFragment on RoleBinding {
+fragment RoleBinding on RoleBinding {
   id
-  user { ...UserFragment }
-  group { ...GroupFragment }
+  user { ...User }
+  group { ...Group }
 }
 
-fragment RoleFragment on Role {
+fragment Role on Role {
   id
   name
   description
   repositories
   permissions
-  roleBindings { ...RoleBindingFragment }
+  roleBindings { ...RoleBinding }
 }
 
-fragment PublicKeyFragment on PublicKey {
+fragment PublicKey on PublicKey {
   id
   name
   digest
   insertedAt
   content
-  user { ...UserFragment }
+  user { ...User }
 }
 
-fragment EabCredentialFragment on EabCredential {
+fragment EabCredential on EabCredential {
   id
   keyId
   hmacKey
@@ -133,13 +133,13 @@ query ListTokens{
 
 query ListKeys($emails: [String]) {
   publicKeys(emails: $emails, first: 1000) {
-    edges { node { ...PublicKeyFragment } }
+    edges { node { ...PublicKey } }
   }
 }
 
 query GetEabCredential($cluster: String!, $provider: Provider!) {
   eabCredential(cluster: $cluster, provider: $provider) {
-    ...EabCredentialFragment
+    ...EabCredential
   }
 }
 

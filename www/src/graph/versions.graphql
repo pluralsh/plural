@@ -1,10 +1,10 @@
-fragment VersionTagFragment on VersionTag {
+fragment VersionTag on VersionTag {
   id
   tag
   version { id }
 }
 
-fragment VersionFragment on Version {
+fragment Version on Version {
   id
   helm
   readme
@@ -12,10 +12,10 @@ fragment VersionFragment on Version {
   version
   insertedAt
   package
-  crds { ...CrdFragment }
-  chart { ...ChartFragment }
+  crds { ...Crd }
+  chart { ...Chart }
   terraform { id name }
-  dependencies { ...DependenciesFragment }
+  dependencies { ...Dependencies }
 }
 
 mutation UpdateVersion($spec: VersionSpec, $attributes: VersionAttributes!) {

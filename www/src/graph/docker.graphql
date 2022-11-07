@@ -1,4 +1,4 @@
-fragment DockerRepoFragment on DockerRepository {
+fragment DockerRepo on DockerRepository {
   id
   name
   public
@@ -16,7 +16,7 @@ fragment DockerRepository on DockerRepository {
   updatedAt
 }
 
-fragment DockerImageFragment on DockerImage {
+fragment DockerImage on DockerImage {
   id
   tag
   digest
@@ -27,7 +27,7 @@ fragment DockerImageFragment on DockerImage {
 }
 
 
-fragment VulnerabilityFragment on Vulnerability {
+fragment Vulnerability on Vulnerability {
   id
   title
   description

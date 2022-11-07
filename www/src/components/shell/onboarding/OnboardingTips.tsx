@@ -30,7 +30,7 @@ function OnboardingTips({ autoAdvanceTime = 10000, ...props }: any) {
       >
         {[
           <>
-            You can use service accounts to have an entire team manage a set installations for one of your plural clusters. Learn more{' '}
+            You can use service accounts to have an entire team manage a set of installations for one of your plural clusters. Learn more{' '}
             <A
               inline
               target="_blank"

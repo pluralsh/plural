@@ -1,6 +1,9 @@
 import { History as BrowserHistory, Location } from 'history'
 import {
-  useCallback, useLayoutEffect, useMemo, useState,
+  useCallback,
+  useLayoutEffect,
+  useMemo,
+  useState,
 } from 'react'
 import { Router } from 'react-router-dom'
 

@@ -111,3 +111,5 @@ end
 
 config :core,
   registry: get_env("DKR_DNS")
+
+config :openai, :token, get_env("OPENAI_BEARER_TOKEN")

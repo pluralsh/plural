@@ -1,10 +1,11 @@
 import { useContext } from 'react'
 import {
-  Button, Div, Flex, P,
+  Button,
+  Div,
+  Flex,
+  P,
 } from 'honorable'
-import {
-  BrowserIcon, CertificateIcon, GitHubLogoIcon,
-} from 'pluralsh-design-system'
+import { BrowserIcon, CertificateIcon, GitHubLogoIcon } from 'pluralsh-design-system'
 
 import RepositoryContext from '../../contexts/RepositoryContext'
 

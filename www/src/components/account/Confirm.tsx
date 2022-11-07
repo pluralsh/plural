@@ -1,6 +1,7 @@
+import { ReactNode } from 'react'
+import { ApolloError } from '@apollo/client'
 import { Div } from 'honorable'
 import { Button, Modal } from 'pluralsh-design-system'
-import { ReactNode } from 'react'
 
 import { GqlError } from '../utils/Alert'
 
@@ -8,7 +9,7 @@ type ConfirmProps = {
   open: boolean
   close: (...args: any[]) => unknown
   title?: ReactNode
-  error?: ReactNode
+  error?: ApolloError
   text?: ReactNode
   submit: (...args: any[]) => unknown
   label?: ReactNode

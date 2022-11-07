@@ -39,7 +39,7 @@ const ListItemInner = styled(LiBare)<{
   borderWidth: '1px',
 }))
 
-type ListItemProps = {
+type ListItemProps = any & {
   first: boolean
   last: boolean
   children: ReactNode
@@ -59,8 +59,8 @@ const ListItem = forwardRef<HTMLLIElement, ListItemProps>(({ first, last, ...pro
   )
 })
 
-type ListProps = {
-  hue: Hue
+type ListProps = any & {
+  hue?: Hue
   children: ReactNode
 }
 

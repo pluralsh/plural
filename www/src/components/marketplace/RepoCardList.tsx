@@ -6,7 +6,7 @@ import { fillEmptyColumns, flexBasis } from './utils'
 
 export function RepoCardList({
   repositories, repoProps = {}, urlParams = '', maxWidth = '800px', stretchLastRow = false, size = 'small', ...props
-}) {
+}: any) {
   return (
     <Flex
       mx={-1}

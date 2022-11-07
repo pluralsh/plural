@@ -1,5 +1,6 @@
 name: Daily
 on:
+  workflow_dispatch:
   schedule:
     - cron: '0 5 * * *'
 
@@ -14,10 +15,8 @@ jobs:
     steps:
       - name: 'Checkout'
         uses: actions/checkout@v3
-      - name: 'Configure Git User'
-        run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
+        with:
+          token: ${{ secrets.PLURAL_BOT_PAT }}
       - name: 'Setup Node'
         uses: actions/setup-node@v3
         with:
@@ -26,6 +25,13 @@ jobs:
         run: |
           yarn install --immutable
           yarn graphql:codegen
-          git add .
-          git commit -m "Update GraphQL TS Schema"
-          git push         
+      - name: 'Commit and push'
+        uses: EndBug/add-and-commit@v9
+        with:
+          add: 'www'
+          author_name: Plural Bot
+          author_email: gh-bot@plural.sh
+          commit: --signoff
+          default_author: user_info
+          message: "Update GraphQL TS Schema"
+          push: true

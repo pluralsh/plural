@@ -2,10 +2,18 @@ import { ThemeContext } from 'grommet'
 import { Div, Flex } from 'honorable'
 import moment from 'moment'
 import {
-  Chip, ListBoxItem, PageCard, Select,
+  Chip,
+  ListBoxItem,
+  PageCard,
+  Select,
 } from 'pluralsh-design-system'
 import {
-  Dispatch, ReactElement, useContext, useEffect, useMemo, useState,
+  Dispatch,
+  ReactElement,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
 } from 'react'
 
 import QueueContext from '../../contexts/QueueContext'
@@ -13,14 +21,14 @@ import { providerToURL } from '../repos/misc'
 
 // TODO: This should not be needed once Clusters.js file gets removed
 // @ts-ignore
-import { Queue } from './Clusters.tsx'
+import { Queue } from './Clusters'
 
 export function ClustersSidenav({
   onQueueChange,
   queues,
-}: { onQueueChange: Dispatch<Queue>, queues: Array<Queue> }): ReactElement {
+}: { onQueueChange: Dispatch<Queue | undefined>, queues: Array<Queue> }): ReactElement {
   const queue: Queue = useContext(QueueContext)
-  const [selectedKey, setSelectedKey] = useState<Queue>(queues.length > 0 ? queues[0] : undefined)
+  const [selectedKey, setSelectedKey] = useState<Queue | undefined>(queues.length > 0 ? queues[0] : undefined)
 
   const onSelectionChange = id => {
     const queue = queues.find(q => q.id === id)
@@ -31,7 +39,7 @@ export function ClustersSidenav({
 
   // Update selected queue if queues are updated
   useEffect(() => {
-    const queue = queues.find(q => q.id === selectedKey.id)
+    const queue = queues.find(q => q.id === selectedKey?.id)
 
     setSelectedKey(queue)
   }, [queues, selectedKey, setSelectedKey])

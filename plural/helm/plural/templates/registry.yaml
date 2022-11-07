@@ -90,10 +90,18 @@ spec:
       nodeSelector:
 {{ toYaml .Values.registry.nodeSelector | indent 8 }}
 {{- end }}
+      {{- with .Values.registry.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
 {{- if .Values.tolerations }}
       tolerations:
 {{ toYaml .Values.registry.tolerations | indent 8 }}
 {{- end }}
+      {{- with .Values.registry.topologySpreadConstraints }}
+      topologySpreadConstraints:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       volumes:
       - name: plural-registry-config
         configMap:

@@ -1,5 +1,9 @@
 import {
-  Div, H2, P, RadioGroup, Text,
+  Div,
+  H2,
+  P,
+  RadioGroup,
+  Text,
 } from 'honorable'
 import { Radio } from 'pluralsh-design-system'
 
@@ -29,7 +33,7 @@ export function CloudOption({
   description,
   selected,
   ...props
-}) {
+}: any) {
   return (
     <OnboardingCardButton
       position="relative"
@@ -61,7 +65,7 @@ export function CloudOption({
   )
 }
 
-export function ChooseAShell({ options, selected, setSelected }) {
+export function ChooseAShell({ options, selected, setSelected }: any) {
   return (
     <Div
       width="100%"

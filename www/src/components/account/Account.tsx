@@ -1,14 +1,14 @@
+import { Flex } from 'honorable'
+import { TabPanel } from 'pluralsh-design-system'
+import { useRef } from 'react'
+import { Outlet } from 'react-router-dom'
+
 import {
   ResponsiveLayoutContentContainer,
   ResponsiveLayoutSidecarContainer,
   ResponsiveLayoutSidenavContainer,
   ResponsiveLayoutSpacer,
-} from 'components/layout/ResponsiveLayout'
-import { Flex } from 'honorable'
-import { TabPanel } from 'pluralsh-design-system'
-import { useRef } from 'react'
-
-import { Outlet } from 'react-router-dom'
+} from '../layout/ResponsiveLayout'
 
 import AccountSideNav from './AccountSidenav'
 

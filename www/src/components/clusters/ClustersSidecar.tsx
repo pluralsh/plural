@@ -1,7 +1,10 @@
 import { A, Flex } from 'honorable'
 import moment from 'moment'
 import {
-  ArrowTopRightIcon, Button, Sidecar, SidecarItem,
+  ArrowTopRightIcon,
+  Button,
+  Sidecar,
+  SidecarItem,
 } from 'pluralsh-design-system'
 import { ReactElement, useContext } from 'react'
 
@@ -9,7 +12,7 @@ import QueueContext from '../../contexts/QueueContext'
 
 // TODO: This should not be needed once Clusters.js file gets removed
 // @ts-ignore
-import { Queue } from './Clusters.tsx'
+import { Queue } from './Clusters'
 
 export function ClustersSidecar(): ReactElement {
   const queue: Queue = useContext(QueueContext)

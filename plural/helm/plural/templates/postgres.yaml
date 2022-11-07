@@ -25,6 +25,14 @@ spec:
     version: "13"
     parameters:
       max_connections: '101'
+  {{- with .Values.postgres.plural.nodeAffinity }}
+  nodeAffinity:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.postgres.plural.tolerations }}
+  tolerations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   sidecars:
   - image: gcr.io/pluralsh/postgres-exporter:0.8.0
     name: exporter

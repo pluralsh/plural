@@ -1,7 +1,7 @@
 global:
   registry: dkr.plural.sh/plural
 
-replicaCount: 2
+replicaCount: 3
 rabbitmqNamespace: rabbitmq
 influxNamespace: influx
 
@@ -294,9 +294,35 @@ postgres:
   plural:
     resources: {}
     size: 50Gi
+    tolerations:
+    - key: plural.sh/pluralReserved
+      operator: Exists
+      effect: "NoSchedule"
+
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: plural.sh/scalingGroup
+            operator: In
+            values:
+            - plural-small
   hydra:
     resources: {}
     size: 25Gi
+    tolerations:
+    - key: plural.sh/pluralReserved
+      operator: Exists
+      effect: "NoSchedule"
+
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: plural.sh/scalingGroup
+            operator: In
+            values:
+            - plural-small
   default:
     resources:
       requests:
@@ -305,6 +331,21 @@ postgres:
       limits:
         cpu: '2'
         memory: 1Gi
+
+
+api:
+  port: 4000
+  bucket: plural-assets
+  resources: {}
+
+  topologySpreadConstraints:
+  - maxSkew: 1
+    topologyKey: topology.kubernetes.io/zone
+    whenUnsatisfiable: DoNotSchedule
+    labelSelector:
+      matchLabels:
+        app.kubernetes.io/name: plural-api
+        app.kubernetes.io/instance: plural
 
 image:
   repository: plural
@@ -317,7 +358,16 @@ rtc:
   # if empty the chart version is used
   tag: '' ## PLRL-REPLACE[  tag: '%s']
   resources: {}
-  replicaCount: 2
+  replicaCount: 3
+
+  topologySpreadConstraints:
+  - maxSkew: 1
+    topologyKey: topology.kubernetes.io/zone
+    whenUnsatisfiable: DoNotSchedule
+    labelSelector:
+      matchLabels:
+        app.kubernetes.io/name: plural-rtc
+        app.kubernetes.io/instance: plural
 
 worker:
   repository: worker
@@ -326,7 +376,16 @@ worker:
   minReplicas: 1
   maxReplicas: 10
   resources: {}
-  replicaCount: 2
+  replicaCount: 3
+
+  topologySpreadConstraints:
+  - maxSkew: 1
+    topologyKey: topology.kubernetes.io/zone
+    whenUnsatisfiable: DoNotSchedule
+    labelSelector:
+      matchLabels:
+        app.kubernetes.io/name: plural-worker
+        app.kubernetes.io/instance: plural
 
 www:
   repository: plural-www
@@ -334,7 +393,16 @@ www:
   tag: '' ## PLRL-REPLACE[  tag: '%s']
   port: 80
   resources: {}
-  replicaCount: 2
+  replicaCount: 3
+
+  topologySpreadConstraints:
+  - maxSkew: 1
+    topologyKey: topology.kubernetes.io/zone
+    whenUnsatisfiable: DoNotSchedule
+    labelSelector:
+      matchLabels:
+        app.kubernetes.io/name: plural-www
+        app.kubernetes.io/instance: plural
 
 cron:
   repository: cron
@@ -346,11 +414,6 @@ imagePullSecrets:
 
 provider: aws
 region: us-east-1
-
-api:
-  port: 4000
-  bucket: plural-assets
-  resources: {}
 
 dbPasswordSecret: plural.plural-plural.credentials.postgresql.acid.zalan.do
 rabbitPasswordSecret: plural-rabbitmq
@@ -398,6 +461,16 @@ hydra:
 
   image:
     repository: gcr.io/pluralsh/oryd/hydra
+  
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: plural.sh/scalingGroup
+            operator: In
+            values:
+            - plural-small
 
   maester:
     enabled: false
@@ -416,6 +489,10 @@ hydra:
   deployment:
     autoscaling:
       enabled: false
+    tolerations:
+    - key: plural.sh/pluralReserved
+      operator: Exists
+      effect: "NoSchedule"
     
   ingress:
     public:
@@ -437,13 +514,45 @@ chartmuseum:
   bucket: plural-charts
   pullPolicy: Always
 
+  topologySpreadConstraints:
+  - maxSkew: 1
+    topologyKey: topology.kubernetes.io/zone
+    whenUnsatisfiable: DoNotSchedule
+    labelSelector:
+      matchLabels:
+        app.kubernetes.io/name: chartmuseum
+        app.kubernetes.io/instance: plural
+
 registry:
   replicaCount: 2
   podAnnotations: {}
   podLabels: {}
   podDisruptionBudget: {}
   nodeSelector: {}
-  tolerations: []
+  tolerations:
+  - key: plural.sh/pluralReserved
+    operator: Exists
+    effect: "NoSchedule"
+
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: plural.sh/scalingGroup
+            operator: In
+            values:
+            - plural-small
+
+  topologySpreadConstraints:
+  - maxSkew: 1
+    topologyKey: topology.kubernetes.io/zone
+    whenUnsatisfiable: DoNotSchedule
+    labelSelector:
+      matchLabels:
+        app.kubernetes.io/name: plural-registry
+        app.kubernetes.io/instance: plural
+
   rbac:
     serviceAccountAnnotations: {}
   
@@ -566,9 +675,20 @@ resources: {}
 
 nodeSelector: {}
 
-tolerations: []
+tolerations:
+- key: plural.sh/pluralReserved
+  operator: Exists
+  effect: "NoSchedule"
 
-affinity: {}
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: plural.sh/scalingGroup
+          operator: In
+          values:
+          - plural-small
 
 test-base:
   enabled: false

@@ -7,10 +7,13 @@ import { OnboardingChecklistContext } from '../../../../contexts/OnboardingCheck
 import { UPDATE_ONBOARDING_CHECKLIST } from '../../../users/queries'
 import { ONBOARDING_CHECKLIST_STATE } from '../../constants'
 import {
-  clearOnboardingChecklistState, isOnboardingChecklistHidden, setOnboardingChecklistState, shouldOnboardingChecklistReappear,
+  clearOnboardingChecklistState,
+  isOnboardingChecklistHidden,
+  setOnboardingChecklistState,
+  shouldOnboardingChecklistReappear,
 } from '../../persistance'
 
-export function ChecklistFooter({ refetch, setDismiss }) {
+export function ChecklistFooter({ refetch, setDismiss }: any) {
   const { setDismissed: setDismissedFromContext } = useContext(OnboardingChecklistContext)
   const [updateChecklist, { loading }] = useMutation(UPDATE_ONBOARDING_CHECKLIST, {
     variables: {

@@ -98,6 +98,10 @@ spec:
       tolerations:
 {{ toYaml .Values.registry.tolerations | indent 8 }}
 {{- end }}
+      {{- with .Values.registry.topologySpreadConstraints }}
+      topologySpreadConstraints:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       volumes:
       - name: plural-registry-config
         configMap:

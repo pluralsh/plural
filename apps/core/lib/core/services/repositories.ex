@@ -670,6 +670,27 @@ defmodule Core.Services.Repositories do
   end
 
   @doc """
+  Returns the docs for a repo if present.  This will get the icon url, untar it, and reformat the result for passthrough to gql.
+  """
+  @spec documentation(Repository.t) :: {:ok, [{binary, binary}]} | error
+  def documentation(%Repository{docs: nil}), do: {:ok, []}
+  def documentation(%Repository{docs: docs} = repo) do
+    url = Core.Storage.url({docs, repo}, :original)
+    with {:ok, %HTTPoison.Response{status_code: 200, body: body}} <- HTTPoison.get(url, [], follow_redirect: true),
+         {:ok, result} <- :erl_tar.extract({:binary, body}, [:memory, :compressed]) do
+      {:ok, Enum.map(result, fn {p, c} -> {clean_path(p), c} end)}
+    end
+  end
+
+  defp clean_path(p) when is_binary(p) do
+    case String.split(p, ["/", "\\"]) do
+      [_ | rest] -> Enum.join(rest, "/")
+      _ -> p
+    end
+  end
+  defp clean_path(p), do: to_string(p) |> clean_path()
+
+  @doc """
   Returns whether a user can `:access` the repository.
   """
   @spec authorize(binary, User.t) :: {:ok, Repository.t} | {:error, term}

@@ -22,6 +22,7 @@ defmodule GraphQl.Schema.Repository do
     field :secrets,        :yml
     field :icon,           :upload_or_url
     field :dark_icon,      :upload_or_url
+    field :docs,           :upload_or_url
     field :tags,           list_of(:tag_attributes)
     field :private,        :boolean
     field :verified,       :boolean
@@ -193,6 +194,8 @@ defmodule GraphQl.Schema.Repository do
     field :public_key, :string, resolve: fn
       repo, _, %{context: %{current_user: user}} -> Repository.resolve_public_key(repo, user)
     end
+
+    field :documentation, list_of(:file_content), resolve: &Repository.documentation/3
 
     timestamps()
   end

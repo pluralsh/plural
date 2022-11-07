@@ -38,6 +38,12 @@ defmodule GraphQl.Resolvers.Repository do
 
   def accessible(repo, user), do: Core.Policies.Repository.allow(repo, user, :access)
 
+  def documentation(repo, _, _) do
+    with {:ok, files} <- Repositories.documentation(repo) do
+      {:ok, Enum.map(files, fn {p, c} -> %{path: p, content: c} end)}
+    end
+  end
+
   def editable(repo, user) do
     case Core.Policies.Repository.can?(user, repo, :edit) do
       {:error, _} -> {:ok, false}

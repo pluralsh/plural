@@ -654,4 +654,20 @@ defmodule Core.Services.RepositoriesTest do
         do: refute refetch(inst)
     end
   end
+
+  describe "#documentation/1" do
+    test "it will find docs" do
+      repo = insert(:repository, docs: %{file_name: "f", updated_at: nil})
+
+      contents = priv_file(:core, "docs.tgz") |> File.read!()
+      expect(HTTPoison, :get, fn _, _, _ -> {:ok, %HTTPoison.Response{status_code: 200, body: contents}} end)
+
+      {:ok, files} = Repositories.documentation(repo)
+
+      by_name = Map.new(files)
+
+      assert by_name["test.md"] == "hello world"
+      assert by_name["other.md"] == "another file"
+    end
+  end
 end

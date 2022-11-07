@@ -294,9 +294,37 @@ postgres:
   plural:
     resources: {}
     size: 50Gi
+    tolerations:
+    - key: plural.sh/pluralReserved
+      operator: Exists
+      effect: "NoSchedule"
+
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchExpressions:
+            - key: plural.sh/scalingGroup
+              operator: In
+              values:
+              - plural-small
   hydra:
     resources: {}
     size: 25Gi
+    tolerations:
+    - key: plural.sh/pluralReserved
+      operator: Exists
+      effect: "NoSchedule"
+
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchExpressions:
+            - key: plural.sh/scalingGroup
+              operator: In
+              values:
+              - plural-small
   default:
     resources:
       requests:
@@ -402,6 +430,16 @@ hydra:
 
   image:
     repository: gcr.io/pluralsh/oryd/hydra
+  
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: plural.sh/scalingGroup
+            operator: In
+            values:
+            - plural-small
 
   maester:
     enabled: false
@@ -420,6 +458,10 @@ hydra:
   deployment:
     autoscaling:
       enabled: false
+    tolerations:
+    - key: plural.sh/pluralReserved
+      operator: Exists
+      effect: "NoSchedule"
     
   ingress:
     public:
@@ -447,7 +489,21 @@ registry:
   podLabels: {}
   podDisruptionBudget: {}
   nodeSelector: {}
-  tolerations: []
+  tolerations:
+  - key: plural.sh/pluralReserved
+    operator: Exists
+    effect: "NoSchedule"
+
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: plural.sh/scalingGroup
+            operator: In
+            values:
+            - plural-small
+
   rbac:
     serviceAccountAnnotations: {}
   

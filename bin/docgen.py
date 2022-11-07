@@ -44,10 +44,10 @@ def gql_client():
     return GraphqlClient(endpoint="https://app.plural.sh/gql", headers={"Authorization": f"Bearer {token}"})
 
 def tab_content(repo, recipe):
-    start = '{% tab title="' + recipe['provider'] + '" %}'
-    mid = f"plural bundle install {repo} {recipe['name']}"
-    end = '{% endtab %}'
-    return f"{start} {mid} {end}"
+    start = '{% tab title="' + recipe['provider'] + '" %}\n'
+    mid = f"plural bundle install {repo} {recipe['name']}\n"
+    end = '{% /tab %}\n'
+    return f"{start}{mid}{end}"
 
 def setup_vals(section):
     return "\n\n".join(f"`{c['name']}`: {c.get('longform') or c['documentation']}" for c in section['configuration'])
@@ -59,25 +59,30 @@ def docgen(repo):
     recipes = client.execute(query=recipes_q, variables={'repoName': repo})
     recipes = [r['node'] for r in recipes['data']['recipes']['edges']]
     recipe = client.execute(query=recipe_q, variables={'id': recipes[0]['id']})['data']['recipe']
-    tabs = " ".join(tab_content(repo, r) for r in recipes)
+    tabs = "".join(tab_content(repo, r) for r in recipes)
     repo_name = repo.capitalize()
     setup = "\n\n".join(setup_vals(section) for section in recipe['recipeSections'])
     click.echo(f"""
 # {repo_name}
 
 ## Description
+
 Plural will install {repo_name} in a dependency-aware manner onto a Plural-managed Kubernetes cluster with one CLI command.
 
 ## Installation
+
 We currently support {repo_name} for the following providers:
 
 {'{% tabs %}'}
+
 {tabs}
-{'{% endtabs %}'}
+{'{% /tabs %}'}
 
 ## Setup Configuration
+
 {setup}
-    """)
+
+""")
 
 if __name__ == '__main__':
   docgen()

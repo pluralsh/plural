@@ -63,6 +63,7 @@ const inputs = [
 
 async function main() {
   for (const input of inputs) {
+    console.log(input)
     try {
       const result = await exec(`python3 bin/docgen.py ${input}`);
 

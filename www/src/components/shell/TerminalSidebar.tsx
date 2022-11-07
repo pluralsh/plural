@@ -454,7 +454,7 @@ function Step3({ appCount }: any) {
         </StepSection>
         <StepSection>
           <StepP>
-            These commands may take upwards of fifteen to complete as the cloud
+            These commands may take upwards of fifteen minutes to complete as the cloud
             provider provisions your infrastructure.
           </StepP>
         </StepSection>

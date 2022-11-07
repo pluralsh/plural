@@ -28,8 +28,8 @@ spec:
       command:
       - echo
       - 'hello world'
-  {{- with .Values.postgres.hydra.affinity }}
-  affinity:
+  {{- with .Values.postgres.hydra.nodeAffinity }}
+  nodeAffinity:
     {{- toYaml . | nindent 4 }}
   {{- end }}
   {{- with .Values.postgres.hydra.tolerations }}

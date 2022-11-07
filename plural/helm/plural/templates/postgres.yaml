@@ -25,8 +25,8 @@ spec:
     version: "13"
     parameters:
       max_connections: '101'
-  {{- with .Values.postgres.plural.affinity }}
-  affinity:
+  {{- with .Values.postgres.plural.nodeAffinity }}
+  nodeAffinity:
     {{- toYaml . | nindent 4 }}
   {{- end }}
   {{- with .Values.postgres.plural.tolerations }}

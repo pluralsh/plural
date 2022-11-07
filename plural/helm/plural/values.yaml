@@ -299,15 +299,14 @@ postgres:
       operator: Exists
       effect: "NoSchedule"
 
-    affinity:
-      nodeAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          nodeSelectorTerms:
-          - matchExpressions:
-            - key: plural.sh/scalingGroup
-              operator: In
-              values:
-              - plural-small
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: plural.sh/scalingGroup
+            operator: In
+            values:
+            - plural-small
   hydra:
     resources: {}
     size: 25Gi
@@ -316,15 +315,14 @@ postgres:
       operator: Exists
       effect: "NoSchedule"
 
-    affinity:
-      nodeAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          nodeSelectorTerms:
-          - matchExpressions:
-            - key: plural.sh/scalingGroup
-              operator: In
-              values:
-              - plural-small
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: plural.sh/scalingGroup
+            operator: In
+            values:
+            - plural-small
   default:
     resources:
       requests:

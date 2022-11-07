@@ -19,17 +19,18 @@ export function InviteUser() {
   const [open, setOpen] = useState(false)
   const [email, setEmail] = useState('')
   const [invite, setInvite] = useState<any>(null)
-  const resetAndClose = useCallback(() => {
-    setEmail('')
-    setInvite(null)
-    setOpen(false)
-  }, [])
-  const [mutation, { loading, error }] = useMutation(CREATE_INVITE, {
+  const [mutation, { loading, error, reset }] = useMutation(CREATE_INVITE, {
     variables: { attributes: { email } },
     onCompleted: data => {
       setInvite(data && data.createInvite)
     },
   })
+  const resetAndClose = useCallback(() => {
+    setEmail('')
+    setInvite(null)
+    setOpen(false)
+    reset()
+  }, [reset])
 
   return (
     <>

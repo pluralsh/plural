@@ -10,7 +10,7 @@ export const deviceLoginCompleted = () => localStorage.getItem(LOGIN_KEY)
 export const wipeDeviceLogin = () => localStorage.removeItem(LOGIN_KEY)
 
 export function DeviceLoginNotif() {
-  const [open, setOpen] = useState(!deviceLoginCompleted())
+  const [open, setOpen] = useState(!!deviceLoginCompleted())
 
   useEffect(() => {
     if (open) wipeDeviceLogin()

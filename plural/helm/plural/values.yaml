@@ -351,7 +351,7 @@ image:
   repository: plural
   # if empty the chart version is used
   tag: '' ## PLRL-REPLACE[  tag: '%s']
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
 
 rtc:
   repository: rtc

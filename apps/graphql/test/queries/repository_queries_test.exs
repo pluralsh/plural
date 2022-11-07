@@ -243,13 +243,13 @@ defmodule GraphQl.RepositoryQueriesTest do
         query Repo($repoId: ID!) {
           repository(id: $repoId) {
             id
-            documentation { path content }
+            docs { path content }
           }
         }
       """, %{"repoId" => repo.id}, %{current_user: user})
 
       assert found["id"] == repo.id
-      by_name = Enum.into(found["documentation"], %{}, & {&1["path"], &1["content"]})
+      by_name = Enum.into(found["docs"], %{}, & {&1["path"], &1["content"]})
 
       assert by_name["test.md"] == "hello world"
       assert by_name["other.md"] == "another file"

@@ -195,7 +195,7 @@ defmodule GraphQl.Schema.Repository do
       repo, _, %{context: %{current_user: user}} -> Repository.resolve_public_key(repo, user)
     end
 
-    field :documentation, list_of(:file_content), resolve: &Repository.documentation/3
+    field :docs, list_of(:file_content), resolve: &Repository.documentation/3
 
     timestamps()
   end

@@ -29,7 +29,7 @@ import ConfigureMyCloudButton from './ConfigureMyCloudButton'
 const { Buffer } = require('buffer/')
 
 const decodeBase64 = str => Buffer.from(str, 'base64').toString('utf-8')
-const detachedMessage = '[detached (from session workspace)]'
+// const detachedMessage = '[detached (from session workspace)]'
 
 function Shell({ shell }: any) {
   const xterm = useRef<any>(null)
@@ -66,9 +66,10 @@ function Shell({ shell }: any) {
 
       term.write(decoded)
 
-      if (!restart && decoded.includes(detachedMessage)) {
-        setRestart(true)
-      }
+      // this seems to death spiral sometimes, reverting for now (@mjg)
+      // if (!restart && decoded.includes(detachedMessage)) {
+      //   setRestart(true)
+      // }
     })
     chan.join()
 

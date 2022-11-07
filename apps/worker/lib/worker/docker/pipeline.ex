@@ -12,5 +12,5 @@ defmodule Worker.Docker.Pipeline do
     |> Flow.start_link()
   end
 
-  defp defer_scan(img), do: Core.Conduit.Broker.publish(%Conduit.Message{body: img}, :dkr)
+  defp defer_scan(img), do: Worker.Conduit.Broker.publish(%Conduit.Message{body: img}, :dkr)
 end

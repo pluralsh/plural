@@ -1,6 +1,6 @@
 import { useContext, useState } from 'react'
 import { Flex, Img, P } from 'honorable'
-import { Button, CloudIcon } from 'pluralsh-design-system'
+import { Button, CloudIcon, TerminalIcon } from 'pluralsh-design-system'
 
 import { persistProvider } from '../../persistance'
 
@@ -42,7 +42,7 @@ function ChooseShell() {
         <CloudOption
           selected={shell === 'cli'}
           icon={(
-            <CloudIcon
+            <TerminalIcon
               size={40}
               color="text-light"
             />

@@ -13,7 +13,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - uses: hashicorp/setup-terraform@v2
-    - uses: azure/setup-helm@v2
+    - uses: azure/setup-helm@v3
       with:
         version: latest
     - name: installing plural

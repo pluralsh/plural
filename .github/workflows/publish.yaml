@@ -14,7 +14,7 @@ jobs:
         with:
           elixir-version: '1.11.4' # Define the elixir version [required]
           otp-version: '23.1.5' # Define the OTP version [required]
-      - uses: azure/setup-helm@v1
+      - uses: azure/setup-helm@v3
         with:
           version: latest
       - name: install plural cli

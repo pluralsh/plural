@@ -9,7 +9,7 @@ dependencies:
   version: 0.16.0
 - name: test-base
   repository: https://pluralsh.github.io/module-library
-  version: 0.1.3
+  version: 0.1.5
   condition: test-base.enabled
 maintainers:
 - email: mjg@plural.sh

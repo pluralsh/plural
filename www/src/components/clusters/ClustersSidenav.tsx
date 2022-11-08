@@ -19,8 +19,6 @@ import {
 import QueueContext from '../../contexts/QueueContext'
 import { providerToURL } from '../repos/misc'
 
-// TODO: This should not be needed once Clusters.js file gets removed
-// @ts-ignore
 import { Queue } from './Clusters'
 
 export function ClustersSidenav({
@@ -57,17 +55,22 @@ export function ClustersSidenav({
           label="Select cluster"
           selectedKey={selectedKey?.id}
           onSelectionChange={onSelectionChange}
-          rightContent={selectedKey && <QueueHealth queue={selectedKey} />}
         >
           {queues.map(queue => (
             <ListBoxItem
               key={queue.id}
               label={queue.name}
               textValue={queue.name}
-              rightContent={<QueueHealth queue={queue} />}
+              rightContent={(
+                <QueueHealth
+                  queue={queue}
+                  short
+                />
+              )}
             />
           ))}
         </Select>
+        {selectedKey && <Div marginTop="xsmall"><QueueHealth queue={selectedKey} /></Div>}
       </Div>
     </Flex>
   )
@@ -86,7 +89,7 @@ function ProfileCard({ queue }: { queue: Queue }): ReactElement {
   )
 }
 
-function QueueHealth({ queue }: { queue: Queue }) {
+function QueueHealth({ queue, short = false }: { queue: Queue, short?: boolean }) {
   const [now, setNow] = useState(moment())
   const pinged = useMemo(() => moment(queue.pingedAt), [queue.pingedAt])
 
@@ -99,10 +102,8 @@ function QueueHealth({ queue }: { queue: Queue }) {
   const healthy = now.subtract(2, 'minutes').isBefore(pinged)
 
   return (
-    <Chip
-      severity={healthy ? 'success' : 'error'}
-    >
-      {healthy ? 'Healthy' : 'Unhealthy'}
+    <Chip severity={healthy ? 'success' : 'error'}>
+      {healthy ? (!short ? 'Healthy' : 'H') : (!short ? 'Unhealthy' : 'U')}
     </Chip>
   )
 }

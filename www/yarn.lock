@@ -2423,14 +2423,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphql-codegen/cli@npm:2.13.9":
-  version: 2.13.9
-  resolution: "@graphql-codegen/cli@npm:2.13.9"
+"@graphql-codegen/cli@npm:2.13.11":
+  version: 2.13.11
+  resolution: "@graphql-codegen/cli@npm:2.13.11"
   dependencies:
     "@babel/generator": ^7.18.13
     "@babel/template": ^7.18.10
     "@babel/types": ^7.18.13
-    "@graphql-codegen/core": 2.6.3
+    "@graphql-codegen/core": 2.6.5
     "@graphql-codegen/plugin-helpers": ^2.7.2
     "@graphql-tools/apollo-engine-loader": ^7.3.6
     "@graphql-tools/code-file-loader": ^7.3.1
@@ -2470,21 +2470,21 @@ __metadata:
     graphql-code-generator: cjs/bin.js
     graphql-codegen: cjs/bin.js
     graphql-codegen-esm: esm/bin.js
-  checksum: 9440e984a3c43816f19c8ed6ce2e5000d0cf7bb851a97fd12c4de17c0ffa45dc4b071311ae996688301aecbf5596d7e6881fa2ec85f7ed34e4854db4c7dfad99
+  checksum: 8d5d6f848f245b2091b85785466805cced26d788a66c3e03fbcfd6dc8b5bac4215b6b687d746ad0ee05685c700eecc93b502fd73c3383e5ac4a19cc1b4198ac1
   languageName: node
   linkType: hard
 
-"@graphql-codegen/core@npm:2.6.3":
-  version: 2.6.3
-  resolution: "@graphql-codegen/core@npm:2.6.3"
+"@graphql-codegen/core@npm:2.6.5":
+  version: 2.6.5
+  resolution: "@graphql-codegen/core@npm:2.6.5"
   dependencies:
     "@graphql-codegen/plugin-helpers": ^2.7.2
     "@graphql-tools/schema": ^9.0.0
-    "@graphql-tools/utils": ^8.8.0
+    "@graphql-tools/utils": 9.0.0
     tslib: ~2.4.0
   peerDependencies:
     graphql: ^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
-  checksum: 7468cb5e5217d4dbb90beb4b4638e343c1d44cec1bab91bce1cb4e96278d86976461be5ae380775a02dda4532d9992702df2b6bf91bd0d31f716e6a87a088dad
+  checksum: 22a30285af6adf5acd8ed2f45363c77b718a1789f024094a4fcc62fc164440f0fed595b5eecfa216e3568a81ba07dd8f2e6111cb49f2ce46160b14167a330c41
   languageName: node
   linkType: hard
 
@@ -2918,6 +2918,17 @@ __metadata:
   peerDependencies:
     graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
   checksum: 24edc6ba3bcfa9a4c1d1d37117c3f96d847beed9638325083c32c6ec9674729dc89fc8cc389d317ae5d9dba22e91443bd9788f1dc8de91a1b6f1e592112bd48f
+  languageName: node
+  linkType: hard
+
+"@graphql-tools/utils@npm:9.0.0":
+  version: 9.0.0
+  resolution: "@graphql-tools/utils@npm:9.0.0"
+  dependencies:
+    tslib: ^2.4.0
+  peerDependencies:
+    graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
+  checksum: 8da22b13e0cfceac20f2ee08c45f360d0bd1390fa0edd8496ea75a0ca7d10ab3bbafca6b4b0dbc3f233a05cd53096e3063b9208f727c72db00e461751164afbd
   languageName: node
   linkType: hard
 
@@ -23670,7 +23681,7 @@ __metadata:
     "@emotion/styled": 11.10.5
     "@gitbeaker/browser": 35.7.0
     "@graphql-codegen/add": 3.2.1
-    "@graphql-codegen/cli": 2.13.9
+    "@graphql-codegen/cli": 2.13.11
     "@graphql-codegen/introspection": 2.2.1
     "@graphql-codegen/typescript": 2.8.1
     "@graphql-codegen/typescript-operations": 2.5.6

@@ -2,8 +2,9 @@ name: CI
 on:
   push:
     branches: [ master ]
-    paths-ignore:
-      - '**/*.md'
+    paths:
+      - ".github/workflows/www.yaml"
+      - "www/**"
   pull_request:
     branches: [ master ]
     paths:

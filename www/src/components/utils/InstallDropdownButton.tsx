@@ -184,8 +184,8 @@ function InstallDropdownButton({
               maxWidth="100%"
               flexGrow={1}
             >
-              Choose either the Plural CLI or cloud shell to install. Learn more about CLI
-              installation in our{' '}
+              {recipe.provider !== 'KIND' && <>Choose either the Plural CLI or cloud shell to install. </>}
+              Learn more about CLI installation in our{' '}
               <A
                 inline
                 href="https://docs.plural.sh/getting-started/getting-started#install-plural-cli"
@@ -207,15 +207,18 @@ function InstallDropdownButton({
           >
             Plural CLI
           </Tab>
-          <Tab
-            active={tab === 1}
-            onClick={() => setTab(1)}
-            flexGrow={1}
-            borderBottom={tab === 1 ? '1px solid border-primary' : '1px solid border-fill-two'}
-            {...{ '&>div': { justifyContent: 'center' } }}
-          >
-            Cloud Shell
-          </Tab>
+          {recipe.provider !== 'KIND' && (
+            <Tab
+              active={tab === 1}
+              onClick={() => setTab(1)}
+              flexGrow={1}
+              borderBottom={tab === 1 ? '1px solid border-primary' : '1px solid border-fill-two'}
+              {...{ '&>div': { justifyContent: 'center' } }}
+            >
+              Cloud Shell
+            </Tab>
+          )}
+
         </Flex>
         <Div padding="large">
           <Div {...(tab !== 0 ? visuallyHideMaintainWidth : {})}>

@@ -82,6 +82,7 @@ export function ClustersContent(): ReactElement | null {
           secondary
           marginRight={1} // Compensate for the border when focused
           onClick={() => refetch()}
+          loading={loading}
         >
           <ReloadIcon marginRight="xsmall" />Refresh
         </Button>

@@ -6,6 +6,7 @@ import {
   Chip,
   LoopingLogo,
   PageTitle,
+  ReloadIcon,
 } from 'pluralsh-design-system'
 import {
   ReactElement,
@@ -81,7 +82,8 @@ export function ClustersContent(): ReactElement | null {
           secondary
           marginRight={1} // Compensate for the border when focused
           onClick={() => refetch()}
-        >Refresh
+        >
+          <ReloadIcon marginRight="xsmall" />Refresh
         </Button>
       </PageTitle>
       <UpgradesList

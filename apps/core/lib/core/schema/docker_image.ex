@@ -5,10 +5,11 @@ defmodule Core.Schema.DockerImage do
   defenum Grade, a: 0, b: 1, c: 2, d: 3, f: 4
 
   schema "docker_images" do
-    field :tag,        :string
-    field :digest,     :string
-    field :grade,      Grade
-    field :scanned_at, :utc_datetime_usec
+    field :tag,               :string
+    field :digest,            :string
+    field :grade,             Grade
+    field :scanned_at,        :utc_datetime_usec
+    field :scan_completed_at, :utc_datetime_usec
 
     has_many   :vulnerabilities,   Vulnerability, foreign_key: :image_id, on_replace: :delete
     belongs_to :docker_repository, DockerRepository
@@ -29,7 +30,7 @@ defmodule Core.Schema.DockerImage do
 
   def scanned_before(query \\ __MODULE__, days) do
     prior = Timex.now() |> Timex.shift(days: -days)
-    from(di in query, where: di.scanned_at < ^prior or is_nil(di.scanned_at))
+    from(di in query, where: di.scanned_at < ^prior or is_nil(di.scanned_at) or di.scan_completed_at < ^prior or is_nil(di.scan_completed_at))
   end
 
   def for_repository(query \\ __MODULE__, repo_id),
@@ -52,8 +53,8 @@ defmodule Core.Schema.DockerImage do
 
   def vulnerability_changeset(model, attrs \\ %{}) do
     model
-    |> cast(attrs, [:scanned_at, :grade])
+    |> cast(attrs, [:scan_completed_at, :grade])
     |> cast_assoc(:vulnerabilities)
-    |> validate_required([:scanned_at, :grade])
+    |> validate_required([:scan_completed_at, :grade])
   end
 end

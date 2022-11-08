@@ -241,7 +241,7 @@ defmodule Core.Services.Repositories do
     Core.Repo.preload(image, [:vulnerabilities])
     |> DockerImage.vulnerability_changeset(%{
       vulnerabilities: vulns,
-      scanned_at: Timex.now(),
+      scan_completed_at: Timex.now(),
       grade: grade(vulns)
     })
     |> Core.Repo.update()

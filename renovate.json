@@ -1,6 +1,7 @@
 {
   "extends": [
     "config:base",
+    ":semanticCommits",
     ":dependencyDashboard",
     ":prHourlyLimit4",
     ":prConcurrentLimit10"
@@ -20,6 +21,11 @@
       "addLabels": [
         "frontend"
       ]
+    },
+    {
+      "matchManagers": ["npm"],
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "automerge": true
     },
     {
       "matchManagers": ["mix"],

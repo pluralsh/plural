@@ -74,21 +74,15 @@ export function handlePreviousUserClick({ jwt }: any) {
 
 export function PluralProvider({ children }: any) {
   const location = useLocation()
-  const [refresh, setRefresh] = useState(false)
   const {
     loading, error, data, refetch,
   } = useQuery(ME_Q, { pollInterval: 60000 })
   const { boot, update } = useIntercom()
-  const userContextValue = useMemo(() => ({ me: data?.me, setRefresh }), [data, setRefresh])
+  const userContextValue = useMemo(() => ({ me: data?.me, refetch }), [data, refetch])
+
+  console.log(data)
 
   useNotificationSubscription()
-
-  useEffect(() => {
-    if (refresh) {
-      refetch()
-      setRefresh(false)
-    }
-  }, [refresh, refetch])
 
   useEffect(() => {
     if (!data?.me) return

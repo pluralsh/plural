@@ -432,7 +432,7 @@ defmodule Core.Services.RepositoriesTest do
 
       assert vuln.image_id == image.id
 
-      assert image.scanned_at
+      assert image.scan_completed_at
       assert image.grade == :c
     end
   end

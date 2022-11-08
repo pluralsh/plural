@@ -8,7 +8,7 @@ defmodule Worker.Conduit.Broker do
 
   pipeline :error_handling do
     plug Core.Conduit.Plug.DeadLetter, broker: __MODULE__, publish_to: :error
-    plug Core.Conduit.Plug.Retry, attempts: 3
+    # plug Core.Conduit.Plug.Retry, attempts: 3 # broken for some reason
   end
 
   pipeline :deserialize do

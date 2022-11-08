@@ -35,11 +35,12 @@ defmodule GraphQl.Schema.Docker do
   end
 
   object :docker_image do
-    field :id,          non_null(:id)
-    field :tag,         :string
-    field :digest,      non_null(:string)
-    field :scanned_at,  :datetime
-    field :grade,       :image_grade
+    field :id,                non_null(:id)
+    field :tag,               :string
+    field :digest,            non_null(:string)
+    field :scanned_at,        :datetime
+    field :scan_completed_at, :datetime
+    field :grade,             :image_grade
 
     field :docker_repository, :docker_repository, resolve: dataloader(Docker)
     field :vulnerabilities,   list_of(:vulnerability), resolve: dataloader(Docker)

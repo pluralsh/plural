@@ -6,8 +6,9 @@ on:
       - '**/*.md'
   pull_request:
     branches: [ master ]
-    paths-ignore:
-      - '**/*.md'
+    paths:
+      - ".github/workflows/www.yaml"
+      - "www/**"
   schedule:
     - cron: '0 0 * * 1'
 jobs:

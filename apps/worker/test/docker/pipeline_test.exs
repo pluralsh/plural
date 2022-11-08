@@ -8,8 +8,8 @@ defmodule Worker.Docker.PipelineTest do
   describe "docker pipeline" do
     test "it can poll and process unscanned dkr images" do
       old = Timex.now() |> Timex.shift(days: -20)
-      imgs = insert_list(3, :docker_image, scanned_at: old)
-      insert(:docker_image, scanned_at: Timex.now())
+      imgs = insert_list(3, :docker_image, scanned_at: old, scan_completed_at: Timex.now()) # just need to set scan completed at so it's ignored
+      insert(:docker_image, scanned_at: Timex.now(), scan_completed_at: Timex.now())
 
       me = self()
       expect(Worker.Conduit.Broker, :publish, 3, fn %{body: img}, :dkr -> send me, {:dkr, img} end)

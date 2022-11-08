@@ -17,7 +17,7 @@ defmodule Worker.Conduit.Subscribers.DockerTest do
 
       assert scanned.id == image.id
       assert scanned.grade == :c
-      assert scanned.scanned_at
+      assert scanned.scan_completed_at
 
       [vuln] = scanned.vulnerabilities
       assert vuln.image_id == scanned.id

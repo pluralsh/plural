@@ -160,7 +160,7 @@ function Delete({ message }: any) {
 }
 
 export function MessageControls({ message, setHover }: any) {
-  const me = useContext(CurrentUserContext)
+  const { me } = useContext(CurrentUserContext)
 
   return (
     <Box

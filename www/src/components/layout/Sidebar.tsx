@@ -49,7 +49,7 @@ export const SIDEBAR_WIDTH = '224px'
 export const SMALL_WIDTH = '60px'
 
 function SidebarWrapper() {
-  const me = useContext(CurrentUserContext)
+  const { me } = useContext(CurrentUserContext)
   const isCurrentlyOnboarding = useIsCurrentlyOnboarding()
   const { pathname } = useLocation()
 

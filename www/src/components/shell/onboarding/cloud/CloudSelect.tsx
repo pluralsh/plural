@@ -80,7 +80,7 @@ function ChooseShell() {
 }
 
 export default function CloudSelect() {
-  const me = useContext(CurrentUserContext)
+  const { me } = useContext(CurrentUserContext)
   const canUseDemo = me?.onboarding === OnboardingStatus.NEW
   const { previous, setSection, setDemoId } = useContext(CreateShellContext)
   const [nextPath, setNextPath] = useState('')

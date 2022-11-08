@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useQuery } from '@apollo/client'
 import { Navigate, useLocation } from 'react-router-dom'
 import { Box } from 'grommet'
@@ -74,10 +74,21 @@ export function handlePreviousUserClick({ jwt }: any) {
 
 export function PluralProvider({ children }: any) {
   const location = useLocation()
-  const { loading, error, data } = useQuery(ME_Q, { pollInterval: 60000 })
+  const [refresh, setRefresh] = useState(false)
+  const {
+    loading, error, data, refetch,
+  } = useQuery(ME_Q, { pollInterval: 60000 })
   const { boot, update } = useIntercom()
+  const userContextValue = useMemo(() => ({ me: data?.me, setRefresh }), [data, setRefresh])
 
   useNotificationSubscription()
+
+  useEffect(() => {
+    if (refresh) {
+      refetch()
+      setRefresh(false)
+    }
+  }, [refresh, refetch])
 
   useEffect(() => {
     if (!data?.me) return
@@ -99,11 +110,11 @@ export function PluralProvider({ children }: any) {
     return (<Navigate to="/login" />)
   }
 
-  const { me, configuration } = data
+  const { configuration } = data
 
   return (
     <PluralConfigurationContext.Provider value={configuration}>
-      <CurrentUserContext.Provider value={me}>
+      <CurrentUserContext.Provider value={userContextValue}>
         {children}
       </CurrentUserContext.Provider>
     </PluralConfigurationContext.Provider>

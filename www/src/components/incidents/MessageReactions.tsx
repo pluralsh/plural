@@ -64,7 +64,7 @@ function Reaction({
 }
 
 export default function MessageReactions({ message, setHover }: any) {
-  const me = useContext(CurrentUserContext)
+  const { me } = useContext(CurrentUserContext)
   const grouped = groupBy(message.reactions, reaction => reaction.name)
   const sorted = Object.entries(grouped).sort(([name, reactions], [other_name, other_reactions]) => {
     // @ts-expect-error

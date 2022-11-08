@@ -112,7 +112,7 @@ function toFormState(account: Partial<Account>) {
 }
 
 export function AccountAttributes() {
-  const { account } = useContext(CurrentUserContext) as { account: Account }
+  const { me: { account } } = useContext(CurrentUserContext) as { me: {account: Account} }
 
   const {
     state: formState,

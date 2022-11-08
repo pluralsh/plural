@@ -9,10 +9,11 @@ import { UPDATE_USER } from '../../users/queries'
 const FORCE_ONBOARDING = 'plural-force-onboarding'
 
 function useOnboarded() {
-  const me = useContext(CurrentUserContext)
+  const { me, setRefresh } = useContext(CurrentUserContext)
 
   const [mutation] = useMutation(UPDATE_USER, {
     variables: { attributes: { onboarding: OnboardingStatus.ONBOARDED } },
+    onCompleted: () => setRefresh(true),
   })
 
   const onboarding = me.onboarding || OnboardingStatus.NEW

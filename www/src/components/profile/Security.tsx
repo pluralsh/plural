@@ -130,7 +130,7 @@ function LoginMethod({
 }
 
 function LoginMethods() {
-  const me = useContext(CurrentUserContext)
+  const { me } = useContext(CurrentUserContext)
   const { data } = useQuery(OAUTH_URLS, { variables: { host: host() } })
   const [mutation] = useMutation(UPDATE_USER)
 

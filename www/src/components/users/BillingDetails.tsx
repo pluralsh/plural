@@ -229,7 +229,7 @@ export function CardOption({ card, current, setCurrent }: any) {
 }
 
 export function CardList() {
-  const me = useContext(CurrentUserContext)
+  const { me } = useContext(CurrentUserContext)
   const [open, setOpen] = useState(false)
   const { data, loading, refetch } = useQuery(CARDS)
   const onCompleted = useCallback(() => {

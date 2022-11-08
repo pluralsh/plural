@@ -110,7 +110,7 @@ function UserEdit({ user, update }: any) {
 }
 
 export function User({ user, update }: any) {
-  const { account, ...me } = useContext(CurrentUserContext)
+  const { me: { account, ...me } } = useContext(CurrentUserContext)
 
   const editable = canEdit(me, account) || hasRbac(me, Permissions.USERS)
 
@@ -157,7 +157,7 @@ export function User({ user, update }: any) {
 }
 
 export function ServiceAccount({ user, update }: any) {
-  const { account, ...me } = useContext(CurrentUserContext)
+  const { me: { account, ...me } } = useContext(CurrentUserContext)
   const editable = canEdit(me, account) || hasRbac(me, Permissions.USERS)
   const [mutation, { error }] = useMutation(IMPERSONATE_SERVICE_ACCOUNT, {
     variables: { id: user.id },

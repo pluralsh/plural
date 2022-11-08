@@ -16,7 +16,7 @@ import Sidebar from './Sidebar'
 import WithApplicationUpdate from './WithApplicationUpdate'
 
 function ServiceAccountBanner({ previousUser }: any) {
-  const me = useContext(CurrentUserContext)
+  const { me } = useContext(CurrentUserContext)
   const theme = useTheme()
 
   return (

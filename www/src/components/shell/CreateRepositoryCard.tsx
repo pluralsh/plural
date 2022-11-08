@@ -13,8 +13,8 @@ import OnboardingCardButton from './onboarding/OnboardingCardButton'
 import OnboardingNavSection from './onboarding/OnboardingNavSection'
 
 const providerToLogo = {
-  github: <GithubLogo />,
-  gitlab: <GitlabLogo />,
+  github: <GithubLogo width={40} />,
+  gitlab: <GitlabLogo width={40} />,
 }
 
 const providerToDisplayName = {
@@ -44,20 +44,22 @@ function CreateRepositoryCard({ data, onPrevious = () => {} }: any) {
               window.location = url
             }}
           >
-            <Div
-              marginHorizontal="auto"
-              maxWidth={40}
-              maxHeight={40}
-            >
-              {providerToLogo[provider.toLowerCase()] || null}
-            </Div>
-            <Text
-              body1
-              bold
-              marginTop="medium"
-            >
-              Create a {providerToDisplayName[provider.toLowerCase()] || null} repository
-            </Text>
+            <Flex direction="column">
+              <Div
+                marginHorizontal="auto"
+                maxWidth={40}
+                maxHeight={40}
+              >
+                {providerToLogo[provider.toLowerCase()] || null}
+              </Div>
+              <Text
+                body1
+                bold
+                marginTop="medium"
+              >
+                Create a {providerToDisplayName[provider.toLowerCase()] || null} repository
+              </Text>
+            </Flex>
           </OnboardingCardButton>
         ))}
       </Flex>

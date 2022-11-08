@@ -1,5 +1,6 @@
 import {
   Div,
+  Flex,
   H2,
   P,
   RadioGroup,
@@ -40,27 +41,29 @@ export function CloudOption({
       selected={selected}
       {...props}
     >
-      <Div
-        marginHorizontal="auto"
-        maxWidth={40}
-        maxHeight={40}
-        overflow="visible"
-      >
-        {icon}
-      </Div>
-      <Text
-        body1
-        bold
-        marginTop="medium"
-      >
-        {header}
-      </Text>
-      <Text
-        caption
-        color="text-light"
-      >
-        {description}
-      </Text>
+      <Flex display="column">
+        <Div
+          marginHorizontal="auto"
+          maxWidth={40}
+          maxHeight={40}
+          overflow="visible"
+        >
+          {icon}
+        </Div>
+        <Text
+          body1
+          bold
+          marginTop="medium"
+        >
+          {header}
+        </Text>
+        <Text
+          caption
+          color="text-light"
+        >
+          {description}
+        </Text>
+      </Flex>
     </OnboardingCardButton>
   )
 }

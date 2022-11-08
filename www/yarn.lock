@@ -17335,9 +17335,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pluralsh-design-system@npm:1.241.0":
-  version: 1.241.0
-  resolution: "pluralsh-design-system@npm:1.241.0"
+"pluralsh-design-system@npm:1.245.0":
+  version: 1.245.0
+  resolution: "pluralsh-design-system@npm:1.245.0"
   dependencies:
     "@floating-ui/react-dom-interactions": 0.8.1
     "@react-aria/button": 3.6.1
@@ -17349,6 +17349,7 @@ __metadata:
     "@react-aria/select": 3.8.1
     "@react-aria/tabs": 3.3.1
     "@react-aria/utils": 3.13.3
+    "@react-aria/visually-hidden": ^3.5.0
     "@react-stately/collections": 3.4.3
     "@react-stately/combobox": 3.2.1
     "@react-stately/overlays": 3.4.1
@@ -17376,7 +17377,7 @@ __metadata:
     react-dom: ">=16.0.0"
     react-transition-group: ">=4.4.2"
     styled-components: ">=5.3.5"
-  checksum: 71b68597859ce6bfe203c4a067c78763854c746f8141e066791304f32dffa0b5de6317ab48c50944b7280bfed879dc0cd98a6d00294fdf7b6c556808bc918c4f
+  checksum: 74e3d76e0c706458d8cffdc1183386b37fff2415290687e3426a6964609af666641ea6deb6fc50858eddf57633ff824f1581d0f37d8bc2d709e29f27b6d0a1f4
   languageName: node
   linkType: hard
 
@@ -23747,7 +23748,7 @@ __metadata:
     moment: 2.29.4
     phoenix: 1.6.15
     pluralsh-absinthe-socket-apollo-link: 0.2.0
-    pluralsh-design-system: 1.241.0
+    pluralsh-design-system: 1.245.0
     postcss-import: 8.2.0
     prop-types: 15.8.1
     query-string: 7.1.1

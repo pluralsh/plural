@@ -2,7 +2,11 @@
 # https://github.com/firebase/firebase-tools
 
 name: Deploy to Firebase Hosting on PR
-on: pull_request
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/firebase-hosting-pull-request.yml"
+      - "www/**"
 jobs:
   build_and_preview:
     if: ${{ github.event.pull_request.head.repo.full_name == github.repository }} && ${{ github.actor != 'plural-bot' }}
@@ -10,6 +14,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: cd www && yarn install --immutable && CI=false yarn build
+      - name: dump github context
+        run: echo "$GITHUB_CONTEXT"
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'

@@ -2,7 +2,9 @@ name: Plural
 
 on:
   push:
-    branches: [ master ]
+    branches:
+      - master
+      - "renovate/*"
     paths-ignore:
       - ".github/workflows/daily.yaml"
       - ".github/workflows/firebase-hosting-pull-request.yml"

@@ -2,7 +2,8 @@ name: Plural UI
 on:
   push:
     branches:
-      - "master"
+      - master
+      - "renovate/*"
     paths:
       - ".github/workflows/www.yaml"
       - "www/**"

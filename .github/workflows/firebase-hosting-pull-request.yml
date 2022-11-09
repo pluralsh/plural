@@ -4,12 +4,14 @@
 name: Deploy to Firebase Hosting on PR
 on:
   pull_request:
+    branches:
+      - master
     paths:
       - ".github/workflows/firebase-hosting-pull-request.yml"
       - "www/**"
 jobs:
   build_and_preview:
-    if: ${{ github.event.pull_request.head.repo.full_name == github.repository }} && ${{ github.actor != 'plural-renovate[bot]' }}
+    if: ${{ github.triggering_actor != 'plural-renovate[bot]' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2

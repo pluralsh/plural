@@ -9,7 +9,7 @@ on:
       - "www/**"
 jobs:
   build_and_preview:
-    if: ${{ github.event.pull_request.head.repo.full_name == github.repository }} && ${{ github.actor != 'plural-bot' }}
+    if: ${{ github.event.pull_request.head.repo.full_name == github.repository }} && ${{ github.actor != 'plural-renovate[bot]' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2

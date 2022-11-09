@@ -2,10 +2,12 @@ import { useQuery } from '@apollo/client'
 import { Flex, P } from 'honorable'
 import moment from 'moment'
 import {
+  Banner,
   Button,
   Chip,
   LoopingLogo,
   PageTitle,
+  ReloadIcon,
 } from 'pluralsh-design-system'
 import {
   ReactElement,
@@ -39,12 +41,19 @@ interface Repository {
 
 export function ClustersContent(): ReactElement | null {
   const queue = useContext(QueueContext)
+  const [success, setSuccess] = useState(false)
+  const [initialLoad, setInitialLoad] = useState(true)
 
   const {
     data, loading, fetchMore, subscribeToMore, refetch,
   } = useQuery(QUEUE, {
     variables: { id: queue.id },
     fetchPolicy: 'cache-and-network',
+    onCompleted: () => {
+      setSuccess(!initialLoad)
+      setInitialLoad(false)
+      setTimeout(() => setSuccess(false), 3000)
+    },
   })
 
   useEffect(() => subscribeToMore({
@@ -81,8 +90,21 @@ export function ClustersContent(): ReactElement | null {
           secondary
           marginRight={1} // Compensate for the border when focused
           onClick={() => refetch()}
-        >Refresh
+          loading={loading}
+        >
+          <ReloadIcon marginRight="xsmall" />Refresh
         </Button>
+        {success && (
+          <Banner
+            heading="Successfully refreshed your cluster data!"
+            severity="success"
+            position="absolute"
+            bottom="16px"
+            right={100}
+            zIndex={100}
+            onClose={() => setSuccess(false)}
+          />
+        )}
       </PageTitle>
       <UpgradesList
         upgrades={data.upgradeQueue?.upgrades}

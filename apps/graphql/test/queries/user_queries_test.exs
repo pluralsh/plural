@@ -2,6 +2,8 @@ defmodule GraphQl.UserQueriesTest do
   use Core.SchemaCase, async: true
   import GraphQl.TestHelpers
 
+  use Mimic
+
   describe "me" do
     test "It will return the current user" do
       user = insert(:user)
@@ -390,6 +392,46 @@ defmodule GraphQl.UserQueriesTest do
       """, %{}, %{current_user: user})
 
       assert ids_equal(found, eabs)
+    end
+  end
+
+  describe "keyBackups" do
+    test "it will list key backups for a user" do
+      user = insert(:user)
+      backups = insert_list(3, :key_backup, user: user)
+
+      {:ok, %{data: %{"keyBackups" => found}}} = run_query("""
+        query {
+          keyBackups(first: 5) {
+            edges { node { id } }
+          }
+        }
+      """, %{}, %{current_user: user})
+
+      assert from_connection(found)
+             |> ids_equal(backups)
+    end
+  end
+
+  describe "keyBackup" do
+    test "it can fetch the secret from a backup" do
+      user = insert(:user)
+      backup = insert(:key_backup, user: user)
+
+      path = backup.vault_path
+      expect(Core.Clients.Vault, :read, fn ^path -> {:ok, "encryptionkey"} end)
+
+      {:ok, %{data: %{"keyBackup" => found}}} = run_query("""
+        query Backup($name: String!) {
+          keyBackup(name: $name) {
+            id
+            value
+          }
+        }
+      """, %{"name" => backup.name}, %{current_user: user})
+
+      assert found["id"] == backup.id
+      assert found["value"] == "encryptionkey"
     end
   end
 end

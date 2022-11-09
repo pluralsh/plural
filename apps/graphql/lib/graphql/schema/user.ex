@@ -78,6 +78,12 @@ defmodule GraphQl.Schema.User do
     field :status, :user_event_status
   end
 
+  input_object :key_backup_attributes do
+    field :name,         non_null(:string)
+    field :repositories, list_of(:string)
+    field :key,          non_null(:string)
+  end
+
   object :user do
     field :id,                   non_null(:id)
     field :name,                 non_null(:string)
@@ -274,12 +280,27 @@ defmodule GraphQl.Schema.User do
     field :device_token, non_null(:string)
   end
 
+  object :key_backup do
+    field :id,           non_null(:id)
+    field :name,         non_null(:string)
+    field :repositories, list_of(:string)
+
+    field :value, non_null(:string), resolve: fn
+      backup, _, _ -> Core.Services.Encryption.fetch(backup)
+    end
+
+    field :user, non_null(:user), resolve: dataloader(User)
+
+    timestamps()
+  end
+
   connection node_type: :user
   connection node_type: :publisher
   connection node_type: :webhook
   connection node_type: :persisted_token
   connection node_type: :public_key
   connection node_type: :persisted_token_audit
+  connection node_type: :key_backup
 
   object :user_queries do
     field :me, :user do
@@ -367,6 +388,19 @@ defmodule GraphQl.Schema.User do
       middleware Authenticated
 
       resolve &User.list_eab_keys/2
+    end
+
+    connection field :key_backups, node_type: :key_backup do
+      middleware Authenticated
+
+      resolve &User.list_key_backups/2
+    end
+
+    field :key_backup, :key_backup do
+      middleware Authenticated
+      arg :name, non_null(:string)
+
+      safe_resolve &User.fetch_key_backup/2
     end
   end
 
@@ -534,6 +568,13 @@ defmodule GraphQl.Schema.User do
       arg :domain, non_null(:string)
 
       safe_resolve &User.destroy_cluster/2
+    end
+
+    field :create_key_backup, :key_backup do
+      middleware Authenticated
+      arg :attributes, non_null(:key_backup_attributes)
+
+      safe_resolve &User.create_key_backup/2
     end
   end
 end

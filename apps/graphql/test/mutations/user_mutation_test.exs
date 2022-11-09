@@ -487,4 +487,30 @@ defmodule GraphQl.UserMutationTest do
       """, %{"name" => "cluster", "domain" => domain.name, "provider" => "AWS"}, %{current_user: user})
     end
   end
+
+  describe "createKeyBackup" do
+    test "it will create a new backup" do
+      user = insert(:user)
+
+      expect(Core.Clients.Vault, :write, fn _, %{secret: "encryptionkey"} -> {:ok, "yay"} end)
+
+      {:ok, %{data: %{"createKeyBackup" => created}}} = run_query("""
+        mutation Create($attrs: KeyBackupAttributes!) {
+          createKeyBackup(attributes: $attrs) {
+            id
+            name
+            repositories
+          }
+        }
+      """, %{"attrs" => %{
+        "name" => "backup",
+        "repositories" => ["repo"],
+        "key" => "encryptionkey"
+      }}, %{current_user: user})
+
+      assert created["id"]
+      assert created["name"] == "backup"
+      assert created["repositories"] == ["repo"]
+    end
+  end
 end

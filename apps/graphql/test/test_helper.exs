@@ -20,4 +20,6 @@ Mimic.copy(GoogleApi.CloudResourceManager.V3.Api.Projects)
 Mimic.copy(GoogleApi.CloudResourceManager.V3.Api.Operations)
 Mimic.copy(GoogleApi.IAM.V1.Api.Projects)
 
+Mimic.copy(Core.Clients.Vault)
+
 ExUnit.start()

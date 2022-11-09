@@ -576,6 +576,14 @@ defmodule Core.Factory do
     }
   end
 
+  def key_backup_factory do
+    %Schema.KeyBackup{
+      name: sequence(:kb, &"backup-#{&1}"),
+      vault_path: sequence(:kb_vault, &"/path/to/#{&1}"),
+      user: build(:user)
+    }
+  end
+
   def with_password(%Schema.User{} = user, password) do
     Schema.User.changeset(user, %{password: password})
     |> Ecto.Changeset.apply_changes()

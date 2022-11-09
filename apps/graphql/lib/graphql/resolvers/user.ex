@@ -1,6 +1,6 @@
 defmodule GraphQl.Resolvers.User do
   use GraphQl.Resolvers.Base, model: Core.Schema.User
-  alias Core.Services.{Users, Accounts}
+  alias Core.Services.{Users, Accounts, Encryption}
   alias Core.Schema.{
     Publisher,
     PersistedToken,
@@ -10,7 +10,8 @@ defmodule GraphQl.Resolvers.User do
     ImpersonationPolicyBinding,
     PublicKey,
     AccessTokenAudit,
-    EabCredential
+    EabCredential,
+    KeyBackup
   }
 
   def data(args) do
@@ -57,6 +58,9 @@ defmodule GraphQl.Resolvers.User do
       _ -> {:error, "forbidden"}
     end
   end
+
+  def fetch_key_backup(%{name: name}, %{context: %{current_user: %{id: user_id}}}),
+    do: {:ok, Encryption.get_backup(user_id, name)}
 
   def list_users(args, %{context: %{current_user: %{account_id: id}}}) do
     User.ordered()
@@ -146,6 +150,12 @@ defmodule GraphQl.Resolvers.User do
     Notification.for_user(user.id)
     |> Notification.ordered()
     |> filter_notifs(args)
+    |> paginate(args)
+  end
+
+  def list_key_backups(args, %{context: %{current_user: user}}) do
+    KeyBackup.for_user(user.id)
+    |> KeyBackup.ordered()
     |> paginate(args)
   end
 
@@ -272,10 +282,13 @@ defmodule GraphQl.Resolvers.User do
     {:ok, keys}
   end
 
-  def destroy_cluster(attributes, %{context: %{current_user: user}}) do
-    with :ok <- Users.destroy_cluster(attributes, user),
+  def destroy_cluster(attrs, %{context: %{current_user: user}}) do
+    with :ok <- Users.destroy_cluster(attrs, user),
       do: {:ok, true}
   end
+
+  def create_key_backup(%{attributes: attrs}, %{context: %{current_user: user}}),
+    do: Encryption.create_backup(attrs, user)
 
   @colors ~w(#6b5b95 #feb236 #d64161 #ff7b25 #103A50 #CDCCC2 #FDC401 #8E5B3C #020001 #2F415B)
 

@@ -63,7 +63,7 @@ export function EmailConfirmed() {
 
 export function VerifyEmailConfirmed() {
   const [open, setOpen] = useState(true)
-  const me = useContext(CurrentUserContext)
+  const { me } = useContext(CurrentUserContext)
   const [mutation] = useMutation(CREATE_RESET_TOKEN, {
     variables: { attributes: { email: me.email, type: ResetTokenType.EMAIL } },
     onCompleted: () => setOpen(false),

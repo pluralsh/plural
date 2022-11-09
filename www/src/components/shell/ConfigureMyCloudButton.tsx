@@ -15,7 +15,7 @@ export default function ConfigureMyCloudButton() {
   const [open, setOpen] = useState(false)
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
-  const me = useContext(CurrentUserContext)
+  const { me } = useContext(CurrentUserContext)
   const isOnboarded = me.onboarding === OnboardingStatus.ONBOARDED
   const isChecklistRef = searchParams.get('ref') === 'checklist'
   const { data } = useQuery(POLL_DEMO_PROJECT_QUERY, { pollInterval: 10000 })

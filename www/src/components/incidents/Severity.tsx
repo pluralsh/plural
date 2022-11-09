@@ -79,7 +79,7 @@ export function SeveritySelect({ severity, setSeverity }: any) {
 export const severityColor = severity => SeverityColorMap[severity]
 
 export function Severity({ incident: { severity, ...incident }, setSeverity }: any) {
-  const user = useContext(CurrentUserContext)
+  const { me: user } = useContext(CurrentUserContext)
   const editable = canEdit(incident, user) && setSeverity
 
   return (

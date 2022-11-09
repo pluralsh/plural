@@ -337,7 +337,7 @@ const PLUGIN_TEMPLATES = [
 ]
 
 function Typing() {
-  const { name: ignore } = useContext(CurrentUserContext)
+  const { me: { name: ignore } } = useContext(CurrentUserContext)
   const { typists } = useContext(PresenceContext)
   const theme = useContext(ThemeContext)
   const typing = typists.filter(name => name !== ignore)

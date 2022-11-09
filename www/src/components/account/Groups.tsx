@@ -47,7 +47,7 @@ function Header({ q, setQ }: any) {
 }
 
 export function Group({ group, q }: any) {
-  const { account, ...me } = useContext(CurrentUserContext)
+  const { me: { account, ...me } } = useContext(CurrentUserContext)
   const editable = canEdit(me, account) || hasRbac(me, Permissions.USERS)
   const [edit, setEdit] = useState(false)
   const [view, setView] = useState(false)

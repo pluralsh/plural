@@ -217,7 +217,7 @@ function EditPlan({ plan }: any) {
 export default function Plan({
   approvePlan, subscription, repository, plan,
 }: any) {
-  const me = useContext(CurrentUserContext)
+  const { me } = useContext(CurrentUserContext)
   const {
     name, cost, period, lineItems: { items, included }, metadata,
   } = plan

@@ -5,14 +5,26 @@ import { useLocation } from 'react-router-dom'
 import CurrentUserContext from '../../../contexts/CurrentUserContext'
 import { OnboardingStatus } from '../../profile/types'
 import { UPDATE_USER } from '../../users/queries'
+import { OnboardingState, RootMutationType, RootMutationTypeUpdateUserArgs } from '../../../generated/graphql'
+import { UserFragment } from '../../../models/user'
 
 const FORCE_ONBOARDING = 'plural-force-onboarding'
 
 function useOnboarded() {
-  const me = useContext(CurrentUserContext)
+  const { me } = useContext(CurrentUserContext)
 
-  const [mutation] = useMutation(UPDATE_USER, {
-    variables: { attributes: { onboarding: OnboardingStatus.ONBOARDED } },
+  const [mutation] = useMutation<RootMutationType, RootMutationTypeUpdateUserArgs>(UPDATE_USER, {
+    variables: { attributes: { onboarding: OnboardingState.Onboarded } },
+    update: (cache, { data }) => {
+      cache.modify({
+        fields: {
+          me: () => cache.writeFragment({
+            data: data?.updateUser,
+            fragment: UserFragment,
+          }),
+        },
+      })
+    },
   })
 
   const onboarding = me.onboarding || OnboardingStatus.NEW

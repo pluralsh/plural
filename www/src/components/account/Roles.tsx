@@ -45,7 +45,7 @@ function Header({ q, setQ }: any) {
 
 function Role({ role, q }: any) {
   const [confirm, setConfirm] = useState(false)
-  const { account, ...me } = useContext(CurrentUserContext)
+  const { me: { account, ...me } } = useContext(CurrentUserContext)
   const editable = canEdit(me, account) || hasRbac(me, Permissions.USERS)
   const [mutation, { loading, error }] = useMutation(DELETE_ROLE, {
     variables: { id: role.id },

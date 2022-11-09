@@ -77,7 +77,7 @@ const ResponsiveWidth = styled.div(({ theme }) => {
 
 // eslint-disable-next-line
 function OnboardingSidenav({ stepIndex, cliMode, onRestart }: OnboardingSidenavProps) {
-  const me: any = useContext(CurrentUserContext)
+  const { me } = useContext(CurrentUserContext)
   const canUseDemo = me?.onboarding === OnboardingStatus.NEW
 
   return (

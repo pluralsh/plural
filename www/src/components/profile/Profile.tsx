@@ -36,7 +36,7 @@ function Attribute({ header, children }: any) {
 
 export function Profile() {
   const { files, onClick, HiddenFileInput } = useFilePicker({})
-  const me = useContext(CurrentUserContext)
+  const { me } = useContext(CurrentUserContext)
   const { dark } = useContext(ThemeContext) as any
   const [name, setName] = useState(me.name)
   const [email, setEmail] = useState(me.email)

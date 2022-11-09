@@ -436,7 +436,7 @@ export function SectionContent({ name, header, children }: any) {
 export default function Explore() {
   const { group, tag } = useParams()
   const navigate = useNavigate()
-  const me = useContext(CurrentUserContext)
+  const { me } = useContext(CurrentUserContext)
   const args = filters(group, me)
   const { data, loading, fetchMore } = useQuery(EXPLORE_REPOS, {
     variables: { tag, ...args },

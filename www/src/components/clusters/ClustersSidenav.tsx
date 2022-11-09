@@ -1,5 +1,6 @@
 import { ThemeContext } from 'grommet'
 import { Div, Flex } from 'honorable'
+import truncate from 'lodash/truncate'
 import moment from 'moment'
 import {
   Chip,
@@ -59,7 +60,7 @@ export function ClustersSidenav({
           {queues.map(queue => (
             <ListBoxItem
               key={queue.id}
-              label={queue.name}
+              label={truncate(queue.name, { length: 14 })}
               textValue={queue.name}
               rightContent={(
                 <QueueHealth

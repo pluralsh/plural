@@ -98,18 +98,18 @@ function OnboardingCompletionModal({
           </P>
           <Flex align="center">
             <HoveredIcon
+              icon={feedback === 'bad' ? <ThumbsUpFilledIcon transform="scale(1, -1)" /> : <ThumbsUpIcon transform="scale(1, -1)" />}
+              color={feedback === 'bad' ? 'icon-danger' : 'text-light'}
+              hoveredColor="icon-danger"
+              textValue="Bad"
+              onClick={() => setFeedback('bad')}
+            />
+            <HoveredIcon
               icon={feedback === 'good' ? <ThumbsUpFilledIcon /> : <ThumbsUpIcon />}
               color={feedback === 'good' ? 'icon-success' : 'text-light'}
               hoveredColor="icon-success"
               textValue="Good"
               onClick={() => setFeedback('good')}
-            />
-            <HoveredIcon
-              icon={feedback === 'bad' ? <ThumbsUpFilledIcon transform="scale(1, -1)" /> : <ThumbsUpIcon transform="scale(1, -1)" />}
-              color={feedback === 'bad' ? 'icon-error' : 'text-light'}
-              hoveredColor="icon-error"
-              textValue="Bad"
-              onClick={() => setFeedback('bad')}
             />
           </Flex>
         </Flex>
@@ -127,6 +127,7 @@ function OnboardingCompletionModal({
             </P>
             <Button
               secondary
+              small
               startIcon={<StarIcon />}
               as="a"
               href="https://github.com/pluralsh/plural"
@@ -151,6 +152,7 @@ function OnboardingCompletionModal({
             </P>
             <Button
               secondary
+              small
               startIcon={<DiscordIcon />}
               as="a"
               href="https://discord.gg/pluralsh"

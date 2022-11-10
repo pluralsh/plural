@@ -86,7 +86,7 @@ variable "single_az_node_groups" {
     plural_small = {
       name = "plural-small"
       capacity_type = "ON_DEMAND"
-      min_capacity = 1
+      min_capacity = 3
       max_capacity = 9
       desired_capacity = 0
       instance_types = ["t3.large", "t3a.large"]
@@ -106,7 +106,7 @@ variable "single_az_node_groups" {
     plural_worker_small = {
       name = "plural-worker-small"
       capacity_type = "ON_DEMAND"
-      min_capacity = 1
+      min_capacity = 3
       max_capacity = 9
       desired_capacity = 0
       instance_types = ["t3.large", "t3a.large"]

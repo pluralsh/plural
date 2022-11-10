@@ -109,15 +109,15 @@ spec:
         {{ include "plural.env" . | nindent 8 }}
         resources:
           {{- toYaml .Values.worker.resources | nindent 12 }}
-      {{- with .Values.nodeSelector }}
+      {{- with .Values.worker.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-    {{- with .Values.affinity }}
+    {{- with .Values.worker.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
     {{- end }}
-    {{- with .Values.tolerations }}
+    {{- with .Values.worker.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
     {{- end }}

@@ -387,6 +387,23 @@ worker:
         app.kubernetes.io/name: plural-worker
         app.kubernetes.io/instance: plural
 
+  nodeSelector: {}
+
+  tolerations:
+  - key: plural.sh/pluralReserved
+    operator: Exists
+    effect: "NoSchedule"
+
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: plural.sh/scalingGroup
+            operator: In
+            values:
+            - plural-worker-small
+
 www:
   repository: plural-www
   # if empty the chart version is used

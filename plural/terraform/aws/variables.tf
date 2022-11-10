@@ -103,6 +103,26 @@ variable "single_az_node_groups" {
         }
       ]
     }
+    plural_worker_small = {
+      name = "plural-worker-small"
+      capacity_type = "ON_DEMAND"
+      min_capacity = 0
+      max_capacity = 9
+      desired_capacity = 0
+      instance_types = ["t3.large", "t3a.large"]
+      k8s_labels = {
+        "plural.sh/capacityType" = "ON_DEMAND"
+        "plural.sh/performanceType" = "SUSTAINED"
+        "plural.sh/scalingGroup" = "plural-worker-small"
+      }
+      k8s_taints = [
+        {
+          key = "plural.sh/pluralReserved"
+          value = "true"
+          effect = "NO_SCHEDULE"
+        }
+      ]
+    }
   }
   description = "Node groups to add to your cluster. A single managed node group will be created in each availability zone."
 }

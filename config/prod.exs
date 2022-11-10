@@ -44,6 +44,12 @@ config :worker, docker_env: [
   # {"DOCKER_TLS_VERIFY", "1"},
 ]
 
+config :core, docker_env: [
+  # {"DOCKER_HOST", "tcp://localhost:2376"},
+  # {"DOCKER_CERT_PATH", "/certs/client"},
+  # {"DOCKER_TLS_VERIFY", "1"},
+]
+
 config :ex_aws,
   region: {:system, "AWS_REGION"},
   secret_access_key: [{:system, "AWS_ACCESS_KEY_ID"}, {:awscli, "profile_name", 30}],

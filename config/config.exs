@@ -123,7 +123,8 @@ config :core,
   onplural_domain: "onplural.sh",
   gcp_organization: "1323",
   gcp_identity: "someone@example.com",
-  vault: "https://vault.vault:8201"
+  vault: "https://vault.vault:8201",
+  docker_env: []
 
 config :briefly,
   directory: [{:system, "TMPDIR"}, {:system, "TMP"}, {:system, "TEMP"}, "/tmp"],

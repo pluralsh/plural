@@ -12,7 +12,7 @@ defmodule Worker.Docker.PipelineTest do
       insert(:docker_image, scanned_at: Timex.now(), scan_completed_at: Timex.now())
 
       me = self()
-      expect(Worker.Conduit.Subscribers.Docker, :scan_image, 3, fn img -> send me, {:dkr, img} end)
+      expect(Core.Services.Scan, :scan_image, 3, fn img -> send me, {:dkr, img} end)
 
       {:ok, producer} = Docker.Producer.start_link()
       {:ok, _} = Docker.Pipeline.start_link(producer)

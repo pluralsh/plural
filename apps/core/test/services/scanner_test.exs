@@ -1,7 +1,6 @@
-defmodule Worker.Conduit.Subscribers.DockerTest do
+defmodule Core.Services.ScanTest do
   use Core.SchemaCase, async: true
   use Mimic
-  alias Worker.Conduit.Subscribers.Docker
 
   describe "#scan_image/1" do
     test "it can execute a trivy command" do
@@ -13,7 +12,7 @@ defmodule Worker.Conduit.Subscribers.DockerTest do
           {~s([{"Vulnerabilities": [#{vuln}]}]), 0}
       end)
 
-      {:ok, scanned} = Docker.scan_image(image)
+      {:ok, scanned} = Core.Services.Scan.scan_image(image)
 
       assert scanned.id == image.id
       assert scanned.grade == :c

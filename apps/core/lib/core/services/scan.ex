@@ -1,29 +1,16 @@
-defmodule Worker.Conduit.Subscribers.Docker do
-  use Conduit.Subscriber
-  import Conduit.Message
-  alias Core.Docker.TrivySource
-  alias Core.Services.Repositories
-  alias Core.Schema.DockerImage
+defmodule Core.Services.Scan do
   require Logger
+  alias Core.Services.Repositories
+  alias Core.Schema.{DockerImage}
+  alias Core.Docker.TrivySource
 
-  def process(message, _opts) do
-    case scan_image(message.body) do
-      {:ok, result} ->
-        log(result)
-        ack(message)
-      error ->
-        Logger.error "Failed scan: #{inspect(error)}"
-        nack(message)
-    end
-  end
-
-  def scan_image(image) do
+  def scan_image(%DockerImage{} = image) do
     %{docker_repository: %{repository: repo} = dkr} = img = Core.Repo.preload(image, [docker_repository: :repository])
     %{publisher: %{owner: owner}} = Core.Repo.preload(repo, [publisher: :owner])
 
-    registry_name  = "#{Worker.conf(:registry)}/#{repo.name}/#{dkr.name}"
-    {:ok, registry_token} = Core.Services.Repositories.docker_token([:pull], "#{repo.name}/#{dkr.name}", owner)
-    env = [{"TRIVY_REGISTRY_TOKEN", registry_token} | Worker.conf(:docker_env)]
+    registry_name  = "#{Core.conf(:registry)}/#{repo.name}/#{dkr.name}"
+    {:ok, registry_token} = Repositories.docker_token([:pull], "#{repo.name}/#{dkr.name}", owner)
+    env = [{"TRIVY_REGISTRY_TOKEN", registry_token} | Core.conf(:docker_env)]
 
     image = "#{registry_name}:#{image.tag}"
     Logger.info "Scanning image #{image}"
@@ -34,9 +21,11 @@ defmodule Worker.Conduit.Subscribers.Docker do
           {:ok, %{"Results" => [_ | _] = res, "SchemaVersion" => 2}} ->
             Enum.flat_map(res, &Map.get(&1, "Vulnerabilities", []))
             |> insert_vulns(img)
+            |> log()
           res ->
             Logger.info "irregular trivy output #{inspect(res)}"
             insert_vulns([], img)
+            |> log()
         end
       {output, _} ->
         Logger.info "Trivy failed with: #{output}"
@@ -50,7 +39,7 @@ defmodule Worker.Conduit.Subscribers.Docker do
     |> Repositories.add_vulnerabilities(img)
   end
 
-  defp log(%DockerImage{id: id, vulnerabilities: vulns}) when is_list(vulns) do
+  defp log({:ok, %DockerImage{id: id, vulnerabilities: vulns}}) when is_list(vulns) do
     Logger.info "Found #{length(vulns)} vulns for image #{id}"
   end
   defp log(_), do: :ok

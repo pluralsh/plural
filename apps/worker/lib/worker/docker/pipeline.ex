@@ -8,7 +8,7 @@ defmodule Worker.Docker.Pipeline do
       Logger.info "Scheduling docker scan for #{img.id}"
       img
     end)
-    |> Flow.map(&Worker.Conduit.Subscribers.Docker.scan_image/1)
+    |> Flow.map(&Core.Services.Scan.scan_image/1)
     |> Flow.start_link()
   end
 

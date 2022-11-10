@@ -41,10 +41,7 @@ defmodule Worker.Docker.Producer do
   end
 
   defp poll_interval() do
-    case System.get_env("DOCKER_SCAN_POLL_INTERVAL") do
-      v when is_binary(v) -> String.to_integer(v)
-      _ -> 60
-    end
+    Core.env("DOCKER_SCAN_POLL_INTERVAL", :int, 60)
     |> :timer.seconds()
   end
 end

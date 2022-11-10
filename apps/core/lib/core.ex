@@ -6,6 +6,24 @@ defmodule Core do
 
   def conf(key), do: Application.get_env(:core, key)
 
+  def env(var, :int, default) do
+    case System.get_env(var) do
+      "" -> default
+      v when is_binary(v) -> String.to_integer(v)
+      _ -> default
+    end
+  end
+
+  def env(var, :bool, default) do
+    case System.get_env(var) do
+      "1" -> true
+      "0" -> false
+      "true" -> true
+      "false" -> false
+      _ -> default
+    end
+  end
+
   def random_phrase(len, sep \\ "-") do
     Enum.map(0..len, fn _ -> Dictionary.random_word() end)
     |> Enum.join(sep)

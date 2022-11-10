@@ -88,7 +88,7 @@ variable "single_az_node_groups" {
       capacity_type = "ON_DEMAND"
       min_capacity = 3
       max_capacity = 9
-      desired_capacity = 0
+      desired_capacity = 3
       instance_types = ["t3.large", "t3a.large"]
       k8s_labels = {
         "plural.sh/capacityType" = "ON_DEMAND"
@@ -108,7 +108,7 @@ variable "single_az_node_groups" {
       capacity_type = "ON_DEMAND"
       min_capacity = 3
       max_capacity = 9
-      desired_capacity = 0
+      desired_capacity = 3
       instance_types = ["t3.large", "t3a.large"]
       k8s_labels = {
         "plural.sh/capacityType" = "ON_DEMAND"

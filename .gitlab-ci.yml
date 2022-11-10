@@ -100,7 +100,7 @@ deploy:
   stage: deploy
   only:
   - master
-  image: gcr.io/pluralsh/plrl-base:0.1.8
+  image: gcr.io/pluralsh/plrl-base:0.1.9
   before_script:
   - cat /root/configure.sh
   - source /root/configure.sh

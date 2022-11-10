@@ -5,7 +5,7 @@ defmodule Core.Clients.ZeroSSL do
 
   def generate_eab_credentials() do
     url("/acme/eab-credentials", access_key: access_key())
-    |> HTTPoison.post("")
+    |> HTTPoison.post("", [], [timeout: 50_000, recv_timeout: 50_000])
     |> handle_response(%Response{})
   end
 

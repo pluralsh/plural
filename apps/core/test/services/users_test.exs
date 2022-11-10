@@ -449,7 +449,7 @@ defmodule Core.Services.UsersTest do
   describe "#get_eab_key/3" do
     test "it will generate and persist an eab keypair for a user" do
       user = insert(:user)
-      expect(HTTPoison, :post, fn _, _ ->
+      expect(HTTPoison, :post, fn _, _, _, _ ->
         {:ok, %{status_code: 200, body: Jason.encode!(%{
           success: 1,
           eab_kid: "abc",

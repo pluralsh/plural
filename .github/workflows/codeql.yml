@@ -1,4 +1,4 @@
-name: CI
+name: Code Scanning
 on:
   push:
     branches: [ master ]

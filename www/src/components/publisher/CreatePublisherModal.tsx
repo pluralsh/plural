@@ -6,6 +6,8 @@ import { useMutation } from '@apollo/client'
 import { useFilePicker } from 'react-sage'
 import isArray from 'lodash/isArray'
 
+import { isValidUrl } from 'utils/string'
+
 import { generatePreview } from '../../utils/file'
 
 import IconUploadPreview from '../utils/IconUploadPreview'
@@ -106,10 +108,6 @@ function CreatePublisherModal({ open, onClose }: CreatePublisherModalProps) {
       .catch(error => {
         setPreMutationError(error.message)
       })
-  }
-
-  function isValidUrl(url: string) {
-    return !/^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/.test(url)
   }
 
   function renderUrlField(

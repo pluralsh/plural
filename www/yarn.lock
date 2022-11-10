@@ -3849,9 +3849,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pluralsh/eslint-config-typescript@npm:2.4.0":
-  version: 2.4.0
-  resolution: "@pluralsh/eslint-config-typescript@npm:2.4.0"
+"@pluralsh/eslint-config-typescript@npm:2.4.2":
+  version: 2.4.2
+  resolution: "@pluralsh/eslint-config-typescript@npm:2.4.2"
   dependencies:
     "@babel/core": ^7.19.6
     "@babel/eslint-parser": ^7.19.1
@@ -3863,7 +3863,7 @@ __metadata:
     "@typescript-eslint/parser": ^5.41.0
     eslint: ^8.26.0
     typescript: ^4.8.4
-  checksum: f3246b3dface9b2049e72fa8d9dde9bd1f590048b99836bcf8de05e74dd7a10d4e8bf010ac8ec3da08cbcd8bf71b30f93b4420fa673db8338a8c1df65b097f1f
+  checksum: 3b13a4f95a3d0a81056eb62f0c3d46511fcb34920bd1265b3ac18e1dd30e2016b604e9a479c39e13d8980bb29a74e80bc2d365176fec0e0b416a53fed0b65423
   languageName: node
   linkType: hard
 
@@ -23720,7 +23720,7 @@ __metadata:
     "@nivo/geo": 0.80.0
     "@nivo/line": 0.80.0
     "@octokit/core": 3.6.0
-    "@pluralsh/eslint-config-typescript": 2.4.0
+    "@pluralsh/eslint-config-typescript": 2.4.2
     "@pluralsh/stylelint-config": 1.0.0
     "@testing-library/jest-dom": 5.16.5
     "@testing-library/react": 13.4.0

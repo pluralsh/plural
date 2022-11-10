@@ -122,7 +122,8 @@ config :core,
   stripe_connect_id: "ca_dummy",
   onplural_domain: "onplural.sh",
   gcp_organization: "1323",
-  gcp_identity: "someone@example.com"
+  gcp_identity: "someone@example.com",
+  vault: "https://vault.vault:8201"
 
 config :briefly,
   directory: [{:system, "TMPDIR"}, {:system, "TMP"}, {:system, "TEMP"}, "/tmp"],

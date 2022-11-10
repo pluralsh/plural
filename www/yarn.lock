@@ -3867,9 +3867,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pluralsh/stylelint-config@npm:1.0.0":
-  version: 1.0.0
-  resolution: "@pluralsh/stylelint-config@npm:1.0.0"
+"@pluralsh/stylelint-config@npm:1.0.1":
+  version: 1.0.1
+  resolution: "@pluralsh/stylelint-config@npm:1.0.1"
   dependencies:
     stylelint: 14.9.1
     stylelint-config-standard: 26.0.0
@@ -3877,7 +3877,7 @@ __metadata:
     stylelint-order: 5.0.0
   peerDependencies:
     stylelint: ">= 14.9.1"
-  checksum: 3cd4a3d22f7b9e58afcbac08e670227c21b350820e5021ad55e1daa6393f0bb26263636cc55b3598d3697a92d5b3a0c22875ed5c1de21a7f4b6be5297c3389bf
+  checksum: d8d0a42571f2b15f6a8c85dc37bca8e248814ef4dbe316976b3134094e7828636341430fbf50bb1fec34159f2182612eccfc886609fcfc64d63b39cee5232a99
   languageName: node
   linkType: hard
 
@@ -23721,7 +23721,7 @@ __metadata:
     "@nivo/line": 0.80.0
     "@octokit/core": 3.6.0
     "@pluralsh/eslint-config-typescript": 2.4.2
-    "@pluralsh/stylelint-config": 1.0.0
+    "@pluralsh/stylelint-config": 1.0.1
     "@testing-library/jest-dom": 5.16.5
     "@testing-library/react": 13.4.0
     "@types/randomcolor": 0.5.6

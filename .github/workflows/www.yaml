@@ -3,7 +3,7 @@ on:
   push:
     branches:
       - master
-      - "renovate/*"
+      - "renovate/frontend/*"
     paths:
       - ".github/workflows/www.yaml"
       - "www/**"

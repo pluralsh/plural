@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - master
-      - "renovate/*"
     paths-ignore:
       - ".github/workflows/daily.yaml"
       - ".github/workflows/firebase-hosting-pull-request.yml"

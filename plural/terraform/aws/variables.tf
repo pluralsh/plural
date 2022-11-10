@@ -86,9 +86,9 @@ variable "single_az_node_groups" {
     plural_small = {
       name = "plural-small"
       capacity_type = "ON_DEMAND"
-      min_capacity = 3
+      min_capacity = 0
       max_capacity = 9
-      desired_capacity = 3
+      desired_capacity = 0
       instance_types = ["t3.large", "t3a.large"]
       k8s_labels = {
         "plural.sh/capacityType" = "ON_DEMAND"
@@ -103,17 +103,17 @@ variable "single_az_node_groups" {
         }
       ]
     }
-    plural_worker_small = {
-      name = "plural-worker-small"
+    plural_worker_medium = {
+      name = "plural-worker-medium"
       capacity_type = "ON_DEMAND"
-      min_capacity = 3
+      min_capacity = 0
       max_capacity = 9
-      desired_capacity = 3
-      instance_types = ["t3.large", "t3a.large"]
+      desired_capacity = 0
+      instance_types = ["t3.xlarge", "t3a.xlarge"]
       k8s_labels = {
         "plural.sh/capacityType" = "ON_DEMAND"
         "plural.sh/performanceType" = "SUSTAINED"
-        "plural.sh/scalingGroup" = "plural-worker-small"
+        "plural.sh/scalingGroup" = "plural-worker-medium"
       }
       k8s_taints = [
         {

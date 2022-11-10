@@ -402,7 +402,7 @@ worker:
           - key: plural.sh/scalingGroup
             operator: In
             values:
-            - plural-worker-small
+            - plural-worker-medium
 
 www:
   repository: plural-www

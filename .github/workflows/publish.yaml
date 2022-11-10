@@ -83,7 +83,7 @@ jobs:
         service_account: 'terraform@pluralsh.iam.gserviceaccount.com'
         token_format: 'access_token'
         create_credentials_file: true
-    - uses: google-github-actions/setup-gcloud@v0.6.2
+    - uses: google-github-actions/setup-gcloud@v1.0.1
     - name: Login to gcr
       run: gcloud auth configure-docker -q
     - name: Login to plural registry
@@ -155,7 +155,7 @@ jobs:
         service_account: 'terraform@pluralsh.iam.gserviceaccount.com'
         token_format: 'access_token'
         create_credentials_file: true
-    - uses: google-github-actions/setup-gcloud@v0.6.2
+    - uses: google-github-actions/setup-gcloud@v1.0.1
     - name: Login to gcr
       run: gcloud auth configure-docker -q
     - name: Login to plural registry

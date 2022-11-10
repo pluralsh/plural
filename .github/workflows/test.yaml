@@ -88,13 +88,13 @@ jobs:
           cp plural /usr/local/bin/plural
       - run: make testup
       - name: Restore dependencies cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: deps
           key: ${{ runner.os }}-mix-4-${{ hashFiles('**/mix.lock') }}
           restore-keys: ${{ runner.os }}-mix-4
       - name: Restore _build
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: _build
           key: ${{ runner.os }}-mix-4-${{ hashFiles('**/mix.lock') }}

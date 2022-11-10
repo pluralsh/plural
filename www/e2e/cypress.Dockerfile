@@ -1,4 +1,4 @@
-FROM cypress/included:10.4.0
+FROM cypress/included:10.11.0
 
 # Install latest stable chrome browser
 RUN wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb

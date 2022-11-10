@@ -378,6 +378,10 @@ worker:
   resources: {}
   replicaCount: 3
 
+  dockerScan:
+    pollInterval: 60
+    parallelism: 1
+
   topologySpreadConstraints:
   - maxSkew: 1
     topologyKey: topology.kubernetes.io/zone

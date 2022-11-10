@@ -107,6 +107,10 @@ spec:
             name: plural-env
         env:
         {{ include "plural.env" . | nindent 8 }}
+        - name: DOCKER_SCAN_POLL_INTERVAL
+          value: {{ .Values.worker.dockerScan.pollInterval | quote }}
+        - name: DOCKER_SCAN_PARALLELISM
+          value: {{ .Values.worker.dockerScan.parallelism | quote }}
         resources:
           {{- toYaml .Values.worker.resources | nindent 12 }}
       {{- with .Values.worker.nodeSelector }}

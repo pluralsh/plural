@@ -77,7 +77,7 @@ jobs:
       uses: docker/setup-qemu-action@v2
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
-    - uses: google-github-actions/auth@v0
+    - uses: google-github-actions/auth@v1
       with:
         workload_identity_provider: 'projects/${{ secrets.GOOGLE_PROJECT_ID }}/locations/global/workloadIdentityPools/github/providers/github'
         service_account: 'terraform@pluralsh.iam.gserviceaccount.com'
@@ -149,7 +149,7 @@ jobs:
       uses: docker/setup-qemu-action@v2
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
-    - uses: google-github-actions/auth@v0
+    - uses: google-github-actions/auth@v1
       with:
         workload_identity_provider: 'projects/${{ secrets.GOOGLE_PROJECT_ID }}/locations/global/workloadIdentityPools/github/providers/github'
         service_account: 'terraform@pluralsh.iam.gserviceaccount.com'

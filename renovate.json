@@ -19,6 +19,7 @@
     {
       "matchManagers": ["npm"],
       "additionalBranchPrefix": "frontend/",
+      "semanticCommitScope": "frontend",
       "addLabels": [
         "frontend"
       ]
@@ -32,6 +33,7 @@
     {
       "matchManagers": ["mix"],
       "additionalBranchPrefix": "backend/",
+      "semanticCommitScope": "backend",
       "addLabels": [
         "backend"
       ]

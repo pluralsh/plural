@@ -36,7 +36,6 @@ defmodule Core.PubSub.Fanout.DockerTest do
   describe "DockerImageCreated" do
     test "it will send to rabbit" do
       img = insert(:docker_image)
-      expect(Core.Conduit.Broker, :publish, fn %Conduit.Message{body: ^img}, :dkr -> :ok end)
       expect(Core.Buffers.Docker, :submit, fn _, ^img -> :ok end)
       event = %PubSub.DockerImageCreated{item: img}
       Core.PubSub.Fanout.fanout(event)

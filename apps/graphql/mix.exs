@@ -62,7 +62,7 @@ defmodule Graphql.MixProject do
       {:absinthe, "~> 1.5.0"},
       {:absinthe_relay, "~> 1.5.0"},
       {:absinthe_plug, "~> 1.5.0", override: true},
-      {:dataloader, "== 1.0.6", override: true},
+      {:dataloader, "== 1.0.10", override: true},
       {:apq, "~> 1.2.1"},
       {:hammer, "~> 6.1"},
 

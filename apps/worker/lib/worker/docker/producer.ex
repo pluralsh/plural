@@ -6,7 +6,6 @@ defmodule Worker.Docker.Producer do
 
   @max 20
   @scan_interval 7
-  @poll :timer.seconds(60)
 
   defmodule State, do: defstruct [:demand, :draining]
 
@@ -15,7 +14,7 @@ defmodule Worker.Docker.Producer do
   end
 
   def init(_) do
-    :timer.send_interval(@poll, :poll)
+    :timer.send_interval(poll_interval(), :poll)
 
     {:producer, %State{demand: 0}}
   end
@@ -39,5 +38,13 @@ defmodule Worker.Docker.Producer do
         {:noreply, imgs, %{state | demand: demand - len}}
       _ -> empty(%{state | demand: demand})
     end
+  end
+
+  defp poll_interval() do
+    case System.get_env("DOCKER_SCAN_POLL_INTERVAL") do
+      v when is_binary(v) -> String.to_integer(v)
+      _ -> 60
+    end
+    |> :timer.seconds()
   end
 end

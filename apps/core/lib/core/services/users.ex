@@ -24,7 +24,7 @@ defmodule Core.Services.Users do
   @type error :: {:error, term}
   @type user_resp :: {:ok, User.t} | error
 
-  @ttl Nebulex.Time.expiry_time(12, :hour)
+  @ttl :timer.hours(12)
 
   @spec get_user(binary) :: User.t | nil
   def get_user(user_id), do: Core.Repo.get(User, user_id)

@@ -7,7 +7,7 @@ use Distillery.Releases.Config,
   # This sets the default release built by `mix distillery.release`
   default_release: :default,
   # This sets the default environment used by `mix distillery.release`
-  default_environment: config_env()
+  default_environment: Mix.env()
 
 environment :dev do
   set dev_mode: true

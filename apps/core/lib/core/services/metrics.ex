@@ -8,7 +8,7 @@ defmodule Core.Services.Metrics do
   @default_offset "1d"
   @default_precision "30m"
 
-  @ttl Nebulex.Time.expiry_time(6, :hour)
+  @ttl :timer.hours(6)
 
   @decorate cacheable(cache: Core.Cache, key: {:platform_metric, name}, opts: [ttl: @ttl])
   def count(name) do

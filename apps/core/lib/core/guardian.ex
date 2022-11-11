@@ -4,7 +4,7 @@ defmodule Core.Guardian do
   alias Core.Schema.User
   alias Core.Services.Users
 
-  @ttl Nebulex.Time.expiry_time(15, :minute)
+  @ttl :timer.minutes(15)
 
   def subject_for_token(%User{id: id}, _claims),
     do: {:ok, "user:#{id}"}

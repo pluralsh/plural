@@ -77,7 +77,7 @@ defmodule Rtc.MixProject do
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.5", override: true},
       {:absinthe_phoenix, "~> 2.0"},
-      {:libcluster, "~> 3.3.0"},
+      {:libcluster, "~> 3.3.1"},
       {:prometheus_ex, "~> 3.0"},
       {:prometheus_plugs, "~> 1.1.1"},
       {:websockex, "~> 0.4"},

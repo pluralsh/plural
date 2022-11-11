@@ -585,6 +585,7 @@ export type DockerImage = {
   grade?: Maybe<ImageGrade>;
   id: Scalars['ID'];
   insertedAt?: Maybe<Scalars['DateTime']>;
+  scanCompletedAt?: Maybe<Scalars['DateTime']>;
   scannedAt?: Maybe<Scalars['DateTime']>;
   tag?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['DateTime']>;
@@ -1229,6 +1230,35 @@ export type InvoiceItem = {
   amount: Scalars['Int'];
   currency: Scalars['String'];
   description?: Maybe<Scalars['String']>;
+};
+
+export type KeyBackup = {
+  __typename?: 'KeyBackup';
+  id: Scalars['ID'];
+  insertedAt?: Maybe<Scalars['DateTime']>;
+  name: Scalars['String'];
+  repositories?: Maybe<Array<Maybe<Scalars['String']>>>;
+  updatedAt?: Maybe<Scalars['DateTime']>;
+  user: User;
+  value: Scalars['String'];
+};
+
+export type KeyBackupAttributes = {
+  key: Scalars['String'];
+  name: Scalars['String'];
+  repositories?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+};
+
+export type KeyBackupConnection = {
+  __typename?: 'KeyBackupConnection';
+  edges?: Maybe<Array<Maybe<KeyBackupEdge>>>;
+  pageInfo: PageInfo;
+};
+
+export type KeyBackupEdge = {
+  __typename?: 'KeyBackupEdge';
+  cursor?: Maybe<Scalars['String']>;
+  node?: Maybe<KeyBackup>;
 };
 
 export type License = {
@@ -2241,6 +2271,7 @@ export type RootMutationType = {
   createIntegration?: Maybe<Integration>;
   createIntegrationWebhook?: Maybe<IntegrationWebhook>;
   createInvite?: Maybe<Invite>;
+  createKeyBackup?: Maybe<KeyBackup>;
   createMessage?: Maybe<IncidentMessage>;
   createOauthIntegration?: Maybe<OauthIntegration>;
   createOidcProvider?: Maybe<OidcProvider>;
@@ -2437,6 +2468,11 @@ export type RootMutationTypeCreateIntegrationWebhookArgs = {
 
 export type RootMutationTypeCreateInviteArgs = {
   attributes: InviteAttributes;
+};
+
+
+export type RootMutationTypeCreateKeyBackupArgs = {
+  attributes: KeyBackupAttributes;
 };
 
 
@@ -3025,6 +3061,8 @@ export type RootQueryType = {
   integrations?: Maybe<IntegrationConnection>;
   invite?: Maybe<Invite>;
   invites?: Maybe<InviteConnection>;
+  keyBackup?: Maybe<KeyBackup>;
+  keyBackups?: Maybe<KeyBackupConnection>;
   loginMethod?: Maybe<LoginMethodResponse>;
   loginMetrics?: Maybe<Array<Maybe<GeoMetric>>>;
   me?: Maybe<User>;
@@ -3170,6 +3208,7 @@ export type RootQueryTypeDockerImagesArgs = {
   dockerRepositoryId: Scalars['ID'];
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
+  q?: InputMaybe<Scalars['String']>;
 };
 
 
@@ -3275,6 +3314,19 @@ export type RootQueryTypeInviteArgs = {
 
 
 export type RootQueryTypeInvitesArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+};
+
+
+export type RootQueryTypeKeyBackupArgs = {
+  name: Scalars['String'];
+};
+
+
+export type RootQueryTypeKeyBackupsArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;

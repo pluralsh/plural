@@ -32,7 +32,8 @@ defmodule Core.Schema.DockerImage do
 
   def scanned_before(query \\ __MODULE__, days) do
     prior = Timex.now() |> Timex.shift(days: -days)
-    from(di in query, where: di.scanned_at < ^prior or is_nil(di.scanned_at) or di.scan_completed_at < ^prior or is_nil(di.scan_completed_at))
+    scanning = Timex.now() |> Timex.shift(minutes: -10)
+    from(di in query, where: di.scanned_at < ^prior or is_nil(di.scanned_at) or ((di.scan_completed_at < ^prior or is_nil(di.scan_completed_at)) and di.scanned_at < ^scanning))
   end
 
   def for_repository(query \\ __MODULE__, repo_id),

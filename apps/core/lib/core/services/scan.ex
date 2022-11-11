@@ -14,7 +14,7 @@ defmodule Core.Services.Scan do
 
     image = "#{registry_name}:#{image.tag}"
     Logger.info "Scanning image #{image}"
-    case System.cmd("trivy", ["--quiet", "image", "--format", "json", image, "--timeout", "10m0s"], env: env) do
+    case System.cmd("trivy", ["--quiet", "image", "--format", "json", image, "--timeout", "5m0s"], env: env) do
       {output, 0} ->
         case Jason.decode(output) do
           {:ok, [%{"Vulnerabilities" => vulns} | _]} -> insert_vulns(vulns, img)
@@ -49,7 +49,9 @@ defmodule Core.Services.Scan do
   defp handle_trivy_error(output, %DockerImage{} = img) do
     case String.contains?(output, "timeout") do
       true -> Ecto.Changeset.change(img, %{scan_completed_at: Timex.now()}) |> Core.Repo.update()
-      _ -> :error
+      _ ->
+        Logger.error "unrecognized trivy output, retrying immediately"
+        :error
     end
   end
 

@@ -75,7 +75,7 @@ defmodule Api.MixProject do
       {:cors_plug, "~> 2.0"},
       {:plug_cowboy, "~> 2.5", override: true},
       {:reverse_proxy_plug, "~> 1.2.1"},
-      {:libcluster, "~> 3.1.1"},
+      {:libcluster, "~> 3.3.0"},
       {:prometheus_ex, "~> 3.0"},
       {:prometheus_plugs, "~> 1.1.1"},
       {:remote_ip, "~> 0.2.0"},

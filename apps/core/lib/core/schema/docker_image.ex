@@ -24,6 +24,8 @@ defmodule Core.Schema.DockerImage do
     )
   end
 
+  def search(query \\ __MODULE__, s), do: from(di in query, where: like(di.tag, ^"#{s}%"))
+
   def for_tag(query \\ __MODULE__, tag) do
     from(di in query, where: di.tag == ^tag)
   end

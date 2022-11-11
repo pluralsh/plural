@@ -393,6 +393,8 @@ worker:
 
   nodeSelector: {}
 
+  extraEnv: []
+
   tolerations:
   - key: plural.sh/pluralReserved
     operator: Exists

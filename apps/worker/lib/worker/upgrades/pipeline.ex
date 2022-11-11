@@ -4,7 +4,7 @@ defmodule Worker.Upgrades.Pipeline do
   alias Core.Services.Upgrades
 
   def start_link(producers) do
-    Flow.from_stages(producers, stages: 3, max_demand: 10)
+    Flow.from_stages(producers, stages: 1, max_demand: 10)
     |> Flow.map(fn upgrade ->
       Logger.info "Processing deferred upgrade #{upgrade.id}"
       upgrade

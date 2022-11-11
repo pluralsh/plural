@@ -44,6 +44,27 @@ defmodule GraphQl.DockerQueriesTest do
       assert from_connection(found)
              |> ids_equal(docker_imgs)
     end
+
+    test "it can search by tag" do
+      repo = insert(:docker_repository)
+      insert_list(3, :docker_image, docker_repository: repo)
+      img = insert(:docker_image, docker_repository: repo, tag: "3.0")
+
+      {:ok, %{data: %{"dockerImages" => found}}} = run_query("""
+        query DockerImages($id: ID!) {
+          dockerImages(dockerRepositoryId: $id, q: "3." first: 5) {
+            edges {
+              node {
+                id
+              }
+            }
+          }
+        }
+      """, %{"id" => repo.id}, %{current_user: insert(:user)})
+
+      assert from_connection(found)
+             |> ids_equal([img])
+    end
   end
 
   describe "dockerImage" do

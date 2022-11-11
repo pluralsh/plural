@@ -123,7 +123,8 @@ config :core,
   onplural_domain: "onplural.sh",
   gcp_organization: "1323",
   gcp_identity: "someone@example.com",
-  vault: "https://vault.vault:8201"
+  vault: "https://vault.vault:8201",
+  docker_env: []
 
 config :briefly,
   directory: [{:system, "TMPDIR"}, {:system, "TMP"}, {:system, "TEMP"}, "/tmp"],
@@ -148,5 +149,11 @@ config :rtc, :flushable, false
 config :hammer,
   backend: {Hammer.Backend.ETS, [expiry_ms: 60_000 * 60,
                                  cleanup_interval_ms: 60_000 * 10]}
+
+config :worker,
+  upgrade_interval: 10,
+  demo_interval: 10,
+  rollout_interval: 10,
+  docker_interval: 60
 
 import_config "#{Mix.env()}.exs"

@@ -81,6 +81,11 @@ config :worker,
 config :worker,
   upgrade_pipeline: []
 
+config :worker,
+  upgrade_interval: 1,
+  demo_interval: 1,
+  rollout_interval: 1,
+  docker_interval: 1
 
 config :core,
   workos_webhook: "supersecret"

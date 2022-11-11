@@ -104,6 +104,7 @@ defmodule GraphQl.Schema.Docker do
     connection field :docker_images, node_type: :docker_image do
       middleware Authenticated
       arg :docker_repository_id, non_null(:id)
+      arg :q, :string
 
       resolve &Docker.list_images/2
     end

@@ -17,6 +17,7 @@ defmodule GraphQl.Resolvers.Docker do
   def list_images(%{docker_repository_id: repo} = args, _) do
     DockerImage.for_repository(repo)
     |> DockerImage.ordered()
+    |> maybe_search(DockerImage, args)
     |> paginate(args)
   end
 

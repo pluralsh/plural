@@ -10,7 +10,7 @@ defmodule Core.Services.ScanTest do
       image_name = "dkr.plural.sh/#{image.docker_repository.repository.name}/#{image.docker_repository.name}:#{image.tag}"
       vuln = Application.get_env(:core, :vulnerability)
       expect(System, :cmd, fn
-        "trivy", ["--quiet", "image", "--format", "json", ^image_name, "--timeout", "5m0s"], [env: [{"TRIVY_REGISTRY_TOKEN", _}]] ->
+        "trivy", ["--quiet", "image", "--format", "json", ^image_name, "--timeout", "5m0s"], [env: [{"TRIVY_REGISTRY_TOKEN", _}], stderr_to_stdout: true] ->
           {~s([{"Vulnerabilities": [#{vuln}]}]), 0}
       end)
 
@@ -27,7 +27,7 @@ defmodule Core.Services.ScanTest do
     test "it will mark on timeouts" do
       image = insert(:docker_image)
       expect(System, :cmd, fn
-        "trivy", ["--quiet", "image", "--format", "json", _, "--timeout", "5m0s"], [env: [{"TRIVY_REGISTRY_TOKEN", _}]] ->
+        "trivy", ["--quiet", "image", "--format", "json", _, "--timeout", "5m0s"], [{:env, [{"TRIVY_REGISTRY_TOKEN", _}]} | _] ->
           {~s(image scan error: scan error: image scan failed: failed analysis: analyze error: timeout: context deadline exceeded), 1}
       end)
 

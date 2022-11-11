@@ -14,7 +14,7 @@ defmodule Core.Services.Scan do
 
     image = "#{registry_name}:#{image.tag}"
     Logger.info "Scanning image #{image}"
-    case System.cmd("trivy", ["--quiet", "image", "--format", "json", image, "--timeout", "5m0s"], env: env) do
+    case System.cmd("trivy", ["--quiet", "image", "--format", "json", image, "--timeout", "5m0s"], env: env, stderr_to_stdout: true) do
       {output, 0} ->
         case Jason.decode(output) do
           {:ok, [%{"Vulnerabilities" => vulns} | _]} -> insert_vulns(vulns, img)

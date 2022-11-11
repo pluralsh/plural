@@ -3,7 +3,7 @@ defmodule Worker.Docker.Pipeline do
   require Logger
 
   def start_link(producer) do
-    Flow.from_stages([producer], stages: 1, max_demand: demand())
+    Flow.from_stages([producer], stages: parallelism(), max_demand: 1)
     |> Flow.map(fn img ->
       Logger.info "Scheduling docker scan for #{img.id}"
       img
@@ -12,5 +12,5 @@ defmodule Worker.Docker.Pipeline do
     |> Flow.start_link()
   end
 
-  defp demand(), do: Core.env("DOCKER_SCAN_PARALLELISM", :int, 1)
+  defp parallelism(), do: Core.env("DOCKER_SCAN_PARALLELISM", :int, 1)
 end

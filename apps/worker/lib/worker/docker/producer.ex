@@ -27,7 +27,7 @@ defmodule Worker.Docker.Producer do
   end
 
   defp poll_interval() do
-    Core.env("DOCKER_SCAN_POLL_INTERVAL", :int, 60)
+    Core.env("DOCKER_SCAN_POLL_INTERVAL", :int, Worker.conf(:docker_interval))
     |> :timer.seconds()
   end
 end

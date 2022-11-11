@@ -17,7 +17,7 @@ defmodule Worker.Docker.PipelineTest do
       {:ok, producer} = Docker.Producer.start_link()
       {:ok, _} = Docker.Pipeline.start_link(producer)
 
-      :timer.sleep(:timer.seconds(6))
+      :timer.sleep(:timer.seconds(3))
 
       found = Enum.map(1..3, fn _ ->
         assert_receive {:dkr, img}

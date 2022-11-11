@@ -17,7 +17,7 @@ defmodule Worker.DemoProjects.PipelineTest do
 
       demo = insert(:demo_project, inserted_at: Timex.now() |> Timex.shift(hours: -24))
 
-      :timer.sleep(:timer.seconds(6))
+      :timer.sleep(:timer.seconds(3))
 
       refute refetch(demo)
     end

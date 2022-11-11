@@ -3,7 +3,7 @@ defmodule Worker.Upgrades.Producer do
   alias Core.Services.Upgrades
 
   @max 20
-  @poll :timer.seconds(5)
+  @poll Worker.conf(:upgrade_interval) |> :timer.seconds()
 
   def start_link(opts \\ []) do
     GenStage.start_link(__MODULE__, opts[:type], name: opts[:name])
@@ -24,6 +24,7 @@ defmodule Worker.Upgrades.Producer do
   end
 
   defp deliver(demand, %State{type: type} = state) do
+    Logger.info "checking for deferred updates"
     case Upgrades.poll_deferred_updates(type, min(demand, @max)) do
       {:ok, updates} when is_list(updates) ->
         {:noreply, updates, demand(state, demand, updates)}

@@ -11,7 +11,7 @@ defmodule Worker.Rollouts.PipelineTest do
       event = %PubSub.VersionCreated{item: insert(:version)}
       roll = insert(:rollout, status: :queued, repository: build(:repository), event: event)
 
-      :timer.sleep(:timer.seconds(6))
+      :timer.sleep(:timer.seconds(3))
 
       assert refetch(roll).status == :finished
     end

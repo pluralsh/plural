@@ -24,7 +24,7 @@ defmodule Worker.Upgrades.PipelineTest do
       ]})
       deferred = insert(:deferred_update, chart_installation: chart_inst, version: version, user: user)
 
-      :timer.sleep(:timer.seconds(6))
+      :timer.sleep(:timer.seconds(3))
 
       refute refetch(deferred)
       assert refetch(chart_inst).version_id == version.id

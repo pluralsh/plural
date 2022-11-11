@@ -150,4 +150,10 @@ config :hammer,
   backend: {Hammer.Backend.ETS, [expiry_ms: 60_000 * 60,
                                  cleanup_interval_ms: 60_000 * 10]}
 
+config :worker,
+  upgrade_interval: 10,
+  demo_interval: 10,
+  rollout_interval: 10,
+  docker_interval: 60
+
 import_config "#{Mix.env()}.exs"

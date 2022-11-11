@@ -3,7 +3,7 @@ defmodule Worker.Rollouts.Producer do
   alias Core.Services.Rollouts
 
   @max 20
-  @poll :timer.seconds(5)
+  @poll Worker.conf(:rollout_interval) |> :timer.seconds()
 
   def start_link(opts \\ []) do
     GenStage.start_link(__MODULE__, opts, name: __MODULE__)

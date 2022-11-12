@@ -9,10 +9,7 @@ defmodule Core.Clients.Vault do
     Vault.new(
       engine: Vault.Engine.KVV2,
       auth: Vault.Auth.Kubernetes,
-      host: host(),
-      http_options: [
-        adapter: {Tesla.Adapter.Hackney, insecure: true}
-      ]
+      host: host()
     )
     |> Vault.auth(%{role: "plural", jwt: kube_jwt()})
   end

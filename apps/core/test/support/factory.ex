@@ -580,7 +580,8 @@ defmodule Core.Factory do
     %Schema.KeyBackup{
       name: sequence(:kb, &"backup-#{&1}"),
       vault_path: sequence(:kb_vault, &"/path/to/#{&1}"),
-      user: build(:user)
+      user: build(:user),
+      digest: sequence(:kb_digest, &"SHA256:#{&1}")
     }
   end
 

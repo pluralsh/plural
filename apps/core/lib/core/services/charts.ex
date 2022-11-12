@@ -182,7 +182,7 @@ defmodule Core.Services.Charts do
     Enum.reduce(crds, transaction, fn {name, content}, xact ->
       add_operation(xact, {:crd, name}, fn %{sync: %{id: id}} ->
         {:ok, path} = Briefly.create()
-        File.write!(path, IO.inspect(content))
+        File.write!(path, content)
         name = Path.basename(name)
         create_crd(%{name: name, blob: %{
           __struct__: Plug.Upload,

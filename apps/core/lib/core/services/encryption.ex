@@ -18,12 +18,15 @@ defmodule Core.Services.Encryption do
     |> add_operation(:db, fn _ ->
       case get_backup(user_id, name) do
         %KeyBackup{} = back -> back
-        _ -> %KeyBackup{user_id: user_id, vault_path: "/keybackups/#{user_id}/#{name}"}
+        _ -> %KeyBackup{user_id: user_id, vault_path: "/keybackups/#{user_id}/#{name}", fresh: true}
       end
-      |> KeyBackup.changeset(attrs)
+      |> KeyBackup.changeset(Map.put(attrs, :digest, "SHA256:#{Core.sha(key)}"))
       |> Core.Repo.insert_or_update()
     end)
-    |> add_operation(:vault, fn %{db: %{vault_path: path}} -> Vault.write(path, %{secret: key}) end)
+    |> add_operation(:vault, fn
+      %{db: %KeyBackup{fresh: true, vault_path: path}} -> Vault.write(path, %{secret: key})
+      _ -> {:ok, %{}}
+    end)
     |> execute(extract: :db)
   end
 

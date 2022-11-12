@@ -283,7 +283,8 @@ defmodule GraphQl.Schema.User do
   object :key_backup do
     field :id,           non_null(:id)
     field :name,         non_null(:string)
-    field :repositories, list_of(:string)
+    field :repositories, list_of(non_null(:string))
+    field :digest,       non_null(:string)
 
     field :value, non_null(:string), resolve: fn
       backup, _, _ -> Core.Services.Encryption.fetch(backup)

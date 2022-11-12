@@ -1,17 +1,19 @@
 import Config
 import System, only: [get_env: 1]
 
+host = get_env("HOST")
+
 config :api, ApiWeb.Endpoint,
-  url: [host: get_env("HOST"), port: 80],
-  check_origin: ["//#{get_env("HOST")}", "//plural-api"]
+  url: [host: host, port: 80],
+  check_origin: ["//#{host}", "//plural-api"]
 
 config :rtc, RtcWeb.Endpoint,
-  url: [host: get_env("HOST"), port: 80],
-  check_origin: ["//#{get_env("HOST")}", "//plural-rtc"]
+  url: [host: host, port: 80],
+  check_origin: ["//#{host}", "//plural-rtc"]
 
-config :core, hostname: get_env("HOST")
-config :email, host: "https://#{get_env("HOST")}"
-config :core, host: "https://#{get_env("HOST")}"
+config :core, hostname: host
+config :email, host: "https://#{host}"
+config :core, host: "https://#{host}"
 
 config :arc,
   storage: Arc.Storage.GCS,
@@ -112,4 +114,5 @@ end
 config :core,
   registry: get_env("DKR_DNS")
 
-config :openai, :token, get_env("OPENAI_BEARER_TOKEN")
+config :openai,
+  token: get_env("OPENAI_BEARER_TOKEN")

@@ -110,7 +110,6 @@ defmodule Core.Services.Shell.Demo do
       Projects.cloudresourcemanager_projects_move(projs, demo.project_id, body: %MoveProjectRequest{
         destinationParent: "organizations/#{org_id}"
       })
-      |> IO.inspect() # useful for testing
     end)
     |> add_operation(:shell, fn _ ->
       with %{} = shell <- Core.Services.Shell.get_shell(user_id) do

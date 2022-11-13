@@ -21,18 +21,24 @@ defmodule Core.Services.EncryptionTest do
 
       assert backup.vault_path == path
       assert backup.user_id == user.id
+      assert backup.digest == "SHA256:#{Core.sha("key")}"
       assert backup.name == "backup"
       assert backup.repositories == ["git@github.com:some/repo.git"]
     end
 
     test "if the backup already exists it will update" do
       user = insert(:user)
-      backup = insert(:key_backup, user: user, name: "backup")
 
-      path = backup.vault_path
+      path = "/keybackups/#{user.id}/backup"
       vpath = "plural#{path}"
       expect(Vault, :auth, fn _, %{role: "plural", jwt: _} -> {:ok, :vault} end)
       expect(Vault, :write, fn :vault, ^vpath, %{secret: "key"} -> {:ok, %{}} end)
+
+      {:ok, backup} = Encryption.create_backup(%{
+        key: "key",
+        name: "backup",
+        repositories: [],
+      }, user)
 
       {:ok, update} = Encryption.create_backup(%{
         key: "key",
@@ -45,6 +51,27 @@ defmodule Core.Services.EncryptionTest do
       assert update.user_id == user.id
       assert update.name == "backup"
       assert update.repositories == ["git@github.com:some/repo.git"]
+    end
+
+    test "if you attempt to modify the key, it will fail" do
+      user = insert(:user)
+
+      path = "/keybackups/#{user.id}/backup"
+      vpath = "plural#{path}"
+      expect(Vault, :auth, fn _, %{role: "plural", jwt: _} -> {:ok, :vault} end)
+      expect(Vault, :write, fn :vault, ^vpath, %{secret: "key"} -> {:ok, %{}} end)
+
+      {:ok, _} = Encryption.create_backup(%{
+        key: "key",
+        name: "backup",
+        repositories: [],
+      }, user)
+
+      {:error, _} = Encryption.create_backup(%{
+        key: "newkey",
+        name: "backup",
+        repositories: ["git@github.com:some/repo.git"]
+      }, user)
     end
   end
 

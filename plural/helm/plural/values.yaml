@@ -169,6 +169,14 @@ configOverlays:
     documentation: signing secret for workos webhooks 
     updates:
     - path: ['plural', 'secrets', 'workos', 'webhook_secret']
+- name: openai-token
+  spec:
+    name: OpenAI Bearer Token
+    folder: secrets
+    subfolder: openai
+    documentation: access token for openai api
+    updates:
+    - path: ['plural', 'secrets', 'openai_token']
 - name: sentry-dsn
   spec:
     name: Sentry DSN

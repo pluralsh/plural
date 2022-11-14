@@ -29,7 +29,7 @@ defmodule Core.Services.Scan do
         end
       {output, _} ->
         Logger.info "Trivy failed with: #{output}"
-        handle_trivy_error(output, img)
+        handle_trivy_error(img)
     end
   end
 
@@ -46,13 +46,9 @@ defmodule Core.Services.Scan do
     Versions.record_scan(output, version)
   end
 
-  defp handle_trivy_error(output, %DockerImage{} = img) do
-    case String.contains?(output, "timeout") do
-      true -> Ecto.Changeset.change(img, %{scan_completed_at: Timex.now()}) |> Core.Repo.update()
-      _ ->
-        Logger.error "unrecognized trivy output, retrying immediately"
-        :error
-    end
+  defp handle_trivy_error(%DockerImage{} = img) do
+    Ecto.Changeset.change(img, %{scan_completed_at: Timex.now()})
+    |> Core.Repo.update()
   end
 
   defp terrascan_details(%Version{

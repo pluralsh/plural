@@ -387,7 +387,7 @@ defmodule GraphQl.RepositoryMutationsTest do
       %{owner: user} = lock = insert(:apply_lock, owner: build(:user))
 
       {:ok, %{data: %{"releaseLock" => release}}} = run_query("""
-        mutation Release($name: String!, $attrs: ApplyLockAttributes!) {
+        mutation Release($name: String!, $attrs: LockAttributes!) {
           releaseLock(repository: $name, attributes: $attrs) {
             id
             lock

@@ -30,7 +30,7 @@ defmodule GraphQl.ScaffoldsQueriesTest do
       provider = "AWS"
       vsn = "0.1.1"
       {:ok, %{data: %{"terraformProvider" => nil}, errors: [%{message: message}]}} = run_query("""
-        query Provider($name: Provider!, $vsn: string!) {
+        query Provider($name: Provider!, $vsn: String!) {
           terraformProvider(name: $name, vsn: $vsn) {
               name
               content

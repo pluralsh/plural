@@ -419,7 +419,7 @@ defmodule GraphQl.AccountMutationTest do
       end)
 
       {:ok, %{data: %{"createZoom" => create}}} = run_query("""
-        mutation Create($attrs: ZoomAttributes!) {
+        mutation Create($attrs: MeetingAttributes!) {
           createZoom(attributes: $attrs) {
             joinUrl
             password

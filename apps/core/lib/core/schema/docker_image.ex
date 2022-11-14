@@ -10,6 +10,7 @@ defmodule Core.Schema.DockerImage do
     field :grade,             Grade
     field :scanned_at,        :utc_datetime_usec
     field :scan_completed_at, :utc_datetime_usec
+    field :scan_retries,      :integer, default: 0
 
     has_many   :vulnerabilities,   Vulnerability, foreign_key: :image_id, on_replace: :delete
     belongs_to :docker_repository, DockerRepository
@@ -56,7 +57,7 @@ defmodule Core.Schema.DockerImage do
 
   def vulnerability_changeset(model, attrs \\ %{}) do
     model
-    |> cast(attrs, [:scan_completed_at, :grade])
+    |> cast(attrs, [:scan_completed_at, :grade, :scan_retries])
     |> cast_assoc(:vulnerabilities)
     |> validate_required([:scan_completed_at, :grade])
   end

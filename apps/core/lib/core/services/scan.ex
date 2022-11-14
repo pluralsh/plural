@@ -29,7 +29,7 @@ defmodule Core.Services.Scan do
         end
       {output, _} ->
         Logger.info "Trivy failed with: #{output}"
-        handle_trivy_error(img)
+        Repositories.retry_scan(img)
     end
   end
 
@@ -44,11 +44,6 @@ defmodule Core.Services.Scan do
       "--use-colors", "f"
     ])
     Versions.record_scan(output, version)
-  end
-
-  defp handle_trivy_error(%DockerImage{} = img) do
-    Ecto.Changeset.change(img, %{scan_completed_at: Timex.now()})
-    |> Core.Repo.update()
   end
 
   defp terrascan_details(%Version{

@@ -437,6 +437,27 @@ defmodule Core.Services.RepositoriesTest do
     end
   end
 
+  describe "#retry_scan/1" do
+    test "if a scan has < 2 retries it's retriable" do
+      image = insert(:docker_image, scan_retries: 1)
+
+      {:ok, img} = Repositories.retry_scan(image)
+
+      assert img.id == image.id
+      assert img.scan_retries == 2
+    end
+
+    test "images with >= 2 retries are completed" do
+      image = insert(:docker_image, scan_retries: 2)
+
+      {:ok, img} = Repositories.retry_scan(image)
+
+      assert img.id == image.id
+      assert img.scan_retries == 0
+      assert img.scan_completed_at
+    end
+  end
+
   describe "#create_artifact/3" do
     test "Publishers can create artifacts" do
       %{publisher: %{owner: user}} = repo = insert(:repository)

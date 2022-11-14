@@ -60,8 +60,8 @@ defmodule Graphql.MixProject do
   defp deps do
     [
       {:absinthe, "~> 1.7.0"},
-      {:absinthe_relay, "~> 1.5.0"},
-      {:absinthe_plug, "~> 1.5.0", override: true},
+      {:absinthe_relay, "~> 1.5.2"},
+      {:absinthe_plug, "~> 1.5.8"},
       {:dataloader, "== 1.0.6", override: true},
       {:apq, "~> 1.2.1"},
       {:hammer, "~> 6.1"},

@@ -47,7 +47,7 @@ defmodule Plural.MixProject do
       {:shards, "~> 1.0"},
       {:ecto, "~> 3.3.2", override: true},
       {:hackney, "~> 1.18.0", override: true},
-      {:absinthe_plug, "~> 1.5.0", override: true},
+      {:absinthe_plug, "~> 1.5.8"},
     ]
   end
 end

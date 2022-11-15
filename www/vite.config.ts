@@ -15,7 +15,7 @@ export default defineConfig({
   },
   build: {
     outDir: 'build',
-    // sourcemap: true, // Seems to cause JavaScript heap out of memory errors on build
+    sourcemap: process.env.NODE_ENV !== 'production', // Seems to cause JavaScript heap out of memory errors on build
   },
   optimizeDeps: {
     esbuildOptions: {

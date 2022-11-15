@@ -20,7 +20,7 @@
     "fix": "yarn fix:js && yarn fix:css",
     "fix:js": "eslint ./src --fix",
     "fix:css": "stylelint src/**/*.css --fix",
-    "e2e": "concurrently -kill-others --success first \"yarn start\" \"wait-on https://localhost:3001 && cd e2e && yarn e2e:start\"",
+    "e2e": "concurrently -kill-others --success first \"yarn start\" \"wait-on -c waitOnConfig.json -v https-get://localhost:3001 && cd e2e && yarn e2e:start\"",
     "unimported": "npx unimported",
     "graphql:codegen": "graphql-codegen --config codegen.yml"
   },

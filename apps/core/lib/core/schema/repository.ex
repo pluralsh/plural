@@ -26,7 +26,7 @@ defmodule Core.Schema.Repository do
     storage: 7
 
   schema "repositories" do
-    field :name,          :string, null: false
+    field :name,          :string
     field :icon_id,       :binary_id
     field :icon,          Core.Storage.Type
     field :dark_icon,     Core.Storage.Type

@@ -12,11 +12,11 @@ defmodule Core.Repo.Migrations.AddPaymentsSchema do
 
     create table(:plans, primary_key: false) do
       add :id,       :uuid, primary_key: true
-      add :name,     :string, null: false
+      add :name,     :string
       add :default,  :boolean
-      add :visible,  :boolean, default: true, null: false
-      add :cost,     :integer, null: false
-      add :period,   :integer, default: 0, null: false
+      add :visible,  :boolean, default: true
+      add :cost,     :integer
+      add :period,   :integer, default: 0
       add :metadata, :map
 
       add :repository_id, references(:repositories, type: :uuid, on_delete: :restrict)

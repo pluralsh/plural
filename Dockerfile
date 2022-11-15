@@ -37,7 +37,7 @@ RUN \
   tar -xzf ${APP_NAME}.tar.gz && \
   rm ${APP_NAME}.tar.gz
 
-FROM alpine:3.16.2 as tools
+FROM alpine:3.16.3 as tools
 
 ARG TARGETARCH
 

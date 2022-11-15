@@ -17449,7 +17449,45 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite@npm:3.2.3, vite@npm:^3.0.0":
+"vite@npm:3.2.4":
+  version: 3.2.4
+  resolution: "vite@npm:3.2.4"
+  dependencies:
+    esbuild: ^0.15.9
+    fsevents: ~2.3.2
+    postcss: ^8.4.18
+    resolve: ^1.22.1
+    rollup: ^2.79.1
+  peerDependencies:
+    "@types/node": ">= 14"
+    less: "*"
+    sass: "*"
+    stylus: "*"
+    sugarss: "*"
+    terser: ^5.4.0
+  dependenciesMeta:
+    fsevents:
+      optional: true
+  peerDependenciesMeta:
+    "@types/node":
+      optional: true
+    less:
+      optional: true
+    sass:
+      optional: true
+    stylus:
+      optional: true
+    sugarss:
+      optional: true
+    terser:
+      optional: true
+  bin:
+    vite: bin/vite.js
+  checksum: 0f3e8f89c15809bd6bd8dec54b04b7c9b87374314d00928035f9d70190b4b220e8206b5d77a1e4097a5019cebf7862df4fbc11fbbb35c4f75f359999123d2c25
+  languageName: node
+  linkType: hard
+
+"vite@npm:^3.0.0":
   version: 3.2.3
   resolution: "vite@npm:3.2.3"
   dependencies:
@@ -18016,7 +18054,7 @@ __metadata:
     typescript: 4.8.4
     util: 0.12.5
     uuid: 9.0.0
-    vite: 3.2.3
+    vite: 3.2.4
     vitest: 0.25.2
     wait-on: 6.0.1
     workbox-core: 6.5.4

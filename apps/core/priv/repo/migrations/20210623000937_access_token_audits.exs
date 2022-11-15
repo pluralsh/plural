@@ -7,7 +7,7 @@ defmodule Core.Repo.Migrations.AccessTokenAudits do
       add :token_id,  references(:persisted_tokens, type: :uuid, on_delete: :delete_all)
       add :ip,        :string
       add :timestamp, :utc_datetime_usec
-      add :count,     :integer, default: 0, null: false
+      add :count,     :integer, default: 0
 
       timestamps()
     end

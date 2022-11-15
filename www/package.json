@@ -39,7 +39,7 @@
     "@nivo/geo": "0.80.0",
     "@nivo/line": "0.80.0",
     "@octokit/core": "3.6.0",
-    "@pluralsh/design-system": "1.290.2",
+    "@pluralsh/design-system": "1.291.0",
     "@testing-library/react": "13.4.0",
     "@types/styled-components": "5.1.26",
     "apollo-absinthe-upload-link": "1.7.0",

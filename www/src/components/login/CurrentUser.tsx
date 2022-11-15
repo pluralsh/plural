@@ -80,8 +80,6 @@ export function PluralProvider({ children }: any) {
   const { boot, update } = useIntercom()
   const userContextValue = useMemo(() => ({ me: data?.me, refetch }), [data, refetch])
 
-  console.log(data)
-
   useNotificationSubscription()
 
   useEffect(() => {

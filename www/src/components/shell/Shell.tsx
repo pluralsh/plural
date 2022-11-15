@@ -1,5 +1,7 @@
 import './shell.css'
 
+import { Buffer } from 'buffer'
+
 import {
   useCallback,
   useContext,
@@ -14,8 +16,6 @@ import { Div, Flex } from 'honorable'
 import { Button, ReloadIcon, ScrollIcon } from 'pluralsh-design-system'
 import { useResizeDetector } from 'react-resize-detector'
 import debounce from 'lodash/debounce'
-
-import { Buffer } from 'buffer/'
 
 import { socket } from '../../helpers/client'
 import TerminalThemeContext from '../../contexts/TerminalThemeContext'

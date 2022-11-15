@@ -107,14 +107,27 @@ function ImageVersionPicker({ image }: any) {
   const navigate = useNavigate()
   const { pathname } = useLocation()
   const { dockerRepository } = image
-  const { data, loading } = useQuery(DOCKER_IMG_Q, {
-    variables: { dockerRepositoryId: dockerRepository.id },
+  const [cursor, setCursor] = useState(null)
+  const [allImages, setAllImages] = useState<any[]>([])
+  const { data } = useQuery(DOCKER_IMG_Q, {
+    variables: {
+      dockerRepositoryId: dockerRepository.id,
+      cursor,
+    },
   })
 
-  if (!data || loading) return null
+  useEffect(() => {
+    if (data?.dockerImages) {
+      setAllImages(x => [...x, ...data.dockerImages.edges.map(({ node }) => node)])
 
-  const { edges } = data.dockerImages
-  const images = edges.map(({ node }) => node)
+      if (data.dockerImages.pageInfo.hasNextPage) {
+        setCursor(data.dockerImages.pageInfo.endCursor)
+      }
+    }
+  }, [data])
+
+  if (!allImages.length) return null
+
   const url = pathname.endsWith('vulnerabilities') ? '/vulnerabilities' : ''
 
   return (
@@ -140,7 +153,7 @@ function ImageVersionPicker({ image }: any) {
           )
         }
       >
-        {images.map(v => (
+        {allImages.map(v => (
           <ListBoxItem
             key={v.id}
             label={v.tag}

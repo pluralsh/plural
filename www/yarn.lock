@@ -4324,7 +4324,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/react@npm:^13.4.0":
+"@testing-library/react@npm:13.4.0":
   version: 13.4.0
   resolution: "@testing-library/react@npm:13.4.0"
   dependencies:
@@ -4459,7 +4459,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jsdom@npm:^20":
+"@types/jsdom@npm:20.0.1":
   version: 20.0.1
   resolution: "@types/jsdom@npm:20.0.1"
   dependencies:
@@ -11293,7 +11293,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jsdom@npm:^20.0.2":
+"jsdom@npm:20.0.2":
   version: 20.0.2
   resolution: "jsdom@npm:20.0.2"
   dependencies:
@@ -17929,9 +17929,9 @@ __metadata:
     "@pluralsh/design-system": 1.290.2
     "@pluralsh/eslint-config-typescript": 2.4.2
     "@pluralsh/stylelint-config": 1.0.1
-    "@testing-library/react": ^13.4.0
+    "@testing-library/react": 13.4.0
     "@types/events": 3.0.0
-    "@types/jsdom": ^20
+    "@types/jsdom": 20.0.1
     "@types/randomcolor": 0.5.6
     "@types/react": 18.0.25
     "@types/react-dom": 18.0.9
@@ -17964,7 +17964,7 @@ __metadata:
     honorable-recipe-mp: 0.3.0
     honorable-theme-default: 0.66.0
     js-yaml: 4.1.0
-    jsdom: ^20.0.2
+    jsdom: 20.0.2
     lodash: 4.17.21
     memoize-one: 6.0.0
     moment: 2.29.4

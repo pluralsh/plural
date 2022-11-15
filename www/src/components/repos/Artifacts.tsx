@@ -19,7 +19,7 @@ import {
   ListIcon,
   UbuntuLogoIcon,
   WindowsLogoIcon,
-} from 'pluralsh-design-system'
+} from '@pluralsh/design-system'
 import { Copyable } from 'forge-core'
 import { normalizeColor } from 'grommet/utils'
 import fs from 'filesize'

@@ -2,7 +2,7 @@ import { useQuery } from '@apollo/client'
 
 import { Div, Flex } from 'honorable'
 import isEmpty from 'lodash/isEmpty'
-import { EmptyState, PageTitle, SearchIcon } from 'pluralsh-design-system'
+import { EmptyState, PageTitle, SearchIcon } from '@pluralsh/design-system'
 import { useCallback, useEffect, useState } from 'react'
 
 import { Placeholder } from '../utils/Placeholder'

@@ -4,7 +4,7 @@ import {
   P,
   Text,
 } from 'honorable'
-import { Button } from 'pluralsh-design-system'
+import { Button } from '@pluralsh/design-system'
 
 import { Github as GithubLogo, Gitlab as GitlabLogo } from './icons'
 import { DEBUG_SCM_TOKENS } from './debug-tokens'

@@ -9,7 +9,7 @@ import {
   ListBoxItemChipList,
   PeopleIcon,
   PersonIcon,
-} from 'pluralsh-design-system'
+} from '@pluralsh/design-system'
 
 import styled from 'styled-components'
 

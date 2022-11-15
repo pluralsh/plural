@@ -7,7 +7,7 @@ import {
   Modal,
   PageTitle,
   SearchIcon,
-} from 'pluralsh-design-system'
+} from '@pluralsh/design-system'
 import { useCallback, useMemo, useState } from 'react'
 import isEqual from 'lodash/isEqual'
 import uniqWith from 'lodash/uniqWith'

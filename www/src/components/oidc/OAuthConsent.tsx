@@ -2,7 +2,7 @@ import { useLocation } from 'react-router-dom'
 import { useMutation, useQuery } from '@apollo/client'
 import { Button } from 'forge-core'
 import queryString from 'query-string'
-import { ArrowRightLeftIcon } from 'pluralsh-design-system'
+import { ArrowRightLeftIcon } from '@pluralsh/design-system'
 import { Box, Text } from 'grommet'
 
 import { LoginPortal } from '../users/MagicLogin'

@@ -11,7 +11,7 @@ import { useQuery } from '@apollo/client'
 import { Box, Collapsible, Text } from 'grommet'
 import { useNavigate, useParams } from 'react-router-dom'
 import sortBy from 'lodash/sortBy'
-import { CaretDownIcon, CaretRightIcon } from 'pluralsh-design-system'
+import { CaretDownIcon, CaretRightIcon } from '@pluralsh/design-system'
 import { Portal } from 'react-portal'
 import { v4 as uuidv4 } from 'uuid'
 

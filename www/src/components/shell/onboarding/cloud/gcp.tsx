@@ -10,7 +10,7 @@ import {
   Select,
   Text,
 } from 'honorable'
-import { FileIcon, FormField } from 'pluralsh-design-system'
+import { FileIcon, FormField } from '@pluralsh/design-system'
 
 import { useTheme } from 'styled-components'
 

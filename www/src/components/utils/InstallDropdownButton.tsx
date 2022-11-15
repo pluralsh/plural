@@ -16,7 +16,7 @@ import {
   Codeline,
   DropdownArrowIcon,
   Tab,
-} from 'pluralsh-design-system'
+} from '@pluralsh/design-system'
 import { Link } from 'react-router-dom'
 import capitalize from 'lodash/capitalize'
 

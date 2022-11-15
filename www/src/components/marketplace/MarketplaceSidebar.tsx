@@ -7,7 +7,7 @@ import {
   Div,
   P,
 } from 'honorable'
-import { Checkbox, CloseIcon, Input } from 'pluralsh-design-system'
+import { Checkbox, CloseIcon, Input } from '@pluralsh/design-system'
 import Fuse from 'fuse.js'
 import capitalize from 'lodash/capitalize'
 

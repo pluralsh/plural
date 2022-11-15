@@ -13,7 +13,7 @@ import {
   ListBoxItem,
   ListBoxItemChipList,
   Select,
-} from 'pluralsh-design-system'
+} from '@pluralsh/design-system'
 
 import { extendConnection } from '../../../utils/graphql'
 

@@ -9,7 +9,7 @@ import {
   Select,
   Text,
 } from 'honorable'
-import { Button, FormField } from 'pluralsh-design-system'
+import { Button, FormField } from '@pluralsh/design-system'
 
 import CreateShellContext from '../../../../contexts/CreateShellContext'
 

@@ -7,7 +7,7 @@ import {
   SubTab,
   TabList,
   TabPanel,
-} from 'pluralsh-design-system'
+} from '@pluralsh/design-system'
 import { useContext, useRef, useState } from 'react'
 import styled from 'styled-components'
 

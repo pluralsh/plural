@@ -15,7 +15,7 @@ import {
   DockerTagIcon,
   EmptyState,
   PageTitle,
-} from 'pluralsh-design-system'
+} from '@pluralsh/design-system'
 import capitalize from 'lodash/capitalize'
 
 import { Table, TableData, TableRow } from '../../utils/Table'

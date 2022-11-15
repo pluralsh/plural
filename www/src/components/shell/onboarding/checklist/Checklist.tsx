@@ -9,7 +9,7 @@ import {
   MarketIcon,
   TerminalIcon,
   Toast,
-} from 'pluralsh-design-system'
+} from '@pluralsh/design-system'
 import {
   useCallback,
   useContext,

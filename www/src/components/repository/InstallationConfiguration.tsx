@@ -11,7 +11,7 @@ import {
   Tab,
   TabList,
   TabPanel,
-} from 'pluralsh-design-system'
+} from '@pluralsh/design-system'
 import { useCallback, useRef, useState } from 'react'
 import { Keyboard } from 'grommet'
 import capitalize from 'lodash/capitalize'

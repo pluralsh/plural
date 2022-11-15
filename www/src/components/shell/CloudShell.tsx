@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useMutation, useQuery } from '@apollo/client'
 import { useLocation } from 'react-router-dom'
 
-import { LoopingLogo } from 'pluralsh-design-system'
+import { LoopingLogo } from '@pluralsh/design-system'
 
 import { Flex } from 'honorable'
 

@@ -3,7 +3,7 @@ import { useQuery, useSubscription } from '@apollo/client'
 import { Box, Text } from 'grommet'
 import moment from 'moment'
 import { BeatLoader } from 'react-spinners'
-import { GitHubLogoIcon, ReloadIcon } from 'pluralsh-design-system'
+import { GitHubLogoIcon, ReloadIcon } from '@pluralsh/design-system'
 import { useParams } from 'react-router-dom'
 
 import { appendConnection, extendConnection } from '../../utils/graphql'

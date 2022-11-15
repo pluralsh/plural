@@ -4,7 +4,7 @@ import {
   Div,
   P,
 } from 'honorable'
-import { TipCarousel } from 'pluralsh-design-system'
+import { TipCarousel } from '@pluralsh/design-system'
 
 function TipCode(props) {
   return (

@@ -1,5 +1,5 @@
 import { Box } from 'grommet'
-import { ValidatedInput } from 'pluralsh-design-system'
+import { ValidatedInput } from '@pluralsh/design-system'
 import { useState } from 'react'
 
 import { BindingInput } from './Typeaheads'

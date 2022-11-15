@@ -1,6 +1,6 @@
 import { useQuery } from '@apollo/client'
 import { Button } from 'honorable'
-import { ArrowTopRightIcon } from 'pluralsh-design-system'
+import { ArrowTopRightIcon } from '@pluralsh/design-system'
 
 import { QUEUES } from './queries'
 

@@ -10,7 +10,7 @@ import {
   MagnifyingGlassIcon,
   Select,
   SprayIcon,
-} from 'pluralsh-design-system'
+} from '@pluralsh/design-system'
 
 import TerminalThemeContext from '../../contexts/TerminalThemeContext'
 

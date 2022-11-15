@@ -1,6 +1,6 @@
 import { useQuery } from '@apollo/client'
 import { Flex } from 'honorable'
-import { LoopingLogo } from 'pluralsh-design-system'
+import { LoopingLogo } from '@pluralsh/design-system'
 
 import { CLOUD_SHELL_QUERY } from './queries'
 

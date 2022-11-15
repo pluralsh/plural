@@ -1,6 +1,6 @@
 import { useQuery } from '@apollo/client'
 import { Flex, H1 } from 'honorable'
-import { Divider, StackCard } from 'pluralsh-design-system'
+import { Divider, StackCard } from '@pluralsh/design-system'
 
 import { useNavigate } from 'react-router-dom'
 

@@ -13,7 +13,7 @@ import {
 import { XTerm } from 'xterm-for-react'
 import { FitAddon } from 'xterm-addon-fit'
 import { Div, Flex } from 'honorable'
-import { Button, ReloadIcon, ScrollIcon } from 'pluralsh-design-system'
+import { Button, ReloadIcon, ScrollIcon } from '@pluralsh/design-system'
 import { useResizeDetector } from 'react-resize-detector'
 import debounce from 'lodash/debounce'
 

@@ -1,6 +1,6 @@
 // import original module declarations
 import 'styled-components'
-import { styledTheme } from 'pluralsh-design-system'
+import { styledTheme } from '@pluralsh/design-system'
 
 type StyledTheme = typeof styledTheme
 

@@ -7,7 +7,7 @@ import {
   useMatch,
 } from 'react-router-dom'
 import { StripeProvider } from 'react-stripe-elements'
-import { Toast } from 'pluralsh-design-system'
+import { Toast } from '@pluralsh/design-system'
 import { useFeature } from '@growthbook/growthbook-react'
 
 import { growthbook } from '../helpers/growthbook'

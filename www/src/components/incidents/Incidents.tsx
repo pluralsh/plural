@@ -26,7 +26,7 @@ import {
   SortAscIcon,
   SortDescIcon,
   TagIcon,
-} from 'pluralsh-design-system'
+} from '@pluralsh/design-system'
 import { useQuery } from '@apollo/client'
 
 import moment from 'moment'

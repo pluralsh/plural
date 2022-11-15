@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo } from 'react'
 import { MenuItem, Select } from 'honorable'
-import { FormField, Input } from 'pluralsh-design-system'
+import { FormField, Input } from '@pluralsh/design-system'
 
 import { stringExists } from '../../validation'
 

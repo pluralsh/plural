@@ -1,5 +1,5 @@
 import { ButtonProps, Flex } from 'honorable'
-import { Button, CheckIcon } from 'pluralsh-design-system'
+import { Button, CheckIcon } from '@pluralsh/design-system'
 import { ReactNode, useEffect, useState } from 'react'
 import { useTheme } from 'styled-components'
 

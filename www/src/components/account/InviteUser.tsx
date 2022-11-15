@@ -4,7 +4,7 @@ import {
   MailIcon,
   Modal,
   ValidatedInput,
-} from 'pluralsh-design-system'
+} from '@pluralsh/design-system'
 import { useCallback, useState } from 'react'
 
 import { useMutation } from '@apollo/client'

@@ -1,4 +1,4 @@
-FROM node:16.18-slim as build
+FROM node:18.12.1-slim as build
 
 WORKDIR /app
 
@@ -17,7 +17,7 @@ COPY . ./
 RUN yarn run build
 
 # production environment
-FROM gcr.io/pluralsh/nginx:1.19.8-alpine
+FROM nginx:1.19.8-alpine
 
 COPY --from=build /app/build /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf

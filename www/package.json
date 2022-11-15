@@ -35,7 +35,7 @@
     "@nivo/geo": "0.80.0",
     "@nivo/line": "0.80.0",
     "@octokit/core": "3.6.0",
-    "@pluralsh/design-system": "1.289.0",
+    "@pluralsh/design-system": "1.290.2",
     "@testing-library/jest-dom": "5.16.5",
     "@testing-library/react": "13.4.0",
     "@types/styled-components": "5.1.26",

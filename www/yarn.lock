@@ -2636,6 +2636,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@floating-ui/core@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "@floating-ui/core@npm:1.0.2"
+  checksum: a6c93c15c4408dfa5acff31c275f36d85f4107a9d7562da2d6c014c810559843a71e38622046195856966929d20a37793e7ed0905e54ddc8edd91cd10500ce8d
+  languageName: node
+  linkType: hard
+
 "@floating-ui/dom@npm:^1.0.0":
   version: 1.0.3
   resolution: "@floating-ui/dom@npm:1.0.3"
@@ -2645,16 +2652,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@floating-ui/react-dom-interactions@npm:0.10.3":
-  version: 0.10.3
-  resolution: "@floating-ui/react-dom-interactions@npm:0.10.3"
+"@floating-ui/dom@npm:^1.0.5":
+  version: 1.0.5
+  resolution: "@floating-ui/dom@npm:1.0.5"
   dependencies:
-    "@floating-ui/react-dom": ^1.0.0
+    "@floating-ui/core": ^1.0.2
+  checksum: 85077c98add5cb39402de954e4857cc74f08fa9f3739575807e40544ed7ba5a55b6e002f38c96373215d97b4dd8023ec79c4db592dd1fc52d658c8393cbb9a0e
+  languageName: node
+  linkType: hard
+
+"@floating-ui/react-dom-interactions@npm:0.11.0":
+  version: 0.11.0
+  resolution: "@floating-ui/react-dom-interactions@npm:0.11.0"
+  dependencies:
+    "@floating-ui/react-dom": ^1.0.1
     aria-hidden: ^1.1.3
   peerDependencies:
     react: ">=16.8.0"
     react-dom: ">=16.8.0"
-  checksum: 8f3dbe9ab8b59edec825209a488c6e25b18e1019691c6d0cfa3ada0b83226efc76f4d06bfdd3cc12a27813cff197e1988917d371204d119ba67bd4e3c3c3a3c8
+  checksum: 4abe7c498847dd2eb54bf407a590fc7435fe579c434b1da88b486e1c0f2bf95c22b60ddb4da26f91a082b379bbc99a7bd20fa648a461c9667adbd9365d4acd55
   languageName: node
   linkType: hard
 
@@ -2667,6 +2683,18 @@ __metadata:
     react: ">=16.8.0"
     react-dom: ">=16.8.0"
   checksum: d79e3c8570b0eaef5e968cd9c69de2c6bb372a5316e4e69a1cd12dae81771863ef430e81b74a0c21cefba663a2f971d8540c7294d7fb3b9807e32ba2a00c1e76
+  languageName: node
+  linkType: hard
+
+"@floating-ui/react-dom@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "@floating-ui/react-dom@npm:1.0.1"
+  dependencies:
+    "@floating-ui/dom": ^1.0.5
+  peerDependencies:
+    react: ">=16.8.0"
+    react-dom: ">=16.8.0"
+  checksum: 74b80fd46f2f301f444af458e5bbdb0ef0321786aca15dd892c45ce4077a500dfc84c117cb1669360ecc1378346eff77886f1b0dd9b1adbb30e72f894fe27dfb
   languageName: node
   linkType: hard
 
@@ -4193,11 +4221,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pluralsh/design-system@npm:1.289.0":
-  version: 1.289.0
-  resolution: "@pluralsh/design-system@npm:1.289.0"
+"@pluralsh/design-system@npm:1.290.2":
+  version: 1.290.2
+  resolution: "@pluralsh/design-system@npm:1.290.2"
   dependencies:
-    "@floating-ui/react-dom-interactions": 0.10.3
+    "@floating-ui/react-dom-interactions": 0.11.0
     "@react-aria/button": 3.6.2
     "@react-aria/checkbox": 3.6.0
     "@react-aria/combobox": 3.4.2
@@ -4217,7 +4245,7 @@ __metadata:
     "@react-stately/tabs": 3.2.2
     "@react-stately/toggle": 3.4.2
     "@react-types/shared": 3.15.0
-    "@tanstack/react-table": 8.5.27
+    "@tanstack/react-table": 8.5.28
     "@types/chroma-js": 2.1.4
     chroma-js: 2.4.2
     classnames: 2.3.2
@@ -4240,7 +4268,7 @@ __metadata:
     react-dom: ">=16.0.0"
     react-transition-group: ">=4.4.2"
     styled-components: ">=5.3.5"
-  checksum: 552176b4aea280fe4a52b29a108474fc652085a347b35cd70cbb3d0ecf6a0dda0f7f25d3463fa4eeca2a55491f83b03c2a987c465d06070e3d46c07e6dbbfb38
+  checksum: a823cd3a85c57abb619f11939fbabae7eb750e33d526ae28c3ba63ce6601f5147bfe7c9b8f756982b9989cd978f04e0ce7c80a7730eea4f06ba71a5c79f04327
   languageName: node
   linkType: hard
 
@@ -5545,22 +5573,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tanstack/react-table@npm:8.5.27":
-  version: 8.5.27
-  resolution: "@tanstack/react-table@npm:8.5.27"
+"@tanstack/react-table@npm:8.5.28":
+  version: 8.5.28
+  resolution: "@tanstack/react-table@npm:8.5.28"
   dependencies:
-    "@tanstack/table-core": 8.5.27
+    "@tanstack/table-core": 8.5.28
   peerDependencies:
     react: ">=16"
     react-dom: ">=16"
-  checksum: 7b58c39ebf08381c6debb5f503e224fc82fd8c1dbbd3e92c91c39d2eed8a5510c7284d00c0ded1c4f11045c57dc7af78bd6cac9de7c1b6cf8bfb5f6838f9673f
+  checksum: 109d7c2fa31c7a55904e7eac08c4824dc65630fea72353b574a7f6f694b186c870d7f9cc322f25cac958c6010dced1fe974b417b4626e81efcea08c62c94f3cf
   languageName: node
   linkType: hard
 
-"@tanstack/table-core@npm:8.5.27":
-  version: 8.5.27
-  resolution: "@tanstack/table-core@npm:8.5.27"
-  checksum: 83614456f8710496dbb5a483dc475ab4c203a6075a082b13cb29fdc182c6ec70f9556cc8a3761aa88f503233c33f68f2879eccca9e2d153b0e5cb5b42a4602bf
+"@tanstack/table-core@npm:8.5.28":
+  version: 8.5.28
+  resolution: "@tanstack/table-core@npm:8.5.28"
+  checksum: 309f40d474f639b70932e17e20282ef2f3a3ccc4927db3273e4e9b34e271d525cd802c3c3b546613e0123782768862cbede527b56f1803f780888fc213afd8b5
   languageName: node
   linkType: hard
 
@@ -24116,7 +24144,7 @@ __metadata:
     "@nivo/geo": 0.80.0
     "@nivo/line": 0.80.0
     "@octokit/core": 3.6.0
-    "@pluralsh/design-system": 1.289.0
+    "@pluralsh/design-system": 1.290.2
     "@pluralsh/eslint-config-typescript": 2.4.2
     "@pluralsh/stylelint-config": 1.0.1
     "@testing-library/jest-dom": 5.16.5

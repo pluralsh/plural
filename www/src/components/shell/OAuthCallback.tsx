@@ -27,7 +27,7 @@ function OAuthCallback({ provider }: any) {
   console.debug(data)
 
   // START <<Remove this after dev>>
-  if (process.env.NODE_ENV !== 'production' && DEBUG_SCM_TOKENS[provider.toUpperCase()]) {
+  if (import.meta.env.MODE !== 'production' && DEBUG_SCM_TOKENS[provider.toUpperCase()]) {
     data = { ...data, ...{ scmToken: DEBUG_SCM_TOKENS[provider.toUpperCase()] } }
   }
   // END <<Remove this after dev>>

@@ -47,7 +47,7 @@ function ServiceAccountBanner({ previousUser }: any) {
 
 function ApplicationLayout({ children }: any) {
   const previousUser = getPreviousUserData()
-  const isProduction = process.env.NODE_ENV === 'production'
+  const isProduction = import.meta.env.MODE === 'production'
 
   return (
     <Flex

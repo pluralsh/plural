@@ -1,5 +1,5 @@
-const isProduction = process.env.NODE_ENV === 'production'
-const url = process.env.PUBLIC_URL || ''
+const isProduction = import.meta.env.MODE === 'production'
+const url = import.meta.env.BASE_URL || ''
 const isServiceWorkerAvailable = 'serviceWorker' in navigator
 const serviceWorkerURL = `${url}/service-worker.js`
 const isLocalhost = Boolean(window.location.hostname === 'localhost'

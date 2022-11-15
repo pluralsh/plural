@@ -6,7 +6,7 @@ import {
 } from 'honorable'
 
 // @ts-ignore
-import { ReactComponent as OnboardingTitleOnboarding } from './OnboardingTitleOnboarding.svg'
+import OnboardingTitleOnboardingSVG from './OnboardingTitleOnboarding.svg'
 
 function OnboardingHeader() {
   return (
@@ -23,7 +23,7 @@ function OnboardingHeader() {
           height={26}
           marginRight="small"
         />
-        <OnboardingTitleOnboarding />
+        <img src={OnboardingTitleOnboardingSVG} alt="Plural onboarding" />
       </Flex>
       <Hr
         marginTop={42}

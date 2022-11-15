@@ -24,9 +24,7 @@ import TerminalSidebar from './TerminalSidebar'
 import TerminalInformation from './TerminalInformation'
 import useOnboarded from './onboarding/useOnboarded'
 import ConfigureMyCloudButton from './ConfigureMyCloudButton'
-
-// eslint-disable-next-line
-const { Buffer } = require('buffer/')
+import { Buffer } from 'buffer/'
 
 const decodeBase64 = str => Buffer.from(str, 'base64').toString('utf-8')
 // const detachedMessage = '[detached (from session workspace)]'

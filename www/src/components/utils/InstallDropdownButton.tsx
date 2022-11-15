@@ -35,11 +35,11 @@ export const providerToDisplayName = {
 }
 
 export const providerToIcon = {
-  AWS: `${process.env.PUBLIC_URL}/aws-icon.png`,
-  AZURE: `${process.env.PUBLIC_URL}/azure.png`,
-  EQUINIX: `${process.env.PUBLIC_URL}/equinix-metal.png`,
-  GCP: `${process.env.PUBLIC_URL}/gcp.png`,
-  KIND: `${process.env.PUBLIC_URL}/kind.png`,
+  AWS: `/aws-icon.png`,
+  AZURE: `/azure.png`,
+  EQUINIX: `/equinix-metal.png`,
+  GCP: `/gcp.png`,
+  KIND: `/kind.png`,
 }
 
 export const providerToIconHeight = {

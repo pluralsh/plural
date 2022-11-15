@@ -34,7 +34,7 @@ function CreateRepositoryCard({ data, onPrevious = () => {} }: any) {
             key={provider}
             onClick={() => {
               // START <<Remove this after dev>>
-              if (process.env.NODE_ENV !== 'production' && DEBUG_SCM_TOKENS[provider]) {
+              if (import.meta.env.MODE !== 'production' && DEBUG_SCM_TOKENS[provider]) {
                 console.log('going to ', `/oauth/callback/${provider.toLowerCase()}/shell?code=abcd`)
                 ;(window as Window).location = `/oauth/callback/${provider.toLowerCase()}/shell?code=abcd`
 

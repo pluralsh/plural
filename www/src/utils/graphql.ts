@@ -1,5 +1,10 @@
 import isString from 'lodash/isString'
 
+import { MutationUpdaterFunction } from '@apollo/client/core/types'
+
+import { UserFragment } from '../models/user'
+import { RootMutationType, RootMutationTypeUpdateUserArgs } from '../generated/graphql'
+
 export function updateFragment(cache, {
   fragment, id, update, fragmentName,
 }) {
@@ -70,4 +75,15 @@ export function deepFetch(map, path) {
   if (!map[key]) return null
 
   return deepFetch(map[key], path.slice(1))
+}
+
+export const updateUserFragment: MutationUpdaterFunction<RootMutationType, RootMutationTypeUpdateUserArgs, any, any> = (cache, { data }) => {
+  cache.modify({
+    fields: {
+      me: () => cache.writeFragment({
+        data: data?.updateUser,
+        fragment: UserFragment,
+      }),
+    },
+  })
 }

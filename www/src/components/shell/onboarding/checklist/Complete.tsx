@@ -8,10 +8,21 @@ import {
 } from 'honorable'
 import { GitHubLogoIcon, SourcererIcon } from 'pluralsh-design-system'
 
-import { UPDATE_ONBOARDING_CHECKLIST } from '../../../users/queries'
+import { UPDATE_USER } from '../../../users/queries'
+import { updateUserFragment } from '../../../../utils/graphql'
+import { RootMutationType, RootMutationTypeUpdateUserArgs } from '../../../../generated/graphql'
 
-export function ChecklistComplete({ refetch }: any) {
-  const [updateChecklist, { loading }] = useMutation(UPDATE_ONBOARDING_CHECKLIST)
+export function ChecklistComplete() {
+  const [updateChecklist, { loading }] = useMutation<RootMutationType, RootMutationTypeUpdateUserArgs>(UPDATE_USER, {
+    variables: {
+      attributes: {
+        onboardingChecklist: {
+          dismissed: true,
+        },
+      },
+    },
+    update: updateUserFragment,
+  })
 
   return (
     <Flex
@@ -62,16 +73,7 @@ export function ChecklistComplete({ refetch }: any) {
         <Button
           small
           loading={loading}
-          onClick={() => updateChecklist({
-            variables: {
-              attributes: {
-                onboardingChecklist: {
-                  dismissed: true,
-                },
-              },
-            },
-            onCompleted: refetch,
-          })}
+          onClick={() => updateChecklist()}
         >Complete
         </Button>
       </Flex>

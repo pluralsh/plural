@@ -73,7 +73,7 @@ function UpdateUpgrades({
             key={t}
             value={t}
             checked={trackTag === t && autoUpgrade}
-            onChange={({ target: { checked } }) => checked && doSetTrackTag(t)}
+            onChange={({ target: { checked } }: any) => checked && doSetTrackTag(t)}
           >
             {capitalize(t)}
           </Radio>
@@ -81,7 +81,7 @@ function UpdateUpgrades({
         <Radio
           value="none"
           checked={!autoUpgrade}
-          onChange={({ target: { checked } }) => checked && doSetTrackTag('none')}
+          onChange={({ target: { checked } }: any) => checked && doSetTrackTag('none')}
         >
           None
         </Radio>

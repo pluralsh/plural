@@ -12858,22 +12858,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"grommet@npm:2.25.3":
-  version: 2.25.3
-  resolution: "grommet@npm:2.25.3"
-  dependencies:
-    grommet-icons: ^4.7.0
-    hoist-non-react-statics: ^3.2.0
-    markdown-to-jsx: ^7.1.5
-    prop-types: ^15.8.1
-  peerDependencies:
-    react: ^16.6.1 || ^17.0.0 || ^18.0.0
-    react-dom: ^16.6.1 || ^17.0.0 || ^18.0.0
-    styled-components: ">= 5.1"
-  checksum: 9164401f68ddb8c97e7ac0c076e255ed9d0067438f074337db9bffde7343bc79d97e14f0a8e3d468cf923e1cd0eaf82ad40cb679925e1969d2da4ed6f637803f
-  languageName: node
-  linkType: hard
-
 "grommet@npm:2.27.0":
   version: 2.27.0
   resolution: "grommet@npm:2.27.0"
@@ -17734,9 +17718,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pluralsh-design-system@npm:1.286.0":
-  version: 1.286.0
-  resolution: "pluralsh-design-system@npm:1.286.0"
+"pluralsh-design-system@npm:1.288.0":
+  version: 1.288.0
+  resolution: "pluralsh-design-system@npm:1.288.0"
   dependencies:
     "@floating-ui/react-dom-interactions": 0.10.3
     "@react-aria/button": 3.6.2
@@ -17762,7 +17746,7 @@ __metadata:
     "@types/chroma-js": 2.1.4
     chroma-js: 2.4.2
     classnames: 2.3.2
-    grommet: 2.25.3
+    grommet: 2.27.0
     highlight.js: 11.6.0
     prop-types: 15.8.1
     react-animate-height: 3.0.4
@@ -17780,7 +17764,7 @@ __metadata:
     react-dom: ">=16.0.0"
     react-transition-group: ">=4.4.2"
     styled-components: ">=5.3.5"
-  checksum: 041d42ab784221cebbb8e00627725426d25de392a18ae18327d04f4925b6acc4c9aaef5a4331dbb132546e62224568920f5fb31310dbd55dd3ad8c9fe0666c3c
+  checksum: cd07820153ae0b55bcd66a2644a68389585e543638c7373ce9df7ba4fa8089892918fad04a43b01e3165737507497aca728946a18227caceb485713ede6da561
   languageName: node
   linkType: hard
 
@@ -24166,7 +24150,7 @@ __metadata:
     moment: 2.29.4
     phoenix: 1.6.15
     pluralsh-absinthe-socket-apollo-link: 0.2.0
-    pluralsh-design-system: 1.286.0
+    pluralsh-design-system: 1.288.0
     postcss-import: 8.2.0
     prop-types: 15.8.1
     query-string: 7.1.1

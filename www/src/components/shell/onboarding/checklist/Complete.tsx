@@ -6,7 +6,7 @@ import {
   Flex,
   Span,
 } from 'honorable'
-import { GitHubLogoIcon, SourcererIcon } from 'pluralsh-design-system'
+import { GitHubLogoIcon, SourcererIcon } from '@pluralsh/design-system'
 
 import { UPDATE_USER } from '../../../users/queries'
 import { updateUserFragment } from '../../../../utils/graphql'

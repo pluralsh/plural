@@ -13,7 +13,7 @@ import {
   TabList,
   TabPanel,
   VerifiedIcon,
-} from 'pluralsh-design-system'
+} from '@pluralsh/design-system'
 
 import { useRef } from 'react'
 

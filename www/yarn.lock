@@ -4193,6 +4193,57 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@pluralsh/design-system@npm:1.289.0":
+  version: 1.289.0
+  resolution: "@pluralsh/design-system@npm:1.289.0"
+  dependencies:
+    "@floating-ui/react-dom-interactions": 0.10.3
+    "@react-aria/button": 3.6.2
+    "@react-aria/checkbox": 3.6.0
+    "@react-aria/combobox": 3.4.2
+    "@react-aria/focus": 3.9.0
+    "@react-aria/interactions": 3.12.0
+    "@react-aria/listbox": 3.7.0
+    "@react-aria/overlays": 3.11.0
+    "@react-aria/radio": 3.4.0
+    "@react-aria/select": 3.8.2
+    "@react-aria/tabs": 3.3.2
+    "@react-aria/utils": 3.14.0
+    "@react-aria/visually-hidden": 3.5.0
+    "@react-stately/collections": 3.4.4
+    "@react-stately/combobox": 3.2.2
+    "@react-stately/overlays": 3.4.2
+    "@react-stately/radio": 3.6.0
+    "@react-stately/tabs": 3.2.2
+    "@react-stately/toggle": 3.4.2
+    "@react-types/shared": 3.15.0
+    "@tanstack/react-table": 8.5.27
+    "@types/chroma-js": 2.1.4
+    chroma-js: 2.4.2
+    classnames: 2.3.2
+    grommet: 2.27.0
+    grommet-icons: 4.8.0
+    highlight.js: 11.6.0
+    prop-types: 15.8.1
+    react-animate-height: 3.0.5
+    react-markdown: 8.0.3
+    react-merge-refs: 2.0.1
+    react-spring: 9.5.5
+    rehype-raw: 6.1.1
+    resize-observer-polyfill: 1.5.1
+  peerDependencies:
+    "@emotion/react": ">=11.9.3"
+    "@emotion/styled": ">=11.9.3"
+    honorable: ">=0.128.0"
+    honorable-theme-default: ">=0.63.0"
+    react: ">=16.0.0"
+    react-dom: ">=16.0.0"
+    react-transition-group: ">=4.4.2"
+    styled-components: ">=5.3.5"
+  checksum: 552176b4aea280fe4a52b29a108474fc652085a347b35cd70cbb3d0ecf6a0dda0f7f25d3463fa4eeca2a55491f83b03c2a987c465d06070e3d46c07e6dbbfb38
+  languageName: node
+  linkType: hard
+
 "@pluralsh/eslint-config-pluralsh@npm:^1.3.1":
   version: 1.3.1
   resolution: "@pluralsh/eslint-config-pluralsh@npm:1.3.1"
@@ -12834,7 +12885,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"grommet-icons@npm:^4.7.0":
+"grommet-icons@npm:4.8.0, grommet-icons@npm:^4.7.0":
   version: 4.8.0
   resolution: "grommet-icons@npm:4.8.0"
   dependencies:
@@ -17718,56 +17769,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pluralsh-design-system@npm:1.288.0":
-  version: 1.288.0
-  resolution: "pluralsh-design-system@npm:1.288.0"
-  dependencies:
-    "@floating-ui/react-dom-interactions": 0.10.3
-    "@react-aria/button": 3.6.2
-    "@react-aria/checkbox": 3.6.0
-    "@react-aria/combobox": 3.4.2
-    "@react-aria/focus": 3.9.0
-    "@react-aria/interactions": 3.12.0
-    "@react-aria/listbox": 3.7.0
-    "@react-aria/overlays": 3.11.0
-    "@react-aria/radio": 3.4.0
-    "@react-aria/select": 3.8.2
-    "@react-aria/tabs": 3.3.2
-    "@react-aria/utils": 3.14.0
-    "@react-aria/visually-hidden": 3.5.0
-    "@react-stately/collections": 3.4.4
-    "@react-stately/combobox": 3.2.2
-    "@react-stately/overlays": 3.4.2
-    "@react-stately/radio": 3.6.0
-    "@react-stately/tabs": 3.2.2
-    "@react-stately/toggle": 3.4.2
-    "@react-types/shared": 3.15.0
-    "@tanstack/react-table": 8.5.27
-    "@types/chroma-js": 2.1.4
-    chroma-js: 2.4.2
-    classnames: 2.3.2
-    grommet: 2.27.0
-    highlight.js: 11.6.0
-    prop-types: 15.8.1
-    react-animate-height: 3.0.4
-    react-markdown: 8.0.3
-    react-merge-refs: 2.0.1
-    react-spring: 9.5.5
-    rehype-raw: 6.1.1
-    resize-observer-polyfill: 1.5.1
-  peerDependencies:
-    "@emotion/react": ">=11.9.3"
-    "@emotion/styled": ">=11.9.3"
-    honorable: ">=0.128.0"
-    honorable-theme-default: ">=0.63.0"
-    react: ">=16.0.0"
-    react-dom: ">=16.0.0"
-    react-transition-group: ">=4.4.2"
-    styled-components: ">=5.3.5"
-  checksum: cd07820153ae0b55bcd66a2644a68389585e543638c7373ce9df7ba4fa8089892918fad04a43b01e3165737507497aca728946a18227caceb485713ede6da561
-  languageName: node
-  linkType: hard
-
 "posix-character-classes@npm:^0.1.0":
   version: 0.1.1
   resolution: "posix-character-classes@npm:0.1.1"
@@ -19085,15 +19086,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-animate-height@npm:3.0.4":
-  version: 3.0.4
-  resolution: "react-animate-height@npm:3.0.4"
+"react-animate-height@npm:3.0.5":
+  version: 3.0.5
+  resolution: "react-animate-height@npm:3.0.5"
   dependencies:
     classnames: ^2.3.1
   peerDependencies:
     react: ">=16.8.0"
     react-dom: ">=16.8.0"
-  checksum: 3efa212b41bb1c424c4b5390c1b0e34e85eec799f5ca76fab3223ccb0dff215febc5fd95a07188db85e5a06661ed9f6f3f9b8c68de744d8daad912f298d1bfc2
+  checksum: dab50deca7d476a4d87fdb619a047b6d3099fb27a2edbdecf52be3062993cb84c2e4a8122e3230a3e301e08b6cc82ebeb4679f927fe64f1fdd5a280d80e656a8
   languageName: node
   linkType: hard
 
@@ -24115,6 +24116,7 @@ __metadata:
     "@nivo/geo": 0.80.0
     "@nivo/line": 0.80.0
     "@octokit/core": 3.6.0
+    "@pluralsh/design-system": 1.289.0
     "@pluralsh/eslint-config-typescript": 2.4.2
     "@pluralsh/stylelint-config": 1.0.1
     "@testing-library/jest-dom": 5.16.5
@@ -24150,7 +24152,6 @@ __metadata:
     moment: 2.29.4
     phoenix: 1.6.15
     pluralsh-absinthe-socket-apollo-link: 0.2.0
-    pluralsh-design-system: 1.288.0
     postcss-import: 8.2.0
     prop-types: 15.8.1
     query-string: 7.1.1

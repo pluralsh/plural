@@ -4,7 +4,7 @@ import {
   Span,
   Text,
 } from 'honorable'
-import { ErrorIcon, Toast } from 'pluralsh-design-system'
+import { ErrorIcon, Toast } from '@pluralsh/design-system'
 import { useContext } from 'react'
 import { useTheme } from 'styled-components'
 

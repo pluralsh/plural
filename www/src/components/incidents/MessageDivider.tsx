@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Divider } from 'pluralsh-design-system'
+import { Divider } from '@pluralsh/design-system'
 import moment from 'moment'
 
 export function sameDay(message, next) {

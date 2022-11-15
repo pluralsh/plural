@@ -10,7 +10,7 @@ import {
   StarIcon,
   ThumbsUpFilledIcon,
   ThumbsUpIcon,
-} from 'pluralsh-design-system'
+} from '@pluralsh/design-system'
 
 type OnboardingCompletionModalProps = {
   open: boolean

@@ -1,6 +1,6 @@
 import { useContext } from 'react'
 import { Flex, P } from 'honorable'
-import { Markdown, PageTitle } from 'pluralsh-design-system'
+import { Markdown, PageTitle } from '@pluralsh/design-system'
 
 import RepositoryContext from '../../contexts/RepositoryContext'
 

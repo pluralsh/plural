@@ -2,7 +2,7 @@ import { useContext, useEffect } from 'react'
 import { useQuery } from '@apollo/client'
 import { useNavigate } from 'react-router-dom'
 import { Box, Text } from 'grommet'
-import { GitHubLogoIcon } from 'pluralsh-design-system'
+import { GitHubLogoIcon } from '@pluralsh/design-system'
 import { Update } from 'forge-core'
 
 import { Provider } from '../repos/misc'

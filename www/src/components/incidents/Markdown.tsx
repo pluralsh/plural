@@ -15,7 +15,7 @@ import { TooltipContent } from 'forge-core'
 import sortBy from 'lodash/sortBy'
 import { Emoji as Emojii } from 'emoji-mart'
 
-import { Code } from 'pluralsh-design-system'
+import { Code } from '@pluralsh/design-system'
 
 import Avatar from '../users/Avatar'
 

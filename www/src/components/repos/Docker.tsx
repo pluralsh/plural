@@ -25,7 +25,7 @@ import {
   Tab,
   TabList,
   TabPanel,
-} from 'pluralsh-design-system'
+} from '@pluralsh/design-system'
 import { Flex } from 'honorable'
 
 import { GoBack } from '../utils/GoBack'

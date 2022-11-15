@@ -15,7 +15,7 @@ import {
   Text,
   ThemeContext,
 } from 'grommet'
-import { ArrowRightIcon, CaretLeftIcon } from 'pluralsh-design-system'
+import { ArrowRightIcon, CaretLeftIcon } from '@pluralsh/design-system'
 import { normalizeColor } from 'grommet/utils'
 
 import { chunk } from '../../utils/array'

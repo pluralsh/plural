@@ -1,6 +1,6 @@
 import { Box } from 'grommet'
 import { Span, Switch } from 'honorable'
-import { Tab, TabList, TabPanel } from 'pluralsh-design-system'
+import { Tab, TabList, TabPanel } from '@pluralsh/design-system'
 import { useCallback, useRef, useState } from 'react'
 
 import { ListItem } from '../profile/ListItem'

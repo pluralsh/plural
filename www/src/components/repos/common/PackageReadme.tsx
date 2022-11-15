@@ -2,7 +2,7 @@ import { Box } from 'grommet'
 
 import { useOutletContext } from 'react-router-dom'
 
-import { Markdown, PageTitle } from 'pluralsh-design-system'
+import { Markdown, PageTitle } from '@pluralsh/design-system'
 
 import { Flex } from 'honorable'
 

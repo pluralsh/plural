@@ -17,7 +17,7 @@ import {
   PageTitle,
   Toast,
   Tooltip,
-} from 'pluralsh-design-system'
+} from '@pluralsh/design-system'
 
 import { Placeholder } from '../utils/Placeholder'
 

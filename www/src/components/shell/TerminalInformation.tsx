@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Codeline, Divider, InfoIcon } from 'pluralsh-design-system'
+import { Codeline, Divider, InfoIcon } from '@pluralsh/design-system'
 
 import {
   Button,

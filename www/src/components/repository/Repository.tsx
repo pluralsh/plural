@@ -2,7 +2,7 @@ import { useQuery } from '@apollo/client'
 import { useRef } from 'react'
 import { Outlet, useParams, useSearchParams } from 'react-router-dom'
 import { Flex } from 'honorable'
-import { TabPanel } from 'pluralsh-design-system'
+import { TabPanel } from '@pluralsh/design-system'
 
 import { GoBack } from '../utils/GoBack'
 

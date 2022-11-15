@@ -9,7 +9,7 @@ import {
 } from 'honorable'
 import moment from 'moment'
 import { useState } from 'react'
-import { ArrowLeftIcon } from 'pluralsh-design-system'
+import { ArrowLeftIcon } from '@pluralsh/design-system'
 
 import { Placeholder } from '../utils/Placeholder'
 

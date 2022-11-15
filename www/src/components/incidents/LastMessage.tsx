@@ -1,4 +1,4 @@
-import { Divider } from 'pluralsh-design-system'
+import { Divider } from '@pluralsh/design-system'
 
 import { formatDate } from './MessageDivider'
 

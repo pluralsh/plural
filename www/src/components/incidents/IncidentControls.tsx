@@ -11,7 +11,7 @@ import {
   CheckIcon,
   LightningIcon,
   OwnerIcon,
-} from 'pluralsh-design-system'
+} from '@pluralsh/design-system'
 import { useMutation } from '@apollo/client'
 
 import { Editable, Slate } from 'slate-react'

@@ -13,7 +13,7 @@ import {
   Input,
   PageTitle,
   ValidatedInput,
-} from 'pluralsh-design-system'
+} from '@pluralsh/design-system'
 import { useContext, useMemo, useState } from 'react'
 import { useTheme } from 'styled-components'
 

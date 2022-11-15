@@ -8,7 +8,7 @@ import {
   ContentCard,
   PageTitle,
   ValidatedInput,
-} from 'pluralsh-design-system'
+} from '@pluralsh/design-system'
 import { useContext, useEffect, useState } from 'react'
 import { useFilePicker } from 'react-sage'
 

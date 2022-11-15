@@ -16,7 +16,7 @@ import {
   ListIcon,
   UbuntuLogoIcon,
   WindowsLogoIcon,
-} from 'pluralsh-design-system'
+} from '@pluralsh/design-system'
 import fs from 'filesize'
 
 import RepositoryContext from '../../contexts/RepositoryContext'

@@ -7,7 +7,7 @@ import {
   Modal,
   PageTitle,
   SearchIcon,
-} from 'pluralsh-design-system'
+} from '@pluralsh/design-system'
 import { useContext, useState } from 'react'
 
 import ListInput from '../utils/ListInput'

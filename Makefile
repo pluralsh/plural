@@ -19,13 +19,10 @@ ifeq ($(APP_NAME), www)
 							-t gcr.io/$(GCP_PROJECT)/plural-www:`cat ../VERSION` \
 							-t $(DKR_HOST)/plural/plural-www:`cat ../VERSION` .
 else
-	docker build --build-arg APP_NAME=$(APP_NAME) \
+	docker buildx build --push --platform linux/$(TARGETARCH) --build-arg APP_NAME=$(APP_NAME) \
 		--build-arg GIT_COMMIT=$(GIT_COMMIT) \
 		--build-arg TARGETARCH=$(TARGETARCH) \
-		-t $(APP_NAME):$(APP_VSN) \
-		-t $(APP_NAME):latest \
-		-t gcr.io/$(GCP_PROJECT)/$(APP_NAME):$(APP_VSN) \
-		-t $(DKR_HOST)/plural/$(APP_NAME):$(APP_VSN) .
+		-t davidspek/$(APP_NAME):$(APP_VSN)-ecto-3.9.0 .
 endif
 
 deploy: ## deploy artifacts to plural

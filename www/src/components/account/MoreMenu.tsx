@@ -1,4 +1,4 @@
-import { IconFrame, MoreIcon, Select } from 'pluralsh-design-system'
+import { IconFrame, MoreIcon, Select } from '@pluralsh/design-system'
 import { useState } from 'react'
 
 export function MoreMenu({ children, onSelectionChange, ...props }: any) {

@@ -5,7 +5,7 @@ import { Outlet, useLocation, useParams } from 'react-router-dom'
 
 import { Button, Flex, Modal } from 'honorable'
 
-import { Tab, TabList, TabPanel } from 'pluralsh-design-system'
+import { Tab, TabList, TabPanel } from '@pluralsh/design-system'
 
 import {
   ResponsiveLayoutContentContainer,

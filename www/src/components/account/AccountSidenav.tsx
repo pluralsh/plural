@@ -1,4 +1,4 @@
-import { PageCard, Tab, TabList } from 'pluralsh-design-system'
+import { PageCard, Tab, TabList } from '@pluralsh/design-system'
 import { useContext } from 'react'
 import { useLocation } from 'react-router-dom'
 import { Div } from 'honorable'

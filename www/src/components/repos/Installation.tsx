@@ -5,7 +5,7 @@ import { Box, Text } from 'grommet'
 
 import { Div, useTheme } from 'honorable'
 
-import { Codeline } from 'pluralsh-design-system'
+import { Codeline } from '@pluralsh/design-system'
 
 import Plan from '../payments/Plan'
 import CreatePlan, { CreateAnchor } from '../payments/CreatePlan'

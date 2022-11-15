@@ -3,7 +3,7 @@ import moment from 'moment'
 import { useEffect, useState } from 'react'
 import { Div, Flex, Text } from 'honorable'
 import { useTheme } from 'styled-components'
-import { LoopingLogo, SearchIcon } from 'pluralsh-design-system'
+import { LoopingLogo, SearchIcon } from '@pluralsh/design-system'
 
 import ListInput from '../utils/ListInput'
 

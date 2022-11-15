@@ -5,7 +5,7 @@ import {
   Button,
   Sidecar,
   SidecarItem,
-} from 'pluralsh-design-system'
+} from '@pluralsh/design-system'
 import { ReactElement, useContext } from 'react'
 
 import QueueContext from '../../contexts/QueueContext'

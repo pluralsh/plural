@@ -2,7 +2,7 @@ import { useQuery } from '@apollo/client'
 
 import { Div } from 'honorable'
 
-import { SearchIcon } from 'pluralsh-design-system'
+import { SearchIcon } from '@pluralsh/design-system'
 
 import { useCallback, useEffect, useState } from 'react'
 

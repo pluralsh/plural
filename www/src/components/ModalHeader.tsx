@@ -1,5 +1,5 @@
 import { Div, Flex, P } from 'honorable'
-import { CloseIcon } from 'pluralsh-design-system'
+import { CloseIcon } from '@pluralsh/design-system'
 
 export function ModalHeader({ text, setOpen }: any) {
   return (

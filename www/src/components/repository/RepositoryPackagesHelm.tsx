@@ -12,7 +12,7 @@ import moment from 'moment'
 
 import Fuse from 'fuse.js'
 
-import { Chip } from 'pluralsh-design-system'
+import { Chip } from '@pluralsh/design-system'
 
 import RepositoryContext from '../../contexts/RepositoryContext'
 

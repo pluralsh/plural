@@ -23,7 +23,7 @@ import {
   RepositoryChip,
   StackIcon,
   Tooltip,
-} from 'pluralsh-design-system'
+} from '@pluralsh/design-system'
 import capitalize from 'lodash/capitalize'
 import Fuse from 'fuse.js'
 

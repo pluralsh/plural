@@ -81,7 +81,7 @@ export default function RepositoryPackages() {
               textValue={label}
               subTab
             >
-              <SubTab flexGrow={1}>{label}</SubTab>
+              <SubTab style={{ flexGrow: 1 }}>{label}</SubTab>
             </LinkTabWrap>
           ))}
         </TabList>

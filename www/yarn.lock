@@ -3791,6 +3791,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@polka/url@npm:^1.0.0-next.20":
+  version: 1.0.0-next.21
+  resolution: "@polka/url@npm:1.0.0-next.21"
+  checksum: c7654046d38984257dd639eab3dc770d1b0340916097b2fac03ce5d23506ada684e05574a69b255c32ea6a144a957c8cd84264159b545fca031c772289d88788
+  languageName: node
+  linkType: hard
+
 "@react-aria/button@npm:3.6.2":
   version: 3.6.2
   resolution: "@react-aria/button@npm:3.6.2"
@@ -5832,6 +5839,15 @@ __metadata:
   peerDependencies:
     vite: ^3.0.0
   checksum: cc85ab31b4689ab137c4b1e65383dccce494371523eb164c579096e513a2abbaa7efb49ba08655fae9f6692f5b7b2602ad339bdce4ae5982fc08fe444fb8a4e5
+  languageName: node
+  linkType: hard
+
+"@vitest/ui@npm:^0.25.2":
+  version: 0.25.2
+  resolution: "@vitest/ui@npm:0.25.2"
+  dependencies:
+    sirv: ^2.0.2
+  checksum: 92cbf5d57de0251f8eab024beb01e1305f6bacc86adeb7a722a970b5254c9681496b9352aa7a3fcf3b5e390cf6aefbde8a9b531baaa4d052ad0ccde60edc3941
   languageName: node
   linkType: hard
 
@@ -16300,6 +16316,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"mrmime@npm:^1.0.0":
+  version: 1.0.1
+  resolution: "mrmime@npm:1.0.1"
+  checksum: cc979da44bbbffebaa8eaf7a45117e851f2d4cb46a3ada6ceb78130466a04c15a0de9a9ce1c8b8ba6f6e1b8618866b1352992bf1757d241c0ddca558b9f28a77
+  languageName: node
+  linkType: hard
+
 "ms@npm:2.0.0":
   version: 2.0.0
   resolution: "ms@npm:2.0.0"
@@ -20563,6 +20586,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"sirv@npm:^2.0.2":
+  version: 2.0.2
+  resolution: "sirv@npm:2.0.2"
+  dependencies:
+    "@polka/url": ^1.0.0-next.20
+    mrmime: ^1.0.0
+    totalist: ^3.0.0
+  checksum: 6982f8ecee9392d246d7eeea8144e50334fe1b46a4fa942995a844ea88c2d518b17cce781bb09926c9a5692a7002a207d18dfd67af2aa538a15e733dc2042298
+  languageName: node
+  linkType: hard
+
 "sisteransi@npm:^1.0.5":
   version: 1.0.5
   resolution: "sisteransi@npm:1.0.5"
@@ -22081,6 +22115,13 @@ __metadata:
   version: 1.0.1
   resolution: "toidentifier@npm:1.0.1"
   checksum: 952c29e2a85d7123239b5cfdd889a0dde47ab0497f0913d70588f19c53f7e0b5327c95f4651e413c74b785147f9637b17410ac8c846d5d4a20a5a33eb6dc3a45
+  languageName: node
+  linkType: hard
+
+"totalist@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "totalist@npm:3.0.0"
+  checksum: ec499bddfc73d5b6c73f8ff68afd7bed286705797f928a11177fee5d1ee80e9052ffcb434638437702e16864bd5490f437a54f79bfea9564e875d34ed3254bca
   languageName: node
   linkType: hard
 
@@ -23867,6 +23908,7 @@ __metadata:
     "@typescript-eslint/parser": 5.43.0
     "@vitejs/plugin-basic-ssl": 0.1.2
     "@vitejs/plugin-react": 2.2.0
+    "@vitest/ui": ^0.25.2
     apollo-absinthe-upload-link: 1.7.0
     browserify-zlib: 0.2.0
     buffer: 6.0.3

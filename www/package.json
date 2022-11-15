@@ -8,7 +8,7 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "analyze": "source-map-explorer 'build/static/js/*.js'",
-    "start": "PORT=3001 HTTPS=true react-scripts start",
+    "start": "vite",
     "start:prod": "yarn build && serve -s -p 3001 build",
     "test": "react-scripts test --watchAll=false",
     "lint": "yarn lint:js && yarn lint:css",

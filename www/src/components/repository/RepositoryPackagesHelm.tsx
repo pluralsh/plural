@@ -24,7 +24,7 @@ import InfiniteScroller from '../utils/InfiniteScroller'
 import { CHARTS_QUERY } from './queries'
 import { packageCardStyle } from './RepositoryPackages'
 
-const defaultChartIcon = `/chart.png`
+const defaultChartIcon = '/chart.png'
 
 const searchOptions = {
   keys: ['name', 'description', 'latestVersion'],

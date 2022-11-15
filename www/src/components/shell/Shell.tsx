@@ -15,6 +15,8 @@ import { Button, ReloadIcon, ScrollIcon } from 'pluralsh-design-system'
 import { useResizeDetector } from 'react-resize-detector'
 import debounce from 'lodash/debounce'
 
+import { Buffer } from 'buffer/'
+
 import { socket } from '../../helpers/client'
 import TerminalThemeContext from '../../contexts/TerminalThemeContext'
 
@@ -24,7 +26,6 @@ import TerminalSidebar from './TerminalSidebar'
 import TerminalInformation from './TerminalInformation'
 import useOnboarded from './onboarding/useOnboarded'
 import ConfigureMyCloudButton from './ConfigureMyCloudButton'
-import { Buffer } from 'buffer/'
 
 const decodeBase64 = str => Buffer.from(str, 'base64').toString('utf-8')
 // const detachedMessage = '[detached (from session workspace)]'

@@ -22,7 +22,7 @@ import InfiniteScroller from '../utils/InfiniteScroller'
 import { DOCKER_QUERY } from './queries'
 import { packageCardStyle } from './RepositoryPackages'
 
-const defaultDockerIcon = `/docker.png`
+const defaultDockerIcon = '/docker.png'
 
 const searchOptions = {
   keys: ['name'],

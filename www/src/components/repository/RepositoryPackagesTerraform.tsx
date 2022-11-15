@@ -21,13 +21,13 @@ import InfiniteScroller from '../utils/InfiniteScroller'
 import { TERRAFORM_QUERY } from './queries'
 import { packageCardStyle } from './RepositoryPackages'
 
-const defaultTerraformIcon = `/terraform.png`
-const defaultChartIcon = `/chart.png`
-const defualtGcpIcon = `/gcp.png`
-const defualtAzureIcon = `/azure.png`
-const defaultAwsIcon = `/aws-icon.png`
-const defaultEquinixIcon = `/equinix-metal.png`
-const defaultKindIcon = `/kind.png`
+const defaultTerraformIcon = '/terraform.png'
+const defaultChartIcon = '/chart.png'
+const defualtGcpIcon = '/gcp.png'
+const defualtAzureIcon = '/azure.png'
+const defaultAwsIcon = '/aws-icon.png'
+const defaultEquinixIcon = '/equinix-metal.png'
+const defaultKindIcon = '/kind.png'
 
 const providerToIcon = {
   GCP: defualtGcpIcon,

@@ -1,11 +1,11 @@
 import './logo-animation.css'
 import { Box } from 'grommet'
 
-const BOTTOM_LEFT = `/plural-logomark-mechanical-for-animation-{color}_bottom-left_100px.svg`
-const BOTTOM_RIGHT = `/plural-logomark-mechanical-for-animation-{color}_bottom-right_100px.svg`
-const TOP_LEFT = `/plural-logomark-mechanical-for-animation-{color}_top-left_100px.svg`
-const TOP_RIGHT = `/plural-logomark-mechanical-for-animation-{color}_top-right_100px.svg`
-const DOT = `/plural-logomark-mechanical-for-animation-{color}_dot_100px.svg`
+const BOTTOM_LEFT = '/plural-logomark-mechanical-for-animation-{color}_bottom-left_100px.svg'
+const BOTTOM_RIGHT = '/plural-logomark-mechanical-for-animation-{color}_bottom-right_100px.svg'
+const TOP_LEFT = '/plural-logomark-mechanical-for-animation-{color}_top-left_100px.svg'
+const TOP_RIGHT = '/plural-logomark-mechanical-for-animation-{color}_top-right_100px.svg'
+const DOT = '/plural-logomark-mechanical-for-animation-{color}_dot_100px.svg'
 
 function scaling(scale) {
   if (!scale) return undefined

@@ -23,7 +23,10 @@ function OnboardingHeader() {
           height={26}
           marginRight="small"
         />
-        <img src={OnboardingTitleOnboardingSVG} alt="Plural onboarding" />
+        <img
+          src={OnboardingTitleOnboardingSVG}
+          alt="Plural onboarding"
+        />
       </Flex>
       <Hr
         marginTop={42}

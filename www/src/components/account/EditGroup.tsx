@@ -8,7 +8,7 @@ import {
   TabList,
   TabPanel,
   ValidatedInput,
-} from 'pluralsh-design-system'
+} from '@pluralsh/design-system'
 import { useRef, useState } from 'react'
 import { Flex } from 'honorable'
 

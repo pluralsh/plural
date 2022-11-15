@@ -7,7 +7,7 @@ import {
   Button,
   Card,
   Markdown,
-} from 'pluralsh-design-system'
+} from '@pluralsh/design-system'
 import { ReactElement, useCallback, useContext } from 'react'
 import { Link } from 'react-router-dom'
 import { useTheme } from 'styled-components'

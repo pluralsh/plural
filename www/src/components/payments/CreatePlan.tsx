@@ -16,7 +16,7 @@ import {
   Trash,
 } from 'forge-core'
 import { FaDollarSign } from 'react-icons/fa'
-import { CreditCardIcon, PlusIcon } from 'pluralsh-design-system'
+import { CreditCardIcon, PlusIcon } from '@pluralsh/design-system'
 
 import { LabeledInput } from '../repos/CreateRepository'
 

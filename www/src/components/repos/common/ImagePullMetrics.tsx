@@ -8,7 +8,7 @@ import {
   SubTab,
   TabList,
   TabPanel,
-} from 'pluralsh-design-system'
+} from '@pluralsh/design-system'
 
 import { DURATIONS, Graph } from '../../utils/Graph'
 import { generateColor } from '../../utils/colors'

@@ -17,7 +17,7 @@ import {
   Stack,
   Text,
 } from 'grommet'
-import { CreditCardIcon } from 'pluralsh-design-system'
+import { CreditCardIcon } from '@pluralsh/design-system'
 import { normalizeColor } from 'grommet/utils'
 
 import CurrentUserContext from '../../contexts/CurrentUserContext'

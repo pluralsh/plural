@@ -1,6 +1,6 @@
 import { Flex } from 'honorable'
 
-import { Button, GearTrainIcon } from 'pluralsh-design-system'
+import { Button, GearTrainIcon } from '@pluralsh/design-system'
 import { useContext, useState } from 'react'
 
 import usePaginatedQuery from '../../hooks/usePaginatedQuery'

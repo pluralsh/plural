@@ -5,7 +5,7 @@ import {
   CloudIcon,
   GearTrainIcon,
   GitHubIcon,
-} from 'pluralsh-design-system'
+} from '@pluralsh/design-system'
 
 import CreateShellContext from '../../../../contexts/CreateShellContext'
 

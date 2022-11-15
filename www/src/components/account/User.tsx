@@ -6,7 +6,7 @@ import {
   Chip,
   GraphQLToast,
   ListBoxItem,
-} from 'pluralsh-design-system'
+} from '@pluralsh/design-system'
 import { useContext, useState } from 'react'
 
 import { fetchToken, setPreviousUserData, setToken } from '../../helpers/authentication'

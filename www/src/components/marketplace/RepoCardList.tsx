@@ -1,5 +1,5 @@
 import { Flex } from 'honorable'
-import { RepositoryCard } from 'pluralsh-design-system'
+import { RepositoryCard } from '@pluralsh/design-system'
 import { Link } from 'react-router-dom'
 
 import { fillEmptyColumns, flexBasis } from './utils'

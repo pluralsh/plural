@@ -1,6 +1,6 @@
 import { Div, P } from 'honorable'
 import { capitalize } from 'lodash'
-import { PageCard } from 'pluralsh-design-system'
+import { PageCard } from '@pluralsh/design-system'
 
 function PublisherSideNav({ publisher }: any) {
   return (

@@ -1,4 +1,4 @@
-import { Button } from 'pluralsh-design-system'
+import { Button } from '@pluralsh/design-system'
 
 export function Actions({
   cancel,

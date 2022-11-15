@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react'
 import { useMutation } from '@apollo/client'
 import { Box } from 'grommet'
 import { Button, Div } from 'honorable'
-import { ListBoxItem, Modal, ValidatedInput } from 'pluralsh-design-system'
+import { ListBoxItem, Modal, ValidatedInput } from '@pluralsh/design-system'
 
 import { appendConnection, updateCache } from '../../utils/graphql'
 

@@ -6,7 +6,7 @@ import {
   RadioGroup,
   Text,
 } from 'honorable'
-import { Radio } from 'pluralsh-design-system'
+import { Radio } from '@pluralsh/design-system'
 
 import OnboardingCardButton from '../OnboardingCardButton'
 

@@ -5,7 +5,7 @@ import {
   CollapseIcon,
   ErrorIcon,
   PageTitle,
-} from 'pluralsh-design-system'
+} from '@pluralsh/design-system'
 
 import {
   Button,

@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Card, CardProps } from 'pluralsh-design-system'
+import { Card, CardProps } from '@pluralsh/design-system'
 import {
   ReactNode,
   createContext,

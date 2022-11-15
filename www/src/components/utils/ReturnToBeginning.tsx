@@ -1,5 +1,5 @@
 import { Layer } from 'grommet'
-import { Button, CaretUpIcon } from 'pluralsh-design-system'
+import { Button, CaretUpIcon } from '@pluralsh/design-system'
 
 export function ReturnToBeginning({ beginning }: any) {
   return (

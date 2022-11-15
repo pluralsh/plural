@@ -12,7 +12,7 @@ import {
   Img,
   P,
 } from 'honorable'
-import { Tab, TabList } from 'pluralsh-design-system'
+import { Tab, TabList } from '@pluralsh/design-system'
 import capitalize from 'lodash/capitalize'
 
 import RepositoryContext from '../../contexts/RepositoryContext'

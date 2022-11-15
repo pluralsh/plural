@@ -7,7 +7,7 @@ import {
   ListBoxItem,
   PageCard,
   Select,
-} from 'pluralsh-design-system'
+} from '@pluralsh/design-system'
 import {
   Dispatch,
   ReactElement,

@@ -6,7 +6,7 @@ import {
   Flex,
   P,
 } from 'honorable'
-import { Callout, Codeline } from 'pluralsh-design-system'
+import { Callout, Codeline } from '@pluralsh/design-system'
 
 import styled from 'styled-components'
 

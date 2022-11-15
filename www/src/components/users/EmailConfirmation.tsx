@@ -6,7 +6,7 @@ import {
 } from 'react'
 import { useMutation } from '@apollo/client'
 import { Box, Layer, Text } from 'grommet'
-import { CloseIcon, ErrorIcon, ReloadIcon } from 'pluralsh-design-system'
+import { CloseIcon, ErrorIcon, ReloadIcon } from '@pluralsh/design-system'
 import moment from 'moment'
 import { useParams } from 'react-router-dom'
 

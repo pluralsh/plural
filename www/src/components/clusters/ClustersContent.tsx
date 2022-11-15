@@ -8,7 +8,7 @@ import {
   LoopingLogo,
   PageTitle,
   ReloadIcon,
-} from 'pluralsh-design-system'
+} from '@pluralsh/design-system'
 import {
   ReactElement,
   useContext,

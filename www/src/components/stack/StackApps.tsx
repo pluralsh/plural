@@ -1,5 +1,5 @@
 import { Flex, P } from 'honorable'
-import { PageTitle } from 'pluralsh-design-system'
+import { PageTitle } from '@pluralsh/design-system'
 import { useOutletContext } from 'react-router-dom'
 
 import { RepoCardList } from '../marketplace/RepoCardList'

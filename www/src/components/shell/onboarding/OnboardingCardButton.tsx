@@ -1,4 +1,4 @@
-import { StatusOkIcon } from 'pluralsh-design-system'
+import { StatusOkIcon } from '@pluralsh/design-system'
 import { Button, Div } from 'honorable'
 
 function OnboardingCardButton({ selected = false, children, ...props }: any) {

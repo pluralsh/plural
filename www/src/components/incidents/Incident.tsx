@@ -21,7 +21,7 @@ import {
   FileIcon,
   MessagesIcon,
   PencilIcon,
-} from 'pluralsh-design-system'
+} from '@pluralsh/design-system'
 
 import { ModalHeader } from '../ModalHeader'
 import { dateFormat } from '../../utils/date'

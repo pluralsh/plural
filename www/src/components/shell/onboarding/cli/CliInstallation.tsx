@@ -17,7 +17,7 @@ import {
   Tab,
   TabList,
   TabPanel,
-} from 'pluralsh-design-system'
+} from '@pluralsh/design-system'
 
 import CreateShellContext from '../../../../contexts/CreateShellContext'
 

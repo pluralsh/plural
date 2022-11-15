@@ -1,5 +1,5 @@
 import { Flex } from 'honorable'
-import { TabPanel } from 'pluralsh-design-system'
+import { TabPanel } from '@pluralsh/design-system'
 import { useRef } from 'react'
 import { Outlet } from 'react-router-dom'
 

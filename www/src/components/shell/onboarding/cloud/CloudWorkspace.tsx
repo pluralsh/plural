@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import { Button, FormField, Input } from 'pluralsh-design-system'
+import { Button, FormField, Input } from '@pluralsh/design-system'
 
 import CreateShellContext from '../../../../contexts/CreateShellContext'
 

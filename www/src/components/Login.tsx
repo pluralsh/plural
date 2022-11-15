@@ -1,5 +1,5 @@
 import { Box, Text } from 'grommet'
-import { CheckIcon, ErrorIcon } from 'pluralsh-design-system'
+import { CheckIcon, ErrorIcon } from '@pluralsh/design-system'
 
 export function disableState(password, confirm) {
   if (password.length === 0) return { disabled: true, reason: '' }

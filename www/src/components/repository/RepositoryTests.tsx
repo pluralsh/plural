@@ -25,7 +25,7 @@ import {
   PageTitle,
   StatusIpIcon,
   StatusOkIcon,
-} from 'pluralsh-design-system'
+} from '@pluralsh/design-system'
 
 import RepositoryContext from '../../contexts/RepositoryContext'
 import usePaginatedQuery from '../../hooks/usePaginatedQuery'

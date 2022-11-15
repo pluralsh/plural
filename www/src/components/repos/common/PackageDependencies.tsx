@@ -11,7 +11,7 @@ import {
   SubTab,
   TabList,
   TabPanel,
-} from 'pluralsh-design-system'
+} from '@pluralsh/design-system'
 import { Flex } from 'honorable'
 
 import TreeGraph from '../../utils/TreeGraph'

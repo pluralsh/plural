@@ -14,7 +14,7 @@ import {
   Tab,
   TabList,
   TabPanel,
-} from 'pluralsh-design-system'
+} from '@pluralsh/design-system'
 import moment from 'moment'
 
 import { A, Flex } from 'honorable'

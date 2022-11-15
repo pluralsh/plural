@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom'
 import { gql, useMutation, useQuery } from '@apollo/client'
 import { Box, Keyboard } from 'grommet'
 import { GqlError } from 'forge-core'
-import { AppIcon, Button } from 'pluralsh-design-system'
+import { AppIcon, Button } from '@pluralsh/design-system'
 
 import { Text } from 'honorable'
 

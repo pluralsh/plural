@@ -1,6 +1,6 @@
 import { useContext, useState } from 'react'
 import { Flex, Img, P } from 'honorable'
-import { Button, CloudIcon, TerminalIcon } from 'pluralsh-design-system'
+import { Button, CloudIcon, TerminalIcon } from '@pluralsh/design-system'
 
 import { persistProvider } from '../../persistance'
 

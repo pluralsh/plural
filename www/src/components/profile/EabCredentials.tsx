@@ -2,7 +2,7 @@ import { useMutation, useQuery } from '@apollo/client'
 import { Box } from 'grommet'
 import { useState } from 'react'
 
-import { InfoIcon, PageTitle, Tooltip } from 'pluralsh-design-system'
+import { InfoIcon, PageTitle, Tooltip } from '@pluralsh/design-system'
 
 import { Span } from 'honorable'
 

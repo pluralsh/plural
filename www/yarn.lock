@@ -5842,7 +5842,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vitest/ui@npm:^0.25.2":
+"@vitest/ui@npm:0.25.2":
   version: 0.25.2
   resolution: "@vitest/ui@npm:0.25.2"
   dependencies:
@@ -23908,7 +23908,7 @@ __metadata:
     "@typescript-eslint/parser": 5.43.0
     "@vitejs/plugin-basic-ssl": 0.1.2
     "@vitejs/plugin-react": 2.2.0
-    "@vitest/ui": ^0.25.2
+    "@vitest/ui": 0.25.2
     apollo-absinthe-upload-link: 1.7.0
     browserify-zlib: 0.2.0
     buffer: 6.0.3

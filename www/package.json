@@ -125,7 +125,7 @@
     "@graphql-codegen/typescript-operations": "2.5.7",
     "@graphql-codegen/typescript-react-apollo": "3.3.6",
     "@pluralsh/eslint-config-typescript": "2.5.3",
-    "@pluralsh/stylelint-config": "1.0.2",
+    "@pluralsh/stylelint-config": "1.1.1",
     "@types/events": "3.0.0",
     "@types/jsdom": "20.0.1",
     "@types/randomcolor": "0.5.6",

@@ -3299,9 +3299,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pluralsh/stylelint-config@npm:1.0.2":
-  version: 1.0.2
-  resolution: "@pluralsh/stylelint-config@npm:1.0.2"
+"@pluralsh/stylelint-config@npm:1.1.1":
+  version: 1.1.1
+  resolution: "@pluralsh/stylelint-config@npm:1.1.1"
   dependencies:
     stylelint: 14.15.0
     stylelint-config-standard: 29.0.0
@@ -3309,7 +3309,7 @@ __metadata:
     stylelint-order: 5.0.0
   peerDependencies:
     stylelint: ">= 14.9.1"
-  checksum: 5d579df0ddfb4fb2303e18700fd9859e07eaf4220ce79e5d7da9d81ffbcc7fbf984663bdcf4220661e653a81596bd9ea3944b13becf2dfc7329cd6e3ed479461
+  checksum: bf34ecefc150d7e6b32e399566b6c9f61904ae354053e6291a54bce9d5f7ecd168c3847aab5270c767a6c3aa55baec14ee75270a2ba29ab7d52f6e15d50e9cb4
   languageName: node
   linkType: hard
 
@@ -17815,7 +17815,7 @@ __metadata:
     "@octokit/core": 3.6.0
     "@pluralsh/design-system": 1.291.0
     "@pluralsh/eslint-config-typescript": 2.5.3
-    "@pluralsh/stylelint-config": 1.0.2
+    "@pluralsh/stylelint-config": 1.1.1
     "@testing-library/react": 13.4.0
     "@types/events": 3.0.0
     "@types/jsdom": 20.0.1

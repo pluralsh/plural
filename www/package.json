@@ -24,7 +24,7 @@
     "graphql:codegen": "graphql-codegen --config codegen.yml"
   },
   "engines": {
-    "node": ">=16.15.0"
+    "node": "16.15.0"
   },
   "packageManager": "yarn@3.2.4",
   "dependencies": {

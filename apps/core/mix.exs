@@ -64,7 +64,7 @@ defmodule Core.MixProject do
       {:sentry, "8.0.6"},
       {:ecto_sql, "~> 3.3.4"},
       {:libvault, "~> 0.2.0"},
-      {:ecto, "~> 3.3.2", override: true},
+      {:ecto, "~> 3.9.0", override: true},
       {:postgrex, ">= 0.0.0"},
       {:ex_machina, "~> 2.3", only: :test},
       {:comeonin, "~> 5.1.2"},

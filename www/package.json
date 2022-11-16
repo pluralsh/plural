@@ -142,7 +142,6 @@
     "eslint-plugin-import": "2.26.0",
     "eslint-plugin-import-newlines": "1.2.3",
     "jsdom": "20.0.2",
-    "postcss-import": "15.0.0",
     "serve": "14.1.1",
     "source-map-explorer": "2.5.3",
     "stylelint": "14.15.0",

@@ -1,4 +1,4 @@
-const isProduction = import.meta.env.MODE === 'production'
+const isProduction = import.meta.env.PROD
 const url = import.meta.env.BASE_URL || ''
 const isServiceWorkerAvailable = 'serviceWorker' in navigator
 const serviceWorkerURL = `${url}/service-worker.js`

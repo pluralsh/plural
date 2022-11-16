@@ -1,7 +1,6 @@
-import { cloneElement, useState } from 'react'
-import { Link } from 'react-router-dom'
-import { Button, Flex, P } from 'honorable'
-import { Fireworks } from 'fireworks-js/dist/react'
+import {cloneElement, useState} from 'react'
+import {Link} from 'react-router-dom'
+import {Button, Flex, P} from 'honorable'
 import {
   ArrowTopRightIcon,
   DiscordIcon,
@@ -11,6 +10,7 @@ import {
   ThumbsUpFilledIcon,
   ThumbsUpIcon,
 } from '@pluralsh/design-system'
+import Fireworks from '@fireworks-js/react'
 
 type OnboardingCompletionModalProps = {
   open: boolean

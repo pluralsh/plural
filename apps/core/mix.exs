@@ -94,7 +94,7 @@ defmodule Core.MixProject do
       {:workos, "~> 0.1.2"},
       {:decorator, "~> 1.3"},   #=> For using Caching Annotations
       {:botanist, "~> 0.1.0", git: "https://github.com/michaeljguarino/botanist.git", branch: "ecto3"},
-      {:x509, "~> 0.8.0"},
+      {:x509, "~> 0.8.5"},
       {
         :briefly,
         git: "https://github.com/CargoSense/briefly",

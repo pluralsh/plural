@@ -79,6 +79,11 @@ config :core,
   workos_webhook: get_env("WORKOS_WEBHOOK_SECRET"),
   gcp_identity: get_env("GCP_USER_EMAIL") || "mjg@plural.sh"
 
+
+if get_env("VAULT_HOST") do
+  config :core, vault: get_env("VAULT_HOST")
+end
+
 config :workos,
   client_id: get_env("WORKOS_CLIENT_ID"),
   api_key: get_env("WORKOS_API_KEY")

@@ -2,9 +2,6 @@ FROM node:18.12.1-slim as build
 
 WORKDIR /app
 
-# # Create a nonroot user for final image
-# RUN useradd -u 10001 nonroot
-
 COPY package.json ./package.json
 COPY yarn.lock ./yarn.lock
 COPY .yarn ./.yarn
@@ -17,15 +14,14 @@ COPY . ./
 RUN yarn run build
 
 # production environment
-FROM nginx:1.23.2-alpine
+FROM nginxinc/nginx-unprivileged:1.23.2-alpine
 
-COPY --from=build /app/build /usr/share/nginx/html
+WORKDIR /usr/share/nginx/html
+# Copy static assets from builder stage
+COPY --from=builder /app/build .
+
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# # Copy nonroot user and switch to it
-# COPY --from=build /etc/passwd /etc/passwd
-# USER nonroot
+EXPOSE 8080
 
-EXPOSE 80
-
-CMD ["nginx", "-g", "daemon off;"]
+ENTRYPOINT ["sh", "-c", "cd /usr/share/nginx/html/ && nginx -g 'daemon off;'"]

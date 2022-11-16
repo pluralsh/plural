@@ -7,9 +7,7 @@ import { GlobalStyle, styledTheme, theme } from '@pluralsh/design-system'
 import { CssBaseline, ThemeProvider, mergeTheme } from 'honorable'
 import { ThemeProvider as StyledThemeProvider } from 'styled-components'
 import { mergeDeep } from '@apollo/client/utilities'
-
 import mpRecipe from 'honorable-recipe-mp'
-
 import { GrowthBook, GrowthBookProvider } from '@growthbook/growthbook-react'
 
 import { client } from './helpers/client'

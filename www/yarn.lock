@@ -9052,10 +9052,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"filesize@npm:8.0.7":
-  version: 8.0.7
-  resolution: "filesize@npm:8.0.7"
-  checksum: 8603d27c5287b984cb100733640645e078f5f5ad65c6d913173e01fb99e09b0747828498fd86647685ccecb69be31f3587b9739ab1e50732116b2374aff4cbf9
+"filesize@npm:10.0.5":
+  version: 10.0.5
+  resolution: "filesize@npm:10.0.5"
+  checksum: b373ebd877566a49566564709c221943741a6e264649ae1f5d6c87c31cd87e94c5e51dae8ee16abbe414fda3fdb6855d8fe4f0ed8d1e33327563d2b59176eaa1
   languageName: node
   linkType: hard
 
@@ -17831,7 +17831,7 @@ __metadata:
     eslint-plugin-import: 2.26.0
     eslint-plugin-import-newlines: 1.2.3
     events: 3.3.0
-    filesize: 8.0.7
+    filesize: 10.0.5
     forge-core: 1.4.6
     fuse.js: 6.6.2
     grommet: 2.27.0

@@ -25,7 +25,7 @@ import {
   Emoji,
   SendMessage,
 } from 'forge-core'
-import fs from 'filesize'
+import { filesize as fs } from 'filesize'
 import { NimbleEmoji, emojiIndex } from 'emoji-mart'
 import { ThemeContext } from 'styled-components'
 import { normalizeColor } from 'grommet/utils'

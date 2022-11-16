@@ -18,7 +18,7 @@ FROM nginxinc/nginx-unprivileged:1.23.2-alpine
 
 WORKDIR /usr/share/nginx/html
 # Copy static assets from builder stage
-COPY --from=builder /app/build .
+COPY --from=build /app/build .
 
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 

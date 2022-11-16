@@ -15,6 +15,9 @@ export default defineConfig({
     port: 3001,
     https: true,
   },
+  define: {
+    'process.env': {}, // Needed otherwise production build will fail with Uncaught ReferenceError: process is not defined. See https://github.com/vitejs/vite/issues/1973
+  },
   build: {
     outDir: 'build',
     sourcemap: process.env.NODE_ENV !== 'production', // Seems to cause JavaScript heap out of memory errors on build

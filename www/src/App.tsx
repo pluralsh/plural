@@ -55,62 +55,60 @@ function App() {
                   background="#171A21"
                 >
                   <HistoryRouter history={browserHistory}>
-                    {[
-                      <Routes>
-                        <Route
-                          path="/reset-password/:id"
-                          element={<ResetPassword />}
-                        />
-                        <Route
-                          path="/password-reset"
-                          element={<PasswordReset />}
-                        />
-                        <Route
-                          path="/confirm-email/:id"
-                          element={<EmailConfirmed />}
-                        />
-                        <Route
-                          path="/invite/:inviteId"
-                          element={<Invite />}
-                        />
-                        <Route
-                          path="/passwordless-login/:token"
-                          element={<PasswordlessLogin />}
-                        />
-                        <Route
-                          path="/oauth/callback/github/shell"
-                          element={<Plural />}
-                        />
-                        <Route
-                          path="/oauth/callback/gitlab/shell"
-                          element={<Plural />}
-                        />
-                        <Route
-                          path="/oauth/callback/:service"
-                          element={<OAuthCallback />}
-                        />
-                        <Route
-                          path="/sso/callback"
-                          element={<SSOCallback />}
-                        />
-                        <Route
-                          path="/login"
-                          element={<Login />}
-                        />
-                        <Route
-                          path="/signup"
-                          element={<Signup />}
-                        />
-                        <Route
-                          path="/oauth/consent"
-                          element={<OAuthConsent />}
-                        />
-                        <Route
-                          path="*"
-                          element={<Plural />}
-                        />
-                      </Routes>,
-                    ]}
+                    <Routes>
+                      <Route
+                        path="/reset-password/:id"
+                        element={<ResetPassword />}
+                      />
+                      <Route
+                        path="/password-reset"
+                        element={<PasswordReset />}
+                      />
+                      <Route
+                        path="/confirm-email/:id"
+                        element={<EmailConfirmed />}
+                      />
+                      <Route
+                        path="/invite/:inviteId"
+                        element={<Invite />}
+                      />
+                      <Route
+                        path="/passwordless-login/:token"
+                        element={<PasswordlessLogin />}
+                      />
+                      <Route
+                        path="/oauth/callback/github/shell"
+                        element={<Plural />}
+                      />
+                      <Route
+                        path="/oauth/callback/gitlab/shell"
+                        element={<Plural />}
+                      />
+                      <Route
+                        path="/oauth/callback/:service"
+                        element={<OAuthCallback />}
+                      />
+                      <Route
+                        path="/sso/callback"
+                        element={<SSOCallback />}
+                      />
+                      <Route
+                        path="/login"
+                        element={<Login />}
+                      />
+                      <Route
+                        path="/signup"
+                        element={<Signup />}
+                      />
+                      <Route
+                        path="/oauth/consent"
+                        element={<OAuthConsent />}
+                      />
+                      <Route
+                        path="*"
+                        element={<Plural />}
+                      />
+                    </Routes>
                   </HistoryRouter>
                 </Box>
               </Grommet>

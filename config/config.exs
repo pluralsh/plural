@@ -44,6 +44,8 @@ config :logger, :console,
 
 config :phoenix, :json_library, Jason
 
+config :reverse_proxy_plug, :http_client, ReverseProxyPlug.HTTPClient.Adapters.HTTPoison
+
 config :core, Core.Guardian,
   issuer: "forge",
   secret_key: "forge_secret"

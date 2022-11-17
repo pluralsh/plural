@@ -1,7 +1,7 @@
 const isProduction = import.meta.env.PROD
-const url = import.meta.env.BASE_URL || ''
+const url = import.meta.url || ''
 const isServiceWorkerAvailable = 'serviceWorker' in navigator
-const serviceWorkerURL = `${url}/service-worker.js`
+const serviceWorkerURL = '/service-worker.js'
 const isLocalhost = Boolean(window.location.hostname === 'localhost'
   // [::1] is the IPv6 localhost address.
   || window.location.hostname === '[::1]'
@@ -53,7 +53,7 @@ const onLoad = config => async () => {
   // service worker/PWA documentation.
   navigator.serviceWorker.ready.then(() => {
     console.log('This web app is being served cache-first by a service '
-      + 'worker. To learn more, visit https://cra.link/PWA')
+      + 'worker.')
   })
 }
 
@@ -97,7 +97,7 @@ const onServiceWorkerStateChange = (registration: ServiceWorkerRegistration, con
   }
 
   console.log('New content is available and will be used when all '
-    + 'tabs for this page are closed. See https://cra.link/PWA.')
+    + 'tabs for this page are closed.')
 
   // Execute callback
   if (config?.onUpdate) {

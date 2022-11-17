@@ -66,7 +66,7 @@ defmodule Api.MixProject do
       {:phoenix_ecto, "~> 4.4.0"},
       {:ecto_sql, "~> 3.9.0"},
       {:postgrex, ">= 0.0.0"},
-      {:phoenix_html, "~> 3.0.0"},
+      {:phoenix_html, "~> 3.2.0"},
       {:basic_auth, "~> 2.2.2"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
       {:gettext, "~> 0.11"},

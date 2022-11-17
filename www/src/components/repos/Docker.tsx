@@ -1,4 +1,7 @@
+// HACK until Select is fixed to admit any ReactNode
+// @ts-nocheck
 import {
+  useCallback,
   useContext,
   useEffect,
   useRef,
@@ -103,10 +106,13 @@ const DEFAULT_FILTER = {
   tag: null, precision: '2h', offset: '7d', tick: 'every 12 hours',
 }
 
+const fetchMoreKey = '__fetch_more__'
+
 function ImageVersionPicker({ image }: any) {
   const navigate = useNavigate()
   const { pathname } = useLocation()
   const { dockerRepository } = image
+  const [hasNextPage, setHasNextPage] = useState(false)
   const [cursor, setCursor] = useState(null)
   const [allImages, setAllImages] = useState<any[]>([])
   const { data } = useQuery(DOCKER_IMG_Q, {
@@ -116,19 +122,27 @@ function ImageVersionPicker({ image }: any) {
     },
   })
 
+  const url = pathname.endsWith('vulnerabilities') ? '/vulnerabilities' : ''
+
+  const fetchMore = useCallback(() => {
+    if (hasNextPage) {
+      setCursor(data.dockerImages.pageInfo.endCursor)
+    }
+  }, [hasNextPage, data])
+
+  const handleSelectionChange = useCallback((selected: any) => {
+    if (selected === fetchMoreKey) fetchMore()
+    else navigate(`/dkr/img/${selected}${url}`)
+  }, [fetchMore, navigate, url])
+
   useEffect(() => {
     if (data?.dockerImages) {
       setAllImages(x => [...x, ...data.dockerImages.edges.map(({ node }) => node)])
-
-      if (data.dockerImages.pageInfo.hasNextPage) {
-        setCursor(data.dockerImages.pageInfo.endCursor)
-      }
+      setHasNextPage(data.dockerImages.pageInfo.hasNextPage)
     }
   }, [data])
 
   if (!allImages.length) return null
-
-  const url = pathname.endsWith('vulnerabilities') ? '/vulnerabilities' : ''
 
   return (
     <Box
@@ -140,7 +154,7 @@ function ImageVersionPicker({ image }: any) {
         label="image"
         width="240px"
         selectedKey={image.id}
-        onSelectionChange={selected => navigate(`/dkr/img/${selected}${url}`)}
+        onSelectionChange={handleSelectionChange}
         rightContent={
           image.scannedAt && (
             <ListBoxItemChipList chips={[
@@ -170,6 +184,17 @@ function ImageVersionPicker({ image }: any) {
             )}
           />
         ))}
+        {hasNextPage ? (
+          <ListBoxItem
+            key={fetchMoreKey}
+            label="Fetch more"
+            textValue="Fetch more"
+            onClick={fetchMore}
+          />
+        ) : (
+          // eslint-disable-next-line react/jsx-no-useless-fragment
+          <></>
+        )}
       </Select>
     </Box>
   )

@@ -88,7 +88,7 @@ defmodule Core.MixProject do
       {:sweet_xml, "~> 0.7.3"},
       {:arc_ecto, "~> 0.11.3"},
       {:dictionary, "~> 0.1.0"},
-      {:mojito, "~> 0.3.0"},
+      {:mojito, "~> 0.7.0"},
       {:nebulex, "== 2.4.2"},
       {:kazan, "~> 0.11", github: "michaeljguarino/kazan"},
       {:workos, "~> 0.1.2"},

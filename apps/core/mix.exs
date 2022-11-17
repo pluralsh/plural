@@ -105,7 +105,7 @@ defmodule Core.MixProject do
       {:oauth2, "~> 2.0"},
       {:websockex, "~> 0.4"},
       {:hackney, "~> 1.18.0", override: true},
-      {:tzdata, "~> 0.1.8", override: true},
+      {:tzdata, "~> 1.1.0", override: true},
       {:prometheus_ex, "~> 3.0"},
       {:stripity_stripe, "~> 2.7"},
       {:conduit, "~> 0.12"},

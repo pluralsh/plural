@@ -14342,13 +14342,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-use-intercom@npm:1.5.2":
-  version: 1.5.2
-  resolution: "react-use-intercom@npm:1.5.2"
+"react-use-intercom@npm:2.0.0":
+  version: 2.0.0
+  resolution: "react-use-intercom@npm:2.0.0"
   peerDependencies:
     react: ">=16.8.0"
     react-dom: ">=16.8.0"
-  checksum: 86e3e573557230a7002cf6e9b44d683e7ef7549f7de02d38eb389cdcb615fab8f3d15414ca67a6146fdfff90ec6527e6bee660ba647b3fdec96000f0866ed10e
+  checksum: 1cc2d3d4ded72371ab9c5a62f6cff5b3d4a6e35db59ef2a153cdba228d13b009c1adfddc0d2b26c9ffe8c189b31c0c8792ccd12f0f22afdc3cbc31a15b5bd793
   languageName: node
   linkType: hard
 
@@ -17867,7 +17867,7 @@ __metadata:
     react-sweet-progress: 1.1.2
     react-toggle: 4.1.3
     react-transition-group: 4.4.5
-    react-use-intercom: 1.5.2
+    react-use-intercom: 2.0.0
     react-virtualized-auto-sizer: 1.0.7
     react-window: 1.8.8
     react-window-reversed: 1.4.1

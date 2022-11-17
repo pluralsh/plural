@@ -12,7 +12,7 @@ defmodule ApiWeb.Plugs.ReverseProxy do
   )
 
   def execute_proxy(method, url, conn) do
-    opts = ReverseProxyPlug.init([])
+    opts = ReverseProxyPlug.init(upstream: url)
 
     HTTPoison.request(%HTTPoison.Request{
       method: method,

@@ -6,13 +6,14 @@ import { LoopingLogo } from '../utils/AnimatedLogo'
 import { useHistory } from '../../router'
 
 import { AUTHENTICATION_URLS_QUERY, SCM_TOKEN_QUERY } from './queries'
-import { DEBUG_SCM_TOKENS } from './debug-tokens'
 
 import OnboardingFlow from './onboarding/OnboardingFlow'
+import { useDevToken } from './useDevToken'
 
 function OAuthCallback({ provider }: any) {
   const history = useHistory()
   const [searchParams] = useSearchParams()
+  const devToken = useDevToken()
 
   const { data: authUrlData } = useQuery(AUTHENTICATION_URLS_QUERY)
 
@@ -23,14 +24,10 @@ function OAuthCallback({ provider }: any) {
     },
   })
 
-  // Do not remove as it's used for onboarding local development
-  console.debug(data)
-
-  // START <<Remove this after dev>>
-  if (import.meta.env.MODE !== 'production' && DEBUG_SCM_TOKENS[provider.toUpperCase()]) {
-    data = { ...data, ...{ scmToken: DEBUG_SCM_TOKENS[provider.toUpperCase()] } }
+  // HACK to navigate the onboarding on staging environments
+  if (import.meta.env.MODE !== 'production' && devToken) {
+    data = { ...data, ...{ scmToken: devToken } }
   }
-  // END <<Remove this after dev>>
 
   if (!data) {
     return (

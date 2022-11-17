@@ -11896,6 +11896,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"piano-keys@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "piano-keys@npm:2.1.0"
+  checksum: 9d5a600d3e71be6a983c204dfe0db8b206205cd6b79b2c8eeafb00fcdb27f9032dc844001da9b6f2cdc0e93d3eff2388ba92870eca81465e846f208d12ce0321
+  languageName: node
+  linkType: hard
+
 "picocolors@npm:^1.0.0":
   version: 1.0.0
   resolution: "picocolors@npm:1.0.0"
@@ -12503,6 +12510,17 @@ __metadata:
     react: ">=16.8.0"
     react-dom: ">=16.8.0"
   checksum: b44ca7d8d8e4bcf1987385ea21a12c614ee21a41f506bdb22cc13cab13c5d65ac4b3fb0c4eb5135cc6a46531e06a77401bad406f30df44f3839e4c51853073a6
+  languageName: node
+  linkType: hard
+
+"react-piano-keys@npm:^1.2.1":
+  version: 1.2.1
+  resolution: "react-piano-keys@npm:1.2.1"
+  dependencies:
+    piano-keys: ^2.1.0
+  peerDependencies:
+    react: ">=16.0.0"
+  checksum: 9ad5b28665a5643745aa98242e0b3e14bb9daa942471ac4baaf4676caf493e10bb3932563dc5d6e7efe4ddf00fead61511b7790cf07afbc208f6dda267c39b44
   languageName: node
   linkType: hard
 
@@ -15826,6 +15844,7 @@ __metadata:
     react-icons: 4.6.0
     react-json-view: 1.21.3
     react-multiline-clamp: 2.0.0
+    react-piano-keys: ^1.2.1
     react-portal: 4.2.2
     react-resize-detector: 7.1.2
     react-router-dom: 6.4.3

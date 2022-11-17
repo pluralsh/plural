@@ -19,6 +19,8 @@ import SelectedApplicationsContext, { SelectedApplicationsContextType } from '..
 
 import { persistApplications, retrieveApplications } from '../persistance'
 
+import { useDevTokenInputSecretCode } from '../useDevToken'
+
 import OnboardingSidenav from './OnboardingSidenav'
 import OnboardingSidecar from './OnboardingSidecar'
 import OnboardingTitle from './OnboardingTitle'
@@ -29,6 +31,8 @@ function OnboardingWrapper({
   onRestart = () => {},
   children,
 }: any) {
+  useDevTokenInputSecretCode()
+
   const theme = useTheme()
   const [selectedApplications, setSelectedApplications] = useState<any[]>(retrieveApplications())
   const selectedApplicationsContextValue = useMemo<SelectedApplicationsContextType>(() => ({ selectedApplications, setSelectedApplications }), [selectedApplications])

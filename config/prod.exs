@@ -1,4 +1,4 @@
-use Mix.Config
+import Config
 
 config :piazza_core,
   shutdown_delay: 14_000

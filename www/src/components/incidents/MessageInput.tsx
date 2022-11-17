@@ -300,7 +300,7 @@ function UploadProgress({
               <Text
                 size="small"
                 color="dark-3"
-              >{fs(attachment.size)}
+              >{fs(attachment.size)?.toString()}
               </Text>
             </Box>
           )}

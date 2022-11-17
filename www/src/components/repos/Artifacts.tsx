@@ -147,7 +147,7 @@ function ArtifactDetails({
         </TableRow>
         <TableRow>
           <TableCell border="right"><b>filesize</b></TableCell>
-          <TableCell>{fs(filesize)}</TableCell>
+          <TableCell>{fs(filesize)?.toString()}</TableCell>
         </TableRow>
         <TableRow>
           <TableCell border="right"><b>arch</b></TableCell>
@@ -242,7 +242,7 @@ export function Artifact({
             <Text
               size="small"
               color="dark-3"
-            >-- {fs(filesize)}
+            >-- {fs(filesize)?.toString()}
             </Text>
           </Box>
         </Box>

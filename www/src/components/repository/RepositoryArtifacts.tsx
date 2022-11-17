@@ -97,7 +97,7 @@ function Artifacts({ artifact }: any) {
           px={1}
           width="calc(100% / 5)"
         >
-          {fs(artifact.filesize)}
+          {fs(artifact.filesize)?.toString()}
         </P>
         <P
           py={1}

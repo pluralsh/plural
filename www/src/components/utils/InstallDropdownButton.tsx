@@ -20,6 +20,8 @@ import {
 import { Link } from 'react-router-dom'
 import capitalize from 'lodash/capitalize'
 
+import { persistApplications } from '../shell/persistance'
+
 export interface Recipe {
   name: string
   description: string
@@ -259,7 +261,7 @@ function InstallDropdownButton({
               </Div>
             )}
             <Link
-              to={type === 'stack' ? `/shell?stackName=${name}&stackProvider=${recipe.provider}` : '/shell'}
+              to={type === 'stack' ? `/shell?stackName=${name}&stackProvider=${recipe.provider}` : `/shell?appName=${name}`}
               style={{ textDecoration: 'none' }}
             >
               <Button

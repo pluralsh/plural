@@ -9159,13 +9159,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fireworks-js@npm:1.4.1":
-  version: 1.4.1
-  resolution: "fireworks-js@npm:1.4.1"
-  peerDependencies:
-    "@types/react": ">=16.8.0"
-    react: ">=16.8.0"
-  checksum: 2858f797f0adc7ba7cc11ee9e391c49e0322d73181fc578b0acec931107560c61a8308726f591c55136ce19c30a355a6c10da940c885f689a4be95c187ada2c9
+"fireworks-js@npm:2.9.0":
+  version: 2.9.0
+  resolution: "fireworks-js@npm:2.9.0"
+  checksum: 0baff234bd37a6ca69145df7ce7e4e0410a00bdf9b0763d1fac3b74050fc6a1c1ea8b1afb2213cad96ed01763475a8c88502b03d3284b9629180c22576c80cb2
   languageName: node
   linkType: hard
 
@@ -17822,7 +17819,7 @@ __metadata:
     eslint-plugin-import-newlines: 1.2.3
     events: 3.3.0
     filesize: 8.0.7
-    fireworks-js: 1.4.1
+    fireworks-js: 2.9.0
     forge-core: 1.4.6
     fuse.js: 6.6.2
     grommet: 2.27.0

@@ -13,13 +13,11 @@ import isEqual from 'lodash/isEqual'
 import uniqWith from 'lodash/uniqWith'
 
 import { Placeholder } from '../utils/Placeholder'
-
 import { extendConnection, removeConnection, updateCache } from '../../utils/graphql'
 import { GqlError } from '../utils/Alert'
 import { StandardScroller } from '../utils/SmoothScroller'
 import { Table, TableData, TableRow } from '../utils/Table'
 import ListInput from '../utils/ListInput'
-
 import { List } from '../utils/List'
 
 import { DELETE_DOMAIN, DNS_DOMAINS, UPDATE_DOMAIN } from './queries'

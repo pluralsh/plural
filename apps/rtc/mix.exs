@@ -73,7 +73,7 @@ defmodule Rtc.MixProject do
       {:phoenix_live_reload, "~> 1.3.0", only: :dev},
       {:telemetry_metrics, "~> 0.6.1"},
       {:telemetry_poller, "~> 1.0.0"},
-      {:gettext, "~> 0.11"},
+      {:gettext, "~> 0.20"},
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.6.0", override: true},
       {:absinthe_phoenix, "~> 2.0.2"},

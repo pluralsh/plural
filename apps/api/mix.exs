@@ -69,7 +69,7 @@ defmodule Api.MixProject do
       {:phoenix_html, "~> 3.2.0"},
       {:basic_auth, "~> 2.2.2"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
-      {:gettext, "~> 0.11"},
+      {:gettext, "~> 0.20"},
       {:jason, "~> 1.0"},
       {:guardian, "~> 1.2.1"},
       {:cors_plug, "~> 2.0"},

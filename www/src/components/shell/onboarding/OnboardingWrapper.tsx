@@ -5,14 +5,10 @@ import {
   useState,
 } from 'react'
 import { Flex } from 'honorable'
-
 import { useTheme } from 'styled-components'
-
 import { useSearchParams } from 'react-router-dom'
-
 import { useQuery } from '@apollo/client'
-
-import { LoadingSpinner } from '@pluralsh/design-system'
+import { LoopingLogo } from '@pluralsh/design-system'
 
 import {
   ResponsiveLayoutContentContainer,
@@ -20,13 +16,9 @@ import {
   ResponsiveLayoutSidenavContainer,
   ResponsiveLayoutSpacer,
 } from '../../layout/ResponsiveLayout'
-
 import SelectedApplicationsContext, { SelectedApplicationsContextType } from '../../../contexts/SelectedApplicationsContext'
-
 import { persistApplications, retrieveApplications } from '../persistance'
-
 import { SEARCH_REPOS } from '../../repos/queries'
-
 import { RootQueryType } from '../../../generated/graphql'
 
 import OnboardingSidenav from './OnboardingSidenav'
@@ -66,7 +58,14 @@ function OnboardingWrapper({
   }, [error, data])
 
   if (appName && loading) {
-    return <LoadingSpinner />
+    return (
+      <Flex
+        grow={1}
+        align="center"
+        justify="center"
+      ><LoopingLogo />
+      </Flex>
+    )
   }
 
   return (

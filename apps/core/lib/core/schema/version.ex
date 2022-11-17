@@ -11,6 +11,8 @@ defmodule Core.Schema.Version do
     PackageScan
   }
 
+  defenum TemplateType, gotemplate: 0, lua: 1
+
   schema "versions" do
     field :version,         :string
     field :helm,            :map
@@ -19,6 +21,7 @@ defmodule Core.Schema.Version do
     field :package_id,      :binary_id
     field :values_template, :string
     field :digest,          :string
+    field :template_type,   TemplateType, default: 0
     field :inserted,        :boolean, virtual: true
 
     embeds_one :dependencies, Dependencies, on_replace: :update
@@ -47,7 +50,7 @@ defmodule Core.Schema.Version do
     from(v in query, preload: ^preloads)
   end
 
-  @valid ~w(version chart_id readme values_template)a
+  @valid ~w(version chart_id readme values_template template_type)a
 
   def changeset(model, attrs \\ %{}) do
     model

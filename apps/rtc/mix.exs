@@ -70,7 +70,7 @@ defmodule Rtc.MixProject do
       {:sentry, "8.0.6"},
       {:phoenix, "~> 1.6.0"},
       {:phoenix_html, "~> 3.2.0"},
-      {:phoenix_live_reload, "~> 1.3.0", only: :dev},
+      {:phoenix_live_reload, "~> 1.4.0", only: :dev},
       {:telemetry_metrics, "~> 0.6.1"},
       {:telemetry_poller, "~> 1.0.0"},
       {:gettext, "~> 0.20"},

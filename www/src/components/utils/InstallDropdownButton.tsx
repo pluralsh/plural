@@ -20,8 +20,6 @@ import {
 import { Link } from 'react-router-dom'
 import capitalize from 'lodash/capitalize'
 
-import { persistApplications } from '../shell/persistance'
-
 export interface Recipe {
   name: string
   description: string

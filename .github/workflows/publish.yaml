@@ -111,7 +111,7 @@ jobs:
         cache-to: type=gha,mode=max
         build-args: |
           APP_NAME=${{ matrix.app }}
-          GIT_COMMIT=$GITHUB_SHA
+          GIT_COMMIT=${{ github.sha }}
     - name: slack webhook
       uses: 8398a7/action-slack@v3
       with:

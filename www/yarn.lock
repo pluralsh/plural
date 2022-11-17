@@ -7184,15 +7184,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"emoji-mart@npm:3.0.1":
-  version: 3.0.1
-  resolution: "emoji-mart@npm:3.0.1"
-  dependencies:
-    "@babel/runtime": ^7.0.0
-    prop-types: ^15.6.0
-  peerDependencies:
-    react: ^0.14.0 || ^15.0.0-0 || ^16.0.0 || ^17.0.0
-  checksum: 6282c6bfea0b183941c63bf20aee53a317503465266cf634819fd5aab84c42c867ee8b412dca8628dd8a74acdf5bd2006dbac6ac024f8f6a07596471f7bbd35d
+"emoji-mart@npm:5.3.2":
+  version: 5.3.2
+  resolution: "emoji-mart@npm:5.3.2"
+  checksum: 86c890ee4cc9f9b8b649268409f1e7efb403928698ced7c86d3e16b6f315f4bd5cbd23fc3a03a3c7328e4a8b7bd61da5fa007c933d25ecabc3ec73daf35f6914
   languageName: node
   linkType: hard
 
@@ -15181,7 +15176,7 @@ __metadata:
     country-code-lookup: 0.0.20
     d3-hierarchy: 3.1.2
     d3-selection: 3.0.0
-    emoji-mart: 3.0.1
+    emoji-mart: 5.3.2
     eslint: 8.27.0
     eslint-config-pluralsh: 3.1.0
     eslint-plugin-import: 2.26.0

@@ -259,7 +259,7 @@ function InstallDropdownButton({
               </Div>
             )}
             <Link
-              to={type === 'stack' ? `/shell?stackName=${name}&stackProvider=${recipe.provider}` : '/shell'}
+              to={type === 'stack' ? `/shell?stackName=${name}&stackProvider=${recipe.provider}` : `/shell?appName=${name}`}
               style={{ textDecoration: 'none' }}
             >
               <Button

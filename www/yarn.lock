@@ -12606,15 +12606,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-countdown@npm:2.3.3":
-  version: 2.3.3
-  resolution: "react-countdown@npm:2.3.3"
+"react-countdown@npm:2.3.4":
+  version: 2.3.4
+  resolution: "react-countdown@npm:2.3.4"
   dependencies:
     prop-types: ^15.7.2
   peerDependencies:
     react: ">= 15"
     react-dom: ">= 15"
-  checksum: 3c97b392766c7b226453d152d17f9586b1a4ef5df1f0e6576bc85a782bda3b237e36386c5005b65af885d241bf1710a73e37ad6da17395c8cc8393ac6a99281b
+  checksum: 4cc6e3113ff17e5e36a75bf953905d95f2cd0027c7263ec2a3a2f7378d5b18128c8234706c9b44afc98b563bbb381b12509a50fbf37de6a9e8740548a7c42da6
   languageName: node
   linkType: hard
 
@@ -16143,7 +16143,7 @@ __metadata:
     react-animations: 1.0.0
     react-collapsible: 2.10.0
     react-copy-to-clipboard: 5.1.0
-    react-countdown: 2.3.3
+    react-countdown: 2.3.4
     react-credit-cards: 0.8.3
     react-diff-viewer: 3.1.1
     react-dnd: 16.0.1

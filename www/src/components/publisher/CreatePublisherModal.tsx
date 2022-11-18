@@ -1,12 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Button, Flex } from 'honorable'
-import {
-  Alert,
-  FormField,
-  Input,
-  Modal,
-} from '@pluralsh/design-system'
+import { FormField, Input, Modal } from '@pluralsh/design-system'
 import { useMutation } from '@apollo/client'
 import { useFilePicker } from 'react-sage'
 import isArray from 'lodash/isArray'

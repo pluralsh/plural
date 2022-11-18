@@ -105,6 +105,19 @@ defmodule Core.Services.TestsTest do
         assert_receive {:event, %PubSub.VersionUpdated{item: %{id: ^id}}}
       end
     end
+
+    test "it can also promote associated tags" do
+      test = insert(:test, status: :succeeded, promote_tag: "stable", tags: ["0.3.0"])
+      bindings = insert_list(3, :test_binding, test: test)
+
+      {:ok, _} = Tests.promote(test)
+
+      for %{version: %{id: id} = version} <- bindings do
+        assert Versions.get_tag(:helm, version.chart_id, "stable").version_id == id
+        assert Versions.get_tag(:helm, version.chart_id, "0.3.0").version_id == id
+        assert_receive {:event, %PubSub.VersionUpdated{item: %{id: ^id}}}
+      end
+    end
   end
 
   describe "#expire/1" do

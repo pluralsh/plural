@@ -10,6 +10,7 @@ defmodule Core.Schema.Test do
     field :name,        :string
     field :source_tag,  :string
     field :promote_tag, :string
+    field :tags,        {:array, :string}
     field :status,      Status
 
     belongs_to :repository, Repository
@@ -41,7 +42,7 @@ defmodule Core.Schema.Test do
     from(t in query, order_by: ^order)
   end
 
-  @valid ~w(name source_tag promote_tag status repository_id creator_id)a
+  @valid ~w(name source_tag promote_tag status repository_id creator_id tags)a
 
   def changeset(model, attrs \\ %{}) do
     model

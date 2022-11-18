@@ -39,7 +39,7 @@ defmodule Core.Schema.ResourceDefinition do
     model
     |> cast(attrs, @valid)
     |> cast_embed(:spec)
-    |> validate_required([:name, :spec])
+    |> validate_required([:name])
   end
 
   def validate(%{spec: spec}, map) when is_map(map) do

@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@apollo/client'
+import { useMutation } from '@apollo/client'
 import { A, Flex, Span } from 'honorable'
 import {
   Button,
@@ -9,24 +9,32 @@ import {
   MarketIcon,
   TerminalIcon,
   Toast,
-} from 'pluralsh-design-system'
+} from '@pluralsh/design-system'
 import {
   useCallback,
   useContext,
   useEffect,
   useMemo,
-  useRef,
   useState,
 } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { OnboardingChecklistContext } from '../../../../contexts/OnboardingChecklistContext'
-import { OnboardingChecklistState, OnboardingState, User } from '../../../../generated/graphql'
-import { ONBOARDING_STATUS, UPDATE_ONBOARDING_CHECKLIST } from '../../../users/queries'
+import {
+  OnboardingChecklistState,
+  OnboardingState,
+  RootMutationType,
+  RootMutationTypeUpdateUserArgs,
+  User,
+} from '../../../../generated/graphql'
+import { UPDATE_USER } from '../../../users/queries'
 import { isOnboardingChecklistHidden } from '../../persistance'
+import CurrentUserContext from '../../../../contexts/CurrentUserContext'
 
-import { ChecklistComplete } from './Complete'
+import { updateUserFragment } from '../../../../utils/graphql'
+
 import { ChecklistFooter } from './Footer'
+import { ChecklistComplete } from './Complete'
 
 const CHECKLIST_ORDER = [
   OnboardingChecklistState.New, OnboardingChecklistState.Configured, OnboardingChecklistState.ConsoleInstalled, OnboardingChecklistState.Finished,
@@ -39,7 +47,7 @@ function statusToIndex(status: OnboardingChecklistState) : number {
 export function OnboardingChecklist() {
   const navigate = useNavigate()
   const { dismissed: dismissedFromContext, setDismissed: setDismissedFromContext } = useContext(OnboardingChecklistContext)
-  const prevDismissedRef = useRef(dismissedFromContext)
+  const { me: user } = useContext(CurrentUserContext) as { me: User }
 
   // State
   const [status, setStatus] = useState<OnboardingChecklistState>(OnboardingChecklistState.New)
@@ -50,9 +58,22 @@ export function OnboardingChecklist() {
   const [dismiss, setDismiss] = useState(false)
   const [visible, setVisible] = useState(false)
 
+  // Callbacks
+  const nextStatus = useCallback((status: OnboardingChecklistState) => (status === OnboardingChecklistState.Finished ? status : CHECKLIST_ORDER[CHECKLIST_ORDER.indexOf(status) + 1]), [])
+  const isCompleted = useCallback(() => completed >= selected, [completed, selected])
+  const canComplete = useCallback(() => Math.abs(selected - completed) === 1, [selected, completed])
+
   // GraphQL
-  const { data, loading: statusLoading, refetch } = useQuery<{me: User}>(ONBOARDING_STATUS, { pollInterval: 60000 })
-  const [updateChecklist, { loading: checklistUpdating, error }] = useMutation(UPDATE_ONBOARDING_CHECKLIST)
+  const [updateChecklist, { loading: checklistUpdating, error }] = useMutation<RootMutationType, RootMutationTypeUpdateUserArgs>(UPDATE_USER, {
+    variables: {
+      attributes: {
+        onboardingChecklist: {
+          status: nextStatus(status),
+        },
+      },
+    },
+    update: updateUserFragment,
+  })
   const checklistStateProps: ChecklistStateProps = {
     onSelectionChange: setSelected,
     onFocusChange: setFocused,
@@ -64,15 +85,7 @@ export function OnboardingChecklist() {
     isDismissed: dismiss,
   }
 
-  // Callbacks
-  const nextStatus = useCallback((status: OnboardingChecklistState) => (status === OnboardingChecklistState.Finished ? status : CHECKLIST_ORDER[CHECKLIST_ORDER.indexOf(status) + 1]), [])
-  const isCompleted = useCallback(() => completed >= selected, [completed, selected])
-  const canComplete = useCallback(() => Math.abs(selected - completed) === 1, [selected, completed])
-
   useEffect(() => {
-    if (!data) return
-
-    const { me: user } = data
     const status = user?.onboardingChecklist?.status || OnboardingChecklistState.New
     const completed = statusToIndex(status) - 1
     const selected = completed > -1 ? completed + 1 : 0
@@ -83,42 +96,25 @@ export function OnboardingChecklist() {
     setStatus(status)
     setDismiss(dismiss)
     setDismissedFromContext(dismiss)
-  }, [setCompleted, setSelected, setStatus, setDismiss, setDismissedFromContext, dismissedFromContext, data])
+  }, [setCompleted, setSelected, setStatus, setDismiss, setDismissedFromContext, dismissedFromContext, user])
 
   // This is a small workaround to not show the checklist closing animation
   // on every page refresh to the users that already finished/dismissed it and still be able to
   // see dismiss animation.
   useEffect(() => {
-    if (!data?.me?.onboardingChecklist?.dismissed
+    if (!user?.onboardingChecklist?.dismissed
       && !isOnboardingChecklistHidden()
       && !dismissedFromContext
-      && data?.me?.onboarding !== OnboardingState.New) {
+      && user?.onboarding !== OnboardingState.New) {
       setTimeout(() => setVisible(true), 1000)
     }
-  }, [data, dismissedFromContext])
-
-  useEffect(() => {
-    if (prevDismissedRef.current !== dismissedFromContext) {
-      refetch()
-    }
-
-    prevDismissedRef.current = dismissedFromContext
-  }, [dismissedFromContext, refetch])
+  }, [user, dismissedFromContext])
 
   const completeButton = (
     <Button
       small
-      loading={statusLoading || checklistUpdating}
-      onClick={() => updateChecklist({
-        variables: {
-          attributes: {
-            onboardingChecklist: {
-              status: nextStatus(status),
-            },
-          },
-        },
-        onCompleted: refetch,
-      })}
+      loading={checklistUpdating}
+      onClick={() => updateChecklist()}
       disabled={isCompleted() || !canComplete()}
     >Mark as done
     </Button>
@@ -151,13 +147,10 @@ export function OnboardingChecklist() {
         label="Getting Started"
         stateProps={checklistStateProps}
         footerChildren={(
-          <ChecklistFooter
-            refetch={refetch}
-            setDismiss={setDismiss}
-          />
+          <ChecklistFooter setDismiss={setDismiss} />
         )}
         completeChildren={(
-          <ChecklistComplete refetch={refetch} />
+          <ChecklistComplete />
         )}
       >
         <ChecklistItem title="Setup on your own cloud">

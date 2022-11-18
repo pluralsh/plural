@@ -1,6 +1,6 @@
 import { useContext } from 'react'
 import { Box, Text, ThemeContext } from 'grommet'
-import { CheckIcon, ErrorIcon, InfoIcon } from 'pluralsh-design-system'
+import { CheckIcon, ErrorIcon, InfoIcon } from '@pluralsh/design-system'
 import { normalizeColor } from 'grommet/utils'
 
 export const AlertStatus = {

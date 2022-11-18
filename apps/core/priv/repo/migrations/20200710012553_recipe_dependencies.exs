@@ -4,7 +4,7 @@ defmodule Core.Repo.Migrations.RecipeDependencies do
   def change do
     create table(:recipe_dependencies, primary_key: false) do
       add :id,                  :uuid, primary_key: true
-      add :index,               :integer, null: false
+      add :index,               :integer
       add :recipe_id,           references(:recipes, type: :uuid, on_delete: :delete_all)
       add :dependent_recipe_id, references(:recipes, type: :uuid, on_delete: :delete_all)
 

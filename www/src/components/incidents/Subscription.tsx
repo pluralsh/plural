@@ -1,5 +1,5 @@
 import { Box, Text } from 'grommet'
-import { CheckIcon, FileIcon, PeopleIcon } from 'pluralsh-design-system'
+import { CheckIcon, FileIcon, PeopleIcon } from '@pluralsh/design-system'
 
 import { RepoIcon } from '../repos/Repositories'
 

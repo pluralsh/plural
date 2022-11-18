@@ -1,5 +1,5 @@
 import { Div, Flex, P } from 'honorable'
-import { Button, DiscordIcon } from 'pluralsh-design-system'
+import { Button, DiscordIcon } from '@pluralsh/design-system'
 
 import OnboardingCard from './OnboardingCard'
 

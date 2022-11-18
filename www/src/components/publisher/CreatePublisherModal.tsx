@@ -6,16 +6,16 @@ import {
   FormField,
   Input,
   Modal,
-} from 'pluralsh-design-system'
+} from '@pluralsh/design-system'
 import { useMutation } from '@apollo/client'
 import { useFilePicker } from 'react-sage'
 import isArray from 'lodash/isArray'
 
-import { isValidUrl } from 'utils/string'
-
+import { isValidUrl } from '../../utils/string'
 import { generatePreview } from '../../utils/file'
 
 import IconUploadPreview from '../utils/IconUploadPreview'
+import { Alert, AlertStatus } from '../utils/Alert'
 
 import { CREATE_PUBLISHER_MUTATION } from './queries'
 
@@ -262,9 +262,11 @@ function CreatePublisherModal({ open, onClose }: CreatePublisherModalProps) {
         )}
       </Flex>
       {!!preMutationError && (
-        <Alert severity="error">
-          {preMutationError}
-        </Alert>
+        <Alert
+          status={AlertStatus.ERROR}
+          hearder="Error"
+          description={preMutationError}
+        />
       )}
     </Modal>
   )

@@ -4,7 +4,7 @@ import {
   Tab,
   TabList,
   TabPanel,
-} from 'pluralsh-design-system'
+} from '@pluralsh/design-system'
 import { Outlet, useLocation } from 'react-router-dom'
 
 import { useContext, useRef } from 'react'

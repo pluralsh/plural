@@ -5,7 +5,7 @@ import { Box } from 'grommet'
 
 import { useOutletContext } from 'react-router-dom'
 
-import { PageTitle } from 'pluralsh-design-system'
+import { PageTitle } from '@pluralsh/design-system'
 
 import { Div, Flex } from 'honorable'
 

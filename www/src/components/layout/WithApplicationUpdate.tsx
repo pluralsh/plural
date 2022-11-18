@@ -6,13 +6,11 @@ import {
 } from 'react'
 
 import * as serviceWorker from '../../serviceWorkerRegistration'
-
 import PluralConfigurationContext from '../../contexts/PluralConfigurationContext'
 
 const COMMIT_KEY = 'git-commit'
 
 export const DEFAULT_COMMIT = 'plural-default-commit'
-
 export const getCommit = () => sessionStorage.getItem(COMMIT_KEY) || DEFAULT_COMMIT
 export const setCommit = sha => sessionStorage.setItem(COMMIT_KEY, sha)
 

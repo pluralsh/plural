@@ -6,7 +6,7 @@ import {
 } from 'react'
 import { Button, ButtonProps } from 'honorable'
 
-import { Tooltip } from 'pluralsh-design-system'
+import { Tooltip } from '@pluralsh/design-system'
 
 type CopyableButtonProps = ButtonProps & {
 displayText?: string

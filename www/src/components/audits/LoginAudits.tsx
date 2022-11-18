@@ -2,7 +2,7 @@ import { useQuery } from '@apollo/client'
 import { Box, Text } from 'grommet'
 import { useCallback, useState } from 'react'
 
-import { PageTitle } from 'pluralsh-design-system'
+import { PageTitle } from '@pluralsh/design-system'
 
 import { Span } from 'honorable'
 

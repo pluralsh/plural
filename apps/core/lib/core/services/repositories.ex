@@ -236,14 +236,28 @@ defmodule Core.Services.Repositories do
   @doc """
   Appends vulnerabilities to a docker image
   """
-  @spec add_vulnerabilities(list, Image.t) :: {:ok, DockerImage.t} | error
+  @spec add_vulnerabilities([map], DockerImage.t) :: {:ok, DockerImage.t} | error
   def add_vulnerabilities(vulns, image) do
     Core.Repo.preload(image, [:vulnerabilities])
     |> DockerImage.vulnerability_changeset(%{
       vulnerabilities: vulns,
       scan_completed_at: Timex.now(),
+      scan_retries: 0,
       grade: grade(vulns)
     })
+    |> Core.Repo.update()
+  end
+
+  @doc """
+  Determines if a scan should be retries or completed
+  """
+  @spec retry_scan(DockerImage.t) :: {:ok, DockerImage.t} | error
+  def retry_scan(%DockerImage{scan_retries: r} = img) when r >= 2 do
+    Ecto.Changeset.change(img, %{scan_completed_at: Timex.now(), scan_retries: 0})
+    |> Core.Repo.update()
+  end
+  def retry_scan(%DockerImage{scan_retries: r} = img) do
+    Ecto.Changeset.change(img, %{scan_retries: r + 1})
     |> Core.Repo.update()
   end
 

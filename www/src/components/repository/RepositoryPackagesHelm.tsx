@@ -12,7 +12,7 @@ import moment from 'moment'
 
 import Fuse from 'fuse.js'
 
-import { Chip } from 'pluralsh-design-system'
+import { Chip } from '@pluralsh/design-system'
 
 import RepositoryContext from '../../contexts/RepositoryContext'
 
@@ -24,7 +24,7 @@ import InfiniteScroller from '../utils/InfiniteScroller'
 import { CHARTS_QUERY } from './queries'
 import { packageCardStyle } from './RepositoryPackages'
 
-const defaultChartIcon = `${process.env.PUBLIC_URL}/chart.png`
+const defaultChartIcon = '/chart.png'
 
 const searchOptions = {
   keys: ['name', 'description', 'latestVersion'],

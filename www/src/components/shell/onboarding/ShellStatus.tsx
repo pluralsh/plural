@@ -1,5 +1,5 @@
 import { Div, Flex, P } from 'honorable'
-import { Chip, ProgressBar } from 'pluralsh-design-system'
+import { Chip, ProgressBar } from '@pluralsh/design-system'
 
 import OnboardingCard from './OnboardingCard'
 

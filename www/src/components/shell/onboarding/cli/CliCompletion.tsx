@@ -1,6 +1,6 @@
 import { useContext, useMemo } from 'react'
 import { A, Flex, P } from 'honorable'
-import { Button, Codeline } from 'pluralsh-design-system'
+import { Button, Codeline } from '@pluralsh/design-system'
 import { Link } from 'react-router-dom'
 
 import {

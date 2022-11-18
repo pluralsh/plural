@@ -1,5 +1,5 @@
 import { Div, Flex, Text } from 'honorable'
-import { ErrorIcon } from 'pluralsh-design-system'
+import { ErrorIcon } from '@pluralsh/design-system'
 
 import { deepFetch } from '../../utils/graphql'
 

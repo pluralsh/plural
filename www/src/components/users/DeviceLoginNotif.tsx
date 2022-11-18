@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Modal } from 'pluralsh-design-system'
+import { Modal } from '@pluralsh/design-system'
 
 const LOGIN_KEY = 'dli-key'
 

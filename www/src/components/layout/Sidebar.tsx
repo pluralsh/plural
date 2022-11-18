@@ -31,7 +31,7 @@ import {
   ScrollIcon,
   TerminalIcon,
   Tooltip,
-} from 'pluralsh-design-system'
+} from '@pluralsh/design-system'
 
 import { getPreviousUserData } from '../../helpers/authentication'
 import { handlePreviousUserClick } from '../login/CurrentUser'

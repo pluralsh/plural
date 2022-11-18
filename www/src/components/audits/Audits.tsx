@@ -5,7 +5,7 @@ import { useQuery } from '@apollo/client'
 
 import { A, Div, Span } from 'honorable'
 
-import { PageTitle } from 'pluralsh-design-system'
+import { PageTitle } from '@pluralsh/design-system'
 
 import { extendConnection } from '../../utils/graphql'
 import { StandardScroller } from '../utils/SmoothScroller'

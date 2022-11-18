@@ -16,8 +16,8 @@ import {
   ListIcon,
   UbuntuLogoIcon,
   WindowsLogoIcon,
-} from 'pluralsh-design-system'
-import fs from 'filesize'
+} from '@pluralsh/design-system'
+import { filesize as fs } from 'filesize'
 
 import RepositoryContext from '../../contexts/RepositoryContext'
 
@@ -97,7 +97,7 @@ function Artifacts({ artifact }: any) {
           px={1}
           width="calc(100% / 5)"
         >
-          {fs(artifact.filesize)}
+          {fs(artifact.filesize)?.toString()}
         </P>
         <P
           py={1}

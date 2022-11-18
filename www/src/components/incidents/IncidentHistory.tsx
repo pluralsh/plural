@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { Box, Collapsible, Text } from 'grommet'
 import moment from 'moment'
-import { CaretDownIcon, CaretRightIcon } from 'pluralsh-design-system'
+import { CaretDownIcon, CaretRightIcon } from '@pluralsh/design-system'
 import sortBy from 'lodash/sortBy'
 import yaml from 'js-yaml'
 import ReactDiffViewer from 'react-diff-viewer'

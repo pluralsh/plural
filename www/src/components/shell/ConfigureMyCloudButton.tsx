@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from '@apollo/client'
 
-import { Button, CloudIcon } from 'pluralsh-design-system'
+import { Button, CloudIcon } from '@pluralsh/design-system'
 import { useContext, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 

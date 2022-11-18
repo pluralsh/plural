@@ -4,7 +4,7 @@ import { Span, Text } from 'honorable'
 import moment from 'moment'
 import { useState } from 'react'
 
-import { InfoIcon, PageTitle, Tooltip } from 'pluralsh-design-system'
+import { InfoIcon, PageTitle, Tooltip } from '@pluralsh/design-system'
 
 import isEmpty from 'lodash/isEmpty'
 

@@ -5,7 +5,7 @@ import {
   SubTab,
   TabList,
   TabPanel,
-} from 'pluralsh-design-system'
+} from '@pluralsh/design-system'
 import { useRef, useState } from 'react'
 
 import { Invites } from './Invites'

@@ -1,6 +1,6 @@
 import { useContext, useMemo } from 'react'
 import { Flex, P } from 'honorable'
-import { RepositoryChip } from 'pluralsh-design-system'
+import { RepositoryChip } from '@pluralsh/design-system'
 
 import { useQuery } from '@apollo/client'
 

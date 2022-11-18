@@ -5,7 +5,7 @@ import {
   CollapseIcon,
   ErrorIcon,
   PageTitle,
-} from 'pluralsh-design-system'
+} from '@pluralsh/design-system'
 
 import {
   Button,
@@ -124,7 +124,7 @@ export default function PackageSecurity() {
         overflow={{ vertical: 'auto' }}
       >
         <H2>Scan failures</H2>
-        {current.scan.errors?.length ? (
+        {current.scan?.errors?.length ? (
           <Box
             direction="column"
             background="fill-one"
@@ -134,7 +134,7 @@ export default function PackageSecurity() {
             flex="grow"
             overflow="auto"
           >
-            {current.scan.errors.map((item, i) => (
+            {current.scan?.errors.map((item, i) => (
               <Box
                 key={i}
                 direction="row"
@@ -185,14 +185,14 @@ export default function PackageSecurity() {
           <Div body2>No scan failures found.</Div>
         )}
         <H2>Vulnerabilities</H2>
-        {current.scan.violations?.length ? (
+        {current.scan?.violations?.length ? (
           <Table
             headers={['', 'Rule', 'Severity']}
             sizes={['40px', '80%', '15%']}
             background="fill-one"
             width="100%"
           >
-            {current.scan.violations.map((vio, ind, arr) => (
+            {current.scan?.violations.map((vio, ind, arr) => (
               <ScanViolation
                 key={`${ind}`}
                 violation={vio}

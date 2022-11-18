@@ -20,7 +20,7 @@ import {
   Tab,
   TabList,
   TabPanel,
-} from 'pluralsh-design-system'
+} from '@pluralsh/design-system'
 import Fuse from 'fuse.js'
 import styled from 'styled-components'
 import isEmpty from 'lodash/isEmpty'

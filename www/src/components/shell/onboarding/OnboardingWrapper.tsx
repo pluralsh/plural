@@ -5,8 +5,10 @@ import {
   useState,
 } from 'react'
 import { Flex } from 'honorable'
-
 import { useTheme } from 'styled-components'
+import { useSearchParams } from 'react-router-dom'
+import { useQuery } from '@apollo/client'
+import { LoopingLogo } from '@pluralsh/design-system'
 
 import {
   ResponsiveLayoutContentContainer,
@@ -14,10 +16,10 @@ import {
   ResponsiveLayoutSidenavContainer,
   ResponsiveLayoutSpacer,
 } from '../../layout/ResponsiveLayout'
-
 import SelectedApplicationsContext, { SelectedApplicationsContextType } from '../../../contexts/SelectedApplicationsContext'
-
 import { persistApplications, retrieveApplications } from '../persistance'
+import { SEARCH_REPOS } from '../../repos/queries'
+import { RootQueryType } from '../../../generated/graphql'
 
 import OnboardingSidenav from './OnboardingSidenav'
 import OnboardingSidecar from './OnboardingSidecar'
@@ -30,8 +32,11 @@ function OnboardingWrapper({
   children,
 }: any) {
   const theme = useTheme()
+  const [searchParams] = useSearchParams()
+  const appName = searchParams.get('appName')
   const [selectedApplications, setSelectedApplications] = useState<any[]>(retrieveApplications())
   const selectedApplicationsContextValue = useMemo<SelectedApplicationsContextType>(() => ({ selectedApplications, setSelectedApplications }), [selectedApplications])
+  const { data, loading, error } = useQuery<RootQueryType>(SEARCH_REPOS, { variables: { query: appName }, skip: !appName })
 
   const handleRestart = useCallback(() => {
     setSelectedApplications([])
@@ -41,6 +46,27 @@ function OnboardingWrapper({
   useEffect(() => {
     persistApplications(selectedApplications)
   }, [selectedApplications])
+
+  useEffect(() => {
+    if (error) return
+
+    const app = data?.searchRepositories?.edges?.at(0)?.node
+
+    if (!app) return
+
+    setSelectedApplications([app])
+  }, [error, data])
+
+  if (appName && loading) {
+    return (
+      <Flex
+        grow={1}
+        align="center"
+        justify="center"
+      ><LoopingLogo />
+      </Flex>
+    )
+  }
 
   return (
     <SelectedApplicationsContext.Provider value={selectedApplicationsContextValue}>

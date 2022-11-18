@@ -1,5 +1,7 @@
 import './shell.css'
 
+import { Buffer } from 'buffer'
+
 import {
   useCallback,
   useContext,
@@ -11,7 +13,7 @@ import {
 import { XTerm } from 'xterm-for-react'
 import { FitAddon } from 'xterm-addon-fit'
 import { Div, Flex } from 'honorable'
-import { Button, ReloadIcon, ScrollIcon } from 'pluralsh-design-system'
+import { Button, ReloadIcon, ScrollIcon } from '@pluralsh/design-system'
 import { useResizeDetector } from 'react-resize-detector'
 import debounce from 'lodash/debounce'
 
@@ -24,9 +26,6 @@ import TerminalSidebar from './TerminalSidebar'
 import TerminalInformation from './TerminalInformation'
 import useOnboarded from './onboarding/useOnboarded'
 import ConfigureMyCloudButton from './ConfigureMyCloudButton'
-
-// eslint-disable-next-line
-const { Buffer } = require('buffer/')
 
 const decodeBase64 = str => Buffer.from(str, 'base64').toString('utf-8')
 // const detachedMessage = '[detached (from session workspace)]'

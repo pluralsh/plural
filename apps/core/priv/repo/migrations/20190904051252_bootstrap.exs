@@ -4,7 +4,7 @@ defmodule Core.Repo.Migrations.Bootstrap do
   def change do
     create table(:users, primary_key: false) do
       add :id, :uuid, primary_key: true
-      add :email, :string, null: false
+      add :email, :string
       add :name, :string
       add :password_hash, :string
 
@@ -16,7 +16,7 @@ defmodule Core.Repo.Migrations.Bootstrap do
     create table(:publishers, primary_key: false) do
       add :id, :uuid, primary_key: true
       add :owner_id, references(:users, type: :uuid, on_delete: :delete_all)
-      add :name, :string, null: false
+      add :name, :string
 
       timestamps()
     end
@@ -26,7 +26,7 @@ defmodule Core.Repo.Migrations.Bootstrap do
     create table(:repositories, primary_key: false) do
       add :id, :uuid, primary_key: true
       add :publisher_id, references(:publishers, type: :uuid, on_delete: :delete_all)
-      add :name, :string, null: false
+      add :name, :string
 
       timestamps()
     end
@@ -37,7 +37,7 @@ defmodule Core.Repo.Migrations.Bootstrap do
     create table(:charts, primary_key: false) do
       add :id, :uuid, primary_key: true
       add :repository_id, references(:repositories, type: :uuid, on_delete: :delete_all)
-      add :name, :string, null: false
+      add :name, :string
       add :latest_version, :string
 
       timestamps()

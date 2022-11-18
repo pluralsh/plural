@@ -3,8 +3,8 @@ import { Box, Stack, Text } from 'grommet'
 import { FileIcon, defaultStyles } from 'react-file-icon'
 import { HoveredBackground, Tooltip } from 'forge-core'
 import moment from 'moment'
-import filesize from 'filesize'
-import { DownloadIcon } from 'pluralsh-design-system'
+import { filesize } from 'filesize'
+import { DownloadIcon } from '@pluralsh/design-system'
 
 import { download } from '../../utils/file'
 
@@ -178,7 +178,7 @@ export function FileEntry({ file }: any) {
               <Text
                 size="xsmall"
                 color="dark-5"
-              >{filesize(file.filesize || 0)}
+              >{filesize(file.filesize || 0)?.toString()}
               </Text>
               <Text size="xsmall">{moment(file.insertedAt).fromNow()}</Text>
             </Box>
@@ -227,7 +227,7 @@ export function StandardFile({
             <Text
               size="xsmall"
               color="dark-5"
-            >{filesize(file.filesize || 0)}
+            >{filesize(file.filesize || 0)?.toString()}
             </Text>
             <Text size="xsmall">{moment(insertedAt).fromNow()}</Text>
           </Box>

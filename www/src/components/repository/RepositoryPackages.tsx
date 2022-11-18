@@ -7,7 +7,7 @@ import {
   SubTab,
   TabList,
   TabPanel,
-} from 'pluralsh-design-system'
+} from '@pluralsh/design-system'
 import { useContext, useRef, useState } from 'react'
 import styled from 'styled-components'
 
@@ -81,7 +81,7 @@ export default function RepositoryPackages() {
               textValue={label}
               subTab
             >
-              <SubTab flexGrow={1}>{label}</SubTab>
+              <SubTab style={{ flexGrow: 1 }}>{label}</SubTab>
             </LinkTabWrap>
           ))}
         </TabList>

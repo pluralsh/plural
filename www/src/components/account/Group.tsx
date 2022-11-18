@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from '@apollo/client'
 import { Box } from 'grommet'
-import { Switch } from 'pluralsh-design-system'
+import { Switch } from '@pluralsh/design-system'
 import { useState } from 'react'
 import { Div } from 'honorable'
 

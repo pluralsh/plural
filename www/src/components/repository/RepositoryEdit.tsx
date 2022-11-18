@@ -26,7 +26,7 @@ import {
   Input,
   PageTitle,
   SearchIcon,
-} from 'pluralsh-design-system'
+} from '@pluralsh/design-system'
 import isEqual from 'lodash/isEqual'
 import isArray from 'lodash/isArray'
 import uniqWith from 'lodash/uniqWith'

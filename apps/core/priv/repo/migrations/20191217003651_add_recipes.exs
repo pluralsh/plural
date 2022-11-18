@@ -4,7 +4,7 @@ defmodule Core.Repo.Migrations.AddRecipes do
   def change do
     create table(:recipes, primary_key: false) do
       add :id,          :uuid, primary_key: true
-      add :name,        :string, null: false
+      add :name,        :string
       add :description, :string
       add :repository_id, references(:repositories, type: :uuid, on_delete: :delete_all)
 
@@ -18,7 +18,7 @@ defmodule Core.Repo.Migrations.AddRecipes do
       add :id,            :uuid, primary_key: true
       add :repository_id, references(:repositories, type: :uuid, on_delete: :delete_all)
       add :recipe_id,     references(:recipes, type: :uuid, on_delete: :delete_all)
-      add :index,         :integer, null: false, default: 0
+      add :index,         :integer, default: 0
 
       timestamps()
     end

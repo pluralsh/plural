@@ -3,9 +3,8 @@ import { ResponsiveLine } from '@nivo/line'
 import moment from 'moment'
 import last from 'lodash/last'
 import { Box, Text } from 'grommet'
-import { normalizeColor } from 'grommet/utils'
 import { Flex, P } from 'honorable'
-import { semanticColors } from 'pluralsh-design-system/dist/theme/colors'
+import { semanticColors } from '@pluralsh/design-system/dist/theme/colors'
 
 export function dateFormat(date) {
   return moment(date).format('MM/DD h:mm:ss A')
@@ -64,42 +63,6 @@ export const DURATIONS = [
     offset: '120d', step: '1d', label: '120d', tick: 'every 10 day',
   },
 ]
-
-const COLOR_MAP = [
-  'blue',
-  'orange',
-  'green',
-  'purple',
-  'red',
-
-  'blue-light',
-  'orange-light',
-  'green-light',
-  'purple-light',
-  'red-light',
-
-  'blue-dark',
-  'orange-dark',
-  'green-dark',
-  'purple-dark',
-  'red-dark',
-
-  'blue-light-2',
-  'orange-light-2',
-  'green-light-2',
-  'purple-light-2',
-  'red-light-2',
-
-  'blue-dark-2',
-  'orange-dark-2',
-  'green-dark-2',
-  'purple-dark-2',
-  'red-dark-2',
-]
-
-export function useColorMap(theme, colors) {
-  return useMemo(() => (colors || COLOR_MAP).map(c => normalizeColor(c, theme)), [theme, colors])
-}
 
 export function Graph({ data, yFormat, tick }: any) {
   const [selected, setSelected] = useState<any>(null)

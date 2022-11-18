@@ -6,7 +6,7 @@ import {
   PageTitle,
   StatusOkIcon,
   ValidatedInput,
-} from 'pluralsh-design-system'
+} from '@pluralsh/design-system'
 import { createElement, useContext, useState } from 'react'
 import { Password } from 'forge-core'
 

@@ -8,7 +8,7 @@ import {
   PackageIcon,
   Stepper,
   TerminalIcon,
-} from 'pluralsh-design-system'
+} from '@pluralsh/design-system'
 import { useContext } from 'react'
 import styled from 'styled-components'
 

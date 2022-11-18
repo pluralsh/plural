@@ -16,7 +16,7 @@ import {
   FormField,
   LoadingSpinner,
   StatusOkIcon,
-} from 'pluralsh-design-system'
+} from '@pluralsh/design-system'
 import {
   useApolloClient,
   useLazyQuery,

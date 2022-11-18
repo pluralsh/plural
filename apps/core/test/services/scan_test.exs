@@ -24,17 +24,17 @@ defmodule Core.Services.ScanTest do
       assert vuln.image_id == scanned.id
     end
 
-    test "it will mark on timeouts" do
+    test "it will retry errors" do
       image = insert(:docker_image)
       expect(System, :cmd, fn
         "trivy", ["--quiet", "image", "--format", "json", _, "--timeout", "5m0s"], [{:env, [{"TRIVY_REGISTRY_TOKEN", _}]} | _] ->
-          {~s(image scan error: scan error: image scan failed: failed analysis: analyze error: timeout: context deadline exceeded), 1}
+          {~s(some weird trivy error), 1}
       end)
 
       {:ok, errored} = Scan.scan_image(image)
 
       assert errored.id == image.id
-      assert errored.scan_completed_at
+      assert errored.scan_retries == 1
     end
   end
 

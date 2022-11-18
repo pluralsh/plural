@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@apollo/client'
+import { useMutation } from '@apollo/client'
 
 import { Div, Flex, P } from 'honorable'
 import moment from 'moment'
@@ -7,7 +7,7 @@ import {
   Button,
   Card,
   Markdown,
-} from 'pluralsh-design-system'
+} from '@pluralsh/design-system'
 import { ReactElement, useCallback, useContext } from 'react'
 import { Link } from 'react-router-dom'
 import { useTheme } from 'styled-components'
@@ -16,14 +16,17 @@ import {
   Notification as NotificationT,
   NotificationType,
   OnboardingChecklistState,
+  RootMutationType,
+  RootMutationTypeUpdateUserArgs,
   User,
 } from '../../generated/graphql'
-
 import { OnboardingChecklistContext } from '../../contexts/OnboardingChecklistContext'
 import usePaginatedQuery from '../../hooks/usePaginatedQuery'
 import { clearOnboardingChecklistState, isOnboardingChecklistHidden } from '../shell/persistance'
-import { ONBOARDING_STATUS, UPDATE_ONBOARDING_CHECKLIST } from '../users/queries'
+import { UPDATE_USER } from '../users/queries'
 import InfiniteScroller from '../utils/InfiniteScroller'
+import CurrentUserContext from '../../contexts/CurrentUserContext'
+import { updateUserFragment } from '../../utils/graphql'
 
 import { NOTIFICATIONS_QUERY } from './queries'
 
@@ -55,11 +58,11 @@ export function NotificationsPanel({ closePanel }: any) {
     { variables: {} },
     data => data.notifications)
 
-  const { data } = useQuery<{ me: User }>(ONBOARDING_STATUS)
+  const { me: user } = useContext(CurrentUserContext) as { me: User }
   const showOnboardingNotification = useCallback(() => (
-    data?.me?.onboardingChecklist?.dismissed || isOnboardingChecklistHidden())
-    && data?.me?.onboardingChecklist?.status !== OnboardingChecklistState.Finished,
-  [data])
+    user?.onboardingChecklist?.dismissed || isOnboardingChecklistHidden())
+    && user?.onboardingChecklist?.status !== OnboardingChecklistState.Finished,
+  [user])
 
   if (showOnboardingNotification() && !notifications.length) {
     return <OnboardingChecklistNotification closePanel={closePanel} />
@@ -99,7 +102,7 @@ export function NotificationsPanel({ closePanel }: any) {
 
 function OnboardingChecklistNotification({ closePanel }: any) {
   const { setDismissed } = useContext(OnboardingChecklistContext)
-  const [updateChecklist, { loading }] = useMutation(UPDATE_ONBOARDING_CHECKLIST, {
+  const [updateChecklist, { loading }] = useMutation<RootMutationType, RootMutationTypeUpdateUserArgs>(UPDATE_USER, {
     variables: {
       attributes: {
         onboardingChecklist: {
@@ -107,6 +110,7 @@ function OnboardingChecklistNotification({ closePanel }: any) {
         },
       },
     },
+    update: updateUserFragment,
     onCompleted: () => {
       clearOnboardingChecklistState()
       closePanel()

@@ -4,7 +4,7 @@ import {
   Span,
   Text,
 } from 'honorable'
-import { ErrorIcon, Toast } from 'pluralsh-design-system'
+import { ErrorIcon, Toast } from '@pluralsh/design-system'
 import { useContext } from 'react'
 import { useTheme } from 'styled-components'
 
@@ -47,7 +47,7 @@ function ServiceAccountBanner({ previousUser }: any) {
 
 function ApplicationLayout({ children }: any) {
   const previousUser = getPreviousUserData()
-  const isProduction = process.env.NODE_ENV === 'production'
+  const isProduction = import.meta.env.MODE === 'production'
 
   return (
     <Flex

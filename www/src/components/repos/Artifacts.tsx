@@ -19,16 +19,14 @@ import {
   ListIcon,
   UbuntuLogoIcon,
   WindowsLogoIcon,
-} from 'pluralsh-design-system'
+} from '@pluralsh/design-system'
 import { Copyable } from 'forge-core'
 import { normalizeColor } from 'grommet/utils'
-import fs from 'filesize'
+import { filesize as fs } from 'filesize'
 import moment from 'moment'
 
 import { HeaderItem } from '../utils/Header'
-
 import { Icon } from '../utils/IconOld'
-
 import { download } from '../../utils/file'
 
 import { DetailContainer } from './Installation'
@@ -149,7 +147,7 @@ function ArtifactDetails({
         </TableRow>
         <TableRow>
           <TableCell border="right"><b>filesize</b></TableCell>
-          <TableCell>{fs(filesize)}</TableCell>
+          <TableCell>{fs(filesize)?.toString()}</TableCell>
         </TableRow>
         <TableRow>
           <TableCell border="right"><b>arch</b></TableCell>
@@ -209,8 +207,8 @@ function ArtifactDetail({
 }
 
 export function Artifact({
-  // eslint-disable-next-line
-  name, type, platform, filesize, ...artifact
+                             // eslint-disable-next-line
+                             name, type, platform, filesize, ...artifact
 }: any) {
   const [open, setOpen] = useState(false)
   const dropRef = useRef<HTMLDivElement>(null)
@@ -244,7 +242,7 @@ export function Artifact({
             <Text
               size="small"
               color="dark-3"
-            >-- {fs(filesize)}
+            >-- {fs(filesize)?.toString()}
             </Text>
           </Box>
         </Box>
@@ -307,7 +305,7 @@ function ArtifactRow({ artifact }: any) {
         >
           <Text
             size="small"
-            // @ts-expect-error
+                        // @ts-expect-error
             weigth={500}
           >
             {artifact.name}

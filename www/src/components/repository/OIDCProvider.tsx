@@ -17,7 +17,7 @@ import {
   Input,
   PageTitle,
   Toast,
-} from 'pluralsh-design-system'
+} from '@pluralsh/design-system'
 import { useNavigate, useParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 

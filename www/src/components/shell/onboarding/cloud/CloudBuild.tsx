@@ -1,7 +1,7 @@
 import { useContext, useEffect } from 'react'
 import { useMutation, useQuery } from '@apollo/client'
 import { Div, Flex, P } from 'honorable'
-import { Button, Chip, ProgressBar } from 'pluralsh-design-system'
+import { Button, Chip, ProgressBar } from '@pluralsh/design-system'
 
 import CreateShellContext from '../../../../contexts/CreateShellContext'
 

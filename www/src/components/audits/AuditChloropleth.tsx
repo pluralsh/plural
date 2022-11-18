@@ -4,7 +4,7 @@ import { useRef, useState } from 'react'
 import lookup from 'country-code-lookup'
 import { Box } from 'grommet'
 
-import { PageTitle, SubTab, TabList } from 'pluralsh-design-system'
+import { PageTitle, SubTab, TabList } from '@pluralsh/design-system'
 
 import { Chloropleth } from '../utils/Chloropleth'
 

@@ -4,7 +4,7 @@ defmodule Core.Repo.Migrations.AddIntegrations do
   def change do
     create table(:integrations, primary_key: false) do
       add :id,          :uuid, primary_key: true
-      add :name,        :string, null: false
+      add :name,        :string
       add :icon,        :string
       add :icon_id,     :uuid
       add :source_url,  :string
@@ -22,7 +22,7 @@ defmodule Core.Repo.Migrations.AddIntegrations do
 
     create table(:resource_definitions, primary_key: false) do
       add :id,   :uuid, primary_key: true
-      add :name, :string, null: false
+      add :name, :string
       add :spec, :map
 
       timestamps()

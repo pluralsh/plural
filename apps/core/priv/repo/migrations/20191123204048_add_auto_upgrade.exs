@@ -3,7 +3,7 @@ defmodule Core.Repo.Migrations.AddAutoUpgrade do
 
   def change do
     alter table(:installations) do
-      add :auto_upgrade, :boolean, default: false, null: false
+      add :auto_upgrade, :boolean, default: false
     end
   end
 end

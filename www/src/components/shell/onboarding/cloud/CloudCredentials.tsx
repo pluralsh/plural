@@ -8,7 +8,7 @@ import {
 } from 'react'
 import { Box, Drop } from 'grommet'
 import { MenuItem, Select } from 'honorable'
-import { Button, FormField } from 'pluralsh-design-system'
+import { Button, FormField } from '@pluralsh/design-system'
 
 import { growthbook } from '../../../../helpers/growthbook'
 

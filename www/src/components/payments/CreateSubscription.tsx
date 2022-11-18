@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Box, Layer, Text } from 'grommet'
-import { Button, NumericInput } from 'forge-core'
-import { PlusIcon } from '@pluralsh/design-system'
+// import { NumericInput } from 'forge-core'
+import { Button, PlusIcon } from '@pluralsh/design-system'
 import { useMutation } from '@apollo/client'
 
 import { deepUpdate } from '../../utils/graphql'

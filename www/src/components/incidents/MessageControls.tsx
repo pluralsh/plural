@@ -5,12 +5,12 @@ import {
   useState,
 } from 'react'
 import { Box, Drop, Text } from 'grommet'
-import {
-  Edit,
-  Emoji,
-  TooltipContent,
-  Trash,
-} from 'forge-core'
+// import {
+//   Edit,
+//   Emoji,
+//   TooltipContent,
+//   Trash,
+// } from 'forge-core'
 import { useMutation } from '@apollo/client'
 import { useParams } from 'react-router-dom'
 

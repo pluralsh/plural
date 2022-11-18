@@ -20,7 +20,7 @@ import {
   UbuntuLogoIcon,
   WindowsLogoIcon,
 } from '@pluralsh/design-system'
-import { Copyable } from 'forge-core'
+// import { Copyable } from 'forge-core'
 import { normalizeColor } from 'grommet/utils'
 import { filesize as fs } from 'filesize'
 import moment from 'moment'

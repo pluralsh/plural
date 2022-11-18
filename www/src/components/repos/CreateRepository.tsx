@@ -1,8 +1,8 @@
 import { useCallback, useState } from 'react'
 import { Box, Text, TextInput } from 'grommet'
-import { PlusIcon } from '@pluralsh/design-system'
+import { Button, PlusIcon, Select } from '@pluralsh/design-system'
 import { useMutation } from '@apollo/client'
-import { Button, SecondaryButton, Select } from 'forge-core'
+// import { SecondaryButton } from 'forge-core'
 import { FilePicker } from 'react-file-picker'
 import { useNavigate } from 'react-router-dom'
 

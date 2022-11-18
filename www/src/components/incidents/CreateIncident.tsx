@@ -5,10 +5,10 @@ import {
   useState,
 } from 'react'
 import { Box, Text, TextInput } from 'grommet'
-import { Button, SecondaryButton } from 'forge-core'
+// import { SecondaryButton } from 'forge-core'
 import { Editable, Slate } from 'slate-react'
 import { useMutation, useQuery } from '@apollo/client'
-import { CheckIcon } from '@pluralsh/design-system'
+import { Button, CheckIcon } from '@pluralsh/design-system'
 
 import { useEditor } from '../utils/hooks'
 import { plainDeserialize, plainSerialize } from '../../utils/slate'

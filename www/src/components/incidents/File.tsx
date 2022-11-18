@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import { Box, Stack, Text } from 'grommet'
 import { FileIcon, defaultStyles } from 'react-file-icon'
-import { HoveredBackground, Tooltip } from 'forge-core'
+// import { HoveredBackground } from 'forge-core'
 import moment from 'moment'
 import { filesize } from 'filesize'
-import { DownloadIcon } from '@pluralsh/design-system'
+import { DownloadIcon, Tooltip } from '@pluralsh/design-system'
 
 import { download } from '../../utils/file'
 

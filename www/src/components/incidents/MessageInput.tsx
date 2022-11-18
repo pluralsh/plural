@@ -19,12 +19,12 @@ import { MoonLoader, SyncLoader } from 'react-spinners'
 import { Progress } from 'react-sweet-progress'
 import { Editor as SlateEditor, Transforms } from 'slate'
 import { useParams } from 'react-router-dom'
-import {
-  Attachment,
-  Close,
-  Emoji,
-  SendMessage,
-} from 'forge-core'
+// import {
+//   Attachment,
+//   Close,
+//   Emoji,
+//   SendMessage,
+// } from 'forge-core'
 import { filesize as fs } from 'filesize'
 import { NimbleEmoji, emojiIndex } from 'emoji-mart'
 import { ThemeContext } from 'styled-components'

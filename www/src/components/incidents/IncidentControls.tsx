@@ -5,8 +5,9 @@ import {
   Layer,
   Text,
 } from 'grommet'
-import { Button, SecondaryButton } from 'forge-core'
+// import { SecondaryButton } from 'forge-core'
 import {
+  Button,
   CameraIcon,
   CheckIcon,
   LightningIcon,

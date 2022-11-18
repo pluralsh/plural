@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react'
 import { Box, Select, Text } from 'grommet'
-import { Button, SecondaryButton } from 'forge-core'
+// import { SecondaryButton } from 'forge-core'
+import { Button } from '@pluralsh/design-system'
 import { useMutation } from '@apollo/client'
 
 import { ModalHeader } from '../ModalHeader'

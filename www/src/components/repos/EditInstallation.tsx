@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { useMutation } from '@apollo/client'
-import { Button, Pill, Select } from 'forge-core'
+// import { Pill } from 'forge-core'
 import { Box, CheckBox, Text } from 'grommet'
-import { CloseIcon } from '@pluralsh/design-system'
+import { Button, CloseIcon, Select } from '@pluralsh/design-system'
 import Toggle from 'react-toggle'
 
 import { TAGS } from '../versions/VersionTags'

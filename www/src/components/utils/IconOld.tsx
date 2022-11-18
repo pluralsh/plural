@@ -1,6 +1,6 @@
 import { createElement, useRef, useState } from 'react'
 import { Box, Text } from 'grommet'
-import { TooltipContent } from 'forge-core'
+// import { TooltipContent } from 'forge-core'
 
 export function Icon({
   icon, iconAttrs, tooltip, onClick, hover,

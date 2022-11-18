@@ -8,15 +8,14 @@ import {
   Text,
   TextInput,
 } from 'grommet'
+// import { HoveredBackground, SecondaryButton, Trash } from 'forge-core'
+import { FaDollarSign } from 'react-icons/fa'
 import {
   Button,
-  HoveredBackground,
-  SecondaryButton,
+  CreditCardIcon,
+  PlusIcon,
   Select,
-  Trash,
-} from 'forge-core'
-import { FaDollarSign } from 'react-icons/fa'
-import { CreditCardIcon, PlusIcon } from '@pluralsh/design-system'
+} from '@pluralsh/design-system'
 
 import { LabeledInput } from '../repos/CreateRepository'
 

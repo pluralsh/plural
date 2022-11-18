@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useMutation } from '@apollo/client'
-import { Button, SecondaryButton } from 'forge-core'
+// import { SecondaryButton } from 'forge-core'
+import { Button } from '@pluralsh/design-system'
 import {
   Box,
   FormField,

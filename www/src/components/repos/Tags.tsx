@@ -5,7 +5,7 @@ import {
   Text,
   TextInput,
 } from 'grommet'
-import { Scroller, Tag as TagInner } from 'forge-core'
+// import { Scroller, Tag as TagInner } from 'forge-core'
 
 import { extendConnection } from '../../utils/graphql'
 

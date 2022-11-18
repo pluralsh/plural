@@ -9170,12 +9170,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"honorable-theme-default@npm:0.66.0":
-  version: 0.66.0
-  resolution: "honorable-theme-default@npm:0.66.0"
+"honorable-theme-default@npm:0.67.0":
+  version: 0.67.0
+  resolution: "honorable-theme-default@npm:0.67.0"
   peerDependencies:
     "@emotion/react": ">=10.0.0"
-  checksum: 9dafd4e2118cc01b2d9125e83aec77c4a86dfbc38596dc42f80c15fd6f9026809eaa0ca646eaf5f1d8e14e0095d814c0e6645bfeaf3e8d5d9549e3059a29ee51
+  checksum: 84ad695124020e6f1c8e44e2aa0f49943931cab0da1057a746e59723e14199be3483032704c0ac887fafb325f6479d31ad31e92d5a2c3f902c9a685dc5ac12f7
   languageName: node
   linkType: hard
 
@@ -15779,7 +15779,7 @@ __metadata:
     history: 5.3.0
     honorable: 0.157.0
     honorable-recipe-mp: 0.4.0
-    honorable-theme-default: 0.66.0
+    honorable-theme-default: 0.67.0
     js-yaml: 4.1.0
     jsdom: 20.0.2
     lodash: 4.17.21

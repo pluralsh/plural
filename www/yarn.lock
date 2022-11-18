@@ -1895,26 +1895,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@floating-ui/core@npm:^1.0.1":
-  version: 1.0.1
-  resolution: "@floating-ui/core@npm:1.0.1"
-  checksum: c8a5f1a491788e5bebfe747e9372df2c7cbee0d8790ddf95e25149ac91ccf1a2cca8f768029826cfd3d687617c1d0f3241b97f1648bdf2a28d421f39e79c2eee
-  languageName: node
-  linkType: hard
-
 "@floating-ui/core@npm:^1.0.2":
   version: 1.0.2
   resolution: "@floating-ui/core@npm:1.0.2"
   checksum: a6c93c15c4408dfa5acff31c275f36d85f4107a9d7562da2d6c014c810559843a71e38622046195856966929d20a37793e7ed0905e54ddc8edd91cd10500ce8d
-  languageName: node
-  linkType: hard
-
-"@floating-ui/dom@npm:^1.0.0":
-  version: 1.0.4
-  resolution: "@floating-ui/dom@npm:1.0.4"
-  dependencies:
-    "@floating-ui/core": ^1.0.1
-  checksum: f038ad74c8c0d4e3668705396c9955018ec4fce5de4a3ebc0d2317fa10a0dbae3ff6c9d331423014ab7558864977a83a1664be2800cb1a1d57cd35647a3d4907
   languageName: node
   linkType: hard
 
@@ -1937,18 +1921,6 @@ __metadata:
     react: ">=16.8.0"
     react-dom: ">=16.8.0"
   checksum: 4abe7c498847dd2eb54bf407a590fc7435fe579c434b1da88b486e1c0f2bf95c22b60ddb4da26f91a082b379bbc99a7bd20fa648a461c9667adbd9365d4acd55
-  languageName: node
-  linkType: hard
-
-"@floating-ui/react-dom@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "@floating-ui/react-dom@npm:1.0.0"
-  dependencies:
-    "@floating-ui/dom": ^1.0.0
-  peerDependencies:
-    react: ">=16.8.0"
-    react-dom: ">=16.8.0"
-  checksum: d79e3c8570b0eaef5e968cd9c69de2c6bb372a5316e4e69a1cd12dae81771863ef430e81b74a0c21cefba663a2f971d8540c7294d7fb3b9807e32ba2a00c1e76
   languageName: node
   linkType: hard
 
@@ -9207,23 +9179,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"honorable@npm:0.148.0":
-  version: 0.148.0
-  resolution: "honorable@npm:0.148.0"
+"honorable@npm:0.157.0":
+  version: 0.157.0
+  resolution: "honorable@npm:0.157.0"
   dependencies:
     "@emotion/is-prop-valid": ^1.2.0
-    "@floating-ui/react-dom": ^1.0.0
+    "@floating-ui/react-dom": ^1.0.1
     lodash.merge: ^4.6.2
     lodash.mergewith: ^4.6.2
     prop-types: ^15.8.1
-    react-textarea-autosize: ^8.3.4
+    react-textarea-autosize: ^8.4.0
     react-transition-group: ^4.4.5
   peerDependencies:
     "@emotion/react": ">=10.0.0"
     "@emotion/styled": ">=10.0.0"
     react: ">=16.0.0"
     react-dom: ">=16.0.0"
-  checksum: f78a2d8b0c81c73725f7dcfcb70322297fb1bfc6f061e2fd37e28252cf6f6ebbca295b6a822f04d8134591f07730e326f61b884f6c8bb3b35b09268852532b90
+  checksum: 1191623c3f8e1a18ef46debc362349cb2a999a8f15b186798fe628a69334e474fc88d16c11355e0567b37470dc780f3e4a1d9a7e0f0b22aa029bac79a7f399f9
   languageName: node
   linkType: hard
 
@@ -12652,7 +12624,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-textarea-autosize@npm:^8.3.2, react-textarea-autosize@npm:^8.3.4":
+"react-textarea-autosize@npm:^8.3.2, react-textarea-autosize@npm:^8.4.0":
   version: 8.4.0
   resolution: "react-textarea-autosize@npm:8.4.0"
   dependencies:
@@ -15805,7 +15777,7 @@ __metadata:
     fuse.js: 6.6.2
     grommet: 2.27.0
     history: 5.3.0
-    honorable: 0.148.0
+    honorable: 0.157.0
     honorable-recipe-mp: 0.3.0
     honorable-theme-default: 0.66.0
     js-yaml: 4.1.0

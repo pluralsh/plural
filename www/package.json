@@ -141,7 +141,7 @@
     "eslint-config-pluralsh": "3.1.0",
     "eslint-plugin-import": "2.26.0",
     "eslint-plugin-import-newlines": "1.2.3",
-    "jsdom": "20.0.2",
+    "jsdom": "20.0.3",
     "serve": "14.1.2",
     "source-map-explorer": "2.5.3",
     "stylelint": "14.15.0",

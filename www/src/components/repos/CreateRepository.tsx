@@ -2,7 +2,6 @@ import { useCallback, useState } from 'react'
 import { Box, Text, TextInput } from 'grommet'
 import { Button, PlusIcon, Select } from '@pluralsh/design-system'
 import { useMutation } from '@apollo/client'
-// import { SecondaryButton } from 'forge-core'
 import { FilePicker } from 'react-file-picker'
 import { useNavigate } from 'react-router-dom'
 
@@ -71,7 +70,8 @@ function ImagePicker({
           }}
           onChange={file => generatePreview(file, setImage)}
         >
-          <SecondaryButton
+          <Button
+            secondary
             round="xsmall"
             label={label || 'Upload an icon'}
           />

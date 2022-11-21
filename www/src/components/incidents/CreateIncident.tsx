@@ -5,7 +5,6 @@ import {
   useState,
 } from 'react'
 import { Box, Text, TextInput } from 'grommet'
-// import { SecondaryButton } from 'forge-core'
 import { Editable, Slate } from 'slate-react'
 import { useMutation, useQuery } from '@apollo/client'
 import { Button, CheckIcon } from '@pluralsh/design-system'
@@ -221,7 +220,8 @@ export function CreateIncident({ onCompleted }: any) {
               justify="end"
               gap="small"
             >
-              <SecondaryButton
+              <Button
+                secondary
                 label="Cancel"
                 onClick={onCompleted}
               />

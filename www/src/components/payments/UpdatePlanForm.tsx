@@ -1,5 +1,4 @@
 import { useState } from 'react'
-// import { SecondaryButton } from 'forge-core'
 import { Button } from '@pluralsh/design-system'
 import { Box } from 'grommet'
 
@@ -29,7 +28,8 @@ export function UpdatePlanForm({ plan: { id, serviceLevels } }: any) {
         gap="small"
         margin={{ top: 'small' }}
       >
-        <SecondaryButton
+        <Button
+          secondary
           label="Add service level"
           round="xsmall"
           onClick={() => setAttributes({ ...attributes, serviceLevels: [...attributes.serviceLevels, serviceLevel] })}

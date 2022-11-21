@@ -6,7 +6,6 @@ import { useNavigate, useParams } from 'react-router-dom'
 //   Copyable,
 //   Edit,
 //   Reload,
-//   SecondaryButton,
 //   Trash,
 // } from 'forge-core'
 import {
@@ -261,7 +260,8 @@ function WebhookControls({ webhook, setEdit }: any) {
                 justify="end"
                 gap="small"
               >
-                <SecondaryButton
+                <Button
+                  secondary
                   label="Cancel"
                   onClick={() => setOpen(false)}
                 />

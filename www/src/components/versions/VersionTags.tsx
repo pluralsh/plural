@@ -1,6 +1,5 @@
 import { useCallback, useState } from 'react'
 import { Box, Select, Text } from 'grommet'
-// import { SecondaryButton } from 'forge-core'
 import { Button } from '@pluralsh/design-system'
 import { useMutation } from '@apollo/client'
 
@@ -79,7 +78,8 @@ export function EditTags({ version, setOpen, refetch }: any) {
             value={value}
             onChange={({ option }) => setValue(option)}
           />
-          <SecondaryButton
+          <Button
+            secondary
             label="add"
             onClick={() => addTag(value)}
           />

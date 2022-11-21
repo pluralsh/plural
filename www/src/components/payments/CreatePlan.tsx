@@ -8,7 +8,7 @@ import {
   Text,
   TextInput,
 } from 'grommet'
-// import { HoveredBackground, SecondaryButton, Trash } from 'forge-core'
+// import { HoveredBackground, Trash } from 'forge-core'
 import { FaDollarSign } from 'react-icons/fa'
 import {
   Button,
@@ -210,7 +210,8 @@ function FeatureCreator({
         gap="small"
         margin={{ top: 'small' }}
       >
-        <SecondaryButton
+        <Button
+          secondary
           label="Add feature"
           round="xsmall"
           onClick={() => setState(addFeature())}
@@ -337,7 +338,8 @@ function ItemCreator({
         gap="small"
         margin={{ top: 'small' }}
       >
-        <SecondaryButton
+        <Button
+          secondary
           label="Add line item"
           round="xsmall"
           onClick={() => setState(addLineItem())}
@@ -535,7 +537,8 @@ function NavigableSlaForm({
         gap="small"
         margin={{ top: 'small' }}
       >
-        <SecondaryButton
+        <Button
+          secondary
           label="Add service level"
           round="xsmall"
           onClick={() => setState({ ...state, serviceLevels: [...state.serviceLevels, serviceLevel] })}

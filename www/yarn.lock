@@ -15299,9 +15299,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vitest@npm:0.25.2":
-  version: 0.25.2
-  resolution: "vitest@npm:0.25.2"
+"vitest@npm:0.25.3":
+  version: 0.25.3
+  resolution: "vitest@npm:0.25.3"
   dependencies:
     "@types/chai": ^4.3.3
     "@types/chai-subset": ^1.3.3
@@ -15336,7 +15336,7 @@ __metadata:
       optional: true
   bin:
     vitest: vitest.mjs
-  checksum: f41fe7c2c1fe8142ceb90f4d4bebca90c62615c168ff82ea5e797affb8cfd78a49c8900f6d9c552e0da1208961750b6cc705113ad99315e69afba5cd3fdef794
+  checksum: cd54de758f41295ef8a5304318b0de37f3182ec9b179d983cb0199dac89d51b80ee30124754703ef77ce4a1b675f3b02094ef96790889d5c9212dbab7490b4d0
   languageName: node
   linkType: hard
 
@@ -15954,7 +15954,7 @@ __metadata:
     uuid: 9.0.0
     vite: 3.2.4
     vite-plugin-pwa: 0.13.3
-    vitest: 0.25.2
+    vitest: 0.25.3
     wait-on: 6.0.1
     workbox-core: 6.5.4
     workbox-expiration: 6.5.4

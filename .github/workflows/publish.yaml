@@ -111,7 +111,7 @@ jobs:
         cache-to: type=gha,mode=max
         build-args: |
           APP_NAME=${{ matrix.app }}
-          GIT_COMMIT=$GITHUB_SHA
+          GIT_COMMIT=${{ github.sha }}
     - name: slack webhook
       uses: 8398a7/action-slack@v3
       with:
@@ -199,7 +199,20 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    - name: Check if RC
+      id: check
+      run: |
+        if [[ ${{ github.ref }} == refs/tags/*rc* ]]; then
+          echo "RC detected, creating pre-release"
+          echo "RC=true" >> $GITHUB_OUTPUT
+        else
+          echo "No RC detected, creating release"
+          echo "RC=false" >> $GITHUB_OUTPUT
+        fi
     - name: Release
       uses: softprops/action-gh-release@v1
       with:
         generate_release_notes: true
+        prerelease: ${{ steps.check.outputs.RC }}

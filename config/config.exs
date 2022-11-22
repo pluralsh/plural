@@ -1,8 +1,9 @@
-use Mix.Config
+import Config
 
 config :core,
   ecto_repos: [Core.Repo],
-  broker: Core.Conduit.Broker
+  broker: Core.Conduit.Broker,
+  env: config_env()
 
 config :piazza_core,
   repos: [Core.Repo]
@@ -43,6 +44,8 @@ config :logger, :console,
   metadata: [:request_id]
 
 config :phoenix, :json_library, Jason
+
+config :reverse_proxy_plug, :http_client, ReverseProxyPlug.HTTPClient.Adapters.HTTPoison
 
 config :core, Core.Guardian,
   issuer: "forge",
@@ -156,4 +159,4 @@ config :worker,
   rollout_interval: 10,
   docker_interval: 60
 
-import_config "#{Mix.env()}.exs"
+import_config "#{config_env()}.exs"

@@ -4,7 +4,7 @@ defmodule Core.Repo.Migrations.AddArtifacts do
   def change do
     create table(:artifacts, primary_key: false) do
       add :id,       :uuid, primary_key: true
-      add :name,     :string, null: false
+      add :name,     :string
       add :readme,   :binary
       add :blob,     :string
       add :blob_id,  :uuid

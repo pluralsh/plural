@@ -34,10 +34,15 @@ jobs:
         shell: bash
         working-directory: www
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - name: 'Checkout'
+        uses: actions/checkout@v3
+      - name: Read Node.js version from package.json
+        run: echo ::set-output name=nodeVersion::$(node -p "require('./package.json').engines.node")
+        id: engines
+      - name: 'Setup Node'
+        uses: actions/setup-node@v3
         with:
-          node-version: 16.15.0
+          node-version: ${{ steps.engines.outputs.nodeVersion }}
       - run: yarn --immutable
       - run: yarn test
   lint:
@@ -48,10 +53,15 @@ jobs:
         shell: bash
         working-directory: www
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - name: 'Checkout'
+        uses: actions/checkout@v3
+      - name: Read Node.js version from package.json
+        run: echo ::set-output name=nodeVersion::$(node -p "require('./package.json').engines.node")
+        id: engines
+      - name: 'Setup Node'
+        uses: actions/setup-node@v3
         with:
-          node-version: 16.15.0
+          node-version: ${{ steps.engines.outputs.nodeVersion }}
       - run: yarn --immutable
       - run: yarn lint
   e2e:
@@ -65,10 +75,15 @@ jobs:
         shell: bash
         working-directory: www
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - name: 'Checkout'
+        uses: actions/checkout@v3
+      - name: Read Node.js version from package.json
+        run: echo ::set-output name=nodeVersion::$(node -p "require('./package.json').engines.node")
+        id: engines
+      - name: 'Setup Node'
+        uses: actions/setup-node@v3
         with:
-          node-version: 16.15.0
+          node-version: ${{ steps.engines.outputs.nodeVersion }}
       - run: yarn # Should run the --immutable in the CI by default
       - run: cd e2e && yarn
       - run: yarn e2e

@@ -4,7 +4,7 @@ defmodule Core.Repo.Migrations.AddSupportTickets do
   def change do
     create table(:incidents, primary_key: false) do
       add :id,               :uuid, primary_key: true
-      add :title,            :string, null: false
+      add :title,            :string
       add :description,      :binary
       add :severity,         :integer
       add :next_response_at, :utc_datetime_usec

@@ -13,7 +13,7 @@ defmodule Core.Repo.Migrations.AddDeferredUpdates do
       add :version_id, references(:versions, type: :uuid, on_delete: :delete_all)
       add :user_id,    references(:users, type: :uuid, on_delete: :delete_all)
       add :dequeue_at, :utc_datetime_usec
-      add :attempts,   :integer, default: 0, null: false
+      add :attempts,   :integer, default: 0
 
       add :reasons, :map
 

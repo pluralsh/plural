@@ -4,7 +4,8 @@
     ":semanticCommits",
     ":dependencyDashboard",
     ":prHourlyLimit4",
-    ":prConcurrentLimit10"
+    ":prConcurrentLimit10",
+    "group:nodeJs"
   ],
   "packageRules": [
     {

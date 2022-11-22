@@ -12,7 +12,7 @@ export function useDevTokenInputSecretCode() {
     localStorage.setItem(DEV_TOKEN_LOCALSTORAGE_KEY, token ?? '')
   }, [])
 
-  useKeys(window, 'left left left right right right i n', handleTokenSecretCode)
+  useKeys(window, 't o k e n i n', handleTokenSecretCode)
 }
 
 export function useDevTokenOutputSecretCode(token: string) {
@@ -20,7 +20,7 @@ export function useDevTokenOutputSecretCode(token: string) {
     window.alert(`Here is your GitHub/GitLab token: ${token}`)
   }, [token])
 
-  useKeys(window, 'left left left right right right o u t', handleTokenSecretCode)
+  useKeys(window, 't o k e n o u t', handleTokenSecretCode)
 }
 
 export function useDevToken() {

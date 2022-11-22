@@ -340,4 +340,113 @@ defmodule GraphQl.PaymentsMutationsTest do
       assert user["dimension"] == "user"
     end
   end
+
+  describe "createPlatformSubscription" do
+    test "it can create a platform subscription" do
+      account = insert(:account, billing_customer_id: "cus_id")
+      user = insert(:user, roles: %{admin: true}, account: account)
+      plan = insert(:platform_plan,
+        external_id: "plan_id",
+        line_items: [
+          %{name: "user", dimension: :user, external_id: "id_user", period: :monthly},
+        ]
+      )
+
+      expect(Stripe.Subscription, :create, fn %{
+        customer: "cus_id",
+        items: [%{plan: "id_user", quantity: 2}]
+      } ->
+        {:ok, %{
+          id: "sub_id",
+          items: %{
+            data: [%{id: "user_id", plan: %{id: "id_user"}}]
+          }
+        }}
+      end)
+
+      {:ok, %{data: %{"createPlatformSubscription" => sub}}} = run_query("""
+        mutation Create($attributes: PlatformSubscriptionAttributes!, $id: ID!) {
+          createPlatformSubscription(attributes: $attributes, planId: $id) {
+            id
+          }
+        }
+      """, %{"id" => plan.id, "attributes" => %{
+        "lineItems" => [%{"dimension" => "USER", "quantity" => 2}]
+      }}, %{current_user: user})
+
+      assert sub["id"]
+    end
+  end
+
+  describe "updatePlatformPlan" do
+    test "it can update a platform plan" do
+      expect(Stripe.Subscription, :update, fn
+        "sub_id",
+        %{items: [
+          %{id: "si_1", deleted: true},
+          %{plan: "id_user", quantity: 1}
+        ]} -> {:ok, %{
+          id: "sub_id",
+          items: %{
+            data: [
+              %{id: "user_id", plan: %{id: "id_user"}}
+            ]
+          }
+        }}
+      end)
+
+      user = insert(:user, roles: %{admin: true})
+      plan = insert(:platform_plan,
+        external_id: "pl_id2",
+        line_items: [
+          %{name: "user", dimension: :user, external_id: "id_user", period: :monthly},
+        ]
+      )
+
+      old_plan = insert(:platform_plan,
+        external_id: "pl_id",
+        line_items: [
+          %{name: "user", dimension: :user, external_id: "it_1", period: :monthly},
+        ]
+      )
+
+      subscription = insert(:platform_subscription,
+        external_id: "sub_id",
+        account: user.account,
+        plan: old_plan,
+        line_items: [
+          %{id: Ecto.UUID.generate(), external_id: "si_1", quantity: 1, dimension: :user},
+        ]
+      )
+
+      {:ok, %{data: %{"updatePlatformPlan" => sub}}} = run_query("""
+        mutation UpdatePlan($planId: ID!) {
+          updatePlatformPlan(planId: $planId) {
+            id
+            plan { id }
+          }
+        }
+      """, %{"planId" => plan.id}, %{current_user: user})
+
+      assert sub["id"] == subscription.id
+      assert sub["plan"]["id"] == plan.id
+    end
+  end
+
+  describe "cancelPlatformSubscription" do
+    test "it can cancel a platform subscription" do
+      account = insert(:account)
+      user = insert(:user, account: account, roles: %{admin: true})
+      subscription = insert(:platform_subscription, account: account, external_id: "sub_id")
+      expect(Stripe.Subscription, :delete, fn "sub_id" -> {:ok, %{}} end)
+
+      {:ok, %{data: %{"cancelPlatformSubscription" => sub}}} = run_query("""
+        mutation  {
+          cancelPlatformSubscription { id }
+        }
+      """, %{}, %{current_user: user})
+
+      assert sub["id"] == subscription.id
+    end
+  end
 end

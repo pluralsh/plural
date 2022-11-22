@@ -11,16 +11,30 @@ defmodule Core.Services.Payments do
     Repository,
     Plan,
     Subscription,
-    Installation
+    Installation,
+    PlatformPlan,
+    PlatformSubscription
   }
 
-  @type plan_resp :: {:ok, Plan.t} | {:error, term}
+  @type error :: {:error, term}
+  @type plan_resp :: {:ok, Plan.t} | error
+  @type platform_plan_resp :: {:ok, PlatformPlan.t} | error
+  @type platform_sub_resp :: {:ok, PlatformSubcription.t} | error
 
   @spec get_plan!(binary) :: Plan.t
   def get_plan!(id), do: Core.Repo.get!(Plan, id)
 
+  @spec get_platform_plan!(binary) :: PlatformPlan.t
+  def get_platform_plan!(id), do: Core.Repo.get!(PlatformPlan, id)
+
   @spec get_subscription!(binary) :: Subscription.t
   def get_subscription!(id), do: Core.Repo.get!(Subscription, id)
+
+  @spec get_platform_subscription!(binary) :: PlatformSubscription.t
+  def get_platform_subscription!(id), do: Core.Repo.get!(PlatformSubscription, id)
+
+  @spec get_platform_subscription_by_account!(binary) :: PlatformSubscription.t
+  def get_platform_subscription_by_account!(id), do: Core.Repo.get_by!(PlatformSubscription, account_id: id)
 
   @spec get_subscription(binary, binary) :: Subscription.t | nil
   def get_subscription(repository_id, user_id) do
@@ -104,6 +118,29 @@ defmodule Core.Services.Payments do
   end
 
   @doc """
+  Cancels a subscription for a user, and deletes the record in our database
+  """
+  @spec cancel_platform_subscription(PlatformSubscription.t, User.t) :: platform_sub_resp
+  def cancel_platform_subscription(%PlatformSubscription{external_id: eid} = subscription, %User{} = user) do
+    start_transaction()
+    |> add_operation(:db, fn _ ->
+      subscription
+      |> allow(user, :delete)
+      |> when_ok(:delete)
+    end)
+    |> add_operation(:stripe, fn _ -> Stripe.Subscription.delete(eid) end)
+    |> execute(extract: :db)
+  end
+
+  @spec cancel_platform_subscription(User.t) :: platform_sub_resp
+  def cancel_platform_subscription(%User{} = user) do
+    %{account: account} = Core.Repo.preload(user, [:account])
+
+    get_platform_subscription_by_account!(account.id)
+    |> cancel_platform_subscription(user)
+  end
+
+  @doc """
   Appends a new usage record for the given line item to stripe's api
   """
   @spec add_usage_record(map, atom, Subscription.t) :: {:ok, term} | {:error, term}
@@ -156,6 +193,44 @@ defmodule Core.Services.Payments do
       %User{} -> {:error, :invalid_argument}
       error -> error
     end
+  end
+
+  @doc """
+  Creates a platform-level plan transactionally in stripe and our db
+  """
+  @spec create_platform_plan(map) :: platform_plan_resp
+  def create_platform_plan(attrs) do
+    start_transaction()
+    |> add_operation(:db, fn _ ->
+      %PlatformPlan{}
+      |> PlatformPlan.changeset(attrs)
+      |> Core.Repo.insert()
+    end)
+    |> add_operation(:stripe, fn %{db: plan} ->
+      build_plan_ops([base: %{
+        amount:   plan.cost,
+        currency: "USD",
+        interval: stripe_interval(plan.period),
+        product: %{name: plan.name}
+      }], plan.line_items)
+      |> Enum.reduce(short_circuit(), fn {name, op}, circuit ->
+        short(circuit, name, fn ->  Stripe.Plan.create(op) end)
+      end)
+      |> execute()
+    end)
+    |> add_operation(:finalized, fn %{db: %{line_items: items} = db, stripe: %{base: %{id: id}} = stripe} ->
+      rest = Map.delete(stripe, :base)
+
+      items = Enum.map(items, fn %{dimension: dimension} = item ->
+        Piazza.Ecto.Schema.mapify(item)
+        |> Map.put(:external_id, rest[dimension].id)
+      end)
+
+      db
+      |> PlatformPlan.changeset(%{external_id: id, line_items: items})
+      |> Core.Repo.update()
+    end)
+    |> execute(extract: :finalized)
   end
 
   @doc """
@@ -215,19 +290,21 @@ defmodule Core.Services.Payments do
 
   defp build_plan_ops(ops, %{items: items}), do: build_plan_ops(ops, items)
   defp build_plan_ops(ops, items) when is_list(items) do
-    Enum.map(items, fn %{cost: cost, period: period, name: name, dimension: dim, type: type} ->
-      plan = %{
+    Enum.map(items, fn %{cost: cost, period: period, name: name, dimension: dim} = item ->
+      plan = Map.merge(%{
         amount: cost,
         currency: "USD",
         interval: stripe_interval(period),
         product: %{name: name},
-        usage_type: type || :licensed
-      }
+      }, item_type(item))
       {dim, plan}
     end)
     |> Enum.concat(ops)
   end
   defp build_plan_ops(ops, _), do: ops
+
+  defp item_type(%{type: t}), do: %{usage_type: t || :licensed}
+  defp item_type(_), do: %{}
 
   defp restitch_line_items(%{line_items: %{items: items}}, rest) do
     %{line_items: %{
@@ -239,6 +316,54 @@ defmodule Core.Services.Payments do
     }
   end
   defp restitch_line_items(_, _), do: %{}
+
+  @doc """
+  Creates a new subscription for the given plan/installation.  Will
+  transactionally create it in stripe (with line items), then persist back
+  the stripe data to the subscription.
+
+  Fails if the user is not the installer
+  """
+  @spec create_platform_subscription(map, binary | PlatformPlan.t, User.t) :: platform_sub_resp
+  def create_platform_subscription(attrs \\ %{}, plan, user)
+  def create_platform_subscription(attrs, %PlatformPlan{} = plan, %User{} = user) do
+    start_transaction()
+    |> add_operation(:account, fn _ ->
+      case Core.Repo.preload(user, [:account]) do
+        %{account: %Account{billing_customer_id: nil}} -> {:error, "no payment method"}
+        %{account: account} -> {:ok, account}
+      end
+    end)
+    |> add_operation(:db, fn %{account: account} ->
+      %PlatformSubscription{plan_id: plan.id, plan: plan, account_id: account.id}
+      |> PlatformSubscription.changeset(attrs)
+      |> allow(user, :create)
+      |> when_ok(:insert)
+    end)
+    |> add_operation(:stripe, fn %{account: %Account{billing_customer_id: cust_id}, db: db} ->
+      Stripe.Subscription.create(%{
+        customer: cust_id,
+        items: sub_line_items(plan, db)
+      })
+    end)
+    |> add_operation(:finalized, fn
+      %{
+        stripe: %{id: sub_id, items: %{data: items}},
+        db: subscription
+      } ->
+      subscription
+      |> PlatformSubscription.stripe_changeset(%{
+        external_id: sub_id,
+        line_items: rebuild_line_items(subscription, plan, items)
+      })
+      |> Core.Repo.update()
+    end)
+    |> execute(extract: :finalized)
+    |> notify(:create)
+  end
+  def create_platform_subscription(attrs, plan_id, %User{} = user),
+    do: create_platform_subscription(attrs, get_platform_plan!(plan_id), user)
+
 
   @doc """
   Creates a new subscription for the given plan/installation.  Will
@@ -342,6 +467,39 @@ defmodule Core.Services.Payments do
     do: update_line_item(attrs, get_subscription!(subscription_id), user)
 
   @doc """
+  Updates the quantity of a specific line item for a platform plan. Persists the update to stripe transactionally.
+
+  Fails if the user does not have billing permissions
+  """
+  @spec update_platform_line_item(%{dimension: binary, quantity: integer}, PlatformSubscription.t | binary, User.t) :: platform_sub_resp
+  def update_platform_line_item(
+    %{dimension: dim, quantity: quantity},
+    %PlatformSubscription{line_items: items} = sub,
+    %User{} = user
+  ) do
+    start_transaction()
+    |> add_operation(:db, fn _ ->
+      sub
+      |> PlatformSubscription.changeset(%{
+        line_items: rebuild_subscription_items(items, dim, quantity)
+      })
+      |> allow(user, :edit)
+      |> when_ok(:update)
+    end)
+    |> add_operation(:stripe, fn %{db: %{line_items: items}} ->
+      with %{external_id: ext_id, quantity: quantity} <- Enum.find(items, & &1.dimension == dim) do
+        Stripe.SubscriptionItem.update(ext_id, %{quantity: quantity})
+      else
+        _ -> {:error, :not_found}
+      end
+    end)
+    |> execute(extract: :db)
+    |> notify(:update)
+  end
+  def update_platform_line_item(attrs, subscription_id, user),
+    do: update_platform_line_item(attrs, get_platform_subscription!(subscription_id), user)
+
+  @doc """
   Moves the subscription to the given plan.  Will migrate all line items to the new
   plan and readjust according to any difference in included items.
 
@@ -393,12 +551,67 @@ defmodule Core.Services.Payments do
     |> notify(:update)
   end
   def update_plan(plan_id, sub_id, user) do
-    get_plan!(plan_id) |> update_plan(get_subscription!(sub_id), user)
+    get_plan!(plan_id)
+    |> update_plan(get_subscription!(sub_id), user)
   end
 
+  @doc """
+  Moves the platform subscription to the given plan.  Will migrate all line items to the new
+  plan and readjust according to any difference in included items.
+  """
+  @spec update_plan(PlatformPlan.t, PlatformSubscription.t, User.t) :: platform_sub_resp
+  def update_platform_plan(%PlatformPlan{id: id} = plan, %User{} = user) do
+    %{account: account} = Core.Repo.preload(user, [:account])
+    sub = get_platform_subscription_by_account!(account.id)
+
+    start_transaction()
+    |> add_operation(:db, fn _ ->
+      sub
+      |> PlatformSubscription.changeset(%{
+        plan_id: id,
+        line_items: migrate_line_items(plan, sub)
+      })
+      |> allow(user, :edit)
+      |> when_ok(:update)
+      |> when_ok(&Core.Repo.preload(&1, [:plan], force: true))
+    end)
+    |> add_operation(:stripe, fn %{db: updated} ->
+      Stripe.Subscription.update(sub.external_id, %{
+        items: old_items(sub) ++ sub_line_items(updated.plan, updated)
+      })
+    end)
+    |> add_operation(:finalized, fn
+      %{
+        stripe: %{id: sub_id, items: %{data: items}},
+        db: subscription
+      } ->
+      subscription
+      |> PlatformSubscription.stripe_changeset(%{
+        external_id: sub_id,
+        line_items: rebuild_line_items(subscription, subscription.plan, items)
+      })
+      |> Core.Repo.update()
+    end)
+    |> execute(extract: :finalized)
+    |> notify(:update)
+  end
+  def update_platform_plan(plan_id, user) do
+    get_platform_plan!(plan_id)
+    |> update_platform_plan(user)
+  end
+
+  defp old_items(%PlatformSubscription{line_items: items}), do: Enum.map(items, & %{id: &1.external_id, deleted: true})
   defp old_items(%Subscription{line_items: %{item_id: item_id, items: items}}) do
     line_items = Enum.map(items, fn %{external_id: id} -> %{id: id, deleted: true} end)
     [%{id: item_id, deleted: true} | line_items]
+  end
+
+  defp sub_line_items(%PlatformPlan{line_items: line_items}, %PlatformSubscription{line_items: items}) do
+    by_dimension = Enum.into(items, %{}, & {&1.dimension, &1})
+
+    Enum.map(line_items, fn %{external_id: id, dimension: dim} ->
+      %{plan: id, quantity: fetch_quantity(by_dimension[dim])}
+    end)
   end
 
   defp sub_line_items(
@@ -415,6 +628,13 @@ defmodule Core.Services.Payments do
   end
   defp sub_line_items(_, _), do: []
 
+  defp migrate_line_items(%PlatformPlan{line_items: items}, subscription) do
+    Enum.map(items, fn %{dimension: dimension} ->
+      current = PlatformSubscription.dimension(subscription, dimension)
+      %{dimension: dimension, quantity: current}
+    end)
+  end
+
   defp migrate_line_items(%Plan{line_items: %{items: items, included: included}}, subscription) do
     by_dimension = Enum.into(included, %{}, & {&1.dimension, &1})
 
@@ -426,10 +646,16 @@ defmodule Core.Services.Payments do
   end
 
   defp rebuild_line_items(
-    %{line_items: %{items: items}},
-    %{line_items: %{items: line_items}},
+    %Subscription{line_items: %{items: items}},
+    %Plan{line_items: %{items: line_items}},
     stripe_items
-  ) when is_list(line_items) do
+  ) when is_list(line_items), do: rebuild_line_items(items, line_items, stripe_items)
+  defp rebuild_line_items(
+    %PlatformSubscription{line_items: items},
+    %PlatformPlan{line_items: line_items},
+    stripe_items
+  ) when is_list(line_items), do: rebuild_line_items(items, line_items, stripe_items)
+  defp rebuild_line_items(items, line_items, stripe_items) when is_list(line_items) and is_list(items) do
     by_stripe_id = Enum.into(stripe_items, %{}, & {&1.plan.id, &1})
     by_dimension = Enum.into(items, %{}, & {&1.dimension, &1})
 

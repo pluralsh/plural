@@ -132,6 +132,36 @@ defmodule GraphQl.PaymentsQueriesTest do
     end
   end
 
+  describe "platformPlans" do
+    test "it will list visible platform plans" do
+      plans = insert_list(3, :platform_plan)
+      insert(:platform_plan, visible: false)
+
+      {:ok, %{data: %{"platformPlans" => found}}} = run_query("""
+        query {
+          platformPlans { id }
+        }
+      """, %{}, %{current_user: insert(:user)})
+
+      assert ids_equal(found, plans)
+    end
+  end
+
+  describe "platformSubscription" do
+    test "it will fetch the subscription for your account" do
+      user = insert(:user)
+      sub = insert(:platform_subscription, account: user.account)
+
+      {:ok, %{data: %{"platformSubscription" => found}}} = run_query("""
+        query {
+          platformSubscription { id }
+        }
+      """, %{}, %{current_user: user})
+
+      assert found["id"] == sub.id
+    end
+  end
+
   defp mk_invoices() do
     %Stripe.List{
       has_more: true,

@@ -209,10 +209,25 @@ defmodule Core.Factory do
     }
   end
 
+  def platform_plan_factory do
+    %Schema.PlatformPlan{
+      name: sequence(:platform_plan, &"plan-#{&1}"),
+      cost: 100,
+      visible: true
+    }
+  end
+
   def subscription_factory do
     %Schema.Subscription{
       installation: build(:installation),
       plan: build(:plan)
+    }
+  end
+
+  def platform_subscription_factory do
+    %Schema.PlatformSubscription{
+      account: build(:account),
+      plan: build(:platform_plan)
     }
   end
 

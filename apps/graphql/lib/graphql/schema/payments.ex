@@ -6,6 +6,8 @@ defmodule GraphQl.Schema.Payments do
   }
 
   ecto_enum :plan_type, Core.Schema.Plan.Type
+  ecto_enum :payment_period, Core.Schema.PlatformPlan.Period
+  ecto_enum :line_item_dimension, Core.Schema.PlatformPlan.Dimension
 
   ### INPUTS
 
@@ -66,6 +68,15 @@ defmodule GraphQl.Schema.Payments do
     field :items, list_of(:limit_attributes)
   end
 
+  input_object :platform_subscription_attributes do
+    field :line_items, list_of(:platform_plan_line_item_attributes)
+  end
+
+  input_object :platform_plan_line_item_attributes do
+    field :dimension, non_null(:line_item_dimension)
+    field :quantity,  non_null(:integer)
+  end
+
   ### OBJECTS
 
   object :plan do
@@ -80,6 +91,30 @@ defmodule GraphQl.Schema.Payments do
     field :service_levels, list_of(:service_level)
 
     timestamps()
+  end
+
+  object :platform_plan do
+    field :id,             non_null(:id)
+    field :name,           non_null(:string)
+    field :visible,        non_null(:boolean)
+    field :cost,           non_null(:integer)
+    field :period,         non_null(:payment_period)
+    field :features,       :plan_features
+    field :line_items,     list_of(:platform_plan_item)
+
+    timestamps()
+  end
+
+  object :platform_plan_item do
+    field :name,        non_null(:string)
+    field :dimension,   non_null(:line_item_dimension)
+    field :external_id, :string
+    field :cost,        non_null(:integer)
+    field :period,      non_null(:payment_period)
+  end
+
+  object :plan_features do
+    field :vpn, :boolean
   end
 
   object :service_level do
@@ -114,6 +149,19 @@ defmodule GraphQl.Schema.Payments do
     connection field :invoices, node_type: :invoice do
       resolve &Payments.list_invoices/3
     end
+  end
+
+  object :platform_subscription do
+    field :id,           non_null(:id)
+    field :external_id,  :string
+    field :line_items,   list_of(:platform_subscription_line_items)
+    field :plan,         :platform_plan, resolve: dataloader(Payments)
+  end
+
+  object :platform_subscription_line_items do
+    field :dimension,   non_null(:line_item_dimension)
+    field :quantity,    non_null(:integer)
+    field :external_id, :string
   end
 
   object :card do
@@ -175,11 +223,22 @@ defmodule GraphQl.Schema.Payments do
       resolve &Payments.resolve_subscription/2
     end
 
-
     connection field :subscriptions, node_type: :repository_subscription do
       middleware Authenticated
 
       resolve &Payments.list_subscriptions/2
+    end
+
+    field :platform_plans, list_of(:platform_plan) do
+      middleware Authenticated
+
+      resolve &Payments.list_platform_plans/2
+    end
+
+    field :platform_subscription, :platform_subscription do
+      middleware Authenticated
+
+      resolve &Payments.resolve_platform_subscription/2
     end
   end
 
@@ -188,21 +247,21 @@ defmodule GraphQl.Schema.Payments do
       middleware Authenticated
       arg :source, non_null(:string)
 
-      resolve safe_resolver(&Payments.create_card/2)
+      safe_resolve &Payments.create_card/2
     end
 
     field :delete_card, :account do
       middleware Authenticated
       arg :id, non_null(:id)
 
-      resolve safe_resolver(&Payments.delete_card/2)
+      safe_resolve &Payments.delete_card/2
     end
 
     field :link_publisher, :publisher do
       middleware Authenticated
       arg :token, non_null(:string)
 
-      resolve safe_resolver(&Payments.link_publisher/2)
+      safe_resolve &Payments.link_publisher/2
     end
 
     field :create_plan, :plan do
@@ -210,7 +269,7 @@ defmodule GraphQl.Schema.Payments do
       arg :repository_id, non_null(:id)
       arg :attributes, non_null(:plan_attributes)
 
-      resolve safe_resolver(&Payments.create_plan/2)
+      safe_resolve &Payments.create_plan/2
     end
 
     field :update_plan_attributes, :plan do
@@ -218,7 +277,7 @@ defmodule GraphQl.Schema.Payments do
       arg :attributes, non_null(:updatable_plan_attributes)
       arg :id,         non_null(:id)
 
-      resolve safe_resolver(&Payments.update_plan_attributes/2)
+      safe_resolve &Payments.update_plan_attributes/2
     end
 
     field :create_subscription, :repository_subscription do
@@ -227,7 +286,7 @@ defmodule GraphQl.Schema.Payments do
       arg :plan_id, non_null(:id)
       arg :attributes, :subscription_attributes
 
-      resolve safe_resolver(&Payments.create_subscription/2)
+      safe_resolve &Payments.create_subscription/2
     end
 
     field :update_plan, :repository_subscription do
@@ -235,7 +294,7 @@ defmodule GraphQl.Schema.Payments do
       arg :plan_id, non_null(:id)
       arg :subscription_id, non_null(:id)
 
-      resolve safe_resolver(&Payments.update_plan/2)
+      safe_resolve &Payments.update_plan/2
     end
 
     field :update_line_item, :repository_subscription do
@@ -243,7 +302,28 @@ defmodule GraphQl.Schema.Payments do
       arg :attributes, non_null(:limit_attributes)
       arg :subscription_id, non_null(:id)
 
-      resolve safe_resolver(&Payments.update_line_item/2)
+      safe_resolve &Payments.update_line_item/2
+    end
+
+    field :create_platform_subscription, :platform_subscription do
+      middleware Authenticated
+      arg :attributes, non_null(:platform_subscription_attributes)
+      arg :plan_id, non_null(:id)
+
+      safe_resolve &Payments.create_platform_subscription/2
+    end
+
+    field :cancel_platform_subscription, :platform_subscription do
+      middleware Authenticated
+
+      safe_resolve &Payments.cancel_platform_subscription/2
+    end
+
+    field :update_platform_plan, :platform_subscription do
+      middleware Authenticated
+      arg :plan_id, non_null(:id)
+
+      safe_resolve &Payments.update_platform_plan/2
     end
   end
 end

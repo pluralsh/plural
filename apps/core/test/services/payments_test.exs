@@ -43,6 +43,38 @@ defmodule Core.Services.PaymentsTest do
     end
   end
 
+  describe "#create_platform_plan" do
+    test "Plans can have line items" do
+      expect(Stripe.Plan, :create, 2, fn
+        %{amount: _, currency: "USD", interval: "month", product: %{name: "pro"}} ->
+          {:ok, %{id: "id_pro"}}
+        %{amount: _, currency: "USD", interval: "month", product: %{name: "users"}} ->
+          {:ok, %{id: "id_users"}}
+      end)
+
+      {:ok, plan} = Payments.create_platform_plan(%{
+        name: "pro",
+        period: :monthly,
+        cost: 100,
+        line_items: [
+          %{dimension: "user", name: "users", cost: 100, period: :monthly},
+        ]
+      })
+
+      assert plan.name == "pro"
+      assert plan.period == :monthly
+      assert plan.cost == 100
+      assert plan.external_id == "id_pro"
+
+      [user] = plan.line_items
+      assert user.dimension == :user
+      assert user.name == "users"
+      assert user.cost == 100
+      assert user.period == :monthly
+      assert user.external_id == "id_users"
+    end
+  end
+
   describe "#create_plan" do
     test "It will create a plan for a repository" do
       expect(Stripe.Plan, :create, fn
@@ -153,6 +185,47 @@ defmodule Core.Services.PaymentsTest do
       assert second.min_severity == 4
       assert second.max_severity == 5
       assert second.response_time == 120
+    end
+  end
+
+  describe "#create_platform_susbcription" do
+    test "A user can create a subscription for a platform plan" do
+      account = insert(:account, billing_customer_id: "cus_id")
+      user = insert(:user, roles: %{admin: true}, account: account)
+      plan = insert(:platform_plan,
+        external_id: "plan_id",
+        line_items: [
+          %{name: "user", dimension: :user, external_id: "id_user", period: :monthly},
+        ]
+      )
+
+      expect(Stripe.Subscription, :create, fn %{
+        customer: "cus_id",
+        items: [%{plan: "id_user", quantity: 2}]
+      } ->
+        {:ok, %{
+          id: "sub_id",
+          items: %{
+            data: [%{id: "user_id", plan: %{id: "id_user"}}]
+          }
+        }}
+      end)
+
+      {:ok, subscription} = Payments.create_platform_subscription(%{
+        line_items: [
+          %{dimension: "user", quantity: 2}
+        ]
+      }, plan, user)
+
+      assert subscription.plan_id == plan.id
+      assert subscription.account_id == user.account_id
+      assert subscription.external_id == "sub_id"
+
+      [user] = subscription.line_items
+      assert user.id
+      assert user.dimension == :user
+      assert user.quantity == 2
+      assert user.external_id == "user_id"
     end
   end
 
@@ -362,6 +435,71 @@ defmodule Core.Services.PaymentsTest do
         subscription,
         user
       )
+    end
+  end
+
+  describe "#cancel_platform_subscription/2" do
+    test "it can delete the subscription in db + stripe" do
+      account = insert(:account)
+      user = insert(:user, account: account, roles: %{admin: true})
+      sub = insert(:platform_subscription, account: account, external_id: "sub_id")
+      expect(Stripe.Subscription, :delete, fn "sub_id" -> {:ok, %{}} end)
+
+      {:ok, s} = Payments.cancel_platform_subscription(user)
+
+      assert s.id == sub.id
+    end
+  end
+
+  describe "#update_platform_plan/3" do
+    test "users can change platform plans" do
+      expect(Stripe.Subscription, :update, fn
+        "sub_id",
+        %{items: [
+          %{id: "si_1", deleted: true},
+          %{plan: "id_user", quantity: 1}
+        ]} -> {:ok, %{
+          id: "sub_id",
+          items: %{
+            data: [
+              %{id: "user_id", plan: %{id: "id_user"}}
+            ]
+          }
+        }}
+      end)
+
+      user = insert(:user, roles: %{admin: true})
+      plan = insert(:platform_plan,
+        external_id: "pl_id2",
+        line_items: [
+          %{name: "user", dimension: :user, external_id: "id_user", period: :monthly},
+        ]
+      )
+
+      old_plan = insert(:platform_plan,
+        external_id: "pl_id",
+        line_items: [
+          %{name: "user", dimension: :user, external_id: "it_1", period: :monthly},
+        ]
+      )
+
+      insert(:platform_subscription,
+        external_id: "sub_id",
+        account: user.account,
+        plan: old_plan,
+        line_items: [
+          %{id: Ecto.UUID.generate(), external_id: "si_1", quantity: 1, dimension: :user},
+        ]
+      )
+
+      {:ok, updated} = Payments.update_platform_plan(plan, user)
+
+      assert updated.external_id == "sub_id"
+      [%{dimension: :user} = user] = updated.line_items
+
+      assert user.id
+      assert user.external_id == "user_id"
+      assert user.quantity == 1
     end
   end
 

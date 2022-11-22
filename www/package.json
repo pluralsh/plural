@@ -135,7 +135,7 @@
     "@typescript-eslint/parser": "5.44.0",
     "@vitejs/plugin-basic-ssl": "0.1.2",
     "@vitejs/plugin-react": "2.2.0",
-    "@vitest/ui": "0.25.2",
+    "@vitest/ui": "0.25.3",
     "concurrently": "7.6.0",
     "eslint": "8.27.0",
     "eslint-config-pluralsh": "3.1.0",

@@ -5039,12 +5039,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vitest/ui@npm:0.25.2":
-  version: 0.25.2
-  resolution: "@vitest/ui@npm:0.25.2"
+"@vitest/ui@npm:0.25.3":
+  version: 0.25.3
+  resolution: "@vitest/ui@npm:0.25.3"
   dependencies:
     sirv: ^2.0.2
-  checksum: 92cbf5d57de0251f8eab024beb01e1305f6bacc86adeb7a722a970b5254c9681496b9352aa7a3fcf3b5e390cf6aefbde8a9b531baaa4d052ad0ccde60edc3941
+  checksum: 496d6ede6a242ede23cc4e77db4b659872a8d63ae2dc9e58da64b8caf406c3509717c858a97877b7d77bca71b68aa46516c2ea1d9e85ba902f242955bb062b35
   languageName: node
   linkType: hard
 
@@ -15878,7 +15878,7 @@ __metadata:
     "@typescript-eslint/parser": 5.44.0
     "@vitejs/plugin-basic-ssl": 0.1.2
     "@vitejs/plugin-react": 2.2.0
-    "@vitest/ui": 0.25.2
+    "@vitest/ui": 0.25.3
     apollo-absinthe-upload-link: 1.7.0
     browserify-zlib: 0.2.0
     buffer: 6.0.3

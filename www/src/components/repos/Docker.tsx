@@ -20,6 +20,7 @@ import { Box } from 'grommet'
 import {
   Codeline,
   GlobeIcon,
+  ListBoxFooterPlus,
   ListBoxItem,
   ListBoxItemChipList,
   PadlockLockedIcon,
@@ -106,8 +107,6 @@ const DEFAULT_FILTER = {
   tag: null, precision: '2h', offset: '7d', tick: 'every 12 hours',
 }
 
-const fetchMoreKey = '__fetch_more__'
-
 function ImageVersionPicker({ image }: any) {
   const navigate = useNavigate()
   const { pathname } = useLocation()
@@ -131,9 +130,10 @@ function ImageVersionPicker({ image }: any) {
   }, [hasNextPage, data])
 
   const handleSelectionChange = useCallback((selected: any) => {
-    if (selected === fetchMoreKey) fetchMore()
-    else navigate(`/dkr/img/${selected}${url}`)
-  }, [fetchMore, navigate, url])
+    if (selected === '$$footer$$') return
+
+    navigate(`/dkr/img/${selected}${url}`)
+  }, [navigate, url])
 
   useEffect(() => {
     if (data?.dockerImages) {
@@ -166,6 +166,13 @@ function ImageVersionPicker({ image }: any) {
             />
           )
         }
+        dropdownFooterFixed={(
+          hasNextPage && (
+            <ListBoxFooterPlus onClick={fetchMore}>
+              Fetch more
+            </ListBoxFooterPlus>
+          )
+        )}
       >
         {allImages.map(v => (
           <ListBoxItem
@@ -184,17 +191,6 @@ function ImageVersionPicker({ image }: any) {
             )}
           />
         ))}
-        {hasNextPage ? (
-          <ListBoxItem
-            key={fetchMoreKey}
-            label="Fetch more"
-            textValue="Fetch more"
-            onClick={fetchMore}
-          />
-        ) : (
-          // eslint-disable-next-line react/jsx-no-useless-fragment
-          <></>
-        )}
       </Select>
     </Box>
   )

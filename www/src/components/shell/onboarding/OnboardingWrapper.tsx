@@ -10,12 +10,6 @@ import { useSearchParams } from 'react-router-dom'
 import { useQuery } from '@apollo/client'
 import { LoopingLogo } from '@pluralsh/design-system'
 
-import { useSearchParams } from 'react-router-dom'
-
-import { useQuery } from '@apollo/client'
-
-import { LoadingSpinner } from '@pluralsh/design-system'
-
 import {
   ResponsiveLayoutContentContainer,
   ResponsiveLayoutSidecarContainer,
@@ -26,12 +20,7 @@ import SelectedApplicationsContext, { SelectedApplicationsContextType } from '..
 import { persistApplications, retrieveApplications } from '../persistance'
 import { SEARCH_REPOS } from '../../repos/queries'
 import { RootQueryType } from '../../../generated/graphql'
-
 import { useDevTokenInputSecretCode } from '../useDevToken'
-
-import { SEARCH_REPOS } from '../../repos/queries'
-
-import { RootQueryType } from '../../../generated/graphql'
 
 import OnboardingSidenav from './OnboardingSidenav'
 import OnboardingSidecar from './OnboardingSidecar'

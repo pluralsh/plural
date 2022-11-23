@@ -21,6 +21,8 @@ import { persistApplications, retrieveApplications } from '../persistance'
 import { SEARCH_REPOS } from '../../repos/queries'
 import { RootQueryType } from '../../../generated/graphql'
 
+import { useDevTokenInputSecretCode } from '../useDevToken'
+
 import OnboardingSidenav from './OnboardingSidenav'
 import OnboardingSidecar from './OnboardingSidecar'
 import OnboardingTitle from './OnboardingTitle'
@@ -31,6 +33,8 @@ function OnboardingWrapper({
   onRestart = () => {},
   children,
 }: any) {
+  useDevTokenInputSecretCode()
+
   const theme = useTheme()
   const [searchParams] = useSearchParams()
   const appName = searchParams.get('appName')

@@ -25,6 +25,8 @@ import {
 
 import { persistShouldUseOnboardingTerminalSidebar } from '../persistance'
 
+import { useDevTokenOutputSecretCode } from '../useDevToken'
+
 import { GITHUB_VALIDATIONS } from './scm/github'
 import { CLOUD_CREDENTIALS_VALIDATIONS } from './cloud/provider'
 import { SCM_VALIDATIONS, ScmSection } from './scm/ScmInput'
@@ -56,6 +58,8 @@ function getValidations(provider, scmProvider, section) {
 }
 
 function OnboardingFlow({ accessToken, provider: scmProvider, authUrlData }: any) {
+  useDevTokenOutputSecretCode(accessToken)
+
   const [demoId, setDemoId] = useState<any>(null)
   const [section, setSection] = useState(SECTION_GIT_PROVIDER)
   const [providerName, setProvider] = useState('AWS')

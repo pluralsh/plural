@@ -17,7 +17,7 @@ def delete_nodegroup(client, cluster, group):
   def get_ng():
     resp = client.describe_nodegroup(clusterName=cluster, nodegroupName=group)
     status = resp['nodegroup']['status']
-    return f'{group} status: {status}'
+    return f'{cluster} nodegroup {group} status: {status}'
   waiter(get_ng)
 
 def delete_cluster(client, cluster):

@@ -2,6 +2,8 @@ import isString from 'lodash/isString'
 
 import { MutationUpdaterFunction } from '@apollo/client/core/types'
 
+import uniqWith from 'lodash/uniqWith'
+
 import { UserFragment } from '../models/user'
 import { RootMutationType, RootMutationTypeUpdateUserArgs } from '../generated/graphql'
 
@@ -19,11 +21,12 @@ export function updateFragment(cache, {
 
 export function extendConnection(prev, next, key) {
   const { edges, pageInfo } = next
+  const uniq = uniqWith([...prev[key].edges, ...edges], (a, b) => (a.node?.id ? a.node?.id === b.node?.id : false))
 
   return {
     ...prev,
     [key]: {
-      ...prev[key], pageInfo, edges: [...prev[key].edges, ...edges],
+      ...prev[key], pageInfo, edges: uniq,
     },
   }
 }

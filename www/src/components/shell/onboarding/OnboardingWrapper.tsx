@@ -20,7 +20,6 @@ import SelectedApplicationsContext, { SelectedApplicationsContextType } from '..
 import { persistApplications, retrieveApplications } from '../persistance'
 import { SEARCH_REPOS } from '../../repos/queries'
 import { RootQueryType } from '../../../generated/graphql'
-
 import { useDevTokenInputSecretCode } from '../useDevToken'
 
 import OnboardingSidenav from './OnboardingSidenav'

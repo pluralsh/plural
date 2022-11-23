@@ -4,7 +4,7 @@ import { OIDCProvider } from '../../models/oauth'
 import { RepoFragment } from '../../models/repo'
 
 export const CREATE_PROVIDER = gql`
-  mutation Provider($id: ID!, $attributes: OIDCAttributes!) {
+  mutation Provider($id: ID!, $attributes: OidcAttributes!) {
     createOidcProvider(installationId: $id, attributes: $attributes) {
       ...OIDCProvider
     }
@@ -13,7 +13,7 @@ export const CREATE_PROVIDER = gql`
 `
 
 export const UPDATE_PROVIDER = gql`
-  mutation Update($id: ID!, $attributes: OIDCAttributes!) {
+  mutation Update($id: ID!, $attributes: OidcAttributes!) {
     updateOidcProvider(installationId: $id, attributes: $attributes) {
       ...OIDCProvider
     }

@@ -16,7 +16,7 @@ defmodule Core.Shell.Client do
       case HTTPoison.post("http://#{ip}:8080/v1/setup", Poison.encode!(req), @headers, @timeout_opts) do
         {:ok, %HTTPoison.Response{status_code: 200}} -> {:ok, true}
         error ->
-          Logger.error "Failed to setup shell: #{inspect(error)}"
+          Logger.error "Failed to setup shell: #{log(error)}"
           {:error, :failed}
       end
     end
@@ -54,4 +54,9 @@ defmodule Core.Shell.Client do
       as -> Poison.decode(body, as: as)
     end
   end
+
+  defp log({:error, %HTTPoison.Response{body: body, status_code: code}}),
+    do: "http response #{code} body=#{body}"
+  defp log({:error, _} = error), do: inspect(error)
+  defp log(_), do: "unknown"
 end

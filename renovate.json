@@ -45,7 +45,7 @@
     {
       "description": "Update Plural CLI version for the cloud shell",
       "fileMatch": ["^apps/core/lib/core/services/shell/pods.ex$"],
-      "matchStrings": ["(^defp image.* ||$)\"(?<depName>.*?):(?<currentValue>.*?)\""],
+      "matchStrings": ["^\\s+(defp image.* ||)\"(?<depName>.*?):(?<currentValue>.*?)\"$"],
       "datasourceTemplate": "docker"
     }
   ],

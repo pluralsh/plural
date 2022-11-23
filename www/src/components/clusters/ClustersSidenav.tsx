@@ -5,6 +5,7 @@ import moment from 'moment'
 import {
   Chip,
   ListBoxItem,
+  ListBoxItemChipList,
   PageCard,
   Select,
 } from '@pluralsh/design-system'
@@ -55,6 +56,7 @@ export function ClustersSidenav({
         <Select
           label="Select cluster"
           selectedKey={selectedKey?.id}
+          rightContent={selectedKey && <QueueHealth queue={selectedKey} />}
           onSelectionChange={onSelectionChange}
         >
           {queues.map(queue => (
@@ -71,7 +73,6 @@ export function ClustersSidenav({
             />
           ))}
         </Select>
-        {selectedKey && <Div marginTop="xsmall"><QueueHealth queue={selectedKey} /></Div>}
       </Div>
     </Flex>
   )

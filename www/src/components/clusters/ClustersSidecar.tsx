@@ -10,8 +10,6 @@ import { ReactElement, useContext } from 'react'
 
 import QueueContext from '../../contexts/QueueContext'
 
-// TODO: This should not be needed once Clusters.js file gets removed
-// @ts-ignore
 import { Queue } from './Clusters'
 
 export function ClustersSidecar(): ReactElement {

@@ -46,9 +46,7 @@ defmodule RtcWeb.ShellChannelTest do
       expect(Client, :setup, fn %{id: ^id} -> {:error, :failed} end)
 
       {:ok, socket} = mk_socket(user)
-      {:error, reason} = subscribe_and_join(socket, "shells:me", %{})
-
-      assert reason == {:error, :failed}
+      {:error, %{reason: _}} = subscribe_and_join(socket, "shells:me", %{})
     end
   end
 end

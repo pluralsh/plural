@@ -15,7 +15,7 @@ defmodule RtcWeb.ShellChannel do
     else
       err ->
         Logger.info "failed to exec pod with #{inspect(err)}"
-        {:error, err}
+        {:error, %{reason: inspect(err)}}
     end
   end
 

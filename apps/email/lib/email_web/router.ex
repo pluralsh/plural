@@ -24,7 +24,7 @@ defmodule EmailWeb.Router do
   #   pipe_through :api
   # end
 
-  if Mix.env() in [:dev, :test] do
+  if Application.fetch_env!(:core, :env) in [:dev, :test] do
     forward "/sent_emails", Bamboo.SentEmailViewerPlug
   end
 end

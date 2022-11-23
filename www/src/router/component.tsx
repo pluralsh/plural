@@ -1,5 +1,6 @@
 import { History as BrowserHistory, Location } from 'history'
 import {
+  ReactNode,
   useCallback,
   useLayoutEffect,
   useMemo,
@@ -9,7 +10,7 @@ import { Router } from 'react-router-dom'
 
 import { HistoryContext, PluralHistory } from './context'
 
-function HistoryRouter({ history, children, ...props }: {history: BrowserHistory, children: JSX.Element[]}) {
+function HistoryRouter({ history, children, ...props }: {history: BrowserHistory, children: ReactNode}) {
   const [state, setState] = useState({
     action: history.action,
     location: history.location,
@@ -40,4 +41,3 @@ function HistoryRouter({ history, children, ...props }: {history: BrowserHistory
 }
 
 export { HistoryRouter }
-

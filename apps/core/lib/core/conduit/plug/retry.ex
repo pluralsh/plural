@@ -38,7 +38,7 @@ defmodule Core.Conduit.Plug.Retry do
     end
   rescue
     error ->
-      retry(message, next, retries, error, System.stacktrace(), opts)
+      retry(message, next, retries, error, __STACKTRACE__, opts)
   catch
     :exit, error ->
       Logger.error "Failed to process message with #{error}"

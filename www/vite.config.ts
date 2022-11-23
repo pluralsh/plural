@@ -4,12 +4,19 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import basicSsl from '@vitejs/plugin-basic-ssl'
 import GlobalPolyFill from '@esbuild-plugins/node-globals-polyfill'
+import { VitePWA } from 'vite-plugin-pwa'
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     basicSsl(),
     react(),
+    VitePWA({
+      injectRegister: null,
+      filename: 'service-worker.ts',
+      srcDir: 'src',
+      strategies: 'injectManifest',
+    }),
   ],
   server: {
     port: 3001,

@@ -39,6 +39,8 @@ function Shell({ shell }: any) {
   const [terminalTheme] = useContext(TerminalThemeContext)
   const { fresh } = useOnboarded()
   const [restart, setRestart] = useState(false)
+  const [fitted, setFitted] = useState(false)
+  const [retry, setRetry] = useState(0)
 
   useEffect(() => {
     if (!xterm?.current?.terminal || restart) {
@@ -49,14 +51,9 @@ function Shell({ shell }: any) {
     }
 
     const term = xterm.current.terminal
-    const chan = socket.channel('shells:me')
 
-    try {
-      fitAddon.fit()
-    }
-    catch (error) {
-      console.error(error)
-    }
+    term.options = {} // hack around an xterm-addon-fit bug
+    const chan = socket.channel('shells:me')
 
     term.write(`Booting into your ${shell.provider} shell...\r\n\r\nIt can take a few minutes to load. Try refreshing the page if it gets stuck for too long.\r\n`)
     chan.onError(err => console.error(`Unknown error during booting into your shell: ${JSON.stringify(err)}`))
@@ -71,28 +68,36 @@ function Shell({ shell }: any) {
       // }
     })
     chan.join()
-
-    let cols = 80
-    let rows = 24
-
-    try {
-      ({ cols, rows } = fitAddon.proposeDimensions() as any)
-
-      setDimensions({ cols, rows })
-    }
-    catch (error) {
-      console.error(error)
-    }
-
     setChannel(chan)
-
-    const ref = socket.onOpen(() => setTimeout(() => chan.push('resize', { width: cols, height: rows }), 1000))
 
     return () => {
       socket.off([ref])
       chan.leave()
     }
-  }, [shell, xterm, fitAddon, restart])
+  }, [shell, xterm, restart])
+
+  const handleResize = useCallback(({ cols, rows }) => {
+    if (!channel) return
+    channel.push('resize', { width: cols, height: rows })
+  }, [channel])
+
+  useEffect(() => {
+    if (fitted || !xterm?.current?.terminal || !channel) return
+
+    try {
+      fitAddon.fit()
+      const { cols, rows } = fitAddon.proposeDimensions() as any
+
+      handleResize({ cols, rows })
+      setDimensions({ cols, rows })
+      setFitted(true)
+    }
+    catch (error) {
+      console.error(error)
+      console.log(`retrying fitting window, retries ${retry}`)
+      setTimeout(() => setRetry(retry + 1), 1000)
+    }
+  }, [xterm, fitAddon, setFitted, fitted, channel, handleResize, retry, setRetry, setDimensions])
 
   const handleResetSize = useCallback(() => {
     if (!channel) return
@@ -102,11 +107,6 @@ function Shell({ shell }: any) {
   useEffect(() => {
     handleResetSize()
   }, [handleResetSize])
-
-  const handleResize = useCallback(({ cols, rows }) => {
-    if (!channel) return
-    channel.push('resize', { width: cols, height: rows })
-  }, [channel])
 
   const { ref } = useResizeDetector({
     onResize: debounce(() => {

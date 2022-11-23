@@ -5,7 +5,6 @@ import moment from 'moment'
 import {
   Chip,
   ListBoxItem,
-  ListBoxItemChipList,
   PageCard,
   Select,
 } from '@pluralsh/design-system'

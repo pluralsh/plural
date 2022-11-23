@@ -422,7 +422,7 @@ www:
   repository: plural-www
   # if empty the chart version is used
   tag: '' ## PLRL-REPLACE[  tag: '%s']
-  port: 80
+  port: 8080
   resources: {}
   replicaCount: 3
 

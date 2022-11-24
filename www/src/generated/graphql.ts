@@ -1234,10 +1234,11 @@ export type InvoiceItem = {
 
 export type KeyBackup = {
   __typename?: 'KeyBackup';
+  digest: Scalars['String'];
   id: Scalars['ID'];
   insertedAt?: Maybe<Scalars['DateTime']>;
   name: Scalars['String'];
-  repositories?: Maybe<Array<Maybe<Scalars['String']>>>;
+  repositories?: Maybe<Array<Scalars['String']>>;
   updatedAt?: Maybe<Scalars['DateTime']>;
   user: User;
   value: Scalars['String'];

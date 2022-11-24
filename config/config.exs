@@ -126,7 +126,7 @@ config :core,
   onplural_domain: "onplural.sh",
   gcp_organization: "1323",
   gcp_identity: "someone@example.com",
-  vault: "vault.plural.sh:443",
+  vault: "https://vault.plural.sh:443",
   docker_env: [],
   openai_token: "openai"
 

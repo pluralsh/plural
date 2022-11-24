@@ -71,7 +71,6 @@ function Shell({ shell }: any) {
     setChannel(chan)
 
     return () => {
-      socket.off([ref])
       chan.leave()
     }
   }, [shell, xterm, restart])

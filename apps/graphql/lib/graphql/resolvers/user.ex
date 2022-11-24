@@ -290,6 +290,9 @@ defmodule GraphQl.Resolvers.User do
   def create_key_backup(%{attributes: attrs}, %{context: %{current_user: user}}),
     do: Encryption.create_backup(attrs, user)
 
+  def delete_key_backup(%{name: name}, %{context: %{current_user: user}}),
+    do: Encryption.delete_backup(name, user)
+
   @colors ~w(#6b5b95 #feb236 #d64161 #ff7b25 #103A50 #CDCCC2 #FDC401 #8E5B3C #020001 #2F415B)
 
   def background_color(%{id: id}) do

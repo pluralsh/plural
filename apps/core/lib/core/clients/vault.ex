@@ -5,6 +5,8 @@ defmodule Core.Clients.Vault do
 
   def write(path, value), do: call(:write, [vpath(path), value])
 
+  def delete(path), do: call(:delete, [vpath(path)])
+
   def client() do
     Vault.new(
       engine: Vault.Engine.KVV2,

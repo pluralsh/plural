@@ -577,5 +577,12 @@ defmodule GraphQl.Schema.User do
 
       safe_resolve &User.create_key_backup/2
     end
+
+    field :delete_key_backup, :key_backup do
+      middleware Authenticated
+      arg :name, non_null(:string)
+
+      safe_resolve &User.delete_key_backup/2
+    end
   end
 end

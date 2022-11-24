@@ -1,6 +1,6 @@
 defmodule Core.Services.ShellTest do
   use Core.SchemaCase, async: true
-  alias Core.Services.{Shell, Dns}
+  alias Core.Services.{Shell, Dns, Encryption}
   alias Kazan.Apis.Core.V1, as: CoreV1
   use Mimic
 
@@ -26,6 +26,8 @@ defmodule Core.Services.ShellTest do
         _, "/user" -> {:ok, %OAuth2.Response{body: %{"name" => "name"}}}
         _, "/user/emails" -> {:ok, %OAuth2.Response{body: [%{"primary" => true, "email" => "me@example.com"}]}}
       end)
+
+      expect(Core.Clients.Vault, :write, fn _, _ -> {:ok, %{}} end)
 
       {:ok, shell} = Shell.create_shell(%{
         provider: :aws,
@@ -59,6 +61,10 @@ defmodule Core.Services.ShellTest do
       assert shell.bucket_prefix == shell.workspace.bucket_prefix
 
       assert Dns.get_domain("sub.onplural.sh")
+
+      [backup] = Encryption.get_backups(user)
+      assert String.starts_with?(backup.name, "shell:#{shell.workspace.cluster}:")
+      assert backup.repositories == ["git@github.com:pluralsh/installations.git"]
     end
 
     test "a user can create a cloud shell with gitlab for scm" do
@@ -82,6 +88,8 @@ defmodule Core.Services.ShellTest do
         _, "/api/v4/user" -> {:ok, %OAuth2.Response{body: %{"name" => "name"}}}
         _, "/api/v4/user/emails" -> {:ok, %OAuth2.Response{body: [%{"primary" => true, "email" => "me@example.com"}]}}
       end)
+
+      expect(Core.Clients.Vault, :write, fn _, _ -> {:ok, %{}} end)
 
       {:ok, shell} = Shell.create_shell(%{
         provider: :aws,

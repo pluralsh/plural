@@ -37,7 +37,7 @@ defmodule Core.Services.EncryptionTest do
       {:ok, backup} = Encryption.create_backup(%{
         key: "key",
         name: "backup",
-        repositories: [],
+        repositories: ["git@github.com:other/repo.git"],
       }, user)
 
       {:ok, update} = Encryption.create_backup(%{
@@ -50,7 +50,7 @@ defmodule Core.Services.EncryptionTest do
       assert update.vault_path == path
       assert update.user_id == user.id
       assert update.name == "backup"
-      assert update.repositories == ["git@github.com:some/repo.git"]
+      assert update.repositories == ["git@github.com:some/repo.git", "git@github.com:other/repo.git"]
     end
 
     test "if you attempt to modify the key, it will fail" do
@@ -72,6 +72,21 @@ defmodule Core.Services.EncryptionTest do
         name: "backup",
         repositories: ["git@github.com:some/repo.git"]
       }, user)
+    end
+  end
+
+  describe "#delete_backup/2" do
+    test "it will delete by name" do
+      backup = insert(:key_backup)
+
+      vpath = "plural#{backup.vault_path}"
+      expect(Vault, :auth, fn _, %{role: "plural", jwt: _} -> {:ok, :vault} end)
+      expect(Vault, :delete, fn :vault, ^vpath -> {:ok, %{}} end)
+
+      {:ok, del} = Encryption.delete_backup(backup.name, backup.user)
+
+      assert del.id == backup.id
+      refute refetch(backup)
     end
   end
 

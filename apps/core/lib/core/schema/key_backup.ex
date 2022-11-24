@@ -29,7 +29,18 @@ defmodule Core.Schema.KeyBackup do
     |> unique_constraint(:digest, name: index_name(:key_backups, [:user_id, :name]))
     |> unique_constraint(:vault_path)
     |> foreign_key_constraint(:user_id)
+    |> repositories()
     |> validate_required([:name, :vault_path])
+  end
+
+  defp repositories(cs) do
+    case get_change(cs, :repositories) do
+      [_ | _] = repos ->
+        # technically not atomic, but this won't have high write throughput at all so nbd
+        repos = Enum.uniq(repos ++ (cs.data.repositories || []))
+        put_change(cs, :repositories, repos)
+      _ -> cs
+    end
   end
 
   defp validate_digest(cs) do

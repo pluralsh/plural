@@ -6,7 +6,7 @@ defmodule GraphQl.AIQueriesTest do
   describe "helpQuestion" do
     test "it will query gpt-3 for an answer" do
       resp = Jason.encode!(%{choices: [%{text: "a long answer to a short question"}]})
-      expect(HTTPoison, :post, fn _, _, _ -> {:ok, %HTTPoison.Response{status_code: 200, body: resp}} end)
+      expect(HTTPoison, :post, fn _, _, _, _ -> {:ok, %HTTPoison.Response{status_code: 200, body: resp}} end)
 
       {:ok, %{data: %{"helpQuestion" => result}}} = run_query("""
         query Q($prompt: String!) {

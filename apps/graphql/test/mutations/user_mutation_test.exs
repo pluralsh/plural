@@ -513,4 +513,24 @@ defmodule GraphQl.UserMutationTest do
       assert created["repositories"] == ["repo"]
     end
   end
+
+  describe "deleteKeyBackup" do
+    test "it will allow deletion of key backups" do
+      user = insert(:user)
+      backup = insert(:key_backup, user: user)
+
+      expect(Core.Clients.Vault, :delete, fn _ -> {:ok, %{}} end)
+
+      {:ok, %{data: %{"deleteKeyBackup" => del}}} = run_query("""
+        mutation Delete($name: String!) {
+          deleteKeyBackup(name: $name) {
+            id
+          }
+        }
+      """, %{"name" => backup.name}, %{current_user: user})
+
+      assert del["id"] == backup.id
+      refute refetch(backup)
+    end
+  end
 end

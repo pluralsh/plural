@@ -12,7 +12,7 @@ function PublisherSideNav({ publisher }: any) {
     >
       <PageCard
         icon={{
-          name: capitalize(publisher.name),
+          name: publisher.name,
           url: publisher.avatar,
         }}
         heading={capitalize(publisher.name)}

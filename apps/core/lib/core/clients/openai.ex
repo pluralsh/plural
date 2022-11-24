@@ -1,6 +1,8 @@
 defmodule Core.Clients.OpenAI do
   require Logger
 
+  @options [recv_timeout: :infinity, timeout: :infinity]
+
   defmodule Choice, do: defstruct [:text, :index, :logprobs]
 
   defmodule CompletionResponse do
@@ -18,7 +20,7 @@ defmodule Core.Clients.OpenAI do
     })
 
     url("/completions")
-    |> HTTPoison.post(body, json_headers())
+    |> HTTPoison.post(body, json_headers(), @options)
     |> handle_response(CompletionResponse.spec())
   end
 

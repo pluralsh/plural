@@ -15,6 +15,8 @@ defmodule GraphQl.ShellMutationsTest do
           {:ok, "git@github.com:pluralsh/demo.git", "pub-key", "priv-key", nil}
       end)
 
+      expect(Core.Clients.Vault, :write, fn _, _ -> {:ok, %{}} end)
+
       attrs = %{
         "provider" => "AWS",
         "scm" => %{"provider" => "GITHUB", "token" => "tok", "name" => "demo"},

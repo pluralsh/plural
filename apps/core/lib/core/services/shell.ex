@@ -3,7 +3,7 @@ defmodule Core.Services.Shell do
   import Core.Policies.Shell
 
   alias Core.Schema.{CloudShell, User, Recipe, Installation, OIDCProvider}
-  alias Core.Services.{Shell.Pods, Dns, Recipes, Repositories}
+  alias Core.Services.{Shell.Pods, Dns, Recipes, Repositories, Encryption}
   alias Core.Shell.{Scm, Client}
 
   @type error :: {:error, term}
@@ -55,6 +55,9 @@ defmodule Core.Services.Shell do
           |> Core.Repo.update()
         end
       %{create: shell} -> {:ok, shell}
+    end)
+    |> add_operation(:backup, fn %{git: %{git_url: url, aes_key: key, workspace: %{cluster: cluster}}} ->
+      Encryption.create_backup(%{name: "shell:#{cluster}:#{Core.random_phrase(2)}", key: key, repositories: [url]}, user)
     end)
     |> add_operation(:init, fn %{create: %CloudShell{} = shell} -> reboot(shell) end)
     |> execute(extract: :git)

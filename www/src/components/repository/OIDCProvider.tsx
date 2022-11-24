@@ -330,11 +330,11 @@ export function UpdateProvider({
 export function OIDCProvider() {
   const navigate = useNavigate()
   const { installation } = useContext(RepositoryContext)
-  const { id } = useParams()
+  const { name } = useParams()
 
   useEffect(() => {
     if (!installation) navigate(-1)
-  }, [id, installation, navigate])
+  }, [name, installation, navigate])
 
   if (!installation) return null
   if (installation.oidcProvider) return <UpdateProvider installation={installation} />

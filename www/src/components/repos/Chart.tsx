@@ -155,10 +155,10 @@ function ImageDependencies({ version: { imageDependencies } }: any) {
 }
 
 export default function Chart() {
-  const { chartId } = useParams()
+  const { id } = useParams()
   const { pathname } = useLocation()
   const [version, setVersion] = useState<any>(null)
-  const { data, fetchMore } = useQuery(CHART_Q, { variables: { chartId }, fetchPolicy: 'cache-and-network' })
+  const { data, fetchMore } = useQuery(CHART_Q, { variables: { id }, fetchPolicy: 'cache-and-network' })
   const tabStateRef = useRef<any>(null)
 
   if (!data) return null
@@ -212,7 +212,7 @@ export default function Chart() {
       <TopBar>
         <GoBack
           text="Back to packages"
-          link={`/repository/${chart.repository.id}/packages/helm`}
+          link={`/repository/${chart.repository.name}/packages/helm`}
         />
       </TopBar>
       <Box

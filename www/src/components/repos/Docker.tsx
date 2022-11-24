@@ -197,7 +197,7 @@ export function Docker() {
       <TopBar>
         <GoBack
           text="Back to packages"
-          link={`/repository/${image.dockerRepository.repository.id}/packages/docker`}
+          link={`/repository/${image.dockerRepository.repository.name}/packages/docker`}
         />
       </TopBar>
       <Box

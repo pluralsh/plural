@@ -24,9 +24,9 @@ import { RepositorySideCar } from './RepositorySideCar'
 import { REPOSITORY_QUERY } from './queries'
 
 function Repository() {
-  const { id } = useParams()
+  const { name } = useParams()
   const [searchParams] = useSearchParams()
-  const { data } = useQuery(REPOSITORY_QUERY, { variables: { repositoryId: id } })
+  const { data } = useQuery(REPOSITORY_QUERY, { variables: { name } })
   const backStackName = searchParams.get('backStackName')
   const tabStateRef = useRef<any>(null)
 

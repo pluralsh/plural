@@ -40,7 +40,7 @@ function RepositorySideNav({
   const tabStateRef = useRef<any>()
 
   useImperativeHandle(outerTabStateRef, () => ({ ...(tabStateRef.current || {}) }))
-  const pathPrefix = `/repository/${repository.id}`
+  const pathPrefix = `/repository/${repository.name}`
   const filteredDirectory = DIRECTORY.filter(({ path }) => {
     switch (path) {
     case '/oidc':
@@ -101,7 +101,7 @@ function RepositorySideNav({
         <A
           inline
           as={Link}
-          to={`/publisher/${repository.publisher.id}?backRepositoryName=${repository.name}&backRepositoryId=${repository.id}`}
+          to={`/publisher/${repository.publisher.id}?backRepositoryName=${repository.name}`}
         >
           {capitalize(repository.publisher.name)}
         </A>

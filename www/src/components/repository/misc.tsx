@@ -34,7 +34,7 @@ function InstalledRepositoryActions({ installation, ...props }: any) {
         >
           <GearTrainIcon
             position="relative"
-            top={4}
+            height="24px"
           />
         </Button>
       </Flex>

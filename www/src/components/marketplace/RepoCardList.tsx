@@ -30,7 +30,7 @@ export function RepoCardList({
             <RepositoryCard
               key={repository.id}
               as={Link}
-              to={`/repository/${repository.id}${urlParams ? `?${urlParams}` : ''}`}
+              to={`/repository/${repository.name}${urlParams ? `?${urlParams}` : ''}`}
               color="text"
               textDecoration="none"
               width="100%"

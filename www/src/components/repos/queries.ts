@@ -205,8 +205,8 @@ export const DELETE_TF = gql`
 `
 
 export const CHART_Q = gql`
-  query Charts($chartId: ID!, $cursor: String) {
-    chart(id: $chartId) {
+  query Charts($id: ID!, $cursor: String) {
+    chart(id: $id) {
       ...ChartFragment
       repository {
         ...RepoFragment
@@ -214,7 +214,7 @@ export const CHART_Q = gql`
       }
       installation { ...ChartInstallationFragment }
     }
-    versions(chartId: $chartId, first: 15, after: $cursor) {
+    versions(chartId: $id, first: 15, after: $cursor) {
       pageInfo { ...PageInfo }
       edges {
         node {

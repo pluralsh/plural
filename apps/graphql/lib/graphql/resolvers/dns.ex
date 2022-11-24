@@ -14,6 +14,7 @@ defmodule GraphQl.Resolvers.Dns do
   def list_domains(args, %{context: %{current_user: user}}) do
     DnsDomain.for_account(user.account_id)
     |> DnsDomain.ordered()
+    |> maybe_search(DnsDomain, args)
     |> paginate(args)
   end
 

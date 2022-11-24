@@ -19,6 +19,23 @@ defmodule Graphql.Queries.DnsTest do
       assert from_connection(found)
              |> ids_equal(domains)
     end
+
+    test "it can search domains for a user's account" do
+      user = insert(:user)
+      domain = insert(:dns_domain, account: user.account, name: "test domain")
+      insert_list(3, :dns_domain, account: user.account)
+
+      {:ok, %{data: %{"dnsDomains" => found}}} = run_query("""
+        query Domains($q: String) {
+          dnsDomains(first: 5, q: $q) {
+            edges { node { id } }
+          }
+        }
+      """, %{"q" => "test"}, %{current_user: user})
+
+      assert from_connection(found)
+             |> ids_equal([domain])
+    end
   end
 
   describe "dnsDomain" do

@@ -77,7 +77,8 @@ config :core,
   zerossl_access_key: get_env("ZEROSSL_ACCESS_KEY"),
   docker_metrics_table: ~s("permanent"."downsampled_docker_pulls"),
   workos_webhook: get_env("WORKOS_WEBHOOK_SECRET"),
-  gcp_identity: get_env("GCP_USER_EMAIL") || "mjg@plural.sh"
+  gcp_identity: get_env("GCP_USER_EMAIL") || "mjg@plural.sh",
+  openai_token: get_env("OPENAI_BEARER_TOKEN")
 
 
 if get_env("VAULT_HOST") do

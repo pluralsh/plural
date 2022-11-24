@@ -35,5 +35,5 @@ defmodule Core.Clients.OpenAI do
 
   defp headers(headers \\ []), do: [{"Authorization", "Bearer #{token()}"} | headers]
 
-  defp token(), do: Application.get_env(:openai, :token)
+  defp token(), do: Core.conf(:openai_token)
 end

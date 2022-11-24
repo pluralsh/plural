@@ -3,8 +3,6 @@ import { capitalize } from 'lodash'
 import { PageCard } from '@pluralsh/design-system'
 
 function PublisherSideNav({ publisher }: any) {
-  console.log(publisher)
-
   return (
     <Div
       marginLeft="medium"

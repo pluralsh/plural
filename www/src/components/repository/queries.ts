@@ -45,8 +45,8 @@ export const UPDATE_REPOSITORY_MUTATION = gql`
 `
 
 export const REPOSITORY_QUERY = gql`
-  query Repository($repositoryId: ID!) {
-    repository(id: $repositoryId) {
+  query Repository($repositoryId: ID, $name: String) {
+    repository(id: $repositoryId, name: $name) {
       ...RepoFragment
       editable
       publicKey

@@ -137,7 +137,7 @@ export default function Terraform() {
       <TopBar>
         <GoBack
           text="Back to packages"
-          link={`/repository/${terraformModule.repository.id}/packages/terraform`}
+          link={`/repository/${terraformModule.repository.name}/packages/terraform`}
         />
       </TopBar>
       <Box

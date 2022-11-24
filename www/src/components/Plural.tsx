@@ -211,7 +211,7 @@ export function PluralInner() {
               </Route>
               {/* --- REPOSITORY --- */}
               <Route
-                path="/repository/:id"
+                path="/repository/:name"
                 element={<Repository />}
               >
                 <Route
@@ -277,7 +277,7 @@ export function PluralInner() {
               </Route>
               {/* --- HELM CHARTS --- */}
               <Route
-                path="/charts/:chartId"
+                path="/charts/:id"
                 element={<Chart />}
               >
                 <Route

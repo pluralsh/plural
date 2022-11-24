@@ -3,6 +3,8 @@ import { capitalize } from 'lodash'
 import { PageCard } from '@pluralsh/design-system'
 
 function PublisherSideNav({ publisher }: any) {
+  console.log(publisher)
+
   return (
     <Div
       marginLeft="medium"
@@ -12,6 +14,7 @@ function PublisherSideNav({ publisher }: any) {
     >
       <PageCard
         icon={{
+          name: capitalize(publisher.name),
           url: publisher.avatar,
         }}
         heading={capitalize(publisher.name)}

@@ -76,7 +76,6 @@ function MarketplaceRepositories({ installed, publisher }: any) {
   const categories = searchParams.getAll('category')
   const tags = searchParams.getAll('tag')
   const backRepositoryName = searchParams.get('backRepositoryName')
-  const backRepositoryId = searchParams.get('backRepositoryId')
   const [search, setSearch] = useState('')
   const [areFiltersOpen, setAreFiltersOpen] = useState(true)
   const tabStateRef = useRef<any>(null)
@@ -199,16 +198,16 @@ function MarketplaceRepositories({ installed, publisher }: any) {
             </LinkTabWrap>
           </TabList>
         )}
-        {publisher && !(backRepositoryName && backRepositoryId) && (
+        {publisher && !backRepositoryName && (
           <GoBack
             text="Back to marketplace"
             link="/marketplace"
           />
         )}
-        {publisher && backRepositoryName && backRepositoryId && (
+        {publisher && backRepositoryName && (
           <GoBack
             text={`Back to ${capitalize(backRepositoryName)}`}
-            link={`/repository/${backRepositoryId}`}
+            link={`/repository/${backRepositoryName}`}
           />
         )}
         {!publisher && (

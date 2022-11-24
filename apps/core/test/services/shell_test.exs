@@ -184,6 +184,18 @@ defmodule Core.Services.ShellTest do
       assert s.id == shell.id
       refute refetch(shell)
     end
+
+    test "it won't cascade demo projects" do
+      user = insert(:user)
+      demo = insert(:demo_project, user: user)
+      shell = insert(:cloud_shell, user: user, pod_name: "plrl-shell-1")
+
+      expect(Kazan, :run, 2, fn _ -> {:ok, Shell.Pods.pod("plrl-shell-1", user.email)} end)
+      {:ok, _} = Shell.delete(user.id)
+
+      refute refetch(shell)
+      assert refetch(demo)
+    end
   end
 
   describe "#udpate_shell/2" do

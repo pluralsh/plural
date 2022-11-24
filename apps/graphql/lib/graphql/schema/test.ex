@@ -12,6 +12,7 @@ defmodule GraphQl.Schema.Test do
     field :name,        :string
     field :status,      :test_status
     field :promote_tag, :string
+    field :tags,        list_of(:string)
     field :steps,       list_of(:test_step_attributes)
   end
 
@@ -29,6 +30,7 @@ defmodule GraphQl.Schema.Test do
     field :status,      non_null(:test_status)
     field :source_tag,  non_null(:string)
     field :promote_tag, non_null(:string)
+    field :tags,        list_of(non_null(:string))
     field :steps,       list_of(:test_step), resolve: dataloader(Test)
     field :creator,     :user, resolve: dataloader(User)
     field :repository,  :repository, resolve: dataloader(Repository)

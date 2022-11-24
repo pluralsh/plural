@@ -6,7 +6,8 @@ defmodule Core.Services.Tests do
     User,
     Test,
     TestStep,
-    Version
+    Version,
+    VersionTag
   }
   alias Core.Services.{Versions, Repositories}
 
@@ -80,11 +81,13 @@ defmodule Core.Services.Tests do
 
     bindings
     |> Enum.reduce(start_transaction(), fn %{version: version}, tx ->
-      add_operation(tx, version.id, fn _ ->
-        case compare_vsn(version, tag) do
-          :gt -> Versions.create_tag(version, tag)
-          _ -> {:ok, :ignore}
-        end
+      Enum.reduce([tag | (test.tags || [])], tx, fn tag, tx ->
+        add_operation(tx, {tag, version.id}, fn _ ->
+          case compare_vsn(version, tag) do
+            :gt -> Versions.create_tag(version, tag)
+            _ -> {:ok, :ignore}
+          end
+        end)
       end)
     end)
     |> execute()
@@ -144,12 +147,12 @@ defmodule Core.Services.Tests do
   end
 
   defp send_notifs(results, user) do
-    Enum.map(results, fn
-      {k, :ignore} -> {k, :ignore}
-      {k, vt} ->
-        %{version: vsn} = Core.Repo.preload(vt, [:version])
-        {:ok, _} = Versions.notify({:ok, vsn}, :update, user)
-        {k, vsn}
+    Enum.filter(results, fn {_, v} -> v != :ignore end)
+    |> Enum.uniq_by(fn {_, %VersionTag{version_id: v}} -> v end)
+    |> Enum.map(fn {{_, k}, vt} ->
+      %{version: vsn} = Core.Repo.preload(vt, [:version])
+      {:ok, _} = Versions.notify({:ok, vsn}, :update, user)
+      {k, vsn}
     end)
     |> Enum.into(%{})
     |> ok()

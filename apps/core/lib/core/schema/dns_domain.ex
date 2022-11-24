@@ -47,4 +47,8 @@ defmodule Core.Schema.DnsDomain do
   def regex(base_domain) do
     ~r/^[a-z0-9-]+\.#{base_domain}$/
   end
+
+  def search(query \\ __MODULE__, name) do
+    from(d in query, where: ilike(d.name, ^"%#{name}%"))
+  end
 end

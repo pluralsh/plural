@@ -76,6 +76,7 @@ defmodule GraphQl.Schema.Dns do
 
     connection field :dns_domains, node_type: :dns_domain do
       middleware Authenticated
+      arg :q, :string
 
       resolve &Dns.list_domains/2
     end

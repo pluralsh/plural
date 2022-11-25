@@ -162,6 +162,50 @@ defmodule GraphQl.PaymentsQueriesTest do
     end
   end
 
+  describe "invoices" do
+    test "it can list invoices for a user's account" do
+      account = insert(:account, billing_customer_id: "cus_id")
+      user = insert(:user, account: account)
+      expect(Stripe.Invoice, :list, fn %{customer: "cus_id"} ->
+        {:ok, mk_invoices()}
+      end)
+
+      {:ok, %{data: %{"invoices" => found}}} = run_query("""
+        query {
+          invoices(first: 5) {
+            pageInfo { hasNextPage endCursor }
+            edges {
+              node {
+                number
+                amountDue
+                amountPaid
+                currency
+                lines { amount currency description }
+              }
+            }
+          }
+        }
+      """, %{}, %{current_user: user})
+
+      %{"pageInfo" => pageInfo, "edges" => [first, second]} = found
+      assert pageInfo["hasNextPage"]
+      assert pageInfo["endCursor"] == "stripe-id-2"
+
+      expected_line_item = %{"amount" => 10, "currency" => "usd", "description" => "Some line item"}
+      assert first["node"]["number"] == "some-number"
+      assert first["node"]["amountDue"] == 0
+      assert first["node"]["amountPaid"] == 10
+      assert first["node"]["currency"] == "usd"
+      assert Enum.all?(first["node"]["lines"], & &1 == expected_line_item)
+
+      assert second["node"]["number"] == "some-number"
+      assert second["node"]["amountDue"] == 10
+      assert second["node"]["amountPaid"] == 10
+      assert second["node"]["currency"] == "usd"
+      assert Enum.all?(second["node"]["lines"], & &1 == expected_line_item)
+    end
+  end
+
   defp mk_invoices() do
     %Stripe.List{
       has_more: true,

@@ -240,6 +240,10 @@ defmodule GraphQl.Schema.Payments do
 
       resolve &Payments.resolve_platform_subscription/2
     end
+
+    connection field :invoices, node_type: :invoice do
+      resolve &Payments.list_invoices/2
+    end
   end
 
   object :payment_mutations do

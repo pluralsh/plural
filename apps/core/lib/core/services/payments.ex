@@ -52,13 +52,25 @@ defmodule Core.Services.Payments do
   @doc """
   List all invoices against a subscription
   """
-  @spec list_invoices(Subscription.t, map) :: {:ok, Stripe.List.t(Stripe.Invoice.t)} | {:error, term}
-  def list_invoices(%Subscription{customer_id: customer} = sub, opts \\ %{}) do
+  @spec list_invoices(Subscription.t | Account.t | User.t, map) :: {:ok, Stripe.List.t(Stripe.Invoice.t)} | {:error, term}
+  def list_invoices(object, opts \\ %{})
+  def list_invoices(%Subscription{customer_id: customer} = sub, opts) do
     %{installation: %{repository: %{publisher: %{billing_account_id: account_id}}}} =
       Core.Repo.preload(sub, [installation: [repository: :publisher]])
 
     Map.merge(%{customer: customer}, opts)
     |> Stripe.Invoice.list(connect_account: account_id)
+  end
+
+  def list_invoices(%Account{billing_customer_id: customer}, opts) do
+    Map.merge(%{customer: customer}, opts)
+    |> Stripe.Invoice.list()
+  end
+
+  def list_invoices(%User{} = user, opts) do
+    Core.Repo.preload(user, [:account])
+    |> Map.get(:account)
+    |> list_invoices(opts)
   end
 
   @doc """

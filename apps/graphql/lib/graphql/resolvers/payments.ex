@@ -2,9 +2,11 @@ defmodule GraphQl.Resolvers.Payments do
   use GraphQl.Resolvers.Base, model: Core.Schema.Subscription
   import Piazza.Utils
   alias Core.Services.{Payments, Users}
-  alias Core.Schema.{Plan, User}
+  alias Core.Schema.{PlatformPlan, PlatformSubscription, Plan, User}
 
   def query(Plan, _), do: Plan.ordered()
+  def query(PlatformPlan, _), do: PlatformPlan
+  def query(PlatformSubscription, _), do: PlatformSubscription
   def query(Subscription, _), do: Subscription
 
   def resolve_subscription(%{id: id}, %{context: %{current_user: user}}) do
@@ -18,10 +20,25 @@ defmodule GraphQl.Resolvers.Payments do
     |> paginate(args)
   end
 
+  def list_invoices(args, %{context: %{current_user: user}}) do
+    Payments.list_invoices(user, to_stripe_args(args))
+    |> to_connection()
+  end
+
   def list_invoices(subscription, args, _) do
     Payments.list_invoices(subscription, to_stripe_args(args))
     |> to_connection()
   end
+
+  def list_platform_plans(_, _) do
+    PlatformPlan.visible()
+    |> PlatformPlan.ordered()
+    |> Core.Repo.all()
+    |> ok()
+  end
+
+  def resolve_platform_subscription(_, %{context: %{current_user: %User{account_id: id}}}),
+    do: {:ok, Payments.get_platform_subscription_by_account!(id)}
 
   def list_cards(%User{id: uid} = user, args, %{context: %{current_user: %User{id: uid}}}) do
     Payments.list_cards(user, to_stripe_args(args))
@@ -73,6 +90,15 @@ defmodule GraphQl.Resolvers.Payments do
 
   def update_plan(%{plan_id: plan_id, subscription_id: id}, %{context: %{current_user: user}}),
     do: Payments.update_plan(plan_id, id, user)
+
+  def create_platform_subscription(%{attributes: attrs, plan_id: id}, %{context: %{current_user: user}}),
+    do: Payments.create_platform_subscription(attrs, id, user)
+
+  def update_platform_plan(%{plan_id: id}, %{context: %{current_user: user}}),
+    do: Payments.update_platform_plan(id, user)
+
+  def cancel_platform_subscription(_, %{context: %{current_user: user}}),
+    do: Payments.cancel_platform_subscription(user)
 
   def link_publisher(%{token: token}, %{context: %{current_user: user}}) do
     Users.get_publisher_by_owner!(user.id)

@@ -1,7 +1,7 @@
 defmodule Core.Schema.Account do
   use Piazza.Ecto.Schema
   use Arc.Ecto.Schema
-  alias Core.Schema.{User, DomainMapping}
+  alias Core.Schema.{User, DomainMapping, PlatformSubscription}
 
   schema "accounts" do
     field :name,                 :string
@@ -12,6 +12,7 @@ defmodule Core.Schema.Account do
 
     belongs_to :root_user, User
     has_many :domain_mappings, DomainMapping, on_replace: :delete
+    has_one :subscription, PlatformSubscription
 
     timestamps()
   end

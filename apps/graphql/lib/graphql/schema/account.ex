@@ -1,6 +1,6 @@
 defmodule GraphQl.Schema.Account do
   use GraphQl.Schema.Base
-  alias GraphQl.Resolvers.{Account, User}
+  alias GraphQl.Resolvers.{Account, User, Payments}
 
   enum_from_list :permission, Core.Schema.Role, :permissions, []
   ecto_enum :webhook_log_state, Core.Schema.WebhookLog.State
@@ -88,6 +88,7 @@ defmodule GraphQl.Schema.Account do
 
     field :root_user, :user, resolve: dataloader(User)
     field :domain_mappings, list_of(:domain_mapping), resolve: dataloader(Account)
+    field :subscription, :platform_subscription, resolve: dataloader(Payments)
 
     field :background_color, :string, resolve: fn
       user, _, _ -> {:ok, User.background_color(user)}

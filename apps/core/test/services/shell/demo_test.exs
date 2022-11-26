@@ -40,11 +40,15 @@ defmodule Core.Services.Shell.DemoTest do
   describe "#delete_demo_project/1" do
     test "a user can delete demo projects" do
       demo = insert(:demo_project)
+      insert(:cloud_shell, demo: demo, provider: :aws, workspace: %{cluster: "c", subdomain: "d.onplural.sh"})
+      domain = insert(:dns_domain, name: "d.onplural.sh")
+      insert(:dns_record, domain: domain, cluster: "c", provider: :aws, creator: demo.user)
 
       expect(Goth.Token, :for_scope, fn _ -> {:ok, %{token: "token"}} end)
       expect(Projects, :cloudresourcemanager_projects_delete, fn _, _ ->
         {:ok, %{name: "operations/123"}}
       end)
+      expect(Core.Conduit.Broker, :publish, fn _, :cluster -> :ok end)
 
       {:ok, _} = Demo.delete_demo_project(demo)
 

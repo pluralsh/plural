@@ -157,6 +157,12 @@ defmodule Core.Schema.CloudShell do
     |> mv_bucket_prefix()
   end
 
+  def update_changeset(model, attrs \\ %{}) do
+    model
+    |> cast(attrs, [])
+    |> cast_embed(:credentials)
+  end
+
   def mv_bucket_prefix(changeset) do
     case apply_changes(changeset) do
       %{workspace: %{bucket_prefix: pre}} -> put_change(changeset, :bucket_prefix, pre)

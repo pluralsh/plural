@@ -1,6 +1,7 @@
 defmodule Core.Services.ShellTest do
   use Core.SchemaCase, async: true
   alias Core.Services.{Shell, Dns, Encryption}
+  alias Core.Services.Shell.Pods
   alias Kazan.Apis.Core.V1, as: CoreV1
   use Mimic
 
@@ -209,20 +210,28 @@ defmodule Core.Services.ShellTest do
       expect(Kazan, :run, fn _ -> {:ok, true} end)
 
       {:ok, update} = Shell.update_shell(%{
-        provider: :aws,
         credentials: %{
           aws: %{access_key_id: "access_key", secret_access_key: "secret"}
-        },
-        scm: %{token: "tok", provider: :github, name: "installations"},
-        workspace: %{
-          cluster: "plural",
-          bucket_prefix: "plrl",
-          region: "us-east-1",
-          subdomain: "sub.onplural.sh"
         }
       }, user)
 
-      assert update.provider == :aws
+      assert update.credentials.aws.access_key_id == "access_key"
+      assert update.credentials.aws.secret_access_key == "secret"
+    end
+  end
+
+  describe "#setup_shell/1" do
+    test "it will call the setup api for a shell" do
+      user = insert(:user)
+      shell = insert(:cloud_shell, user: user)
+
+      pod = Pods.pod("plrl-shell-1", "mjg@plural.sh")
+      expect(Kazan, :run, fn _ -> {:ok, %{pod | status: %CoreV1.PodStatus{pod_ip: "10.0.1.0"}}} end)
+      expect(HTTPoison, :post, fn _, _, _, _ -> {:ok, %HTTPoison.Response{status_code: 200}} end)
+
+      {:ok, setup} = Shell.setup_shell(user)
+
+      assert setup.id == shell.id
     end
   end
 

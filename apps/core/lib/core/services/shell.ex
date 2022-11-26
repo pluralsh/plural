@@ -71,11 +71,23 @@ defmodule Core.Services.Shell do
     start_transaction()
     |> add_operation(:shell, fn _ ->
       get_shell!(user_id)
-      |> CloudShell.changeset(attributes)
+      |> CloudShell.update_changeset(attributes)
       |> Core.Repo.update()
     end)
     |> add_operation(:reboot, fn %{shell: s} -> reboot(s) end)
     |> execute(extract: :shell)
+  end
+
+  @doc """
+  calls the shell setup api and returns the shell back
+  """
+  @spec setup_shell(User.t) :: shell_resp
+  def setup_shell(%User{id: user_id}) do
+    shell = get_shell!(user_id)
+    case Client.setup(shell) do
+      {:ok, _} -> {:ok, shell}
+      error -> error
+    end
   end
 
   @doc """

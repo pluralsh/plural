@@ -21,6 +21,24 @@ defmodule GraphQl.RecipeQueriesTest do
              |> ids_equal(recipes)
     end
 
+    test "it can list recipes anonymously" do
+      repo    = insert(:repository)
+      recipes = insert_list(3, :recipe, repository: repo)
+      insert(:recipe, private: true, repository: repo)
+      insert(:recipe)
+
+      {:ok, %{data: %{"recipes" => found}}} = run_query("""
+        query Recipes($id: ID!) {
+          recipes(repositoryId: $id, first: 5) {
+            edges { node { id } }
+          }
+        }
+      """, %{"id" => repo.id})
+
+      assert from_connection(found)
+             |> ids_equal(recipes)
+    end
+
     test "It will list recipes for a repo by repo name" do
       repo    = insert(:repository)
       recipes = insert_list(3, :recipe, repository: repo)

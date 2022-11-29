@@ -41,6 +41,14 @@
       "fileMatch": ["^apps/core/lib/core/services/shell/pods.ex$"],
       "matchStrings": ["(^defp image.* ||$)\"(?<depName>.*?):(?<currentValue>.*?)\""],
       "datasourceTemplate": "docker"
+    },
+    {
+      "description": "Update tool versions in the Plural Docker image",
+      "fileMatch": ["^Dockerfile$"],
+      "matchStrings": [
+        "datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\s(?:ENV|ARG) .*?_VERSION=(?<currentValue>.*)\\s"
+      ],
+      "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}"
     }
   ],
   "separateMinorPatch": true

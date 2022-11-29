@@ -233,7 +233,6 @@ defmodule GraphQl.Schema.Recipe do
 
   object :recipe_queries do
     field :recipe, :recipe do
-      middleware Authenticated
       arg :id,   :id
       arg :name, :string
       arg :repo, :string
@@ -250,7 +249,6 @@ defmodule GraphQl.Schema.Recipe do
     end
 
     connection field :recipes, node_type: :recipe do
-      middleware Authenticated
       middleware Accessible
       arg :repository_id,   :id
       arg :repository_name, :string

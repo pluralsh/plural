@@ -284,7 +284,6 @@ defmodule Core.Services.Charts do
   def extract_chart_meta(chart, path) do
     readme_file  = String.to_charlist("#{chart}/README.md")
     chart_file   = String.to_charlist("#{chart}/Chart.yaml")
-    val_template = String.to_charlist("#{chart}/values.yaml.tpl")
     deps_tmplate = String.to_charlist("#{chart}/deps.yaml")
 
     with {:ok, result} <- String.to_charlist(path)
@@ -292,19 +291,35 @@ defmodule Core.Services.Charts do
          {:readme, {_, readme}} <- {:readme, Enum.find(result, &elem(&1, 0) == readme_file)},
          {:chart, {_, chart_yaml}} <- {:chart, Enum.find(result, &elem(&1, 0) == chart_file)},
          {:ok, chart_decoded} <- YamlElixir.read_from_string(chart_yaml),
-         {:ok, deps} <- Dependencies.extract_dependencies(result, deps_tmplate) do
-      {:ok, %{
+         {:ok, deps} <- Dependencies.extract_dependencies(result, deps_tmplate),
+         {:ok, values_tpl} <- find_template(result, chart) do
+      {:ok, Map.merge(%{
         readme: readme,
         helm: chart_decoded,
         digest: Piazza.File.hash(path),
-        values_template: extract_val_template(result, val_template),
         dependencies: deps,
         crds: get_crds(result, "#{chart}/crds/")
-      }}
+      }, values_tpl)}
     else
       {:readme, _} -> {:error, "could not find README.md"}
       {:chart, _} -> {:error, "could not find Chart.yaml"}
       error -> error
+    end
+  end
+
+  def find_template(result, chart) do
+    Enum.find_value([
+      {:gotemplate, String.to_charlist("#{chart}/values.yaml.tpl")},
+      {:lua, String.to_charlist("#{chart}/values.yaml.lua")}
+    ], fn {type, path} ->
+      case Enum.find(result, &elem(&1, 0) == path) do
+        {_, contents} -> {type, contents}
+        _ -> nil
+      end
+    end)
+    |> case do
+      {type, contents} -> {:ok, %{template_type: type, values_template: contents}}
+      _ -> {:error, "could not find values template"}
     end
   end
 
@@ -317,13 +332,6 @@ defmodule Core.Services.Charts do
       end
     end)
     |> Enum.filter(& &1)
-  end
-
-  defp extract_val_template(result, val_template) do
-    case Enum.find(result, &elem(&1, 0) == val_template) do
-      {_, template} -> template
-      _ -> nil
-    end
   end
 
   @doc """

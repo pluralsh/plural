@@ -48,7 +48,7 @@ ENV HELM_VERSION=v3.9.3
 ENV GOON_VERSION=v1.1.1
 
 # renovate: datasource=github-releases depName=pluralsh/plural-cli
-ENV CLI_VERSION=v0.4.9
+ENV CLI_VERSION=v0.5.24
 
 # renovate: datasource=github-releases depName=accurics/terrascan
 ENV TERRASCAN_VERSION=v1.15.2

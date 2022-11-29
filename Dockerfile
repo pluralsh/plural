@@ -42,7 +42,7 @@ FROM alpine:3.17.0 as tools
 ARG TARGETARCH
 
 # renovate: datasource=github-releases depName=helm/helm
-ENV HELM_VERSION=v3.9.3
+ENV HELM_VERSION=v3.10.2
 
 # renovate: datasource=github-releases depName=alco/goon
 ENV GOON_VERSION=v1.1.1

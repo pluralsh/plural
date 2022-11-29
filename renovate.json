@@ -26,12 +26,6 @@
       ]
     },
     {
-      "matchManagers": ["npm"],
-      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
-      "automerge": true,
-      "automergeType": "branch"
-    },
-    {
       "matchManagers": ["mix"],
       "additionalBranchPrefix": "backend/",
       "semanticCommitScope": "backend",

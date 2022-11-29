@@ -51,7 +51,7 @@ ENV GOON_VERSION=v1.1.1
 ENV CLI_VERSION=v0.5.24
 
 # renovate: datasource=github-releases depName=accurics/terrascan
-ENV TERRASCAN_VERSION=v1.15.2
+ENV TERRASCAN_VERSION=v1.17.0
 
 # renovate: datasource=github-releases depName=aquasecurity/trivy
 ENV TRIVY_VERSION=v0.35.0

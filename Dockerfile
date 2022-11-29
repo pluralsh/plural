@@ -54,7 +54,7 @@ ENV CLI_VERSION=v0.5.24
 ENV TERRASCAN_VERSION=v1.15.2
 
 # renovate: datasource=github-releases depName=aquasecurity/trivy
-ENV TRIVY_VERSION=v0.30.4
+ENV TRIVY_VERSION=v0.35.0
 
 RUN apk add --update --no-cache curl ca-certificates unzip wget openssl && \
     # download helm

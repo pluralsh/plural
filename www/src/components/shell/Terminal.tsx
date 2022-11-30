@@ -46,7 +46,7 @@ function TerminalWrapper({ shell }) {
     )
   }
 
-  if (!data?.id) {
+  if (!data?.setupShell?.id) {
     return <Loading />
   }
 

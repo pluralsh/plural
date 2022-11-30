@@ -6,7 +6,7 @@ class PluralHistory {
   private _stack: Array<string> = []
 
   // We do not want to store those paths in the history
-  private readonly _filteredPaths: Array<string> = ['/login', '/oauth', '/signup', '/sso', '/invite', '/confirm-email']
+  private readonly _filteredPaths: Array<string> = ['/login', '/oauth', '/signup', '/sso', '/invite', '/confirm-email', '/reset-password', '/password-reset']
 
   // Keep only this number of entries in the history
   private readonly _maxHistoryLength = 20

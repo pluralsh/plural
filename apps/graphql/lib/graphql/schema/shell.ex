@@ -166,6 +166,12 @@ defmodule GraphQl.Schema.Shell do
       safe_resolve &Shell.create_shell/2
     end
 
+    field :setup_shell, :cloud_shell do
+      middleware Authenticated
+
+      safe_resolve &Shell.setup_shell/2
+    end
+
     field :update_shell_configuration, :boolean do
       middleware Authenticated
       arg :context, non_null(:map)

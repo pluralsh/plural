@@ -52,6 +52,23 @@ defmodule GraphQl.ShellMutationsTest do
     end
   end
 
+  describe "setupShell" do
+    test "it will call the setup api for a cloud shell instance" do
+      user = insert(:user)
+      shell = insert(:cloud_shell, user: user)
+
+      expect(Core.Shell.Client, :setup, fn _ -> {:ok, %{}} end)
+
+      {:ok, %{data: %{"setupShell" => found}}} = run_query("""
+        mutation {
+          setupShell { id }
+        }
+      """, %{}, %{current_user: user})
+
+      assert found["id"] == shell.id
+    end
+  end
+
   describe "rebootShell" do
     test "it will reboot a shell's pod" do
       user = insert(:user)

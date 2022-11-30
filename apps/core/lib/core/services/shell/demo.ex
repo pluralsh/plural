@@ -1,6 +1,6 @@
 defmodule Core.Services.Shell.Demo do
   use Core.Services.Base
-  alias Core.Schema.{User, DemoProject}
+  alias Core.Schema.{User, DemoProject, CloudShell}
   alias Core.Services.{Locks, Users, Upgrades, Repositories}
   alias GoogleApi.CloudResourceManager.V3.Api.{Projects, Operations}
   alias GoogleApi.CloudResourceManager.V3.Model.{Project, Operation, SetIamPolicyRequest, MoveProjectRequest}
@@ -28,6 +28,9 @@ defmodule Core.Services.Shell.Demo do
 
   @spec get_by_user_id(binary) :: DemoProject.t | nil
   def get_by_user_id(id), do: Core.Repo.get_by(DemoProject, user_id: id)
+
+  @spec get_shell(binary) :: CloudShell.t | nil
+  def get_shell(id), do: Core.Repo.get_by(CloudShell, demo_id: id)
 
   @doc """
   Returns at most `limit` demo projects for deletion.  This operation should be atomic, and will mark each project with
@@ -133,6 +136,14 @@ defmodule Core.Services.Shell.Demo do
     |> add_operation(:proj, fn _ ->
       projects_conn()
       |> Projects.cloudresourcemanager_projects_delete(proj_id)
+    end)
+    |> add_operation(:cluster, fn _ ->
+      with %{provider: p, workspace: %{cluster: c, subdomain: d}} <- get_shell(proj.id),
+           :ok <- Users.destroy_cluster(%{provider: p, name: c, domain: d}, proj.user) do
+        {:ok, true}
+      else
+        _ -> {:ok, false}
+      end
     end)
     |> add_operation(:db, fn _ -> Core.Repo.delete(proj) end)
     |> add_operation(:maybe_reset, fn _ ->

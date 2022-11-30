@@ -9,6 +9,9 @@ defmodule GraphQl.Resolvers.Shell do
   def create_shell(%{attributes: attrs}, %{context: %{current_user: user}}),
     do: Shell.create_shell(attrs, user)
 
+  def setup_shell(_, %{context: %{current_user: user}}),
+    do: Shell.setup_shell(user)
+
   def resolve_shell_configuration(_, %{context: %{current_user: user}}),
     do: Shell.shell_configuration(user)
 

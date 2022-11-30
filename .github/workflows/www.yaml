@@ -19,8 +19,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v4
@@ -42,18 +40,21 @@ jobs:
           push: false
           load: true
           tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
           platforms: linux/amd64
-      - run: echo ${{ steps.meta.outputs.tags }}
-      # - name: Run Trivy vulnerability scanner in IaC mode
-      #   uses: aquasecurity/trivy-action@master
-      #   with:
-      #     scan-type: 'image'
-      #     image-ref: ${{ steps.meta.outputs.tags }}
-      #     hide-progress: false
-      #     format: 'sarif'
-      #     output: 'trivy-results.sarif'
-      #     security-checks: 'vuln,secret,config'
-      #     ignore-unfixed: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+      - name: Run Trivy vulnerability scanner in IaC mode
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'image'
+          image-ref: ${{ steps.meta.outputs.tags }}
+          hide-progress: false
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          security-checks: 'vuln,secret,config'
+          ignore-unfixed: true
+           #severity: 'CRITICAL,HIGH'
   test:
     name: Unit test
     runs-on: ubuntu-latest

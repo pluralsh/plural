@@ -25,9 +25,9 @@ jobs:
         with:
           # list of Docker images to use as base name for tags
           images: |
+            ghcr.io/pluralsh/plural-www
             dkr.plural.sh/plural/plural-www
             gcr.io/pluralsh/plural-www
-            ghcr.io/pluralsh/plural-www
           # generate Docker tags based on the following events/attributes
           tags: |
             type=sha
@@ -48,7 +48,7 @@ jobs:
         uses: aquasecurity/trivy-action@master
         with:
           scan-type: 'image'
-          image-ref: ${{ steps.meta.outputs.tags }}
+          image-ref: ${{ steps.meta.outputs.json.tags[0] }}
           hide-progress: false
           format: 'sarif'
           output: 'trivy-results.sarif'

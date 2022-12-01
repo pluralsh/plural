@@ -11,7 +11,7 @@ on:
       - ".github/workflows/publish.yaml"
       - ".github/workflows/push-to-plural.yaml"
       - ".github/workflows/www.yaml"
-      - ".github/workflows/trivy-scan.yaml"
+      - ".github/workflows/trivy-artifact-scan.yaml"
       - 'www/**'
       - "plural/**"
       - "*.md"
@@ -24,7 +24,7 @@ on:
       - ".github/workflows/publish.yaml"
       - ".github/workflows/push-to-plural.yaml"
       - ".github/workflows/www.yaml"
-      - ".github/workflows/trivy-scan.yaml"
+      - ".github/workflows/trivy-artifact-scan.yaml"
       - 'www/**'
       - "plural/**"
       - "*.md"

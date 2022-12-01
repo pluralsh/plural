@@ -69,7 +69,7 @@ defmodule Core.MixProject do
       {:ex_machina, "~> 2.7.0", only: :test},
       {:comeonin, "~> 5.3.0"},
       {:argon2_elixir, "~> 2.0"},
-      {:piazza_core, "~> 0.3.8"},
+      {:piazza_core, "~> 0.3.8", git: "https://github.com/michaeljguarino/piazza_core"},
       {:inet_cidr, "~> 1.0.0"},
       {:dns, "~> 2.4.0"},
       {:bamboo, "~> 2.0"},

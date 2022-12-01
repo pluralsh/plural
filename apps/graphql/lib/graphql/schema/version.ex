@@ -23,11 +23,13 @@ defmodule GraphQl.Schema.Version do
     field :tag, non_null(:string)
   end
 
+  @desc "The version of a package."
   object :version do
     field :id,              non_null(:id)
     field :version,         non_null(:string)
     field :readme,          :string
     field :values_template, :string
+    field :template_type,   :template_type, description: "The template engine used to render the valuesTemplate."
     field :helm,            :map
     field :tags,            list_of(:version_tag), resolve: dataloader(Version)
     field :dependencies,    :dependencies
@@ -43,6 +45,9 @@ defmodule GraphQl.Schema.Version do
 
     timestamps()
   end
+
+  @desc "Template engines that can be used at build time."
+  ecto_enum :template_type, Core.Schema.Version.TemplateType
 
   object :package_scan do
     field :id, non_null(:id)

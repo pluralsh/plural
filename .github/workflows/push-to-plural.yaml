@@ -9,7 +9,7 @@ on:
 jobs:
   deploy:
     name: Push Plural artifact to Plural
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v3
     - uses: hashicorp/setup-terraform@v2

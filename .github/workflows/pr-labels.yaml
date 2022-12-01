@@ -6,7 +6,7 @@ on:
 jobs:
   label:
     name: Check that PR has required labels
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - uses: mheap/github-action-required-labels@v2
         with:

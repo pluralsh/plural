@@ -29,7 +29,7 @@ on:
 jobs:
   build:
     name: Build image
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     strategy:
       matrix:
         app: [ plural, cron, worker, rtc ]
@@ -70,7 +70,7 @@ jobs:
             GIT_COMMIT=$GITHUB_SHA
   test:
     name: Test
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
       - uses: erlef/setup-beam@v1

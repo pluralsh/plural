@@ -46,9 +46,9 @@ jobs:
         with:
           # list of Docker images to use as base name for tags
           images: |
+            ghcr.io/pluralsh/${{ matrix.app }}
             dkr.plural.sh/plural/${{ matrix.app }}
             gcr.io/pluralsh/${{ matrix.app }}
-            ghcr.io/pluralsh/${{ matrix.app }}
           # generate Docker tags based on the following events/attributes
           tags: |
             type=semver,pattern={{version}}
@@ -62,6 +62,7 @@ jobs:
           context: "."
           file: "./Dockerfile"
           push: false
+          load: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           platforms: linux/amd64
@@ -70,6 +71,21 @@ jobs:
           build-args: |
             APP_NAME=${{ matrix.app }}
             GIT_COMMIT=$GITHUB_SHA
+      - name: Run Trivy vulnerability scanner on ${{ matrix.app }} image
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'image'
+          image-ref: ${{ fromJSON(steps.meta.outputs.json).tags[0] }}
+          hide-progress: false
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          security-checks: 'vuln,secret,config'
+          ignore-unfixed: true
+           #severity: 'CRITICAL,HIGH'
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: 'trivy-results.sarif'
   test:
     name: Test
     runs-on: ubuntu-20.04

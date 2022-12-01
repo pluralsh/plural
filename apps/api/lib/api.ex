@@ -8,7 +8,7 @@ defmodule Api do
   """
 
   def hmac(secret, payload) do
-    :crypto.hmac(:sha256, secret, payload)
+    :crypto.mac(:hmac, :sha256, secret, payload)
     |> Base.encode16(case: :lower)
   end
 

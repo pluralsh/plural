@@ -17,6 +17,10 @@ jobs:
   build:
     name: Build image
     runs-on: ubuntu-20.04
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+      packages: 'write'
     steps:
       - uses: actions/checkout@v3
       - name: Docker meta
@@ -26,19 +30,27 @@ jobs:
           # list of Docker images to use as base name for tags
           images: |
             ghcr.io/pluralsh/plural-www
-            dkr.plural.sh/plural/plural-www
-            gcr.io/pluralsh/plural-www
           # generate Docker tags based on the following events/attributes
           tags: |
             type=sha
-      - uses: docker/setup-qemu-action@v2
-      - uses: docker/setup-buildx-action@v2
+            type=ref,event=pr
+            type=ref,event=branch
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Login to GHCR
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       - uses: docker/build-push-action@v3
         with:
           context: ./www
           file: ./www/Dockerfile
-          push: false
-          load: true
+          push: true
+          load: false
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           platforms: linux/amd64

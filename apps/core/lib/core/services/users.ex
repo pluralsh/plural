@@ -602,7 +602,7 @@ defmodule Core.Services.Users do
   defp sanitize(url), do: "https://" <> url
 
   def hmac(secret, payload) when is_binary(payload) do
-    :crypto.hmac(:sha, secret, payload)
+    :crypto.mac(:hmac, :sha, secret, payload)
     |> Base.encode16(case: :lower)
   end
 

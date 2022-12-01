@@ -1,4 +1,4 @@
-FROM bitwalker/alpine-elixir:1.11.4 AS builder
+FROM bitwalker/alpine-elixir:1.12.3 AS builder
 
 # The following are build arguments used to change variable parts of the image.
 # The name of your application/release (required)
@@ -89,7 +89,7 @@ RUN apk add --update --no-cache curl ca-certificates unzip wget openssl && \
     chmod +x /usr/local/bin/terrascan && \
     chmod +x /usr/local/bin/trivy
 
-FROM erlang:23.3.4.18-alpine
+FROM erlang:24.3.4.6-alpine
 
 # The name of your application/release (required)
 ARG APP_NAME

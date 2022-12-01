@@ -11,6 +11,7 @@ on:
       - ".github/workflows/publish.yaml"
       - ".github/workflows/push-to-plural.yaml"
       - ".github/workflows/www.yaml"
+      - ".github/workflows/trivy-artifact-scan.yaml"
       - 'www/**'
       - "plural/**"
       - "*.md"
@@ -23,6 +24,7 @@ on:
       - ".github/workflows/publish.yaml"
       - ".github/workflows/push-to-plural.yaml"
       - ".github/workflows/www.yaml"
+      - ".github/workflows/trivy-artifact-scan.yaml"
       - 'www/**'
       - "plural/**"
       - "*.md"
@@ -44,12 +46,12 @@ jobs:
         with:
           # list of Docker images to use as base name for tags
           images: |
+            ghcr.io/pluralsh/${{ matrix.app }}
             dkr.plural.sh/plural/${{ matrix.app }}
             gcr.io/pluralsh/${{ matrix.app }}
-            ghcr.io/pluralsh/${{ matrix.app }}
           # generate Docker tags based on the following events/attributes
           tags: |
-            type=semver,pattern={{version}}
+            type=sha
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx
@@ -60,6 +62,7 @@ jobs:
           context: "."
           file: "./Dockerfile"
           push: false
+          load: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           platforms: linux/amd64
@@ -68,6 +71,46 @@ jobs:
           build-args: |
             APP_NAME=${{ matrix.app }}
             GIT_COMMIT=$GITHUB_SHA
+      - name: Run Trivy vulnerability scanner on ${{ matrix.app }} image
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'image'
+          image-ref: ${{ fromJSON(steps.meta.outputs.json).tags[0] }}
+          hide-progress: false
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          security-checks: 'vuln,secret'
+          ignore-unfixed: true
+           #severity: 'CRITICAL,HIGH'
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: 'trivy-results.sarif'
+  trivy-scan:
+    name: Trivy fs scan
+    runs-on: ubuntu-20.04
+    permissions:
+      contents: read # for actions/checkout to fetch code
+      security-events: write # for github/codeql-action/upload-sarif to upload SARIF results
+      actions: read # only required for a private repository by github/codeql-action/upload-sarif to get the Action run status
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Run Trivy vulnerability scanner in fs mode
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          hide-progress: false
+          skip-dirs: 'www,plural'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          security-checks: 'vuln,secret'
+          ignore-unfixed: true
+          #severity: 'CRITICAL,HIGH'
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: 'trivy-results.sarif'
   test:
     name: Test
     runs-on: ubuntu-20.04

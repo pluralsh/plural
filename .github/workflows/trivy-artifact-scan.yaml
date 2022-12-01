@@ -1,17 +1,18 @@
 name: Trivy Artifact Scanning
 on:
-  push:
-    branches: [ master ]
-    paths:
-      - "plural/**"
-      - ".github/workflows/trivy-artifact-scan.yaml"
-  pull_request:
-    branches: [ master ]
-    paths:
-      - "plural/**"
-      - ".github/workflows/trivy-artifact-scan.yaml"
-  schedule:
-    - cron: '0 0 * * 1'
+  # push:
+  #   branches: [ master ]
+  #   paths:
+  #     - "plural/**"
+  #     - ".github/workflows/trivy-artifact-scan.yaml"
+  # pull_request:
+  #   branches: [ master ]
+  #   paths:
+  #     - "plural/**"
+  #     - ".github/workflows/trivy-artifact-scan.yaml"
+  # schedule:
+  #   - cron: '0 0 * * 1'
+  workflow_dispatch:
 jobs:
   trivy-scan:
     name: Trivy IaC scan

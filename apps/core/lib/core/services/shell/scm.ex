@@ -11,10 +11,10 @@ defmodule Core.Shell.Scm do
   """
   @spec keypair(binary) :: {:ok, binary, binary} | error
   def keypair(email) do
-    with {_, _, _, params, public} = private <- :public_key.generate_key({:namedCurve, :secp256r1}),
+    with {_, _, _, params, public, _} = private <- :public_key.generate_key({:namedCurve, :secp256r1}),
          entry <- :public_key.pem_entry_encode(:ECPrivateKey, private),
          pem_private <- :public_key.pem_encode([entry]),
-         ssh_public <- :public_key.ssh_encode([{{{:ECPoint, public}, params}, [{:comment, email}]}], :openssh_public_key),
+         ssh_public <- :ssh_file.encode([{{{:ECPoint, public}, params}, [{:comment, email}]}], :openssh_key),
       do: {:ok, pem_private, ssh_public}
   end
 

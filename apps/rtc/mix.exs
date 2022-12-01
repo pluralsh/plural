@@ -78,7 +78,7 @@ defmodule Rtc.MixProject do
       {:plug_cowboy, "~> 2.6.0", override: true},
       {:absinthe_phoenix, "~> 2.0.2"},
       {:libcluster, "~> 3.3.1"},
-      {:prometheus_ex, "~> 3.0"},
+      {:prometheus_ex, git: "https://github.com/lanodan/prometheus.ex", branch: "fix/elixir-1.14", override: true},
       {:prometheus_plugs, "~> 1.1.1"},
       {:websockex, "~> 0.4"},
       {:k8s_traffic_plug, github: "Financial-Times/k8s_traffic_plug"},

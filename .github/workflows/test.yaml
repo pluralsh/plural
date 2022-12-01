@@ -5,16 +5,26 @@ on:
     branches:
       - master
     paths-ignore:
-      - ".github/workflows/**"
-      - "!.github/workflows/test.yaml"
+      - ".github/workflows/daily.yaml"
+      - ".github/workflows/firebase-hosting-pull-request.yml"
+      - ".github/workflows/pr-labels.yaml"
+      - ".github/workflows/publish.yaml"
+      - ".github/workflows/push-to-plural.yaml"
+      - ".github/workflows/www.yaml"
+      - ".github/workflows/trivy-scan.yaml"
       - 'www/**'
       - "plural/**"
       - "*.md"
   pull_request:
     branches: [ master ]
     paths-ignore:
-      - ".github/workflows/**"
-      - "!.github/workflows/test.yaml"
+      - ".github/workflows/daily.yaml"
+      - ".github/workflows/firebase-hosting-pull-request.yml"
+      - ".github/workflows/pr-labels.yaml"
+      - ".github/workflows/publish.yaml"
+      - ".github/workflows/push-to-plural.yaml"
+      - ".github/workflows/www.yaml"
+      - ".github/workflows/trivy-scan.yaml"
       - 'www/**'
       - "plural/**"
       - "*.md"

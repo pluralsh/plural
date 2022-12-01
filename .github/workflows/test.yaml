@@ -39,6 +39,8 @@ jobs:
       contents: 'read'
       id-token: 'write'
       packages: 'write'
+      security-events: write
+      actions: read
     steps:
       - name: Checkout
         uses: actions/checkout@v3

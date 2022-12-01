@@ -21,6 +21,8 @@ jobs:
       contents: 'read'
       id-token: 'write'
       packages: 'write'
+      security-events: write
+      actions: read
     steps:
       - uses: actions/checkout@v3
       - name: Docker meta

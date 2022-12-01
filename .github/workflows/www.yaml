@@ -44,17 +44,21 @@ jobs:
           platforms: linux/amd64
           cache-from: type=gha
           cache-to: type=gha,mode=max
-      - name: Run Trivy vulnerability scanner in IaC mode
+      - name: Run Trivy vulnerability scanner on frontend image
         uses: aquasecurity/trivy-action@master
         with:
           scan-type: 'image'
-          image-ref: ${{ steps.meta.outputs.json.tags[0] }}
+          image-ref: ${{ fromJSON(steps.meta.outputs.json).tags[0] }}
           hide-progress: false
           format: 'sarif'
           output: 'trivy-results.sarif'
           security-checks: 'vuln,secret,config'
           ignore-unfixed: true
            #severity: 'CRITICAL,HIGH'
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: 'trivy-results.sarif'
   test:
     name: Unit test
     runs-on: ubuntu-20.04

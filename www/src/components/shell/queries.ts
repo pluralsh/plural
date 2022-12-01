@@ -28,6 +28,12 @@ export const CLOUD_SHELL_QUERY = gql`
   ${CloudShellFragment}
 `
 
+export const SETUP_SHELL = gql`
+  mutation {
+    setupShell { id }
+  }
+`
+
 export const CREATE_SHELL_MUTATION = gql`
   mutation Create($attributes: CloudShellAttributes!) {
     createShell(attributes: $attributes) {

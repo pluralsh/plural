@@ -4,6 +4,8 @@ import { Div } from 'honorable'
 
 import { useNavigate } from 'react-router-dom'
 
+import { Button } from '@pluralsh/design-system'
+
 import CreateShellContext from '../../../../contexts/CreateShellContext'
 
 import { CLOUD_SHELL_QUERY, CREATE_SHELL_MUTATION } from '../../queries'
@@ -12,6 +14,7 @@ import { GqlError } from '../../../utils/Alert'
 import { ShellStatus } from '../ShellStatus'
 
 import { JoinCommunityCard } from '../JoinCommunityCard'
+import OnboardingNavSection from '../OnboardingNavSection'
 
 const EMPTY_SHELL = ({ alive: false, status: {} })
 
@@ -23,6 +26,7 @@ function CloudLaunch() {
     workspace,
     credentials,
     demoId,
+    previous,
   } = useContext(CreateShellContext)
 
   const [createShellMutation, { data: mutationData, error }] = useMutation(CREATE_SHELL_MUTATION,
@@ -70,7 +74,17 @@ function CloudLaunch() {
           />
         </Div>
       )}
-      <JoinCommunityCard />
+      {!!error && (
+        <OnboardingNavSection>
+          <Button
+            secondary
+            onClick={previous}
+          >
+            Back
+          </Button>
+        </OnboardingNavSection>
+      )}
+      {!error && <JoinCommunityCard />}
     </>
   )
 }

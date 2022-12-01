@@ -466,7 +466,7 @@ defmodule Core.Services.Accounts do
   end
 
   def hmac(secret, payload) when is_binary(payload) do
-    :crypto.hmac(:sha, secret, payload)
+    :crypto.mac(:hmac, :sha, secret, payload)
     |> Base.encode16(case: :lower)
   end
 

@@ -15,8 +15,8 @@ config :core, hostname: host
 config :email, host: "https://#{host}"
 config :core, host: "https://#{host}"
 
-config :arc,
-  storage: Arc.Storage.GCS,
+config :waffle,
+  storage: Waffle.Storage.Google,
   bucket: get_env("BUCKET")
 
 config :core, Core.Guardian,
@@ -102,7 +102,7 @@ end
 
 if provider != :gcp do
   config :goth, disabled: true
-  config :arc, storage: Arc.Storage.S3
+  config :waffle, storage: Waffle.Storage.S3
 end
 
 if org_id = get_env("GCP_ORG_ID") do

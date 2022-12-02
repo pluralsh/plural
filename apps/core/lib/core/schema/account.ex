@@ -1,6 +1,6 @@
 defmodule Core.Schema.Account do
   use Piazza.Ecto.Schema
-  use Arc.Ecto.Schema
+  use Waffle.Ecto.Schema
   alias Core.Schema.{User, DomainMapping, PlatformSubscription}
 
   schema "accounts" do

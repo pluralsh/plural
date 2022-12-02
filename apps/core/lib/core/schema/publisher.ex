@@ -1,6 +1,6 @@
 defmodule Core.Schema.Publisher do
   use Piazza.Ecto.Schema
-  use Arc.Ecto.Schema
+  use Waffle.Ecto.Schema
   alias Core.Schema.{User, Address, Repository, Account}
 
   @repo_sideload_limit 5

@@ -62,8 +62,8 @@ config :botanist,
 config :core, :connection_draining,
   shutdown_delay_ms: 1
 
-config :arc,
-  storage: Arc.Storage.GCS,
+config :waffle,
+  storage: Waffle.Storage.Google,
   bucket: "forge-assets"
 
 config :stripity_stripe,

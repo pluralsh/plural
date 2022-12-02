@@ -51,7 +51,7 @@ defmodule Core.MixProject do
   def application do
     [
       mod: {Core.Application, []},
-      extra_applications: [:logger, :crypto, :porcelain]
+      extra_applications: [:logger, :crypto, :porcelain, :ssh]
     ]
   end
 

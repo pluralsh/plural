@@ -100,7 +100,7 @@ plural-migration-{{ .Release.Revision }}
 
 {{- define "plural.wait-for-migration" -}}
 - name: wait-for-pg
-  image: gcr.io/pluralsh/busybox:latest
+  image: gcr.io/pluralsh/library/busybox:1.35.0
   imagePullPolicy: IfNotPresent
   command: [ "/bin/sh", "-c", "until nc -zv plural-plural 5432 -w1; do echo 'waiting for db'; sleep 1; done" ]
 {{- end -}}

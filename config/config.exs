@@ -63,7 +63,7 @@ config :core, :connection_draining,
   shutdown_delay_ms: 1
 
 config :waffle,
-  storage: Waffle.Storage.Google,
+  storage: Waffle.Storage.Google.CloudStorage,
   bucket: "forge-assets"
 
 config :stripity_stripe,

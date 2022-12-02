@@ -16,7 +16,7 @@ config :email, host: "https://#{host}"
 config :core, host: "https://#{host}"
 
 config :waffle,
-  storage: Waffle.Storage.Google,
+  storage: Waffle.Storage.Google.CloudStorage,
   bucket: get_env("BUCKET")
 
 config :core, Core.Guardian,

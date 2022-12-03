@@ -15,8 +15,10 @@ defmodule Core.Clients.OpenAI do
   def completion(model, prompt) do
     body = Jason.encode!(%{
       model: model,
-      prompt: prompt,
+      prompt: String.trim(prompt),
       max_tokens: 1000,
+      temperature: 0.7,
+      top_p: 1,
     })
 
     url("/completions")

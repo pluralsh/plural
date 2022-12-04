@@ -3,7 +3,7 @@ defmodule Core.Services.Repositories do
   import Core.Policies.Repository
 
   alias Core.PubSub
-  alias Core.Services.{Users, Locks}
+  alias Core.Services.{Users, Locks, Shell.Demo}
   alias Core.Auth.Jwt
   alias Core.Clients.Hydra
   alias Core.Schema.{
@@ -357,8 +357,11 @@ defmodule Core.Services.Repositories do
   def create_installation(attrs, repository_id, %User{} = user) do
     repo = get_repository!(repository_id)
     attrs = add_track_tag(attrs, repo)
+            |> Map.put_new(:context, %{})
+            |> Map.put(:source, installation_source(user))
+
     %Installation{repository_id: repository_id, user_id: user.id, auto_upgrade: true}
-    |> Installation.changeset(Map.put_new(attrs, :context, %{}))
+    |> Installation.changeset(attrs)
     |> allow(user, :create)
     |> when_ok(:insert)
     |> notify(:create, user)
@@ -367,6 +370,13 @@ defmodule Core.Services.Repositories do
   defp add_track_tag(attrs, %Repository{default_tag: tag}) when is_binary(tag) and byte_size(tag) > 0,
     do: Map.put(attrs, :track_tag, tag)
   defp add_track_tag(attrs, _), do: attrs
+
+  defp installation_source(%User{id: id}) do
+    case Demo.has_demo?(id) do
+      true -> :demo
+      _ -> :default
+    end
+  end
 
   @doc """
   Updates the given installation.

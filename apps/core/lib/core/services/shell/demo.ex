@@ -23,6 +23,12 @@ defmodule Core.Services.Shell.Demo do
   @lock "demo-projects"
   @max_count 3
 
+  @spec has_demo?(binary) :: boolean
+  def has_demo?(user_id) do
+    DemoProject.for_user(user_id)
+    |> Core.Repo.exists?()
+  end
+
   @spec get_demo_project(binary) :: DemoProject.t | nil
   def get_demo_project(id), do: Core.Repo.get(DemoProject, id)
 

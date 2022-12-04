@@ -136,6 +136,23 @@ defmodule Core.Services.RepositoriesTest do
       assert installation.repository_id == repo.id
       assert installation.license_key
       assert installation.track_tag == "latest"
+      assert installation.source == :default
+
+      assert_receive {:event, %PubSub.InstallationCreated{item: ^installation, actor: ^user}}
+    end
+
+    test "It will set :demo as source if a demo project exists", %{user: user} do
+      repo = insert(:repository)
+      insert(:demo_project, user: user)
+
+      {:ok, installation} = Repositories.create_installation(%{}, repo.id, user)
+
+      assert installation.auto_upgrade
+      assert installation.user_id == user.id
+      assert installation.repository_id == repo.id
+      assert installation.license_key
+      assert installation.track_tag == "latest"
+      assert installation.source == :demo
 
       assert_receive {:event, %PubSub.InstallationCreated{item: ^installation, actor: ^user}}
     end

@@ -17,8 +17,11 @@ defmodule Core.Schema.Installation do
     end
   end
 
+  defenum Source, default: 0, demo: 1
+
   schema "installations" do
     field :context,      :map
+    field :source,       Source, default: :default
     field :auto_upgrade, :boolean, default: false
     field :track_tag,    :string, default: "latest"
     field :license_key,  :string
@@ -39,7 +42,7 @@ defmodule Core.Schema.Installation do
   def for_user(query \\ __MODULE__, user_id),
     do: from(i in query, where: i.user_id == ^user_id)
 
-  @valid ~w(user_id repository_id context auto_upgrade track_tag)a
+  @valid ~w(user_id repository_id context auto_upgrade track_tag source)a
 
   def changeset(model, attrs \\ %{}) do
     model

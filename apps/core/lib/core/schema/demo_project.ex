@@ -20,6 +20,10 @@ defmodule Core.Schema.DemoProject do
     timestamps()
   end
 
+  def for_user(query \\ __MODULE__, user_id) do
+    from(dp in query, where: dp.user_id == ^user_id)
+  end
+
   def ordered(query \\ __MODULE__, order \\ [asc: :id]) do
     from(dp in query, order_by: ^order)
   end

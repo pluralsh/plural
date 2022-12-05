@@ -140,6 +140,10 @@ defmodule Core.Schema.CloudShell do
     timestamps()
   end
 
+  def for_user(query \\ __MODULE__, user_id) do
+    from(cs in query, where: cs.user_id == ^user_id)
+  end
+
   @valid ~w(provider git_url ssh_public_key ssh_private_key demo_id)a
 
   def changeset(model, attrs \\ %{}) do

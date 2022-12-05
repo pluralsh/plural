@@ -19,6 +19,15 @@ defmodule Core.Services.Shell do
   end
 
   @doc """
+  Whether the `user_id` has an extant cloud shell
+  """
+  @spec has_shell?(binary) :: boolean
+  def has_shell?(user_id) do
+    CloudShell.for_user(user_id)
+    |> Core.Repo.exists?()
+  end
+
+  @doc """
   Gets a cloud shell for a given user id
   """
   @spec get_shell(binary) :: CloudShell.t | nil

@@ -353,30 +353,33 @@ defmodule Core.Services.Repositories do
   @doc """
   Creates a new installation for a repository for the given user
   """
-  @spec create_installation(map, binary, User.t) :: {:ok, Installation.t} | {:error, term}
-  def create_installation(attrs, repository_id, %User{} = user) do
-    repo = get_repository!(repository_id)
-    attrs = add_track_tag(attrs, repo)
-            |> Map.put_new(:context, %{})
-            |> Map.put(:source, installation_source(user))
-
-    %Installation{repository_id: repository_id, user_id: user.id, auto_upgrade: true}
-    |> Installation.changeset(attrs)
+  @spec create_installation(map, binary | Repository.t, User.t) :: {:ok, Installation.t} | {:error, term}
+  def create_installation(attrs, %Repository{id: repo_id} = repo, %User{} = user) do
+    %Installation{repository_id: repo_id, user_id: user.id, auto_upgrade: true}
+    |> Installation.changeset(
+      add_track_tag(attrs, repo)
+      |> Map.put_new(:context, %{})
+      |> Map.put(:source, installation_source(user))
+    )
     |> allow(user, :create)
     |> when_ok(:insert)
     |> notify(:create, user)
   end
+  def create_installation(attrs, id, user),
+    do: create_installation(attrs, get_repository!(id), user)
 
   defp add_track_tag(attrs, %Repository{default_tag: tag}) when is_binary(tag) and byte_size(tag) > 0,
     do: Map.put(attrs, :track_tag, tag)
   defp add_track_tag(attrs, _), do: attrs
 
   defp installation_source(%User{id: id}) do
-    case {Demo.has_demo?(id), Shell.has_shell?(id)} do
-      {true, _} -> :demo
-      {_, true} -> :shell
-      _ -> :default
-    end
+    Core.local_cache({:inst_source, id}, fn ->
+      case {Demo.has_demo?(id), Shell.has_shell?(id)} do
+        {true, _} -> :demo
+        {_, true} -> :shell
+        _ -> :default
+      end
+    end)
   end
 
   @doc """

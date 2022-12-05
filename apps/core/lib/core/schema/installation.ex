@@ -17,7 +17,7 @@ defmodule Core.Schema.Installation do
     end
   end
 
-  defenum Source, default: 0, demo: 1
+  defenum Source, default: 0, shell: 1, demo: 2
 
   schema "installations" do
     field :context,      :map

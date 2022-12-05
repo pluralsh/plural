@@ -143,6 +143,7 @@ defmodule Core.Services.RepositoriesTest do
 
     test "It will set :demo as source if a demo project exists", %{user: user} do
       repo = insert(:repository)
+      insert(:cloud_shell, user: user)
       insert(:demo_project, user: user)
 
       {:ok, installation} = Repositories.create_installation(%{}, repo.id, user)
@@ -153,6 +154,22 @@ defmodule Core.Services.RepositoriesTest do
       assert installation.license_key
       assert installation.track_tag == "latest"
       assert installation.source == :demo
+
+      assert_receive {:event, %PubSub.InstallationCreated{item: ^installation, actor: ^user}}
+    end
+
+    test "It will set :shell as source if a cloud shell exists", %{user: user} do
+      repo = insert(:repository)
+      insert(:cloud_shell, user: user)
+
+      {:ok, installation} = Repositories.create_installation(%{}, repo.id, user)
+
+      assert installation.auto_upgrade
+      assert installation.user_id == user.id
+      assert installation.repository_id == repo.id
+      assert installation.license_key
+      assert installation.track_tag == "latest"
+      assert installation.source == :shell
 
       assert_receive {:event, %PubSub.InstallationCreated{item: ^installation, actor: ^user}}
     end

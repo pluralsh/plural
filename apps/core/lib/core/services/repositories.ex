@@ -3,7 +3,7 @@ defmodule Core.Services.Repositories do
   import Core.Policies.Repository
 
   alias Core.PubSub
-  alias Core.Services.{Users, Locks, Shell.Demo}
+  alias Core.Services.{Users, Locks, Shell.Demo, Shell}
   alias Core.Auth.Jwt
   alias Core.Clients.Hydra
   alias Core.Schema.{
@@ -372,8 +372,9 @@ defmodule Core.Services.Repositories do
   defp add_track_tag(attrs, _), do: attrs
 
   defp installation_source(%User{id: id}) do
-    case Demo.has_demo?(id) do
-      true -> :demo
+    case {Demo.has_demo?(id), Shell.has_shell?(id)} do
+      {true, _} -> :demo
+      {_, true} -> :shell
       _ -> :default
     end
   end

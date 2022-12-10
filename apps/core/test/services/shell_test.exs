@@ -278,7 +278,7 @@ defmodule Core.Services.ShellTest do
       insert(:recipe_item, recipe_section: section2, terraform: tf)
       insert(:recipe_item, recipe_section: section2, chart: other_chart)
 
-      {:ok, insts} = Shell.install_bundle(recipe, %{recipe.repository.name => %{"key" => "example.com"}}, true, user)
+      {:ok, insts} = Shell.install_bundle(recipe, %{configuration: %{recipe.repository.name => %{"key" => "example.com"}}}, true, user)
 
       inst = Enum.find(insts, & &1.repository_id == repo.id)
       assert inst.user_id == user.id

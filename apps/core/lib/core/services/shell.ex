@@ -132,12 +132,12 @@ defmodule Core.Services.Shell do
   * install the recipe
   * optionally configure oidc
   """
-  @spec install_bundle(Recipe.t, map, binary, User.t) :: {:ok, [Installation.t]} | error
-  def install_bundle(%Recipe{} = recipe, ctx, oidc, %User{} = user) do
+  @spec install_bundle(Recipe.t, %{configuration: map}, binary, User.t) :: {:ok, [Installation.t]} | error
+  def install_bundle(%Recipe{} = recipe, %{configuration: ctx} = context, oidc, %User{} = user) do
     recipe = Core.Repo.preload(recipe, [:repository])
     start_transaction()
     |> add_operation(:shell, fn _ ->
-      update_shell_configuration(ctx, user)
+      update_shell_configuration(context, user)
     end)
     |> add_operation(:install, fn _ ->
       Recipes.install(recipe, %{}, user)

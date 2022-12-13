@@ -2660,7 +2660,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@growthbook/growthbook-react@npm:0.10.1":
+"@growthbook/growthbook-react@npm:^0.10.1":
   version: 0.10.1
   resolution: "@growthbook/growthbook-react@npm:0.10.1"
   dependencies:
@@ -4374,10 +4374,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@remix-run/router@npm:1.0.3":
-  version: 1.0.3
-  resolution: "@remix-run/router@npm:1.0.3"
-  checksum: 7e535f3c24bf6b0a48aff3de70ee74e5402fe93105aa9bd01f275d5d8f5a9a8a7cadec08d18cf5544d4f24bc9d7a091abc1c9d4ea8efb2893e9077f104a51459
+"@remix-run/router@npm:1.0.5":
+  version: 1.0.5
+  resolution: "@remix-run/router@npm:1.0.5"
+  checksum: 5d66750b7defc10c80d9748fa003fcfe2af9ef82de3c06be88c926ede36a15b9e971ed2222981db843494e2f77c3de14470efe6dc877530cea774dc31162ec6f
   languageName: node
   linkType: hard
 
@@ -12694,27 +12694,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-router-dom@npm:6.4.3":
-  version: 6.4.3
-  resolution: "react-router-dom@npm:6.4.3"
+"react-router-dom@npm:^6.4.5":
+  version: 6.4.5
+  resolution: "react-router-dom@npm:6.4.5"
   dependencies:
-    "@remix-run/router": 1.0.3
-    react-router: 6.4.3
+    "@remix-run/router": 1.0.5
+    react-router: 6.4.5
   peerDependencies:
     react: ">=16.8"
     react-dom: ">=16.8"
-  checksum: 67a44d8dc45761a1c88793cac73839bb657168ef61b9473eb39b186b4a3ea1472454fd96f8997dc541cb1e79a723d62f9503cbc9179b63b8f1d634ed6d2b079a
+  checksum: 09d7841dd52efd2c60947171f95d9d1860cabd7540ac74dede86a6c36a2dd26a645e4928cbc8aa4e1c9d1f906f2ef144ba6da5ac69243590df855a6df8cfe1aa
   languageName: node
   linkType: hard
 
-"react-router@npm:6.4.3":
-  version: 6.4.3
-  resolution: "react-router@npm:6.4.3"
+"react-router@npm:6.4.5":
+  version: 6.4.5
+  resolution: "react-router@npm:6.4.5"
   dependencies:
-    "@remix-run/router": 1.0.3
+    "@remix-run/router": 1.0.5
   peerDependencies:
     react: ">=16.8"
-  checksum: b89c0495c6837b1457915c08c5acc4eb7a2e9e3fae0420faf9bfc6311ecdfe78627cc1034c0e975bccd9aeeb70d1dcc5021322779dd3053d94c47e37339d77eb
+  checksum: 0d471df39f0487224240f9910c2f2939519f3e9909a7b19f72767aeea2caf1c9fa4e8ea9a51b17c20051ec252db0fcc34a7a0b3068b338dd9d8eb656ffd489c1
   languageName: node
   linkType: hard
 
@@ -12780,7 +12780,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-stripe-elements@npm:6.1.2":
+"react-stripe-elements@npm:^6.1.2":
   version: 6.1.2
   resolution: "react-stripe-elements@npm:6.1.2"
   dependencies:
@@ -15916,7 +15916,7 @@ __metadata:
     "@graphql-codegen/typescript-operations": 2.5.7
     "@graphql-codegen/typescript-react-apollo": 3.3.6
     "@growthbook/growthbook": 0.20.0
-    "@growthbook/growthbook-react": 0.10.1
+    "@growthbook/growthbook-react": ^0.10.1
     "@nivo/core": 0.80.0
     "@nivo/geo": 0.80.0
     "@nivo/line": 0.80.0
@@ -15986,11 +15986,11 @@ __metadata:
     react-piano-keys: 1.2.1
     react-portal: 4.2.2
     react-resize-detector: 7.1.2
-    react-router-dom: 6.4.3
+    react-router-dom: ^6.4.5
     react-sage: 0.3.16
     react-script-hook: 1.7.2
     react-spinners: 0.13.6
-    react-stripe-elements: 6.1.2
+    react-stripe-elements: ^6.1.2
     react-sweet-progress: 1.1.2
     react-toggle: 4.1.3
     react-transition-group: 4.4.5

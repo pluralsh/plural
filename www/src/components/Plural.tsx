@@ -1,4 +1,10 @@
-import { useContext, useEffect, useState } from 'react'
+import {
+  Suspense,
+  lazy,
+  useContext,
+  useEffect,
+  useState,
+} from 'react'
 import {
   Navigate,
   Outlet,
@@ -16,62 +22,64 @@ import { useHistory } from '../router'
 import PluralConfigurationContext from '../contexts/PluralConfigurationContext'
 import CurrentUserContext from '../contexts/CurrentUserContext'
 
-import ApplicationLayout from './layout/ApplicationLayout'
-import BreadcrumbProvider from './Breadcrumbs'
-import Chart from './repos/Chart'
-import CloudShell from './shell/CloudShell'
-import ImagePullMetrics from './repos/common/ImagePullMetrics'
-import ImageVulnerabilities from './repos/common/ImageVulnerabilities'
-import Marketplace from './marketplace/Marketplace'
-import OAuthCallback from './shell/OAuthCallback'
-import PackageConfiguration from './repos/common/PackageConfiguration'
-import PackageDependencies from './repos/common/PackageDependencies'
-import PackageReadme from './repos/common/PackageReadme'
-import PackageSecurity from './repos/common/PackageSecurity'
-import PackageUpdateQueue from './repos/common/PackageUpdateQueue'
-import Publisher from './publisher/Publisher'
-import Repository from './repository/Repository'
-import RepositoryArtifacts from './repository/RepositoryArtifacts'
-import RepositoryDeployments from './repository/RepositoryDeployments'
-import RepositoryDescription from './repository/RepositoryDescription'
-import RepositoryEdit from './repository/RepositoryEdit'
-import RepositoryPackages from './repository/RepositoryPackages'
-import RepositoryPackagesDocker from './repository/RepositoryPackagesDocker'
-import RepositoryPackagesHelm from './repository/RepositoryPackagesHelm'
-import RepositoryPackagesTerraform from './repository/RepositoryPackagesTerraform'
-import RepositoryTests from './repository/RepositoryTests'
-import Stack from './stack/Stack'
-import StackApps from './stack/StackApps'
-import Terraform from './repos/Terraform'
-import { AccessTokens } from './profile/AccessTokens'
-import { Account } from './account/Account'
-import { AccountAttributes } from './account/AccountAttributes'
-import { AuditChloropleth } from './audits/AuditChloropleth'
-import { AuditDirectory } from './audits/AuditDirectory'
-import { Audits } from './audits/Audits'
-import { ChecklistProvider, OnboardingChecklist } from './shell/onboarding/checklist/Checklist'
-import { Clusters } from './clusters/Clusters'
-import { PluralProvider } from './login/CurrentUser'
-import { DeviceLoginNotif } from './users/DeviceLoginNotif'
-import { Docker, DockerRepository } from './repos/Docker'
-import { Domains } from './account/Domains'
-import { EabCredentials } from './profile/EabCredentials'
-import { EditAccount } from './users/EditAccount'
-import { Groups } from './account/Groups'
-import { IntegrationPage } from './repos/Integrations'
-import { LoginAudits } from './audits/LoginAudits'
-import { MyProfile } from './profile/MyProfile'
-import { OIDCProvider } from './repository/OIDCProvider'
-import { OauthCreator } from './integrations/OauthCreator'
-import { Profile } from './profile/Profile'
-import { PublicKeys } from './profile/PublicKeys'
-import { Roles } from './account/Roles'
-import { Security } from './profile/Security'
-import { ServiceAccounts } from './account/ServiceAccounts'
-import { UpgradeQueue } from './clusters/UpgradeQueue'
-import { UpgradeQueues } from './clusters/UpgradeQueues'
-import { Users } from './account/Users'
-import { VerifyEmailConfirmed } from './users/EmailConfirmation'
+const ApplicationLayout = lazy(() => import('./layout/ApplicationLayout'))
+const BreadcrumbProvider = lazy(() => import('./Breadcrumbs'))
+const Chart = lazy(() => import('./repos/Chart'))
+const CloudShell = lazy(() => import('./shell/CloudShell'))
+const ImagePullMetrics = lazy(() => import('./repos/common/ImagePullMetrics'))
+const ImageVulnerabilities = lazy(() => import('./repos/common/ImageVulnerabilities'))
+const Marketplace = lazy(() => import('./marketplace/Marketplace'))
+const OAuthCallback = lazy(() => import('./shell/OAuthCallback'))
+const PackageConfiguration = lazy(() => import('./repos/common/PackageConfiguration'))
+const PackageDependencies = lazy(() => import('./repos/common/PackageDependencies'))
+const PackageReadme = lazy(() => import('./repos/common/PackageReadme'))
+const PackageSecurity = lazy(() => import('./repos/common/PackageSecurity'))
+const PackageUpdateQueue = lazy(() => import('./repos/common/PackageUpdateQueue'))
+const Publisher = lazy(() => import('./publisher/Publisher'))
+const Repository = lazy(() => import('./repository/Repository'))
+const RepositoryArtifacts = lazy(() => import('./repository/RepositoryArtifacts'))
+const RepositoryDeployments = lazy(() => import('./repository/RepositoryDeployments'))
+const RepositoryDescription = lazy(() => import('./repository/RepositoryDescription'))
+const RepositoryEdit = lazy(() => import('./repository/RepositoryEdit'))
+const RepositoryPackages = lazy(() => import('./repository/RepositoryPackages'))
+const RepositoryPackagesDocker = lazy(() => import('./repository/RepositoryPackagesDocker'))
+const RepositoryPackagesHelm = lazy(() => import('./repository/RepositoryPackagesHelm'))
+const RepositoryPackagesTerraform = lazy(() => import('./repository/RepositoryPackagesTerraform'))
+const RepositoryTests = lazy(() => import('./repository/RepositoryTests'))
+const Stack = lazy(() => import('./stack/Stack'))
+const StackApps = lazy(() => import('./stack/StackApps'))
+const Terraform = lazy(() => import('./repos/Terraform'))
+const AccessTokens = lazy(() => import('./profile/AccessTokens').then(module => ({ default: module.AccessTokens })))
+const Account = lazy(() => import('./account/Account').then(module => ({ default: module.Account })))
+const AccountAttributes = lazy(() => import('./account/AccountAttributes').then(module => ({ default: module.AccountAttributes })))
+const AuditChloropleth = lazy(() => import('./audits/AuditChloropleth').then(module => ({ default: module.AuditChloropleth })))
+const AuditDirectory = lazy(() => import('./audits/AuditDirectory').then(module => ({ default: module.AuditDirectory })))
+const Audits = lazy(() => import('./audits/Audits').then(module => ({ default: module.Audits })))
+const ChecklistProvider = lazy(() => import('./shell/onboarding/checklist/Checklist').then(module => ({ default: module.ChecklistProvider })))
+const OnboardingChecklist = lazy(() => import('./shell/onboarding/checklist/Checklist').then(module => ({ default: module.OnboardingChecklist })))
+const Clusters = lazy(() => import('./clusters/Clusters').then(module => ({ default: module.Clusters })))
+const PluralProvider = lazy(() => import('./login/CurrentUser').then(module => ({ default: module.PluralProvider })))
+const DeviceLoginNotif = lazy(() => import('./users/DeviceLoginNotif').then(module => ({ default: module.DeviceLoginNotif })))
+const Docker = lazy(() => import('./repos/Docker').then(module => ({ default: module.Docker })))
+const DockerRepository = lazy(() => import('./repos/Docker').then(module => ({ default: module.DockerRepository })))
+const Domains = lazy(() => import('./account/Domains').then(module => ({ default: module.Domains })))
+const EabCredentials = lazy(() => import('./profile/EabCredentials').then(module => ({ default: module.EabCredentials })))
+const EditAccount = lazy(() => import('./users/EditAccount').then(module => ({ default: module.EditAccount })))
+const Groups = lazy(() => import('./account/Groups').then(module => ({ default: module.Groups })))
+const IntegrationPage = lazy(() => import('./repos/Integrations').then(module => ({ default: module.IntegrationPage })))
+const LoginAudits = lazy(() => import('./audits/LoginAudits').then(module => ({ default: module.LoginAudits })))
+const MyProfile = lazy(() => import('./profile/MyProfile').then(module => ({ default: module.MyProfile })))
+const OIDCProvider = lazy(() => import('./repository/OIDCProvider').then(module => ({ default: module.OIDCProvider })))
+const OauthCreator = lazy(() => import('./integrations/OauthCreator').then(module => ({ default: module.OauthCreator })))
+const Profile = lazy(() => import('./profile/Profile').then(module => ({ default: module.Profile })))
+const PublicKeys = lazy(() => import('./profile/PublicKeys').then(module => ({ default: module.PublicKeys })))
+const Roles = lazy(() => import('./account/Roles').then(module => ({ default: module.Roles })))
+const Security = lazy(() => import('./profile/Security').then(module => ({ default: module.Security })))
+const ServiceAccounts = lazy(() => import('./account/ServiceAccounts').then(module => ({ default: module.ServiceAccounts })))
+const UpgradeQueue = lazy(() => import('./clusters/UpgradeQueue').then(module => ({ default: module.UpgradeQueue })))
+const UpgradeQueues = lazy(() => import('./clusters/UpgradeQueues').then(module => ({ default: module.UpgradeQueues })))
+const Users = lazy(() => import('./account/Users').then(module => ({ default: module.Users })))
+const VerifyEmailConfirmed = lazy(() => import('./users/EmailConfirmation').then(module => ({ default: module.VerifyEmailConfirmed })))
 
 function EditBilling(props) {
   return (
@@ -463,8 +471,10 @@ export function PluralInner() {
 
 export default function Plural() {
   return (
-    <PluralProvider>
-      <PluralInner />
-    </PluralProvider>
+    <Suspense>
+      <PluralProvider>
+        <PluralInner />
+      </PluralProvider>
+    </Suspense>
   )
 }

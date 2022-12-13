@@ -11,6 +11,8 @@ import {
 } from '../layout/ResponsiveLayout'
 import { LinkTabWrap } from '../utils/Tabs'
 
+import RoadmapDataProvider from './RoadmapDataProvider'
+
 const TABS = [
   {
     label: 'Roadmap',
@@ -64,7 +66,9 @@ function Roadmap() {
       </ResponsiveLayoutSidenavContainer>
       <ResponsiveLayoutSpacer />
       <ResponsiveLayoutContentContainer>
-        <Outlet />
+        <RoadmapDataProvider>
+          <Outlet />
+        </RoadmapDataProvider>
       </ResponsiveLayoutContentContainer>
       <ResponsiveLayoutSidecarContainer>
         Sidecar

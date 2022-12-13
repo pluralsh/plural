@@ -16,6 +16,7 @@ import {
   useOutsideClick,
 } from 'honorable'
 import {
+  ArchitectureIcon,
   ArrowTopRightIcon,
   BellIcon,
   CloseIcon,
@@ -80,6 +81,11 @@ function SidebarWrapper() {
       name: 'Audits',
       Icon: ListIcon,
       url: '/audits',
+    },
+    {
+      name: 'Roadmap',
+      Icon: ArchitectureIcon,
+      url: '/roadmap',
     },
   ]
 

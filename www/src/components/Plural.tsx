@@ -49,6 +49,12 @@ const RepositoryTests = lazy(() => import('./repository/RepositoryTests'))
 const Stack = lazy(() => import('./stack/Stack'))
 const StackApps = lazy(() => import('./stack/StackApps'))
 const Terraform = lazy(() => import('./repos/Terraform'))
+const Roadmap = lazy(() => import('./roadmap/Roadmap'))
+const RoadmapRoadmap = lazy(() => import('./roadmap/RoadmapRoadmap'))
+const RoadmapChangelog = lazy(() => import('./roadmap/RoadmapChangelog'))
+const RoadmapApplicationRequests = lazy(() => import('./roadmap/RoadmapApplicationRequests'))
+const RoadmapFeatureRequests = lazy(() => import('./roadmap/RoadmapFeatureRequests'))
+const RoadmapFeedback = lazy(() => import('./roadmap/RoadmapFeedback'))
 const AccessTokens = lazy(() => import('./profile/AccessTokens').then(module => ({ default: module.AccessTokens })))
 const Account = lazy(() => import('./account/Account').then(module => ({ default: module.Account })))
 const AccountAttributes = lazy(() => import('./account/AccountAttributes').then(module => ({ default: module.AccountAttributes })))
@@ -454,6 +460,32 @@ export function PluralInner() {
                 path="/clusters"
                 element={<Clusters />}
               />
+              {/* --- ROADMAP --- */}
+              <Route
+                path="/roadmap"
+                element={<Roadmap />}
+              >
+                <Route
+                  index
+                  element={<RoadmapRoadmap />}
+                />
+                <Route
+                  path="changelog"
+                  element={<RoadmapChangelog />}
+                />
+                <Route
+                  path="application-requests"
+                  element={<RoadmapApplicationRequests />}
+                />
+                <Route
+                  path="feature-requests"
+                  element={<RoadmapFeatureRequests />}
+                />
+                <Route
+                  path="feedback"
+                  element={<RoadmapFeedback />}
+                />
+              </Route>
               {/* --- 404 --- */}
               <Route
                 path="/*"

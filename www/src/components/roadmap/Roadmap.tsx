@@ -1,6 +1,6 @@
 import { useRef } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
-import { Flex } from 'honorable'
+import { Div, Flex } from 'honorable'
 import { Tab, TabList } from '@pluralsh/design-system'
 
 import {
@@ -41,7 +41,11 @@ function Roadmap() {
   const { pathname } = useLocation()
 
   return (
-    <Flex marginTop="xxxxlarge">
+    <Flex
+      paddingTop="xxxxlarge"
+      position="relative"
+      height="100vh"
+    >
       <ResponsiveLayoutSidenavContainer
         marginLeft="medium"
         width={240}
@@ -66,9 +70,15 @@ function Roadmap() {
       </ResponsiveLayoutSidenavContainer>
       <ResponsiveLayoutSpacer />
       <ResponsiveLayoutContentContainer>
-        <RoadmapDataProvider>
-          <Outlet />
-        </RoadmapDataProvider>
+        <Div
+          maxHeight="100%"
+          overflowY="auto"
+          overflowX="hidden"
+        >
+          <RoadmapDataProvider>
+            <Outlet />
+          </RoadmapDataProvider>
+        </Div>
       </ResponsiveLayoutContentContainer>
       <ResponsiveLayoutSidecarContainer>
         Sidecar

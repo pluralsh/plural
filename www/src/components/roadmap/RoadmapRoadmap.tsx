@@ -16,12 +16,12 @@ function RoadmapRoadmap() {
       ...pluralArtifactsIssues,
     ]
       .sort((a, b) => (a.created_at < b.created_at ? -1 : 1))
-      // .map(issue => ({
-      //   title: issue.title,
-      //   url: issue.html_url,
-      //   body: issue.body,
-      //   state: issue.state,
-      // }))
+      .map(issue => ({
+        title: issue.title,
+        url: issue.html_url,
+        body: issue.body,
+        state: issue.state,
+      }))
   ), [pluralIssues, pluralArtifactsIssues])
 
   return (

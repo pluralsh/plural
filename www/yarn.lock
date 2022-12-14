@@ -2660,7 +2660,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@growthbook/growthbook-react@npm:^0.10.1":
+"@growthbook/growthbook-react@npm:0.10.1":
   version: 0.10.1
   resolution: "@growthbook/growthbook-react@npm:0.10.1"
   dependencies:
@@ -12694,7 +12694,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-router-dom@npm:^6.4.5":
+"react-router-dom@npm:6.4.5":
   version: 6.4.5
   resolution: "react-router-dom@npm:6.4.5"
   dependencies:
@@ -12780,7 +12780,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-stripe-elements@npm:^6.1.2":
+"react-stripe-elements@npm:6.1.2":
   version: 6.1.2
   resolution: "react-stripe-elements@npm:6.1.2"
   dependencies:
@@ -15916,7 +15916,7 @@ __metadata:
     "@graphql-codegen/typescript-operations": 2.5.7
     "@graphql-codegen/typescript-react-apollo": 3.3.6
     "@growthbook/growthbook": 0.20.0
-    "@growthbook/growthbook-react": ^0.10.1
+    "@growthbook/growthbook-react": 0.10.1
     "@nivo/core": 0.80.0
     "@nivo/geo": 0.80.0
     "@nivo/line": 0.80.0
@@ -15986,11 +15986,11 @@ __metadata:
     react-piano-keys: 1.2.1
     react-portal: 4.2.2
     react-resize-detector: 7.1.2
-    react-router-dom: ^6.4.5
+    react-router-dom: 6.4.5
     react-sage: 0.3.16
     react-script-hook: 1.7.2
     react-spinners: 0.13.6
-    react-stripe-elements: ^6.1.2
+    react-stripe-elements: 6.1.2
     react-sweet-progress: 1.1.2
     react-toggle: 4.1.3
     react-transition-group: 4.4.5

@@ -115,6 +115,7 @@ defmodule GraphQl.Resolvers.Repository do
     Repository.for_account(query, user.account_id)
     |> Repository.supported(user)
   end
+  defp apply_filter(query, {:provider, prov}, _) when not is_nil(prov), do: Repository.for_provider(query, prov)
   defp apply_filter(query, {:tag, tag}, _) when is_binary(tag), do: Repository.for_tag(query, tag)
   defp apply_filter(query, {:tags, [_ | _] = tags}, _), do: Repository.for_tags(query, tags)
   defp apply_filter(query, {:categories, [_ | _] = categories}, _), do: Repository.for_categories(query, categories)

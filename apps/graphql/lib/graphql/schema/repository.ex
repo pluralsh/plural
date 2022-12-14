@@ -310,6 +310,7 @@ defmodule GraphQl.Schema.Repository do
       arg :supports,     :boolean
       arg :installed,    :boolean
       arg :category,     :category
+      arg :provider,     :provider
 
       # multiselects
       arg :categories,   list_of(:category)

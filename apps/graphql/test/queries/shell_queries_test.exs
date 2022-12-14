@@ -69,7 +69,9 @@ defmodule GraphQl.ShellQueriesTest do
         {:ok, %HTTPoison.Response{status_code: 200, body: Poison.encode!(%Models.Configuration{
           workspace: %Models.Workspace{bucket_prefix: "pre", network: %Models.Network{plural_dns: true}},
           git: %Models.Git{url: "git"},
-          context_configuration: %{"some" => "config"}
+          context_configuration: %{"some" => "config"},
+          buckets: ["bucket"],
+          domains: ["some.example.com"]
         })}}
       end)
 
@@ -79,6 +81,8 @@ defmodule GraphQl.ShellQueriesTest do
             workspace { bucketPrefix network { pluralDns } }
             git { url }
             contextConfiguration
+            buckets
+            domains
           }
         }
       """, %{}, %{current_user: shell.user})
@@ -87,6 +91,8 @@ defmodule GraphQl.ShellQueriesTest do
       assert found["workspace"]["network"]["pluralDns"]
       assert found["git"]["url"] == "git"
       assert found["contextConfiguration"] == %{"some" => "config"}
+      assert found["buckets"] == ["bucket"]
+      assert found["domains"] == ["some.example.com"]
     end
   end
 

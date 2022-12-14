@@ -231,15 +231,13 @@ defmodule GraphQl.ShellMutationsTest do
       insert(:recipe_item, recipe_section: section2, chart: other_chart)
 
       {:ok, %{data: %{"installBundle" => [_ | _]}}} = run_query("""
-        mutation Install($repo: String!, $name: String!, $context: Map!) {
-          installBundle(repo: $repo, name: $name, oidc: true, context: $context) {
-            id
-          }
+        mutation Install($repo: String!, $name: String!, $context: ContextAttributes!) {
+          installBundle(repo: $repo, name: $name, oidc: true, context: $context) { id }
         }
       """, %{
         "repo" => repo.name,
         "name" => recipe.name,
-        "context" => Poison.encode!(%{repo.name => %{"key" => "example.com"}})
+        "context" => %{"buckets" => ["bucket"], "configuration" => Poison.encode!(%{repo.name => %{"key" => "example.com"}})}
       }, %{current_user: user})
     end
   end

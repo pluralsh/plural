@@ -182,18 +182,21 @@ defmodule GraphQl.RecipeQueriesTest do
       collection = insert(:stack_collection, stack: stack, provider: :aws)
       recipes = insert_list(3, :stack_recipe, collection: collection)
                 |> Enum.map(& &1.recipe)
+      sections = for r <- recipes, do: insert(:recipe_section, recipe: r)
 
       {:ok, %{data: %{"stack" => found}}} = run_query("""
         query Stack($name: String!) {
           stack(name: $name, provider: AWS) {
             id
             bundles { id }
+            sections { id }
           }
         }
       """, %{"name" => stack.name}, %{current_user: insert(:user)})
 
       assert found["id"] == stack.id
       assert ids_equal(found["bundles"], recipes)
+      assert ids_equal(found["sections"], sections)
     end
   end
 

@@ -197,6 +197,15 @@ defmodule GraphQl.Schema.Shell do
       safe_resolve &Shell.install_bundle/2
     end
 
+    field :install_stack_shell, list_of(:recipe) do
+      middleware Authenticated
+      arg :name, non_null(:string)
+      arg :oidc, non_null(:boolean)
+      arg :context, non_null(:context_attributes)
+
+      safe_resolve &Shell.install_stack/2
+    end
+
     field :reboot_shell, :cloud_shell do
       middleware Authenticated
       safe_resolve &Shell.reboot/2

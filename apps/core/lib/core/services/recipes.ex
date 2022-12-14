@@ -9,6 +9,9 @@ defmodule Core.Services.Recipes do
   @type recipe_resp :: {:ok, Recipe.t} | error
   @type stack_resp :: {:ok, Stack.t} | error
 
+  @recipe_preloads [recipe_sections: [:repository, [recipe_items: [:terraform, :chart]]]]
+  @preloads [dependencies: [dependent_recipe: @recipe_preloads]] ++ @recipe_preloads
+
   @spec get!(binary) :: Recipe.t
   def get!(recipe_id), do: Core.Repo.get!(Recipe, recipe_id)
 
@@ -128,6 +131,32 @@ defmodule Core.Services.Recipes do
   end
 
   @doc """
+  Installs a stack, which is effectively just looping through all recipes and installing each
+  """
+  @spec install_stack(binary | Stack.t, atom, User.t) :: {:ok, [Recipe.t]} | error
+  def install_stack(%Stack{} = stack, provider, user) do
+    stack = Core.Repo.preload(stack, [collections: [bundles: [recipe: @preloads]]])
+    with %{bundles: bundles} <- Enum.find(stack.collections, & &1.provider == provider) do
+      bundles
+      |> Enum.reduce(start_transaction(), fn bundle, xact ->
+        add_operation(xact, bundle.id, fn _ -> install(bundle.recipe, %{}, user) end)
+      end)
+      |> execute()
+      |> case do
+        {:ok, _} -> {:ok, Enum.map(bundles, &hydrate(&1.recipe))}
+        err -> err
+      end
+    else
+      _ -> {:error, "invalid provider #{provider}"}
+    end
+  end
+
+  def install_stack(name, provider, user) when is_binary(name) do
+    get_stack!(name)
+    |> install_stack(provider, user)
+  end
+
+  @doc """
   Evaluates each section of the recipe, given the provided context, and installs
   the repository for each section and any chart/terraform items per section. Returns
   the created installations.
@@ -194,9 +223,6 @@ defmodule Core.Services.Recipes do
     |> execute(extract: :create)
   end
 
-  @recipe_preloads [recipe_sections: [:repository, [recipe_items: [:terraform, :chart]]]]
-  @preloads [dependencies: [dependent_recipe: @recipe_preloads]] ++ @recipe_preloads
-
   @doc """
   Preloads a stack and all recipes for the given provider
   """
@@ -204,9 +230,12 @@ defmodule Core.Services.Recipes do
   def hydrate(%Stack{} = stack, provider) do
     stack = Core.Repo.preload(stack, [collections: [bundles: [recipe: @preloads]]])
 
-    Enum.find(stack.collections, & &1.provider == provider)
-    |> case do
-      %{bundles: bundles} -> {:ok, %{stack | bundles: Enum.map(bundles, &hydrate(&1.recipe))}}
+    case Enum.find(stack.collections, & &1.provider == provider) do
+      %{bundles: bundles} ->
+        bundles  = Enum.map(bundles, &hydrate(&1.recipe))
+        sections = Enum.flat_map(bundles, & &1.recipe_sections)
+                   |> merge_sections()
+        {:ok, %{stack | bundles: bundles, sections: sections}}
       _ -> {:error, "invalid provider"}
     end
   end
@@ -288,6 +317,23 @@ defmodule Core.Services.Recipes do
       %{id: cinst_id} -> Charts.update_chart_installation(%{version_id: version.id}, cinst_id, user)
       _ -> Charts.create_chart_installation(%{chart_id: id, version_id: version.id}, installation.id, user)
     end
+  end
+
+  defp merge_sections(sections) do
+    {sections, seen} = Enum.reduce(sections, {[], %{}}, fn section, {res, seen} ->
+      case Map.get(seen, section) do
+        nil -> {[section | res], Map.put(seen, section.repository_id, section)}
+        val -> {res, Map.put(seen, section.repository_id, merge_section(val, section))}
+      end
+    end)
+
+    sections
+    |> Enum.map(&Map.get(seen, &1.repository_id))
+    |> topsort_sections()
+  end
+
+  defp merge_section(into, section) do
+    %{into | configuration: Enum.uniq_by(into.configuration ++ section.configuration, & &1.field)}
   end
 
   defp topsort_sections(sections) do

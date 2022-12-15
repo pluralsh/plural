@@ -372,6 +372,12 @@ export type ConsentRequest = {
   skip?: Maybe<Scalars['Boolean']>;
 };
 
+export type ContextAttributes = {
+  buckets?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  configuration: Scalars['Map'];
+  domains?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+};
+
 export type Crd = {
   __typename?: 'Crd';
   blob?: Maybe<Scalars['String']>;
@@ -2390,6 +2396,8 @@ export type RootMutationType = {
   installBundle?: Maybe<Array<Maybe<Installation>>>;
   installChart?: Maybe<ChartInstallation>;
   installRecipe?: Maybe<Array<Maybe<Installation>>>;
+  installStack?: Maybe<Array<Maybe<Recipe>>>;
+  installStackShell?: Maybe<Array<Maybe<Recipe>>>;
   installTerraform?: Maybe<TerraformInstallation>;
   linkPublisher?: Maybe<Publisher>;
   login?: Maybe<User>;
@@ -2802,7 +2810,7 @@ export type RootMutationTypeImpersonateServiceAccountArgs = {
 
 
 export type RootMutationTypeInstallBundleArgs = {
-  context: Scalars['Map'];
+  context: ContextAttributes;
   name: Scalars['String'];
   oidc: Scalars['Boolean'];
   repo: Scalars['String'];
@@ -2818,6 +2826,19 @@ export type RootMutationTypeInstallChartArgs = {
 export type RootMutationTypeInstallRecipeArgs = {
   context: Scalars['Map'];
   recipeId: Scalars['ID'];
+};
+
+
+export type RootMutationTypeInstallStackArgs = {
+  name: Scalars['String'];
+  provider: Provider;
+};
+
+
+export type RootMutationTypeInstallStackShellArgs = {
+  context: ContextAttributes;
+  name: Scalars['String'];
+  oidc: Scalars['Boolean'];
 };
 
 
@@ -3528,6 +3549,7 @@ export type RootQueryTypeRepositoriesArgs = {
   first?: InputMaybe<Scalars['Int']>;
   installed?: InputMaybe<Scalars['Boolean']>;
   last?: InputMaybe<Scalars['Int']>;
+  provider?: InputMaybe<Provider>;
   publisherId?: InputMaybe<Scalars['ID']>;
   publishers?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
   q?: InputMaybe<Scalars['String']>;
@@ -3843,7 +3865,9 @@ export type ServiceLevelAttributes = {
 
 export type ShellConfiguration = {
   __typename?: 'ShellConfiguration';
+  buckets?: Maybe<Array<Maybe<Scalars['String']>>>;
   contextConfiguration?: Maybe<Scalars['Map']>;
+  domains?: Maybe<Array<Maybe<Scalars['String']>>>;
   git?: Maybe<GitConfiguration>;
   workspace?: Maybe<ShellWorkspace>;
 };
@@ -3905,6 +3929,7 @@ export type Stack = {
   id: Scalars['ID'];
   insertedAt?: Maybe<Scalars['DateTime']>;
   name: Scalars['String'];
+  sections?: Maybe<Array<Maybe<RecipeSection>>>;
   updatedAt?: Maybe<Scalars['DateTime']>;
 };
 

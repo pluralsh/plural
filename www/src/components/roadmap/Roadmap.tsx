@@ -49,6 +49,7 @@ function Roadmap() {
     >
       <ResponsiveLayoutSidenavContainer
         marginLeft="medium"
+        marginTop="xxxlarge"
         width={240}
       >
         <TabList
@@ -80,7 +81,7 @@ function Roadmap() {
           </RoadmapDataProvider>
         </Div>
       </ResponsiveLayoutContentContainer>
-      <ResponsiveLayoutSidecarContainer>
+      <ResponsiveLayoutSidecarContainer marginTop="xsmall">
         <RoadmapSideCar />
       </ResponsiveLayoutSidecarContainer>
       <ResponsiveLayoutSpacer />

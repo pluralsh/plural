@@ -73,6 +73,7 @@ function Roadmap() {
       <ResponsiveLayoutSpacer />
       <ResponsiveLayoutContentContainer>
         <Div
+          flexGrow={1}
           maxHeight="100%"
           overflow="hidden"
         >

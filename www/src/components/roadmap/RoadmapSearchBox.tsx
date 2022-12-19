@@ -76,8 +76,7 @@ function RoadmapSearchBox({
   return (
     <Flex
       direction="column"
-      flexGrow={1}
-      maxHeight="calc(100% - 89px)" // 89px is the title size
+      height="calc(100% - 89px)" // 89px is the title size
       overflow="hidden"
       paddingBottom="xlarge"
     >
@@ -85,6 +84,7 @@ function RoadmapSearchBox({
         align="center"
         justify="space-between"
         gap="medium"
+        flexShrink={0}
       >
         <P
           body2

@@ -135,9 +135,9 @@
     "@types/react-dom": "18.0.9",
     "@typescript-eslint/eslint-plugin": "5.44.0",
     "@typescript-eslint/parser": "5.44.0",
-    "@vitejs/plugin-basic-ssl": "0.1.2",
-    "@vitejs/plugin-react": "2.2.0",
-    "@vitest/ui": "0.25.3",
+    "@vitejs/plugin-basic-ssl": "1.0.1",
+    "@vitejs/plugin-react": "3.0.0",
+    "@vitest/ui": "0.26.0",
     "concurrently": "7.6.0",
     "eslint": "8.28.0",
     "eslint-config-pluralsh": "3.1.0",
@@ -148,9 +148,9 @@
     "source-map-explorer": "2.5.3",
     "stylelint": "14.15.0",
     "typescript": "4.9.3",
-    "vite": "3.2.4",
-    "vite-plugin-pwa": "0.13.3",
-    "vitest": "0.25.3",
+    "vite": "4.0.2",
+    "vite-plugin-pwa": "0.14.0",
+    "vitest": "0.26.0",
     "wait-on": "6.0.1"
   }
 }

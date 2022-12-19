@@ -15,15 +15,18 @@ const filterOutPullRequests = () => true
 // const filterOutPullRequests = data => !data.pull_request // TODO use this one before shipping
 
 function castIssues(rawIssues: any[]): IssueType[] {
-  return [...rawIssues].sort((a, b) => (a.created_at < b.created_at ? -1 : 1))
+  return rawIssues
     .map(issue => ({
       id: issue.id ?? '',
       title: issue.title ?? '',
       url: issue.html_url ?? '',
       body: issue.body ?? '',
+      author: issue.user?.login ?? '',
       state: issue.state ?? '',
+      votes: 0, // TODO
       createdAt: issue.created_at ?? '',
     }))
+    .sort((a, b) => (a.createdAt < b.createdAt ? -1 : 1))
 }
 
 function useRoadmapData() {

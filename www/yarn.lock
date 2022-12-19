@@ -9329,18 +9329,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"honorable-theme-default@npm:0.70.0":
-  version: 0.70.0
-  resolution: "honorable-theme-default@npm:0.70.0"
+"honorable-theme-default@npm:0.77.0":
+  version: 0.77.0
+  resolution: "honorable-theme-default@npm:0.77.0"
   peerDependencies:
     "@emotion/react": ">=10.0.0"
-  checksum: d6dde4f7123b9ca81b2d554c730c9cf5ecc746ee96a25a6bc75c5bae5cde598d7e2234097f18dcfd61137b17c1a55bff2c54b608a500d676e4c5f9e9d62cd04b
+  checksum: 008e34e25ff4e7d56e67d52296b495fa28caaacea67eb6e18b28e0283a71099fee647dbe43e0996e93472217fe9ed94d77e0bd1c73dc9c4a5ec205528790f328
   languageName: node
   linkType: hard
 
-"honorable@npm:0.186.0":
-  version: 0.186.0
-  resolution: "honorable@npm:0.186.0"
+"honorable@npm:0.194.0":
+  version: 0.194.0
+  resolution: "honorable@npm:0.194.0"
   dependencies:
     "@emotion/is-prop-valid": ^1.2.0
     "@floating-ui/react-dom": ^1.0.1
@@ -9354,7 +9354,7 @@ __metadata:
     "@emotion/styled": ">=10.0.0"
     react: ">=16.0.0"
     react-dom: ">=16.0.0"
-  checksum: a05ee4d9c22b899c5a42b344ed2a56daa4928ae725073960cbd1a2bb8f3576d5ae5f1f691380750c6c77f2de030fe56faa38e932c46ebc16a05ce7855bbb83d9
+  checksum: 4ada627c577ad63de48bbf7d76ee6d3c9f36a7b0e01606988d9f975cbacb9beb644626ed6a5e20f65554bf0ac72ab046503168be58d10249e58c26fbf997d174
   languageName: node
   linkType: hard
 
@@ -15954,9 +15954,9 @@ __metadata:
     fuse.js: 6.6.2
     grommet: 2.28.0
     history: 5.3.0
-    honorable: 0.186.0
+    honorable: 0.194.0
     honorable-recipe-mp: 0.4.0
-    honorable-theme-default: 0.70.0
+    honorable-theme-default: 0.77.0
     js-yaml: 4.1.0
     jsdom: 20.0.3
     lodash: 4.17.21

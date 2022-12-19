@@ -1,6 +1,6 @@
 defmodule Core.Services.ShellTest do
   use Core.SchemaCase, async: true
-  alias Core.Services.{Shell, Dns, Encryption}
+  alias Core.Services.{Shell, Dns, Encryption, Repositories}
   alias Core.Services.Shell.Pods
   alias Kazan.Apis.Core.V1, as: CoreV1
   use Mimic
@@ -278,9 +278,54 @@ defmodule Core.Services.ShellTest do
       insert(:recipe_item, recipe_section: section2, terraform: tf)
       insert(:recipe_item, recipe_section: section2, chart: other_chart)
 
-      {:ok, insts} = Shell.install_bundle(recipe, %{recipe.repository.name => %{"key" => "example.com"}}, true, user)
+      {:ok, insts} = Shell.install_bundle(recipe, %{configuration: %{recipe.repository.name => %{"key" => "example.com"}}}, true, user)
 
       inst = Enum.find(insts, & &1.repository_id == repo.id)
+      assert inst.user_id == user.id
+
+      %{oidc_provider: %{bindings: [binding]} = provider} = Core.Repo.preload(inst, [oidc_provider: :bindings])
+
+      assert provider.redirect_uris == ["https://example.com/oidc"]
+      assert provider.auth_method == :post
+      assert provider.client_id == "123"
+      assert provider.client_secret == "secret"
+      assert binding.user_id == user.id
+    end
+  end
+
+  describe "#install_stack/1" do
+    setup [:setup_root_user]
+
+    test "users can install bundles for their shell", %{user: user} do
+      pod_name = "plrl-shell-1"
+      insert(:cloud_shell, user: user, pod_name: pod_name, workspace: %{subdomain: "example.com"}, provider: :aws)
+      expect(Shell.Pods, :ip, fn ^pod_name -> {:ok, "0.1.2.3"} end)
+      expect(HTTPoison, :request, fn :post, "http://0.1.2.3:8080/v1/context/configuration", _, _, _ -> {:ok, %HTTPoison.Response{status_code: 200}} end)
+      expect(HTTPoison, :post, fn _, _, _ ->
+        {:ok, %{status_code: 200, body: Jason.encode!(%{client_id: "123", client_secret: "secret"})}}
+      end)
+
+      repo = insert(:repository)
+      recipe = insert(:recipe, repository: repo, provider: :aws, oidc_settings: %{auth_method: :post, uri_format: "https://{domain}/oidc", domain_key: "key"})
+      section = insert(:recipe_section, repository: repo, recipe: recipe)
+      %{repository: repo2} = section2 = insert(:recipe_section, recipe: recipe)
+      chart = insert(:chart, repository: repo)
+      insert(:version, chart: chart, version: chart.latest_version)
+      other_chart = insert(:chart, repository: repo2)
+      insert(:version, chart: other_chart, version: other_chart.latest_version)
+      tf = insert(:terraform, repository: repo2)
+      insert(:version, terraform: tf, version: tf.latest_version, chart: nil)
+      insert(:recipe_item, recipe_section: section, chart: chart)
+      insert(:recipe_item, recipe_section: section2, terraform: tf)
+      insert(:recipe_item, recipe_section: section2, chart: other_chart)
+
+      stack = insert(:stack)
+      collection = insert(:stack_collection, provider: :aws, stack: stack)
+      insert(:stack_recipe, collection: collection, recipe: recipe)
+
+      {:ok, [r]} = Shell.install_stack(stack, %{configuration: %{recipe.repository.name => %{"key" => "example.com"}}}, true, user)
+
+      inst = Repositories.get_installation(user.id, r.repository_id)
       assert inst.user_id == user.id
 
       %{oidc_provider: %{bindings: [binding]} = provider} = Core.Repo.preload(inst, [oidc_provider: :bindings])

@@ -38,6 +38,11 @@ defmodule GraphQl.Resolvers.Shell do
     |> Shell.install_bundle(ctx, oidc, user)
   end
 
+  def install_stack(%{name: name, oidc: oidc, context: ctx}, %{context: %{current_user: user}}) do
+    Recipes.get_stack!(name)
+    |> Shell.install_stack(ctx, oidc, user)
+  end
+
   def reboot(_, %{context: %{current_user: user}}), do: Shell.reboot(user.id)
 
   def stop(_, %{context: %{current_user: user}}), do: Shell.stop(user)

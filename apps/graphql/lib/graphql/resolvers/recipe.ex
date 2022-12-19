@@ -67,6 +67,9 @@ defmodule GraphQl.Resolvers.Recipe do
   def install_recipe(%{recipe_id: recipe_id, context: context}, %{context: %{current_user: user}}),
     do: Recipes.install(recipe_id, context, user)
 
+  def install_stack(%{name: stack, provider: provider}, %{context: %{current_user: user}}),
+    do: Recipes.install_stack(stack, provider, user)
+
   def upsert_stack(%{attributes: %{name: name} = attrs}, %{context: %{current_user: user}}),
     do: Recipes.upsert_stack(attrs, name, user)
 

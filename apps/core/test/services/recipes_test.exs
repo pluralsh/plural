@@ -1,7 +1,7 @@
 defmodule Core.Services.RecipesTest do
   use Core.SchemaCase, async: true
   alias Core.Services.Recipes
-  alias Core.Services.{Charts, Terraform}
+  alias Core.Services.{Charts, Terraform, Repositories}
 
   describe "#create" do
     test "It can create a multi-section recipe" do
@@ -228,6 +228,32 @@ defmodule Core.Services.RecipesTest do
       {:ok, _} = Recipes.install(recipe, %{}, user)
 
       assert refetch(user).provider == :aws
+    end
+  end
+
+  describe "#install_stack/3" do
+    setup [:setup_root_user]
+    test "it can install all recipes in a stack", %{user: user} do
+      stack = insert(:stack)
+      collection = insert(:stack_collection, provider: :aws, stack: stack)
+      recipe = insert(:recipe)
+      insert(:stack_recipe, collection: collection, recipe: recipe)
+      %{repository: repo} = section = insert(:recipe_section, recipe: recipe, repository: recipe.repository)
+      %{repository: repo2} = section2 = insert(:recipe_section, recipe: recipe)
+      chart = insert(:chart, repository: repo)
+      insert(:version, chart: chart, version: chart.latest_version)
+      other_chart = insert(:chart, repository: repo2)
+      insert(:version, chart: other_chart, version: other_chart.latest_version)
+      tf = insert(:terraform, repository: repo2)
+      insert(:version, terraform: tf, version: tf.latest_version, chart: nil)
+      insert(:recipe_item, recipe_section: section, chart: chart)
+      insert(:recipe_item, recipe_section: section2, terraform: tf)
+      insert(:recipe_item, recipe_section: section2, chart: other_chart)
+
+      {:ok, [r | _]} = Recipes.install_stack(stack, :aws, user)
+
+      assert r.id == recipe.id
+      assert Repositories.get_installation(user.id, r.repository_id)
     end
   end
 

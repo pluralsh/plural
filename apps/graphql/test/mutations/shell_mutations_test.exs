@@ -231,15 +231,53 @@ defmodule GraphQl.ShellMutationsTest do
       insert(:recipe_item, recipe_section: section2, chart: other_chart)
 
       {:ok, %{data: %{"installBundle" => [_ | _]}}} = run_query("""
-        mutation Install($repo: String!, $name: String!, $context: Map!) {
-          installBundle(repo: $repo, name: $name, oidc: true, context: $context) {
-            id
-          }
+        mutation Install($repo: String!, $name: String!, $context: ContextAttributes!) {
+          installBundle(repo: $repo, name: $name, oidc: true, context: $context) { id }
         }
       """, %{
         "repo" => repo.name,
         "name" => recipe.name,
-        "context" => Poison.encode!(%{repo.name => %{"key" => "example.com"}})
+        "context" => %{"buckets" => ["bucket"], "configuration" => Poison.encode!(%{repo.name => %{"key" => "example.com"}})}
+      }, %{current_user: user})
+    end
+  end
+
+  describe "installStackShell" do
+    setup [:setup_root_user]
+    test "it can install a stack w/in a cloud shell crazily enough", %{user: user} do
+      pod_name = "plrl-shell-1"
+      insert(:cloud_shell, user: user, pod_name: pod_name, provider: :aws, workspace: %{subdomain: "example.com"})
+      expect(Pods, :ip, fn ^pod_name -> {:ok, "0.1.2.3"} end)
+      expect(HTTPoison, :request, fn :post, "http://0.1.2.3:8080/v1/context/configuration", _, _, _ -> {:ok, %HTTPoison.Response{status_code: 200}} end)
+      expect(HTTPoison, :post, fn _, _, _ ->
+        {:ok, %{status_code: 200, body: Jason.encode!(%{client_id: "123", client_secret: "secret"})}}
+      end)
+
+      repo = insert(:repository)
+      recipe = insert(:recipe, repository: repo, provider: :aws, oidc_settings: %{auth_method: :post, uri_format: "https://{domain}/oidc", domain_key: "key"})
+      section = insert(:recipe_section, repository: repo, recipe: recipe)
+      %{repository: repo2} = section2 = insert(:recipe_section, recipe: recipe)
+      chart = insert(:chart, repository: repo)
+      insert(:version, chart: chart, version: chart.latest_version)
+      other_chart = insert(:chart, repository: repo2)
+      insert(:version, chart: other_chart, version: other_chart.latest_version)
+      tf = insert(:terraform, repository: repo2)
+      insert(:version, terraform: tf, version: tf.latest_version, chart: nil)
+      insert(:recipe_item, recipe_section: section, chart: chart)
+      insert(:recipe_item, recipe_section: section2, terraform: tf)
+      insert(:recipe_item, recipe_section: section2, chart: other_chart)
+
+      stack = insert(:stack)
+      collection = insert(:stack_collection, provider: :aws, stack: stack)
+      insert(:stack_recipe, collection: collection, recipe: recipe)
+
+      {:ok, %{data: %{"installStackShell" => [_ | _]}}} = run_query("""
+        mutation Install($name: String!, $context: ContextAttributes!) {
+          installStackShell(name: $name, oidc: true, context: $context) { id }
+        }
+      """, %{
+        "name" => stack.name,
+        "context" => %{"configuration" => Poison.encode!(%{repo.name => %{"key" => "example.com"}})}
       }, %{current_user: user})
     end
   end

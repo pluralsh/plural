@@ -55,6 +55,12 @@ defmodule GraphQl.Schema.Shell do
     field :subscription_id, non_null(:string)
   end
 
+  input_object :context_attributes do
+    field :configuration, non_null(:map)
+    field :buckets,       list_of(:string)
+    field :domains,       list_of(:string)
+  end
+
   object :cloud_shell do
     field :id,          non_null(:id)
     field :provider,    non_null(:provider)
@@ -84,6 +90,8 @@ defmodule GraphQl.Schema.Shell do
     field :workspace,             :shell_workspace
     field :git,                   :git_configuration
     field :context_configuration, :map
+    field :buckets,               list_of(:string)
+    field :domains,               list_of(:string)
   end
 
   object :shell_workspace do
@@ -181,12 +189,21 @@ defmodule GraphQl.Schema.Shell do
 
     field :install_bundle, list_of(:installation) do
       middleware Authenticated
-      arg :context, non_null(:map)
-      arg :oidc, non_null(:boolean)
-      arg :repo, non_null(:string)
-      arg :name, non_null(:string)
+      arg :context, non_null(:context_attributes)
+      arg :oidc,    non_null(:boolean)
+      arg :repo,    non_null(:string)
+      arg :name,    non_null(:string)
 
       safe_resolve &Shell.install_bundle/2
+    end
+
+    field :install_stack_shell, list_of(:recipe) do
+      middleware Authenticated
+      arg :name, non_null(:string)
+      arg :oidc, non_null(:boolean)
+      arg :context, non_null(:context_attributes)
+
+      safe_resolve &Shell.install_stack/2
     end
 
     field :reboot_shell, :cloud_shell do

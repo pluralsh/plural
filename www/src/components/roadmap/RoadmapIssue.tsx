@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import moment from 'moment'
 import { Div, Flex, P } from 'honorable'
 import { Button, Chip, GitHubLogoIcon } from '@pluralsh/design-system'
@@ -76,20 +77,22 @@ function RoadmapIssue({ issue }: RoadmapIssuePropsType) {
   )
 }
 
-const summaryText = '## Summary'
-const commentText = '<!-- A brief description of the issue and what you expect to happen instead -->'
-const imageRegex = /<img .*>/gm
+const toReplaces = [
+  /<img .*>/gm,
+  '## Summary',
+  '## Use Case',
+  '<!-- Help us to understand your request in context -->',
+  '<!-- A brief description of the issue and what you expect to happen instead -->',
+]
 
 function prepareIssueBody(body: string) {
-  const indexOfSummary = body.indexOf(summaryText)
-  let text = body.replaceAll(commentText, '')
+  let text = body
 
-  text = text.replaceAll(imageRegex, '')
-  text = indexOfSummary !== -1
-    ? text.slice(indexOfSummary + summaryText.length, indexOfSummary + summaryText.length + 100)
-    : text.slice(0, 100)
+  toReplaces.forEach(toReplace => {
+    text = text.replaceAll(toReplace, '')
+  })
 
-  return text.split('\n').join(' ')
+  return text.slice(0, 100)
 }
 
-export default RoadmapIssue
+export default memo(RoadmapIssue)

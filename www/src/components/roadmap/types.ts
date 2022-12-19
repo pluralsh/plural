@@ -1,5 +1,6 @@
 export type IssueType = {
- title: string
+  id: string
+  title: string
   url: string
   body: string
   state: string

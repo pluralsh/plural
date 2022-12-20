@@ -3222,9 +3222,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pluralsh/design-system@npm:1.293.2":
-  version: 1.293.2
-  resolution: "@pluralsh/design-system@npm:1.293.2"
+"@pluralsh/design-system@npm:1.295.0":
+  version: 1.295.0
+  resolution: "@pluralsh/design-system@npm:1.295.0"
   dependencies:
     "@floating-ui/react-dom-interactions": 0.11.0
     "@react-aria/button": 3.6.3
@@ -3246,13 +3246,13 @@ __metadata:
     "@react-stately/tabs": 3.2.3
     "@react-stately/toggle": 3.4.3
     "@react-types/shared": 3.16.0
-    "@tanstack/react-table": 8.5.30
+    "@tanstack/react-table": 8.7.0
     "@types/chroma-js": 2.1.4
     chroma-js: 2.4.2
     classnames: 2.3.2
-    grommet: 2.27.0
+    grommet: 2.28.0
     grommet-icons: 4.8.0
-    highlight.js: 11.6.0
+    highlight.js: 11.7.0
     honorable-recipe-mapper: 0.2.0
     prop-types: 15.8.1
     react-animate-height: 3.0.5
@@ -3270,7 +3270,7 @@ __metadata:
     react-dom: ">=16.0.0"
     react-transition-group: ">=4.4.2"
     styled-components: ">=5.3.5"
-  checksum: c750e0f84d1babb95b732d28c2063aedb836071495c3e7dc65a5b09ba987c5f7f2dcf8c8f26cf7ae579adf390b1abc04f54e119dae3934cb4308da57c395f17d
+  checksum: ea0753e46bcaa2127ddcde420efc8b4715400389b71fe2334def79d6604ba39b1e6c7c43adfd33c9d351e29406cd502b1bbeba9b97d5050c3bf736e0c395c53e
   languageName: node
   linkType: hard
 
@@ -4493,22 +4493,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tanstack/react-table@npm:8.5.30":
-  version: 8.5.30
-  resolution: "@tanstack/react-table@npm:8.5.30"
+"@tanstack/react-table@npm:8.7.0":
+  version: 8.7.0
+  resolution: "@tanstack/react-table@npm:8.7.0"
   dependencies:
-    "@tanstack/table-core": 8.5.30
+    "@tanstack/table-core": 8.7.0
   peerDependencies:
     react: ">=16"
     react-dom: ">=16"
-  checksum: 0e61cd98bf68a8c5004dc80bf9ff097205ce5e48e48f72600cce0788db6987c4e770e0a97795a884c17f36647f8faf6cea5817399b1e74158c3c4ecf8c80c79a
+  checksum: 5f739f619dacfd134449bc8cff819d7e1b9549b8c8b20c293f2c786098a53d20fe5755727d8abb6fa56a64583792bbc89d8b1c7cd24ac3497495d2c20bac9e77
   languageName: node
   linkType: hard
 
-"@tanstack/table-core@npm:8.5.30":
-  version: 8.5.30
-  resolution: "@tanstack/table-core@npm:8.5.30"
-  checksum: 05d5612ec417a665cb67c35eb94cada149884fc3377ec6b3850eff3081517a913a57b5725f9c609b9eada6de8b980d63bbb30a8d62111730d62aea80e184b997
+"@tanstack/table-core@npm:8.7.0":
+  version: 8.7.0
+  resolution: "@tanstack/table-core@npm:8.7.0"
+  checksum: 835511727ab5651066a4cbc98916fbc2463ec6d6ddc5c74c1fec5713eeba8e26641653c1a35b69b303f0c58f574416a09e26da44cf7e9a884cb954fc26b12afd
   languageName: node
   linkType: hard
 
@@ -9053,7 +9053,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"grommet-icons@npm:4.8.0, grommet-icons@npm:^4.7.0, grommet-icons@npm:^4.8.0":
+"grommet-icons@npm:4.8.0, grommet-icons@npm:^4.8.0":
   version: 4.8.0
   resolution: "grommet-icons@npm:4.8.0"
   dependencies:
@@ -9074,22 +9074,6 @@ __metadata:
     react-dom: ">= 16.4.1"
     styled-components: ">= 4.X"
   checksum: 7b29e6fd773a29a9f7b48e5b0a163e1c51b3b196891228d88a0e5b99faab4ece03b5410a97665105fe886402016a337237b956d5f46af06ec2e06e2b328a0757
-  languageName: node
-  linkType: hard
-
-"grommet@npm:2.27.0":
-  version: 2.27.0
-  resolution: "grommet@npm:2.27.0"
-  dependencies:
-    grommet-icons: ^4.7.0
-    hoist-non-react-statics: ^3.2.0
-    markdown-to-jsx: ^7.1.5
-    prop-types: ^15.8.1
-  peerDependencies:
-    react: ^16.6.1 || ^17.0.0 || ^18.0.0
-    react-dom: ^16.6.1 || ^17.0.0 || ^18.0.0
-    styled-components: ">= 5.1"
-  checksum: 6d43e25090877de0f994713d386ba8cf745c365799bbc5b2fd215d3a5b17b2d6910fe832f4f3a208c1d718ffad78746aaba8df9e1ba76c2c5e6c364f17a69b35
   languageName: node
   linkType: hard
 
@@ -9290,10 +9274,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"highlight.js@npm:11.6.0":
-  version: 11.6.0
-  resolution: "highlight.js@npm:11.6.0"
-  checksum: 3908eb34a4b442ca1e20c1ae6415ea935fbbcdb2b532a89948d82b0fa4ad41fc5de3802a0de4e88a0bcb7d97d4445579048cd2aab1d105ac47f59dd58a9a98ae
+"highlight.js@npm:11.7.0":
+  version: 11.7.0
+  resolution: "highlight.js@npm:11.7.0"
+  checksum: 19e3fb8b56f4b361b057a8523b989dfeb6479bbd1e29cec3fac6fa5c78d09927d5fa61b7dba6631fdb57cfdca9b3084aa4da49405ceaf4a67f67beae2ed5b77d
   languageName: node
   linkType: hard
 
@@ -15921,7 +15905,7 @@ __metadata:
     "@nivo/geo": 0.80.0
     "@nivo/line": 0.80.0
     "@octokit/core": 4.1.0
-    "@pluralsh/design-system": 1.293.2
+    "@pluralsh/design-system": 1.295.0
     "@pluralsh/eslint-config-typescript": 2.5.6
     "@pluralsh/stylelint-config": 1.1.1
     "@testing-library/react": 13.4.0

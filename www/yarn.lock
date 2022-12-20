@@ -3222,9 +3222,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pluralsh/design-system@npm:1.295.0":
-  version: 1.295.0
-  resolution: "@pluralsh/design-system@npm:1.295.0"
+"@pluralsh/design-system@npm:1.296.0":
+  version: 1.296.0
+  resolution: "@pluralsh/design-system@npm:1.296.0"
   dependencies:
     "@floating-ui/react-dom-interactions": 0.11.0
     "@react-aria/button": 3.6.3
@@ -3270,7 +3270,7 @@ __metadata:
     react-dom: ">=16.0.0"
     react-transition-group: ">=4.4.2"
     styled-components: ">=5.3.5"
-  checksum: ea0753e46bcaa2127ddcde420efc8b4715400389b71fe2334def79d6604ba39b1e6c7c43adfd33c9d351e29406cd502b1bbeba9b97d5050c3bf736e0c395c53e
+  checksum: bca7695c50763d8fc0a8f56620e9526a62617cd795354dd62c9ed95b9898cea690f413317b81d718e4e2b4e9bc04d583b94bfb05b0016ed5ea75e67cc7f0e1e4
   languageName: node
   linkType: hard
 
@@ -15905,7 +15905,7 @@ __metadata:
     "@nivo/geo": 0.80.0
     "@nivo/line": 0.80.0
     "@octokit/core": 4.1.0
-    "@pluralsh/design-system": 1.295.0
+    "@pluralsh/design-system": 1.296.0
     "@pluralsh/eslint-config-typescript": 2.5.6
     "@pluralsh/stylelint-config": 1.1.1
     "@testing-library/react": 13.4.0

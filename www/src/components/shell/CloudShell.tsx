@@ -12,6 +12,7 @@ import { Terminal } from './Terminal'
 import CreateRepositoryCard from './CreateRepositoryCard'
 import OnboardingWrapper from './onboarding/OnboardingWrapper'
 import ApplicationsSelection from './onboarding/applications/ApplicationsSelection'
+import Onboarding from './onboarding_v3/Onboarding'
 
 function CloudShell() {
   const location = useLocation()
@@ -51,20 +52,21 @@ function CloudShell() {
   }
 
   return (
-    <OnboardingWrapper
-      stepIndex={section === 'applications' ? 0 : 1}
-      onRestart={() => setSection('applications')}
-    >
-      {section === 'applications' && (
-        <ApplicationsSelection onNext={() => setSection('git')} />
-      )}
-      {section === 'git' && (
-        <CreateRepositoryCard
-          data={data}
-          onPrevious={() => setSection('applications')}
-        />
-      )}
-    </OnboardingWrapper>
+    // <OnboardingWrapper
+    //   stepIndex={section === 'applications' ? 0 : 1}
+    //   onRestart={() => setSection('applications')}
+    // >
+    //   {section === 'applications' && (
+    //     <ApplicationsSelection onNext={() => setSection('git')} />
+    //   )}
+    //   {section === 'git' && (
+    //     <CreateRepositoryCard
+    //       data={data}
+    //       onPrevious={() => setSection('applications')}
+    //     />
+    //   )}
+    // </OnboardingWrapper>
+    <Onboarding />
   )
 }
 

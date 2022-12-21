@@ -20,6 +20,9 @@ type SortType = 'votes' | 'recent' | 'alphabetical'
 type RoadmapSearchBoxPropsType = {
   label: string
   issues: IssueType[]
+  displayAuthor?: boolean
+  displayVotes?: boolean
+  displayProgress?: boolean
 }
 
 const fuseOptions = {
@@ -52,6 +55,9 @@ const sortStrategies = {
 function RoadmapSearchBox({
   label,
   issues,
+  displayAuthor = false,
+  displayVotes = false,
+  displayProgress = false,
 }: RoadmapSearchBoxPropsType) {
   const [isSortMenuOpen, setIsSortMenuOpen] = useState(false)
   const [sort, setSort] = useState<SortType>('votes')
@@ -151,6 +157,9 @@ function RoadmapSearchBox({
             <RoadmapIssue
               key={issue.id}
               issue={issue}
+              displayAuthor={displayAuthor}
+              displayVotes={displayVotes}
+              displayProgress={displayProgress}
             />
           ))}
         </Flex>

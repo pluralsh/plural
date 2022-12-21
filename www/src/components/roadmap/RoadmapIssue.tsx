@@ -8,6 +8,8 @@ import { IssueType } from './types'
 type RoadmapIssuePropsType = {
   issue: IssueType
   displayAuthor?: boolean
+  displayVotes?: boolean
+  displayProgress?: boolean
 }
 
 const ellipsis = {
@@ -16,7 +18,12 @@ const ellipsis = {
   textOverflow: 'ellipsis',
 }
 
-function RoadmapIssue({ issue, displayAuthor = false }: RoadmapIssuePropsType) {
+function RoadmapIssue({
+  issue,
+  displayAuthor = false,
+  displayVotes = false,
+  displayProgress = false,
+}: RoadmapIssuePropsType) {
   console.log('issue', issue)
 
   return (
@@ -58,21 +65,26 @@ function RoadmapIssue({ issue, displayAuthor = false }: RoadmapIssuePropsType) {
           </P>
         </Flex>
         <Div flexGrow={1} />
-        <P
-          body2
-          color="text-xlight"
-          flexShrink={0}
-          marginLeft="medium"
-        >
-          {issue.votes} vote{issue.votes > 1 ? 's' : ''}
-        </P>
-        <Chip
-          size="large"
-          flexShrink={0}
-          marginLeft="medium"
-        >
-          In progress
-        </Chip>
+        {displayVotes && (
+          <P
+            body2
+            color="text-xlight"
+            flexShrink={0}
+            marginLeft="medium"
+          >
+            {issue.votes} vote{issue.votes > 1 ? 's' : ''}
+          </P>
+        )}
+        {displayProgress && (
+          <Chip
+            size="large"
+            flexShrink={0}
+            marginLeft="medium"
+            severity={issue.state === 'open' ? 'info' : 'success'}
+          >
+            {issue.state === 'open' ? 'In progress' : 'Shipped'}
+          </Chip>
+        )}
         <Button
           as="a"
           href={issue.url}

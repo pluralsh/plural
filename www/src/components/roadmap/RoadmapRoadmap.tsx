@@ -8,17 +8,15 @@ import RoadmapSearchBox from './RoadmapSearchBox'
 import { LABEL_ROADMAP } from './constants'
 
 function RoadmapRoadmap() {
-  const {
-    pluralIssues,
-    pluralArtifactsIssues,
-  } = useContext(RoadmapContext)
+  const { pluralIssues, pluralArtifactsIssues } = useContext(RoadmapContext)
 
   const issues = useMemo(() => [...pluralIssues, ...pluralArtifactsIssues].filter(issue => issue.labels.includes(LABEL_ROADMAP)), [pluralIssues, pluralArtifactsIssues])
 
   return (
     <>
-      <PageTitle heading="Roadpmap" />
+      <PageTitle heading="Roadmap" />
       <RoadmapSearchBox
+        displayProgress
         label="Contribute to our roadmap by adding your feedback or voting."
         issues={issues}
       />

@@ -7,6 +7,7 @@ import { IssueType } from './types'
 
 type RoadmapIssuePropsType = {
   issue: IssueType
+  displayAuthor?: boolean
 }
 
 const ellipsis = {
@@ -15,84 +16,110 @@ const ellipsis = {
   textOverflow: 'ellipsis',
 }
 
-function RoadmapIssue({ issue }: RoadmapIssuePropsType) {
+function RoadmapIssue({ issue, displayAuthor = false }: RoadmapIssuePropsType) {
+  console.log('issue', issue)
+
   return (
-    <Flex
-      align="center"
+    <Div
       borderBottom="1px solid border"
       padding="medium"
     >
-      <Flex
-        direction="column"
-        minWidth={0}
-        gap="xxsmall"
-      >
+      <Flex align="center">
         <Flex
-          align="center"
-          gap="small"
+          direction="column"
           minWidth={0}
+          gap="xxsmall"
         >
+          <Flex
+            align="center"
+            gap="small"
+            minWidth={0}
+          >
+            <P
+              body1
+              fontWeight="bold"
+              {...ellipsis}
+            >
+              {issue.title}
+            </P>
+            <P
+              overline
+              flexShrink={0}
+            >
+              {moment(issue.createdAt).fromNow(true)}
+            </P>
+          </Flex>
           <P
-            body1
-            fontWeight="bold"
+            body2
+            color="text-light"
             {...ellipsis}
           >
-            {issue.title}
-          </P>
-          <P
-            overline
-            flexShrink={0}
-          >
-            {moment(issue.createdAt).fromNow(true)}
+            {prepareIssueBody(issue.body) || '\u00A0'}
           </P>
         </Flex>
+        <Div flexGrow={1} />
         <P
           body2
-          color="text-light"
-          {...ellipsis}
+          color="text-xlight"
+          flexShrink={0}
+          marginLeft="medium"
         >
-          {prepareIssueBody(issue.body) || '\u00A0'}
+          {issue.votes} vote{issue.votes > 1 ? 's' : ''}
         </P>
+        <Chip
+          size="large"
+          flexShrink={0}
+          marginLeft="medium"
+        >
+          In progress
+        </Chip>
+        <Button
+          as="a"
+          href={issue.url}
+          target="_blank"
+          secondary
+          endIcon={<GitHubLogoIcon />}
+          flexShrink={0}
+          marginLeft="medium"
+        >
+          View on GitHub
+        </Button>
       </Flex>
-      <Div flexGrow={1} />
-      <Chip
-        size="large"
-        flexShrink={0}
-        marginLeft="medium"
-      >
-        In progress
-      </Chip>
-      <Button
-        as="a"
-        href={issue.url}
-        target="_blank"
-        secondary
-        endIcon={<GitHubLogoIcon />}
-        flexShrink={0}
-        marginLeft="medium"
-      >
-        View on GitHub
-      </Button>
-    </Flex>
+      {displayAuthor && (
+        <P
+          caption
+          color="text-xlight"
+          marginTop="small"
+        >
+          Requested by: {issue.author}
+        </P>
+      )}
+    </Div>
   )
 }
 
 const toReplaces = [
-  /<img .*>/gm,
-  '## Summary',
-  '## Use Case',
-  '<!-- Help us to understand your request in context -->',
-  '<!-- A brief description of the issue and what you expect to happen instead -->',
+  /<img .*>/g,
+  /^<!--.*-->/g,
+  /^#.*/g,
 ]
 
 function prepareIssueBody(body: string) {
-  let text = body
+  const texts = body.split('\n')
 
-  toReplaces.forEach(toReplace => {
-    text = text.replaceAll(toReplace, '')
+  texts.forEach((text, i) => {
+    let nextText = text
+
+    toReplaces.forEach(toReplace => {
+      nextText = nextText.replaceAll(toReplace, '')
+    })
+
+    texts[i] = nextText
   })
 
-  return text.slice(0, 100)
+  const output = texts.filter(Boolean).join(' ').trim()
+
+  return output[0].toUpperCase() + output.slice(1)
 }
 
 export default memo(RoadmapIssue)

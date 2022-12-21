@@ -5,6 +5,8 @@ export type IssueType = {
   body: string
   author: string
   state: string
+  labels: string[]
   votes: number
+  isPullRequest: boolean
   createdAt: string
 }

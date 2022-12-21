@@ -5,13 +5,15 @@ import RoadmapContext from '../../contexts/RoadmapContext'
 
 import RoadmapSearchBox from './RoadmapSearchBox'
 
+import { LABEL_ROADMAP } from './constants'
+
 function RoadmapRoadmap() {
   const {
     pluralIssues,
     pluralArtifactsIssues,
   } = useContext(RoadmapContext)
 
-  const issues = useMemo(() => [...pluralIssues, ...pluralArtifactsIssues], [pluralIssues, pluralArtifactsIssues])
+  const issues = useMemo(() => [...pluralIssues, ...pluralArtifactsIssues].filter(issue => issue.labels.includes(LABEL_ROADMAP)), [pluralIssues, pluralArtifactsIssues])
 
   return (
     <>

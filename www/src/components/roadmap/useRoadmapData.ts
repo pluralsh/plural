@@ -11,9 +11,6 @@ import { LABEL_REQUEST, LABEL_ROADMAP } from './constants'
 
 const perPage = 100 // Max is 100
 
-const filterOutPullRequests = () => true
-// const filterOutPullRequests = data => !data.pull_request // TODO use this one before shipping
-
 function castIssues(rawIssues: any[]): IssueType[] {
   return rawIssues
     .map(issue => ({
@@ -23,10 +20,12 @@ function castIssues(rawIssues: any[]): IssueType[] {
       body: issue.body ?? '',
       author: issue.user?.login ?? '',
       state: issue.state ?? '',
-      votes: 0, // TODO
+      votes: issue.reactions.total_count,
+      labels: issue.labels?.map((label: any) => label.name) ?? [],
+      isPullRequest: !!issue.pull_request,
       createdAt: issue.created_at ?? '',
     }))
-    .sort((a, b) => (a.createdAt < b.createdAt ? -1 : 1))
+    .sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1))
 }
 
 function useRoadmapData() {
@@ -49,7 +48,7 @@ function useRoadmapData() {
       repo: 'plural',
     })
 
-    setPluralIssues(x => [...x, ...response1.data.filter(filterOutPullRequests), ...response2.data.filter(filterOutPullRequests)])
+    setPluralIssues(x => [...x, ...response1.data, ...response2.data])
     setHasMorePlural(response1.data.length >= perPage || response2.data.length >= perPage)
   }, [ockokit, pagePlural])
 
@@ -63,7 +62,7 @@ function useRoadmapData() {
       repo: 'plural-artifacts',
     })
 
-    setPluralArtifactsIssues(x => [...x, ...response1.data.filter(filterOutPullRequests), ...response2.data.filter(filterOutPullRequests)])
+    setPluralArtifactsIssues(x => [...x, ...response1.data, ...response2.data])
     setHasMorePluraArtifacts(response1.data.length >= perPage || response2.data.length >= perPage)
   }, [ockokit, pagePluralArtifacts])
 

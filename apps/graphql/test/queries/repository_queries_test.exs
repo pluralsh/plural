@@ -181,6 +181,24 @@ defmodule GraphQl.RepositoryQueriesTest do
              |> ids_equal(repos)
     end
 
+    test "it can list all repositories for a provider" do
+      repos = insert_list(3, :repository)
+      for r <- repos,
+        do: insert(:recipe, repository: r, provider: :aws)
+      insert(:recipe, provider: :gcp)
+
+      {:ok, %{data: %{"repositories" => found}}} = run_query("""
+        query {
+          repositories(first: 5, provider: AWS) {
+            edges { node { id } }
+          }
+        }
+      """, %{})
+
+      assert from_connection(found)
+             |> ids_equal(repos)
+    end
+
     test "it can search all public repositories" do
       repos = for i <- 1..3, do: insert(:repository, name: "query #{i}")
       insert(:repository)

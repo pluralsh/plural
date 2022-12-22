@@ -2,7 +2,7 @@ defmodule Core.Services.Shell do
   use Core.Services.Base
   import Core.Policies.Shell
 
-  alias Core.Schema.{CloudShell, User, Recipe, Installation, OIDCProvider}
+  alias Core.Schema.{CloudShell, User, Recipe, Installation, OIDCProvider, Stack}
   alias Core.Services.{Shell.Pods, Dns, Recipes, Repositories, Encryption}
   alias Core.Shell.{Scm, Client}
 
@@ -16,6 +16,15 @@ defmodule Core.Services.Shell do
   def get_shell(user_id) do
     Core.Repo.get_by(CloudShell, user_id: user_id)
     |> Core.Repo.preload([:user])
+  end
+
+  @doc """
+  Whether the `user_id` has an extant cloud shell
+  """
+  @spec has_shell?(binary) :: boolean
+  def has_shell?(user_id) do
+    CloudShell.for_user(user_id)
+    |> Core.Repo.exists?()
   end
 
   @doc """
@@ -123,36 +132,60 @@ defmodule Core.Services.Shell do
   * install the recipe
   * optionally configure oidc
   """
-  @spec install_bundle(Recipe.t, map, binary, User.t) :: {:ok, [Installation.t]} | error
-  def install_bundle(%Recipe{} = recipe, ctx, oidc, %User{} = user) do
+  @spec install_bundle(Recipe.t, %{configuration: map}, binary, User.t) :: {:ok, [Installation.t]} | error
+  def install_bundle(%Recipe{} = recipe, %{configuration: ctx} = context, oidc, %User{} = user) do
     recipe = Core.Repo.preload(recipe, [:repository])
     start_transaction()
-    |> add_operation(:shell, fn _ ->
-      update_shell_configuration(ctx, user)
+    |> add_operation(:shell, fn _ -> update_shell_configuration(context, user) end)
+    |> add_operation(:install, fn _ -> Recipes.install(recipe, %{}, user) end)
+    |> add_operation(:oidc, fn _ ->
+      maybe_enable_oidc(oidc, recipe, ctx[recipe.repository.name] || %{}, user)
     end)
-    |> add_operation(:install, fn _ ->
-      Recipes.install(recipe, %{}, user)
-    end)
-    |> maybe_enable_oidc(oidc, recipe, ctx[recipe.repository.name] || %{}, user)
     |> execute(extract: :install)
   end
 
-  defp maybe_enable_oidc(tx, false, _, _, _), do: tx
-  defp maybe_enable_oidc(tx, _, %Recipe{oidc_settings: %Recipe.OIDCSettings{} = settings, repository_id: repo_id}, ctx, %User{id: uid} = user) do
-    add_operation(tx, :oidc, fn _ ->
-      shell = get_shell!(user.id)
-      uris  = redirect_uris(settings, ctx, shell)
-      inst  = Repositories.get_installation(uid, repo_id)
-              |> Core.Repo.preload([oidc_provider: :bindings])
-
-      Repositories.upsert_oidc_provider(%{
-        auth_method: settings.auth_method,
-        bindings: oidc_bindings(inst.oidc_provider, user),
-        redirect_uris: merge_uris(uris, inst.oidc_provider)
-      }, inst.id, user)
+  @doc """
+  transactionally sets shell context.yaml and intalls all associated bundles and enables oidc as needed
+  """
+  @spec install_stack(Stack.t, map, boolean, User.t) :: {:ok, boolean} | error
+  def install_stack(%Stack{} = stack, %{configuration: ctx} = context, oidc, %User{} = user) do
+    %{provider: provider} = get_shell(user.id)
+    start_transaction()
+    |> add_operation(:shell, fn _ -> update_shell_configuration(context, user) end)
+    |> add_operation(:install, fn _ -> Recipes.install_stack(stack, provider, user) end)
+    |> add_operation(:oidcs, fn %{install: bundles} ->
+      Core.Repo.preload(bundles, [:repository])
+      |> Enum.reduce(short_circuit(), fn b, s ->
+        short(s, b.id, fn ->
+          maybe_enable_oidc(oidc, b, ctx[b.repository.name] || %{}, user)
+        end)
+      end)
+      |> execute()
     end)
+    |> execute(extract: :install)
   end
-  defp maybe_enable_oidc(tx, _, _, _, _), do: tx
+
+  defp maybe_enable_oidc(enable \\ true, recipe, ctx, user)
+  defp maybe_enable_oidc(false, _, _, _), do: {:ok, true}
+  defp maybe_enable_oidc(_, %Recipe{recipe_dependencies: [_ |  _] = recipes} = recipe, ctx, user) do
+    Enum.map([%{recipe | recipe_dependencies: []} | recipes], &maybe_enable_oidc(&1, ctx, user))
+    |> ok()
+  end
+
+  defp maybe_enable_oidc(_, %Recipe{oidc_settings: %Recipe.OIDCSettings{} = settings, repository_id: repo_id}, ctx, %User{id: uid} = user) do
+    shell = get_shell!(user.id)
+    uris  = redirect_uris(settings, ctx, shell)
+    inst  = Repositories.get_installation(uid, repo_id)
+            |> Core.Repo.preload([oidc_provider: :bindings])
+
+    Repositories.upsert_oidc_provider(%{
+      auth_method: settings.auth_method,
+      bindings: oidc_bindings(inst.oidc_provider, user),
+      redirect_uris: merge_uris(uris, inst.oidc_provider)
+    }, inst.id, user)
+  end
+
+  defp maybe_enable_oidc(_, _, _, _), do: {:ok, true}
 
   defp oidc_bindings(nil, %User{id: uid}), do: [%{user_id: uid}]
   defp oidc_bindings(%OIDCProvider{bindings: bindings}, %User{id: uid}) do

@@ -56,6 +56,14 @@ defmodule Core do
     |> Base.encode32()
   end
 
+  def local_cache(key, fun) do
+    with nil <- Process.get(key) do
+      res = fun.()
+      Process.put(key, res)
+      res
+    end
+  end
+
   def retry(fun, attempts \\ 0)
   def retry(fun, 3), do: fun.()
   def retry(fun, attempts) do

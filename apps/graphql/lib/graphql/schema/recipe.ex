@@ -209,6 +209,7 @@ defmodule GraphQl.Schema.Recipe do
     field :collections,  list_of(:stack_collection), resolve: dataloader(Recipe)
     field :creator,      :user, resolve: dataloader(User)
     field :bundles,      list_of(:recipe)
+    field :sections,     list_of(:recipe_section)
 
     timestamps()
   end
@@ -309,7 +310,15 @@ defmodule GraphQl.Schema.Recipe do
       arg :recipe_id, non_null(:id)
       arg :context,   non_null(:map)
 
-      resolve safe_resolver(&Recipe.install_recipe/2)
+      safe_resolve &Recipe.install_recipe/2
+    end
+
+    field :install_stack, list_of(:recipe) do
+      middleware Authenticated
+      arg :name,     non_null(:string)
+      arg :provider, non_null(:provider)
+
+      safe_resolve &Recipe.install_stack/2
     end
   end
 end

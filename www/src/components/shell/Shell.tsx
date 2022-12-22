@@ -38,15 +38,12 @@ function Shell({ shell }: any) {
   const fitAddon = useMemo(() => new FitAddon(), [])
   const [terminalTheme] = useContext(TerminalThemeContext)
   const { fresh } = useOnboarded()
-  const [restart, setRestart] = useState(false)
+  const [open, setOpen] = useState(false)
   const [fitted, setFitted] = useState(false)
   const [retry, setRetry] = useState(0)
 
   useEffect(() => {
-    if (!xterm?.current?.terminal || restart) {
-      // eslint-disable-next-line no-unused-expressions
-      restart && setRestart(false)
-
+    if (!xterm?.current?.terminal) {
       return
     }
 
@@ -60,12 +57,11 @@ function Shell({ shell }: any) {
     chan.on('stdo', ({ message }) => {
       const decoded = decodeBase64(message)
 
-      term.write(decoded)
+      if (!open && decoded.trim() !== '') {
+        setOpen(true)
+      }
 
-      // this seems to death spiral sometimes, reverting for now (@mjg)
-      // if (!restart && decoded.includes(detachedMessage)) {
-      //   setRestart(true)
-      // }
+      term.write(decoded)
     })
     chan.join()
     setChannel(chan)
@@ -73,7 +69,7 @@ function Shell({ shell }: any) {
     return () => {
       chan.leave()
     }
-  }, [shell, xterm, restart])
+  }, [shell, xterm, setOpen, open])
 
   const handleResize = useCallback(({ cols, rows }) => {
     if (!channel) return
@@ -105,7 +101,7 @@ function Shell({ shell }: any) {
 
   useEffect(() => {
     handleResetSize()
-  }, [handleResetSize])
+  }, [handleResetSize, dimensions, open])
 
   const { ref } = useResizeDetector({
     onResize: debounce(() => {

@@ -1,4 +1,7 @@
+// HACK until Select is fixed to admit any ReactNode
+// @ts-nocheck
 import {
+  useCallback,
   useContext,
   useEffect,
   useRef,
@@ -17,6 +20,7 @@ import { Box } from 'grommet'
 import {
   Codeline,
   GlobeIcon,
+  ListBoxFooterPlus,
   ListBoxItem,
   ListBoxItemChipList,
   PadlockLockedIcon,
@@ -107,15 +111,38 @@ function ImageVersionPicker({ image }: any) {
   const navigate = useNavigate()
   const { pathname } = useLocation()
   const { dockerRepository } = image
-  const { data, loading } = useQuery(DOCKER_IMG_Q, {
-    variables: { dockerRepositoryId: dockerRepository.id },
+  const [hasNextPage, setHasNextPage] = useState(false)
+  const [cursor, setCursor] = useState(null)
+  const [allImages, setAllImages] = useState<any[]>([])
+  const { data } = useQuery(DOCKER_IMG_Q, {
+    variables: {
+      dockerRepositoryId: dockerRepository.id,
+      cursor,
+    },
   })
 
-  if (!data || loading) return null
-
-  const { edges } = data.dockerImages
-  const images = edges.map(({ node }) => node)
   const url = pathname.endsWith('vulnerabilities') ? '/vulnerabilities' : ''
+
+  const fetchMore = useCallback(() => {
+    if (hasNextPage) {
+      setCursor(data.dockerImages.pageInfo.endCursor)
+    }
+  }, [hasNextPage, data])
+
+  const handleSelectionChange = useCallback((selected: any) => {
+    if (selected === '$$footer$$') return
+
+    navigate(`/dkr/img/${selected}${url}`)
+  }, [navigate, url])
+
+  useEffect(() => {
+    if (data?.dockerImages) {
+      setAllImages(x => [...x, ...data.dockerImages.edges.map(({ node }) => node)])
+      setHasNextPage(data.dockerImages.pageInfo.hasNextPage)
+    }
+  }, [data])
+
+  if (!allImages.length) return null
 
   return (
     <Box
@@ -127,7 +154,7 @@ function ImageVersionPicker({ image }: any) {
         label="image"
         width="240px"
         selectedKey={image.id}
-        onSelectionChange={selected => navigate(`/dkr/img/${selected}${url}`)}
+        onSelectionChange={handleSelectionChange}
         rightContent={
           image.scannedAt && (
             <ListBoxItemChipList chips={[
@@ -139,8 +166,15 @@ function ImageVersionPicker({ image }: any) {
             />
           )
         }
+        dropdownFooterFixed={(
+          hasNextPage && (
+            <ListBoxFooterPlus onClick={fetchMore}>
+              Fetch more
+            </ListBoxFooterPlus>
+          )
+        )}
       >
-        {images.map(v => (
+        {allImages.map(v => (
           <ListBoxItem
             key={v.id}
             label={v.tag}

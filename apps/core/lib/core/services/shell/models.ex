@@ -17,7 +17,7 @@ end
 
 defmodule Core.Shell.Models.Configuration do
   alias Core.Shell.Models.{Workspace, Git}
-  defstruct [:workspace, :git, :context_configuration]
+  defstruct [:workspace, :git, :context_configuration, :buckets, :domains]
 
   def as() do
     %__MODULE__{

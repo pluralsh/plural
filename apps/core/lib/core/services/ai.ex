@@ -11,7 +11,7 @@ defmodule Core.Services.AI do
   """
   @spec answer(binary) :: {:ok, binary} | error
   def answer(prompt) do
-    case OpenAI.completion("davinci", prompt) do
+    case OpenAI.completion("text-davinci-003", prompt) do
       {:ok, %OpenAI.CompletionResponse{choices: [%OpenAI.Choice{text: text} | _]}} -> {:ok, text}
       {:ok, _} -> {:error, "no response found"}
       error -> error

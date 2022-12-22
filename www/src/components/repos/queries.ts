@@ -162,7 +162,7 @@ export const REPO_Q = gql`
 
 export const DOCKER_IMG_Q = gql`
   query DockerImages($dockerRepositoryId: ID!, $cursor: String) {
-    dockerImages(dockerRepositoryId: $dockerRepositoryId, after: $cursor, first: 15) {
+    dockerImages(dockerRepositoryId: $dockerRepositoryId, after: $cursor, first: 100) {
       pageInfo { ...PageInfo }
       edges {
         node {

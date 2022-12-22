@@ -55,27 +55,31 @@ function TerminalSidebar({ shell, showCheatsheet, ...props }: any) {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [stepIndex, setStepIndex] = useState(0)
   const {
-    workingSteps, skipConsoleInstall, appCount, stackName,
+    workingSteps,
+    skipConsoleInstall,
+    displayConsoleButton,
+    appCount,
+    stackName,
   } = useMemo(() => {
     const workingSteps = [...steps]
-    const shouldInstallConsole = retrieveConsole()
     const applications = retrieveApplications()
     const stack = retrieveStack()
+    const shouldInstallConsole = retrieveConsole()
+    const hasApplicationConsole = applications.some(a => a.name === 'console')
 
     const ret = {
       appCount: applications?.length,
       stackName: stack?.name,
       workingSteps,
+      skipConsoleInstall: !shouldInstallConsole || hasApplicationConsole,
+      displayConsoleButton: shouldInstallConsole || hasApplicationConsole,
     }
 
-    if (applications.length === 1 && applications[0].name !== 'console') return { ...ret, skipConsoleInstall: false }
-    if (shouldInstallConsole) return { ...ret, skipConsoleInstall: false }
-
-    ret.workingSteps.shift()
-
-    return {
-      ...ret, skipConsoleInstall: true,
+    if (ret.skipConsoleInstall) {
+      ret.workingSteps.shift()
     }
+
+    return ret
   }, [])
 
   const { title, Component } = workingSteps[stepIndex]
@@ -201,7 +205,7 @@ function TerminalSidebar({ shell, showCheatsheet, ...props }: any) {
       <OnboardingCompletionModal
         open={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        skipConsoleInstall={skipConsoleInstall}
+        displayConsoleButton={displayConsoleButton}
         shell={shell}
       />
     </>

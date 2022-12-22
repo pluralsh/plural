@@ -5,6 +5,8 @@ replicaCount: 3
 rabbitmqNamespace: rabbitmq
 influxNamespace: influx
 
+extraSecretEnv: {}
+
 rbac:
   serviceAccountAnnotations: {}
 

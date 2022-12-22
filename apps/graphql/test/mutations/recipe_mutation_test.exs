@@ -118,6 +118,31 @@ defmodule GraphQl.RecipeMutationsTest do
     end
   end
 
+  describe "installStack" do
+    setup [:setup_root_user]
+    test "You can install stack", %{user: user} do
+      recipe = insert(:recipe)
+      %{repository: repo} = section = insert(:recipe_section, recipe: recipe)
+      chart = insert(:chart, repository: repo)
+      insert(:version, chart: chart, version: chart.latest_version)
+      insert(:recipe_item, recipe_section: section, chart: chart)
+
+      stack = insert(:stack)
+      collection = insert(:stack_collection, provider: :aws, stack: stack)
+      insert(:stack_recipe, collection: collection, recipe: recipe)
+
+      {:ok, %{data: %{"installStack" => [found]}}} = run_query("""
+        mutation Install($name: String!, $provider: Provider!) {
+          installStack(name: $name, provider: $provider) {
+            id
+          }
+        }
+      """, %{"name" => stack.name, "provider" => "AWS"}, %{current_user: user})
+
+      assert found["id"] == recipe.id
+    end
+  end
+
   describe "createStack" do
     test "it can create a new stack instance" do
       recipe = insert(:recipe)

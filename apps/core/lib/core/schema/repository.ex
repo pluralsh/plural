@@ -189,6 +189,14 @@ defmodule Core.Schema.Repository do
     from(r in query, where: r.publisher_id in ^publisher_ids)
   end
 
+  def for_provider(query \\ __MODULE__, provider) do
+    from(r in query,
+      join: rp in assoc(r, :recipes),
+      where: rp.provider == ^provider,
+      distinct: true
+    )
+  end
+
   def ordered(query \\ __MODULE__, order \\ [asc: :name]),
     do: from(r in query, order_by: ^order)
 

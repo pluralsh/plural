@@ -15,14 +15,14 @@ import Fireworks from '@fireworks-js/react'
 type OnboardingCompletionModalProps = {
   open: boolean
   onClose: () => void
-  skipConsoleInstall: boolean
+  displayConsoleButton: boolean
   shell: any
 }
 
 function OnboardingCompletionModal({
   open,
   onClose,
-  skipConsoleInstall,
+  displayConsoleButton,
   shell,
 }: OnboardingCompletionModalProps) {
   const [feedback, setFeedback] = useState<null | 'good' | 'bad'>(null)
@@ -54,7 +54,7 @@ function OnboardingCompletionModal({
         <P marginBottom="large">
           Congratulations, you've installed your first apps!
         </P>
-        {skipConsoleInstall && (
+        {!displayConsoleButton && (
           <Button
             primary
             width="100%"
@@ -64,7 +64,7 @@ function OnboardingCompletionModal({
             View my apps
           </Button>
         )}
-        {!skipConsoleInstall && (
+        {displayConsoleButton && (
           <Flex align="center">
             <Button
               primary

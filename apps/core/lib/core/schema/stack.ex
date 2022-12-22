@@ -8,6 +8,7 @@ defmodule Core.Schema.Stack do
     field :featured,     :boolean, default: false
     field :display_name, :string
     field :bundles,      :map, virtual: true
+    field :sections,     :map, virtual: true
     field :expires_at,   :utc_datetime_usec
 
     belongs_to :account,     Account

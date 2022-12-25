@@ -12,6 +12,7 @@ metadata:
 {{ include "plural.labels" . | indent 4 }}
 spec:
   schedule: {{ .crontab | quote }}
+  successfulJobsHistoryLimit: 2
   jobTemplate:
     spec:
       template:

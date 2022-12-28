@@ -1867,9 +1867,9 @@ export enum Provider {
   Custom = 'CUSTOM',
   Equinix = 'EQUINIX',
   Gcp = 'GCP',
-  Kind = 'KIND',
-  Kubernetes = 'KUBERNETES',
   Generic = 'GENERIC',
+  Kind = 'KIND',
+  Kubernetes = 'KUBERNETES'
 }
 
 export type PublicKey = {

@@ -5,7 +5,7 @@ defmodule Email.Builder.LockedInstallation do
     %{installation: %{user: user}} = inst = Core.Repo.preload(inst, [:version, installation: [:user, :repository]])
     repo = inst.installation.repository
     base_email()
-    |> to(user)
+    |> to(expand_service_account(user))
     |> subject("Breaking Changes Need to be applied for #{repo.name}")
     |> assign(:type, inst_type(inst))
     |> assign(:user, user)

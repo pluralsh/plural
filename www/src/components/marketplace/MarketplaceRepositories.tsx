@@ -383,7 +383,7 @@ function MarketplaceRepositories({ installed, publisher }: any) {
             )}
             {!resultRepositories?.length && !installed && (
               <EmptyState
-                message="Oops! We couln't find any apps."
+                message="Oops! We couldn't find any apps."
                 description="If you can't find what you're looking for, you can onboard the application."
               >
                 <Flex

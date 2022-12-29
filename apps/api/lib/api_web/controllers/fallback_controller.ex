@@ -21,7 +21,7 @@ defmodule ApiWeb.FallbackController do
   def error(%Ecto.Changeset{} = cs), do: {422, format_changeset(cs)}
   def error(val) when is_atom(val), do: {422, val}
   def error(val) when is_binary(val), do: {422, val}
-  def error(_), do: {422, "unkown error"}
+  def error(_), do: {422, "unknown error"}
 
   defp format_changeset(changeset) do
     Ecto.Changeset.traverse_errors(changeset, fn {msg, opts} ->

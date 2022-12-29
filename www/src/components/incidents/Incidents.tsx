@@ -236,7 +236,7 @@ function TagInput({ setAlternate }: any) {
       width={FILTER_DROP_WIDTH}
     >
       <Text
-        size="samll"
+        size="small"
         weight={500}
       >tag
       </Text>

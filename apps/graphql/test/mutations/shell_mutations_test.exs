@@ -185,7 +185,7 @@ defmodule GraphQl.ShellMutationsTest do
   end
 
   describe "transferDemoProject" do
-    test "it will send out a tranfer request" do
+    test "it will send out a transfer request" do
       demo = insert(:demo_project)
 
       proj_id = demo.project_id

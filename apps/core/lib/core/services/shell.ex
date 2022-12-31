@@ -145,7 +145,7 @@ defmodule Core.Services.Shell do
   end
 
   @doc """
-  transactionally sets shell context.yaml and intalls all associated bundles and enables oidc as needed
+  transactionally sets shell context.yaml and installs all associated bundles and enables oidc as needed
   """
   @spec install_stack(Stack.t, map, boolean, User.t) :: {:ok, boolean} | error
   def install_stack(%Stack{} = stack, %{configuration: ctx} = context, oidc, %User{} = user) do

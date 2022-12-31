@@ -28,7 +28,7 @@ sections:
     documentation: FQDN to use for your plural cluster
     type: DOMAIN
   - name: plural_dkr_dns
-    documentaion: FQDN for your plural docker registry
+    documentation: FQDN for your plural docker registry
     type: DOMAIN
   - name: admin_name
     documentation: name for initial admin user

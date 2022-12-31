@@ -88,4 +88,5 @@ config :worker,
   docker_interval: 1
 
 config :core,
-  workos_webhook: "supersecret"
+  workos_webhook: "supersecret",
+  enforce_pricing: true

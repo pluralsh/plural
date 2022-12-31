@@ -32,6 +32,7 @@ export const providerToDisplayName = {
   EQUINIX: 'Equinix Metal',
   GCP: 'Google Cloud Platform',
   KIND: 'Kind',
+  GENERIC: 'Generic',
 }
 
 export const providerToIcon = {
@@ -40,6 +41,7 @@ export const providerToIcon = {
   EQUINIX: '/equinix-metal.png',
   GCP: '/gcp.png',
   KIND: '/kind.png',
+  GENERIC: '/chart.png',
 }
 
 export const providerToIconHeight = {
@@ -48,6 +50,7 @@ export const providerToIconHeight = {
   EQUINIX: 16,
   GCP: 14,
   KIND: 14,
+  GENERIC: 14,
 }
 
 const visuallyHideMaintainWidth = {

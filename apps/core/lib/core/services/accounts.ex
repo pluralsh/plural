@@ -227,6 +227,16 @@ defmodule Core.Services.Accounts do
     do: allow(service_account, user, :impersonate)
 
   @doc """
+  Fetch all users that can impersonate this service account.  Return just the user if not a service account
+  """
+  @spec accessible_users(User.t) :: [User.t]
+  def accessible_users(%User{service_account: true} = user) do
+    User.for_service_account(user)
+    |> Core.Repo.all()
+  end
+  def accessible_users(user), do: [user]
+
+  @doc """
   Accepts the invite and creates a new user
   """
   @spec realize_invite(map, binary) :: user_resp

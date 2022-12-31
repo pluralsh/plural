@@ -27,7 +27,7 @@ defmodule GraphQl.Schema.Helpers do
       rescue
         error ->
           Logger.error(Exception.format(:error, error, __STACKTRACE__))
-          {:error, Exception.message(error)}
+          {:error, exception_msg(error)}
       end
     end
   end
@@ -40,4 +40,7 @@ defmodule GraphQl.Schema.Helpers do
       %{^key => v}, _, _ -> {:ok, v}
     end
   end
+
+  defp exception_msg(%Ecto.NoResultsError{}), do: "the resource you requested was not found"
+  defp exception_msg(e), do: Exception.message(e)
 end

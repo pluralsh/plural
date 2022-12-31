@@ -39,7 +39,7 @@ defmodule Core.PubSub.IntegrationWebhook.IncidentsTest do
       assert Enum.map(results, &elem(&1, 0))
              |> ids_equal(webhooks)
 
-      for {webhook, %{payload: %{action: "incident.upated", payload: payload}} = log} <- results do
+      for {webhook, %{payload: %{action: "incident.updated", payload: payload}} = log} <- results do
         assert webhook.id == log.webhook_id
         assert log.state == :sending
         assert log.attempts == 0

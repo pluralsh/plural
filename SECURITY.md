@@ -12,7 +12,7 @@ Plural uses Argon2 for password hashing.  This has been proven to be the most ro
 
 ### Secret Storage
 
-Plural stores some user provided secrets in postgres.  These are symetrically encrypted using AES-256
+Plural stores some user provided secrets in postgres.  These are symmetrically encrypted using AES-256
 
 ### Authentication
 

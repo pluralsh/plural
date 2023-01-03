@@ -6,9 +6,9 @@ import {
 } from 'honorable'
 import {
   ArrowTopRightIcon,
-  CertificateIcon,
   DiscordIcon,
   GitHubLogoIcon,
+  ScrollIcon,
 } from '@pluralsh/design-system'
 
 function RoadmapSideCar(props: any) {
@@ -23,7 +23,7 @@ function RoadmapSideCar(props: any) {
         secondary
         as="a"
         target="_blank"
-        href="https://github.com/pluralsh/plural/issues"
+        href="https://github.com/pluralsh/plural/issues/new/choose"
         endIcon={(<ArrowTopRightIcon />)}
       >
         Roadmap request
@@ -50,13 +50,14 @@ function RoadmapSideCar(props: any) {
           <Button
             small
             tertiary
+            padding="none"
             as="a"
             target="_blank"
             href="https://docs.plural.sh"
             width="100%"
             justifyContent="flex-start"
             startIcon={(
-              <CertificateIcon />
+              <ScrollIcon />
             )}
           >
             Docs
@@ -64,6 +65,7 @@ function RoadmapSideCar(props: any) {
           <Button
             small
             tertiary
+            padding="none"
             as="a"
             target="_blank"
             href="https://discord.gg/pluralsh"
@@ -78,6 +80,7 @@ function RoadmapSideCar(props: any) {
           <Button
             small
             tertiary
+            padding="none"
             as="a"
             target="_blank"
             href="https://github.com/pluralsh"

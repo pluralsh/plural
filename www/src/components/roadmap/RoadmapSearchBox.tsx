@@ -15,7 +15,7 @@ import { MagnifyingGlassIcon, SortDescIcon } from '@pluralsh/design-system'
 import { IssueType } from './types'
 import RoadmapIssue from './RoadmapIssue'
 
-type SortType = 'votes' | 'recent' | 'alphabetical'
+type SortType = 'votes' | 'recent' | 'alphabetical' | 'state'
 
 type RoadmapSearchBoxPropsType = {
   label: string
@@ -23,6 +23,8 @@ type RoadmapSearchBoxPropsType = {
   displayAuthor?: boolean
   displayVotes?: boolean
   displayProgress?: boolean
+  removeVoteSorting?: boolean
+  removeStateSorting?: boolean
 }
 
 const fuseOptions = {
@@ -33,7 +35,7 @@ const fuseOptions = {
   // findAllMatches: false,
   // minMatchCharLength: 1,
   // location: 0,
-  // threshold: 0.6,
+  threshold: 0.333,
   // distance: 100,
   // useExtendedSearch: false,
   // ignoreLocation: false,
@@ -48,6 +50,13 @@ const fuseOptions = {
 
 const sortStrategies = {
   votes: (a: IssueType, b: IssueType) => b.votes - a.votes,
+  state: (a: IssueType, b: IssueType) => {
+    if (b.state === a.state) return 0
+    if (b.state === 'open') return 1
+    if (a.state === 'open') return -1
+
+    return 0
+  },
   recent: (a: IssueType, b: IssueType) => new Date(b.createdAt).valueOf() - new Date(a.createdAt).valueOf(),
   alphabetical: (a: IssueType, b: IssueType) => a.title.localeCompare(b.title),
 }
@@ -58,9 +67,11 @@ function RoadmapSearchBox({
   displayAuthor = false,
   displayVotes = false,
   displayProgress = false,
+  removeVoteSorting = false,
+  removeStateSorting = false,
 }: RoadmapSearchBoxPropsType) {
   const [isSortMenuOpen, setIsSortMenuOpen] = useState(false)
-  const [sort, setSort] = useState<SortType>('votes')
+  const [sort, setSort] = useState<SortType>(removeVoteSorting ? removeStateSorting ? 'recent' : 'state' : 'votes')
   const [search, setSearch] = useState('')
 
   const fuse = useMemo(() => new Fuse(issues, fuseOptions), [issues])
@@ -124,7 +135,12 @@ function RoadmapSearchBox({
                 width={200}
                 zIndex={9999}
               >
-                <MenuItem onClick={() => handleSortSelect('votes')}>Most votes</MenuItem>
+                {!removeVoteSorting && (
+                  <MenuItem onClick={() => handleSortSelect('votes')}>Most votes</MenuItem>
+                )}
+                {!removeStateSorting && (
+                  <MenuItem onClick={() => handleSortSelect('state')}>State</MenuItem>
+                )}
                 <MenuItem onClick={() => handleSortSelect('recent')}>Recently added</MenuItem>
                 <MenuItem onClick={() => handleSortSelect('alphabetical')}>A-Z</MenuItem>
               </Menu>

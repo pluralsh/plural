@@ -71,7 +71,7 @@ function Roadmap() {
         </TabList>
       </ResponsiveLayoutSidenavContainer>
       <ResponsiveLayoutSpacer />
-      <ResponsiveLayoutContentContainer>
+      <ResponsiveLayoutContentContainer marginRight-desktop-down={32}>
         <Div
           flexGrow={1}
           maxHeight="100%"
@@ -82,7 +82,7 @@ function Roadmap() {
           </RoadmapDataProvider>
         </Div>
       </ResponsiveLayoutContentContainer>
-      <ResponsiveLayoutSidecarContainer marginTop="xsmall">
+      <ResponsiveLayoutSidecarContainer marginTop="minus-medium">
         <RoadmapSideCar />
       </ResponsiveLayoutSidecarContainer>
       <ResponsiveLayoutSpacer />

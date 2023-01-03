@@ -18,6 +18,7 @@ function RoadmapFeatureRequests() {
       <RoadmapSearchBox
         displayAuthor
         displayVotes
+        removeStateSorting
         label="Contribute to our roadmap by adding your feedback or voting."
         issues={issues}
       />

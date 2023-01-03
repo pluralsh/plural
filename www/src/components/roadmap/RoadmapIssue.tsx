@@ -50,6 +50,7 @@ function RoadmapIssue({
             <P
               overline
               flexShrink={0}
+              color="text-xlight"
             >
               {moment(issue.createdAt).fromNow(true)}
             </P>
@@ -78,6 +79,7 @@ function RoadmapIssue({
             size="large"
             flexShrink={0}
             marginLeft="medium"
+            fillLevel={2}
             severity={issue.state === 'open' ? 'info' : 'success'}
           >
             {issue.state === 'open' ? 'In progress' : 'Shipped'}
@@ -92,7 +94,7 @@ function RoadmapIssue({
           flexShrink={0}
           marginLeft="medium"
         >
-          View on GitHub
+          {displayVotes ? 'Vote' : 'View'}
         </Button>
       </Flex>
       {displayAuthor && (

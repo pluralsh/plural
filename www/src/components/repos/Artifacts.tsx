@@ -305,7 +305,7 @@ function ArtifactRow({ artifact }: any) {
         >
           <Text
             size="small"
-            weigth={500}
+            weight={500}
           >
             {artifact.name}
           </Text>

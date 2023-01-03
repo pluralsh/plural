@@ -1,6 +1,6 @@
 defprotocol GraphQl.ExceptionHandler do
   @fallback_to_any true
-  def message(stuct)
+  def message(struct)
 
   def capture(struct)
 end

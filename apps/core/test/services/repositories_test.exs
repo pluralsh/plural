@@ -393,7 +393,7 @@ defmodule Core.Services.RepositoriesTest do
       %{"refresh_token" => _} = Jason.decode!(decoded)
     end
 
-    test "It can generate licenses for payed plans" do
+    test "It can generate licenses for paid plans" do
       publisher = insert(:publisher)
       {:ok, repo} = Repositories.create_repository(%{name: "my-repo", category: :data}, publisher.owner)
       installation = insert(:installation, repository: repo)

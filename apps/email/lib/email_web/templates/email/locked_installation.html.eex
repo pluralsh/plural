@@ -7,7 +7,7 @@
 <%= row do %>
   <%= text do %>
     Repository <b><%= @repo.name %></b> has unapplied breaking changes, to apply them,
-    check out your repo locally and run the folling commands:
+    check out your repo locally and run the following commands:
   <% end %>
 <% end %>
 

@@ -1867,6 +1867,7 @@ export enum Provider {
   Custom = 'CUSTOM',
   Equinix = 'EQUINIX',
   Gcp = 'GCP',
+  Generic = 'GENERIC',
   Kind = 'KIND',
   Kubernetes = 'KUBERNETES'
 }

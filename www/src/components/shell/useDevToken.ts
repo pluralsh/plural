@@ -4,7 +4,7 @@ import useKeys from 'react-piano-keys'
 export const DEV_TOKEN_LOCALSTORAGE_KEY = 'pluralsh-onboarding-provider-token'
 
 // HACK to secretly read the github/gitlab token for user input to navigate the onboarding in staging environments
-// The code to activate it is written bellow
+// The code to activate it is written below
 export function useDevTokenInputSecretCode() {
   const handleTokenSecretCode = useCallback(() => {
     const token = window.prompt('Enter your GitHub/GitLab token')

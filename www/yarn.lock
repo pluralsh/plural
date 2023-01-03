@@ -3300,7 +3300,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@octokit/core@npm:^4.1.0":
+"@octokit/core@npm:4.1.0":
   version: 4.1.0
   resolution: "@octokit/core@npm:4.1.0"
   dependencies:
@@ -16060,7 +16060,7 @@ __metadata:
     "@nivo/core": 0.80.0
     "@nivo/geo": 0.80.0
     "@nivo/line": 0.80.0
-    "@octokit/core": ^4.1.0
+    "@octokit/core": 4.1.0
     "@pluralsh/design-system": 1.293.2
     "@pluralsh/eslint-config-typescript": 2.5.6
     "@pluralsh/stylelint-config": 1.1.1

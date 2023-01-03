@@ -96,6 +96,7 @@ export function CardIcon({ brand }: any) {
     return (
       <Visa
         color="plain"
+        // @ts-expect-error
         size="medium"
       />
     )
@@ -103,6 +104,7 @@ export function CardIcon({ brand }: any) {
     return (
       <Mastercard
         color="plain"
+        // @ts-expect-error
         size="medium"
       />
     )
@@ -110,6 +112,7 @@ export function CardIcon({ brand }: any) {
     return (
       <Amex
         color="plain"
+        // @ts-expect-error
         size="medium"
       />
     )

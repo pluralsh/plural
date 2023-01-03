@@ -16,11 +16,11 @@ import {
   useOutsideClick,
 } from 'honorable'
 import {
-  ArchitectureIcon,
   ArrowTopRightIcon,
   BellIcon,
   CloseIcon,
   ClusterIcon,
+  CompassIcon,
   DiscordIcon,
   GitHubLogoIcon,
   ListIcon,
@@ -84,7 +84,7 @@ function SidebarWrapper() {
     },
     {
       name: 'Roadmap',
-      Icon: ArchitectureIcon,
+      Icon: CompassIcon,
       url: '/roadmap',
     },
   ]

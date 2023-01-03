@@ -80,7 +80,7 @@ export function EditGroup({ group, edit, setEdit }: any) {
           stateProps={{
             orientation: 'horizontal',
             selectedKey: view,
-            onSelectionChange: key => setView(key),
+            onSelectionChange: key => setView(key as string),
           }}
         >
           {Object.entries(TABS).map(([key, { label }]) => (

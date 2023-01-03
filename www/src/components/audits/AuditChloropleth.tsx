@@ -16,7 +16,7 @@ const DIRECTORY = [
 ]
 
 export function AuditChloropleth() {
-  const [selectedKey, setSelectedKey] = useState('audit-logs')
+  const [selectedKey, setSelectedKey] = useState<any>('audit-logs')
   const tabStateRef = useRef<any>(null)
 
   const { data } = useQuery(selectedKey === 'logins' ? LOGIN_METRICS : AUDIT_METRICS, { fetchPolicy: 'cache-and-network' })

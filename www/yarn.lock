@@ -4999,6 +4999,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@rollup/plugin-inject@npm:^5.0.1":
+  version: 5.0.3
+  resolution: "@rollup/plugin-inject@npm:5.0.3"
+  dependencies:
+    "@rollup/pluginutils": ^5.0.1
+    estree-walker: ^2.0.2
+    magic-string: ^0.27.0
+  peerDependencies:
+    rollup: ^1.20.0||^2.0.0||^3.0.0
+  peerDependenciesMeta:
+    rollup:
+      optional: true
+  checksum: d8458b11af3447710ce200fe2886faff07bb054e1269a4f06f5f3c1a1b83019b6ce7761badfa116ca96fbb9c49f16b94ad02d1a72c2fb64dc68cb7dd81331cb7
+  languageName: node
+  linkType: hard
+
 "@rollup/plugin-node-resolve@npm:^11.2.1":
   version: 11.2.1
   resolution: "@rollup/plugin-node-resolve@npm:11.2.1"
@@ -9839,6 +9855,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"honorable-recipe-mp@npm:0.4.0":
+  version: 0.4.0
+  resolution: "honorable-recipe-mp@npm:0.4.0"
+  checksum: fd2d7bd30cc984a1f8be23736a0a2c1d9aec45ecd4ed702a0b37ed3e7fb3d5bcbbb289dd7ed3e30f49e70d3c9f22e200e854667b9df565750635bf68f120e269
+  languageName: node
+  linkType: hard
+
 "honorable-theme-default@npm:1.0.0-beta.5":
   version: 1.0.0-beta.5
   resolution: "honorable-theme-default@npm:1.0.0-beta.5"
@@ -13897,6 +13920,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"rollup-plugin-polyfill-node@npm:^0.11.0":
+  version: 0.11.0
+  resolution: "rollup-plugin-polyfill-node@npm:0.11.0"
+  dependencies:
+    "@rollup/plugin-inject": ^5.0.1
+  peerDependencies:
+    rollup: ^1.20.0 || ^2.0.0 || ^3.0.0
+  checksum: 059657c718154964c7b2e9140aa884fb1602a2f9348124f942d3ce4e5640fcf92733cd9096c77d7ff99842b3a07b7e237126b5b185d678f7f523aaf0d949e67b
+  languageName: node
+  linkType: hard
+
 "rollup-plugin-terser@npm:^7.0.0":
   version: 7.0.2
   resolution: "rollup-plugin-terser@npm:7.0.2"
@@ -16527,6 +16561,7 @@ __metadata:
     grommet: 2.28.0
     history: 5.3.0
     honorable: 1.0.0-beta.17
+    honorable-recipe-mp: 0.4.0
     honorable-theme-default: 1.0.0-beta.5
     js-yaml: 4.1.0
     jsdom: 20.0.3
@@ -16570,6 +16605,7 @@ __metadata:
     react-window: 1.8.8
     react-window-reversed: 1.4.1
     rehype-raw: 6.1.1
+    rollup-plugin-polyfill-node: ^0.11.0
     serve: 14.1.2
     slate: 0.87.0
     slate-history: 0.86.0

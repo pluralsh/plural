@@ -24,8 +24,6 @@ function RoadmapIssue({
   displayVotes = false,
   displayProgress = false,
 }: RoadmapIssuePropsType) {
-  console.log('issue', issue)
-
   return (
     <Div
       borderBottom="1px solid border"

@@ -4,10 +4,11 @@ import { Route, Routes } from 'react-router-dom'
 import { ApolloProvider } from '@apollo/client'
 import { IntercomProvider } from 'react-use-intercom'
 import { Box, Grommet, ThemeType } from 'grommet'
-import { GlobalStyle, theme as honorableTheme, styledTheme } from '@pluralsh/design-system'
-import { CssBaseline, ThemeProvider } from 'honorable'
+import { GlobalStyle, styledTheme, theme } from '@pluralsh/design-system'
+import { CssBaseline, ThemeProvider, mergeTheme } from 'honorable'
 import { ThemeProvider as StyledThemeProvider } from 'styled-components'
 import { mergeDeep } from '@apollo/client/utilities'
+import mpRecipe from 'honorable-recipe-mp'
 import { GrowthBook, GrowthBookProvider } from '@growthbook/growthbook-react'
 
 import { client } from './helpers/client'
@@ -27,6 +28,14 @@ const OAuthConsent = lazy(() => import('./components/oidc/OAuthConsent').then(mo
 const EmailConfirmed = lazy(() => import('./components/users/EmailConfirmation').then(module => ({ default: module.EmailConfirmed })))
 const OAuthCallback = lazy(() => import('./components/users/OAuthCallback').then(module => ({ default: module.OAuthCallback })))
 const SSOCallback = lazy(() => import('./components/users/SSOCallback').then(module => ({ default: module.SSOCallback })))
+
+const honorableTheme = mergeTheme(theme, {
+  global: [
+    // This provides the mp spacing props to honorable
+    // DEPRECATED in favor of the semantic spacing system
+    mpRecipe(),
+  ],
+})
 
 function App() {
   const mergedStyledTheme = mergeDeep(DEFAULT_THEME, styledTheme)

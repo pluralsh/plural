@@ -8,6 +8,7 @@ import {
 } from 'react-router-dom'
 import { Flex, P } from 'honorable'
 import { Button, TabPanel } from '@pluralsh/design-system'
+import { validate as uuidValidate } from 'uuid'
 
 import { GoBack } from '../utils/GoBack'
 
@@ -28,19 +29,10 @@ import { RepositorySideCar } from './RepositorySideCar'
 
 import { REPOSITORY_QUERY } from './queries'
 
-// To test whether the provided url param is a uuid or a name
-const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i
-
 function Repository() {
   const { name } = useParams()
   const [searchParams] = useSearchParams()
-  const variables: any = { name }
-
-  if (name && uuidRegex.test(name)) {
-    variables.repositoryId = name
-  }
-
-  const { data, loading } = useQuery(REPOSITORY_QUERY, { variables })
+  const { data, loading } = useQuery(REPOSITORY_QUERY, { variables: uuidValidate(name ?? '') ? { repositoryId: name } : { name } })
   const backStackName = searchParams.get('backStackName')
   const tabStateRef = useRef<any>(null)
 

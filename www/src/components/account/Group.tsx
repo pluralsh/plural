@@ -51,6 +51,7 @@ function GroupMember({
         {edit && (
           <DeleteIconButton
             onClick={() => mutation()}
+            // @ts-expect-error
             hue="lighter"
           />
         )}

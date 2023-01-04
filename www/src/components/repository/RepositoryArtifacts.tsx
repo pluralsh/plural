@@ -140,7 +140,8 @@ function Artifacts({ artifact }: any) {
         </H2>
         <Code
           language="markdown"
-          mt={2}
+          marginTop="xlarge"
+          onSelectedTabChange={() => {}}
         >
           {artifact.readme}
         </Code>
@@ -154,7 +155,8 @@ function Artifacts({ artifact }: any) {
         </H2>
         <Code
           language="json"
-          mt={2}
+          marginTop="xlarge"
+          onSelectedTabChange={() => {}}
         >
           {`{
   "name": "${artifact.name}",

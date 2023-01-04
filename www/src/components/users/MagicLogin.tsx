@@ -11,12 +11,7 @@ import {
   Keyboard,
   Text,
 } from 'grommet'
-import {
-  Divider,
-  FormField,
-  LoadingSpinner,
-  StatusOkIcon,
-} from '@pluralsh/design-system'
+import { Divider, FormField, LoadingSpinner } from '@pluralsh/design-system'
 import {
   useApolloClient,
   useLazyQuery,
@@ -32,11 +27,9 @@ import {
 import queryString from 'query-string'
 import {
   A,
-  Article,
   Button,
   Div,
   Flex,
-  H2,
   Icon,
   Img,
   Input,
@@ -50,7 +43,7 @@ import { WelcomeHeader } from '../utils/WelcomeHeader'
 import { fetchToken, setToken } from '../../helpers/authentication'
 import { Alert, AlertStatus, GqlError } from '../utils/Alert'
 import { disableState } from '../Login'
-import { PLURAL_FULL_LOGO_WHITE, PLURAL_MARK_WHITE } from '../constants'
+import { LOGIN_SIDEBAR_IMAGE, PLURAL_MARK_WHITE } from '../constants'
 import { ACCEPT_LOGIN } from '../oidc/queries'
 import { host } from '../../helpers/hostname'
 import { useHistory } from '../../router'
@@ -110,53 +103,17 @@ export function LoginPortal({ children }: any) {
         direction="column"
         align="center"
         background="fill-one"
-        display-tablet="none"
-        padding="xxlarge"
-        overflowY="auto"
-        overflowX="hidden"
+        display-desktop-down="none"
+        overflow="hidden"
+        width={504}
         height="100%"
       >
-        <Flex
-          grow={1}
-          width={408}
-          direction="column"
-        >
-          {/* LOGOTYPE */}
-          <Flex
-            paddingBottom="xxxlarge"
-            align="center"
-            gap="xxsmall"
-          >
-            <Img
-              src={PLURAL_FULL_LOGO_WHITE}
-              height={48}
-            />
-          </Flex>
-          {/* HIGHLIGHTS */}
-          <Flex
-            grow={1}
-            direction="column"
-            justify="center"
-          >
-            <LoginHighlight
-              title="Built for the cloud."
-              marginBottom="xxlarge"
-            >
-              Plural is optimized for you to bring your own cloud and run on top of Kubernetes with the ideal cluster
-              distribution.
-            </LoginHighlight>
-            <LoginHighlight
-              title="Developer friendly."
-              marginBottom="xxlarge"
-            >
-              Use our simple GitOps driven workflow for deploying and managing applications, and a centralized
-              configuration in a single repo.
-            </LoginHighlight>
-            <LoginHighlight title="Batteries included.">
-              Baked-in observability, logging, auditing, and user auth.
-            </LoginHighlight>
-          </Flex>
-        </Flex>
+        <Img
+          src={LOGIN_SIDEBAR_IMAGE}
+          width="100%"
+          height="100%"
+          objectFit="cover"
+        />
       </Flex>
       {/* RIGHT SIDE */}
       <Flex
@@ -174,39 +131,6 @@ export function LoginPortal({ children }: any) {
           {children}
         </Div>
       </Flex>
-    </Flex>
-  )
-}
-
-function LoginHighlight({ title, children, ...props }: any) {
-  return (
-    <Flex
-      align="flex-start"
-      {...props}
-    >
-      <StatusOkIcon
-        size={16}
-        marginTop="xxsmall"
-        backgroundColor="white"
-        borderRadius="100%"
-        outline="2px solid fill-one" // cover the white background with outline that can be seen on the outside of the icon
-        outlineOffset={-1}
-        color="border-primary"
-      />
-      <Article marginLeft="medium">
-        <H2
-          subtitle1
-          marginBottom="xxsmall"
-        >
-          {title}
-        </H2>
-        <P
-          body2
-          color="text-light"
-        >
-          {children}
-        </P>
-      </Article>
     </Flex>
   )
 }
@@ -321,6 +245,16 @@ function LoginPoller({ challenge, token, deviceToken }: any) {
   )
 }
 
+const sortOrder = [
+  'GITHUB',
+  'GITLAB',
+  'GOOGLE',
+]
+
+function sortOauthUrls(a, b) {
+  return sortOrder.indexOf(a.provider) - sortOrder.indexOf(b.provider)
+}
+
 function OAuthOptions({ oauthUrls }: any) {
   const { ref, width } = useResizeDetector({
     handleHeight: false,
@@ -348,7 +282,7 @@ function OAuthOptions({ oauthUrls }: any) {
             wrap="wrap"
             flexWrap="wrap"
           >
-            {oauthUrls.map(url => (
+            {[...oauthUrls].sort(sortOauthUrls).map(url => (
               <OAuthOption
                 key={url.provider}
                 url={url}
@@ -451,7 +385,7 @@ export function Login() {
 
   return (
     <LoginPortal>
-      <WelcomeHeader marginBottom="xxlarge" />
+      <WelcomeHeader marginBottom="xlarge" />
       {passwordless && (
         <Div>
           <LoginPoller
@@ -534,7 +468,7 @@ function OAuthOption({ url: { authorizeUrl, provider }, ...props }: any) {
         window.location = authorizeUrl
       }}
       startIcon={(
-        <Icon>
+        <Icon filter="grayscale(1)">
           {createElement(icon, { size: 20, fullColor: true })}
         </Icon>
       )}

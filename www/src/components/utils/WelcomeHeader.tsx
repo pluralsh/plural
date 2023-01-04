@@ -1,15 +1,13 @@
-import { Div, H1, P } from 'honorable'
+import { Div, H1 } from 'honorable'
 
-export function WelcomeHeader({ heading = 'Welcome to Plural', subheading = 'We\'re glad to see you here.', ...props }: any) {
+export function WelcomeHeader({ heading = 'Welcome to Plural', ...props }: any) {
   return (
     <Div {...props}>
-      <H1 title1>{heading}</H1>
-      <P
-        body1
-        color="text-light"
-      >
-        {subheading}
-      </P>
+      <H1
+        title1
+        textAlign="center"
+      >{heading}
+      </H1>
     </Div>
   )
 }

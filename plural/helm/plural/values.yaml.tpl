@@ -73,7 +73,6 @@ chartmuseum:
 {{ $hydraPassword := dedupe . "plural.hydraPassword" (randAlphaNum 20) }}
 {{ $hydraHost := default "hydra.plural.sh" .Values.hydra_host }}
 hydraPassword: {{ $hydraPassword }}
-configureHydra: true
 hydraSecrets:
   system: {{ dedupe . "plural.hydraSecrets.system" (randAlphaNum 20) }}
   cookie: {{ dedupe . "plural.hydraSecrets.cookie" (randAlphaNum 20) }}
@@ -82,10 +81,6 @@ hydraSecrets:
 hydra:
   hydra:
     config:
-      dsn: "postgres://hydra:{{ $hydraPassword }}@plural-hydra:5432/hydra"
-      secrets:
-        system: {{ dedupe . "plural.hydra.secrets.system" (randAlphaNum 20) }}
-        cookie: {{ dedupe . "plural.hydra.secrets.cookie" (randAlphaNum 20) }}
       urls:
         self:
           issuer: https://{{ $hydraHost }}/
@@ -95,7 +90,9 @@ hydra:
     public:
       hosts:
       - host: {{ $hydraHost }}
-        paths: ["/.*"]
+        paths:
+        - path: /
+          pathType: ImplementationSpecific
       tls:
       - hosts:
         - {{ $hydraHost }}

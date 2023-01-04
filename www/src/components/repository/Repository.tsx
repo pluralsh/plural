@@ -28,7 +28,7 @@ import { RepositorySideCar } from './RepositorySideCar'
 
 import { REPOSITORY_QUERY } from './queries'
 
-// To test weither the provided url param is a uuid or a name
+// To test whether the provided url param is a uuid or a name
 const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i
 
 function Repository() {

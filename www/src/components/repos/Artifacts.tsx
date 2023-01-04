@@ -305,7 +305,6 @@ function ArtifactRow({ artifact }: any) {
         >
           <Text
             size="small"
-                        // @ts-expect-error
             weight={500}
           >
             {artifact.name}

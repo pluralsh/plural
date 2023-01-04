@@ -9,6 +9,7 @@ defmodule Core.Schema.Account do
     field :workos_connection_id, :string
     field :icon,                 Core.Storage.Type
     field :billing_customer_id,  :string
+    field :delinquent_at,        :utc_datetime_usec
 
     belongs_to :root_user, User
     has_many :domain_mappings, DomainMapping, on_replace: :delete
@@ -29,7 +30,7 @@ defmodule Core.Schema.Account do
     |> cast_attachments(attrs, [:icon], allow_urls: true)
   end
 
-  @payment ~w(billing_customer_id)a
+  @payment ~w(billing_customer_id delinquent_at)a
 
   def payment_changeset(model, attrs \\ %{}) do
     model

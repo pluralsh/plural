@@ -128,7 +128,8 @@ config :core,
   gcp_identity: "someone@example.com",
   vault: "https://vault.plural.sh:443",
   docker_env: [],
-  openai_token: "openai"
+  openai_token: "openai",
+  stripe_webhook_secret: "bogus"
 
 config :briefly,
   directory: [{:system, "TMPDIR"}, {:system, "TMP"}, {:system, "TEMP"}, "/tmp"],

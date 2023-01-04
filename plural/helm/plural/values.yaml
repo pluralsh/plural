@@ -35,6 +35,14 @@ configOverlays:
     documentation: id for stripe connect account
     updates:
     - path: ['plural', 'secrets', 'stripe_connect_id']
+- name: stripe-webhook-secret
+  spec:
+    folder: secrets
+    subfolder: stripe
+    name: Stripe Webhook Secret
+    documentation: secret for stripe event webhooks
+    updates:
+    - path: ['plural', 'secrets', 'stripe_webhook_secret']
 - name: zerossl-access-key
   spec:
     folder: secrets

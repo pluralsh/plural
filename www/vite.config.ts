@@ -35,19 +35,6 @@ export default defineConfig({
       ],
     },
   },
-  // optimizeDeps: {
-  //   esbuildOptions: {
-  //     define: {
-  //       global: 'globalThis',
-  //     },
-  //     plugins: [
-  //       NodeGlobalsPolyfillPlugin({
-  //         process: true,
-  //         buffer: true,
-  //       }),
-  //     ],
-  //   },
-  // },
   resolve: {
     alias: {
       process: 'process/browser',

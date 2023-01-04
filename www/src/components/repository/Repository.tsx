@@ -1,8 +1,13 @@
 import { useQuery } from '@apollo/client'
 import { useRef } from 'react'
-import { Outlet, useParams, useSearchParams } from 'react-router-dom'
-import { Flex } from 'honorable'
-import { TabPanel } from '@pluralsh/design-system'
+import {
+  Link,
+  Outlet,
+  useParams,
+  useSearchParams,
+} from 'react-router-dom'
+import { Flex, P } from 'honorable'
+import { Button, TabPanel } from '@pluralsh/design-system'
 
 import { GoBack } from '../utils/GoBack'
 
@@ -23,14 +28,23 @@ import { RepositorySideCar } from './RepositorySideCar'
 
 import { REPOSITORY_QUERY } from './queries'
 
+// To test weither is provider url param is a uuid or a name
+const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+
 function Repository() {
   const { name } = useParams()
   const [searchParams] = useSearchParams()
-  const { data } = useQuery(REPOSITORY_QUERY, { variables: { name } })
+  const variables: any = { name }
+
+  if (name && uuidRegex.test(name)) {
+    variables.repositoryId = name
+  }
+
+  const { data, loading } = useQuery(REPOSITORY_QUERY, { variables })
   const backStackName = searchParams.get('backStackName')
   const tabStateRef = useRef<any>(null)
 
-  if (!data) {
+  if (loading) {
     return (
       <Flex
         // These mp values are to align the looping logo with the previous looping logo.
@@ -41,6 +55,26 @@ function Repository() {
         justify="center"
       >
         <LoopingLogo />
+      </Flex>
+    )
+  }
+
+  if (!data || !data.repository) {
+    return (
+      <Flex
+        direction="column"
+        align="center"
+        justify="center"
+        height="100%"
+      >
+        <P body2>Repository not found.</P>
+        <Button
+          mt="medium"
+          as={Link}
+          to="/marketplace"
+        >
+          Go to the marketplace
+        </Button>
       </Flex>
     )
   }

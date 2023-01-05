@@ -490,7 +490,7 @@ hydraImage:
   # ORY Hydra image
   repository: gcr.io/pluralsh/oryd/hydra
   # ORY Hydra version
-  tag: v1.8.5
+  tag: v1.11.10
   # Image pull policy
   pullPolicy: IfNotPresent
 

@@ -91,7 +91,7 @@ hydra:
       hosts:
       - host: {{ $hydraHost }}
         paths:
-        - path: /
+        - path: /*
           pathType: ImplementationSpecific
       tls:
       - hosts:

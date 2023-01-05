@@ -494,7 +494,7 @@ hydra:
 
   image:
     repository: gcr.io/pluralsh/oryd/hydra
-    tag: v2.0.2
+    tag: v2.0.3
   
   secret:
     enabled: false

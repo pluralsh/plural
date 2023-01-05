@@ -1,9 +1,9 @@
 import { Div, Flex } from 'honorable'
 
-export function ResponsiveLayoutSpacer() {
+export function ResponsiveLayoutSpacer({ grow = 1 }) {
   return (
     <Div
-      flexGrow={1}
+      flexGrow={grow}
       display-desktopLarge-down="none"
     />
   )

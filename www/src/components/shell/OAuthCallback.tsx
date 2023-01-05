@@ -6,9 +6,8 @@ import { LoopingLogo } from '../utils/AnimatedLogo'
 import { useHistory } from '../../router'
 
 import { AUTHENTICATION_URLS_QUERY, SCM_TOKEN_QUERY } from './queries'
-
-import OnboardingFlow from './onboarding/OnboardingFlow'
 import { useDevToken } from './useDevToken'
+import { Onboarding } from './onboarding_v3/Onboarding'
 
 function OAuthCallback({ provider }: any) {
   const history = useHistory()
@@ -29,7 +28,7 @@ function OAuthCallback({ provider }: any) {
     data = { ...data, ...{ scmToken: devToken } }
   }
 
-  if (!data) {
+  if (!data || !authUrlData) {
     return (
       <LoopingLogo />
     )
@@ -42,7 +41,7 @@ function OAuthCallback({ provider }: any) {
   }
 
   return (
-    <OnboardingFlow
+    <Onboarding
       accessToken={data.scmToken}
       provider={provider.toUpperCase()}
       authUrlData={authUrlData}

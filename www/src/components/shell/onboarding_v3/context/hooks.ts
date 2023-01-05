@@ -1,0 +1,124 @@
+import { Dispatch, useCallback, useContext } from 'react'
+
+import {
+  CloudIcon,
+  ListIcon,
+  NetworkInterfaceIcon,
+  PackageIcon,
+  TerminalIcon,
+} from '@pluralsh/design-system'
+
+import { OnboardingContext } from './onboarding'
+import {
+  CloudType,
+  OnboardingPath,
+  SCMProps,
+  Section,
+  SectionKey,
+  Sections,
+} from './types'
+
+const defaultSections = (): Sections => {
+  const sections: Sections = {
+    [SectionKey.CREATE_REPOSITORY]: {
+      index: 0, key: SectionKey.CREATE_REPOSITORY, title: 'Create a repository', IconComponent: PackageIcon,
+    },
+    [SectionKey.CONFIGURE_CLOUD]: {
+      index: 1, key: SectionKey.CONFIGURE_CLOUD, title: 'Configure cloud', IconComponent: CloudIcon,
+    },
+    [SectionKey.CONFIGURE_WORKSPACE]: {
+      index: 2, key: SectionKey.CONFIGURE_WORKSPACE, title: 'Configure workspace', IconComponent: NetworkInterfaceIcon,
+    },
+    [SectionKey.CREATE_CLOUD_SHELL]: {
+      index: 3, key: SectionKey.CREATE_CLOUD_SHELL, title: 'Create cloud shell', IconComponent: TerminalIcon,
+    },
+  }
+
+  // build sections flow
+  sections[SectionKey.CREATE_REPOSITORY].next = sections[SectionKey.CONFIGURE_CLOUD]
+
+  sections[SectionKey.CONFIGURE_CLOUD].prev = sections[SectionKey.CREATE_REPOSITORY]
+  sections[SectionKey.CONFIGURE_CLOUD].next = sections[SectionKey.CONFIGURE_WORKSPACE]
+
+  sections[SectionKey.CONFIGURE_WORKSPACE].prev = sections[SectionKey.CONFIGURE_CLOUD]
+  sections[SectionKey.CONFIGURE_WORKSPACE].next = sections[SectionKey.CREATE_CLOUD_SHELL]
+
+  sections[SectionKey.CREATE_CLOUD_SHELL].prev = sections[SectionKey.CONFIGURE_WORKSPACE]
+
+  return sections
+}
+
+const localCLISections = (): Sections => {
+  const sections: Sections = {
+    [SectionKey.CREATE_REPOSITORY]: {
+      index: 0, key: SectionKey.CREATE_REPOSITORY, title: 'Create a repository', IconComponent: PackageIcon,
+    },
+    [SectionKey.CONFIGURE_CLOUD]: {
+      index: 1, key: SectionKey.CONFIGURE_CLOUD, title: 'Configure cloud', IconComponent: CloudIcon,
+    },
+    [SectionKey.INSTALL_CLI]: {
+      index: 2, key: SectionKey.INSTALL_CLI, title: 'Install Plural CLI', IconComponent: TerminalIcon,
+    },
+    [SectionKey.COMPLETE_SETUP]: {
+      index: 3, key: SectionKey.COMPLETE_SETUP, title: 'Complete Setup', IconComponent: ListIcon,
+    },
+  }
+
+  // build sections flow
+  sections[SectionKey.CREATE_REPOSITORY].next = sections[SectionKey.CONFIGURE_CLOUD]
+
+  sections[SectionKey.CONFIGURE_CLOUD].prev = sections[SectionKey.CREATE_REPOSITORY]
+  sections[SectionKey.CONFIGURE_CLOUD].next = sections[SectionKey.INSTALL_CLI]
+
+  sections[SectionKey.INSTALL_CLI].prev = sections[SectionKey.CONFIGURE_CLOUD]
+  sections[SectionKey.INSTALL_CLI].next = sections[SectionKey.COMPLETE_SETUP]
+
+  sections[SectionKey.COMPLETE_SETUP].prev = sections[SectionKey.INSTALL_CLI]
+
+  return sections
+}
+
+const useToken = (): string | undefined => {
+  const { scm: { token } } = useContext(OnboardingContext)
+
+  return token
+}
+
+const useSection = (): Section => {
+  const { section } = useContext(OnboardingContext)
+
+  return section
+}
+
+const useCloud = (): CloudType | undefined => {
+  const { cloud: { type } } = useContext(OnboardingContext)
+
+  return type
+}
+
+const useSCM = (): SCMProps => {
+  const { scm } = useContext(OnboardingContext)
+
+  return scm
+}
+
+const useRestart = (): Dispatch<void> => usePath(OnboardingPath.CloudShell)
+
+const usePath = (path: OnboardingPath): Dispatch<void> => {
+  const { setSections } = useContext(OnboardingContext)
+  let sections: Sections
+
+  switch (path) {
+  case OnboardingPath.CloudShell:
+    sections = defaultSections()
+    break
+  case OnboardingPath.LocalCLI:
+    sections = localCLISections()
+  }
+
+  return useCallback(() => setSections(sections), [setSections])
+}
+
+export {
+  useToken, useCloud, useSCM, useRestart, defaultSections, useSection, usePath,
+}

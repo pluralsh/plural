@@ -1,25 +1,16 @@
 module "shell_node_group" {
-  source = "github.com/pluralsh/module-library//terraform/eks-node-groups/multi-az-node-group"
-  
-  node_group_name = "shell-nodes"
-  cluster_name    = var.cluster_name
-  instance_types  = ["t3.large"]
-  subnet_ids      = var.shell_subnet_ids
-  desired_size    = 1
-  min_capacity    = 1
-  max_capacity    = 10
-  
-  labels = {
-    "platform.plural.sh/instance-class" = "shell"
-  }
+  source = "github.com/pluralsh/module-library//terraform/eks-node-groups/multi-az-node-groups?ref=20e64863ffc5e361045db8e6b81b9d244a55809e"
+  cluster_name           = var.cluster_name
+  default_iam_role_arn   = var.node_role_arn
+  tags                   = var.tags
+  node_groups_defaults   = var.node_groups_defaults
 
-  tags = {}
+  node_groups            = var.shell_node_groups
+  set_desired_size       = false
+  private_subnet_ids        = var.private_subnet_ids
+}
 
-  taints = [
-    {
-      key = "platform.plural.sh/taint"
-      value = "SHELL"
-      effect = "NO_SCHEDULE"
-    }
-  ]
+moved {
+  from = module.shell_node_group.aws_eks_node_group.gpu_inf_small
+  to   = module.shell_node_group.aws_eks_node_group.workers["shell_nodes"]
 }

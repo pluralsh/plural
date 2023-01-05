@@ -131,7 +131,7 @@ function prepareIssueBody(body: string) {
 
   const output = texts.filter(Boolean).join(' ').trim()
 
-  return output[0].toUpperCase() + output.slice(1)
+  return (output[0] ?? '').toUpperCase() + (output.slice(1) ?? '')
 }
 
 export default memo(RoadmapIssue)

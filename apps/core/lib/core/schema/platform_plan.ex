@@ -2,7 +2,7 @@ defmodule Core.Schema.PlatformPlan do
   use Piazza.Ecto.Schema
 
   defenum Period, monthly: 0, yearly: 1
-  defenum Dimension, user: 0
+  defenum Dimension, user: 0, cluster: 1
 
   defmodule LineItem do
     use Piazza.Ecto.Schema

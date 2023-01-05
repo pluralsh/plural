@@ -302,7 +302,7 @@ configOverlays:
     name: shell image
     documentation: the image url for use on cloud shell pods
     updates:
-    - path: ['plural', 'secrets', 'cloud_shell_img']
+    - path: ['plural', 'secrets', 'cloud_shell_img']  
 
 secrets:
   jwt: dummy
@@ -487,6 +487,10 @@ crons:
 - cronName: plrl-prune-stacks
   cronModule: Prune.Stacks
   crontab: "55 0 * * *"
+  envVars: []
+- cronName: plrl-sync-usage
+  cronModule: Task.Usage
+  crontab: "0 0 * * *"
   envVars: []
 
 hydraSecrets:

@@ -21,6 +21,10 @@ defmodule Core.Schema.UpgradeQueue do
     from(q in query, where: q.user_id == ^user_id)
   end
 
+  def ordered(query \\ __MODULE__, order \\ [asc: :id]) do
+    from(q in query, order_by: ^order)
+  end
+
   def expired(query \\ __MODULE__) do
     expiry = Timex.now() |> Timex.shift(days: -@expiry)
     from(q in query, where: q.pinged_at < ^expiry)

@@ -521,6 +521,45 @@ defmodule Core.Services.Payments do
   def update_line_item(attrs, subscription_id, user),
     do: update_line_item(attrs, get_subscription!(subscription_id), user)
 
+
+  @doc """
+  Aligns usage with the current counts on the account.  If the account has no platform subscription, just removes the update market
+  """
+  @spec sync_usage(Account.t) :: platform_sub_resp
+  def sync_usage(%Account{subscription: nil} = account) do
+    account
+    |> Ecto.Changeset.change(%{usage_updated: false})
+    |> Core.Repo.update()
+  end
+
+  def sync_usage(%Account{
+    user_count: u,
+    cluster_count: c,
+    subscription: %PlatformSubscription{} = s,
+    root_user: user
+  } = account) do
+    user = Core.Services.Rbac.preload(user)
+
+    start_transaction()
+    |> add_operation(:account, fn _ ->
+      account
+      |> Ecto.Changeset.change(%{usage_updated: false})
+      |> Core.Repo.update()
+    end)
+    |> add_operation(:users, fn _ ->
+      update_platform_line_item(%{dimension: :user, quantity: u}, s, user)
+    end)
+    |> add_operation(:clusters, fn %{users: s} ->
+      update_platform_line_item(%{dimension: :cluster, quantity: c}, s, user)
+    end)
+    |> execute(extract: :clusters)
+  end
+
+  def sync_usage(%Account{} = account) do
+    Core.Repo.preload(account, [:root_user, :subscription])
+    |> sync_usage()
+  end
+
   @doc """
   Updates the quantity of a specific line item for a platform plan. Persists the update to stripe transactionally.
 

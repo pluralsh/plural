@@ -79,7 +79,8 @@ config :core,
   workos_webhook: get_env("WORKOS_WEBHOOK_SECRET"),
   gcp_identity: get_env("GCP_USER_EMAIL") || "mjg@plural.sh",
   openai_token: get_env("OPENAI_BEARER_TOKEN"),
-  enforce_pricing: get_env("ENFORCE_PRICING")
+  enforce_pricing: get_env("ENFORCE_PRICING"),
+  stripe_webhook_secret: get_env("STRIPE_WEBHOOK_SECRET")
 
 
 if get_env("VAULT_HOST") do

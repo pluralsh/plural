@@ -21,6 +21,9 @@ defmodule Core.Services.Payments do
   @type platform_plan_resp :: {:ok, PlatformPlan.t} | error
   @type platform_sub_resp :: {:ok, PlatformSubcription.t} | error
 
+  @spec get_account(binary) :: Account.t | nil
+  def get_account(cust_id), do: Core.Repo.get_by(Account, billing_customer_id: cust_id)
+
   @spec get_plan!(binary) :: Plan.t
   def get_plan!(id), do: Core.Repo.get!(Plan, id)
 
@@ -119,7 +122,7 @@ defmodule Core.Services.Payments do
   @doc """
   Completes the stripe oauth cycle and persists the account id to the publisher
   """
-  @spec create_publisher_account(Publisher.t, binary) :: {:ok, Publisher.t} | {:error, term}
+  @spec create_publisher_account(Publisher.t, binary) :: {:ok, Publisher.t} | error
   def create_publisher_account(%Publisher{} = publisher, code) do
     with {:ok, %{stripe_user_id: account_id}} <- Stripe.Connect.OAuth.token(code) do
       publisher
@@ -127,6 +130,27 @@ defmodule Core.Services.Payments do
       |> Core.Repo.update()
     end
   end
+
+
+  @doc """
+  Modifies delinquency for an account.  If an account is already delinquent, we don't want to move its timestamp into  the future,
+  so it's ignored.  Otherwise, if it's delinquent, it can always be marked undelinquent, and vice-versa.
+  """
+  @spec toggle_delinquent(binary | Account.t, term) :: {:ok, Account.t} | error
+  def toggle_delinquent(cust_id, deliquent_at \\ Timex.now())
+  def toggle_delinquent(%Account{delinquent_at: del} = account, now) when not is_nil(del) and not is_nil(now),
+    do: {:ok, account}
+  def toggle_delinquent(%Account{} = account, delinquent_at) do
+    account
+    |> Account.payment_changeset(%{delinquent_at: delinquent_at})
+    |> Core.Repo.update()
+  end
+  def toggle_delinquent(nil, _), do: {:error, "account not found"}
+  def toggle_delinquent(id, val) when is_binary(id) do
+    get_account(id)
+    |> toggle_delinquent(val)
+  end
+
 
   @doc """
   Cancels a subscription for a user, and deletes the record in our database
@@ -174,7 +198,7 @@ defmodule Core.Services.Payments do
   @doc """
   Appends a new usage record for the given line item to stripe's api
   """
-  @spec add_usage_record(map, atom, Subscription.t) :: {:ok, term} | {:error, term}
+  @spec add_usage_record(map, atom, Subscription.t) :: {:ok, term} | error
   def add_usage_record(params, dimension, %Subscription{} = sub) do
     %{installation: %{repository: %{publisher: pub}}} = Core.Repo.preload(sub, [installation: [repository: :publisher]])
     timestamp = DateTime.utc_now() |> DateTime.to_unix()

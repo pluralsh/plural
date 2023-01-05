@@ -9,6 +9,7 @@ defmodule Core.Schema.Account do
     field :workos_connection_id, :string
     field :icon,                 Core.Storage.Type
     field :billing_customer_id,  :string
+    field :delinquent_at,        :utc_datetime_usec
     field :user_count,           :integer, default: 0
     field :cluster_count,        :integer, default: 0
     field :usage_updated,        :boolean
@@ -49,6 +50,8 @@ defmodule Core.Schema.Account do
     |> generate_uuid(:icon_id)
     |> cast_attachments(attrs, [:icon], allow_urls: true)
   end
+
+  @payment ~w(billing_customer_id delinquent_at)a
 
   def payment_changeset(model, attrs \\ %{}) do
     model

@@ -42,6 +42,7 @@ defmodule ApiWeb.Router do
 
     scope "/webhooks" do
       post "/workos", WebhookController, :workos
+      post "/stripe", WebhookController, :stripe
     end
   end
 

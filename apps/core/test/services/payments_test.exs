@@ -451,6 +451,41 @@ defmodule Core.Services.PaymentsTest do
     end
   end
 
+  describe "#sync_usage/1" do
+    setup [:setup_root_user]
+    test "if the account is on no plan, it'll just de-mark" do
+      account = insert(:account, usage_updated: true)
+
+      {:ok, up} = Payments.sync_usage(account)
+
+      assert up.id == account.id
+      refute up.usage_updated
+    end
+
+    test "if the account is on a platform plan, it will update", %{account: account} do
+      {:ok, account} = Ecto.Changeset.change(account, %{cluster_count: 2, user_count: 3})
+                       |> Core.Repo.update()
+      subscription = insert(:platform_subscription, account: account, line_items: [
+        %{id: Ecto.UUID.generate(), external_id: "si_1", quantity: 1, dimension: :user},
+        %{id: Ecto.UUID.generate(), external_id: "si_2", quantity: 0, dimension: :cluster},
+      ])
+
+      expect(Stripe.SubscriptionItem, :update, 2, fn
+        "si_1", %{quantity: 3} -> {:ok, %{}}
+        "si_2", %{quantity: 2} -> {:ok, %{}}
+      end)
+
+      {:ok, updated} = Payments.sync_usage(account)
+
+      assert updated.id == subscription.id
+
+      %{user: user, cluster: cluster} = Enum.into(updated.line_items, %{}, & {&1.dimension, &1})
+
+      assert user.quantity == 3
+      assert cluster.quantity == 2
+    end
+  end
+
   describe "#update_platform_plan/3" do
     test "users can change platform plans" do
       expect(Stripe.Subscription, :update, fn

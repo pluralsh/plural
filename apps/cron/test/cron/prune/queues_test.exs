@@ -7,7 +7,7 @@ defmodule Cron.Prune.QueuesTest do
       old = insert_list(3, :upgrade_queue, pinged_at: Timex.now() |> Timex.shift(days: -15))
       insert(:upgrade_queue)
 
-      {3, _} = Queues.run()
+      Queues.run()
 
       for q <- old,
         do: refute refetch(q)

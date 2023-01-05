@@ -29,6 +29,21 @@ defmodule Core.Services.UpgradesTest do
     end
   end
 
+  describe "#delete_queue/1" do
+    test "it will decrement usage transactionally" do
+      account = insert(:account, cluster_count: 1)
+      user = insert(:user, account: account)
+      q = insert(:upgrade_queue, user: user)
+
+      {:ok, up} = Upgrades.delete_queue(q)
+
+      assert up.id == q.id
+      account = refetch(account)
+      assert account.cluster_count == 0
+      assert account.usage_updated
+    end
+  end
+
   describe "#ping/2" do
     test "it will set the pinged_at timestamp" do
       queue = insert(:upgrade_queue)

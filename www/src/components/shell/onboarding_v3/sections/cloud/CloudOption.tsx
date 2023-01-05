@@ -15,7 +15,7 @@ function CloudOption({
       selected={selected}
       {...props}
     >
-      <Flex display="column">
+      <Flex direction="column">
         <Div
           marginHorizontal="auto"
           maxWidth={40}

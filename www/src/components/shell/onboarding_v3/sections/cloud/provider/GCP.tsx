@@ -1,4 +1,9 @@
-import { FormField, ListBoxItem, Select } from '@pluralsh/design-system'
+import {
+  CloseIcon,
+  FormField,
+  ListBoxItem,
+  Select,
+} from '@pluralsh/design-system'
 import {
   useCallback,
   useContext,
@@ -7,7 +12,7 @@ import {
   useState,
 } from 'react'
 import { FileInput, ThemeContext } from 'grommet'
-import { Div } from 'honorable'
+import { Div, Span } from 'honorable'
 import IsEmpty from 'lodash/isEmpty'
 
 import { OnboardingContext } from '../../../context/onboarding'
@@ -44,6 +49,9 @@ const fileInputTheme = (selected, error) => ({
     },
     border: {
       color: error ? 'error' : selected ? 'success' : 'fill-three',
+    },
+    icons: {
+      remove: CloseIcon,
     },
   },
 })
@@ -117,6 +125,13 @@ function GCP() {
               browse: 'Select file',
             }}
             onChange={({ target: { files } }: {target: {files: FileList}}) => readFile(files)}
+            renderFile={file => (
+              <Span
+                margin="small"
+                color="text-light"
+              >{file.name}
+              </Span>
+            )}
           />
         </ThemeContext.Extend>
         {!!fileError && (

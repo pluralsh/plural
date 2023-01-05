@@ -265,6 +265,9 @@ export const DEFAULT_THEME = {
     background: 'background',
   },
   fileInput: {
+    message: {
+      size: 'small',
+    },
     background: {
       color: 'fill-two',
     },

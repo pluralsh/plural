@@ -1,5 +1,5 @@
 import { Flex } from 'honorable'
-import { Button } from '@pluralsh/design-system'
+import { Button, Callout } from '@pluralsh/design-system'
 import {
   useContext,
   useEffect,
@@ -20,6 +20,7 @@ function CloudStep({ onBack, onNext }) {
   const setLocalCLIPath = usePath(OnboardingPath.LocalCLI)
   const { valid } = useContext(OnboardingContext)
   const [showConfig, setShowConfig] = useState(false)
+  const [expanded, setExpanded] = useState(false)
   const hasConfig = useMemo(() => cloud === CloudType.Cloud, [cloud])
 
   useEffect(() => {
@@ -47,6 +48,17 @@ function CloudStep({ onBack, onNext }) {
       {hasConfig && showConfig && (
         <CloudCredentials />
       )}
+
+      <Callout
+        severity="info"
+        title="Why do I need to enter my cloud credentials?"
+        buttonProps={{ children: 'Learn more' }}
+        expandable
+        expanded={expanded}
+        onExpand={setExpanded}
+      >
+        Connecting with your cloud credentials allows us to lorem ipsum dolor.
+      </Callout>
 
       <Flex
         gap="medium"

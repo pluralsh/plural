@@ -14,6 +14,7 @@ export const ProviderIcons = {
   AZURE: DEFAULT_AZURE_ICON,
   EQUINIX: DEFAULT_EQUINIX_ICON,
   KIND: DEFAULT_KIND_ICON,
+  GENERIC: DEFAULT_CHART_ICON,
 }
 
 export const DarkProviderIcons = {

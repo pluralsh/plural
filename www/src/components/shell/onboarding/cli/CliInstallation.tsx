@@ -74,7 +74,7 @@ function CliInstallation() {
           stateProps={{
             orientation: 'horizontal',
             selectedKey: tab,
-            onSelectionChange: key => setTab(key),
+            onSelectionChange: key => setTab(key as string),
           }}
           justifyContent="stretch"
           width="100%"
@@ -151,6 +151,7 @@ function CliInstallation() {
             <Div marginTop="small">
               {tab === TAB_MAC
                 ? <Codeline>{currentTab?.command}</Codeline> : (
+                  // @ts-expect-error
                   <Code>
                     {currentTab?.command || ''}
                   </Code>

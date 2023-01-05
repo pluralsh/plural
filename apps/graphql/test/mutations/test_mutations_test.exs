@@ -3,7 +3,7 @@ defmodule GraphQl.TestMutationsTest do
   import GraphQl.TestHelpers
 
   describe "createTest" do
-    test "owners can craete tests" do
+    test "owners can create tests" do
       %{owner: owner} = pub = insert(:publisher)
       repo = insert(:repository, publisher: pub)
       insert(:installation, user: owner, repository: repo)

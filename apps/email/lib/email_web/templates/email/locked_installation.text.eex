@@ -1,5 +1,5 @@
 Repository <%= @repo.name %> has unapplied breaking changes, to apply them,
-check out your repo locally and run the folling commands:
+check out your repo locally and run the following commands:
 
 ```
 <%= if @deps.instructions.script do %>

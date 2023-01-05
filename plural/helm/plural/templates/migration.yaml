@@ -67,8 +67,8 @@ spec:
       restartPolicy: Never
       containers:
       - name: hydra-migration
-        image: "{{ .Values.hydraImage.repository }}:{{ .Values.hydraImage.tag }}"
-        imagePullPolicy: {{ .Values.hydraImage.pullPolicy }}
+        image: "{{ .Values.hydra.image.repository }}:{{ .Values.hydra.image.tag }}"
+        imagePullPolicy: {{ .Values.hydra.image.pullPolicy }}
         command: ["hydra"]
         args: ["migrate", "sql", "-e", "--yes"]
         env:

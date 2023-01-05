@@ -20,6 +20,7 @@ import {
   BellIcon,
   CloseIcon,
   ClusterIcon,
+  CompassIcon,
   DiscordIcon,
   GitHubLogoIcon,
   ListIcon,
@@ -80,6 +81,11 @@ function SidebarWrapper() {
       name: 'Audits',
       Icon: ListIcon,
       url: '/audits',
+    },
+    {
+      name: 'Roadmap',
+      Icon: CompassIcon,
+      url: '/roadmap',
     },
   ]
 

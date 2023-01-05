@@ -245,7 +245,7 @@ defmodule GraphQl.Schema.Account do
       middleware Authenticated
       arg :id, non_null(:id)
 
-      resolve safe_resolver(&Account.resolve_role/2)
+      safe_resolve &Account.resolve_role/2
     end
 
     connection field :roles, node_type: :role do
@@ -279,9 +279,10 @@ defmodule GraphQl.Schema.Account do
   object :account_mutations do
     field :create_service_account, :user do
       middleware Authenticated
+      middleware Differentiate, feature: :user_management
       arg :attributes, non_null(:service_account_attributes)
 
-      resolve safe_resolver(&Account.create_service_account/2)
+      safe_resolve &Account.create_service_account/2
     end
 
     field :update_service_account, :user do
@@ -289,7 +290,7 @@ defmodule GraphQl.Schema.Account do
       arg :id, non_null(:id)
       arg :attributes, non_null(:service_account_attributes)
 
-      resolve safe_resolver(&Account.update_service_account/2)
+      safe_resolve &Account.update_service_account/2
     end
 
     field :impersonate_service_account, :user do
@@ -298,27 +299,27 @@ defmodule GraphQl.Schema.Account do
       arg :id,    :id
       arg :email, :string
 
-      resolve safe_resolver(&Account.impersonate_service_account/2)
+      safe_resolve &Account.impersonate_service_account/2
     end
 
     field :update_account, :account do
       middleware Authenticated
       arg :attributes, non_null(:account_attributes)
 
-      resolve safe_resolver(&Account.update_account/2)
+      safe_resolve &Account.update_account/2
     end
 
     field :create_invite, :invite do
       arg :attributes, non_null(:invite_attributes)
 
-      resolve safe_resolver(&Account.create_invite/2)
+      safe_resolve &Account.create_invite/2
     end
 
     field :delete_invite, :invite do
       arg :id, :id
       arg :secure_id, :string
 
-      resolve safe_resolver(&Account.delete_invite/2)
+      safe_resolve &Account.delete_invite/2
     end
 
     field :realize_invite, :user do
@@ -329,16 +330,17 @@ defmodule GraphQl.Schema.Account do
 
     field :create_group, :group do
       middleware Authenticated
+      middleware Differentiate, feature: :user_management
       arg :attributes, non_null(:group_attributes)
 
-      resolve safe_resolver(&Account.create_group/2)
+      safe_resolve &Account.create_group/2
     end
 
     field :delete_group, :group do
       middleware Authenticated
       arg :group_id, non_null(:id)
 
-      resolve safe_resolver(&Account.delete_group/2)
+      safe_resolve &Account.delete_group/2
     end
 
     field :update_group, :group do
@@ -346,7 +348,7 @@ defmodule GraphQl.Schema.Account do
       arg :group_id, non_null(:id)
       arg :attributes, non_null(:group_attributes)
 
-      resolve safe_resolver(&Account.update_group/2)
+      safe_resolve &Account.update_group/2
     end
 
     field :create_group_member, :group_member do
@@ -354,7 +356,7 @@ defmodule GraphQl.Schema.Account do
       arg :group_id, non_null(:id)
       arg :user_id, non_null(:id)
 
-      resolve safe_resolver(&Account.create_group_member/2)
+      safe_resolve &Account.create_group_member/2
     end
 
     field :delete_group_member, :group_member do
@@ -362,14 +364,15 @@ defmodule GraphQl.Schema.Account do
       arg :group_id, non_null(:id)
       arg :user_id, non_null(:id)
 
-      resolve safe_resolver(&Account.delete_group_member/2)
+      safe_resolve &Account.delete_group_member/2
     end
 
     field :create_role, :role do
       middleware Authenticated
+      middleware Differentiate, feature: :user_management
       arg :attributes, non_null(:role_attributes)
 
-      resolve safe_resolver(&Account.create_role/2)
+      safe_resolve &Account.create_role/2
     end
 
     field :update_role, :role do
@@ -377,21 +380,21 @@ defmodule GraphQl.Schema.Account do
       arg :id, non_null(:id)
       arg :attributes, non_null(:role_attributes)
 
-      resolve safe_resolver(&Account.update_role/2)
+      safe_resolve &Account.update_role/2
     end
 
     field :delete_role, :role do
       middleware Authenticated
       arg :id, non_null(:id)
 
-      resolve safe_resolver(&Account.delete_role/2)
+      safe_resolve &Account.delete_role/2
     end
 
     field :create_integration_webhook, :integration_webhook do
       middleware Authenticated
       arg :attributes, non_null(:integration_webhook_attributes)
 
-      resolve safe_resolver(&Account.create_webhook/2)
+      safe_resolve &Account.create_webhook/2
     end
 
     field :update_integration_webhook, :integration_webhook do
@@ -399,28 +402,28 @@ defmodule GraphQl.Schema.Account do
       arg :id, non_null(:id)
       arg :attributes, non_null(:integration_webhook_attributes)
 
-      resolve safe_resolver(&Account.update_webhook/2)
+      safe_resolve &Account.update_webhook/2
     end
 
     field :delete_integration_webhook, :integration_webhook do
       middleware Authenticated
       arg :id, non_null(:id)
 
-      resolve safe_resolver(&Account.delete_webhook/2)
+      safe_resolve &Account.delete_webhook/2
     end
 
     field :create_oauth_integration, :oauth_integration do
       middleware Authenticated
       arg :attributes, non_null(:oauth_attributes)
 
-      resolve safe_resolver(&Account.create_integration/2)
+      safe_resolve &Account.create_integration/2
     end
 
     field :create_zoom, :zoom_meeting do
       middleware Authenticated, :external
       arg :attributes, non_null(:meeting_attributes)
 
-      resolve safe_resolver(&Account.create_zoom_meeting/2)
+      safe_resolve &Account.create_zoom_meeting/2
     end
   end
 end

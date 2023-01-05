@@ -14,7 +14,7 @@ COPY . ./
 RUN yarn run build
 
 # production environment
-FROM nginxinc/nginx-unprivileged:1.23.2-alpine
+FROM nginxinc/nginx-unprivileged:1.23.3-alpine
 
 WORKDIR /usr/share/nginx/html
 # Copy static assets from builder stage

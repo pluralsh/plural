@@ -35,6 +35,7 @@ const providerToIcon = {
   AZURE: defualtAzureIcon,
   EQUINIX: defaultEquinixIcon,
   KIND: defaultKindIcon,
+  GENERIC: defaultChartIcon,
 }
 
 const searchOptions = {

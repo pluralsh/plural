@@ -22,7 +22,13 @@ export default function PackageConfiguration() {
         pad={{ right: 'xsmall' }}
         overflow={{ vertical: 'auto' }}
       >
-        {valuesTemplate ? <Code language="yaml">{valuesTemplate}</Code> : <Div body2>No configuration found.</Div>}
+        {valuesTemplate ? (
+          <Code
+            language="yaml"
+            onSelectedTabChange={() => {}}
+          >{valuesTemplate}
+          </Code>
+        ) : <Div body2>No configuration found.</Div>}
       </Box>
     </Box>
   )

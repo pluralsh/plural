@@ -97,6 +97,25 @@ defmodule Core.Services.Payments do
     |> Core.Repo.exists?()
   end
 
+  @spec enforce?() :: boolean
+  def enforce?(), do: !!Core.conf(:enforce_pricing)
+
+  @preloads [account: [subscription: :plan]]
+
+  def preload(%User{} = user), do: Core.Repo.preload(user, @preloads)
+
+  @doc """
+  Determine's if a user's account has access to the given feature.  Returns `true` if enforcement is not enabled yet.
+  """
+  @spec has_feature?(User.t, atom) :: boolean
+  def has_feature?(%User{} = user, feature) do
+    case {enforce?(), preload(user)} do
+      {false, _} -> true
+      {_, %User{account: %Account{subscription: %PlatformSubscription{plan: %PlatformPlan{features: %{^feature => true}}}}}} -> true
+      _ -> false
+    end
+  end
+
   @doc """
   Completes the stripe oauth cycle and persists the account id to the publisher
   """

@@ -22,6 +22,8 @@ function RepositorySideCarButtons() {
         as="a"
         target="_blank"
         href={repository.homepage}
+        width="100%"
+        justifyContent="flex-start"
         startIcon={(
           <BrowserIcon />
         )}
@@ -35,6 +37,8 @@ function RepositorySideCarButtons() {
           as="a"
           target="_blank"
           href={repository.license.url}
+          width="100%"
+          justifyContent="flex-start"
           startIcon={(
             <CertificateIcon />
           )}
@@ -48,6 +52,8 @@ function RepositorySideCarButtons() {
         as="a"
         target="_blank"
         href={repository.gitUrl}
+        width="100%"
+        justifyContent="flex-start"
         startIcon={(
           <GitHubLogoIcon />
         )}

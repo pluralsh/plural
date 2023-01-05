@@ -2,7 +2,7 @@ defmodule Core.Services.Rbac do
   alias Core.Schema.{User, Role}
 
   def preload(user) do
-    Core.Repo.preload(user, [:account, role_bindings: :role, group_role_bindings: :role])
+    Core.Repo.preload(user, [account: [subscription: :plan], role_bindings: :role, group_role_bindings: :role])
   end
 
   def evaluate_policy(user, policy) do

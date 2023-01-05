@@ -9,7 +9,7 @@ import { Button, ButtonProps } from 'honorable'
 import { Tooltip } from '@pluralsh/design-system'
 
 type CopyableButtonProps = ButtonProps & {
-displayText?: string
+  copyText?: string
 }
 
 function CopyableButtonRef({ copyText, onClick, ...props }: CopyableButtonProps, ref: Ref<any>) {
@@ -23,7 +23,7 @@ function CopyableButtonRef({ copyText, onClick, ...props }: CopyableButtonProps,
     }
   }, [copied])
 
-  const handleCopy = () => window.navigator.clipboard.writeText(copyText).then(() => setCopied(true))
+  const handleCopy = () => window.navigator.clipboard.writeText(copyText ?? '').then(() => setCopied(true))
 
   return (
     <Tooltip
@@ -55,4 +55,3 @@ function CopyableButtonRef({ copyText, onClick, ...props }: CopyableButtonProps,
 const CopyableButton = forwardRef(CopyableButtonRef)
 
 export default CopyableButton
-

@@ -2,7 +2,10 @@ import { IconFrame, IconFrameProps, TrashCanIcon } from '@pluralsh/design-system
 import { forwardRef } from 'react'
 
 export const DeleteIconButton = forwardRef<HTMLDivElement, Partial<IconFrameProps>>(({
-  size, clickable, textValue, ...props
+  size,
+  clickable,
+  textValue,
+  ...props
 }, ref) => (
   <IconFrame
     ref={ref}

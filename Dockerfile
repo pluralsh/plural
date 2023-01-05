@@ -42,19 +42,19 @@ FROM alpine:3.17.0 as tools
 ARG TARGETARCH
 
 # renovate: datasource=github-releases depName=helm/helm
-ENV HELM_VERSION=v3.10.2
+ENV HELM_VERSION=v3.10.3
 
 # renovate: datasource=github-releases depName=alco/goon
 ENV GOON_VERSION=v1.1.1
 
 # renovate: datasource=github-releases depName=pluralsh/plural-cli
-ENV CLI_VERSION=v0.5.30
+ENV CLI_VERSION=v0.5.34
 
 # renovate: datasource=github-releases depName=accurics/terrascan
-ENV TERRASCAN_VERSION=v1.17.0
+ENV TERRASCAN_VERSION=v1.17.1
 
 # renovate: datasource=github-releases depName=aquasecurity/trivy
-ENV TRIVY_VERSION=v0.35.0
+ENV TRIVY_VERSION=v0.36.1
 
 RUN apk add --update --no-cache curl ca-certificates unzip wget openssl && \
     # download helm

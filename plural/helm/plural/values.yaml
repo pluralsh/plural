@@ -490,14 +490,6 @@ hydraSecrets:
   system: dummy
   cookie: dummy
 
-hydraImage:
-  # ORY Hydra image
-  repository: gcr.io/pluralsh/oryd/hydra
-  # ORY Hydra version
-  tag: v1.8.5
-  # Image pull policy
-  pullPolicy: IfNotPresent
-
 autoscaling:
   enabled: true
 
@@ -506,7 +498,11 @@ hydra:
 
   image:
     repository: gcr.io/pluralsh/oryd/hydra
+    tag: v2.0.3
   
+  secret:
+    enabled: false
+
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
@@ -520,9 +516,9 @@ hydra:
   maester:
     enabled: false
   hydra:
-    dangerousForceHttp: true
-    existingSecret: false
-    autoMigrate: false
+    dev: true
+    automigration:
+      enabled: false
     config:
       ttl:
         id_token: 12h
@@ -538,6 +534,14 @@ hydra:
     - key: plural.sh/pluralReserved
       operator: Exists
       effect: "NoSchedule"
+    topologySpreadConstraints:
+    - maxSkew: 1
+      topologyKey: topology.kubernetes.io/zone
+      whenUnsatisfiable: DoNotSchedule
+      labelSelector:
+        matchLabels:
+          app.kubernetes.io/name: hydra
+          app.kubernetes.io/instance: plural
     
   ingress:
     public:

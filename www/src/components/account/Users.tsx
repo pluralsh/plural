@@ -24,7 +24,7 @@ const DIRECTORY = [
 ]
 
 export function Users() {
-  const [selectedKey, setSelectedKey] = useState('Users')
+  const [selectedKey, setSelectedKey] = useState<any>('Users')
   const tabStateRef = useRef<any>(null)
 
   return (

@@ -3,7 +3,8 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import basicSsl from '@vitejs/plugin-basic-ssl'
-import GlobalPolyFill from '@esbuild-plugins/node-globals-polyfill'
+import nodePolyfills from 'rollup-plugin-polyfill-node'
+// import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill'
 import { VitePWA } from 'vite-plugin-pwa'
 
 // https://vitejs.dev/config/
@@ -28,18 +29,9 @@ export default defineConfig({
   build: {
     outDir: 'build',
     sourcemap: process.env.NODE_ENV !== 'production', // Seems to cause JavaScript heap out of memory errors on build
-  },
-  optimizeDeps: {
-    esbuildOptions: {
-      define: {
-        global: 'globalThis',
-      },
+    rollupOptions: {
       plugins: [
-        // @ts-expect-error
-        GlobalPolyFill.default({
-          process: true,
-          buffer: true,
-        }),
+        nodePolyfills,
       ],
     },
   },

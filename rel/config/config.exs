@@ -78,7 +78,8 @@ config :core,
   docker_metrics_table: ~s("permanent"."downsampled_docker_pulls"),
   workos_webhook: get_env("WORKOS_WEBHOOK_SECRET"),
   gcp_identity: get_env("GCP_USER_EMAIL") || "mjg@plural.sh",
-  openai_token: get_env("OPENAI_BEARER_TOKEN")
+  openai_token: get_env("OPENAI_BEARER_TOKEN"),
+  enforce_pricing: get_env("ENFORCE_PRICING")
 
 
 if get_env("VAULT_HOST") do

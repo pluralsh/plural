@@ -94,25 +94,25 @@ export function CardIcon({ brand }: any) {
   switch (brand.toLowerCase()) {
   case 'visa':
     return (
-      // @ts-expect-error
       <Visa
         color="plain"
+        // @ts-expect-error
         size="medium"
       />
     )
   case 'mastercard':
     return (
-      // @ts-expect-error
       <Mastercard
         color="plain"
+        // @ts-expect-error
         size="medium"
       />
     )
   case 'amex':
     return (
-      // @ts-expect-error
       <Amex
         color="plain"
+        // @ts-expect-error
         size="medium"
       />
     )

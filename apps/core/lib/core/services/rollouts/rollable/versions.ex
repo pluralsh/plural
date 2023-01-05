@@ -1,7 +1,7 @@
 defimpl Core.Rollouts.Rollable, for: [Core.PubSub.VersionCreated, Core.PubSub.VersionUpdated] do
   use Core.Rollable.Base
   import Core.Rollable.Utils
-  alias Core.Services.{Dependencies, Upgrades, Rollouts}
+  alias Core.Services.{Dependencies, Upgrades, Rollouts, Payments}
   alias Core.Schema.{ChartInstallation, TerraformInstallation}
 
   def name(%Core.PubSub.VersionCreated{}), do: "version:created"
@@ -13,7 +13,7 @@ defimpl Core.Rollouts.Rollable, for: [Core.PubSub.VersionCreated, Core.PubSub.Ve
     ChartInstallation.for_chart(chart_id)
     |> ChartInstallation.with_auto_upgrade(version.tags)
     |> maybe_ignore_version(@for, ChartInstallation, version.id)
-    |> ChartInstallation.preload(installation: [:repository, :user])
+    |> ChartInstallation.preload(installation: [:repository, user: :account])
     |> ChartInstallation.ordered()
   end
 
@@ -21,7 +21,7 @@ defimpl Core.Rollouts.Rollable, for: [Core.PubSub.VersionCreated, Core.PubSub.Ve
     TerraformInstallation.for_terraform(tf_id)
     |> TerraformInstallation.with_auto_upgrade(version.tags)
     |> maybe_ignore_version(@for, TerraformInstallation, version.id)
-    |> TerraformInstallation.preload(installation: [:repository, :user])
+    |> TerraformInstallation.preload(installation: [:repository, user: :account])
     |> TerraformInstallation.ordered()
   end
 
@@ -29,8 +29,8 @@ defimpl Core.Rollouts.Rollable, for: [Core.PubSub.VersionCreated, Core.PubSub.Ve
   defp maybe_ignore_version(q, _, mod, id), do: mod.ignore_version(q, id)
 
   def process(%{item: version}, %{installation: %{user: user}} = inst) do
-    case Dependencies.valid?(version.dependencies, user) do
-      true -> directly_install(version, inst)
+    case {Dependencies.valid?(version.dependencies, user), Payments.delinquent?(user)} do
+      {true, false} -> directly_install(version, inst)
       _ -> Upgrades.create_deferred_update(version.id, inst, user)
     end
   end

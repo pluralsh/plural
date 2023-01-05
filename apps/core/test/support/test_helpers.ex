@@ -27,5 +27,10 @@ defmodule Core.TestHelpers do
 
   def refetch(%{__struct__: schema, id: id}), do: Core.Repo.get(schema, id)
 
+  def update_record(struct, attrs) do
+    Ecto.Changeset.change(struct, attrs)
+    |> Core.Repo.update()
+  end
+
   def priv_file(app, path), do: Path.join(:code.priv_dir(app), path)
 end

@@ -9,8 +9,3 @@ module "shell_node_group" {
   set_desired_size       = false
   private_subnet_ids        = var.private_subnet_ids
 }
-
-moved {
-  from = module.shell_node_group.aws_eks_node_group.gpu_inf_small
-  to   = module.shell_node_group.aws_eks_node_group.workers["shell_nodes"]
-}

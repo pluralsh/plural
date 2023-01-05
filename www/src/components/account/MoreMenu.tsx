@@ -22,6 +22,8 @@ export function MoreMenu({ children, onSelectionChange, ...props }: any) {
           clickable
           size="medium"
           icon={<MoreIcon />}
+          background="transparent"
+          border="none"
         />
       )}
       {...props}

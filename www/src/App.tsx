@@ -42,7 +42,6 @@ function App() {
 
   return (
     <Suspense>
-
       <ApolloProvider client={client}>
         <IntercomProvider appId={INTERCOM_APP_ID}>
           <ThemeProvider theme={honorableTheme}>

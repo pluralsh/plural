@@ -34,11 +34,11 @@ function MarketplaceSidebarCheckbox({
 }: any) {
   return (
     <Checkbox
-      mb={0.25}
       small
       checked={toggled}
       onChange={onClick}
       tabIndex={trapFocus ? 0 : -1}
+      marginBottom="xsmall"
     >
       <P
         body2

@@ -121,7 +121,7 @@ function UninstallApp({
 
 export function InstallationConfiguration({ installation, open, setOpen }: any) {
   const tabStateRef = useRef<any>(null)
-  const [selectedTabKey, setSelectedKey] = useState('')
+  const [selectedTabKey, setSelectedKey] = useState<any>('')
 
   // Update tab controls.
   const [autoUpgrade, setAutoUpgrade] = useState(installation.autoUpgrade || false)
@@ -213,7 +213,8 @@ export function InstallationConfiguration({ installation, open, setOpen }: any) 
       <TabPanel
         stateRef={tabStateRef}
         paddingTop="large"
-        paddingHorizontal="large"
+        paddingLeft="large"
+        paddingRight="large"
       >
         {tabs[selectedTabKey]?.content}
       </TabPanel>

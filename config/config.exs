@@ -146,7 +146,7 @@ config :worker, demo_projects_pipeline: []
 config :worker, docker_pipeline: []
 
 config :core, Core.Clients.Hydra,
-  hydra_admin: "http://plural-hydra-admin:4445",
+  hydra_admin: "http://plural-hydra-admin:4445/admin",
   hydra_public: "http://plural-hydra-public:4444"
 
 config :rtc, :flushable, false

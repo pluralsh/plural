@@ -48,7 +48,7 @@ The k8s service account that will be used for plural deployments
 EOF
 }
 
-variable "shell_subnet_ids" {
+variable "private_subnet_ids" {
   type = list(string)
 }
 
@@ -72,7 +72,7 @@ variable "node_groups_defaults" {
 
     instance_types = ["t3.large", "t3a.large"]
     disk_size = 50
-    ami_release_version = "1.21.14-20220824"
+    ami_release_version = "1.22.15-20221222"
     force_update_version = true
     ami_type = "AL2_x86_64"
     k8s_labels = {}
@@ -125,6 +125,39 @@ variable "single_az_node_groups" {
     }
   }
   description = "Node groups to add to your cluster. A single managed node group will be created in each availability zone."
+}
+
+variable "shell_node_groups" {
+  type = any
+  default = {
+    shell_nodes = {
+      name = "shell-nodes"
+      capacity_type = "ON_DEMAND"
+      min_capacity = 1
+      max_capacity = 10
+      desired_capacity = 1
+      instance_types = ["t3.large"]
+      k8s_labels = {
+        "plural.sh/capacityType" = "ON_DEMAND"
+        "plural.sh/performanceType" = "SUSTAINED"
+        "plural.sh/scalingGroup" = "shell-nodes"
+        "platform.plural.sh/instance-class" = "shell"
+      }
+      k8s_taints = [
+        {
+          key = "platform.plural.sh/taint"
+          value = "SHELL"
+          effect = "NO_SCHEDULE"
+        }
+        # {
+        #   key = "plural.sh/pluralReserved"
+        #   value = "true"
+        #   effect = "NO_SCHEDULE"
+        # }
+      ]
+    }
+  }
+  description = "Node groups to add to your cluster. A single managed node group will be created across all availability zones."
 }
 
 variable "private_subnets" {

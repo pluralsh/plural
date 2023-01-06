@@ -10,6 +10,7 @@ defmodule Core.Schema.Account do
     field :icon,                 Core.Storage.Type
     field :billing_customer_id,  :string
     field :delinquent_at,        :utc_datetime_usec
+    field :grandfathered_until,  :utc_datetime_usec
     field :user_count,           :integer, default: 0
     field :cluster_count,        :integer, default: 0
     field :usage_updated,        :boolean

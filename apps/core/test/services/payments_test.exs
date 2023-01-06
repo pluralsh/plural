@@ -538,6 +538,52 @@ defmodule Core.Services.PaymentsTest do
     end
   end
 
+  describe "#has_feature?/2" do
+    test "if a user's plan has a feature, then it returns true" do
+      account = insert(:account)
+      insert(:platform_subscription, account: account, plan: build(:platform_plan, features: %{user_management: true}))
+      user = insert(:user, account: account)
+      assert Payments.has_feature?(user, :user_management)
+    end
+
+    test "if a user's account is grandfathered, then it returns true" do
+      account = insert(:account, grandfathered_until: Timex.now() |> Timex.shift(days: 1))
+      insert(:platform_subscription, account: account, plan: build(:platform_plan, features: %{user_management: false}))
+      user = insert(:user, account: account)
+      assert Payments.has_feature?(user, :user_management)
+
+      account = insert(:account, grandfathered_until: Timex.now() |> Timex.shift(days: -1))
+      insert(:platform_subscription, account: account, plan: build(:platform_plan, features: %{user_management: false}))
+      user = insert(:user, account: account)
+      refute Payments.has_feature?(user, :user_management)
+    end
+
+    test "if a user's account is delinquent then it returns false" do
+      account = insert(:account, delinquent_at: Timex.now() |> Timex.shift(days: -100))
+      insert(:platform_subscription, account: account, plan: build(:platform_plan, features: %{user_management: true}))
+      user = insert(:user, account: account)
+      refute Payments.has_feature?(user, :user_management)
+
+      account = insert(:account, delinquent_at: Timex.now())
+      insert(:platform_subscription, account: account, plan: build(:platform_plan, features: %{user_management: true}))
+      user = insert(:user, account: account)
+      assert Payments.has_feature?(user, :user_management)
+    end
+
+    test "if a user's account has no plan it returns false" do
+      account = insert(:account)
+      user = insert(:user, account: account)
+      refute Payments.has_feature?(user, :user_management)
+    end
+
+    test "if a user's account is doesn't have the feature, then it returns false" do
+      account = insert(:account)
+      insert(:platform_subscription, account: account, plan: build(:platform_plan, features: %{user_management: false}))
+      user = insert(:user, account: account)
+      refute Payments.has_feature?(user, :user_management)
+    end
+  end
+
   describe "#update_plan/3" do
     test "Users can change plans" do
       expect(Stripe.Subscription, :update, fn

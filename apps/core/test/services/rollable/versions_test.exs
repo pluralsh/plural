@@ -83,6 +83,32 @@ defmodule Core.Rollable.VersionsTest do
       end
     end
 
+    test "it will defer updates if a user is delinquent" do
+      user = insert(:user, account: build(:account, delinquent_at: Timex.now() |> Timex.shift(days: -100)))
+      %{chart: chart} = chart_version = insert(:version, version: "0.1.0")
+      inst = insert(:chart_installation,
+        installation: insert(:installation, auto_upgrade: true, user: user),
+        chart: chart,
+        version: chart_version
+      )
+
+      version = insert(:version, version: "0.1.1", chart: chart)
+      insert(:version_tag, version: version, chart: chart, tag: "latest")
+
+      event = %PubSub.VersionCreated{item: version}
+      {:ok, rollout} = Rollouts.create_rollout(chart.repository_id, event)
+
+      {:ok, rolled} = Rollouts.execute(rollout)
+
+      assert rolled.status == :finished
+      assert rolled.count == 1
+
+      [deferred] = Core.Repo.all(Core.Schema.DeferredUpdate)
+
+      assert deferred.chart_installation_id == inst.id
+      assert deferred.version_id == version.id
+    end
+
     test "it will defer updates if a version's dependencies aren't satisfied" do
       dep_chart = insert(:chart)
       %{chart: chart} = chart_version = insert(:version, version: "0.1.0")

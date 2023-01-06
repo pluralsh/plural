@@ -108,13 +108,35 @@ defmodule Core.Services.Payments do
   def preload(%User{} = user), do: Core.Repo.preload(user, @preloads)
 
   @doc """
+  determine if an account (or a user's account) is currently delinquent
+  """
+  @spec delinquent?(User.t | Account.t) :: boolean
+  def delinquent?(%Account{delinquent_at: at}) when not is_nil(at) do
+    Timex.shift(at, days: 14)
+    |> Timex.before?(Timex.now())
+  end
+  def delinquent?(%User{account: account}), do: delinquent?(account)
+  def delinquent?(_), do: false
+
+  @doc """
+  determine if an account (or a user's account) should be grandfathered into old features
+  """
+  @spec grandfathered?(User.t | Account.t) :: boolean
+  def grandfathered?(%User{account: account}), do: grandfathered?(account)
+  def grandfathered?(%Account{grandfathered_until: at}) when not is_nil(at), do: Timex.after?(at, Timex.now())
+  def grandfathered?(_), do: false
+
+  @doc """
   Determine's if a user's account has access to the given feature.  Returns `true` if enforcement is not enabled yet.
   """
   @spec has_feature?(User.t, atom) :: boolean
   def has_feature?(%User{} = user, feature) do
-    case {enforce?(), preload(user)} do
-      {false, _} -> true
-      {_, %User{account: %Account{subscription: %PlatformSubscription{plan: %PlatformPlan{features: %{^feature => true}}}}}} -> true
+    user = preload(user)
+    case {enforce?(), delinquent?(user), grandfathered?(user), user} do
+      {false, _, _, _} -> true
+      {_, true, _, _} -> false
+      {_, _, true, _} -> true
+      {_, _, _, %User{account: %Account{subscription: %PlatformSubscription{plan: %PlatformPlan{features: %{^feature => true}}}}}} -> true
       _ -> false
     end
   end

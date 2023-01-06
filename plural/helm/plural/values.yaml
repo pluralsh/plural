@@ -524,10 +524,17 @@ hydra:
   maester:
     enabled: false
   hydra:
-    dev: true
+    dev: false
     automigration:
       enabled: false
     config:
+      serve:
+        admin:
+          tls:
+            enabled: false
+        public:
+          tls:
+            enabled: false
       ttl:
         id_token: 12h
         access_token: 12h

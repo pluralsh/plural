@@ -535,6 +535,9 @@ hydra:
         public:
           tls:
             enabled: false
+        cookies:
+          same_site_mode: None
+          secure: true
       ttl:
         id_token: 12h
         access_token: 12h
@@ -567,6 +570,9 @@ hydra:
         cert-manager.io/cluster-issuer: letsencrypt-prod
         nginx.ingress.kubernetes.io/force-ssl-redirect: 'true'
         nginx.ingress.kubernetes.io/use-regex: "true"
+        nginx.ingress.kubernetes.io/proxy-connect-timeout: '10'
+        nginx.ingress.kubernetes.io/proxy-read-timeout: '120'
+        nginx.ingress.kubernetes.io/proxy-send-timeout: '120'
   
 chartmuseum:
   resources: {}

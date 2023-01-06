@@ -24,6 +24,7 @@ export type Account = {
   __typename?: 'Account';
   backgroundColor?: Maybe<Scalars['String']>;
   billingCustomerId?: Maybe<Scalars['String']>;
+  delinquentAt?: Maybe<Scalars['DateTime']>;
   domainMappings?: Maybe<Array<Maybe<DomainMapping>>>;
   icon?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
@@ -1304,6 +1305,7 @@ export type LineItemAttributes = {
 };
 
 export enum LineItemDimension {
+  Cluster = 'CLUSTER',
   User = 'USER'
 }
 

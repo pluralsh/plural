@@ -127,6 +127,8 @@ defmodule Core.Clients.Hydra do
 
   defp handle_response({:ok, %{status_code: code, body: body}}, type) when code in 200..299,
     do: {:ok, Poison.decode!(body, as: type)}
+  defp handle_response({:ok, %{status_code: code, body: body}}, _type) when code in 400..499,
+    do: Logger.error "Hydra returned unexpected response hydra: #{inspect(body)}"
   defp handle_response(error, _) do
     Logger.error "Failed to call hydra: #{inspect(error)}"
     {:error, :unauthorized}

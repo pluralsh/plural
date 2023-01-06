@@ -94,6 +94,9 @@ defmodule GraphQl.Resolvers.Payments do
   def create_platform_subscription(%{attributes: attrs, plan_id: id}, %{context: %{current_user: user}}),
     do: Payments.create_platform_subscription(attrs, id, user)
 
+  def delete_platform_subscription(_, %{context: %{current_user: user}}),
+    do: Payments.delete_platform_subscription(user)
+
   def update_platform_plan(%{plan_id: id}, %{context: %{current_user: user}}),
     do: Payments.update_platform_plan(id, user)
 

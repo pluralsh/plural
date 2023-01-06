@@ -317,6 +317,12 @@ defmodule GraphQl.Schema.Payments do
       safe_resolve &Payments.create_platform_subscription/2
     end
 
+    field :delete_platform_subscription, :account do
+      middleware Authenticated
+
+      safe_resolve &Payments.delete_platform_subscription/2
+    end
+
     field :cancel_platform_subscription, :platform_subscription do
       middleware Authenticated
 

@@ -443,6 +443,34 @@ defmodule Core.Services.Payments do
 
 
   @doc """
+  Cancels a user's subscription in stripe and wipes the reference to it in our db.  This effectively converts the
+  user to OSS
+  """
+  @spec delete_platform_subscription(User.t) :: {:ok, Account.t} | error
+  def delete_platform_subscription(%User{} = user) do
+    start_transaction()
+    |> add_operation(:fetch, fn _ ->
+      case Core.Repo.preload(user, [account: :subscription]) do
+        %{account: %Account{subscription: nil}} -> {:error, "your account has no subscription"}
+        %{account: account} -> {:ok, account}
+      end
+    end)
+    |> add_operation(:db, fn %{fetch: %{subscription: subscription}} ->
+      subscription
+      |> allow(user, :delete)
+      |> when_ok(:delete)
+    end)
+    |> add_operation(:account, fn %{fetch: account} ->
+      Account.payment_changeset(account, %{delinquent_at: nil})
+      |> Core.Repo.update()
+      |> when_ok(&Map.put(&1, :subscription, nil))
+    end)
+    |> add_operation(:stripe, fn %{db: %{external_id: ext_id}} -> Stripe.Subscription.delete(ext_id) end)
+    |> execute(extract: :account)
+    |> notify(:delete)
+  end
+
+  @doc """
   Creates a new subscription for the given plan/installation.  Will
   transactionally create it in stripe (with line items), then persist back
   the stripe data to the subscription.

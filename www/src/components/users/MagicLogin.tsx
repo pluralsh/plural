@@ -369,6 +369,7 @@ export function Login() {
   const client = useApolloClient()
   const location = useLocation()
   const jwt = fetchToken()
+  const [ran, setRan] = useState(false)
   const { login_challenge: challenge, deviceToken } = queryString.parse(location.search)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -409,13 +410,14 @@ export function Login() {
   }, [data, challenge, deviceToken])
 
   useEffect(() => {
-    if (jwt && challenge) {
+    if (jwt && challenge && !ran) {
+      setRan(true)
       handleOauthChallenge(client, challenge)
     }
     else if (!deviceToken && jwt) {
       history.navigate('/')
     }
-  }, [challenge, deviceToken, history, client, jwt])
+  }, [challenge, deviceToken, history, client, jwt, ran, setRan])
 
   const submit = useCallback(() => (open ? mutation() : getLoginMethod()), [mutation, getLoginMethod, open])
 

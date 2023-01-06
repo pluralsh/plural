@@ -414,7 +414,7 @@ export function Login() {
       setRan(true)
       handleOauthChallenge(client, challenge)
     }
-    else if (!deviceToken && jwt) {
+    else if (!deviceToken && !challenge && jwt) {
       history.navigate('/')
     }
   }, [challenge, deviceToken, history, client, jwt, ran, setRan])

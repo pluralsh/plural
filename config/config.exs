@@ -75,7 +75,6 @@ config :core, Core.Email.Mailer,
 config :core, Core.PartitionedCache,
   primary: [
     gc_interval: :timer.hours(1),
-    backend: :shards,
     partitions: 2,
     allocated_memory: 1000 * 1000 * 500
   ]
@@ -85,12 +84,10 @@ config :core, Core.Cache,
   node_selector: Nebulex.Adapters.Dist,
   primary: [
     gc_interval: :timer.hours(1),
-    backend: :shards,
     partitions: 2,
     allocated_memory: 1000 * 1000 * 500
   ],
   gc_interval: :timer.hours(1),
-  backend: :shards,
   partitions: 2,
   allocated_memory: 1000 * 1000 * 500
 

@@ -25,7 +25,7 @@ function CloudCredentials() {
       label: CloudProviderDisplayName[c],
     }))
 
-  useEffect(() => setCloud({ ...cloud, provider }), [provider, setCloud])
+  useEffect(() => setCloud(c => ({ ...c, provider })), [provider, setCloud])
 
   return (
     <>

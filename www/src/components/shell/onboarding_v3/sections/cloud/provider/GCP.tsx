@@ -17,6 +17,13 @@ import IsEmpty from 'lodash/isEmpty'
 
 import { OnboardingContext } from '../../../context/onboarding'
 import { IsObjectEmpty } from '../../../../../../utils/object'
+import {
+  AzureCloudProvider,
+  CloudProvider,
+  GCPCloudProvider,
+  WorkspaceProps,
+} from '../../../context/types'
+import { useSetCloudProviderKeys, useSetWorkspaceKeys } from '../../../context/hooks'
 
 const REGIONS = [
   'asia-east1',
@@ -57,18 +64,17 @@ const fileInputTheme = (selected, error) => ({
 })
 
 function GCP() {
-  const {
-    cloud, setCloud, setValid, workspace, setWorkspace,
-  } = useContext(OnboardingContext)
-  const isValid = useMemo(() => !IsObjectEmpty(cloud?.gcp) && !IsObjectEmpty(workspace), [cloud, workspace])
+  const { cloud, setValid, workspace } = useContext(OnboardingContext)
+  const setCloudProviderKeys = useSetCloudProviderKeys<GCPCloudProvider>(CloudProvider.GCP)
+  const setWorkspaceKeys = useSetWorkspaceKeys()
   const [fileSelected, setFileSelected] = useState(!!cloud?.gcp?.fileName)
   const [fileError, setFileError] = useState<FileError>()
-  const setCloudKeys = useCallback((records: Record<string, unknown>) => setCloud({ ...cloud, gcp: { ...cloud?.gcp, ...records } }), [cloud, setCloud])
-  const setWorkspaceKeys = useCallback((records: Record<string, unknown>) => setWorkspace({ ...workspace, ...records }), [setWorkspace, workspace])
+  const isValid = useMemo(() => !IsObjectEmpty(cloud?.gcp) && !IsObjectEmpty(workspace), [cloud, workspace])
+
   const readFile = useCallback(async (files: FileList) => {
     setFileSelected(false)
     setFileError(undefined)
-    setCloudKeys({ applicationCredentials: undefined, fileName: undefined })
+    setCloudProviderKeys({ applicationCredentials: undefined, fileName: undefined })
     setWorkspaceKeys({ project: undefined })
 
     if (files.length === 0) return
@@ -92,8 +98,8 @@ function GCP() {
 
     setFileSelected(true)
     setWorkspaceKeys({ project: credentials.project_id })
-    setCloudKeys({ applicationCredentials: content, fileName: file.name })
-  }, [setCloudKeys, setWorkspaceKeys])
+    setCloudProviderKeys({ applicationCredentials: content, fileName: file.name })
+  }, [setCloudProviderKeys, setWorkspaceKeys])
 
   useEffect(() => setValid(isValid), [isValid, setValid])
   useEffect(() => (IsEmpty(workspace?.region) ? setWorkspaceKeys({ region: 'us-east1' }) : undefined), [setWorkspaceKeys, workspace])

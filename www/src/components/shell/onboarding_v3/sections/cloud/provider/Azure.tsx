@@ -1,9 +1,4 @@
-import {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-} from 'react'
+import { useContext, useEffect, useMemo } from 'react'
 import {
   FormField,
   Input,
@@ -15,6 +10,8 @@ import IsEmpty from 'lodash/isEmpty'
 
 import { OnboardingContext } from '../../../context/onboarding'
 import { IsObjectEmpty } from '../../../../../../utils/object'
+import { AzureCloudProvider, CloudProvider } from '../../../context/types'
+import { useSetCloudProviderKeys, useSetWorkspaceKeys } from '../../../context/hooks'
 
 const REGIONS = [
   'eastus',
@@ -42,12 +39,10 @@ const REGIONS = [
 ]
 
 function Azure() {
-  const {
-    cloud, setCloud, setValid, workspace, setWorkspace,
-  } = useContext(OnboardingContext)
+  const { cloud, setValid, workspace } = useContext(OnboardingContext)
+  const setCloudProviderKeys = useSetCloudProviderKeys<AzureCloudProvider>(CloudProvider.Azure)
+  const setWorkspaceKeys = useSetWorkspaceKeys()
   const isValid = useMemo(() => !IsObjectEmpty(cloud?.azure) && !IsObjectEmpty(workspace), [cloud, workspace])
-  const setCloudKeys = useCallback((records: Record<string, unknown>) => setCloud({ ...cloud, azure: { ...cloud?.azure, ...records } }), [cloud, setCloud])
-  const setWorkspaceKeys = useCallback((records: Record<string, unknown>) => setWorkspace({ ...workspace, ...records }), [setWorkspace, workspace])
 
   useEffect(() => setValid(isValid), [isValid, setValid])
   useEffect(() => (IsEmpty(workspace?.region) ? setWorkspaceKeys({ region: 'eastus' }) : undefined), [setWorkspaceKeys, workspace])
@@ -76,7 +71,7 @@ function Azure() {
         >
           <Input
             value={cloud?.azure?.clientID}
-            onChange={({ target: { value } }) => setCloudKeys({ clientID: value })}
+            onChange={({ target: { value } }) => setCloudProviderKeys({ clientID: value })}
           />
         </FormField>
         <FormField
@@ -85,7 +80,7 @@ function Azure() {
         >
           <Input
             value={cloud?.azure?.clientSecret}
-            onChange={({ target: { value } }) => setCloudKeys({ clientSecret: value })}
+            onChange={({ target: { value } }) => setCloudProviderKeys({ clientSecret: value })}
             type="password"
           />
         </FormField>
@@ -98,7 +93,7 @@ function Azure() {
         >
           <Input
             value={cloud?.azure?.subscriptionID}
-            onChange={({ target: { value } }) => setCloudKeys({ subscriptionID: value })}
+            onChange={({ target: { value } }) => setCloudProviderKeys({ subscriptionID: value })}
           />
         </FormField>
         <FormField
@@ -107,7 +102,7 @@ function Azure() {
         >
           <Input
             value={cloud?.azure?.tenantID}
-            onChange={({ target: { value } }) => setCloudKeys({ tenantID: value })}
+            onChange={({ target: { value } }) => setCloudProviderKeys({ tenantID: value })}
           />
         </FormField>
       </Flex>
@@ -115,13 +110,13 @@ function Azure() {
       <FormField label="Resource Group">
         <Input
           value={cloud?.azure?.resourceGroup}
-          onChange={({ target: { value } }) => setCloudKeys({ resourceGroup: value })}
+          onChange={({ target: { value } }) => setCloudProviderKeys({ resourceGroup: value })}
         />
       </FormField>
       <FormField label="Storage Account">
         <Input
           value={cloud?.azure?.storageAccount}
-          onChange={({ target: { value } }) => setCloudKeys({ storageAccount: value })}
+          onChange={({ target: { value } }) => setCloudProviderKeys({ storageAccount: value })}
         />
       </FormField>
     </>

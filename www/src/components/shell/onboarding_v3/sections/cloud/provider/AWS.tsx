@@ -4,17 +4,14 @@ import {
   ListBoxItem,
   Select,
 } from '@pluralsh/design-system'
-import {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-} from 'react'
+import { useContext, useEffect, useMemo } from 'react'
 import { Flex } from 'honorable'
 import IsEmpty from 'lodash/isEmpty'
 
 import { OnboardingContext } from '../../../context/onboarding'
 import { IsObjectEmpty } from '../../../../../../utils/object'
+import { AWSCloudProvider, CloudProvider } from '../../../context/types'
+import { useSetCloudProviderKeys, useSetWorkspaceKeys } from '../../../context/hooks'
 
 const REGIONS = [
   'af-south-1',
@@ -42,12 +39,10 @@ const REGIONS = [
 ]
 
 function AWS() {
-  const {
-    cloud, setCloud, setValid, workspace, setWorkspace,
-  } = useContext(OnboardingContext)
+  const { cloud, setValid, workspace } = useContext(OnboardingContext)
+  const setCloudProviderKeys = useSetCloudProviderKeys<AWSCloudProvider>(CloudProvider.AWS)
+  const setWorkspaceKeys = useSetWorkspaceKeys()
   const isValid = useMemo(() => !IsObjectEmpty(cloud?.aws) && !IsObjectEmpty(workspace), [cloud, workspace])
-  const setCloudKeys = useCallback((records: Record<string, unknown>) => setCloud({ ...cloud, aws: { ...cloud?.aws, ...records } }), [cloud, setCloud])
-  const setWorkspaceKeys = useCallback((records: Record<string, unknown>) => setWorkspace({ ...workspace, ...records }), [setWorkspace, workspace])
 
   useEffect(() => setValid(isValid), [isValid, setValid])
   useEffect(() => (IsEmpty(workspace?.region) ? setWorkspaceKeys({ region: 'us-east-2' }) : undefined), [setWorkspaceKeys, workspace])
@@ -77,7 +72,7 @@ function AWS() {
         >
           <Input
             value={cloud?.aws?.accessKey}
-            onChange={({ target: { value } }) => setCloudKeys({ accessKey: value })}
+            onChange={({ target: { value } }) => setCloudProviderKeys({ accessKey: value })}
           />
         </FormField>
         <FormField
@@ -86,7 +81,7 @@ function AWS() {
         >
           <Input
             value={cloud?.aws?.secretKey}
-            onChange={({ target: { value } }) => setCloudKeys({ secretKey: value })}
+            onChange={({ target: { value } }) => setCloudProviderKeys({ secretKey: value })}
             type="password"
           />
         </FormField>

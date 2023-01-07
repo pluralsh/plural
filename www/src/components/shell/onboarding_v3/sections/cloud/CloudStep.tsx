@@ -7,31 +7,22 @@ import {
   useState,
 } from 'react'
 
-import { useCloud, usePath } from '../../context/hooks'
-import { CloudType, OnboardingPath } from '../../context/types'
+import { useCloudType, usePath } from '../../context/hooks'
+import { CloudType } from '../../context/types'
 import { OnboardingContext } from '../../context/onboarding'
 
 import { ProviderSelection } from './ProviderSelection'
 import CloudCredentials from './CloudCredentials'
 
 function CloudStep({ onBack, onNext }) {
-  const cloud = useCloud()
-  const setCloudShellPath = usePath(OnboardingPath.CloudShell)
-  const setLocalCLIPath = usePath(OnboardingPath.LocalCLI)
+  const cloudType = useCloudType()
+  const setPath = usePath(cloudType)
   const { valid } = useContext(OnboardingContext)
   const [showConfig, setShowConfig] = useState(false)
   const [expanded, setExpanded] = useState(false)
-  const hasConfig = useMemo(() => cloud === CloudType.Cloud, [cloud])
+  const hasConfig = useMemo(() => cloudType === CloudType.Cloud, [cloudType])
 
-  useEffect(() => {
-    if (cloud !== CloudType.Local) {
-      setCloudShellPath()
-
-      return
-    }
-
-    setLocalCLIPath()
-  }, [cloud, setCloudShellPath, setLocalCLIPath])
+  useEffect(() => setPath(), [cloudType, setPath])
 
   return (
     <Flex
@@ -46,19 +37,20 @@ function CloudStep({ onBack, onNext }) {
       )}
 
       {hasConfig && showConfig && (
-        <CloudCredentials />
+        <>
+          <CloudCredentials />
+          <Callout
+            severity="info"
+            title="Why do I need to enter my cloud credentials?"
+            buttonProps={{ children: 'Learn more' }}
+            expandable
+            expanded={expanded}
+            onExpand={setExpanded}
+          >
+            Connecting with your cloud credentials allows us to lorem ipsum dolor.
+          </Callout>
+        </>
       )}
-
-      <Callout
-        severity="info"
-        title="Why do I need to enter my cloud credentials?"
-        buttonProps={{ children: 'Learn more' }}
-        expandable
-        expanded={expanded}
-        onExpand={setExpanded}
-      >
-        Connecting with your cloud credentials allows us to lorem ipsum dolor.
-      </Callout>
 
       <Flex
         gap="medium"

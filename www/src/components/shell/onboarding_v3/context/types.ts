@@ -35,11 +35,6 @@ interface Section {
   prev?: Section
 }
 
-enum OnboardingPath {
-  CloudShell = 'CloudShell',
-  LocalCLI = 'LocalCLI',
-}
-
 type Sections = { [key: keyof typeof SectionKey]: Section }
 
 enum OrgType {
@@ -64,8 +59,6 @@ enum CloudType {
 interface AWSCloudProvider {
   accessKey?: string
   secretKey?: string
-
-  [key: string]: unknown
 }
 
 interface AzureCloudProvider {
@@ -75,16 +68,14 @@ interface AzureCloudProvider {
   tenantID?: string
   clientID?: string
   clientSecret?: string
-
-  [key: string]: unknown
 }
 
 interface GCPCloudProvider {
   fileName?: string
   applicationCredentials?: string
-
-  [key: string]: unknown
 }
+
+type CloudProviderBase = AzureCloudProvider | AWSCloudProvider | GCPCloudProvider
 
 interface CloudProps {
   type?: CloudType
@@ -97,11 +88,14 @@ interface CloudProps {
 interface WorkspaceProps {
   project?: string,
   region?: string,
+  clusterName?: string,
+  bucketPrefix?: string,
+  subdomain?: string,
 }
 
 export type {
-  Sections, Section, SCMProps, CloudProps, WorkspaceProps,
+  Sections, Section, SCMProps, CloudProps, WorkspaceProps, GCPCloudProvider, AWSCloudProvider, AzureCloudProvider, CloudProviderBase,
 }
 export {
-  SectionKey, OrgType, CloudType, OnboardingPath, CloudProviderDisplayName, CloudProviderDisplayNameType, CloudProvider,
+  SectionKey, OrgType, CloudType, CloudProviderDisplayName, CloudProviderDisplayNameType, CloudProvider,
 }

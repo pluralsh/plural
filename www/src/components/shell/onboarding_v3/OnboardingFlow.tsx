@@ -9,7 +9,7 @@ import OnboardingCard from './OnboardingCard'
 import RepositoryStep from './sections/repository/RepositoryStep'
 import CloudStep from './sections/cloud/CloudStep'
 import WorkspaceStep from './sections/workspace/WorkspaceStep'
-import ShellStep from './sections/shell/ShellStep'
+import SummaryStep from './sections/summary/SummaryStep'
 import { useSection, useToken } from './context/hooks'
 import CLIInstallationStep from './sections/cli/CLIInstallationStep'
 import CLICompletionStep from './sections/cli/CLICompletionStep'
@@ -55,7 +55,7 @@ function OnboardingFlow({
         />
       )}
       {section?.key === SectionKey.CREATE_CLOUD_SHELL && (
-        <ShellStep onBack={onBack} />
+        <SummaryStep onBack={onBack} />
       )}
       {section?.key === SectionKey.INSTALL_CLI && (
         <CLIInstallationStep

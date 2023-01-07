@@ -1,11 +1,4 @@
-import {
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
-
-import { usePrevious } from '@pluralsh/design-system'
+import { useContext, useEffect, useState } from 'react'
 
 import { CloudProvider } from '../../../context/types'
 
@@ -20,17 +13,20 @@ interface ProviderProps {
 }
 
 function Provider({ provider }: ProviderProps) {
-  const { cloud, setCloud, setWorkspace } = useContext(OnboardingContext)
+  const { setCloud, setWorkspace } = useContext(OnboardingContext)
   const [lastProvider, setLastProvider] = useState(provider)
 
   useEffect(() => {
     if (lastProvider === provider) return
     setLastProvider(provider)
 
-    delete cloud[lastProvider]
-    setCloud(cloud)
+    setCloud(c => {
+      delete c[lastProvider]
+
+      return c
+    })
     setWorkspace({})
-  }, [lastProvider, provider])
+  }, [lastProvider, provider, setCloud, setWorkspace])
 
   switch (provider) {
   case CloudProvider.AWS:

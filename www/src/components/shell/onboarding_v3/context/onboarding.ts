@@ -1,4 +1,4 @@
-import { Dispatch, createContext } from 'react'
+import { Dispatch, SetStateAction, createContext } from 'react'
 
 import {
   CloudProps,
@@ -10,17 +10,17 @@ import {
 
 interface ContextProps {
   scm: SCMProps
-  setSCM: Dispatch<SCMProps>
+  setSCM: Dispatch<SetStateAction<SCMProps>>
   cloud: CloudProps
-  setCloud: Dispatch<CloudProps>
+  setCloud: Dispatch<SetStateAction<CloudProps>>
   workspace: WorkspaceProps
-  setWorkspace: Dispatch<WorkspaceProps>
+  setWorkspace: Dispatch<SetStateAction<WorkspaceProps>>
   valid: boolean
-  setValid: Dispatch<boolean>
+  setValid: Dispatch<SetStateAction<boolean>>
   sections: Sections
-  setSections: Dispatch<Sections>
+  setSections: Dispatch<SetStateAction<Sections>>
   section: Section
-  setSection: Dispatch<Section>
+  setSection: Dispatch<SetStateAction<Section>>
 }
 
 const OnboardingContext = createContext<ContextProps>({} as ContextProps)

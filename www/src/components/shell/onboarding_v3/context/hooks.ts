@@ -10,12 +10,14 @@ import {
 
 import { OnboardingContext } from './onboarding'
 import {
+  CloudProvider,
+  CloudProviderBase,
   CloudType,
-  OnboardingPath,
   SCMProps,
   Section,
   SectionKey,
   Sections,
+  WorkspaceProps,
 } from './types'
 
 const defaultSections = (): Sections => {
@@ -90,10 +92,10 @@ const useSection = (): Section => {
   return section
 }
 
-const useCloud = (): CloudType | undefined => {
+const useCloudType = (): CloudType => {
   const { cloud: { type } } = useContext(OnboardingContext)
 
-  return type
+  return type || CloudType.Cloud
 }
 
 const useSCM = (): SCMProps => {
@@ -102,23 +104,36 @@ const useSCM = (): SCMProps => {
   return scm
 }
 
-const useRestart = (): Dispatch<void> => usePath(OnboardingPath.CloudShell)
-
-const usePath = (path: OnboardingPath): Dispatch<void> => {
+const usePath = (path: CloudType): Dispatch<void> => {
   const { setSections } = useContext(OnboardingContext)
-  let sections: Sections
 
-  switch (path) {
-  case OnboardingPath.CloudShell:
-    sections = defaultSections()
-    break
-  case OnboardingPath.LocalCLI:
-    sections = localCLISections()
-  }
+  return useCallback(() => {
+    let sections: Sections
 
-  return useCallback(() => setSections(sections), [setSections])
+    switch (path) {
+    case CloudType.Cloud:
+      sections = defaultSections()
+      break
+    case CloudType.Local:
+      sections = localCLISections()
+    }
+
+    setSections(sections)
+  }, [path, setSections])
+}
+
+const useSetWorkspaceKeys = (): Dispatch<Partial<WorkspaceProps>> => {
+  const { setWorkspace } = useContext(OnboardingContext)
+
+  return useCallback((partial: Partial<WorkspaceProps>) => setWorkspace(w => ({ ...w, ...partial })), [setWorkspace])
+}
+
+const useSetCloudProviderKeys = <T extends CloudProviderBase>(provider: CloudProvider): Dispatch<Partial<T>> => {
+  const { setCloud } = useContext(OnboardingContext)
+
+  return useCallback((partial: Partial<T>) => setCloud(c => ({ ...c, [provider]: { ...c[provider], ...partial } })), [provider, setCloud])
 }
 
 export {
-  useToken, useCloud, useSCM, useRestart, defaultSections, useSection, usePath,
+  useToken, useCloudType, useSCM, defaultSections, useSection, usePath, useSetWorkspaceKeys, useSetCloudProviderKeys,
 }

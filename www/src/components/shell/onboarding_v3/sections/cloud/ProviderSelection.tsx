@@ -18,7 +18,7 @@ function ProviderSelection() {
   const [path, setPath] = useState(cloud?.type)
   const isValid = useMemo(() => path !== undefined, [path])
 
-  useEffect(() => setCloud({ ...cloud, type: path }), [path, setCloud])
+  useEffect(() => setCloud(c => ({ ...c, type: path })), [path, setCloud])
   useEffect(() => setValid(isValid), [setValid, isValid])
 
   return (

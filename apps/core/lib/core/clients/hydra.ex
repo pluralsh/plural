@@ -43,7 +43,6 @@ defmodule Core.Clients.Hydra do
     ]
   end
 
-  @duration 60 * 60 * 24
 
   def get_configuration() do
     public_url("/.well-known/openid-configuration")

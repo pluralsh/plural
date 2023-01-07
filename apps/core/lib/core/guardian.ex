@@ -19,7 +19,7 @@ defmodule Core.Guardian do
   end
   def resource_from_claims(_claims), do: {:error, :not_authorized}
 
-  @decorate cacheable(cache: Core.Cache, key: {:login_v2, id}, opts: [ttl: @ttl], match: &allow/1)
+  @decorate cacheable(cache: Core.Cache, key: {:login, id}, opts: [ttl: @ttl], match: &allow/1)
   def fetch_user(id) do
     Users.get_user(id)
     |> Core.Services.Rbac.preload()

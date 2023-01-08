@@ -17,12 +17,7 @@ import IsEmpty from 'lodash/isEmpty'
 
 import { OnboardingContext } from '../../../context/onboarding'
 import { IsObjectEmpty } from '../../../../../../utils/object'
-import {
-  AzureCloudProvider,
-  CloudProvider,
-  GCPCloudProvider,
-  WorkspaceProps,
-} from '../../../context/types'
+import { CloudProvider, GCPCloudProvider } from '../../../context/types'
 import { useSetCloudProviderKeys, useSetWorkspaceKeys } from '../../../context/hooks'
 
 const REGIONS = [

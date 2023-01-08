@@ -30,10 +30,8 @@ function Onboarding() {
   useDevTokenInputSecretCode()
 
   const theme = useTheme()
-  const { section, setSection, sections } = useContext(OnboardingContext)
+  const { section, setSection } = useContext(OnboardingContext)
   const navigate = useNavigate()
-
-  useEffect(() => setSection(Object.values(sections).find(s => s.key === section.key)), [sections, setSection])
 
   return (
     <Flex

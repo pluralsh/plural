@@ -1,6 +1,14 @@
 import { Flex, H2 } from 'honorable'
 
-function OnboardingCard({ children, title = '', ...props }: any) {
+interface OnboardingCardProps {
+  title?: string,
+  mode: 'Step' | 'Creating'
+  children: JSX.Element | Array<JSX.Element> | false
+}
+
+function OnboardingCard({
+  title = '', mode = 'Step', children, ...props
+}: OnboardingCardProps) {
   return (
     <Flex
       direction="column"
@@ -10,8 +18,8 @@ function OnboardingCard({ children, title = '', ...props }: any) {
       backgroundColor="fill-one"
       border="1px solid border"
       borderRadius="large"
-      paddingVertical="xlarge"
-      paddingHorizontal="112px"
+      paddingVertical={mode === 'Step' ? 'xlarge' : 'medium'}
+      paddingHorizontal={mode === 'Step' ? '112px' : 0}
       overflowY="auto"
       {...props}
     >

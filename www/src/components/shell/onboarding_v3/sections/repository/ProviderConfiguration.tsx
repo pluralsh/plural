@@ -3,76 +3,48 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useState,
 } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { Flex, Img, Input } from 'honorable'
 import {
-  Flex,
-  Img,
-  Input,
-  MenuItem,
+  Button,
+  FormField,
+  ListBoxItem,
   Select,
-  Text,
-} from 'honorable'
-import { Button, FormField } from '@pluralsh/design-system'
+} from '@pluralsh/design-system'
 
 import { OnboardingContext } from '../../context/onboarding'
 import { ScmProvider } from '../../../../../generated/graphql'
 import { isAlphanumeric } from '../../../validation'
 
+import { OrgType, SCMOrg } from '../../context/types'
+
 import { useGithubState } from './provider/github'
 import { useGitlabState } from './provider/gitlab'
 
-function OrgDisplay({ name, avatarUrl }: any) {
-  return (
-    <Flex
-      direction="row"
-      align="left"
-      marginTop={avatarUrl ? '-2px' : 0}
-    >
-      {avatarUrl && (
-        <Img
-          borderRadius="medium"
-          marginRight="xsmall"
-          src={avatarUrl}
-          display="block"
-          width={24}
-          height={24}
-        />
-      )}
-      <Text
-        body1
-      >{name}
-      </Text>
-    </Flex>
-  )
+interface OrgInputProps {
+  orgs: Array<SCMOrg>
 }
 
-function OrgInput({ org, orgs, doSetOrg }: any) {
-  const { scm: { provider } } = useContext(OnboardingContext)
+function OrgInput({ orgs }: OrgInputProps) {
+  const { scm: { provider, org }, setSCM } = useContext(OnboardingContext)
+  const setOrg = useCallback(org => setSCM(scm => ({ ...scm, org })), [setSCM])
+  const setOrgByKey = useCallback(id => {
+    const org = orgs.find(o => o.id === id)
 
-  const orgMapper = useCallback(org => {
-    const menuItem = provider === ScmProvider.Github ? {
-      name: org.login,
-      avatarUrl: org.avatar_url,
-      key: org.id,
-    } : {
-      name: org.data.path || org.data.username,
-      avatarUrl: org.data.avatar_url,
-      key: org.id,
-    }
+    setSCM(scm => ({ ...scm, org }))
+  }, [orgs, setSCM])
 
-    return (
-      <MenuItem
-        key={menuItem.key}
-        value={org}
-      >
-        <OrgDisplay
-          name={menuItem.name}
-          avatarUrl={menuItem.avatarUrl}
-        />
-      </MenuItem>
-    )
-  }, [provider])
+  useEffect(() => {
+    if (org) return
+
+    const userOrg = orgs.find(o => o.orgType === OrgType.User)
+
+    if (!userOrg) return
+
+    setOrg(userOrg)
+  }, [org, orgs, setOrg])
 
   return (
     <FormField
@@ -86,35 +58,56 @@ function OrgInput({ org, orgs, doSetOrg }: any) {
       }
     >
       <Select
-        width="100%"
-        onChange={({ target: { value } }) => doSetOrg(value)}
-        value={org || null}
+        onSelectionChange={key => setOrgByKey(key)}
+        selectedKey={org?.id}
+        leftContent={(
+          <Img
+            borderRadius="medium"
+            src={org?.avatarUrl}
+            width={24}
+            height={24}
+          />
+        )}
       >
-        {orgs?.map(orgMapper) || []}
+        {orgs?.map(o => (
+          <ListBoxItem
+            key={o.id}
+            label={o.name}
+            textValue={o.name}
+            leftContent={(
+              <Img
+                borderRadius="medium"
+                marginRight="xsmall"
+                src={o.avatarUrl}
+                display="block"
+                width={24}
+                height={24}
+              />
+            )}
+          />
+        ))}
       </Select>
     </FormField>
   )
 }
 
-function RepositoryInput({ scmState }: any) {
+function RepositoryInput({ orgs }: any) {
   const { scm, setSCM, setValid } = useContext(OnboardingContext)
   const maxLen = 100
-  const setName = useCallback((name: string) => setSCM({ ...scm, name }), [setSCM, scm])
-  const isValid = useMemo(() => scm?.name?.length > 0 && !isAlphanumeric(scm?.name), [scm])
+  const setName = useCallback((name: string) => setSCM({ ...scm, repositoryName: name }), [setSCM, scm])
+  const isValid = useMemo(() => scm?.repositoryName?.length > 0 && !isAlphanumeric(scm?.repositoryName), [scm])
 
   useEffect(() => setValid(isValid), [isValid, setValid])
 
   return (
     <>
-      <OrgInput
-        {...scmState}
-      />
+      <OrgInput orgs={orgs} />
       <FormField
         width="100%"
         marginTop="medium"
         label="Repository name"
         hint="Your repository's name must be globally unique."
-        length={scm?.name?.length || 0}
+        length={scm?.repositoryName?.length || 0}
         maxLength={maxLen}
         error={!isValid}
       >
@@ -122,7 +115,7 @@ function RepositoryInput({ scmState }: any) {
           error={!isValid}
           width="100%"
           onChange={({ target: { value } }) => setName(value.substring(0, maxLen))}
-          value={scm?.name}
+          value={scm?.repositoryName}
           placeholder="Choose a repository name"
         />
       </FormField>
@@ -131,20 +124,20 @@ function RepositoryInput({ scmState }: any) {
 }
 
 function GithubRepositoryInput() {
-  const { scm, setSCM } = useContext(OnboardingContext)
-  const scmState = useGithubState({ scm, setSCM })
+  const { scm } = useContext(OnboardingContext)
+  const orgs = useGithubState({ token: scm.token })
 
   return (
-    <RepositoryInput scmState={scmState} />
+    <RepositoryInput orgs={orgs} />
   )
 }
 
 function GitlabRepositoryInput() {
-  const { scm, setSCM } = useContext(OnboardingContext)
-  const scmState = useGitlabState({ scm, setSCM })
+  const { scm } = useContext(OnboardingContext)
+  const orgs = useGitlabState({ token: scm.token })
 
   return (
-    <RepositoryInput scmState={scmState} />
+    <RepositoryInput orgs={orgs} />
   )
 }
 

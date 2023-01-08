@@ -1,6 +1,6 @@
 import { Button, FormField, Input } from '@pluralsh/design-system'
 import { Flex } from 'honorable'
-import { useContext } from 'react'
+import { useContext, useMemo } from 'react'
 
 import { OnboardingContext } from '../../context/onboarding'
 import { useSetWorkspaceKeys } from '../../context/hooks'
@@ -8,6 +8,7 @@ import { useSetWorkspaceKeys } from '../../context/hooks'
 function WorkspaceStep({ onBack, onNext }) {
   const { workspace } = useContext(OnboardingContext)
   const setWorkspaceKeys = useSetWorkspaceKeys()
+  const isValid = useMemo(() => workspace?.clusterName && workspace?.bucketPrefix && workspace?.subdomain, [workspace])
 
   return (
     <Flex
@@ -63,7 +64,11 @@ function WorkspaceStep({ onBack, onNext }) {
           onClick={onBack}
         >Back
         </Button>
-        <Button onClick={onNext}>Continue</Button>
+        <Button
+          onClick={onNext}
+          disabled={!isValid}
+        >Continue
+        </Button>
       </Flex>
     </Flex>
   )

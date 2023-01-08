@@ -1,47 +1,27 @@
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Octokit } from '@octokit/core'
 
-import { OrgType } from '../../../context/types'
+import { OrgType, SCMOrg } from '../../../context/types'
 
-export function useGithubState({ scm, setSCM }: any) {
-  const client = useMemo(() => new Octokit({ auth: scm.token }), [scm])
-  const [orgs, setOrgs] = useState<any>(null)
-  const [org, setOrg] = useState<any>(null)
-
-  const doSetOrg = useCallback(org => {
-    if (org.type === OrgType.User) {
-      setSCM({ ...scm, org: null, orgType: OrgType.User })
-    }
-    else {
-      setSCM({ ...scm, org: org.login, orgType: OrgType.Organization })
-    }
-    setOrg(org)
-  }, [scm, setSCM])
+export function useGithubState({ token }): Array<SCMOrg> {
+  const client = useMemo(() => new Octokit({ auth: token }), [token])
+  const [orgs, setOrgs] = useState<Array<SCMOrg>>([])
 
   useEffect(() => {
     const fetch = async () => {
       const { data } = await client.request('GET /user/orgs')
       const { data: me } = await client.request('GET /user')
-      const mergedOrgs = [me, ...data]
 
-      if (data && me) setOrgs(mergedOrgs)
-
-      const selectedOrg = scm.orgType === OrgType.User ? me : data.find(org => org.login === scm.org) || me
-
-      doSetOrg(selectedOrg)
+      setOrgs([me, ...data].map<SCMOrg>(o => ({
+        name: o.login,
+        orgType: o.type === OrgType.User ? OrgType.User : OrgType.Organization,
+        id: `${o.id}`,
+        avatarUrl: o.avatar_url,
+      })))
     }
 
-    if (!orgs) fetch()
-  }, [client, setOrgs, orgs, doSetOrg, scm])
+    if (orgs.length === 0) fetch()
+  }, [client, setOrgs, orgs])
 
-  return {
-    org,
-    orgs,
-    doSetOrg,
-  }
+  return orgs
 }

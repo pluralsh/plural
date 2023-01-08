@@ -33,6 +33,7 @@ interface Section {
   IconComponent: ReactElement
   next?: Section
   prev?: Section
+  state?: 'Creating' | undefined
 }
 
 type Sections = { [key: keyof typeof SectionKey]: Section }
@@ -46,9 +47,15 @@ interface SCMProps {
   token?: string
   provider?: ScmProvider
   authUrls: Array<AuthorizationUrl>
+  repositoryName?: string
+  org?: SCMOrg
+}
+
+interface SCMOrg {
+  id?: string
   name?: string
-  org?: string
   orgType?: OrgType
+  avatarUrl?: string
 }
 
 enum CloudType {
@@ -94,7 +101,7 @@ interface WorkspaceProps {
 }
 
 export type {
-  Sections, Section, SCMProps, CloudProps, WorkspaceProps, GCPCloudProvider, AWSCloudProvider, AzureCloudProvider, CloudProviderBase,
+  Sections, Section, SCMProps, CloudProps, WorkspaceProps, GCPCloudProvider, AWSCloudProvider, AzureCloudProvider, CloudProviderBase, SCMOrg,
 }
 export {
   SectionKey, OrgType, CloudType, CloudProviderDisplayName, CloudProviderDisplayNameType, CloudProvider,

@@ -1,55 +1,41 @@
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Gitlab } from '@gitbeaker/browser'
 
-import { OrgType } from '../../../context/types'
+import { OrgType, SCMOrg } from '../../../context/types'
 
 // TODO: test this
-export function useGitlabState({ scm, setSCM }: any) {
-  const client = useMemo(() => new Gitlab({ oauthToken: scm.token }), [scm])
+export function useGitlabState({ token }): Array<SCMOrg> {
+  const client = useMemo(() => new Gitlab({ oauthToken: token }), [token])
   const [orgs, setOrgs] = useState<any>(null)
-  const [org, setOrg] = useState<any>(null)
-  const doSetOrg = useCallback(org => {
-    if (org.type === 'user') {
-      setSCM({ ...scm, org: null, orgType: OrgType.User })
-    }
-    else {
-      setSCM({ ...scm, org: `${org.id}`, orgType: OrgType.Organization })
-    }
-
-    setOrg(org)
-  }, [scm, setSCM])
 
   useEffect(() => {
     const fetch = async () => {
       const groups = await client.Groups.all({ min_access_level: 30 })
       const me = await client.Users.current()
+
       const orgs = [
         {
-          type: 'user', data: me, id: me.id,
+          type: OrgType.User, data: me, id: me.id,
         },
         ...groups.map(g => ({
-          type: 'group',
+          type: OrgType.Organization,
           data: g,
           id: g.id,
         })),
       ]
-      const selectedOrg = scm.orgType === OrgType.User ? me : orgs.find(org => org.id === scm.org) || me
+
+      setOrgs(orgs.map<SCMOrg>(o => ({
+        name: o.data.path || o.data.username,
+        orgType: o.type,
+        id: `${o.id}`,
+        avatarUrl: o.data.avatar_url,
+      })))
 
       setOrgs(orgs)
-      doSetOrg(selectedOrg)
     }
 
     if (!orgs) fetch()
-  }, [client, setOrgs, orgs, doSetOrg, scm])
+  }, [client, setOrgs, orgs])
 
-  return {
-    org,
-    orgs,
-    doSetOrg,
-  }
+  return orgs
 }

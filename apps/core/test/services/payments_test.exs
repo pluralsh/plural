@@ -465,7 +465,7 @@ defmodule Core.Services.PaymentsTest do
     test "if the account is on a platform plan, it will update", %{account: account} do
       {:ok, account} = Ecto.Changeset.change(account, %{cluster_count: 2, user_count: 3})
                        |> Core.Repo.update()
-      subscription = insert(:platform_subscription, account: account, line_items: [
+      subscription = insert(:platform_subscription, external_id: "ext_id", account: account, line_items: [
         %{id: Ecto.UUID.generate(), external_id: "si_1", quantity: 1, dimension: :user},
         %{id: Ecto.UUID.generate(), external_id: "si_2", quantity: 0, dimension: :cluster},
       ])
@@ -603,6 +603,19 @@ defmodule Core.Services.PaymentsTest do
       user = insert(:user, account: account)
 
       {:error, _} = Payments.delete_platform_subscription(user)
+    end
+  end
+
+  describe "#setup_enterprise_plan/1" do
+    test "will add an account to the current enterprise plan" do
+      account = insert(:account)
+      plan = insert(:platform_plan, name: "Enterprise")
+
+      {:ok, subscription} = Payments.setup_enterprise_plan(account.id)
+
+      assert subscription.account_id == account.id
+      assert subscription.plan_id == plan.id
+      refute subscription.external_id
     end
   end
 

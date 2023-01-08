@@ -26,6 +26,7 @@ export type Account = {
   billingCustomerId?: Maybe<Scalars['String']>;
   delinquentAt?: Maybe<Scalars['DateTime']>;
   domainMappings?: Maybe<Array<Maybe<DomainMapping>>>;
+  grandfatheredUnitl?: Maybe<Scalars['DateTime']>;
   icon?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
   insertedAt?: Maybe<Scalars['DateTime']>;

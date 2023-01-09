@@ -6,17 +6,14 @@ import { OrgType, SCMOrg } from '../../../context/types'
 // TODO: test this
 export function useGitlabState({ token }): Array<SCMOrg> {
   const client = useMemo(() => new Gitlab({ oauthToken: token }), [token])
-  const [orgs, setOrgs] = useState<any>(null)
+  const [orgs, setOrgs] = useState<Array<SCMOrg>>()
 
   useEffect(() => {
     const fetch = async () => {
       const groups = await client.Groups.all({ min_access_level: 30 })
       const me = await client.Users.current()
-
       const orgs = [
-        {
-          type: OrgType.User, data: me, id: me.id,
-        },
+        { type: OrgType.User, data: me, id: me.id },
         ...groups.map(g => ({
           type: OrgType.Organization,
           data: g,
@@ -30,12 +27,10 @@ export function useGitlabState({ token }): Array<SCMOrg> {
         id: `${o.id}`,
         avatarUrl: o.data.avatar_url,
       })))
-
-      setOrgs(orgs)
     }
 
     if (!orgs) fetch()
   }, [client, setOrgs, orgs])
 
-  return orgs
+  return orgs ?? []
 }

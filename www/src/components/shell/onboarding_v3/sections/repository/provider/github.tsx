@@ -5,7 +5,7 @@ import { OrgType, SCMOrg } from '../../../context/types'
 
 export function useGithubState({ token }): Array<SCMOrg> {
   const client = useMemo(() => new Octokit({ auth: token }), [token])
-  const [orgs, setOrgs] = useState<Array<SCMOrg>>([])
+  const [orgs, setOrgs] = useState<Array<SCMOrg>>()
 
   useEffect(() => {
     const fetch = async () => {
@@ -20,8 +20,8 @@ export function useGithubState({ token }): Array<SCMOrg> {
       })))
     }
 
-    if (orgs.length === 0) fetch()
+    if (!orgs) fetch()
   }, [client, setOrgs, orgs])
 
-  return orgs
+  return orgs ?? []
 }

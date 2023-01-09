@@ -13,7 +13,7 @@ function CreateShellStep({ onBack }) {
   return (
     <Flex
       direction="column"
-      gap="large"
+      gap="medium"
     >
       {!isCreating && <Summary onBack={onBack} />}
       {isCreating && <CreateShell />}

@@ -77,9 +77,9 @@ function RepositorySummaryUnstyled({ ...props }) {
             <P
               caption
               color="text-xlight"
-            >Repository name
+            >Repository Name
             </P>
-            <P body1>{scm?.name}</P>
+            <P body1>{scm?.repositoryName}</P>
           </div>
         </div>
 
@@ -88,9 +88,20 @@ function RepositorySummaryUnstyled({ ...props }) {
             <P
               caption
               color="text-xlight"
-            >Git account
+            >Git Account
             </P>
-            <P body1>{scm?.org || 'User'}</P>
+            <P body1>{scm?.org?.name || 'User'}</P>
+          </div>
+        </div>
+
+        <div className="entryContainer">
+          <div className="entry">
+            <P
+              caption
+              color="text-xlight"
+            >Account Type
+            </P>
+            <P body1>{scm?.org?.orgType}</P>
           </div>
         </div>
       </div>
@@ -177,7 +188,7 @@ function WorkspaceSummaryUnstyled({ ...props }) {
             <P
               caption
               color="text-xlight"
-            >Bucket prefix
+            >Bucket Prefix
             </P>
             <P body1>{workspace?.bucketPrefix}</P>
           </div>

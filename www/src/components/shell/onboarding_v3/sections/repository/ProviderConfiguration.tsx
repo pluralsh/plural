@@ -60,7 +60,7 @@ function OrgInput({ orgs }: OrgInputProps) {
       <Select
         onSelectionChange={key => setOrgByKey(key)}
         selectedKey={org?.id}
-        leftContent={(
+        leftContent={org?.avatarUrl && (
           <Img
             borderRadius="medium"
             src={org?.avatarUrl}
@@ -159,14 +159,12 @@ export function ProviderInput() {
 }
 
 export function ProviderConfiguration({ onNext }) {
-  // const { exceptions, error } = useContext(CreateShellContext)
   const { valid } = useContext(OnboardingContext)
   const navigate = useNavigate()
 
   return (
     <div>
       <ProviderInput />
-      {/* {exceptions && <Exceptions exceptions={exceptions} />} */}
       <Flex
         gap="medium"
         justify="space-between"

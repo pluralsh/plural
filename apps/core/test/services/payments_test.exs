@@ -584,6 +584,28 @@ defmodule Core.Services.PaymentsTest do
     end
   end
 
+  describe "#delete_platform_subscription/1" do
+    setup [:setup_root_user]
+    test "it will delete in stripe and db", %{user: user, account: account} do
+      sub = insert(:platform_subscription, account: account, external_id: "ext_id")
+      expect(Stripe.Subscription, :delete, fn "ext_id" -> {:ok, %{}} end)
+
+      {:ok, deleted} = Payments.delete_platform_subscription(user)
+
+      assert deleted.id == account.id
+      refute deleted.subscription
+
+      refute refetch(sub)
+    end
+
+    test "users w/o perms cannot delete", %{account: account} do
+      insert(:platform_subscription, account: account, external_id: "ext_id")
+      user = insert(:user, account: account)
+
+      {:error, _} = Payments.delete_platform_subscription(user)
+    end
+  end
+
   describe "#update_plan/3" do
     test "Users can change plans" do
       expect(Stripe.Subscription, :update, fn

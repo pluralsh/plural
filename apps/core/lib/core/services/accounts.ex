@@ -32,6 +32,8 @@ defmodule Core.Services.Accounts do
 
   def get_group!(id), do: Core.Repo.get!(Group, id)
 
+  def get_group_by_name(aid, name), do: Core.Repo.get_by(Group, name: name, account_id: aid)
+
   def get_invite!(id), do: Core.Repo.get_by!(Invite, secure_id: id)
 
   def get_invite(id), do: Core.Repo.get_by(Invite, secure_id: id)
@@ -173,6 +175,11 @@ defmodule Core.Services.Accounts do
       |> allow(user, :create)
       |> when_ok(:insert)
     end)
+    |> add_operation(:account, fn %{sa: %{account_id: aid}} -> {:ok, get_account!(aid)} end)
+    |> add_operation(:provision, fn
+      %{account: %Account{sa_provisioned: true} = account, sa: sa} -> setup_sa_group(account, sa)
+      %{account: account, sa: sa} -> provision_service_account_role(account, sa)
+    end)
     |> add_operation(:validate, fn %{sa: %{account_id: aid} = sa} ->
       case Core.Repo.preload(sa, impersonation_policy: :bindings) do
         %{impersonation_policy: %{bindings: bindings}} -> validate_bindings(aid, bindings)
@@ -181,6 +188,48 @@ defmodule Core.Services.Accounts do
     end)
     |> execute(extract: :sa)
     |> Users.notify(:create)
+  end
+
+  @sa_group "service-accounts"
+
+  defp provision_service_account_role(%Account{id: aid} = account, %User{} = sa) do
+    start_transaction()
+    |> add_operation(:group, fn _ -> setup_sa_group(account, sa) end)
+    |> add_operation(:role, fn %{group: %{group: g}} ->
+      %Role{account_id: aid}
+      |> Role.changeset(%{
+        name: @sa_group,
+        description: "permissions given to service accounts in your account",
+        repositories: ["*"],
+        permissions: %{install: true},
+        role_bindings: [%{group_id: g.id}]
+      })
+      |> Core.Repo.insert()
+    end)
+    |> add_operation(:account, fn _ ->
+      Account.changeset(account, %{sa_provisioned: true})
+      |> Core.Repo.update()
+    end)
+    |> execute()
+  end
+
+  defp setup_sa_group(%Account{id: aid}, %User{id: user_id}) do
+    start_transaction()
+    |> add_operation(:group, fn _ ->
+      case get_group_by_name(aid, @sa_group) do
+        %Group{} = g -> {:ok, g}
+        _ ->
+          %Group{account_id: aid}
+          |> Group.changeset(%{name: @sa_group, description: "group managed automatically for all service accounts"})
+          |> Core.Repo.insert()
+      end
+    end)
+    |> add_operation(:group_member, fn %{group: group} ->
+      %GroupMember{group_id: group.id}
+      |> GroupMember.changeset(%{user_id: user_id})
+      |> Core.Repo.insert()
+    end)
+    |> execute()
   end
 
   @doc """

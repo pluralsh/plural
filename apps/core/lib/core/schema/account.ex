@@ -14,6 +14,7 @@ defmodule Core.Schema.Account do
     field :user_count,           :integer, default: 0
     field :cluster_count,        :integer, default: 0
     field :usage_updated,        :boolean
+    field :sa_provisioned,       :boolean
 
     belongs_to :root_user, User
     has_many :domain_mappings, DomainMapping, on_replace: :delete
@@ -39,7 +40,7 @@ defmodule Core.Schema.Account do
     )
   end
 
-  @valid ~w(name workos_connection_id)a
+  @valid ~w(name workos_connection_id sa_provisioned)a
   @payment ~w(billing_customer_id)a
 
   def changeset(model, attrs \\ %{}) do

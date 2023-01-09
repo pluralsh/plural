@@ -71,7 +71,7 @@ function Onboarding() {
             onBack={() => setSection(section.prev || section)}
           />
         </ResponsiveLayoutContentContainer>
-        <ResponsiveLayoutSpacer grow={2} />
+        <ResponsiveLayoutSpacer />
       </Flex>
     </Flex>
   )

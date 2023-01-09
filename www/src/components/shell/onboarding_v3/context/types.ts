@@ -1,6 +1,6 @@
 import { ReactElement } from 'react'
 
-import { AuthorizationUrl, ScmProvider } from '../../../../generated/graphql'
+import { AuthorizationUrl, Provider, ScmProvider } from '../../../../generated/graphql'
 
 enum CloudProvider {
   Azure = 'azure',
@@ -13,6 +13,13 @@ enum CloudProviderDisplayName {
   aws = 'Amazon Web Services',
   azure = 'Azure',
   gcp = 'Google Cloud Platform',
+}
+
+// Keys should match CloudProvider values
+enum CloudProviderToProvider {
+  aws = Provider.Aws,
+  azure = Provider.Azure,
+  gcp = Provider.Gcp,
 }
 
 type CloudProviderDisplayNameType = {[key in CloudProvider]: string}
@@ -101,8 +108,8 @@ interface WorkspaceProps {
 }
 
 export type {
-  Sections, Section, SCMProps, CloudProps, WorkspaceProps, GCPCloudProvider, AWSCloudProvider, AzureCloudProvider, CloudProviderBase, SCMOrg,
+  Sections, Section, SCMProps, CloudProps, WorkspaceProps, GCPCloudProvider, AWSCloudProvider, AzureCloudProvider, CloudProviderBase, SCMOrg, CloudProviderToProviderType,
 }
 export {
-  SectionKey, OrgType, CloudType, CloudProviderDisplayName, CloudProviderDisplayNameType, CloudProvider,
+  SectionKey, OrgType, CloudType, CloudProviderDisplayName, CloudProviderDisplayNameType, CloudProvider, CloudProviderToProvider,
 }

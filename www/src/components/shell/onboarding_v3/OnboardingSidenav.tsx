@@ -16,14 +16,12 @@ const ResponsiveWidth = styled.div(({ theme }) => {
     textAlign: 'center',
     [medMq]: {
       width: expandAtWidth,
-      textAlign: 'left',
     },
     [desktopMq]: {
-      marginLeft: 64,
       width: expandAtWidth,
     },
     [desktopLargeMq]: {
-      width: 230,
+      width: 256,
     },
   }
 })

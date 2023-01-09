@@ -115,9 +115,12 @@ function ErrorWrapper({ error }: ErrorWrapperProps) {
       overflowY="auto"
       gap="xxsmall"
     >
-      {error.graphQLErrors.map(err => (
-        <P>{err.message}</P>
+      {error.graphQLErrors && error.graphQLErrors.map((err, idx) => (
+        <P key={idx}>{err.message.replace(/\\n/g, '')}</P>
       ))}
+      {!error.graphQLErrors && (
+        <P>{error.message.replace(/\\n/g, '')}</P>
+      )}
     </Flex>
   )
 }
@@ -191,7 +194,7 @@ interface ShellStatusProps {
   error: ApolloError | undefined
 }
 
-export function ShellStatus({ shell, error }: ShellStatusProps) {
+export function ShellStatus({ shell, error, loading }: ShellStatusProps) {
   const {
     alive, status: {
       containersReady, initialized, podScheduled, ready,
@@ -216,8 +219,8 @@ export function ShellStatus({ shell, error }: ShellStatusProps) {
 
         {!error && (
           <ProgressBar
-            mode={alive ? 'determinate' : 'indeterminate'}
-            progress={alive ? 100 : undefined}
+            mode={alive && !loading ? 'determinate' : 'indeterminate'}
+            progress={alive && !loading ? 100 : undefined}
             backgroundColor="fill-two"
             marginBottom="medium"
           />
@@ -252,8 +255,14 @@ export function ShellStatus({ shell, error }: ShellStatusProps) {
           />
 
           <ProgressEntry
-            text="Ready"
+            text="Shell ready"
             loading={!ready}
+            error={error}
+          />
+
+          <ProgressEntry
+            text="Booting into shell"
+            loading={loading}
             error={error}
             last
           />

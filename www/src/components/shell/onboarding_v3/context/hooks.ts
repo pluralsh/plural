@@ -105,7 +105,7 @@ const useSCM = (): SCMProps => {
 }
 
 const usePath = (path: CloudType): Dispatch<void> => {
-  const { setSections } = useContext(OnboardingContext)
+  const { setSections, section, setSection } = useContext(OnboardingContext)
 
   return useCallback(() => {
     let sections: Sections
@@ -118,7 +118,10 @@ const usePath = (path: CloudType): Dispatch<void> => {
       sections = localCLISections()
     }
 
+    const updatedSection = sections[section.key]
+
     setSections(sections)
+    setSection(updatedSection)
   }, [path, setSections])
 }
 

@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react'
+import { forwardRef, useContext, useState } from 'react'
 import { Flex } from 'honorable'
 import Fuse from 'fuse.js'
 
@@ -12,16 +12,41 @@ import {
   SprayIcon,
 } from '@pluralsh/design-system'
 
+import styled from 'styled-components'
+
 import TerminalThemeContext from '../../contexts/TerminalThemeContext'
 
 import { normalizedThemes, themeNames } from './themes'
 
 const fuse = new Fuse(themeNames, { threshold: 0.25 })
 
+const ThemeSelectButton = styled(forwardRef((props, ref) => (
+  <Button
+    ref={ref}
+    tertiary
+    small
+    startIcon={<SprayIcon />}
+    endIcon={(
+      <DropdownArrowIcon
+        className="dropdownIcon"
+        marginLeft="8px"
+        size={12}
+      />
+    )}
+    {...props}
+  >
+    Change theme
+  </Button>
+)))<{ isOpen?: boolean }>(({ isOpen = false }) => ({
+  '.dropdownIcon': {
+    transform: isOpen ? 'scaleY(-1)' : 'scaleY(1)',
+    transition: 'transform 0.2s ease',
+  },
+}))
+
 function TerminalThemeSelector() {
   const [, setTerminalTheme] = useContext(TerminalThemeContext)
   const [search, setSearch] = useState('')
-  const [open, setOpen] = useState(false)
   const results = fuse.search(search).map(x => x.item)
   const displayedThemes = results.length ? results : themeNames
 
@@ -31,31 +56,7 @@ function TerminalThemeSelector() {
       placement="right"
       width="460px"
       onSelectionChange={t => setTerminalTheme(t)}
-      onOpenChange={o => setOpen(o)}
-      triggerButton={(
-        <Button
-          tertiary
-          small
-          startIcon={<SprayIcon />}
-          endIcon={(
-            <DropdownArrowIcon
-              marginLeft="8px"
-              size={12}
-              style={open ? {
-                transform: 'rotate(180deg)',
-                transitionDuration: '.2s',
-                transitionProperty: 'transform',
-              } : {
-                transform: 'rotate(0)',
-                transitionDuration: '.2s',
-                transitionProperty: 'transform',
-              }}
-            />
-          )}
-        >
-          Change theme
-        </Button>
-      )}
+      triggerButton={<ThemeSelectButton />}
       dropdownFooterFixed={(
         <Flex
           width="458px"

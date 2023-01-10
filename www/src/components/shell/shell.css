@@ -5,4 +5,13 @@
 
 .xterm-screen {
   width: auto !important;
+  height: 100% !important;
+}
+
+.xterm-viewport {
+  overflow-y: auto !important;
+}
+
+.xterm-rows > div {
+  width: auto !important;
 }

@@ -1,4 +1,5 @@
 import './shell.css'
+import 'xterm/css/xterm.css'
 
 import { Buffer } from 'buffer'
 
@@ -10,15 +11,15 @@ import {
   useRef,
   useState,
 } from 'react'
-import { XTerm } from 'xterm-for-react'
-import { FitAddon } from 'xterm-addon-fit'
 import { Div, Flex } from 'honorable'
 import { Button, ReloadIcon, ScrollIcon } from '@pluralsh/design-system'
-import { useResizeDetector } from 'react-resize-detector'
-import debounce from 'lodash/debounce'
+import { Terminal } from 'xterm'
+import { FitAddon } from 'xterm-addon-fit'
 
-import { socket } from '../../helpers/client'
+import { useResizeDetector } from 'react-resize-detector'
+
 import TerminalThemeContext from '../../contexts/TerminalThemeContext'
+import { socket } from '../../helpers/client'
 
 import TerminalThemeSelector from './TerminalThemeSelector'
 import { normalizedThemes } from './themes'
@@ -28,90 +29,89 @@ import useOnboarded from './onboarding/useOnboarded'
 import ConfigureMyCloudButton from './ConfigureMyCloudButton'
 
 const decodeBase64 = str => Buffer.from(str, 'base64').toString('utf-8')
-// const detachedMessage = '[detached (from session workspace)]'
+const SHELL_CHANNEL_NAME = 'shells:me'
+
+enum ChannelEvent {
+  OnData = 'command',
+  OnResize = 'resize',
+  OnResponse = 'stdo',
+}
+
+const resize = (fitAddon: FitAddon, channel: unknown, terminal: Terminal) => {
+  let { cols, rows } = fitAddon.proposeDimensions() || {}
+
+  cols = Number.isNaN(cols) ? 0 : cols
+  rows = Number.isNaN(rows) ? 0 : rows
+
+  terminal.resize(cols, rows)
+  if (channel) channel.push(ChannelEvent.OnResize, { width: cols, height: rows })
+
+  console.log('resize')
+}
 
 function Shell({ shell }: any) {
-  const xterm = useRef<any>(null)
-  const [channel, setChannel] = useState<any>(null)
-  const [dimensions, setDimensions] = useState<any>({})
-  const [showCheatsheet, setShowCheatsheet] = useState(true)
-  const fitAddon = useMemo(() => new FitAddon(), [])
+  const terminalRef = useRef<HTMLElement>()
   const [terminalTheme] = useContext(TerminalThemeContext)
   const { fresh } = useOnboarded()
-  const [open, setOpen] = useState(false)
-  const [fitted, setFitted] = useState(false)
-  const [retry, setRetry] = useState(0)
 
+  const [channel, setChannel] = useState()
+  const [showCheatsheet, setShowCheatsheet] = useState(true)
+  const [loaded, setLoaded] = useState(false)
+
+  const terminal = useMemo(() => new Terminal({ cursorBlink: true, theme: normalizedThemes[terminalTheme] }), [terminalTheme])
+  const fitAddon = useMemo(() => new FitAddon(), [])
+
+  const onConnectionError = useCallback(err => console.error(`Unknown error during booting into your shell: ${JSON.stringify(err)}`), [])
+  const onRepairViewport = useCallback(() => resize(fitAddon, channel, terminal), [channel, fitAddon, terminal])
+  const onResize = useCallback(() => resize(fitAddon, channel, terminal), [channel, fitAddon, terminal])
+
+  const { ref: terminalContainerRef } = useResizeDetector({ onResize, refreshMode: 'debounce', refreshRate: 500 })
+
+  // Mount the terminal
   useEffect(() => {
-    if (!xterm?.current?.terminal) {
-      return
-    }
+    if (!terminalRef.current) return
 
-    const term = xterm.current.terminal
+    // Load addon
+    terminal.loadAddon(fitAddon)
 
-    term.options = {} // hack around an xterm-addon-fit bug
-    const chan = socket.channel('shells:me')
+    // Set up the terminal
+    terminal.open(terminalRef.current!)
 
-    term.write(`Booting into your ${shell.provider} shell...\r\n\r\nIt can take a few minutes to load. Try refreshing the page if it gets stuck for too long.\r\n`)
-    chan.onError(err => console.error(`Unknown error during booting into your shell: ${JSON.stringify(err)}`))
-    chan.on('stdo', ({ message }) => {
+    // Welcome message
+    terminal.write(`Booting into your ${shell.provider} shell...\r\n\r\nIt can take a few minutes to load. Try refreshing the page if it gets stuck for too long.\r\n`)
+
+    // Fit the size of terminal element
+    fitAddon.fit()
+
+    // Init the connection
+    const channel = socket.channel(SHELL_CHANNEL_NAME)
+
+    // Handle input
+    terminal.onData(text => channel.push(ChannelEvent.OnData, { cmd: text }))
+
+    channel.onError(onConnectionError)
+    channel.on(ChannelEvent.OnResponse, ({ message }) => {
       const decoded = decodeBase64(message)
 
-      if (!open && decoded.trim() !== '') {
-        setOpen(true)
+      if (!loaded && decoded.trim() !== '') {
+        setLoaded(true)
       }
 
-      term.write(decoded)
+      terminal.write(decoded)
     })
-    chan.join()
-    setChannel(chan)
+    channel.join()
 
-    return () => {
-      chan.leave()
-    }
-  }, [shell, xterm, setOpen, open])
+    setChannel(channel)
 
-  const handleResize = useCallback(({ cols, rows }) => {
-    if (!channel) return
-    channel.push('resize', { width: cols, height: rows })
-  }, [channel])
+    return () => channel.leave() || terminal.dispose()
+  }, [terminalRef, terminal, fitAddon])
 
+  // Resize after initial response when shell is loaded
   useEffect(() => {
-    if (fitted || !xterm?.current?.terminal || !channel) return
+    if (loaded) resize(fitAddon, channel, terminal)
+  }, [loaded])
 
-    try {
-      fitAddon.fit()
-      const { cols, rows } = fitAddon.proposeDimensions() as any
-
-      handleResize({ cols, rows })
-      setDimensions({ cols, rows })
-      setFitted(true)
-    }
-    catch (error) {
-      console.error(error)
-      console.log(`retrying fitting window, retries ${retry}`)
-      setTimeout(() => setRetry(retry + 1), 1000)
-    }
-  }, [xterm, fitAddon, setFitted, fitted, channel, handleResize, retry, setRetry, setDimensions])
-
-  const handleResetSize = useCallback(() => {
-    if (!channel) return
-    channel.push('resize', { width: dimensions.cols, height: dimensions.rows })
-  }, [channel, dimensions])
-
-  useEffect(() => {
-    handleResetSize()
-  }, [handleResetSize, dimensions, open])
-
-  const { ref } = useResizeDetector({
-    onResize: debounce(() => {
-      if (!channel) return
-      fitAddon.fit()
-      handleResize(fitAddon.proposeDimensions() as any as any)
-    }, 500, { leading: true }),
-  })
-
-  const handleData = useCallback(text => channel.push('command', { cmd: text }), [channel])
+  console.log('shell render')
 
   return (
     <>
@@ -140,7 +140,7 @@ function Shell({ shell }: any) {
           small
           tertiary
           startIcon={(<ReloadIcon />)}
-          onClick={handleResetSize}
+          onClick={onRepairViewport}
         >
           Repair viewport
         </Button>
@@ -161,7 +161,7 @@ function Shell({ shell }: any) {
           showCheatsheet={showCheatsheet}
         />
         <Flex
-          ref={ref}
+          ref={terminalContainerRef}
           align="center"
           justify="center"
           overflow="hidden"
@@ -172,19 +172,24 @@ function Shell({ shell }: any) {
           paddingHorizontal="medium"
           backgroundColor={normalizedThemes[terminalTheme].background}
         >
-          <XTerm
+          <Div
+            id="terminal"
             className="terminal"
-            ref={xterm}
-            addons={[fitAddon]}
-            options={{ theme: normalizedThemes[terminalTheme] }}
-            onResize={handleResize}
-            onData={handleData}
-            // @ts-expect-error
-            style={{
-              width: '100%',
-              height: '100%',
-            }}
+            ref={terminalRef}
           />
+          {/* <XTerm */}
+          {/*  className="terminal" */}
+          {/*  ref={xterm} */}
+          {/*  addons={[fitAddon]} */}
+          {/*  options={{ theme: normalizedThemes[terminalTheme] }} */}
+          {/*  // onResize={handleResize} */}
+          {/*  onData={handleData} */}
+          {/*  // @ts-expect-error */}
+          {/*  style={{ */}
+          {/*    width: '100%', */}
+          {/*    height: '100%', */}
+          {/*  }} */}
+          {/* /> */}
         </Flex>
       </Flex>
     </>

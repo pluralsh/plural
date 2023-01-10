@@ -177,19 +177,6 @@ function Shell({ shell }: any) {
             className="terminal"
             ref={terminalRef}
           />
-          {/* <XTerm */}
-          {/*  className="terminal" */}
-          {/*  ref={xterm} */}
-          {/*  addons={[fitAddon]} */}
-          {/*  options={{ theme: normalizedThemes[terminalTheme] }} */}
-          {/*  // onResize={handleResize} */}
-          {/*  onData={handleData} */}
-          {/*  // @ts-expect-error */}
-          {/*  style={{ */}
-          {/*    width: '100%', */}
-          {/*    height: '100%', */}
-          {/*  }} */}
-          {/* /> */}
         </Flex>
       </Flex>
     </>

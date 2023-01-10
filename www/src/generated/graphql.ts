@@ -2382,6 +2382,7 @@ export type RootMutationType = {
   deleteInvite?: Maybe<Invite>;
   deleteKeyBackup?: Maybe<KeyBackup>;
   deleteMessage?: Maybe<IncidentMessage>;
+  deletePlatformSubscription?: Maybe<Account>;
   deletePublicKey?: Maybe<PublicKey>;
   deleteReaction?: Maybe<IncidentMessage>;
   deleteRecipe?: Maybe<Recipe>;

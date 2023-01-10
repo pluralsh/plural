@@ -45,8 +45,6 @@ const resize = (fitAddon: FitAddon, channel: unknown, terminal: Terminal) => {
 
   terminal.resize(cols, rows)
   if (channel) channel.push(ChannelEvent.OnResize, { width: cols, height: rows })
-
-  console.log('resize')
 }
 
 function Shell({ shell }: any) {
@@ -110,8 +108,6 @@ function Shell({ shell }: any) {
   useEffect(() => {
     if (loaded) resize(fitAddon, channel, terminal)
   }, [loaded])
-
-  console.log('shell render')
 
   return (
     <>

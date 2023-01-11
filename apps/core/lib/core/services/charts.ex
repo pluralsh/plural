@@ -308,10 +308,12 @@ defmodule Core.Services.Charts do
   end
 
   def find_template(result, chart) do
-    Enum.find_value([
-      {:gotemplate, String.to_charlist("#{chart}/values.yaml.tpl")},
-      {:lua, String.to_charlist("#{chart}/values.yaml.lua")}
-    ], fn {type, path} ->
+    Enum.map([
+      {:gotemplate, "#{chart}/values.yaml.tpl"},
+      {:lua, "#{chart}/values.yaml.lua"},
+      {:javascript, "#{chart}/values.yaml.js"}
+    ], fn {type, path} -> {type, String.to_charlist(path)} end)
+    |> Enum.find_value(fn {type, path} ->
       case Enum.find(result, &elem(&1, 0) == path) do
         {_, contents} -> {type, contents}
         _ -> nil

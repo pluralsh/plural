@@ -11,7 +11,7 @@ defmodule Core.Schema.Version do
     PackageScan
   }
 
-  defenum TemplateType, gotemplate: 0, lua: 1
+  defenum TemplateType, gotemplate: 0, lua: 1, javascript: 2
 
   schema "versions" do
     field :version,         :string

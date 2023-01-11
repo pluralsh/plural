@@ -546,6 +546,13 @@ defmodule Core.Services.PaymentsTest do
       assert Payments.has_feature?(user, :user_management)
     end
 
+    test "if a user's plan is enterprise, it get's any feature" do
+      account = insert(:account)
+      insert(:platform_subscription, account: account, plan: build(:platform_plan, enterprise: true, features: %{user_management: false}))
+      user = insert(:user, account: account)
+      assert Payments.has_feature?(user, :user_management)
+    end
+
     test "if a user's account is grandfathered, then it returns true" do
       account = insert(:account, grandfathered_until: Timex.now() |> Timex.shift(days: 1))
       insert(:platform_subscription, account: account, plan: build(:platform_plan, features: %{user_management: false}))

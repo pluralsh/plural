@@ -139,6 +139,7 @@ defmodule Core.Services.Payments do
       {false, _, _, _} -> true
       {_, true, _, _} -> false
       {_, _, true, _} -> true
+      {_, _, _, %User{account: %Account{subscription: %PlatformSubscription{plan: %PlatformPlan{enterprise: true}}}}} -> true
       {_, _, _, %User{account: %Account{subscription: %PlatformSubscription{plan: %PlatformPlan{features: %{^feature => true}}}}}} -> true
       _ -> false
     end
@@ -333,6 +334,7 @@ defmodule Core.Services.Payments do
         name: "Enterprise",
         period: :monthly,
         visible: true,
+        enterprise: true,
         features: %{vpn: true, user_management: true},
         line_items: [
           %{name: "User", dimension: :user, period: :monthly, cost: 4900}, # these costs are arbitrary, as won't be billed through stripe

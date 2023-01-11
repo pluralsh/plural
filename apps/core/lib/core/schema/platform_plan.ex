@@ -28,6 +28,7 @@ defmodule Core.Schema.PlatformPlan do
   schema "platform_plans" do
     field :name,        :string
     field :visible,     :boolean, default: true
+    field :enterprise,  :boolean
     field :cost,        :integer
     field :period,      Period
     field :external_id, :string

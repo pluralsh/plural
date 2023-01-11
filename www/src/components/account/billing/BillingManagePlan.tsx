@@ -1,12 +1,16 @@
 import { Div } from 'honorable'
 
+import BillingPreview from './BillingPreview'
 import BillingPricingCards from './BillingPricingCards'
 import BillingPricingTable from './BillingPricingTable'
 
 function BillingManagePlan() {
   return (
     <>
-      <BillingPricingCards />
+      <BillingPreview />
+      <Div marginTop="xxlarge">
+        <BillingPricingCards />
+      </Div>
       <Div marginTop="xxlarge">
         <BillingPricingTable />
       </Div>

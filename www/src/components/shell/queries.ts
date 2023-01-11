@@ -43,6 +43,13 @@ export const CREATE_SHELL_MUTATION = gql`
   ${CloudShellFragment}
 `
 
+export const DELETE_SHELL_MUTATION = gql`
+  mutation {
+    deleteShell { ...CloudShellFragment }
+  }
+  ${CloudShellFragment}
+`
+
 export const REBOOT_SHELL_MUTATION = gql`
   mutation {
     rebootShell {

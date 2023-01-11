@@ -1,5 +1,5 @@
 import { Div } from 'honorable'
-import { Button, CheckIcon, CloseIcon } from '@pluralsh/design-system'
+import { CheckIcon, CloseIcon } from '@pluralsh/design-system'
 
 const columnStyles = {
   position: 'relative',
@@ -136,7 +136,7 @@ function BillingPricingTable() {
           borderTopLeftRadius={6}
           borderLeft="1px solid border-fill-two"
         >
-          Free
+          Open-source
         </Div>
         <Div body2>
           Free

@@ -30,6 +30,7 @@ function BillingLayout() {
       <Div
         flexGrow
         overflowY="auto"
+        paddingRight={1}
       >
         <Outlet />
       </Div>

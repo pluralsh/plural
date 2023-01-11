@@ -1,4 +1,4 @@
-import { Div, Flex, P } from 'honorable'
+import { Flex, P } from 'honorable'
 import {
   Button,
   CloudIcon,
@@ -6,12 +6,12 @@ import {
   GitHubIcon,
 } from '@pluralsh/design-system'
 import { useCallback, useContext } from 'react'
-import styled from 'styled-components'
+import styled, { CSSObject } from 'styled-components'
 
 import { OnboardingContext } from '../../context/onboarding'
 import { ScmProvider } from '../../../../../generated/graphql'
 
-const entryGridStyle = theme => ({
+const entryGridStyle = (theme): CSSObject => ({
   borderTop: theme.borders.default,
   display: 'flex',
 
@@ -68,7 +68,7 @@ function RepositorySummaryUnstyled({ ...props }) {
               color="text-xlight"
             >Provider
             </P>
-            <P body1>{SCMProviderDisplayName[scm?.provider]}</P>
+            <P body1>{SCMProviderDisplayName[scm.provider!]}</P>
           </div>
         </div>
 
@@ -243,4 +243,4 @@ function Summary({ onBack }) {
   )
 }
 
-export default Summary
+export { Summary }

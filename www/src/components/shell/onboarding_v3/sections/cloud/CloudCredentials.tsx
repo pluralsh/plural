@@ -2,8 +2,7 @@ import { FormField, ListBoxItem, Select } from '@pluralsh/design-system'
 import { useContext, useEffect, useState } from 'react'
 
 import { growthbook } from '../../../../../helpers/growthbook'
-import { CloudProvider, CloudProviderDisplayName, CloudProviderDisplayNameType } from '../../context/types'
-
+import { CloudProvider, CloudProviderDisplayName } from '../../context/types'
 import { OnboardingContext } from '../../context/onboarding'
 
 import Provider from './provider/Provider'
@@ -13,7 +12,7 @@ const GROWTHBOOK_AZURE_CLOUD_KEY = 'azure-cloud-shell'
 
 interface ProviderItem {
   key: string,
-  label: CloudProviderDisplayNameType
+  label: string
 }
 
 function CloudCredentials() {
@@ -33,7 +32,7 @@ function CloudCredentials() {
         <Select
           defaultOpen={false}
           selectedKey={provider}
-          onSelectionChange={key => setProvider(key)}
+          onSelectionChange={key => setProvider(key as CloudProvider)}
         >
           {providers.map(provider => (
             <ListBoxItem

@@ -29,12 +29,7 @@ function CloudStep({ onBack, onNext }) {
       direction="column"
       gap="xlarge"
     >
-      {!showConfig && (
-        <ProviderSelection
-          onBack={onBack}
-          onNext={onNext}
-        />
-      )}
+      {!showConfig && (<ProviderSelection />)}
 
       {hasConfig && showConfig && (
         <>

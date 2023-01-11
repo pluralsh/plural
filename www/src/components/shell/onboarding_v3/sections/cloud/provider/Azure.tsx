@@ -52,7 +52,7 @@ function Azure() {
       <FormField label="Region">
         <Select
           selectedKey={workspace?.region}
-          onSelectionChange={value => setWorkspaceKeys({ region: value })}
+          onSelectionChange={value => setWorkspaceKeys({ region: `${value}` })}
         >
           {REGIONS.map(r => (
             <ListBoxItem

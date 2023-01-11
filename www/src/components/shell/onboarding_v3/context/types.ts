@@ -1,4 +1,4 @@
-import { ReactElement } from 'react'
+import { ComponentType, ReactElement } from 'react'
 
 import { AuthorizationUrl, Provider, ScmProvider } from '../../../../generated/graphql'
 
@@ -22,8 +22,6 @@ enum CloudProviderToProvider {
   gcp = Provider.Gcp,
 }
 
-type CloudProviderDisplayNameType = {[key in CloudProvider]: string}
-
 enum SectionKey {
   CREATE_REPOSITORY = 'CREATE_REPOSITORY',
   CONFIGURE_CLOUD = 'CONFIGURE_CLOUD',
@@ -37,13 +35,13 @@ interface Section {
   index: number,
   key: SectionKey
   title: string
-  IconComponent: ReactElement
+  IconComponent: ComponentType
   next?: Section
   prev?: Section
   state?: 'Creating' | undefined
 }
 
-type Sections = { [key: keyof typeof SectionKey]: Section }
+type Sections = {[key in keyof typeof SectionKey]?: Section}
 
 enum OrgType {
   User = 'User',
@@ -108,8 +106,8 @@ interface WorkspaceProps {
 }
 
 export type {
-  Sections, Section, SCMProps, CloudProps, WorkspaceProps, GCPCloudProvider, AWSCloudProvider, AzureCloudProvider, CloudProviderBase, SCMOrg, CloudProviderToProviderType,
+  Sections, Section, SCMProps, CloudProps, WorkspaceProps, GCPCloudProvider, AWSCloudProvider, AzureCloudProvider, CloudProviderBase, SCMOrg,
 }
 export {
-  SectionKey, OrgType, CloudType, CloudProviderDisplayName, CloudProviderDisplayNameType, CloudProvider, CloudProviderToProvider,
+  SectionKey, OrgType, CloudType, CloudProviderDisplayName, CloudProvider, CloudProviderToProvider,
 }

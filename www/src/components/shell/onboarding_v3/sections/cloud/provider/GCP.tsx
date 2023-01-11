@@ -66,23 +66,23 @@ function GCP() {
   const [fileError, setFileError] = useState<FileError>()
   const isValid = useMemo(() => !IsObjectEmpty(cloud?.gcp) && !IsObjectEmpty(workspace), [cloud, workspace])
 
-  const readFile = useCallback(async (files: FileList) => {
+  const readFile = useCallback(async (files: FileList | undefined | null) => {
     setFileSelected(false)
     setFileError(undefined)
     setCloudProviderKeys({ applicationCredentials: undefined, fileName: undefined })
     setWorkspaceKeys({ project: undefined })
 
-    if (files.length === 0) return
+    if (files?.length === 0) return
 
-    const file = files.item(0)
+    const file = files?.item(0)
 
-    if (file.type !== 'application/json') {
+    if (file?.type !== 'application/json') {
       setFileError(FileError.InvalidFormat)
 
       return
     }
 
-    const content = await file.text()
+    const content = await file?.text()
     const credentials = JSON.parse(content)
 
     if (!credentials.project_id) {
@@ -104,7 +104,7 @@ function GCP() {
       <FormField label="Region">
         <Select
           selectedKey={workspace?.region}
-          onSelectionChange={value => setWorkspaceKeys({ region: value })}
+          onSelectionChange={value => setWorkspaceKeys({ region: `${value}` })}
           maxHeight={200}
         >
           {REGIONS.map(r => (
@@ -120,12 +120,12 @@ function GCP() {
       <FormField label="Service account credentials">
         <ThemeContext.Extend value={fileInputTheme(fileSelected, !!fileError)}>
           <FileInput
-            value={cloud?.gcp?.fileName ? [{ name: cloud.gcp.fileName }] as string : undefined}
+            value={cloud?.gcp?.fileName ? [{ name: cloud.gcp.fileName }] as any : undefined}
             messages={{
               dropPrompt: 'Drop your service account credentials file here',
               browse: 'Select file',
             }}
-            onChange={({ target: { files } }: {target: {files: FileList}}) => readFile(files)}
+            onChange={event => readFile(event?.target?.files)}
             renderFile={file => (
               <Span
                 margin="small"

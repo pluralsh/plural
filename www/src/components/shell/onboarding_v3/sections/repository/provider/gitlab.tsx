@@ -22,7 +22,7 @@ export function useGitlabState({ token }): Array<SCMOrg> {
       ]
 
       setOrgs(orgs.map<SCMOrg>(o => ({
-        name: o.data.path || o.data.username,
+        name: (o.data.path || o.data.username) as string,
         orgType: o.type,
         id: `${o.id}`,
         avatarUrl: o.data.avatar_url,

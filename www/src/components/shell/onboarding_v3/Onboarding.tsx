@@ -3,7 +3,6 @@ import { useTheme } from 'styled-components'
 import {
   ReactElement,
   useContext,
-  useEffect,
   useMemo,
   useState,
 } from 'react'
@@ -11,6 +10,8 @@ import { useNavigate } from 'react-router-dom'
 
 import { ResponsiveLayoutContentContainer, ResponsiveLayoutSidenavContainer, ResponsiveLayoutSpacer } from '../../layout/ResponsiveLayout'
 import { useDevTokenInputSecretCode } from '../useDevToken'
+
+import { AuthorizationUrl, RootQueryType, ScmProvider } from '../../../generated/graphql'
 
 import OnboardingHeader from './OnboardingHeader'
 import OnboardingSidenav from './OnboardingSidenav'
@@ -77,18 +78,24 @@ function Onboarding() {
   )
 }
 
+interface OnboardingProps {
+  accessToken?: string
+  provider?: ScmProvider;
+  authUrlData?: RootQueryType
+}
+
 function OnboardingWithContext({
   accessToken, provider, authUrlData, ...props
-}): ReactElement {
+}: OnboardingProps): ReactElement {
   const [scm, setSCM] = useState<SCMProps>({
     token: accessToken,
     provider,
-    authUrls: authUrlData?.scmAuthorization,
+    authUrls: authUrlData?.scmAuthorization as Array<AuthorizationUrl>,
   })
   const [valid, setValid] = useState<boolean>(true)
   const [cloud, setCloud] = useState<CloudProps>({} as CloudProps)
   const [sections, setSections] = useState<Sections>(defaultSections())
-  const [section, setSection] = useState<Section>(sections[SectionKey.CREATE_REPOSITORY])
+  const [section, setSection] = useState<Section>(sections[SectionKey.CREATE_REPOSITORY]!)
   const [workspace, setWorkspace] = useState<WorkspaceProps>({} as WorkspaceProps)
 
   const context = useMemo<ContextProps>(() => ({

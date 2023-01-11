@@ -3,7 +3,7 @@ import { Flex, H2 } from 'honorable'
 interface OnboardingCardProps {
   title?: string,
   mode: 'Step' | 'Creating'
-  children: JSX.Element | Array<JSX.Element> | false
+  children: JSX.Element | Array<JSX.Element> | unknown
 }
 
 function OnboardingCard({

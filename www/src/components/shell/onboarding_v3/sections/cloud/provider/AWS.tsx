@@ -42,7 +42,7 @@ function AWS() {
   const { cloud, setValid, workspace } = useContext(OnboardingContext)
   const setCloudProviderKeys = useSetCloudProviderKeys<AWSCloudProvider>(CloudProvider.AWS)
   const setWorkspaceKeys = useSetWorkspaceKeys()
-  const isValid = useMemo(() => !IsObjectEmpty(cloud?.aws) && !IsObjectEmpty(workspace), [cloud, workspace])
+  const isValid = useMemo(() => !IsObjectEmpty(cloud?.aws) && !IsObjectEmpty(workspace!), [cloud, workspace])
 
   useEffect(() => setValid(isValid), [isValid, setValid])
   useEffect(() => (IsEmpty(workspace?.region) ? setWorkspaceKeys({ region: 'us-east-2' }) : undefined), [setWorkspaceKeys, workspace])
@@ -52,7 +52,7 @@ function AWS() {
       <FormField label="Region">
         <Select
           selectedKey={workspace?.region}
-          onSelectionChange={value => setWorkspaceKeys({ region: value })}
+          onSelectionChange={value => setWorkspaceKeys({ region: `${value}` })}
         >
           {REGIONS.map(r => (
             <ListBoxItem

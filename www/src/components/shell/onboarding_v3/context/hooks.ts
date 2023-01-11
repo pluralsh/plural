@@ -37,15 +37,15 @@ const defaultSections = (): Sections => {
   }
 
   // build sections flow
-  sections[SectionKey.CREATE_REPOSITORY].next = sections[SectionKey.CONFIGURE_CLOUD]
+  sections[SectionKey.CREATE_REPOSITORY]!.next = sections[SectionKey.CONFIGURE_CLOUD]
 
-  sections[SectionKey.CONFIGURE_CLOUD].prev = sections[SectionKey.CREATE_REPOSITORY]
-  sections[SectionKey.CONFIGURE_CLOUD].next = sections[SectionKey.CONFIGURE_WORKSPACE]
+  sections[SectionKey.CONFIGURE_CLOUD]!.prev = sections[SectionKey.CREATE_REPOSITORY]
+  sections[SectionKey.CONFIGURE_CLOUD]!.next = sections[SectionKey.CONFIGURE_WORKSPACE]
 
-  sections[SectionKey.CONFIGURE_WORKSPACE].prev = sections[SectionKey.CONFIGURE_CLOUD]
-  sections[SectionKey.CONFIGURE_WORKSPACE].next = sections[SectionKey.CREATE_CLOUD_SHELL]
+  sections[SectionKey.CONFIGURE_WORKSPACE]!.prev = sections[SectionKey.CONFIGURE_CLOUD]
+  sections[SectionKey.CONFIGURE_WORKSPACE]!.next = sections[SectionKey.CREATE_CLOUD_SHELL]
 
-  sections[SectionKey.CREATE_CLOUD_SHELL].prev = sections[SectionKey.CONFIGURE_WORKSPACE]
+  sections[SectionKey.CREATE_CLOUD_SHELL]!.prev = sections[SectionKey.CONFIGURE_WORKSPACE]
 
   return sections
 }
@@ -67,15 +67,15 @@ const localCLISections = (): Sections => {
   }
 
   // build sections flow
-  sections[SectionKey.CREATE_REPOSITORY].next = sections[SectionKey.CONFIGURE_CLOUD]
+  sections[SectionKey.CREATE_REPOSITORY]!.next = sections[SectionKey.CONFIGURE_CLOUD]
 
-  sections[SectionKey.CONFIGURE_CLOUD].prev = sections[SectionKey.CREATE_REPOSITORY]
-  sections[SectionKey.CONFIGURE_CLOUD].next = sections[SectionKey.INSTALL_CLI]
+  sections[SectionKey.CONFIGURE_CLOUD]!.prev = sections[SectionKey.CREATE_REPOSITORY]
+  sections[SectionKey.CONFIGURE_CLOUD]!.next = sections[SectionKey.INSTALL_CLI]
 
-  sections[SectionKey.INSTALL_CLI].prev = sections[SectionKey.CONFIGURE_CLOUD]
-  sections[SectionKey.INSTALL_CLI].next = sections[SectionKey.COMPLETE_SETUP]
+  sections[SectionKey.INSTALL_CLI]!.prev = sections[SectionKey.CONFIGURE_CLOUD]
+  sections[SectionKey.INSTALL_CLI]!.next = sections[SectionKey.COMPLETE_SETUP]
 
-  sections[SectionKey.COMPLETE_SETUP].prev = sections[SectionKey.INSTALL_CLI]
+  sections[SectionKey.COMPLETE_SETUP]!.prev = sections[SectionKey.INSTALL_CLI]
 
   return sections
 }
@@ -121,7 +121,7 @@ const usePath = (path: CloudType): Dispatch<void> => {
     const updatedSection = sections[section.key]
 
     setSections(sections)
-    setSection(updatedSection)
+    setSection(updatedSection!)
   }, [path, setSections])
 }
 

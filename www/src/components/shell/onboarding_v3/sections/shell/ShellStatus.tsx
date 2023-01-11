@@ -1,4 +1,4 @@
-import { Div, Flex, P } from 'honorable'
+import { Flex, P } from 'honorable'
 import {
   Button,
   Chip,
@@ -70,7 +70,7 @@ interface ProgressEntryProps {
   text: string
   loading: boolean
   error: ApolloError | undefined
-  last: boolean
+  last?: boolean
 }
 
 function ProgressEntry({
@@ -192,15 +192,10 @@ function Community() {
 interface ShellStatusProps {
   shell: CloudShell
   error: ApolloError | undefined
+  loading: boolean
 }
 
 export function ShellStatus({ shell, error, loading }: ShellStatusProps) {
-  const {
-    alive, status: {
-      containersReady, initialized, podScheduled, ready,
-    },
-  } = shell
-
   return (
     <Flex
       paddingTop="xsmall"
@@ -219,8 +214,9 @@ export function ShellStatus({ shell, error, loading }: ShellStatusProps) {
 
         {!error && (
           <ProgressBar
-            mode={alive && !loading ? 'determinate' : 'indeterminate'}
-            progress={alive && !loading ? 100 : undefined}
+            mode={shell.alive && !loading ? 'determinate' : 'indeterminate'}
+            progress={shell.alive && !loading ? 100 : undefined}
+            // @ts-expect-error
             backgroundColor="fill-two"
             marginBottom="medium"
           />
@@ -238,25 +234,25 @@ export function ShellStatus({ shell, error, loading }: ShellStatusProps) {
         <>
           <ProgressEntry
             text="Initialize"
-            loading={!initialized}
+            loading={shell?.status?.initialized || false}
             error={error}
           />
 
           <ProgressEntry
             text="Schedule pods"
-            loading={!podScheduled}
+            loading={shell?.status?.podScheduled || false}
             error={error}
           />
 
           <ProgressEntry
             text="Containers ready"
-            loading={!containersReady}
+            loading={shell?.status?.containersReady || false}
             error={error}
           />
 
           <ProgressEntry
             text="Shell ready"
-            loading={!ready}
+            loading={shell?.status?.ready || false}
             error={error}
           />
 

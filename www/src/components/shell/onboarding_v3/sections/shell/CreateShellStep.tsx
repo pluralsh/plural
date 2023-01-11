@@ -3,7 +3,7 @@ import { useContext, useMemo } from 'react'
 
 import { OnboardingContext } from '../../context/onboarding'
 
-import Summary from './Summary'
+import { Summary } from './Summary'
 import CreateShell from './CreateShell'
 
 function CreateShellStep({ onBack }) {

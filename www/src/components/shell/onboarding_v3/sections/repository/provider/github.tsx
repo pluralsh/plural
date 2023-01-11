@@ -14,7 +14,7 @@ export function useGithubState({ token }): Array<SCMOrg> {
 
       setOrgs([me, ...data].map<SCMOrg>(o => ({
         name: o.login,
-        orgType: o.type === OrgType.User ? OrgType.User : OrgType.Organization,
+        orgType: (o as any).type === OrgType.User ? OrgType.User : OrgType.Organization,
         id: `${o.id}`,
         avatarUrl: o.avatar_url,
       })))

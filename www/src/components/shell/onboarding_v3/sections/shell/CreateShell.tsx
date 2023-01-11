@@ -23,6 +23,7 @@ import {
   CloudShellAttributes,
   DeleteShellDocument,
   GcpShellCredentialsAttributes,
+  Provider,
   RootMutationTypeCreateShellArgs,
   RootQueryType,
   ShellCredentialsAttributes,
@@ -44,6 +45,8 @@ const EMPTY_SHELL = ({ alive: false, status: {} }) as CloudShell
 async function createShell(
   client: ApolloClient<unknown>, workspace: WorkspaceProps, scm: SCMProps, cloud: CloudProps
 ): Promise<ApolloError | undefined> {
+  const provider: Provider = (CloudProviderToProvider[cloud.provider!] as unknown) as Provider
+
   const { errors } = await client.mutate<CloudShell, RootMutationTypeCreateShellArgs>({
     mutation: CREATE_SHELL_MUTATION,
     variables: {
@@ -61,9 +64,9 @@ async function createShell(
           provider: scm.provider,
           org: scm.org?.orgType === OrgType.User ? null : scm.org?.name,
         },
-        provider: CloudProviderToProvider[cloud.provider],
+        provider,
         demoId: null,
-        credentials: { [cloud.provider]: toCloudProviderAttributes(cloud) } as ShellCredentialsAttributes,
+        credentials: { [cloud.provider!]: toCloudProviderAttributes(cloud) } as ShellCredentialsAttributes,
       } as CloudShellAttributes,
     } as RootMutationTypeCreateShellArgs,
   })
@@ -77,7 +80,7 @@ async function createShell(
   return undefined
 }
 
-function toCloudProviderAttributes(cloud: CloudProps): AwsShellCredentialsAttributes | AzureShellCredentialsAttributes | GcpShellCredentialsAttributes {
+function toCloudProviderAttributes(cloud: CloudProps): AwsShellCredentialsAttributes | AzureShellCredentialsAttributes | GcpShellCredentialsAttributes | undefined {
   switch (cloud.provider) {
   case CloudProvider.AWS:
     return {
@@ -97,6 +100,8 @@ function toCloudProviderAttributes(cloud: CloudProps): AwsShellCredentialsAttrib
       tenantId: cloud.azure?.tenantID,
     } as AzureShellCredentialsAttributes
   }
+
+  return undefined
 }
 
 function CreateShell() {
@@ -125,7 +130,7 @@ function CreateShell() {
     setSetupShellCompleted(false)
   }, [deleteShell])
 
-  const { data, shellQueryError } = useQuery<RootQueryType>(CLOUD_SHELL_QUERY, {
+  const { data, error: shellQueryError } = useQuery<RootQueryType>(CLOUD_SHELL_QUERY, {
     fetchPolicy: 'network-only',
     nextFetchPolicy: 'network-only',
     initialFetchPolicy: 'network-only',
@@ -147,8 +152,8 @@ function CreateShell() {
 
         setError(error)
       }
-      catch (error: ApolloError) {
-        setError(error)
+      catch (error) {
+        setError(error as ApolloError)
       }
       finally {
         setCreated(true)

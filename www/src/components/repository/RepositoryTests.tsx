@@ -13,7 +13,6 @@ import {
   P,
   Span,
 } from 'honorable'
-import { XTerm } from 'xterm-for-react'
 import { FitAddon } from 'xterm-addon-fit'
 import {
   ArrowLeftIcon,
@@ -26,6 +25,8 @@ import {
   StatusIpIcon,
   StatusOkIcon,
 } from '@pluralsh/design-system'
+
+import { Terminal } from 'xterm'
 
 import RepositoryContext from '../../contexts/RepositoryContext'
 import usePaginatedQuery from '../../hooks/usePaginatedQuery'
@@ -75,6 +76,7 @@ function TestLogs({ step: { id, hasLogs }, testId }: any) {
   const client = useApolloClient()
   const xterm = useRef<any>(null)
   const fitAddon = useMemo(() => new FitAddon(), [])
+  const terminal = useMemo(() => new Terminal({ theme: XTermTheme, disableStdin: true }), [])
   const { data } = useSubscription(LOGS_SUB, {
     variables: { testId },
   })
@@ -82,9 +84,6 @@ function TestLogs({ step: { id, hasLogs }, testId }: any) {
   useEffect(() => {
     if (!xterm?.current?.terminal) return
 
-    const { current: { terminal } } = xterm
-
-    terminal.setOption('disableStdin', true)
     terminal.loadAddon(fitAddon)
 
     try {
@@ -99,7 +98,7 @@ function TestLogs({ step: { id, hasLogs }, testId }: any) {
         xterm.current.terminal.writeln(l)
       }
     }
-  }, [id, data, xterm, fitAddon])
+  }, [id, data, xterm, fitAddon, terminal])
 
   useEffect(() => {
     if (!hasLogs || !xterm || !xterm.current || !xterm.current.terminal) return
@@ -124,12 +123,9 @@ function TestLogs({ step: { id, hasLogs }, testId }: any) {
         border="1px solid border"
         borderColor="border-fill-two"
       >
-        <XTerm
+        <Div
+          id="terminal"
           ref={xterm}
-          addons={[fitAddon]}
-          options={{ theme: XTermTheme }}
-          onResize={console.log}
-          onData={console.log}
         />
       </Div>
     </Div>

@@ -15,7 +15,6 @@ import { Div, Flex } from 'honorable'
 import { Button, ReloadIcon, ScrollIcon } from '@pluralsh/design-system'
 import { Terminal } from 'xterm'
 import { FitAddon } from 'xterm-addon-fit'
-
 import { useResizeDetector } from 'react-resize-detector'
 
 import TerminalThemeContext from '../../contexts/TerminalThemeContext'
@@ -37,8 +36,8 @@ enum ChannelEvent {
   OnResponse = 'stdo',
 }
 
-const resize = (fitAddon: FitAddon, channel: unknown, terminal: Terminal) => {
-  let { cols, rows } = fitAddon.proposeDimensions() || {}
+const resize = (fitAddon: FitAddon, channel: any, terminal: Terminal) => {
+  let { cols = 0, rows = 0 } = fitAddon.proposeDimensions() || {}
 
   cols = Number.isNaN(cols) ? 0 : cols
   rows = Number.isNaN(rows) ? 0 : rows
@@ -63,7 +62,7 @@ function Shell({ shell }: any) {
   const onRepairViewport = useCallback(() => resize(fitAddon, channel, terminal), [channel, fitAddon, terminal])
   const onResize = useCallback(() => resize(fitAddon, channel, terminal), [channel, fitAddon, terminal])
 
-  const { ref: terminalContainerRef } = useResizeDetector({ onResize, refreshMode: 'debounce', refreshRate: 500 })
+  const { ref: terminalContainerRef } = useResizeDetector({ onResize, refreshMode: 'debounce', refreshRate: 250 })
 
   // Mount the terminal
   useEffect(() => {

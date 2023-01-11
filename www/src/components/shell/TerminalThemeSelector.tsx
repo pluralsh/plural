@@ -1,4 +1,9 @@
-import { forwardRef, useContext, useState } from 'react'
+import {
+  ComponentType,
+  forwardRef,
+  useContext,
+  useState,
+} from 'react'
 import { Flex } from 'honorable'
 import Fuse from 'fuse.js'
 
@@ -11,8 +16,7 @@ import {
   Select,
   SprayIcon,
 } from '@pluralsh/design-system'
-
-import styled from 'styled-components'
+import styled, { DefaultTheme, StyledComponent } from 'styled-components'
 
 import TerminalThemeContext from '../../contexts/TerminalThemeContext'
 
@@ -20,7 +24,7 @@ import { normalizedThemes, themeNames } from './themes'
 
 const fuse = new Fuse(themeNames, { threshold: 0.25 })
 
-const ThemeSelectButton = styled(forwardRef((props, ref) => (
+const ThemeSelectButton: StyledComponent<ComponentType, DefaultTheme> = styled(forwardRef(({ props }, ref) => (
   <Button
     ref={ref}
     tertiary

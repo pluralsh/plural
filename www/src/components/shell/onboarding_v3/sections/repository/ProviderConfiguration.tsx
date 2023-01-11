@@ -3,7 +3,6 @@ import {
   useContext,
   useEffect,
   useMemo,
-  useState,
 } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Flex, Img, Input } from 'honorable'
@@ -17,7 +16,6 @@ import {
 import { OnboardingContext } from '../../context/onboarding'
 import { ScmProvider } from '../../../../../generated/graphql'
 import { isAlphanumeric } from '../../../validation'
-
 import { OrgType, SCMOrg } from '../../context/types'
 
 import { useGithubState } from './provider/github'
@@ -95,7 +93,7 @@ function RepositoryInput({ orgs }: any) {
   const { scm, setSCM, setValid } = useContext(OnboardingContext)
   const maxLen = 100
   const setName = useCallback((name: string) => setSCM({ ...scm, repositoryName: name }), [setSCM, scm])
-  const isValid = useMemo(() => scm?.repositoryName?.length > 0 && !isAlphanumeric(scm?.repositoryName), [scm])
+  const isValid = useMemo(() => !!scm?.repositoryName?.length && !isAlphanumeric(scm?.repositoryName), [scm])
 
   useEffect(() => setValid(isValid), [isValid, setValid])
 

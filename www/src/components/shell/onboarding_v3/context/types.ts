@@ -1,4 +1,4 @@
-import { ComponentType, ReactElement } from 'react'
+import { ComponentType } from 'react'
 
 import { AuthorizationUrl, Provider, ScmProvider } from '../../../../generated/graphql'
 

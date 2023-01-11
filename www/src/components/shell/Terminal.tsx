@@ -4,7 +4,7 @@ import { Banner, LoopingLogo } from '@pluralsh/design-system'
 
 import { useEffect } from 'react'
 
-import { CLOUD_SHELL_QUERY, SETUP_SHELL } from './queries'
+import { CLOUD_SHELL_QUERY, DELETE_SHELL_MUTATION, SETUP_SHELL } from './queries'
 
 import { ShellStatus } from './onboarding/ShellStatus'
 import OnboardingWrapper from './onboarding/OnboardingWrapper'
@@ -27,6 +27,7 @@ function Loading() {
 
 function TerminalWrapper({ shell }) {
   const [mutation, { error, data }] = useMutation(SETUP_SHELL)
+  const [deleteMut] = useMutation(DELETE_SHELL_MUTATION)
 
   useEffect(() => {
     mutation()
@@ -34,7 +35,10 @@ function TerminalWrapper({ shell }) {
 
   if (error) {
     return (
-      <OnboardingWrapper stepIndex={3}>
+      <OnboardingWrapper
+        stepIndex={3}
+        onRestart={deleteMut}
+      >
         <Banner
           heading="Failed to set up shell"
           severity="error"

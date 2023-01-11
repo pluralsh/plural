@@ -55,6 +55,9 @@ const RoadmapChangelog = lazy(() => import('./roadmap/RoadmapChangelog'))
 const RoadmapApplicationRequests = lazy(() => import('./roadmap/RoadmapApplicationRequests'))
 const RoadmapFeatureRequests = lazy(() => import('./roadmap/RoadmapFeatureRequests'))
 const RoadmapFeedback = lazy(() => import('./roadmap/RoadmapFeedback'))
+const BillingLayout = lazy(() => import('./account/billing/BillingLayout'))
+const BillingManagePlan = lazy(() => import('./account/billing/BillingManagePlan'))
+const BillingPayments = lazy(() => import('./account/billing/BillingPayments'))
 const AccessTokens = lazy(() => import('./profile/AccessTokens').then(module => ({ default: module.AccessTokens })))
 const Account = lazy(() => import('./account/Account').then(module => ({ default: module.Account })))
 const AccountAttributes = lazy(() => import('./account/AccountAttributes').then(module => ({ default: module.AccountAttributes })))
@@ -411,6 +414,19 @@ export function PluralInner() {
                   path="domains"
                   element={<Domains />}
                 />
+                <Route
+                  path="billing"
+                  element={<BillingLayout />}
+                >
+                  <Route
+                    index
+                    element={<BillingManagePlan />}
+                  />
+                  <Route
+                    path="payments"
+                    element={<BillingPayments />}
+                  />
+                </Route>
               </Route>
               <Route
                 path="/account/billing/:section"

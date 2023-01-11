@@ -14,6 +14,7 @@ const DIRECTORY = [
   { path: '/account/groups', label: 'Groups' },
   { path: '/account/roles', label: 'Roles' },
   { path: '/account/domains', label: 'Domains' },
+  { path: '/account/billing', label: 'Billing' },
 ]
 
 function AccountTabList({ tabStateRef }: any) {

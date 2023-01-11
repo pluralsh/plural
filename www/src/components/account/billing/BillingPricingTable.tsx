@@ -1,5 +1,5 @@
 import { Div } from 'honorable'
-import { CheckIcon, CloseIcon } from '@pluralsh/design-system'
+import { Button, CheckIcon, CloseIcon } from '@pluralsh/design-system'
 
 const columnStyles = {
   position: 'relative',
@@ -33,6 +33,10 @@ const columnStyles = {
 const firstColumnCellProps = {
   body2: true,
   borderLeft: '1px solid border-fill-two',
+}
+
+const lastColumnCellProps = {
+  borderRight: '1px solid border-fill-two',
 }
 
 function BillingPricingTable() {
@@ -118,12 +122,20 @@ function BillingPricingTable() {
         <Div {...firstColumnCellProps}>
           Commercial license
         </Div>
-        <Div {...firstColumnCellProps}>
+        <Div
+          {...firstColumnCellProps}
+          borderBottomLeftRadius={6}
+          borderBottom="1px solid border-fill-two"
+        >
           Invoices
         </Div>
       </Div>
       <Div {...columnStyles}>
-        <Div subtitle2>
+        <Div
+          subtitle2
+          borderTopLeftRadius={6}
+          borderLeft="1px solid border-fill-two"
+        >
           Free
         </Div>
         <Div body2>
@@ -195,7 +207,7 @@ function BillingPricingTable() {
         <Div>
           <CloseIcon color="icon-default" />
         </Div>
-        <Div>
+        <Div borderBottom="1px solid border-fill-two">
           <CloseIcon color="icon-default" />
         </Div>
       </Div>
@@ -272,13 +284,107 @@ function BillingPricingTable() {
         <Div>
           <CloseIcon color="icon-default" />
         </Div>
-        <Div>
+        <Div borderBottom="1px solid border-fill-two">
           <CloseIcon color="icon-default" />
         </Div>
       </Div>
       <Div {...columnStyles}>
-        <Div subtitle2>
+        <Div
+          {...lastColumnCellProps}
+          subtitle2
+          borderTopRightRadius={6}
+        >
           Enterprise
+        </Div>
+        <Div
+          {...lastColumnCellProps}
+          body2
+        >
+          Custom
+        </Div>
+        <Div
+          {...lastColumnCellProps}
+          body2
+        >
+          Unlimited
+        </Div>
+        <Div
+          {...lastColumnCellProps}
+          body2
+        >
+          Unlimited
+        </Div>
+        <Div {...lastColumnCellProps}>
+          <CheckIcon color="icon-success" />
+        </Div>
+        <Div {...lastColumnCellProps}>
+          <CheckIcon color="icon-success" />
+        </Div>
+        <Div {...lastColumnCellProps}>
+          <CheckIcon color="icon-success" />
+        </Div>
+        <Div {...lastColumnCellProps}>
+          <CheckIcon color="icon-success" />
+        </Div>
+        <Div {...lastColumnCellProps}>
+          <CheckIcon color="icon-success" />
+        </Div>
+        <Div {...lastColumnCellProps}>
+          <CheckIcon color="icon-success" />
+        </Div>
+        <Div {...lastColumnCellProps}>
+          <CheckIcon color="icon-success" />
+        </Div>
+        <Div {...lastColumnCellProps}>
+          <CheckIcon color="icon-success" />
+        </Div>
+        <Div {...lastColumnCellProps}>
+          <CheckIcon color="icon-success" />
+        </Div>
+        <Div {...lastColumnCellProps}>
+          4 hours
+        </Div>
+        <Div
+          {...lastColumnCellProps}
+          body2
+        >
+          Extended
+        </Div>
+        <Div
+          {...lastColumnCellProps}
+          body2
+        >
+          SAML + Google SSO + OIDC
+        </Div>
+        <Div {...lastColumnCellProps}>
+          <CheckIcon color="icon-success" />
+        </Div>
+        <Div {...lastColumnCellProps}>
+          <CheckIcon color="icon-success" />
+        </Div>
+        <Div {...lastColumnCellProps}>
+          <CheckIcon color="icon-success" />
+        </Div>
+        <Div {...lastColumnCellProps}>
+          <CheckIcon color="icon-success" />
+        </Div>
+        <Div {...lastColumnCellProps}>
+          <CheckIcon color="icon-success" />
+        </Div>
+        <Div {...lastColumnCellProps}>
+          Available
+        </Div>
+        <Div {...lastColumnCellProps}>
+          <CheckIcon color="icon-success" />
+        </Div>
+        <Div {...lastColumnCellProps}>
+          <CheckIcon color="icon-success" />
+        </Div>
+        <Div
+          borderBottom="1px solid border-fill-two"
+          borderBottomRightRadius={6}
+        >
+          <CheckIcon color="icon-success" />
         </Div>
       </Div>
     </Div>

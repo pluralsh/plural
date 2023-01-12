@@ -97,6 +97,7 @@ function SidebarWrapper() {
           style={isCurrentlyOnboarding ? {
             width: '0',
             opacity: '0',
+            zIndex: -1,
           } : null}
           items={items}
           activeId={pathname}

@@ -25,7 +25,7 @@ import CurrentUserContext from '../contexts/CurrentUserContext'
 const ApplicationLayout = lazy(() => import('./layout/ApplicationLayout'))
 const BreadcrumbProvider = lazy(() => import('./Breadcrumbs'))
 const Chart = lazy(() => import('./repos/Chart'))
-const CloudShell = lazy(() => import('./shell/CloudShell'))
+const CloudShell = lazy(() => import('./shell/v2/Shell'))
 const ImagePullMetrics = lazy(() => import('./repos/common/ImagePullMetrics'))
 const ImageVulnerabilities = lazy(() => import('./repos/common/ImageVulnerabilities'))
 const Marketplace = lazy(() => import('./marketplace/Marketplace'))

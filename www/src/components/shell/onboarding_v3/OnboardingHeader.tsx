@@ -9,17 +9,21 @@ import {
   SidebarSection,
 } from '@pluralsh/design-system'
 import { useTheme } from 'styled-components'
+import { Dispatch } from 'react'
 
 import { OnboardingLogo } from './OnboardingLogo'
 
-function OnboardingHeader({ onRestart }) {
+interface OnboardingHeaderProps {
+  onRestart?: Dispatch<void>
+}
+
+function OnboardingHeader({ onRestart }: OnboardingHeaderProps) {
   const theme = useTheme()
 
   return (
     <Sidebar
       layout="horizontal"
       background={theme.colors['fill-one']}
-      grow={0}
     >
       <SidebarSection
         grow={1}
@@ -63,14 +67,16 @@ function OnboardingHeader({ onRestart }) {
             icon={<DocumentIcon />}
           />
         </SidebarItem>
-        <SidebarItem>
-          <Button
-            small
-            secondary
-            onClick={onRestart}
-          >Restart onboarding
-          </Button>
-        </SidebarItem>
+        {onRestart && (
+          <SidebarItem>
+            <Button
+              small
+              secondary
+              onClick={onRestart}
+            >Restart onboarding
+            </Button>
+          </SidebarItem>
+        )}
       </SidebarSection>
     </Sidebar>
   )

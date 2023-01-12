@@ -168,4 +168,8 @@ config :worker,
   rollout_interval: 10,
   docker_interval: 60
 
+config :junit_formatter,
+  print_report_file: true,
+  automatic_create_dir?: true
+
 import_config "#{config_env()}.exs"

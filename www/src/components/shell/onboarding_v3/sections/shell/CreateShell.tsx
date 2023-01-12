@@ -134,7 +134,7 @@ function CreateShell() {
     fetchPolicy: 'network-only',
     nextFetchPolicy: 'network-only',
     initialFetchPolicy: 'network-only',
-    pollInterval: 5000,
+    pollInterval: 3000,
   })
 
   const [setupShell] = useMutation(SETUP_SHELL, {

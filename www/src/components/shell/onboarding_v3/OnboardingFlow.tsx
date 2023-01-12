@@ -21,7 +21,7 @@ function OnboardingFlow({
   onNext, onBack,
 }) {
   const token = useToken() || ''
-  const section = useSection()
+  const { section } = useSection()
   const isCreating = useMemo(() => section.key === SectionKey.CREATE_CLOUD_SHELL && section.state === 'Creating', [section])
   const { data, loading } = useQuery(AUTHENTICATION_URLS_QUERY)
 

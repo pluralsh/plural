@@ -1,23 +1,17 @@
 import { Flex } from 'honorable'
 import { useTheme } from 'styled-components'
-import {
-  ReactElement,
-  useContext,
-  useMemo,
-  useState,
-} from 'react'
+import { ReactElement, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { ResponsiveLayoutContentContainer, ResponsiveLayoutSidenavContainer, ResponsiveLayoutSpacer } from '../../layout/ResponsiveLayout'
 import { useDevTokenInputSecretCode } from '../useDevToken'
-
 import { AuthorizationUrl, RootQueryType, ScmProvider } from '../../../generated/graphql'
 
 import OnboardingHeader from './OnboardingHeader'
 import OnboardingSidenav from './OnboardingSidenav'
 import { OnboardingFlow } from './OnboardingFlow'
 import { ContextProps, OnboardingContext } from './context/onboarding'
-import { defaultSections } from './context/hooks'
+import { defaultSections, useSection } from './context/hooks'
 import {
   CloudProps,
   SCMProps,
@@ -27,11 +21,11 @@ import {
   WorkspaceProps,
 } from './context/types'
 
-function Onboarding() {
+function Onboarding({ active, children }: Partial<OnboardingProps>) {
   useDevTokenInputSecretCode()
 
   const theme = useTheme()
-  const { section, setSection } = useContext(OnboardingContext)
+  const { section, setSection } = useSection(active)
   const navigate = useNavigate()
 
   return (
@@ -67,10 +61,14 @@ function Onboarding() {
           marginRight="xlarge"
           marginRight-desktop-down={theme.spacing.large}
         >
-          <OnboardingFlow
-            onNext={() => setSection(section.next || section)}
-            onBack={() => setSection(section.prev || section)}
-          />
+          {!children && (
+            <OnboardingFlow
+              onNext={() => setSection(section.next || section)}
+              onBack={() => setSection(section.prev || section)}
+            />
+          )}
+
+          {children && children}
         </ResponsiveLayoutContentContainer>
         <ResponsiveLayoutSpacer />
       </Flex>
@@ -82,6 +80,8 @@ interface OnboardingProps {
   accessToken?: string
   provider?: ScmProvider;
   authUrlData?: RootQueryType
+  active?: SectionKey
+  children?: ReactElement | Array<ReactElement>
 }
 
 function OnboardingWithContext({

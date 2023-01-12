@@ -191,8 +191,8 @@ function Community() {
 
 interface ShellStatusProps {
   shell: CloudShell
-  error: ApolloError | undefined
-  loading: boolean
+  error?: ApolloError | undefined
+  loading?: boolean
 }
 
 export function ShellStatus({ shell, error, loading }: ShellStatusProps) {
@@ -234,31 +234,31 @@ export function ShellStatus({ shell, error, loading }: ShellStatusProps) {
         <>
           <ProgressEntry
             text="Initialize"
-            loading={shell?.status?.initialized || false}
+            loading={!(shell?.status?.initialized ?? false)}
             error={error}
           />
 
           <ProgressEntry
             text="Schedule pods"
-            loading={shell?.status?.podScheduled || false}
+            loading={!(shell?.status?.podScheduled ?? false)}
             error={error}
           />
 
           <ProgressEntry
             text="Containers ready"
-            loading={shell?.status?.containersReady || false}
+            loading={!(shell?.status?.containersReady ?? false)}
             error={error}
           />
 
           <ProgressEntry
             text="Shell ready"
-            loading={shell?.status?.ready || false}
+            loading={!(shell?.status?.ready ?? false)}
             error={error}
           />
 
           <ProgressEntry
             text="Booting into shell"
-            loading={loading}
+            loading={loading ?? true}
             error={error}
             last
           />

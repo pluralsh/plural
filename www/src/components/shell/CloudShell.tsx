@@ -1,29 +1,25 @@
 import { useEffect, useState } from 'react'
+import { LoopingLogo } from '@pluralsh/design-system'
+import { Flex } from 'honorable'
 import { useMutation, useQuery } from '@apollo/client'
 
-import { LoopingLogo } from '@pluralsh/design-system'
-
-import { Flex } from 'honorable'
-
-import { CLOUD_SHELL_QUERY, REBOOT_SHELL_MUTATION } from './queries'
 import { Terminal } from './Terminal'
 import { Onboarding } from './onboarding_v3/Onboarding'
+import { CLOUD_SHELL_QUERY, REBOOT_SHELL_MUTATION } from './queries'
 
 function CloudShell() {
-  // const location = useLocation()
-  // const [section, setSection] = useState<'applications' | 'git'>(location?.state?.step === 1 ? 'git' : 'applications')
-  const [created, setCreated] = useState(false)
+  const [booting, setBooting] = useState(false)
   const { data: shellData } = useQuery(CLOUD_SHELL_QUERY, { fetchPolicy: 'network-only' })
   const [rebootMutation] = useMutation(REBOOT_SHELL_MUTATION)
 
   useEffect(() => {
-    if (shellData && shellData.shell && !shellData.shell.alive) {
+    if (shellData?.shell && !shellData.shell.alive) {
       rebootMutation()
-      setCreated(true)
+      setBooting(true)
     }
-  }, [shellData, rebootMutation])
+  }, [rebootMutation, shellData])
 
-  if (shellData?.shell?.alive || created) {
+  if (shellData?.shell?.alive || booting) {
     return (
       <Terminal />
     )
@@ -45,23 +41,7 @@ function CloudShell() {
     )
   }
 
-  return (
-    // <OnboardingWrapper
-    //   stepIndex={section === 'applications' ? 0 : 1}
-    //   onRestart={() => setSection('applications')}
-    // >
-    //   {section === 'applications' && (
-    //     <ApplicationsSelection onNext={() => setSection('git')} />
-    //   )}
-    //   {section === 'git' && (
-    //     <CreateRepositoryCard
-    //       data={data}
-    //       onPrevious={() => setSection('applications')}
-    //     />
-    //   )}
-    // </OnboardingWrapper>
-    <Onboarding />
-  )
+  return (<Onboarding />)
 }
 
 export default CloudShell

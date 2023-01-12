@@ -1,5 +1,4 @@
 import { Dispatch, useCallback, useContext } from 'react'
-
 import {
   CloudIcon,
   ListIcon,
@@ -14,8 +13,8 @@ import {
   CloudProviderBase,
   CloudType,
   SCMProps,
-  Section,
   SectionKey,
+  SectionState,
   Sections,
   WorkspaceProps,
 } from './types'
@@ -86,10 +85,15 @@ const useToken = (): string | undefined => {
   return token
 }
 
-const useSection = (): Section => {
-  const { section } = useContext(OnboardingContext)
+const useSection = (key?: SectionKey) => {
+  const { section, setSection, sections } = useContext(OnboardingContext)
 
-  return section
+  if (key) setSection(sections[key]!)
+
+  return {
+    section,
+    setSection,
+  }
 }
 
 const useCloudType = (): CloudType => {

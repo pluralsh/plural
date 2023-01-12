@@ -38,10 +38,11 @@ interface Section {
   IconComponent: ComponentType
   next?: Section
   prev?: Section
-  state?: 'Creating' | undefined
+  state?: SectionState
 }
 
 type Sections = {[key in keyof typeof SectionKey]?: Section}
+type SectionState = 'Creating' | undefined
 
 enum OrgType {
   User = 'User',
@@ -106,7 +107,7 @@ interface WorkspaceProps {
 }
 
 export type {
-  Sections, Section, SCMProps, CloudProps, WorkspaceProps, GCPCloudProvider, AWSCloudProvider, AzureCloudProvider, CloudProviderBase, SCMOrg,
+  Sections, Section, SCMProps, CloudProps, WorkspaceProps, GCPCloudProvider, AWSCloudProvider, AzureCloudProvider, CloudProviderBase, SCMOrg, SectionState,
 }
 export {
   SectionKey, OrgType, CloudType, CloudProviderDisplayName, CloudProvider, CloudProviderToProvider,

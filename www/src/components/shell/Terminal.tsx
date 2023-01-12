@@ -1,17 +1,19 @@
 import { useMutation, useQuery } from '@apollo/client'
 import { Flex } from 'honorable'
-import { Banner, LoopingLogo } from '@pluralsh/design-system'
+import { LoopingLogo } from '@pluralsh/design-system'
 
-import { useEffect } from 'react'
+import React, { useEffect, useMemo } from 'react'
+
+import { CloudShell, RootQueryType } from '../../generated/graphql'
 
 import { CLOUD_SHELL_QUERY, SETUP_SHELL } from './queries'
 
-import { ShellStatus } from './onboarding/ShellStatus'
-import OnboardingWrapper from './onboarding/OnboardingWrapper'
-import { JoinCommunityCard } from './onboarding/JoinCommunityCard'
-
 import TerminalThemeProvider from './TerminalThemeProvider'
 import Shell from './Shell'
+import { Onboarding } from './onboarding_v3/Onboarding'
+import { SectionKey } from './onboarding_v3/context/types'
+import { ShellStatus } from './onboarding_v3/sections/shell/ShellStatus'
+import OnboardingCard from './onboarding_v3/OnboardingCard'
 
 function Loading() {
   return (
@@ -25,28 +27,42 @@ function Loading() {
   )
 }
 
-function TerminalWrapper({ shell }) {
-  const [mutation, { error, data }] = useMutation(SETUP_SHELL)
+export function Terminal() {
+  const { data } = useQuery<Pick<RootQueryType, 'shell'>>(CLOUD_SHELL_QUERY, {
+    pollInterval: 3000,
+    fetchPolicy: 'network-only',
+    nextFetchPolicy: 'network-only',
+    initialFetchPolicy: 'network-only',
+  })
+  const [setupShell, { data: setupShellData, error }] = useMutation(SETUP_SHELL)
+  const { shell } = data || {}
+  const isReady = useMemo(() => (shell?.alive ?? false) && !!shell?.status && Object.values(shell.status).every(s => s), [shell])
 
   useEffect(() => {
-    mutation()
-  }, [])
+    if (isReady) setupShell()
+  }, [isReady, setupShell])
 
-  if (error) {
+  if (!shell?.status) {
+    return <Loading />
+  }
+
+  if (!isReady) {
     return (
-      <OnboardingWrapper stepIndex={3}>
-        <Banner
-          heading="Failed to set up shell"
-          severity="error"
-        >
-          {error.graphQLErrors[0].message}
-        </Banner>
-        <JoinCommunityCard />
-      </OnboardingWrapper>
+      <Onboarding
+        active={SectionKey.CREATE_CLOUD_SHELL}
+      >
+        <OnboardingCard mode="Creating">
+          <ShellStatus
+            shell={shell as CloudShell}
+            error={error}
+            loading
+          />
+        </OnboardingCard>
+      </Onboarding>
     )
   }
 
-  if (!data?.setupShell?.id) {
+  if (!setupShellData?.setupShell?.id) {
     return <Loading />
   }
 
@@ -55,25 +71,4 @@ function TerminalWrapper({ shell }) {
       <Shell shell={shell} />
     </TerminalThemeProvider>
   )
-}
-
-export function Terminal() {
-  const { data } = useQuery(CLOUD_SHELL_QUERY, { pollInterval: 5000, fetchPolicy: 'cache-and-network' })
-  const { shell } = data || {}
-  const { alive, status } = shell || {}
-
-  if (!status) {
-    return <Loading />
-  }
-
-  if (!alive) {
-    return (
-      <OnboardingWrapper stepIndex={3}>
-        <ShellStatus shell={shell} />
-        <JoinCommunityCard />
-      </OnboardingWrapper>
-    )
-  }
-
-  return <TerminalWrapper shell={shell} />
 }

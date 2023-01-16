@@ -541,7 +541,7 @@ defmodule Core.Services.PaymentsTest do
   describe "#has_feature?/2" do
     test "if a user's plan has a feature, then it returns true" do
       account = insert(:account)
-      insert(:platform_subscription, account: account, plan: build(:platform_plan, features: %{user_management: true}))
+      enable_features(account, [:user_management])
       user = insert(:user, account: account)
       assert Payments.has_feature?(user, :user_management)
     end

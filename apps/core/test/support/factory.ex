@@ -604,4 +604,9 @@ defmodule Core.Factory do
     Schema.User.changeset(user, %{password: password})
     |> Ecto.Changeset.apply_changes()
   end
+
+  def enable_features(account, features) do
+    features = Enum.into(features, %{}, & {&1, true})
+    insert(:platform_subscription, account: account, plan: build(:platform_plan, features: features))
+  end
 end

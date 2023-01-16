@@ -114,6 +114,17 @@ defmodule Core.Schema.User do
   end
   def for_service_account(query, _), do: for_bindings(query, [])
 
+  def accessible(query \\ __MODULE__, %__MODULE__{id: user_id, groups: groups}) do
+    group_ids = Enum.map(groups, & &1.id)
+
+    from(u in query,
+      join: p in assoc(u, :impersonation_policy),
+      join: b in assoc(p, :bindings),
+      where: b.group_id in ^group_ids or b.user_id == ^user_id,
+      distinct: true
+    )
+  end
+
   defp for_bindings(query, bindings) do
     user_ids  = Enum.filter(bindings, & &1.user_id) |> Enum.map(& &1.user_id)
     group_ids = Enum.filter(bindings, & &1.group_id) |> Enum.map(& &1.group_id)

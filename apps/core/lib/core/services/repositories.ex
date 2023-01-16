@@ -372,7 +372,7 @@ defmodule Core.Services.Repositories do
     do: Map.put(attrs, :track_tag, tag)
   defp add_track_tag(attrs, _), do: attrs
 
-  defp installation_source(%User{id: id}) do
+  def installation_source(%User{id: id}) do
     Core.local_cache({:inst_source, id}, fn ->
       case {Demo.has_demo?(id), Shell.has_shell?(id)} do
         {true, _} -> :demo

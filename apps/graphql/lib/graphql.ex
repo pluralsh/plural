@@ -25,6 +25,7 @@ defmodule GraphQl do
   import_types GraphQl.Schema.Scaffold
   import_types GraphQl.Schema.Test
   import_types GraphQl.Schema.AI
+  import_types GraphQl.Schema.Cluster
 
   alias GraphQl.Resolvers.{
     User,
@@ -40,7 +41,9 @@ defmodule GraphQl do
     Incidents,
     Rollout,
     Dns,
-    Test
+    Test,
+    Cluster,
+    Upgrade
   }
 
   @sources [
@@ -57,7 +60,9 @@ defmodule GraphQl do
     Incidents,
     Rollout,
     Dns,
-    Test
+    Test,
+    Cluster,
+    Upgrade
   ]
 
   def context(ctx) do
@@ -114,6 +119,7 @@ defmodule GraphQl do
     import_fields :provider_queries
     import_fields :test_queries
     import_fields :ai_queries
+    import_fields :cluster_queries
   end
 
   mutation do
@@ -133,6 +139,7 @@ defmodule GraphQl do
     import_fields :shell_mutations
     import_fields :rollout_mutations
     import_fields :test_mutations
+    import_fields :cluster_mutations
   end
 
   subscription do

@@ -600,6 +600,15 @@ defmodule Core.Factory do
     }
   end
 
+  def cluster_factory do
+    %Schema.Cluster{
+      name: sequence(:cluster, &"cluster-#{&1}"),
+      provider: :aws,
+      owner: build(:user),
+      account: build(:account)
+    }
+  end
+
   def with_password(%Schema.User{} = user, password) do
     Schema.User.changeset(user, %{password: password})
     |> Ecto.Changeset.apply_changes()

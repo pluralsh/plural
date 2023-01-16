@@ -31,15 +31,24 @@ export const RecipeItemFragment = gql`
 `
 
 export const RecipeSectionFragment = gql`
-  fragment RecipeSectionFragment on RecipeSection {
-    index
-    repository {
-      ...RepoFragment
-      installation { ...InstallationFragment }
+    fragment RecipeSectionFragment on RecipeSection {
+        index
+        repository {
+            ...RepoFragment
+            installation { ...InstallationFragment }
+        }
+        recipeItems { ...RecipeItemFragment }
+        configuration {
+            name
+            default
+            documentation
+            type
+            placeholder
+            condition { operation field value }
+            validation { type regex message }
+        }
     }
-    recipeItems { ...RecipeItemFragment }
-  }
-  ${RepoFragment}
-  ${RecipeItemFragment}
-  ${InstallationFragment}
+    ${RepoFragment}
+    ${RecipeItemFragment}
+    ${InstallationFragment}
 `

@@ -51,7 +51,7 @@ export function* chunk(array: any[], chunkSize) {
 }
 
 export function trimSuffix(str, suff) {
-  if (str.endsWith(suff)) {
+  if (str && str.endsWith(suff)) {
     return str.slice(0, str.length - suff.length)
   }
 

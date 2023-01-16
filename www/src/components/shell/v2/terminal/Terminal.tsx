@@ -3,7 +3,7 @@ import 'xterm/css/xterm.css'
 
 import { Buffer } from 'buffer'
 
-import { Button, Div, Flex } from 'honorable'
+import { Button, Flex } from 'honorable'
 import {
   ReactElement,
   useCallback,
@@ -47,9 +47,14 @@ function ActionBarItem({ tooltip, icon, children }: ActionBarItemProps) {
   ) : children
 
   return (
-    <Tooltip label={tooltip}>
-      <div>{content}</div>
-    </Tooltip>
+    <>
+      {tooltip && (
+        <Tooltip label={tooltip}>
+          <div>{content}</div>
+        </Tooltip>
+      )}
+      {!tooltip && content}
+    </>
   )
 }
 
@@ -63,18 +68,15 @@ function ActionBar() {
       marginRight="medium"
     >
       <ActionBarItem
-        tooltip="Some Options"
+        tooltip="Repair Viewport"
         icon={<ToolIcon />}
       />
-      <ActionBarItem tooltip="Theme Selector"><TerminalThemeSelector /></ActionBarItem>
+      <ActionBarItem tooltip="Shell Theme"><TerminalThemeSelector /></ActionBarItem>
       <ActionBarItem
-        tooltip="Terminal Options"
+        tooltip="CLI Cheat Sheet"
         icon={<CliIcon />}
       />
-      <ActionBarItem
-        tooltip="More Options"
-        icon={<MoreIcon />}
-      />
+      <ActionBarItem icon={<MoreIcon />} />
     </Flex>
   )
 }
@@ -161,8 +163,6 @@ function Terminal({ shell }) {
     <Flex
       flexGrow={1}
       flexDirection="column"
-      // height="100%"
-      // maxHeight="100%"
     >
       <ActionBar />
       <Flex
@@ -172,11 +172,11 @@ function Terminal({ shell }) {
         backgroundColor={normalizedThemes[terminalTheme].background}
         padding="large"
       >
-        <Div
-          id="terminal"
-          className="terminal"
-          ref={terminalRef}
-        />
+        {/* <Div */}
+        {/*  id="terminal" */}
+        {/*  className="terminal" */}
+        {/*  ref={terminalRef} */}
+        {/* /> */}
       </Flex>
     </Flex>
   )

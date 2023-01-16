@@ -24,6 +24,7 @@ function OnboardingHeader({ onRestart }: OnboardingHeaderProps) {
     <Sidebar
       layout="horizontal"
       background={theme.colors['fill-one']}
+      maxHeight={56}
     >
       <SidebarSection
         grow={1}
@@ -47,22 +48,22 @@ function OnboardingHeader({ onRestart }: OnboardingHeaderProps) {
         </SidebarItem>
         <SidebarItem
           clickable
-          tooltip="Documentation"
+          tooltip="Support"
           href=""
         >
           <IconFrame
-            textValue="Documentation"
+            textValue="Support"
             type="secondary"
             icon={<LifePreserverIcon />}
           />
         </SidebarItem>
         <SidebarItem
           clickable
-          tooltip=""
-          href=""
+          tooltip="Documentation"
+          href="https://docs.plural.sh/"
         >
           <IconFrame
-            textValue=""
+            textValue="Documentation"
             type="secondary"
             icon={<DocumentIcon />}
           />

@@ -1,102 +1,41 @@
-import { Div, Flex, P } from 'honorable'
+import { Div, Flex } from 'honorable'
+import { useEffect, useState } from 'react'
 import {
-  ReactElement,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
-import {
-  AppsIcon,
-  FormField,
-  Input,
-  InstallIcon,
   LoopingLogo,
   Wizard,
-  WizardInstaller,
   WizardNavigation,
-  WizardPicker,
-  WizardStep,
   WizardStepConfig,
   WizardStepper,
-  useActive,
 } from '@pluralsh/design-system'
-import { useQuery } from '@apollo/client'
+import { useApolloClient, useQuery } from '@apollo/client'
 
-import { EXPLORE_REPOS } from '../../../../repos/queries'
+import { Provider } from '../../../../../generated/graphql'
 
-interface FormData {
-  domain: string
-}
+import { APPLICATIONS_QUERY } from './queries'
+import { buildSteps, toDefaultSteps } from './helpers'
 
-function Application({ ...props }: any): ReactElement {
-  const { active, setData } = useActive<FormData>()
-  const [domain, setDomain] = useState<string>(active?.data?.domain ?? '')
+const FILTERED_RECIPES = ['bootstrap']
 
-  // Build our form data
-  const data = useMemo<FormData>(() => ({ domain }), [domain])
+function Installer({ provider }: {provider: Provider}) {
+  const client = useApolloClient()
 
-  // Update step data on change
-  useEffect(() => setData(data), [domain, setData, data])
+  const [selectedApplications, setSelectedApplications] = useState<Array<WizardStepConfig>>([])
+  const [stepsLoading, setStepsLoading] = useState(false)
+  const [steps, setSteps] = useState<Array<WizardStepConfig>>([])
 
-  return (
-    <WizardStep
-      valid={domain.length > 0}
-      data={data}
-      {...props}
-    >
-      <P
-        overline
-        color="text-xlight"
-        paddingBottom="medium"
-      >configure {active.label}
-      </P>
-      <FormField
-        label="Domain"
-        required
-      >
-        <Input
-          placeholder="https://{domain}.onplural.sh"
-          value={domain}
-          onChange={event => setDomain(event.target.value)}
-        />
-      </FormField>
-    </WizardStep>
-  )
-}
+  const { data: { repositories: { edges: applicationNodes } = { edges: undefined } } = {} } = useQuery(APPLICATIONS_QUERY, { variables: { provider } })
+  const applications = applicationNodes?.map(({ node }) => node).filter(app => (!app?.private ?? true) && !FILTERED_RECIPES.includes(app?.name))
 
-const toPickerItems = (applications): Array<WizardStepConfig> => applications?.map(app => ({
-  key: app.id,
-  label: app.name,
-  imageUrl: app.icon,
-  node: <Application key={app.id} />,
-})) || []
+  useEffect(() => {
+    const build = async () => {
+      const steps = await buildSteps(client, provider, selectedApplications)
 
-const toDefaultSteps = (applications): Array<WizardStepConfig> => [{
-  key: 'apps',
-  label: 'Apps',
-  Icon: AppsIcon,
-  node: <WizardPicker items={toPickerItems(applications)} />,
-  isDefault: true,
-},
-{
-  key: 'placeholder',
-  isPlaceholder: true,
-},
-{
-  key: 'install',
-  label: 'Install',
-  Icon: InstallIcon,
-  node: <WizardInstaller />,
-  isDefault: true,
-}]
+      setSteps(steps)
+    }
 
-function Installer() {
-  // const [open, setOpen] = useState(true)
-  // const [confirmClose, setConfirmClose] = useState(false)
-  // const [visible, setVisible] = useState(false)
-  // const [inProgress, setInProgress] = useState<boolean>(false)
-  const { data: { repositories: { edges: applicationNodes } = { edges: undefined } } = {} } = useQuery(EXPLORE_REPOS)
-  const applications = applicationNodes?.map(({ node }) => node).filter(app => !app?.private ?? true)
+    setStepsLoading(true)
+    build().then(() => setStepsLoading(false))
+  }, [client, selectedApplications.length, provider])
 
   if (!applications) {
     return (
@@ -120,17 +59,15 @@ function Installer() {
       padding="medium"
     >
       <Wizard
-        // onComplete={completed => setInProgress(completed)}
-        defaultSteps={toDefaultSteps(applications)}
+        onSelect={apps => setSelectedApplications(apps)}
+        defaultSteps={toDefaultSteps(applications, provider)}
+        dependencySteps={steps}
         limit={5}
+        loading={stepsLoading}
       >
         {{
           stepper: <WizardStepper />,
-          navigation: <WizardNavigation onInstall={() => {
-            // setOpen(false)
-            // setVisible(true)
-          }}
-          />,
+          navigation: <WizardNavigation onInstall={() => {}} />,
         }}
       </Wizard>
     </Div>

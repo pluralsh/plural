@@ -1,16 +1,10 @@
 import { useQuery } from '@apollo/client'
-
 import { Div, Flex } from 'honorable'
-
 import { LoopingLogo } from '@pluralsh/design-system'
-
-import { Box } from 'grommet'
 
 import useOnboarded from '../../onboarding/useOnboarded'
 import OnboardingHeader from '../../onboarding_v3/OnboardingHeader'
-
 import TerminalThemeProvider from '../../TerminalThemeProvider'
-
 import { CLOUD_SHELL_QUERY } from '../../queries'
 
 import Terminal from './Terminal'
@@ -45,7 +39,7 @@ function Content() {
         padding="large"
       >
         <ContentCard>
-          <Installer />
+          <Installer provider={data.shell.provider} />
           <TerminalThemeProvider>
             <Terminal shell={data.shell} />
           </TerminalThemeProvider>

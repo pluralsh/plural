@@ -1,5 +1,6 @@
 import {
   ReactElement,
+  useContext,
   useEffect,
   useMemo,
   useState,
@@ -17,19 +18,23 @@ import { useQuery } from '@apollo/client'
 import { RECIPES_QUERY } from '../../../../repository/queries'
 import { RECIPE_Q } from '../../../../repos/queries'
 import { Recipe } from '../../../../../generated/graphql'
+import { TerminalContext } from '../context/terminal'
 
 import { Configuration } from './Configuration'
 
 interface StepData {
   id: string | undefined,
-  oidc: boolean,
   context: Record<string, unknown>
 }
 
+const toConfig = config => (config ? Object.keys(config)
+  .map(key => ({ [key]: { value: config[key], valid: true } }))
+  .reduce((acc, entry) => ({ ...acc, ...entry })) : undefined)
+
 export function Application({ provider, ...props }: any): ReactElement {
   const { active, setData } = useActive<StepData>()
+  const { configuration } = useContext(TerminalContext)
   const [context, setContext] = useState<Record<string, unknown>>(active.data?.context || {})
-  const [oidc, setOIDC] = useState(active.data?.oidc || false)
   const [valid, setValid] = useState(true)
   const { data: { recipes: { edges: recipeEdges } = { edges: undefined } } = {} } = useQuery(RECIPES_QUERY, {
     variables: { repositoryId: active.key },
@@ -41,9 +46,11 @@ export function Application({ provider, ...props }: any): ReactElement {
     skip: !recipeBase,
   })
 
+  const recipeContext = useMemo(() => toConfig(configuration?.contextConfiguration![active.label!]), [active.label, configuration?.contextConfiguration])
+  const mergedContext = useMemo<Record<string, unknown>>(() => ({ ...recipeContext, ...context }), [recipeContext, context])
   const stepData = useMemo(() => ({
-    ...active.data, ...{ id: recipe?.recipe.id }, ...{ oidc }, ...{ context },
-  }), [active.data, oidc, recipe?.recipe.id, context])
+    ...active.data, ...{ id: recipe?.recipe.id }, ...{ context: mergedContext },
+  }), [active.data, recipe?.recipe.id, mergedContext])
 
   useEffect(() => {
     const valid = Object.values<any>(context).every(({ valid }) => valid)
@@ -127,10 +134,8 @@ export function Application({ provider, ...props }: any): ReactElement {
       </Div>
       <Configuration
         recipe={recipe.recipe}
-        context={context}
-        oidc={oidc}
+        context={mergedContext}
         setContext={setContext}
-        setOIDC={setOIDC}
       />
     </WizardStep>
   )

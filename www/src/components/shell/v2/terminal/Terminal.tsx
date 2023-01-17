@@ -3,7 +3,7 @@ import 'xterm/css/xterm.css'
 
 import { Buffer } from 'buffer'
 
-import { Button, Flex } from 'honorable'
+import { Button, Div, Flex } from 'honorable'
 import {
   ReactElement,
   useCallback,
@@ -100,7 +100,7 @@ const resize = (fitAddon: FitAddon, channel: any, terminal: XTerm) => {
   if (channel) channel.push(ChannelEvent.OnResize, { width: cols, height: rows })
 }
 
-function Terminal({ shell }) {
+function Terminal({ provider }) {
   const terminalRef = useRef<HTMLElement>()
   const [terminalTheme] = useContext(TerminalThemeContext)
 
@@ -126,7 +126,7 @@ function Terminal({ shell }) {
     terminal.open(terminalRef.current!)
 
     // Welcome message
-    terminal.write(`Booting into your ${shell.provider} shell...\r\n\r\nIt can take a few minutes to load. Try refreshing the page if it gets stuck for too long.\r\n`)
+    terminal.write(`Booting into your ${provider} shell...\r\n\r\nIt can take a few minutes to load. Try refreshing the page if it gets stuck for too long.\r\n`)
 
     // Fit the size of terminal element
     fitAddon.fit()

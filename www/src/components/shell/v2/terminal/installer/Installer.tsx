@@ -1,6 +1,9 @@
 import { Div, Flex } from 'honorable'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import {
+  HamburgerMenuCollapseIcon,
+  HamburgerMenuIcon,
+  IconFrame,
   LoopingLogo,
   Wizard,
   WizardNavigation,
@@ -9,22 +12,26 @@ import {
 } from '@pluralsh/design-system'
 import { useApolloClient, useQuery } from '@apollo/client'
 
-import { Provider } from '../../../../../generated/graphql'
+import { TerminalContext } from '../context/terminal'
 
 import { APPLICATIONS_QUERY } from './queries'
 import { buildSteps, toDefaultSteps } from './helpers'
 
-const FILTERED_RECIPES = ['bootstrap']
+const FILTERED_APPS = ['bootstrap', 'ingress-nginx', 'postgres']
 
-function Installer({ provider }: {provider: Provider}) {
+function Installer() {
   const client = useApolloClient()
-
+  const { shell: { provider }, configuration } = useContext(TerminalContext)
   const [selectedApplications, setSelectedApplications] = useState<Array<WizardStepConfig>>([])
   const [stepsLoading, setStepsLoading] = useState(false)
   const [steps, setSteps] = useState<Array<WizardStepConfig>>([])
+  const [visible, setVisible] = useState(true)
 
-  const { data: { repositories: { edges: applicationNodes } = { edges: undefined } } = {} } = useQuery(APPLICATIONS_QUERY, { variables: { provider } })
-  const applications = applicationNodes?.map(({ node }) => node).filter(app => (!app?.private ?? true) && !FILTERED_RECIPES.includes(app?.name))
+  const { data: { repositories: { edges: applicationNodes } = { edges: undefined } } = {} } = useQuery(APPLICATIONS_QUERY, {
+    variables: { provider },
+    skip: !provider,
+  })
+  const applications = applicationNodes?.map(({ node }) => node).filter(app => (!app?.private ?? true) && !FILTERED_APPS.includes(app?.name))
 
   useEffect(() => {
     const build = async () => {
@@ -54,22 +61,60 @@ function Installer({ provider }: {provider: Provider}) {
 
   return (
     <Div
-      width={600}
-      borderRight="1px solid border"
       padding="medium"
+      borderRight="1px solid border"
     >
-      <Wizard
-        onSelect={apps => setSelectedApplications(apps)}
-        defaultSteps={toDefaultSteps(applications, provider)}
-        dependencySteps={steps}
-        limit={5}
-        loading={stepsLoading}
+      <Div
+        width={!visible ? 32 : 0}
+        height={!visible ? '100%' : 0}
+        opacity={!visible ? 1 : 0}
+        visibility={!visible ? 'visible' : 'collapse'}
+        transition="opacity 650ms linear"
+        style={{ position: 'absolute' }}
       >
-        {{
-          stepper: <WizardStepper />,
-          navigation: <WizardNavigation onInstall={() => {}} />,
-        }}
-      </Wizard>
+        <IconFrame
+          icon={<HamburgerMenuIcon />}
+          clickable
+          onClick={() => setVisible(!visible)}
+        />
+      </Div>
+      <Div
+        width={visible ? 600 : 32}
+        height="100%"
+        opacity={visible ? 1 : 0}
+        visibility={visible ? 'visible' : 'collapse'}
+        transition="width 300ms linear, opacity 150ms linear"
+      >
+        <Wizard
+          onSelect={apps => setSelectedApplications(apps)}
+          defaultSteps={toDefaultSteps(applications, provider)}
+          dependencySteps={steps}
+          limit={5}
+          loading={stepsLoading || !configuration}
+        >
+          {{
+            stepper: (
+              <Flex
+                grow={1}
+                align="center"
+                justify="space-between"
+                width="100%"
+                gap="xsmall"
+              >
+                <WizardStepper />
+                <IconFrame
+                  icon={<HamburgerMenuCollapseIcon />}
+                  clickable
+                  onClick={() => setVisible(!visible)}
+                />
+              </Flex>
+            ),
+            navigation: <WizardNavigation onInstall={() => {
+            }}
+            />,
+          }}
+        </Wizard>
+      </Div>
     </Div>
   )
 }

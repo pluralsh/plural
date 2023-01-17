@@ -19,7 +19,7 @@ const available = (config, context) => {
 
   switch (condition.operation) {
   case OperationType.NOT:
-    return !context[condition.field]
+    return !(context[condition.field]?.value)
   }
 
   return true
@@ -29,17 +29,13 @@ interface ConfigurationProps {
   recipe: Recipe,
   context: Record<string, unknown>
   setContext: Dispatch<SetStateAction<Record<string, unknown>>>
-  oidc?: boolean
-  setOIDC: Dispatch<boolean>
 }
 
-export function Configuration({
-  recipe, context, oidc, setContext, setOIDC,
-}: ConfigurationProps): ReactElement {
+export function Configuration({ recipe, context, setContext }: ConfigurationProps): ReactElement {
   const { active } = useActive<Record<string, unknown>>()
   const sections = recipe.recipeSections
   const configurations = sections!.filter(section => section!.repository!.name === active.label).map(section => section!.configuration).flat().filter(c => !!c)
-  const setValue = useCallback((fieldName, value, valid = true) => setContext({ ...context, ...{ [fieldName]: { value, valid } } }), [setContext, context])
+  const setValue = useCallback((fieldName, value, valid = true) => setContext(context => ({ ...context, ...{ [fieldName]: { value, valid: !!valid } } })), [setContext])
 
   return (
     <Flex
@@ -62,15 +58,6 @@ export function Configuration({
         >No configuration available.
         </Span>
       )}
-      {/* {recipe.oidcEnabled && ( */}
-      {/*  <div> */}
-      {/*    <Switch */}
-      {/*      checked={oidc} */}
-      {/*      onChange={({ target: { checked } }) => setOIDC(checked)} */}
-      {/*    >Enable OIDC */}
-      {/*    </Switch> */}
-      {/*  </div> */}
-      {/* )} */}
     </Flex>
   )
 }

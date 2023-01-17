@@ -44,6 +44,7 @@ export const RecipeSectionFragment = gql`
             documentation
             type
             placeholder
+            optional
             condition { operation field value }
             validation { type regex message }
         }

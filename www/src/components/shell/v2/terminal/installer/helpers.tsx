@@ -13,7 +13,9 @@ import { RECIPE_Q } from '../../../../repos/queries'
 
 import { Application } from './Application'
 
-const FORCED_APPS = ['console']
+const FORCED_APPS = {
+  console: 'The Plural Console will allow you to monitor, upgrade, and deploy applications easily from one centralized place.',
+}
 
 const toPickerItems = (applications, provider: Provider): Array<WizardStepConfig> => applications?.map(app => ({
   key: app.id,
@@ -23,16 +25,15 @@ const toPickerItems = (applications, provider: Provider): Array<WizardStepConfig
     key={app.id}
     provider={provider}
   />,
+  isRequired: Object.keys(FORCED_APPS).includes(app.name),
+  tooltip: FORCED_APPS[app.name],
 })) || []
 
 const toDefaultSteps = (applications, provider: Provider): Array<WizardStepConfig> => [{
   key: 'apps',
   label: 'Apps',
   Icon: AppsIcon,
-  node: <WizardPicker
-    items={toPickerItems(applications, provider)}
-    preSelected={FORCED_APPS}
-  />,
+  node: <WizardPicker items={toPickerItems(applications, provider)} />,
   isDefault: true,
 },
 {

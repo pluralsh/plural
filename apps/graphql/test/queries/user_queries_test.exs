@@ -220,6 +220,7 @@ defmodule GraphQl.UserQueriesTest do
   describe "token" do
     test "it can fetch audits for a token" do
       token = insert(:persisted_token)
+      enable_features(token.user.account, [:audit])
       audits = for i <- 1..3 do
         insert(:access_token_audit,
           token: token,
@@ -234,15 +235,35 @@ defmodule GraphQl.UserQueriesTest do
             audits(first: 10) { edges { node { id } } }
           }
         }
-      """, %{"id" => token.id}, %{current_user: token.user})
+      """, %{"id" => token.id}, %{current_user: Core.Services.Rbac.preload(token.user)})
 
       assert found["id"] == token.id
       assert from_connection(found["audits"])
              |> ids_equal(audits)
     end
 
+    test "it will fail if the feature is not enabled" do
+      token = insert(:persisted_token)
+      audits = for i <- 1..3 do
+        insert(:access_token_audit,
+          token: token,
+          timestamp: Timex.now() |> Timex.shift(minutes: -i)
+        )
+      end
+
+      {:ok, %{errors: [_ | _]}} = run_query("""
+        query Token($id: ID!) {
+          token(id: $id) {
+            id
+            audits(first: 10) { edges { node { id } } }
+          }
+        }
+      """, %{"id" => token.id}, %{current_user: Core.Services.Rbac.preload(token.user)})
+    end
+
     test "It can fetch audit metrics for a token" do
       token = insert(:persisted_token)
+      enable_features(token.user.account, [:audit])
       insert_list(3, :access_token_audit, token: token, country: "US", count: 1)
       insert_list(2, :access_token_audit, token: token, country: "CN", count: 2)
       insert(:access_token_audit, country: "UK")
@@ -254,12 +275,28 @@ defmodule GraphQl.UserQueriesTest do
             metrics { country count }
           }
         }
-      """, %{"id" => token.id}, %{current_user: token.user})
+      """, %{"id" => token.id}, %{current_user: Core.Services.Rbac.preload(token.user)})
 
       grouped = Enum.into(metrics, %{}, & {&1["country"], &1["count"]})
       assert grouped["US"] == 3
       assert grouped["CN"] == 4
       refute grouped["UK"]
+    end
+
+    test "geometrics will fail w/o the audit feature enabled" do
+      token = insert(:persisted_token)
+      insert_list(3, :access_token_audit, token: token, country: "US", count: 1)
+      insert_list(2, :access_token_audit, token: token, country: "CN", count: 2)
+      insert(:access_token_audit, country: "UK")
+
+      {:ok, %{errors: [_ | _]}} = run_query("""
+        query Token($id: ID!) {
+          token(id: $id) {
+            id
+            metrics { country count }
+          }
+        }
+      """, %{"id" => token.id}, %{current_user: Core.Services.Rbac.preload(token.user)})
     end
   end
 

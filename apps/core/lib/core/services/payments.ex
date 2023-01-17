@@ -320,7 +320,7 @@ defmodule Core.Services.Payments do
       name: "Pro",
       period: :monthly,
       visible: true,
-      features: %{vpn: true, user_management: true},
+      features: %{vpn: true, user_management: true, audit: true},
       line_items: [
         %{name: "User", dimension: :user, period: :monthly, cost: 4900},
         %{name: "Cluster", dimension: :cluster, period: :monthly, cost: 39900}
@@ -335,7 +335,7 @@ defmodule Core.Services.Payments do
         period: :monthly,
         visible: true,
         enterprise: true,
-        features: %{vpn: true, user_management: true},
+        features: %{vpn: true, user_management: true, audit: true},
         line_items: [
           %{name: "User", dimension: :user, period: :monthly, cost: 4900}, # these costs are arbitrary, as won't be billed through stripe
           %{name: "Cluster", dimension: :cluster, period: :monthly, cost: 39900}

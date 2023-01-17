@@ -121,6 +121,12 @@ defmodule GraphQl.Schema.Recipe do
     field :oidc_settings,       :oidc_settings
     field :private,             :boolean
     field :restricted,          :boolean
+    field :oidc_enabled,        :boolean, resolve: fn
+      %{oidc_settings: %{}}, _, _ -> {:ok, true}
+      %{recipe_dependencies: [_ | _] = deps}, _, _ ->
+        {:ok, Enum.any?(deps, &is_map(&1.oidc_settings))}
+      _, _, _ -> {:ok, false}
+    end
     field :tests,               list_of(:recipe_test)
     field :repository,          :repository, resolve: dataloader(Repository)
     field :recipe_sections,     list_of(:recipe_section), resolve: lazy_dataloader(:recipe_sections, Recipe)

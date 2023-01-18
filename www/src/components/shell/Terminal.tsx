@@ -1,13 +1,11 @@
 import { useMutation, useQuery } from '@apollo/client'
 import { Flex } from 'honorable'
 import { LoopingLogo } from '@pluralsh/design-system'
-
 import React, { useEffect, useMemo } from 'react'
 
 import { CloudShell, RootQueryType } from '../../generated/graphql'
 
 import { CLOUD_SHELL_QUERY, SETUP_SHELL } from './queries'
-
 import TerminalThemeProvider from './TerminalThemeProvider'
 import Shell from './Shell'
 import { Onboarding } from './onboarding_v3/Onboarding'

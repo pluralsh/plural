@@ -1,5 +1,12 @@
 import { Div, Flex } from 'honorable'
-import { useContext, useEffect, useState } from 'react'
+import {
+  Dispatch,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 import {
   HamburgerMenuCollapseIcon,
   HamburgerMenuIcon,
@@ -15,13 +22,14 @@ import { useApolloClient, useQuery } from '@apollo/client'
 import { TerminalContext } from '../context/terminal'
 
 import { APPLICATIONS_QUERY } from './queries'
-import { buildSteps, toDefaultSteps } from './helpers'
+import { buildSteps, install, toDefaultSteps } from './helpers'
 
 const FILTERED_APPS = ['bootstrap', 'ingress-nginx', 'postgres']
 
 function Installer() {
   const client = useApolloClient()
   const { shell: { provider }, configuration } = useContext(TerminalContext)
+  const onResetRef = useRef<{onReset: Dispatch<void>}>({ onReset: () => {} })
   const [selectedApplications, setSelectedApplications] = useState<Array<WizardStepConfig>>([])
   const [stepsLoading, setStepsLoading] = useState(false)
   const [steps, setSteps] = useState<Array<WizardStepConfig>>([])
@@ -32,6 +40,18 @@ function Installer() {
     skip: !provider,
   })
   const applications = applicationNodes?.map(({ node }) => node).filter(app => (!app?.private ?? true) && !FILTERED_APPS.includes(app?.name))
+
+  const onInstall = useCallback((payload: Array<WizardStepConfig>) => {
+    setStepsLoading(true)
+
+    install(client, payload, provider)
+      .then(() => {
+        onResetRef?.current?.onReset()
+        setVisible(false)
+      })
+      .catch(err => console.error(err))
+      .finally(() => setStepsLoading(false))
+  }, [client, provider])
 
   useEffect(() => {
     const build = async () => {
@@ -91,6 +111,7 @@ function Installer() {
           dependencySteps={steps}
           limit={5}
           loading={stepsLoading || !configuration}
+          onResetRef={onResetRef}
         >
           {{
             stepper: (
@@ -109,9 +130,7 @@ function Installer() {
                 />
               </Flex>
             ),
-            navigation: <WizardNavigation onInstall={() => {
-            }}
-            />,
+            navigation: <WizardNavigation onInstall={onInstall} />,
           }}
         </Wizard>
       </Div>

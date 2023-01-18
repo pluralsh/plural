@@ -25,17 +25,19 @@ import { Configuration } from './Configuration'
 interface StepData {
   id: string | undefined,
   context: Record<string, unknown>
+  oidc: boolean
 }
 
 const toConfig = config => (config ? Object.keys(config)
   .map(key => ({ [key]: { value: config[key], valid: true } }))
-  .reduce((acc, entry) => ({ ...acc, ...entry })) : undefined)
+  .reduce((acc, entry) => ({ ...acc, ...entry }), {}) : undefined)
 
 export function Application({ provider, ...props }: any): ReactElement {
   const { active, setData } = useActive<StepData>()
   const { configuration } = useContext(TerminalContext)
   const [context, setContext] = useState<Record<string, unknown>>(active.data?.context || {})
   const [valid, setValid] = useState(true)
+  const [oidc, setOIDC] = useState(active.data?.oidc || false)
   const { data: { recipes: { edges: recipeEdges } = { edges: undefined } } = {} } = useQuery(RECIPES_QUERY, {
     variables: { repositoryId: active.key },
   })
@@ -49,8 +51,8 @@ export function Application({ provider, ...props }: any): ReactElement {
   const recipeContext = useMemo(() => toConfig(configuration?.contextConfiguration![active.label!]), [active.label, configuration?.contextConfiguration])
   const mergedContext = useMemo<Record<string, unknown>>(() => ({ ...recipeContext, ...context }), [recipeContext, context])
   const stepData = useMemo(() => ({
-    ...active.data, ...{ id: recipe?.recipe.id }, ...{ context: mergedContext },
-  }), [active.data, recipe?.recipe.id, mergedContext])
+    ...active.data, ...{ id: recipe?.recipe.id }, ...{ context: mergedContext }, ...{ oidc },
+  }), [active.data, recipe?.recipe.id, mergedContext, oidc])
 
   useEffect(() => {
     const valid = Object.values<any>(context).every(({ valid }) => valid)
@@ -136,6 +138,8 @@ export function Application({ provider, ...props }: any): ReactElement {
         recipe={recipe.recipe}
         context={mergedContext}
         setContext={setContext}
+        oidc={oidc}
+        setOIDC={setOIDC}
       />
     </WizardStep>
   )

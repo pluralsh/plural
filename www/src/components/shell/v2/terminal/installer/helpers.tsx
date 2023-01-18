@@ -10,6 +10,7 @@ import {
 import { Provider, Recipe, RecipeSection } from '../../../../../generated/graphql'
 import { RECIPES_QUERY } from '../../../../repository/queries'
 import { RECIPE_Q } from '../../../../repos/queries'
+import { CREATE_QUICK_STACK_MUTATION, INSTALL_STACK_SHELL_MUTATION } from '../../../queries'
 
 import { Application } from './Application'
 
@@ -99,6 +100,24 @@ const buildSteps = async (client: ApolloClient<unknown>, provider: Provider, sel
   return toDependencySteps(Array.from(dependencyMap.values()), provider)
 }
 
+const install = async (client: ApolloClient<unknown>, apps: Array<WizardStepConfig<any>>, provider: Provider) => {
+  const toAPIContext = context => ({ ...Object.keys(context || {}).reduce((acc, key) => ({ ...acc, [key]: context[key].value }), {}) })
+
+  const { data: { quickStack }, errors } = await client.mutate({
+    mutation: CREATE_QUICK_STACK_MUTATION,
+    variables: { applicationIds: apps.map(app => app.key), provider },
+  })
+
+  if (errors) return Promise.reject(errors)
+
+  const configuration = apps.reduce((acc, app) => ({ ...acc, [app.label!]: toAPIContext(app.data?.context || {}) }), {})
+
+  return client.mutate({
+    mutation: INSTALL_STACK_SHELL_MUTATION,
+    variables: { name: quickStack.name, oidc: true, context: { configuration: JSON.stringify(configuration), domains: [], buckets: [] } },
+  })
+}
+
 export {
-  toDependencySteps, toDefaultSteps, buildSteps, toPickerItems,
+  toDependencySteps, toDefaultSteps, buildSteps, toPickerItems, install,
 }

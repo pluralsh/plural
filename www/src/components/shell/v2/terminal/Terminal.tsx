@@ -172,11 +172,11 @@ function Terminal({ provider }) {
         backgroundColor={normalizedThemes[terminalTheme].background}
         padding="large"
       >
-        {/* <Div */}
-        {/*  id="terminal" */}
-        {/*  className="terminal" */}
-        {/*  ref={terminalRef} */}
-        {/* /> */}
+        <Div
+          id="terminal"
+          className="terminal"
+          ref={terminalRef}
+        />
       </Flex>
     </Flex>
   )

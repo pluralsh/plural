@@ -25,10 +25,10 @@ function Content() {
   if (!shell?.provider) {
     return (
       <Flex
+        flexGrow={1}
         align="center"
         justify="center"
-        borderRight="1px solid border"
-        padding="medium"
+        padding="xlarge"
       >
         <LoopingLogo />
       </Flex>

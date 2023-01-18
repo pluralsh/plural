@@ -9,6 +9,7 @@ enum ConfigurationType {
 
 enum OperationType {
   NOT = 'NOT',
+  PREFIX = 'PREFIX',
 }
 
 export { ConfigurationType, OperationType }

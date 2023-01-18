@@ -1,18 +1,24 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { useQuery } from '@apollo/client'
 import { Button, Card } from '@pluralsh/design-system'
 import { Div, Spinner } from 'honorable'
+import { CardElement } from '@stripe/react-stripe-j'
 
 import { CARDS_QUERY } from './queries'
 
-function BillingBankCard() {
+function BillingBankCards() {
+  const [edit, setEdit] = useState(false)
   const { data, loading, error } = useQuery(CARDS_QUERY)
 
   const card = useMemo(() => data?.me?.cards?.edges?.[0]?.node ?? null, [data])
 
   const handleAddCard = useCallback(() => {
-
+    setEdit(true)
   }, [])
+
+  const renderEdit = useCallback(() => (
+    <Div />
+  ), [])
 
   if (loading) {
     return (
@@ -73,4 +79,4 @@ function BillingBankCard() {
   )
 }
 
-export default BillingBankCard
+export default BillingBankCards

@@ -1,6 +1,6 @@
 import { Div } from 'honorable'
 
-import BillingBankCard from './BillingBankCard'
+import BillingBankCards from './BillingBankCards'
 import BillingInvoices from './BillingInvoices'
 
 function BillingPayments() {
@@ -12,7 +12,7 @@ function BillingPayments() {
       >
         Payment info
       </Div>
-      <BillingBankCard />
+      <BillingBankCards />
       <Div
         subtitle1
         marginTop="xlarge"

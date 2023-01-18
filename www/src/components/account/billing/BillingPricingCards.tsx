@@ -3,6 +3,8 @@ import { Button } from '@pluralsh/design-system'
 
 import BillingPricingCard from './BillingPricingCard'
 
+import { CLUSTER_PRICING, USER_PRICING } from './constants'
+
 function BillingPricingCards() {
   return (
     <Flex gap="medium">
@@ -52,9 +54,9 @@ function BillingPricingCards() {
         title="Professional"
         subtitle={(
           <>
-            $399/cluster/month
+            ${CLUSTER_PRICING}/cluster/month
             <br />
-            $49/user/month
+            ${USER_PRICING}/user/month
           </>
         )}
         items={[

@@ -1,6 +1,8 @@
 import { Div } from 'honorable'
 import { CheckIcon, CloseIcon } from '@pluralsh/design-system'
 
+import { CLUSTER_PRICING, USER_PRICING } from './constants'
+
 const columnStyles = {
   position: 'relative',
   boxShadow: '-12px 0 12px 0px rgb(14 16 21 / 20%)',
@@ -54,10 +56,10 @@ function BillingPricingTable() {
           {...firstColumnCellProps}
           borderTopLeftRadius={6}
         >
-          Clusters
+          Apps
         </Div>
         <Div {...firstColumnCellProps}>
-          Apps
+          Clusters
         </Div>
         <Div {...firstColumnCellProps}>
           User accounts
@@ -139,10 +141,10 @@ function BillingPricingTable() {
           Open-source
         </Div>
         <Div body2>
-          Free
+          Unlimited
         </Div>
         <Div body2>
-          Unlimited
+          Free
         </Div>
         <Div body2>
           Unlimited
@@ -216,13 +218,13 @@ function BillingPricingTable() {
           Professional
         </Div>
         <Div body2>
-          $399/cluster/month
-        </Div>
-        <Div body2>
           Unlimited
         </Div>
         <Div body2>
-          $49/user/month
+          ${CLUSTER_PRICING}/cluster/month
+        </Div>
+        <Div body2>
+          ${USER_PRICING}/user/month
         </Div>
         <Div>
           <CheckIcon color="icon-success" />
@@ -300,13 +302,13 @@ function BillingPricingTable() {
           {...lastColumnCellProps}
           body2
         >
-          Custom
+          Unlimited
         </Div>
         <Div
           {...lastColumnCellProps}
           body2
         >
-          Unlimited
+          Custom
         </Div>
         <Div
           {...lastColumnCellProps}

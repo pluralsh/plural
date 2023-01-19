@@ -5464,6 +5464,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/react-stripe-elements@npm:^6":
+  version: 6.0.6
+  resolution: "@types/react-stripe-elements@npm:6.0.6"
+  dependencies:
+    "@types/react": "*"
+    "@types/stripe-v3": "*"
+  checksum: c5b35e3b644b68a935d77038d0b0d7e702f6aec5e1618db1c24a2dc2b339f0f01fc81c80867e16be84c8b3f754b561b10848e44cd3e6ebe4e7c408d44b039101
+  languageName: node
+  linkType: hard
+
 "@types/react@npm:*":
   version: 18.0.25
   resolution: "@types/react@npm:18.0.25"
@@ -5506,6 +5516,13 @@ __metadata:
   version: 7.3.13
   resolution: "@types/semver@npm:7.3.13"
   checksum: 00c0724d54757c2f4bc60b5032fe91cda6410e48689633d5f35ece8a0a66445e3e57fa1d6e07eb780f792e82ac542948ec4d0b76eb3484297b79bd18b8cf1cb0
+  languageName: node
+  linkType: hard
+
+"@types/stripe-v3@npm:*":
+  version: 3.1.27
+  resolution: "@types/stripe-v3@npm:3.1.27"
+  checksum: e519bbb7318159ec1b238d6dc86e632db9abe934f119904a9cb53367213f56767eb51a8ad05dd557d94b0b72a3c0bda0cdf504acc8d2185b88790fcd9b901eaf
   languageName: node
   linkType: hard
 
@@ -12791,6 +12808,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"prop-types@npm:15.7.2":
+  version: 15.7.2
+  resolution: "prop-types@npm:15.7.2"
+  dependencies:
+    loose-envify: ^1.4.0
+    object-assign: ^4.1.1
+    react-is: ^16.8.1
+  checksum: 5eef82fdda64252c7e75aa5c8cc28a24bbdece0f540adb60ce67c205cf978a5bd56b83e4f269f91c6e4dcfd80b36f2a2dec24d362e278913db2086ca9c6f9430
+  languageName: node
+  linkType: hard
+
 "prop-types@npm:15.8.1, prop-types@npm:^15.0.0, prop-types@npm:^15.5.8, prop-types@npm:^15.6.0, prop-types@npm:^15.6.2, prop-types@npm:^15.7.2, prop-types@npm:^15.8.1":
   version: 15.8.1
   resolution: "prop-types@npm:15.8.1"
@@ -13132,7 +13160,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-is@npm:^16.13.1, react-is@npm:^16.7.0":
+"react-is@npm:^16.13.1, react-is@npm:^16.7.0, react-is@npm:^16.8.1":
   version: 16.13.1
   resolution: "react-is@npm:16.13.1"
   checksum: f7a19ac3496de32ca9ae12aa030f00f14a3d45374f1ceca0af707c831b2a6098ef0d6bdae51bd437b0a306d7f01d4677fcc8de7c0d331eb47ad0f46130e53c5f
@@ -13343,6 +13371,18 @@ __metadata:
     react: ^16.8.0 || ^17.0.0 || ^18.0.0
     react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
   checksum: ee18d0fc4aa98b952c2d8c2a939c5fb05f160ca30d92b5b4a7d932910c1146120118f0506deb73fd671e147f891391a3556de512fb2cdf88b795a3c6f3b53219
+  languageName: node
+  linkType: hard
+
+"react-stripe-elements@npm:^6.1.2":
+  version: 6.1.2
+  resolution: "react-stripe-elements@npm:6.1.2"
+  dependencies:
+    prop-types: 15.7.2
+  peerDependencies:
+    react: ^15.5.4 || ^16.0.0-0
+    react-dom: ^15.5.4 || ^16.0.0-0
+  checksum: 142d314cef0a075a2e12e159c655da8b0ce4a0c7b7d28565cab432ae1ed504d841a5ff7ff83af15862ad59e38cb07e9b30de3b70ba52dd31024042475a321df0
   languageName: node
   linkType: hard
 
@@ -16542,6 +16582,7 @@ __metadata:
     "@types/randomcolor": 0.5.7
     "@types/react": 18.0.26
     "@types/react-dom": 18.0.10
+    "@types/react-stripe-elements": ^6
     "@types/styled-components": 5.1.26
     "@types/uuid": ^9.0.0
     "@typescript-eslint/eslint-plugin": 5.48.0
@@ -16603,6 +16644,7 @@ __metadata:
     react-sage: 0.3.16
     react-script-hook: 1.7.2
     react-spinners: 0.13.7
+    react-stripe-elements: ^6.1.2
     react-sweet-progress: 1.1.2
     react-toggle: 4.1.3
     react-transition-group: 4.4.5

@@ -1,6 +1,6 @@
 defmodule Core.Schema.UpgradeQueue do
   use Piazza.Ecto.Schema
-  alias Core.Schema.User
+  alias Core.Schema.{User, Cluster}
 
   @expiry 1
 
@@ -13,6 +13,7 @@ defmodule Core.Schema.UpgradeQueue do
     field :pinged_at, :utc_datetime_usec
 
     belongs_to :user, User
+    belongs_to :cluster, Cluster
 
     timestamps()
   end
@@ -30,13 +31,14 @@ defmodule Core.Schema.UpgradeQueue do
     from(q in query, where: q.pinged_at < ^expiry)
   end
 
-  @valid ~w(acked user_id name domain git provider)a
+  @valid ~w(acked user_id name domain git provider cluster_id)a
 
   def changeset(model, attrs \\ %{}) do
     model
     |> cast(attrs, @valid)
     |> validate_required([:user_id])
     |> foreign_key_constraint(:user_id)
+    |> unique_constraint(:cluster_id)
     |> unique_constraint(:name, name: index_name(:upgrade_queues, [:user_id, :name]))
   end
 end

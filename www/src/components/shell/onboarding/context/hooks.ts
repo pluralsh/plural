@@ -15,7 +15,6 @@ import {
   CloudType,
   SCMProps,
   SectionKey,
-  SectionState,
   Sections,
   WorkspaceProps,
 } from './types'

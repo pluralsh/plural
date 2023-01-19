@@ -16,7 +16,7 @@ import {
 
 import { OnboardingContext } from '../../context/onboarding'
 import { ScmProvider } from '../../../../../generated/graphql'
-import { isAlphanumeric } from '../../../validation'
+import { isAlphanumeric } from '../../../helpers'
 import { OrgType, SCMOrg } from '../../context/types'
 
 import { useGithubState } from './provider/github'

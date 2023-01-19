@@ -1,16 +1,21 @@
 import { Div, Flex, Text } from 'honorable'
-
 import { useState } from 'react'
+import {
+  Button,
+  Callout,
+  GitHubLogoIcon,
+  GitLabLogoIcon,
+} from '@pluralsh/design-system'
 
-import { Button, Callout } from '@pluralsh/design-system'
-
-import { Github as GithubLogo, Gitlab as GitlabLogo } from '../../../icons'
 import { useDevToken } from '../../../hooks/useDevToken'
 import OnboardingCardButton from '../../OnboardingCardButton'
 
 const providerToLogo = {
-  github: <GithubLogo width={40} />,
-  gitlab: <GitlabLogo width={40} />,
+  github: <GitHubLogoIcon size={40} />,
+  gitlab: <GitLabLogoIcon
+    size={40}
+    fullColor
+  />,
 }
 
 const providerToDisplayName = {

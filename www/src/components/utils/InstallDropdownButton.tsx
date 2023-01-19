@@ -20,8 +20,6 @@ import {
 import { Link } from 'react-router-dom'
 import capitalize from 'lodash/capitalize'
 
-import { Github as GithubLogo, Gitlab as GitlabLogo } from '../shell/icons'
-
 export interface Recipe {
   name: string
   description: string
@@ -53,11 +51,6 @@ export const providerToIconHeight = {
   GCP: 14,
   KIND: 14,
   GENERIC: 14,
-}
-
-export const providerToLogo = {
-  github: <GithubLogo width={40} />,
-  gitlab: <GitlabLogo width={40} />,
 }
 
 const visuallyHideMaintainWidth = {

@@ -30,7 +30,7 @@ import {
   RootQueryType,
   ShellCredentialsAttributes,
 } from '../../../../../generated/graphql'
-import { CLOUD_SHELL_QUERY, CREATE_SHELL_MUTATION, SETUP_SHELL } from '../../../queries'
+import { CLOUD_SHELL_QUERY, CREATE_SHELL_MUTATION, SETUP_SHELL_MUTATION } from '../../../queries'
 import {
   CloudProps,
   CloudProvider,
@@ -139,7 +139,7 @@ function CreateShell() {
     pollInterval: 3000,
   })
 
-  const [setupShell] = useMutation(SETUP_SHELL, {
+  const [setupShell] = useMutation(SETUP_SHELL_MUTATION, {
     onError: error => setError(error),
     onCompleted: () => setSetupShellCompleted(true),
   })

@@ -7,7 +7,7 @@ import { LoopingLogo } from '../../../../../design-system/src'
 import { CloudShell, RootQueryType } from '../../generated/graphql'
 
 import { Onboarding } from './onboarding/Onboarding'
-import { CLOUD_SHELL_QUERY, REBOOT_SHELL_MUTATION, SETUP_SHELL } from './queries'
+import { CLOUD_SHELL_QUERY, REBOOT_SHELL_MUTATION, SETUP_SHELL_MUTATION } from './queries'
 
 import { SectionKey } from './onboarding/context/types'
 import OnboardingCard from './onboarding/OnboardingCard'
@@ -35,7 +35,7 @@ function TerminalBootStatus() {
     nextFetchPolicy: 'network-only',
     initialFetchPolicy: 'network-only',
   })
-  const [setupShell, { error }] = useMutation(SETUP_SHELL)
+  const [setupShell, { error }] = useMutation(SETUP_SHELL_MUTATION)
   const loading = useMemo(() => !shell, [shell])
   const isReady = useMemo(() => (shell?.alive ?? false) && !!shell?.status && Object.values(shell.status).every(s => s), [shell])
 

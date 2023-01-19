@@ -28,7 +28,7 @@ export const CLOUD_SHELL_QUERY = gql`
   ${CloudShellFragment}
 `
 
-export const SETUP_SHELL = gql`
+export const SETUP_SHELL_MUTATION = gql`
   mutation {
     setupShell { id }
   }

@@ -1,5 +1,4 @@
 import { useMutation } from '@apollo/client'
-
 import { Div, Flex, P } from 'honorable'
 import moment from 'moment'
 import {
@@ -22,11 +21,11 @@ import {
 } from '../../generated/graphql'
 import { OnboardingChecklistContext } from '../../contexts/OnboardingChecklistContext'
 import usePaginatedQuery from '../../hooks/usePaginatedQuery'
-import { clearOnboardingChecklistState, isOnboardingChecklistHidden } from '../shell/persistance'
 import { UPDATE_USER } from '../users/queries'
 import InfiniteScroller from '../utils/InfiniteScroller'
 import CurrentUserContext from '../../contexts/CurrentUserContext'
 import { updateUserFragment } from '../../utils/graphql'
+import { clearOnboardingChecklistState, isOnboardingChecklistHidden } from '../../helpers/localStorage'
 
 import { NOTIFICATIONS_QUERY } from './queries'
 

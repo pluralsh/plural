@@ -29,6 +29,7 @@ const EmailConfirmed = lazy(() => import('./components/users/EmailConfirmation')
 const OAuthCallback = lazy(() => import('./components/users/OAuthCallback').then(module => ({ default: module.OAuthCallback })))
 const SSOCallback = lazy(() => import('./components/users/SSOCallback').then(module => ({ default: module.SSOCallback })))
 
+// @ts-expect-error
 const honorableTheme = mergeTheme(theme, {
   global: [
     // This provides the mp spacing props to honorable

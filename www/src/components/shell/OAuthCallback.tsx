@@ -6,8 +6,8 @@ import { LoopingLogo } from '../utils/AnimatedLogo'
 import { useHistory } from '../../router'
 
 import { AUTHENTICATION_URLS_QUERY, SCM_TOKEN_QUERY } from './queries'
-import { useDevToken } from './useDevToken'
-import { Onboarding } from './onboarding_v3/Onboarding'
+import { useDevToken } from './hooks/useDevToken'
+import { Onboarding } from './onboarding/Onboarding'
 
 function OAuthCallback({ provider }: any) {
   const history = useHistory()

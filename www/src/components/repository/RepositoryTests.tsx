@@ -1,3 +1,5 @@
+import 'xterm/css/xterm.css'
+
 import {
   useContext,
   useEffect,
@@ -13,7 +15,6 @@ import {
   P,
   Span,
 } from 'honorable'
-import { XTerm } from 'xterm-for-react'
 import { FitAddon } from 'xterm-addon-fit'
 import {
   ArrowLeftIcon,
@@ -26,6 +27,7 @@ import {
   StatusIpIcon,
   StatusOkIcon,
 } from '@pluralsh/design-system'
+import { Terminal } from 'xterm'
 
 import RepositoryContext from '../../contexts/RepositoryContext'
 import usePaginatedQuery from '../../hooks/usePaginatedQuery'
@@ -73,19 +75,20 @@ async function fetchLogs(
 
 function TestLogs({ step: { id, hasLogs }, testId }: any) {
   const client = useApolloClient()
-  const xterm = useRef<any>(null)
+  const terminalRef = useRef<HTMLDivElement>()
   const fitAddon = useMemo(() => new FitAddon(), [])
+  const terminal = useMemo(() => new Terminal({ theme: XTermTheme, disableStdin: false, rightClickSelectsWord: true }), [])
   const { data } = useSubscription(LOGS_SUB, {
     variables: { testId },
   })
 
   useEffect(() => {
-    if (!xterm?.current?.terminal) return
+    if (!terminalRef?.current) return
 
-    const { current: { terminal } } = xterm
-
-    terminal.setOption('disableStdin', true)
     terminal.loadAddon(fitAddon)
+
+    // Set up the terminal
+    terminal.open(terminalRef.current!)
 
     try {
       fitAddon.fit()
@@ -93,23 +96,24 @@ function TestLogs({ step: { id, hasLogs }, testId }: any) {
     catch (error) {
       console.error(error)
     }
-
-    if (data && data.testLogs && data.testLogs.step.id === id) {
-      for (const l of data.testLogs.logs) {
-        xterm.current.terminal.writeln(l)
-      }
-    }
-  }, [id, data, xterm, fitAddon])
+  }, [terminalRef, fitAddon, terminal])
 
   useEffect(() => {
-    if (!hasLogs || !xterm || !xterm.current || !xterm.current.terminal) return
-    const term = xterm.current.terminal
+    if (data && data.testLogs && data.testLogs.step.id === id) {
+      for (const l of data.testLogs.logs) {
+        terminal.writeln(l)
+      }
+    }
+  }, [data, id, terminal])
 
-    term.clear()
+  useEffect(() => {
+    if (!hasLogs) return
+
+    terminal.clear()
     fetchLogs(
-      client, testId, id, term
+      client, testId, id, terminal
     )
-  }, [hasLogs, client, testId, id, xterm])
+  }, [hasLogs, client, testId, id, terminal])
 
   return (
     <Div
@@ -124,12 +128,9 @@ function TestLogs({ step: { id, hasLogs }, testId }: any) {
         border="1px solid border"
         borderColor="border-fill-two"
       >
-        <XTerm
-          ref={xterm}
-          addons={[fitAddon]}
-          options={{ theme: XTermTheme }}
-          onResize={console.log}
-          onData={console.log}
+        <Div
+          id="terminal"
+          ref={terminalRef}
         />
       </Div>
     </Div>

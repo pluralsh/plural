@@ -13030,7 +13030,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-credit-cards@npm:0.8.3":
+"react-credit-cards@npm:^0.8.3":
   version: 0.8.3
   resolution: "react-credit-cards@npm:0.8.3"
   dependencies:
@@ -16627,7 +16627,7 @@ __metadata:
     react-collapsible: 2.10.0
     react-copy-to-clipboard: 5.1.0
     react-countdown: 2.3.5
-    react-credit-cards: 0.8.3
+    react-credit-cards: ^0.8.3
     react-diff-viewer: 3.1.1
     react-dnd: 16.0.1
     react-dnd-html5-backend: 16.0.1

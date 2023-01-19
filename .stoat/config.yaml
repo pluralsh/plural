@@ -1,0 +1,35 @@
+---
+version: 1
+enabled: true
+plugins:
+  job_runtime:
+    enabled: true
+  static_hosting:
+    api-test-results:
+      path: junit/api.html
+    api-coverage:
+      path: apps/api/cover/excoveralls.html
+    core-test-results:
+      path: junit/core.html
+    core-coverage:
+      path: apps/core/cover/excoveralls.html
+    cron-test-results:
+      path: junit/cron.html
+    cron-coverage:
+      path: apps/cron/cover/excoveralls.html
+    email-test-results:
+      path: junit/email.html
+    email-coverage:
+      path: apps/email/cover/excoveralls.html
+    graphql-test-results:
+      path: junit/graphql.html
+    graphql-coverage:
+      path: apps/graphql/cover/excoveralls.html
+    rtc-test-results:
+      path: junit/rtc.html
+    rtc-coverage:
+      path: apps/rtc/cover/excoveralls.html
+    worker-test-results:
+      path: junit/worker.html
+    worker-coverage:
+      path: apps/worker/cover/excoveralls.html

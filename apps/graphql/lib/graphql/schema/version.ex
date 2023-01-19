@@ -91,6 +91,7 @@ defmodule GraphQl.Schema.Version do
     field :providers,        list_of(:provider)
     field :secrets,          list_of(:string)
     field :provider_vsn,     :string
+    field :cli_vsn,          :string
     field :application,      :boolean
     field :provider_wirings, :map
     field :outputs,          :map

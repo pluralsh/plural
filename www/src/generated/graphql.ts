@@ -24,7 +24,9 @@ export type Account = {
   __typename?: 'Account';
   backgroundColor?: Maybe<Scalars['String']>;
   billingCustomerId?: Maybe<Scalars['String']>;
+  delinquentAt?: Maybe<Scalars['DateTime']>;
   domainMappings?: Maybe<Array<Maybe<DomainMapping>>>;
+  grandfatheredUnitl?: Maybe<Scalars['DateTime']>;
   icon?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
   insertedAt?: Maybe<Scalars['DateTime']>;
@@ -465,6 +467,7 @@ export type Dependencies = {
   __typename?: 'Dependencies';
   application?: Maybe<Scalars['Boolean']>;
   breaking?: Maybe<Scalars['Boolean']>;
+  cliVsn?: Maybe<Scalars['String']>;
   dependencies?: Maybe<Array<Maybe<Dependency>>>;
   instructions?: Maybe<ChangeInstructions>;
   outputs?: Maybe<Scalars['Map']>;
@@ -1304,6 +1307,7 @@ export type LineItemAttributes = {
 };
 
 export enum LineItemDimension {
+  Cluster = 'CLUSTER',
   User = 'USER'
 }
 
@@ -1786,6 +1790,7 @@ export type PlatformMetrics = {
 export type PlatformPlan = {
   __typename?: 'PlatformPlan';
   cost: Scalars['Int'];
+  enterprise?: Maybe<Scalars['Boolean']>;
   features?: Maybe<PlanFeatures>;
   id: Scalars['ID'];
   insertedAt?: Maybe<Scalars['DateTime']>;
@@ -2379,6 +2384,7 @@ export type RootMutationType = {
   deleteInvite?: Maybe<Invite>;
   deleteKeyBackup?: Maybe<KeyBackup>;
   deleteMessage?: Maybe<IncidentMessage>;
+  deletePlatformSubscription?: Maybe<Account>;
   deletePublicKey?: Maybe<PublicKey>;
   deleteReaction?: Maybe<IncidentMessage>;
   deleteRecipe?: Maybe<Recipe>;
@@ -4014,6 +4020,7 @@ export enum TagGroup {
 /** Template engines that can be used at build time. */
 export enum TemplateType {
   Gotemplate = 'GOTEMPLATE',
+  Javascript = 'JAVASCRIPT',
   Lua = 'LUA'
 }
 

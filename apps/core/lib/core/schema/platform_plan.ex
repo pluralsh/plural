@@ -2,7 +2,7 @@ defmodule Core.Schema.PlatformPlan do
   use Piazza.Ecto.Schema
 
   defenum Period, monthly: 0, yearly: 1
-  defenum Dimension, user: 0
+  defenum Dimension, user: 0, cluster: 1
 
   defmodule LineItem do
     use Piazza.Ecto.Schema
@@ -28,12 +28,13 @@ defmodule Core.Schema.PlatformPlan do
   schema "platform_plans" do
     field :name,        :string
     field :visible,     :boolean, default: true
+    field :enterprise,  :boolean
     field :cost,        :integer
     field :period,      Period
     field :external_id, :string
 
     embeds_one :features, Features, on_replace: :update do
-      boolean_fields [:vpn, :user_management]
+      boolean_fields [:vpn, :user_management, :audit]
     end
 
     embeds_many :line_items, LineItem, on_replace: :delete

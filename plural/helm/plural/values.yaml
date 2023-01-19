@@ -35,6 +35,14 @@ configOverlays:
     documentation: id for stripe connect account
     updates:
     - path: ['plural', 'secrets', 'stripe_connect_id']
+- name: stripe-webhook-secret
+  spec:
+    folder: secrets
+    subfolder: stripe
+    name: Stripe Webhook Secret
+    documentation: secret for stripe event webhooks
+    updates:
+    - path: ['plural', 'secrets', 'stripe_webhook_secret']
 - name: zerossl-access-key
   spec:
     folder: secrets
@@ -294,7 +302,7 @@ configOverlays:
     name: shell image
     documentation: the image url for use on cloud shell pods
     updates:
-    - path: ['plural', 'secrets', 'cloud_shell_img']
+    - path: ['plural', 'secrets', 'cloud_shell_img']  
 
 secrets:
   jwt: dummy
@@ -480,6 +488,10 @@ crons:
   cronModule: Prune.Stacks
   crontab: "55 0 * * *"
   envVars: []
+- cronName: plrl-sync-usage
+  cronModule: Task.Usage
+  crontab: "0 0 * * *"
+  envVars: []
 
 hydraSecrets:
   dsn: memory
@@ -512,10 +524,20 @@ hydra:
   maester:
     enabled: false
   hydra:
-    dev: true
+    dev: false
     automigration:
       enabled: false
     config:
+      serve:
+        admin:
+          tls:
+            enabled: false
+        public:
+          tls:
+            enabled: false
+        cookies:
+          same_site_mode: None
+          secure: true
       ttl:
         id_token: 12h
         access_token: 12h
@@ -548,6 +570,9 @@ hydra:
         cert-manager.io/cluster-issuer: letsencrypt-prod
         nginx.ingress.kubernetes.io/force-ssl-redirect: 'true'
         nginx.ingress.kubernetes.io/use-regex: "true"
+        nginx.ingress.kubernetes.io/proxy-connect-timeout: '10'
+        nginx.ingress.kubernetes.io/proxy-read-timeout: '120'
+        nginx.ingress.kubernetes.io/proxy-send-timeout: '120'
   
 chartmuseum:
   resources: {}

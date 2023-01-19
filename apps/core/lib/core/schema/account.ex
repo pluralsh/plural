@@ -9,6 +9,12 @@ defmodule Core.Schema.Account do
     field :workos_connection_id, :string
     field :icon,                 Core.Storage.Type
     field :billing_customer_id,  :string
+    field :delinquent_at,        :utc_datetime_usec
+    field :grandfathered_until,  :utc_datetime_usec
+    field :user_count,           :integer, default: 0
+    field :cluster_count,        :integer, default: 0
+    field :usage_updated,        :boolean
+    field :sa_provisioned,       :boolean
 
     belongs_to :root_user, User
     has_many :domain_mappings, DomainMapping, on_replace: :delete
@@ -17,7 +23,25 @@ defmodule Core.Schema.Account do
     timestamps()
   end
 
-  @valid ~w(name workos_connection_id)a
+  def usage_updated(query \\ __MODULE__) do
+    from(a in query, where: a.usage_updated)
+  end
+
+  def ordered(query \\ __MODULE__, order \\ [asc: :id]) do
+    from(a in query, order_by: ^order)
+  end
+
+  def usage(query \\ __MODULE__) do
+    from(a in query,
+      join: u in Core.Schema.User, on: u.account_id == a.id,
+      left_join: q in Core.Schema.UpgradeQueue, on: q.user_id == u.id,
+      group_by: a.id,
+      select: %{id: a.id, users: count(u.id, :distinct), clusters: count(q.id, :distinct)}
+    )
+  end
+
+  @valid ~w(name workos_connection_id sa_provisioned)a
+  @payment ~w(billing_customer_id)a
 
   def changeset(model, attrs \\ %{}) do
     model
@@ -29,7 +53,7 @@ defmodule Core.Schema.Account do
     |> cast_attachments(attrs, [:icon], allow_urls: true)
   end
 
-  @payment ~w(billing_customer_id)a
+  @payment ~w(billing_customer_id delinquent_at)a
 
   def payment_changeset(model, attrs \\ %{}) do
     model

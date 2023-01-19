@@ -118,6 +118,19 @@ defmodule Core.Services.Upgrades do
     |> notify(:upsert, queue)
   end
 
+  def delete_queue(%UpgradeQueue{} = queue) do
+    start_transaction()
+    |> add_operation(:q, fn _ -> Core.Repo.delete(queue) end)
+    |> add_operation(:account, fn _ ->
+      %{user: user} = Core.Repo.preload(queue, [:user])
+      case Core.PubSub.Consumers.Usage.apply_counts(user.account_id, cluster: -1) do
+        {1, _} -> {:ok, queue}
+        _ -> {:error, :usage_failure}
+      end
+    end)
+    |> execute(extract: :q)
+  end
+
   def create_upgrade(params, %UpgradeQueue{} = queue) do
     %Upgrade{queue_id: queue.id}
     |> Upgrade.changeset(params)

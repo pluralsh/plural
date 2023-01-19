@@ -21,11 +21,17 @@ defmodule Core.Services.Payments do
   @type platform_plan_resp :: {:ok, PlatformPlan.t} | error
   @type platform_sub_resp :: {:ok, PlatformSubcription.t} | error
 
+  @spec get_account(binary) :: Account.t | nil
+  def get_account(cust_id), do: Core.Repo.get_by(Account, billing_customer_id: cust_id)
+
   @spec get_plan!(binary) :: Plan.t
   def get_plan!(id), do: Core.Repo.get!(Plan, id)
 
   @spec get_platform_plan!(binary) :: PlatformPlan.t
   def get_platform_plan!(id), do: Core.Repo.get!(PlatformPlan, id)
+
+  @spec get_platform_plan_by_name!(binary) :: PlatformPlan.t
+  def get_platform_plan_by_name!(name), do: Core.Repo.get_by!(PlatformPlan, name: name)
 
   @spec get_subscription!(binary) :: Subscription.t
   def get_subscription!(id), do: Core.Repo.get!(Subscription, id)
@@ -105,13 +111,36 @@ defmodule Core.Services.Payments do
   def preload(%User{} = user), do: Core.Repo.preload(user, @preloads)
 
   @doc """
+  determine if an account (or a user's account) is currently delinquent
+  """
+  @spec delinquent?(User.t | Account.t) :: boolean
+  def delinquent?(%Account{delinquent_at: at}) when not is_nil(at) do
+    Timex.shift(at, days: 14)
+    |> Timex.before?(Timex.now())
+  end
+  def delinquent?(%User{account: account}), do: delinquent?(account)
+  def delinquent?(_), do: false
+
+  @doc """
+  determine if an account (or a user's account) should be grandfathered into old features
+  """
+  @spec grandfathered?(User.t | Account.t) :: boolean
+  def grandfathered?(%User{account: account}), do: grandfathered?(account)
+  def grandfathered?(%Account{grandfathered_until: at}) when not is_nil(at), do: Timex.after?(at, Timex.now())
+  def grandfathered?(_), do: false
+
+  @doc """
   Determine's if a user's account has access to the given feature.  Returns `true` if enforcement is not enabled yet.
   """
   @spec has_feature?(User.t, atom) :: boolean
   def has_feature?(%User{} = user, feature) do
-    case {enforce?(), preload(user)} do
-      {false, _} -> true
-      {_, %User{account: %Account{subscription: %PlatformSubscription{plan: %PlatformPlan{features: %{^feature => true}}}}}} -> true
+    user = preload(user)
+    case {enforce?(), delinquent?(user), grandfathered?(user), user} do
+      {false, _, _, _} -> true
+      {_, true, _, _} -> false
+      {_, _, true, _} -> true
+      {_, _, _, %User{account: %Account{subscription: %PlatformSubscription{plan: %PlatformPlan{enterprise: true}}}}} -> true
+      {_, _, _, %User{account: %Account{subscription: %PlatformSubscription{plan: %PlatformPlan{features: %{^feature => true}}}}}} -> true
       _ -> false
     end
   end
@@ -119,7 +148,7 @@ defmodule Core.Services.Payments do
   @doc """
   Completes the stripe oauth cycle and persists the account id to the publisher
   """
-  @spec create_publisher_account(Publisher.t, binary) :: {:ok, Publisher.t} | {:error, term}
+  @spec create_publisher_account(Publisher.t, binary) :: {:ok, Publisher.t} | error
   def create_publisher_account(%Publisher{} = publisher, code) do
     with {:ok, %{stripe_user_id: account_id}} <- Stripe.Connect.OAuth.token(code) do
       publisher
@@ -127,6 +156,27 @@ defmodule Core.Services.Payments do
       |> Core.Repo.update()
     end
   end
+
+
+  @doc """
+  Modifies delinquency for an account.  If an account is already delinquent, we don't want to move its timestamp into  the future,
+  so it's ignored.  Otherwise, if it's delinquent, it can always be marked undelinquent, and vice-versa.
+  """
+  @spec toggle_delinquent(binary | Account.t, term) :: {:ok, Account.t} | error
+  def toggle_delinquent(cust_id, deliquent_at \\ Timex.now())
+  def toggle_delinquent(%Account{delinquent_at: del} = account, now) when not is_nil(del) and not is_nil(now),
+    do: {:ok, account}
+  def toggle_delinquent(%Account{} = account, delinquent_at) do
+    account
+    |> Account.payment_changeset(%{delinquent_at: delinquent_at})
+    |> Core.Repo.update()
+  end
+  def toggle_delinquent(nil, _), do: {:error, "account not found"}
+  def toggle_delinquent(id, val) when is_binary(id) do
+    get_account(id)
+    |> toggle_delinquent(val)
+  end
+
 
   @doc """
   Cancels a subscription for a user, and deletes the record in our database
@@ -174,7 +224,7 @@ defmodule Core.Services.Payments do
   @doc """
   Appends a new usage record for the given line item to stripe's api
   """
-  @spec add_usage_record(map, atom, Subscription.t) :: {:ok, term} | {:error, term}
+  @spec add_usage_record(map, atom, Subscription.t) :: {:ok, term} | error
   def add_usage_record(params, dimension, %Subscription{} = sub) do
     %{installation: %{repository: %{publisher: pub}}} = Core.Repo.preload(sub, [installation: [repository: :publisher]])
     timestamp = DateTime.utc_now() |> DateTime.to_unix()
@@ -262,6 +312,44 @@ defmodule Core.Services.Payments do
       |> Core.Repo.update()
     end)
     |> execute(extract: :finalized)
+  end
+
+  def setup_plans() do
+    {:ok, _} = create_platform_plan(%{
+      cost: 0,
+      name: "Pro",
+      period: :monthly,
+      visible: true,
+      features: %{vpn: true, user_management: true, audit: true},
+      line_items: [
+        %{name: "User", dimension: :user, period: :monthly, cost: 4900},
+        %{name: "Cluster", dimension: :cluster, period: :monthly, cost: 39900}
+      ]
+    })
+
+    {:ok, _} =
+      %PlatformPlan{}
+      |> PlatformPlan.changeset(%{
+        cost: 0,
+        name: "Enterprise",
+        period: :monthly,
+        visible: true,
+        enterprise: true,
+        features: %{vpn: true, user_management: true, audit: true},
+        line_items: [
+          %{name: "User", dimension: :user, period: :monthly, cost: 4900}, # these costs are arbitrary, as won't be billed through stripe
+          %{name: "Cluster", dimension: :cluster, period: :monthly, cost: 39900}
+        ]
+      })
+      |> Core.Repo.insert()
+  end
+
+  def setup_enterprise_plan(account_id) do
+    plan = get_platform_plan_by_name!("Enterprise")
+
+    %PlatformSubscription{account_id: account_id}
+    |> PlatformSubscription.changeset(%{plan_id: plan.id})
+    |> Core.Repo.insert()
   end
 
   @doc """
@@ -397,6 +485,34 @@ defmodule Core.Services.Payments do
 
 
   @doc """
+  Cancels a user's subscription in stripe and wipes the reference to it in our db.  This effectively converts the
+  user to OSS
+  """
+  @spec delete_platform_subscription(User.t) :: {:ok, Account.t} | error
+  def delete_platform_subscription(%User{} = user) do
+    start_transaction()
+    |> add_operation(:fetch, fn _ ->
+      case Core.Repo.preload(user, [account: :subscription]) do
+        %{account: %Account{subscription: nil}} -> {:error, "your account has no subscription"}
+        %{account: account} -> {:ok, account}
+      end
+    end)
+    |> add_operation(:db, fn %{fetch: %{subscription: subscription}} ->
+      subscription
+      |> allow(user, :delete)
+      |> when_ok(:delete)
+    end)
+    |> add_operation(:account, fn %{fetch: account} ->
+      Account.payment_changeset(account, %{delinquent_at: nil})
+      |> Core.Repo.update()
+      |> when_ok(&Map.put(&1, :subscription, nil))
+    end)
+    |> add_operation(:stripe, fn %{db: %{external_id: ext_id}} -> Stripe.Subscription.delete(ext_id) end)
+    |> execute(extract: :account)
+    |> notify(:delete)
+  end
+
+  @doc """
   Creates a new subscription for the given plan/installation.  Will
   transactionally create it in stripe (with line items), then persist back
   the stripe data to the subscription.
@@ -496,6 +612,47 @@ defmodule Core.Services.Payments do
   end
   def update_line_item(attrs, subscription_id, user),
     do: update_line_item(attrs, get_subscription!(subscription_id), user)
+
+
+  @doc """
+  Aligns usage with the current counts on the account.  If the account has no platform subscription, just removes the update market
+  """
+  @spec sync_usage(Account.t) :: platform_sub_resp
+  def sync_usage(%Account{
+    user_count: u,
+    cluster_count: c,
+    subscription: %PlatformSubscription{external_id: ext_id} = s,
+    root_user: user
+  } = account) when is_binary(ext_id) do
+    user = Core.Services.Rbac.preload(user)
+
+    start_transaction()
+    |> add_operation(:account, fn _ ->
+      account
+      |> Ecto.Changeset.change(%{usage_updated: false})
+      |> Core.Repo.update()
+    end)
+    |> add_operation(:users, fn _ ->
+      update_platform_line_item(%{dimension: :user, quantity: u}, s, user)
+    end)
+    |> add_operation(:clusters, fn %{users: s} ->
+      update_platform_line_item(%{dimension: :cluster, quantity: c}, s, user)
+    end)
+    |> execute(extract: :clusters)
+  end
+
+  def sync_usage(%Account{subscription: %Ecto.Association.NotLoaded{}} = account) do
+    Core.Repo.preload(account, [:root_user, :subscription])
+    |> sync_usage()
+  end
+
+  def sync_usage(%Account{} = account) do
+    account
+    |> Ecto.Changeset.change(%{usage_updated: false})
+    |> Core.Repo.update()
+  end
+
+
 
   @doc """
   Updates the quantity of a specific line item for a platform plan. Persists the update to stripe transactionally.

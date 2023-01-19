@@ -99,6 +99,7 @@ defmodule GraphQl.Schema.Payments do
     field :visible,        non_null(:boolean)
     field :cost,           non_null(:integer)
     field :period,         non_null(:payment_period)
+    field :enterprise,     :boolean
     field :features,       :plan_features
     field :line_items,     list_of(:platform_plan_item)
 
@@ -315,6 +316,12 @@ defmodule GraphQl.Schema.Payments do
       arg :plan_id, non_null(:id)
 
       safe_resolve &Payments.create_platform_subscription/2
+    end
+
+    field :delete_platform_subscription, :account do
+      middleware Authenticated
+
+      safe_resolve &Payments.delete_platform_subscription/2
     end
 
     field :cancel_platform_subscription, :platform_subscription do

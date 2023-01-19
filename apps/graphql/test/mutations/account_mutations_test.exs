@@ -7,7 +7,7 @@ defmodule GraphQl.AccountMutationTest do
     setup [:setup_root_user]
 
     test "it can create service accounts", %{user: user, account: account} do
-      insert(:platform_subscription, account: account, plan: build(:platform_plan, features: %{user_management: true}))
+      enable_features(account, [:user_management])
       group = insert(:group, account: user.account)
       {:ok, %{data: %{"createServiceAccount" => svc}}} = run_query("""
         mutation createSvcAccount($attributes: ServiceAccountAttributes!) {
@@ -30,6 +30,30 @@ defmodule GraphQl.AccountMutationTest do
 
       assert svc["serviceAccount"]
       assert hd(svc["impersonationPolicy"]["bindings"])["group"]["id"] == group.id
+    end
+
+    test "delinquent accounts cannot create service accounts", %{user: user, account: account} do
+      {:ok, account} = update_record(account, %{delinquent_at: Timex.now() |> Timex.shift(days: -100)})
+      enable_features(account, [:user_management])
+      group = insert(:group, account: user.account)
+      {:ok, %{errors: [_ | _]}} = run_query("""
+        mutation createSvcAccount($attributes: ServiceAccountAttributes!) {
+          createServiceAccount(attributes: $attributes) {
+            id
+            serviceAccount
+            impersonationPolicy {
+              bindings { group { id } }
+            }
+          }
+        }
+      """,
+      %{
+        "attributes" => %{
+          "name" => "svc",
+          "impersonationPolicy" => %{"bindings" => [%{"groupId" => group.id}]}
+        }
+      },
+      %{current_user: Core.Services.Rbac.preload(refetch(user))})
     end
 
     test "it will fail to create service accounts if feature doesn't exist", %{user: user} do
@@ -189,7 +213,7 @@ defmodule GraphQl.AccountMutationTest do
     setup [:setup_root_user]
 
     test "creates a group if feature is enabled", %{user: user, account: account} do
-      insert(:platform_subscription, account: account, plan: build(:platform_plan, features: %{user_management: true}))
+      enable_features(account, [:user_management])
       {:ok, %{data: %{"createGroup" => create}}} = run_query("""
         mutation Create($attributes: GroupAttributes!) {
           createGroup(attributes: $attributes) {
@@ -297,7 +321,7 @@ defmodule GraphQl.AccountMutationTest do
     setup [:setup_root_user]
 
     test "it can create roles", %{user: user, account: account} do
-      insert(:platform_subscription, account: account, plan: build(:platform_plan, features: %{user_management: true}))
+      enable_features(account, [:user_management])
       {:ok, %{data: %{"createRole" => create}}} = run_query("""
         mutation Create($attributes: RoleAttributes!) {
           createRole(attributes: $attributes) {

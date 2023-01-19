@@ -74,15 +74,22 @@ config :core, Core.Email.Mailer,
 
 config :core, Core.PartitionedCache,
   primary: [
-    gc_interval: :timer.seconds(3600),
-    backend: :shards,
+    gc_interval: :timer.hours(1),
     partitions: 2,
     allocated_memory: 1000 * 1000 * 500
   ]
 
 config :core, Core.Cache,
   local: Core.Cache.Local,
-  node_selector: Nebulex.Adapters.Dist
+  node_selector: Nebulex.Adapters.Dist,
+  primary: [
+    gc_interval: :timer.hours(1),
+    partitions: 2,
+    allocated_memory: 1000 * 1000 * 500
+  ],
+  gc_interval: :timer.hours(1),
+  partitions: 2,
+  allocated_memory: 1000 * 1000 * 500
 
 config :core, Core.Conduit.Broker,
   adapter: ConduitAMQP,
@@ -128,7 +135,8 @@ config :core,
   gcp_identity: "someone@example.com",
   vault: "https://vault.plural.sh:443",
   docker_env: [],
-  openai_token: "openai"
+  openai_token: "openai",
+  stripe_webhook_secret: "bogus"
 
 config :briefly,
   directory: [{:system, "TMPDIR"}, {:system, "TMP"}, {:system, "TEMP"}, "/tmp"],
@@ -159,5 +167,9 @@ config :worker,
   demo_interval: 10,
   rollout_interval: 10,
   docker_interval: 60
+
+config :junit_formatter,
+  print_report_file: true,
+  automatic_create_dir?: true
 
 import_config "#{config_env()}.exs"

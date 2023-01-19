@@ -156,6 +156,19 @@ jobs:
           restore-keys: ${{ runner.os }}-mix-6
       - run: mix deps.get
       - run: mix test
+      - run: mix coveralls.html
+      - run: pip3 install ansi2html junit2html
+      - run: mkdir junit
+      - run: junit2html _build/test/lib/api/test-junit-report.xml junit/api.html
+      - run: junit2html _build/test/lib/core/test-junit-report.xml junit/core.html
+      - run: junit2html _build/test/lib/cron/test-junit-report.xml junit/cron.html
+      - run: junit2html _build/test/lib/graphql/test-junit-report.xml junit/graphql.html
+      - run: junit2html _build/test/lib/email/test-junit-report.xml junit/email.html
+      - run: junit2html _build/test/lib/rtc/test-junit-report.xml junit/rtc.html
+      - run: junit2html _build/test/lib/worker/test-junit-report.xml junit/worker.html
+      - name: Run stoat action
+        uses: stoat-dev/stoat-action@v0
+        if: always()
       - uses: 8398a7/action-slack@v3
         with:
           status: ${{ job.status }}

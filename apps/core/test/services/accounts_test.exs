@@ -22,6 +22,15 @@ defmodule Core.Services.AccountsTest do
 
       assert binding.group_id == group.id
 
+      %{groups: [group], group_role_bindings: [%{role: role}]} = Core.Services.Rbac.preload(srv_acct)
+
+      assert group.name == "service-accounts"
+      assert group.account_id == srv_acct.account_id
+      assert role.name == "service-accounts"
+      assert role.permissions.install
+
+      assert refetch(user.account).sa_provisioned
+
       assert_receive {:event, %PubSub.UserCreated{item: ^srv_acct}}
     end
 

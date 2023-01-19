@@ -1,5 +1,6 @@
 defmodule GraphQl.Schema.Audit do
   use GraphQl.Schema.Base
+  alias GraphQl.Middleware.Differentiate
   alias GraphQl.Resolvers.{Audit, User, Repository, Version, Account, Docker}
 
   object :audit do
@@ -34,12 +35,14 @@ defmodule GraphQl.Schema.Audit do
   object :audit_queries do
     connection field :audits, node_type: :audit do
       middleware Authenticated
+      middleware Differentiate, feature: :audit
 
       resolve &Audit.list_audits/2
     end
 
     field :audit_metrics, list_of(:geo_metric) do
       middleware Authenticated
+      middleware Differentiate, feature: :audit
 
       resolve &Audit.audit_metrics/2
     end

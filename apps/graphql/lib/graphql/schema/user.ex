@@ -6,7 +6,7 @@ defmodule GraphQl.Schema.User do
     Payments,
     Account
   }
-  alias GraphQl.Middleware.{Authenticated, AllowJwt, RateLimit}
+  alias GraphQl.Middleware.{Authenticated, AllowJwt, RateLimit, Differentiate}
 
   ecto_enum :notification_type, Schema.Notification.Type
   ecto_enum :reset_token_type, Schema.ResetToken.Type
@@ -172,10 +172,12 @@ defmodule GraphQl.Schema.User do
     field :token, :string
 
     connection field :audits, node_type: :persisted_token_audit do
+      middleware Differentiate, feature: :audit
       resolve &User.list_token_audits/2
     end
 
     field :metrics, list_of(:geo_metric) do
+      middleware Differentiate, feature: :audit
       resolve &User.audit_metrics/2
     end
 

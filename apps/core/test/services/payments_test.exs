@@ -451,6 +451,41 @@ defmodule Core.Services.PaymentsTest do
     end
   end
 
+  describe "#sync_usage/1" do
+    setup [:setup_root_user]
+    test "if the account is on no plan, it'll just de-mark" do
+      account = insert(:account, usage_updated: true)
+
+      {:ok, up} = Payments.sync_usage(account)
+
+      assert up.id == account.id
+      refute up.usage_updated
+    end
+
+    test "if the account is on a platform plan, it will update", %{account: account} do
+      {:ok, account} = Ecto.Changeset.change(account, %{cluster_count: 2, user_count: 3})
+                       |> Core.Repo.update()
+      subscription = insert(:platform_subscription, external_id: "ext_id", account: account, line_items: [
+        %{id: Ecto.UUID.generate(), external_id: "si_1", quantity: 1, dimension: :user},
+        %{id: Ecto.UUID.generate(), external_id: "si_2", quantity: 0, dimension: :cluster},
+      ])
+
+      expect(Stripe.SubscriptionItem, :update, 2, fn
+        "si_1", %{quantity: 3} -> {:ok, %{}}
+        "si_2", %{quantity: 2} -> {:ok, %{}}
+      end)
+
+      {:ok, updated} = Payments.sync_usage(account)
+
+      assert updated.id == subscription.id
+
+      %{user: user, cluster: cluster} = Enum.into(updated.line_items, %{}, & {&1.dimension, &1})
+
+      assert user.quantity == 3
+      assert cluster.quantity == 2
+    end
+  end
+
   describe "#update_platform_plan/3" do
     test "users can change platform plans" do
       expect(Stripe.Subscription, :update, fn
@@ -500,6 +535,94 @@ defmodule Core.Services.PaymentsTest do
       assert user.id
       assert user.external_id == "user_id"
       assert user.quantity == 1
+    end
+  end
+
+  describe "#has_feature?/2" do
+    test "if a user's plan has a feature, then it returns true" do
+      account = insert(:account)
+      enable_features(account, [:user_management])
+      user = insert(:user, account: account)
+      assert Payments.has_feature?(user, :user_management)
+    end
+
+    test "if a user's plan is enterprise, it get's any feature" do
+      account = insert(:account)
+      insert(:platform_subscription, account: account, plan: build(:platform_plan, enterprise: true, features: %{user_management: false}))
+      user = insert(:user, account: account)
+      assert Payments.has_feature?(user, :user_management)
+    end
+
+    test "if a user's account is grandfathered, then it returns true" do
+      account = insert(:account, grandfathered_until: Timex.now() |> Timex.shift(days: 1))
+      insert(:platform_subscription, account: account, plan: build(:platform_plan, features: %{user_management: false}))
+      user = insert(:user, account: account)
+      assert Payments.has_feature?(user, :user_management)
+
+      account = insert(:account, grandfathered_until: Timex.now() |> Timex.shift(days: -1))
+      insert(:platform_subscription, account: account, plan: build(:platform_plan, features: %{user_management: false}))
+      user = insert(:user, account: account)
+      refute Payments.has_feature?(user, :user_management)
+    end
+
+    test "if a user's account is delinquent then it returns false" do
+      account = insert(:account, delinquent_at: Timex.now() |> Timex.shift(days: -100))
+      insert(:platform_subscription, account: account, plan: build(:platform_plan, features: %{user_management: true}))
+      user = insert(:user, account: account)
+      refute Payments.has_feature?(user, :user_management)
+
+      account = insert(:account, delinquent_at: Timex.now())
+      insert(:platform_subscription, account: account, plan: build(:platform_plan, features: %{user_management: true}))
+      user = insert(:user, account: account)
+      assert Payments.has_feature?(user, :user_management)
+    end
+
+    test "if a user's account has no plan it returns false" do
+      account = insert(:account)
+      user = insert(:user, account: account)
+      refute Payments.has_feature?(user, :user_management)
+    end
+
+    test "if a user's account is doesn't have the feature, then it returns false" do
+      account = insert(:account)
+      insert(:platform_subscription, account: account, plan: build(:platform_plan, features: %{user_management: false}))
+      user = insert(:user, account: account)
+      refute Payments.has_feature?(user, :user_management)
+    end
+  end
+
+  describe "#delete_platform_subscription/1" do
+    setup [:setup_root_user]
+    test "it will delete in stripe and db", %{user: user, account: account} do
+      sub = insert(:platform_subscription, account: account, external_id: "ext_id")
+      expect(Stripe.Subscription, :delete, fn "ext_id" -> {:ok, %{}} end)
+
+      {:ok, deleted} = Payments.delete_platform_subscription(user)
+
+      assert deleted.id == account.id
+      refute deleted.subscription
+
+      refute refetch(sub)
+    end
+
+    test "users w/o perms cannot delete", %{account: account} do
+      insert(:platform_subscription, account: account, external_id: "ext_id")
+      user = insert(:user, account: account)
+
+      {:error, _} = Payments.delete_platform_subscription(user)
+    end
+  end
+
+  describe "#setup_enterprise_plan/1" do
+    test "will add an account to the current enterprise plan" do
+      account = insert(:account)
+      plan = insert(:platform_plan, name: "Enterprise")
+
+      {:ok, subscription} = Payments.setup_enterprise_plan(account.id)
+
+      assert subscription.account_id == account.id
+      assert subscription.plan_id == plan.id
+      refute subscription.external_id
     end
   end
 

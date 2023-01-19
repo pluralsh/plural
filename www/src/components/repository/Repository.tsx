@@ -1,8 +1,14 @@
 import { useQuery } from '@apollo/client'
 import { useRef } from 'react'
-import { Outlet, useParams, useSearchParams } from 'react-router-dom'
-import { Flex } from 'honorable'
-import { TabPanel } from '@pluralsh/design-system'
+import {
+  Link,
+  Outlet,
+  useParams,
+  useSearchParams,
+} from 'react-router-dom'
+import { Flex, P } from 'honorable'
+import { Button, TabPanel } from '@pluralsh/design-system'
+import { validate as uuidValidate } from 'uuid'
 
 import { GoBack } from '../utils/GoBack'
 
@@ -26,11 +32,11 @@ import { REPOSITORY_QUERY } from './queries'
 function Repository() {
   const { name } = useParams()
   const [searchParams] = useSearchParams()
-  const { data } = useQuery(REPOSITORY_QUERY, { variables: { name } })
+  const { data, loading } = useQuery(REPOSITORY_QUERY, { variables: uuidValidate(name ?? '') ? { repositoryId: name } : { name } })
   const backStackName = searchParams.get('backStackName')
   const tabStateRef = useRef<any>(null)
 
-  if (!data) {
+  if (loading) {
     return (
       <Flex
         // These mp values are to align the looping logo with the previous looping logo.
@@ -41,6 +47,26 @@ function Repository() {
         justify="center"
       >
         <LoopingLogo />
+      </Flex>
+    )
+  }
+
+  if (!data || !data.repository) {
+    return (
+      <Flex
+        direction="column"
+        align="center"
+        justify="center"
+        height="100%"
+      >
+        <P body2>Repository not found.</P>
+        <Button
+          mt="medium"
+          as={Link}
+          to="/marketplace"
+        >
+          Go to the marketplace
+        </Button>
       </Flex>
     )
   }

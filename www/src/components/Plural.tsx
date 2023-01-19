@@ -102,13 +102,13 @@ function EditBilling(props) {
 }
 
 function WrapStripe({ children }: any) {
-  const { stripePublishableKey, stripeConnectId } = useContext(PluralConfigurationContext)
+  const { stripePublishableKey } = useContext(PluralConfigurationContext)
 
   const stripe = useMemo(() => loadStripe(stripePublishableKey), [stripePublishableKey])
 
   if (!stripePublishableKey) return children
 
-  const options = { clientSecret: stripeConnectId }
+  const options = { }
 
   return (
     <Elements

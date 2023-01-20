@@ -9,6 +9,7 @@ import {
 
 import { useDevToken } from '../../../hooks/useDevToken'
 import OnboardingCardButton from '../../OnboardingCardButton'
+import useOnboarded from '../../../hooks/useOnboarded'
 
 const providerToLogo = {
   github: <GitHubLogoIcon size={40} />,
@@ -25,6 +26,7 @@ const providerToDisplayName = {
 
 function ProviderSelection({ data }) {
   const devToken = useDevToken()
+  const { fresh: isOnboarding, mutation } = useOnboarded()
   const [expanded, setExpanded] = useState(false)
 
   return (
@@ -78,14 +80,20 @@ function ProviderSelection({ data }) {
         We manage your cluster's state using Git, lorem ipsum dolor ist amet consectutor.
       </Callout>
 
-      <Flex
-        gap="medium"
-        justify="space-between"
-        borderTop="1px solid border"
-        paddingTop="large"
-      >
-        <Button secondary>Skip onboarding</Button>
-      </Flex>
+      {isOnboarding && (
+        <Flex
+          gap="medium"
+          justify="space-between"
+          borderTop="1px solid border"
+          paddingTop="large"
+        >
+          <Button
+            secondary
+            onClick={() => mutation()}
+          >Skip onboarding
+          </Button>
+        </Flex>
+      )}
     </Flex>
   )
 }

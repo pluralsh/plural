@@ -1,4 +1,9 @@
-import { Div, Flex, Text } from 'honorable'
+import {
+  Div,
+  Flex,
+  Span,
+  Text,
+} from 'honorable'
 
 import OnboardingCardButton from '../../OnboardingCardButton'
 
@@ -15,7 +20,10 @@ function CloudOption({
       selected={selected}
       {...props}
     >
-      <Flex direction="column">
+      <Flex
+        direction="column"
+        gap="xxsmall"
+      >
         <Div
           marginHorizontal="auto"
           maxWidth={40}
@@ -24,19 +32,19 @@ function CloudOption({
         >
           {icon}
         </Div>
-        <Text
+        <Span
           body1
           bold
-          marginTop="medium"
+          marginTop="small"
         >
           {header}
-        </Text>
-        <Text
+        </Span>
+        <Span
           caption
           color="text-light"
         >
           {description}
-        </Text>
+        </Span>
       </Flex>
     </OnboardingCardButton>
   )

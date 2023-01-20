@@ -113,6 +113,7 @@ const install = async (client: ApolloClient<unknown>, apps: Array<WizardStepConf
 
   const configuration = apps.reduce((acc, app) => ({ ...acc, [app.label!]: toAPIContext(app.data?.context || {}) }), {})
 
+  // TODO: get domains and buckets for validation
   return client.mutate({
     mutation: INSTALL_STACK_SHELL_MUTATION,
     variables: { name: quickStack.name, oidc: true, context: { configuration: JSON.stringify(configuration), domains: [], buckets: [] } },

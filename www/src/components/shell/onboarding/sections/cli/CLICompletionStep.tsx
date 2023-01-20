@@ -3,9 +3,14 @@ import { A, Flex, P } from 'honorable'
 import { useState } from 'react'
 
 import { Button, Checkbox, Codeline } from '@pluralsh/design-system'
+import { useNavigate } from 'react-router-dom'
+
+import useOnboarded from '../../../hooks/useOnboarded'
 
 function CliCompletion({ onBack }) {
   const [completed, setCompleted] = useState(false)
+  const navigate = useNavigate()
+  const { mutation } = useOnboarded()
 
   return (
     <>
@@ -54,8 +59,7 @@ function CliCompletion({ onBack }) {
         </Button>
         <Button
           disabled={!completed}
-          onClick={() => {
-          }}
+          onClick={() => mutation().then(() => navigate('/marketplace'))}
         >Continue to app
         </Button>
       </Flex>

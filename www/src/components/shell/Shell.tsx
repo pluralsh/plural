@@ -1,18 +1,16 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { useMutation, useQuery } from '@apollo/client'
 import { Flex } from 'honorable'
-
-import { LoopingLogo } from '../../../../../design-system/src'
+import { ApolloError } from '@apollo/client/errors'
+import { LoopingLogo } from '@pluralsh/design-system'
 
 import { CloudShell, RootQueryType } from '../../generated/graphql'
+import { ResponsiveLayoutContentContainer, ResponsiveLayoutSpacer } from '../layout/ResponsiveLayout'
 
 import { Onboarding } from './onboarding/Onboarding'
 import { CLOUD_SHELL_QUERY, REBOOT_SHELL_MUTATION, SETUP_SHELL_MUTATION } from './queries'
-
-import { SectionKey } from './onboarding/context/types'
 import OnboardingCard from './onboarding/OnboardingCard'
 import { ShellStatus } from './onboarding/sections/shell/ShellStatus'
-
 import Content from './terminal/Content'
 
 function Loading() {
@@ -28,8 +26,7 @@ function Loading() {
 }
 
 function TerminalBootStatus() {
-  const [validated, setValidated] = useState(false)
-  const { data: { shell } = {} } = useQuery<Pick<RootQueryType, 'shell'>>(CLOUD_SHELL_QUERY, {
+  const { data: { shell } = {}, stopPolling } = useQuery<Pick<RootQueryType, 'shell'>>(CLOUD_SHELL_QUERY, {
     pollInterval: 5000,
     fetchPolicy: 'network-only',
     nextFetchPolicy: 'network-only',
@@ -40,28 +37,32 @@ function TerminalBootStatus() {
   const isReady = useMemo(() => (shell?.alive ?? false) && !!shell?.status && Object.values(shell.status).every(s => s), [shell])
 
   useEffect(() => {
-    if (isReady) {
-      setupShell().finally(() => setValidated(true))
-    }
+    if (isReady) setupShell()
   }, [isReady, setupShell])
+
+  useEffect(() => {
+    if (isReady && !error) stopPolling()
+  }, [isReady, error, stopPolling])
 
   if (loading) {
     return <Loading />
   }
 
-  if (!isReady || !validated || error) {
+  if (!isReady || error) {
     return (
-      <Onboarding
-        active={SectionKey.CREATE_CLOUD_SHELL}
-      >
-        <OnboardingCard mode="Creating">
-          <ShellStatus
-            shell={shell as CloudShell}
-            error={error}
-            loading
-          />
-        </OnboardingCard>
-      </Onboarding>
+      <Flex marginTop="xxxlarge">
+        <ResponsiveLayoutSpacer />
+        <ResponsiveLayoutContentContainer>
+          <OnboardingCard mode="Creating">
+            <ShellStatus
+              shell={shell as CloudShell}
+              error={error}
+              loading
+            />
+          </OnboardingCard>
+        </ResponsiveLayoutContentContainer>
+        <ResponsiveLayoutSpacer />
+      </Flex>
     )
   }
 

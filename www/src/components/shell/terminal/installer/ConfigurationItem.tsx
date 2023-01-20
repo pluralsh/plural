@@ -119,7 +119,8 @@ export function ConfigurationItem({
   config, ctx, setValue,
 }) {
   const isInt = config.type === ConfigurationType.INT
-  const isPassword = config.type === ConfigurationType.PASSWORD
+  const renderAsPassword = ['private_key', 'public_key']
+  const isPassword = config.type === ConfigurationType.PASSWORD || renderAsPassword.includes(config.name)
 
   switch (config.type) {
   case ConfigurationType.BOOL:

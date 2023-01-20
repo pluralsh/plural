@@ -37,7 +37,7 @@ import {
 import { getPreviousUserData } from '../../helpers/authentication'
 import { handlePreviousUserClick } from '../login/CurrentUser'
 import CurrentUserContext from '../../contexts/CurrentUserContext'
-import { useIsCurrentlyOnboarding } from '../shell/onboarding/useOnboarded'
+import { useIsCurrentlyOnboarding } from '../shell/hooks/useOnboarded'
 
 import CreatePublisherModal from '../publisher/CreatePublisherModal'
 

@@ -7,6 +7,8 @@ import { ResponsiveLayoutContentContainer, ResponsiveLayoutSidenavContainer, Res
 import { useDevTokenInputSecretCode } from '../hooks/useDevToken'
 import { AuthorizationUrl, RootQueryType, ScmProvider } from '../../../generated/graphql'
 
+import useOnboarded from '../hooks/useOnboarded'
+
 import OnboardingHeader from './OnboardingHeader'
 import OnboardingSidenav from './OnboardingSidenav'
 import { OnboardingFlow } from './OnboardingFlow'
@@ -27,6 +29,7 @@ function Onboarding({ active, children }: Partial<OnboardingProps>) {
   const theme = useTheme()
   const { section, setSection } = useSection(active)
   const navigate = useNavigate()
+  const { fresh: isOnboarding } = useOnboarded()
 
   return (
     <Flex
@@ -36,7 +39,7 @@ function Onboarding({ active, children }: Partial<OnboardingProps>) {
       alignItems="center"
       overflowY="auto"
     >
-      <OnboardingHeader onRestart={() => navigate('/shell')} />
+      {isOnboarding && <OnboardingHeader onRestart={() => navigate('/shell')} />}
       <Flex
         position="relative"
         width="100%"

@@ -3,9 +3,8 @@ import 'xterm/css/xterm.css'
 
 import { Buffer } from 'buffer'
 
-import { Button, Div, Flex } from 'honorable'
+import { Div, Flex } from 'honorable'
 import {
-  ReactElement,
   useCallback,
   useContext,
   useEffect,
@@ -16,69 +15,13 @@ import {
 import { Terminal as XTerm } from 'xterm'
 import { FitAddon } from 'xterm-addon-fit'
 import { useResizeDetector } from 'react-resize-detector'
-import {
-  CliIcon,
-  MoreIcon,
-  ToolIcon,
-  Tooltip,
-} from '@pluralsh/design-system'
 
-import { normalizedThemes } from '../theme/themes'
 import { socket } from '../../../helpers/client'
-import { TerminalThemeSelector } from '../theme/Selector'
-import { TerminalThemeContext } from '../theme/context'
 
-interface ActionBarItemProps {
-  tooltip?: string,
-  icon?: ReactElement,
-  children?: ReactElement
-}
-
-function ActionBarItem({ tooltip, icon, children }: ActionBarItemProps) {
-  const content = icon ? (
-    <Button
-      width={32}
-      height={32}
-      small
-      secondary
-    >{icon}
-    </Button>
-  ) : children
-
-  return (
-    <>
-      {tooltip && (
-        <Tooltip label={tooltip}>
-          <div>{content}</div>
-        </Tooltip>
-      )}
-      {!tooltip && content}
-    </>
-  )
-}
-
-function ActionBar() {
-  return (
-    <Flex
-      height={64}
-      gap="small"
-      align="center"
-      justify="flex-end"
-      marginRight="medium"
-    >
-      <ActionBarItem
-        tooltip="Repair Viewport"
-        icon={<ToolIcon />}
-      />
-      <ActionBarItem tooltip="Shell Theme"><TerminalThemeSelector /></ActionBarItem>
-      <ActionBarItem
-        tooltip="CLI Cheat Sheet"
-        icon={<CliIcon />}
-      />
-      <ActionBarItem icon={<MoreIcon />} />
-    </Flex>
-  )
-}
+import { normalizedThemes } from './theme/themes'
+import { TerminalThemeContext } from './theme/context'
+import { State, TerminalContext } from './context/terminal'
+import { ActionBar } from './actionbar/ActionBar'
 
 const decodeBase64 = str => Buffer.from(str, 'base64').toString('utf-8')
 const SHELL_CHANNEL_NAME = 'shells:me'
@@ -102,8 +45,9 @@ const resize = (fitAddon: FitAddon, channel: any, terminal: XTerm) => {
 function Terminal({ provider }) {
   const terminalRef = useRef<HTMLElement>()
   const { theme } = useContext(TerminalThemeContext)
+  const { state, setState } = useContext(TerminalContext)
 
-  const [channel, setChannel] = useState()
+  const [channel, setChannel] = useState<any>()
   const [loaded, setLoaded] = useState(false)
 
   const terminal = useMemo(() => new XTerm({ cursorBlink: true, theme: normalizedThemes[theme] }), [theme])
@@ -158,12 +102,21 @@ function Terminal({ provider }) {
     if (loaded) resize(fitAddon, channel, terminal)
   }, [loaded])
 
+  useEffect(() => {
+    if (state === State.Installed && channel) {
+      const cmd = 'plural build && plural deploy\r'
+
+      channel.push(ChannelEvent.OnData, { cmd })
+      setState(State.New)
+    }
+  }, [state, setState, terminal, channel])
+
   return (
     <Flex
       flexGrow={1}
       flexDirection="column"
     >
-      <ActionBar />
+      <ActionBar onRepairViewport={onResize} />
       <Flex
         ref={terminalContainerRef}
         overflow="hidden"

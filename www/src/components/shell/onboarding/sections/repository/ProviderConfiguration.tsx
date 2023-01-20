@@ -94,7 +94,7 @@ function RepositoryInput({ orgs }: any) {
   const { scm, setSCM, setValid } = useContext(OnboardingContext)
   const maxLen = 100
   const setName = useCallback((name: string) => setSCM({ ...scm, repositoryName: name }), [setSCM, scm])
-  const isValid = useMemo(() => !!scm?.repositoryName?.length && !isAlphanumeric(scm?.repositoryName), [scm])
+  const isValid = useMemo(() => !!scm?.repositoryName?.length && isAlphanumeric(scm?.repositoryName), [scm])
 
   useEffect(() => setValid(isValid), [isValid, setValid])
 

@@ -1,11 +1,17 @@
-import { Dispatch, useCallback, useContext } from 'react'
+import {
+  Dispatch,
+  useCallback,
+  useContext,
+  useEffect,
+} from 'react'
 
 import {
   CloudIcon,
+  GitMerge,
   ListIcon,
-  NetworkInterfaceIcon,
   PackageIcon,
   TerminalIcon,
+  WorkspaceIcon,
 } from '@pluralsh/design-system'
 
 import { OnboardingContext } from './onboarding'
@@ -22,13 +28,13 @@ import {
 const defaultSections = (): Sections => {
   const sections: Sections = {
     [SectionKey.CREATE_REPOSITORY]: {
-      index: 0, key: SectionKey.CREATE_REPOSITORY, title: 'Create a repository', IconComponent: PackageIcon,
+      index: 0, key: SectionKey.CREATE_REPOSITORY, title: 'Create a repository', IconComponent: GitMerge,
     },
     [SectionKey.CONFIGURE_CLOUD]: {
       index: 1, key: SectionKey.CONFIGURE_CLOUD, title: 'Configure cloud', IconComponent: CloudIcon,
     },
     [SectionKey.CONFIGURE_WORKSPACE]: {
-      index: 2, key: SectionKey.CONFIGURE_WORKSPACE, title: 'Configure workspace', IconComponent: NetworkInterfaceIcon,
+      index: 2, key: SectionKey.CONFIGURE_WORKSPACE, title: 'Configure workspace', IconComponent: WorkspaceIcon,
     },
     [SectionKey.CREATE_CLOUD_SHELL]: {
       index: 3, key: SectionKey.CREATE_CLOUD_SHELL, title: 'Create cloud shell', IconComponent: TerminalIcon,
@@ -88,7 +94,9 @@ const useToken = (): string | undefined => {
 const useSection = (key?: SectionKey) => {
   const { section, setSection, sections } = useContext(OnboardingContext)
 
-  if (key) setSection(sections[key]!)
+  useEffect(() => {
+    if (key) setSection(sections[key]!)
+  }, [key, sections, setSection])
 
   return {
     section,

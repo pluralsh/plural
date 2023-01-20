@@ -1,12 +1,10 @@
 import { Flex } from 'honorable'
-
 import {
   useContext,
   useEffect,
   useMemo,
   useState,
 } from 'react'
-
 import { Button, Callout } from '@pluralsh/design-system'
 
 import { useCloudType, usePath } from '../../context/hooks'

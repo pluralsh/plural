@@ -19,7 +19,9 @@ import {
   WizardStepper,
 } from '@pluralsh/design-system'
 
-import { TerminalContext } from '../context/terminal'
+import { State, TerminalContext } from '../context/terminal'
+
+import useOnboarded from '../../hooks/useOnboarded'
 
 import { APPLICATIONS_QUERY } from './queries'
 import { buildSteps, install, toDefaultSteps } from './helpers'
@@ -28,7 +30,8 @@ const FILTERED_APPS = ['bootstrap', 'ingress-nginx', 'postgres']
 
 function Installer() {
   const client = useApolloClient()
-  const { shell: { provider }, configuration } = useContext(TerminalContext)
+  const { mutation } = useOnboarded()
+  const { shell: { provider }, configuration, setState } = useContext(TerminalContext)
   const onResetRef = useRef<{onReset: Dispatch<void>}>({ onReset: () => {} })
   const [selectedApplications, setSelectedApplications] = useState<Array<WizardStepConfig>>([])
   const [stepsLoading, setStepsLoading] = useState(false)
@@ -48,10 +51,12 @@ function Installer() {
       .then(() => {
         onResetRef?.current?.onReset()
         setVisible(false)
+        setState(State.Installed)
+        mutation()
       })
       .catch(err => console.error(err))
       .finally(() => setStepsLoading(false))
-  }, [client, provider])
+  }, [client, provider, setState])
 
   useEffect(() => {
     const build = async () => {

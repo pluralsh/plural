@@ -47,5 +47,15 @@ export const normalizedThemes = Object.entries({ ...themes, [DEFAULT_THEME_NAME]
   .reduce((acc, [key, theme]) => ({ ...acc, [key.toLowerCase()]: theme }), {})
 export const themeNames = Object.keys(normalizedThemes)
 
-export const getTheme = () => localStorage.getItem(THEME_KEY)
+export const getTheme = () => {
+  const themeName = localStorage.getItem(THEME_KEY) || DEFAULT_THEME_NAME
+  const theme = normalizedThemes[themeName]
+
+  if (theme) return themeName
+
+  setTheme(DEFAULT_THEME_NAME)
+
+  return DEFAULT_THEME_NAME
+}
+
 export const setTheme = name => localStorage.setItem(THEME_KEY, name)

@@ -333,6 +333,44 @@ export type CloudShellAttributes = {
   workspace: WorkspaceAttributes;
 };
 
+export type Cluster = {
+  __typename?: 'Cluster';
+  account?: Maybe<Account>;
+  consoleUrl?: Maybe<Scalars['String']>;
+  domain?: Maybe<Scalars['String']>;
+  gitUrl?: Maybe<Scalars['String']>;
+  id: Scalars['ID'];
+  insertedAt?: Maybe<Scalars['DateTime']>;
+  name: Scalars['String'];
+  owner?: Maybe<User>;
+  pingedAt?: Maybe<Scalars['DateTime']>;
+  provider: Provider;
+  queue?: Maybe<UpgradeQueue>;
+  source?: Maybe<Source>;
+  updatedAt?: Maybe<Scalars['DateTime']>;
+};
+
+export type ClusterAttributes = {
+  consoleUrl?: InputMaybe<Scalars['String']>;
+  domain?: InputMaybe<Scalars['String']>;
+  gitUrl?: InputMaybe<Scalars['String']>;
+  name: Scalars['String'];
+  provider: Provider;
+  source?: InputMaybe<Source>;
+};
+
+export type ClusterConnection = {
+  __typename?: 'ClusterConnection';
+  edges?: Maybe<Array<Maybe<ClusterEdge>>>;
+  pageInfo: PageInfo;
+};
+
+export type ClusterEdge = {
+  __typename?: 'ClusterEdge';
+  cursor?: Maybe<Scalars['String']>;
+  node?: Maybe<Cluster>;
+};
+
 export type ClusterInformation = {
   __typename?: 'ClusterInformation';
   gitCommit?: Maybe<Scalars['String']>;
@@ -1958,6 +1996,7 @@ export type Recipe = {
   id: Scalars['ID'];
   insertedAt?: Maybe<Scalars['DateTime']>;
   name: Scalars['String'];
+  oidcEnabled?: Maybe<Scalars['Boolean']>;
   oidcSettings?: Maybe<OidcSettings>;
   private?: Maybe<Scalars['Boolean']>;
   provider?: Maybe<Provider>;
@@ -2335,6 +2374,7 @@ export type RootMutationType = {
   completeIncident?: Maybe<Incident>;
   createArtifact?: Maybe<Artifact>;
   createCard?: Maybe<Account>;
+  createCluster?: Maybe<Cluster>;
   createCrd?: Maybe<Crd>;
   createDemoProject?: Maybe<DemoProject>;
   createDnsRecord?: Maybe<DnsRecord>;
@@ -2372,6 +2412,7 @@ export type RootMutationType = {
   createZoom?: Maybe<ZoomMeeting>;
   deleteCard?: Maybe<Account>;
   deleteChartInstallation?: Maybe<ChartInstallation>;
+  deleteCluster?: Maybe<Cluster>;
   deleteDemoProject?: Maybe<DemoProject>;
   deleteDnsRecord?: Maybe<DnsRecord>;
   deleteDomain?: Maybe<DnsDomain>;
@@ -2492,6 +2533,11 @@ export type RootMutationTypeCreateArtifactArgs = {
 
 export type RootMutationTypeCreateCardArgs = {
   source: Scalars['String'];
+};
+
+
+export type RootMutationTypeCreateClusterArgs = {
+  attributes: ClusterAttributes;
 };
 
 
@@ -2688,6 +2734,12 @@ export type RootMutationTypeDeleteCardArgs = {
 
 export type RootMutationTypeDeleteChartInstallationArgs = {
   id: Scalars['ID'];
+};
+
+
+export type RootMutationTypeDeleteClusterArgs = {
+  name: Scalars['String'];
+  provider: Provider;
 };
 
 
@@ -3149,6 +3201,8 @@ export type RootQueryType = {
   chartInstallations?: Maybe<ChartInstallationConnection>;
   charts?: Maybe<ChartConnection>;
   closure?: Maybe<Array<Maybe<ClosureItem>>>;
+  cluster?: Maybe<Cluster>;
+  clusters?: Maybe<ClusterConnection>;
   configuration?: Maybe<PluralConfiguration>;
   deferredUpdates?: Maybe<DeferredUpdateConnection>;
   demoProject?: Maybe<DemoProject>;
@@ -3269,6 +3323,19 @@ export type RootQueryTypeChartsArgs = {
 export type RootQueryTypeClosureArgs = {
   id: Scalars['ID'];
   type: DependencyType;
+};
+
+
+export type RootQueryTypeClusterArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type RootQueryTypeClustersArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
 };
 
 
@@ -3906,6 +3973,12 @@ export type SlimSubscription = {
   lineItems?: Maybe<SubscriptionLineItems>;
   plan?: Maybe<Plan>;
 };
+
+export enum Source {
+  Default = 'DEFAULT',
+  Demo = 'DEMO',
+  Shell = 'SHELL'
+}
 
 export enum SpecDatatype {
   Bool = 'BOOL',

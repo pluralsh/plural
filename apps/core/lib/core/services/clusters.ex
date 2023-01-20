@@ -12,6 +12,10 @@ defmodule Core.Services.Clusters do
     Core.Repo.get_by(Cluster, account_id: account_id, provider: provider, name: name)
   end
 
+  def get_cluster_by_owner(user_id) do
+    Core.Repo.get_by(Cluster, owner_id: user_id)
+  end
+
   @doc """
   Determines if a user has access to the cluster referenced by `id`
   """
@@ -36,14 +40,14 @@ defmodule Core.Services.Clusters do
   creates a cluster record from an upgrade queue.  Also ties the cluster back onto that queue
   """
   @spec create_from_queue(UpgradeQueue.t) :: cluster_resp
-  def create_from_queue(%UpgradeQueue{name: n, provider: p, git: g, domain: d, pinged_at: pinged} = q) do
+  def create_from_queue(%UpgradeQueue{name: n, provider: p, git: g, domain: d, user_id: uid, pinged_at: pinged} = q) do
     %{user: user} = Core.Repo.preload(q, [:user])
 
     start_transaction()
     |> add_operation(:cluster, fn _ ->
-      case get_cluster(user.account_id, p, n) do
+      case get_cluster_by_owner(uid) do
         %Cluster{} = c ->
-          Cluster.changeset(c, %{console_url: d})
+          Cluster.changeset(c, %{console_url: d, provider: p, name: n})
           |> Core.Repo.update()
         _ ->
           create_cluster(%{

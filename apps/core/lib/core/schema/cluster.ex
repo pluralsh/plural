@@ -24,6 +24,14 @@ defmodule Core.Schema.Cluster do
     timestamps()
   end
 
+  def for_expired_queue(query \\ __MODULE__) do
+    expired = UpgradeQueue.expired()
+    from(c in query,
+      join: q in subquery(expired),
+        on: q.cluster_id == c.id
+    )
+  end
+
   def for_user(query \\ __MODULE__, %User{id: user_id, account_id: account_id} = user) do
     accessible = User.accessible(user)
     from(c in query,
@@ -42,6 +50,7 @@ defmodule Core.Schema.Cluster do
   def changeset(model, attrs \\ %{}) do
     model
     |> cast(attrs, @valid)
+    |> unique_constraint(:owner_id)
     |> foreign_key_constraint(:owner_id)
     |> foreign_key_constraint(:account_id)
     |> unique_constraint(:name, name: index_name(:clusters, [:account_id, :provider, :name]))

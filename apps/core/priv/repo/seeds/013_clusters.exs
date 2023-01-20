@@ -1,5 +1,8 @@
 import Botanist
 
+alias Core.Backfill.Clusters
+
 seed do
-  Core.Backfill.Clusters.from_queues()
+  Clusters.trim()
+  Clusters.from_queues()
 end

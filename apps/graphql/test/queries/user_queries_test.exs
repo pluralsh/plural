@@ -244,7 +244,7 @@ defmodule GraphQl.UserQueriesTest do
 
     test "it will fail if the feature is not enabled" do
       token = insert(:persisted_token)
-      audits = for i <- 1..3 do
+      for i <- 1..3 do
         insert(:access_token_audit,
           token: token,
           timestamp: Timex.now() |> Timex.shift(minutes: -i)

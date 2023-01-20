@@ -31,6 +31,10 @@ defmodule Core.Schema.UpgradeQueue do
     from(q in query, where: q.pinged_at < ^expiry)
   end
 
+  def without_cluster(query \\ __MODULE__) do
+    from(q in query, where: is_nil(q.cluster_id))
+  end
+
   @valid ~w(acked user_id name domain git provider cluster_id)a
 
   def changeset(model, attrs \\ %{}) do

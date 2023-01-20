@@ -1,6 +1,7 @@
 defmodule Core.Services.Upgrades do
   use Core.Services.Base
   import Core.Rollable.Utils
+  require Logger
   alias Core.Schema.{
     User,
     UpgradeQueue,
@@ -104,7 +105,7 @@ defmodule Core.Services.Upgrades do
   defp update_inst(%{chart_installation: %ChartInstallation{} = inst}), do: inst
   defp update_inst(%{terraform_installation: %TerraformInstallation{} = inst}), do: inst
 
-  def create_queue(%{name: name} = attrs, %User{id: user_id} = user) do
+  def create_queue(%{name: name} = attrs, %User{id: user_id, email: email} = user) do
     queue = get_queue(user_id, name)
 
     start_transaction()
@@ -116,7 +117,14 @@ defmodule Core.Services.Upgrades do
       |> UpgradeQueue.changeset(attrs)
       |> Core.Repo.insert_or_update()
     end)
-    |> add_operation(:cluster, fn %{queue: q} -> Clusters.create_from_queue(q) end)
+    |> add_operation(:cluster, fn %{queue: q} ->
+      case Clusters.create_from_queue(q) do
+        {:ok, _} = res -> res
+        _ ->
+          Logger.info "could not create cluster from q for #{email}"
+          {:ok, nil}
+      end
+    end)
     |> add_operation(:refetch, fn %{queue: q} -> {:ok, get_queue(q.id)} end)
     |> execute(extract: :refetch)
     |> notify(:upsert, queue)

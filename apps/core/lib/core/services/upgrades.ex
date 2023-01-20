@@ -120,8 +120,8 @@ defmodule Core.Services.Upgrades do
     |> add_operation(:cluster, fn %{queue: q} ->
       case Clusters.create_from_queue(q) do
         {:ok, _} = res -> res
-        _ ->
-          Logger.info "could not create cluster from q for #{email}"
+        errr ->
+          Logger.info "could not create cluster from q for #{email}: #{inspect(err)}"
           {:ok, nil}
       end
     end)

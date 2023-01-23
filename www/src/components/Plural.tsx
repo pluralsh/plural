@@ -3,6 +3,7 @@ import {
   lazy,
   useContext,
   useEffect,
+  useMemo,
   useState,
 } from 'react'
 import {
@@ -12,7 +13,8 @@ import {
   Routes,
   useMatch,
 } from 'react-router-dom'
-import { StripeProvider } from 'react-stripe-elements'
+import { loadStripe } from '@stripe/stripe-js'
+import { Elements } from '@stripe/react-stripe-js'
 import { Toast } from '@pluralsh/design-system'
 import { useFeature } from '@growthbook/growthbook-react'
 
@@ -102,12 +104,14 @@ function EditBilling(props) {
 function WrapStripe({ children }: any) {
   const { stripePublishableKey } = useContext(PluralConfigurationContext)
 
+  const stripePromise = useMemo(() => loadStripe(stripePublishableKey), [stripePublishableKey])
+
   if (!stripePublishableKey) return children
 
   return (
-    <StripeProvider apiKey={stripePublishableKey}>
+    <Elements stripe={stripePromise}>
       {children}
-    </StripeProvider>
+    </Elements>
   )
 }
 

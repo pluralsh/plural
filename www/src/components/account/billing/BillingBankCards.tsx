@@ -1,85 +1,66 @@
 import { useCallback, useMemo, useState } from 'react'
-import { useQuery } from '@apollo/client'
-import { Button, Card, Input } from '@pluralsh/design-system'
+import { useMutation, useQuery } from '@apollo/client'
+import { Button, Card } from '@pluralsh/design-system'
 import { Div, Flex, Spinner } from 'honorable'
-import Cards from 'react-credit-cards'
-import 'react-credit-cards/es/styles-compiled.css'
+import { CardElement, useElements, useStripe } from '@stripe/react-stripe-js'
 
-import { CARDS_QUERY } from './queries'
+import { CARDS_QUERY, CREATE_CARD_MUTATION } from './queries'
 
 function BillingBankCards() {
   const [edit, setEdit] = useState(false)
-  const [number, setNumber] = useState('')
-  const [name, setName] = useState('')
-  const [expiry, setExpiry] = useState('')
-  const [cvc, setCvc] = useState('')
-  const [focused, setFocused] = useState('')
   const { data, loading, error } = useQuery(CARDS_QUERY)
+  const [createCard] = useMutation(CREATE_CARD_MUTATION)
+
+  const stripe = useStripe()
+  const elements = useElements()
 
   const card = useMemo(() => data?.me?.cards?.edges?.[0]?.node ?? null, [data])
 
+  console.log('card', card)
   const handleAddCard = useCallback(() => {
     setEdit(true)
   }, [])
 
+  const handleSubmit = useCallback(async event => {
+    event.preventDefault()
+
+    if (!(stripe && elements)) return
+
+    const { error, token } = await stripe.createToken(elements.getElement(CardElement)!,)
+
+    if (error) {
+      console.log('error', error)
+
+      return
+    }
+
+    await createCard({
+      variables: {
+        source: token.id,
+      },
+    })
+
+    console.log('good')
+  }, [stripe, elements, createCard])
+
   const renderEdit = useCallback(() => (
-    <Flex
-      align="start"
-      gap="medium"
-      width="100%"
-    >
-      <Cards
-        cvc={cvc}
-        expiry={expiry}
-        focused={focused}
-        name={name}
-        number={number}
-      />
+    <form onSubmit={handleSubmit}>
+      <Card padding="medium">
+        <CardElement options={{ style: { base: { color: 'white' } } }} />
+      </Card>
       <Flex
-        flexGrow={1}
-        direction="column"
-        gap="medium"
+        justify="flex-end"
+        marginTop="medium"
       >
-        <Input
-          width="100%"
-          placeholder="Card number"
-          value={number}
-          onChange={event => setNumber(event.target.value)}
-          onFocus={() => setFocused('number')}
-        />
-        <Input
-          width="100%"
-          placeholder="Card holder name"
-          value={name}
-          onChange={event => setName(event.target.value)}
-          onFocus={() => setFocused('name')}
-        />
-        <Flex gap="medium">
-          <Input
-            flexGrow={1}
-            placeholder="Card expiry"
-            value={expiry}
-            onChange={event => setExpiry(event.target.value)}
-            onFocus={() => setFocused('expiry')}
-          />
-          <Input
-            flexGrow={1}
-            placeholder="CVC"
-            value={cvc}
-            onChange={event => setCvc(event.target.value)}
-            onFocus={() => setFocused('cvc')}
-          />
-        </Flex>
-        <Button alignSelf="flex-end">Add card</Button>
+        <Button
+          type="submit"
+          disabled={!stripe || !elements}
+        >
+          Add card
+        </Button>
       </Flex>
-    </Flex>
-  ), [
-    cvc,
-    expiry,
-    focused,
-    name,
-    number,
-  ])
+    </form>
+  ), [stripe, elements, handleSubmit])
 
   if (loading) {
     return (
@@ -113,7 +94,6 @@ function BillingBankCards() {
       <Card
         display="flex"
         flexDirection="column"
-        alignItems="center"
         padding="medium"
       >
         {renderEdit()}

@@ -5110,16 +5110,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@stripe/react-stripe-js@npm:^1.16.3":
-  version: 1.16.3
-  resolution: "@stripe/react-stripe-js@npm:1.16.3"
+"@stripe/react-stripe-js@npm:^1.16.4":
+  version: 1.16.4
+  resolution: "@stripe/react-stripe-js@npm:1.16.4"
   dependencies:
     prop-types: ^15.7.2
   peerDependencies:
     "@stripe/stripe-js": ^1.44.1
     react: ^16.8.0 || ^17.0.0 || ^18.0.0
     react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
-  checksum: 35e65bc06e57725f3e0f5ca942cb247c5a7f603313c06e604a4041783ec8bf82bc758759f625ab04f9381483729265b219a2c8109874e339d6fae3fd188a2002
+  checksum: e411ce91503398677eaf38016fb7e93315517407b81115b2e359fcd44610a786f1cd37b4c959c9fda8c6f35b1b4fe7dc2af29965168041fceff251cb5f40e74e
   languageName: node
   linkType: hard
 
@@ -9513,15 +9513,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"globalthis@npm:^1.0.2":
-  version: 1.0.3
-  resolution: "globalthis@npm:1.0.3"
-  dependencies:
-    define-properties: ^1.1.3
-  checksum: fbd7d760dc464c886d0196166d92e5ffb4c84d0730846d6621a39fbbc068aeeb9c8d1421ad330e94b7bca4bb4ea092f5f21f3d36077812af5d098b4dc006c998
-  languageName: node
-  linkType: hard
-
 "globby@npm:^11.0.3, globby@npm:^11.1.0":
   version: 11.1.0
   resolution: "globby@npm:11.1.0"
@@ -12592,16 +12583,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"payment@npm:^2.3.0":
-  version: 2.4.6
-  resolution: "payment@npm:2.4.6"
-  dependencies:
-    globalthis: ^1.0.2
-    qj: ~2.0.0
-  checksum: 993806f55456207bb3b2c3134f88bbf8e02468cdc4521c3a4e2392b5643d68ad374878d6698e0fd0a05232195cfaf6666b6bb8c6fde6d00a148012cfc94238d1
-  languageName: node
-  linkType: hard
-
 "phoenix@npm:1.6.15":
   version: 1.6.15
   resolution: "phoenix@npm:1.6.15"
@@ -12881,13 +12862,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"qj@npm:~2.0.0":
-  version: 2.0.0
-  resolution: "qj@npm:2.0.0"
-  checksum: d48e74b8f54d8c9560e749281e033ab3e7550682355be32289726352002c231d6d6b28752cf91729d758591c2a778534a61ca5cd2602fc3249f446146c58fe2d
-  languageName: node
-  linkType: hard
-
 "qs@npm:^6.10.1":
   version: 6.11.0
   resolution: "qs@npm:6.11.0"
@@ -13027,18 +13001,6 @@ __metadata:
     react: ">= 15"
     react-dom: ">= 15"
   checksum: 24289f40591e88003052270e4eb9f7a87838e403ec2036fbd5ef99d57851c8d9739dae619d65f339494e582e34e2691c033a975bd8f7416730fc9beaf76a2b4b
-  languageName: node
-  linkType: hard
-
-"react-credit-cards@npm:^0.8.3":
-  version: 0.8.3
-  resolution: "react-credit-cards@npm:0.8.3"
-  dependencies:
-    payment: ^2.3.0
-  peerDependencies:
-    prop-types: ^15.7.2
-    react: ^15.0.0 || ^16.0.0
-  checksum: d2cbd5cbecf451a85841968aa5bc5a0aa1c62e26c0841852e46394559196c838f256d8cb3c3c2c21ffd6da0a83ec9ac35a003c66128e242f94533760fbb625fc
   languageName: node
   linkType: hard
 
@@ -16574,7 +16536,7 @@ __metadata:
     "@pluralsh/design-system": 1.299.0
     "@pluralsh/eslint-config-typescript": 2.5.30
     "@pluralsh/stylelint-config": 1.1.3
-    "@stripe/react-stripe-js": ^1.16.3
+    "@stripe/react-stripe-js": ^1.16.4
     "@stripe/stripe-js": ^1.46.0
     "@testing-library/react": 13.4.0
     "@types/events": 3.0.0
@@ -16627,7 +16589,6 @@ __metadata:
     react-collapsible: 2.10.0
     react-copy-to-clipboard: 5.1.0
     react-countdown: 2.3.5
-    react-credit-cards: ^0.8.3
     react-diff-viewer: 3.1.1
     react-dnd: 16.0.1
     react-dnd-html5-backend: 16.0.1

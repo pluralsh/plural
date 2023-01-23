@@ -18,3 +18,11 @@ export const CARDS_QUERY = gql`
     }
   }
 `
+
+export const CREATE_CARD_MUTATION = gql`
+  mutation CreateCard($source: String!) {
+    createCard(source: $source) {
+      id
+    }
+  }
+`

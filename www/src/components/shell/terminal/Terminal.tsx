@@ -95,11 +95,13 @@ function Terminal({ provider }) {
     setChannel(channel)
 
     return () => channel.leave() || terminal.dispose()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [terminalRef, terminal, fitAddon])
 
   // Resize after initial response when shell is loaded
   useEffect(() => {
     if (loaded) resize(fitAddon, channel, terminal)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loaded])
 
   useEffect(() => {

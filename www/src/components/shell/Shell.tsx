@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo } from 'react'
 import { useMutation, useQuery } from '@apollo/client'
 import { Flex } from 'honorable'
-import { ApolloError } from '@apollo/client/errors'
 import { LoopingLogo } from '@pluralsh/design-system'
 
 import { CloudShell, RootQueryType } from '../../generated/graphql'

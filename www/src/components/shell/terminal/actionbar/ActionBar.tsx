@@ -1,11 +1,6 @@
 import { Dispatch, ReactElement, useState } from 'react'
 import { Button, Flex } from 'honorable'
-import {
-  CliIcon,
-  MoreIcon,
-  ToolIcon,
-  Tooltip,
-} from '@pluralsh/design-system'
+import { CliIcon, ToolIcon, Tooltip } from '@pluralsh/design-system'
 
 import { TerminalThemeSelector } from '../theme/Selector'
 

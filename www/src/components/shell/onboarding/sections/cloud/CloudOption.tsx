@@ -1,9 +1,4 @@
-import {
-  Div,
-  Flex,
-  Span,
-  Text,
-} from 'honorable'
+import { Div, Flex, Span } from 'honorable'
 
 import OnboardingCardButton from '../../OnboardingCardButton'
 

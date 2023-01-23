@@ -1,6 +1,5 @@
 import {
   Chip,
-  CloudIcon,
   Codeline,
   DownloadIcon,
   FormField,
@@ -109,6 +108,7 @@ function CloudInfoModal({ onClose }) {
   )
 }
 
+// TODO: Finish once API for shell update is added
 function CloudCredentialsModal({ onClose }) {
   const [open, setOpen] = useState(true)
   const close = useCallback(() => {
@@ -355,6 +355,7 @@ function MoreOptions() {
         leftContent: <Flex><InfoOutlineIcon /></Flex>,
       },
     },
+    // TODO: Enable once API that handles shell update is merged
     // cloudCredentials: {
     //   label: 'Cloud credentials',
     //   onSelect: () => setSelected(DialogSelection.CloudCredentials),

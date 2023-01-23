@@ -55,6 +55,7 @@ function Installer() {
       })
       .catch(err => console.error(err))
       .finally(() => setStepsLoading(false))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [client, provider, setState])
 
   useEffect(() => {
@@ -66,6 +67,7 @@ function Installer() {
 
     setStepsLoading(true)
     build().then(() => setStepsLoading(false))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [client, selectedApplications.length, provider])
 
   if (!applications) {

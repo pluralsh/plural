@@ -134,6 +134,7 @@ const usePath = (path: CloudType): Dispatch<void> => {
 
     setSections(sections)
     setSection(updatedSection!)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [path, setSections])
 }
 

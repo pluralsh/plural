@@ -52,6 +52,7 @@ export function Configuration({
     hiddenConfigurations.forEach(conf => {
       setContext(context => ({ ...context, ...{ [conf!.name!]: { value: context[conf!.name!]?.value, valid: true } } }))
     })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hiddenConfigurations.length, setContext])
 
   return (

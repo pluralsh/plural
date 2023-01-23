@@ -180,6 +180,13 @@ defmodule GraphQl.Schema.Shell do
       safe_resolve &Shell.setup_shell/2
     end
 
+    field :update_shell, :cloud_shell do
+      middleware Authenticated
+      arg :attributes, non_null(:cloud_shell_attributes)
+
+      safe_resolve &Shell.update_shell/2
+    end
+
     field :update_shell_configuration, :boolean do
       middleware Authenticated
       arg :context, non_null(:map)

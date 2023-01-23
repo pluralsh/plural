@@ -45,6 +45,14 @@ defmodule Core.Services.ClustersTest do
       assert refetch(queue).cluster_id == cluster.id
     end
 
+    test "it can create w/ existing queus" do
+      queue = insert(:upgrade_queue, domain: "console.plural.sh", git: "git@github.com/pluralsh/repo", provider: :aws)
+      cluster = insert(:cluster, name: queue.name, provider: queue.provider, account: queue.user.account, owner: queue.user)
+      insert(:upgrade_queue, cluster: cluster)
+
+      {:ok, _} = Clusters.create_from_queue(queue)
+    end
+
     test "if the cluster already exists, it will still tie in the queue" do
       queue = insert(:upgrade_queue, domain: "console.plural.sh", git: "git@github.com/pluralsh/repo", provider: :aws)
       cluster = insert(:cluster, name: queue.name, provider: queue.provider, account: queue.user.account, owner: queue.user)

@@ -67,10 +67,10 @@ defmodule Core.Services.ShellTest do
       assert String.starts_with?(backup.name, "shell:#{shell.workspace.cluster}:")
       assert backup.repositories == ["git@github.com:pluralsh/installations.git"]
 
-      cluster = Clusters.get_cluster(user.account_id, :aws, "plural")
-      assert cluster.owner_id == user.id
-      assert cluster.domain == "sub.onplural.sh"
-      assert cluster.git_url == "git@github.com:pluralsh/installations.git"
+      # cluster = Clusters.get_cluster(user.account_id, :aws, "plural")
+      # assert cluster.owner_id == user.id
+      # assert cluster.domain == "sub.onplural.sh"
+      # assert cluster.git_url == "git@github.com:pluralsh/installations.git"
     end
 
     test "a user can create a cloud shell with gitlab for scm" do

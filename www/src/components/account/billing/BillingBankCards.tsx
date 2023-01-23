@@ -1,66 +1,25 @@
-import { useCallback, useMemo, useState } from 'react'
-import { useMutation, useQuery } from '@apollo/client'
+import { useMemo, useState } from 'react'
+import { useQuery } from '@apollo/client'
 import { Button, Card } from '@pluralsh/design-system'
-import { Div, Flex, Spinner } from 'honorable'
-import { CardElement, useElements, useStripe } from '@stripe/react-stripe-js'
+import { Div, Spinner } from 'honorable'
 
-import { CARDS_QUERY, CREATE_CARD_MUTATION } from './queries'
+import { CARDS_QUERY } from './queries'
+
+import useBankCard from './useBankCard'
 
 function BillingBankCards() {
   const [edit, setEdit] = useState(false)
-  const { data, loading, error } = useQuery(CARDS_QUERY)
-  const [createCard] = useMutation(CREATE_CARD_MUTATION)
-
-  const stripe = useStripe()
-  const elements = useElements()
+  const {
+    data,
+    loading,
+    error,
+    refetch,
+  } = useQuery(CARDS_QUERY)
 
   const card = useMemo(() => data?.me?.cards?.edges?.[0]?.node ?? null, [data])
 
   console.log('card', card)
-  const handleAddCard = useCallback(() => {
-    setEdit(true)
-  }, [])
-
-  const handleSubmit = useCallback(async event => {
-    event.preventDefault()
-
-    if (!(stripe && elements)) return
-
-    const { error, token } = await stripe.createToken(elements.getElement(CardElement)!,)
-
-    if (error) {
-      console.log('error', error)
-
-      return
-    }
-
-    await createCard({
-      variables: {
-        source: token.id,
-      },
-    })
-
-    console.log('good')
-  }, [stripe, elements, createCard])
-
-  const renderEdit = useCallback(() => (
-    <form onSubmit={handleSubmit}>
-      <Card padding="medium">
-        <CardElement options={{ style: { base: { color: 'white' } } }} />
-      </Card>
-      <Flex
-        justify="flex-end"
-        marginTop="medium"
-      >
-        <Button
-          type="submit"
-          disabled={!stripe || !elements}
-        >
-          Add card
-        </Button>
-      </Flex>
-    </form>
-  ), [stripe, elements, handleSubmit])
+  const { error: cardError, renderDisplay, renderEdit } = useBankCard(card, setEdit, refetch)
 
   if (loading) {
     return (
@@ -75,7 +34,7 @@ function BillingBankCards() {
     )
   }
 
-  if (error) {
+  if (error || cardError) {
     return (
       <Card
         display="flex"
@@ -113,7 +72,7 @@ function BillingBankCards() {
           No payment card saved
         </Div>
         <Button
-          onClick={handleAddCard}
+          onClick={() => setEdit(true)}
           marginTop="medium"
         >
           Add card
@@ -128,7 +87,7 @@ function BillingBankCards() {
       flexDirection="column"
       padding="medium"
     >
-      card
+      {renderDisplay()}
     </Card>
   )
 }

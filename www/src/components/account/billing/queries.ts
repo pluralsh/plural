@@ -26,3 +26,11 @@ export const CREATE_CARD_MUTATION = gql`
     }
   }
 `
+
+export const DELETE_CARD_MUTATION = gql`
+  mutation DeleteCard($id: ID!) {
+    deleteCard(id: $id) {
+      id
+    }
+  }
+`

@@ -14,12 +14,17 @@ import { OnboardingContext } from '../../context/onboarding'
 import { ProviderSelection } from './ProviderSelection'
 import CloudCredentials from './CloudCredentials'
 
+enum CalloutKey {
+  CloudCredentials,
+  CloudCost,
+}
+
 function CloudStep({ onBack, onNext }) {
   const cloudType = useCloudType()
   const setPath = usePath(cloudType)
   const { valid } = useContext(OnboardingContext)
   const [showConfig, setShowConfig] = useState(false)
-  const [expanded, setExpanded] = useState(false)
+  const [expanded, setExpanded] = useState<CalloutKey | undefined>()
   const hasConfig = useMemo(() => cloudType === CloudType.Cloud, [cloudType])
 
   useEffect(() => setPath(), [cloudType, setPath])
@@ -39,10 +44,21 @@ function CloudStep({ onBack, onNext }) {
             title="Why do I need to enter my cloud credentials?"
             buttonProps={{ children: 'Learn more' }}
             expandable
-            expanded={expanded}
-            onExpand={setExpanded}
+            expanded={expanded === CalloutKey.CloudCredentials}
+            onExpand={expanded => setExpanded(expanded ? CalloutKey.CloudCredentials : undefined)}
           >
             Connecting with your cloud credentials allows us to lorem ipsum dolor.
+          </Callout>
+
+          <Callout
+            severity="info"
+            title="How much cloud cost should I expect?"
+            buttonProps={{ children: 'Learn more' }}
+            expandable
+            expanded={expanded === CalloutKey.CloudCost}
+            onExpand={expanded => setExpanded(expanded ? CalloutKey.CloudCost : undefined)}
+          >
+            Lorem ipsum dolor...
           </Callout>
         </>
       )}

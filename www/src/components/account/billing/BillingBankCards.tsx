@@ -18,7 +18,6 @@ function BillingBankCards() {
 
   const card = useMemo(() => data?.me?.cards?.edges?.[0]?.node ?? null, [data])
 
-  console.log('card', card)
   const { error: cardError, renderDisplay, renderEdit } = useBankCard(card, setEdit, refetch)
 
   if (loading) {

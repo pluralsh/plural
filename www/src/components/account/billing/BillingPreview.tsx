@@ -1,26 +1,49 @@
-import { useState } from 'react'
-import { Div, Flex, Switch } from 'honorable'
+import { useMemo, useState } from 'react'
+import {
+  Div,
+  Flex,
+  Spinner,
+  Switch,
+} from 'honorable'
+import {
+  Card,
+  CloseIcon,
+  ClusterIcon,
+  PeopleIcon,
+} from '@pluralsh/design-system'
 
-import { CloseIcon, ClusterIcon, PeopleIcon } from '@pluralsh/design-system'
+import { useQuery } from '@apollo/client'
 
 import { CLUSTER_PRICING, USER_PRICING } from './constants'
 
+import { CLUSTERS_QUERY, USERS_QUERY } from './queries'
+
 function BillingPreview() {
   const [isProfessional, setIsProfessional] = useState(false)
+  const { data: clustersData, loading: clustersLoading } = useQuery(CLUSTERS_QUERY)
+  const { data: usersData, loading: usersLoading } = useQuery(USERS_QUERY)
 
-  const nClusters = 2
+  const nClusters = useMemo(() => clustersData?.clusters?.edges?.length ?? 0, [clustersData])
+  const nUsers = useMemo(() => usersData?.users?.edges?.length ?? 0, [usersData])
   const pClusters = isProfessional ? CLUSTER_PRICING : 0
-  const nUsers = 4
   const pUsers = isProfessional ? USER_PRICING : 0
   const total = nClusters * pClusters + nUsers * pUsers
 
+  if (clustersLoading || usersLoading) {
+    return (
+      <Card
+        padding="large"
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+      >
+        <Spinner />
+      </Card>
+    )
+  }
+
   return (
-    <Div
-      backgroundColor="fill-one"
-      border="1px solid border"
-      borderRadius="large"
-      padding="large"
-    >
+    <Card padding="large">
       <Flex
         align="center"
         justify="space-between"
@@ -34,6 +57,7 @@ function BillingPreview() {
         <Switch
           checked={isProfessional}
           onChange={event => setIsProfessional(event.target.checked)}
+          padding={0}
         >
           <Div
             color="text-xlight"
@@ -50,7 +74,7 @@ function BillingPreview() {
         >
           <ClusterIcon />
           <Div>
-            {nClusters} clusters
+            {nClusters} cluster{nClusters > 1 ? 's' : ''}
           </Div>
           <CloseIcon size={12} />
           <Div>
@@ -71,7 +95,7 @@ function BillingPreview() {
         >
           <PeopleIcon />
           <Div>
-            {nUsers} users
+            {nUsers} user{nUsers > 1 ? 's' : ''}
           </Div>
           <CloseIcon size={12} />
           <Div>
@@ -94,7 +118,7 @@ function BillingPreview() {
       >
         Total: ${total}/month
       </Flex>
-    </Div>
+    </Card>
   )
 }
 

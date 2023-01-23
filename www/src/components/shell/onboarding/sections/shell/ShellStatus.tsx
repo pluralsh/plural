@@ -1,7 +1,5 @@
-import { Flex, P } from 'honorable'
-
+import { Flex, P, Span } from 'honorable'
 import { ApolloError } from '@apollo/client/errors'
-
 import {
   Button,
   Chip,
@@ -10,8 +8,16 @@ import {
   ErrorIcon,
   ProgressBar,
 } from '@pluralsh/design-system'
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
+import styled from 'styled-components'
 
 import { CloudShell } from '../../../../../generated/graphql'
+import { CopyButtonBase } from '../../../terminal/actionbar/Cheatsheet'
 
 interface StatusChipProps {
   loading: boolean,
@@ -101,27 +107,63 @@ function ProgressEntry({
   )
 }
 
+const CopyButton = styled(CopyButtonBase)(({ theme }) => ({
+  top: theme.spacing.large,
+  right: theme.spacing.large,
+  boxShadow: theme.boxShadows.slight,
+  zIndex: 100,
+}))
+
 interface ErrorWrapperProps {
   error: ApolloError
 }
 
 function ErrorWrapper({ error }: ErrorWrapperProps) {
+  const [hovered, setHovered] = useState(false)
+  const [copied, setCopied] = useState(false)
+  const message = useMemo(() => {
+    if (error.graphQLErrors) return error.graphQLErrors.map(err => err.message.replace(/\\n/g, '\n')).join('\n')
+
+    return error.message.replace(/\\n/g, '\n')
+  }, [error])
+
+  const handleCopy = useCallback(() => window.navigator.clipboard
+    .writeText(message)
+    .then(() => setCopied(true)),
+  [message])
+
+  useEffect(() => {
+    if (copied) {
+      const timeout = setTimeout(() => setCopied(false), 1000)
+
+      return () => clearTimeout(timeout)
+    }
+  }, [copied])
+
   return (
     <Flex
-      flexDirection="column"
-      marginTop="medium"
-      paddingHorizontal="large"
-      paddingVertical="medium"
-      background="fill-zero"
-      maxHeight={100}
-      overflowY="auto"
-      gap="xxsmall"
+      position="relative"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
     >
-      {error.graphQLErrors && error.graphQLErrors.map((err, idx) => (
-        <P key={idx}>{err.message.replace(/\\n/g, '')}</P>
-      ))}
-      {!error.graphQLErrors && (
-        <P>{error.message.replace(/\\n/g, '')}</P>
+      <Flex
+        flexDirection="column"
+        marginTop="medium"
+        paddingHorizontal="large"
+        paddingVertical="medium"
+        background="fill-zero"
+        maxHeight={100}
+        grow={1}
+        overflowY="auto"
+        gap="xxsmall"
+      >
+        <Span style={{ whiteSpace: 'break-spaces' }}>{message}</Span>
+      </Flex>
+      {hovered && (
+        <CopyButton
+          copied={copied}
+          handleCopy={handleCopy}
+        />
       )}
     </Flex>
   )

@@ -39,7 +39,7 @@ export function Application({ provider, ...props }: any): ReactElement {
   const { configuration } = useContext(TerminalContext)
   const [context, setContext] = useState<Record<string, unknown>>(active.data?.context || {})
   const [valid, setValid] = useState(true)
-  const [oidc, setOIDC] = useState(active.data?.oidc || false)
+  const [oidc, setOIDC] = useState(active.data?.oidc ?? true)
   const { data: { recipes: { edges: recipeEdges } = { edges: undefined } } = {} } = useQuery(RECIPES_QUERY, {
     variables: { repositoryId: active.key },
   })

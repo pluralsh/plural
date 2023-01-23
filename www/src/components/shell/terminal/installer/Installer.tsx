@@ -20,7 +20,6 @@ import {
 } from '@pluralsh/design-system'
 
 import { State, TerminalContext } from '../context/terminal'
-
 import useOnboarded from '../../hooks/useOnboarded'
 
 import { APPLICATIONS_QUERY } from './queries'

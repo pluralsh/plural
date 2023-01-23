@@ -169,7 +169,7 @@ function CheatsheetCommand({ command, description, last }: any) {
 }
 
 // Extracted from the Design System. TODO: Export it there and reuse
-function CopyButtonBase({
+export function CopyButtonBase({
   copied,
   handleCopy,
   className,

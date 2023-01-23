@@ -32,7 +32,7 @@ const available = (config, context) => {
 
 interface ConfigurationProps {
   // TODO: Remove object extension once api and graphql files are updated
-  recipe: Recipe & {oidcEnabled?: boolean},
+  recipe: Recipe,
   context: Record<string, any>
   setContext: Dispatch<SetStateAction<Record<string, any>>>
   oidc?: boolean
@@ -46,7 +46,6 @@ export function Configuration({
   const sections = recipe.recipeSections
   const configurations = sections!.filter(section => section!.repository!.name === active.label).map(section => section!.configuration).flat().filter(c => !!c)
   const setValue = useCallback((fieldName, value, valid = true) => setContext(context => ({ ...context, ...{ [fieldName]: { value, valid } } })), [setContext])
-  const hasOIDC = useMemo(() => !!recipe.oidcSettings, [recipe.oidcSettings])
   const hiddenConfigurations = useMemo(() => configurations.filter(conf => !available(conf, context)), [configurations, context])
 
   useEffect(() => {
@@ -76,7 +75,7 @@ export function Configuration({
         >No configuration available.
         </Span>
       )}
-      {hasOIDC && (
+      {recipe.oidcEnabled && (
         <div>
           <Switch
             checked={oidc}

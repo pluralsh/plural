@@ -5,12 +5,13 @@ import { TerraformFragment } from './terraform'
 import { InstallationFragment, RepoFragment } from './repo'
 
 export const RecipeFragment = gql`
-  fragment RecipeFragment on Recipe {
-    id
-    name
-    description
-    provider
-  }
+    fragment RecipeFragment on Recipe {
+        id
+        name
+        description
+        provider
+        oidcEnabled
+    }
 `
 
 export const RecipeItemFragment = gql`

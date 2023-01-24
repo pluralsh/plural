@@ -1,55 +1,46 @@
-import { Flex } from 'honorable'
+import { Div, Flex } from 'honorable'
 import { RepositoryCard } from '@pluralsh/design-system'
 import { Link } from 'react-router-dom'
 
 import { fillEmptyColumns, flexBasis } from './utils'
+import AppCard, { MarketplaceAppCard } from './AppCard'
 
 export function RepoCardList({
   repositories, repoProps = {}, urlParams = '', maxWidth = '800px', stretchLastRow = false, size = 'small', ...props
 }: any) {
+  console.log('repoProps', repoProps)
+
   return (
-    <Flex
-      mx={-1}
-      align="stretch"
-      wrap="wrap"
+    <Div
+      display="grid"
+      gap="medium"
+      gridTemplateColumns="repeat(auto-fit, minmax(350px, 1fr))"
       {...props}
     >
       {
         repositories?.map(repository => (
-          <Flex
-            key={`${repository.id}flex`}
-            px={0.75}
-            marginBottom="large"
-            width="auto"
-            flexBasis={flexBasis}
-            flexGrow={1}
-            flexShrink={1}
-            minWidth="250px"
-            maxWidth={maxWidth}
-          >
-            <RepositoryCard
-              key={repository.id}
-              as={Link}
-              to={`/repository/${repository.name}${urlParams ? `?${urlParams}` : ''}`}
-              color="text"
-              textDecoration="none"
-              width="100%"
-              title={repository.name}
-              imageUrl={repository.darkIcon || repository.icon}
-              publisher={repository.publisher?.name}
-              description={repository.description}
-              tags={repository.tags.map(({ tag }) => tag)}
-              priv={repository.private}
-              installed={!!repository.installation}
-              verified={repository.verified}
-              trending={repository.trending}
-              size={size}
-              {...repoProps}
-            />
-          </Flex>
+          <MarketplaceAppCard
+            key={repository.id}
+            as={Link}
+            to={`/repository/${repository.name}${urlParams ? `?${urlParams}` : ''}`}
+            color="text"
+            textDecoration="none"
+            width="100%"
+            title={repository.name}
+            imageUrl={repository.darkIcon || repository.icon}
+            publisher={repository.publisher?.name}
+            description={repository.description}
+            tags={repository.tags.map(({ tag }) => tag)}
+            priv={repository.private}
+            installed={!!repository.installation}
+            verified={repository.verified}
+            trending={repository.trending}
+            size={size}
+            {...repoProps}
+          />
         ))
       }
       {!stretchLastRow && fillEmptyColumns(10)}
-    </Flex>
+    </Div>
   )
 }

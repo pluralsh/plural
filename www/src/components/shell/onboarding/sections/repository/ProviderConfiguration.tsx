@@ -32,6 +32,17 @@ interface OrgInputProps {
   orgs: Array<SCMOrg>
 }
 
+function providerToOrgLabel(provider?: ScmProvider): string {
+  switch (provider) {
+  case ScmProvider.Gitlab:
+    return 'GitLab group'
+  case ScmProvider.Github:
+    return 'GitHub organization'
+  }
+
+  return 'Organization or group'
+}
+
 function OrgInput({ orgs }: OrgInputProps) {
   const { scm: { provider, org }, setSCM } = useContext(OnboardingContext)
   const setOrg = useCallback(org => setSCM(scm => ({ ...scm, org })), [setSCM])
@@ -54,13 +65,7 @@ function OrgInput({ orgs }: OrgInputProps) {
   return (
     <FormField
       width="100%"
-      label={
-        provider === ScmProvider.Github
-          ? 'GitHub organization'
-          : provider === ScmProvider.Gitlab
-            ? 'GitLab group'
-            : 'Organization or group'
-      }
+      label={providerToOrgLabel(provider)}
     >
       <Select
         onSelectionChange={key => setOrgByKey(key)}

@@ -29,7 +29,7 @@ async function isRepoNameUsed(client, owner, name) {
     if (error.status === ResponseCode.NotFound) return false
   }
 
-  return true
+  return false
 }
 
 function useRepoExists(

@@ -5,17 +5,13 @@ import {
   P,
   Span,
 } from 'honorable'
+
 import {
   AppIcon,
   Card,
   Chip,
-  ComponentsIcon,
-  DashboardIcon,
-  GearTrainIcon,
-  IdIcon,
-  LogsIcon,
   PadlockLockedIcon,
-  RunBookIcon,
+  RocketIcon,
   VerifiedIcon,
 } from '@pluralsh/design-system'
 
@@ -23,9 +19,7 @@ import { Severity } from '@pluralsh/design-system/dist/types'
 
 import { ComponentProps, ReactNode } from 'react'
 
-// const SHORTCUT_URLS = SHORTCUTS.map(shortcut => shortcut.url)
-
-// const isShortcut = url => SHORTCUT_URLS.indexOf(url) > -1
+import { Repository } from '../../generated/graphql'
 
 export const getBorderColor = (severity?: Severity) => {
   switch (severity) {
@@ -41,23 +35,18 @@ export const getBorderColor = (severity?: Severity) => {
 
 type AppCardProps = {
   title: ReactNode
+  subtitle?: ReactNode | null
   imageUrl: string
-  publisher: string
   description: string
   tags: string[]
-  appStatus?: ReactNode
   severity?: Severity
-  version?: string
   rightContent?: ReactNode
   childrenProps: ComponentProps<typeof Div>
 }
 
-type MarketplaceAppCardProps = Omit<AppCardProps, 'chip'> & {
-  installed?: boolean
-  verified: boolean
-  trending: boolean
-  priv: boolean
-}
+type MarketplaceAppCardProps = {
+  repository: Repository
+} & ComponentProps<typeof Div>
 
 export function ListItemBorder({
   color,
@@ -69,22 +58,30 @@ export function ListItemBorder({
   radius?: number
 }) {
   return (
-    <Flex
-      backgroundColor={color}
-      borderTopLeftRadius={radius}
-      borderBottomLeftRadius={radius}
-      height="inherit"
-      width={width}
-    />
+    <Div
+      position="absolute"
+      top={0}
+      left={0}
+      width="100%"
+      height="100%"
+      borderRadius={radius}
+      overflow="hidden"
+    >
+      <Div
+        position="absolute"
+        backgroundColor={color}
+        width={width}
+        height="100%"
+      />
+    </Div>
   )
 }
 
 export function AppCardBasicInfo({
   imageUrl,
   title,
-  version,
-  appStatus,
-}: Pick<AppCardProps, 'imageUrl' | 'title' | 'version' | 'appStatus'>) {
+  subtitle,
+}: Pick<AppCardProps, 'imageUrl' | 'title' | 'subtitle'>) {
   return (
     <Flex
       align="center"
@@ -100,17 +97,14 @@ export function AppCardBasicInfo({
         />
       )}
       <Flex direction="column">
-        <Flex gap="small">
-          <H3
-            margin={0}
-            body1
-            fontWeight={600}
-          >
-            {title}
-          </H3>
-          {appStatus}
-        </Flex>
-        {version && <Flex>v{version}</Flex>}
+        <H3
+          margin={0}
+          body1
+          fontWeight={600}
+        >
+          {title}
+        </H3>
+        {subtitle && <Flex>{subtitle}</Flex>}
       </Flex>
     </Flex>
   )
@@ -118,13 +112,11 @@ export function AppCardBasicInfo({
 
 export function AppCard({
   title,
+  subtitle,
   imageUrl,
-  version,
-  appStatus,
   rightContent = <div>stuff</div>,
   children,
   severity,
-  childrenProps,
   ...props
 }: AppCardProps & ComponentProps<typeof Card>) {
   const borderColor = getBorderColor(severity)
@@ -135,37 +127,49 @@ export function AppCard({
       display="flex"
       flexGrow={1}
       flexShrink={1}
-      minWidth={240}
+      flexDirection="column"
+      position="relative"
       {...props}
     >
       {borderColor && <ListItemBorder color={borderColor} />}
       <Flex width="100%">
         <AppCardBasicInfo
           title={title}
-          version={version}
+          subtitle={subtitle}
           imageUrl={imageUrl}
-          appStatus={appStatus}
         />
         {rightContent}
       </Flex>
-      {children && <Div {...childrenProps}>{children}</Div>}
+      {children}
     </Card>
   )
 }
 
 export function MarketplaceAppCard({
-  installed,
-  title,
-  verified,
-  priv,
+  repository,
   ...props
 }: MarketplaceAppCardProps) {
+  const {
+    installation,
+    name,
+    verified,
+    private: priv,
+    publisher,
+    darkIcon,
+    icon,
+    trending,
+    description,
+  } = repository
+  const installed = !!installation
+  const tags = repository.tags?.map(t => t?.tag).filter(t => !!t) || []
+  const maxTags = trending ? 5 : 6
+
   const fullTitle = (
     <Flex
       alignItems="center"
       gap={3}
     >
-      {title}
+      {name}
       {verified && (
         <VerifiedIcon
           as="div"
@@ -211,11 +215,76 @@ export function MarketplaceAppCard({
     </Flex>
   )
 
+  const children = (
+    <Flex
+      flexDirection="column"
+      paddingLeft="medium"
+      paddingRight="medium"
+      paddingBottom="medium"
+      flexGrow={1}
+    >
+      {description && (
+        <P
+          body2
+          marginTop="xsmall"
+          color="text-light"
+          style={{
+            display: '-webkit-box',
+            '-webkit-line-clamp': '2',
+            '-webkit-box-orient': 'vertical',
+            overflow: 'hidden',
+          }}
+        >
+          {description}
+        </P>
+      )}
+      <Div flexGrow={1} />
+      {(trending || tags?.length > 0) && (
+        <Flex
+          marginTop="medium"
+          gap="xsmall"
+          flexWrap="wrap"
+        >
+          {!!trending && (
+            <Chip
+              size="small"
+              hue="lighter"
+            >
+              <RocketIcon color="action-link-inline" />
+              <Span
+                color="action-link-inline"
+                marginLeft="xxsmall"
+              >
+                Trending
+              </Span>
+            </Chip>
+          )}
+          {tags
+            ?.filter((_x, i) => i < maxTags)
+            .map(tag => (
+              <Chip
+                size="small"
+                hue="lighter"
+                key={tag}
+                _last={{ marginRight: 0 }}
+              >
+                {tag}
+              </Chip>
+            ))}
+        </Flex>
+      )}
+    </Flex>
+  )
+
   return (
     <AppCard
       title={fullTitle}
+      subtitle={publisher?.name}
       rightContent={rightContent}
+      imageUrl={darkIcon || icon}
       {...props}
-    />
+    >
+      {children}
+    </AppCard>
   )
 }

@@ -1,14 +1,17 @@
-import { Div, Flex } from 'honorable'
-import { RepositoryCard } from '@pluralsh/design-system'
+import { Div } from 'honorable'
 import { Link } from 'react-router-dom'
 
-import { fillEmptyColumns, flexBasis } from './utils'
-import AppCard, { MarketplaceAppCard } from './AppCard'
+import { Repository } from '../../generated/graphql'
+
+import { fillEmptyColumns } from './utils'
+import { MarketplaceAppCard } from './AppCard'
 
 export function RepoCardList({
   repositories, repoProps = {}, urlParams = '', maxWidth = '800px', stretchLastRow = false, size = 'small', ...props
 }: any) {
   console.log('repoProps', repoProps)
+
+  const repos = repositories as Repository[]
 
   return (
     <Div
@@ -18,7 +21,7 @@ export function RepoCardList({
       {...props}
     >
       {
-        repositories?.map(repository => (
+        repos?.map(repository => (
           <MarketplaceAppCard
             key={repository.id}
             as={Link}
@@ -26,16 +29,7 @@ export function RepoCardList({
             color="text"
             textDecoration="none"
             width="100%"
-            title={repository.name}
-            imageUrl={repository.darkIcon || repository.icon}
-            publisher={repository.publisher?.name}
-            description={repository.description}
-            tags={repository.tags.map(({ tag }) => tag)}
-            priv={repository.private}
-            installed={!!repository.installation}
-            verified={repository.verified}
-            trending={repository.trending}
-            size={size}
+            repository={repository}
             {...repoProps}
           />
         ))

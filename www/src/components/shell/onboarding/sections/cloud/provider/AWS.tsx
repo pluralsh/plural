@@ -47,6 +47,7 @@ function AWS() {
 
   useEffect(() => setValid(isValid), [isValid, setValid])
   useEffect(() => (IsEmpty(workspace?.region) ? setWorkspaceKeys({ region: 'us-east-2' }) : undefined), [setWorkspaceKeys, workspace])
+  useEffect(() => (IsEmpty(cloud?.aws) ? setCloudProviderKeys({ secretKey: '', accessKey: '' }) : undefined), [setCloudProviderKeys, cloud?.aws])
 
   return (
     <>

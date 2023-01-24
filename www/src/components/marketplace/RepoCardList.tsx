@@ -6,8 +6,14 @@ import { Repository } from '../../generated/graphql'
 import { fillEmptyColumns } from './utils'
 import { MarketplaceAppCard } from './AppCard'
 
+// Maket sure verified checkmark isn't supposed to go next to publisher
+
 export function RepoCardList({
-  repositories, repoProps = {}, urlParams = '', maxWidth = '800px', stretchLastRow = false, size = 'small', ...props
+  repositories,
+  repoProps = {},
+  urlParams = '',
+  stretchLastRow = false,
+  ...props
 }: any) {
   console.log('repoProps', repoProps)
 
@@ -20,20 +26,20 @@ export function RepoCardList({
       gridTemplateColumns="repeat(auto-fit, minmax(350px, 1fr))"
       {...props}
     >
-      {
-        repos?.map(repository => (
-          <MarketplaceAppCard
-            key={repository.id}
-            as={Link}
-            to={`/repository/${repository.name}${urlParams ? `?${urlParams}` : ''}`}
-            color="text"
-            textDecoration="none"
-            width="100%"
-            repository={repository}
-            {...repoProps}
-          />
-        ))
-      }
+      {repos?.map(repository => (
+        <MarketplaceAppCard
+          key={repository.id}
+          as={Link}
+          to={`/repository/${repository.name}${
+            urlParams ? `?${urlParams}` : ''
+          }`}
+          color="text"
+          textDecoration="none"
+          width="100%"
+          repository={repository}
+          {...repoProps}
+        />
+      ))}
       {!stretchLastRow && fillEmptyColumns(10)}
     </Div>
   )

@@ -45,7 +45,6 @@ export default function StackApps() {
         <RepoCardList
           repositories={repositories}
           urlParams={`backStackName=${stack.name}`}
-          mx={-0.75}
         />
       </Flex>
     </Flex>

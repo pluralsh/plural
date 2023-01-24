@@ -32,7 +32,7 @@ function HoveredIcon({
 
   return (
     <IconFrame
-      clickable
+      cursor="pointer"
       padding="xsmall"
       textValue={textValue}
       icon={cloneElement(icon, {

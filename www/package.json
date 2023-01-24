@@ -39,7 +39,7 @@
     "@nivo/core": "0.80.0",
     "@nivo/geo": "0.80.0",
     "@nivo/line": "0.80.0",
-    "@octokit/core": "4.1.0",
+    "@octokit/core": "4.2.0",
     "@pluralsh/design-system": "1.302.0",
     "@testing-library/react": "13.4.0",
     "@types/styled-components": "5.1.26",

@@ -105,10 +105,10 @@ function RepositoryInput({ orgs, provider }: any) {
   const { scm, setSCM, setValid } = useContext(OnboardingContext)
   const maxLen = 100
   const setName = useCallback((name: string) => setSCM({ ...scm, repositoryName: name }), [setSCM, scm])
-  const { loading, exists } = useRepoExists(
+  const { loading, exists, validated } = useRepoExists(
     scm.token, scm.org, scm.repositoryName, provider
   )
-  const isValid = useMemo(() => !!scm?.repositoryName?.length && isAlphanumeric(scm?.repositoryName) && !exists && !loading, [scm?.repositoryName, exists, loading])
+  const isValid = useMemo(() => !!scm?.repositoryName?.length && isAlphanumeric(scm?.repositoryName) && !exists && validated, [scm?.repositoryName, exists, validated])
 
   useEffect(() => setValid(isValid), [isValid, setValid])
 

@@ -1,31 +1,64 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Octokit } from '@octokit/core'
 
-import { OrgType, SCMOrg } from '../../../context/types'
+import { SCMOrg } from '../../../context/types'
 import { ScmProvider } from '../../../../../../generated/graphql'
+
+const MIN_REPO_NAME_LEN = 4
+
+enum ResponseCode {
+  NotFound = 404,
+  Ok = 200
+}
+
+interface ErrorResponse {
+  name: string
+  status: ResponseCode,
+  message: string
+}
+
+async function isRepoNameUsed(client, owner, name) {
+  try {
+    const response = await client.request(`GET /repos/${owner}/${name}`)
+
+    return response.status === ResponseCode.Ok
+  }
+  catch (err) {
+    const error = err as ErrorResponse
+
+    if (error.status === ResponseCode.NotFound) return false
+  }
+
+  return true
+}
 
 function useRepoExists(
   token, org: SCMOrg | undefined, name: string | undefined, provider: ScmProvider
 ) {
+  const delay = 750
   const client = useMemo(() => new Octokit({ auth: token }), [token])
-  const [repositories, setRepositories] = useState<Set<string>>(new Set<string>())
   const [loading, setLoading] = useState(false)
-  const endpoint = useMemo(() => (org && org.orgType === OrgType.Organization ? `GET /orgs/${org.name}/repos` : 'GET /user/repos'), [org])
+  const [validated, setValidated] = useState(false)
+  const [exists, setExists] = useState(false)
 
   useEffect(() => {
-    setLoading(true)
+    setExists(false)
+    setValidated(false)
 
-    const load = async () => {
-      const { data: repositories } = await client.request(endpoint)
+    if (!name || name.length < 1 || provider !== ScmProvider.Github) return
 
-      setRepositories(new Set(repositories.map(repository => repository.name)))
-      setLoading(false)
-    }
+    const handler = setTimeout(() => {
+      setLoading(true)
+      isRepoNameUsed(client, org?.name, name).then(exists => setExists(exists)).finally(() => {
+        setLoading(false)
+        setValidated(true)
+      })
+    }, delay)
 
-    load()
-  }, [client, endpoint])
+    return () => clearTimeout(handler)
+  }, [client, name, org?.name, provider])
 
-  return provider === ScmProvider.Github ? { loading, exists: repositories.has(name || '') } : { loading: false, exists: false }
+  return provider === ScmProvider.Github ? { loading, exists, validated } : { loading: false, exists: false, validated: true }
 }
 
 export { useRepoExists }

@@ -22,7 +22,6 @@ import {
   ClusterIcon,
   CompassIcon,
   Sidebar as DSSidebar,
-  SidebarItem as DSSidebarItem,
   DiscordIcon,
   GitHubLogoIcon,
   ListIcon,
@@ -32,6 +31,7 @@ import {
   PeopleIcon,
   PersonIcon,
   ScrollIcon,
+  SidebarItem,
   SidebarSection,
   TerminalIcon,
 } from '@pluralsh/design-system'
@@ -119,7 +119,7 @@ function SidebarMenuItem({
   children: JSX.Element
 }) {
   return (
-    <DSSidebarItem
+    <SidebarItem
       clickable
       tooltip={tooltip}
       href={href}
@@ -128,7 +128,7 @@ function SidebarMenuItem({
       className={className}
     >
       {children}
-    </DSSidebarItem>
+    </SidebarItem>
   )
 }
 
@@ -189,7 +189,7 @@ function Sidebar(props: ComponentProps<typeof DSSidebar>) {
             const isActive = active(item)
 
             return (
-              <DSSidebarItem
+              <SidebarItem
                 key={i}
                 clickable
                 tooltip={item.text}
@@ -210,7 +210,7 @@ function Sidebar(props: ComponentProps<typeof DSSidebar>) {
                 width={32}
               >
                 {item.icon}
-              </DSSidebarItem>
+              </SidebarItem>
             )
           })}
           <Flex grow={1} />
@@ -234,7 +234,7 @@ function Sidebar(props: ComponentProps<typeof DSSidebar>) {
           {/* ---
           NOTIFICATIONS BELL
         --- */}
-          <DSSidebarItem
+          <SidebarItem
             position="relative"
             clickable
             label="Notifications"
@@ -273,11 +273,11 @@ function Sidebar(props: ComponentProps<typeof DSSidebar>) {
                 </Span>
               </Flex>
             )}
-          </DSSidebarItem>
+          </SidebarItem>
           {/* ---
           USER
         --- */}
-          <DSSidebarItem
+          <SidebarItem
             ref={menuItemRef}
             className="sidebar-menu"
             active={isMenuOpen}
@@ -290,7 +290,7 @@ function Sidebar(props: ComponentProps<typeof DSSidebar>) {
               src={me.avatar}
               size={32}
             />
-          </DSSidebarItem>
+          </SidebarItem>
         </SidebarSection>
       </DSSidebar>
       {/* ---

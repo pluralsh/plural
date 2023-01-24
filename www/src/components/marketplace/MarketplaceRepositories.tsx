@@ -53,12 +53,11 @@ const searchOptions = {
 }
 
 const chipProps = {
-  marginRight: 'xsmall',
-  marginBottom: 'xsmall',
   flexShrink: 0,
   tabIndex: 0,
   closeButton: true,
   clickable: true,
+  height: '100%',
 }
 
 const sidebarWidth = 256 - 32
@@ -280,91 +279,103 @@ function MarketplaceRepositories({ installed, publisher }: any) {
           maxWidth-desktopLarge-up={publisher ? 928 : null}
           width-desktopLarge-up={publisher ? 928 : null}
         >
-          <Div position="relative">
-            {publisher && (
-              <Div paddingLeft="large">
-                <H1 title1>{capitalize(publisher.name)}'s Apps</H1>
-                <Hr
-                  marginTop="large"
-                  marginBottom="medium"
-                />
-              </Div>
-            )}
-            <Flex
-              paddingLeft="large"
-              paddingRight={publisher ? 0 : 'large'}
-              align="stretch"
-              wrap
-              marginBottom="-8px"
-              paddingVertical={2}
-            >
-              <Div
-                minWidth="210px"
-                flex="1 1 210px"
-                marginBottom="xsmall"
-              >
-                <Input
-                  startIcon={<MagnifyingGlassIcon size={14} />}
-                  placeholder="Search for a repository"
-                  marginRight={
-                    [...categories, ...tags].length ? 'xsmall' : 'none'
-                  }
-                  value={search}
-                  onChange={event => setSearch(event.target.value)}
-                />
-              </Div>
-              {categories.map(category => (
-                <Chip
-                  {...chipProps}
-                  onClick={() => handleClearToken('category', category)}
-                  onKeyDown={event => (event.key === 'Enter' || event.key === ' ')
-                    && handleClearToken('category', category)}
-                >
-                  {capitalize(category)}
-                </Chip>
-              ))}
-              {tags.map(tag => (
-                <Chip
-                  {...chipProps}
-                  onClick={() => handleClearToken('tag', tag)}
-                  onKeyDown={event => (event.key === 'Enter' || event.key === ' ')
-                    && handleClearToken('tag', tag)}
-                >
-                  {capitalize(tag)}
-                </Chip>
-              ))}
-              {!!(categories.length || tags.length) && (
-                <Button
-                  marginBottom="xsmall"
-                  flexShrink={0}
-                  tertiary
-                  small
-                  onClick={() => handleClearTokens()}
-                >
-                  Clear all
-                </Button>
-              )}
-            </Flex>
-            <Div
-              flexShrink={0}
-              height={16}
-              width="100%"
-              background="linear-gradient(0deg, transparent 0%, fill-zero 50%);"
-              position="absolute"
-              top="100%"
-              zIndex={999}
-            />
-          </Div>
+          {publisher && (
+            <Div paddingLeft="large">
+              <H1 title1>{capitalize(publisher.name)}'s Apps</H1>
+              <Hr
+                marginTop="large"
+                marginBottom="medium"
+              />
+            </Div>
+          )}
           <Div
-            paddingTop="medium"
             paddingBottom="xxxlarge"
+            paddingLeft="large"
+            paddingRight="small"
             paddingHorizontal="large"
-            margin="xxsmall"
+            marginRight="large"
             overflowY="auto"
             overflowX="hidden"
             position="relative"
             ref={scrollRef}
           >
+            <Div
+              marginBottom="medium"
+              position="sticky"
+              top="0"
+              backgroundColor="fill-zero"
+            >
+              <Flex
+                align="stretch"
+                wrap
+                gap="small"
+              >
+                <Div
+                  minWidth="210px"
+                  flex="1 1 210px"
+                >
+                  <Input
+                    startIcon={<MagnifyingGlassIcon size={14} />}
+                    placeholder="Search for a repository"
+                    value={search}
+                    onChange={event => setSearch(event.target.value)}
+                  />
+                </Div>
+                {categories.map(category => (
+                  <Flex
+                    key={category}
+                    flexDirection="column"
+                  >
+                    <Chip
+                      {...chipProps}
+                      onClick={() => handleClearToken('category', category)}
+                      onKeyDown={event => (event.key === 'Enter' || event.key === ' ')
+                      && handleClearToken('category', category)}
+                    >
+                      {capitalize(category)}
+                    </Chip>
+                  </Flex>
+                ))}
+                {tags.map(tag => (
+                  <Flex
+                    key={tag}
+                    flexDirection="column"
+                  >
+                    <Chip
+                      {...chipProps}
+                      onClick={() => handleClearToken('tag', tag)}
+                      onKeyDown={event => (event.key === 'Enter' || event.key === ' ')
+                    && handleClearToken('tag', tag)}
+                    >
+                      {capitalize(tag)}
+                    </Chip>
+                  </Flex>
+                ))}
+                {!!(categories.length || tags.length) && (
+                  <Flex flexDirection="column">
+                    <Button
+                      height="100%"
+                      marginBottom="xsmall"
+                      flexShrink={0}
+                      tertiary
+                      small
+                      onClick={() => handleClearTokens()}
+                    >
+                      Clear all
+                    </Button>
+                  </Flex>
+                )}
+              </Flex>
+              <Div
+                flexShrink={0}
+                height={16}
+                width="100%"
+                background="linear-gradient(0deg, transparent 0%, fill-zero 90%);"
+                position="absolute"
+                top="100%"
+                zIndex={999}
+              />
+            </Div>
             {shouldRenderStacks && <MarketplaceStacks />}
             {resultRepositories?.length > 0 && !publisher && (
               <H1

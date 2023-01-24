@@ -8,7 +8,12 @@ import {
   WizardStepConfig,
 } from '@pluralsh/design-system'
 
-import { Provider, Recipe, RecipeSection } from '../../../../generated/graphql'
+import {
+  Datatype,
+  Provider,
+  Recipe,
+  RecipeSection,
+} from '../../../../generated/graphql'
 import { RECIPES_QUERY } from '../../../repository/queries'
 import { RECIPE_Q } from '../../../repos/queries'
 import { CREATE_QUICK_STACK_MUTATION, INSTALL_STACK_SHELL_MUTATION } from '../../queries'
@@ -103,6 +108,7 @@ const buildSteps = async (client: ApolloClient<unknown>, provider: Provider, sel
 
 const install = async (client: ApolloClient<unknown>, apps: Array<WizardStepConfig<any>>, provider: Provider) => {
   const toAPIContext = context => ({ ...Object.keys(context || {}).reduce((acc, key) => ({ ...acc, [key]: context[key].value }), {}) })
+  const toDataTypeValues = (context, datatype) => Object.keys(context || {}).reduce((acc: Array<any>, key) => (context[key].type === datatype ? [...acc, context[key].value] : [...acc]), [])
 
   const { data: { quickStack }, errors } = await client.mutate({
     mutation: CREATE_QUICK_STACK_MUTATION,
@@ -112,11 +118,12 @@ const install = async (client: ApolloClient<unknown>, apps: Array<WizardStepConf
   if (errors) return Promise.reject(errors)
 
   const configuration = apps.reduce((acc, app) => ({ ...acc, [app.label!]: toAPIContext(app.data?.context || {}) }), {})
+  const domains = apps.reduce((acc: Array<any>, app) => [...acc, ...toDataTypeValues(app.data?.context || {}, Datatype.Domain)], [])
+  const buckets = apps.reduce((acc: Array<any>, app) => [...acc, ...toDataTypeValues(app.data?.context || {}, Datatype.Bucket)], [])
 
-  // TODO: get domains and buckets for validation
   return client.mutate({
     mutation: INSTALL_STACK_SHELL_MUTATION,
-    variables: { name: quickStack.name, oidc: true, context: { configuration: JSON.stringify(configuration), domains: [], buckets: [] } },
+    variables: { name: quickStack.name, oidc: true, context: { configuration: JSON.stringify(configuration), domains, buckets } },
   })
 }
 

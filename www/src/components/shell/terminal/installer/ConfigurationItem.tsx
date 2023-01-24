@@ -72,7 +72,11 @@ function ConfigurationField({
 
   const [local, setLocal] = useState(modifier(value, true) || defaultValue)
 
-  useEffect(() => (local ? setValue(name, modifier(local), valid) : setValue(name, local, valid)), [local, setValue, modifier, name, valid])
+  useEffect(() => (local ? setValue(
+    name, modifier(local), valid, config?.type
+  ) : setValue(
+    name, local, valid, config?.type
+  )), [local, setValue, modifier, name, valid, config])
 
   return (
     <FormField

@@ -61,7 +61,7 @@ function StatusHeader({ header, description, error }: StatusHeaderProps) {
           color="text"
           fontWeight={600}
         >
-          {!error ? header : 'Cloud shell failed to build'}
+          {!error ? header : 'Cloud shell failed to start'}
         </P>
       </Flex>
       <P

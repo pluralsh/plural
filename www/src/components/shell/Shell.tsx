@@ -1,13 +1,18 @@
-import React, { useEffect, useMemo } from 'react'
+import React, { useCallback, useEffect, useMemo } from 'react'
 import { useMutation, useQuery } from '@apollo/client'
 import { Flex } from 'honorable'
-import { LoopingLogo } from '@pluralsh/design-system'
+import { Button, LoopingLogo } from '@pluralsh/design-system'
 
 import { CloudShell, RootQueryType } from '../../generated/graphql'
 import { ResponsiveLayoutContentContainer, ResponsiveLayoutSpacer } from '../layout/ResponsiveLayout'
 
 import { Onboarding } from './onboarding/Onboarding'
-import { CLOUD_SHELL_QUERY, REBOOT_SHELL_MUTATION, SETUP_SHELL_MUTATION } from './queries'
+import {
+  CLOUD_SHELL_QUERY,
+  DELETE_SHELL_MUTATION,
+  REBOOT_SHELL_MUTATION,
+  SETUP_SHELL_MUTATION,
+} from './queries'
 import OnboardingCard from './onboarding/OnboardingCard'
 import { ShellStatus } from './onboarding/sections/shell/ShellStatus'
 import Content from './terminal/Content'
@@ -24,16 +29,20 @@ function Loading() {
   )
 }
 
+const SHELL_POLL_INTERVAL = 5000
+
 function TerminalBootStatus() {
   const { data: { shell } = {}, stopPolling } = useQuery<Pick<RootQueryType, 'shell'>>(CLOUD_SHELL_QUERY, {
-    pollInterval: 5000,
+    pollInterval: SHELL_POLL_INTERVAL,
     fetchPolicy: 'network-only',
     nextFetchPolicy: 'network-only',
     initialFetchPolicy: 'network-only',
   })
   const [setupShell, { error }] = useMutation(SETUP_SHELL_MUTATION)
+  const [deleteShell] = useMutation(DELETE_SHELL_MUTATION)
   const loading = useMemo(() => !shell, [shell])
   const isReady = useMemo(() => (shell?.alive ?? false) && !!shell?.status && Object.values(shell.status).every(s => s), [shell])
+  const onDelete = useCallback(() => deleteShell().then(() => window.location.reload()), [deleteShell])
 
   useEffect(() => {
     if (isReady) setupShell()
@@ -58,6 +67,23 @@ function TerminalBootStatus() {
               error={error}
               loading
             />
+            {error && (
+              <Flex
+                gap="large"
+                justify="flex-end"
+                borderTop="1px solid border"
+                marginTop="medium"
+                paddingTop="large"
+                paddingBottom="xsmall"
+                paddingHorizontal="large"
+              >
+                <Button
+                  onClick={() => onDelete()}
+                  destructive
+                >Delete shell
+                </Button>
+              </Flex>
+            )}
           </OnboardingCard>
         </ResponsiveLayoutContentContainer>
         <ResponsiveLayoutSpacer />

@@ -72,12 +72,11 @@ function ProviderSelection({ data }) {
       <Callout
         severity="info"
         title="Why do I need to authenticate with GitHub/GitLab"
-        buttonProps={{ children: 'Learn more' }}
         expandable
         expanded={expanded}
         onExpand={setExpanded}
       >
-        We manage your cluster's state using Git, lorem ipsum dolor ist amet consectutor.
+        Plural manages all cluster configurations via Git, and will provision a Github repository on your behalf. This repository is set up using scoped deploy keys to store the state of your workspace, and no oauth credentials are persisted.
       </Callout>
 
       {isOnboarding && (

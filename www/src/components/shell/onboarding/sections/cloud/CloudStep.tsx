@@ -42,18 +42,16 @@ function CloudStep({ onBack, onNext }) {
           <Callout
             severity="info"
             title="Why do I need to enter my cloud credentials?"
-            buttonProps={{ children: 'Learn more' }}
             expandable
             expanded={expanded === CalloutKey.CloudCredentials}
             onExpand={expanded => setExpanded(expanded ? CalloutKey.CloudCredentials : undefined)}
           >
-            Connecting with your cloud credentials allows us to lorem ipsum dolor.
+            Plural uses your cloud credentials to create your infrastructure in your own cloud. All cloud credentials are stored securely using symmetric encryption.
           </Callout>
 
           <Callout
             severity="info"
             title="How much cloud cost should I expect?"
-            buttonProps={{ children: 'Learn more' }}
             expandable
             expanded={expanded === CalloutKey.CloudCost}
             onExpand={expanded => setExpanded(expanded ? CalloutKey.CloudCost : undefined)}

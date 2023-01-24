@@ -2491,6 +2491,7 @@ export type RootMutationType = {
   updateRepository?: Maybe<Repository>;
   updateRole?: Maybe<Role>;
   updateServiceAccount?: Maybe<User>;
+  updateShell?: Maybe<CloudShell>;
   updateShellConfiguration?: Maybe<Scalars['Boolean']>;
   updateStep?: Maybe<TestStep>;
   updateTerraform?: Maybe<Terraform>;
@@ -3133,6 +3134,11 @@ export type RootMutationTypeUpdateRoleArgs = {
 export type RootMutationTypeUpdateServiceAccountArgs = {
   attributes: ServiceAccountAttributes;
   id: Scalars['ID'];
+};
+
+
+export type RootMutationTypeUpdateShellArgs = {
+  attributes: CloudShellAttributes;
 };
 
 

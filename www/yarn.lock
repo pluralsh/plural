@@ -9415,7 +9415,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"git-url-parse@npm:^13.1.0":
+"git-url-parse@npm:13.1.0":
   version: 13.1.0
   resolution: "git-url-parse@npm:13.1.0"
   dependencies:
@@ -16656,7 +16656,7 @@ __metadata:
     filesize: 10.0.6
     forge-core: 1.4.6
     fuse.js: 6.6.2
-    git-url-parse: ^13.1.0
+    git-url-parse: 13.1.0
     grommet: 2.28.0
     history: 5.3.0
     honorable: 1.0.0-beta.17

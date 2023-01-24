@@ -1,6 +1,6 @@
 defmodule Core.Services.ShellTest do
   use Core.SchemaCase, async: true
-  alias Core.Services.{Shell, Dns, Encryption, Repositories, Clusters}
+  alias Core.Services.{Shell, Dns, Encryption, Repositories}
   alias Core.Services.Shell.Pods
   alias Kazan.Apis.Core.V1, as: CoreV1
   use Mimic

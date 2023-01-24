@@ -14,6 +14,13 @@ defmodule Core.PubSub.Usage.UsersTest do
       assert account.user_count == 1
       assert account.usage_updated
     end
+
+    test "it ignores service accounts" do
+      user = insert(:user, service_account: true)
+
+      event = %PubSub.UserCreated{item: user}
+      :ok = Usage.handle_event(event)
+    end
   end
 
   describe "UserDeleted" do
@@ -26,6 +33,13 @@ defmodule Core.PubSub.Usage.UsersTest do
       account = refetch(user.account)
       assert account.user_count == 0
       assert account.usage_updated
+    end
+
+    test "it ignores service accounts" do
+      user = insert(:user, service_account: true)
+
+      event = %PubSub.UserDeleted{item: user}
+      :ok = Usage.handle_event(event)
     end
   end
 end

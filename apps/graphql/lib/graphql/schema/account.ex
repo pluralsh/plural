@@ -81,6 +81,8 @@ defmodule GraphQl.Schema.Account do
     field :name,                 :string
     field :billing_customer_id,  :string
     field :workos_connection_id, :string
+    field :cluster_count,        :string
+    field :user_count,           :string
     field :delinquent_at,        :datetime
     field :grandfathered_unitl,  :datetime
 

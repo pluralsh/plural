@@ -5,7 +5,12 @@ import {
   useMemo,
 } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Flex, Img, Input } from 'honorable'
+import {
+  Flex,
+  Img,
+  Input,
+  Spinner,
+} from 'honorable'
 
 import {
   Button,
@@ -21,6 +26,7 @@ import { OrgType, SCMOrg } from '../../context/types'
 
 import { useGithubState } from './provider/github'
 import { useGitlabState } from './provider/gitlab'
+import { useRepoExists } from './provider/useRepoExists'
 
 interface OrgInputProps {
   orgs: Array<SCMOrg>
@@ -90,11 +96,14 @@ function OrgInput({ orgs }: OrgInputProps) {
   )
 }
 
-function RepositoryInput({ orgs }: any) {
+function RepositoryInput({ orgs, provider }: any) {
   const { scm, setSCM, setValid } = useContext(OnboardingContext)
   const maxLen = 100
   const setName = useCallback((name: string) => setSCM({ ...scm, repositoryName: name }), [setSCM, scm])
-  const isValid = useMemo(() => !!scm?.repositoryName?.length && isAlphanumeric(scm?.repositoryName), [scm])
+  const { loading, exists } = useRepoExists(
+    scm.token, scm.org, scm.repositoryName, provider
+  )
+  const isValid = useMemo(() => !!scm?.repositoryName?.length && isAlphanumeric(scm?.repositoryName) && !exists && !loading, [scm?.repositoryName, exists, loading])
 
   useEffect(() => setValid(isValid), [isValid, setValid])
 
@@ -116,6 +125,7 @@ function RepositoryInput({ orgs }: any) {
           onChange={({ target: { value } }) => setName(value.substring(0, maxLen))}
           value={scm?.repositoryName}
           placeholder="Choose a repository name"
+          endIcon={loading ? <Spinner /> : null}
         />
       </FormField>
     </>
@@ -127,7 +137,10 @@ function GithubRepositoryInput() {
   const orgs = useGithubState({ token: scm.token })
 
   return (
-    <RepositoryInput orgs={orgs} />
+    <RepositoryInput
+      orgs={orgs}
+      provider={ScmProvider.Github}
+    />
   )
 }
 
@@ -136,7 +149,10 @@ function GitlabRepositoryInput() {
   const orgs = useGitlabState({ token: scm.token })
 
   return (
-    <RepositoryInput orgs={orgs} />
+    <RepositoryInput
+      orgs={orgs}
+      provider={ScmProvider.Gitlab}
+    />
   )
 }
 

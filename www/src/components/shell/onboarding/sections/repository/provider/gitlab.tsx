@@ -4,7 +4,7 @@ import { Gitlab } from '@gitbeaker/browser'
 import { OrgType, SCMOrg } from '../../../context/types'
 
 // TODO: test this
-export function useGitlabState({ token }): Array<SCMOrg> {
+function useGitlabState({ token }): Array<SCMOrg> {
   const client = useMemo(() => new Gitlab({ oauthToken: token }), [token])
   const [orgs, setOrgs] = useState<Array<SCMOrg>>()
 
@@ -34,3 +34,5 @@ export function useGitlabState({ token }): Array<SCMOrg> {
 
   return orgs ?? []
 }
+
+export { useGitlabState }

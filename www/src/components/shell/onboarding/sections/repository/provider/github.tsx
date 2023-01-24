@@ -3,7 +3,7 @@ import { Octokit } from '@octokit/core'
 
 import { OrgType, SCMOrg } from '../../../context/types'
 
-export function useGithubState({ token }): Array<SCMOrg> {
+function useGithubState({ token }): Array<SCMOrg> {
   const client = useMemo(() => new Octokit({ auth: token }), [token])
   const [orgs, setOrgs] = useState<Array<SCMOrg>>()
 
@@ -25,3 +25,5 @@ export function useGithubState({ token }): Array<SCMOrg> {
 
   return orgs ?? []
 }
+
+export { useGithubState }

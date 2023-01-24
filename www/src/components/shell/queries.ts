@@ -135,19 +135,19 @@ export const STACK_QUERY = gql`
 `
 
 export const CREATE_QUICK_STACK_MUTATION = gql`
-    mutation QuickStacks($applicationIds: [ID], $provider: Provider!) {
-        quickStack(repositoryIds: $applicationIds, provider: $provider) {
-            id
-            name
-        }
+  mutation QuickStacks($applicationIds: [ID], $provider: Provider!) {
+    quickStack(repositoryIds: $applicationIds, provider: $provider) {
+      id
+      name
     }
+  }
 `
 
 export const INSTALL_STACK_SHELL_MUTATION = gql`
-    mutation InstallStackShell($name: String!, $context: ContextAttributes!, $oidc: Boolean!) {
-        installStackShell(name: $name, context: $context, oidc: $oidc) {
-            id
-            name
-        }
+  mutation InstallStackShell($name: String!, $context: ContextAttributes!, $oidc: Boolean!) {
+    installStackShell(name: $name, context: $context, oidc: $oidc) {
+      id
+      name
     }
+  }
 `

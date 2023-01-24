@@ -114,7 +114,7 @@ function RepositoryInput({ orgs, provider }: any) {
         width="100%"
         marginTop="medium"
         label="Repository name"
-        hint="Your repository's name must be globally unique."
+        hint={exists ? 'This repository already exists. Please use a different name.' : "Your repository's name must be globally unique."}
         length={scm?.repositoryName?.length || 0}
         maxLength={maxLen}
         error={!isValid}

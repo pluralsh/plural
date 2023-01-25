@@ -4,8 +4,6 @@ import { Octokit } from '@octokit/core'
 import { SCMOrg } from '../../../context/types'
 import { ScmProvider } from '../../../../../../generated/graphql'
 
-const MIN_REPO_NAME_LEN = 4
-
 enum ResponseCode {
   NotFound = 404,
   Ok = 200

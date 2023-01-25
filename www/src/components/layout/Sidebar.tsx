@@ -1,5 +1,5 @@
 import {
-  forwardRef,
+  useCallback,
   useContext,
   useRef,
   useState,
@@ -7,12 +7,11 @@ import {
 import { Link, useLocation } from 'react-router-dom'
 import {
   Avatar,
-  Div,
   Flex,
-  Img,
   Menu,
   MenuItem,
   P,
+  Span,
   useOutsideClick,
 } from 'honorable'
 import {
@@ -21,6 +20,8 @@ import {
   CloseIcon,
   ClusterIcon,
   CompassIcon,
+  Sidebar as DSSidebar,
+  SidebarItem as DSSidebarItem,
   DiscordIcon,
   GitHubLogoIcon,
   ListIcon,
@@ -30,9 +31,11 @@ import {
   PeopleIcon,
   PersonIcon,
   ScrollIcon,
+  SidebarSection,
   TerminalIcon,
-  Tooltip,
 } from '@pluralsh/design-system'
+
+import { useTheme } from 'styled-components'
 
 import { getPreviousUserData } from '../../helpers/authentication'
 import { handlePreviousUserClick } from '../login/CurrentUser'
@@ -43,234 +46,112 @@ import CreatePublisherModal from '../publisher/CreatePublisherModal'
 
 import { clearLocalStorage } from '../../helpers/localStorage'
 
-import { NotificationsPanel, WithNotifications } from './WithNotifications'
+import { NotificationsPanel, WithNotificationsCount, useNotificationsCount } from './WithNotifications'
 
 export const SIDEBAR_ICON_HEIGHT = '40px'
 export const SIDEBAR_WIDTH = '224px'
 export const SMALL_WIDTH = '60px'
 
-function SidebarWrapper() {
-  const { me } = useContext(CurrentUserContext)
-  const isCurrentlyOnboarding = useIsCurrentlyOnboarding()
-  const { pathname } = useLocation()
+/* TODO: Make sure urlRegexp is working with new Sidebar */
+const MENU_ITEMS = [
+  {
+    text: 'Marketplace',
+    icon: <MarketIcon />,
+    path: '/marketplace',
+    pathRegexp: /^\/(marketplace|installed|repository|stack)/,
+  },
+  {
+    text: 'Cloud Shell',
+    icon: <TerminalIcon />,
+    path: '/shell',
+    pathRegexp: /^\/(shell|oauth\/callback\/.+\/shell)/,
+  },
+  {
+    text: 'Account',
+    icon: <PeopleIcon />,
+    path: '/account',
+  },
+  {
+    text: 'Clusters',
+    icon: <ClusterIcon />,
+    path: '/clusters',
+  },
+  {
+    text: 'Audits',
+    icon: <ListIcon />,
+    path: '/audits',
+  },
+  {
+    text: 'Roadmap',
+    icon: <CompassIcon />,
+    path: '/roadmap',
+  },
+] as const
 
-  const items = [
-    {
-      name: 'Marketplace',
-      Icon: MarketIcon,
-      url: '/marketplace',
-      urlRegexp: /^\/(marketplace|installed|repository)/,
-    },
-    {
-      name: 'Cloud Shell',
-      Icon: TerminalIcon,
-      url: '/shell',
-      urlRegexp: /^\/(shell|oauth\/callback\/.+\/shell)/,
-    },
-    {
-      name: 'Account',
-      Icon: PeopleIcon,
-      url: '/account',
-    },
-    {
-      name: 'Clusters',
-      Icon: ClusterIcon,
-      url: '/clusters',
-    },
-    {
-      name: 'Audits',
-      Icon: ListIcon,
-      url: '/audits',
-    },
-    {
-      name: 'Roadmap',
-      Icon: CompassIcon,
-      url: '/roadmap',
-    },
-  ]
+function SidebarWrapper() {
+  const isCurrentlyOnboarding = useIsCurrentlyOnboarding()
 
   return (
-    <WithNotifications>
-      {({ notificationsCount }) => (
-        <Sidebar
-          transition="width 300ms ease, opacity 200ms ease"
-          style={isCurrentlyOnboarding ? {
+    <Sidebar
+      transition="width 300ms ease, opacity 200ms ease"
+      style={
+        isCurrentlyOnboarding
+          ? {
             width: '0',
             opacity: '0',
-          } : null}
-          items={items}
-          activeId={pathname}
-          notificationsCount={notificationsCount}
-          userName={me.name}
-          userImageUrl={me.avatar}
-          userAccount={me.account?.name}
-        />
-      )}
-    </WithNotifications>
-  )
-}
-
-function TransitionText({ collapsed, ...props }: any) {
-  return (
-    <P
-      display="block"
-      opacity={collapsed ? 0 : 1}
-      visibility={collapsed ? 'hidden' : 'visible'}
-      transition={`opacity ${collapsed ? 200 : 500}ms ease, background-color ${collapsed ? 200 : 500}ms ease ${collapsed ? 0 : 50}ms, visibility 200ms linear, color 150ms linear`}
-      {...props}
+          }
+          : null
+      }
     />
   )
 }
 
-function SidebarItemRef({
-  active,
-  highlight,
-  collapsed,
-  startIcon,
-  endIcon,
-  label,
+function SidebarMenuItem({
   tooltip,
-  badge = 0,
-  linkTo,
-  ...otherProps
-},
-ref) {
-  const [hovered, setHovered] = useState(false)
-
-  function wrapLink(node) {
-    if (!linkTo) return node
-
-    if (linkTo.startsWith('http')) {
-      return (
-        <a
-          href={linkTo}
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{ textDecoration: 'none' }}
-        >
-          {node}
-        </a>
-      )
-    }
-
-    return (
-      <Link
-        to={linkTo}
-        style={{ textDecoration: 'none' }}
-      >
-        {node}
-      </Link>
-    )
-  }
-
-  function wrapTooltip(node) {
-    if (!tooltip) return node
-
-    return (
-      <Tooltip
-        arrow
-        placement="right"
-        label={tooltip}
-        zIndex={9999999}
-        visibility={collapsed ? 'visible' : 'hidden'}
-        display={hovered ? 'block' : 'none'}
-        whiteSpace="nowrap"
-      >
-        {node}
-      </Tooltip>
-    )
-  }
-
-  function renderItem() {
-    return (
-      <Flex
-        ref={ref}
-        onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => setHovered(false)}
-        pt="13px" // Give it a square look with a weird padding
-        pb="6px"
-        px={0.75}
-        align="center"
-        borderRadius="normal"
-        cursor="pointer"
-        {...{ '& *': { color: highlight ? 'text-warning-light' : active ? 'text' : 'text-light' } }}
-        backgroundColor={active ? 'fill-zero-selected' : null}
-        _hover={{
-          '& *': { color: highlight ? 'text-warning-light' : 'text' },
-          backgroundColor: active ? 'fill-zero-selected' : 'fill-zero-hover',
-        }}
-        {...otherProps}
-      >
-        <Flex
-          align="center"
-          justify="center"
-          position="relative"
-        >
-          <Div {...{ '& *': { transition: 'color 150ms linear' } }}>
-            {startIcon}
-          </Div>
-          {badge > 0 && (
-            <Flex
-              align="center"
-              justify="center"
-              position="absolute"
-              backgroundColor="icon-error"
-              borderRadius="50%"
-              fontSize={8}
-              width={10}
-              height={10}
-              top={-6}
-              right={-8}
-            >
-              {badge}
-            </Flex>
-          )}
-        </Flex>
-        <Flex
-          ml={1}
-          mr={endIcon ? -0.25 : 0}
-          marginTop="-4px"
-          flexShrink={0}
-          align="center"
-          flexGrow={1}
-          opacity={collapsed ? 0 : 1}
-          visibility={collapsed ? 'hidden' : 'visible'}
-          transition={`opacity ${collapsed ? 200 : 500}ms ease, background-color ${collapsed ? 200 : 500}ms ease ${collapsed ? 0 : 50}ms, visibility 200ms linear, color 150ms linear`}
-        >
-          {label}
-          <Div
-            ml={1}
-            flexGrow={1}
-          />
-          {endIcon}
-        </Flex>
-      </Flex>
-    )
-  }
-
-  return wrapLink(wrapTooltip(renderItem()))
+  href,
+  className,
+  children,
+}: {
+  tooltip: string
+  href?: string
+  className?: string
+  children: JSX.Element
+}) {
+  return (
+    <DSSidebarItem
+      clickable
+      tooltip={tooltip}
+      href={href}
+      height={32}
+      width={32}
+      className={className}
+    >
+      {children}
+    </DSSidebarItem>
+  )
 }
 
-const SidebarItem = forwardRef(SidebarItemRef)
-
-function Sidebar({
-  activeId = '',
-  items = [],
-  notificationsCount = 0,
-  userImageUrl,
-  userName,
-  userAccount,
-  ...props
-}: any) {
+function Sidebar() {
   const menuItemRef = useRef<HTMLDivElement>(null)
   const menuRef = useRef<HTMLDivElement>(null)
   const notificationsPanelRef = useRef<HTMLDivElement>(null)
   const [isMenuOpen, setIsMenuOpened] = useState(false)
   const [collapsed, _setCollapsed] = useState(true)
-  const [isNotificationsPanelOpen, setIsNotificationsPanelOpen] = useState(false)
-  const [isCreatePublisherModalOpen, setIsCreatePublisherModalOpen] = useState(false)
+  const [isNotificationsPanelOpen, setIsNotificationsPanelOpen]
+    = useState(false)
+  const [isCreatePublisherModalOpen, setIsCreatePublisherModalOpen]
+    = useState(false)
   const sidebarWidth = collapsed ? 65 : 256 - 32 // 64 + 1px border
   const previousUserData = getPreviousUserData()
+  const theme = useTheme()
+  const { me } = useContext(CurrentUserContext)
+  const menuItems = MENU_ITEMS
+  const { pathname } = useLocation()
+  const active = useCallback(({ path, pathRegexp }: { path: string; pathRegexp?: RegExp }) => (path === '/'
+    ? pathname === path || pathname.startsWith('/apps/')
+    : pathname.startsWith(path))
+    || (pathRegexp && (pathname.match(pathRegexp)?.length ?? 0 > 0)), [pathname])
+  const notificationsCount = useNotificationsCount()
 
   useOutsideClick(menuRef, event => {
     if (!menuItemRef.current?.contains(event.target as any)) {
@@ -291,186 +172,121 @@ function Sidebar({
 
   return (
     <>
-      <Flex
-        direction="column"
-        flexGrow={0}
-        flexShrink={0}
-        width={sidebarWidth}
-        height="100vh"
-        maxHeight="100vh"
-        borderRight="1px solid border"
-        userSelect="none"
-        transition="width 300ms ease"
-        position="relative"
-        {...props}
-      >
-        {/* ---
-          HEADER
-        --- */}
-        <Link to="/">
-          <Flex
-            py={1}
-            pl={1.25}
-            flexShrink={0}
-            align="center"
-            borderBottom="1px solid border"
-          >
-            <Img
-              src="/plural-logo-white.svg"
-              width={24}
-            />
-            <TransitionText
-              ml={1}
-              mb="-4px"
-              collapsed={collapsed}
-            >
-              <Img
-                src="/plural-logotype-white.svg"
-                height={20}
-              />
-            </TransitionText>
-          </Flex>
-        </Link>
-        {/* ---
-          MENU
-        --- */}
-        <Div
-          py={0.75}
-          px={0.75}
-          flexGrow={1}
-          flexShrink={1}
-          overflowY="auto"
-          overflowX="hidden"
-          borderBottom="1px solid border"
-          {...{
-            '&::-webkit-scrollbar': {
-              display: 'none',
-            },
-            '&::-webkit-scrollbar-thumb': {
-              display: 'none',
-            },
-          }}
+      <DSSidebar backgroundColor={theme.colors?.['fill-one']}>
+        <SidebarSection
+          grow={1}
+          shrink={1}
         >
-          {items.map(({
-            name, Icon, url, urlRegexp,
-          }) => (
-            // @ts-expect-error
-            <SidebarItem
-              key={name}
-              marginBottom="xsmall"
-              active={activeId.startsWith(url) || urlRegexp?.test(activeId)}
-              collapsed={collapsed}
-              startIcon={<Icon />}
-              label={name}
-              tooltip={name}
-              linkTo={url}
-            />
-          ))}
-        </Div>
-        {/* ---
+          {/* ---
+          MENU ITEMS
+        --- */}
+          {menuItems.map((item, i) => {
+            const isActive = active(item)
+
+            return (
+              <DSSidebarItem
+                key={i}
+                clickable
+                tooltip={item.text}
+                className={`sidebar-${item.text}`}
+                as={Link}
+                to={item.path}
+                backgroundColor={
+                  isActive ? theme.colors?.['fill-one-selected'] : null
+                }
+                _hover={{
+                  backgroundColor: isActive
+                    ? theme.colors?.['fill-one-selected']
+                    : theme.colors?.['fill-one-hover'],
+                  cursor: 'pointer',
+                }}
+                borderRadius="normal"
+                height={32}
+                width={32}
+              >
+                {item.icon}
+              </DSSidebarItem>
+            )
+          })}
+          <Flex grow={1} />
+          {/* ---
           SOCIAL
         --- */}
-        <Div
-          py={0.75}
-          px={0.75}
-          flexShrink={0}
-          borderBottom="1px solid border"
-        >
-          {/* @ts-expect-error */}
-          <SidebarItem
-            mb={0.25}
-            collapsed={collapsed}
-            startIcon={<DiscordIcon />}
-            endIcon={(
-              <ArrowTopRightIcon />
-            )}
-            label="Discord"
+          <SidebarMenuItem
             tooltip="Discord"
-            linkTo="https://discord.gg/pluralsh"
-          />
-          {/* @ts-expect-error */}
-          <SidebarItem
-            collapsed={collapsed}
-            startIcon={<GitHubLogoIcon />}
-            endIcon={(
-              <ArrowTopRightIcon />
-            )}
-            label="GitHub"
+            className="sidebar-discord"
+            href="https://discord.gg/bEBAMXV64s"
+          >
+            <DiscordIcon />
+          </SidebarMenuItem>
+          <SidebarMenuItem
             tooltip="GitHub"
-            linkTo="https://github.com/pluralsh/plural"
-          />
-        </Div>
-        {/* ---
-          COLLAPSE
+            className="sidebar-github"
+            href="https://github.com/pluralsh/plural"
+          >
+            <GitHubLogoIcon />
+          </SidebarMenuItem>
+          {/* ---
+          NOTIFICATIONS BELL
         --- */}
-        <Div
-          pt={0.75}
-          px={0.75}
-          flexShrink={0}
-        >
-          {/* @ts-expect-error */}
-          <SidebarItem
-            active={isNotificationsPanelOpen}
-            collapsed={collapsed}
-            startIcon={<BellIcon />}
+          <DSSidebarItem
+            position="relative"
+            clickable
             label="Notifications"
             tooltip="Notifications"
+            className="sidebar-notifications"
             onClick={event => {
               event.stopPropagation()
-              setIsNotificationsPanelOpen(x => !x)
+              setIsNotificationsPanelOpen(isOpen => !isOpen)
             }}
-            badge={notificationsCount}
-          />
-        </Div>
-        {/* ---
+            backgroundColor={
+              isNotificationsPanelOpen
+                ? theme.colors?.['fill-one-selected']
+                : null
+            }
+            width={32}
+            height={32}
+          >
+            <BellIcon />
+            {notificationsCount > 0 && (
+              <Flex
+                color="white"
+                backgroundColor="error"
+                borderRadius="100%"
+                fontSize={11}
+                align="start"
+                justify="center"
+                height={15}
+                width={15}
+                position="absolute"
+                left={16}
+                top={2}
+              >
+                <Span marginTop={-2}>
+                  {notificationsCount > 99 ? '!' : notificationsCount}
+                </Span>
+              </Flex>
+            )}
+          </DSSidebarItem>
+          {/* ---
           USER
         --- */}
-        <Div
-          py={0.5}
-          px={0.5}
-          flexShrink={0}
-        >
-          {/* @ts-expect-error */}
-          <SidebarItem
+          <DSSidebarItem
             ref={menuItemRef}
-            py={0.25 / 2}
-            px={0.5}
+            className="sidebar-menu"
             active={isMenuOpen}
-            collapsed={collapsed}
-            startIcon={(
-              <Avatar
-                src={userImageUrl}
-                name={userName}
-                flexShrink={0}
-                size={32}
-              />
-            )}
-            label={(
-              <Div>
-                <Div
-                  collapsed={collapsed}
-                  color="text-strong"
-                  fontWeight={500}
-                  wordBreak="keep-all"
-                >
-                  {userName}
-                </Div>
-                {userAccount && (
-                  <Div
-                    body3
-                    collapsed={collapsed}
-                    color="text-xlight"
-                    wordBreak="keep-all"
-                  >
-                    {userAccount}
-                  </Div>
-                )}
-              </Div>
-            )}
+            clickable
+            collapsed
             onClick={() => setIsMenuOpened(x => !x)}
-          />
-        </Div>
-      </Flex>
+          >
+            <Avatar
+              name={me.name}
+              src={me.avatar}
+              size={32}
+            />
+          </DSSidebarItem>
+        </SidebarSection>
+      </DSSidebar>
       {/* ---
         MENU
       --- */}
@@ -537,7 +353,7 @@ function Sidebar({
           right={0}
           align="flex-end"
           backgroundColor="rgba(0, 0, 0, 0.5)"
-          zIndex={99999}
+          zIndex={theme.zIndexes.selectPopover - 1}
         >
           <Flex
             ref={notificationsPanelRef}
@@ -555,9 +371,7 @@ function Sidebar({
               padding="medium"
               borderBottom="1px solid border"
             >
-              <P subtitle2>
-                Notifications
-              </P>
+              <P subtitle2>Notifications</P>
               <Flex
                 align="center"
                 justify="center"
@@ -577,7 +391,9 @@ function Sidebar({
               direction="column"
               overflowY="auto"
             >
-              <NotificationsPanel closePanel={() => setIsNotificationsPanelOpen(false)} />
+              <NotificationsPanel
+                closePanel={() => setIsNotificationsPanelOpen(false)}
+              />
             </Flex>
           </Flex>
         </Flex>

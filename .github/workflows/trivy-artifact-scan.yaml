@@ -28,7 +28,7 @@ jobs:
         uses: aquasecurity/trivy-action@master
         with:
           scan-type: 'fs'
-          scan-ref: 'plural'
+          skip-dirs: '.github,.stoat,apps,bin,config,rel,testdata,www'
           hide-progress: false
           format: 'sarif'
           output: 'trivy-results.sarif'

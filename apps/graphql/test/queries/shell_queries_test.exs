@@ -67,18 +67,18 @@ defmodule GraphQl.ShellQueriesTest do
 
       expect(HTTPoison, :request, fn :get, "http://0.0.0.0:8080/v1/configuration", _, _, _ ->
         {:ok, %HTTPoison.Response{status_code: 200, body: Poison.encode!(%Models.Configuration{
-          workspace: %Models.Workspace{bucket_prefix: "pre", network: %Models.Network{plural_dns: true}},
+          workspace: %Models.Workspace{bucket_prefix: "pre", network: %Models.Network{plural_dns: true}, region: "us-east2"},
           git: %Models.Git{url: "git"},
           context_configuration: %{"some" => "config"},
           buckets: ["bucket"],
-          domains: ["some.example.com"]
+          domains: ["some.example.com"],
         })}}
       end)
 
       {:ok, %{data: %{"shellConfiguration" => found}}} = run_query("""
         query {
           shellConfiguration {
-            workspace { bucketPrefix network { pluralDns } }
+            workspace { bucketPrefix network { pluralDns } region }
             git { url }
             contextConfiguration
             buckets
@@ -88,6 +88,7 @@ defmodule GraphQl.ShellQueriesTest do
       """, %{}, %{current_user: shell.user})
 
       assert found["workspace"]["bucketPrefix"] == "pre"
+      assert found["workspace"]["region"] == "us-east2"
       assert found["workspace"]["network"]["pluralDns"]
       assert found["git"]["url"] == "git"
       assert found["contextConfiguration"] == %{"some" => "config"}

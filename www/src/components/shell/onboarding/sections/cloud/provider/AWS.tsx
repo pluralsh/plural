@@ -93,3 +93,4 @@ function AWS() {
 }
 
 export default AWS
+export { REGIONS }

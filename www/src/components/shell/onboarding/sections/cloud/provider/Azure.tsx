@@ -129,3 +129,4 @@ function Azure() {
 }
 
 export default Azure
+export { REGIONS }

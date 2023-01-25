@@ -1,13 +1,6 @@
-import {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
+import { useCallback, useState } from 'react'
 import { FileInput, ThemeContext } from 'grommet'
 import { Div, Span } from 'honorable'
-import IsEmpty from 'lodash/isEmpty'
 
 import {
   CloseIcon,
@@ -15,11 +8,6 @@ import {
   ListBoxItem,
   Select,
 } from '@pluralsh/design-system'
-
-import { OnboardingContext } from '../../../context/onboarding'
-import { IsObjectEmpty } from '../../../../../../utils/object'
-import { CloudProvider, GCPCloudProvider } from '../../../context/types'
-import { useSetCloudProviderKeys, useSetWorkspaceKeys } from '../../../context/hooks'
 
 const REGIONS = [
   'asia-east1',
@@ -60,18 +48,16 @@ const fileInputTheme = (selected, error) => ({
 })
 
 function GCP() {
-  const { cloud, setValid, workspace } = useContext(OnboardingContext)
-  const setCloudProviderKeys = useSetCloudProviderKeys<GCPCloudProvider>(CloudProvider.GCP)
-  const setWorkspaceKeys = useSetWorkspaceKeys()
-  const [fileSelected, setFileSelected] = useState(!!cloud?.gcp?.fileName)
+  // const { cloud, setValid, workspace } = useContext(OnboardingContext)
+  // const setCloudProviderKeys = useSetCloudProviderKeys<GCPCloudProvider>(CloudProvider.GCP)
+  // const setWorkspaceKeys = useSetWorkspaceKeys()
+  const [fileSelected, setFileSelected] = useState<boolean>()
   const [fileError, setFileError] = useState<FileError>()
-  const isValid = useMemo(() => !IsObjectEmpty(cloud?.gcp) && !IsObjectEmpty(workspace), [cloud, workspace])
+  // const isValid = useMemo(() => !IsObjectEmpty(cloud?.gcp) && !IsObjectEmpty(workspace), [cloud, workspace])
 
   const readFile = useCallback(async (files: FileList | undefined | null) => {
     setFileSelected(false)
     setFileError(undefined)
-    setCloudProviderKeys({ applicationCredentials: undefined, fileName: undefined })
-    setWorkspaceKeys({ project: undefined })
 
     if (files?.length === 0) return
 
@@ -93,20 +79,18 @@ function GCP() {
     }
 
     setFileSelected(true)
-    setWorkspaceKeys({ project: credentials.project_id })
-    setCloudProviderKeys({ applicationCredentials: content, fileName: file.name })
-  }, [setCloudProviderKeys, setWorkspaceKeys])
+  }, [])
 
-  useEffect(() => setValid(isValid), [isValid, setValid])
-  useEffect(() => (IsEmpty(workspace?.region) ? setWorkspaceKeys({ region: 'us-east1' }) : undefined), [setWorkspaceKeys, workspace])
+  // useEffect(() => setValid(isValid), [isValid, setValid])
+  // useEffect(() => (IsEmpty(workspace?.region) ? setWorkspaceKeys({ region: 'us-east1' }) : undefined), [setWorkspaceKeys, workspace])
 
   return (
     <>
       <FormField label="Region">
         <Select
-          selectedKey={workspace?.region}
-          onSelectionChange={value => setWorkspaceKeys({ region: `${value}` })}
-          maxHeight={200}
+          selectedKey={null}
+          // onSelectionChange={value => setWorkspaceKeys({ region: `${value}` })}
+          maxHeight={150}
         >
           {REGIONS.map(r => (
             <ListBoxItem
@@ -121,7 +105,7 @@ function GCP() {
       <FormField label="Service account credentials">
         <ThemeContext.Extend value={fileInputTheme(fileSelected, !!fileError)}>
           <FileInput
-            value={cloud?.gcp?.fileName ? [{ name: cloud.gcp.fileName }] as any : undefined}
+            // value={cloud?.gcp?.fileName ? [{ name: cloud.gcp.fileName }] as any : undefined}
             messages={{
               dropPrompt: 'Drop your service account credentials file here',
               browse: 'Select file',
@@ -150,4 +134,3 @@ function GCP() {
 }
 
 export default GCP
-export { REGIONS }

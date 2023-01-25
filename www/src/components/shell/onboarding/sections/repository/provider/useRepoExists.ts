@@ -17,7 +17,7 @@ interface ErrorResponse {
 
 async function isRepoNameUsed(client, owner, name) {
   try {
-    const response = await client.request(`GET /repos/${owner}/${name}`)
+    const response = await client.request(`GET /repos/${owner}/${name}`, { request: { cache: 'reload' } })
 
     return response.status === ResponseCode.Ok
   }

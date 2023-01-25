@@ -18,8 +18,8 @@ import { useResizeDetector } from 'react-resize-detector'
 
 import { socket } from '../../../helpers/client'
 
-import { normalizedThemes } from './theme/themes'
-import { TerminalThemeContext } from './theme/context'
+import { normalizedThemes } from './actionbar/theme/themes'
+import { TerminalThemeContext } from './actionbar/theme/context'
 import { State, TerminalContext } from './context/terminal'
 import { ActionBar } from './actionbar/ActionBar'
 

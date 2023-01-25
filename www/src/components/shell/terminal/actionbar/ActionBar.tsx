@@ -2,10 +2,10 @@ import { Dispatch, ReactElement, useState } from 'react'
 import { Button, Flex } from 'honorable'
 import { CliIcon, ToolIcon, Tooltip } from '@pluralsh/design-system'
 
-import { TerminalThemeSelector } from '../theme/Selector'
+import { TerminalThemeSelector } from './theme/Selector'
 
-import { Cheatsheet } from './Cheatsheet'
-import { MoreOptions } from './MoreOptions'
+import { Cheatsheet } from './cheatsheet/Cheatsheet'
+import { MoreOptions } from './options/MoreOptions'
 
 interface ActionBarItemProps {
   tooltip?: string,

@@ -7,7 +7,7 @@ import useOnboarded from '../hooks/useOnboarded'
 import OnboardingHeader from '../onboarding/OnboardingHeader'
 import { CLOUD_SHELL_QUERY } from '../queries'
 
-import TerminalThemeProvider from './theme/Provider'
+import TerminalThemeProvider from './actionbar/theme/Provider'
 import Terminal from './Terminal'
 import ContentCard from './ContentCard'
 import Installer from './installer/Installer'

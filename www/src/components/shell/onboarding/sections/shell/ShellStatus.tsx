@@ -17,7 +17,7 @@ import {
 import styled from 'styled-components'
 
 import { CloudShell } from '../../../../../generated/graphql'
-import { CopyButtonBase } from '../../../terminal/actionbar/Cheatsheet'
+import { CopyButtonBase } from '../../../terminal/actionbar/cheatsheet/CheatsheetCommand'
 
 interface StatusChipProps {
   loading: boolean,

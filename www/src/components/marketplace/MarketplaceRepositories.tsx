@@ -328,7 +328,7 @@ function MarketplaceRepositories({ installed, publisher }: any) {
             paddingTop="medium"
             paddingBottom="xxxlarge"
             paddingHorizontal="large"
-            margin="xxsmall"
+            marginRight="xxsmall"
             overflowY="auto"
             overflowX="hidden"
             position="relative"

@@ -4,9 +4,7 @@ import { Link } from 'react-router-dom'
 import { Repository } from '../../generated/graphql'
 
 import { fillEmptyColumns } from './utils'
-import { MarketplaceAppCard } from './AppCard'
-
-// Maket sure verified checkmark isn't supposed to go next to publisher
+import { MarketplaceAppCard } from './MarketplaceAppCard'
 
 export function RepoCardList({
   repositories,
@@ -15,8 +13,6 @@ export function RepoCardList({
   stretchLastRow = false,
   ...props
 }: any) {
-  console.log('repoProps', repoProps)
-
   const repos = repositories as Repository[]
 
   return (

@@ -24,6 +24,7 @@ export type Account = {
   __typename?: 'Account';
   backgroundColor?: Maybe<Scalars['String']>;
   billingCustomerId?: Maybe<Scalars['String']>;
+  clusterCount?: Maybe<Scalars['String']>;
   delinquentAt?: Maybe<Scalars['DateTime']>;
   domainMappings?: Maybe<Array<Maybe<DomainMapping>>>;
   grandfatheredUnitl?: Maybe<Scalars['DateTime']>;
@@ -34,6 +35,7 @@ export type Account = {
   rootUser?: Maybe<User>;
   subscription?: Maybe<PlatformSubscription>;
   updatedAt?: Maybe<Scalars['DateTime']>;
+  userCount?: Maybe<Scalars['String']>;
   workosConnectionId?: Maybe<Scalars['String']>;
 };
 

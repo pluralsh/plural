@@ -3,12 +3,10 @@ import { TabPanel } from '@pluralsh/design-system'
 import { useRef } from 'react'
 import { Outlet } from 'react-router-dom'
 
-import {
-  ResponsiveLayoutContentContainer,
-  ResponsiveLayoutSidecarContainer,
-  ResponsiveLayoutSidenavContainer,
-  ResponsiveLayoutSpacer,
-} from '../layout/ResponsiveLayout'
+import { ResponsiveLayoutContentContainer } from '../utils/layout/ResponsiveLayoutContentContainer'
+import { ResponsiveLayoutSidecarContainer } from '../utils/layout/ResponsiveLayoutSidecarContainer'
+import { ResponsiveLayoutSpacer } from '../utils/layout/ResponsiveLayoutSpacer'
+import { ResponsiveLayoutSidenavContainer } from '../utils/layout/ResponsiveLayoutSidenavContainer'
 
 import AccountSideNav from './AccountSidenav'
 

@@ -11,7 +11,9 @@ import { useContext, useRef } from 'react'
 
 import { LinkTabWrap } from '../utils/Tabs'
 
-import { ResponsiveLayoutContentContainer, ResponsiveLayoutSidenavContainer, ResponsiveLayoutSpacer } from '../layout/ResponsiveLayout'
+import { ResponsiveLayoutContentContainer } from '../utils/layout/ResponsiveLayoutContentContainer'
+import { ResponsiveLayoutSpacer } from '../utils/layout/ResponsiveLayoutSpacer'
+import { ResponsiveLayoutSidenavContainer } from '../utils/layout/ResponsiveLayoutSidenavContainer'
 import CurrentUserContext from '../../contexts/CurrentUserContext'
 
 const DIRECTORY = [

@@ -10,12 +10,10 @@ import { useSearchParams } from 'react-router-dom'
 import { useQuery } from '@apollo/client'
 import { LoopingLogo } from '@pluralsh/design-system'
 
-import {
-  ResponsiveLayoutContentContainer,
-  ResponsiveLayoutSidecarContainer,
-  ResponsiveLayoutSidenavContainer,
-  ResponsiveLayoutSpacer,
-} from '../../layout/ResponsiveLayout'
+import { ResponsiveLayoutContentContainer } from '../../utils/layout/ResponsiveLayoutContentContainer'
+import { ResponsiveLayoutSidecarContainer } from '../../utils/layout/ResponsiveLayoutSidecarContainer'
+import { ResponsiveLayoutSpacer } from '../../utils/layout/ResponsiveLayoutSpacer'
+import { ResponsiveLayoutSidenavContainer } from '../../utils/layout/ResponsiveLayoutSidenavContainer'
 import SelectedApplicationsContext, { SelectedApplicationsContextType } from '../../../contexts/SelectedApplicationsContext'
 import { persistApplications, retrieveApplications } from '../persistance'
 import { SEARCH_REPOS } from '../../repos/queries'

@@ -1,4 +1,5 @@
 import {
+  ComponentProps,
   useCallback,
   useContext,
   useRef,
@@ -46,7 +47,7 @@ import CreatePublisherModal from '../publisher/CreatePublisherModal'
 
 import { clearLocalStorage } from '../../helpers/localStorage'
 
-import { NotificationsPanel, WithNotificationsCount, useNotificationsCount } from './WithNotifications'
+import { NotificationsPanel, useNotificationsCount } from './WithNotifications'
 
 export const SIDEBAR_ICON_HEIGHT = '40px'
 export const SIDEBAR_WIDTH = '224px'
@@ -131,7 +132,7 @@ function SidebarMenuItem({
   )
 }
 
-function Sidebar() {
+function Sidebar(props: ComponentProps<typeof DSSidebar>) {
   const menuItemRef = useRef<HTMLDivElement>(null)
   const menuRef = useRef<HTMLDivElement>(null)
   const notificationsPanelRef = useRef<HTMLDivElement>(null)
@@ -150,7 +151,8 @@ function Sidebar() {
   const active = useCallback(({ path, pathRegexp }: { path: string; pathRegexp?: RegExp }) => (path === '/'
     ? pathname === path || pathname.startsWith('/apps/')
     : pathname.startsWith(path))
-    || (pathRegexp && (pathname.match(pathRegexp)?.length ?? 0 > 0)), [pathname])
+      || (pathRegexp && (pathname.match(pathRegexp)?.length ?? 0 > 0)),
+  [pathname])
   const notificationsCount = useNotificationsCount()
 
   useOutsideClick(menuRef, event => {
@@ -172,7 +174,10 @@ function Sidebar() {
 
   return (
     <>
-      <DSSidebar backgroundColor={theme.colors?.['fill-one']}>
+      <DSSidebar
+        backgroundColor={theme.colors?.['fill-one']}
+        {...props}
+      >
         <SidebarSection
           grow={1}
           shrink={1}
@@ -248,7 +253,8 @@ function Sidebar() {
             height={32}
           >
             <BellIcon />
-            {notificationsCount > 0 && (
+            {typeof notificationsCount === 'number'
+              && notificationsCount > 0 && (
               <Flex
                 color="white"
                 backgroundColor="error"

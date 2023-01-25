@@ -36,7 +36,8 @@ import { LoopingLogo } from '../utils/AnimatedLogo'
 import { LinkTabWrap } from '../utils/Tabs'
 
 import TopBar from '../layout/TopBar'
-import { ResponsiveLayoutSidecarContainer, ResponsiveLayoutSpacer } from '../layout/ResponsiveLayout'
+import { ResponsiveLayoutSidecarContainer } from '../utils/layout/ResponsiveLayoutSidecarContainer'
+import { ResponsiveLayoutSpacer } from '../utils/layout/ResponsiveLayoutSpacer'
 
 import PublisherSideNav from '../publisher/PublisherSideNav'
 import PublisherSideCar from '../publisher/PublisherSideCar'

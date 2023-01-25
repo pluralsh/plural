@@ -1,52 +1,12 @@
-import {
-  A,
-  Flex,
-  Span,
-  Text,
-} from 'honorable'
-import { ErrorIcon, Toast } from '@pluralsh/design-system'
-import { useContext } from 'react'
-import { useTheme } from 'styled-components'
-
-import { getPreviousUserData } from '../../helpers/authentication'
-import { handlePreviousUserClick } from '../login/CurrentUser'
-import CurrentUserContext from '../../contexts/CurrentUserContext'
+import { A, Flex, Span } from 'honorable'
+import { Toast } from '@pluralsh/design-system'
 
 import Sidebar from './Sidebar'
 import WithApplicationUpdate from './WithApplicationUpdate'
-
-function ServiceAccountBanner({ previousUser }: any) {
-  const { me } = useContext(CurrentUserContext)
-  const theme = useTheme()
-
-  return (
-    <Flex
-      direction="row"
-      justifyContent="center"
-      alignItems="center"
-      gap={theme.spacing.xsmall}
-      paddingTop="large"
-      paddingRight="medium"
-      paddingLeft="medium"
-    >
-      <ErrorIcon
-        color="text-warning-light"
-      />
-      <Text>
-        You are currently logged into the service account {me.email}.{' '}
-        <A
-          inline
-          onClick={() => handlePreviousUserClick(previousUser)}
-        >
-          Switch to {previousUser.me.email}
-        </A>
-      </Text>
-    </Flex>
-  )
-}
+import Header from './Header'
+import Subheader from './Subheader'
 
 function ApplicationLayout({ children }: any) {
-  const previousUser = getPreviousUserData()
   const isProduction = import.meta.env.MODE === 'production'
 
   return (
@@ -57,6 +17,7 @@ function ApplicationLayout({ children }: any) {
       height="100vh"
       maxHeight="100vh"
       overflow="hidden"
+      flexDirection="column"
     >
       {isProduction && (
         <WithApplicationUpdate>
@@ -77,14 +38,20 @@ function ApplicationLayout({ children }: any) {
           )}
         </WithApplicationUpdate>
       )}
-      <Sidebar />
+      <Header />
       <Flex
-        direction="column"
-        flexGrow={1}
-        overflowX="hidden"
+        width="100%"
+        height="100%"
       >
-        {previousUser && <ServiceAccountBanner previousUser={previousUser} />}
-        {children}
+        <Sidebar />
+        <Flex
+          direction="column"
+          flexGrow={1}
+          overflowX="hidden"
+        >
+          <Subheader />
+          {children}
+        </Flex>
       </Flex>
     </Flex>
   )

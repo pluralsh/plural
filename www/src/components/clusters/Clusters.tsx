@@ -11,12 +11,10 @@ import { ReactElement, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 
 import QueueContext from '../../contexts/QueueContext'
-import {
-  ResponsiveLayoutContentContainer,
-  ResponsiveLayoutSidecarContainer,
-  ResponsiveLayoutSidenavContainer,
-  ResponsiveLayoutSpacer,
-} from '../layout/ResponsiveLayout'
+import { ResponsiveLayoutContentContainer } from '../utils/layout/ResponsiveLayoutContentContainer'
+import { ResponsiveLayoutSidecarContainer } from '../utils/layout/ResponsiveLayoutSidecarContainer'
+import { ResponsiveLayoutSpacer } from '../utils/layout/ResponsiveLayoutSpacer'
+import { ResponsiveLayoutSidenavContainer } from '../utils/layout/ResponsiveLayoutSidenavContainer'
 
 import { ClustersContent, Upgrade } from './ClustersContent'
 import { ClustersSidecar } from './ClustersSidecar'

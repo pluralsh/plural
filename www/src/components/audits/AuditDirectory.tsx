@@ -3,7 +3,9 @@ import { Tab, TabList } from '@pluralsh/design-system'
 import { Outlet, useLocation } from 'react-router-dom'
 import { useRef } from 'react'
 
-import { ResponsiveLayoutContentContainer, ResponsiveLayoutSidenavContainer, ResponsiveLayoutSpacer } from '../layout/ResponsiveLayout'
+import { ResponsiveLayoutContentContainer } from '../utils/layout/ResponsiveLayoutContentContainer'
+import { ResponsiveLayoutSpacer } from '../utils/layout/ResponsiveLayoutSpacer'
+import { ResponsiveLayoutSidenavContainer } from '../utils/layout/ResponsiveLayoutSidenavContainer'
 
 import { LinkTabWrap } from '../utils/Tabs'
 

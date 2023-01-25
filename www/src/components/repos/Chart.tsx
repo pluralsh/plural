@@ -21,12 +21,10 @@ import { A, Flex } from 'honorable'
 
 import { updateCache } from '../../utils/graphql'
 
-import {
-  ResponsiveLayoutContentContainer,
-  ResponsiveLayoutSidecarContainer,
-  ResponsiveLayoutSidenavContainer,
-  ResponsiveLayoutSpacer,
-} from '../layout/ResponsiveLayout'
+import { ResponsiveLayoutContentContainer } from '../utils/layout/ResponsiveLayoutContentContainer'
+import { ResponsiveLayoutSidecarContainer } from '../utils/layout/ResponsiveLayoutSidecarContainer'
+import { ResponsiveLayoutSpacer } from '../utils/layout/ResponsiveLayoutSpacer'
+import { ResponsiveLayoutSidenavContainer } from '../utils/layout/ResponsiveLayoutSidenavContainer'
 import TopBar from '../layout/TopBar'
 
 import { GoBack } from '../utils/GoBack'

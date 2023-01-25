@@ -1,6 +1,6 @@
 import { Flex } from 'honorable'
 
-import { ResponsiveLayoutSpacer } from '../layout/ResponsiveLayout'
+import { ResponsiveLayoutSpacer } from '../utils/layout/ResponsiveLayoutSpacer'
 
 import MarketplaceRepositories from './MarketplaceRepositories'
 

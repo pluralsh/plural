@@ -1,5 +1,4 @@
 import { useQuery } from '@apollo/client'
-import { Box } from 'grommet'
 import {
   A,
   Br,
@@ -24,47 +23,47 @@ import { ClustersSidenav } from './ClustersSidenav'
 import { QUEUES, UPGRADE_QUEUE_SUB } from './queries'
 
 export interface QueueList {
-  upgradeQueues: Array<Queue>;
+  upgradeQueues: Array<Queue>
 }
 
 export interface QueueSubscription {
   upgradeQueueDelta: {
-    delta: 'CREATE',
-    payload: Queue;
+    delta: 'CREATE'
+    payload: Queue
   }
 }
 
 export interface Queue {
-  acked: string;
-  domain: string;
-  git: string;
-  id: string;
-  name: string;
-  pingedAt: string;
-  provider: string;
-  upgrades: Upgrade[];
+  acked: string
+  domain: string
+  git: string
+  id: string
+  name: string
+  pingedAt: string
+  provider: string
+  upgrades: Upgrade[]
 }
 
 export function Clusters(): ReactElement | null {
   const [queue, setQueue] = useState<Queue | undefined>({} as Queue)
-  const {
-    data,
-    subscribeToMore,
-  } = useQuery<QueueList>(QUEUES, { fetchPolicy: 'cache-and-network' })
+  const { data, subscribeToMore } = useQuery<QueueList>(QUEUES, {
+    fetchPolicy: 'cache-and-network',
+  })
 
   useEffect(() => subscribeToMore<QueueSubscription>({
     document: UPGRADE_QUEUE_SUB,
-    updateQuery: (prev, {
-      subscriptionData: {
-        data: {
-          upgradeQueueDelta: {
-            delta,
-            payload,
+    updateQuery: (prev,
+      {
+        subscriptionData: {
+          data: {
+            upgradeQueueDelta: { delta, payload },
           },
         },
-      },
-    }) => (delta === 'CREATE' ? { ...prev, upgradeQueues: [payload, ...prev.upgradeQueues] } : prev),
-  }), [subscribeToMore])
+      }) => (delta === 'CREATE'
+      ? { ...prev, upgradeQueues: [payload, ...prev.upgradeQueues] }
+      : prev),
+  }),
+  [subscribeToMore])
 
   useEffect(() => (data ? setQueue(data?.upgradeQueues[0]) : data), [data])
 
@@ -82,13 +81,17 @@ export function Clusters(): ReactElement | null {
 
   if (!data || !queue) {
     return (
-      <Box margin={{ top: '152px' }}>
-        <EmptyState
-          message="Looks like you don't have any clusters registered yet."
-        >
-          <Span>
-            Clusters are registered here once you've installed and deployed Plural
-            <Br />Console. If you need support installing it, read our&nbsp;
+      <Flex
+        height="100%"
+        alignItems="center"
+        justifyContent="center"
+        overflow="auto"
+      >
+        <EmptyState message="Looks like you don't have any clusters registered yet.">
+          <Span maxWidth={500}>
+            Clusters are registered here once you've installed and deployed
+            Plural
+            Console. If you need support installing it, read our&nbsp;
             <A
               inline
               href="https://docs.plural.sh/getting-started/getting-started"
@@ -96,7 +99,8 @@ export function Clusters(): ReactElement | null {
               rel="noopener noreferrer"
             >
               quickstart guide
-            </A>.
+            </A>
+            .
           </Span>
           <Button
             as={Link}
@@ -106,7 +110,7 @@ export function Clusters(): ReactElement | null {
             Install Plural Console
           </Button>
         </EmptyState>
-      </Box>
+      </Flex>
     )
   }
 

@@ -52,8 +52,6 @@ export function ClustersSidenav({
     <Flex
       gap={24}
       direction="column"
-      paddingVertical="large"
-      width={240}
     >
       <ProfileCard queue={queue} />
       <Div>

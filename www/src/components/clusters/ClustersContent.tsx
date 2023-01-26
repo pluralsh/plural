@@ -81,7 +81,7 @@ export function ClustersContent(): ReactElement | null {
     <Flex
       grow={1}
       direction="column"
-      paddingVertical="large"
+      overflow="hidden"
     >
       <PageTitle
         heading="Upgrades"

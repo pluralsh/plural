@@ -21,11 +21,10 @@ export function ClustersSidecar(): ReactElement {
     <Flex
       gap={24}
       direction="column"
-      paddingVertical="large"
+      overflow="hidden"
     >
       <Button
         secondary
-        endIcon={<ArrowTopRightIcon />}
         as={A}
         target="_blank"
         href={`https://${queue.domain}`}
@@ -35,12 +34,10 @@ export function ClustersSidecar(): ReactElement {
           },
         }}
       >
-        Console
+        Launch Console
       </Button>
       <Sidecar heading="Metadata">
-        <SidecarItem heading="Cluster name">
-          {queue.name}
-        </SidecarItem>
+        <SidecarItem heading="Cluster name">{queue.name}</SidecarItem>
         <SidecarItem heading="Git url">
           <A
             inline
@@ -52,9 +49,7 @@ export function ClustersSidecar(): ReactElement {
             {queue.git}
           </A>
         </SidecarItem>
-        <SidecarItem heading="Acked">
-          {queue.acked}
-        </SidecarItem>
+        <SidecarItem heading="Acked">{queue.acked}</SidecarItem>
         <SidecarItem heading="Last pinged">
           {moment(queue.pingedAt).format('lll')}
         </SidecarItem>

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
-import { FileInput, ThemeContext } from 'grommet'
+import { FileInput } from 'grommet'
+import { ThemeContext } from 'grommet/contexts'
 import { Div, Span } from 'honorable'
 import { CloseIcon, FormField } from '@pluralsh/design-system'
 
@@ -27,7 +28,6 @@ const fileInputTheme = (selected, error) => ({
 function GCP({ setProps, setValid }) {
   const [fileSelected, setFileSelected] = useState<boolean>()
   const [fileError, setFileError] = useState<FileError>()
-  // const isValid = useMemo(() => !IsObjectEmpty(cloud?.gcp) && !IsObjectEmpty(workspace), [cloud, workspace])
 
   const readFile = useCallback(async (files: FileList | undefined | null) => {
     setFileSelected(false)

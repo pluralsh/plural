@@ -5,16 +5,16 @@ import {
   useMemo,
   useState,
 } from 'react'
-import { FileInput, ThemeContext } from 'grommet'
 import { Div, Span } from 'honorable'
 import IsEmpty from 'lodash/isEmpty'
-
 import {
   CloseIcon,
   FormField,
   ListBoxItem,
   Select,
 } from '@pluralsh/design-system'
+import { FileInput } from 'grommet'
+import { ThemeContext } from 'grommet/contexts'
 
 import { OnboardingContext } from '../../../context/onboarding'
 import { IsObjectEmpty } from '../../../../../../utils/object'
@@ -43,27 +43,29 @@ enum FileError {
   InvalidContent = 'Invalid file content. Could not find \'project_id\'.',
 }
 
-const fileInputTheme = (selected, error) => ({
-  fileInput: {
-    hover: {
+function fileInputTheme(selected, error) {
+  return {
+    fileInput: {
+      hover: {
+        border: {
+          color: error ? 'error' : selected ? 'success' : 'selected',
+        },
+      },
       border: {
-        color: error ? 'error' : selected ? 'success' : 'selected',
+        color: error ? 'error' : selected ? 'success' : 'fill-three',
+      },
+      icons: {
+        remove: CloseIcon,
       },
     },
-    border: {
-      color: error ? 'error' : selected ? 'success' : 'fill-three',
-    },
-    icons: {
-      remove: CloseIcon,
-    },
-  },
-})
+  }
+}
 
 function GCP() {
   const { cloud, setValid, workspace } = useContext(OnboardingContext)
   const setCloudProviderKeys = useSetCloudProviderKeys<GCPCloudProvider>(CloudProvider.GCP)
   const setWorkspaceKeys = useSetWorkspaceKeys()
-  const [fileSelected, setFileSelected] = useState(!!cloud?.gcp?.fileName)
+  const [fileSelected, setFileSelected] = useState<boolean>(!!cloud?.gcp?.fileName)
   const [fileError, setFileError] = useState<FileError>()
   const isValid = useMemo(() => !IsObjectEmpty(cloud?.gcp) && !IsObjectEmpty(workspace), [cloud, workspace])
 
@@ -121,7 +123,7 @@ function GCP() {
       <FormField label="Service account credentials">
         <ThemeContext.Extend value={fileInputTheme(fileSelected, !!fileError)}>
           <FileInput
-            value={cloud?.gcp?.fileName ? [{ name: cloud.gcp.fileName }] as any : undefined}
+            value={cloud?.gcp?.fileName ? [{ name: cloud?.gcp?.fileName }] as any : undefined}
             messages={{
               dropPrompt: 'Drop your service account credentials file here',
               browse: 'Select file',
@@ -131,7 +133,7 @@ function GCP() {
               <Span
                 margin="small"
                 color="text-light"
-              >{file.name}
+              >{file?.name}
               </Span>
             )}
           />

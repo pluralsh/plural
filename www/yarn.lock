@@ -5811,10 +5811,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@zeit/schemas@npm:2.21.0":
-  version: 2.21.0
-  resolution: "@zeit/schemas@npm:2.21.0"
-  checksum: 59d4f0851dd6ff7a56ebab66f51af36bcebe9ac81377c1a9f85a97769c894f22168bbe88c47978964d95dd8ef76e9d25d2ed5a5131905d2aea703423fe3930ad
+"@zeit/schemas@npm:2.29.0":
+  version: 2.29.0
+  resolution: "@zeit/schemas@npm:2.29.0"
+  checksum: 3cea06bb67d790336aca0cc17580fd492ff3fc66ef4d180dce7053ff7ff54ab81b56bf718ba6f537148c581161d06306a481ec218d540bff922e0e009844ffd1
   languageName: node
   linkType: hard
 
@@ -14288,11 +14288,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"serve@npm:14.1.2":
-  version: 14.1.2
-  resolution: "serve@npm:14.1.2"
+"serve@npm:14.2.0":
+  version: 14.2.0
+  resolution: "serve@npm:14.2.0"
   dependencies:
-    "@zeit/schemas": 2.21.0
+    "@zeit/schemas": 2.29.0
     ajv: 8.11.0
     arg: 5.0.2
     boxen: 7.0.0
@@ -14305,7 +14305,7 @@ __metadata:
     update-check: 1.5.4
   bin:
     serve: build/main.js
-  checksum: 814e429f2373addca7e57c38c548ae1d4ef7afe52f5091aa421604f4c61633417e891834d5c7bcb6439ee4b0aeb7a4871e3e704c42173b602986566be21f5375
+  checksum: a1c26e6c3dd0c482589b39a105e2f09bebf20ee8a0358accd5d64b313952ad3e1a56b8af2bdfef269f9fd37140b4f6c940d12395c851e4a46dfdace8f97616e4
   languageName: node
   linkType: hard
 
@@ -16721,7 +16721,7 @@ __metadata:
     react-window-reversed: 1.4.1
     rehype-raw: 6.1.1
     rollup-plugin-polyfill-node: 0.11.0
-    serve: 14.1.2
+    serve: 14.2.0
     slate: 0.87.0
     slate-history: 0.86.0
     slate-react: 0.88.0

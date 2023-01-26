@@ -1,75 +1,32 @@
 import { Flex } from 'honorable'
+import { FormField, Input } from '@pluralsh/design-system'
+import { useEffect, useMemo } from 'react'
 
-import {
-  FormField,
-  Input,
-  ListBoxItem,
-  Select,
-} from '@pluralsh/design-system'
+import { IsObjectEmpty } from '../../../../../../utils/object'
 
-const REGIONS = [
-  'eastus',
-  'eastus2',
-  'southcentralus',
-  'westus2',
-  'westus3',
-  'australiaeast',
-  'southeastasia',
-  'northeurope',
-  'swedencentral',
-  'uksouth',
-  'westeurope',
-  'centralus',
-  'southafricanorth',
-  'centralindia',
-  'eastasia',
-  'japaneast',
-  'koreacentral',
-  'canadacentral',
-  'francecentral',
-  'germanywestcentral',
-  'norwayeast',
-  'brazilsouth',
-]
+function Azure({ props, setProps, setValid }) {
+  const isValid = useMemo(() => !IsObjectEmpty(props?.azure), [props])
 
-function Azure() {
-  // const { cloud, setValid, workspace } = useContext(OnboardingContext)
-  // const setCloudProviderKeys = useSetCloudProviderKeys<AzureCloudProvider>(CloudProvider.Azure)
-  // const setWorkspaceKeys = useSetWorkspaceKeys()
-  // const isValid = useMemo(() => !IsObjectEmpty(cloud?.azure) && !IsObjectEmpty(workspace), [cloud, workspace])
+  // Init props provider object
+  useEffect(() => {
+    setProps({
+      azure: {
+        clientID: '', clientSecret: '', subscriptionID: '', tenantID: '', resourceGroup: '', storageAccount: '',
+      },
+    })
+  }, [setProps])
 
-  // useEffect(() => setValid(isValid), [isValid, setValid])
-  // useEffect(() => (IsEmpty(workspace?.region) ? setWorkspaceKeys({ region: 'eastus' }) : undefined), [setWorkspaceKeys, workspace])
-  // useEffect(() => (IsEmpty(cloud?.azure) ? setCloudProviderKeys({
-  //   tenantID: '', subscriptionID: '', storageAccount: '', clientSecret: '', clientID: '', resourceGroup: '',
-  // }) : undefined), [setCloudProviderKeys, cloud?.azure])
+  useEffect(() => setValid(isValid), [isValid, setValid])
 
   return (
     <>
-      <FormField label="Region">
-        <Select
-          selectedKey={null}
-          // onSelectionChange={value => setWorkspaceKeys({ region: `${value}` })}
-          maxHeight={150}
-        >
-          {REGIONS.map(r => (
-            <ListBoxItem
-              key={r}
-              label={r}
-              textValue={r}
-            />
-          ))}
-
-        </Select>
-      </FormField>
       <Flex gap="large">
         <FormField
           label="Client ID"
           width="100%"
         >
           <Input
-            value={null}
-            // onChange={({ target: { value } }) => setCloudProviderKeys({ clientID: value })}
+            onChange={({ target: { value } }) => setProps(props => ({ azure: { ...props.azure, clientID: value } }))}
           />
         </FormField>
         <FormField
@@ -77,8 +34,7 @@ function Azure() {
           width="100%"
         >
           <Input
-            value={null}
-            // onChange={({ target: { value } }) => setCloudProviderKeys({ clientSecret: value })}
+            onChange={({ target: { value } }) => setProps(props => ({ azure: { ...props.azure, clientSecret: value } }))}
             type="password"
           />
         </FormField>
@@ -90,8 +46,7 @@ function Azure() {
           width="100%"
         >
           <Input
-            value={null}
-            // onChange={({ target: { value } }) => setCloudProviderKeys({ subscriptionID: value })}
+            onChange={({ target: { value } }) => setProps(props => ({ azure: { ...props.azure, subscriptionID: value } }))}
           />
         </FormField>
         <FormField
@@ -99,22 +54,19 @@ function Azure() {
           width="100%"
         >
           <Input
-            value={null}
-            // onChange={({ target: { value } }) => setCloudProviderKeys({ tenantID: value })}
+            onChange={({ target: { value } }) => setProps(props => ({ azure: { ...props.azure, tenantID: value } }))}
           />
         </FormField>
       </Flex>
 
       <FormField label="Resource Group">
         <Input
-          value={null}
-          // onChange={({ target: { value } }) => setCloudProviderKeys({ resourceGroup: value })}
+          onChange={({ target: { value } }) => setProps(props => ({ azure: { ...props.azure, resourceGroup: value } }))}
         />
       </FormField>
       <FormField label="Storage Account">
         <Input
-          value={null}
-          // onChange={({ target: { value } }) => setCloudProviderKeys({ storageAccount: value })}
+          onChange={({ target: { value } }) => setProps(props => ({ azure: { ...props.azure, storageAccount: value } }))}
         />
       </FormField>
     </>

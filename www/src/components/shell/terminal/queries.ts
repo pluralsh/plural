@@ -10,6 +10,7 @@ export const SHELL_CONFIGURATION_QUERY = gql`
             workspace {
                 bucketPrefix
                 cluster
+                region
                 network {
                     pluralDns
                     subdomain
@@ -17,4 +18,12 @@ export const SHELL_CONFIGURATION_QUERY = gql`
             }
         }
     }
+`
+
+export const UPDATE_SHELL_MUTATION = gql`
+  mutation UpdateShell($attributes: CloudShellAttributes!) {
+    updateShell(attributes: $attributes) {
+            id
+    }
+  }
 `

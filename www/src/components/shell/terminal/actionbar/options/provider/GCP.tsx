@@ -1,30 +1,7 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { FileInput, ThemeContext } from 'grommet'
 import { Div, Span } from 'honorable'
-
-import {
-  CloseIcon,
-  FormField,
-  ListBoxItem,
-  Select,
-} from '@pluralsh/design-system'
-
-const REGIONS = [
-  'asia-east1',
-  'asia-east2',
-  'asia-northeast1',
-  'asia-northeast2',
-  'asia-northeast3',
-  'asia-south1',
-  'asia-southeast1',
-  'australia-southeast1',
-  'europe-central2',
-  'europe-west2',
-  'europe-west3',
-  'us-east1',
-  'us-west1',
-  'us-west2',
-]
+import { CloseIcon, FormField } from '@pluralsh/design-system'
 
 enum FileError {
   InvalidFormat = 'Invalid file format. Expected JSON.',
@@ -47,10 +24,7 @@ const fileInputTheme = (selected, error) => ({
   },
 })
 
-function GCP() {
-  // const { cloud, setValid, workspace } = useContext(OnboardingContext)
-  // const setCloudProviderKeys = useSetCloudProviderKeys<GCPCloudProvider>(CloudProvider.GCP)
-  // const setWorkspaceKeys = useSetWorkspaceKeys()
+function GCP({ setProps, setValid }) {
   const [fileSelected, setFileSelected] = useState<boolean>()
   const [fileError, setFileError] = useState<FileError>()
   // const isValid = useMemo(() => !IsObjectEmpty(cloud?.gcp) && !IsObjectEmpty(workspace), [cloud, workspace])
@@ -58,6 +32,8 @@ function GCP() {
   const readFile = useCallback(async (files: FileList | undefined | null) => {
     setFileSelected(false)
     setFileError(undefined)
+    setValid(false)
+    setProps({ gcp: { applicationCredentials: '' } })
 
     if (files?.length === 0) return
 
@@ -79,57 +55,42 @@ function GCP() {
     }
 
     setFileSelected(true)
-  }, [])
+    setProps({ gcp: { applicationCredentials: content } })
+    setValid(true)
+  }, [setProps, setValid])
 
-  // useEffect(() => setValid(isValid), [isValid, setValid])
-  // useEffect(() => (IsEmpty(workspace?.region) ? setWorkspaceKeys({ region: 'us-east1' }) : undefined), [setWorkspaceKeys, workspace])
+  // Init props provider object
+  useEffect(() => {
+    setProps({ gcp: { applicationCredentials: '' } })
+  }, [setProps])
 
   return (
-    <>
-      <FormField label="Region">
-        <Select
-          selectedKey={null}
-          // onSelectionChange={value => setWorkspaceKeys({ region: `${value}` })}
-          maxHeight={150}
-        >
-          {REGIONS.map(r => (
-            <ListBoxItem
-              key={r}
-              label={r}
-              textValue={r}
-            />
-          ))}
-
-        </Select>
-      </FormField>
-      <FormField label="Service account credentials">
-        <ThemeContext.Extend value={fileInputTheme(fileSelected, !!fileError)}>
-          <FileInput
-            // value={cloud?.gcp?.fileName ? [{ name: cloud.gcp.fileName }] as any : undefined}
-            messages={{
-              dropPrompt: 'Drop your service account credentials file here',
-              browse: 'Select file',
-            }}
-            onChange={event => readFile(event?.target?.files)}
-            renderFile={file => (
-              <Span
-                margin="small"
-                color="text-light"
-              >{file.name}
-              </Span>
-            )}
-          />
-        </ThemeContext.Extend>
-        {!!fileError && (
-          <Div
-            marginTop="xxsmall"
-            fontSize="small"
-            color="error"
-          >{fileError}
-          </Div>
-        )}
-      </FormField>
-    </>
+    <FormField label="Service account credentials">
+      <ThemeContext.Extend value={fileInputTheme(fileSelected, !!fileError)}>
+        <FileInput
+          messages={{
+            dropPrompt: 'Drop your service account credentials file here',
+            browse: 'Select file',
+          }}
+          onChange={event => readFile(event?.target?.files)}
+          renderFile={file => (
+            <Span
+              margin="small"
+              color="text-light"
+            >{file.name}
+            </Span>
+          )}
+        />
+      </ThemeContext.Extend>
+      {!!fileError && (
+        <Div
+          marginTop="xxsmall"
+          fontSize="small"
+          color="error"
+        >{fileError}
+        </Div>
+      )}
+    </FormField>
   )
 }
 

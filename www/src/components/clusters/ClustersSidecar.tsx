@@ -1,11 +1,6 @@
 import { A, Flex } from 'honorable'
 import moment from 'moment'
-import {
-  ArrowTopRightIcon,
-  Button,
-  Sidecar,
-  SidecarItem,
-} from '@pluralsh/design-system'
+import { Button, Sidecar, SidecarItem } from '@pluralsh/design-system'
 import { ReactElement, useContext } from 'react'
 
 import QueueContext from '../../contexts/QueueContext'

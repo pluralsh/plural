@@ -1,10 +1,5 @@
 import { useQuery } from '@apollo/client'
-import {
-  A,
-  Br,
-  Flex,
-  Span,
-} from 'honorable'
+import { A, Flex, Span } from 'honorable'
 import { Button, EmptyState, LoopingLogo } from '@pluralsh/design-system'
 import { ReactElement, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'

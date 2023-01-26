@@ -16,7 +16,6 @@ import {
   TabPanel,
 } from '@pluralsh/design-system'
 import moment from 'moment'
-
 import { A, Flex } from 'honorable'
 
 import { updateCache } from '../../utils/graphql'
@@ -25,16 +24,11 @@ import { ResponsiveLayoutContentContainer } from '../utils/layout/ResponsiveLayo
 import { ResponsiveLayoutSidecarContainer } from '../utils/layout/ResponsiveLayoutSidecarContainer'
 import { ResponsiveLayoutSpacer } from '../utils/layout/ResponsiveLayoutSpacer'
 import { ResponsiveLayoutSidenavContainer } from '../utils/layout/ResponsiveLayoutSidenavContainer'
-import TopBar from '../layout/TopBar'
-
-import { GoBack } from '../utils/GoBack'
+import { ResponsiveLayoutPage } from '../utils/layout/ResponsiveLayoutPage'
+import { SideNavOffset } from '../utils/layout/SideNavOffset'
 import { LinkTabWrap } from '../utils/Tabs'
 
 import PluralConfigurationContext from '../../contexts/PluralConfigurationContext'
-
-import { ResponsiveLayoutPage } from '../utils/layout/ResponsiveLayoutPage'
-
-import { SideNavOffset } from '../utils/layout/SideNavOffset'
 
 import {
   PackageGrade,
@@ -48,7 +42,6 @@ import { CHART_Q, INSTALL_CHART, UPDATE_CHART_INST } from './queries'
 import { DEFAULT_CHART_ICON } from './constants'
 
 import { DetailContainer } from './Installation'
-import { UnderTopBar } from './UnderTopBar'
 
 function ChartInfo({ version: { helm, insertedAt } }: any) {
   return (
@@ -226,75 +219,65 @@ export default function Chart() {
     .find(tab => pathname?.startsWith(`${pathPrefix}${tab.path}`))
 
   return (
-    <ResponsiveLayoutPage flexDirection="column">
-      <TopBar>
-        <GoBack
-          text="Back to packages"
-          link={`/repository/${chart.repository.name}/packages/helm`}
+    <ResponsiveLayoutPage>
+      <ResponsiveLayoutSidenavContainer>
+        <PackageHeader
+          name={currentVersion.chart.name}
+          icon={currentVersion.chart.icon || DEFAULT_CHART_ICON}
         />
-      </TopBar>
-      <UnderTopBar>
-        <ResponsiveLayoutSidenavContainer>
-          <PackageHeader
-            name={currentVersion.chart.name}
-            icon={currentVersion.chart.icon || DEFAULT_CHART_ICON}
-          />
-          <PackageVersionPicker
-            edges={edges}
-            installed={chartInst}
-            version={version || currentVersion}
-            setVersion={setVersion}
-            pageInfo={pageInfo}
-            fetchMore={fetchMore}
-          />
-          <SideNavOffset>
-            <TabList
-              stateRef={tabStateRef}
-              stateProps={{
-                orientation: 'vertical',
-                selectedKey: currentTab?.path,
-              }}
-            >
-              {filteredDirectory.map(({ label, textValue, path }) => (
-                <LinkTabWrap
-                  key={path}
-                  textValue={
-                    typeof label === 'string' ? label : textValue || ''
-                  }
-                  to={`${pathPrefix}${path}`}
-                >
-                  <Tab>{label}</Tab>
-                </LinkTabWrap>
-              ))}
-            </TabList>
-          </SideNavOffset>
-        </ResponsiveLayoutSidenavContainer>
-        <ResponsiveLayoutSpacer />
-        <TabPanel
-          as={<ResponsiveLayoutContentContainer />}
-          stateRef={tabStateRef}
-        >
-          <Outlet
-            context={{ helmChart: chart, currentHelmChart: currentVersion }}
-          />
-        </TabPanel>
-        <ResponsiveLayoutSidecarContainer width="200px">
-          <Flex
-            gap="medium"
-            direction="column"
-            paddingTop={hasActions() ? '' : 'xsmall'}
-            marginTop={hasActions() ? '' : 'xxlarge'}
+        <PackageVersionPicker
+          edges={edges}
+          installed={chartInst}
+          version={version || currentVersion}
+          setVersion={setVersion}
+          pageInfo={pageInfo}
+          fetchMore={fetchMore}
+        />
+        <SideNavOffset>
+          <TabList
+            stateRef={tabStateRef}
+            stateProps={{
+              orientation: 'vertical',
+              selectedKey: currentTab?.path,
+            }}
           >
-            <ChartActions
-              chart={chart}
-              currentVersion={currentVersion}
-            />
-            <ChartInfo version={currentVersion} />
-            <ImageDependencies version={currentVersion} />
-          </Flex>
-        </ResponsiveLayoutSidecarContainer>
-        <ResponsiveLayoutSpacer />
-      </UnderTopBar>
+            {filteredDirectory.map(({ label, textValue, path }) => (
+              <LinkTabWrap
+                key={path}
+                textValue={typeof label === 'string' ? label : textValue || ''}
+                to={`${pathPrefix}${path}`}
+              >
+                <Tab>{label}</Tab>
+              </LinkTabWrap>
+            ))}
+          </TabList>
+        </SideNavOffset>
+      </ResponsiveLayoutSidenavContainer>
+      <ResponsiveLayoutSpacer />
+      <TabPanel
+        as={<ResponsiveLayoutContentContainer />}
+        stateRef={tabStateRef}
+      >
+        <Outlet
+          context={{ helmChart: chart, currentHelmChart: currentVersion }}
+        />
+      </TabPanel>
+      <ResponsiveLayoutSidecarContainer width="200px">
+        <Flex
+          gap="medium"
+          direction="column"
+          paddingTop={hasActions() ? '' : 'xsmall'}
+          marginTop={hasActions() ? '' : 'xxlarge'}
+        >
+          <ChartActions
+            chart={chart}
+            currentVersion={currentVersion}
+          />
+          <ChartInfo version={currentVersion} />
+          <ImageDependencies version={currentVersion} />
+        </Flex>
+      </ResponsiveLayoutSidecarContainer>
+      <ResponsiveLayoutSpacer />
     </ResponsiveLayoutPage>
   )
 }

@@ -1,49 +1,62 @@
-import { Div, Flex, Img } from 'honorable'
+import {
+  A,
+  Div,
+  Flex,
+  Img,
+} from 'honorable'
 import { Button, Tooltip } from '@pluralsh/design-system'
 import { useTheme } from 'styled-components'
+
+import { useQuery } from '@apollo/client'
+
+import { QueueList } from '../clusters/Clusters'
+import { QUEUES } from '../clusters/queries'
 
 const APP_ICON = '/app-logo-white.png'
 
 export default function Header() {
   const theme = useTheme()
 
-  // TODO: Implement console link button once we have the ability to reliably
-  // determine the url to the user's console isntance
+  const { data: queuesData } = useQuery<QueueList>(QUEUES, {
+    fetchPolicy: 'cache-and-network',
+    pollInterval: 10 * 60 * 1000 /* check every 10 min */,
+  })
 
-  // const consoleLink = ''
+  const consoleDomain = queuesData?.upgradeQueues?.[0]?.domain
+  const consoleLink = consoleDomain ? `https://${consoleDomain}` : null
 
-  // let consoleButton = (
-  //   <Button
-  //     small
-  //     {...(consoleLink
-  //       ? {
-  //         as: 'a',
-  //         href: consoleLink,
-  //         target: '_blank',
-  //         rel: 'noopener noreferrer',
-  //       }
-  //       : { disabled: true })}
-  //   >
-  //     Launch Console
-  //   </Button>
-  // )
+  let consoleButton = (
+    <Button
+      small
+      {...(consoleLink
+        ? {
+          as: A,
+          href: consoleLink,
+          target: '_blank',
+          rel: 'noopener noreferrer',
+          textDecoration: 'none !important',
+        }
+        : { disabled: true })}
+    >
+      Launch Console
+    </Button>
+  )
 
-  // if (!consoleLink) {
-  //   consoleButton = (
-  //     <Tooltip
-  //       placement="bottom-end"
-  //       label={(
-  //         <>
-  //           You must have Plural Console
-  //           <br />
-  //           deployed to access your console.
-  //         </>
-  //       )}
-  //     >
-  //       <div>{consoleButton}</div>
-  //     </Tooltip>
-  //   )
-  // }
+  // Don't show tooltip unless data has actually loaded confirming there is
+  // no console to link to.
+  if (queuesData && !consoleLink) {
+    consoleButton = (
+      <Tooltip
+        placement="bottom-end"
+        width={240}
+        label={
+          <>You must have Plural Console deployed to access your console.</>
+        }
+      >
+        <div>{consoleButton}</div>
+      </Tooltip>
+    )
+  }
 
   return (
     <Div
@@ -64,7 +77,7 @@ export default function Header() {
           alt="Plural app"
         />
         <Flex grow={1} />
-        {/* {consoleButton} */}
+        {consoleButton}
       </Flex>
     </Div>
   )

@@ -62,7 +62,10 @@ function Status({ status }: any) {
 async function fetchLogs(
   client, id, step, term
 ) {
-  const { data } = await client.query({ query: TEST_LOGS, variables: { id, step } })
+  const { data } = await client.query({
+    query: TEST_LOGS,
+    variables: { id, step },
+  })
 
   if (data && data.testLogs) {
     const lines = data.testLogs.split(/\r?\n/)
@@ -77,7 +80,12 @@ function TestLogs({ step: { id, hasLogs }, testId }: any) {
   const client = useApolloClient()
   const terminalRef = useRef<HTMLDivElement>()
   const fitAddon = useMemo(() => new FitAddon(), [])
-  const terminal = useMemo(() => new Terminal({ theme: XTermTheme, disableStdin: false, rightClickSelectsWord: true }), [])
+  const terminal = useMemo(() => new Terminal({
+    theme: XTermTheme,
+    disableStdin: false,
+    rightClickSelectsWord: true,
+  }),
+  [])
   const { data } = useSubscription(LOGS_SUB, {
     variables: { testId },
   })
@@ -146,18 +154,15 @@ function Test({ test, last, setTest }: any) {
       cursor="pointer"
       suffix={<ListIcon size={16} />}
     >
-      <TableData>
-        {test.promoteTag}
-      </TableData>
-      <TableData>
-        {test.name}
-      </TableData>
+      <TableData>{test.promoteTag}</TableData>
+      <TableData>{test.name}</TableData>
       <TableData>
         <P body2>{moment(test.insertedAt).format('MMM DD, YYYY')}</P>
         <P
           caption
           color="text-xlight"
-        >{moment(test.insertedAt).format('hh:mm a')}
+        >
+          {moment(test.insertedAt).format('hh:mm a')}
         </P>
       </TableData>
       <TableData>
@@ -165,7 +170,8 @@ function Test({ test, last, setTest }: any) {
         <P
           caption
           color="text-xlight"
-        >{moment(test.updatedAt).format('hh:mm a')}
+        >
+          {moment(test.updatedAt).format('hh:mm a')}
         </P>
       </TableData>
       <TableData>
@@ -189,28 +195,37 @@ function TestStep({ step, test, last }: any) {
         <TableData>
           <CollapseIcon
             size={8}
-            style={open ? {
-              transform: 'rotate(270deg)',
-              transitionDuration: '.2s',
-              transitionProperty: 'transform',
-            } : {
-              transform: 'rotate(180deg)',
-              transitionDuration: '.2s',
-              transitionProperty: 'transform',
-            }}
+            style={
+              open
+                ? {
+                  transform: 'rotate(270deg)',
+                  transitionDuration: '.2s',
+                  transitionProperty: 'transform',
+                }
+                : {
+                  transform: 'rotate(180deg)',
+                  transitionDuration: '.2s',
+                  transitionProperty: 'transform',
+                }
+            }
           />
         </TableData>
         <TableData>{step.name}</TableData>
         <TableData>{step.description}</TableData>
         <TableData>
-          <P body2>{moment(step.updatedAt || step.insertedAt).format('MMM DD, YYYY')}</P>
+          <P body2>
+            {moment(step.updatedAt || step.insertedAt).format('MMM DD, YYYY')}
+          </P>
           <P
             caption
             color="text-xlight"
-          >{moment(step.updatedAt || step.insertedAt).format('hh:mm a')}
+          >
+            {moment(step.updatedAt || step.insertedAt).format('hh:mm a')}
           </P>
         </TableData>
-        <TableData><Status status={step.status} /></TableData>
+        <TableData>
+          <Status status={step.status} />
+        </TableData>
       </TableRow>
       {open && (
         <TestLogs
@@ -228,15 +243,10 @@ function TestDetail({ test, setTest }: any) {
 
   return (
     <>
-      <PageTitle
-        heading="Tests"
-        paddingTop="medium"
-      />
+      <PageTitle heading="Tests" />
       <Button
         secondary
-        startIcon={(
-          <ArrowLeftIcon size={16} />
-        )}
+        startIcon={<ArrowLeftIcon size={16} />}
         onClick={() => setTest(null)}
         justifyContent="start"
         marginBottom="medium"
@@ -302,11 +312,10 @@ function RepositoryTests() {
       direction="column"
       flexGrow={1}
     >
-      <PageTitle
-        heading="Tests"
-        paddingTop="medium"
-      >
-        <Flex display-desktop-up="none"><RepositoryActions /></Flex>
+      <PageTitle heading="Tests">
+        <Flex display-desktop-up="none">
+          <RepositoryActions />
+        </Flex>
       </PageTitle>
       <Flex
         direction="column"
@@ -315,7 +324,13 @@ function RepositoryTests() {
       >
         {tests?.length ? (
           <Table
-            headers={['Promote to', 'Name', 'Created on', 'Last updated', 'Status']}
+            headers={[
+              'Promote to',
+              'Name',
+              'Created on',
+              'Last updated',
+              'Status',
+            ]}
             sizes={['15%', '35%', '15%', '15%', '20%']}
             background="fill-one"
             width="100%"
@@ -339,7 +354,9 @@ function RepositoryTests() {
               ))}
             </InfiniteScroller>
           </Table>
-        ) : <Span>This repository does not have any tests yet.</Span>}
+        ) : (
+          <Span>This repository does not have any tests yet.</Span>
+        )}
       </Flex>
     </Flex>
   )

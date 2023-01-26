@@ -32,6 +32,10 @@ import { LinkTabWrap } from '../utils/Tabs'
 
 import PluralConfigurationContext from '../../contexts/PluralConfigurationContext'
 
+import { ResponsiveLayoutPage } from '../utils/layout/ResponsiveLayoutPage'
+
+import { SideNavOffset } from '../utils/layout/SideNavOffset'
+
 import {
   PackageGrade,
   PackageHeader,
@@ -44,6 +48,7 @@ import { CHART_Q, INSTALL_CHART, UPDATE_CHART_INST } from './queries'
 import { DEFAULT_CHART_ICON } from './constants'
 
 import { DetailContainer } from './Installation'
+import { UnderTopBar } from './UnderTopBar'
 
 function ChartInfo({ version: { helm, insertedAt } }: any) {
   return (
@@ -54,10 +59,12 @@ function ChartInfo({ version: { helm, insertedAt } }: any) {
       style={{ overflow: 'hidden', marginTop: '8px' }}
     >
       <PackageProperty header="App Version">{helm.appVersion}</PackageProperty>
-      <PackageProperty header="Created">{moment(insertedAt).fromNow()}</PackageProperty>
-      {(!!helm?.sources?.length && (
+      <PackageProperty header="Created">
+        {moment(insertedAt).fromNow()}
+      </PackageProperty>
+      {!!helm?.sources?.length && (
         <PackageProperty header="Sources">
-          {(helm.sources).map(l => (
+          {helm.sources.map(l => (
             <Box>
               <A
                 inline
@@ -72,32 +79,40 @@ function ChartInfo({ version: { helm, insertedAt } }: any) {
             </Box>
           ))}
         </PackageProperty>
-      ))}
-      {(!!helm?.maintainers?.length && (
+      )}
+      {!!helm?.maintainers?.length && (
         <PackageProperty header="Maintainers">
-          {(helm.maintainers).map(m => <Box key={m.email}>{m.email}</Box>)}
+          {helm.maintainers.map(m => (
+            <Box key={m.email}>{m.email}</Box>
+          ))}
         </PackageProperty>
-      ))}
+      )}
     </DetailContainer>
   )
 }
 
 function ChartInstaller({ chart, version }: any) {
-  const [mutation, { error }] = useMutation(chart.installation ? UPDATE_CHART_INST : INSTALL_CHART, {
-    variables: {
-      id: chart.installation ? chart.installation.id : chart.repository.installation.id,
-      attributes: { chartId: chart.id, versionId: version.id },
-    },
-    update: (cache, { data }) => {
-      const ci = data.installChart || data.updateChartInstallation
+  const [mutation, { error }] = useMutation(chart.installation ? UPDATE_CHART_INST : INSTALL_CHART,
+    {
+      variables: {
+        id: chart.installation
+          ? chart.installation.id
+          : chart.repository.installation.id,
+        attributes: { chartId: chart.id, versionId: version.id },
+      },
+      update: (cache, { data }) => {
+        const ci = data.installChart || data.updateChartInstallation
 
-      updateCache(cache, {
-        query: CHART_Q,
-        variables: { chartId: chart.id },
-        update: prev => ({ ...prev, chart: { ...prev.chart, installation: ci } }),
-      })
-    },
-  })
+        updateCache(cache, {
+          query: CHART_Q,
+          variables: { chartId: chart.id },
+          update: prev => ({
+            ...prev,
+            chart: { ...prev.chart, installation: ci },
+          }),
+        })
+      },
+    })
 
   return (
     <Button
@@ -111,15 +126,19 @@ function ChartInstaller({ chart, version }: any) {
 }
 
 export function ChartActions({ chart, currentVersion, ...props }: any) {
-  if (chart.installation?.version?.id === currentVersion.id || !chart.repository.installation) {
+  if (
+    chart.installation?.version?.id === currentVersion.id
+    || !chart.repository.installation
+  ) {
     return null
   }
 
   return (
-    <Box {...props}><ChartInstaller
-      chart={chart}
-      version={currentVersion}
-    />
+    <Box {...props}>
+      <ChartInstaller
+        chart={chart}
+        version={currentVersion}
+      />
     </Box>
   )
 }
@@ -156,7 +175,10 @@ export default function Chart() {
   const { id } = useParams()
   const { pathname } = useLocation()
   const [version, setVersion] = useState<any>(null)
-  const { data, fetchMore } = useQuery(CHART_Q, { variables: { id }, fetchPolicy: 'cache-and-network' })
+  const { data, fetchMore } = useQuery(CHART_Q, {
+    variables: { id },
+    fetchPolicy: 'cache-and-network',
+  })
   const tabStateRef = useRef<any>(null)
 
   if (!data) return null
@@ -165,7 +187,8 @@ export default function Chart() {
   const { edges, pageInfo } = versions
   const currentVersion = version || edges[0].node
   const chartInst = data.chart.installation
-  const hasActions = () => chart.installation?.version?.id !== currentVersion.id && chart.repository.installation
+  const hasActions = () => chart.installation?.version?.id !== currentVersion.id
+    && chart.repository.installation
 
   const DIRECTORY = [
     { label: 'Readme', path: '' },
@@ -203,55 +226,48 @@ export default function Chart() {
     .find(tab => pathname?.startsWith(`${pathPrefix}${tab.path}`))
 
   return (
-    <Box
-      direction="column"
-      fill
-    >
+    <ResponsiveLayoutPage flexDirection="column">
       <TopBar>
         <GoBack
           text="Back to packages"
           link={`/repository/${chart.repository.name}/packages/helm`}
         />
       </TopBar>
-      <Box
-        pad="16px"
-        direction="row"
-      >
+      <UnderTopBar>
         <ResponsiveLayoutSidenavContainer>
-          <Box
-            pad={{ left: '16px' }}
-            width="240px"
-          >
-            <PackageHeader
-              name={currentVersion.chart.name}
-              icon={currentVersion.chart.icon || DEFAULT_CHART_ICON}
-            />
-            <PackageVersionPicker
-              edges={edges}
-              installed={chartInst}
-              version={version || currentVersion}
-              setVersion={setVersion}
-              pageInfo={pageInfo}
-              fetchMore={fetchMore}
-            />
-          </Box>
-          <TabList
-            stateRef={tabStateRef}
-            stateProps={{
-              orientation: 'vertical',
-              selectedKey: currentTab?.path,
-            }}
-          >
-            {filteredDirectory.map(({ label, textValue, path }) => (
-              <LinkTabWrap
-                key={path}
-                textValue={typeof label === 'string' ? label : textValue || ''}
-                to={`${pathPrefix}${path}`}
-              >
-                <Tab>{label}</Tab>
-              </LinkTabWrap>
-            ))}
-          </TabList>
+          <PackageHeader
+            name={currentVersion.chart.name}
+            icon={currentVersion.chart.icon || DEFAULT_CHART_ICON}
+          />
+          <PackageVersionPicker
+            edges={edges}
+            installed={chartInst}
+            version={version || currentVersion}
+            setVersion={setVersion}
+            pageInfo={pageInfo}
+            fetchMore={fetchMore}
+          />
+          <SideNavOffset>
+            <TabList
+              stateRef={tabStateRef}
+              stateProps={{
+                orientation: 'vertical',
+                selectedKey: currentTab?.path,
+              }}
+            >
+              {filteredDirectory.map(({ label, textValue, path }) => (
+                <LinkTabWrap
+                  key={path}
+                  textValue={
+                    typeof label === 'string' ? label : textValue || ''
+                  }
+                  to={`${pathPrefix}${path}`}
+                >
+                  <Tab>{label}</Tab>
+                </LinkTabWrap>
+              ))}
+            </TabList>
+          </SideNavOffset>
         </ResponsiveLayoutSidenavContainer>
         <ResponsiveLayoutSpacer />
         <TabPanel
@@ -278,7 +294,7 @@ export default function Chart() {
           </Flex>
         </ResponsiveLayoutSidecarContainer>
         <ResponsiveLayoutSpacer />
-      </Box>
-    </Box>
+      </UnderTopBar>
+    </ResponsiveLayoutPage>
   )
 }

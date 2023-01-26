@@ -30,6 +30,12 @@ import { LoopingLogo } from '../utils/AnimatedLogo'
 
 import TopBar from '../layout/TopBar'
 
+import { ResponsiveLayoutPage } from '../utils/layout/ResponsiveLayoutPage'
+
+import { UnderTopBar } from '../repos/UnderTopBar'
+
+import { SideNavOffset } from '../utils/layout/SideNavOffset'
+
 import { STACK_QUERY } from './queries'
 import { StackContext } from './types'
 import { StackActions } from './misc'
@@ -48,9 +54,6 @@ function Sidenav({ stack }: StackContext) {
 
   return (
     <Flex
-      paddingVertical="medium"
-      paddingLeft="medium"
-      width={240}
       flexShrink={0}
       direction="column"
     >
@@ -100,9 +103,8 @@ function Sidenav({ stack }: StackContext) {
       >
         Curated by Plural
       </P>
-      <Div
+      <SideNavOffset
         marginTop="medium"
-        marginLeft="minus-medium"
       >
         <TabList
           stateRef={tabStateRef}
@@ -121,7 +123,7 @@ function Sidenav({ stack }: StackContext) {
             </LinkTabWrap>
           ))}
         </TabList>
-      </Div>
+      </SideNavOffset>
     </Flex>
   )
 }
@@ -160,25 +162,14 @@ export default function Stack() {
   const outletContext: StackContext = { stack }
 
   return (
-    <Flex
-      height="100%"
-      maxHeight="100%"
-      direction="column"
-      overflowY="hidden"
-    >
+    <ResponsiveLayoutPage flexDirection="column">
       <TopBar>
         <GoBack
           text="Back to marketplace"
           link="/marketplace"
         />
       </TopBar>
-      <Flex
-        flexGrow={1}
-        height={0}
-        overflowX="hidden"
-        paddingLeft="medium"
-        paddingRight="medium"
-      >
+      <UnderTopBar>
         <ResponsiveLayoutSidenavContainer>
           <Sidenav stack={stack} />
         </ResponsiveLayoutSidenavContainer>
@@ -193,7 +184,7 @@ export default function Stack() {
           <Sidecar stack={stack} />
         </ResponsiveLayoutSidecarContainer>
         <ResponsiveLayoutSpacer />
-      </Flex>
-    </Flex>
+      </UnderTopBar>
+    </ResponsiveLayoutPage>
   )
 }

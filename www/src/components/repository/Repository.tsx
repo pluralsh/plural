@@ -22,6 +22,10 @@ import { ResponsiveLayoutSpacer } from '../utils/layout/ResponsiveLayoutSpacer'
 import { ResponsiveLayoutSidenavContainer } from '../utils/layout/ResponsiveLayoutSidenavContainer'
 import TopBar from '../layout/TopBar'
 
+import { ResponsiveLayoutPage } from '../utils/layout/ResponsiveLayoutPage'
+
+import { UnderTopBar } from '../repos/UnderTopBar'
+
 import RepositorySideNav from './RepositorySideNav'
 import { RepositorySideCar } from './RepositorySideCar'
 
@@ -73,25 +77,14 @@ function Repository() {
 
   return (
     <RepositoryContext.Provider value={repository}> {/* Provide the repository to children */}
-      <Flex
-        height="100%"
-        maxHeight="100%"
-        direction="column"
-        overflowY="hidden"
-      >
+      <ResponsiveLayoutPage flexDirection="column">
         <TopBar>
           <GoBack
             text={backStackName ? `Back to ${backStackName} stack` : 'Back to marketplace'}
             link={backStackName ? `/stack/${backStackName}` : '/marketplace'}
           />
         </TopBar>
-        <Flex
-          flexGrow={1}
-          height={0}
-          overflowX="hidden"
-          paddingLeft="medium"
-          paddingRight="medium"
-        >
+        <UnderTopBar>
           <ResponsiveLayoutSidenavContainer>
             <RepositorySideNav tabStateRef={tabStateRef} />
           </ResponsiveLayoutSidenavContainer>
@@ -108,8 +101,8 @@ function Repository() {
             <RepositorySideCar />
           </ResponsiveLayoutSidecarContainer>
           <ResponsiveLayoutSpacer />
-        </Flex>
-      </Flex>
+        </UnderTopBar>
+      </ResponsiveLayoutPage>
     </RepositoryContext.Provider>
   )
 }

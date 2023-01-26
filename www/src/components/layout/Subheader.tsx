@@ -66,14 +66,14 @@ export default function Subheader() {
   return (
     <Flex
       align="center"
-      backgroundColor={theme.colors?.grey[950]}
+      backgroundColor={theme.colors['fill-one']}
       borderBottom="1px solid border"
       minHeight={48}
+      paddingHorizontal="large"
     >
       <ResponsiveLayoutSidenavContainer
         gap="small"
         display="flex"
-        paddingHorizontal="large"
         width={240}
       >
         <IconFrame

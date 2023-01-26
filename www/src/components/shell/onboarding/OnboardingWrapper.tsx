@@ -76,7 +76,7 @@ function OnboardingWrapper({
         height="100%"
         direction="column"
         alignItems="center"
-        paddingTop="xxlarge"
+        paddingTop="large"
         overflowY="auto"
       >
         <Flex
@@ -88,7 +88,7 @@ function OnboardingWrapper({
           <ResponsiveLayoutSpacer />
           <ResponsiveLayoutSidenavContainer
             marginRight={theme.spacing.xlarge - theme.spacing.small}
-            marginLeft="xlarge"
+            marginLeft="large"
             paddingRight="small"
             overflowY="auto"
             flexShrink={0}

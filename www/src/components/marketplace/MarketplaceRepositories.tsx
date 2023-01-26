@@ -35,7 +35,6 @@ import { GoBack } from '../utils/GoBack'
 import { LoopingLogo } from '../utils/AnimatedLogo'
 import { LinkTabWrap } from '../utils/Tabs'
 
-import TopBar from '../layout/TopBar'
 import { ResponsiveLayoutSidecarContainer } from '../utils/layout/ResponsiveLayoutSidecarContainer'
 import { ResponsiveLayoutSpacer } from '../utils/layout/ResponsiveLayoutSpacer'
 
@@ -81,7 +80,12 @@ function MarketplaceRepositories({ installed, publisher }: any) {
   const [areFiltersOpen, setAreFiltersOpen] = useState(true)
   const tabStateRef = useRef<any>(null)
 
-  const [repositories, loadingRepositories, hasMoreRepositories, fetchMoreRepositories] = usePaginatedQuery(MARKETPLACE_QUERY,
+  const [
+    repositories,
+    loadingRepositories,
+    hasMoreRepositories,
+    fetchMoreRepositories,
+  ] = usePaginatedQuery(MARKETPLACE_QUERY,
     {
       variables: {
         ...(publisher ? { publisherId: publisher.id } : {}),
@@ -89,7 +93,12 @@ function MarketplaceRepositories({ installed, publisher }: any) {
     },
     data => data.repositories)
 
-  const shouldRenderStacks = growthbook.isOn('stacks') && !categories.length && !tags.length && !installed && !search
+  const shouldRenderStacks
+    = growthbook.isOn('stacks')
+    && !categories.length
+    && !tags.length
+    && !installed
+    && !search
 
   useEffect(() => {
     const { current } = scrollRef
@@ -97,7 +106,12 @@ function MarketplaceRepositories({ installed, publisher }: any) {
     if (!current) return
 
     function handleScroll(event) {
-      if (!loadingRepositories && hasMoreRepositories && Math.abs(event.target.scrollTop - (event.target.scrollHeight - event.target.offsetHeight)) < 32) {
+      if (
+        !loadingRepositories
+        && hasMoreRepositories
+        && Math.abs(event.target.scrollTop
+            - (event.target.scrollHeight - event.target.offsetHeight)) < 32
+      ) {
         fetchMoreRepositories()
       }
     }
@@ -107,7 +121,12 @@ function MarketplaceRepositories({ installed, publisher }: any) {
     return () => {
       current.removeEventListener('scroll', handleScroll)
     }
-  }, [scrollRef, fetchMoreRepositories, loadingRepositories, hasMoreRepositories])
+  }, [
+    scrollRef,
+    fetchMoreRepositories,
+    loadingRepositories,
+    hasMoreRepositories,
+  ])
 
   if (repositories.length === 0 && loadingRepositories) {
     return (
@@ -122,8 +141,12 @@ function MarketplaceRepositories({ installed, publisher }: any) {
     )
   }
 
-  const sortedRepositories = orderBy(repositories.slice(), ['trending', r => r.name.toLowerCase()], ['desc', 'asc'])
-    .filter(repository => (categories.length ? categories.includes(repository.category.toLowerCase()) : true))
+  const sortedRepositories = orderBy(repositories.slice(),
+    ['trending', r => r.name.toLowerCase()],
+    ['desc', 'asc'])
+    .filter(repository => (categories.length
+      ? categories.includes(repository.category.toLowerCase())
+      : true))
     .filter(repository => {
       if (!tags.length) return true
 
@@ -136,7 +159,9 @@ function MarketplaceRepositories({ installed, publisher }: any) {
   const fuse = new Fuse(sortedRepositories, searchOptions)
 
   const resultRepositories = search
-    ? orderBy(fuse.search(search).map(({ item }) => item), ['trending', r => r.name.toLowerCase()], ['desc', 'asc'])
+    ? orderBy(fuse.search(search).map(({ item }) => item),
+      ['trending', r => r.name.toLowerCase()],
+      ['desc', 'asc'])
     : sortedRepositories
 
   function handleClearToken(key, value) {
@@ -174,7 +199,12 @@ function MarketplaceRepositories({ installed, publisher }: any) {
       width-desktopLarge-down="100%"
       flexGrow={publisher ? 1 : 0}
     >
-      <TopBar>
+      <Flex
+        marginHorizontal="large"
+        flexShrink={0}
+        height={57}
+        alignItems="flex-end"
+      >
         {!publisher && (
           <TabList
             stateRef={tabStateRef}
@@ -224,13 +254,15 @@ function MarketplaceRepositories({ installed, publisher }: any) {
               small
               startIcon={<FiltersIcon />}
               onClick={() => setAreFiltersOpen(x => !x)}
-              backgroundColor={areFiltersOpen ? 'fill-zero-selected' : 'fill-zero'}
+              backgroundColor={
+                areFiltersOpen ? 'fill-zero-selected' : 'fill-zero'
+              }
             >
               Filters
             </Button>
           </Flex>
         )}
-      </TopBar>
+      </Flex>
       <Flex
         flexGrow={1}
         marginTop="medium"
@@ -251,9 +283,7 @@ function MarketplaceRepositories({ installed, publisher }: any) {
           <Div position="relative">
             {publisher && (
               <Div paddingLeft="large">
-                <H1 title1>
-                  {capitalize(publisher.name)}'s Apps
-                </H1>
+                <H1 title1>{capitalize(publisher.name)}'s Apps</H1>
                 <Hr
                   marginTop="large"
                   marginBottom="medium"
@@ -274,13 +304,11 @@ function MarketplaceRepositories({ installed, publisher }: any) {
                 marginBottom="xsmall"
               >
                 <Input
-                  startIcon={(
-                    <MagnifyingGlassIcon
-                      size={14}
-                    />
-                  )}
+                  startIcon={<MagnifyingGlassIcon size={14} />}
                   placeholder="Search for a repository"
-                  marginRight={[...categories, ...tags].length ? 'xsmall' : 'none'}
+                  marginRight={
+                    [...categories, ...tags].length ? 'xsmall' : 'none'
+                  }
                   value={search}
                   onChange={event => setSearch(event.target.value)}
                 />
@@ -289,7 +317,8 @@ function MarketplaceRepositories({ installed, publisher }: any) {
                 <Chip
                   {...chipProps}
                   onClick={() => handleClearToken('category', category)}
-                  onKeyDown={event => (event.key === 'Enter' || event.key === ' ') && handleClearToken('category', category)}
+                  onKeyDown={event => (event.key === 'Enter' || event.key === ' ')
+                    && handleClearToken('category', category)}
                 >
                   {capitalize(category)}
                 </Chip>
@@ -298,7 +327,8 @@ function MarketplaceRepositories({ installed, publisher }: any) {
                 <Chip
                   {...chipProps}
                   onClick={() => handleClearToken('tag', tag)}
-                  onKeyDown={event => (event.key === 'Enter' || event.key === ' ') && handleClearToken('tag', tag)}
+                  onKeyDown={event => (event.key === 'Enter' || event.key === ' ')
+                    && handleClearToken('tag', tag)}
                 >
                   {capitalize(tag)}
                 </Chip>
@@ -357,13 +387,16 @@ function MarketplaceRepositories({ installed, publisher }: any) {
                 <LoopingLogo />
               </Flex>
             )}
-            {!resultRepositories?.length && installed && ![...searchParams]?.length && isEmpty(search) && (
-              <EmptyState
-                message="Looks like you haven't installed your first app yet."
-              >
+            {!resultRepositories?.length
+              && installed
+              && ![...searchParams]?.length
+              && isEmpty(search) && (
+              <EmptyState message="Looks like you haven't installed your first app yet.">
                 <Span>
-                  Head back to the marketplace to select your first application! If you need
-                  <Br />support installing your first app, read our&nbsp;
+                  Head back to the marketplace to select your first
+                  application! If you need
+                  <Br />
+                  support installing your first app, read our&nbsp;
                   <A
                     inline
                     href="https://docs.plural.sh/getting-started/getting-started"
@@ -371,7 +404,8 @@ function MarketplaceRepositories({ installed, publisher }: any) {
                     rel="noopener noreferrer"
                   >
                     quickstart guide
-                  </A>.
+                  </A>
+                  .
                 </Span>
                 <Button
                   as={Link}
@@ -397,7 +431,7 @@ function MarketplaceRepositories({ installed, publisher }: any) {
                     href="https://docs.plural.sh/applications/adding-new-application"
                     target="_blank"
                     primary
-                    endIcon={(<ArrowTopRightIcon />)}
+                    endIcon={<ArrowTopRightIcon />}
                   >
                     Add an application
                   </Button>
@@ -416,6 +450,11 @@ function MarketplaceRepositories({ installed, publisher }: any) {
         </StyledTabPanel>
         {!publisher && (
           <Div
+            display="flex"
+            flexDirection="column"
+            width={sidebarWidth}
+            height="auto"
+            overflow="hidden"
             marginRight={areFiltersOpen ? 'large' : `-${sidebarWidth}px`}
             transform={areFiltersOpen ? 'translateX(0)' : 'translateX(100%)'}
             opacity={areFiltersOpen ? 1 : 0}
@@ -423,9 +462,7 @@ function MarketplaceRepositories({ installed, publisher }: any) {
             position="sticky"
             top={0}
             right={0}
-            width={sidebarWidth}
-            height="calc(100% - 16px)"
-            overflowY="auto"
+            marginBottom="medium"
             border="1px solid border"
             backgroundColor="fill-one"
             borderRadius="large"

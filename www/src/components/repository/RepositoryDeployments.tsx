@@ -35,7 +35,11 @@ function statusAttributes({ status, cursor }: any) {
   case 'FINISHED':
     return { icon: <StatusOkIcon />, text: 'finished', severity: 'success' }
   case 'RUNNING':
-    return { loading: true, text: `${progress(cursor)}% completed`, severity: 'info' }
+    return {
+      loading: true,
+      text: `${progress(cursor)}% completed`,
+      severity: 'info',
+    }
   default:
     return {}
   }
@@ -49,7 +53,8 @@ function Status({ rollout }: any) {
       {...rest}
       backgroundColor="fill-two"
       borderColor="border-fill-two"
-    >{text}
+    >
+      {text}
     </Chip>
   )
 }
@@ -59,15 +64,25 @@ function Rollout({ rollout, last }: any) {
     <TableRow last={last}>
       <TableData>{rollout.event}</TableData>
       <TableData>{rollout.count} clusters</TableData>
-      <TableData>{rollout.heartbeat ? moment(rollout.heartbeat).fromNow() : 'pending'}</TableData>
-      <TableData><Status rollout={rollout} /></TableData>
+      <TableData>
+        {rollout.heartbeat ? moment(rollout.heartbeat).fromNow() : 'pending'}
+      </TableData>
+      <TableData>
+        <Status rollout={rollout} />
+      </TableData>
     </TableRow>
   )
 }
 
 function RepositoryDeployments() {
   const { id } = useContext(RepositoryContext)
-  const [rollouts, loadingRollouts, hasMoreRollouts, fetchMoreRollouts, subscribeToMore] = usePaginatedQuery(DEPLOYMENTS_QUERY,
+  const [
+    rollouts,
+    loadingRollouts,
+    hasMoreRollouts,
+    fetchMoreRollouts,
+    subscribeToMore,
+  ] = usePaginatedQuery(DEPLOYMENTS_QUERY,
     {
       variables: {
         repositoryId: id,
@@ -78,17 +93,18 @@ function RepositoryDeployments() {
   useEffect(() => subscribeToMore({
     document: ROLLOUT_SUB,
     variables: { repositoryId: id },
-    updateQuery: (prev, {
-      subscriptionData: {
-        data: {
-          rolloutDelta: {
-            delta,
-            payload,
+    updateQuery: (prev,
+      {
+        subscriptionData: {
+          data: {
+            rolloutDelta: { delta, payload },
           },
         },
-      },
-    }) => (delta === 'CREATE' ? appendConnection(prev, payload, 'rollouts') : prev),
-  }), [id, subscribeToMore])
+      }) => (delta === 'CREATE'
+      ? appendConnection(prev, payload, 'rollouts')
+      : prev),
+  }),
+  [id, subscribeToMore])
 
   const len = rollouts.length
 
@@ -109,11 +125,10 @@ function RepositoryDeployments() {
       maxHeight="100%"
       direction="column"
     >
-      <PageTitle
-        heading="Deployments"
-        paddingTop="medium"
-      >
-        <Flex display-desktop-up="none"><RepositoryActions /></Flex>
+      <PageTitle heading="Deployments">
+        <Flex display-desktop-up="none">
+          <RepositoryActions />
+        </Flex>
       </PageTitle>
       <Div
         fill
@@ -145,7 +160,9 @@ function RepositoryDeployments() {
               ))}
             </InfiniteScroller>
           </Table>
-        ) : <Span>This repository does not have any deployments yet.</Span>}
+        ) : (
+          <Span>This repository does not have any deployments yet.</Span>
+        )}
       </Div>
     </Flex>
   )

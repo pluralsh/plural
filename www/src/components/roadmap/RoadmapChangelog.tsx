@@ -1,9 +1,10 @@
 import { Fragment, useContext, useMemo } from 'react'
-import { PageTitle } from '@pluralsh/design-system'
 import { Div, P } from 'honorable'
 import moment from 'moment'
 
 import RoadmapContext from '../../contexts/RoadmapContext'
+
+import { ScrollablePage } from '../utils/layout/ScrollablePage'
 
 import { IssueType } from './types'
 import { LABEL_ROADMAP } from './constants'
@@ -38,38 +39,29 @@ function RoadmapFeatureRequests() {
   }, [pluralIssues, pluralArtifactsIssues])
 
   return (
-    <>
-      <PageTitle heading="Changelog" />
-      <Div
-        flexGrow={1}
-        height="calc(100% - 89px)" // 89px is the title size
-        overflowY="auto"
-      >
-        {packs.map(({ month, issues }) => (
-          <Fragment key={month}>
-            <P subtitle1>
-              {moment(month).format('MMMM YYYY')}
-            </P>
-            <Div
-              marginTop="medium"
-              marginBottom="xlarge"
-              backgroundColor="fill-one"
-              border="1px solid border"
-              borderRadius="large"
-            >
-              {issues.map(issue => (
-                <RoadmapIssue
-                  key={issue.id}
-                  displayAuthor
-                  displayProgress
-                  issue={issue}
-                />
-              ))}
-            </Div>
-          </Fragment>
-        ))}
-      </Div>
-    </>
+    <ScrollablePage heading="Changelog">
+      {packs.map(({ month, issues }) => (
+        <Fragment key={month}>
+          <P subtitle1>{moment(month).format('MMMM YYYY')}</P>
+          <Div
+            marginTop="medium"
+            marginBottom="xlarge"
+            backgroundColor="fill-one"
+            border="1px solid border"
+            borderRadius="large"
+          >
+            {issues.map(issue => (
+              <RoadmapIssue
+                key={issue.id}
+                displayAuthor
+                displayProgress
+                issue={issue}
+              />
+            ))}
+          </Div>
+        </Fragment>
+      ))}
+    </ScrollablePage>
   )
 }
 

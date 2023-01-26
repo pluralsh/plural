@@ -7,6 +7,8 @@ export function ResponsiveLayoutContentContainer(props: any) {
       flexGrow={1}
       flexShrink={1}
       height="100%"
+      minWidth={0}
+      minHeight={0}
       maxHeight="100%"
       width={896}
       maxWidth-desktopLarge-up={896}

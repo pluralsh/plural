@@ -16,6 +16,8 @@ import { ResponsiveLayoutSidecarContainer } from '../utils/layout/ResponsiveLayo
 import { ResponsiveLayoutSpacer } from '../utils/layout/ResponsiveLayoutSpacer'
 import { ResponsiveLayoutSidenavContainer } from '../utils/layout/ResponsiveLayoutSidenavContainer'
 
+import { ResponsiveLayoutPage } from '../utils/layout/ResponsiveLayoutPage'
+
 import { ClustersContent, Upgrade } from './ClustersContent'
 import { ClustersSidecar } from './ClustersSidecar'
 import { ClustersSidenav } from './ClustersSidenav'
@@ -110,15 +112,7 @@ export function Clusters(): ReactElement | null {
 
   return (
     <QueueContext.Provider value={queue}>
-      <Flex
-        flexGrow={1}
-        height={0}
-        overflowX="hidden"
-        paddingLeft="medium"
-        paddingRight="large"
-        paddingTop="xxxlarge"
-        paddingBottom="medium"
-      >
+      <ResponsiveLayoutPage>
         <ResponsiveLayoutSidenavContainer>
           <ClustersSidenav
             onQueueChange={setQueue}
@@ -133,7 +127,7 @@ export function Clusters(): ReactElement | null {
           <ClustersSidecar />
         </ResponsiveLayoutSidecarContainer>
         <ResponsiveLayoutSpacer />
-      </Flex>
+      </ResponsiveLayoutPage>
     </QueueContext.Provider>
   )
 }

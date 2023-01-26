@@ -1,6 +1,8 @@
 import { A, Flex, Span } from 'honorable'
 import { Toast } from '@pluralsh/design-system'
 
+import { useIsCurrentlyOnboarding } from '../shell/onboarding/useOnboarded'
+
 import Sidebar from './Sidebar'
 import WithApplicationUpdate from './WithApplicationUpdate'
 import Header from './Header'
@@ -8,6 +10,7 @@ import Subheader from './Subheader'
 
 function ApplicationLayout({ children }: any) {
   const isProduction = import.meta.env.MODE === 'production'
+  const isCurrentlyOnboarding = useIsCurrentlyOnboarding()
 
   return (
     <Flex
@@ -15,6 +18,8 @@ function ApplicationLayout({ children }: any) {
       width="100vw"
       maxWidth="100vw"
       height="100vh"
+      minWidth="0"
+      minHeight="0"
       maxHeight="100vh"
       overflow="hidden"
       flexDirection="column"
@@ -41,7 +46,9 @@ function ApplicationLayout({ children }: any) {
       <Header />
       <Flex
         width="100%"
-        height="100%"
+        minWidth={0}
+        minHeight={0}
+        flexGrow={1}
       >
         <Sidebar />
         <Flex
@@ -49,7 +56,7 @@ function ApplicationLayout({ children }: any) {
           flexGrow={1}
           overflowX="hidden"
         >
-          <Subheader />
+          {!isCurrentlyOnboarding && <Subheader />}
           {children}
         </Flex>
       </Flex>

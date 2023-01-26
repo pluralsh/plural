@@ -22,10 +22,15 @@ import { deepUpdate, updateCache } from '../../utils/graphql'
 
 import { GqlError } from '../utils/Alert'
 
+import { ResponsiveLayoutPage } from '../utils/layout/ResponsiveLayoutPage'
+
+import { SideNavOffset } from '../utils/layout/SideNavOffset'
+
 import { INSTALL_TF, TF_Q, UNINSTALL_TF } from './queries'
 import { DEFAULT_TF_ICON } from './constants'
 
 import { PackageGrade, PackageHeader, PackageVersionPicker } from './common/misc'
+import { UnderTopBar } from './UnderTopBar'
 
 function TerraformInstaller({ terraformModule, version }: any) {
   const installed = terraformModule?.installation?.version.id === version.id
@@ -128,52 +133,46 @@ export default function Terraform() {
     .find(tab => pathname?.startsWith(`${pathPrefix}${tab.path}`))
 
   return (
-    <Box
-      direction="column"
-      fill
-    >
+    <ResponsiveLayoutPage flexDirection="column">
       <TopBar>
         <GoBack
           text="Back to packages"
           link={`/repository/${terraformModule.repository.name}/packages/terraform`}
         />
       </TopBar>
-      <Box
-        pad="16px"
-        direction="row"
-      >
-        <ResponsiveLayoutSidenavContainer width="240px">
-          <Box pad={{ left: '16px' }}>
-            <PackageHeader
-              name={terraformModule.name}
-              icon={DEFAULT_TF_ICON}
-            />
-            <PackageVersionPicker
-              edges={edges}
-              installed={tfInst}
-              version={version || currentVersion}
-              setVersion={setVersion}
-              pageInfo={pageInfo}
-              fetchMore={fetchMore}
-            />
-          </Box>
-          <TabList
-            stateRef={tabStateRef}
-            stateProps={{
-              orientation: 'vertical',
-              selectedKey: currentTab?.path,
-            }}
-          >
-            {filteredDirectory.map(({ label, textValue, path }) => (
-              <LinkTabWrap
-                key={path}
-                textValue={typeof label === 'string' ? label : textValue || ''}
-                to={`${pathPrefix}${path}`}
-              >
-                <Tab>{label}</Tab>
-              </LinkTabWrap>
-            ))}
-          </TabList>
+      <UnderTopBar>
+        <ResponsiveLayoutSidenavContainer>
+          <PackageHeader
+            name={terraformModule.name}
+            icon={DEFAULT_TF_ICON}
+          />
+          <PackageVersionPicker
+            edges={edges}
+            installed={tfInst}
+            version={version || currentVersion}
+            setVersion={setVersion}
+            pageInfo={pageInfo}
+            fetchMore={fetchMore}
+          />
+          <SideNavOffset>
+            <TabList
+              stateRef={tabStateRef}
+              stateProps={{
+                orientation: 'vertical',
+                selectedKey: currentTab?.path,
+              }}
+            >
+              {filteredDirectory.map(({ label, textValue, path }) => (
+                <LinkTabWrap
+                  key={path}
+                  textValue={typeof label === 'string' ? label : textValue || ''}
+                  to={`${pathPrefix}${path}`}
+                >
+                  <Tab>{label}</Tab>
+                </LinkTabWrap>
+              ))}
+            </TabList>
+          </SideNavOffset>
         </ResponsiveLayoutSidenavContainer>
         <ResponsiveLayoutSpacer />
         <TabPanel
@@ -195,7 +194,7 @@ export default function Terraform() {
           />
         </ResponsiveLayoutSidecarContainer>
         <ResponsiveLayoutSpacer />
-      </Box>
-    </Box>
+      </UnderTopBar>
+    </ResponsiveLayoutPage>
   )
 }

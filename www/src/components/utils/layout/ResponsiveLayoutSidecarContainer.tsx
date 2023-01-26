@@ -5,6 +5,8 @@ export function ResponsiveLayoutSidecarContainer(props: any) {
     <Div
       marginLeft="xlarge"
       display-desktop-down="none"
+      width={200}
+      flexShrink={0}
       {...props}
     />
   )

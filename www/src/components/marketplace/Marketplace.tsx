@@ -1,4 +1,4 @@
-import { Flex } from 'honorable'
+import { ResponsiveLayoutPage } from '../utils/layout/ResponsiveLayoutPage'
 
 import { ResponsiveLayoutSpacer } from '../utils/layout/ResponsiveLayoutSpacer'
 
@@ -6,24 +6,14 @@ import MarketplaceRepositories from './MarketplaceRepositories'
 
 function Marketplace({ installed = false, publisher = null }: any) {
   return (
-    <Flex
-      direction="column"
-      overflow="hidden"
-      flexGrow={1}
-      maxWidth="100%"
-    >
-      <Flex
-        flexGrow={1}
-        overflow="hidden"
-      >
-        {!publisher && <ResponsiveLayoutSpacer />}
-        <MarketplaceRepositories
-          installed={installed}
-          publisher={publisher}
-        />
-        {!publisher && <ResponsiveLayoutSpacer />}
-      </Flex>
-    </Flex>
+    <ResponsiveLayoutPage padding={0}>
+      {!publisher && <ResponsiveLayoutSpacer />}
+      <MarketplaceRepositories
+        installed={installed}
+        publisher={publisher}
+      />
+      {!publisher && <ResponsiveLayoutSpacer />}
+    </ResponsiveLayoutPage>
   )
 }
 

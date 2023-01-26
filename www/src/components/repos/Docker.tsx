@@ -47,6 +47,10 @@ import PluralConfigurationContext from '../../contexts/PluralConfigurationContex
 
 import { LoopingLogo } from '../utils/AnimatedLogo'
 
+import { ResponsiveLayoutPage } from '../utils/layout/ResponsiveLayoutPage'
+
+import { SideNavOffset } from '../utils/layout/SideNavOffset'
+
 import {
   PackageGrade,
   PackageHeader,
@@ -57,6 +61,7 @@ import {
 import { DetailContainer } from './Installation'
 import { DEFAULT_DKR_ICON } from './constants'
 import { DOCKER_IMG_Q, DOCKER_Q, UPDATE_DOCKER } from './queries'
+import { UnderTopBar } from './UnderTopBar'
 
 function PrivateControl({ dockerRepo }: any) {
   const [mutation] = useMutation(UPDATE_DOCKER, { variables: { id: dockerRepo.id } })
@@ -222,45 +227,39 @@ export function Docker() {
   const currentTab = [...DIRECTORY].sort((a, b) => b.path.length - a.path.length).find(tab => pathname?.startsWith(`${pathPrefix}${tab.path}`))
 
   return (
-    <Box
-      direction="column"
-      fill
-    >
+    <ResponsiveLayoutPage flexDirection="column">
       <TopBar>
         <GoBack
           text="Back to packages"
           link={`/repository/${image.dockerRepository.repository.name}/packages/docker`}
         />
       </TopBar>
-      <Box
-        pad="16px"
-        direction="row"
-      >
+      <UnderTopBar>
         <ResponsiveLayoutSidenavContainer>
-          <Box pad={{ left: '16px' }}>
-            <PackageHeader
-              name={image.dockerRepository.name}
-              icon={DEFAULT_DKR_ICON}
-            />
-            <ImageVersionPicker image={image} />
-          </Box>
-          <TabList
-            stateRef={tabStateRef}
-            stateProps={{
-              orientation: 'vertical',
-              selectedKey: currentTab?.path,
-            }}
-          >
-            {DIRECTORY.map(({ label, textValue, path }: any) => (
-              <LinkTabWrap
-                key={path}
-                textValue={typeof label === 'string' ? label : textValue || ''}
-                to={`${pathPrefix}${path}`}
-              >
-                <Tab>{label}</Tab>
-              </LinkTabWrap>
-            ))}
-          </TabList>
+          <PackageHeader
+            name={image.dockerRepository.name}
+            icon={DEFAULT_DKR_ICON}
+          />
+          <ImageVersionPicker image={image} />
+          <SideNavOffset>
+            <TabList
+              stateRef={tabStateRef}
+              stateProps={{
+                orientation: 'vertical',
+                selectedKey: currentTab?.path,
+              }}
+            >
+              {DIRECTORY.map(({ label, textValue, path }: any) => (
+                <LinkTabWrap
+                  key={path}
+                  textValue={typeof label === 'string' ? label : textValue || ''}
+                  to={`${pathPrefix}${path}`}
+                >
+                  <Tab>{label}</Tab>
+                </LinkTabWrap>
+              ))}
+            </TabList>
+          </SideNavOffset>
         </ResponsiveLayoutSidenavContainer>
         <ResponsiveLayoutSpacer />
         <TabPanel
@@ -298,7 +297,7 @@ export function Docker() {
           </DetailContainer>
         </ResponsiveLayoutSidecarContainer>
         <ResponsiveLayoutSpacer />
-      </Box>
-    </Box>
+      </UnderTopBar>
+    </ResponsiveLayoutPage>
   )
 }

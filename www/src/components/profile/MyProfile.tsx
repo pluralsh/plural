@@ -1,4 +1,3 @@
-import { Flex } from 'honorable'
 import {
   PageCard,
   Tab,
@@ -15,6 +14,8 @@ import { ResponsiveLayoutContentContainer } from '../utils/layout/ResponsiveLayo
 import { ResponsiveLayoutSpacer } from '../utils/layout/ResponsiveLayoutSpacer'
 import { ResponsiveLayoutSidenavContainer } from '../utils/layout/ResponsiveLayoutSidenavContainer'
 import CurrentUserContext from '../../contexts/CurrentUserContext'
+import { ResponsiveLayoutPage } from '../utils/layout/ResponsiveLayoutPage'
+import { SideNavOffset } from '../utils/layout/SideNavOffset'
 
 const DIRECTORY = [
   { path: '/profile/me', label: 'Profile' },
@@ -31,39 +32,36 @@ export function MyProfile() {
   const currentTab = DIRECTORY.find(tab => pathname?.startsWith(tab.path))
 
   return (
-    <Flex
-      height="100%"
-      width="100%"
-      overflowY="hidden"
-      padding={32}
-      paddingTop={88}
-    >
-      <ResponsiveLayoutSidenavContainer width={240}>
-        <PageCard
-          heading={me.name}
-          icon={{ name: me.name, url: me.avatar, spacing: 'none' }}
-          subheading={me?.roles?.admin && (
-            `Admin${me?.account?.name && ` at ${me?.account?.name}`}`
-          )}
-          marginBottom="xlarge"
-        />
-        <TabList
-          stateRef={tabStateRef}
-          stateProps={{
-            orientation: 'vertical',
-            selectedKey: currentTab?.path,
-          }}
-        >
-          {DIRECTORY.map(({ label, path }) => (
-            <LinkTabWrap
-              key={path}
-              textValue={label}
-              to={path}
-            >
-              <Tab>{label}</Tab>
-            </LinkTabWrap>
-          ))}
-        </TabList>
+    <ResponsiveLayoutPage>
+      <ResponsiveLayoutSidenavContainer>
+        <SideNavOffset>
+          <PageCard
+            heading={me.name}
+            icon={{ name: me.name, url: me.avatar, spacing: 'none' }}
+            subheading={
+              me?.roles?.admin
+              && `Admin${me?.account?.name && ` at ${me?.account?.name}`}`
+            }
+            marginBottom="xlarge"
+          />
+          <TabList
+            stateRef={tabStateRef}
+            stateProps={{
+              orientation: 'vertical',
+              selectedKey: currentTab?.path,
+            }}
+          >
+            {DIRECTORY.map(({ label, path }) => (
+              <LinkTabWrap
+                key={path}
+                textValue={label}
+                to={path}
+              >
+                <Tab>{label}</Tab>
+              </LinkTabWrap>
+            ))}
+          </TabList>
+        </SideNavOffset>
       </ResponsiveLayoutSidenavContainer>
       <ResponsiveLayoutSpacer />
       <TabPanel
@@ -73,6 +71,6 @@ export function MyProfile() {
         <Outlet />
       </TabPanel>
       <ResponsiveLayoutSpacer />
-    </Flex>
+    </ResponsiveLayoutPage>
   )
 }

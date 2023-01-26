@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc && vite build",
+    "build:staging": "tsc && vite build --mode staging",
     "preview": "vite preview",
     "analyze": "source-map-explorer 'build/static/js/*.js'",
     "start": "vite",

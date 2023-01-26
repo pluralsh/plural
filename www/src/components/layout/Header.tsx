@@ -1,5 +1,5 @@
 import { Div, Flex, Img } from 'honorable'
-import { ArrowTopRightIcon, Button } from '@pluralsh/design-system'
+import { ArrowTopRightIcon, Button, Tooltip } from '@pluralsh/design-system'
 import { useTheme } from 'styled-components'
 
 const APP_ICON = '/app-logo-white.png'
@@ -7,17 +7,54 @@ const APP_ICON = '/app-logo-white.png'
 export default function Header() {
   const theme = useTheme()
 
+  // TODO: Figure out how to get console link
+  const consoleLink = ''
+
+  let consoleButton = (
+    <Button
+      small
+      endIcon={<ArrowTopRightIcon size={14} />}
+      {...(consoleLink
+        ? {
+          as: 'a',
+          href: consoleLink,
+          target: '_blank',
+          rel: 'noopener noreferrer',
+        }
+        : { disabled: true })}
+    >
+      Launch Console
+    </Button>
+  )
+
+  if (!consoleLink) {
+    consoleButton = (
+      <Tooltip
+        placement="bottom-end"
+        label={(
+          <>
+            You must have Plural Console
+            <br />
+            deployed to access your console.
+          </>
+        )}
+      >
+        <div>{consoleButton}</div>
+      </Tooltip>
+    )
+  }
+
   return (
     <Div
       backgroundColor={theme.colors['fill-one']}
       borderBottom="1px solid border"
+      paddingHorizontal="large"
+      paddingVertical="xsmall"
     >
-      {/* <DemoBanner /> */}
       <Flex
         align="center"
         gap="medium"
-        paddingHorizontal="large"
-        paddingVertical="xsmall"
+        minHeight={40}
       >
         <Img
           height={24}
@@ -26,18 +63,7 @@ export default function Header() {
           alt="Plural app"
         />
         <Flex grow={1} />
-        <Button
-          small
-          tertiary
-          fontWeight={600}
-          endIcon={<ArrowTopRightIcon size={14} />}
-          as="a"
-          href="https://app.plural.sh"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Plural App
-        </Button>
+        {consoleButton}
       </Flex>
     </Div>
   )

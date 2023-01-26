@@ -70,14 +70,38 @@ resource "kubernetes_namespace" "plural" {
 resource "aws_s3_bucket" "chart_bucket" {
   bucket = var.chart_bucket
   acl    = "private"
+
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm     = "AES256"
+      }
+    }
+  }
 }
 
 resource "aws_s3_bucket" "plural_assets_bucket" {
   bucket = var.plural_assets_bucket
   acl    = "private"
+
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm     = "AES256"
+      }
+    }
+  }
 }
 
 resource "aws_s3_bucket" "plural_images_bucket" {
   bucket = var.plural_images_bucket
-  acl    = "public-read"
+  acl    = "private"
+
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm     = "AES256"
+      }
+    }
+  }
 }

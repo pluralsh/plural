@@ -111,7 +111,7 @@ ENV REPLACE_OS_VARS=true \
 WORKDIR /opt/app
 
 # Create plural user and home directory, set owner to plural
-RUN groupadd -g 10001 plural && \
+RUN addgroup -g 10001 plural && \
     adduser -s /bin/sh -u 10001 -G 10001 -h "/opt/app" -S -D plural && \
     chown -R 10001:10001 "/opt/app"
 

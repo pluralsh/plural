@@ -1,5 +1,5 @@
 import { Div, Flex, Img } from 'honorable'
-import { ArrowTopRightIcon, Button, Tooltip } from '@pluralsh/design-system'
+import { Button, Tooltip } from '@pluralsh/design-system'
 import { useTheme } from 'styled-components'
 
 const APP_ICON = '/app-logo-white.png'
@@ -13,7 +13,6 @@ export default function Header() {
   let consoleButton = (
     <Button
       small
-      endIcon={<ArrowTopRightIcon size={14} />}
       {...(consoleLink
         ? {
           as: 'a',

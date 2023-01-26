@@ -102,6 +102,7 @@ defmodule GraphQl.Schema.Shell do
     field :network,       :network_configuration
     field :bucket_prefix, :string
     field :cluster,       :string
+    field :region,        :string
   end
 
   object :network_configuration do

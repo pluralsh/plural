@@ -7,7 +7,7 @@ defmodule Core.Shell.Models.Network do
 end
 
 defmodule Core.Shell.Models.Workspace do
-  defstruct [:network, :bucket_prefix, :cluster]
+  defstruct [:network, :bucket_prefix, :cluster, :region]
 
   def as() do
     %__MODULE__{network: %Core.Shell.Models.Network{}}

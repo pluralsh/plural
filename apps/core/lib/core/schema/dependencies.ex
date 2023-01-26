@@ -67,6 +67,7 @@ defmodule Core.Schema.Dependencies do
     field :secrets,          {:array, :string}
     field :application,      :boolean, default: false
     field :breaking,         :boolean, default: false
+    field :dedicated,        :boolean, default: false
     field :wait,             :boolean, default: false
     field :provider_vsn,     :string
     field :cli_vsn,          :string

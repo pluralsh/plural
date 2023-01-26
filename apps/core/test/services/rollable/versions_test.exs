@@ -83,6 +83,45 @@ defmodule Core.Rollable.VersionsTest do
       end
     end
 
+    test "it will lock an installation and deliver a dedicated upgrade if the version is dedicated" do
+      %{chart: chart} = chart_version = insert(:version, version: "0.1.0")
+      auto_upgraded = for _ <- 1..3 do
+        insert(:chart_installation,
+          installation: insert(:installation, auto_upgrade: true),
+          chart: chart,
+          version: chart_version
+        )
+      end
+
+      queues = for %{installation: %{user: user}} <- auto_upgraded do
+        insert(:upgrade_queue, user: user)
+      end
+
+      version = insert(:version, version: "0.1.1", chart: chart, dependencies: %{dedicated: true})
+      insert(:version_tag, version: version, chart: chart, tag: "latest")
+
+      event = %PubSub.VersionCreated{item: version}
+      {:ok, rollout} = Rollouts.create_rollout(chart.repository_id, event)
+
+      {:ok, rolled} = Rollouts.execute(rollout)
+
+      assert rolled.status == :finished
+      assert rolled.count == 3
+
+
+      for %{id: id} = bumped <- auto_upgraded do
+        inst = refetch(bumped)
+        assert_receive {:event, %PubSub.InstallationLocked{item: %{id: ^id}}}
+        assert inst.version_id == version.id
+        assert inst.locked
+      end
+
+      for queue <- queues do
+        [upgrade] = Core.Schema.Upgrade.for_queue(queue.id) |> Core.Repo.all()
+        assert upgrade.type == :dedicated
+      end
+    end
+
     test "it will defer updates if a user is delinquent" do
       user = insert(:user, account: build(:account, delinquent_at: Timex.now() |> Timex.shift(days: -100)))
       %{chart: chart} = chart_version = insert(:version, version: "0.1.0")

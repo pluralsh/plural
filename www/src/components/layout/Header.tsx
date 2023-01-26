@@ -7,41 +7,43 @@ const APP_ICON = '/app-logo-white.png'
 export default function Header() {
   const theme = useTheme()
 
-  // TODO: Figure out how to get console link
-  const consoleLink = ''
+  // TODO: Implement console link button once we have the ability to reliably
+  // determine the url to the user's console isntance
 
-  let consoleButton = (
-    <Button
-      small
-      {...(consoleLink
-        ? {
-          as: 'a',
-          href: consoleLink,
-          target: '_blank',
-          rel: 'noopener noreferrer',
-        }
-        : { disabled: true })}
-    >
-      Launch Console
-    </Button>
-  )
+  // const consoleLink = ''
 
-  if (!consoleLink) {
-    consoleButton = (
-      <Tooltip
-        placement="bottom-end"
-        label={(
-          <>
-            You must have Plural Console
-            <br />
-            deployed to access your console.
-          </>
-        )}
-      >
-        <div>{consoleButton}</div>
-      </Tooltip>
-    )
-  }
+  // let consoleButton = (
+  //   <Button
+  //     small
+  //     {...(consoleLink
+  //       ? {
+  //         as: 'a',
+  //         href: consoleLink,
+  //         target: '_blank',
+  //         rel: 'noopener noreferrer',
+  //       }
+  //       : { disabled: true })}
+  //   >
+  //     Launch Console
+  //   </Button>
+  // )
+
+  // if (!consoleLink) {
+  //   consoleButton = (
+  //     <Tooltip
+  //       placement="bottom-end"
+  //       label={(
+  //         <>
+  //           You must have Plural Console
+  //           <br />
+  //           deployed to access your console.
+  //         </>
+  //       )}
+  //     >
+  //       <div>{consoleButton}</div>
+  //     </Tooltip>
+  //   )
+  // }
 
   return (
     <Div
@@ -62,7 +64,7 @@ export default function Header() {
           alt="Plural app"
         />
         <Flex grow={1} />
-        {consoleButton}
+        {/* {consoleButton} */}
       </Flex>
     </Div>
   )

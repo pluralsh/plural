@@ -79,7 +79,7 @@ export function Configuration({
         <Span
           color="text-light"
           body2
-        >No configuration available.
+        >Nothing needs doing here! You can continue.
         </Span>
       )}
       {recipe.oidcEnabled && (

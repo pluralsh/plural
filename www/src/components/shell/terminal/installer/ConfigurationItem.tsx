@@ -91,7 +91,7 @@ function ConfigurationField({
         type={type}
         error={!valid}
         prefix={config.type === ConfigurationType.BUCKET ? configuration?.workspace?.bucketPrefix : ''}
-        suffix={config.type === ConfigurationType.DOMAIN ? configuration?.workspace?.network?.subdomain : ''}
+        suffix={config.type === ConfigurationType.DOMAIN ? `.${configuration?.workspace?.network?.subdomain}` : ''}
         onChange={({ target: { value } }) => setLocal(value)}
       />
     </FormField>

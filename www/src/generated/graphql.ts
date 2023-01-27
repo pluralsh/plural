@@ -3973,6 +3973,7 @@ export type ShellWorkspace = {
   bucketPrefix?: Maybe<Scalars['String']>;
   cluster?: Maybe<Scalars['String']>;
   network?: Maybe<NetworkConfiguration>;
+  region?: Maybe<Scalars['String']>;
 };
 
 export type SlimSubscription = {

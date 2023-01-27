@@ -11,16 +11,17 @@ defmodule GraphQl.ShellQueriesTest do
       pod = Pods.pod("plrl-shell-1", "mjg@plural.sh")
       expect(Pods, :fetch, fn "plrl-shell-1" -> {:ok, pod} end)
 
-      shell = insert(:cloud_shell, pod_name: "plrl-shell-1", workspace: %{cluster: "cluster"})
+      shell = insert(:cloud_shell, pod_name: "plrl-shell-1", workspace: %{cluster: "cluster", region: "us-east2"})
 
       {:ok, %{data: %{"shell" => found}}} = run_query("""
         query {
-          shell { id alive cluster }
+          shell { id alive cluster region }
         }
       """, %{}, %{current_user: shell.user})
 
       assert found["id"] == shell.id
       assert found["cluster"] == "cluster"
+      assert found["region"] == "us-east2"
       refute found["alive"]
     end
   end
@@ -67,18 +68,18 @@ defmodule GraphQl.ShellQueriesTest do
 
       expect(HTTPoison, :request, fn :get, "http://0.0.0.0:8080/v1/configuration", _, _, _ ->
         {:ok, %HTTPoison.Response{status_code: 200, body: Poison.encode!(%Models.Configuration{
-          workspace: %Models.Workspace{bucket_prefix: "pre", network: %Models.Network{plural_dns: true}, region: "us-east2"},
+          workspace: %Models.Workspace{bucket_prefix: "pre", network: %Models.Network{plural_dns: true}},
           git: %Models.Git{url: "git"},
           context_configuration: %{"some" => "config"},
           buckets: ["bucket"],
-          domains: ["some.example.com"],
+          domains: ["some.example.com"]
         })}}
       end)
 
       {:ok, %{data: %{"shellConfiguration" => found}}} = run_query("""
         query {
           shellConfiguration {
-            workspace { bucketPrefix network { pluralDns } region }
+            workspace { bucketPrefix network { pluralDns } }
             git { url }
             contextConfiguration
             buckets
@@ -88,7 +89,6 @@ defmodule GraphQl.ShellQueriesTest do
       """, %{}, %{current_user: shell.user})
 
       assert found["workspace"]["bucketPrefix"] == "pre"
-      assert found["workspace"]["region"] == "us-east2"
       assert found["workspace"]["network"]["pluralDns"]
       assert found["git"]["url"] == "git"
       assert found["contextConfiguration"] == %{"some" => "config"}

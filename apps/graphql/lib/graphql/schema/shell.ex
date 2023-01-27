@@ -83,6 +83,10 @@ defmodule GraphQl.Schema.Shell do
       shell, _, _ -> Shell.status(shell)
     end
 
+    field :region, non_null(:string), resolve: fn
+      %{workspace: %{region: region}}, _, _ -> {:ok, region}
+    end
+
     timestamps()
   end
 

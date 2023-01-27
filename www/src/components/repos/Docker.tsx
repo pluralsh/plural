@@ -1,5 +1,3 @@
-// HACK until Select is fixed to admit any ReactNode
-// @ts-nocheck
 import {
   useCallback,
   useContext,
@@ -16,7 +14,6 @@ import {
 } from 'react-router-dom'
 import moment from 'moment'
 import { Box } from 'grommet'
-
 import {
   Codeline,
   GlobeIcon,
@@ -32,21 +29,15 @@ import {
 } from '@pluralsh/design-system'
 import { Flex } from 'honorable'
 
-import { GoBack } from '../utils/GoBack'
-
-import {
-  ResponsiveLayoutContentContainer,
-  ResponsiveLayoutSidecarContainer,
-  ResponsiveLayoutSidenavContainer,
-  ResponsiveLayoutSpacer,
-} from '../layout/ResponsiveLayout'
-
+import { ResponsiveLayoutContentContainer } from '../utils/layout/ResponsiveLayoutContentContainer'
+import { ResponsiveLayoutSidecarContainer } from '../utils/layout/ResponsiveLayoutSidecarContainer'
+import { ResponsiveLayoutSpacer } from '../utils/layout/ResponsiveLayoutSpacer'
+import { ResponsiveLayoutSidenavContainer } from '../utils/layout/ResponsiveLayoutSidenavContainer'
+import { ResponsiveLayoutPage } from '../utils/layout/ResponsiveLayoutPage'
+import { SideNavOffset } from '../utils/layout/SideNavOffset'
 import { LinkTabWrap } from '../utils/Tabs'
 
-import TopBar from '../layout/TopBar'
-
 import PluralConfigurationContext from '../../contexts/PluralConfigurationContext'
-
 import { LoopingLogo } from '../utils/AnimatedLogo'
 
 import {
@@ -61,7 +52,9 @@ import { DEFAULT_DKR_ICON } from './constants'
 import { DOCKER_IMG_Q, DOCKER_Q, UPDATE_DOCKER } from './queries'
 
 function PrivateControl({ dockerRepo }: any) {
-  const [mutation] = useMutation(UPDATE_DOCKER, { variables: { id: dockerRepo.id } })
+  const [mutation] = useMutation(UPDATE_DOCKER, {
+    variables: { id: dockerRepo.id },
+  })
 
   if (!dockerRepo?.repository?.editable) {
     return (
@@ -70,7 +63,15 @@ function PrivateControl({ dockerRepo }: any) {
         gap="xsmall"
         fontWeight="600"
       >
-        {dockerRepo.public ? (<><GlobeIcon /> Public</>) : (<><PadlockLockedIcon /> Private</>)}
+        {dockerRepo.public ? (
+          <>
+            <GlobeIcon /> Public
+          </>
+        ) : (
+          <>
+            <PadlockLockedIcon /> Private
+          </>
+        )}
       </Flex>
     )
   }
@@ -89,11 +90,15 @@ function PrivateControl({ dockerRepo }: any) {
 export function DockerRepository() {
   const navigate = useNavigate()
   const { id } = useParams()
-  const { data } = useQuery(DOCKER_IMG_Q, { variables: { dockerRepositoryId: id } })
+  const { data } = useQuery(DOCKER_IMG_Q, {
+    variables: { dockerRepositoryId: id },
+  })
 
   useEffect(() => {
     if (!data) return
-    const { dockerImages: { edges } } = data
+    const {
+      dockerImages: { edges },
+    } = data
 
     if (edges.length === 0) return
 
@@ -104,7 +109,10 @@ export function DockerRepository() {
 }
 
 const DEFAULT_FILTER = {
-  tag: null, precision: '2h', offset: '7d', tick: 'every 12 hours',
+  tag: null,
+  precision: '2h',
+  offset: '7d',
+  tick: 'every 12 hours',
 }
 
 function ImageVersionPicker({ image }: any) {
@@ -133,11 +141,15 @@ function ImageVersionPicker({ image }: any) {
     if (selected === '$$footer$$') return
 
     navigate(`/dkr/img/${selected}${url}`)
-  }, [navigate, url])
+  },
+  [navigate, url])
 
   useEffect(() => {
     if (data?.dockerImages) {
-      setAllImages(x => [...x, ...data.dockerImages.edges.map(({ node }) => node)])
+      setAllImages(x => [
+        ...x,
+        ...data.dockerImages.edges.map(({ node }) => node),
+      ])
       setHasNextPage(data.dockerImages.pageInfo.hasNextPage)
     }
   }, [data])
@@ -157,22 +169,21 @@ function ImageVersionPicker({ image }: any) {
         onSelectionChange={handleSelectionChange}
         rightContent={
           image.scannedAt && (
-            <ListBoxItemChipList chips={[
-              <PackageGrade
+            <ListBoxItemChipList
+              chips={[<PackageGrade
                 grade={image.grade}
                 size="small"
-              />,
-            ]}
+              />]}
             />
           )
         }
-        dropdownFooterFixed={(
+        dropdownFooterFixed={
           hasNextPage && (
             <ListBoxFooterPlus onClick={fetchMore}>
               Fetch more
             </ListBoxFooterPlus>
           )
-        )}
+        }
       >
         {allImages.map(v => (
           <ListBoxItem
@@ -181,12 +192,11 @@ function ImageVersionPicker({ image }: any) {
             textValue={v.tag}
             rightContent={(
               <ListBoxItemChipList
-                chips={[...(v.scannedAt ? [
-                  <PackageGrade
-                    grade={v.grade}
-                    size="small"
-                  />,
-                ] : [])]}
+                chips={[...(v.scannedAt ? [<PackageGrade
+                  grade={v.grade}
+                  size="small"
+                />] : []),
+                ]}
               />
             )}
           />
@@ -218,34 +228,25 @@ export function Docker() {
   if (!data) return <LoopingLogo />
 
   const { dockerImage: image } = data
-  const imageName = dockerPull(registry, { ...image, dockerRepository: image.dockerRepository })
+  const imageName = dockerPull(registry, {
+    ...image,
+    dockerRepository: image.dockerRepository,
+  })
 
   const pathPrefix = `/dkr/img/${image.id}`
-  const currentTab = [...DIRECTORY].sort((a, b) => b.path.length - a.path.length).find(tab => pathname?.startsWith(`${pathPrefix}${tab.path}`))
+  const currentTab = [...DIRECTORY]
+    .sort((a, b) => b.path.length - a.path.length)
+    .find(tab => pathname?.startsWith(`${pathPrefix}${tab.path}`))
 
   return (
-    <Box
-      direction="column"
-      fill
-    >
-      <TopBar>
-        <GoBack
-          text="Back to packages"
-          link={`/repository/${image.dockerRepository.repository.name}/packages/docker`}
+    <ResponsiveLayoutPage>
+      <ResponsiveLayoutSidenavContainer>
+        <PackageHeader
+          name={image.dockerRepository.name}
+          icon={DEFAULT_DKR_ICON}
         />
-      </TopBar>
-      <Box
-        pad="16px"
-        direction="row"
-      >
-        <ResponsiveLayoutSidenavContainer>
-          <Box pad={{ left: '16px' }}>
-            <PackageHeader
-              name={image.dockerRepository.name}
-              icon={DEFAULT_DKR_ICON}
-            />
-            <ImageVersionPicker image={image} />
-          </Box>
+        <ImageVersionPicker image={image} />
+        <SideNavOffset>
           <TabList
             stateRef={tabStateRef}
             stateProps={{
@@ -263,44 +264,48 @@ export function Docker() {
               </LinkTabWrap>
             ))}
           </TabList>
-        </ResponsiveLayoutSidenavContainer>
-        <ResponsiveLayoutSpacer />
-        <TabPanel
-          as={<ResponsiveLayoutContentContainer />}
-          stateRef={tabStateRef}
-        >
-          <Outlet context={{
-            image, imageName, filter, setFilter,
+        </SideNavOffset>
+      </ResponsiveLayoutSidenavContainer>
+      <ResponsiveLayoutSpacer />
+      <TabPanel
+        as={<ResponsiveLayoutContentContainer />}
+        stateRef={tabStateRef}
+      >
+        <Outlet
+          context={{
+            image,
+            imageName,
+            filter,
+            setFilter,
           }}
-          />
-        </TabPanel>
-        <ResponsiveLayoutSidecarContainer width="200px">
-          <Codeline marginBottom="large">{`docker pull ${imageName}`}</Codeline>
-          <DetailContainer
-            title="Metadata"
-            pad="small"
-            gap="small"
-            style={{ overflow: 'hidden' }}
+        />
+      </TabPanel>
+      <ResponsiveLayoutSidecarContainer width="200px">
+        <Codeline marginBottom="large">{`docker pull ${imageName}`}</Codeline>
+        <DetailContainer
+          title="Metadata"
+          pad="small"
+          gap="small"
+          style={{ overflow: 'hidden' }}
+        >
+          <PrivateControl dockerRepo={image.dockerRepository} />
+          <PackageProperty header="Created">
+            {moment(image.updatedAt || image.insertedAt).format('lll')}
+          </PackageProperty>
+          <PackageProperty header="Scanned">
+            {image.scannedAt
+              ? moment(image.scannedAt).format('lll')
+              : 'unscanned'}
+          </PackageProperty>
+          <PackageProperty
+            header="Sha"
+            style={{ wordWrap: 'break-word' }}
           >
-            <PrivateControl dockerRepo={image.dockerRepository} />
-            <PackageProperty header="Created">
-              {moment(image.updatedAt || image.insertedAt).format('lll')}
-            </PackageProperty>
-            <PackageProperty header="Scanned">
-              {image.scannedAt
-                ? moment(image.scannedAt).format('lll')
-                : 'unscanned'}
-            </PackageProperty>
-            <PackageProperty
-              header="Sha"
-              style={{ wordWrap: 'break-word' }}
-            >
-              {image.digest}
-            </PackageProperty>
-          </DetailContainer>
-        </ResponsiveLayoutSidecarContainer>
-        <ResponsiveLayoutSpacer />
-      </Box>
-    </Box>
+            {image.digest}
+          </PackageProperty>
+        </DetailContainer>
+      </ResponsiveLayoutSidecarContainer>
+      <ResponsiveLayoutSpacer />
+    </ResponsiveLayoutPage>
   )
 }

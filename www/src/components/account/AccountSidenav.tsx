@@ -6,6 +6,7 @@ import { Div } from 'honorable'
 import { LinkTabWrap } from '../utils/Tabs'
 
 import CurrentUserContext from '../../contexts/CurrentUserContext'
+import { SideNavOffset } from '../utils/layout/SideNavOffset'
 
 const DIRECTORY = [
   { path: '/account/edit', label: 'Account attributes' },
@@ -45,7 +46,7 @@ export default function AccountSideNav({ tabStateRef = {} }: any) {
   const { me } = useContext(CurrentUserContext) as Record<string, any>
 
   return (
-    <>
+    <SideNavOffset>
       <PageCard
         marginBottom="large"
         heading={(
@@ -55,13 +56,14 @@ export default function AccountSideNav({ tabStateRef = {} }: any) {
             webkitBoxOrient="vertical"
             overflowY="hidden"
             lineBreak="all"
-          >{me?.account?.name || ''}
+          >
+            {me?.account?.name || ''}
           </Div>
         )}
         subheading={me?.publisher ? 'Publisher' : undefined}
         icon={{ name: me?.account?.name || '?' }}
       />
       <AccountTabList tabStateRef={tabStateRef} />
-    </>
+    </SideNavOffset>
   )
 }

@@ -202,9 +202,9 @@ function MarketplaceSidebar(props) {
 
   return (
     <Div
-      maxHeight="100%"
+      minHeight="100%"
       overflowY="scroll"
-      overflowX="hidden"
+      overflowX="auto"
       {...props}
     >
       {renderCategories()}

@@ -17,11 +17,10 @@ export default function RepositoryDescription() {
       position="relative"
       overflowY="hidden"
     >
-      <PageTitle
-        heading="Readme"
-        paddingTop="medium"
-      >
-        <Flex display-desktop-up="none"><RepositoryActions /></Flex>
+      <PageTitle heading="Readme">
+        <Flex display-desktop-up="none">
+          <RepositoryActions />
+        </Flex>
       </PageTitle>
       <Flex
         direction="column"
@@ -38,7 +37,9 @@ export default function RepositoryDescription() {
             gitUrl={repository.gitUrl}
             mainBranch={repository.mainBranch}
           />
-        ) : <P>This repository does not have a Readme yet.</P>}
+        ) : (
+          <P>This repository does not have a Readme yet.</P>
+        )}
       </Flex>
     </Flex>
   )

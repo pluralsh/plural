@@ -1,15 +1,16 @@
 import { A, P } from 'honorable'
-import { PageTitle } from '@pluralsh/design-system'
+
+import { ScrollablePage } from '../utils/layout/ScrollablePage'
 
 function RoadmapFeedback() {
   return (
-    <>
-      <PageTitle heading="Feedback" />
+    <ScrollablePage heading="Feedback">
       <P
         body2
         color="text-xlight"
       >
-        Hearing your feedback is important to us and helps shape our roadmap and make our product better.
+        Hearing your feedback is important to us and helps shape our roadmap and
+        make our product better.
       </P>
       <A
         inline
@@ -20,7 +21,7 @@ function RoadmapFeedback() {
       >
         Give us feedback on discord.
       </A>
-    </>
+    </ScrollablePage>
   )
 }
 

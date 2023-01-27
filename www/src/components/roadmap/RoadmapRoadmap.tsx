@@ -1,6 +1,8 @@
 import { useContext, useMemo } from 'react'
 import { PageTitle } from '@pluralsh/design-system'
 
+import { Flex } from 'honorable/dist/components/Flex/Flex'
+
 import RoadmapContext from '../../contexts/RoadmapContext'
 
 import RoadmapSearchBox from './RoadmapSearchBox'
@@ -13,7 +15,11 @@ function RoadmapRoadmap() {
   const issues = useMemo(() => [...pluralIssues, ...pluralArtifactsIssues].filter(issue => issue.labels.includes(LABEL_ROADMAP)), [pluralIssues, pluralArtifactsIssues])
 
   return (
-    <>
+    <Flex
+      overflow="hidden"
+      flexDirection="column"
+      height="100%"
+    >
       <PageTitle heading="Roadmap" />
       <RoadmapSearchBox
         displayProgress
@@ -21,7 +27,7 @@ function RoadmapRoadmap() {
         label="Contribute to our roadmap by adding your feedback or voting."
         issues={issues}
       />
-    </>
+    </Flex>
   )
 }
 

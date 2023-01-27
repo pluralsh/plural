@@ -1,11 +1,14 @@
-import { Flex } from 'honorable'
 import { Tab, TabList } from '@pluralsh/design-system'
 import { Outlet, useLocation } from 'react-router-dom'
 import { useRef } from 'react'
 
-import { ResponsiveLayoutContentContainer, ResponsiveLayoutSidenavContainer, ResponsiveLayoutSpacer } from '../layout/ResponsiveLayout'
+import { ResponsiveLayoutContentContainer } from '../utils/layout/ResponsiveLayoutContentContainer'
+import { ResponsiveLayoutSpacer } from '../utils/layout/ResponsiveLayoutSpacer'
+import { ResponsiveLayoutSidenavContainer } from '../utils/layout/ResponsiveLayoutSidenavContainer'
 
 import { LinkTabWrap } from '../utils/Tabs'
+import { SideNavOffset } from '../utils/layout/SideNavOffset'
+import { ResponsiveLayoutPage } from '../utils/layout/ResponsiveLayoutPage'
 
 const DIRECTORY = [
   { path: '/audits/logs', label: 'Audit logs' },
@@ -19,39 +22,33 @@ export function AuditDirectory() {
   const currentTab = DIRECTORY.find(tab => pathname?.startsWith(tab.path))
 
   return (
-    <Flex
-      height="100%"
-      width="100%"
-      padding="16px"
-      overflowY="hidden"
-    >
-      <ResponsiveLayoutSidenavContainer
-        marginTop={90}
-        width={240}
-      >
-        <TabList
-          stateRef={tabStateRef}
-          stateProps={{
-            orientation: 'vertical',
-            selectedKey: currentTab?.path,
-          }}
-        >
-          {DIRECTORY.map(({ label, path }) => (
-            <LinkTabWrap
-              key={path}
-              textValue={label}
-              to={path}
-            >
-              <Tab>{label}</Tab>
-            </LinkTabWrap>
-          ))}
-        </TabList>
+    <ResponsiveLayoutPage>
+      <ResponsiveLayoutSidenavContainer>
+        <SideNavOffset paddingTop={66}>
+          <TabList
+            stateRef={tabStateRef}
+            stateProps={{
+              orientation: 'vertical',
+              selectedKey: currentTab?.path,
+            }}
+          >
+            {DIRECTORY.map(({ label, path }) => (
+              <LinkTabWrap
+                key={path}
+                textValue={label}
+                to={path}
+              >
+                <Tab>{label}</Tab>
+              </LinkTabWrap>
+            ))}
+          </TabList>
+        </SideNavOffset>
       </ResponsiveLayoutSidenavContainer>
       <ResponsiveLayoutSpacer />
-      <ResponsiveLayoutContentContainer paddingTop="large">
+      <ResponsiveLayoutContentContainer>
         <Outlet />
       </ResponsiveLayoutContentContainer>
       <ResponsiveLayoutSpacer />
-    </Flex>
+    </ResponsiveLayoutPage>
   )
 }

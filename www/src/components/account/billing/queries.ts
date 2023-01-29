@@ -35,19 +35,6 @@ export const DELETE_CARD_MUTATION = gql`
   }
 `
 
-export const CLUSTERS_QUERY = gql`
-  query Clusters {
-    clusters(first: 500) {
-      edges {
-        node {
-          id
-          name
-        }
-      }
-    }
-  }
-`
-
 export const USERS_QUERY = gql`
   query Users {
     users(serviceAccount: false, first: 500) {

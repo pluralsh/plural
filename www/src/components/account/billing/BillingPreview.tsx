@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useContext, useMemo, useState } from 'react'
 import {
   Div,
   Flex,
@@ -14,22 +14,24 @@ import {
 
 import { useQuery } from '@apollo/client'
 
+import CurrentUserContext from '../../../contexts/CurrentUserContext'
+
 import { CLUSTER_PRICING, USER_PRICING } from './constants'
 
-import { CLUSTERS_QUERY, USERS_QUERY } from './queries'
+import { USERS_QUERY } from './queries'
 
 function BillingPreview() {
+  const { me } = useContext(CurrentUserContext)
   const [isProfessional, setIsProfessional] = useState(false)
-  const { data: clustersData, loading: clustersLoading } = useQuery(CLUSTERS_QUERY)
   const { data: usersData, loading: usersLoading } = useQuery(USERS_QUERY)
 
-  const nClusters = useMemo(() => clustersData?.clusters?.edges?.length ?? 0, [clustersData])
+  const nClusters = useMemo(() => me?.account?.clusterCount ?? 0, [me])
   const nUsers = useMemo(() => usersData?.users?.edges?.length ?? 0, [usersData])
   const pClusters = isProfessional ? CLUSTER_PRICING : 0
   const pUsers = isProfessional ? USER_PRICING : 0
   const total = nClusters * pClusters + nUsers * pUsers
 
-  if (clustersLoading || usersLoading) {
+  if (usersLoading) {
     return (
       <Card
         padding="large"

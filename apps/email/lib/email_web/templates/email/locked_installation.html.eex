@@ -14,8 +14,8 @@
 <%= row do %>
 <div>
 <code>
-<%= if @deps.instructions.script do %>
-<%= @deps.instructions.script %>
+<%= if @instructions.script do %>
+<%= @instructions.script %>
 <% end %>
 plural build --only <%= @repo.name %>
 plural deploy --commit "applying breaking changes to <%= @repo.name %>"
@@ -24,13 +24,13 @@ plural repos unlock <%= @repo.name %>
 </div>
 <% end %>
 
-<%= if @deps.instructions.instructions do %>
+<%= if @instructions.instructions do %>
 <%= row do %>
 <%= text do %>
 The maintainers also have provided these instructions:
 <% end %>
 <pre>
-<%= @deps.instructions.instructions %>
+<%= @instructions.instructions %>
 </pre>
 <% end %>
 <% end %>

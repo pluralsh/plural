@@ -1,45 +1,52 @@
 import { useMemo } from 'react'
-import { Card } from '@pluralsh/design-system'
-import { Div } from 'honorable'
+import {
+  Button,
+  Card,
+  Chip,
+  DownloadIcon,
+} from '@pluralsh/design-system'
+import { Div, Flex } from 'honorable'
+import moment from 'moment'
 
 function BillingInvoices() {
   const invoices = useMemo(() => [
-    {
-      id: 0,
-      date: new Date().toISOString(),
-      plan: 'Professional',
-      amount: 1500,
-    },
-    {
-      id: 1,
-      date: new Date().toISOString(),
-      plan: 'Professional',
-      amount: 1250,
-    },
-    {
-      id: 2,
-      date: new Date().toISOString(),
-      plan: 'Professional',
-      amount: 1000,
-    },
-    {
-      id: 3,
-      date: new Date().toISOString(),
-      plan: 'Professional',
-      amount: 750,
-    },
-    {
-      id: 4,
-      date: new Date().toISOString(),
-      plan: 'Professional',
-      amount: 500,
-    },
-    {
-      id: 5,
-      date: new Date().toISOString(),
-      plan: 'Professional',
-      amount: 250,
-    },
+    // Let's keep the commented code until data flows in
+    // {
+    //   id: 0,
+    //   date: new Date().toISOString(),
+    //   plan: 'Professional',
+    //   amount: 1500,
+    // },
+    // {
+    //   id: 1,
+    //   date: new Date().toISOString(),
+    //   plan: 'Professional',
+    //   amount: 1250,
+    // },
+    // {
+    //   id: 2,
+    //   date: new Date().toISOString(),
+    //   plan: 'Professional',
+    //   amount: 1000,
+    // },
+    // {
+    //   id: 3,
+    //   date: new Date().toISOString(),
+    //   plan: 'Professional',
+    //   amount: 750,
+    // },
+    // {
+    //   id: 4,
+    //   date: new Date().toISOString(),
+    //   plan: 'Professional',
+    //   amount: 500,
+    // },
+    // {
+    //   id: 5,
+    //   date: new Date().toISOString(),
+    //   plan: 'Professional',
+    //   amount: 250,
+    // },
   ], [])
 
   return (
@@ -75,18 +82,28 @@ function BillingInvoices() {
             backgroundColor={i % 2 ? 'fill-one' : 'fill-two'}
             display="grid"
             gridTemplateColumns="repeat(4, 1fr)"
-            padding="medium"
+            paddingVertical="xsmall"
+            paddingHorizontal="medium"
           >
-            <Div>
-              {invoice.date}
-            </Div>
-            <Div>
-              {invoice.plan}
-            </Div>
-            <Div>
-              {invoice.amount}
-            </Div>
-            <Div />
+            <Flex align="center">
+              {moment(invoice.date).format('MM/DD/YY')}
+            </Flex>
+            <Flex align="center">
+              <Chip severity="info">
+                {invoice.plan}
+              </Chip>
+            </Flex>
+            <Flex align="center">
+              ${invoice.amount}
+            </Flex>
+            <Flex justify="flex-end">
+              <Button
+                tertiary
+                padding={0}
+              >
+                <DownloadIcon color="icon-light" />
+              </Button>
+            </Flex>
           </Div>
         ))}
       </Div>

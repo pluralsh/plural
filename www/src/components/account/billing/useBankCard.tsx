@@ -12,7 +12,9 @@ import { capitalize } from 'lodash'
 
 import { CREATE_CARD_MUTATION, DELETE_CARD_MUTATION } from './queries'
 
-function useBankCard(card: any, setEdit: Dispatch<SetStateAction<boolean>>, refetch: () => Promise<any>) {
+function useBankCard(
+  card: any, setEdit: Dispatch<SetStateAction<boolean>>, refetch: () => Promise<any>, noCancel = false
+) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [createCard] = useMutation(CREATE_CARD_MUTATION)
@@ -79,13 +81,15 @@ function useBankCard(card: any, setEdit: Dispatch<SetStateAction<boolean>>, refe
         marginTop="medium"
         gap="medium"
       >
-        <Button
-          secondary
-          type="cancel"
-          onClick={() => setEdit(false)}
-        >
-          Cancel
-        </Button>
+        {!noCancel && (
+          <Button
+            secondary
+            type="button"
+            onClick={() => setEdit(false)}
+          >
+            Cancel
+          </Button>
+        )}
         <Button
           type="submit"
           disabled={!stripe || !elements}
@@ -95,7 +99,7 @@ function useBankCard(card: any, setEdit: Dispatch<SetStateAction<boolean>>, refe
         </Button>
       </Flex>
     </form>
-  ), [stripe, elements, loading, setEdit, handleSubmit])
+  ), [noCancel, stripe, elements, loading, setEdit, handleSubmit])
 
   const renderDisplay = useCallback(() => (
     <Flex

@@ -83,6 +83,10 @@ defmodule GraphQl.Schema.Shell do
       shell, _, _ -> Shell.status(shell)
     end
 
+    field :region, non_null(:string), resolve: fn
+      %{workspace: %{region: region}}, _, _ -> {:ok, region}
+    end
+
     timestamps()
   end
 
@@ -98,6 +102,7 @@ defmodule GraphQl.Schema.Shell do
     field :network,       :network_configuration
     field :bucket_prefix, :string
     field :cluster,       :string
+    field :region,        :string
   end
 
   object :network_configuration do
@@ -178,6 +183,13 @@ defmodule GraphQl.Schema.Shell do
       middleware Authenticated
 
       safe_resolve &Shell.setup_shell/2
+    end
+
+    field :update_shell, :cloud_shell do
+      middleware Authenticated
+      arg :attributes, non_null(:cloud_shell_attributes)
+
+      safe_resolve &Shell.update_shell/2
     end
 
     field :update_shell_configuration, :boolean do

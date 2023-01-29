@@ -1,3 +1,5 @@
+import 'xterm/css/xterm.css'
+
 import {
   useContext,
   useEffect,
@@ -13,7 +15,6 @@ import {
   P,
   Span,
 } from 'honorable'
-import { XTerm } from 'xterm-for-react'
 import { FitAddon } from 'xterm-addon-fit'
 import {
   ArrowLeftIcon,
@@ -26,6 +27,7 @@ import {
   StatusIpIcon,
   StatusOkIcon,
 } from '@pluralsh/design-system'
+import { Terminal } from 'xterm'
 
 import RepositoryContext from '../../contexts/RepositoryContext'
 import usePaginatedQuery from '../../hooks/usePaginatedQuery'
@@ -60,7 +62,10 @@ function Status({ status }: any) {
 async function fetchLogs(
   client, id, step, term
 ) {
-  const { data } = await client.query({ query: TEST_LOGS, variables: { id, step } })
+  const { data } = await client.query({
+    query: TEST_LOGS,
+    variables: { id, step },
+  })
 
   if (data && data.testLogs) {
     const lines = data.testLogs.split(/\r?\n/)
@@ -73,19 +78,25 @@ async function fetchLogs(
 
 function TestLogs({ step: { id, hasLogs }, testId }: any) {
   const client = useApolloClient()
-  const xterm = useRef<any>(null)
+  const terminalRef = useRef<HTMLDivElement>()
   const fitAddon = useMemo(() => new FitAddon(), [])
+  const terminal = useMemo(() => new Terminal({
+    theme: XTermTheme,
+    disableStdin: false,
+    rightClickSelectsWord: true,
+  }),
+  [])
   const { data } = useSubscription(LOGS_SUB, {
     variables: { testId },
   })
 
   useEffect(() => {
-    if (!xterm?.current?.terminal) return
+    if (!terminalRef?.current) return
 
-    const { current: { terminal } } = xterm
-
-    terminal.setOption('disableStdin', true)
     terminal.loadAddon(fitAddon)
+
+    // Set up the terminal
+    terminal.open(terminalRef.current!)
 
     try {
       fitAddon.fit()
@@ -93,23 +104,24 @@ function TestLogs({ step: { id, hasLogs }, testId }: any) {
     catch (error) {
       console.error(error)
     }
-
-    if (data && data.testLogs && data.testLogs.step.id === id) {
-      for (const l of data.testLogs.logs) {
-        xterm.current.terminal.writeln(l)
-      }
-    }
-  }, [id, data, xterm, fitAddon])
+  }, [terminalRef, fitAddon, terminal])
 
   useEffect(() => {
-    if (!hasLogs || !xterm || !xterm.current || !xterm.current.terminal) return
-    const term = xterm.current.terminal
+    if (data && data.testLogs && data.testLogs.step.id === id) {
+      for (const l of data.testLogs.logs) {
+        terminal.writeln(l)
+      }
+    }
+  }, [data, id, terminal])
 
-    term.clear()
+  useEffect(() => {
+    if (!hasLogs) return
+
+    terminal.clear()
     fetchLogs(
-      client, testId, id, term
+      client, testId, id, terminal
     )
-  }, [hasLogs, client, testId, id, xterm])
+  }, [hasLogs, client, testId, id, terminal])
 
   return (
     <Div
@@ -124,12 +136,9 @@ function TestLogs({ step: { id, hasLogs }, testId }: any) {
         border="1px solid border"
         borderColor="border-fill-two"
       >
-        <XTerm
-          ref={xterm}
-          addons={[fitAddon]}
-          options={{ theme: XTermTheme }}
-          onResize={console.log}
-          onData={console.log}
+        <Div
+          id="terminal"
+          ref={terminalRef}
         />
       </Div>
     </Div>
@@ -145,18 +154,15 @@ function Test({ test, last, setTest }: any) {
       cursor="pointer"
       suffix={<ListIcon size={16} />}
     >
-      <TableData>
-        {test.promoteTag}
-      </TableData>
-      <TableData>
-        {test.name}
-      </TableData>
+      <TableData>{test.promoteTag}</TableData>
+      <TableData>{test.name}</TableData>
       <TableData>
         <P body2>{moment(test.insertedAt).format('MMM DD, YYYY')}</P>
         <P
           caption
           color="text-xlight"
-        >{moment(test.insertedAt).format('hh:mm a')}
+        >
+          {moment(test.insertedAt).format('hh:mm a')}
         </P>
       </TableData>
       <TableData>
@@ -164,7 +170,8 @@ function Test({ test, last, setTest }: any) {
         <P
           caption
           color="text-xlight"
-        >{moment(test.updatedAt).format('hh:mm a')}
+        >
+          {moment(test.updatedAt).format('hh:mm a')}
         </P>
       </TableData>
       <TableData>
@@ -188,28 +195,37 @@ function TestStep({ step, test, last }: any) {
         <TableData>
           <CollapseIcon
             size={8}
-            style={open ? {
-              transform: 'rotate(270deg)',
-              transitionDuration: '.2s',
-              transitionProperty: 'transform',
-            } : {
-              transform: 'rotate(180deg)',
-              transitionDuration: '.2s',
-              transitionProperty: 'transform',
-            }}
+            style={
+              open
+                ? {
+                  transform: 'rotate(270deg)',
+                  transitionDuration: '.2s',
+                  transitionProperty: 'transform',
+                }
+                : {
+                  transform: 'rotate(180deg)',
+                  transitionDuration: '.2s',
+                  transitionProperty: 'transform',
+                }
+            }
           />
         </TableData>
         <TableData>{step.name}</TableData>
         <TableData>{step.description}</TableData>
         <TableData>
-          <P body2>{moment(step.updatedAt || step.insertedAt).format('MMM DD, YYYY')}</P>
+          <P body2>
+            {moment(step.updatedAt || step.insertedAt).format('MMM DD, YYYY')}
+          </P>
           <P
             caption
             color="text-xlight"
-          >{moment(step.updatedAt || step.insertedAt).format('hh:mm a')}
+          >
+            {moment(step.updatedAt || step.insertedAt).format('hh:mm a')}
           </P>
         </TableData>
-        <TableData><Status status={step.status} /></TableData>
+        <TableData>
+          <Status status={step.status} />
+        </TableData>
       </TableRow>
       {open && (
         <TestLogs
@@ -227,15 +243,10 @@ function TestDetail({ test, setTest }: any) {
 
   return (
     <>
-      <PageTitle
-        heading="Tests"
-        paddingTop="medium"
-      />
+      <PageTitle heading="Tests" />
       <Button
         secondary
-        startIcon={(
-          <ArrowLeftIcon size={16} />
-        )}
+        startIcon={<ArrowLeftIcon size={16} />}
         onClick={() => setTest(null)}
         justifyContent="start"
         marginBottom="medium"
@@ -301,11 +312,10 @@ function RepositoryTests() {
       direction="column"
       flexGrow={1}
     >
-      <PageTitle
-        heading="Tests"
-        paddingTop="medium"
-      >
-        <Flex display-desktop-up="none"><RepositoryActions /></Flex>
+      <PageTitle heading="Tests">
+        <Flex display-desktop-up="none">
+          <RepositoryActions />
+        </Flex>
       </PageTitle>
       <Flex
         direction="column"
@@ -314,7 +324,13 @@ function RepositoryTests() {
       >
         {tests?.length ? (
           <Table
-            headers={['Promote to', 'Name', 'Created on', 'Last updated', 'Status']}
+            headers={[
+              'Promote to',
+              'Name',
+              'Created on',
+              'Last updated',
+              'Status',
+            ]}
             sizes={['15%', '35%', '15%', '15%', '20%']}
             background="fill-one"
             width="100%"
@@ -338,7 +354,9 @@ function RepositoryTests() {
               ))}
             </InfiniteScroller>
           </Table>
-        ) : <Span>This repository does not have any tests yet.</Span>}
+        ) : (
+          <Span>This repository does not have any tests yet.</Span>
+        )}
       </Flex>
     </Flex>
   )

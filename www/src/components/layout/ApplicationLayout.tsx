@@ -1,53 +1,16 @@
-import {
-  A,
-  Flex,
-  Span,
-  Text,
-} from 'honorable'
-import { ErrorIcon, Toast } from '@pluralsh/design-system'
-import { useContext } from 'react'
-import { useTheme } from 'styled-components'
+import { A, Flex, Span } from 'honorable'
+import { Toast } from '@pluralsh/design-system'
 
-import { getPreviousUserData } from '../../helpers/authentication'
-import { handlePreviousUserClick } from '../login/CurrentUser'
-import CurrentUserContext from '../../contexts/CurrentUserContext'
+import { useIsCurrentlyOnboarding } from '../shell/onboarding/useOnboarded'
 
 import Sidebar from './Sidebar'
 import WithApplicationUpdate from './WithApplicationUpdate'
-
-function ServiceAccountBanner({ previousUser }: any) {
-  const { me } = useContext(CurrentUserContext)
-  const theme = useTheme()
-
-  return (
-    <Flex
-      direction="row"
-      justifyContent="center"
-      alignItems="center"
-      gap={theme.spacing.xsmall}
-      paddingTop="large"
-      paddingRight="medium"
-      paddingLeft="medium"
-    >
-      <ErrorIcon
-        color="text-warning-light"
-      />
-      <Text>
-        You are currently logged into the service account {me.email}.{' '}
-        <A
-          inline
-          onClick={() => handlePreviousUserClick(previousUser)}
-        >
-          Switch to {previousUser.me.email}
-        </A>
-      </Text>
-    </Flex>
-  )
-}
+import Header from './Header'
+import Subheader from './Subheader'
 
 function ApplicationLayout({ children }: any) {
-  const previousUser = getPreviousUserData()
   const isProduction = import.meta.env.MODE === 'production'
+  const isCurrentlyOnboarding = useIsCurrentlyOnboarding()
 
   return (
     <Flex
@@ -55,8 +18,11 @@ function ApplicationLayout({ children }: any) {
       width="100vw"
       maxWidth="100vw"
       height="100vh"
+      minWidth="0"
+      minHeight="0"
       maxHeight="100vh"
       overflow="hidden"
+      flexDirection="column"
     >
       {isProduction && (
         <WithApplicationUpdate>
@@ -77,14 +43,22 @@ function ApplicationLayout({ children }: any) {
           )}
         </WithApplicationUpdate>
       )}
-      <Sidebar />
+      <Header />
       <Flex
-        direction="column"
+        width="100%"
+        minWidth={0}
+        minHeight={0}
         flexGrow={1}
-        overflowX="hidden"
       >
-        {previousUser && <ServiceAccountBanner previousUser={previousUser} />}
-        {children}
+        <Sidebar />
+        <Flex
+          direction="column"
+          flexGrow={1}
+          overflowX="hidden"
+        >
+          {!isCurrentlyOnboarding && <Subheader />}
+          {children}
+        </Flex>
       </Flex>
     </Flex>
   )

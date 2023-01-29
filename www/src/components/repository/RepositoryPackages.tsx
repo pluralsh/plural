@@ -59,11 +59,10 @@ export default function RepositoryPackages() {
       direction="column"
       height="100%"
     >
-      <PageTitle
-        heading="Packages"
-        paddingTop="medium"
-      >
-        <Flex display-desktop-up="none"><RepositoryActions /></Flex>
+      <PageTitle heading="Packages">
+        <Flex display-desktop-up="none">
+          <RepositoryActions />
+        </Flex>
       </PageTitle>
       <StyledTabPanel stateRef={tabStateRef}>
         <TabList

@@ -16686,7 +16686,6 @@ __metadata:
     workbox-strategies: 6.5.4
     xterm: 5.1.0
     xterm-addon-fit: 0.7.0
-    xterm-for-react: 1.0.4
     xterm-theme: 1.1.0
   languageName: unknown
   linkType: soft
@@ -16728,19 +16727,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"xterm-for-react@npm:1.0.4":
-  version: 1.0.4
-  resolution: "xterm-for-react@npm:1.0.4"
-  dependencies:
-    prop-types: ^15.7.2
-    xterm: ^4.5.0
-  peerDependencies:
-    react: ^16.0.0
-    react-dom: ^16.0.0
-  checksum: 3c4bffdf78b9194e9b0b567c326adb8bdba0de75d9abb8cd3a8d34e9d3602c3e3e1a9215d7201ea2fde462f0614fd29915f77e7b70f68c42c331312330981d96
-  languageName: node
-  linkType: hard
-
 "xterm-theme@npm:1.1.0":
   version: 1.1.0
   resolution: "xterm-theme@npm:1.1.0"
@@ -16752,13 +16738,6 @@ __metadata:
   version: 5.1.0
   resolution: "xterm@npm:5.1.0"
   checksum: cbacbc9dc1bbcf21dabecff46856b43f2d5854b42c1bec4ea03a5720000f2a88d79b0da45b6c38213d6607474a1fbe66d5ff25fa120b7e9e60eeed964dd840a1
-  languageName: node
-  linkType: hard
-
-"xterm@npm:^4.5.0":
-  version: 4.19.0
-  resolution: "xterm@npm:4.19.0"
-  checksum: 4385e08d6f1e26d0db295ba55f0ed9c304686a72c2cfdd32502cf59de23ae9c93434d469fc3735f44375602f209f767a1ba643a86be6f8e0f1cf7e5bfdccde87
   languageName: node
   linkType: hard
 

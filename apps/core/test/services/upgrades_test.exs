@@ -12,6 +12,9 @@ defmodule Core.Services.UpgradesTest do
       assert queue.name == "cluster"
       assert queue.user_id == user.id
 
+      cluster = Core.Services.Clusters.get_cluster(user.account_id, :aws, "cluster")
+      assert queue.cluster_id == cluster.id
+
       assert_receive {:event, %PubSub.UpgradeQueueCreated{item: ^queue}}
     end
 
@@ -52,6 +55,20 @@ defmodule Core.Services.UpgradesTest do
 
       assert q.id == queue.id
       assert q.pinged_at
+
+      assert_receive {:event, %PubSub.UpgradeQueueUpdated{item: ^q}}
+    end
+
+    test "it will ping the cluster too if it exists" do
+      cluster = insert(:cluster)
+      queue = insert(:upgrade_queue, cluster: cluster)
+
+      {:ok, q} = Upgrades.ping(queue)
+
+      assert q.id == queue.id
+      assert q.pinged_at
+
+      assert refetch(cluster).pinged_at
 
       assert_receive {:event, %PubSub.UpgradeQueueUpdated{item: ^q}}
     end

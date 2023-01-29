@@ -65,6 +65,14 @@ defmodule Core.Services.Shell do
         end
       %{create: shell} -> {:ok, shell}
     end)
+    # |> add_operation(:cluster, fn %{git: %CloudShell{workspace: wspace} = shell} ->
+    #   Clusters.create_cluster(%{
+    #     provider: shell.provider,
+    #     name: wspace.cluster,
+    #     domain: wspace.subdomain,
+    #     git_url: shell.git_url
+    #   }, user)
+    # end)
     |> add_operation(:backup, fn %{git: %{git_url: url, aes_key: key, workspace: %{cluster: cluster}}} ->
       Encryption.create_backup(%{name: "shell:#{cluster}:#{Core.random_phrase(2)}", key: key, repositories: [url]}, user)
     end)

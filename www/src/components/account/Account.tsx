@@ -1,14 +1,12 @@
-import { Flex } from 'honorable'
 import { TabPanel } from '@pluralsh/design-system'
 import { useRef } from 'react'
 import { Outlet } from 'react-router-dom'
 
-import {
-  ResponsiveLayoutContentContainer,
-  ResponsiveLayoutSidecarContainer,
-  ResponsiveLayoutSidenavContainer,
-  ResponsiveLayoutSpacer,
-} from '../layout/ResponsiveLayout'
+import { ResponsiveLayoutContentContainer } from '../utils/layout/ResponsiveLayoutContentContainer'
+import { ResponsiveLayoutSidecarContainer } from '../utils/layout/ResponsiveLayoutSidecarContainer'
+import { ResponsiveLayoutSpacer } from '../utils/layout/ResponsiveLayoutSpacer'
+import { ResponsiveLayoutSidenavContainer } from '../utils/layout/ResponsiveLayoutSidenavContainer'
+import { ResponsiveLayoutPage } from '../utils/layout/ResponsiveLayoutPage'
 
 import AccountSideNav from './AccountSidenav'
 
@@ -36,25 +34,19 @@ export function Account() {
   const tabStateRef = useRef<any>()
 
   return (
-    <Flex
-      height="100%"
-      width="100%"
-      overflowY="hidden"
-      padding={32}
-      paddingTop={88}
-    >
-      <ResponsiveLayoutSidenavContainer width={240}>
+    <ResponsiveLayoutPage>
+      <ResponsiveLayoutSidenavContainer>
         <AccountSideNav tabStateRef={tabStateRef} />
       </ResponsiveLayoutSidenavContainer>
       <ResponsiveLayoutSpacer />
       <TabPanel
-        as={<ResponsiveLayoutContentContainer overflow="visible" />}
+        as={<ResponsiveLayoutContentContainer />}
         stateRef={tabStateRef}
       >
         <Outlet />
       </TabPanel>
       <ResponsiveLayoutSpacer />
       <ResponsiveLayoutSidecarContainer width="200px" />
-    </Flex>
+    </ResponsiveLayoutPage>
   )
 }

@@ -36,7 +36,14 @@ defmodule Plural.MixProject do
       apps_path: "apps",
       version: version(),
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      test_coverage: [tool: ExCoveralls],
+      preferred_cli_env: [
+        coveralls: :test,
+        "coveralls.detail": :test,
+        "coveralls.post": :test,
+        "coveralls.html": :test
+      ]
     ]
   end
 
@@ -48,6 +55,10 @@ defmodule Plural.MixProject do
       {:ecto, "~> 3.9.0", override: true},
       {:hackney, "~> 1.18.1", override: true},
       {:absinthe_plug, "~> 1.5.8"},
+      {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
+      {:sobelow, "~> 0.8", only: :dev},
+      {:excoveralls, "~> 0.10", only: :test},
+      {:junit_formatter, "~> 3.3", only: [:test]}
     ]
   end
 end

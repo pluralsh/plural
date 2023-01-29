@@ -1,6 +1,7 @@
 defmodule Core.Services.Upgrades do
   use Core.Services.Base
   import Core.Rollable.Utils
+  require Logger
   alias Core.Schema.{
     User,
     UpgradeQueue,
@@ -9,7 +10,7 @@ defmodule Core.Services.Upgrades do
     ChartInstallation,
     TerraformInstallation
   }
-  alias Core.Services.{Dependencies, Locks}
+  alias Core.Services.{Dependencies, Locks, Clusters}
   alias Core.PubSub
 
   def get_queue(id), do: Core.Repo.get(UpgradeQueue, id)
@@ -22,7 +23,9 @@ defmodule Core.Services.Upgrades do
   end
 
   def authorize(id, %User{id: user_id}) do
-    case get_queue(id) do
+    get_queue(id)
+    |> Core.Repo.preload([:cluster])
+    |> case do
       %UpgradeQueue{user_id: ^user_id} = q -> {:ok, q}
       _ -> {:error, :unauthorized}
     end
@@ -102,7 +105,7 @@ defmodule Core.Services.Upgrades do
   defp update_inst(%{chart_installation: %ChartInstallation{} = inst}), do: inst
   defp update_inst(%{terraform_installation: %TerraformInstallation{} = inst}), do: inst
 
-  def create_queue(%{name: name} = attrs, %User{id: user_id} = user) do
+  def create_queue(%{name: name} = attrs, %User{id: user_id, email: email} = user) do
     queue = get_queue(user_id, name)
 
     start_transaction()
@@ -114,7 +117,16 @@ defmodule Core.Services.Upgrades do
       |> UpgradeQueue.changeset(attrs)
       |> Core.Repo.insert_or_update()
     end)
-    |> execute(extract: :queue)
+    |> add_operation(:cluster, fn %{queue: q} ->
+      case Clusters.create_from_queue(q) do
+        {:ok, _} = res -> res
+        err ->
+          Logger.info "could not create cluster from q for #{email}: #{inspect(err)}"
+          {:ok, nil}
+      end
+    end)
+    |> add_operation(:refetch, fn %{queue: q} -> {:ok, get_queue(q.id)} end)
+    |> execute(extract: :refetch)
     |> notify(:upsert, queue)
   end
 
@@ -149,8 +161,22 @@ defmodule Core.Services.Upgrades do
   end
 
   def ping(%UpgradeQueue{} = q) do
-    Ecto.Changeset.change(q, %{pinged_at: Timex.now()})
-    |> Core.Repo.update()
+    %{cluster: cluster} = Core.Repo.preload(q, [:cluster])
+
+    start_transaction()
+    |> add_operation(:queue, fn _ ->
+      Ecto.Changeset.change(q, %{pinged_at: Timex.now()})
+      |> Core.Repo.update()
+    end)
+    |> add_operation(:cluster, fn _ ->
+      case cluster do
+        nil -> {:ok, %{}}
+        _ ->
+          Ecto.Changeset.change(cluster, %{pinged_at: Timex.now()})
+          |> Core.Repo.update()
+      end
+    end)
+    |> execute(extract: :queue)
     |> notify(:update)
   end
 

@@ -6,7 +6,6 @@ import {
   P,
   Span,
 } from 'honorable'
-
 import {
   StackIcon,
   Tab,
@@ -14,45 +13,32 @@ import {
   TabPanel,
   VerifiedIcon,
 } from '@pluralsh/design-system'
-
 import { useRef } from 'react'
 
-import { GoBack } from '../utils/GoBack'
-
-import {
-  ResponsiveLayoutContentContainer,
-  ResponsiveLayoutSidecarContainer,
-  ResponsiveLayoutSidenavContainer,
-  ResponsiveLayoutSpacer,
-} from '../layout/ResponsiveLayout'
+import { ResponsiveLayoutContentContainer } from '../utils/layout/ResponsiveLayoutContentContainer'
+import { ResponsiveLayoutSidecarContainer } from '../utils/layout/ResponsiveLayoutSidecarContainer'
+import { ResponsiveLayoutSpacer } from '../utils/layout/ResponsiveLayoutSpacer'
+import { ResponsiveLayoutSidenavContainer } from '../utils/layout/ResponsiveLayoutSidenavContainer'
+import { ResponsiveLayoutPage } from '../utils/layout/ResponsiveLayoutPage'
+import { SideNavOffset } from '../utils/layout/SideNavOffset'
 
 import { LinkTabWrap } from '../utils/Tabs'
-
 import { LoopingLogo } from '../utils/AnimatedLogo'
-
-import TopBar from '../layout/TopBar'
 
 import { STACK_QUERY } from './queries'
 import { StackContext } from './types'
 import { StackActions } from './misc'
 
-const DIRECTORY = [
-  { label: 'Stack applications', path: '' },
-]
+const DIRECTORY = [{ label: 'Stack applications', path: '' }]
 
 function Sidenav({ stack }: StackContext) {
   const { pathname } = useLocation()
   const pathPrefix = `/stack/${stack.name}`
-  const currentTab = DIRECTORY
-    .sort((a, b) => b.path.length - a.path.length)
-    .find(tab => pathname?.startsWith(`${pathPrefix}${tab.path}`))
+  const currentTab = DIRECTORY.sort((a, b) => b.path.length - a.path.length).find(tab => pathname?.startsWith(`${pathPrefix}${tab.path}`))
   const tabStateRef = useRef<any>(null)
 
   return (
     <Flex
-      paddingVertical="medium"
-      paddingLeft="medium"
-      width={240}
       flexShrink={0}
       direction="column"
     >
@@ -102,10 +88,7 @@ function Sidenav({ stack }: StackContext) {
       >
         Curated by Plural
       </P>
-      <Div
-        marginTop="medium"
-        marginLeft="minus-medium"
-      >
+      <SideNavOffset marginTop="medium">
         <TabList
           stateRef={tabStateRef}
           stateProps={{
@@ -123,7 +106,7 @@ function Sidenav({ stack }: StackContext) {
             </LinkTabWrap>
           ))}
         </TabList>
-      </Div>
+      </SideNavOffset>
     </Flex>
   )
 }
@@ -142,7 +125,9 @@ function Sidecar({ stack }: StackContext) {
 
 export default function Stack() {
   const { name } = useParams()
-  const { data } = useQuery(STACK_QUERY, { variables: { name, provider: 'AWS' } })
+  const { data } = useQuery(STACK_QUERY, {
+    variables: { name, provider: 'AWS' },
+  })
   const tabStateRef = useRef<any>(null)
 
   if (!data) {
@@ -162,40 +147,21 @@ export default function Stack() {
   const outletContext: StackContext = { stack }
 
   return (
-    <Flex
-      height="100%"
-      maxHeight="100%"
-      direction="column"
-      overflowY="hidden"
-    >
-      <TopBar>
-        <GoBack
-          text="Back to marketplace"
-          link="/marketplace"
-        />
-      </TopBar>
-      <Flex
-        flexGrow={1}
-        height={0}
-        overflowX="hidden"
-        paddingLeft="medium"
-        paddingRight="medium"
+    <ResponsiveLayoutPage flexDirection="column">
+      <ResponsiveLayoutSidenavContainer>
+        <Sidenav stack={stack} />
+      </ResponsiveLayoutSidenavContainer>
+      <ResponsiveLayoutSpacer />
+      <TabPanel
+        as={<ResponsiveLayoutContentContainer />}
+        stateRef={tabStateRef}
       >
-        <ResponsiveLayoutSidenavContainer>
-          <Sidenav stack={stack} />
-        </ResponsiveLayoutSidenavContainer>
-        <ResponsiveLayoutSpacer />
-        <TabPanel
-          as={<ResponsiveLayoutContentContainer />}
-          stateRef={tabStateRef}
-        >
-          <Outlet context={outletContext} />
-        </TabPanel>
-        <ResponsiveLayoutSidecarContainer>
-          <Sidecar stack={stack} />
-        </ResponsiveLayoutSidecarContainer>
-        <ResponsiveLayoutSpacer />
-      </Flex>
-    </Flex>
+        <Outlet context={outletContext} />
+      </TabPanel>
+      <ResponsiveLayoutSidecarContainer>
+        <Sidecar stack={stack} />
+      </ResponsiveLayoutSidecarContainer>
+      <ResponsiveLayoutSpacer />
+    </ResponsiveLayoutPage>
   )
 }

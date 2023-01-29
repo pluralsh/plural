@@ -24,6 +24,7 @@ export type Account = {
   __typename?: 'Account';
   backgroundColor?: Maybe<Scalars['String']>;
   billingCustomerId?: Maybe<Scalars['String']>;
+  clusterCount?: Maybe<Scalars['String']>;
   delinquentAt?: Maybe<Scalars['DateTime']>;
   domainMappings?: Maybe<Array<Maybe<DomainMapping>>>;
   grandfatheredUnitl?: Maybe<Scalars['DateTime']>;
@@ -34,6 +35,7 @@ export type Account = {
   rootUser?: Maybe<User>;
   subscription?: Maybe<PlatformSubscription>;
   updatedAt?: Maybe<Scalars['DateTime']>;
+  userCount?: Maybe<Scalars['String']>;
   workosConnectionId?: Maybe<Scalars['String']>;
 };
 
@@ -333,6 +335,44 @@ export type CloudShellAttributes = {
   workspace: WorkspaceAttributes;
 };
 
+export type Cluster = {
+  __typename?: 'Cluster';
+  account?: Maybe<Account>;
+  consoleUrl?: Maybe<Scalars['String']>;
+  domain?: Maybe<Scalars['String']>;
+  gitUrl?: Maybe<Scalars['String']>;
+  id: Scalars['ID'];
+  insertedAt?: Maybe<Scalars['DateTime']>;
+  name: Scalars['String'];
+  owner?: Maybe<User>;
+  pingedAt?: Maybe<Scalars['DateTime']>;
+  provider: Provider;
+  queue?: Maybe<UpgradeQueue>;
+  source?: Maybe<Source>;
+  updatedAt?: Maybe<Scalars['DateTime']>;
+};
+
+export type ClusterAttributes = {
+  consoleUrl?: InputMaybe<Scalars['String']>;
+  domain?: InputMaybe<Scalars['String']>;
+  gitUrl?: InputMaybe<Scalars['String']>;
+  name: Scalars['String'];
+  provider: Provider;
+  source?: InputMaybe<Source>;
+};
+
+export type ClusterConnection = {
+  __typename?: 'ClusterConnection';
+  edges?: Maybe<Array<Maybe<ClusterEdge>>>;
+  pageInfo: PageInfo;
+};
+
+export type ClusterEdge = {
+  __typename?: 'ClusterEdge';
+  cursor?: Maybe<Scalars['String']>;
+  node?: Maybe<Cluster>;
+};
+
 export type ClusterInformation = {
   __typename?: 'ClusterInformation';
   gitCommit?: Maybe<Scalars['String']>;
@@ -467,6 +507,7 @@ export type Dependencies = {
   __typename?: 'Dependencies';
   application?: Maybe<Scalars['Boolean']>;
   breaking?: Maybe<Scalars['Boolean']>;
+  cliVsn?: Maybe<Scalars['String']>;
   dependencies?: Maybe<Array<Maybe<Dependency>>>;
   instructions?: Maybe<ChangeInstructions>;
   outputs?: Maybe<Scalars['Map']>;
@@ -1789,6 +1830,7 @@ export type PlatformMetrics = {
 export type PlatformPlan = {
   __typename?: 'PlatformPlan';
   cost: Scalars['Int'];
+  enterprise?: Maybe<Scalars['Boolean']>;
   features?: Maybe<PlanFeatures>;
   id: Scalars['ID'];
   insertedAt?: Maybe<Scalars['DateTime']>;
@@ -1956,6 +1998,7 @@ export type Recipe = {
   id: Scalars['ID'];
   insertedAt?: Maybe<Scalars['DateTime']>;
   name: Scalars['String'];
+  oidcEnabled?: Maybe<Scalars['Boolean']>;
   oidcSettings?: Maybe<OidcSettings>;
   private?: Maybe<Scalars['Boolean']>;
   provider?: Maybe<Provider>;
@@ -2333,6 +2376,7 @@ export type RootMutationType = {
   completeIncident?: Maybe<Incident>;
   createArtifact?: Maybe<Artifact>;
   createCard?: Maybe<Account>;
+  createCluster?: Maybe<Cluster>;
   createCrd?: Maybe<Crd>;
   createDemoProject?: Maybe<DemoProject>;
   createDnsRecord?: Maybe<DnsRecord>;
@@ -2370,6 +2414,7 @@ export type RootMutationType = {
   createZoom?: Maybe<ZoomMeeting>;
   deleteCard?: Maybe<Account>;
   deleteChartInstallation?: Maybe<ChartInstallation>;
+  deleteCluster?: Maybe<Cluster>;
   deleteDemoProject?: Maybe<DemoProject>;
   deleteDnsRecord?: Maybe<DnsRecord>;
   deleteDomain?: Maybe<DnsDomain>;
@@ -2448,6 +2493,7 @@ export type RootMutationType = {
   updateRepository?: Maybe<Repository>;
   updateRole?: Maybe<Role>;
   updateServiceAccount?: Maybe<User>;
+  updateShell?: Maybe<CloudShell>;
   updateShellConfiguration?: Maybe<Scalars['Boolean']>;
   updateStep?: Maybe<TestStep>;
   updateTerraform?: Maybe<Terraform>;
@@ -2490,6 +2536,11 @@ export type RootMutationTypeCreateArtifactArgs = {
 
 export type RootMutationTypeCreateCardArgs = {
   source: Scalars['String'];
+};
+
+
+export type RootMutationTypeCreateClusterArgs = {
+  attributes: ClusterAttributes;
 };
 
 
@@ -2686,6 +2737,12 @@ export type RootMutationTypeDeleteCardArgs = {
 
 export type RootMutationTypeDeleteChartInstallationArgs = {
   id: Scalars['ID'];
+};
+
+
+export type RootMutationTypeDeleteClusterArgs = {
+  name: Scalars['String'];
+  provider: Provider;
 };
 
 
@@ -3082,6 +3139,11 @@ export type RootMutationTypeUpdateServiceAccountArgs = {
 };
 
 
+export type RootMutationTypeUpdateShellArgs = {
+  attributes: CloudShellAttributes;
+};
+
+
 export type RootMutationTypeUpdateShellConfigurationArgs = {
   context: Scalars['Map'];
 };
@@ -3147,6 +3209,8 @@ export type RootQueryType = {
   chartInstallations?: Maybe<ChartInstallationConnection>;
   charts?: Maybe<ChartConnection>;
   closure?: Maybe<Array<Maybe<ClosureItem>>>;
+  cluster?: Maybe<Cluster>;
+  clusters?: Maybe<ClusterConnection>;
   configuration?: Maybe<PluralConfiguration>;
   deferredUpdates?: Maybe<DeferredUpdateConnection>;
   demoProject?: Maybe<DemoProject>;
@@ -3267,6 +3331,19 @@ export type RootQueryTypeChartsArgs = {
 export type RootQueryTypeClosureArgs = {
   id: Scalars['ID'];
   type: DependencyType;
+};
+
+
+export type RootQueryTypeClusterArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type RootQueryTypeClustersArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
 };
 
 
@@ -3896,6 +3973,7 @@ export type ShellWorkspace = {
   bucketPrefix?: Maybe<Scalars['String']>;
   cluster?: Maybe<Scalars['String']>;
   network?: Maybe<NetworkConfiguration>;
+  region?: Maybe<Scalars['String']>;
 };
 
 export type SlimSubscription = {
@@ -3904,6 +3982,12 @@ export type SlimSubscription = {
   lineItems?: Maybe<SubscriptionLineItems>;
   plan?: Maybe<Plan>;
 };
+
+export enum Source {
+  Default = 'DEFAULT',
+  Demo = 'DEMO',
+  Shell = 'SHELL'
+}
 
 export enum SpecDatatype {
   Bool = 'BOOL',
@@ -4018,6 +4102,7 @@ export enum TagGroup {
 /** Template engines that can be used at build time. */
 export enum TemplateType {
   Gotemplate = 'GOTEMPLATE',
+  Javascript = 'JAVASCRIPT',
   Lua = 'LUA'
 }
 

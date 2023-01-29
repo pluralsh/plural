@@ -4,11 +4,14 @@ import {
   Hr,
   Img,
 } from 'honorable'
+import { useTheme } from 'styled-components'
 
 // @ts-ignore
 import OnboardingTitleOnboardingSVG from './OnboardingTitleOnboarding.svg'
 
 function OnboardingHeader() {
+  const theme = useTheme()
+
   return (
     <Div width="100%">
       <Flex align="flex-end">
@@ -29,8 +32,8 @@ function OnboardingHeader() {
         />
       </Flex>
       <Hr
-        marginTop={42}
-        marginBottom="large"
+        marginTop={theme.spacing.large}
+        marginBottom="medium"
       />
     </Div>
   )

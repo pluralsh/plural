@@ -32,7 +32,7 @@ provider "kubernetes" {
 {{ else }}
 data "google_container_cluster" "cluster" {
   name = {{ .Values.Cluster }}
-  location = {{ .Values.Region | quote }}
+  location = {{ coalesce .Values.ClusterLocation .Values.Region | quote }}
 }
 
 provider "kubernetes" {

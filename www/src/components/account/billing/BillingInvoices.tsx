@@ -9,7 +9,7 @@ import { Div, Flex } from 'honorable'
 import moment from 'moment'
 
 function BillingInvoices() {
-  const invoices = useMemo(() => [
+  const invoices = useMemo<any[]>(() => [
     // Let's keep the commented code until data flows in
     // {
     //   id: 0,

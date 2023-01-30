@@ -37,7 +37,7 @@ function EditCloudCredentialsModal({ onClose }) {
     setOpen(false)
     onClose()
   }, [onClose])
-  const onUpdate = useCallback(() => {}, [updateShell])
+  const onUpdate = useCallback(() => updateShell().then(() => window.location.reload()), [updateShell])
 
   useEffect(() => {
     if (!shell) return

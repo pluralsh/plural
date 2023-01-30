@@ -1,5 +1,6 @@
 import {
   ComponentProps,
+  ReactElement,
   useCallback,
   useContext,
   useRef,
@@ -53,8 +54,15 @@ export const SIDEBAR_ICON_HEIGHT = '40px'
 export const SIDEBAR_WIDTH = '224px'
 export const SMALL_WIDTH = '60px'
 
+type MenuItem = {
+  text: string
+  icon: ReactElement
+  path: string
+  pathRegexp?: RegExp
+}
+
 /* TODO: Make sure urlRegexp is working with new Sidebar */
-const MENU_ITEMS = [
+const MENU_ITEMS:MenuItem[] = [
   {
     text: 'Marketplace',
     icon: <MarketIcon />,
@@ -87,7 +95,15 @@ const MENU_ITEMS = [
     icon: <CompassIcon />,
     path: '/roadmap',
   },
-] as const
+]
+
+function isActiveMenuItem({ path, pathRegexp }: Pick<MenuItem, 'path' | 'pathRegexp'>,
+  currentPath) {
+  return (
+    (path === '/' ? currentPath === path : currentPath.startsWith(path))
+    || (pathRegexp && (currentPath.match(pathRegexp)?.length ?? 0 > 0))
+  )
+}
 
 function SidebarWrapper() {
   const isCurrentlyOnboarding = useIsCurrentlyOnboarding()
@@ -148,11 +164,8 @@ function Sidebar(props: ComponentProps<typeof DSSidebar>) {
   const { me } = useContext(CurrentUserContext)
   const menuItems = MENU_ITEMS
   const { pathname } = useLocation()
-  const active = useCallback(({ path, pathRegexp }: { path: string; pathRegexp?: RegExp }) => (path === '/'
-    ? pathname === path || pathname.startsWith('/apps/')
-    : pathname.startsWith(path))
-      || (pathRegexp && (pathname.match(pathRegexp)?.length ?? 0 > 0)),
-  [pathname])
+  const active = useCallback((menuItem: Parameters<typeof isActiveMenuItem>[0]) => isActiveMenuItem(menuItem, pathname),
+    [pathname])
   const notificationsCount = useNotificationsCount()
 
   useOutsideClick(menuRef, event => {

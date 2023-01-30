@@ -1,4 +1,9 @@
-import { useCallback, useMemo } from 'react'
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
 import { useQuery } from '@apollo/client'
 import { Div, Spinner } from 'honorable'
 import { Modal } from '@pluralsh/design-system'
@@ -20,12 +25,16 @@ function BillingUpgradeToProfessionalModal({ open, onClose }: BillingUpgradeToPr
     loading,
     error,
     refetch,
-  } = useQuery(CARDS_QUERY)
+  } = useQuery(CARDS_QUERY, {
+    fetchPolicy: 'network-only',
+  })
+
+  const [edit, setEdit] = useState(true)
 
   const card = useMemo(() => data?.me?.cards?.edges?.[0]?.node ?? null, [data])
 
   const { error: cardError, renderEdit, renderDisplay } = useBankCard(
-    card, () => {}, refetch, true
+    card, setEdit, refetch, true
   )
 
   const renderLoading = useCallback(() => (
@@ -50,9 +59,15 @@ function BillingUpgradeToProfessionalModal({ open, onClose }: BillingUpgradeToPr
       >
         Your payment details
       </Div>
-      {card ? renderDisplay() : renderEdit()}
+      {edit || !card ? renderEdit() : renderDisplay()}
     </>
-  ), [card, renderDisplay, renderEdit])
+  ), [edit, card, renderDisplay, renderEdit])
+
+  useEffect(() => {
+    if (loading || !card) return
+
+    setEdit(false)
+  }, [loading, card])
 
   return (
     <Modal

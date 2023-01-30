@@ -3,6 +3,7 @@ import { gql } from '@apollo/client'
 export const CARDS_QUERY = gql`
   query Cards {
     me {
+      id
       cards(first: 100) {
         edges {
           node {

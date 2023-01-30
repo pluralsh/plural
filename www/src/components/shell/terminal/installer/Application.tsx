@@ -28,6 +28,7 @@ interface StepData {
   id: string | undefined,
   context: Record<string, unknown>
   oidc: boolean
+  skipped?: boolean,
 }
 
 const toConfig = config => (config ? Object.keys(config)

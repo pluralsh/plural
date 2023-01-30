@@ -8,7 +8,7 @@ import {
 } from 'react'
 import { Flex, Span, Switch } from 'honorable'
 
-import { useActive } from '@pluralsh/design-system'
+import { useActive, useNavigation } from '@pluralsh/design-system'
 
 import {
   Datatype,
@@ -46,7 +46,10 @@ interface ConfigurationProps {
 export function Configuration({
   recipe, context, setContext, oidc, setOIDC,
 }: ConfigurationProps): ReactElement {
-  const { active } = useActive<Record<string, unknown>>()
+  const {
+    active, completed, setCompleted, setData,
+  } = useActive<Record<string, unknown>>()
+  const { onNext } = useNavigation()
   const sections = recipe.recipeSections
   const configurations = sections!.filter(section => section!.repository!.name === active.label).map(section => section!.configuration).flat().filter(c => !!c)
   const setValue = useCallback((
@@ -60,6 +63,17 @@ export function Configuration({
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hiddenConfigurations.length, setContext])
+
+  useEffect(() => {
+    if (configurations.length === 0 && !completed && active.data?.id) setCompleted(true)
+  }, [configurations.length, completed, active.data?.id, setCompleted])
+
+  useEffect(() => {
+    if (configurations.length === 0 && !active.data?.skipped && completed) {
+      setData({ ...active.data, ...{ skipped: true } })
+      onNext()
+    }
+  }, [active.data, completed, configurations.length, onNext, setData])
 
   return (
     <Flex

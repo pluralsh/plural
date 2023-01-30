@@ -75,7 +75,6 @@ interface AWSCloudProvider {
 }
 
 interface AzureCloudProvider {
-  resourceGroup?: string
   storageAccount?: string
   subscriptionID?: string
   tenantID?: string

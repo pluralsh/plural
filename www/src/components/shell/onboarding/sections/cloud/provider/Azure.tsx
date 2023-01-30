@@ -49,7 +49,7 @@ function Azure() {
   useEffect(() => setValid(isValid), [isValid, setValid])
   useEffect(() => (IsEmpty(workspace?.region) ? setWorkspaceKeys({ region: 'eastus' }) : undefined), [setWorkspaceKeys, workspace])
   useEffect(() => (IsEmpty(cloud?.azure) ? setCloudProviderKeys({
-    tenantID: '', subscriptionID: '', storageAccount: '', clientSecret: '', clientID: '', resourceGroup: '',
+    tenantID: '', subscriptionID: '', storageAccount: '', clientSecret: '', clientID: '',
   }) : undefined), [setCloudProviderKeys, cloud?.azure])
 
   return (

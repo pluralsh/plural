@@ -36,16 +36,13 @@ import {
   SidebarSection,
   TerminalIcon,
 } from '@pluralsh/design-system'
-
 import { useTheme } from 'styled-components'
 
 import { getPreviousUserData } from '../../helpers/authentication'
 import { handlePreviousUserClick } from '../login/CurrentUser'
 import CurrentUserContext from '../../contexts/CurrentUserContext'
 import { useIsCurrentlyOnboarding } from '../shell/hooks/useOnboarded'
-
 import CreatePublisherModal from '../publisher/CreatePublisherModal'
-
 import { clearLocalStorage } from '../../helpers/localStorage'
 
 import { NotificationsPanel, useNotificationsCount } from './WithNotifications'
@@ -111,15 +108,7 @@ function SidebarWrapper() {
   return (
     <Sidebar
       transition="width 300ms ease, opacity 200ms ease"
-      style={
-        isCurrentlyOnboarding
-          ? {
-            width: '0',
-            opacity: '0',
-            zIndex: -1,
-          }
-          : null
-      }
+      style={isCurrentlyOnboarding ? { display: 'none' } : null}
     />
   )
 }

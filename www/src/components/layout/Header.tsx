@@ -6,16 +6,17 @@ import {
 } from 'honorable'
 import { Button, Tooltip } from '@pluralsh/design-system'
 import { useTheme } from 'styled-components'
-
 import { useQuery } from '@apollo/client'
 
 import { QueueList } from '../clusters/Clusters'
 import { QUEUES } from '../clusters/queries'
+import { useIsCurrentlyOnboarding } from '../shell/hooks/useOnboarded'
 
 const APP_ICON = '/app-logo-white.png'
 
 export default function Header() {
   const theme = useTheme()
+  const isCurrentlyOnboarding = useIsCurrentlyOnboarding()
 
   const { data: queuesData } = useQuery<QueueList>(QUEUES, {
     fetchPolicy: 'cache-and-network',
@@ -64,6 +65,7 @@ export default function Header() {
       borderBottom="1px solid border"
       paddingHorizontal="large"
       paddingVertical="xsmall"
+      style={isCurrentlyOnboarding ? { display: 'none' } : null}
     >
       <Flex
         align="center"

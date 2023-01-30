@@ -3,11 +3,12 @@ import { useTheme } from 'styled-components'
 import { ReactElement, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import { ResponsiveLayoutContentContainer, ResponsiveLayoutSidenavContainer, ResponsiveLayoutSpacer } from '../../layout/ResponsiveLayout'
 import { useDevTokenInputSecretCode } from '../hooks/useDevToken'
 import { AuthorizationUrl, RootQueryType, ScmProvider } from '../../../generated/graphql'
-
 import useOnboarded from '../hooks/useOnboarded'
+import { ResponsiveLayoutSpacer } from '../../utils/layout/ResponsiveLayoutSpacer'
+import { ResponsiveLayoutContentContainer } from '../../utils/layout/ResponsiveLayoutContentContainer'
+import { ResponsiveLayoutSidenavContainer } from '../../utils/layout/ResponsiveLayoutSidenavContainer'
 
 import OnboardingHeader from './OnboardingHeader'
 import OnboardingSidenav from './OnboardingSidenav'

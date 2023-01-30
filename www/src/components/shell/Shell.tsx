@@ -4,7 +4,8 @@ import { Flex } from 'honorable'
 import { Button, LoopingLogo } from '@pluralsh/design-system'
 
 import { CloudShell, RootQueryType } from '../../generated/graphql'
-import { ResponsiveLayoutContentContainer, ResponsiveLayoutSpacer } from '../layout/ResponsiveLayout'
+import { ResponsiveLayoutSpacer } from '../utils/layout/ResponsiveLayoutSpacer'
+import { ResponsiveLayoutContentContainer } from '../utils/layout/ResponsiveLayoutContentContainer'
 
 import { Onboarding } from './onboarding/Onboarding'
 import {

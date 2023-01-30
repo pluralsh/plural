@@ -114,8 +114,8 @@ function Azure() {
 
       <FormField label="Resource Group">
         <Input
-          value={cloud?.azure?.resourceGroup}
-          onChange={({ target: { value } }) => setCloudProviderKeys({ resourceGroup: value })}
+          value={workspace?.project}
+          onChange={({ target: { value } }) => setWorkspaceKeys({ project: value })}
         />
       </FormField>
       <FormField label="Storage Account">

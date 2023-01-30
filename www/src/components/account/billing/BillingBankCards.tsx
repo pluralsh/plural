@@ -1,39 +1,18 @@
-import { useMemo, useState } from 'react'
-import { useQuery } from '@apollo/client'
+import { useContext, useState } from 'react'
 import { Button, Card } from '@pluralsh/design-system'
-import { Div, Spinner } from 'honorable'
+import { Div } from 'honorable'
 
-import { CARDS_QUERY } from './queries'
+import BillingBankCardContext from '../../../contexts/BillingBankCardContext'
 
 import useBankCard from './useBankCard'
 
 function BillingBankCards() {
+  const { card } = useContext(BillingBankCardContext)
   const [edit, setEdit] = useState(false)
-  const {
-    data,
-    loading,
-    error,
-    refetch,
-  } = useQuery(CARDS_QUERY)
 
-  const card = useMemo(() => data?.me?.cards?.edges?.[0]?.node ?? null, [data])
+  const { error: cardError, renderDisplay, renderEdit } = useBankCard(setEdit)
 
-  const { error: cardError, renderDisplay, renderEdit } = useBankCard(card, setEdit, refetch)
-
-  if (loading) {
-    return (
-      <Card
-        display="flex"
-        alignItems="center"
-        justifyContent="center"
-        padding="medium"
-      >
-        <Spinner />
-      </Card>
-    )
-  }
-
-  if (error || cardError) {
+  if (cardError) {
     return (
       <Card
         display="flex"

@@ -2,6 +2,7 @@ import {
   Dispatch,
   SetStateAction,
   useCallback,
+  useContext,
   useState,
 } from 'react'
 import { useMutation } from '@apollo/client'
@@ -10,11 +11,13 @@ import { Div, Flex } from 'honorable'
 import { CardElement, useElements, useStripe } from '@stripe/react-stripe-js'
 import { capitalize } from 'lodash'
 
+import BillingBankCardContext from '../../../contexts/BillingBankCardContext'
+
 import { CREATE_CARD_MUTATION, DELETE_CARD_MUTATION } from './queries'
 
-function useBankCard(
-  card: any, setEdit: Dispatch<SetStateAction<boolean>>, refetch: () => Promise<any>, noCancel = false
-) {
+function useBankCard(setEdit: Dispatch<SetStateAction<boolean>>, noCancel = false) {
+  const { card, refetch } = useContext(BillingBankCardContext)
+
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [createCard] = useMutation(CREATE_CARD_MUTATION)
@@ -58,6 +61,8 @@ function useBankCard(
   }, [stripe, elements, createCard, refetch, setEdit])
 
   const handleDelete = useCallback(async () => {
+    if (!card) return
+
     setLoading(true)
 
     await deleteCard({
@@ -101,43 +106,47 @@ function useBankCard(
     </form>
   ), [noCancel, stripe, elements, loading, setEdit, handleSubmit])
 
-  const renderDisplay = useCallback(() => (
-    <Flex
-      align="center"
-      gap="small"
-    >
-      <Card padding="small">
-        <Flex
-          align="center"
-          justify="center"
-        >
-          {card.brand}
-        </Flex>
-      </Card>
+  const renderDisplay = useCallback(() => {
+    if (!card) return null
+
+    return (
       <Flex
-        direction="column"
-        gap="xxxsmall"
+        align="center"
+        gap="small"
       >
-        <Div
-          fontWeight={600}
-          body1
+        <Card padding="small">
+          <Flex
+            align="center"
+            justify="center"
+          >
+            {card.brand}
+          </Flex>
+        </Card>
+        <Flex
+          direction="column"
+          gap="xxxsmall"
         >
-          {capitalize(card.brand)} ending in {card.last4}
-        </Div>
-        <Div color="text-xlight">
-          Expires {card.expMonth.toString().padStart(2, '0')}/{card.expYear}
-        </Div>
+          <Div
+            fontWeight={600}
+            body1
+          >
+            {capitalize(card.brand)} ending in {card.last4}
+          </Div>
+          <Div color="text-xlight">
+            Expires {card.expMonth.toString().padStart(2, '0')}/{card.expYear}
+          </Div>
+        </Flex>
+        <Div flexGrow={1} />
+        <Button
+          secondary
+          onClick={handleDelete}
+          loading={loading}
+        >
+          Delete
+        </Button>
       </Flex>
-      <Div flexGrow={1} />
-      <Button
-        secondary
-        onClick={handleDelete}
-        loading={loading}
-      >
-        Delete
-      </Button>
-    </Flex>
-  ), [card, loading, handleDelete])
+    )
+  }, [card, loading, handleDelete])
 
   return {
     renderEdit,

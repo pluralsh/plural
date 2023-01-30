@@ -22,6 +22,14 @@ export const PLATFORM_PLANS_QUERY = gql`
   }
 `
 
+export const UPGRADE_TO_PROFESSIONAL_PLAN_MUTATION = gql`
+  mutation UpgradeToProfessionalPlan($attributes: PlatformSubscriptionAttributes!, $planId: ID!) {
+    createPlatformSubscription(attributes: $attributes, planId: $planId) {
+      id
+    }
+  }
+`
+
 export const CARDS_QUERY = gql`
   query Cards {
     me {

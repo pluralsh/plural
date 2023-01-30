@@ -5,12 +5,7 @@ import {
   useMemo,
   useState,
 } from 'react'
-import {
-  Div,
-  Flex,
-  Spinner,
-  Switch,
-} from 'honorable'
+import { Div, Flex, Switch } from 'honorable'
 import {
   Card,
   CloseIcon,
@@ -18,13 +13,9 @@ import {
   PeopleIcon,
 } from '@pluralsh/design-system'
 
-import { useQuery } from '@apollo/client'
-
-import CurrentUserContext from '../../../contexts/CurrentUserContext'
-
 import PlatformPlansContext from '../../../contexts/PlatformPlansContext'
 
-import { USERS_QUERY } from './queries'
+import BillingConsumptionContext from '../../../contexts/BillingConsumptionContext'
 
 type BillingPreviewPropsType = {
   noCard?: boolean
@@ -32,14 +23,11 @@ type BillingPreviewPropsType = {
 }
 
 function BillingPreview({ noCard, discountPreview }: BillingPreviewPropsType) {
-  const { me } = useContext(CurrentUserContext)
   const { clusterMonthlyPricing, userMonthlyPricing, annualDiscount } = useContext(PlatformPlansContext)
+  const { nClusters, nUsers } = useContext(BillingConsumptionContext)
 
   const [isProfessional, setIsProfessional] = useState(false)
-  const { data: usersData, loading: usersLoading } = useQuery(USERS_QUERY)
 
-  const nClusters = useMemo(() => me?.account?.clusterCount ?? 0, [me])
-  const nUsers = useMemo(() => usersData?.users?.edges?.length ?? 0, [usersData])
   const pClusters = useMemo(() => (discountPreview
     ? isProfessional
       ? Math.ceil(clusterMonthlyPricing * (1 - annualDiscount))
@@ -80,10 +68,6 @@ function BillingPreview({ noCard, discountPreview }: BillingPreviewPropsType) {
     >
       {children}
     </Card>
-  ), [])
-
-  const renderLoading = useCallback(() => (
-    <Spinner />
   ), [])
 
   const renderProfessionalSwitch = useCallback(() => (
@@ -223,10 +207,6 @@ function BillingPreview({ noCard, discountPreview }: BillingPreviewPropsType) {
     renderProfessionalSwitch,
     renderAnnualDiscountSwitch,
   ])
-
-  if (usersLoading) {
-    return noCard ? renderLoading() : wrapCard(renderLoading())
-  }
 
   return noCard ? renderContent() : wrapCard(renderContent())
 }

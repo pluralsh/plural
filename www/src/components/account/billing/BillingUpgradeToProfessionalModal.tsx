@@ -1,18 +1,24 @@
 import {
   useCallback,
+  useContext,
   useEffect,
-  useMemo,
   useState,
 } from 'react'
-import { useMutation, useQuery } from '@apollo/client'
-import { Div, Flex, Spinner } from 'honorable'
+import { Link } from 'react-router-dom'
+import { useMutation } from '@apollo/client'
+import { Div, Flex } from 'honorable'
 import { Button, Modal } from '@pluralsh/design-system'
 
-import { CARDS_QUERY } from './queries'
+import PlatformPlansContext from '../../../contexts/PlatformPlansContext'
+import BillingBankCardContext from '../../../contexts/BillingBankCardContext'
+import BillingConsumptionContext from '../../../contexts/BillingConsumptionContext'
+
+import { UPGRADE_TO_PROFESSIONAL_PLAN_MUTATION } from './queries'
 
 import useBankCard from './useBankCard'
 
 import BillingPreview from './BillingPreview'
+import BillingError from './BillingError'
 
 type BillingUpgradeToProfessionalModalPropsType = {
   open: boolean
@@ -20,39 +26,45 @@ type BillingUpgradeToProfessionalModalPropsType = {
 }
 
 function BillingUpgradeToProfessionalModal({ open, onClose }: BillingUpgradeToProfessionalModalPropsType) {
-  const {
-    data,
-    loading: loadingCards,
-    error,
-    refetch,
-  } = useQuery(CARDS_QUERY, {
-    fetchPolicy: 'network-only',
-  })
-  // const [upgradeMutation, { loading: loadingUpgradeMutation }] = useMutation(UPGRADE_TO_PROFESSIONAL_PLAN_MUTATION, {
+  const { proPlatformPlan } = useContext(PlatformPlansContext)
+  const { nClusters, nUsers } = useContext(BillingConsumptionContext)
+  const { card } = useContext(BillingBankCardContext)
 
-  // })
+  const [upgradeMutation, { loading: loadingUpgradeMutation }] = useMutation(UPGRADE_TO_PROFESSIONAL_PLAN_MUTATION, {
+    variables: {
+      attributes: {
+        lineItems: [
+          {
+            dimension: 'CLUSTER',
+            quantity: nClusters,
+          },
+          {
+            dimension: 'USER',
+            quantity: nUsers,
+          },
+        ],
+      },
+      planId: proPlatformPlan.id,
+    },
+  })
 
   const [edit, setEdit] = useState(true)
+  const [success, setSuccess] = useState(false)
+  const [error, setError] = useState(false)
 
-  const card = useMemo(() => data?.me?.cards?.edges?.[0]?.node ?? null, [data])
-
-  const { error: cardError, renderEdit, renderDisplay } = useBankCard(
-    card, setEdit, refetch, true
-  )
+  const { error: cardError, renderEdit, renderDisplay } = useBankCard(setEdit, true)
 
   const handleUpgrade = useCallback(() => {
+    if (!card) return
 
-  }, [])
-
-  const renderLoading = useCallback(() => (
-    <Spinner />
-  ), [])
-
-  const renderError = useCallback(() => (
-    <Div body2>
-      An error occured. Please reload the page or contact support.
-    </Div>
-  ), [])
+    upgradeMutation()
+      .then(() => {
+        setSuccess(true)
+      })
+      .catch(() => {
+        setError(true)
+      })
+  }, [card, upgradeMutation])
 
   const renderContent = useCallback(() => (
     <>
@@ -74,19 +86,46 @@ function BillingUpgradeToProfessionalModal({ open, onClose }: BillingUpgradeToPr
       >
         <Button
           onClick={handleUpgrade}
+          loading={loadingUpgradeMutation}
           disabled={!card}
         >
           Upgrade
         </Button>
       </Flex>
     </>
-  ), [edit, card, renderDisplay, renderEdit, handleUpgrade])
+  ), [
+    edit,
+    card,
+    loadingUpgradeMutation,
+    renderDisplay,
+    renderEdit,
+    handleUpgrade,
+  ])
+
+  const renderSuccess = useCallback(() => (
+    <>
+      <Div>
+        Welcome to the Plural Professional plan! You now have access to groups, roles, service accounts, and more.
+      </Div>
+      <Flex
+        justify="flex-end"
+        marginTop="large"
+      >
+        <Button
+          as={Link}
+          to="/marketplace"
+        >
+          Explore the app
+        </Button>
+      </Flex>
+    </>
+  ), [])
 
   useEffect(() => {
-    if (loadingCards || !card) return
+    if (!card) return
 
     setEdit(false)
-  }, [loadingCards, card])
+  }, [card])
 
   return (
     <Modal
@@ -95,7 +134,7 @@ function BillingUpgradeToProfessionalModal({ open, onClose }: BillingUpgradeToPr
       header="Upgrade to professional"
       minWidth={512 + 128}
     >
-      {(error || cardError) ? renderError() : loadingCards ? renderLoading() : renderContent()}
+      {(error || cardError) ? <BillingError /> : success ? renderSuccess() : renderContent()}
     </Modal>
   )
 }

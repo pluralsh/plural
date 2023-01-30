@@ -22,7 +22,7 @@ import { useQuery } from '@apollo/client'
 
 import CurrentUserContext from '../../../contexts/CurrentUserContext'
 
-import { ANNUAL_PRICING_DISCOUNT, CLUSTER_PRICING, USER_PRICING } from './constants'
+import PlatformPlansContext from '../../../contexts/PlatformPlansContext'
 
 import { USERS_QUERY } from './queries'
 
@@ -33,6 +33,8 @@ type BillingPreviewPropsType = {
 
 function BillingPreview({ noCard, discountPreview }: BillingPreviewPropsType) {
   const { me } = useContext(CurrentUserContext)
+  const { clusterMonthlyPricing, userMonthlyPricing, annualDiscount } = useContext(PlatformPlansContext)
+
   const [isProfessional, setIsProfessional] = useState(false)
   const { data: usersData, loading: usersLoading } = useQuery(USERS_QUERY)
 
@@ -40,20 +42,20 @@ function BillingPreview({ noCard, discountPreview }: BillingPreviewPropsType) {
   const nUsers = useMemo(() => usersData?.users?.edges?.length ?? 0, [usersData])
   const pClusters = useMemo(() => (discountPreview
     ? isProfessional
-      ? Math.ceil(CLUSTER_PRICING * (1 - ANNUAL_PRICING_DISCOUNT))
-      : CLUSTER_PRICING
+      ? Math.ceil(clusterMonthlyPricing * (1 - annualDiscount))
+      : clusterMonthlyPricing
     : isProfessional
-      ? CLUSTER_PRICING
+      ? clusterMonthlyPricing
       : 0),
-  [discountPreview, isProfessional])
+  [discountPreview, clusterMonthlyPricing, annualDiscount, isProfessional])
   const pUsers = useMemo(() => (discountPreview
     ? isProfessional
-      ? Math.ceil(USER_PRICING * (1 - ANNUAL_PRICING_DISCOUNT))
-      : USER_PRICING
+      ? Math.ceil(userMonthlyPricing * (1 - annualDiscount))
+      : userMonthlyPricing
     : isProfessional
-      ? USER_PRICING
+      ? userMonthlyPricing
       : 0),
-  [discountPreview, isProfessional])
+  [discountPreview, userMonthlyPricing, annualDiscount, isProfessional])
   const totalClusters = useMemo(() => (discountPreview && isProfessional ? 12 : 1) * nClusters * pClusters,
     [
       discountPreview,
@@ -120,11 +122,11 @@ function BillingPreview({ noCard, discountPreview }: BillingPreviewPropsType) {
           color="text-xlight"
           marginLeft="xxsmall"
         >
-          Annually ({ANNUAL_PRICING_DISCOUNT * 100}% discount)
+          Annually ({annualDiscount * 100}% discount)
         </Div>
       </Switch>
     </Flex>
-  ), [isProfessional])
+  ), [isProfessional, annualDiscount])
 
   const renderContent = useCallback(() => (
     <Div width="100%">

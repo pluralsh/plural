@@ -1,7 +1,8 @@
 import { Div } from 'honorable'
 import { CheckIcon, CloseIcon } from '@pluralsh/design-system'
+import { useContext } from 'react'
 
-import { CLUSTER_PRICING, USER_PRICING } from './constants'
+import PlatformPlansContext from '../../../contexts/PlatformPlansContext'
 
 const columnStyles = {
   position: 'relative',
@@ -42,6 +43,8 @@ const lastColumnCellProps = {
 }
 
 function BillingPricingTable() {
+  const { clusterMonthlyPricing, userMonthlyPricing } = useContext(PlatformPlansContext)
+
   return (
     <Div
       display="grid"
@@ -221,10 +224,10 @@ function BillingPricingTable() {
           Unlimited
         </Div>
         <Div body2>
-          ${CLUSTER_PRICING}/cluster/month
+          ${clusterMonthlyPricing}/cluster/month
         </Div>
         <Div body2>
-          ${USER_PRICING}/user/month
+          ${userMonthlyPricing}/user/month
         </Div>
         <Div>
           <CheckIcon color="icon-success" />

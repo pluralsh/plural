@@ -1,14 +1,15 @@
+import { useContext, useState } from 'react'
 import { Flex } from 'honorable'
 import { Button } from '@pluralsh/design-system'
 
-import { useState } from 'react'
+import PlatformPlansContext from '../../../contexts/PlatformPlansContext'
 
 import BillingPricingCard from './BillingPricingCard'
 import BillingUpgradeToProfessionalModal from './BillingUpgradeToProfessionalModal'
 
-import { CLUSTER_PRICING, USER_PRICING } from './constants'
-
 function BillingPricingCards() {
+  const { clusterMonthlyPricing, userMonthlyPricing } = useContext(PlatformPlansContext)
+
   const [upgradeToProfessionalModalOpen, setUpgradeToProfessionalModalOpen] = useState(false)
 
   return (
@@ -60,9 +61,9 @@ function BillingPricingCards() {
           title="Professional"
           subtitle={(
             <>
-              ${CLUSTER_PRICING}/cluster/month
+              ${clusterMonthlyPricing}/cluster/month
               <br />
-              ${USER_PRICING}/user/month
+              ${userMonthlyPricing}/user/month
             </>
           )}
           items={[

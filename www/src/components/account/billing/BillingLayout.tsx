@@ -2,11 +2,13 @@ import { Button, PageTitle } from '@pluralsh/design-system'
 import { Div, Flex } from 'honorable'
 import { Link, Outlet, useLocation } from 'react-router-dom'
 
+import BillingPlatformPlansProvider from './BillingPlatformPlansProvider'
+
 function BillingLayout() {
   const { pathname } = useLocation()
 
   return (
-    <>
+    <BillingPlatformPlansProvider>
       <PageTitle heading="Billing">
         <Flex>
           <Button
@@ -34,7 +36,7 @@ function BillingLayout() {
       >
         <Outlet />
       </Div>
-    </>
+    </BillingPlatformPlansProvider>
   )
 }
 

@@ -1,5 +1,27 @@
 import { gql } from '@apollo/client'
 
+export const PLATFORM_PLANS_QUERY = gql`
+  query PlatformPlans {
+    platformPlans {
+      id
+      name
+      cost
+      period
+      visible
+      enterprise
+      features {
+        vpn
+      }
+      lineItems {
+        name
+        dimension
+        cost
+        period
+      }
+    }
+  }
+`
+
 export const CARDS_QUERY = gql`
   query Cards {
     me {

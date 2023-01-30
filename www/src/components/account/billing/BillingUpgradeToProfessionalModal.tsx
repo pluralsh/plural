@@ -4,9 +4,9 @@ import {
   useMemo,
   useState,
 } from 'react'
-import { useQuery } from '@apollo/client'
-import { Div, Spinner } from 'honorable'
-import { Modal } from '@pluralsh/design-system'
+import { useMutation, useQuery } from '@apollo/client'
+import { Div, Flex, Spinner } from 'honorable'
+import { Button, Modal } from '@pluralsh/design-system'
 
 import { CARDS_QUERY } from './queries'
 
@@ -22,12 +22,15 @@ type BillingUpgradeToProfessionalModalPropsType = {
 function BillingUpgradeToProfessionalModal({ open, onClose }: BillingUpgradeToProfessionalModalPropsType) {
   const {
     data,
-    loading,
+    loading: loadingCards,
     error,
     refetch,
   } = useQuery(CARDS_QUERY, {
     fetchPolicy: 'network-only',
   })
+  // const [upgradeMutation, { loading: loadingUpgradeMutation }] = useMutation(UPGRADE_TO_PROFESSIONAL_PLAN_MUTATION, {
+
+  // })
 
   const [edit, setEdit] = useState(true)
 
@@ -36,6 +39,10 @@ function BillingUpgradeToProfessionalModal({ open, onClose }: BillingUpgradeToPr
   const { error: cardError, renderEdit, renderDisplay } = useBankCard(
     card, setEdit, refetch, true
   )
+
+  const handleUpgrade = useCallback(() => {
+
+  }, [])
 
   const renderLoading = useCallback(() => (
     <Spinner />
@@ -55,19 +62,31 @@ function BillingUpgradeToProfessionalModal({ open, onClose }: BillingUpgradeToPr
       />
       <Div
         fontWeight="bold"
-        marginVertical="medium"
+        marginTop="medium"
+        marginBottom="small"
       >
         Your payment details
       </Div>
       {edit || !card ? renderEdit() : renderDisplay()}
+      <Flex
+        justify="flex-end"
+        marginTop="xxlarge"
+      >
+        <Button
+          onClick={handleUpgrade}
+          disabled={!card}
+        >
+          Upgrade
+        </Button>
+      </Flex>
     </>
-  ), [edit, card, renderDisplay, renderEdit])
+  ), [edit, card, renderDisplay, renderEdit, handleUpgrade])
 
   useEffect(() => {
-    if (loading || !card) return
+    if (loadingCards || !card) return
 
     setEdit(false)
-  }, [loading, card])
+  }, [loadingCards, card])
 
   return (
     <Modal
@@ -76,7 +95,7 @@ function BillingUpgradeToProfessionalModal({ open, onClose }: BillingUpgradeToPr
       header="Upgrade to professional"
       minWidth={512 + 128}
     >
-      {(error || cardError) ? renderError() : loading ? renderLoading() : renderContent()}
+      {(error || cardError) ? renderError() : loadingCards ? renderLoading() : renderContent()}
     </Modal>
   )
 }

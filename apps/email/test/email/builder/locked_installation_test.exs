@@ -22,5 +22,25 @@ defmodule Email.Builder.LockedInstallationTest do
 
       assert to.id == user.id
     end
+
+    test "it can still deliver w/ no instructions provided" do
+      service_account = insert(:user, service_account: true)
+      user = insert(:user, account: service_account.account)
+      %{group: group} = insert(:impersonation_policy_binding,
+        policy: build(:impersonation_policy, user: service_account),
+        group: insert(:group, account: service_account.account)
+      )
+      insert(:group_member, group: group, user: user)
+
+      inst = insert(:installation, user: service_account)
+      ci = insert(:chart_installation,
+        installation: inst,
+        version: build(:version)
+      )
+
+      %{to: [to]} = Email.Builder.LockedInstallation.email(ci)
+
+      assert to.id == user.id
+    end
   end
 end

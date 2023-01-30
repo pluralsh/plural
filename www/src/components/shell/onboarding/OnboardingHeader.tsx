@@ -4,8 +4,8 @@ import {
   Button,
   DiscordIcon,
   DocumentIcon,
+  GitHubLogoIcon,
   IconFrame,
-  LifePreserverIcon,
   Sidebar,
   SidebarItem,
   SidebarSection,
@@ -49,12 +49,12 @@ function OnboardingHeader({ onRestart }: OnboardingHeaderProps) {
         <SidebarItem
           clickable
           tooltip="Support"
-          href=""
+          href="https://github.com/pluralsh/plural"
         >
           <IconFrame
             textValue="Support"
             type="secondary"
-            icon={<LifePreserverIcon />}
+            icon={<GitHubLogoIcon />}
           />
         </SidebarItem>
         <SidebarItem

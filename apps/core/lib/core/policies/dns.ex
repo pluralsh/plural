@@ -24,8 +24,9 @@ defmodule Core.Policies.Dns do
     do: :pass
 
   def can?(%User{id: id}, %DnsRecord{creator_id: id}, :delete), do: :pass
-  def can?(%User{account_id: id} = user, %DnsRecord{} = record, action) when action != :delete do
+  def can?(%User{account_id: id, id: uid} = user, %DnsRecord{} = record, action) when action != :delete do
     case Core.Repo.preload(record, [domain: [access_policy: :bindings]]) do
+      %{domain: %DnsDomain{creator_id: ^uid}} -> :pass
       %{domain: %DnsDomain{account_id: ^id, access_policy: nil}} -> :pass
       %{domain: %DnsDomain{account_id: ^id, access_policy: policy}} ->
         Rbac.evaluate_policy(user, policy) |> error(@policy_msg)

@@ -17,6 +17,7 @@ import capitalize from 'lodash/capitalize'
 
 import RepositoryContext from '../../contexts/RepositoryContext'
 import { LinkTabWrap } from '../utils/Tabs'
+import { SideNavOffset } from '../utils/layout/SideNavOffset'
 
 const DIRECTORY = [
   { label: 'Readme', path: '' },
@@ -63,9 +64,6 @@ function RepositorySideNav({
 
   return (
     <Flex
-      paddingVertical="medium"
-      paddingLeft="medium"
-      width={240}
       flexShrink={0}
       direction="column"
       {...props}
@@ -106,9 +104,8 @@ function RepositorySideNav({
           {capitalize(repository.publisher.name)}
         </A>
       </P>
-      <Div
+      <SideNavOffset
         marginTop="medium"
-        marginLeft="minus-medium"
       >
         <TabList
           stateRef={tabStateRef}
@@ -127,7 +124,7 @@ function RepositorySideNav({
             </LinkTabWrap>
           ))}
         </TabList>
-      </Div>
+      </SideNavOffset>
     </Flex>
   )
 }

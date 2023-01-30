@@ -1,4 +1,4 @@
-import { useMemo, useRef } from 'react'
+import { useCallback, useMemo, useRef } from 'react'
 import { useOutletContext } from 'react-router-dom'
 import { Box } from 'grommet'
 import moment from 'moment'
@@ -13,8 +13,7 @@ import {
 import { DURATIONS, Graph } from '../../utils/Graph'
 import { generateColor } from '../../utils/colors'
 
-function RangePicker({ duration, setDuration }: any) {
-  const tabStateRef = useRef<any>(null)
+function RangePicker({ duration, setDuration, tabStateRef }: any) {
   const selectedKey = `${duration.offset}+${duration.step}`
 
   return (
@@ -57,6 +56,12 @@ export default function ImagePullMetrics() {
   }),
   [dockerRepository.metrics, dockerRepository.name])
   const tabStateRef = useRef<any>(null)
+  const setDuration = useCallback(({ offset, step, tick }) => setFilter({
+    ...filter,
+    offset,
+    precision: step,
+    tick,
+  }), [filter, setFilter])
 
   return (
     <Box
@@ -84,12 +89,7 @@ export default function ImagePullMetrics() {
         <RangePicker
           tabStateRef={tabStateRef}
           duration={{ offset: filter.offset, step: filter.precision }}
-          setDuration={({ offset, step, tick }) => setFilter({
-            ...filter,
-            offset,
-            precision: step,
-            tick,
-          })}
+          setDuration={setDuration}
         />
         <Graph
           data={data}

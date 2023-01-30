@@ -2,7 +2,8 @@ defimpl Core.Rollouts.Rollable, for: [Core.PubSub.VersionCreated, Core.PubSub.Ve
   use Core.Rollable.Base
   import Core.Rollable.Utils
   alias Core.Services.{Dependencies, Upgrades, Rollouts, Payments}
-  alias Core.Schema.{ChartInstallation, TerraformInstallation}
+  alias Core.Schema.{ChartInstallation, TerraformInstallation, Version}
+  alias Core.Schema.Dependencies, as: Deps
 
   def name(%Core.PubSub.VersionCreated{}), do: "version:created"
   def name(%Core.PubSub.VersionUpdated{}), do: "version:updated"
@@ -44,7 +45,7 @@ defimpl Core.Rollouts.Rollable, for: [Core.PubSub.VersionCreated, Core.PubSub.Ve
       |> Core.Repo.update()
     end)
     |> add_operation(:upgrades, fn
-      %{inst: %{locked: true}} -> {:ok, []}
+      %{inst: %{locked: true}} -> locked_upgrades(version, inst)
       %{inst: inst} -> deliver_upgrades(inst.installation.user_id, fn queue ->
         Core.Services.Upgrades.create_upgrade(%{
           repository_id: repo_id(version),
@@ -54,4 +55,15 @@ defimpl Core.Rollouts.Rollable, for: [Core.PubSub.VersionCreated, Core.PubSub.Ve
     end)
     |> execute(extract: :upgrades)
   end
+
+  defp locked_upgrades(%Version{dependencies: %Deps{dedicated: true}} = version, inst) do
+    deliver_upgrades(inst.installation.user_id, fn queue ->
+      Core.Services.Upgrades.create_upgrade(%{
+        type: :dedicated,
+        repository_id: repo_id(version),
+        message: "Upgraded #{type(version)} #{pkg_name(version)} to #{version.version}"
+      }, queue)
+    end)
+  end
+  defp locked_upgrades(_, _), do: {:ok, []}
 end

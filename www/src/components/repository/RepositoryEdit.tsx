@@ -71,20 +71,20 @@ const StyledTextInput = styled(TextInput)`
 `
 
 type FormState = {
-  name: string;
-  description: string;
-  category: string;
-  oauthUrl: string;
-  oauthMethod: string;
-  tags: { tag: string }[];
-  private: boolean;
-  websiteUrl?: string;
-  docsUrl?: string;
-  githubUrl?: string;
-  discordUrl?: string;
-  slackUrl?: string;
-  twitterUrl?: string;
-};
+  name: string
+  description: string
+  category: string
+  oauthUrl: string
+  oauthMethod: string
+  tags: { tag: string }[]
+  private: boolean
+  websiteUrl?: string
+  docsUrl?: string
+  githubUrl?: string
+  discordUrl?: string
+  slackUrl?: string
+  twitterUrl?: string
+}
 
 function RepositoryEdit() {
   const {
@@ -100,8 +100,6 @@ function RepositoryEdit() {
     community: communityUrls,
     documentation,
   } = useContext(RepositoryContext) as Repository
-
-  console.log('documentation', documentation)
 
   const {
     state: formState,
@@ -150,46 +148,47 @@ function RepositoryEdit() {
     = tagSearch?.data?.tags?.edges?.map((edge: any) => edge?.node) || []
 
   const [iconUpdate, setIconUpdate] = useState<{
-    file: File | null;
-    previewUrl: string | null;
+    file: File | null
+    previewUrl: string | null
   }>({ file: null, previewUrl: icon || null })
 
   const tagSearchRef = useRef<any>(null)
 
-  const [mutation, { loading, error }] = useMutation(UPDATE_REPOSITORY_MUTATION, {
-    variables: {
-      repositoryId: id,
-      attributes: {
-        name: formState.name,
-        description: formState.description,
-        category: formState.category,
-        oauthSettings:
-          formState.oauthUrl && formState.oauthMethod
-            ? {
-              uriFormat: formState.oauthUrl,
-              authMethod: formState.oauthMethod,
-            }
-            : null,
-        ...(iconUpdate.file ? { icon: iconUpdate.file } : {}),
-        tags: formState.tags,
-        private: formState.private,
-        documentation: formState.docsUrl,
-        community: {
-          homepage: formState.websiteUrl,
-          gitUrl: formState.githubUrl,
-          discord: formState.discordUrl,
-          slack: formState.slackUrl,
-          twitter: formState.twitterUrl,
+  const [mutation, { loading, error }] = useMutation(UPDATE_REPOSITORY_MUTATION,
+    {
+      variables: {
+        repositoryId: id,
+        attributes: {
+          name: formState.name,
+          description: formState.description,
+          category: formState.category,
+          oauthSettings:
+            formState.oauthUrl && formState.oauthMethod
+              ? {
+                uriFormat: formState.oauthUrl,
+                authMethod: formState.oauthMethod,
+              }
+              : null,
+          ...(iconUpdate.file ? { icon: iconUpdate.file } : {}),
+          tags: formState.tags,
+          private: formState.private,
+          documentation: formState.docsUrl,
+          community: {
+            homepage: formState.websiteUrl,
+            gitUrl: formState.githubUrl,
+            discord: formState.discordUrl,
+            slack: formState.slackUrl,
+            twitter: formState.twitterUrl,
+          },
         },
       },
-    },
-    update: (_cache, { data: { updateRepository } }) => {
-      setIconUpdate({
-        previewUrl: updateRepository.icon || null,
-        file: null,
-      })
-    },
-  })
+      update: (_cache, { data: { updateRepository } }) => {
+        setIconUpdate({
+          previewUrl: updateRepository.icon || null,
+          file: null,
+        })
+      },
+    })
 
   const iconPicker = useFilePicker({
     minImageWidth: 64,
@@ -249,9 +248,7 @@ function RepositoryEdit() {
     setTagSearchString('')
   }
 
-  function renderUrlField(key: string,
-    label: string,
-    placeholder: string) {
+  function renderUrlField(key: string, label: string, placeholder: string) {
     return (
       <FormField
         label={label}
@@ -338,10 +335,7 @@ function RepositoryEdit() {
       display="flex"
       flexDirection="column"
     >
-      <PageTitle
-        heading="Edit"
-        paddingTop="medium"
-      >
+      <PageTitle heading="Edit">
         <Flex
           align="center"
           gap="medium"
@@ -350,10 +344,15 @@ function RepositoryEdit() {
             type="submit"
             dirty={formHasUpdates}
             enabled={submitEnabled}
-            disabled={!submitEnabled || Object.keys(formStateErrors).some(key => formStateErrors[key])}
+            disabled={
+              !submitEnabled
+              || Object.keys(formStateErrors).some(key => formStateErrors[key])
+            }
             loading={loading}
           />
-          <Flex display-desktop-up="none"><RepositoryActions /></Flex>
+          <Flex display-desktop-up="none">
+            <RepositoryActions />
+          </Flex>
         </Flex>
       </PageTitle>
       <ContentCard
@@ -463,20 +462,22 @@ function RepositoryEdit() {
               minRows={3}
               placeholder={formInitialState.description}
               value={formState.description}
-              onChange={event => updateFormState({ description: event.target.value.substring(0, 200) })}
+              onChange={event => updateFormState({
+                description: event.target.value.substring(0, 200),
+              })}
             />
           </FormField>
           <Flex gap="medium">
-            {renderUrlField('websiteUrl', 'Website link', 'Website URL',)}
-            {renderUrlField('docsUrl', 'Docs link', 'Docs URL',)}
+            {renderUrlField('websiteUrl', 'Website link', 'Website URL')}
+            {renderUrlField('docsUrl', 'Docs link', 'Docs URL')}
           </Flex>
           <Flex gap="medium">
-            {renderUrlField('githubUrl', 'GitHub link', 'GitHub URL',)}
-            {renderUrlField('discordUrl', 'Discord link', 'Discord invite URL',)}
+            {renderUrlField('githubUrl', 'GitHub link', 'GitHub URL')}
+            {renderUrlField('discordUrl', 'Discord link', 'Discord invite URL')}
           </Flex>
           <Flex gap="medium">
-            {renderUrlField('slackUrl', 'Slack link', 'Slack invite URL',)}
-            {renderUrlField('twitterUrl', 'Twitter link', 'Twitter URL',)}
+            {renderUrlField('slackUrl', 'Slack link', 'Slack invite URL')}
+            {renderUrlField('twitterUrl', 'Twitter link', 'Twitter URL')}
           </Flex>
           <FormField
             marginBottom="large"
@@ -547,8 +548,7 @@ function RepositoryEdit() {
                 value={formState.oauthUrl}
                 onChange={event => updateFormState({ oauthUrl: event.target.value })}
                 placeholder={
-                  formInitialState.oauthUrl
-                    || 'https://{domain}/oauth/callback'
+                  formInitialState.oauthUrl || 'https://{domain}/oauth/callback'
                 }
               />
             </FormField>

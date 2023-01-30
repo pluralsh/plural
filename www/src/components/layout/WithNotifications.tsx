@@ -1,4 +1,4 @@
-import { useMutation } from '@apollo/client'
+import { useMutation, useQuery } from '@apollo/client'
 import { Div, Flex, P } from 'honorable'
 import moment from 'moment'
 import {
@@ -7,7 +7,7 @@ import {
   Card,
   Markdown,
 } from '@pluralsh/design-system'
-import { ReactElement, useCallback, useContext } from 'react'
+import { useCallback, useContext } from 'react'
 import { Link } from 'react-router-dom'
 import { useTheme } from 'styled-components'
 
@@ -17,6 +17,7 @@ import {
   OnboardingChecklistState,
   RootMutationType,
   RootMutationTypeUpdateUserArgs,
+  RootQueryType,
   User,
 } from '../../generated/graphql'
 import { OnboardingChecklistContext } from '../../contexts/OnboardingChecklistContext'
@@ -29,22 +30,14 @@ import { clearOnboardingChecklistState, isOnboardingChecklistHidden } from '../.
 
 import { NOTIFICATIONS_QUERY } from './queries'
 
-type WithNotificationsProps = {
-  children: ({
-    notificationsCount,
-  }: {
-    notificationsCount: number
-  }) => ReactElement | null
-}
+export function useNotificationsCount() {
+  const { data } = useQuery<{ notifications: RootQueryType['notifications'] }>(NOTIFICATIONS_QUERY,
+    {
+      variables: { first: 100 },
+      pollInterval: 10000,
+    })
 
-export function WithNotifications({ children }: WithNotificationsProps) {
-  const [notifications] = usePaginatedQuery(NOTIFICATIONS_QUERY,
-    { variables: {} },
-    data => data.notifications)
-
-  return children({
-    notificationsCount: notifications.length,
-  })
+  return data?.notifications?.edges?.length ?? undefined
 }
 
 export function NotificationsPanel({ closePanel }: any) {

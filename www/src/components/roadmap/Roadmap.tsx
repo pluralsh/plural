@@ -1,15 +1,17 @@
 import { useRef } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
-import { Div, Flex } from 'honorable'
+import { Div } from 'honorable'
 import { Tab, TabList } from '@pluralsh/design-system'
 
-import {
-  ResponsiveLayoutContentContainer,
-  ResponsiveLayoutSidecarContainer,
-  ResponsiveLayoutSidenavContainer,
-  ResponsiveLayoutSpacer,
-} from '../layout/ResponsiveLayout'
+import { ResponsiveLayoutContentContainer } from '../utils/layout/ResponsiveLayoutContentContainer'
+import { ResponsiveLayoutSidecarContainer } from '../utils/layout/ResponsiveLayoutSidecarContainer'
+import { ResponsiveLayoutSpacer } from '../utils/layout/ResponsiveLayoutSpacer'
+import { ResponsiveLayoutSidenavContainer } from '../utils/layout/ResponsiveLayoutSidenavContainer'
 import { LinkTabWrap } from '../utils/Tabs'
+
+import { ResponsiveLayoutPage } from '../utils/layout/ResponsiveLayoutPage'
+
+import { SideNavOffset } from '../utils/layout/SideNavOffset'
 
 import RoadmapDataProvider from './RoadmapDataProvider'
 import RoadmapSideCar from './RoadmapSideCar'
@@ -42,33 +44,27 @@ function Roadmap() {
   const { pathname } = useLocation()
 
   return (
-    <Flex
-      paddingTop="xxxxlarge"
-      position="relative"
-      height="100vh"
-    >
-      <ResponsiveLayoutSidenavContainer
-        marginLeft="medium"
-        marginTop="xxxlarge"
-        width={240}
-      >
-        <TabList
-          stateRef={tabStateRef}
-          stateProps={{
-            orientation: 'vertical',
-            selectedKey: pathname,
-          }}
-        >
-          {TABS.map(({ label, path }) => (
-            <LinkTabWrap
-              key={path}
-              textValue={label}
-              to={path}
-            >
-              <Tab>{label}</Tab>
-            </LinkTabWrap>
-          ))}
-        </TabList>
+    <ResponsiveLayoutPage>
+      <ResponsiveLayoutSidenavContainer>
+        <SideNavOffset paddingTop={60}>
+          <TabList
+            stateRef={tabStateRef}
+            stateProps={{
+              orientation: 'vertical',
+              selectedKey: pathname,
+            }}
+          >
+            {TABS.map(({ label, path }) => (
+              <LinkTabWrap
+                key={path}
+                textValue={label}
+                to={path}
+              >
+                <Tab>{label}</Tab>
+              </LinkTabWrap>
+            ))}
+          </TabList>
+        </SideNavOffset>
       </ResponsiveLayoutSidenavContainer>
       <ResponsiveLayoutSpacer />
       <ResponsiveLayoutContentContainer marginRight-desktop-down={32}>
@@ -86,7 +82,7 @@ function Roadmap() {
         <RoadmapSideCar />
       </ResponsiveLayoutSidecarContainer>
       <ResponsiveLayoutSpacer />
-    </Flex>
+    </ResponsiveLayoutPage>
   )
 }
 

@@ -4,8 +4,8 @@ import { NotificationFragment } from '../../models/incidents'
 import { PageInfo } from '../../models/misc'
 
 export const NOTIFICATIONS_QUERY = gql`
-  query NotificationsQuery($incidentId: ID, $cursor: String) {
-    notifications(incidentId: $incidentId, first: 50, after: $cursor) {
+  query NotificationsQuery($incidentId: ID, $first: Int = 50, $cursor: String) {
+    notifications(incidentId: $incidentId, first: $first, after: $cursor) {
       pageInfo {
         ...PageInfo
       }

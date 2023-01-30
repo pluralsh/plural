@@ -12,10 +12,12 @@ defimpl Core.PubSub.Usage, for: Any do
 end
 
 defimpl Core.PubSub.Usage, for: Core.PubSub.UserCreated do
+  def update(%@for{item: %{service_account: true}}), do: :ok
   def update(%@for{item: %{account_id: aid}}), do: {aid, user: 1}
 end
 
 defimpl Core.PubSub.Usage, for: Core.PubSub.UserDeleted do
+  def update(%@for{item: %{service_account: true}}), do: :ok
   def update(%@for{item: %{account_id: aid}}), do: {aid, user: -1}
 end
 

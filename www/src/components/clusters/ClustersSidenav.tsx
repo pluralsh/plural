@@ -20,12 +20,17 @@ import {
 import QueueContext from '../../contexts/QueueContext'
 import { providerToURL } from '../repos/misc'
 
+import { SideNavOffset } from '../utils/layout/SideNavOffset'
+
 import { Queue } from './Clusters'
 
 export function ClustersSidenav({
   onQueueChange,
   queues,
-}: { onQueueChange: Dispatch<Queue | undefined>, queues: Array<Queue> }): ReactElement {
+}: {
+  onQueueChange: Dispatch<Queue | undefined>
+  queues: Array<Queue>
+}): ReactElement {
   const queue: Queue = useContext(QueueContext)
   const [selectedKey, setSelectedKey] = useState<Queue | undefined>(queues.length > 0 ? queues[0] : undefined)
 
@@ -47,11 +52,9 @@ export function ClustersSidenav({
     <Flex
       gap={24}
       direction="column"
-      paddingVertical="large"
-      width={240}
     >
       <ProfileCard queue={queue} />
-      <Div paddingLeft="medium">
+      <Div>
         <Select
           label="Select cluster"
           selectedKey={selectedKey?.id}
@@ -71,7 +74,11 @@ export function ClustersSidenav({
             />
           ))}
         </Select>
-        {selectedKey && <Div marginTop="xsmall"><QueueHealth queue={selectedKey} /></Div>}
+        {selectedKey && (
+          <Div marginTop="xsmall">
+            <QueueHealth queue={selectedKey} />
+          </Div>
+        )}
       </Div>
     </Flex>
   )
@@ -82,15 +89,23 @@ function ProfileCard({ queue }: { queue: Queue }): ReactElement {
   const url = providerToURL(queue?.provider, dark)
 
   return (
-    <PageCard
-      heading={queue?.name}
-      subheading={queue?.provider}
-      icon={{ url }}
-    />
+    <SideNavOffset>
+      <PageCard
+        heading={queue?.name}
+        subheading={queue?.provider}
+        icon={{ url }}
+      />
+    </SideNavOffset>
   )
 }
 
-function QueueHealth({ queue, short = false }: { queue: Queue, short?: boolean }) {
+function QueueHealth({
+  queue,
+  short = false,
+}: {
+  queue: Queue
+  short?: boolean
+}) {
   const [now, setNow] = useState(moment())
   const pinged = useMemo(() => moment(queue.pingedAt), [queue.pingedAt])
 
@@ -104,7 +119,7 @@ function QueueHealth({ queue, short = false }: { queue: Queue, short?: boolean }
 
   return (
     <Chip severity={healthy ? 'success' : 'error'}>
-      {healthy ? (!short ? 'Healthy' : 'H') : (!short ? 'Unhealthy' : 'U')}
+      {healthy ? (!short ? 'Healthy' : 'H') : !short ? 'Unhealthy' : 'U'}
     </Chip>
   )
 }

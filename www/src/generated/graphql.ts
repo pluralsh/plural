@@ -24,6 +24,7 @@ export type Account = {
   __typename?: 'Account';
   backgroundColor?: Maybe<Scalars['String']>;
   billingCustomerId?: Maybe<Scalars['String']>;
+  clusterCount?: Maybe<Scalars['String']>;
   delinquentAt?: Maybe<Scalars['DateTime']>;
   domainMappings?: Maybe<Array<Maybe<DomainMapping>>>;
   grandfatheredUnitl?: Maybe<Scalars['DateTime']>;
@@ -34,6 +35,7 @@ export type Account = {
   rootUser?: Maybe<User>;
   subscription?: Maybe<PlatformSubscription>;
   updatedAt?: Maybe<Scalars['DateTime']>;
+  userCount?: Maybe<Scalars['String']>;
   workosConnectionId?: Maybe<Scalars['String']>;
 };
 
@@ -2491,6 +2493,7 @@ export type RootMutationType = {
   updateRepository?: Maybe<Repository>;
   updateRole?: Maybe<Role>;
   updateServiceAccount?: Maybe<User>;
+  updateShell?: Maybe<CloudShell>;
   updateShellConfiguration?: Maybe<Scalars['Boolean']>;
   updateStep?: Maybe<TestStep>;
   updateTerraform?: Maybe<Terraform>;
@@ -3133,6 +3136,11 @@ export type RootMutationTypeUpdateRoleArgs = {
 export type RootMutationTypeUpdateServiceAccountArgs = {
   attributes: ServiceAccountAttributes;
   id: Scalars['ID'];
+};
+
+
+export type RootMutationTypeUpdateShellArgs = {
+  attributes: CloudShellAttributes;
 };
 
 
@@ -3965,6 +3973,7 @@ export type ShellWorkspace = {
   bucketPrefix?: Maybe<Scalars['String']>;
   cluster?: Maybe<Scalars['String']>;
   network?: Maybe<NetworkConfiguration>;
+  region?: Maybe<Scalars['String']>;
 };
 
 export type SlimSubscription = {

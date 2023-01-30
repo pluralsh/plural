@@ -44,7 +44,9 @@ export default function PackageUpdateQueue() {
       gap="small"
     >
       <PageTitle heading="Update queue">
-        <Flex display-desktop-up="none"><PackageActions /></Flex>
+        <Flex display-desktop-up="none">
+          <PackageActions />
+        </Flex>
       </PageTitle>
       {edges?.length ? (
         <Table
@@ -64,18 +66,22 @@ export default function PackageUpdateQueue() {
               loading={loading}
               mapper={({ node }, { next }) => (
                 <TableRow last={!next.node}>
-                  <TableData>{node.deferred.version.version}</TableData>
-                  <TableData><Date date={node.deferred.dequeueAt} /></TableData>
-                  <TableData><Date date={node.deferred.insertedAt} /></TableData>
-                  <TableData>{node.deferred.attempts}</TableData>
+                  <TableData>{node?.version?.version}</TableData>
+                  <TableData>
+                    <Date date={node?.dequeueAt} />
+                  </TableData>
+                  <TableData>
+                    <Date date={node?.insertedAt} />
+                  </TableData>
+                  <TableData>{node?.attempts}</TableData>
                 </TableRow>
               )}
-              loadNextPage={() => pageInfo.hasNextPage && fetchMore({
-                variables: { cursor: pageInfo.endCursor },
-                updateQuery: (prev, { fetchMoreResult: { deferredUpdates } }) => (
-                  extendConnection(prev, deferredUpdates, 'deferredUpdates')
-                ),
-              })}
+              loadNextPage={() => pageInfo.hasNextPage
+                && fetchMore({
+                  variables: { cursor: pageInfo.endCursor },
+                  updateQuery: (prev,
+                    { fetchMoreResult: { deferredUpdates } }) => extendConnection(prev, deferredUpdates, 'deferredUpdates'),
+                })}
             />
           </Box>
         </Table>

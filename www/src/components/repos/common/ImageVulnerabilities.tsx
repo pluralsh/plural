@@ -323,9 +323,11 @@ export default function ImageVulnerabilities() {
           </Codeline>
         </Flex>
       </PageTitle>
-      <Box
-        overflow={{ vertical: 'auto' }}
-        pad={{ right: 'xsmall' }}
+      <Flex
+        flexDirection="vertical"
+        height="100%"
+        overflow="hidden"
+        justifyContent="center"
       >
         {vulnerabilities?.length ? (
           <Table
@@ -333,6 +335,8 @@ export default function ImageVulnerabilities() {
             sizes={['5%', '20%', '20%', '20%', '20%', '15%']}
             background="fill-one"
             width="100%"
+            maxHeight="100%"
+            overflow="auto"
           >
             {vulnerabilities.map((v, ind, arr) => (
               <Vulnerability
@@ -354,7 +358,7 @@ export default function ImageVulnerabilities() {
             )}
           />
         )}
-      </Box>
+      </Flex>
     </Box>
   )
 }

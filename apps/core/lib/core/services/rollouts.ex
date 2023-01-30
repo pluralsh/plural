@@ -30,7 +30,7 @@ defmodule Core.Services.Rollouts do
     |> ok()
   end
 
-  def lock_installation(%Version{dependencies: %Dependencies{breaking: true}}, inst) do
+  def lock_installation(%Version{dependencies: %Dependencies{breaking: b, dedicated: d}}, inst) when b or d do
     Ecto.Changeset.change(inst, %{locked: true})
     |> Core.Repo.update()
     |> notify(:locked)

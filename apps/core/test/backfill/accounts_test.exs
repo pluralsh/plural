@@ -6,6 +6,7 @@ defmodule Core.Backfill.AccountsTest do
     test "it will properly compute usage for all accounts" do
       ac1 = insert(:account)
       [u | _] = insert_list(3, :user, account: ac1)
+      insert(:user, account: ac1, service_account: true)
       insert(:upgrade_queue, user: u)
       insert(:upgrade_queue, user: u)
 

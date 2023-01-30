@@ -11,16 +11,17 @@ defmodule GraphQl.ShellQueriesTest do
       pod = Pods.pod("plrl-shell-1", "mjg@plural.sh")
       expect(Pods, :fetch, fn "plrl-shell-1" -> {:ok, pod} end)
 
-      shell = insert(:cloud_shell, pod_name: "plrl-shell-1", workspace: %{cluster: "cluster"})
+      shell = insert(:cloud_shell, pod_name: "plrl-shell-1", workspace: %{cluster: "cluster", region: "us-east2"})
 
       {:ok, %{data: %{"shell" => found}}} = run_query("""
         query {
-          shell { id alive cluster }
+          shell { id alive cluster region }
         }
       """, %{}, %{current_user: shell.user})
 
       assert found["id"] == shell.id
       assert found["cluster"] == "cluster"
+      assert found["region"] == "us-east2"
       refute found["alive"]
     end
   end

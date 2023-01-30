@@ -3,7 +3,7 @@ defmodule Core.Services.Shell do
   import Core.Policies.Shell
 
   alias Core.Schema.{CloudShell, User, Recipe, Installation, OIDCProvider, Stack}
-  alias Core.Services.{Shell.Pods, Dns, Recipes, Repositories, Encryption, Clusters}
+  alias Core.Services.{Shell.Pods, Dns, Recipes, Repositories, Encryption}
   alias Core.Shell.{Scm, Client}
 
   @type error :: {:error, term}

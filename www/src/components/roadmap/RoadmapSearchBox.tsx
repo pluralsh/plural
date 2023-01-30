@@ -81,9 +81,8 @@ function RoadmapSearchBox({
   return (
     <Flex
       direction="column"
-      height="calc(100% - 89px)" // 89px is the title size
+      maxHeight="100%"
       overflow="hidden"
-      paddingBottom="xlarge"
     >
       <Flex
         align="center"

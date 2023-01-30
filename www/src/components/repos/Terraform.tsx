@@ -2,26 +2,18 @@ import { useRef, useState } from 'react'
 import { Box } from 'grommet'
 import { useMutation, useQuery } from '@apollo/client'
 import { Outlet, useLocation, useParams } from 'react-router-dom'
-
 import { Button, Flex, Modal } from 'honorable'
-
 import { Tab, TabList, TabPanel } from '@pluralsh/design-system'
 
-import {
-  ResponsiveLayoutContentContainer,
-  ResponsiveLayoutSidecarContainer,
-  ResponsiveLayoutSidenavContainer,
-  ResponsiveLayoutSpacer,
-} from '../layout/ResponsiveLayout'
-
-import { GoBack } from '../utils/GoBack'
-
+import { ResponsiveLayoutContentContainer } from '../utils/layout/ResponsiveLayoutContentContainer'
+import { ResponsiveLayoutSidecarContainer } from '../utils/layout/ResponsiveLayoutSidecarContainer'
+import { ResponsiveLayoutSpacer } from '../utils/layout/ResponsiveLayoutSpacer'
+import { ResponsiveLayoutSidenavContainer } from '../utils/layout/ResponsiveLayoutSidenavContainer'
+import { ResponsiveLayoutPage } from '../utils/layout/ResponsiveLayoutPage'
+import { SideNavOffset } from '../utils/layout/SideNavOffset'
 import { LinkTabWrap } from '../utils/Tabs'
 
-import TopBar from '../layout/TopBar'
-
 import { deepUpdate, updateCache } from '../../utils/graphql'
-
 import { GqlError } from '../utils/Alert'
 
 import { INSTALL_TF, TF_Q, UNINSTALL_TF } from './queries'
@@ -31,21 +23,24 @@ import { PackageGrade, PackageHeader, PackageVersionPicker } from './common/misc
 
 function TerraformInstaller({ terraformModule, version }: any) {
   const installed = terraformModule?.installation?.version.id === version.id
-  const [mutation, { error }] = useMutation(installed ? UNINSTALL_TF : INSTALL_TF, {
-    variables: {
-      id: installed ? terraformModule.installation.id : terraformModule.repository.installation.id,
-      attributes: { terraformId: terraformModule.id, versionId: version.id },
-    },
-    update: (cache, { data }) => {
-      const ti = data.installTerraform ? data.installTerraform : null
+  const [mutation, { error }] = useMutation(installed ? UNINSTALL_TF : INSTALL_TF,
+    {
+      variables: {
+        id: installed
+          ? terraformModule.installation.id
+          : terraformModule.repository.installation.id,
+        attributes: { terraformId: terraformModule.id, versionId: version.id },
+      },
+      update: (cache, { data }) => {
+        const ti = data.installTerraform ? data.installTerraform : null
 
-      updateCache(cache, {
-        query: TF_Q,
-        variables: { tfId: terraformModule.id },
-        update: prev => deepUpdate(prev, 'terraformModule.installation', () => ti),
-      })
-    },
-  })
+        updateCache(cache, {
+          query: TF_Q,
+          variables: { tfId: terraformModule.id },
+          update: prev => deepUpdate(prev, 'terraformModule.installation', () => ti),
+        })
+      },
+    })
 
   return (
     <>
@@ -67,7 +62,11 @@ function TerraformInstaller({ terraformModule, version }: any) {
   )
 }
 
-export function TerraformActions({ terraformModule, currentVersion, ...props }: any) {
+export function TerraformActions({
+  terraformModule,
+  currentVersion,
+  ...props
+}: any) {
   if (!terraformModule.installation) return null
 
   return (
@@ -84,7 +83,10 @@ export default function Terraform() {
   const { pathname } = useLocation()
   const [version, setVersion] = useState<any>(null)
   const { tfId } = useParams()
-  const { data, fetchMore } = useQuery(TF_Q, { variables: { tfId }, fetchPolicy: 'cache-and-network' })
+  const { data, fetchMore } = useQuery(TF_Q, {
+    variables: { tfId },
+    fetchPolicy: 'cache-and-network',
+  })
   const tabStateRef = useRef<any>(null)
 
   if (!data) return null
@@ -130,35 +132,21 @@ export default function Terraform() {
     .find(tab => pathname?.startsWith(`${pathPrefix}${tab.path}`))
 
   return (
-    <Box
-      direction="column"
-      fill
-    >
-      <TopBar>
-        <GoBack
-          text="Back to packages"
-          link={`/repository/${terraformModule.repository.name}/packages/terraform`}
+    <ResponsiveLayoutPage>
+      <ResponsiveLayoutSidenavContainer>
+        <PackageHeader
+          name={terraformModule.name}
+          icon={DEFAULT_TF_ICON}
         />
-      </TopBar>
-      <Box
-        pad="16px"
-        direction="row"
-      >
-        <ResponsiveLayoutSidenavContainer width="240px">
-          <Box pad={{ left: '16px' }}>
-            <PackageHeader
-              name={terraformModule.name}
-              icon={DEFAULT_TF_ICON}
-            />
-            <PackageVersionPicker
-              edges={edges}
-              installed={tfInst}
-              version={version || currentVersion}
-              setVersion={setVersion}
-              pageInfo={pageInfo}
-              fetchMore={fetchMore}
-            />
-          </Box>
+        <PackageVersionPicker
+          edges={edges}
+          installed={tfInst}
+          version={version || currentVersion}
+          setVersion={setVersion}
+          pageInfo={pageInfo}
+          fetchMore={fetchMore}
+        />
+        <SideNavOffset>
           <TabList
             stateRef={tabStateRef}
             stateProps={{
@@ -176,28 +164,28 @@ export default function Terraform() {
               </LinkTabWrap>
             ))}
           </TabList>
-        </ResponsiveLayoutSidenavContainer>
-        <ResponsiveLayoutSpacer />
-        <TabPanel
-          as={<ResponsiveLayoutContentContainer />}
-          stateRef={tabStateRef}
-        >
-          <Outlet
-            context={{
-              terraformChart: terraformModule,
-              currentTerraformChart: currentVersion,
-            }}
-          />
-        </TabPanel>
-        <ResponsiveLayoutSidecarContainer width="200px">
-          <TerraformActions
-            terraformModule={terraformModule}
-            currentVersion={currentVersion}
-            height="54px"
-          />
-        </ResponsiveLayoutSidecarContainer>
-        <ResponsiveLayoutSpacer />
-      </Box>
-    </Box>
+        </SideNavOffset>
+      </ResponsiveLayoutSidenavContainer>
+      <ResponsiveLayoutSpacer />
+      <TabPanel
+        as={<ResponsiveLayoutContentContainer />}
+        stateRef={tabStateRef}
+      >
+        <Outlet
+          context={{
+            terraformChart: terraformModule,
+            currentTerraformChart: currentVersion,
+          }}
+        />
+      </TabPanel>
+      <ResponsiveLayoutSidecarContainer width="200px">
+        <TerraformActions
+          terraformModule={terraformModule}
+          currentVersion={currentVersion}
+          height="54px"
+        />
+      </ResponsiveLayoutSidecarContainer>
+      <ResponsiveLayoutSpacer />
+    </ResponsiveLayoutPage>
   )
 }

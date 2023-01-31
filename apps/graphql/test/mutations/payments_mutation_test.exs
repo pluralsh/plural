@@ -343,36 +343,38 @@ defmodule GraphQl.PaymentsMutationsTest do
 
   describe "createPlatformSubscription" do
     test "it can create a platform subscription" do
-      account = insert(:account, billing_customer_id: "cus_id")
+      account = insert(:account, billing_customer_id: "cus_id", user_count: 2, cluster_count: 0)
       user = insert(:user, roles: %{admin: true}, account: account)
       plan = insert(:platform_plan,
         external_id: "plan_id",
         line_items: [
           %{name: "user", dimension: :user, external_id: "id_user", period: :monthly},
+          %{name: "cluster", dimension: :cluster, external_id: "id_cluster", period: :monthly},
         ]
       )
 
       expect(Stripe.Subscription, :create, fn %{
         customer: "cus_id",
-        items: [%{plan: "id_user", quantity: 2}]
+        items: [%{plan: "id_user", quantity: 2}, %{plan: "id_cluster", quantity: 0}]
       } ->
         {:ok, %{
           id: "sub_id",
           items: %{
-            data: [%{id: "user_id", plan: %{id: "id_user"}}]
+            data: [
+              %{id: "user_id", plan: %{id: "id_user"}},
+              %{id: "cluster_id", plan: %{id: "id_cluster"}}
+            ]
           }
         }}
       end)
 
       {:ok, %{data: %{"createPlatformSubscription" => sub}}} = run_query("""
-        mutation Create($attributes: PlatformSubscriptionAttributes!, $id: ID!) {
-          createPlatformSubscription(attributes: $attributes, planId: $id) {
+        mutation Create($id: ID!) {
+          createPlatformSubscription(planId: $id) {
             id
           }
         }
-      """, %{"id" => plan.id, "attributes" => %{
-        "lineItems" => [%{"dimension" => "USER", "quantity" => 2}]
-      }}, %{current_user: user})
+      """, %{"id" => plan.id}, %{current_user: user})
 
       assert sub["id"]
     end

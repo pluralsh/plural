@@ -111,7 +111,7 @@ defmodule Core.Services.Payments do
 
   @preloads [account: [subscription: :plan]]
 
-  def preload(%User{} = user), do: Core.Repo.preload(user, @preloads)
+  def preload(%User{} = user, opts \\ []), do: Core.Repo.preload(user, @preloads, opts)
 
   def force_preload(%User{} = user, preloads \\ [:account]), do: Core.Repo.preload(user, preloads, force: true)
 
@@ -466,14 +466,17 @@ defmodule Core.Services.Payments do
   def create_platform_subscription(attrs, %PlatformPlan{} = plan, %User{} = user) do
     start_transaction()
     |> add_operation(:account, fn _ ->
-      case preload(user) do
+      case preload(user, force: true) do
         %{account: %Account{billing_customer_id: nil}} -> {:error, "no payment method"}
         %{account: account} -> {:ok, account}
       end
     end)
-    |> add_operation(:db, fn %{account: account} ->
+    |> add_operation(:db, fn %{account: %Account{cluster_count: cc, user_count: uc} = account} ->
       %PlatformSubscription{plan_id: plan.id, plan: plan, account_id: account.id}
-      |> PlatformSubscription.changeset(attrs)
+      |> PlatformSubscription.changeset(Map.put(attrs, :line_items, [
+        %{dimension: :cluster, quantity: cc},
+        %{dimension: :user, quantity: uc}
+      ]))
       |> allow(user, :create)
       |> when_ok(:insert)
     end)

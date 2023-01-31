@@ -190,42 +190,47 @@ defmodule Core.Services.PaymentsTest do
 
   describe "#create_platform_susbcription" do
     test "A user can create a subscription for a platform plan" do
-      account = insert(:account, billing_customer_id: "cus_id")
+      account = insert(:account, billing_customer_id: "cus_id", user_count: 2, cluster_count: 0)
       user = insert(:user, roles: %{admin: true}, account: account)
       plan = insert(:platform_plan,
         external_id: "plan_id",
         line_items: [
           %{name: "user", dimension: :user, external_id: "id_user", period: :monthly},
+          %{name: "cluster", dimension: :cluster, external_id: "id_cluster", period: :monthly},
         ]
       )
 
       expect(Stripe.Subscription, :create, fn %{
         customer: "cus_id",
-        items: [%{plan: "id_user", quantity: 2}]
+        items: [%{plan: "id_user", quantity: 2}, %{plan: "id_cluster", quantity: 0}]
       } ->
         {:ok, %{
           id: "sub_id",
           items: %{
-            data: [%{id: "user_id", plan: %{id: "id_user"}}]
+            data: [
+              %{id: "user_id", plan: %{id: "id_user"}},
+              %{id: "cluster_id", plan: %{id: "id_cluster"}}
+            ]
           }
         }}
       end)
 
-      {:ok, subscription} = Payments.create_platform_subscription(%{
-        line_items: [
-          %{dimension: "user", quantity: 2}
-        ]
-      }, plan, user)
+      {:ok, subscription} = Payments.create_platform_subscription(%{}, plan, user)
 
       assert subscription.plan_id == plan.id
       assert subscription.account_id == user.account_id
       assert subscription.external_id == "sub_id"
 
-      [user] = subscription.line_items
+      %{user: user, cluster: cluster} = Enum.into(subscription.line_items, %{}, & {&1.dimension, &1})
       assert user.id
       assert user.dimension == :user
       assert user.quantity == 2
       assert user.external_id == "user_id"
+
+      assert cluster.id
+      assert cluster.dimension == :cluster
+      assert cluster.quantity == 0
+      assert cluster.external_id == "cluster_id"
     end
   end
 

@@ -68,10 +68,6 @@ defmodule GraphQl.Schema.Payments do
     field :items, list_of(:limit_attributes)
   end
 
-  input_object :platform_subscription_attributes do
-    field :line_items, list_of(:platform_plan_line_item_attributes)
-  end
-
   input_object :platform_plan_line_item_attributes do
     field :dimension, non_null(:line_item_dimension)
     field :quantity,  non_null(:integer)
@@ -312,7 +308,6 @@ defmodule GraphQl.Schema.Payments do
 
     field :create_platform_subscription, :platform_subscription do
       middleware Authenticated
-      arg :attributes, non_null(:platform_subscription_attributes)
       arg :plan_id, non_null(:id)
 
       safe_resolve &Payments.create_platform_subscription/2

@@ -322,6 +322,7 @@ export type CloudShell = {
   id: Scalars['ID'];
   insertedAt?: Maybe<Scalars['DateTime']>;
   provider: Provider;
+  region: Scalars['String'];
   status?: Maybe<ShellStatus>;
   subdomain: Scalars['String'];
   updatedAt?: Maybe<Scalars['DateTime']>;
@@ -4326,6 +4327,7 @@ export type UpgradeQueueDelta = {
 export enum UpgradeType {
   Approval = 'APPROVAL',
   Bounce = 'BOUNCE',
+  Dedicated = 'DEDICATED',
   Deploy = 'DEPLOY'
 }
 

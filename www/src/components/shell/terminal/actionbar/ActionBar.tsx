@@ -1,4 +1,12 @@
-import { Dispatch, ReactElement, useState } from 'react'
+import {
+  Dispatch,
+  MutableRefObject,
+  ReactElement,
+  forwardRef,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 import { Button, Flex } from 'honorable'
 import { CliIcon, ToolIcon, Tooltip } from '@pluralsh/design-system'
 
@@ -14,9 +22,9 @@ interface ActionBarItemProps {
   onClick?: Dispatch<any>
 }
 
-function ActionBarItem({
+function ActionBarItemRef({
   tooltip, icon, children, onClick,
-}: ActionBarItemProps) {
+}: ActionBarItemProps, ref) {
   const content = icon ? (
     <Button
       width={32}
@@ -24,6 +32,7 @@ function ActionBarItem({
       onClick={onClick}
       small
       secondary
+      ref={ref}
     >{icon}
     </Button>
   ) : children
@@ -40,8 +49,15 @@ function ActionBarItem({
   )
 }
 
+const ActionBarItem = forwardRef(ActionBarItemRef)
+
 function ActionBar({ onRepairViewport }) {
   const [showCheatsheet, setShowCheatsheet] = useState(false)
+  const cheatsheetButtonRef = useRef<HTMLElement>()
+
+  useEffect(() => {
+    console.log(cheatsheetButtonRef)
+  }, [cheatsheetButtonRef])
 
   return (
     <Flex
@@ -62,10 +78,15 @@ function ActionBar({ onRepairViewport }) {
         tooltip="CLI Cheat Sheet"
         onClick={() => setShowCheatsheet(true)}
         icon={<CliIcon />}
+        ref={cheatsheetButtonRef}
       />
       <ActionBarItem><MoreOptions /></ActionBarItem>
 
-      {showCheatsheet && <Cheatsheet onClose={() => setShowCheatsheet(false)} />}
+      {showCheatsheet && (
+        <Cheatsheet
+          onClose={() => setShowCheatsheet(false)}
+        />
+      )}
     </Flex>
   )
 }

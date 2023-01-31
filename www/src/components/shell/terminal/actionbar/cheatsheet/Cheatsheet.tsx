@@ -8,10 +8,10 @@ function Cheatsheet({ onClose }) {
   return (
     <Layer
       plain
-      onClickOutside={onClose}
       animation="fadeIn"
-      position="top-right"
-      margin={{ top: '60px', right: '60px' }}
+      position="bottom-right"
+      modal={false}
+      margin={{ bottom: '56x' }}
     >
       <Card
         fillLevel={2}

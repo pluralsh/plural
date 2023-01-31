@@ -1,4 +1,4 @@
-import { Flex } from 'honorable'
+import { A, Flex } from 'honorable'
 import {
   useContext,
   useEffect,
@@ -55,8 +55,18 @@ function CloudStep({ onBack, onNext }) {
             expandable
             expanded={expanded === CalloutKey.CloudCost}
             onExpand={expanded => setExpanded(expanded ? CalloutKey.CloudCost : undefined)}
+            buttonProps={{
+              children: 'Learn more',
+              as: A,
+              href: 'https://docs.plural.sh/operations/cost-management',
+              target: '_blank',
+              style: {
+                textDecoration: 'none',
+                color: 'inherit',
+              },
+            }}
           >
-            Lorem ipsum dolor...
+            By default Plural will deploy 3 nodes, each with 2 vCPU/8 GB along with Kubernetes. Costs are attributable to running the EKS/AKS/GKE cluster and 3 additional nodes, as well as any additional applications deployed.
           </Callout>
         </>
       )}

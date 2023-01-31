@@ -49,8 +49,7 @@ function useBankCard(setEdit: Dispatch<SetStateAction<boolean>>, noCancel = fals
         },
       })
 
-      await refetch()
-
+      refetch()
       setEdit(false)
     }
     catch (error) {

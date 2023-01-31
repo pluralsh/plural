@@ -49,6 +49,7 @@ defmodule ApiWeb.AuthController do
   defp fetch_scopes(repo, user) do
     [full_name, _] = String.split(repo, ":")
     [repo_name | rest] = String.split(full_name, "/")
+
     {Repositories.authorize_docker(repo_name, Enum.join(rest, "/"), user), full_name}
   end
 end

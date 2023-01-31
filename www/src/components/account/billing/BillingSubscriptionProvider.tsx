@@ -26,8 +26,6 @@ function BillingSubscriptionProvider({ children }: BillingSubscriptionProviderPr
     refetch,
   ])
 
-  console.log('subscriptionContextValue', subscriptionContextValue)
-
   return (
     <SubscriptionContext.Provider value={subscriptionContextValue}>
       {children}

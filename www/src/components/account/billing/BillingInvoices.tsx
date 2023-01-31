@@ -1,59 +1,25 @@
-import { useMemo } from 'react'
-import {
-  Button,
-  Card,
-  Chip,
-  DownloadIcon,
-} from '@pluralsh/design-system'
+import { useCallback, useMemo } from 'react'
+import { Button, Card, DownloadIcon } from '@pluralsh/design-system'
 import { Div, Flex } from 'honorable'
 import moment from 'moment'
+import { useQuery } from '@apollo/client'
+
+import { Invoice } from '../../../generated/graphql'
+
+import { INVOICES_QUERY } from './queries'
+import BillingError from './BillingError'
+import BillingLoading from './BillingLoading'
 
 function BillingInvoices() {
-  const invoices = useMemo<any[]>(() => [
-    // Let's keep the commented code until data flows in
-    // {
-    //   id: 0,
-    //   date: new Date().toISOString(),
-    //   plan: 'Professional',
-    //   amount: 1500,
-    // },
-    // {
-    //   id: 1,
-    //   date: new Date().toISOString(),
-    //   plan: 'Professional',
-    //   amount: 1250,
-    // },
-    // {
-    //   id: 2,
-    //   date: new Date().toISOString(),
-    //   plan: 'Professional',
-    //   amount: 1000,
-    // },
-    // {
-    //   id: 3,
-    //   date: new Date().toISOString(),
-    //   plan: 'Professional',
-    //   amount: 750,
-    // },
-    // {
-    //   id: 4,
-    //   date: new Date().toISOString(),
-    //   plan: 'Professional',
-    //   amount: 500,
-    // },
-    // {
-    //   id: 5,
-    //   date: new Date().toISOString(),
-    //   plan: 'Professional',
-    //   amount: 250,
-    // },
-  ], [])
+  const { data, loading, error } = useQuery(INVOICES_QUERY)
 
-  return (
-    <Card>
+  const invoices = useMemo(() => data?.invoices?.edges?.map(e => e.node) as Invoice[], [data])
+
+  const renderContent = useCallback(() => (
+    <>
       <Div
         display="grid"
-        gridTemplateColumns="repeat(4, 1fr)"
+        gridTemplateColumns="repeat(3, 1fr)"
         padding="medium"
       >
         <Div
@@ -66,38 +32,31 @@ function BillingInvoices() {
           body2
           fontWeight={600}
         >
-          Plan
-        </Div>
-        <Div
-          body2
-          fontWeight={600}
-        >
           Amount
         </Div>
       </Div>
       <Div>
         {invoices.map((invoice, i) => (
           <Div
-            key={invoice.id}
+            key={invoice.number}
             backgroundColor={i % 2 ? 'fill-one' : 'fill-two'}
             display="grid"
-            gridTemplateColumns="repeat(4, 1fr)"
+            gridTemplateColumns="repeat(3, 1fr)"
             paddingVertical="xsmall"
             paddingHorizontal="medium"
           >
             <Flex align="center">
-              {moment(invoice.date).format('MM/DD/YY')}
+              {moment(invoice.createdAt).format('MM/DD/YY')}
             </Flex>
             <Flex align="center">
-              <Chip severity="info">
-                {invoice.plan}
-              </Chip>
-            </Flex>
-            <Flex align="center">
-              ${invoice.amount}
+              ${invoice.amountPaid / 100}
             </Flex>
             <Flex justify="flex-end">
               <Button
+                as="a"
+                href={invoice.hostedInvoiceUrl}
+                target="_blank"
+                rel="noopener noreferer"
                 tertiary
                 padding={0}
               >
@@ -107,6 +66,12 @@ function BillingInvoices() {
           </Div>
         ))}
       </Div>
+    </>
+  ), [invoices])
+
+  return (
+    <Card>
+      {error ? <BillingError /> : loading ? <BillingLoading /> : renderContent()}
     </Card>
   )
 }

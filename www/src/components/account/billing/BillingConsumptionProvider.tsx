@@ -28,8 +28,6 @@ function BillingConsumptionProvider({ children }: BillingConsumptionProviderProp
     nUsers,
   ])
 
-  console.log('billingConsumptionContextValue', billingConsumptionContextValue)
-
   if (error) return <BillingError />
   if (loading) return <BillingLoading />
 

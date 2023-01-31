@@ -33,6 +33,9 @@ defmodule Core.Services.Payments do
   @spec get_platform_plan_by_name!(binary) :: PlatformPlan.t
   def get_platform_plan_by_name!(name), do: Core.Repo.get_by!(PlatformPlan, name: name)
 
+  @spec get_platform_plan_by_name(binary) :: PlatformPlan.t
+  def get_platform_plan_by_name(name), do: Core.Repo.get_by(PlatformPlan, name: name)
+
   @spec get_subscription!(binary) :: Subscription.t
   def get_subscription!(id), do: Core.Repo.get!(Subscription, id)
 
@@ -108,7 +111,7 @@ defmodule Core.Services.Payments do
 
   @preloads [account: [subscription: :plan]]
 
-  def preload(%User{} = user), do: Core.Repo.preload(user, @preloads)
+  def preload(%User{} = user, opts \\ []), do: Core.Repo.preload(user, @preloads, opts)
 
   def force_preload(%User{} = user, preloads \\ [:account]), do: Core.Repo.preload(user, preloads, force: true)
 
@@ -317,34 +320,47 @@ defmodule Core.Services.Payments do
   end
 
   def setup_plans() do
-    {:ok, _} = create_platform_plan(%{
-      cost: 0,
-      name: "Pro",
-      period: :monthly,
-      visible: true,
-      features: %{vpn: true, user_management: true, audit: true},
-      line_items: [
-        %{name: "User", dimension: :user, period: :monthly, cost: 4900},
-        %{name: "Cluster", dimension: :cluster, period: :monthly, cost: 39900}
-      ]
-    })
+    {:ok, _} = create_default_plan(:monthly)
+    {:ok, _} = create_default_plan(:yearly)
 
-    {:ok, _} =
-      %PlatformPlan{}
-      |> PlatformPlan.changeset(%{
+    case get_platform_plan_by_name("Enterprise") do
+      %PlatformPlan{} = p -> {:ok, p}
+      _ ->
+        %PlatformPlan{}
+        |> PlatformPlan.changeset(%{
+          cost: 0,
+          name: "Enterprise",
+          period: :monthly,
+          visible: true,
+          enterprise: true,
+          features: %{vpn: true, user_management: true, audit: true},
+          line_items: [
+            %{name: "User", dimension: :user, period: :monthly, cost: 4900}, # these costs are arbitrary, as won't be billed through stripe
+            %{name: "Cluster", dimension: :cluster, period: :monthly, cost: 39900}
+          ]
+        })
+        |> Core.Repo.insert()
+    end
+  end
+
+  def create_default_plan(period) do
+    with {:ok, nil} <- {:ok, Core.Repo.get_by(PlatformPlan, name: "Pro", visible: true, period: period)} do
+      create_platform_plan(%{
         cost: 0,
-        name: "Enterprise",
-        period: :monthly,
+        name: "Pro",
+        period: period,
         visible: true,
-        enterprise: true,
         features: %{vpn: true, user_management: true, audit: true},
         line_items: [
-          %{name: "User", dimension: :user, period: :monthly, cost: 4900}, # these costs are arbitrary, as won't be billed through stripe
-          %{name: "Cluster", dimension: :cluster, period: :monthly, cost: 39900}
+          %{name: "User", dimension: :user, period: :monthly, cost: discount(4900, period)},
+          %{name: "Cluster", dimension: :cluster, period: :monthly, cost: discount(39900, period)}
         ]
       })
-      |> Core.Repo.insert()
+    end
   end
+
+  defp discount(amount, :monthly), do: round(amount / 10)
+  defp discount(amount, _), do: amount
 
   def setup_enterprise_plan(account_id) do
     plan = get_platform_plan_by_name!("Enterprise")
@@ -450,14 +466,17 @@ defmodule Core.Services.Payments do
   def create_platform_subscription(attrs, %PlatformPlan{} = plan, %User{} = user) do
     start_transaction()
     |> add_operation(:account, fn _ ->
-      case preload(user) do
+      case preload(user, force: true) do
         %{account: %Account{billing_customer_id: nil}} -> {:error, "no payment method"}
         %{account: account} -> {:ok, account}
       end
     end)
-    |> add_operation(:db, fn %{account: account} ->
+    |> add_operation(:db, fn %{account: %Account{cluster_count: cc, user_count: uc} = account} ->
       %PlatformSubscription{plan_id: plan.id, plan: plan, account_id: account.id}
-      |> PlatformSubscription.changeset(attrs)
+      |> PlatformSubscription.changeset(Map.put(attrs, :line_items, [
+        %{dimension: :cluster, quantity: cc},
+        %{dimension: :user, quantity: uc}
+      ]))
       |> allow(user, :create)
       |> when_ok(:insert)
     end)
@@ -494,7 +513,9 @@ defmodule Core.Services.Payments do
   def delete_platform_subscription(%User{} = user) do
     start_transaction()
     |> add_operation(:fetch, fn _ ->
-      case Core.Repo.preload(user, [account: :subscription]) do
+      case Core.Repo.preload(user, [account: [subscription: :plan]], force: true) do
+        %{account: %Account{subscription: %PlatformSubscription{plan: %PlatformPlan{enterprise: true}}}} ->
+          {:error, "to remove an enterprise subscription contact your account representative"}
         %{account: %Account{subscription: nil}} -> {:error, "your account has no subscription"}
         %{account: account} -> {:ok, account}
       end
@@ -509,7 +530,7 @@ defmodule Core.Services.Payments do
       |> Core.Repo.update()
       |> when_ok(&Map.put(&1, :subscription, nil))
     end)
-    |> add_operation(:stripe, fn %{db: %{external_id: ext_id}} -> Stripe.Subscription.delete(ext_id) end)
+    |> add_operation(:stripe, fn %{db: %{external_id: ext_id}} -> Stripe.Subscription.delete(ext_id, %{prorate: true}) end)
     |> execute(extract: :account)
     |> notify(:delete)
   end

@@ -71,8 +71,7 @@ function useBankCard(setEdit: Dispatch<SetStateAction<boolean>>, noCancel = fals
       },
     })
 
-    await refetch()
-
+    refetch()
     setLoading(false)
   }, [card, deleteCard, refetch])
 

@@ -141,6 +141,24 @@ defmodule Core.Services.DnsTest do
       assert record.type == :a
     end
 
+    test "creators can create records w/o being on the access policy" do
+      user = insert(:user)
+      domain = insert(:dns_domain, account: user.account, creator: user)
+      insert(:dns_access_policy_binding,
+        policy: build(:dns_access_policy, domain: domain),
+        user: insert(:user, account: user.account)
+      )
+
+      external_id = "12345"
+      expect(DnsRecord, :create, fn _, _ -> dns_resp(external_id) end)
+
+      {:ok, _} = Dns.create_record(%{
+        type: :a,
+        name: "some.#{domain.name}",
+        records: ["1.2.3.4"],
+      }, "cluster", :aws, user)
+    end
+
     test "It will respect access policies" do
       user = insert(:user)
       domain = insert(:dns_domain, account: user.account)

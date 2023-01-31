@@ -12,6 +12,7 @@ import { Button, Modal } from '@pluralsh/design-system'
 import PlatformPlansContext from '../../../contexts/PlatformPlansContext'
 import BillingBankCardContext from '../../../contexts/BillingBankCardContext'
 import BillingConsumptionContext from '../../../contexts/BillingConsumptionContext'
+import SubscriptionContext from '../../../contexts/SubscriptionContext'
 
 import { UPGRADE_TO_PROFESSIONAL_PLAN_MUTATION } from './queries'
 
@@ -29,6 +30,7 @@ function BillingUpgradeToProfessionalModal({ open, onClose }: BillingUpgradeToPr
   const { proPlatformPlan } = useContext(PlatformPlansContext)
   const { nClusters, nUsers } = useContext(BillingConsumptionContext)
   const { card } = useContext(BillingBankCardContext)
+  const { refetch: refetchSubscription } = useContext(SubscriptionContext)
 
   const [upgradeMutation, { loading: loadingUpgradeMutation }] = useMutation(UPGRADE_TO_PROFESSIONAL_PLAN_MUTATION, {
     variables: {
@@ -60,11 +62,12 @@ function BillingUpgradeToProfessionalModal({ open, onClose }: BillingUpgradeToPr
     upgradeMutation()
       .then(() => {
         setSuccess(true)
+        refetchSubscription()
       })
       .catch(() => {
         setError(true)
       })
-  }, [card, upgradeMutation])
+  }, [card, upgradeMutation, refetchSubscription])
 
   const renderContent = useCallback(() => (
     <>

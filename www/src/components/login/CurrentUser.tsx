@@ -76,7 +76,10 @@ export function PluralProvider({ children }: any) {
   const location = useLocation()
   const {
     loading, error, data, refetch,
-  } = useQuery(ME_Q, { pollInterval: 60000 })
+  } = useQuery(ME_Q, {
+    pollInterval: 60000,
+    fetchPolicy: 'network-only',
+  })
   const { boot, update } = useIntercom()
   const userContextValue = useMemo(() => ({ me: data?.me, refetch }), [data, refetch])
 

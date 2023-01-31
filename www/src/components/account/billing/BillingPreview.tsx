@@ -2,6 +2,7 @@ import {
   ReactNode,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
 } from 'react'
@@ -16,6 +17,7 @@ import {
 import PlatformPlansContext from '../../../contexts/PlatformPlansContext'
 
 import BillingConsumptionContext from '../../../contexts/BillingConsumptionContext'
+import SubscriptionContext from '../../../contexts/SubscriptionContext'
 
 type BillingPreviewPropsType = {
   noCard?: boolean
@@ -24,9 +26,10 @@ type BillingPreviewPropsType = {
 
 function BillingPreview({ noCard, discountPreview }: BillingPreviewPropsType) {
   const { clusterMonthlyPricing, userMonthlyPricing, annualDiscount } = useContext(PlatformPlansContext)
+  const { isProPlan } = useContext(SubscriptionContext)
   const { nClusters, nUsers } = useContext(BillingConsumptionContext)
 
-  const [isProfessional, setIsProfessional] = useState(false)
+  const [isProfessional, setIsProfessional] = useState(isProPlan)
 
   const pClusters = useMemo(() => (discountPreview
     ? isProfessional
@@ -207,6 +210,12 @@ function BillingPreview({ noCard, discountPreview }: BillingPreviewPropsType) {
     renderProfessionalSwitch,
     renderAnnualDiscountSwitch,
   ])
+
+  useEffect(() => {
+    if (!isProPlan) return
+
+    setIsProfessional(true)
+  }, [isProPlan])
 
   return noCard ? renderContent() : wrapCard(renderContent())
 }

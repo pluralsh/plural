@@ -1,16 +1,30 @@
-import { useContext, useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
 import { Flex } from 'honorable'
 import { Button } from '@pluralsh/design-system'
 
 import PlatformPlansContext from '../../../contexts/PlatformPlansContext'
+import SubscriptionContext from '../../../contexts/SubscriptionContext'
 
 import BillingPricingCard from './BillingPricingCard'
 import BillingUpgradeToProfessionalModal from './BillingUpgradeToProfessionalModal'
+import BillingDowngradeModal from './BillingDowngradeModal'
 
 function BillingPricingCards() {
   const { clusterMonthlyPricing, userMonthlyPricing } = useContext(PlatformPlansContext)
+  const { isProPlan } = useContext(SubscriptionContext)
 
   const [upgradeToProfessionalModalOpen, setUpgradeToProfessionalModalOpen] = useState(false)
+  const [downgradeModalOpen, setDowngradeModalOpen] = useState(false)
+
+  const renderCurrentPlanButton = useCallback(() => (
+    <Button
+      primary
+      disabled
+      width="100%"
+    >
+      Current plan
+    </Button>
+  ), [])
 
   return (
     <>
@@ -47,15 +61,15 @@ function BillingPricingCards() {
               checked: true,
             },
           ]}
-          callToAction={(
+          callToAction={isProPlan ? (
             <Button
-              primary
-              disabled
+              tertiary
               width="100%"
+              onClick={() => setDowngradeModalOpen(true)}
             >
-              Current plan
+              Downgrade
             </Button>
-          )}
+          ) : renderCurrentPlanButton()}
         />
         <BillingPricingCard
           title="Professional"
@@ -88,7 +102,7 @@ function BillingPricingCards() {
               checked: true,
             },
           ]}
-          callToAction={(
+          callToAction={isProPlan ? renderCurrentPlanButton() : (
             <Button
               primary
               width="100%"
@@ -131,6 +145,10 @@ function BillingPricingCards() {
           ]}
           callToAction={(
             <Button
+              as="a"
+              href="https://plural.sh/contact-sales"
+              target="_blank"
+              rel="noopener noreferer"
               secondary
               width="100%"
             >
@@ -142,6 +160,10 @@ function BillingPricingCards() {
       <BillingUpgradeToProfessionalModal
         open={upgradeToProfessionalModalOpen}
         onClose={() => setUpgradeToProfessionalModalOpen(false)}
+      />
+      <BillingDowngradeModal
+        open={downgradeModalOpen}
+        onClose={() => setDowngradeModalOpen(false)}
       />
     </>
   )

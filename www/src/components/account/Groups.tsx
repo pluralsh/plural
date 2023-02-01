@@ -33,6 +33,8 @@ import { Info } from './Info'
 import { hasRbac } from './utils'
 import { GroupsList } from './GroupsList'
 
+import BillingLegacyUserBanner from './billing/BillingLegacyUserBanner'
+
 function Header({ q, setQ }: any) {
   return (
     <ListInput
@@ -139,6 +141,10 @@ export function Groups() {
       <PageTitle heading="Groups">
         <CreateGroup q={q} />
       </PageTitle>
+      <BillingLegacyUserBanner
+        feature="Groups"
+        marginBottom="medium"
+      />
       <List>
         <Header
           q={q}

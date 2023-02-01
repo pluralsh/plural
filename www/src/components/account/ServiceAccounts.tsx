@@ -20,6 +20,8 @@ import { CreateServiceAccount } from './CreateServiceAccount'
 
 import { ServiceAccount } from './User'
 
+import BillingLegacyUserBanner from './billing/BillingLegacyUserBanner'
+
 function Header({ q, setQ }: any) {
   return (
     <ListInput
@@ -115,6 +117,10 @@ export function ServiceAccounts() {
       <PageTitle heading="Service accounts">
         <CreateServiceAccount q={q} />
       </PageTitle>
+      <BillingLegacyUserBanner
+        feature="Service accounts"
+        marginBottom="medium"
+      />
       <List>
         <Header
           q={q}

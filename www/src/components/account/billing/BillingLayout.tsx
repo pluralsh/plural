@@ -5,6 +5,7 @@ import { Link, Outlet, useLocation } from 'react-router-dom'
 import BillingPlatformPlansProvider from './BillingPlatformPlansProvider'
 import BillingConsumptionProvider from './BillingConsumptionProvider'
 import BillingBankCardProvider from './BillingBankCardProvider'
+import BillingLegacyUserBanner from './BillingLegacyUserBanner'
 
 function BillingLayout() {
   const { pathname } = useLocation()
@@ -33,6 +34,7 @@ function BillingLayout() {
               </Button>
             </Flex>
           </PageTitle>
+          <BillingLegacyUserBanner marginBottom="medium" />
           <Div
             flexGrow
             overflowY="auto"

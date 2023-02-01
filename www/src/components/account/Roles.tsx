@@ -30,6 +30,8 @@ import { Info } from './Info'
 import { EditRole } from './EditRole'
 import { CreateRole } from './CreateRole'
 
+import BillingLegacyUserBanner from './billing/BillingLegacyUserBanner'
+
 function Header({ q, setQ }: any) {
   return (
     <ListInput
@@ -165,6 +167,10 @@ export function Roles() {
         {' '}
         <CreateRole q={q} />
       </PageTitle>
+      <BillingLegacyUserBanner
+        feature="Roles"
+        marginBottom="medium"
+      />
       <List>
         <Header
           q={q}

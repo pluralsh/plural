@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useMutation } from '@apollo/client'
-import { Button, SecondaryButton } from 'forge-core'
+import { Button } from '@pluralsh/design-system'
 import {
   Box,
   FormField,
@@ -121,7 +121,8 @@ export function CreateWebhook({ cancel }: any) {
         justify="end"
         gap="xsmall"
       >
-        <SecondaryButton
+        <Button
+          secondary
           label="Cancel"
           onClick={cancel}
         />

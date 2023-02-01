@@ -14,8 +14,8 @@ import {
   TextInput,
   ThemeContext,
 } from 'grommet'
-import { Button } from 'forge-core'
 import {
+  Button,
   CaretRightIcon,
   CheckIcon,
   CloseIcon,

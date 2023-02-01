@@ -5,7 +5,7 @@ import { VariableSizeList } from 'react-window-reversed'
 import { FixedSizeList as FixedList, VariableSizeList as List } from 'react-window'
 import Autosizer from 'react-virtualized-auto-sizer'
 import memoize from 'memoize-one'
-import { CellMeasurer } from 'forge-core'
+// import { CellMeasurer } from 'forge-core'
 
 class SmartLoader extends PureComponent<any> {
   _listRef: any = null

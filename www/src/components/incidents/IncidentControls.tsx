@@ -5,8 +5,8 @@ import {
   Layer,
   Text,
 } from 'grommet'
-import { Button, SecondaryButton } from 'forge-core'
 import {
+  Button,
   CameraIcon,
   CheckIcon,
   LightningIcon,
@@ -117,7 +117,8 @@ function CompleteIncident({ incident: { id } }: any) {
                 align="center"
                 gap="xsmall"
               >
-                <SecondaryButton
+                <Button
+                  secondary
                   label="Cancel"
                   onClick={() => setOpen(false)}
                 />

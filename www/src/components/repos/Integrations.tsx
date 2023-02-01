@@ -2,12 +2,12 @@ import { useContext, useEffect, useState } from 'react'
 import { useQuery } from '@apollo/client'
 import styled from 'styled-components'
 import { useNavigate, useParams } from 'react-router-dom'
-import {
-  Carousel,
-  HoveredBackground,
-  ScrollableContainer,
-  Scroller,
-} from 'forge-core'
+// import {
+//   Carousel,
+//   HoveredBackground,
+//   ScrollableContainer,
+//   Scroller,
+// } from 'forge-core'
 import {
   Anchor,
   Box,

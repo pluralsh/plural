@@ -2,7 +2,7 @@
 import { useContext } from 'react'
 import { useMutation } from '@apollo/client'
 import { Box, Text } from 'grommet'
-import { Tooltip } from 'forge-core'
+import { Tooltip } from '@pluralsh/design-system'
 import 'emoji-mart/css/emoji-mart.css'
 import { Emoji } from 'emoji-mart'
 

@@ -1,6 +1,6 @@
 import { useContext } from 'react'
 import { Box, Text } from 'grommet'
-import { Select } from 'forge-core'
+import { Select } from '@pluralsh/design-system'
 
 import { normalizeColor } from 'grommet/utils'
 

@@ -5,8 +5,13 @@ import { useCallback, useContext, useState } from 'react'
 import { CardElement, Elements, injectStripe } from 'react-stripe-elements'
 import { Box, Layer, Text } from 'grommet'
 import { useMutation, useQuery } from '@apollo/client'
-import { Button, PaymentMethods, Trash } from 'forge-core'
-import { CreditCardIcon as Amex, CreditCardIcon as Mastercard, CreditCardIcon as Visa } from '@pluralsh/design-system'
+// import { PaymentMethods, Trash } from 'forge-core'
+import {
+  CreditCardIcon as Amex,
+  Button,
+  CreditCardIcon as Mastercard,
+  CreditCardIcon as Visa,
+} from '@pluralsh/design-system'
 
 import { HeaderItem } from '../utils/Header'
 

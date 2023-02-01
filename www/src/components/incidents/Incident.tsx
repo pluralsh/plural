@@ -5,7 +5,7 @@ import {
   useMemo,
   useState,
 } from 'react'
-import { Button, Scroller } from 'forge-core'
+// import { Scroller } from 'forge-core'
 import { Editable, Slate } from 'slate-react'
 import { useMutation, useQuery, useSubscription } from '@apollo/client'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -17,6 +17,7 @@ import {
 } from 'grommet'
 import moment from 'moment'
 import {
+  Button,
   CloseIcon,
   FileIcon,
   MessagesIcon,

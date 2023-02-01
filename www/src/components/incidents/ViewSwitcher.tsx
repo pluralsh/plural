@@ -1,7 +1,7 @@
 import { createElement, useRef, useState } from 'react'
 import { Box, Text } from 'grommet'
 
-import { Check as Checkmark, File, Messages } from 'forge-core'
+// import { Check as Checkmark, File, Messages } from 'forge-core'
 
 import { Tooltip } from '../utils/Tooltip'
 

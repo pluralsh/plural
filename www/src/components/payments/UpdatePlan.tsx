@@ -1,6 +1,6 @@
 import { Box, Layer, Text } from 'grommet'
 import { useMutation } from '@apollo/client'
-import { Button } from 'forge-core'
+import { Button } from '@pluralsh/design-system'
 
 import { ModalHeader } from '../ModalHeader'
 

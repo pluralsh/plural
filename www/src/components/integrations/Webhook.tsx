@@ -1,14 +1,13 @@
 import { useContext, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import {
-  Button,
-  Close,
-  Copyable,
-  Edit,
-  Reload,
-  SecondaryButton,
-  Trash,
-} from 'forge-core'
+// import {
+//   Button,
+//   Close,
+//   Copyable,
+//   Edit,
+//   Reload,
+//   Trash,
+// } from 'forge-core'
 import {
   Box,
   Layer,
@@ -261,7 +260,8 @@ function WebhookControls({ webhook, setEdit }: any) {
                 justify="end"
                 gap="small"
               >
-                <SecondaryButton
+                <Button
+                  secondary
                   label="Cancel"
                   onClick={() => setOpen(false)}
                 />

@@ -11,7 +11,7 @@ import {
   Markdown,
   Text,
 } from 'grommet'
-import { TooltipContent } from 'forge-core'
+// import { TooltipContent } from 'forge-core'
 import sortBy from 'lodash/sortBy'
 import { Emoji as Emojii } from 'emoji-mart'
 

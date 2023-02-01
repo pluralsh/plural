@@ -5,7 +5,8 @@ import {
   Layer,
   Text,
 } from 'grommet'
-import { Button, Reload as Refresh } from 'forge-core'
+// import { Reload as Refresh } from 'forge-core'
+import { Button } from '@pluralsh/design-system'
 import { useMutation } from '@apollo/client'
 
 import { NumericInput } from '../utils/NumericInput'

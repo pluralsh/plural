@@ -64,6 +64,11 @@ def gql_client():
     return GraphqlClient(endpoint="https://app.plural.sh/gql", headers={"Authorization": f"Bearer {token}"})
 
 
+def copy_from_gcr(url):
+    parts = url.split("/")
+    gcr_url = "/".join(parts[2:])
+    os.system(f"skopeo copy --multi-arch all --dest-authfile config.json docker://gcr.io/pluralsh/{gcr_url} docker://{url}")
+
 async def delete_missing(dkr_client, manifest, imgname, original, f):
     for layer in manifest['layers']:
         has_blob = await dkr_client.head_blob(imgname, FormattedSHA256.parse(layer['digest']))
@@ -72,6 +77,7 @@ async def delete_missing(dkr_client, manifest, imgname, original, f):
             click.echo(f"deleting {original}")
             await dkr_client.delete_manifest(imgname)
             f.writelines(f"{original}\n")
+            copy_from_gcr(original)
             return
 
 async def ensure_tokens_present(dkr_client, path):
@@ -120,7 +126,8 @@ async def maybe_prune_img(dkr_client, img, repo, dkr, f):
             await delete_missing(dkr_client, subman.manifest.get_json(), imgname, img_url, f)
         SEEN.add(img_url)
     except Exception as e:
-        click.echo(f"failure executing {img_url}")
+        click.echo(f"failure executing {img_url}, attempting a copy")
+        copy_from_gcr(img_url)
         print(e)
 
 SUBSTEP = 5

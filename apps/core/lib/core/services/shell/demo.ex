@@ -1,5 +1,6 @@
 defmodule Core.Services.Shell.Demo do
   use Core.Services.Base
+  require Logger
   alias Core.Schema.{User, DemoProject, CloudShell}
   alias Core.Services.{Locks, Users, Upgrades, Repositories}
   alias GoogleApi.CloudResourceManager.V3.Api.{Projects, Operations}
@@ -142,6 +143,14 @@ defmodule Core.Services.Shell.Demo do
     |> add_operation(:proj, fn _ ->
       projects_conn()
       |> Projects.cloudresourcemanager_projects_delete(proj_id)
+      |> case do
+        {:ok, _} = ok -> ok
+        {:error, %Tesla.Env{status: 404}} -> {:ok, :not_found}
+        {:error, %Tesla.Env{status: 403}} -> {:ok, :no_perms} # seems to also happen when not found
+        err ->
+          Logger.info "failed to delete project #{inspect(err)}"
+          err
+      end
     end)
     |> add_operation(:cluster, fn _ ->
       with %{provider: p, workspace: %{cluster: c, subdomain: d}} <- get_shell(proj.id),

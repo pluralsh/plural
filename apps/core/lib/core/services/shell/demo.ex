@@ -147,9 +147,7 @@ defmodule Core.Services.Shell.Demo do
         {:ok, _} = ok -> ok
         {:error, %Tesla.Env{status: 404}} -> {:ok, :not_found}
         {:error, %Tesla.Env{status: 403}} -> {:ok, :no_perms} # seems to also happen when not found
-        err ->
-          Logger.info "failed to delete project #{inspect(err)}"
-          err
+        err -> handle_error(err)
       end
     end)
     |> add_operation(:cluster, fn _ ->
@@ -169,6 +167,19 @@ defmodule Core.Services.Shell.Demo do
     end)
     |> execute(extract: :db)
   end
+
+  defp handle_error({:error, %Tesla.Env{body: body}} = err) do
+    case Jason.decode(body) do
+      {:ok, %{"error" => %{"message" => "Project not active"}}} ->
+        Logger.info "inactive project, can delete"
+        {:ok, :inactive}
+      {:ok, body} ->
+        Logger.error "unrecognized error body: #{inspect(body)}"
+        err
+      _ -> err
+    end
+  end
+  defp handle_error(err), do: err
 
   @doc """
   Deletes the demo project of the current user and its associated gcp project

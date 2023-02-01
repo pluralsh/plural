@@ -37,7 +37,8 @@ function ApplicationLayout({ children }: any) {
                 onClick={() => reloadApplication()}
                 style={{ textDecoration: 'none' }}
                 color="action-link-inline"
-              >Update now
+              >
+                Update now
               </A>
             </Toast>
           )}

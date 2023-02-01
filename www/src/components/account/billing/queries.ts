@@ -74,18 +74,6 @@ export const DELETE_CARD_MUTATION = gql`
   }
 `
 
-export const USERS_QUERY = gql`
-  query Users {
-    users(serviceAccount: false, first: 500) {
-      edges {
-        node {
-          id
-        }
-      }
-    }
-  }
-`
-
 export const INVOICES_QUERY = gql`
   query Users {
     invoices(first: 500) {

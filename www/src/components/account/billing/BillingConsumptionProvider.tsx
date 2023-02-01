@@ -1,13 +1,7 @@
 import { ReactNode, useContext, useMemo } from 'react'
-import { useQuery } from '@apollo/client'
 
 import CurrentUserContext from '../../../contexts/CurrentUserContext'
 import BillingConsumptionContext, { BillingConsumptionContextType } from '../../../contexts/BillingConsumptionContext'
-
-import { USERS_QUERY } from './queries'
-
-import BillingError from './BillingError'
-import BillingLoading from './BillingLoading'
 
 type BillingConsumptionProviderPropsType = {
   children: ReactNode
@@ -15,10 +9,9 @@ type BillingConsumptionProviderPropsType = {
 
 function BillingConsumptionProvider({ children }: BillingConsumptionProviderPropsType) {
   const { me } = useContext(CurrentUserContext)
-  const { data, loading, error } = useQuery(USERS_QUERY)
 
   const nClusters = useMemo(() => (me?.account?.clusterCount ? parseInt(me?.account?.clusterCount) : 0), [me])
-  const nUsers = useMemo(() => data?.users?.edges?.length ?? 0, [data])
+  const nUsers = useMemo(() => (me?.account?.userCount ? parseInt(me?.account?.userCount) : 0), [me])
 
   const billingConsumptionContextValue = useMemo<BillingConsumptionContextType>(() => ({
     nClusters,
@@ -27,9 +20,6 @@ function BillingConsumptionProvider({ children }: BillingConsumptionProviderProp
     nClusters,
     nUsers,
   ])
-
-  if (error) return <BillingError />
-  if (loading) return <BillingLoading />
 
   return (
     <BillingConsumptionContext.Provider value={billingConsumptionContextValue}>

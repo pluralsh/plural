@@ -71,6 +71,7 @@ function AWS() {
         <FormField
           label="Access Key ID"
           width="100%"
+          required
         >
           <Input
             value={cloud?.aws?.accessKey}
@@ -80,6 +81,7 @@ function AWS() {
         <FormField
           label="Secret Access Key"
           width="100%"
+          required
         >
           <Input
             value={cloud?.aws?.secretKey}

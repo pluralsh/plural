@@ -1,4 +1,9 @@
-import { useContext, useEffect, useMemo } from 'react'
+import {
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
 
 import { Flex } from 'honorable'
 import IsEmpty from 'lodash/isEmpty'
@@ -8,6 +13,7 @@ import {
   Input,
   ListBoxItem,
   Select,
+  ValidatedInput,
 } from '@pluralsh/design-system'
 
 import { OnboardingContext } from '../../../context/onboarding'
@@ -40,11 +46,14 @@ const REGIONS = [
   'brazilsouth',
 ]
 
+const STORAGE_ACCOUNT_REGEX = /^[a-z0-9]{3,24}$/
+
 function Azure() {
   const { cloud, setValid, workspace } = useContext(OnboardingContext)
   const setCloudProviderKeys = useSetCloudProviderKeys<AzureCloudProvider>(CloudProvider.Azure)
   const setWorkspaceKeys = useSetWorkspaceKeys()
-  const isValid = useMemo(() => !IsObjectEmpty(cloud?.azure) && !IsObjectEmpty(workspace), [cloud, workspace])
+  const [error, setError] = useState<{[key in keyof AzureCloudProvider]: string | null}>({})
+  const isValid = useMemo(() => !IsObjectEmpty(cloud?.azure) && !IsObjectEmpty(workspace) && IsObjectEmpty(error), [cloud?.azure, error, workspace])
 
   useEffect(() => setValid(isValid), [isValid, setValid])
   useEffect(() => (IsEmpty(workspace?.region) ? setWorkspaceKeys({ region: 'eastus' }) : undefined), [setWorkspaceKeys, workspace])
@@ -52,9 +61,19 @@ function Azure() {
     tenantID: '', subscriptionID: '', storageAccount: '', clientSecret: '', clientID: '',
   }) : undefined), [setCloudProviderKeys, cloud?.azure])
 
+  useEffect(() => {
+    const storageAccount = STORAGE_ACCOUNT_REGEX.test(cloud?.azure?.storageAccount ?? '')
+      ? null
+      : 'must be between 3 and 24 characters in length and may contain numbers and lowercase letters only'
+
+    setError(err => ({ ...err, storageAccount }))
+  }, [cloud?.azure?.storageAccount])
+
   return (
     <>
-      <FormField label="Region">
+      <FormField
+        label="Region"
+      >
         <Select
           selectedKey={workspace?.region}
           onSelectionChange={value => setWorkspaceKeys({ region: `${value}` })}
@@ -73,6 +92,7 @@ function Azure() {
         <FormField
           label="Client ID"
           width="100%"
+          required
         >
           <Input
             value={cloud?.azure?.clientID}
@@ -82,6 +102,7 @@ function Azure() {
         <FormField
           label="Client Secret"
           width="100%"
+          required
         >
           <Input
             value={cloud?.azure?.clientSecret}
@@ -95,6 +116,7 @@ function Azure() {
         <FormField
           label="Subscription ID"
           width="100%"
+          required
         >
           <Input
             value={cloud?.azure?.subscriptionID}
@@ -104,6 +126,7 @@ function Azure() {
         <FormField
           label="Tenant ID"
           width="100%"
+          required
         >
           <Input
             value={cloud?.azure?.tenantID}
@@ -112,16 +135,26 @@ function Azure() {
         </FormField>
       </Flex>
 
-      <FormField label="Resource Group">
+      <FormField
+        label="Resource Group"
+        required
+      >
         <Input
           value={workspace?.project}
           onChange={({ target: { value } }) => setWorkspaceKeys({ project: value })}
         />
       </FormField>
-      <FormField label="Storage Account">
+
+      <FormField
+        label="Storage Account"
+        hint={error.storageAccount}
+        error={!!error.storageAccount}
+        required
+      >
         <Input
           value={cloud?.azure?.storageAccount}
           onChange={({ target: { value } }) => setCloudProviderKeys({ storageAccount: value })}
+          error={!!error.storageAccount}
         />
       </FormField>
     </>

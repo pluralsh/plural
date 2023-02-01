@@ -112,7 +112,7 @@ const install = async (client: ApolloClient<unknown>, apps: Array<WizardStepConf
 
   const { data: { quickStack }, errors } = await client.mutate({
     mutation: CREATE_QUICK_STACK_MUTATION,
-    variables: { applicationIds: apps.map(app => app.key), provider },
+    variables: { applicationIds: apps.filter(app => !app.isDependency).map(app => app.key), provider },
   })
 
   if (errors) return Promise.reject(errors)

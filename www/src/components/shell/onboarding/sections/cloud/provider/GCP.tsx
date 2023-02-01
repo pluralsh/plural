@@ -120,7 +120,10 @@ function GCP() {
 
         </Select>
       </FormField>
-      <FormField label="Service account credentials">
+      <FormField
+        label="Service account credentials"
+        required
+      >
         <ThemeContext.Extend value={fileInputTheme(fileSelected, !!fileError)}>
           <FileInput
             value={cloud?.gcp?.fileName ? [{ name: cloud?.gcp?.fileName }] as any : undefined}

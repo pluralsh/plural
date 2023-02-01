@@ -1,10 +1,7 @@
 import {
   Dispatch,
-  MutableRefObject,
   ReactElement,
   forwardRef,
-  useEffect,
-  useRef,
   useState,
 } from 'react'
 import { Button, Flex } from 'honorable'
@@ -53,11 +50,6 @@ const ActionBarItem = forwardRef(ActionBarItemRef)
 
 function ActionBar({ onRepairViewport }) {
   const [showCheatsheet, setShowCheatsheet] = useState(false)
-  const cheatsheetButtonRef = useRef<HTMLElement>()
-
-  useEffect(() => {
-    console.log(cheatsheetButtonRef)
-  }, [cheatsheetButtonRef])
 
   return (
     <Flex
@@ -78,7 +70,6 @@ function ActionBar({ onRepairViewport }) {
         tooltip="CLI Cheat Sheet"
         onClick={() => setShowCheatsheet(true)}
         icon={<CliIcon />}
-        ref={cheatsheetButtonRef}
       />
       <ActionBarItem><MoreOptions /></ActionBarItem>
 

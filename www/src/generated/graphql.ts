@@ -1851,21 +1851,12 @@ export type PlatformPlanItem = {
   period: PaymentPeriod;
 };
 
-export type PlatformPlanLineItemAttributes = {
-  dimension: LineItemDimension;
-  quantity: Scalars['Int'];
-};
-
 export type PlatformSubscription = {
   __typename?: 'PlatformSubscription';
   externalId?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
   lineItems?: Maybe<Array<Maybe<PlatformSubscriptionLineItems>>>;
   plan?: Maybe<PlatformPlan>;
-};
-
-export type PlatformSubscriptionAttributes = {
-  lineItems?: InputMaybe<Array<InputMaybe<PlatformPlanLineItemAttributes>>>;
 };
 
 export type PlatformSubscriptionLineItems = {
@@ -2632,7 +2623,6 @@ export type RootMutationTypeCreatePlanArgs = {
 
 
 export type RootMutationTypeCreatePlatformSubscriptionArgs = {
-  attributes: PlatformSubscriptionAttributes;
   planId: Scalars['ID'];
 };
 

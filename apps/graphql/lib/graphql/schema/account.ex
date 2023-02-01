@@ -84,7 +84,7 @@ defmodule GraphQl.Schema.Account do
     field :cluster_count,        :string
     field :user_count,           :string
     field :delinquent_at,        :datetime
-    field :grandfathered_unitl,  :datetime
+    field :grandfathered_until,  :datetime
 
     field :icon, :string, resolve: fn
       account, _, _ -> {:ok, Core.Storage.url({account.icon, account}, :original)}
@@ -96,6 +96,10 @@ defmodule GraphQl.Schema.Account do
 
     field :background_color, :string, resolve: fn
       user, _, _ -> {:ok, User.background_color(user)}
+    end
+
+    field :available_features, :plan_features, resolve: fn
+      account, _, _ -> {:ok, Account.available_features(account)}
     end
 
     timestamps()
@@ -221,6 +225,12 @@ defmodule GraphQl.Schema.Account do
   connection node_type: :invite
 
   object :account_queries do
+    field :account, :account do
+      middleware Authenticated
+
+      resolve &Account.resolve_account/2
+    end
+
     field :invite, :invite do
       arg :id, non_null(:string)
 

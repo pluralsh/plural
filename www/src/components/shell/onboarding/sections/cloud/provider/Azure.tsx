@@ -4,16 +4,13 @@ import {
   useMemo,
   useState,
 } from 'react'
-
 import { Flex } from 'honorable'
 import IsEmpty from 'lodash/isEmpty'
-
 import {
   FormField,
   Input,
   ListBoxItem,
   Select,
-  ValidatedInput,
 } from '@pluralsh/design-system'
 
 import { OnboardingContext } from '../../../context/onboarding'

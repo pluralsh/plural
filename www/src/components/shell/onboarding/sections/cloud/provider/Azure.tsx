@@ -43,13 +43,26 @@ const REGIONS = [
   'brazilsouth',
 ]
 
-const STORAGE_ACCOUNT_REGEX = /^[a-z0-9]{3,24}$/
+type ValidationFieldKey = keyof AzureCloudProvider | 'resourceGroup'
+type Validation = {regex: RegExp, message: string}
+type ValidationField = {[key in ValidationFieldKey]?: Validation}
+
+const VALIDATOR: ValidationField = {
+  storageAccount: {
+    regex: /^[a-z0-9]{3,24}$/,
+    message: 'must be between 3 and 24 characters and may contain numbers and lowercase letters only',
+  },
+  resourceGroup: {
+    regex: /^[\w\-().]{0,63}[\w\-()]$/,
+    message: 'must be between 1 and 64 characters and may contain alphanumerics, underscores, parentheses, hyphens, and periods (except at end)',
+  },
+}
 
 function Azure() {
   const { cloud, setValid, workspace } = useContext(OnboardingContext)
   const setCloudProviderKeys = useSetCloudProviderKeys<AzureCloudProvider>(CloudProvider.Azure)
   const setWorkspaceKeys = useSetWorkspaceKeys()
-  const [error, setError] = useState<{[key in keyof AzureCloudProvider]: string | null}>({})
+  const [error, setError] = useState<{[key in ValidationFieldKey]?: string | null}>({})
   const isValid = useMemo(() => !IsObjectEmpty(cloud?.azure) && !IsObjectEmpty(workspace) && IsObjectEmpty(error), [cloud?.azure, error, workspace])
 
   useEffect(() => setValid(isValid), [isValid, setValid])
@@ -59,12 +72,17 @@ function Azure() {
   }) : undefined), [setCloudProviderKeys, cloud?.azure])
 
   useEffect(() => {
-    const storageAccount = STORAGE_ACCOUNT_REGEX.test(cloud?.azure?.storageAccount ?? '')
-      ? null
-      : 'must be between 3 and 24 characters in length and may contain numbers and lowercase letters only'
+    const merged = { ...cloud?.azure, resourceGroup: workspace?.project }
 
-    setError(err => ({ ...err, storageAccount }))
-  }, [cloud?.azure?.storageAccount])
+    Object.keys(merged).forEach(key => {
+      const { regex, message } = VALIDATOR[key as keyof AzureCloudProvider] || {}
+      const error = regex?.test(merged?.[key]) ? null : message
+
+      if (!regex || !message) return
+
+      setError(err => ({ ...err, [key]: error }))
+    })
+  }, [cloud?.azure, workspace?.project])
 
   return (
     <>
@@ -135,9 +153,12 @@ function Azure() {
       <FormField
         label="Resource Group"
         required
+        hint={error.resourceGroup}
+        error={!!error.resourceGroup}
       >
         <Input
           value={workspace?.project}
+          error={!!error.resourceGroup}
           onChange={({ target: { value } }) => setWorkspaceKeys({ project: value })}
         />
       </FormField>

@@ -15,6 +15,7 @@ import { ME_Q } from '../users/queries'
 import { setPreviousUserData, setToken, wipeToken } from '../../helpers/authentication'
 import { useNotificationSubscription } from '../incidents/Notifications'
 import { LoopingLogo } from '../utils/AnimatedLogo'
+import BillingSubscriptionProvider from '../account/billing/BillingSubscriptionProvider'
 
 // const POLL_INTERVAL=30000
 
@@ -110,7 +111,9 @@ export function PluralProvider({ children }: any) {
   return (
     <PluralConfigurationContext.Provider value={configuration}>
       <CurrentUserContext.Provider value={userContextValue}>
-        {children}
+        <BillingSubscriptionProvider>
+          {children}
+        </BillingSubscriptionProvider>
       </CurrentUserContext.Provider>
     </PluralConfigurationContext.Provider>
   )

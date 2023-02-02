@@ -2,35 +2,11 @@ import 'babel-polyfill'
 import { createRoot } from 'react-dom/client'
 import posthog from 'posthog-js'
 
+import Cookiebot from './utils/cookiebot'
+
 import App from './App'
 
 import * as serviceWorker from './serviceWorkerRegistration'
-
-export interface Cookiebot {
-  consent: {
-    necessary: boolean;
-    preferences: boolean;
-    statistics: boolean;
-    marketing: boolean;
-    method: string | null;
-  };
-  consented: boolean;
-  declined: boolean;
-  hasResponse: boolean;
-  doNotTrack: boolean;
-  regulations: {
-    gdprApplies: boolean;
-    ccpaApplies: boolean;
-    lgpdApplies: boolean;
-  }
-  show(): void;
-  hide(): void;
-  getScript(url: string, async: boolean, callback: () => void): void;
-  withdraw(): void;
-  submitCustomConsent(optinPreferences: boolean, optinStatistics: boolean, optinMarketing: boolean): void;
-}
-
-declare const Cookiebot: Cookiebot
 
 posthog.init('phc_r0v4jbKz8Rr27mfqgO15AN5BMuuvnU8hCFedd6zpSDy',
   {

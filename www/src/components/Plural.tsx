@@ -22,6 +22,7 @@ import { useHistory } from '../router'
 
 import PluralConfigurationContext from '../contexts/PluralConfigurationContext'
 import CurrentUserContext from '../contexts/CurrentUserContext'
+import Cookiebot from '../utils/cookiebot'
 
 const ApplicationLayout = lazy(() => import('./layout/ApplicationLayout'))
 const BreadcrumbProvider = lazy(() => import('./Breadcrumbs'))
@@ -167,6 +168,9 @@ function PosthogIdentifier() {
       accountId: me.account.id,
       accountName: me.account.name,
     })
+  }
+  else {
+    Cookiebot.show()
   }
 
   return null

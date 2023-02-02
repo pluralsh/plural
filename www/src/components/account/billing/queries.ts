@@ -23,8 +23,8 @@ export const PLATFORM_PLANS_QUERY = gql`
 `
 
 export const UPGRADE_TO_PROFESSIONAL_PLAN_MUTATION = gql`
-  mutation UpgradeToProfessionalPlan($attributes: PlatformSubscriptionAttributes!, $installationId: ID!, $planId: ID!) {
-    createPlatformSubscription(attributes: $attributes, installationId: $installationId, planId: $planId) {
+  mutation UpgradeToProfessionalPlan($planId: ID!) {
+    createPlatformSubscription(planId: $planId) {
       id
     }
   }

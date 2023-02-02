@@ -11,7 +11,6 @@ import { Button, Modal } from '@pluralsh/design-system'
 
 import PlatformPlansContext from '../../../contexts/PlatformPlansContext'
 import BillingBankCardContext from '../../../contexts/BillingBankCardContext'
-import BillingConsumptionContext from '../../../contexts/BillingConsumptionContext'
 import SubscriptionContext from '../../../contexts/SubscriptionContext'
 
 import { UPGRADE_TO_PROFESSIONAL_PLAN_MUTATION } from './queries'
@@ -28,24 +27,11 @@ type BillingUpgradeToProfessionalModalPropsType = {
 
 function BillingUpgradeToProfessionalModal({ open, onClose }: BillingUpgradeToProfessionalModalPropsType) {
   const { proPlatformPlan } = useContext(PlatformPlansContext)
-  const { nClusters, nUsers } = useContext(BillingConsumptionContext)
   const { card } = useContext(BillingBankCardContext)
   const { refetch: refetchSubscription } = useContext(SubscriptionContext)
 
   const [upgradeMutation, { loading: loadingUpgradeMutation }] = useMutation(UPGRADE_TO_PROFESSIONAL_PLAN_MUTATION, {
     variables: {
-      attributes: {
-        lineItems: [
-          {
-            dimension: 'CLUSTER',
-            quantity: nClusters,
-          },
-          {
-            dimension: 'USER',
-            quantity: nUsers,
-          },
-        ],
-      },
       planId: proPlatformPlan.id,
     },
   })

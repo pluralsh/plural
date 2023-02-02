@@ -160,14 +160,14 @@ function PosthogIdentifier() {
 
   PosthogIdentiy(me)
 
-  const onPrefChange = () => {
-    PosthogIdentiy(me)
-  }
-
   useEffect(() => {
+    const onPrefChange = () => {
+      PosthogIdentiy(me)
+    }
+
     window.addEventListener('CookiebotOnAccept', onPrefChange)
     window.addEventListener('CookiebotOnDecline', onPrefChange)
-  }, [])
+  }, [me])
 
   return null
 }

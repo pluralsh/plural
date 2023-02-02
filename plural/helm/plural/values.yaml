@@ -195,6 +195,14 @@ configOverlays:
     documentation: dsn address for sentry error collection
     updates:
     - path: ['plural', 'sentryDsn']
+- name: plrl-shell-img
+  spec:
+    folder: plural
+    subfolder: cloud shell
+    name: shell image
+    documentation: the image url for use on cloud shell pods
+    updates:
+    - path: ['plural', 'secrets', 'cloud_shell_img']  
 - name: api-cpu
   labels:
     platform.plural.sh/component: plural-api
@@ -295,14 +303,6 @@ configOverlays:
     documentation: memory requests for chartmuseum deployment
     updates:
     - path: ['plural', 'chartmuseum', 'resources', 'requests', 'memory']
-- name: plrl-shell-img
-  spec:
-    folder: plural
-    subfolder: cloud shell
-    name: shell image
-    documentation: the image url for use on cloud shell pods
-    updates:
-    - path: ['plural', 'secrets', 'cloud_shell_img']  
 
 secrets:
   jwt: dummy

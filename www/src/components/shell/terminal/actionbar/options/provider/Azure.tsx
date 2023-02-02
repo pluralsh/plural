@@ -58,12 +58,6 @@ function Azure({ props, setProps, setValid }) {
           />
         </FormField>
       </Flex>
-
-      <FormField label="Storage Account">
-        <Input
-          onChange={({ target: { value } }) => setProps(props => ({ azure: { ...props.azure, storageAccount: value } }))}
-        />
-      </FormField>
     </>
   )
 }

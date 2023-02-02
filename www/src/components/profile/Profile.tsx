@@ -11,6 +11,7 @@ import {
 } from '@pluralsh/design-system'
 import { useContext, useEffect, useState } from 'react'
 import { useFilePicker } from 'react-sage'
+import posthog from 'posthog-js'
 
 import CurrentUserContext from '../../contexts/CurrentUserContext'
 import { UPDATE_USER } from '../users/queries'
@@ -44,6 +45,10 @@ export function Profile() {
   const [avatarFile, setAvatarFile] = useState<any>()
   const [mutation, { loading }] = useMutation(UPDATE_USER, {
     variables: { attributes: { name, email, avatar: avatarFile } },
+    onCompleted: ({ updateUser: { id, email } }) => {
+      posthog.identify(id)
+      posthog.people.set({ email })
+    },
   })
 
   let url = ProviderIcons[me.provider] || DEFAULT_CHART_ICON

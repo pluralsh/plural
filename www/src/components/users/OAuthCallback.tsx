@@ -4,6 +4,7 @@ import { useLocation, useParams } from 'react-router-dom'
 import qs from 'query-string'
 
 import { Box } from 'grommet'
+import posthog from 'posthog-js'
 
 import { setToken } from '../../helpers/authentication'
 import { host } from '../../helpers/hostname'
@@ -30,8 +31,14 @@ export function OAuthCallback() {
     variables: {
       code, host: host(), provider: service?.toUpperCase(), deviceToken,
     },
-    onCompleted: ({ oauthCallback }) => {
-      setToken(oauthCallback.jwt)
+    onCompleted: ({
+      oauthCallback: {
+        jwt, onboarding, id, email,
+      },
+    }) => {
+      setToken(jwt)
+      posthog.identify(id)
+      posthog.people.set({ email })
       if (deviceToken) finishedDeviceLogin()
       const challenge = getChallenge()
 
@@ -39,7 +46,7 @@ export function OAuthCallback() {
         handleOauthChallenge(client, challenge)
       }
       else {
-        window.location.href = (oauthCallback.onboarding === OnboardingStatus.NEW) ? '/shell' : '/'
+        window.location.href = (onboarding === OnboardingStatus.NEW) ? '/shell' : '/'
       }
     },
   })

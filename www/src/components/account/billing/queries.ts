@@ -32,7 +32,7 @@ export const UPGRADE_TO_PROFESSIONAL_PLAN_MUTATION = gql`
 
 export const DOWNGRADE_TO_FREE_PLAN_MUTATION = gql`
   mutation DowngradeToFreePlanMutation {
-    cancelPlatformSubscription {
+    deletePlatformSubscription {
       id
     }
   }

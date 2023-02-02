@@ -15,6 +15,7 @@ import {
 import { StripeProvider } from 'react-stripe-elements'
 import { Toast } from '@pluralsh/design-system'
 import { useFeature } from '@growthbook/growthbook-react'
+import posthog from 'posthog-js'
 
 import { growthbook } from '../helpers/growthbook'
 import { useHistory } from '../router'
@@ -154,6 +155,17 @@ function TestBanner() {
   return null
 }
 
+function PosthogIdentifier() {
+  const { me } = useContext(CurrentUserContext)
+
+  if (!posthog.has_opted_out_capturing()) {
+    posthog.identify(me.id)
+    posthog.people.set({ email: me.email })
+  }
+
+  return null
+}
+
 export function PluralInner() {
   const isChecklistEnabled = useFeature('checklist').on
 
@@ -162,6 +174,7 @@ export function PluralInner() {
       <BreadcrumbProvider>
         <ChecklistProvider>
           <ApplicationLayout>
+            <PosthogIdentifier />
             <VerifyEmailConfirmed />
             <DeviceLoginNotif />
             <TestBanner />

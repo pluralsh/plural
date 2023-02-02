@@ -129,13 +129,27 @@
         background-color: #171a21;
       }
     </style>
+    <!-- Cookiebot MUST BE FIRST script -->
+    <script
+      id="Cookiebot"
+      src="https://consent.cookiebot.com/uc.js"
+      data-cbid="c6718f17-016b-4d02-9bc2-9f1467f610fb"
+      data-blockingmode="none"
+      type="text/javascript"
+      data-widget-position="bottom-left"
+    ></script>
+    <!-- END Cookiebot -->
     <script type="text/javascript">
     window.heap=window.heap||[],heap.load=function(e,t){window.heap.appid=e,window.heap.config=t=t||{};var r=document.createElement("script");r.type="text/javascript",r.async=!0,r.src="https://cdn.heapanalytics.com/js/heap-"+e+".js";var a=document.getElementsByTagName("script")[0];a.parentNode.insertBefore(r,a);for(var n=function(e){return function(){heap.push([e].concat(Array.prototype.slice.call(arguments,0)))}},p=["addEventProperties","addUserProperties","clearEventProperties","identify","resetIdentity","removeEventProperty","setEventProperties","track","unsetEventProperty"],o=0;o<p.length;o++)heap[p[o]]=n(p[o])};
     heap.load("3306441968");
     </script>
     <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-GP9XH1EENY"></script>
-    <script>
+    <script
+      type="text/plain"
+      data-cookieconsent="statistics"
+      async 
+      src="https://www.googletagmanager.com/gtag/js?id=G-GP9XH1EENY"></script>
+    <script data-cookieconsent="statistics">
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());

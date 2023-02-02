@@ -143,7 +143,7 @@ export function Groups() {
       </PageTitle>
       <BillingLegacyUserBanner
         feature="Groups"
-        marginBottom="medium"
+        marginBottom="large"
       />
       <List>
         <Header

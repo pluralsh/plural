@@ -119,7 +119,7 @@ export function ServiceAccounts() {
       </PageTitle>
       <BillingLegacyUserBanner
         feature="Service accounts"
-        marginBottom="medium"
+        marginBottom="large"
       />
       <List>
         <Header

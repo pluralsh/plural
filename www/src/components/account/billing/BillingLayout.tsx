@@ -34,9 +34,10 @@ function BillingLayout() {
               </Button>
             </Flex>
           </PageTitle>
-          <BillingLegacyUserBanner marginBottom="medium" />
+          <BillingLegacyUserBanner marginBottom="large" />
           <Div
             flexGrow
+            flexShrink={0}
             overflowY="auto"
             paddingRight={1}
           >

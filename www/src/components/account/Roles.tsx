@@ -169,7 +169,7 @@ export function Roles() {
       </PageTitle>
       <BillingLegacyUserBanner
         feature="Roles"
-        marginBottom="medium"
+        marginBottom="large"
       />
       <List>
         <Header

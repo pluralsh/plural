@@ -161,7 +161,12 @@ function PosthogIdentifier() {
   // I think we might need some way to rerun this if a user later opts in to the cookie
   if (!posthog.has_opted_out_capturing()) {
     posthog.identify(me.id)
-    posthog.people.set({ email: me.email })
+    posthog.people.set({
+      email: me.email,
+      name: me.name,
+      accountId: me.account.id,
+      accountName: me.account.name,
+    })
   }
 
   return null

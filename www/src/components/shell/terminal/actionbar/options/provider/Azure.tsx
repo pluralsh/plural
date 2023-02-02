@@ -11,7 +11,7 @@ function Azure({ props, setProps, setValid }) {
   useEffect(() => {
     setProps({
       azure: {
-        clientID: '', clientSecret: '', subscriptionID: '', tenantID: '', storageAccount: '',
+        clientID: '', clientSecret: '', subscriptionID: '', tenantID: '',
       },
     })
   }, [setProps])

@@ -158,6 +158,7 @@ function TestBanner() {
 function PosthogIdentifier() {
   const { me } = useContext(CurrentUserContext)
 
+  // I think we might need some way to rerun this if a user later opts in to the cookie
   if (!posthog.has_opted_out_capturing()) {
     posthog.identify(me.id)
     posthog.people.set({ email: me.email })

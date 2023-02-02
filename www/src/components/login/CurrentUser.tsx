@@ -4,7 +4,6 @@ import { Navigate, useLocation } from 'react-router-dom'
 import { Box } from 'grommet'
 
 import { useIntercom } from 'react-use-intercom'
-import posthog from 'posthog-js'
 
 import PluralConfigurationContext from '../../contexts/PluralConfigurationContext'
 
@@ -47,8 +46,6 @@ export default function CurrentUser({ children }: any) {
         email: me.email,
         company: me.account.name,
       })
-      posthog.identify(me.id)
-      posthog.people.set({ email: me.email })
     }
   }, [data])
 

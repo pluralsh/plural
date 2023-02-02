@@ -4,7 +4,6 @@ import { useApolloClient, useMutation } from '@apollo/client'
 import { useLocation } from 'react-router-dom'
 
 import qs from 'query-string'
-import posthog from 'posthog-js'
 
 import { setToken } from '../../helpers/authentication'
 import { GqlError } from '../utils/Alert'
@@ -23,10 +22,8 @@ export function SSOCallback() {
 
   const [mutation, { error, loading }] = useMutation(SSO_CALLBACK, {
     variables: { code, deviceToken },
-    onCompleted: ({ ssoCallback: { jwt, id, email } }) => {
-      setToken(jwt)
-      posthog.identify(id)
-      posthog.people.set({ email })
+    onCompleted: result => {
+      setToken(result.ssoCallback.jwt)
       if (deviceToken) finishedDeviceLogin()
       const challenge = getChallenge()
 

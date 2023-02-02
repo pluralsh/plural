@@ -45,8 +45,6 @@ import {
 import { useResizeDetector } from 'react-resize-detector'
 import useScript from 'react-script-hook'
 
-import posthog from 'posthog-js'
-
 import { WelcomeHeader } from '../utils/WelcomeHeader'
 
 import { fetchToken, setToken } from '../../helpers/authentication'
@@ -217,11 +215,6 @@ export function PasswordlessLogin() {
   const { token } = useParams()
   const [mutation, { error, loading, data }] = useMutation(PASSWORDLESS_LOGIN, {
     variables: { token },
-    onCompleted: ({ login: { jwt, id, email } }) => {
-      setToken(jwt)
-      posthog.identify(id)
-      posthog.people.set({ email })
-    },
   })
 
   useEffect(() => {
@@ -291,13 +284,11 @@ function LoginPoller({ challenge, token, deviceToken }: any) {
       client.mutate({
         mutation: POLL_LOGIN_TOKEN,
         variables: { token, deviceToken },
-      }).then(({ data: { loginToken: { jwt, id, email } } }) => {
+      }).then(({ data: { loginToken: { jwt } } }) => {
         setToken(jwt)
         setSuccess(true)
 
         if (deviceToken) finishedDeviceLogin()
-        posthog.identify(id)
-        posthog.people.set({ email })
 
         if (challenge) {
           handleOauthChallenge(client, challenge)
@@ -394,10 +385,8 @@ export function Login() {
 
   const [mutation, { loading: mLoading, error }] = useMutation(LOGIN_MUTATION, {
     variables: { email, password, deviceToken },
-    onCompleted: ({ login: { jwt, id, email } }) => {
+    onCompleted: ({ login: { jwt } }) => {
       setToken(jwt)
-      posthog.identify(id)
-      posthog.people.set({ email })
       if (deviceToken) finishedDeviceLogin()
       if (challenge) {
         handleOauthChallenge(client, challenge)
@@ -568,11 +557,9 @@ export function Signup() {
   const deviceToken = getDeviceToken()
   const [mutation, { loading, error }] = useMutation(SIGNUP_MUTATION, {
     variables: { attributes: { email, password, name }, account: { name: account }, deviceToken },
-    onCompleted: ({ signup: { jwt, id, email } }) => {
+    onCompleted: ({ signup: { jwt } }) => {
       if (deviceToken) finishedDeviceLogin()
       setToken(jwt)
-      posthog.identify(id)
-      posthog.people.set({ email })
       history.navigate('/shell')
     },
   })

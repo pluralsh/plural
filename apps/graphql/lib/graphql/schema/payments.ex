@@ -111,7 +111,9 @@ defmodule GraphQl.Schema.Payments do
   end
 
   object :plan_features do
-    field :vpn, :boolean
+    field :vpn,             :boolean
+    field :user_management, :boolean
+    field :audit,           :boolean
   end
 
   object :service_level do

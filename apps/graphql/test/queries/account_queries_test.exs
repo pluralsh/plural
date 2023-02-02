@@ -2,6 +2,28 @@ defmodule GraphQl.AccountQueriesTest do
   use Core.SchemaCase, async: true
   import GraphQl.TestHelpers
 
+  describe "account" do
+    setup [:setup_root_user]
+
+    test "it can fetch a users account", %{user: user, account: account} do
+      enable_features(account, [:vpn, :user_management])
+
+      {:ok, %{data: %{"account" => found}}} = run_query("""
+        query {
+          account {
+            id
+            availableFeatures { vpn userManagement audit }
+          }
+        }
+      """, %{}, %{current_user: user})
+
+      assert found["id"] == account.id
+      assert found["availableFeatures"]["vpn"]
+      assert found["availableFeatures"]["userManagement"]
+      refute found["availableFeatures"]["audit"]
+    end
+  end
+
   describe "groups" do
     setup [:setup_root_user]
 

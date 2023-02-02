@@ -158,7 +158,7 @@ defmodule GraphQl.Schema.Account do
     field :name,         non_null(:string)
     field :description,  :string
     field :repositories, list_of(:string)
-    field :permissions,  list_of(:permission), resolve: fn role, _, _ ->
+    field :permissions,  non_null(list_of(non_null(:permission))), resolve: fn role, _, _ ->
       {:ok, Core.Schema.Role.permissions(role)}
     end
     field :role_bindings, list_of(:role_binding), resolve: dataloader(Account)

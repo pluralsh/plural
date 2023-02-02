@@ -15,14 +15,13 @@ import {
 import { StripeProvider } from 'react-stripe-elements'
 import { Toast } from '@pluralsh/design-system'
 import { useFeature } from '@growthbook/growthbook-react'
-import posthog from 'posthog-js'
 
 import { growthbook } from '../helpers/growthbook'
 import { useHistory } from '../router'
 
 import PluralConfigurationContext from '../contexts/PluralConfigurationContext'
 import CurrentUserContext from '../contexts/CurrentUserContext'
-import Cookiebot from '../utils/cookiebot'
+import PosthogIdentiy from '../utils/posthog'
 
 const ApplicationLayout = lazy(() => import('./layout/ApplicationLayout'))
 const BreadcrumbProvider = lazy(() => import('./Breadcrumbs'))
@@ -156,34 +155,13 @@ function TestBanner() {
   return null
 }
 
-function posthogIdentiy(me: any) {
-  if (Cookiebot.consent.statistics) {
-    posthog.opt_in_capturing()
-    posthog.identify(me.id)
-    posthog.people.set({
-      // should email be under the GDPR check?
-      email: me.email,
-      accountId: me.account.id,
-      accountName: me.account.name,
-    })
-    if (!Cookiebot.regulations.gdprApplies) {
-      posthog.people.set({
-        name: me.name,
-      })
-    }
-  }
-  else {
-    posthog.opt_out_capturing()
-  }
-}
-
 function PosthogIdentifier() {
   const { me } = useContext(CurrentUserContext)
 
-  posthogIdentiy(me)
+  PosthogIdentiy(me)
 
   const onPrefChange = () => {
-    posthogIdentiy(me)
+    PosthogIdentiy(me)
   }
 
   useEffect(() => {

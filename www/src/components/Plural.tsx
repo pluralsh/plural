@@ -22,6 +22,8 @@ import { useHistory } from '../router'
 import PluralConfigurationContext from '../contexts/PluralConfigurationContext'
 import CurrentUserContext from '../contexts/CurrentUserContext'
 
+import FullScreenSpinner from './utils/layout/FullScreenSpinner'
+
 const ApplicationLayout = lazy(() => import('./layout/ApplicationLayout'))
 const BreadcrumbProvider = lazy(() => import('./Breadcrumbs'))
 const Chart = lazy(() => import('./repos/Chart'))
@@ -508,7 +510,7 @@ export function PluralInner() {
 
 export default function Plural() {
   return (
-    <Suspense>
+    <Suspense fallback={<FullScreenSpinner />}>
       <PluralProvider>
         <PluralInner />
       </PluralProvider>

@@ -157,6 +157,11 @@ function TestBanner() {
 export function PluralInner() {
   const isChecklistEnabled = useFeature('checklist').on
 
+  useEffect(() => {
+    // Send termination signal to spinner
+    window.dispatchEvent(new Event('react-render'))
+  }, [])
+
   return (
     <WrapStripe>
       <BreadcrumbProvider>

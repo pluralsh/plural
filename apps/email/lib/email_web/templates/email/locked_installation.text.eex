@@ -2,16 +2,16 @@ Repository <%= @repo.name %> has unapplied breaking changes, to apply them,
 check out your repo locally and run the following commands:
 
 ```
-<%= if @deps.instructions.script do %>
-<%= @deps.instructions.script %>
+<%= if @instructions.script do %>
+<%= @instructions.script %>
 <% end %>
 plural build --only <%= @repo.name %>
 plural deploy --commit "applying breaking changes to <%= @repo.name %>"
 plural repos unlock <%= @repo.name %>
 ```
 
-<%= if @deps.instructions.instructions do %>
+<%= if @instructions.instructions do %>
 The maintainers also have provided these instructions:
 
-<%= @deps.instructions.instructions %>
+<%= @instructions.instructions %>
 <% end %>

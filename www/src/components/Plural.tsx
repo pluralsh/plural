@@ -156,11 +156,9 @@ function TestBanner() {
   return null
 }
 
-function PosthogIdentifier() {
-  const { me } = useContext(CurrentUserContext)
-
-  // I think we might need some way to rerun this if a user later opts in to the cookie
-  if (!posthog.has_opted_out_capturing()) {
+function posthogIdentiy(me: any) {
+  if (Cookiebot.consent.statistics) {
+    posthog.opt_in_capturing()
     posthog.identify(me.id)
     posthog.people.set({
       // should email be under the GDPR check?
@@ -175,8 +173,23 @@ function PosthogIdentifier() {
     }
   }
   else {
-    Cookiebot.show()
+    posthog.opt_out_capturing()
   }
+}
+
+function PosthogIdentifier() {
+  const { me } = useContext(CurrentUserContext)
+
+  posthogIdentiy(me)
+
+  const onPrefChange = () => {
+    posthogIdentiy(me)
+  }
+
+  useEffect(() => {
+    window.addEventListener('CookiebotOnAccept', onPrefChange)
+    window.addEventListener('CookiebotOnDecline', onPrefChange)
+  }, [])
 
   return null
 }

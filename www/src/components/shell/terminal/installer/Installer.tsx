@@ -4,20 +4,20 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from 'react'
 import { useApolloClient, useQuery } from '@apollo/client'
 import {
-  HamburgerMenuCollapseIcon,
-  HamburgerMenuIcon,
-  IconFrame,
+  GraphQLToast,
   LoopingLogo,
   Wizard,
   WizardNavigation,
   WizardStepConfig,
   WizardStepper,
 } from '@pluralsh/design-system'
+import { ApolloError } from '@apollo/client/errors'
 
 import { State, TerminalContext } from '../context/terminal'
 import useOnboarded from '../../hooks/useOnboarded'
@@ -32,16 +32,18 @@ function Installer() {
   const { mutation } = useOnboarded()
   const { shell: { provider }, configuration, setState } = useContext(TerminalContext)
   const onResetRef = useRef<{onReset: Dispatch<void>}>({ onReset: () => {} })
-  const [selectedApplications, setSelectedApplications] = useState<Array<WizardStepConfig>>([])
   const [stepsLoading, setStepsLoading] = useState(false)
   const [steps, setSteps] = useState<Array<WizardStepConfig>>([])
-  const [visible, setVisible] = useState(true)
+  const [error, setError] = useState<ApolloError | null>()
+  const [defaultSteps, setDefaultSteps] = useState<Array<WizardStepConfig>>([])
 
-  const { data: { repositories: { edges: applicationNodes } = { edges: undefined } } = {} } = useQuery(APPLICATIONS_QUERY, {
+  const { data: { repositories: { edges: applicationNodes } = { edges: undefined } } = {}, refetch } = useQuery(APPLICATIONS_QUERY, {
     variables: { provider },
     skip: !provider,
+    fetchPolicy: 'network-only',
   })
-  const applications = applicationNodes?.map(({ node }) => node).filter(app => (!app?.private ?? true) && !FILTERED_APPS.includes(app?.name))
+
+  const applications = useMemo(() => applicationNodes?.map(({ node }) => node).filter(app => ((!app?.private ?? true) && !app?.installation) && !FILTERED_APPS.includes(app?.name)), [applicationNodes])
 
   const onInstall = useCallback((payload: Array<WizardStepConfig>) => {
     setStepsLoading(true)
@@ -49,16 +51,15 @@ function Installer() {
     install(client, payload, provider)
       .then(() => {
         onResetRef?.current?.onReset()
-        setVisible(false)
         setState(State.Installed)
         mutation()
+        refetch()
       })
-      .catch(err => console.error(err))
+      .catch(err => setError(err))
       .finally(() => setStepsLoading(false))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [client, provider, setState])
+  }, [client, mutation, provider, refetch, setState])
 
-  useEffect(() => {
+  const onSelect = useCallback(selectedApplications => {
     const build = async () => {
       const steps = await buildSteps(client, provider, selectedApplications)
 
@@ -66,11 +67,12 @@ function Installer() {
     }
 
     setStepsLoading(true)
-    build().then(() => setStepsLoading(false))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [client, selectedApplications.length, provider])
+    build().finally(() => setStepsLoading(false))
+  }, [client, provider])
 
-  if (!applications) {
+  useEffect(() => setDefaultSteps(toDefaultSteps(applications, provider)), [applications, provider])
+
+  if (!applications || defaultSteps.length === 0) {
     return (
       <Flex
         flexGrow={0}
@@ -91,55 +93,39 @@ function Installer() {
       borderRight="1px solid border"
     >
       <Div
-        width={!visible ? 32 : 0}
-        height={!visible ? '100%' : 0}
-        opacity={!visible ? 1 : 0}
-        visibility={!visible ? 'visible' : 'collapse'}
-        transition="opacity 650ms linear"
-        style={{ position: 'absolute' }}
-      >
-        <IconFrame
-          icon={<HamburgerMenuIcon />}
-          clickable
-          onClick={() => setVisible(!visible)}
-        />
-      </Div>
-      <Div
-        width={visible ? 600 : 32}
         height="100%"
-        opacity={visible ? 1 : 0}
-        visibility={visible ? 'visible' : 'collapse'}
+        style={{ position: 'absolute' }}
+      />
+      <Div
+        width={600}
+        height="100%"
         transition="width 300ms linear, opacity 150ms linear"
       >
         <Wizard
-          onSelect={apps => setSelectedApplications(apps)}
-          defaultSteps={toDefaultSteps(applications, provider)}
+          onSelect={onSelect}
+          defaultSteps={defaultSteps}
           dependencySteps={steps}
           limit={5}
           loading={stepsLoading || !configuration}
           onResetRef={onResetRef}
         >
           {{
-            stepper: (
-              <Flex
-                grow={1}
-                align="center"
-                justify="space-between"
-                width="100%"
-                gap="xsmall"
-              >
-                <WizardStepper />
-                <IconFrame
-                  icon={<HamburgerMenuCollapseIcon />}
-                  clickable
-                  onClick={() => setVisible(!visible)}
-                />
-              </Flex>
-            ),
+            stepper: <WizardStepper />,
             navigation: <WizardNavigation onInstall={onInstall} />,
           }}
         </Wizard>
       </Div>
+
+      {error && (
+        <GraphQLToast
+          error={{ graphQLErrors: [...error.graphQLErrors] }}
+          header="Error"
+          onClose={() => setError(null)}
+          margin="medium"
+          marginHorizontal="xxxxlarge"
+          closeTimeout={20000}
+        />
+      )}
     </Div>
   )
 }

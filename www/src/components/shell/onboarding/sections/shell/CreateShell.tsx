@@ -17,12 +17,9 @@ import { Button, Callout, ReturnIcon } from '@pluralsh/design-system'
 
 import { OnboardingContext } from '../../context/onboarding'
 import {
-  AwsShellCredentialsAttributes,
-  AzureShellCredentialsAttributes,
   CloudShell,
   CloudShellAttributes,
   DeleteShellDocument,
-  GcpShellCredentialsAttributes,
   Provider,
   RootMutationTypeCreateShellArgs,
   RootQueryType,
@@ -31,13 +28,13 @@ import {
 import { CLOUD_SHELL_QUERY, CREATE_SHELL_MUTATION, SETUP_SHELL_MUTATION } from '../../../queries'
 import {
   CloudProps,
-  CloudProvider,
   CloudProviderToProvider,
   OrgType,
   SCMProps,
   SectionKey,
   WorkspaceProps,
 } from '../../context/types'
+import { toCloudProviderAttributes } from '../../../utils/provider'
 
 import { ShellStatus } from './ShellStatus'
 
@@ -64,30 +61,6 @@ function toCloudShellAttributes(
     demoId: null,
     credentials: { [cloud.provider!]: toCloudProviderAttributes(cloud) } as ShellCredentialsAttributes,
   } as CloudShellAttributes
-}
-
-function toCloudProviderAttributes(cloud: CloudProps): AwsShellCredentialsAttributes | AzureShellCredentialsAttributes | GcpShellCredentialsAttributes | undefined {
-  switch (cloud.provider) {
-  case CloudProvider.AWS:
-    return {
-      accessKeyId: cloud.aws?.accessKey,
-      secretAccessKey: cloud.aws?.secretKey,
-    } as AwsShellCredentialsAttributes
-  case CloudProvider.GCP:
-    return {
-      applicationCredentials: cloud.gcp?.applicationCredentials,
-    } as GcpShellCredentialsAttributes
-  case CloudProvider.Azure:
-    return {
-      clientId: cloud.azure?.clientID,
-      clientSecret: cloud.azure?.clientSecret,
-      storageAccount: cloud.azure?.storageAccount,
-      subscriptionId: cloud.azure?.subscriptionID,
-      tenantId: cloud.azure?.tenantID,
-    } as AzureShellCredentialsAttributes
-  }
-
-  return undefined
 }
 
 async function createShell(

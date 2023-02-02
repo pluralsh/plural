@@ -6,8 +6,8 @@ import { ServerError, useMutation, useQuery } from '@apollo/client'
 import { CloudProps, CloudProvider } from '../../../onboarding/context/types'
 import { CLOUD_SHELL_QUERY } from '../../../queries'
 import { UPDATE_SHELL_MUTATION } from '../../queries'
-
-import { CloudShellAttributes, WorkspaceAttributes } from '../../../../../generated/graphql'
+import { CloudShellAttributes, ShellCredentialsAttributes, WorkspaceAttributes } from '../../../../../generated/graphql'
+import { toCloudProviderAttributes } from '../../../utils/provider'
 
 import Provider from './provider/Provider'
 
@@ -28,7 +28,7 @@ function EditCloudCredentialsModal({ onClose }) {
           cluster: '',
           bucketPrefix: '',
         } as WorkspaceAttributes,
-        credentials: providerProps,
+        credentials: { [provider!]: toCloudProviderAttributes({ provider, ...providerProps }) } as ShellCredentialsAttributes,
       } as CloudShellAttributes,
     },
   })

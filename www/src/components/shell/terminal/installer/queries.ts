@@ -11,6 +11,11 @@ export const APPLICATIONS_QUERY = gql`
           private
           icon
           darkIcon
+          installation {
+            updatedAt
+            id
+            context
+          }
         }
       }
     }

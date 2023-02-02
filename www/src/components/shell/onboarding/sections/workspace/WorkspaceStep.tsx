@@ -42,14 +42,14 @@ function WorkspaceStep({ onBack, onNext }) {
 
       <FormField
         label="Subdomain"
-        hint="The domain you'll use for all your applications."
+        hint="The domain you'll use for all your applications. Don't worry, you can change your domain later!"
         width="100%"
       >
         <Input
           value={workspace?.subdomain}
           placeholder="my-company"
           onChange={({ target: { value } }) => setWorkspaceKeys({ subdomain: value })}
-          suffix="onplural.sh"
+          suffix=".onplural.sh"
         />
       </FormField>
 

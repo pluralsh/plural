@@ -163,11 +163,16 @@ function PosthogIdentifier() {
   if (!posthog.has_opted_out_capturing()) {
     posthog.identify(me.id)
     posthog.people.set({
+      // should email be under the GDPR check?
       email: me.email,
-      name: me.name,
       accountId: me.account.id,
       accountName: me.account.name,
     })
+    if (!Cookiebot.regulations.gdprApplies) {
+      posthog.people.set({
+        name: me.name,
+      })
+    }
   }
   else {
     Cookiebot.show()

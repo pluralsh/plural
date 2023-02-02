@@ -106,7 +106,7 @@ defmodule GraphQl.Schema.User do
     end
 
     field :publisher,            :publisher, resolve: dataloader(User)
-    field :account,              :account, resolve: dataloader(Account)
+    field :account,              non_null(:account), resolve: dataloader(Account)
     field :impersonation_policy, :impersonation_policy, resolve: dataloader(User)
 
     field :jwt, :string, resolve: fn

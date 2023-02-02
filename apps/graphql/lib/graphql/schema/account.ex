@@ -90,7 +90,7 @@ defmodule GraphQl.Schema.Account do
       account, _, _ -> {:ok, Core.Storage.url({account.icon, account}, :original)}
     end
 
-    field :root_user, :user, resolve: dataloader(User)
+    field :root_user, non_null(:user), resolve: dataloader(User)
     field :domain_mappings, list_of(:domain_mapping), resolve: dataloader(Account)
     field :subscription, :platform_subscription, resolve: dataloader(Payments)
 

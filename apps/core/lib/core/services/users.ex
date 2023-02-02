@@ -532,7 +532,7 @@ defmodule Core.Services.Users do
     end)
     |> Enum.each(fn r ->
       %Conduit.Message{body: r}
-      |> Core.Conduit.Broker.publish(:cluster)
+      |> Core.broker().publish(:cluster)
     end)
   end
 

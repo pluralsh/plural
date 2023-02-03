@@ -53,14 +53,6 @@ export const InviteFragment = gql`
   }
 `
 
-export const GroupMemberFragment = gql`
-  fragment GroupMemberFragment on GroupMember {
-    id
-    user { ...UserFragment }
-  }
-  ${UserFragment}
-`
-
 export const TokenFragment = gql`
   fragment TokenFragment on PersistedToken {
     id

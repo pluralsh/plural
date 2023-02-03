@@ -1,8 +1,7 @@
-import { useMutation, useQuery } from '@apollo/client'
 import { Box } from 'grommet'
 import { Switch } from '@pluralsh/design-system'
 import { useState } from 'react'
-import { Div } from 'honorable'
+import { Div, Flex } from 'honorable'
 
 import { Placeholder } from '../utils/Placeholder'
 
@@ -14,19 +13,24 @@ import { StandardScroller } from '../utils/SmoothScroller'
 
 import { List, ListItem } from '../utils/List'
 
-import { DELETE_GROUP_MEMBER, GROUP_MEMBERS } from './queries'
+import {
+  GroupMembersDocument,
+  Group as GroupT,
+  useDeleteGroupMemberMutation,
+  useGroupMembersQuery,
+} from '../../generated/graphql'
 
 import { UserInfo } from './User'
 
 function GroupMember({
   user, group, first, last, edit,
 }: any) {
-  const [mutation] = useMutation(DELETE_GROUP_MEMBER, {
+  const [mutation] = useDeleteGroupMemberMutation({
     variables: { groupId: group.id, userId: user.id },
-    update: (cache, { data: { deleteGroupMember } }) => updateCache(cache, {
-      query: GROUP_MEMBERS,
+    update: (cache, { data }) => updateCache(cache, {
+      query: GroupMembersDocument,
       variables: { id: group.id },
-      update: prev => removeConnection(prev, deleteGroupMember, 'groupMembers'),
+      update: prev => removeConnection(prev, data?.deleteGroupMember, 'groupMembers'),
     }),
   })
 
@@ -51,8 +55,6 @@ function GroupMember({
         {edit && (
           <DeleteIconButton
             onClick={() => mutation()}
-            // @ts-expect-error
-            hue="lighter"
           />
         )}
       </Box>
@@ -60,14 +62,21 @@ function GroupMember({
   )
 }
 
-export function GroupMembers({ group, edit }: any) {
+export function GroupMembers({
+  group,
+  edit,
+}: {
+  group: GroupT
+  edit?: boolean
+}) {
   const [listRef, setListRef] = useState<any>(null)
-  const { data, loading, fetchMore } = useQuery(GROUP_MEMBERS, {
+  const { data, loading, fetchMore } = useGroupMembersQuery({
     variables: { id: group.id },
     fetchPolicy: 'cache-and-network',
   })
 
-  if (!data) return null
+  if (!data?.groupMembers) return null
+
   const {
     groupMembers: { pageInfo, edges },
   } = data
@@ -109,18 +118,17 @@ export function GroupMembers({ group, edit }: any) {
 
 export function ViewGroup({ group }: any) {
   return (
-    <Box
-      fill
-      pad={{ bottom: 'small' }}
-      gap="small"
+    <Flex
+      direction="column"
+      gap="medium"
     >
       <Switch
         checked={group.global}
         disabled
       >
-        apply group globally
+        Apply globally
       </Switch>
       <GroupMembers group={group} />
-    </Box>
+    </Flex>
   )
 }

@@ -1,11 +1,9 @@
 import {
-  ReactElement,
   ReactNode,
   useCallback,
   useEffect,
   useState,
 } from 'react'
-import { useMutation } from '@apollo/client'
 import { Box } from 'grommet'
 import { Button, Modal, ValidatedInput } from '@pluralsh/design-system'
 
@@ -13,7 +11,7 @@ import { appendConnection, updateCache } from '../../utils/graphql'
 
 import { GqlError } from '../utils/Alert'
 
-import { CREATE_GROUP, GROUPS_Q } from './queries'
+import { GroupsDocument, useCreateGroupMutation } from '../../generated/graphql'
 
 export function CreateGroup({ q }: any) {
   const [open, setOpen] = useState(false)
@@ -28,20 +26,20 @@ export function CreateGroup({ q }: any) {
     setErrorMsg(undefined)
   }, [])
 
-  const [mutation, { loading, error }] = useMutation(CREATE_GROUP, {
+  const [mutation, { loading, error }] = useCreateGroupMutation({
     variables: { attributes: { name, description } },
     onCompleted: () => resetAndClose(),
-    update: (cache, { data: { createGroup } }) => updateCache(cache, {
-      query: GROUPS_Q,
+    update: (cache, { data }) => updateCache(cache, {
+      query: GroupsDocument,
       variables: { q },
-      update: prev => appendConnection(prev, createGroup, 'groups'),
+      update: prev => appendConnection(prev, data?.createGroup, 'groups'),
     }),
   })
 
   useEffect(() => {
     setErrorMsg(error && (
       <GqlError
-        header="Something went wrong"
+        header="Problem creating group"
         error={error}
       />
     ))

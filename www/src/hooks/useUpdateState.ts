@@ -1,7 +1,11 @@
 import isEqual from 'lodash/isEqual'
 import { useCallback, useMemo, useState } from 'react'
 
-export function useUpdateState<T extends { [key: string]: unknown }>(initialState: T) {
+type IsEqualFn<T = any> = (a: T, b: T) => boolean
+type IsEqualFns<T> = Partial<Record<keyof T, IsEqualFn<T[keyof T]>>>
+
+export function useUpdateState<T extends { [key: string]: unknown }>(initialState: T,
+  isEqualFns?: IsEqualFns<T>) {
   const [state, setState] = useState({ ...initialState })
   const [errors, setErrors] = useState({})
 
@@ -19,15 +23,24 @@ export function useUpdateState<T extends { [key: string]: unknown }>(initialStat
   },
   [errors])
 
+  const clearErrors = useCallback(() => setErrors({}), [])
+
   const hasUpdates = useMemo(() => {
-    for (const [prop, value] of Object.entries(state)) {
-      if (!isEqual(value, initialState[prop])) {
+    for (const [key, value] of Object.entries(state)) {
+      const isEqualFn = isEqualFns?.[key]
+
+      if (isEqualFn) {
+        if (isEqualFn(value as any, initialState[key] as any)) {
+          return true
+        }
+      }
+      else if (!isEqual(value, initialState[key])) {
         return true
       }
     }
 
     return false
-  }, [initialState, state])
+  }, [isEqualFns, initialState, state])
 
   return {
     state: { ...state },
@@ -37,5 +50,6 @@ export function useUpdateState<T extends { [key: string]: unknown }>(initialStat
     initialState: { ...initialState },
     errors,
     updateErrors,
+    clearErrors,
   }
 }

@@ -1,4 +1,10 @@
-import { useCallback, useState } from 'react'
+import {
+  ReactElement,
+  ReactNode,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react'
 import { useMutation } from '@apollo/client'
 import { Box } from 'grommet'
 import { Button, Modal, ValidatedInput } from '@pluralsh/design-system'
@@ -13,11 +19,13 @@ export function CreateGroup({ q }: any) {
   const [open, setOpen] = useState(false)
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
+  const [errorMsg, setErrorMsg] = useState<ReactNode>()
 
   const resetAndClose = useCallback(() => {
     setName('')
     setDescription('')
     setOpen(false)
+    setErrorMsg(undefined)
   }, [])
 
   const [mutation, { loading, error }] = useMutation(CREATE_GROUP, {
@@ -29,6 +37,15 @@ export function CreateGroup({ q }: any) {
       update: prev => appendConnection(prev, createGroup, 'groups'),
     }),
   })
+
+  useEffect(() => {
+    setErrorMsg(error && (
+      <GqlError
+        header="Something went wrong"
+        error={error}
+      />
+    ))
+  }, [error])
 
   return (
     <>
@@ -65,12 +82,7 @@ export function CreateGroup({ q }: any) {
           width="50vw"
           gap="small"
         >
-          {error && (
-            <GqlError
-              header="Something went wrong"
-              error={error}
-            />
-          )}
+          {errorMsg}
           <ValidatedInput
             value={name}
             onChange={({ target: { value } }) => setName(value)}

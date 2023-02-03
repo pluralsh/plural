@@ -1,4 +1,3 @@
-import { Box } from 'grommet'
 import { Flex } from 'honorable'
 import {
   Button,
@@ -62,8 +61,7 @@ export function Group({ group, q }: { group: GroupT; q: any }) {
   })
 
   return (
-    <Box
-      fill="horizontal"
+    <Flex
       direction="row"
       align="center"
     >
@@ -142,7 +140,7 @@ export function Group({ group, q }: { group: GroupT; q: any }) {
           error={error}
         />
       </>
-    </Box>
+    </Flex>
   )
 }
 

@@ -1,4 +1,3 @@
-import { Box } from 'grommet'
 import { Switch } from '@pluralsh/design-system'
 import { useState } from 'react'
 import { Div, Flex } from 'honorable'
@@ -41,23 +40,15 @@ function GroupMember({
       first={first}
       last={last}
     >
-      <Box
-        flex={false}
-        fill="horizontal"
-        direction="row"
-        align="center"
-      >
+      <Flex alignItems="center">
         <UserInfo
           user={user}
           fill="horizontal"
           hue="lightest"
+          flexGrow={1}
         />
-        {edit && (
-          <DeleteIconButton
-            onClick={() => mutation()}
-          />
-        )}
-      </Box>
+        {edit && <DeleteIconButton onClick={() => mutation()} />}
+      </Flex>
     </ListItem>
   )
 }

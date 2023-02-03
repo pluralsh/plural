@@ -143,7 +143,10 @@ export const DEFAULT_COLOR_THEME = {
   'input-border': 'border',
   primary: '#0639FF',
   'action-primary': '#293EFF',
-  background: 'transparent',
+  background: {
+    light: 'transparent',
+    dark: 'transparent',
+  },
   'background-light': {
     light: '#f5f7f9',
     dark: '#22293b',

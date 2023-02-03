@@ -23,8 +23,6 @@ import PluralConfigurationContext from '../contexts/PluralConfigurationContext'
 import CurrentUserContext from '../contexts/CurrentUserContext'
 import PosthogIdentiy from '../utils/posthog'
 
-import FullScreenSpinner from './utils/layout/FullScreenSpinner'
-
 const ApplicationLayout = lazy(() => import('./layout/ApplicationLayout'))
 const BreadcrumbProvider = lazy(() => import('./Breadcrumbs'))
 const Chart = lazy(() => import('./repos/Chart'))
@@ -176,11 +174,6 @@ function PosthogIdentifier() {
 
 export function PluralInner() {
   const isChecklistEnabled = useFeature('checklist').on
-
-  useEffect(() => {
-    // Send termination signal to spinner
-    window.dispatchEvent(new Event('react-render'))
-  }, [])
 
   return (
     <WrapStripe>
@@ -529,7 +522,7 @@ export function PluralInner() {
 
 export default function Plural() {
   return (
-    <Suspense fallback={<FullScreenSpinner />}>
+    <Suspense>
       <PluralProvider>
         <PluralInner />
       </PluralProvider>

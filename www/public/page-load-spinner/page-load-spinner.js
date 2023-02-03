@@ -31,7 +31,6 @@
 
   const listenerRemovers = images.map(imageUrl => {
     const logoImg = document.createElement('img')
-
     logoImg.src = imageUrl
     logoImg.addEventListener('load', imageLoaded)
 
@@ -40,26 +39,15 @@
     }
   })
 
-  window.addEventListener('react-render', () => {
-    console.log('load')
-    window.clearInterval(tickInterval)
-    listenerRemovers.forEach(remover => {
-      remover()
-    })
-
-    const spinnerNode = document.getElementById('loading-placeholder')
-
-    spinnerNode.remove()
-  })
-
   // Cleanup callbacks once app has loaded
-  // const rootObserver = new MutationObserver(() => {
-  //   if (rootNode.hasChildNodes) {
-  //     window.clearInterval(tickInterval)
-  //     listenerRemovers.forEach(remover => {
-  //       remover()
-  //     })
-  //   }
-  // })
-  // rootObserver.observe(document.getElementById('root'), { childList: true })
+  const rootNode = document.getElementById('root')
+  const rootObserver = new MutationObserver(() => {
+    if (rootNode.hasChildNodes) {
+      window.clearInterval(tickInterval)
+      listenerRemovers.forEach(remover => {
+        remover()
+      })
+    }
+  })
+  rootObserver.observe(document.getElementById('root'), { childList: true })
 }())

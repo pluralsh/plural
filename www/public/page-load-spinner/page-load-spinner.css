@@ -17,28 +17,22 @@
   box-sizing: border-box;
 }
 
-#loading-placeholder.show {
+#root:empty + #loading-placeholder.show {
   display: block;
   position: fixed;
   top: 0;
   bottom: 0;
   right: 0;
   left: 0;
-  z-index: 0;
-}
-
-#root {
-  position: relative;
-  z-index: 1;
 }
 
 #loading-placeholder .spinner {
   position: absolute;
   width: 100%;
   top: 50%;
-  /*
+  /* 
      A bunch of nasty calcs to get the spinner optically centered across
-     different viewport heights. Once the vh goes beyond --clampMin, the
+     different viewport heights. Once the vh goes beyond --clampMin, the 
      spinner gets shifted up proportional to vh until it reaches --clampMax.
      Units are kinda weird because calc() won't allow a value with units
      as a denominator.

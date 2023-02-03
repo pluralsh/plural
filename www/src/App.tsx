@@ -3,7 +3,7 @@ import { Suspense, lazy } from 'react'
 import { Route, Routes } from 'react-router-dom'
 import { ApolloProvider } from '@apollo/client'
 import { IntercomProvider } from 'react-use-intercom'
-import { Grommet, ThemeType } from 'grommet'
+import { Box, Grommet, ThemeType } from 'grommet'
 import { GlobalStyle, styledTheme, theme } from '@pluralsh/design-system'
 import { CssBaseline, ThemeProvider, mergeTheme } from 'honorable'
 import { ThemeProvider as StyledThemeProvider } from 'styled-components'
@@ -35,16 +35,13 @@ const honorableTheme = mergeTheme(theme, {
     // DEPRECATED in favor of the semantic spacing system
     mpRecipe(),
   ],
-  colors: {
-    background: 'transparent',
-  },
 })
 
 function App() {
   const mergedStyledTheme = mergeDeep(DEFAULT_THEME, styledTheme)
 
   return (
-    <Suspense fallback={null}>
+    <Suspense>
       <ApolloProvider client={client}>
         <IntercomProvider appId={INTERCOM_APP_ID}>
           <ThemeProvider theme={honorableTheme}>
@@ -57,62 +54,68 @@ function App() {
                   theme={mergedStyledTheme as any as ThemeType}
                   themeMode="dark"
                 >
-                  <HistoryRouter history={browserHistory}>
-                    <Routes>
-                      <Route
-                        path="/reset-password/:id"
-                        element={<ResetPassword />}
-                      />
-                      <Route
-                        path="/password-reset"
-                        element={<PasswordReset />}
-                      />
-                      <Route
-                        path="/confirm-email/:id"
-                        element={<EmailConfirmed />}
-                      />
-                      <Route
-                        path="/invite/:inviteId"
-                        element={<Invite />}
-                      />
-                      <Route
-                        path="/passwordless-login/:token"
-                        element={<PasswordlessLogin />}
-                      />
-                      <Route
-                        path="/oauth/callback/github/shell"
-                        element={<Plural />}
-                      />
-                      <Route
-                        path="/oauth/callback/gitlab/shell"
-                        element={<Plural />}
-                      />
-                      <Route
-                        path="/oauth/callback/:service"
-                        element={<OAuthCallback />}
-                      />
-                      <Route
-                        path="/sso/callback"
-                        element={<SSOCallback />}
-                      />
-                      <Route
-                        path="/login"
-                        element={<Login />}
-                      />
-                      <Route
-                        path="/signup"
-                        element={<Signup />}
-                      />
-                      <Route
-                        path="/oauth/consent"
-                        element={<OAuthConsent />}
-                      />
-                      <Route
-                        path="*"
-                        element={<Plural />}
-                      />
-                    </Routes>
-                  </HistoryRouter>
+                  <Box
+                    width="100vw"
+                    height="100vh"
+                    background="#171A21"
+                  >
+                    <HistoryRouter history={browserHistory}>
+                      <Routes>
+                        <Route
+                          path="/reset-password/:id"
+                          element={<ResetPassword />}
+                        />
+                        <Route
+                          path="/password-reset"
+                          element={<PasswordReset />}
+                        />
+                        <Route
+                          path="/confirm-email/:id"
+                          element={<EmailConfirmed />}
+                        />
+                        <Route
+                          path="/invite/:inviteId"
+                          element={<Invite />}
+                        />
+                        <Route
+                          path="/passwordless-login/:token"
+                          element={<PasswordlessLogin />}
+                        />
+                        <Route
+                          path="/oauth/callback/github/shell"
+                          element={<Plural />}
+                        />
+                        <Route
+                          path="/oauth/callback/gitlab/shell"
+                          element={<Plural />}
+                        />
+                        <Route
+                          path="/oauth/callback/:service"
+                          element={<OAuthCallback />}
+                        />
+                        <Route
+                          path="/sso/callback"
+                          element={<SSOCallback />}
+                        />
+                        <Route
+                          path="/login"
+                          element={<Login />}
+                        />
+                        <Route
+                          path="/signup"
+                          element={<Signup />}
+                        />
+                        <Route
+                          path="/oauth/consent"
+                          element={<OAuthConsent />}
+                        />
+                        <Route
+                          path="*"
+                          element={<Plural />}
+                        />
+                      </Routes>
+                    </HistoryRouter>
+                  </Box>
                 </Grommet>
               </GrowthBookProvider>
             </StyledThemeProvider>

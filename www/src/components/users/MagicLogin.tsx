@@ -30,10 +30,8 @@ import {
   Icon,
   Img,
   Input,
-  P,
 } from 'honorable'
 import { useResizeDetector } from 'react-resize-detector'
-import useScript from 'react-script-hook'
 
 import {
   AcceptLoginDocument,
@@ -42,21 +40,18 @@ import {
   useLoginMutation,
   useOauthUrlsQuery,
   usePasswordlessLoginMutation,
-  useSignupMutation,
 } from '../../generated/graphql'
 
 import { WelcomeHeader } from '../utils/WelcomeHeader'
 
 import { fetchToken, setToken } from '../../helpers/authentication'
 import { Alert, AlertStatus, GqlError } from '../utils/Alert'
-import { disableState } from '../Login'
 import { LOGIN_SIDEBAR_IMAGE, PLURAL_MARK_WHITE } from '../constants'
 import { host } from '../../helpers/hostname'
 import { useHistory } from '../../router'
 
 import {
   METHOD_ICONS,
-  getDeviceToken,
   saveChallenge,
   saveDeviceToken,
   wipeChallenge,
@@ -269,7 +264,7 @@ function sortOauthUrls(a, b) {
   return sortOrder.indexOf(a.provider) - sortOrder.indexOf(b.provider)
 }
 
-function OAuthOptions({ oauthUrls }: any) {
+export function OAuthOptions({ oauthUrls }: any) {
   const { ref, width } = useResizeDetector({
     handleHeight: false,
   })
@@ -597,147 +592,3 @@ function OAuthOption({ url: { authorizeUrl, provider }, ...props }: any) {
   )
 }
 
-export function Signup() {
-  const history = useHistory()
-  const location = useLocation()
-  const [email, setEmail] = useState(location?.state?.email || '')
-  const [password, setPassword] = useState('')
-  const [name, setName] = useState('')
-  const [account, setAccount] = useState('')
-  const [confirm, setConfirm] = useState('')
-  const deviceToken = getDeviceToken()
-  const [mutation, { loading, error }] = useSignupMutation({
-    variables: {
-      attributes: { email, password, name },
-      account: { name: account },
-      deviceToken,
-    },
-    onCompleted: ({ signup }) => {
-      if (deviceToken) finishedDeviceLogin()
-      setToken(signup?.jwt)
-      history.navigate('/shell')
-    },
-  })
-  const { data } = useOauthUrlsQuery({ variables: { host: host() } })
-
-  useEffect(() => {
-    if (fetchToken()) {
-      history.navigate('/')
-    }
-  }, [history])
-  // we should probably move hubspot to loaded similarly to with the other analytic tools and setup with cookiebot
-  useScript({ src: 'https://js.hs-scripts.com/22363579.js' })
-  const submit = useCallback(() => {
-    mutation()
-  }, [mutation])
-
-  // @ts-expect-error
-  const { disabled, reason } = disableState(password, confirm, email)
-
-  return (
-    <LoginPortal>
-      <WelcomeHeader marginBottom="xxlarge" />
-      <Form onSubmit={submit}>
-        {error && (
-          <Div marginBottom="medium">
-            <GqlError
-              error={error}
-              header="Signup failed"
-            />
-          </Div>
-        )}
-        <LabelledInput
-          label="Email address"
-          value={email}
-          onChange={setEmail}
-          placeholder="Enter email address"
-        />
-        <LabelledInput
-          label="Full name"
-          value={name}
-          onChange={setName}
-          placeholder="Enter first and last name"
-        />
-        <LabelledInput
-          label="Account name"
-          value={account}
-          onChange={setAccount}
-          placeholder="Enter account name (must be unique)"
-        />
-        <LabelledInput
-          label="Password"
-          value={password}
-          type="password"
-          onChange={setPassword}
-          placeholder="Enter password"
-          caption="10 character minimum"
-          hint={
-            reason === 'Password is too short' && (
-              <P
-                caption
-                color="text-error"
-              >
-                Password is too short
-              </P>
-            )
-          }
-        />
-        <LabelledInput
-          label="Confirm password"
-          value={confirm}
-          type="password"
-          onChange={setConfirm}
-          placeholder="Enter password again"
-          hint={
-            reason === 'Passwords do not match' && (
-              <P
-                caption
-                color="text-error"
-              >
-                Password doesn't match
-              </P>
-            )
-          }
-        />
-        <Button
-          type="submit"
-          primary
-          width="100%"
-          disabled={disabled}
-          loading={loading}
-        >
-          Create account
-        </Button>
-      </Form>
-      <OAuthOptions oauthUrls={data?.oauthUrls} />
-      <P
-        body2
-        textAlign="center"
-        marginTop="medium"
-      >
-        Already have an account?{' '}
-        <A
-          as={Link}
-          inline
-          to="/login"
-        >
-          Login
-        </A>
-      </P>
-      <P
-        body2
-        textAlign="center"
-        marginTop="xxsmall"
-      >
-        <A
-          inline
-          onClick={() => {
-            (window as any)?._hsp?.push(['showBanner'])
-          }}
-        >
-          Cookie settings
-        </A>
-      </P>
-    </LoginPortal>
-  )
-}

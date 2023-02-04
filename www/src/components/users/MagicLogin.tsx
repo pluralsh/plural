@@ -14,9 +14,9 @@ import {
 import { Divider, FormField, LoadingSpinner } from '@pluralsh/design-system'
 import { useApolloClient } from '@apollo/client'
 import {
+  Link,
   Navigate,
   useLocation,
-  useNavigate,
   useParams,
 } from 'react-router-dom'
 import queryString from 'query-string'
@@ -161,9 +161,7 @@ export function PasswordlessLogin() {
             src={PLURAL_MARK_WHITE}
             width="45px"
           />
-          <Text size="large">
-            Passwordless Login
-          </Text>
+          <Text size="large">Passwordless Login</Text>
         </Box>
         {loading && (
           <Text
@@ -263,11 +261,7 @@ function LoginPoller({ challenge, token, deviceToken }: any) {
   )
 }
 
-const sortOrder = [
-  'GITHUB',
-  'GITLAB',
-  'GOOGLE',
-]
+const sortOrder = ['GITHUB', 'GITLAB', 'GOOGLE']
 
 function sortOauthUrls(a, b) {
   return sortOrder.indexOf(a.provider) - sortOrder.indexOf(b.provider)
@@ -317,7 +311,6 @@ function OAuthOptions({ oauthUrls }: any) {
 
 export function Login() {
   const history = useHistory()
-  const navigate = useNavigate()
   const client = useApolloClient()
   const location = useLocation()
   const jwt = fetchToken()
@@ -334,13 +327,16 @@ export function Login() {
   const open = loginMethod === LoginMethod.PASSWORD
   const passwordless = loginMethod === LoginMethod.PASSWORDLESS
 
-  const { data: oAuthData } = useQuery(OAUTH_URLS, { variables: { host: host() } })
   const { data: oAuthData } = useOauthUrlsQuery({
     variables: { host: host() },
   })
 
   const [mutation, { loading: mLoading, error }] = useLoginMutation({
-    variables: { email, password, deviceToken },
+    variables: {
+      email,
+      password,
+      deviceToken: typeof deviceToken === 'string' ? deviceToken : undefined,
+    },
     onCompleted: ({ login }) => {
       setToken(login?.jwt)
       if (deviceToken) finishedDeviceLogin()
@@ -375,7 +371,8 @@ export function Login() {
     }
   }, [challenge, deviceToken, history, client, jwt, ran, setRan])
 
-  const submit = useCallback(() => (open ? mutation() : getLoginMethod()), [mutation, getLoginMethod, open])
+  const submit = useCallback(() => (open ? mutation() : getLoginMethod()),
+    [mutation, getLoginMethod, open])
 
   const loading = qLoading || mLoading
 
@@ -445,8 +442,10 @@ export function Login() {
                   caption={(
                     <A
                       inline
-                      onClick={() => navigate('/password-reset')}
-                    >forgot your password?
+                      as={Link}
+                      to="/password-reset"
+                    >
+                      forgot your password?
                     </A>
                   )}
                   value={password}
@@ -463,9 +462,7 @@ export function Login() {
               </Button>
             </Form>
           </Keyboard>
-          {!deviceToken && (
-            <OAuthOptions oauthUrls={oAuthData?.oauthUrls} />
-          )}
+          {!deviceToken && <OAuthOptions oauthUrls={oAuthData?.oauthUrls} />}
         </>
       )}
     </LoginPortal>
@@ -503,7 +500,6 @@ function OAuthOption({ url: { authorizeUrl, provider }, ...props }: any) {
 
 export function Signup() {
   const history = useHistory()
-  const navigate = useNavigate()
   const location = useLocation()
   const [email, setEmail] = useState(location?.state?.email || '')
   const [password, setPassword] = useState('')
@@ -574,14 +570,16 @@ export function Signup() {
             onChange={setPassword}
             placeholder="Enter password"
             caption="10 character minimum"
-            hint={reason === 'Password is too short' && (
-              <P
-                caption
-                color="text-error"
-              >
-                Password is too short
-              </P>
-            )}
+            hint={
+              reason === 'Password is too short' && (
+                <P
+                  caption
+                  color="text-error"
+                >
+                  Password is too short
+                </P>
+              )
+            }
           />
           <LabelledInput
             label="Confirm password"
@@ -589,14 +587,16 @@ export function Signup() {
             type="password"
             onChange={setConfirm}
             placeholder="Enter password again"
-            hint={reason === 'Passwords do not match' && (
-              <P
-                caption
-                color="text-error"
-              >
-                Password doesn't match
-              </P>
-            )}
+            hint={
+              reason === 'Passwords do not match' && (
+                <P
+                  caption
+                  color="text-error"
+                >
+                  Password doesn't match
+                </P>
+              )
+            }
           />
           <Button
             primary
@@ -617,8 +617,9 @@ export function Signup() {
       >
         Already have an account?{' '}
         <A
+          as={Link}
           inline
-          onClick={() => navigate('/login')}
+          to="/login"
         >
           Login
         </A>

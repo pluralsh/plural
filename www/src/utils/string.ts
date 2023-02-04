@@ -5,5 +5,5 @@ export function isValidUrl(url) {
 }
 
 export function isMinViableEmail(text) {
-  return text.match(/^[^@]+@[^@]+\.[^@]+$/)
+  return text.match(/^[^@]+@[^@]+\.[^@.]+$/)
 }

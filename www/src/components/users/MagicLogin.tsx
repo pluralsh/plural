@@ -2,21 +2,21 @@ import {
   createElement,
   useCallback,
   useEffect,
+  useRef,
   useState,
 } from 'react'
 import {
   Box,
   Collapsible,
   Form,
-  Keyboard,
   Text,
 } from 'grommet'
 import { Divider, FormField, LoadingSpinner } from '@pluralsh/design-system'
 import { useApolloClient } from '@apollo/client'
 import {
   Link,
-  Navigate,
   useLocation,
+  useNavigate,
   useParams,
 } from 'react-router-dom'
 import queryString from 'query-string'
@@ -309,7 +309,19 @@ function OAuthOptions({ oauthUrls }: any) {
   )
 }
 
+type LoginState =
+  | 'INITIAL'
+  | 'CHECK_EMAIL'
+  | 'CHECKING_EMAIL'
+  | 'CHECK_PASSWORD'
+  | 'CHECKING_PASSWORD'
+  | 'PASSWORD_LOGIN'
+  | 'PASSWORDLESS'
+  | 'SIGNUP'
+
 export function Login() {
+  const [state, setState] = useState<LoginState>('INITIAL')
+  const prevState = useRef<LoginState>('INITIAL')
   const history = useHistory()
   const client = useApolloClient()
   const location = useLocation()
@@ -318,18 +330,17 @@ export function Login() {
   const { login_challenge: challenge, deviceToken } = queryString.parse(location.search)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [getLoginMethod, { data, loading: qLoading, error: qError }]
-    = useLoginMethodLazyQuery({
-      variables: { email, host: host() },
-    })
-
-  const loginMethod = data?.loginMethod?.loginMethod
-  const open = loginMethod === LoginMethod.PASSWORD
-  const passwordless = loginMethod === LoginMethod.PASSWORDLESS
-
-  const { data: oAuthData } = useOauthUrlsQuery({
-    variables: { host: host() },
+  const [
+    getLoginMethod,
+    {
+      data: loginMethodData,
+      loading: loginMethodLoading,
+      error: loginMethodError,
+    },
+  ] = useLoginMethodLazyQuery({
+    variables: { email, host: host() },
   })
+  const navigate = useNavigate()
 
   const [mutation, { loading: mLoading, error }] = useLoginMutation({
     variables: {
@@ -349,17 +360,73 @@ export function Login() {
     },
   })
 
+  console.log('state', state)
+  useEffect(() => {
+    if (state !== prevState.current) {
+      switch (state) {
+      case 'CHECK_EMAIL':
+        setState('CHECKING_EMAIL')
+        console.log('setting to CHECKING_EMAIL')
+        getLoginMethod()
+        break
+      case 'CHECK_PASSWORD':
+        mutation()
+        setState('CHECKING_PASSWORD')
+        break
+      default:
+        console.error("We shouldn't be here")
+      }
+    }
+    prevState.current = state
+  }, [getLoginMethod, mutation, state])
+
+  useEffect(() => {
+    if (state === 'SIGNUP') {
+      navigate('/signup')
+    }
+  })
+
+  useEffect(() => {
+    console.log({ loginMethodLoading, loginMethodData, state })
+    if (!loginMethodLoading && loginMethodData && state === 'CHECKING_EMAIL') {
+      const loginMethod = loginMethodData?.loginMethod?.loginMethod
+
+      if (loginMethod === LoginMethod.PASSWORD) {
+        setState('PASSWORD_LOGIN')
+      }
+      else if (loginMethod === LoginMethod.PASSWORDLESS) {
+        setState('PASSWORDLESS')
+      }
+      else {
+        setState('SIGNUP')
+      }
+    }
+  }, [loginMethodData, loginMethodLoading, state])
+
+  useEffect(() => {
+    if (state === 'CHECKING_EMAIL' && loginMethodError) {
+      if (deviceToken) saveDeviceToken(deviceToken)
+      setState('SIGNUP')
+    }
+  }, [deviceToken, loginMethodError, state])
+
+  const loginMethod = loginMethodData?.loginMethod
+
+  const { data: oAuthData } = useOauthUrlsQuery({
+    variables: { host: host() },
+  })
+
   useEffect(() => {
     wipeChallenge()
     wipeDeviceToken()
 
     if (challenge) saveChallenge(challenge)
 
-    if (data?.loginMethod?.authorizeUrl) {
+    if (loginMethodData?.loginMethod?.authorizeUrl) {
       if (deviceToken) saveDeviceToken(deviceToken)
-      window.location = data.loginMethod.authorizeUrl
+      window.location = loginMethodData.loginMethod.authorizeUrl as any
     }
-  }, [data, challenge, deviceToken])
+  }, [loginMethodData, challenge, deviceToken])
 
   useEffect(() => {
     if (jwt && challenge && !ran) {
@@ -371,21 +438,18 @@ export function Login() {
     }
   }, [challenge, deviceToken, history, client, jwt, ran, setRan])
 
-  const submit = useCallback(() => (open ? mutation() : getLoginMethod()),
-    [mutation, getLoginMethod, open])
+  const submit = useCallback(() => {
+    console.log('submit')
+    if (state === 'PASSWORD_LOGIN') {
+      setState('CHECK_PASSWORD')
+    }
+    if (state === 'INITIAL') {
+      setState('CHECK_EMAIL')
+    }
+  },
+  [state])
 
-  const loading = qLoading || mLoading
-
-  if (qError) {
-    if (deviceToken) saveDeviceToken(deviceToken)
-
-    return (
-      <Navigate
-        to="/signup"
-        state={{ email }}
-      />
-    )
-  }
+  const loading = loginMethodLoading || mLoading
 
   // This is to ensure that if both login token and login challenge are
   // available, user will not see the login view while oauth challenge
@@ -405,63 +469,76 @@ export function Login() {
   return (
     <LoginPortal>
       <WelcomeHeader marginBottom="xlarge" />
-      {passwordless && (
+      {state === 'PASSWORDLESS' && (
         <Div>
           <LoginPoller
-            token={data.loginMethod.token}
+            token={loginMethod?.token}
             challenge={challenge}
             deviceToken={deviceToken}
           />
         </Div>
       )}
-      {!passwordless && (
+      {state !== 'PASSWORDLESS' && (
         <>
-          <Keyboard onEnter={submit}>
-            <Form onSubmit={submit}>
-              {error && (
-                <Div marginBottom="medium">
-                  <GqlError
-                    error={error}
-                    header="Login Failed"
-                  />
-                </Div>
-              )}
-              <LabelledInput
-                label="Email address"
-                value={email}
-                onChange={open ? null : setEmail}
-                placeholder="Enter email address"
-              />
-              <Collapsible
-                open={open}
-                direction="vertical"
-              >
-                <LabelledInput
-                  label="Password"
-                  type="password"
-                  caption={(
-                    <A
-                      inline
-                      as={Link}
-                      to="/password-reset"
-                    >
-                      forgot your password?
-                    </A>
-                  )}
-                  value={password}
-                  onChange={setPassword}
-                  placeholder="Enter password"
+          <Form onSubmit={submit}>
+            {error && (
+              <Div marginBottom="medium">
+                <GqlError
+                  error={error}
+                  header="Login Failed"
                 />
-              </Collapsible>
-              <Button
-                width="100%"
-                loading={loading}
-                onClick={submit}
-              >
-                Continue
-              </Button>
-            </Form>
-          </Keyboard>
+              </Div>
+            )}
+            <LabelledInput
+              label="Email address"
+              value={email}
+              onChange={state === 'PASSWORD_LOGIN' ? setEmail : setEmail}
+                // disabled={state === 'PASSWORD_LOGIN'}
+              placeholder="Enter email address"
+              caption={
+                state === 'PASSWORD_LOGIN' ? (
+                  <A
+                    inline
+                    onClick={() => {
+                      setEmail('')
+                      setState('INITIAL')
+                    }}
+                  >
+                    change email
+                  </A>
+                ) : null
+              }
+            />
+            <Collapsible
+              open={state === 'PASSWORD_LOGIN'}
+              direction="vertical"
+            >
+              <LabelledInput
+                label="Password"
+                type="password"
+                caption={(
+                  <A
+                    inline
+                    as={Link}
+                    to="/password-reset"
+                  >
+                    forgot your password?
+                  </A>
+                )}
+                value={password}
+                onChange={setPassword}
+                placeholder="Enter password"
+              />
+            </Collapsible>
+            <Button
+              type="submit"
+              width="100%"
+              loading={loading}
+              // onClick={submit}
+            >
+              Continue
+            </Button>
+          </Form>
           {!deviceToken && <OAuthOptions oauthUrls={oAuthData?.oauthUrls} />}
         </>
       )}
@@ -535,80 +612,78 @@ export function Signup() {
   return (
     <LoginPortal>
       <WelcomeHeader marginBottom="xxlarge" />
-      <Keyboard onEnter={() => mutation()}>
-        <Form onSubmit={() => mutation()}>
-          {error && (
-            <Div marginBottom="medium">
-              <GqlError
-                error={error}
-                header="Signup failed"
-              />
-            </Div>
-          )}
-          <LabelledInput
-            label="Email address"
-            value={email}
-            onChange={setEmail}
-            placeholder="Enter email address"
-          />
-          <LabelledInput
-            label="Full name"
-            value={name}
-            onChange={setName}
-            placeholder="Enter first and last name"
-          />
-          <LabelledInput
-            label="Account name"
-            value={account}
-            onChange={setAccount}
-            placeholder="Enter account name (must be unique)"
-          />
-          <LabelledInput
-            label="Password"
-            value={password}
-            type="password"
-            onChange={setPassword}
-            placeholder="Enter password"
-            caption="10 character minimum"
-            hint={
-              reason === 'Password is too short' && (
-                <P
-                  caption
-                  color="text-error"
-                >
-                  Password is too short
-                </P>
-              )
-            }
-          />
-          <LabelledInput
-            label="Confirm password"
-            value={confirm}
-            type="password"
-            onChange={setConfirm}
-            placeholder="Enter password again"
-            hint={
-              reason === 'Passwords do not match' && (
-                <P
-                  caption
-                  color="text-error"
-                >
-                  Password doesn't match
-                </P>
-              )
-            }
-          />
-          <Button
-            primary
-            width="100%"
-            disabled={disabled}
-            loading={loading}
-            onClick={() => mutation()}
-          >
-            Create account
-          </Button>
-        </Form>
-      </Keyboard>
+      <Form onSubmit={() => submit()}>
+        {error && (
+          <Div marginBottom="medium">
+            <GqlError
+              error={error}
+              header="Signup failed"
+            />
+          </Div>
+        )}
+        <LabelledInput
+          label="Email address"
+          value={email}
+          onChange={setEmail}
+          placeholder="Enter email address"
+        />
+        <LabelledInput
+          label="Full name"
+          value={name}
+          onChange={setName}
+          placeholder="Enter first and last name"
+        />
+        <LabelledInput
+          label="Account name"
+          value={account}
+          onChange={setAccount}
+          placeholder="Enter account name (must be unique)"
+        />
+        <LabelledInput
+          label="Password"
+          value={password}
+          type="password"
+          onChange={setPassword}
+          placeholder="Enter password"
+          caption="10 character minimum"
+          hint={
+            reason === 'Password is too short' && (
+              <P
+                caption
+                color="text-error"
+              >
+                Password is too short
+              </P>
+            )
+          }
+        />
+        <LabelledInput
+          label="Confirm password"
+          value={confirm}
+          type="password"
+          onChange={setConfirm}
+          placeholder="Enter password again"
+          hint={
+            reason === 'Passwords do not match' && (
+              <P
+                caption
+                color="text-error"
+              >
+                Password doesn't match
+              </P>
+            )
+          }
+        />
+        <Button
+          primary
+          width="100%"
+          disabled={disabled}
+          loading={loading}
+          onClick={() => mutation()}
+        >
+          Create account
+        </Button>
+      </Form>
       <OAuthOptions oauthUrls={data?.oauthUrls} />
       <P
         body2

@@ -64,11 +64,14 @@ export function Signup() {
   // @ts-expect-error
   const { disabled, reason } = disableState(password, confirm, email)
 
+  let showEmailError = error?.message?.startsWith('not_found')
+
+  console.log(error?.message)
   return (
     <LoginPortal>
       <WelcomeHeader marginBottom="xxlarge" />
       <Form onSubmit={submit}>
-        {error && (
+        {!showEmailError && error && (
           <Div marginBottom="medium">
             <GqlError error={error} header="Signup failed" />
           </Div>

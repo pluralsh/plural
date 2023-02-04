@@ -394,7 +394,7 @@ export function Login() {
         setInputFocus(passwordRef)
         break
       default:
-        console.error("We shouldn't be here")
+        break
       }
     }
     prevState.current = state
@@ -542,6 +542,10 @@ export function Login() {
                     inline
                     as={Link}
                     to="/password-reset"
+                    onClick={e => {
+                      e.preventDefault()
+                      navigate('/password-reset', { state: { email } })
+                    }}
                   >
                     forgot your password?
                   </A>

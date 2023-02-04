@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useLocation, useParams } from 'react-router-dom'
 import { useMutation, useQuery } from '@apollo/client'
 import { Box, Form, Keyboard } from 'grommet'
 import {
@@ -126,7 +126,8 @@ export function ResetPassword() {
 }
 
 export function PasswordReset() {
-  const [attributes, setAttributes] = useState({ email: '', type: ResetTokenType.PASSWORD })
+  const location = useLocation()
+  const [attributes, setAttributes] = useState({ email: location?.state?.email || '', type: ResetTokenType.PASSWORD })
   const [mutation, { loading, data, error }] = useMutation(CREATE_RESET_TOKEN, { variables: { attributes } })
 
   const reset = data && data.createResetToken

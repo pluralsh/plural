@@ -509,8 +509,8 @@ export function Login() {
               ref={emailRef}
               label="Email address"
               value={email}
-              onChange={state === 'PASSWORD_LOGIN' ? setEmail : setEmail}
-              // disabled={state === 'PASSWORD_LOGIN'}
+              onChange={state === 'PASSWORD_LOGIN' ? undefined : setEmail}
+              disabled={state === 'PASSWORD_LOGIN'}
               placeholder="Enter email address"
               caption={
                 state === 'PASSWORD_LOGIN' ? (

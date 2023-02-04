@@ -14,6 +14,8 @@ import { PasswordStatus, disableState } from '../Login'
 
 import { wipeToken } from '../../helpers/authentication'
 
+import { isMinViableEmail } from '../../utils/string'
+
 import { ResetTokenType } from './types'
 import { CREATE_RESET_TOKEN, REALIZE_TOKEN, RESET_TOKEN } from './queries'
 import { LabelledInput, LoginPortal } from './MagicLogin'
@@ -171,6 +173,8 @@ export function PasswordReset() {
             width="100%"
             onClick={() => mutation()}
             loading={loading}
+            disabled={!isMinViableEmail(attributes.email)}
+
           >
             Reset Password
           </Button>

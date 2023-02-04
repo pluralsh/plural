@@ -143,16 +143,14 @@ query GetEabCredential($cluster: String!, $provider: Provider!) {
   }
 }
 
-mutation PollLoginToken($token: String!) {
-  loginToken(token: $token) { jwt }
-}
-
 mutation DevLogin {
   deviceLogin { loginUrl deviceToken }
 }
 
-mutation Login($email: String!, $pwd: String!) {
-  login(email: $email, password: $pwd) { jwt }
+mutation Login($email: String!, $password: String!, $deviceToken: String) {
+  login(email: $email, password: $password, deviceToken: $deviceToken) {
+    jwt
+  }
 }
 
 mutation ImpersonateServiceAccount($email: String) {
@@ -175,4 +173,67 @@ mutation DeleteEabCredential($cluster: String!, $provider: Provider!) {
 
 mutation CreateEvent($attrs: UserEventAttributes!) {
   createUserEvent(attributes: $attrs)
+}
+
+query LoginMethod($email: String!, $host: String) {
+  loginMethod(email: $email, host: $host) {
+    loginMethod
+    token
+    authorizeUrl
+  }
+}
+
+mutation Signup(
+  $attributes: UserAttributes!
+  $account: AccountAttributes
+  $deviceToken: String
+) {
+  signup(
+    attributes: $attributes
+    account: $account
+    deviceToken: $deviceToken
+  ) {
+    jwt
+    onboarding
+  }
+}
+
+mutation PasswordlessLogin($token: String!) {
+  passwordlessLogin(token: $token) {
+    jwt
+  }
+}
+
+mutation PollLoginToken($token: String!, $deviceToken: String) {
+  loginToken(token: $token, deviceToken: $deviceToken) {
+    jwt
+  }
+}
+
+query OauthUrls($host: String) {
+  oauthUrls(host: $host) {
+    provider
+    authorizeUrl
+  }
+}
+
+query LoginMethod($email: String!, $host: String) {
+  loginMethod(email: $email, host: $host) {
+    loginMethod
+    token
+    authorizeUrl
+  }
+}
+
+query OauthUrls($host: String) {
+  oauthUrls(host: $host) {
+    provider
+    authorizeUrl
+  }
+}
+
+mutation AcceptLogin($challenge: String!) {
+  acceptLogin(challenge: $challenge) { 
+    redirectTo
+  }
 }

@@ -12,12 +12,7 @@ import {
   Text,
 } from 'grommet'
 import { Divider, FormField, LoadingSpinner } from '@pluralsh/design-system'
-import {
-  useApolloClient,
-  useLazyQuery,
-  useMutation,
-  useQuery,
-} from '@apollo/client'
+import { useApolloClient } from '@apollo/client'
 import {
   Navigate,
   useLocation,
@@ -38,13 +33,22 @@ import {
 import { useResizeDetector } from 'react-resize-detector'
 import useScript from 'react-script-hook'
 
+import {
+  AcceptLoginDocument,
+  PollLoginTokenDocument,
+  useLoginMethodLazyQuery,
+  useLoginMutation,
+  useOauthUrlsQuery,
+  usePasswordlessLoginMutation,
+  useSignupMutation,
+} from '../../generated/graphql'
+
 import { WelcomeHeader } from '../utils/WelcomeHeader'
 
 import { fetchToken, setToken } from '../../helpers/authentication'
 import { Alert, AlertStatus, GqlError } from '../utils/Alert'
 import { disableState } from '../Login'
 import { LOGIN_SIDEBAR_IMAGE, PLURAL_MARK_WHITE } from '../constants'
-import { ACCEPT_LOGIN } from '../oidc/queries'
 import { host } from '../../helpers/hostname'
 import { useHistory } from '../../router'
 
@@ -57,18 +61,19 @@ import {
   wipeDeviceToken,
 } from './utils'
 import { LoginMethod } from './types'
-import {
-  LOGIN_METHOD,
-  LOGIN_MUTATION,
-  OAUTH_URLS,
-  PASSWORDLESS_LOGIN,
-  POLL_LOGIN_TOKEN,
-  SIGNUP_MUTATION,
-} from './queries'
 import { finishedDeviceLogin } from './DeviceLoginNotif'
 
 export function LabelledInput({
-  label, value, onChange, placeholder, type, caption, hint, error = undefined, required = false, disabled = false,
+  label,
+  value,
+  onChange,
+  placeholder,
+  type,
+  caption,
+  hint,
+  error = undefined,
+  required = false,
+  disabled = false,
 }: any) {
   return (
     <FormField
@@ -137,8 +142,8 @@ export function LoginPortal({ children }: any) {
 
 export function PasswordlessLogin() {
   const { token } = useParams()
-  const [mutation, { error, loading, data }] = useMutation(PASSWORDLESS_LOGIN, {
-    variables: { token },
+  const [mutation, { error, loading, data }] = usePasswordlessLoginMutation({
+    variables: { token: token ?? '' },
   })
 
   useEffect(() => {
@@ -187,15 +192,22 @@ export function PasswordlessLogin() {
 }
 
 export function handleOauthChallenge(client, challenge) {
-  client.mutate({
-    mutation: ACCEPT_LOGIN,
-    variables: { challenge },
-  }).then(({ data: { acceptLogin: { redirectTo } } }) => {
-    window.location = redirectTo
-  }).catch(err => {
-    console.error(err)
-    wipeChallenge()
-  })
+  client
+    .mutate({
+      mutation: AcceptLoginDocument,
+      variables: { challenge },
+    })
+    .then(({
+      data: {
+        acceptLogin: { redirectTo },
+      },
+    }) => {
+      window.location = redirectTo
+    })
+    .catch(err => {
+      console.error(err)
+      wipeChallenge()
+    })
 }
 
 function LoginPoller({ challenge, token, deviceToken }: any) {
@@ -205,22 +217,28 @@ function LoginPoller({ challenge, token, deviceToken }: any) {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      client.mutate({
-        mutation: POLL_LOGIN_TOKEN,
-        variables: { token, deviceToken },
-      }).then(({ data: { loginToken: { jwt } } }) => {
-        setToken(jwt)
-        setSuccess(true)
+      client
+        .mutate({
+          mutation: PollLoginTokenDocument,
+          variables: { token, deviceToken },
+        })
+        .then(({
+          data: {
+            loginToken: { jwt },
+          },
+        }) => {
+          setToken(jwt)
+          setSuccess(true)
 
-        if (deviceToken) finishedDeviceLogin()
+          if (deviceToken) finishedDeviceLogin()
 
-        if (challenge) {
-          handleOauthChallenge(client, challenge)
-        }
-        else {
-          history.navigate('/')
-        }
-      })
+          if (challenge) {
+            handleOauthChallenge(client, challenge)
+          }
+          else {
+            history.navigate('/')
+          }
+        })
     }, 2000)
 
     return () => clearInterval(interval)
@@ -307,20 +325,24 @@ export function Login() {
   const { login_challenge: challenge, deviceToken } = queryString.parse(location.search)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [getLoginMethod, { data, loading: qLoading, error: qError }] = useLazyQuery(LOGIN_METHOD, {
-    variables: { email, host: host() },
-  })
+  const [getLoginMethod, { data, loading: qLoading, error: qError }]
+    = useLoginMethodLazyQuery({
+      variables: { email, host: host() },
+    })
 
   const loginMethod = data?.loginMethod?.loginMethod
   const open = loginMethod === LoginMethod.PASSWORD
   const passwordless = loginMethod === LoginMethod.PASSWORDLESS
 
   const { data: oAuthData } = useQuery(OAUTH_URLS, { variables: { host: host() } })
+  const { data: oAuthData } = useOauthUrlsQuery({
+    variables: { host: host() },
+  })
 
-  const [mutation, { loading: mLoading, error }] = useMutation(LOGIN_MUTATION, {
+  const [mutation, { loading: mLoading, error }] = useLoginMutation({
     variables: { email, password, deviceToken },
-    onCompleted: ({ login: { jwt } }) => {
-      setToken(jwt)
+    onCompleted: ({ login }) => {
+      setToken(login?.jwt)
       if (deviceToken) finishedDeviceLogin()
       if (challenge) {
         handleOauthChallenge(client, challenge)
@@ -489,15 +511,19 @@ export function Signup() {
   const [account, setAccount] = useState('')
   const [confirm, setConfirm] = useState('')
   const deviceToken = getDeviceToken()
-  const [mutation, { loading, error }] = useMutation(SIGNUP_MUTATION, {
-    variables: { attributes: { email, password, name }, account: { name: account }, deviceToken },
-    onCompleted: ({ signup: { jwt } }) => {
+  const [mutation, { loading, error }] = useSignupMutation({
+    variables: {
+      attributes: { email, password, name },
+      account: { name: account },
+      deviceToken,
+    },
+    onCompleted: ({ signup }) => {
       if (deviceToken) finishedDeviceLogin()
-      setToken(jwt)
+      setToken(signup?.jwt)
       history.navigate('/shell')
     },
   })
-  const { data } = useQuery(OAUTH_URLS, { variables: { host: host() } })
+  const { data } = useOauthUrlsQuery({ variables: { host: host() } })
 
   useEffect(() => {
     if (fetchToken()) {

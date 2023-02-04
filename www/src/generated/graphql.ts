@@ -5122,13 +5122,6 @@ export type GetEabCredentialQueryVariables = Exact<{
 
 export type GetEabCredentialQuery = { __typename?: 'RootQueryType', eabCredential?: { __typename?: 'EabCredential', id: string, keyId: string, hmacKey: string, cluster: string, provider: Provider, insertedAt?: Date | null } | null };
 
-export type PollLoginTokenMutationVariables = Exact<{
-  token: Scalars['String'];
-}>;
-
-
-export type PollLoginTokenMutation = { __typename?: 'RootMutationType', loginToken?: { __typename?: 'User', jwt?: string | null } | null };
-
 export type DevLoginMutationVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -5136,7 +5129,8 @@ export type DevLoginMutation = { __typename?: 'RootMutationType', deviceLogin?: 
 
 export type LoginMutationVariables = Exact<{
   email: Scalars['String'];
-  pwd: Scalars['String'];
+  password: Scalars['String'];
+  deviceToken?: InputMaybe<Scalars['String']>;
 }>;
 
 
@@ -5176,6 +5170,52 @@ export type CreateEventMutationVariables = Exact<{
 
 
 export type CreateEventMutation = { __typename?: 'RootMutationType', createUserEvent?: boolean | null };
+
+export type LoginMethodQueryVariables = Exact<{
+  email: Scalars['String'];
+  host?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type LoginMethodQuery = { __typename?: 'RootQueryType', loginMethod?: { __typename?: 'LoginMethodResponse', loginMethod: LoginMethod, token?: string | null, authorizeUrl?: string | null } | null };
+
+export type SignupMutationVariables = Exact<{
+  attributes: UserAttributes;
+  account?: InputMaybe<AccountAttributes>;
+  deviceToken?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type SignupMutation = { __typename?: 'RootMutationType', signup?: { __typename?: 'User', jwt?: string | null, onboarding?: OnboardingState | null } | null };
+
+export type PasswordlessLoginMutationVariables = Exact<{
+  token: Scalars['String'];
+}>;
+
+
+export type PasswordlessLoginMutation = { __typename?: 'RootMutationType', passwordlessLogin?: { __typename?: 'User', jwt?: string | null } | null };
+
+export type PollLoginTokenMutationVariables = Exact<{
+  token: Scalars['String'];
+  deviceToken?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type PollLoginTokenMutation = { __typename?: 'RootMutationType', loginToken?: { __typename?: 'User', jwt?: string | null } | null };
+
+export type OauthUrlsQueryVariables = Exact<{
+  host?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type OauthUrlsQuery = { __typename?: 'RootQueryType', oauthUrls?: Array<{ __typename?: 'OauthInfo', provider: OauthProvider, authorizeUrl: string } | null> | null };
+
+export type AcceptLoginMutationVariables = Exact<{
+  challenge: Scalars['String'];
+}>;
+
+
+export type AcceptLoginMutation = { __typename?: 'RootMutationType', acceptLogin?: { __typename?: 'OauthResponse', redirectTo: string } | null };
 
 export type VersionTagFragment = { __typename?: 'VersionTag', id: string, tag: string, version?: { __typename?: 'Version', id: string } | null };
 
@@ -8184,39 +8224,6 @@ export function useGetEabCredentialLazyQuery(baseOptions?: Apollo.LazyQueryHookO
 export type GetEabCredentialQueryHookResult = ReturnType<typeof useGetEabCredentialQuery>;
 export type GetEabCredentialLazyQueryHookResult = ReturnType<typeof useGetEabCredentialLazyQuery>;
 export type GetEabCredentialQueryResult = Apollo.QueryResult<GetEabCredentialQuery, GetEabCredentialQueryVariables>;
-export const PollLoginTokenDocument = gql`
-    mutation PollLoginToken($token: String!) {
-  loginToken(token: $token) {
-    jwt
-  }
-}
-    `;
-export type PollLoginTokenMutationFn = Apollo.MutationFunction<PollLoginTokenMutation, PollLoginTokenMutationVariables>;
-
-/**
- * __usePollLoginTokenMutation__
- *
- * To run a mutation, you first call `usePollLoginTokenMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `usePollLoginTokenMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [pollLoginTokenMutation, { data, loading, error }] = usePollLoginTokenMutation({
- *   variables: {
- *      token: // value for 'token'
- *   },
- * });
- */
-export function usePollLoginTokenMutation(baseOptions?: Apollo.MutationHookOptions<PollLoginTokenMutation, PollLoginTokenMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<PollLoginTokenMutation, PollLoginTokenMutationVariables>(PollLoginTokenDocument, options);
-      }
-export type PollLoginTokenMutationHookResult = ReturnType<typeof usePollLoginTokenMutation>;
-export type PollLoginTokenMutationResult = Apollo.MutationResult<PollLoginTokenMutation>;
-export type PollLoginTokenMutationOptions = Apollo.BaseMutationOptions<PollLoginTokenMutation, PollLoginTokenMutationVariables>;
 export const DevLoginDocument = gql`
     mutation DevLogin {
   deviceLogin {
@@ -8251,8 +8258,8 @@ export type DevLoginMutationHookResult = ReturnType<typeof useDevLoginMutation>;
 export type DevLoginMutationResult = Apollo.MutationResult<DevLoginMutation>;
 export type DevLoginMutationOptions = Apollo.BaseMutationOptions<DevLoginMutation, DevLoginMutationVariables>;
 export const LoginDocument = gql`
-    mutation Login($email: String!, $pwd: String!) {
-  login(email: $email, password: $pwd) {
+    mutation Login($email: String!, $password: String!, $deviceToken: String) {
+  login(email: $email, password: $password, deviceToken: $deviceToken) {
     jwt
   }
 }
@@ -8273,7 +8280,8 @@ export type LoginMutationFn = Apollo.MutationFunction<LoginMutation, LoginMutati
  * const [loginMutation, { data, loading, error }] = useLoginMutation({
  *   variables: {
  *      email: // value for 'email'
- *      pwd: // value for 'pwd'
+ *      password: // value for 'password'
+ *      deviceToken: // value for 'deviceToken'
  *   },
  * });
  */
@@ -8449,6 +8457,216 @@ export function useCreateEventMutation(baseOptions?: Apollo.MutationHookOptions<
 export type CreateEventMutationHookResult = ReturnType<typeof useCreateEventMutation>;
 export type CreateEventMutationResult = Apollo.MutationResult<CreateEventMutation>;
 export type CreateEventMutationOptions = Apollo.BaseMutationOptions<CreateEventMutation, CreateEventMutationVariables>;
+export const LoginMethodDocument = gql`
+    query LoginMethod($email: String!, $host: String) {
+  loginMethod(email: $email, host: $host) {
+    loginMethod
+    token
+    authorizeUrl
+  }
+}
+    `;
+
+/**
+ * __useLoginMethodQuery__
+ *
+ * To run a query within a React component, call `useLoginMethodQuery` and pass it any options that fit your needs.
+ * When your component renders, `useLoginMethodQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useLoginMethodQuery({
+ *   variables: {
+ *      email: // value for 'email'
+ *      host: // value for 'host'
+ *   },
+ * });
+ */
+export function useLoginMethodQuery(baseOptions: Apollo.QueryHookOptions<LoginMethodQuery, LoginMethodQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<LoginMethodQuery, LoginMethodQueryVariables>(LoginMethodDocument, options);
+      }
+export function useLoginMethodLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<LoginMethodQuery, LoginMethodQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<LoginMethodQuery, LoginMethodQueryVariables>(LoginMethodDocument, options);
+        }
+export type LoginMethodQueryHookResult = ReturnType<typeof useLoginMethodQuery>;
+export type LoginMethodLazyQueryHookResult = ReturnType<typeof useLoginMethodLazyQuery>;
+export type LoginMethodQueryResult = Apollo.QueryResult<LoginMethodQuery, LoginMethodQueryVariables>;
+export const SignupDocument = gql`
+    mutation Signup($attributes: UserAttributes!, $account: AccountAttributes, $deviceToken: String) {
+  signup(attributes: $attributes, account: $account, deviceToken: $deviceToken) {
+    jwt
+    onboarding
+  }
+}
+    `;
+export type SignupMutationFn = Apollo.MutationFunction<SignupMutation, SignupMutationVariables>;
+
+/**
+ * __useSignupMutation__
+ *
+ * To run a mutation, you first call `useSignupMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSignupMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [signupMutation, { data, loading, error }] = useSignupMutation({
+ *   variables: {
+ *      attributes: // value for 'attributes'
+ *      account: // value for 'account'
+ *      deviceToken: // value for 'deviceToken'
+ *   },
+ * });
+ */
+export function useSignupMutation(baseOptions?: Apollo.MutationHookOptions<SignupMutation, SignupMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SignupMutation, SignupMutationVariables>(SignupDocument, options);
+      }
+export type SignupMutationHookResult = ReturnType<typeof useSignupMutation>;
+export type SignupMutationResult = Apollo.MutationResult<SignupMutation>;
+export type SignupMutationOptions = Apollo.BaseMutationOptions<SignupMutation, SignupMutationVariables>;
+export const PasswordlessLoginDocument = gql`
+    mutation PasswordlessLogin($token: String!) {
+  passwordlessLogin(token: $token) {
+    jwt
+  }
+}
+    `;
+export type PasswordlessLoginMutationFn = Apollo.MutationFunction<PasswordlessLoginMutation, PasswordlessLoginMutationVariables>;
+
+/**
+ * __usePasswordlessLoginMutation__
+ *
+ * To run a mutation, you first call `usePasswordlessLoginMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `usePasswordlessLoginMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [passwordlessLoginMutation, { data, loading, error }] = usePasswordlessLoginMutation({
+ *   variables: {
+ *      token: // value for 'token'
+ *   },
+ * });
+ */
+export function usePasswordlessLoginMutation(baseOptions?: Apollo.MutationHookOptions<PasswordlessLoginMutation, PasswordlessLoginMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<PasswordlessLoginMutation, PasswordlessLoginMutationVariables>(PasswordlessLoginDocument, options);
+      }
+export type PasswordlessLoginMutationHookResult = ReturnType<typeof usePasswordlessLoginMutation>;
+export type PasswordlessLoginMutationResult = Apollo.MutationResult<PasswordlessLoginMutation>;
+export type PasswordlessLoginMutationOptions = Apollo.BaseMutationOptions<PasswordlessLoginMutation, PasswordlessLoginMutationVariables>;
+export const PollLoginTokenDocument = gql`
+    mutation PollLoginToken($token: String!, $deviceToken: String) {
+  loginToken(token: $token, deviceToken: $deviceToken) {
+    jwt
+  }
+}
+    `;
+export type PollLoginTokenMutationFn = Apollo.MutationFunction<PollLoginTokenMutation, PollLoginTokenMutationVariables>;
+
+/**
+ * __usePollLoginTokenMutation__
+ *
+ * To run a mutation, you first call `usePollLoginTokenMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `usePollLoginTokenMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [pollLoginTokenMutation, { data, loading, error }] = usePollLoginTokenMutation({
+ *   variables: {
+ *      token: // value for 'token'
+ *      deviceToken: // value for 'deviceToken'
+ *   },
+ * });
+ */
+export function usePollLoginTokenMutation(baseOptions?: Apollo.MutationHookOptions<PollLoginTokenMutation, PollLoginTokenMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<PollLoginTokenMutation, PollLoginTokenMutationVariables>(PollLoginTokenDocument, options);
+      }
+export type PollLoginTokenMutationHookResult = ReturnType<typeof usePollLoginTokenMutation>;
+export type PollLoginTokenMutationResult = Apollo.MutationResult<PollLoginTokenMutation>;
+export type PollLoginTokenMutationOptions = Apollo.BaseMutationOptions<PollLoginTokenMutation, PollLoginTokenMutationVariables>;
+export const OauthUrlsDocument = gql`
+    query OauthUrls($host: String) {
+  oauthUrls(host: $host) {
+    provider
+    authorizeUrl
+  }
+}
+    `;
+
+/**
+ * __useOauthUrlsQuery__
+ *
+ * To run a query within a React component, call `useOauthUrlsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOauthUrlsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOauthUrlsQuery({
+ *   variables: {
+ *      host: // value for 'host'
+ *   },
+ * });
+ */
+export function useOauthUrlsQuery(baseOptions?: Apollo.QueryHookOptions<OauthUrlsQuery, OauthUrlsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<OauthUrlsQuery, OauthUrlsQueryVariables>(OauthUrlsDocument, options);
+      }
+export function useOauthUrlsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<OauthUrlsQuery, OauthUrlsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<OauthUrlsQuery, OauthUrlsQueryVariables>(OauthUrlsDocument, options);
+        }
+export type OauthUrlsQueryHookResult = ReturnType<typeof useOauthUrlsQuery>;
+export type OauthUrlsLazyQueryHookResult = ReturnType<typeof useOauthUrlsLazyQuery>;
+export type OauthUrlsQueryResult = Apollo.QueryResult<OauthUrlsQuery, OauthUrlsQueryVariables>;
+export const AcceptLoginDocument = gql`
+    mutation AcceptLogin($challenge: String!) {
+  acceptLogin(challenge: $challenge) {
+    redirectTo
+  }
+}
+    `;
+export type AcceptLoginMutationFn = Apollo.MutationFunction<AcceptLoginMutation, AcceptLoginMutationVariables>;
+
+/**
+ * __useAcceptLoginMutation__
+ *
+ * To run a mutation, you first call `useAcceptLoginMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAcceptLoginMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [acceptLoginMutation, { data, loading, error }] = useAcceptLoginMutation({
+ *   variables: {
+ *      challenge: // value for 'challenge'
+ *   },
+ * });
+ */
+export function useAcceptLoginMutation(baseOptions?: Apollo.MutationHookOptions<AcceptLoginMutation, AcceptLoginMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AcceptLoginMutation, AcceptLoginMutationVariables>(AcceptLoginDocument, options);
+      }
+export type AcceptLoginMutationHookResult = ReturnType<typeof useAcceptLoginMutation>;
+export type AcceptLoginMutationResult = Apollo.MutationResult<AcceptLoginMutation>;
+export type AcceptLoginMutationOptions = Apollo.BaseMutationOptions<AcceptLoginMutation, AcceptLoginMutationVariables>;
 export const UpdateVersionDocument = gql`
     mutation UpdateVersion($spec: VersionSpec, $attributes: VersionAttributes!) {
   updateVersion(spec: $spec, attributes: $attributes) {

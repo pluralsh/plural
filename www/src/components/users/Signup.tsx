@@ -1,17 +1,7 @@
-import {
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Form } from 'grommet'
-import { Link, useLocation, useSearchParams } from 'react-router-dom'
-import {
-  A,
-  Button,
-  Div,
-  P,
-} from 'honorable'
+import { Link, useLocation } from 'react-router-dom'
+import { A, Button, Div, P } from 'honorable'
 import useScript from 'react-script-hook'
 
 import { useOauthUrlsQuery, useSignupMutation } from '../../generated/graphql'
@@ -28,8 +18,8 @@ import { LabelledInput, LoginPortal, OAuthOptions } from './MagicLogin'
 
 export function Signup() {
   const history = useHistory()
-  const searchParams = useSearchParams()
-  const [email, setEmail] = useState(searchParams[0].get('email') || '')
+  const location = useLocation()
+  const [email, setEmail] = useState(location?.state?.email || '')
   const [password, setPassword] = useState('')
   const [name, setName] = useState('')
   const [account, setAccount] = useState('')
@@ -80,10 +70,7 @@ export function Signup() {
       <Form onSubmit={submit}>
         {error && (
           <Div marginBottom="medium">
-            <GqlError
-              error={error}
-              header="Signup failed"
-            />
+            <GqlError error={error} header="Signup failed" />
           </Div>
         )}
         <LabelledInput
@@ -115,10 +102,7 @@ export function Signup() {
           caption="10 character minimum"
           hint={
             reason === 'Password is too short' && (
-              <P
-                caption
-                color="text-error"
-              >
+              <P caption color="text-error">
                 Password is too short
               </P>
             )
@@ -132,10 +116,7 @@ export function Signup() {
           placeholder="Enter password again"
           hint={
             reason === 'Passwords do not match' && (
-              <P
-                caption
-                color="text-error"
-              >
+              <P caption color="text-error">
                 Password doesn't match
               </P>
             )
@@ -152,32 +133,10 @@ export function Signup() {
         </Button>
       </Form>
       <OAuthOptions oauthUrls={data?.oauthUrls} />
-      <P
-        body2
-        textAlign="center"
-        marginTop="medium"
-      >
+      <P body2 textAlign="center" marginTop="medium">
         Already have an account?{' '}
-        <A
-          as={Link}
-          inline
-          to="/login"
-        >
+        <A as={Link} inline to="/login">
           Login
-        </A>
-      </P>
-      <P
-        body2
-        textAlign="center"
-        marginTop="xxsmall"
-      >
-        <A
-          inline
-          onClick={() => {
-            (window as any)?._hsp?.push(['showBanner'])
-          }}
-        >
-          Cookie settings
         </A>
       </P>
     </LoginPortal>

@@ -402,7 +402,7 @@ export function Login() {
 
   useEffect(() => {
     if (state === 'SIGNUP') {
-      navigate(`/signup${email ? `?email=${encodeURIComponent(email)}` : ''}`)
+      navigate('/signup', { state: { email } })
     }
   })
 
@@ -595,4 +595,3 @@ function OAuthOption({ url: { authorizeUrl, provider }, ...props }: any) {
     </Button>
   )
 }
-

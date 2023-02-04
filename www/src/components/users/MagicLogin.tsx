@@ -50,6 +50,8 @@ import { LOGIN_SIDEBAR_IMAGE, PLURAL_MARK_WHITE } from '../constants'
 import { host } from '../../helpers/hostname'
 import { useHistory } from '../../router'
 
+import { isMinViableEmail } from '../../utils/string'
+
 import {
   METHOD_ICONS,
   saveChallenge,
@@ -552,6 +554,7 @@ export function Login() {
               type="submit"
               width="100%"
               loading={loading}
+              disabled={!isMinViableEmail(email)}
             >
               Continue
             </Button>

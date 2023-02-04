@@ -3,3 +3,7 @@ export const obfuscate = str => `${str.substring(0, 5)}${'*'.repeat(str.length -
 export function isValidUrl(url) {
   return !/^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/.test(url)
 }
+
+export function isMinViableEmail(text) {
+  return text.match(/^[^@]+@[^@]+\.[^@]+$/)
+}

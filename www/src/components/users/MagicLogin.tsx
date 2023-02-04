@@ -399,7 +399,7 @@ export function Login() {
 
   useEffect(() => {
     if (state === 'SIGNUP') {
-      navigate('/signup')
+      navigate(`/signup${email ? `?email=${encodeURIComponent(email)}` : ''}`)
     }
   })
 

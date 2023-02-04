@@ -1,6 +1,11 @@
-import { useCallback, useEffect, useState } from 'react'
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 import { Form } from 'grommet'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useSearchParams } from 'react-router-dom'
 import {
   A,
   Button,
@@ -23,13 +28,15 @@ import { LabelledInput, LoginPortal, OAuthOptions } from './MagicLogin'
 
 export function Signup() {
   const history = useHistory()
-  const location = useLocation()
-  const [email, setEmail] = useState(location?.state?.email || '')
+  const searchParams = useSearchParams()
+  const [email, setEmail] = useState(searchParams[0].get('email') || '')
   const [password, setPassword] = useState('')
   const [name, setName] = useState('')
   const [account, setAccount] = useState('')
   const [confirm, setConfirm] = useState('')
   const deviceToken = getDeviceToken()
+  const nameRef = useRef<HTMLElement>()
+  const emailRef = useRef<HTMLElement>()
   const [mutation, { loading, error }] = useSignupMutation({
     variables: {
       attributes: { email, password, name },
@@ -45,6 +52,14 @@ export function Signup() {
     },
   })
   const { data } = useOauthUrlsQuery({ variables: { host: host() } })
+
+  useEffect(() => {
+    const ref = email ? nameRef : emailRef
+
+    ref?.current?.querySelector('input')?.focus()
+    // Only set focus on first render
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   useEffect(() => {
     if (fetchToken()) {
@@ -72,12 +87,14 @@ export function Signup() {
           </Div>
         )}
         <LabelledInput
+          ref={emailRef}
           label="Email address"
           value={email}
           onChange={setEmail}
           placeholder="Enter email address"
         />
         <LabelledInput
+          ref={nameRef}
           label="Full name"
           value={name}
           onChange={setName}

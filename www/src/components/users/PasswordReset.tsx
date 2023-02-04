@@ -131,9 +131,12 @@ export function PasswordReset() {
 
   return (
     <LoginPortal>
-      <Div marginBottom="xxlarge">
-        <H1 title1>
-          Reset your password
+      <Div marginBottom="xlarge">
+        <H1
+          title1
+          textAlign="center"
+        >
+          Reset password
         </H1>
       </Div>
       {reset && (

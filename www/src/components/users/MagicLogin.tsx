@@ -97,7 +97,7 @@ ref) => (
   </FormField>
 ))
 
-const RIGHT_CONTENT_MAX_WIDTH = 480
+const RIGHT_CONTENT_MAX_WIDTH = 512
 
 export function LoginPortal({ children }: any) {
   return (
@@ -117,6 +117,7 @@ export function LoginPortal({ children }: any) {
           width="100%"
           height="100%"
           objectFit="cover"
+          objectPosition="top center"
         />
       </Flex>
       {/* RIGHT SIDE */}

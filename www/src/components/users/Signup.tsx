@@ -66,7 +66,7 @@ export function Signup() {
 
   let showEmailError = error?.message?.startsWith('not_found')
 
-  console.log(error?.message)
+  console.log('errormessage', error?.message)
   return (
     <LoginPortal>
       <WelcomeHeader marginBottom="xxlarge" />

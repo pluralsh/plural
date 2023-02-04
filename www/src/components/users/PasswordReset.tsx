@@ -1,13 +1,17 @@
 import { useState } from 'react'
-import { useLocation, useParams } from 'react-router-dom'
+import { Link, useLocation, useParams } from 'react-router-dom'
 import { useMutation, useQuery } from '@apollo/client'
 import { Box, Form, Keyboard } from 'grommet'
 import {
+  A,
   Button,
   Div,
+  Flex,
   H1,
   P,
 } from 'honorable'
+
+import { SuccessIcon } from '@pluralsh/design-system'
 
 import { Alert, AlertStatus, GqlError } from '../utils/Alert'
 import { PasswordStatus, disableState } from '../Login'
@@ -25,13 +29,14 @@ export function ResetPassword() {
   const [attributes, setAttributes] = useState({ password: '' })
   const [confirm, setConfirm] = useState('')
   const { data } = useQuery(RESET_TOKEN, { variables: { id } })
-  const [mutation, { loading, data: realized, error }] = useMutation(REALIZE_TOKEN, {
-    variables: { id, attributes },
-    onCompleted: () => {
-      wipeToken()
-      window.location = '/login' as any as Location
-    },
-  })
+  const [mutation, { loading, data: realized, error }] = useMutation(REALIZE_TOKEN,
+    {
+      variables: { id, attributes },
+      onCompleted: () => {
+        wipeToken()
+        window.location = '/login' as any as Location
+      },
+    })
 
   const { disabled, reason } = disableState(attributes.password, confirm)
 
@@ -44,9 +49,7 @@ export function ResetPassword() {
         width="400px"
       >
         <Div marginBottom="xxlarge">
-          <H1 title1>
-            Reset your password
-          </H1>
+          <H1 title1>Reset password</H1>
         </Div>
         {realized && realized.realizeResetToken && (
           <Alert
@@ -80,14 +83,16 @@ export function ResetPassword() {
                 onChange={password => setAttributes({ ...attributes, password })}
                 placeholder="a strong password"
                 caption="10 character minimum"
-                hint={reason === 'Password is too short' && (
-                  <P
-                    caption
-                    color="text-error"
-                  >
-                    Password is too short
-                  </P>
-                )}
+                hint={
+                  reason === 'Password is too short' && (
+                    <P
+                      caption
+                      color="text-error"
+                    >
+                      Password is too short
+                    </P>
+                  )
+                }
               />
               <LabelledInput
                 label="Confirm Password"
@@ -95,14 +100,16 @@ export function ResetPassword() {
                 value={confirm}
                 onChange={setConfirm}
                 placeholder="confirm your password"
-                hint={reason === 'Passwords do not match' && (
-                  <P
-                    caption
-                    color="text-error"
-                  >
-                    Password doesn't match
-                  </P>
-                )}
+                hint={
+                  reason === 'Passwords do not match' && (
+                    <P
+                      caption
+                      color="text-error"
+                    >
+                      Password doesn't match
+                    </P>
+                  )
+                }
               />
             </Box>
 
@@ -128,59 +135,82 @@ export function ResetPassword() {
 export function PasswordReset() {
   const location = useLocation()
   const [attributes, setAttributes] = useState({ email: location?.state?.email || '', type: ResetTokenType.PASSWORD })
-  const [mutation, { loading, data, error }] = useMutation(CREATE_RESET_TOKEN, { variables: { attributes } })
+  const [mutation, { loading, data, error }] = useMutation(CREATE_RESET_TOKEN, {
+    variables: { attributes },
+  })
 
-  const reset = data && data.createResetToken
+  const resetSuccess = data && data.createResetToken
 
   return (
     <LoginPortal>
-      <Div marginBottom="xlarge">
-        <H1
-          title1
-          textAlign="center"
-        >
-          Reset password
-        </H1>
-      </Div>
-      {reset && (
-        <Div marginBottom="medium">
-          <Alert
-            status={AlertStatus.SUCCESS}
-            header="Password reset email sent"
-            description="Check your inbox for the reset link to complete your password reset"
-          />
-        </Div>
+      {resetSuccess ? (
+        <ResetSuccess />
+      ) : (
+        <>
+          <Div marginBottom="xlarge">
+            <H1
+              title1
+              textAlign="center"
+            >
+              Reset password
+            </H1>
+          </Div>
+          {error && (
+            <Div marginBottom="medium">
+              <GqlError
+                header="Failed!"
+                error={error}
+              />
+            </Div>
+          )}
+          <Form onSubmit={() => mutation()}>
+            <LabelledInput
+              width="100%"
+              value={attributes.email}
+              label="Email"
+              name="email"
+              placeholder="your email"
+              onChange={email => setAttributes({ ...attributes, email })}
+            />
+            <Button
+              type="submit"
+              width="100%"
+              loading={loading}
+              disabled={!isMinViableEmail(attributes.email)}
+            >
+              Reset Password
+            </Button>
+          </Form>
+        </>
       )}
-      {error && (
-        <Div marginBottom="medium">
-          <GqlError
-            header="Failed!"
-            error={error}
-          />
-        </Div>
-      )}
-      <Keyboard onEnter={() => mutation()}>
-        <Form onSubmit={() => mutation()}>
-
-          <LabelledInput
-            width="100%"
-            value={attributes.email}
-            label="Email"
-            name="email"
-            placeholder="your email"
-            onChange={email => setAttributes({ ...attributes, email })}
-          />
-          <Button
-            width="100%"
-            onClick={() => mutation()}
-            loading={loading}
-            disabled={!isMinViableEmail(attributes.email)}
-
-          >
-            Reset Password
-          </Button>
-        </Form>
-      </Keyboard>
     </LoginPortal>
+  )
+}
+
+function ResetSuccess() {
+  return (
+    <Flex
+      flexDirection="column"
+      alignItems="center"
+      justifyContent="center"
+      textAlign="center"
+    >
+      <SuccessIcon
+        color="icon-success"
+        size={32}
+        marginBottom="large"
+      />
+      <Div marginBottom="xlarge">
+        <H1 title1>Password reset email sent</H1>
+        <P>Check your email to continue the process.</P>
+      </Div>
+      <A
+        inline
+        as={Link}
+        to="/login"
+      >
+        Back to login
+      </A>
+    </Flex>
   )
 }

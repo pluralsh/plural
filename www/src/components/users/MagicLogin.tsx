@@ -33,6 +33,8 @@ import {
 } from 'honorable'
 import { useResizeDetector } from 'react-resize-detector'
 
+import { useTheme } from 'styled-components'
+
 import {
   AcceptLoginDocument,
   PollLoginTokenDocument,
@@ -51,6 +53,8 @@ import { host } from '../../helpers/hostname'
 import { useHistory } from '../../router'
 
 import { isMinViableEmail } from '../../utils/string'
+
+import Cookiebot from '../../utils/cookiebot'
 
 import {
   METHOD_ICONS,
@@ -100,6 +104,8 @@ ref) => (
 const RIGHT_CONTENT_MAX_WIDTH = 512
 
 export function LoginPortal({ children }: any) {
+  const theme = useTheme()
+
   return (
     <Flex height="100vh">
       {/* LEFT SIDE */}
@@ -123,10 +129,15 @@ export function LoginPortal({ children }: any) {
       {/* RIGHT SIDE */}
       <Flex
         overflow="auto"
+        flexDirection="column"
         grow={1}
         shrink={1}
-        padding="xxlarge"
+        paddingHorizontal="xxlarge"
       >
+        <Div
+          flexGrow={1}
+          minHeight={theme.spacing.xxxlarge}
+        />
         <Div
           maxWidth={RIGHT_CONTENT_MAX_WIDTH}
           width="100%"
@@ -135,6 +146,7 @@ export function LoginPortal({ children }: any) {
         >
           {children}
         </Div>
+        <Footer minHeight={theme.spacing.xxxlarge} />
       </Flex>
     </Flex>
   )
@@ -487,86 +499,88 @@ export function Login() {
 
   return (
     <LoginPortal>
-      <WelcomeHeader marginBottom="xlarge" />
-      {state === 'PASSWORDLESS' && (
-        <Div>
-          <LoginPoller
-            token={loginMethod?.token}
-            challenge={challenge}
-            deviceToken={deviceToken}
-          />
-        </Div>
-      )}
-      {state !== 'PASSWORDLESS' && (
-        <>
-          <Form onSubmit={submit}>
-            {loginMError && (
-              <Div marginBottom="medium">
-                <GqlError
-                  error={loginMError}
-                  header="Login Failed"
-                />
-              </Div>
-            )}
-            <LabelledInput
-              ref={emailRef}
-              label="Email address"
-              value={email}
-              onChange={state === 'PASSWORD_LOGIN' ? undefined : setEmail}
-              disabled={state === 'PASSWORD_LOGIN'}
-              placeholder="Enter email address"
-              caption={
-                state === 'PASSWORD_LOGIN' ? (
-                  <A
-                    inline
-                    onClick={() => {
-                      setEmail('')
-                      setState('INITIAL')
-                    }}
-                  >
-                    change email
-                  </A>
-                ) : null
-              }
+      <Div>
+        <WelcomeHeader marginBottom="xlarge" />
+        {state === 'PASSWORDLESS' && (
+          <Div>
+            <LoginPoller
+              token={loginMethod?.token}
+              challenge={challenge}
+              deviceToken={deviceToken}
             />
-            <Collapsible
-              open={state === 'PASSWORD_LOGIN'}
-              direction="vertical"
-            >
+          </Div>
+        )}
+        {state !== 'PASSWORDLESS' && (
+          <>
+            <Form onSubmit={submit}>
+              {loginMError && (
+                <Div marginBottom="medium">
+                  <GqlError
+                    error={loginMError}
+                    header="Login Failed"
+                  />
+                </Div>
+              )}
               <LabelledInput
-                ref={passwordRef}
-                label="Password"
-                type="password"
-                caption={(
-                  <A
-                    inline
-                    as={Link}
-                    to="/password-reset"
-                    onClick={e => {
-                      e.preventDefault()
-                      navigate('/password-reset', { state: { email } })
-                    }}
-                  >
-                    forgot your password?
-                  </A>
-                )}
-                value={password}
-                onChange={setPassword}
-                placeholder="Enter password"
+                ref={emailRef}
+                label="Email address"
+                value={email}
+                onChange={state === 'PASSWORD_LOGIN' ? undefined : setEmail}
+                disabled={state === 'PASSWORD_LOGIN'}
+                placeholder="Enter email address"
+                caption={
+                  state === 'PASSWORD_LOGIN' ? (
+                    <A
+                      inline
+                      onClick={() => {
+                        setEmail('')
+                        setState('INITIAL')
+                      }}
+                    >
+                      change email
+                    </A>
+                  ) : null
+                }
               />
-            </Collapsible>
-            <Button
-              type="submit"
-              width="100%"
-              loading={loading}
-              disabled={!isMinViableEmail(email)}
-            >
-              Continue
-            </Button>
-          </Form>
-          {!deviceToken && <OAuthOptions oauthUrls={oAuthData?.oauthUrls} />}
-        </>
-      )}
+              <Collapsible
+                open={state === 'PASSWORD_LOGIN'}
+                direction="vertical"
+              >
+                <LabelledInput
+                  ref={passwordRef}
+                  label="Password"
+                  type="password"
+                  caption={(
+                    <A
+                      inline
+                      as={Link}
+                      to="/password-reset"
+                      onClick={e => {
+                        e.preventDefault()
+                        navigate('/password-reset', { state: { email } })
+                      }}
+                    >
+                      forgot your password?
+                    </A>
+                  )}
+                  value={password}
+                  onChange={setPassword}
+                  placeholder="Enter password"
+                />
+              </Collapsible>
+              <Button
+                type="submit"
+                width="100%"
+                loading={loading}
+                disabled={!isMinViableEmail(email)}
+              >
+                Continue
+              </Button>
+            </Form>
+            {!deviceToken && <OAuthOptions oauthUrls={oAuthData?.oauthUrls} />}
+          </>
+        )}
+      </Div>
     </LoginPortal>
   )
 }
@@ -597,5 +611,49 @@ function OAuthOption({ url: { authorizeUrl, provider }, ...props }: any) {
     >
       {providerToName[provider.toLowerCase()]}
     </Button>
+  )
+}
+
+function Footer(props) {
+  return (
+    <Flex
+      gap="xlarge"
+      caption
+      justifyContent="center"
+      textAlign="center"
+      color="text-xlight"
+      flexGrow={1}
+      alignItems="end"
+      paddingBottom="medium"
+      {...props}
+    >
+      <Div>
+        © Plural Labs {new Date().toLocaleString('en-us', { year: 'numeric' })}
+      </Div>
+      <A
+        inline
+        href="https://www.plural.sh/legal/privacy-policy"
+        target="_blank"
+      >
+        Privacy Policy
+      </A>
+
+      <A
+        inline
+        onClick={() => {
+          (window as any)?._hsp?.push(['showBanner'])
+        }}
+      >
+        Cookie settings
+      </A>
+      <A
+        inline
+        onClick={() => {
+          Cookiebot.show()
+        }}
+      >
+        Cookie settings
+      </A>
+    </Flex>
   )
 }

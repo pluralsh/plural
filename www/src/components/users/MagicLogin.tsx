@@ -1,5 +1,7 @@
 import {
+  RefObject,
   createElement,
+  forwardRef,
   useCallback,
   useEffect,
   useRef,
@@ -63,7 +65,7 @@ import {
 import { LoginMethod } from './types'
 import { finishedDeviceLogin } from './DeviceLoginNotif'
 
-export function LabelledInput({
+export const LabelledInput = forwardRef(({
   label,
   value,
   onChange,
@@ -74,29 +76,29 @@ export function LabelledInput({
   error = undefined,
   required = false,
   disabled = false,
-}: any) {
-  return (
-    <FormField
-      label={label}
-      caption={caption}
-      hint={hint}
-      marginBottom="small"
+}: any,
+ref) => (
+  <FormField
+    label={label}
+    caption={caption}
+    hint={hint}
+    marginBottom="small"
+    error={error}
+    required={required}
+  >
+    <Input
+      ref={ref}
+      width="100%"
+      name={label}
+      type={type}
+      value={value || ''}
+      onChange={onChange && (({ target: { value } }) => onChange(value))}
+      placeholder={placeholder}
       error={error}
-      required={required}
-    >
-      <Input
-        width="100%"
-        name={label}
-        type={type}
-        value={value || ''}
-        onChange={onChange && (({ target: { value } }) => onChange(value))}
-        placeholder={placeholder}
-        error={error}
-        disabled={disabled}
-      />
-    </FormField>
-  )
-}
+      disabled={disabled}
+    />
+  </FormField>
+))
 
 const RIGHT_CONTENT_MAX_WIDTH = 480
 
@@ -344,28 +346,43 @@ export function Login() {
     })
   }, [email, loginMethodQuery])
   const navigate = useNavigate()
+  const passwordRef = useRef<HTMLElement>()
+  const emailRef = useRef<HTMLElement>()
 
-  const [loginMutation, { loading: loginMLoading, error: loginMError }] = useLoginMutation({
-    variables: {
-      email,
-      password,
-      deviceToken: typeof deviceToken === 'string' ? deviceToken : undefined,
-    },
-    onCompleted: ({ login }) => {
-      setToken(login?.jwt)
-      if (deviceToken) finishedDeviceLogin()
-      if (challenge) {
-        handleOauthChallenge(client, challenge)
-      }
-      else {
-        history.navigate('/')
-      }
-    },
-  })
+  const [loginMutation, { loading: loginMLoading, error: loginMError }]
+    = useLoginMutation({
+      variables: {
+        email,
+        password,
+        deviceToken: typeof deviceToken === 'string' ? deviceToken : undefined,
+      },
+      onCompleted: ({ login }) => {
+        setToken(login?.jwt)
+        if (deviceToken) finishedDeviceLogin()
+        if (challenge) {
+          handleOauthChallenge(client, challenge)
+        }
+        else {
+          history.navigate('/')
+        }
+      },
+    })
 
+  const setInputFocus = (ref: RefObject<any>) => {
+    requestAnimationFrame(() => {
+      ref.current?.querySelector('input')?.focus()
+    })
+  }
+
+  useEffect(() => {
+    setInputFocus(emailRef)
+  }, [])
   useEffect(() => {
     if (state !== prevState.current) {
       switch (state) {
+      case 'INITIAL':
+        setInputFocus(emailRef)
+        break
       case 'CHECK_EMAIL':
         setState('CHECKING_EMAIL')
         console.log('setting to CHECKING_EMAIL')
@@ -374,6 +391,9 @@ export function Login() {
       case 'CHECK_PASSWORD':
         loginMutation()
         setState('CHECKING_PASSWORD')
+        break
+      case 'PASSWORD_LOGIN':
+        setInputFocus(passwordRef)
         break
       default:
         console.error("We shouldn't be here")
@@ -491,6 +511,7 @@ export function Login() {
               </Div>
             )}
             <LabelledInput
+              ref={emailRef}
               label="Email address"
               value={email}
               onChange={state === 'PASSWORD_LOGIN' ? setEmail : setEmail}
@@ -515,6 +536,7 @@ export function Login() {
               direction="vertical"
             >
               <LabelledInput
+                ref={passwordRef}
                 label="Password"
                 type="password"
                 caption={(
@@ -560,9 +582,9 @@ function OAuthOption({ url: { authorizeUrl, provider }, ...props }: any) {
       width={143}
       height={48}
       secondary
-      onClick={() => {
-        window.location = authorizeUrl
-      }}
+      as={A}
+      _hover={{ textDecoration: 'none' }}
+      href={authorizeUrl}
       startIcon={(
         <Icon filter="grayscale(1)">
           {createElement(icon, { size: 20, fullColor: true })}

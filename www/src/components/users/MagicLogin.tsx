@@ -331,18 +331,21 @@ export function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [
-    getLoginMethod,
+    loginMethodQuery,
     {
       data: loginMethodData,
       loading: loginMethodLoading,
       error: loginMethodError,
     },
-  ] = useLoginMethodLazyQuery({
-    variables: { email, host: host() },
-  })
+  ] = useLoginMethodLazyQuery()
+  const getLoginMethod = useCallback(() => {
+    loginMethodQuery({
+      variables: { email, host: host() },
+    })
+  }, [email, loginMethodQuery])
   const navigate = useNavigate()
 
-  const [mutation, { loading: mLoading, error }] = useLoginMutation({
+  const [loginMutation, { loading: loginMLoading, error: loginMError }] = useLoginMutation({
     variables: {
       email,
       password,
@@ -360,7 +363,6 @@ export function Login() {
     },
   })
 
-  console.log('state', state)
   useEffect(() => {
     if (state !== prevState.current) {
       switch (state) {
@@ -370,7 +372,7 @@ export function Login() {
         getLoginMethod()
         break
       case 'CHECK_PASSWORD':
-        mutation()
+        loginMutation()
         setState('CHECKING_PASSWORD')
         break
       default:
@@ -378,7 +380,7 @@ export function Login() {
       }
     }
     prevState.current = state
-  }, [getLoginMethod, mutation, state])
+  }, [getLoginMethod, loginMutation, state])
 
   useEffect(() => {
     if (state === 'SIGNUP') {
@@ -446,10 +448,9 @@ export function Login() {
     if (state === 'INITIAL') {
       setState('CHECK_EMAIL')
     }
-  },
-  [state])
+  }, [state])
 
-  const loading = loginMethodLoading || mLoading
+  const loading = loginMethodLoading || loginMLoading
 
   // This is to ensure that if both login token and login challenge are
   // available, user will not see the login view while oauth challenge
@@ -481,10 +482,10 @@ export function Login() {
       {state !== 'PASSWORDLESS' && (
         <>
           <Form onSubmit={submit}>
-            {error && (
+            {loginMError && (
               <Div marginBottom="medium">
                 <GqlError
-                  error={error}
+                  error={loginMError}
                   header="Login Failed"
                 />
               </Div>
@@ -493,7 +494,7 @@ export function Login() {
               label="Email address"
               value={email}
               onChange={state === 'PASSWORD_LOGIN' ? setEmail : setEmail}
-                // disabled={state === 'PASSWORD_LOGIN'}
+              // disabled={state === 'PASSWORD_LOGIN'}
               placeholder="Enter email address"
               caption={
                 state === 'PASSWORD_LOGIN' ? (
@@ -534,7 +535,6 @@ export function Login() {
               type="submit"
               width="100%"
               loading={loading}
-              // onClick={submit}
             >
               Continue
             </Button>
@@ -605,6 +605,9 @@ export function Signup() {
   }, [history])
   // we should probably move hubspot to loaded similarly to with the other analytic tools and setup with cookiebot
   useScript({ src: 'https://js.hs-scripts.com/22363579.js' })
+  const submit = useCallback(() => {
+    mutation()
+  }, [mutation])
 
   // @ts-expect-error
   const { disabled, reason } = disableState(password, confirm, email)
@@ -612,7 +615,7 @@ export function Signup() {
   return (
     <LoginPortal>
       <WelcomeHeader marginBottom="xxlarge" />
-      <Form onSubmit={() => submit()}>
+      <Form onSubmit={submit}>
         {error && (
           <Div marginBottom="medium">
             <GqlError
@@ -675,11 +678,11 @@ export function Signup() {
           }
         />
         <Button
+          type="submit"
           primary
           width="100%"
           disabled={disabled}
           loading={loading}
-          onClick={() => mutation()}
         >
           Create account
         </Button>

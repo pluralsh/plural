@@ -159,9 +159,14 @@ defmodule Core.Services.Shell do
   def install_stack(%Stack{} = stack, %{configuration: ctx} = context, oidc, %User{} = user) do
     %{provider: provider} = get_shell(user.id)
     start_transaction()
-    |> add_operation(:shell, fn _ -> update_shell_configuration(context, user) end)
     |> add_operation(:install, fn _ -> Recipes.install_stack(stack, provider, user) end)
-    |> add_operation(:oidcs, fn %{install: bundles} ->
+    |> add_operation(:bundles, fn %{install: bundles} -> {:ok, Core.Repo.preload(bundles, [:repository])} end)
+    |> add_operation(:shell, fn %{bundles: bundles} ->
+      bundles = Enum.map(bundles, & %{repository: &1.repository.name, name: &1.name})
+      Map.put(context, :bundles, bundles)
+      |> update_shell_configuration(user)
+    end)
+    |> add_operation(:oidcs, fn %{bundles: bundles} ->
       Core.Repo.preload(bundles, [:repository])
       |> Enum.reduce(short_circuit(), fn b, s ->
         short(s, b.id, fn ->

@@ -10,36 +10,38 @@ import { Button, FormField, Input } from '@pluralsh/design-system'
 
 import { OnboardingContext } from '../../context/onboarding'
 import { useSetWorkspaceKeys } from '../../context/hooks'
-import { WorkspaceProps } from '../../context/types'
+import { CloudProvider, WorkspaceProps } from '../../context/types'
 import { IsObjectEmpty } from '../../../../../utils/object'
 
 type ValidationFieldKey = keyof WorkspaceProps
 type Validation = {regex: RegExp, message: string}
-type ValidationField = {[key in ValidationFieldKey]?: Validation}
+type ValidationFn = (provider: CloudProvider) => {regex: RegExp, message: string}
+type ValidationField = {[key in ValidationFieldKey]?: Validation | ValidationFn}
 
 const VALIDATOR: ValidationField = {
-  clusterName: {
-    regex: /^[a-z][0-9\-a-z]{0,12}$/,
-    message: 'must be between 1 and 12 characters and may contain alphanumeric characters only',
-  },
+  clusterName: (provider: CloudProvider) => ({
+    regex: provider === CloudProvider.GCP ? /^[a-z][0-9\-a-z]{0,11}$/ : /^[a-z][0-9\-a-z]{0,14}$/,
+    message: `must be between 1 and ${provider === CloudProvider.GCP ? 12 : 15} characters and may contain alphanumeric characters only`,
+  }),
 }
 
 function WorkspaceStep({ onBack, onNext }) {
-  const { workspace } = useContext(OnboardingContext)
+  const { workspace, cloud } = useContext(OnboardingContext)
   const setWorkspaceKeys = useSetWorkspaceKeys()
   const [error, setError] = useState<{[key in ValidationFieldKey]?: string | null}>({})
   const isValid = useMemo(() => workspace?.clusterName && workspace?.bucketPrefix && workspace?.subdomain && IsObjectEmpty(error), [error, workspace?.bucketPrefix, workspace?.clusterName, workspace?.subdomain])
 
   useEffect(() => {
     Object.keys(workspace).forEach(key => {
-      const { regex, message } = VALIDATOR[key as keyof WorkspaceProps] || {}
+      const validation = VALIDATOR[key as keyof WorkspaceProps]
+      const { regex, message } = (typeof validation === 'function' ? validation(cloud.provider!) : validation) || {}
       const error = regex?.test(workspace?.[key]) ? null : message
 
       if (!regex || !message) return
 
       setError(err => ({ ...err, [key]: error }))
     })
-  }, [workspace])
+  }, [cloud.provider, workspace])
 
   return (
     <Flex

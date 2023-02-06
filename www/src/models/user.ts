@@ -8,12 +8,6 @@ export const AccountFragment = gql`
     backgroundColor
     clusterCount
     userCount
-    subscription {
-      id
-      plan {
-        id
-      }
-    }
   }
 `
 

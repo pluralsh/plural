@@ -22,6 +22,21 @@ export const PLATFORM_PLANS_QUERY = gql`
   }
 `
 
+export const SUBSCRIPTION_QUERY = gql`
+  query Subscription {
+    account {
+      grandfatheredUntil
+      delinquentAt
+      subscription {
+        id
+        plan {
+          id
+        }
+      }
+    }
+  }
+`
+
 export const UPGRADE_TO_PROFESSIONAL_PLAN_MUTATION = gql`
   mutation UpgradeToProfessionalPlan($planId: ID!) {
     createPlatformSubscription(planId: $planId) {

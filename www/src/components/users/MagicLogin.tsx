@@ -319,9 +319,9 @@ type LoginState =
   | 'Initial'
   | 'CheckEmail'
   | 'CheckingEmail'
-  | 'PassLoginCheckPass'
-  | 'PassLoginCheckingPass'
-  | 'PassLogin'
+  | 'PwdLogin_CheckPwd'
+  | 'PwdLogin_CheckingPwd'
+  | 'PwdLogin'
   | 'PasswordlessLogin'
   | 'Signup'
 
@@ -329,12 +329,18 @@ const State = {
   Initial: 'Initial',
   CheckEmail: 'CheckEmail',
   CheckingEmail: 'CheckingEmail',
-  PassLoginCheckPass: 'PassLoginCheckPass',
-  PassLoginCheckingPass: 'PassLoginCheckingPass',
-  PassLogin: 'PassLogin',
+  PwdLogin: 'PwdLogin',
+  PwdLogin_CheckPwd: 'PwdLogin_CheckPwd',
+  PwdLogin_CheckingPwd: 'PwdLogin_CheckingPwd',
   PasswordlessLogin: 'PasswordlessLogin',
   Signup: 'Signup',
 } as const satisfies Record<LoginState, LoginState>
+
+const setInputFocus = (ref: RefObject<any>) => {
+  requestAnimationFrame(() => {
+    ref.current?.querySelector('input')?.focus()
+  })
+}
 
 export function Login() {
   const [state, setState] = useState<LoginState>(State.Initial)
@@ -347,6 +353,14 @@ export function Login() {
   const { login_challenge: challenge, deviceToken } = queryString.parse(location.search)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const navigate = useNavigate()
+  const passwordRef = useRef<HTMLElement>()
+  const emailRef = useRef<HTMLElement>()
+
+  useEffect(() => {
+    setInputFocus(emailRef)
+  }, [])
+
   const [
     loginMethodQuery,
     {
@@ -360,14 +374,6 @@ export function Login() {
       variables: { email, host: host() },
     })
   }, [email, loginMethodQuery])
-  const navigate = useNavigate()
-  const passwordRef = useRef<HTMLElement>()
-  const emailRef = useRef<HTMLElement>()
-
-  const isPasswordLogin
-    = state === State.PassLogin
-    || state === State.PassLoginCheckingPass
-    || state === State.PassLoginCheckPass
 
   const [loginMutation, { loading: loginMLoading, error: loginMError }]
     = useLoginMutation({
@@ -388,15 +394,6 @@ export function Login() {
       },
     })
 
-  const setInputFocus = (ref: RefObject<any>) => {
-    requestAnimationFrame(() => {
-      ref.current?.querySelector('input')?.focus()
-    })
-  }
-
-  useEffect(() => {
-    setInputFocus(emailRef)
-  }, [])
   useEffect(() => {
     if (state !== prevState.current) {
       switch (state) {
@@ -407,11 +404,11 @@ export function Login() {
         getLoginMethod()
         setState(State.CheckingEmail)
         break
-      case State.PassLoginCheckPass:
+      case State.PwdLogin_CheckPwd:
         loginMutation()
-        setState(State.PassLoginCheckingPass)
+        setState(State.PwdLogin_CheckingPwd)
         break
-      case State.PassLogin:
+      case State.PwdLogin:
         setInputFocus(passwordRef)
         break
       default:
@@ -428,8 +425,8 @@ export function Login() {
   })
 
   useEffect(() => {
-    if (state === State.PassLoginCheckingPass && loginMError) {
-      setState(State.PassLogin)
+    if (state === State.PwdLogin_CheckingPwd && loginMError) {
+      setState(State.PwdLogin)
       setPassword('')
     }
   }, [loginMError, state])
@@ -449,26 +446,13 @@ export function Login() {
         setState(State.Signup)
       }
       else if (loginMethod === LoginMethod.Password) {
-        setState(State.PassLogin)
+        setState(State.PwdLogin)
       }
       else if (loginMethod === LoginMethod.Passwordless) {
         setState(State.PasswordlessLogin)
       }
     }
   }, [loginMethodData, loginMethodLoading, state])
-
-  useEffect(() => {
-    if (state === State.CheckingEmail && loginMethodError) {
-      if (deviceToken) saveDeviceToken(deviceToken)
-      setState(State.Signup)
-    }
-  }, [deviceToken, loginMethodError, state])
-
-  const loginMethod = loginMethodData?.loginMethod
-
-  const { data: oAuthData } = useOauthUrlsQuery({
-    variables: { host: host() },
-  })
 
   useEffect(() => {
     wipeChallenge()
@@ -492,6 +476,23 @@ export function Login() {
     }
   }, [challenge, deviceToken, history, client, jwt, ran, setRan])
 
+  useEffect(() => {
+    if (state === State.CheckingEmail && loginMethodError) {
+      if (deviceToken) saveDeviceToken(deviceToken)
+      setState(State.Signup)
+    }
+  }, [deviceToken, loginMethodError, state])
+
+  const loginMethod = loginMethodData?.loginMethod
+
+  const { data: oAuthData } = useOauthUrlsQuery({
+    variables: { host: host() },
+  })
+
+  const isPasswordLogin
+    = state === State.PwdLogin
+    || state === State.PwdLogin_CheckingPwd
+    || state === State.PwdLogin_CheckPwd
   const disableSubmit = isPasswordLogin
     ? password.length === 0
     : !isMinViableEmail(email)
@@ -501,8 +502,8 @@ export function Login() {
       return
     }
     switch (state) {
-    case State.PassLogin:
-      setState(State.PassLoginCheckPass)
+    case State.PwdLogin:
+      setState(State.PwdLogin_CheckPwd)
       break
     case State.Initial:
       setState(State.CheckEmail)
@@ -575,7 +576,7 @@ export function Login() {
                 }
               />
               <Collapsible
-                open={state === State.PassLogin}
+                open={state === State.PwdLogin}
                 direction="vertical"
               >
                 <LabelledInput

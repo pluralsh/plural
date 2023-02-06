@@ -11,7 +11,8 @@ import { setToken } from '../helpers/authentication'
 
 import { UserFragment } from '../models/user'
 
-import { LabelledInput, LoginPortal } from './users/MagicLogin'
+import { LoginPortal } from './users/LoginPortal'
+import { LabelledInput } from './users/LabelledInput'
 import { WelcomeHeader } from './utils/WelcomeHeader'
 
 const SIGNUP = gql`

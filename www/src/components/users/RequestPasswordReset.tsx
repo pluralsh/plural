@@ -16,7 +16,8 @@ import { ResetTokenType, useCreateResetTokenMutation } from '../../generated/gra
 import { isMinViableEmail } from '../../utils/string'
 import { GqlError } from '../utils/Alert'
 
-import { LabelledInput, LoginPortal } from './MagicLogin'
+import { LoginPortal } from './LoginPortal'
+import { LabelledInput } from './LabelledInput'
 
 export function RequestPasswordReset() {
   const location = useLocation()

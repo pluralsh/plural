@@ -1,7 +1,6 @@
 import {
   RefObject,
   createElement,
-  forwardRef,
   useCallback,
   useEffect,
   useRef,
@@ -13,7 +12,7 @@ import {
   Form,
   Text,
 } from 'grommet'
-import { Divider, FormField, LoadingSpinner } from '@pluralsh/design-system'
+import { Divider, LoadingSpinner } from '@pluralsh/design-system'
 import { useApolloClient } from '@apollo/client'
 import {
   Link,
@@ -28,8 +27,6 @@ import {
   Div,
   Flex,
   Icon,
-  Img,
-  Input,
 } from 'honorable'
 import { useResizeDetector } from 'react-resize-detector'
 
@@ -47,7 +44,7 @@ import { WelcomeHeader } from '../utils/WelcomeHeader'
 
 import { fetchToken, setToken } from '../../helpers/authentication'
 import { Alert, AlertStatus, GqlError } from '../utils/Alert'
-import { LOGIN_SIDEBAR_IMAGE, PLURAL_MARK_WHITE } from '../constants'
+import { PLURAL_MARK_WHITE } from '../constants'
 import { host } from '../../helpers/hostname'
 import { useHistory } from '../../router'
 
@@ -61,90 +58,8 @@ import {
   wipeDeviceToken,
 } from './utils'
 import { finishedDeviceLogin } from './DeviceLoginNotif'
-import { Footer, FooterBalancer } from './LoginFooter'
-
-export const LabelledInput = forwardRef(({
-  label,
-  value,
-  onChange,
-  placeholder,
-  type,
-  caption,
-  hint,
-  error = undefined,
-  required = false,
-  disabled = false,
-  inputProps,
-}: any,
-ref) => (
-  <FormField
-    label={label}
-    caption={caption}
-    hint={hint}
-    marginBottom="small"
-    error={error}
-    required={required}
-  >
-    <Input
-      ref={ref}
-      width="100%"
-      name={label}
-      type={type}
-      value={value || ''}
-      onChange={onChange && (({ target: { value } }) => onChange(value))}
-      placeholder={placeholder}
-      error={error}
-      disabled={disabled}
-      {...inputProps}
-    />
-  </FormField>
-))
-
-const RIGHT_CONTENT_MAX_WIDTH = 512
-
-export function LoginPortal({ children }: any) {
-  return (
-    <Flex height="100vh">
-      {/* LEFT SIDE */}
-      <Flex
-        direction="column"
-        align="center"
-        background="fill-one"
-        display-desktop-down="none"
-        overflow="hidden"
-        width={504}
-        height="100%"
-      >
-        <Img
-          src={LOGIN_SIDEBAR_IMAGE}
-          width="100%"
-          height="100%"
-          objectFit="cover"
-          objectPosition="top center"
-        />
-      </Flex>
-      {/* RIGHT SIDE */}
-      <Flex
-        overflow="auto"
-        flexDirection="column"
-        grow={1}
-        shrink={1}
-        paddingHorizontal="xxlarge"
-      >
-        <FooterBalancer />
-        <Div
-          maxWidth={RIGHT_CONTENT_MAX_WIDTH}
-          width="100%"
-          marginVertical="auto"
-          marginHorizontal="auto"
-        >
-          {children}
-        </Div>
-        <Footer />
-      </Flex>
-    </Flex>
-  )
-}
+import { LabelledInput } from './LabelledInput'
+import { LoginPortal, RIGHT_CONTENT_MAX_WIDTH } from './LoginPortal'
 
 export function PasswordlessLogin() {
   const { token } = useParams()

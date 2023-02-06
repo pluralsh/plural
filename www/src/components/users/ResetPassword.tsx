@@ -10,7 +10,8 @@ import { wipeToken } from '../../helpers/authentication'
 import { Alert, AlertStatus, GqlError } from '../utils/Alert'
 import { validatePassword } from '../Login'
 
-import { LabelledInput, LoginPortal } from './MagicLogin'
+import { LoginPortal } from './LoginPortal'
+import { LabelledInput } from './LabelledInput'
 import { ConfirmPasswordField, SetPasswordField } from './Signup'
 
 export function ResetPassword() {

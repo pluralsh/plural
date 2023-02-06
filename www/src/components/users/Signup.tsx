@@ -11,6 +11,7 @@ import {
   A,
   Button,
   Div,
+  Flex,
   P,
 } from 'honorable'
 import useScript from 'react-script-hook'
@@ -25,7 +26,9 @@ import { useHistory } from '../../router'
 
 import { getDeviceToken } from './utils'
 import { finishedDeviceLogin } from './DeviceLoginNotif'
-import { LabelledInput, LoginPortal, OAuthOptions } from './MagicLogin'
+import { OAuthOptions } from './MagicLogin'
+import { LoginPortal } from './LoginPortal'
+import { LabelledInput } from './LabelledInput'
 
 function PasswordErrorMsg({ errorCode }: { errorCode: PasswordErrorCode }) {
   return (
@@ -142,19 +145,27 @@ export function Signup() {
           onChange={setEmail}
           placeholder="Enter email address"
         />
-        <LabelledInput
-          ref={nameRef}
-          label="Username"
-          value={name}
-          onChange={setName}
-          placeholder="Enter username"
-        />
-        <LabelledInput
-          label="Company name"
-          value={account}
-          onChange={setAccount}
-          placeholder="Enter company name"
-        />
+        <Flex
+          flexWrap="wrap"
+          width="100%"
+          gap="medium"
+        >
+          <LabelledInput
+            flex="1 1"
+            label="Company name"
+            value={account}
+            onChange={setAccount}
+            placeholder="Enter company name"
+          />
+          <LabelledInput
+            flex="1 1"
+            ref={nameRef}
+            label="Username"
+            value={name}
+            onChange={setName}
+            placeholder="Enter username"
+          />
+        </Flex>
         <SetPasswordField
           value={password}
           onChange={setPassword}

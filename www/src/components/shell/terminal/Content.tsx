@@ -66,7 +66,7 @@ function Content() {
     <Div height={isOnboarding ? '100%' : 'calc(100% - 48px)'}>
       {isOnboarding && (
         <>
-          <OnboardingHeader />
+          <OnboardingHeader mode="shell" />
           <WelcomeModal />
         </>
       )}

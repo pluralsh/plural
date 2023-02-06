@@ -20,6 +20,7 @@ import { SectionKey } from './context/types'
 
 interface OnboardingHeaderProps {
   onRestart?: Dispatch<void>
+  mode?: 'wizard' | 'shell'
 }
 
 function RestartModal({ onRestart, open, onClose }) {
@@ -61,7 +62,7 @@ function RestartModal({ onRestart, open, onClose }) {
   )
 }
 
-function OnboardingHeader({ onRestart }: OnboardingHeaderProps) {
+function OnboardingHeader({ onRestart, mode = 'wizard' }: OnboardingHeaderProps) {
   const theme = useTheme()
   const [open, setOpen] = useState(false)
   const { section } = useSection()
@@ -119,7 +120,7 @@ function OnboardingHeader({ onRestart }: OnboardingHeaderProps) {
             small
             secondary
             onClick={() => setOpen(true)}
-            disabled={section.key === SectionKey.CREATE_REPOSITORY}
+            disabled={section?.key === SectionKey.CREATE_REPOSITORY || mode === 'shell'}
           >Restart onboarding
           </Button>
         </SidebarItem>

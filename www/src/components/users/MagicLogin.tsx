@@ -77,6 +77,7 @@ export const LabelledInput = forwardRef(({
   error = undefined,
   required = false,
   disabled = false,
+  inputProps,
 }: any,
 ref) => (
   <FormField
@@ -97,6 +98,7 @@ ref) => (
       placeholder={placeholder}
       error={error}
       disabled={disabled}
+      {...inputProps}
     />
   </FormField>
 ))

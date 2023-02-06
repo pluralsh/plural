@@ -8,6 +8,7 @@ import {
   Flex,
   H1,
   P,
+  Span,
 } from 'honorable'
 import { SuccessIcon } from '@pluralsh/design-system'
 
@@ -32,15 +33,20 @@ export function ResetPassword() {
   const [attributes, setAttributes] = useState({ password: '' })
   const [confirm, setConfirm] = useState('')
   const { data } = useResetTokenQuery({ variables: { id: id ?? '' } })
-  const [mutation, { loading, data: realized, error }] = useRealizeResetTokenMutation({
-    variables: { id: id ?? '', attributes },
-    onCompleted: () => {
-      wipeToken()
-      window.location = '/login' as any as Location
-    },
-  })
+  const [mutation, { loading, data: realized, error }]
+    = useRealizeResetTokenMutation({
+      variables: { id: id ?? '', attributes },
+      onCompleted: () => {
+        wipeToken()
+        window.location = '/login' as any as Location
+      },
+    })
 
-  const { disabled, reason, error: passwordError } = disableState(attributes.password, confirm)
+  const {
+    disabled,
+    reason,
+    error: passwordError,
+  } = disableState(attributes.password, confirm)
 
   if (!data) return null
 
@@ -119,6 +125,14 @@ export function RequestPasswordReset() {
 
   const resetSuccess = data && data.createResetToken
 
+  console.log('name', error?.name)
+  console.log('message', error?.message)
+  console.log('extraInfo', error?.extraInfo)
+  console.log('cause', error?.cause)
+
+  const invalidEmail = error?.message === 'not_found'
+  const gqlError = !invalidEmail ? error : undefined
+
   return (
     <LoginPortal>
       {resetSuccess ? (
@@ -133,7 +147,7 @@ export function RequestPasswordReset() {
               Reset password
             </H1>
           </Div>
-          {error && (
+          {gqlError && (
             <Div marginBottom="medium">
               <GqlError
                 header="Failed!"
@@ -149,6 +163,8 @@ export function RequestPasswordReset() {
               name="email"
               placeholder="your email"
               onChange={email => setAttributes({ ...attributes, email })}
+              hint={invalidEmail ? <Span color="text-danger-light">Invalid email address</Span> : undefined}
+              inputProps={{ error: invalidEmail }}
             />
             <Button
               type="submit"

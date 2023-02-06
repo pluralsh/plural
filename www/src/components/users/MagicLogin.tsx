@@ -353,6 +353,11 @@ export function Login() {
   const passwordRef = useRef<HTMLElement>()
   const emailRef = useRef<HTMLElement>()
 
+  const isPasswordLogin
+    = state === 'PASSWORD_LOGIN'
+    || state === 'CHECKING_PASSWORD'
+    || state === 'CHECK_PASSWORD'
+
   const [loginMutation, { loading: loginMLoading, error: loginMError }]
     = useLoginMutation({
       variables: {
@@ -411,6 +416,15 @@ export function Login() {
       navigate('/signup', { state: { email } })
     }
   })
+
+  useEffect(() => {
+    if (state === 'CHECKING_PASSWORD' && loginMError) {
+      setState('PASSWORD_LOGIN')
+      console.log('loginMError', loginMError)
+    }
+  }, [loginMError, state])
+  const passwordErrorMsg = loginMError?.message === 'invalid password' ? 'Invalid password' : undefined
+  const loginError = !passwordErrorMsg && loginMError
 
   useEffect(() => {
     console.log({ loginMethodLoading, loginMethodData, state })
@@ -507,10 +521,10 @@ export function Login() {
         {state !== 'PASSWORDLESS' && (
           <>
             <Form onSubmit={submit}>
-              {loginMError && (
+              {loginError && (
                 <Div marginBottom="medium">
                   <GqlError
-                    error={loginMError}
+                    error={loginError}
                     header="Login Failed"
                   />
                 </Div>
@@ -519,11 +533,11 @@ export function Login() {
                 ref={emailRef}
                 label="Email address"
                 value={email}
-                onChange={state === 'PASSWORD_LOGIN' ? undefined : setEmail}
-                disabled={state === 'PASSWORD_LOGIN'}
+                onChange={isPasswordLogin ? undefined : setEmail}
+                disabled={isPasswordLogin}
                 placeholder="Enter email address"
                 caption={
-                  state === 'PASSWORD_LOGIN' ? (
+                  state === isPasswordLogin ? (
                     <A
                       inline
                       onClick={() => {
@@ -557,6 +571,8 @@ export function Login() {
                       forgot your password?
                     </A>
                   )}
+                  hint={passwordErrorMsg}
+                  error={!!passwordErrorMsg}
                   value={password}
                   onChange={setPassword}
                   placeholder="Enter password"

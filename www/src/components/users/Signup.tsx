@@ -14,10 +14,10 @@ import {
   Flex,
   P,
 } from 'honorable'
-import useScript from 'react-script-hook'
 
 import { useOauthUrlsQuery, useSignupMutation } from '../../generated/graphql'
 import { WelcomeHeader } from '../utils/WelcomeHeader'
+import { HubSpot } from '../utils/HubSpot'
 import { fetchToken, setToken } from '../../helpers/authentication'
 import { GqlError } from '../utils/Alert'
 import { PasswordErrorCode, PasswordErrorMessage, validatePassword } from '../Login'
@@ -117,7 +117,6 @@ export function Signup() {
       history.navigate('/')
     }
   }, [history])
-  useScript({ src: 'https://js.hs-scripts.com/22363579.js' })
   const submit = useCallback(() => {
     mutation()
   }, [mutation])
@@ -128,6 +127,7 @@ export function Signup() {
 
   return (
     <LoginPortal>
+      <HubSpot />
       <WelcomeHeader marginBottom="xxlarge" />
       <Form onSubmit={submit}>
         {!showEmailError && error && (

@@ -22,12 +22,13 @@ export type Scalars = {
 
 export type Account = {
   __typename?: 'Account';
+  availableFeatures?: Maybe<PlanFeatures>;
   backgroundColor?: Maybe<Scalars['String']>;
   billingCustomerId?: Maybe<Scalars['String']>;
   clusterCount?: Maybe<Scalars['String']>;
   delinquentAt?: Maybe<Scalars['DateTime']>;
   domainMappings?: Maybe<Array<Maybe<DomainMapping>>>;
-  grandfatheredUnitl?: Maybe<Scalars['DateTime']>;
+  grandfatheredUntil?: Maybe<Scalars['DateTime']>;
   icon?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
   insertedAt?: Maybe<Scalars['DateTime']>;
@@ -1790,6 +1791,8 @@ export type PlanFeatureAttributes = {
 
 export type PlanFeatures = {
   __typename?: 'PlanFeatures';
+  audit?: Maybe<Scalars['Boolean']>;
+  userManagement?: Maybe<Scalars['Boolean']>;
   vpn?: Maybe<Scalars['Boolean']>;
 };
 
@@ -3192,6 +3195,7 @@ export type RootMutationTypeUpsertRepositoryArgs = {
 
 export type RootQueryType = {
   __typename?: 'RootQueryType';
+  account?: Maybe<Account>;
   auditMetrics?: Maybe<Array<Maybe<GeoMetric>>>;
   audits?: Maybe<AuditConnection>;
   categories?: Maybe<Array<Maybe<CategoryInfo>>>;

@@ -1,3 +1,5 @@
+import posthog from 'posthog-js'
+
 import { AUTH_PREVIOUS_USER_DATA } from '../constants'
 import { BROWSER_HISTORY_STORAGE_KEY } from '../router/context'
 
@@ -12,6 +14,7 @@ export enum ONBOARDING_CHECKLIST_STATE {
 // Clears the user related local storage keys during logout.
 function clearLocalStorage(): void {
   wipeToken()
+  posthog.reset()
   localStorage.removeItem(AUTH_PREVIOUS_USER_DATA)
   localStorage.removeItem(BROWSER_HISTORY_STORAGE_KEY)
 

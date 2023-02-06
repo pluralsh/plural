@@ -1,6 +1,7 @@
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useQuery } from '@apollo/client'
 import { Navigate, useLocation } from 'react-router-dom'
+import { Box } from 'grommet'
 
 import { useIntercom } from 'react-use-intercom'
 
@@ -13,6 +14,23 @@ import { growthbook } from '../../helpers/growthbook'
 import { ME_Q } from '../users/queries'
 import { setPreviousUserData, setToken, wipeToken } from '../../helpers/authentication'
 import { useNotificationSubscription } from '../incidents/Notifications'
+import { LoopingLogo } from '../utils/AnimatedLogo'
+
+// const POLL_INTERVAL=30000
+
+function LoadingSpinner() {
+  const [showLogo, setShowLogo] = useState(false)
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowLogo(true)
+    }, 500)
+
+    return () => clearTimeout(timer)
+  }, [])
+
+  return showLogo ? <LoopingLogo /> : null
+}
 
 export default function CurrentUser({ children }: any) {
   const { loading, error, data } = useQuery(ME_Q)
@@ -31,9 +49,7 @@ export default function CurrentUser({ children }: any) {
     }
   }, [data])
 
-  if (loading) {
-    return null
-  }
+  if (loading) return (<Box height="100vh"><LoadingSpinner /></Box>)
 
   if (error || !data?.me?.id) {
     wipeToken()
@@ -78,9 +94,7 @@ export function PluralProvider({ children }: any) {
     if (data && data.me) update()
   }, [location, data, update])
 
-  if (loading) {
-    return null
-  }
+  if (loading) return (<Box height="100vh"><LoadingSpinner /></Box>)
 
   if (error || !data || !data.me || !data.me.id) {
     wipeToken()

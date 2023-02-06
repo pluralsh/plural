@@ -1,7 +1,7 @@
 defmodule GraphQl.Resolvers.Account do
   use GraphQl.Resolvers.Base, model: Core.Schema.Account
   import GraphQl.Resolvers.User, only: [with_jwt: 1]
-  alias Core.Schema.{Group, GroupMember, Role, RoleBinding, IntegrationWebhook, WebhookLog, OAuthIntegration, DomainMapping, Invite}
+  alias Core.Schema.{Group, GroupMember, Role, RoleBinding, IntegrationWebhook, WebhookLog, OAuthIntegration, DomainMapping, Invite, PlatformSubscription, PlatformPlan}
   alias Core.Services.Accounts
 
   def query(Group, _), do: Group
@@ -12,6 +12,18 @@ defmodule GraphQl.Resolvers.Account do
   def query(WebhookLog, _), do: WebhookLog
   def query(DomainMapping, _), do: DomainMapping
   def query(_, _), do: Account
+
+  def resolve_account(_, %{context: %{current_user: user}}) do
+    Accounts.get_account!(user.account_id)
+    |> Core.Repo.preload([subscription: :plan])
+    |> ok()
+  end
+
+  def available_features(%Account{subscription: %PlatformSubscription{plan: %PlatformPlan{}}} = account) do
+    PlatformPlan.features()
+    |> Enum.into(%{}, & {&1, Core.Services.Payments.has_feature?(account, &1)})
+  end
+  def available_features(_), do: nil
 
   def update_account(%{attributes: attrs}, %{context: %{current_user: user}}),
     do: Accounts.update_account(attrs, user)

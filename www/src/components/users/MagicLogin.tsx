@@ -570,6 +570,7 @@ export function Signup() {
       history.navigate('/')
     }
   }, [history])
+  // we should probably move hubspot to loaded similarly to with the other analytic tools and setup with cookiebot
   useScript({ src: 'https://js.hs-scripts.com/22363579.js' })
 
   // @ts-expect-error

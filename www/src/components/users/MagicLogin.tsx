@@ -431,7 +431,6 @@ export function Login() {
     if (state === State.PassLoginCheckingPass && loginMError) {
       setState(State.PassLogin)
       setPassword('')
-      console.log('loginMError', loginMError)
     }
   }, [loginMError, state])
   const passwordErrorMsg
@@ -446,14 +445,14 @@ export function Login() {
     ) {
       const loginMethod = loginMethodData?.loginMethod?.loginMethod
 
-      if (loginMethod === LoginMethod.Password) {
+      if (!loginMethod) {
+        setState(State.Signup)
+      }
+      else if (loginMethod === LoginMethod.Password) {
         setState(State.PassLogin)
       }
       else if (loginMethod === LoginMethod.Passwordless) {
         setState(State.PasswordlessLogin)
-      }
-      else {
-        setState(State.Signup)
       }
     }
   }, [loginMethodData, loginMethodLoading, state])

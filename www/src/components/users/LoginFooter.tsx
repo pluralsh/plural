@@ -55,7 +55,7 @@ export function Footer(props) {
 const breakpoint = '@media screen and (min-width: 614px)'
 
 export const FooterList = styled.div(({ theme }) => ({
-  paddingTop: theme.spacing.large,
+  paddingTop: theme.spacing.xxlarge,
   paddingBottom: theme.spacing.medium,
   display: 'flex',
   flexDirection: 'column',
@@ -65,6 +65,7 @@ export const FooterList = styled.div(({ theme }) => ({
   textAlign: 'center',
   color: 'text-xlight',
   minHeight: theme.spacing.xxxlarge,
+  height: '100%',
   [breakpoint]: {
     flexDirection: 'row',
     gap: theme.spacing.xlarge,
@@ -76,8 +77,5 @@ export const FooterList = styled.div(({ theme }) => ({
 export const FooterBalancer = styled.div(({ theme }) => ({
   flexGrow: 1,
   flexShrink: 0,
-  height: theme.spacing.medium,
-  [breakpoint]: {
-    height: theme.spacing.xxxlarge,
-  },
+  height: theme.spacing.xxlarge,
 }))

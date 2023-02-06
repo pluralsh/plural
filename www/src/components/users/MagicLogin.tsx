@@ -33,8 +33,6 @@ import {
 } from 'honorable'
 import { useResizeDetector } from 'react-resize-detector'
 
-import { useTheme } from 'styled-components'
-
 import {
   AcceptLoginDocument,
   PollLoginTokenDocument,
@@ -54,8 +52,6 @@ import { useHistory } from '../../router'
 
 import { isMinViableEmail } from '../../utils/string'
 
-import Cookiebot from '../../utils/cookiebot'
-
 import {
   METHOD_ICONS,
   saveChallenge,
@@ -65,6 +61,7 @@ import {
 } from './utils'
 import { LoginMethod } from './types'
 import { finishedDeviceLogin } from './DeviceLoginNotif'
+import { Footer, FooterBalancer } from './LoginFooter'
 
 export const LabelledInput = forwardRef(({
   label,
@@ -106,8 +103,6 @@ ref) => (
 const RIGHT_CONTENT_MAX_WIDTH = 512
 
 export function LoginPortal({ children }: any) {
-  const theme = useTheme()
-
   return (
     <Flex height="100vh">
       {/* LEFT SIDE */}
@@ -136,10 +131,7 @@ export function LoginPortal({ children }: any) {
         shrink={1}
         paddingHorizontal="xxlarge"
       >
-        <Div
-          flexGrow={1}
-          minHeight={theme.spacing.xxxlarge}
-        />
+        <FooterBalancer />
         <Div
           maxWidth={RIGHT_CONTENT_MAX_WIDTH}
           width="100%"
@@ -148,7 +140,7 @@ export function LoginPortal({ children }: any) {
         >
           {children}
         </Div>
-        <Footer minHeight={theme.spacing.xxxlarge} />
+        <Footer />
       </Flex>
     </Flex>
   )
@@ -613,49 +605,5 @@ function OAuthOption({ url: { authorizeUrl, provider }, ...props }: any) {
     >
       {providerToName[provider.toLowerCase()]}
     </Button>
-  )
-}
-
-function Footer(props) {
-  return (
-    <Flex
-      gap="xlarge"
-      caption
-      justifyContent="center"
-      textAlign="center"
-      color="text-xlight"
-      flexGrow={1}
-      alignItems="end"
-      paddingBottom="medium"
-      {...props}
-    >
-      <Div>
-        © Plural Labs {new Date().toLocaleString('en-us', { year: 'numeric' })}
-      </Div>
-      <A
-        inline
-        href="https://www.plural.sh/legal/privacy-policy"
-        target="_blank"
-      >
-        Privacy Policy
-      </A>
-
-      <A
-        inline
-        onClick={() => {
-          (window as any)?._hsp?.push(['showBanner'])
-        }}
-      >
-        Cookie settings
-      </A>
-      <A
-        inline
-        onClick={() => {
-          Cookiebot.show()
-        }}
-      >
-        Cookie settings
-      </A>
-    </Flex>
   )
 }

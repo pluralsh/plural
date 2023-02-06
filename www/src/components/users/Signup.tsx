@@ -19,7 +19,7 @@ import { useOauthUrlsQuery, useSignupMutation } from '../../generated/graphql'
 import { WelcomeHeader } from '../utils/WelcomeHeader'
 import { fetchToken, setToken } from '../../helpers/authentication'
 import { GqlError } from '../utils/Alert'
-import { PasswordError, PasswordErrorMessage, disableState } from '../Login'
+import { PasswordErrorCode, PasswordErrorMessage, validatePassword } from '../Login'
 import { host } from '../../helpers/hostname'
 import { useHistory } from '../../router'
 
@@ -27,7 +27,7 @@ import { getDeviceToken } from './utils'
 import { finishedDeviceLogin } from './DeviceLoginNotif'
 import { LabelledInput, LoginPortal, OAuthOptions } from './MagicLogin'
 
-function PasswordErrorMsg({ errorCode }: { errorCode: PasswordError }) {
+function PasswordErrorMsg({ errorCode }: { errorCode: PasswordErrorCode }) {
   return (
     <P
       caption
@@ -40,8 +40,8 @@ function PasswordErrorMsg({ errorCode }: { errorCode: PasswordError }) {
 
 export function SetPasswordField({
   errorCode,
-  props,
-}: { errorCode: PasswordError } & ComponentProps<typeof LabelledInput>) {
+  ...props
+}: { errorCode: PasswordErrorCode } & ComponentProps<typeof LabelledInput>) {
   return (
     <LabelledInput
       label="Password"
@@ -58,7 +58,7 @@ export function SetPasswordField({
 
 export function ConfirmPasswordField({
   errorCode,
-  props,
+  ...props
 }: ComponentProps<typeof SetPasswordField>) {
   return (
     <LabelledInput
@@ -119,11 +119,9 @@ export function Signup() {
     mutation()
   }, [mutation])
 
-  const { disabled, error: passwordError } = disableState(password, confirm)
+  const { disabled, error: passwordError } = validatePassword(password, confirm)
 
   const showEmailError = error?.message?.startsWith('not_found')
-
-  console.log('errormessage', error?.message)
 
   return (
     <LoginPortal>

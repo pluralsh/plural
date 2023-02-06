@@ -31,6 +31,12 @@ export function RequestPasswordReset() {
   const resetSuccess = data && data.createResetToken
   const invalidEmail = error?.message === 'not_found'
   const gqlError = !invalidEmail ? error : undefined
+  const disabled = !isMinViableEmail(attributes.email)
+  const onSubmit = () => {
+    if (!disabled) {
+      mutation()
+    }
+  }
 
   return (
     <LoginPortal>
@@ -38,14 +44,13 @@ export function RequestPasswordReset() {
         <RequestResetSuccess />
       ) : (
         <>
-          <Div marginBottom="xlarge">
-            <H1
-              title1
-              textAlign="center"
-            >
-              Reset password
-            </H1>
-          </Div>
+          <H1
+            title1
+            textAlign="center"
+            marginBottom="xlarge"
+          >
+            Reset password
+          </H1>
           {gqlError && (
             <Div marginBottom="medium">
               <GqlError
@@ -54,7 +59,7 @@ export function RequestPasswordReset() {
               />
             </Div>
           )}
-          <Form onSubmit={() => mutation()}>
+          <Form onSubmit={onSubmit}>
             <LabelledInput
               width="100%"
               value={attributes.email}
@@ -73,7 +78,7 @@ export function RequestPasswordReset() {
               type="submit"
               width="100%"
               loading={loading}
-              disabled={!isMinViableEmail(attributes.email)}
+              disabled={disabled}
             >
               Reset Password
             </Button>

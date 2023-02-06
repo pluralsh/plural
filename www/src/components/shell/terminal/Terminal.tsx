@@ -106,7 +106,7 @@ function Terminal({ provider }) {
 
   useEffect(() => {
     if (state === State.Installed && channel) {
-      const cmd = 'plural build && plural deploy\r'
+      const cmd = 'plural build && plural deploy --commit "deploying a few apps with plural"\r'
 
       channel.push(ChannelEvent.OnData, { cmd })
       setState(State.New)

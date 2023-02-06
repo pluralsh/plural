@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { Link, useLocation, useParams } from 'react-router-dom'
-import { useMutation, useQuery } from '@apollo/client'
-import { Box, Form, Keyboard } from 'grommet'
+import { Form } from 'grommet'
 import {
   A,
   Button,
@@ -10,35 +9,38 @@ import {
   H1,
   P,
 } from 'honorable'
-
 import { SuccessIcon } from '@pluralsh/design-system'
+
+import {
+  ResetTokenType,
+  useCreateResetTokenMutation,
+  useRealizeResetTokenMutation,
+  useResetTokenQuery,
+} from '../../generated/graphql'
+
+import { wipeToken } from '../../helpers/authentication'
+import { isMinViableEmail } from '../../utils/string'
 
 import { Alert, AlertStatus, GqlError } from '../utils/Alert'
 import { PasswordStatus, disableState } from '../Login'
 
-import { wipeToken } from '../../helpers/authentication'
-
-import { isMinViableEmail } from '../../utils/string'
-
-import { ResetTokenType } from './types'
-import { CREATE_RESET_TOKEN, REALIZE_TOKEN, RESET_TOKEN } from './queries'
 import { LabelledInput, LoginPortal } from './MagicLogin'
+import { ConfirmPasswordField, SetPasswordField } from './Signup'
 
 export function ResetPassword() {
   const { id } = useParams()
   const [attributes, setAttributes] = useState({ password: '' })
   const [confirm, setConfirm] = useState('')
-  const { data } = useQuery(RESET_TOKEN, { variables: { id } })
-  const [mutation, { loading, data: realized, error }] = useMutation(REALIZE_TOKEN,
-    {
-      variables: { id, attributes },
-      onCompleted: () => {
-        wipeToken()
-        window.location = '/login' as any as Location
-      },
-    })
+  const { data } = useResetTokenQuery({ variables: { id: id ?? '' } })
+  const [mutation, { loading, data: realized, error }] = useRealizeResetTokenMutation({
+    variables: { id: id ?? '', attributes },
+    onCompleted: () => {
+      wipeToken()
+      window.location = '/login' as any as Location
+    },
+  })
 
-  const { disabled, reason } = disableState(attributes.password, confirm)
+  const { disabled, reason, error: passwordError } = disableState(attributes.password, confirm)
 
   if (!data) return null
 
@@ -64,78 +66,54 @@ export function ResetPassword() {
             error={error}
           />
         )}
-        <Keyboard onEnter={() => mutation()}>
-          <Form onSubmit={() => mutation()}>
-            <Box
-              margin={{ bottom: 'small' }}
-              gap="small"
-            >
-              <LabelledInput
-                width="100%"
-                label="Email"
-                name="email"
-                value={data.resetToken.user.email}
-              />
-              <LabelledInput
-                label="Password"
-                type="password"
-                value={attributes.password}
-                onChange={password => setAttributes({ ...attributes, password })}
-                placeholder="a strong password"
-                caption="10 character minimum"
-                hint={
-                  reason === 'Password is too short' && (
-                    <P
-                      caption
-                      color="text-error"
-                    >
-                      Password is too short
-                    </P>
-                  )
-                }
-              />
-              <LabelledInput
-                label="Confirm Password"
-                type="password"
-                value={confirm}
-                onChange={setConfirm}
-                placeholder="confirm your password"
-                hint={
-                  reason === 'Passwords do not match' && (
-                    <P
-                      caption
-                      color="text-error"
-                    >
-                      Password doesn't match
-                    </P>
-                  )
-                }
-              />
-            </Box>
-
-            <PasswordStatus
-              disabled={disabled}
-              reason={reason}
-            />
-            <Button
+        <Form onSubmit={() => mutation()}>
+          <Flex
+            flexDirection="column"
+            marginBottom="small"
+            gap="small"
+          >
+            <LabelledInput
               width="100%"
-              onClick={() => mutation()}
-              loading={loading}
-              disabled={disabled}
-            >
-              Reset password
-            </Button>
-          </Form>
-        </Keyboard>
+              label="Email"
+              name="email"
+              value={data.resetToken?.user.email}
+            />
+            <SetPasswordField
+              value={attributes.password}
+              onChange={password => setAttributes({ ...attributes, password })}
+              errorCode={passwordError}
+            />
+            <ConfirmPasswordField
+              value={confirm}
+              onChange={setConfirm}
+              errorCode={passwordError}
+            />
+          </Flex>
+
+          <PasswordStatus
+            disabled={disabled}
+            reason={reason}
+          />
+          <Button
+            width="100%"
+            loading={loading}
+            disabled={disabled}
+          >
+            Reset password
+          </Button>
+        </Form>
       </Div>
     </LoginPortal>
   )
 }
 
-export function PasswordReset() {
+export function RequestPasswordReset() {
   const location = useLocation()
-  const [attributes, setAttributes] = useState({ email: location?.state?.email || '', type: ResetTokenType.PASSWORD })
-  const [mutation, { loading, data, error }] = useMutation(CREATE_RESET_TOKEN, {
+  const [attributes, setAttributes] = useState({
+    email: location?.state?.email || '',
+    type: ResetTokenType.Password,
+  })
+  const [mutation, { loading, data, error }] = useCreateResetTokenMutation({
     variables: { attributes },
   })
 
@@ -144,7 +122,7 @@ export function PasswordReset() {
   return (
     <LoginPortal>
       {resetSuccess ? (
-        <ResetSuccess />
+        <RequestResetSuccess />
       ) : (
         <>
           <Div marginBottom="xlarge">
@@ -187,7 +165,7 @@ export function PasswordReset() {
   )
 }
 
-function ResetSuccess() {
+function RequestResetSuccess() {
   return (
     <Flex
       flexDirection="column"

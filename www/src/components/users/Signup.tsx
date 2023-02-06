@@ -1,20 +1,78 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import {
+  ComponentProps,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 import { Form } from 'grommet'
 import { Link, useLocation } from 'react-router-dom'
-import { A, Button, Div, P } from 'honorable'
+import {
+  A,
+  Button,
+  Div,
+  P,
+} from 'honorable'
 import useScript from 'react-script-hook'
 
 import { useOauthUrlsQuery, useSignupMutation } from '../../generated/graphql'
 import { WelcomeHeader } from '../utils/WelcomeHeader'
 import { fetchToken, setToken } from '../../helpers/authentication'
 import { GqlError } from '../utils/Alert'
-import { disableState } from '../Login'
+import { PasswordError, PasswordErrorMessage, disableState } from '../Login'
 import { host } from '../../helpers/hostname'
 import { useHistory } from '../../router'
 
 import { getDeviceToken } from './utils'
 import { finishedDeviceLogin } from './DeviceLoginNotif'
 import { LabelledInput, LoginPortal, OAuthOptions } from './MagicLogin'
+
+function PasswordErrorMsg({ errorCode }: { errorCode: PasswordError }) {
+  return (
+    <P
+      caption
+      color="text-error"
+    >
+      {PasswordErrorMessage[errorCode]}
+    </P>
+  )
+}
+
+export function SetPasswordField({
+  errorCode,
+  props,
+}: { errorCode: PasswordError } & ComponentProps<typeof LabelledInput>) {
+  return (
+    <LabelledInput
+      label="Password"
+      type="password"
+      placeholder="Enter password"
+      hint="10 character minimum"
+      caption={
+        errorCode === 'TOO_SHORT' && <PasswordErrorMsg errorCode={errorCode} />
+      }
+      {...props}
+    />
+  )
+}
+
+export function ConfirmPasswordField({
+  errorCode,
+  props,
+}: ComponentProps<typeof SetPasswordField>) {
+  return (
+    <LabelledInput
+      label="Confirm password"
+      type="password"
+      placeholder="Confirm password"
+      hint=""
+      caption={
+        errorCode === 'NO_MATCH' && <PasswordErrorMsg errorCode={errorCode} />
+      }
+      {...props}
+    />
+  )
+}
 
 export function Signup() {
   const history = useHistory()
@@ -61,19 +119,22 @@ export function Signup() {
     mutation()
   }, [mutation])
 
-  // @ts-expect-error
-  const { disabled, reason } = disableState(password, confirm, email)
+  const { disabled, error: passwordError } = disableState(password, confirm)
 
-  let showEmailError = error?.message?.startsWith('not_found')
+  const showEmailError = error?.message?.startsWith('not_found')
 
   console.log('errormessage', error?.message)
+
   return (
     <LoginPortal>
       <WelcomeHeader marginBottom="xxlarge" />
       <Form onSubmit={submit}>
         {!showEmailError && error && (
           <Div marginBottom="medium">
-            <GqlError error={error} header="Signup failed" />
+            <GqlError
+              error={error}
+              header="Signup failed"
+            />
           </Div>
         )}
         <LabelledInput
@@ -85,45 +146,26 @@ export function Signup() {
         />
         <LabelledInput
           ref={nameRef}
-          label="Full name"
+          label="Username"
           value={name}
           onChange={setName}
-          placeholder="Enter first and last name"
+          placeholder="Enter username"
         />
         <LabelledInput
-          label="Account name"
+          label="Company name"
           value={account}
           onChange={setAccount}
-          placeholder="Enter account name (must be unique)"
+          placeholder="Enter company name"
         />
-        <LabelledInput
-          label="Password"
+        <SetPasswordField
           value={password}
-          type="password"
           onChange={setPassword}
-          placeholder="Enter password"
-          caption="10 character minimum"
-          hint={
-            reason === 'Password is too short' && (
-              <P caption color="text-error">
-                Password is too short
-              </P>
-            )
-          }
+          errorCode={passwordError}
         />
-        <LabelledInput
-          label="Confirm password"
+        <ConfirmPasswordField
           value={confirm}
-          type="password"
           onChange={setConfirm}
-          placeholder="Enter password again"
-          hint={
-            reason === 'Passwords do not match' && (
-              <P caption color="text-error">
-                Password doesn't match
-              </P>
-            )
-          }
+          errorCode={passwordError}
         />
         <Button
           type="submit"
@@ -136,9 +178,17 @@ export function Signup() {
         </Button>
       </Form>
       <OAuthOptions oauthUrls={data?.oauthUrls} />
-      <P body2 textAlign="center" marginTop="medium">
+      <P
+        body2
+        textAlign="center"
+        marginTop="medium"
+      >
         Already have an account?{' '}
-        <A as={Link} inline to="/login">
+        <A
+          as={Link}
+          inline
+          to="/login"
+        >
           Login
         </A>
       </P>

@@ -1,11 +1,18 @@
 import { Box, Text } from 'grommet'
 import { CheckIcon, ErrorIcon } from '@pluralsh/design-system'
 
-export function disableState(password, confirm) {
+export type PasswordError = 'TOO_SHORT' | 'NO_MATCH'
+
+export const PasswordErrorMessage = {
+  TOO_SHORT: 'Password is too short',
+  NO_MATCH: 'Passwords do not match',
+} as const satisfies Record<PasswordError, string>
+
+export function disableState(password, confirm):{disabled:boolean, reason: string, error?: PasswordError} {
   if (password.length === 0) return { disabled: true, reason: '' }
-  if (password.length < 10) return { disabled: true, reason: 'Password is too short' }
+  if (password.length < 10) return { disabled: true, reason: 'Password is too short', error: 'TOO_SHORT' }
   if (!confirm) return { disabled: true, reason: '' }
-  if (confirm && password !== confirm) return { disabled: true, reason: 'Passwords do not match' }
+  if (confirm && password !== confirm) return { disabled: true, reason: 'Passwords do not match', error: 'NO_MATCH' }
 
   return { disabled: false, reason: '' }
 }

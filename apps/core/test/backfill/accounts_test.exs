@@ -24,4 +24,15 @@ defmodule Core.Backfill.AccountsTest do
       assert ac2.cluster_count == 0
     end
   end
+
+  describe "#grandfather/0" do
+    test "it will set the grandfather timestamp on all accounts" do
+      accounts = insert_list(3, :account)
+
+      {3, _} = Accounts.grandfather()
+
+      for account <- accounts,
+        do: assert refetch(account).grandfathered_until
+    end
+  end
 end

@@ -23,6 +23,7 @@ import { useHistory } from '../router'
 
 import PluralConfigurationContext from '../contexts/PluralConfigurationContext'
 import CurrentUserContext from '../contexts/CurrentUserContext'
+import PosthogIdentiy from '../utils/posthog'
 
 const ApplicationLayout = lazy(() => import('./layout/ApplicationLayout'))
 const BreadcrumbProvider = lazy(() => import('./Breadcrumbs'))
@@ -161,6 +162,23 @@ function TestBanner() {
   return null
 }
 
+function PosthogIdentifier() {
+  const { me } = useContext(CurrentUserContext)
+
+  PosthogIdentiy(me)
+
+  useEffect(() => {
+    const onPrefChange = () => {
+      PosthogIdentiy(me)
+    }
+
+    window.addEventListener('CookiebotOnAccept', onPrefChange)
+    window.addEventListener('CookiebotOnDecline', onPrefChange)
+  }, [me])
+
+  return null
+}
+
 export function PluralInner() {
   const isChecklistEnabled = useFeature('checklist').on
 
@@ -169,6 +187,7 @@ export function PluralInner() {
       <BreadcrumbProvider>
         <ChecklistProvider>
           <ApplicationLayout>
+            <PosthogIdentifier />
             <VerifyEmailConfirmed />
             <DeviceLoginNotif />
             <TestBanner />

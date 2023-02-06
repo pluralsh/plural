@@ -1,3 +1,5 @@
+import posthog from 'posthog-js'
+
 import {
   CONSOLE_LOCAL_STORAGE_KEY,
   ONBOARDING_CHECKLIST_STATE,
@@ -15,6 +17,7 @@ import { wipeToken } from './authentication'
 // Clears the user related local storage keys during logout.
 function clearLocalStorage(): void {
   wipeToken()
+  posthog.reset()
   localStorage.removeItem(SELECTED_APPLICATIONS_LOCAL_STORAGE_KEY)
   localStorage.removeItem(PROVIDER_LOCAL_STORAGE_KEY)
   localStorage.removeItem(STACK_NAME_LOCAL_STORAGE_KEY)

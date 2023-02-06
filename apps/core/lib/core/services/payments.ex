@@ -137,18 +137,25 @@ defmodule Core.Services.Payments do
   @doc """
   Determine's if a user's account has access to the given feature.  Returns `true` if enforcement is not enabled yet.
   """
-  @spec has_feature?(User.t, atom) :: boolean
-  def has_feature?(%User{} = user, feature) do
-    user = preload(user)
-    case {enforce?(), delinquent?(user), grandfathered?(user), user} do
+  @spec has_feature?(User.t | Account.t, atom) :: boolean
+  def has_feature?(%Account{} = account, feature) do
+    case {enforce?(), delinquent?(account), grandfathered?(account), account} do
       {false, _, _, _} -> true
       {_, true, _, _} -> false
       {_, _, true, _} -> true
-      {_, _, _, %User{account: %Account{subscription: %PlatformSubscription{plan: %PlatformPlan{enterprise: true}}}}} -> true
-      {_, _, _, %User{account: %Account{subscription: %PlatformSubscription{plan: %PlatformPlan{features: %{^feature => true}}}}}} -> true
+      {_, _, _, %Account{subscription: %PlatformSubscription{plan: %PlatformPlan{enterprise: true}}}} -> true
+      {_, _, _, %Account{subscription: %PlatformSubscription{plan: %PlatformPlan{features: %{^feature => true}}}}} -> true
       _ -> false
     end
   end
+
+  def has_feature?(%User{} = user, feature) do
+    preload(user)
+    |> Map.get(:account)
+    |> has_feature?(feature)
+  end
+
+  def has_feature?(_, _), do: false
 
   @doc """
   Completes the stripe oauth cycle and persists the account id to the publisher

@@ -10,4 +10,9 @@ defmodule Core.Backfill.Accounts do
       |> Core.Repo.update_all(set: [user_count: u, cluster_count: c])
     end)
   end
+
+  def grandfather() do
+    grandfathered = Timex.now() |> Timex.shift(days: 30)
+    Core.Repo.update_all(Account, set: [grandfathered_until: grandfathered])
+  end
 end

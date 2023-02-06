@@ -185,8 +185,6 @@ def save_publisher(pub):
 def webflow_dump():
     wf = webflow_client()
     api = gql_client()
-
-    
     
     click.echo('syncing tags')
     tags = api.execute(query=tags_q)

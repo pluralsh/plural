@@ -215,7 +215,8 @@ export const LOGIN_METHOD = gql`
 export const SIGNUP_MUTATION = gql`
   mutation Signup($attributes: UserAttributes!, $account: AccountAttributes, $deviceToken: String) {
     signup(attributes: $attributes, account: $account, deviceToken: $deviceToken) { 
-      jwt 
+      jwt
+      id
       onboarding
     }
   }
@@ -224,20 +225,22 @@ export const SIGNUP_MUTATION = gql`
 export const LOGIN_MUTATION = gql`
   mutation Login($email: String!, $password: String!, $deviceToken: String) {
     login(email: $email, password: $password, deviceToken: $deviceToken) { 
-      jwt 
+      jwt
+      id
+      email
     }
   }
 `
 
 export const PASSWORDLESS_LOGIN = gql`
   mutation Passwordless($token: String!) {
-    passwordlessLogin(token: $token) { jwt }
+    passwordlessLogin(token: $token) { jwt id email }
   }
 `
 
 export const POLL_LOGIN_TOKEN = gql`
   mutation Poll($token: String!, $deviceToken: String) {
-    loginToken(token: $token, deviceToken: $deviceToken) { jwt }
+    loginToken(token: $token, deviceToken: $deviceToken) { jwt id email }
   }
 `
 export const EAB_CREDENTIALS = gql`
@@ -274,12 +277,14 @@ export const OAUTH_CALLBACK = gql`
     oauthCallback(code: $code, host: $host, provider: $provider, deviceToken: $deviceToken) { 
       jwt 
       onboarding
+      id
+      email
     }
   }
 `
 
 export const SSO_CALLBACK = gql`
   mutation SSOCallback($code: String!, $deviceToken: String) { 
-    ssoCallback(code: $code, deviceToken: $deviceToken) { jwt }
+    ssoCallback(code: $code, deviceToken: $deviceToken) { jwt id email }
   }
 `

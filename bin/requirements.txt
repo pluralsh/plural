@@ -3,3 +3,5 @@ click
 python-graphql-client
 pyyaml
 webflowpy
+docker_registry_client_async
+asyncio

@@ -35,6 +35,7 @@ import { useResizeDetector } from 'react-resize-detector'
 
 import {
   AcceptLoginDocument,
+  LoginMethod,
   PollLoginTokenDocument,
   useLoginMethodLazyQuery,
   useLoginMutation,
@@ -59,7 +60,6 @@ import {
   wipeChallenge,
   wipeDeviceToken,
 } from './utils'
-import { LoginMethod } from './types'
 import { finishedDeviceLogin } from './DeviceLoginNotif'
 import { Footer, FooterBalancer } from './LoginFooter'
 
@@ -316,18 +316,29 @@ export function OAuthOptions({ oauthUrls }: any) {
 }
 
 type LoginState =
-  | 'INITIAL'
-  | 'CHECK_EMAIL'
-  | 'CHECKING_EMAIL'
-  | 'CHECK_PASSWORD'
-  | 'CHECKING_PASSWORD'
-  | 'PASSWORD_LOGIN'
-  | 'PASSWORDLESS'
-  | 'SIGNUP'
+  | 'Initial'
+  | 'CheckEmail'
+  | 'CheckingEmail'
+  | 'PassLoginCheckPass'
+  | 'PassLoginCheckingPass'
+  | 'PassLogin'
+  | 'PasswordlessLogin'
+  | 'Signup'
+
+const State = {
+  Initial: 'Initial',
+  CheckEmail: 'CheckEmail',
+  CheckingEmail: 'CheckingEmail',
+  PassLoginCheckPass: 'PassLoginCheckPass',
+  PassLoginCheckingPass: 'PassLoginCheckingPass',
+  PassLogin: 'PassLogin',
+  PasswordlessLogin: 'PasswordlessLogin',
+  Signup: 'Signup',
+} as const satisfies Record<LoginState, LoginState>
 
 export function Login() {
-  const [state, setState] = useState<LoginState>('INITIAL')
-  const prevState = useRef<LoginState>('INITIAL')
+  const [state, setState] = useState<LoginState>(State.Initial)
+  const prevState = useRef<LoginState>(State.Initial)
   const history = useHistory()
   const client = useApolloClient()
   const location = useLocation()
@@ -354,9 +365,9 @@ export function Login() {
   const emailRef = useRef<HTMLElement>()
 
   const isPasswordLogin
-    = state === 'PASSWORD_LOGIN'
-    || state === 'CHECKING_PASSWORD'
-    || state === 'CHECK_PASSWORD'
+    = state === State.PassLogin
+    || state === State.PassLoginCheckingPass
+    || state === State.PassLoginCheckPass
 
   const [loginMutation, { loading: loginMLoading, error: loginMError }]
     = useLoginMutation({
@@ -389,19 +400,18 @@ export function Login() {
   useEffect(() => {
     if (state !== prevState.current) {
       switch (state) {
-      case 'INITIAL':
+      case State.Initial:
         setInputFocus(emailRef)
         break
-      case 'CHECK_EMAIL':
-        setState('CHECKING_EMAIL')
-        console.log('setting to CHECKING_EMAIL')
+      case State.CheckEmail:
         getLoginMethod()
+        setState(State.CheckingEmail)
         break
-      case 'CHECK_PASSWORD':
+      case State.PassLoginCheckPass:
         loginMutation()
-        setState('CHECKING_PASSWORD')
+        setState(State.PassLoginCheckingPass)
         break
-      case 'PASSWORD_LOGIN':
+      case State.PassLogin:
         setInputFocus(passwordRef)
         break
       default:
@@ -412,41 +422,46 @@ export function Login() {
   }, [getLoginMethod, loginMutation, state])
 
   useEffect(() => {
-    if (state === 'SIGNUP') {
+    if (state === State.Signup) {
       navigate('/signup', { state: { email } })
     }
   })
 
   useEffect(() => {
-    if (state === 'CHECKING_PASSWORD' && loginMError) {
-      setState('PASSWORD_LOGIN')
+    if (state === State.PassLoginCheckingPass && loginMError) {
+      setState(State.PassLogin)
+      setPassword('')
       console.log('loginMError', loginMError)
     }
   }, [loginMError, state])
-  const passwordErrorMsg = loginMError?.message === 'invalid password' ? 'Invalid password' : undefined
+  const passwordErrorMsg
+    = loginMError?.message === 'invalid password' ? 'Invalid password' : undefined
   const loginError = !passwordErrorMsg && loginMError
 
   useEffect(() => {
-    console.log({ loginMethodLoading, loginMethodData, state })
-    if (!loginMethodLoading && loginMethodData && state === 'CHECKING_EMAIL') {
+    if (
+      !loginMethodLoading
+      && loginMethodData
+      && state === State.CheckingEmail
+    ) {
       const loginMethod = loginMethodData?.loginMethod?.loginMethod
 
-      if (loginMethod === LoginMethod.PASSWORD) {
-        setState('PASSWORD_LOGIN')
+      if (loginMethod === LoginMethod.Password) {
+        setState(State.PassLogin)
       }
-      else if (loginMethod === LoginMethod.PASSWORDLESS) {
-        setState('PASSWORDLESS')
+      else if (loginMethod === LoginMethod.Passwordless) {
+        setState(State.PasswordlessLogin)
       }
       else {
-        setState('SIGNUP')
+        setState(State.Signup)
       }
     }
   }, [loginMethodData, loginMethodLoading, state])
 
   useEffect(() => {
-    if (state === 'CHECKING_EMAIL' && loginMethodError) {
+    if (state === State.CheckingEmail && loginMethodError) {
       if (deviceToken) saveDeviceToken(deviceToken)
-      setState('SIGNUP')
+      setState(State.Signup)
     }
   }, [deviceToken, loginMethodError, state])
 
@@ -478,15 +493,25 @@ export function Login() {
     }
   }, [challenge, deviceToken, history, client, jwt, ran, setRan])
 
+  const disableSubmit = isPasswordLogin
+    ? password.length === 0
+    : !isMinViableEmail(email)
+
   const submit = useCallback(() => {
-    console.log('submit')
-    if (state === 'PASSWORD_LOGIN') {
-      setState('CHECK_PASSWORD')
+    if (disableSubmit) {
+      return
     }
-    if (state === 'INITIAL') {
-      setState('CHECK_EMAIL')
+    switch (state) {
+    case State.PassLogin:
+      setState(State.PassLoginCheckPass)
+      break
+    case State.Initial:
+      setState(State.CheckEmail)
+      break
+    default:
+      break
     }
-  }, [state])
+  }, [disableSubmit, state])
 
   const loading = loginMethodLoading || loginMLoading
 
@@ -509,7 +534,7 @@ export function Login() {
     <LoginPortal>
       <Div>
         <WelcomeHeader marginBottom="xlarge" />
-        {state === 'PASSWORDLESS' && (
+        {state === State.PasswordlessLogin && (
           <Div>
             <LoginPoller
               token={loginMethod?.token}
@@ -518,7 +543,7 @@ export function Login() {
             />
           </Div>
         )}
-        {state !== 'PASSWORDLESS' && (
+        {state !== State.PasswordlessLogin && (
           <>
             <Form onSubmit={submit}>
               {loginError && (
@@ -537,12 +562,12 @@ export function Login() {
                 disabled={isPasswordLogin}
                 placeholder="Enter email address"
                 caption={
-                  state === isPasswordLogin ? (
+                  isPasswordLogin ? (
                     <A
                       inline
                       onClick={() => {
                         setEmail('')
-                        setState('INITIAL')
+                        setState(State.Initial)
                       }}
                     >
                       change email
@@ -551,7 +576,7 @@ export function Login() {
                 }
               />
               <Collapsible
-                open={state === 'PASSWORD_LOGIN'}
+                open={state === State.PassLogin}
                 direction="vertical"
               >
                 <LabelledInput
@@ -582,7 +607,7 @@ export function Login() {
                 type="submit"
                 width="100%"
                 loading={loading}
-                disabled={!isMinViableEmail(email)}
+                disabled={disableSubmit}
               >
                 Continue
               </Button>

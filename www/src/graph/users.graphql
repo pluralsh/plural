@@ -233,7 +233,24 @@ query OauthUrls($host: String) {
 }
 
 mutation AcceptLogin($challenge: String!) {
-  acceptLogin(challenge: $challenge) { 
+  acceptLogin(challenge: $challenge) {
     redirectTo
+  }
+}
+
+mutation CreateResetToken($attributes: ResetTokenAttributes!) {
+  createResetToken(attributes: $attributes)
+}
+
+mutation RealizeResetToken($id: ID!, $attributes: ResetTokenRealization!) {
+  realizeResetToken(id: $id, attributes: $attributes)
+}
+
+query ResetToken($id: ID!) {
+  resetToken(id: $id) {
+    type
+    user {
+      ...User
+    }
   }
 }

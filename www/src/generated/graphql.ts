@@ -5217,6 +5217,28 @@ export type AcceptLoginMutationVariables = Exact<{
 
 export type AcceptLoginMutation = { __typename?: 'RootMutationType', acceptLogin?: { __typename?: 'OauthResponse', redirectTo: string } | null };
 
+export type CreateResetTokenMutationVariables = Exact<{
+  attributes: ResetTokenAttributes;
+}>;
+
+
+export type CreateResetTokenMutation = { __typename?: 'RootMutationType', createResetToken?: boolean | null };
+
+export type RealizeResetTokenMutationVariables = Exact<{
+  id: Scalars['ID'];
+  attributes: ResetTokenRealization;
+}>;
+
+
+export type RealizeResetTokenMutation = { __typename?: 'RootMutationType', realizeResetToken?: boolean | null };
+
+export type ResetTokenQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type ResetTokenQuery = { __typename?: 'RootQueryType', resetToken?: { __typename?: 'ResetToken', type: ResetTokenType, user: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } } | null };
+
 export type VersionTagFragment = { __typename?: 'VersionTag', id: string, tag: string, version?: { __typename?: 'Version', id: string } | null };
 
 export type VersionFragment = { __typename?: 'Version', id: string, helm?: Map<string, unknown> | null, readme?: string | null, valuesTemplate?: string | null, version: string, insertedAt?: Date | null, package?: string | null, crds?: Array<{ __typename?: 'Crd', id: string, name: string, blob?: string | null } | null> | null, chart?: { __typename?: 'Chart', id?: string | null, name: string, description?: string | null, latestVersion?: string | null, insertedAt?: Date | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', name?: string | null, repo?: string | null, type?: DependencyType | null, version?: string | null, optional?: boolean | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null } | null, terraform?: { __typename?: 'Terraform', id?: string | null, name?: string | null } | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', name?: string | null, repo?: string | null, type?: DependencyType | null, version?: string | null, optional?: boolean | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null };
@@ -8667,6 +8689,107 @@ export function useAcceptLoginMutation(baseOptions?: Apollo.MutationHookOptions<
 export type AcceptLoginMutationHookResult = ReturnType<typeof useAcceptLoginMutation>;
 export type AcceptLoginMutationResult = Apollo.MutationResult<AcceptLoginMutation>;
 export type AcceptLoginMutationOptions = Apollo.BaseMutationOptions<AcceptLoginMutation, AcceptLoginMutationVariables>;
+export const CreateResetTokenDocument = gql`
+    mutation CreateResetToken($attributes: ResetTokenAttributes!) {
+  createResetToken(attributes: $attributes)
+}
+    `;
+export type CreateResetTokenMutationFn = Apollo.MutationFunction<CreateResetTokenMutation, CreateResetTokenMutationVariables>;
+
+/**
+ * __useCreateResetTokenMutation__
+ *
+ * To run a mutation, you first call `useCreateResetTokenMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateResetTokenMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createResetTokenMutation, { data, loading, error }] = useCreateResetTokenMutation({
+ *   variables: {
+ *      attributes: // value for 'attributes'
+ *   },
+ * });
+ */
+export function useCreateResetTokenMutation(baseOptions?: Apollo.MutationHookOptions<CreateResetTokenMutation, CreateResetTokenMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateResetTokenMutation, CreateResetTokenMutationVariables>(CreateResetTokenDocument, options);
+      }
+export type CreateResetTokenMutationHookResult = ReturnType<typeof useCreateResetTokenMutation>;
+export type CreateResetTokenMutationResult = Apollo.MutationResult<CreateResetTokenMutation>;
+export type CreateResetTokenMutationOptions = Apollo.BaseMutationOptions<CreateResetTokenMutation, CreateResetTokenMutationVariables>;
+export const RealizeResetTokenDocument = gql`
+    mutation RealizeResetToken($id: ID!, $attributes: ResetTokenRealization!) {
+  realizeResetToken(id: $id, attributes: $attributes)
+}
+    `;
+export type RealizeResetTokenMutationFn = Apollo.MutationFunction<RealizeResetTokenMutation, RealizeResetTokenMutationVariables>;
+
+/**
+ * __useRealizeResetTokenMutation__
+ *
+ * To run a mutation, you first call `useRealizeResetTokenMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRealizeResetTokenMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [realizeResetTokenMutation, { data, loading, error }] = useRealizeResetTokenMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      attributes: // value for 'attributes'
+ *   },
+ * });
+ */
+export function useRealizeResetTokenMutation(baseOptions?: Apollo.MutationHookOptions<RealizeResetTokenMutation, RealizeResetTokenMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RealizeResetTokenMutation, RealizeResetTokenMutationVariables>(RealizeResetTokenDocument, options);
+      }
+export type RealizeResetTokenMutationHookResult = ReturnType<typeof useRealizeResetTokenMutation>;
+export type RealizeResetTokenMutationResult = Apollo.MutationResult<RealizeResetTokenMutation>;
+export type RealizeResetTokenMutationOptions = Apollo.BaseMutationOptions<RealizeResetTokenMutation, RealizeResetTokenMutationVariables>;
+export const ResetTokenDocument = gql`
+    query ResetToken($id: ID!) {
+  resetToken(id: $id) {
+    type
+    user {
+      ...User
+    }
+  }
+}
+    ${UserFragmentDoc}`;
+
+/**
+ * __useResetTokenQuery__
+ *
+ * To run a query within a React component, call `useResetTokenQuery` and pass it any options that fit your needs.
+ * When your component renders, `useResetTokenQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useResetTokenQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useResetTokenQuery(baseOptions: Apollo.QueryHookOptions<ResetTokenQuery, ResetTokenQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ResetTokenQuery, ResetTokenQueryVariables>(ResetTokenDocument, options);
+      }
+export function useResetTokenLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ResetTokenQuery, ResetTokenQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ResetTokenQuery, ResetTokenQueryVariables>(ResetTokenDocument, options);
+        }
+export type ResetTokenQueryHookResult = ReturnType<typeof useResetTokenQuery>;
+export type ResetTokenLazyQueryHookResult = ReturnType<typeof useResetTokenLazyQuery>;
+export type ResetTokenQueryResult = Apollo.QueryResult<ResetTokenQuery, ResetTokenQueryVariables>;
 export const UpdateVersionDocument = gql`
     mutation UpdateVersion($spec: VersionSpec, $attributes: VersionAttributes!) {
   updateVersion(spec: $spec, attributes: $attributes) {

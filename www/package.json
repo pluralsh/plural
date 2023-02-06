@@ -148,6 +148,7 @@
     "eslint-config-pluralsh": "3.1.0",
     "eslint-plugin-import": "2.27.5",
     "eslint-plugin-import-newlines": "1.3.0",
+    "eslint-plugin-react-hooks": "4.6.0",
     "jsdom": "20.0.3",
     "rollup-plugin-polyfill-node": "0.12.0",
     "serve": "14.2.0",

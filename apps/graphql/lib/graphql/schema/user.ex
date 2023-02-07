@@ -46,6 +46,7 @@ defmodule GraphQl.Schema.User do
   end
 
   input_object :address_attributes do
+    field :name,    :string
     field :line1,   non_null(:string)
     field :line2,   non_null(:string)
     field :city,    non_null(:string)

@@ -87,11 +87,22 @@ defmodule Core.Services.Accounts do
   """
   @spec update_account(map, User.t) :: account_resp
   def update_account(attributes, %User{account_id: aid} = user) do
-    get_account!(aid)
-    |> Core.Repo.preload([:domain_mappings])
-    |> Account.changeset(attributes)
-    |> allow(user, :edit)
-    |> when_ok(:update)
+    start_transaction()
+    |> add_operation(:db, fn _ ->
+      get_account!(aid)
+      |> Core.Repo.preload([:domain_mappings])
+      |> Account.changeset(attributes)
+      |> allow(user, :edit)
+      |> when_ok(:update)
+    end)
+    |> add_operation(:stripe, fn
+      %{db: %{address_updated: true, billing_customer_id: cid} = account} when is_binary(cid) ->
+        account = Core.Repo.preload(account, [:root_user])
+        with {:ok, stripe} <- Core.Services.Payments.stripe_attrs(account),
+          do: Stripe.Customer.update(cid, stripe)
+      %{db: db} -> {:ok, db}
+    end)
+    |> execute(extract: :db)
   end
 
   @doc """

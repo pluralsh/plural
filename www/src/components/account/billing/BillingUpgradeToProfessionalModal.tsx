@@ -32,10 +32,9 @@ function BillingUpgradeToProfessionalModal({ open, onClose }: BillingUpgradeToPr
 
   const [applyYearlyDiscount, setApplyYearlyDiscount] = useState(false)
 
-  console.log('applyYearlyDiscount', applyYearlyDiscount);
   const [upgradeMutation, { loading: loadingUpgradeMutation }] = useMutation(UPGRADE_TO_PROFESSIONAL_PLAN_MUTATION, {
     variables: {
-      planId: proPlatformPlan.id,
+      planId: applyYearlyDiscount ? proYearlyPlatformPlan.id : proPlatformPlan.id,
     },
   })
 

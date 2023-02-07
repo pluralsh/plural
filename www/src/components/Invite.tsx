@@ -151,14 +151,17 @@ export default function Invite() {
       </Div>
       <Form onSubmit={onSubmit}>
         {error && (
-          <GqlError
-            error={error}
-            header="Something went wrong!"
-          />
+          <Div marginBottom="large">
+            <GqlError
+              header="Signup failed"
+              error={error}
+            />
+          </Div>
         )}
         <Flex
           flexDirection="column"
           gap="small"
+          marginBottom="small"
         >
           <LabelledInput
             label="Email"

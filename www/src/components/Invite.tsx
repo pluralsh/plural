@@ -149,18 +149,13 @@ export default function Invite() {
           Create an account to join.
         </P>
       </Div>
-      <Form
-        onSubmit={onSubmit}
-        fill
-        pad="medium"
-      >
+      <Form onSubmit={onSubmit}>
         {error && (
           <GqlError
             error={error}
             header="Something went wrong!"
           />
         )}
-
         <Flex
           flexDirection="column"
           gap="small"

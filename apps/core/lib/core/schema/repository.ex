@@ -157,6 +157,13 @@ defmodule Core.Schema.Repository do
         on: i.repository_id == r.id)
   end
 
+  def uninstalled(query \\ __MODULE__, user_id) do
+    from(r in query,
+      left_join: i in ^Installation.for_user(user_id),
+        on: i.repository_id == r.id,
+      where: is_nil(i.id))
+  end
+
   def accessible(query \\ __MODULE__, user)
 
   def accessible(query, %User{account_id: aid}) do

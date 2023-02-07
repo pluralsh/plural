@@ -5,7 +5,7 @@ defmodule Core.Shell.Client do
   alias Core.Shell.Models
   require Logger
 
-  @timeout 50_000
+  @timeout 90_000
   @timeout_opts [timeout: @timeout, recv_timeout: @timeout]
 
   @headers [{"accept", "*/*"}, {"content-type", "application/json"}]

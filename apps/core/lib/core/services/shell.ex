@@ -220,7 +220,7 @@ defmodule Core.Services.Shell do
 
   defp redirect_uri(format, ctx, key, %CloudShell{workspace: %{subdomain: domain}}) do
     format
-    |> String.replace("{domain}", ctx[key])
+    |> String.replace("{domain}", ctx[key] || "")
     |> String.replace("{subdomain}", domain)
   end
 

@@ -7,14 +7,11 @@ import {
 } from '@pluralsh/design-system'
 import { useTheme } from 'styled-components'
 import { useNavigate } from 'react-router-dom'
-
 import { useContext } from 'react'
 
 import { getPreviousUserData } from '../../helpers/authentication'
 import { handlePreviousUserClick } from '../login/CurrentUser'
-
 import CurrentUserContext from '../../contexts/CurrentUserContext'
-
 import { ResponsiveLayoutContentContainer } from '../utils/layout/ResponsiveLayoutContentContainer'
 import { ResponsiveLayoutSidecarContainer } from '../utils/layout/ResponsiveLayoutSidecarContainer'
 import { ResponsiveLayoutSpacer } from '../utils/layout/ResponsiveLayoutSpacer'

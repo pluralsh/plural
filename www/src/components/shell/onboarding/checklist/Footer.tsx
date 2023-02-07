@@ -3,17 +3,16 @@ import { Button, Flex } from 'honorable'
 import { useContext } from 'react'
 
 import { OnboardingChecklistContext } from '../../../../contexts/OnboardingChecklistContext'
-
 import { UPDATE_USER } from '../../../users/queries'
-import { ONBOARDING_CHECKLIST_STATE } from '../../constants'
+import { updateUserFragment } from '../../../../utils/graphql'
+import { RootMutationType, RootMutationTypeUpdateUserArgs } from '../../../../generated/graphql'
 import {
+  ONBOARDING_CHECKLIST_STATE,
   clearOnboardingChecklistState,
   isOnboardingChecklistHidden,
   setOnboardingChecklistState,
   shouldOnboardingChecklistReappear,
-} from '../../persistance'
-import { updateUserFragment } from '../../../../utils/graphql'
-import { RootMutationType, RootMutationTypeUpdateUserArgs } from '../../../../generated/graphql'
+} from '../../../../helpers/localStorage'
 
 export function ChecklistFooter({ setDismiss }: any) {
   const { setDismissed: setDismissedFromContext } = useContext(OnboardingChecklistContext)

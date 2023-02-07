@@ -1,7 +1,8 @@
 import { Link } from 'react-router-dom'
-import { Button, Modal } from '@pluralsh/design-system'
+import { Button, CloseIcon, IconFrame, Modal } from '@pluralsh/design-system'
 import {
   A,
+  Div,
   Flex,
   Img,
   P,
@@ -47,10 +48,17 @@ function BillingMigrationModal() {
       <Flex
         justify="flex-end"
         marginTop="large"
+        gap="medium"
       >
         <Button
+          tertiary
+          onClick={() => setOpen(false)}
+        >
+          Close
+        </Button>
+        <Button
           as={Link}
-          to="/account/billing"
+          to="/account/billing?upgrade=true"
           onClick={() => setOpen(false)}
         >
           Upgrade now

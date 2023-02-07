@@ -1,4 +1,4 @@
-import { useCallback, useContext, useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import { Flex } from 'honorable'
 import { Button } from '@pluralsh/design-system'
 
@@ -8,8 +8,10 @@ import SubscriptionContext from '../../../contexts/SubscriptionContext'
 import BillingPricingCard from './BillingPricingCard'
 import BillingUpgradeToProfessionalModal from './BillingUpgradeToProfessionalModal'
 import BillingDowngradeModal from './BillingDowngradeModal'
+import { useSearchParams } from 'react-router-dom'
 
 function BillingPricingCards() {
+  const [searchParams, setSearchParams] = useSearchParams()
   const { clusterMonthlyPricing, userMonthlyPricing } = useContext(PlatformPlansContext)
   const { isProPlan } = useContext(SubscriptionContext)
 
@@ -25,6 +27,17 @@ function BillingPricingCards() {
       Current plan
     </Button>
   ), [])
+
+  useEffect(() => {
+    if (!searchParams.get('upgrade')) return
+
+    setUpgradeToProfessionalModalOpen(true)
+    setSearchParams(sp => {
+      sp.delete('upgrade')
+
+      return sp
+    })
+  }, [searchParams])
 
   return (
     <>

@@ -20,9 +20,13 @@ type ValidationField = {[key in ValidationFieldKey]?: Validation | ValidationFn}
 
 const VALIDATOR: ValidationField = {
   clusterName: (provider: CloudProvider) => ({
-    regex: provider === CloudProvider.GCP ? /^[a-z][0-9\-a-z]{0,11}$/ : /^[a-z][0-9\-a-z]{0,14}$/,
-    message: `must be between 1 and ${provider === CloudProvider.GCP ? 12 : 15} characters and may contain alphanumeric characters only`,
+    regex: provider === CloudProvider.GCP ? /^[a-z][0-9-a-z]{0,11}$/ : /^[a-z][0-9\-a-z]{0,14}$/,
+    message: `must be between 1 and ${provider === CloudProvider.GCP ? 12 : 15} characters and may contain hyphenated alphanumeric string only`,
   }),
+  bucketPrefix: {
+    regex: /^[a-z][a-z0-9-]{1,61}[a-z0-9]$/,
+    message: 'must be between 3 and 64 characters and may contain hyphenated alphanumeric string only',
+  },
 }
 
 function WorkspaceStep({ onBack, onNext }) {
@@ -64,11 +68,13 @@ function WorkspaceStep({ onBack, onNext }) {
 
       <FormField
         label="Bucket prefix"
-        hint="A unique prefix to generate bucket names."
+        error={!!error.bucketPrefix}
+        hint={error.bucketPrefix || 'A unique prefix to generate bucket names.'}
         width="100%"
       >
         <Input
           value={workspace?.bucketPrefix}
+          error={!!error.bucketPrefix}
           placeholder="plural"
           onChange={({ target: { value } }) => setWorkspaceKeys({ bucketPrefix: value })}
         />

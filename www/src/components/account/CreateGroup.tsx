@@ -1,5 +1,9 @@
-import { useCallback, useState } from 'react'
-import { useMutation } from '@apollo/client'
+import {
+  ReactNode,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react'
 import { Box } from 'grommet'
 import { Button, Modal, ValidatedInput } from '@pluralsh/design-system'
 
@@ -7,28 +11,39 @@ import { appendConnection, updateCache } from '../../utils/graphql'
 
 import { GqlError } from '../utils/Alert'
 
-import { CREATE_GROUP, GROUPS_Q } from './queries'
+import { GroupsDocument, useCreateGroupMutation } from '../../generated/graphql'
 
 export function CreateGroup({ q }: any) {
   const [open, setOpen] = useState(false)
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
+  const [errorMsg, setErrorMsg] = useState<ReactNode>()
 
   const resetAndClose = useCallback(() => {
     setName('')
     setDescription('')
     setOpen(false)
+    setErrorMsg(undefined)
   }, [])
 
-  const [mutation, { loading, error }] = useMutation(CREATE_GROUP, {
+  const [mutation, { loading, error }] = useCreateGroupMutation({
     variables: { attributes: { name, description } },
     onCompleted: () => resetAndClose(),
-    update: (cache, { data: { createGroup } }) => updateCache(cache, {
-      query: GROUPS_Q,
+    update: (cache, { data }) => updateCache(cache, {
+      query: GroupsDocument,
       variables: { q },
-      update: prev => appendConnection(prev, createGroup, 'groups'),
+      update: prev => appendConnection(prev, data?.createGroup, 'groups'),
     }),
   })
+
+  useEffect(() => {
+    setErrorMsg(error && (
+      <GqlError
+        header="Problem creating group"
+        error={error}
+      />
+    ))
+  }, [error])
 
   return (
     <>
@@ -65,12 +80,7 @@ export function CreateGroup({ q }: any) {
           width="50vw"
           gap="small"
         >
-          {error && (
-            <GqlError
-              header="Something went wrong"
-              error={error}
-            />
-          )}
+          {errorMsg}
           <ValidatedInput
             value={name}
             onChange={({ target: { value } }) => setName(value)}

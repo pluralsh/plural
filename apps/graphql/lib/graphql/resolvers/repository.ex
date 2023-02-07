@@ -109,6 +109,8 @@ defmodule GraphQl.Resolvers.Repository do
 
   defp apply_filter(query, {:installed, true}, %{id: id}),
     do: Repository.for_user(query, id)
+  defp apply_filter(query, {:installed, false}, %{id: id}),
+    do: Repository.uninstalled(query, id)
   defp apply_filter(query, {:supports, true}, %{id: _} = user) do
     user = Core.Services.Rbac.preload(user)
 

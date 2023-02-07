@@ -264,6 +264,32 @@ export const DEFAULT_THEME = {
   layer: {
     background: 'background',
   },
+  fileInput: {
+    message: {
+      size: 'small',
+    },
+    background: {
+      color: 'fill-two',
+    },
+    hover: {
+      background: {
+        color: '#303540ff',
+      },
+      border: {
+        color: 'selected',
+        radius: '4px',
+        size: '1px',
+      },
+    },
+    border: {
+      color: 'fill-three',
+      radius: '4px',
+      size: '1px',
+    },
+    round: {
+      size: '4px',
+    },
+  },
   global: {
     colors: DEFAULT_COLOR_THEME,
     focus: { shadow: null, border: { color: 'brand' } },

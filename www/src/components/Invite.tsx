@@ -140,7 +140,10 @@ export default function Invite() {
   return (
     <LoginPortal>
       <Div marginBottom="xlarge">
-        <WelcomeHeader textAlign="left" />
+        <WelcomeHeader
+          textAlign="left"
+          marginBottom="xxsmall"
+        />{' '}
         <P
           body1
           color="text-xlight"

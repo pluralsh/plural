@@ -1,4 +1,10 @@
-import { useCallback, useContext, useEffect, useState } from 'react'
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { Flex } from 'honorable'
 import { Button } from '@pluralsh/design-system'
 
@@ -6,9 +12,8 @@ import PlatformPlansContext from '../../../contexts/PlatformPlansContext'
 import SubscriptionContext from '../../../contexts/SubscriptionContext'
 
 import BillingPricingCard from './BillingPricingCard'
-import BillingUpgradeToProfessionalModal from './BillingUpgradeToProfessionalModal'
 import BillingDowngradeModal from './BillingDowngradeModal'
-import { useSearchParams } from 'react-router-dom'
+import BillingUpgradeToProfessionalModal from './BillingUpgradeToProfessionalModal'
 
 function BillingPricingCards() {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -37,7 +42,7 @@ function BillingPricingCards() {
 
       return sp
     })
-  }, [searchParams])
+  }, [searchParams, setSearchParams])
 
   return (
     <>

@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 import { Button, Modal } from '@pluralsh/design-system'
 import {
   A,
-  Div,
   Flex,
   Img,
   P,

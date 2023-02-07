@@ -92,7 +92,7 @@ function BillingPreview({ noCard, discountPreview, onChange }: BillingPreviewPro
         Preview Professional plan
       </Div>
     </Switch>
-  ), [isProfessional])
+  ), [isProfessional, handleChange])
 
   const renderAnnualDiscountSwitch = useCallback(() => (
     <Flex
@@ -119,7 +119,7 @@ function BillingPreview({ noCard, discountPreview, onChange }: BillingPreviewPro
         </Div>
       </Switch>
     </Flex>
-  ), [isProfessional, annualDiscount])
+  ), [isProfessional, annualDiscount, handleChange])
 
   const renderContent = useCallback(() => (
     <Div width="100%">

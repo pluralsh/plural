@@ -8,7 +8,6 @@ defmodule RtcWeb.ShellChannel do
 
   def join("shells:me", _, socket) do
     with %CloudShell{pod_name: name} = shell <- Shell.get_shell(socket.assigns.user.id),
-         {:ok, _} <- Client.setup(shell),
          url <- Pods.PodExec.exec_url(name),
          {:ok, pid} <- Pods.PodExec.start_link(url, self()) do
       {:ok, assign(socket, :wss_pid, pid)}

@@ -59,6 +59,10 @@ export function OAuthConsent() {
     navigate('/login')
   }, [navigate])
 
+  if (!userData?.me?.email) {
+    logout()
+  }
+
   if (!data || userLoading) {
     return (
       <Flex

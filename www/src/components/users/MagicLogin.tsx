@@ -28,7 +28,8 @@ import {
   Flex,
   Icon,
 } from 'honorable'
-import { useResizeDetector } from 'react-resize-detector'
+
+import styled from 'styled-components'
 
 import {
   AcceptLoginDocument,
@@ -59,7 +60,7 @@ import {
 } from './utils'
 import { finishedDeviceLogin } from './DeviceLoginNotif'
 import { LabelledInput } from './LabelledInput'
-import { LoginPortal, RIGHT_CONTENT_MAX_WIDTH } from './LoginPortal'
+import { LOGIN_BREAKPOINT, LoginPortal } from './LoginPortal'
 
 export function PasswordlessLogin() {
   const { token } = useParams()
@@ -189,16 +190,8 @@ function sortOauthUrls(a, b) {
 }
 
 export function OAuthOptions({ oauthUrls }: any) {
-  const { ref, width } = useResizeDetector({
-    handleHeight: false,
-  })
-  const singleColumn = (width as number) < RIGHT_CONTENT_MAX_WIDTH
-
   return (
-    <Div
-      ref={ref}
-      marginBottom="medium"
-    >
+    <Div marginBottom="medium">
       {oauthUrls && (
         <>
           <Divider
@@ -220,7 +213,6 @@ export function OAuthOptions({ oauthUrls }: any) {
                 key={url.provider}
                 url={url}
                 flexGrow={1}
-                width={singleColumn ? '100%' : 'auto'}
               />
             ))}
           </Flex>
@@ -541,25 +533,35 @@ const providerToName = {
   gitlab: 'GitLab',
 }
 
+export const FlexAtBreak = styled.div(_ => ({
+  width: '100%',
+  [LOGIN_BREAKPOINT]: {
+    flex: '1 0',
+    width: 'auto',
+  },
+}))
+
 function OAuthOption({ url: { authorizeUrl, provider }, ...props }: any) {
   const icon = METHOD_ICONS[provider]
 
   return (
-    <Button
-      width={143}
-      height={48}
-      secondary
-      as={A}
-      _hover={{ textDecoration: 'none' }}
-      href={authorizeUrl}
-      startIcon={(
-        <Icon filter="grayscale(1)">
-          {createElement(icon, { size: 20, fullColor: true })}
-        </Icon>
-      )}
-      {...props}
-    >
-      {providerToName[provider.toLowerCase()]}
-    </Button>
+    <FlexAtBreak>
+      <Button
+        width="100%"
+        height={48}
+        secondary
+        as={A}
+        _hover={{ textDecoration: 'none' }}
+        href={authorizeUrl}
+        startIcon={(
+          <Icon filter="grayscale(1)">
+            {createElement(icon, { size: 20, fullColor: true })}
+          </Icon>
+        )}
+        {...props}
+      >
+        {providerToName[provider.toLowerCase()]}
+      </Button>
+    </FlexAtBreak>
   )
 }

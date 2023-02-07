@@ -15,6 +15,8 @@ import {
   P,
 } from 'honorable'
 
+import { useTheme } from 'styled-components'
+
 import { useOauthUrlsQuery, useSignupMutation } from '../../generated/graphql'
 import { WelcomeHeader } from '../utils/WelcomeHeader'
 import { HubSpot } from '../utils/HubSpot'
@@ -26,8 +28,8 @@ import { useHistory } from '../../router'
 
 import { getDeviceToken } from './utils'
 import { finishedDeviceLogin } from './DeviceLoginNotif'
-import { OAuthOptions } from './MagicLogin'
-import { LoginPortal } from './LoginPortal'
+import { FlexAtBreak, OAuthOptions } from './MagicLogin'
+import { LOGIN_BREAKPOINT, LoginPortal } from './LoginPortal'
 import { LabelledInput } from './LabelledInput'
 
 function PasswordErrorMsg({ errorCode }: { errorCode: PasswordErrorCode }) {
@@ -78,6 +80,7 @@ export function ConfirmPasswordField({
 }
 
 export function Signup() {
+  const theme = useTheme()
   const history = useHistory()
   const location = useLocation()
   const [email, setEmail] = useState(location?.state?.email || '')
@@ -148,23 +151,31 @@ export function Signup() {
         <Flex
           flexWrap="wrap"
           width="100%"
-          gap="medium"
+          columnGap={theme.spacing.medium}
+          flexBasis="100%"
         >
-          <LabelledInput
-            flex="1 1"
-            label="Company name"
-            value={account}
-            onChange={setAccount}
-            placeholder="Enter company name"
-          />
-          <LabelledInput
-            flex="1 1"
-            ref={nameRef}
-            label="Username"
-            value={name}
-            onChange={setName}
-            placeholder="Enter username"
-          />
+          <FlexAtBreak>
+            <LabelledInput
+              width="100%"
+              label="Company name"
+              value={account}
+              onChange={setAccount}
+              placeholder="Enter company name"
+            />
+          </FlexAtBreak>
+          <FlexAtBreak>
+            <LabelledInput
+              {...{
+                [LOGIN_BREAKPOINT]: { flex: '1 0' },
+              }}
+              width="100%"
+              ref={nameRef}
+              label="Username"
+              value={name}
+              onChange={setName}
+              placeholder="Enter username"
+            />
+          </FlexAtBreak>
         </Flex>
         <SetPasswordField
           value={password}

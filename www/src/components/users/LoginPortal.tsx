@@ -1,3 +1,4 @@
+import { styledTheme } from '@pluralsh/design-system'
 import { Div, Flex, Img } from 'honorable'
 
 import { LOGIN_SIDEBAR_IMAGE } from '../constants'
@@ -5,6 +6,10 @@ import { LOGIN_SIDEBAR_IMAGE } from '../constants'
 import { Footer, FooterBalancer } from './LoginFooter'
 
 export const RIGHT_CONTENT_MAX_WIDTH = 512
+export const RIGHT_CONTENT_PAD = styledTheme.spacing.xxlarge
+export const LOGIN_BREAKPOINT = `@media screen and (min-width: ${
+  RIGHT_CONTENT_MAX_WIDTH + RIGHT_CONTENT_PAD * 2
+}px)`
 
 export function LoginPortal({ children }: any) {
   return (
@@ -33,7 +38,7 @@ export function LoginPortal({ children }: any) {
         flexDirection="column"
         grow={1}
         shrink={1}
-        paddingHorizontal="xxlarge"
+        paddingHorizontal={RIGHT_CONTENT_PAD}
       >
         <FooterBalancer />
         <Div

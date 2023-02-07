@@ -3,6 +3,8 @@ import styled from 'styled-components'
 
 import Cookiebot from '../../utils/cookiebot'
 
+import { LOGIN_BREAKPOINT } from './LoginPortal'
+
 export const FooterLink = styled.a(({ theme }) => ({
   '&, &:any-link': {
     ...theme.partials.text.caption,
@@ -52,8 +54,6 @@ export function Footer(props) {
   )
 }
 
-const breakpoint = '@media screen and (min-width: 614px)'
-
 export const FooterList = styled.div(({ theme }) => ({
   paddingTop: theme.spacing.xxlarge,
   paddingBottom: theme.spacing.medium,
@@ -66,7 +66,7 @@ export const FooterList = styled.div(({ theme }) => ({
   color: 'text-xlight',
   minHeight: theme.spacing.xxxlarge,
   height: '100%',
-  [breakpoint]: {
+  [LOGIN_BREAKPOINT]: {
     flexDirection: 'row',
     gap: theme.spacing.xlarge,
     alignItems: 'end',

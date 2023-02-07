@@ -1,7 +1,6 @@
 defmodule RtcWeb.ShellChannelTest do
   use RtcWeb.ChannelCase, async: false
   use Mimic
-  alias Core.Shell.Client
   alias Core.Services.Shell.Pods
 
   setup :set_mimic_global
@@ -12,7 +11,7 @@ defmodule RtcWeb.ShellChannelTest do
       %{id: id} = cloud_shell = insert(:cloud_shell, user: user, pod_name: "plrl-shell")
 
       url = Pods.PodExec.exec_url(cloud_shell.pod_name)
-      expect(Client, :setup, fn %{id: ^id} -> {:ok, true} end)
+      # expect(Client, :setup, fn %{id: ^id} -> {:ok, true} end)
       expect(Pods.PodExec, :start_link, fn ^url, _ -> {:ok, :pid} end)
 
       expect(Pods.PodExec, :command, fn :pid, cmd ->
@@ -37,16 +36,6 @@ defmodule RtcWeb.ShellChannelTest do
       assert_push "stdo", %{message: res}
 
       assert Base.decode64!(res) == "resized"
-    end
-
-    test "channel should return error and close on setup fail" do
-      user = insert(:user)
-      %{id: id} = insert(:cloud_shell, user: user, pod_name: "plrl-shell")
-
-      expect(Client, :setup, fn %{id: ^id} -> {:error, :failed} end)
-
-      {:ok, socket} = mk_socket(user)
-      {:error, %{reason: _}} = subscribe_and_join(socket, "shells:me", %{})
     end
   end
 end

@@ -22,6 +22,7 @@ import {
   CloseIcon,
   ClusterIcon,
   CompassIcon,
+  CookieIcon,
   Sidebar as DSSidebar,
   DiscordIcon,
   GitHubLogoIcon,
@@ -48,6 +49,8 @@ import CreatePublisherModal from '../publisher/CreatePublisherModal'
 
 import { clearLocalStorage } from '../../helpers/localStorage'
 
+import Cookiebot from '../../utils/cookiebot'
+
 import { NotificationsPanel, useNotificationsCount } from './WithNotifications'
 
 export const SIDEBAR_ICON_HEIGHT = '40px'
@@ -62,7 +65,7 @@ type MenuItem = {
 }
 
 /* TODO: Make sure urlRegexp is working with new Sidebar */
-const MENU_ITEMS:MenuItem[] = [
+const MENU_ITEMS: MenuItem[] = [
   {
     text: 'Marketplace',
     icon: <MarketIcon />,
@@ -318,6 +321,12 @@ function Sidebar(props: ComponentProps<typeof DSSidebar>) {
           minWidth="175px"
           left={sidebarWidth + 8}
           border="1px solid border"
+          // Fix incorrect borders due to mixed element types
+          {...{
+            '&, &>*:first-of-type:not(:first-child) > div': {
+              borderTop: theme.borders['fill-two'],
+            },
+          }}
         >
           <MenuItem
             as={Link}
@@ -327,6 +336,16 @@ function Sidebar(props: ComponentProps<typeof DSSidebar>) {
           >
             <PersonIcon mr={1} />
             My profile
+          </MenuItem>
+          <MenuItem
+            color="inherit"
+            textDecoration="none"
+            onClick={() => {
+              Cookiebot?.show()
+            }}
+          >
+            <CookieIcon marginRight="small" />
+            Cookie settings
           </MenuItem>
           <MenuItem
             as="a"

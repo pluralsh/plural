@@ -11,7 +11,6 @@ import { PageInfo } from '../../models/misc'
 import {
   AccountFragment,
   GroupFragment,
-  GroupMemberFragment,
   ImpersonationPolicy,
   RoleFragment,
   UserFragment,
@@ -47,19 +46,6 @@ export const USERS_Q = gql`
   ${ImpersonationPolicy}
 `
 
-export const GROUPS_Q = gql`
-  query Groups($q: String, $cursor: String) {
-    groups(q: $q, first: 20, after: $cursor) {
-      pageInfo { ...PageInfo }
-      edges {
-        node { ...GroupFragment }
-      }
-    }
-  }
-  ${PageInfo}
-  ${GroupFragment}
-`
-
 export const SEARCH_USERS = gql`
   query SearchUsers($q: String, $cursor: String) {
     users(q: $q, after: $cursor, first: 5, all: true) {
@@ -86,37 +72,6 @@ export const SEARCH_GROUPS = gql`
   ${GroupFragment}
 `
 
-export const GROUP_MEMBERS = gql`
-  query GroupMembers($cursor: String, $id: ID!) {
-    groupMembers(groupId: $id, after: $cursor, first: 20) {
-      pageInfo { ...PageInfo }
-      edges {
-        node { ...GroupMemberFragment }
-      }
-    }
-  }
-  ${PageInfo}
-  ${GroupMemberFragment}
-`
-
-export const CREATE_GROUP_MEMBERS = gql`
-  mutation CreateGroupMember($groupId: ID!, $userId: ID!) {
-    createGroupMember(groupId: $groupId, userId: $userId) {
-      ...GroupMemberFragment
-    }
-  }
-  ${GroupMemberFragment}
-`
-
-export const DELETE_GROUP_MEMBER = gql`
-  mutation DeleteMember($groupId: ID!, $userId: ID!) {
-    deleteGroupMember(groupId: $groupId, userId: $userId) {
-      ...GroupMemberFragment
-    }
-  }
-  ${GroupMemberFragment}
-`
-
 export const EDIT_USER = gql`
   mutation UpdateUser($id: ID, $attributes: UserAttributes!) {
     updateUser(id: $id, attributes: $attributes) {
@@ -124,33 +79,6 @@ export const EDIT_USER = gql`
     }
   }
   ${UserFragment}
-`
-
-export const CREATE_GROUP = gql`
-  mutation CreateGroup($attributes: GroupAttributes!) {
-    createGroup(attributes: $attributes) {
-      ...GroupFragment
-    }
-  }
-  ${GroupFragment}
-`
-
-export const UPDATE_GROUP = gql`
-  mutation UpdateGroup($id: ID!, $attributes: GroupAttributes!) {
-    updateGroup(groupId: $id, attributes: $attributes) {
-      ...GroupFragment
-    }
-  }
-  ${GroupFragment}
-`
-
-export const DELETE_GROUP = gql`
-  mutation DeleteGroup($id: ID!) {
-    deleteGroup(groupId: $id) {
-      ...GroupFragment
-    }
-  }
-  ${GroupFragment}
 `
 
 export const CREATE_INVITE = gql`

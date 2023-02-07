@@ -121,6 +121,23 @@ defmodule GraphQl.RepositoryQueriesTest do
              |> ids_equal(found_repos)
     end
 
+    test "It can list repositories not installed by a user" do
+      user = insert(:user)
+      insert_list(3, :installation, user: user)
+      expected = insert(:repository)
+
+      {:ok, %{data: %{"repositories" => repos}}} = run_query("""
+        query {
+          repositories(installed: false, first: 5) {
+            edges { node { id } }
+          }
+        }
+      """, %{}, %{current_user: user})
+
+      assert from_connection(repos)
+             |> ids_equal([expected])
+    end
+
     test "It can list repositories for a tag" do
       user = insert(:user)
       repo  = insert(:repository, tags: [%{tag: "tag", resource_type: :repository}])

@@ -1,0 +1,55 @@
+query GroupMembers($cursor: String, $id: ID!) {
+  groupMembers(groupId: $id, after: $cursor, first: 20) {
+    pageInfo {
+      ...PageInfo
+    }
+    edges {
+      node {
+        ...GroupMember
+      }
+    }
+  }
+}
+
+mutation CreateGroupMember($groupId: ID!, $userId: ID!) {
+  createGroupMember(groupId: $groupId, userId: $userId) {
+    ...GroupMember
+  }
+}
+
+mutation DeleteGroupMember($groupId: ID!, $userId: ID!) {
+  deleteGroupMember(groupId: $groupId, userId: $userId) {
+    ...GroupMember
+  }
+}
+
+mutation CreateGroup($attributes: GroupAttributes!) {
+  createGroup(attributes: $attributes) {
+    ...Group
+  }
+}
+
+mutation UpdateGroup($id: ID!, $attributes: GroupAttributes!) {
+  updateGroup(groupId: $id, attributes: $attributes) {
+    ...Group
+  }
+}
+
+mutation DeleteGroup($id: ID!) {
+  deleteGroup(groupId: $id) {
+    ...Group
+  }
+}
+
+query Groups($q: String, $cursor: String) {
+  groups(q: $q, first: 20, after: $cursor) {
+    pageInfo {
+      ...PageInfo
+    }
+    edges {
+      node {
+        ...Group
+      }
+    }
+  }
+}

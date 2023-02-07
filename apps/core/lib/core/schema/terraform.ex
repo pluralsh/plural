@@ -1,6 +1,6 @@
 defmodule Core.Schema.Terraform do
   use Piazza.Ecto.Schema
-  use Arc.Ecto.Schema
+  use Waffle.Ecto.Schema
   alias Core.Schema.{Repository, Dependencies}
 
   schema "terraform" do

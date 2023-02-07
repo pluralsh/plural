@@ -1,6 +1,6 @@
 defmodule Core.Schema.Artifact do
   use Piazza.Ecto.Schema
-  use Arc.Ecto.Schema
+  use Waffle.Ecto.Schema
   alias Core.Schema.{Repository}
 
   defenum Platform, mac: 0, windows: 1, linux: 2, android: 3, freebsd: 4, openbsd: 5, solaris: 6

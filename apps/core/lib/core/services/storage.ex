@@ -1,6 +1,6 @@
 defmodule Core.Storage do
-  use Arc.Definition
-  use Arc.Ecto.Definition
+  use Waffle.Definition
+  use Waffle.Ecto.Definition
   alias Core.Schema.{
     User,
     Publisher,

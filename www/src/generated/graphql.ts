@@ -4770,6 +4770,28 @@ export type OauthIntegrationFragment = { __typename?: 'OauthIntegration', id: st
 
 export type ZoomMeetingFragment = { __typename?: 'ZoomMeeting', joinUrl: string, password?: string | null };
 
+export type SignupInviteMutationVariables = Exact<{
+  attributes: UserAttributes;
+  inviteId: Scalars['String'];
+}>;
+
+
+export type SignupInviteMutation = { __typename?: 'RootMutationType', signup?: { __typename?: 'User', jwt?: string | null } | null };
+
+export type RealizeInviteMutationVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type RealizeInviteMutation = { __typename?: 'RootMutationType', realizeInvite?: { __typename?: 'User', jwt?: string | null } | null };
+
+export type InviteQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type InviteQuery = { __typename?: 'RootQueryType', invite?: { __typename?: 'Invite', email?: string | null, account?: { __typename?: 'Account', name?: string | null } | null, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null } | null };
+
 export type MetricFragment = { __typename?: 'Metric', name: string, tags?: Array<{ __typename?: 'MetricTag', name: string, value: string } | null> | null, values?: Array<{ __typename?: 'MetricValue', time?: Date | null, value?: number | null } | null> | null };
 
 export type PageInfoFragment = { __typename?: 'PageInfo', endCursor?: string | null, hasNextPage: boolean };
@@ -6995,6 +7017,114 @@ export function useUpsertOidcProviderMutation(baseOptions?: Apollo.MutationHookO
 export type UpsertOidcProviderMutationHookResult = ReturnType<typeof useUpsertOidcProviderMutation>;
 export type UpsertOidcProviderMutationResult = Apollo.MutationResult<UpsertOidcProviderMutation>;
 export type UpsertOidcProviderMutationOptions = Apollo.BaseMutationOptions<UpsertOidcProviderMutation, UpsertOidcProviderMutationVariables>;
+export const SignupInviteDocument = gql`
+    mutation SignupInvite($attributes: UserAttributes!, $inviteId: String!) {
+  signup(attributes: $attributes, inviteId: $inviteId) {
+    jwt
+  }
+}
+    `;
+export type SignupInviteMutationFn = Apollo.MutationFunction<SignupInviteMutation, SignupInviteMutationVariables>;
+
+/**
+ * __useSignupInviteMutation__
+ *
+ * To run a mutation, you first call `useSignupInviteMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSignupInviteMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [signupInviteMutation, { data, loading, error }] = useSignupInviteMutation({
+ *   variables: {
+ *      attributes: // value for 'attributes'
+ *      inviteId: // value for 'inviteId'
+ *   },
+ * });
+ */
+export function useSignupInviteMutation(baseOptions?: Apollo.MutationHookOptions<SignupInviteMutation, SignupInviteMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SignupInviteMutation, SignupInviteMutationVariables>(SignupInviteDocument, options);
+      }
+export type SignupInviteMutationHookResult = ReturnType<typeof useSignupInviteMutation>;
+export type SignupInviteMutationResult = Apollo.MutationResult<SignupInviteMutation>;
+export type SignupInviteMutationOptions = Apollo.BaseMutationOptions<SignupInviteMutation, SignupInviteMutationVariables>;
+export const RealizeInviteDocument = gql`
+    mutation RealizeInvite($id: String!) {
+  realizeInvite(id: $id) {
+    jwt
+  }
+}
+    `;
+export type RealizeInviteMutationFn = Apollo.MutationFunction<RealizeInviteMutation, RealizeInviteMutationVariables>;
+
+/**
+ * __useRealizeInviteMutation__
+ *
+ * To run a mutation, you first call `useRealizeInviteMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRealizeInviteMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [realizeInviteMutation, { data, loading, error }] = useRealizeInviteMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useRealizeInviteMutation(baseOptions?: Apollo.MutationHookOptions<RealizeInviteMutation, RealizeInviteMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RealizeInviteMutation, RealizeInviteMutationVariables>(RealizeInviteDocument, options);
+      }
+export type RealizeInviteMutationHookResult = ReturnType<typeof useRealizeInviteMutation>;
+export type RealizeInviteMutationResult = Apollo.MutationResult<RealizeInviteMutation>;
+export type RealizeInviteMutationOptions = Apollo.BaseMutationOptions<RealizeInviteMutation, RealizeInviteMutationVariables>;
+export const InviteDocument = gql`
+    query Invite($id: String!) {
+  invite(id: $id) {
+    email
+    account {
+      name
+    }
+    user {
+      ...User
+    }
+  }
+}
+    ${UserFragmentDoc}`;
+
+/**
+ * __useInviteQuery__
+ *
+ * To run a query within a React component, call `useInviteQuery` and pass it any options that fit your needs.
+ * When your component renders, `useInviteQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useInviteQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useInviteQuery(baseOptions: Apollo.QueryHookOptions<InviteQuery, InviteQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<InviteQuery, InviteQueryVariables>(InviteDocument, options);
+      }
+export function useInviteLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<InviteQuery, InviteQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<InviteQuery, InviteQueryVariables>(InviteDocument, options);
+        }
+export type InviteQueryHookResult = ReturnType<typeof useInviteQuery>;
+export type InviteLazyQueryHookResult = ReturnType<typeof useInviteLazyQuery>;
+export type InviteQueryResult = Apollo.QueryResult<InviteQuery, InviteQueryVariables>;
 export const GetRecipeDocument = gql`
     query GetRecipe($repo: String, $name: String) {
   recipe(repo: $repo, name: $name) {

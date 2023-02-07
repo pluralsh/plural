@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { gql, useMutation, useQuery } from '@apollo/client'
 import { Box, Keyboard } from 'grommet'
 import { GqlError } from 'forge-core'
 import { AppIcon, Button } from '@pluralsh/design-system'
@@ -9,38 +8,11 @@ import { Text } from 'honorable'
 
 import { setToken } from '../helpers/authentication'
 
-import { UserFragment } from '../models/user'
+import { useInviteQuery, useRealizeInviteMutation, useSignupInviteMutation } from '../generated/graphql'
 
 import { LoginPortal } from './users/LoginPortal'
 import { LabelledInput } from './users/LabelledInput'
 import { WelcomeHeader } from './utils/WelcomeHeader'
-
-const SIGNUP = gql`
-  mutation Signup($attributes: UserAttributes!, $inviteId: String!) {
-    signup(attributes: $attributes, inviteId: $inviteId) {
-      jwt
-    }
-  }
-`
-
-const REALIZE = gql`
-  mutation Realize($id: String!) {
-    realizeInvite(id: $id) {
-      jwt
-    }
-  }
-`
-
-const INVITE_Q = gql`
-  query Invite($id: String!) {
-    invite(id: $id) {
-      email
-      account { name }
-      user { ...UserFragment }
-    }
-  }
-  ${UserFragment}
-`
 
 function InvalidInvite() {
   return (
@@ -56,10 +28,10 @@ function InvalidInvite() {
 }
 
 function ExistingInvite({ invite: { account }, id }: any) {
-  const [mutation, { loading, error }] = useMutation(REALIZE, {
+  const [mutation, { loading, error }] = useRealizeInviteMutation({
     variables: { id },
-    onCompleted: ({ realizeInvite: { jwt } }) => {
-      setToken(jwt)
+    onCompleted: ({ realizeInvite }) => {
+      setToken(realizeInvite?.jwt)
       ;(window as Window).location = '/'
     },
   })
@@ -99,15 +71,17 @@ export default function Invite() {
   const { inviteId } = useParams()
   const [attributes, setAttributes] = useState({ name: '', password: '' })
   const [passwordConfirmation, setPasswordConfirmation] = useState('')
-  const [mutation, { loading, error }] = useMutation(SIGNUP, {
-    variables: { inviteId, attributes },
-    onCompleted: ({ signup: { jwt } }) => {
-      setToken(jwt)
+  const [mutation, { loading, error }] = useSignupInviteMutation({
+    variables: { inviteId: inviteId ?? '', attributes },
+    onCompleted: ({ signup }) => {
+      setToken(signup?.jwt)
       ;(window as Window).location = '/'
     },
   })
 
-  const { data, error: inviteError } = useQuery(INVITE_Q, { variables: { id: inviteId } })
+  const { data, error: inviteError } = useInviteQuery({
+    variables: { id: inviteId ?? '' },
+  })
 
   if (inviteError) return <InvalidInvite />
   if (!data) return null
@@ -117,7 +91,7 @@ export default function Invite() {
   const passwordMatch = attributes.password === passwordConfirmation
   const isValid = isNameValid && isPasswordValid && passwordMatch
 
-  if (data.invite.user) {
+  if (data?.invite?.user) {
     return (
       <ExistingInvite
         invite={data.invite}
@@ -143,7 +117,7 @@ export default function Invite() {
                 header="Something went wrong!"
               />
             )}
-            <WelcomeHeader heading="Accept your invitation" />
+            <WelcomeHeader />
             <Box
               direction="row"
               gap="small"
@@ -167,7 +141,7 @@ export default function Invite() {
                   caption
                   color="text-xlight"
                 >
-                  {data.invite.email}
+                  {data?.invite?.email}
                 </Text>
               </Box>
             </Box>
@@ -177,7 +151,7 @@ export default function Invite() {
             >
               <LabelledInput
                 label="Email"
-                value={data.invite.email}
+                value={data?.invite?.email}
                 disabled
               />
               <LabelledInput
@@ -194,7 +168,11 @@ export default function Invite() {
                 placeholder="Enter password"
                 onChange={password => setAttributes({ ...attributes, password })}
                 error={attributes.password.length > 0 && !isPasswordValid}
-                hint={attributes.password.length > 0 && !isPasswordValid ? 'Password is too short. Use at least 10 characters.' : ''}
+                hint={
+                  attributes.password.length > 0 && !isPasswordValid
+                    ? 'Password is too short. Use at least 10 characters.'
+                    : ''
+                }
                 required
               />
               <LabelledInput
@@ -204,7 +182,11 @@ export default function Invite() {
                 placeholder="Enter password again"
                 onChange={setPasswordConfirmation}
                 error={passwordConfirmation && !passwordMatch}
-                hint={passwordConfirmation && !passwordMatch ? 'Passwords do not match.' : ''}
+                hint={
+                  passwordConfirmation && !passwordMatch
+                    ? 'Passwords do not match.'
+                    : ''
+                }
                 required
               />
             </Box>

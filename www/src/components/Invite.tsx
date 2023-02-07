@@ -1,10 +1,15 @@
 import { useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { Box, Keyboard } from 'grommet'
+import { Box } from 'grommet'
 import { GqlError } from 'forge-core'
-import { AppIcon, Button } from '@pluralsh/design-system'
+import { Button } from '@pluralsh/design-system'
 
-import { Text } from 'honorable'
+import {
+  Div,
+  Flex,
+  Form,
+  P,
+} from 'honorable'
 
 import { setToken } from '../helpers/authentication'
 
@@ -13,17 +18,19 @@ import { useInviteQuery, useRealizeInviteMutation, useSignupInviteMutation } fro
 import { LoginPortal } from './users/LoginPortal'
 import { LabelledInput } from './users/LabelledInput'
 import { WelcomeHeader } from './utils/WelcomeHeader'
+import { ConfirmPasswordField, SetPasswordField } from './users/Signup'
+import { validatePassword } from './Login'
 
 function InvalidInvite() {
   return (
-    <Box
+    <Flex
       width="100vw"
       height="100vh"
-      justify="center"
-      align="center"
+      justifyContent="center"
+      alignItems="center"
     >
-      That invite code is no longer valid
-    </Box>
+      This invite code is no longer valid
+    </Flex>
   )
 }
 
@@ -69,13 +76,21 @@ function ExistingInvite({ invite: { account }, id }: any) {
 
 export default function Invite() {
   const { inviteId } = useParams()
-  const [attributes, setAttributes] = useState({ name: '', password: '' })
-  const [passwordConfirmation, setPasswordConfirmation] = useState('')
+  const [name, setName] = useState('')
+  const [password, setPassword] = useState('')
+  const [confirm, setConfirm] = useState('')
   const [mutation, { loading, error }] = useSignupInviteMutation({
-    variables: { inviteId: inviteId ?? '', attributes },
+    variables: {
+      inviteId: inviteId ?? '',
+      attributes: {
+        name,
+        password,
+      },
+    },
     onCompleted: ({ signup }) => {
       setToken(signup?.jwt)
-      ;(window as Window).location = '/'
+      console.log('signup', signup)
+      // ;(window as Window).location = '/'
     },
   })
 
@@ -86,10 +101,10 @@ export default function Invite() {
   if (inviteError) return <InvalidInvite />
   if (!data) return null
 
-  const isNameValid = attributes.name.length > 0
-  const isPasswordValid = attributes.password.length >= 10
-  const passwordMatch = attributes.password === passwordConfirmation
-  const isValid = isNameValid && isPasswordValid && passwordMatch
+  const { disabled: passwordDisabled, error: passwordError } = validatePassword(password, confirm)
+
+  const isNameValid = name.length > 0
+  const submitEnabled = isNameValid && !passwordDisabled
 
   if (data?.invite?.user) {
     return (
@@ -100,108 +115,76 @@ export default function Invite() {
     )
   }
 
+  const onSubmit = () => {
+    if (!submitEnabled) {
+      return
+    }
+    mutation()
+  }
+
   return (
     <LoginPortal>
-      <Box
+      <Div marginBottom="xlarge">
+        <WelcomeHeader
+          textAlign="left"
+        />
+        <P
+          body1
+          color="text-xlight"
+        >
+          {data.invite?.account?.name} invited you to join their Plural account. Create an
+          account to join.
+        </P>
+      </Div>
+      <Form
+        onSubmit={onSubmit}
         fill
         pad="medium"
       >
-        <Keyboard onEnter={() => isValid && mutation()}>
-          <Box
-            flex={false}
-            gap="small"
-          >
-            {error && (
-              <GqlError
-                error={error}
-                header="Something went wrong!"
-              />
-            )}
-            <WelcomeHeader />
-            <Box
-              direction="row"
-              gap="small"
-              align="center"
-              margin={{ vertical: '32px' }}
-            >
-              <AppIcon
-                name={attributes.name || 'John Doe'}
-                size="xsmall"
-                hue="default"
-              />
-              <Box>
-                <Text
-                  body1
-                  fontFamily="Monument Semi-Mono, monospace"
-                  fontWeight="500"
-                >
-                  {attributes.name || 'John Doe'}
-                </Text>
-                <Text
-                  caption
-                  color="text-xlight"
-                >
-                  {data?.invite?.email}
-                </Text>
-              </Box>
-            </Box>
-            <Box
-              gap="small"
-              fill="horizontal"
-            >
-              <LabelledInput
-                label="Email"
-                value={data?.invite?.email}
-                disabled
-              />
-              <LabelledInput
-                label="Name"
-                value={attributes.name}
-                placeholder="John Doe"
-                onChange={name => setAttributes({ ...attributes, name })}
-                required
-              />
-              <LabelledInput
-                type="password"
-                label="Password"
-                value={attributes.password}
-                placeholder="Enter password"
-                onChange={password => setAttributes({ ...attributes, password })}
-                error={attributes.password.length > 0 && !isPasswordValid}
-                hint={
-                  attributes.password.length > 0 && !isPasswordValid
-                    ? 'Password is too short. Use at least 10 characters.'
-                    : ''
-                }
-                required
-              />
-              <LabelledInput
-                type="password"
-                label="Confirm password"
-                value={passwordConfirmation}
-                placeholder="Enter password again"
-                onChange={setPasswordConfirmation}
-                error={passwordConfirmation && !passwordMatch}
-                hint={
-                  passwordConfirmation && !passwordMatch
-                    ? 'Passwords do not match.'
-                    : ''
-                }
-                required
-              />
-            </Box>
-            <Button
-              primary
-              width="100%"
-              loading={loading}
-              disabled={!isValid}
-              onClick={() => mutation()}
-            >
-              Sign up
-            </Button>
-          </Box>
-        </Keyboard>
-      </Box>
+        {error && (
+          <GqlError
+            error={error}
+            header="Something went wrong!"
+          />
+        )}
+
+        <Flex
+          flexDirection="column"
+          gap="small"
+        >
+          <LabelledInput
+            label="Email"
+            value={data?.invite?.email}
+            disabled
+          />
+          <LabelledInput
+            label="Username"
+            value={name}
+            placeholder="Enter username"
+            onChange={setName}
+            required
+          />
+          <SetPasswordField
+            value={password}
+            onChange={setPassword}
+            errorCode={passwordError}
+          />
+          <ConfirmPasswordField
+            value={confirm}
+            onChange={setConfirm}
+            errorCode={passwordError}
+          />
+        </Flex>
+        <Button
+          type="submit"
+          primary
+          width="100%"
+          loading={loading}
+          disabled={!submitEnabled}
+        >
+          Sign up
+        </Button>
+      </Form>
     </LoginPortal>
   )
 }

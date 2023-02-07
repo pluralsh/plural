@@ -23,7 +23,9 @@ function BillingPlatformPlansProvider({ children }: BillingPlatformPlansProvider
   const { data, loading, error } = useQuery(PLATFORM_PLANS_QUERY)
 
   const platformPlans = useMemo(() => data?.platformPlans as PlatformPlan[], [data])
-  const proPlatformPlan = useMemo(() => (platformPlans ? platformPlans.find(p => p.name === 'Pro')! : {} as PlatformPlan), [platformPlans])
+  const proPlatformPlan = useMemo(() => (platformPlans ? platformPlans.find(p => p.name === 'Pro' && p.period === 'MONTHLY')! : {} as PlatformPlan), [platformPlans])
+  const proYearlyPlatformPlan = useMemo(() => (platformPlans ? platformPlans.find(p => p.name === 'Pro' && p.period === 'YEARLY')! : {} as PlatformPlan), [platformPlans])
+  const enterprisePlatformPlan = useMemo(() => (platformPlans ? platformPlans.find(p => p.name === 'Enterprise')! : {} as PlatformPlan), [platformPlans])
 
   const { clusterMonthlyPricing, userMonthlyPricing } = useMemo(() => {
     if (!proPlatformPlan) return errorPricing
@@ -40,12 +42,16 @@ function BillingPlatformPlansProvider({ children }: BillingPlatformPlansProvider
   const platformPlansContextValue = useMemo<PlatformPlansContextType>(() => ({
     platformPlans,
     proPlatformPlan,
+    proYearlyPlatformPlan,
+    enterprisePlatformPlan,
     clusterMonthlyPricing,
     userMonthlyPricing,
-    annualDiscount: 0.2, // Hardcoded for now
+    annualDiscount: 0.1, // Hardcoded for now
   }), [
     platformPlans,
     proPlatformPlan,
+    proYearlyPlatformPlan,
+    enterprisePlatformPlan,
     clusterMonthlyPricing,
     userMonthlyPricing,
   ])

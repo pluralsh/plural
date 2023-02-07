@@ -1,13 +1,17 @@
+import { useContext } from 'react'
 import { Link } from 'react-router-dom'
 import { Banner } from '@pluralsh/design-system'
 import { A, DivProps } from 'honorable'
+
+import SubscriptionContext from '../../../contexts/SubscriptionContext'
 
 type BillingLegacyUserBannerPropsType = DivProps & {
   feature?: string
 }
 
 function BillingLegacyUserBanner({ feature, ...props }: BillingLegacyUserBannerPropsType) {
-  const open = true // TODO
+  const { isProPlan, isEnterprisePlan, isGrandfathered } = useContext(SubscriptionContext)
+  const open = !(isProPlan || isEnterprisePlan) && isGrandfathered
 
   if (!open) return null
 

@@ -5,6 +5,7 @@ import { PlatformSubscription } from '../generated/graphql'
 export type SubscriptionContextType = {
   subscription: PlatformSubscription | null
   isProPlan: boolean
+  isEnterprisePlan: boolean
   isGrandfathered: boolean
   refetch: () => void
 }
@@ -12,6 +13,7 @@ export type SubscriptionContextType = {
 const SubscriptionContext = createContext<SubscriptionContextType>({
   subscription: null,
   isProPlan: false,
+  isEnterprisePlan: false,
   isGrandfathered: false,
   refetch: () => {},
 })

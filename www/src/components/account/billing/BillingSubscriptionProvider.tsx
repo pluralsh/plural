@@ -21,19 +21,22 @@ function BillingSubscriptionProvider({ children }: BillingSubscriptionProviderPr
     error,
     refetch,
   } = useQuery(SUBSCRIPTION_QUERY, { fetchPolicy: 'network-only' })
-  const { proPlatformPlan } = useContext(PlatformPlansContext)
+  const { proPlatformPlan, proYearlyPlatformPlan, enterprisePlatformPlan } = useContext(PlatformPlansContext)
 
   const subscription = useMemo(() => data?.account?.subscription as PlatformSubscription | null, [data])
-  const isProPlan = useMemo(() => subscription?.plan?.id === proPlatformPlan.id, [subscription, proPlatformPlan])
+  const isProPlan = useMemo(() => !!subscription?.plan?.id && (subscription.plan.id === proPlatformPlan?.id || subscription.plan.id === proYearlyPlatformPlan?.id), [subscription, proPlatformPlan])
+  const isEnterprisePlan = useMemo(() => !!subscription?.plan?.id && subscription.plan.id === enterprisePlatformPlan?.id, [subscription, enterprisePlatformPlan])
   const isGrandfathered = useMemo(() => moment(data?.account?.grandfatheredUntil).diff(moment()) > 0, [data])
   const subscriptionContextValue = useMemo<SubscriptionContextType>(() => ({
     subscription,
     isProPlan,
+    isEnterprisePlan,
     isGrandfathered,
     refetch,
   }), [
     subscription,
     isProPlan,
+    isEnterprisePlan,
     isGrandfathered,
     refetch,
   ])

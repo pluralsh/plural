@@ -1,9 +1,14 @@
+import { useContext } from 'react'
 import { Link } from 'react-router-dom'
 import { A, P } from 'honorable'
 
+import SubscriptionContext from '../../../contexts/SubscriptionContext'
+
 function BillingLegacyUserMessage() {
-  const open = true
-  const expired = false
+  const { isProPlan, isEnterprisePlan, isGrandfathered } = useContext(SubscriptionContext)
+
+  const open = !(isProPlan || isEnterprisePlan) && isGrandfathered
+  const expired = !isGrandfathered
 
   if (!open) return null
 

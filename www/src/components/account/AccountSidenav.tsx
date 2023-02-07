@@ -51,13 +51,7 @@ export default function AccountSideNav({ tabStateRef = {} }: any) {
       <PageCard
         marginBottom="large"
         heading={(
-          <Div
-            display="-webkit-box"
-            webkitLineClamp={2}
-            webkitBoxOrient="vertical"
-            overflowY="hidden"
-            lineBreak="all"
-          >
+          <Div wordBreak="break-word">
             {me?.account?.name || ''}
           </Div>
         )}

@@ -12,12 +12,16 @@ mutation RealizeInvite($id: String!) {
 
 query Invite($id: String!) {
   invite(id: $id) {
+    id
     email
     account {
       name
     }
     user {
       ...User
+      account {
+        ...Account
+      }
     }
   }
 }

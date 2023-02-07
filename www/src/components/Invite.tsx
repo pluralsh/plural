@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { Box } from 'grommet'
 import { GqlError } from 'forge-core'
 import { Button } from '@pluralsh/design-system'
 
@@ -13,7 +12,13 @@ import {
 
 import { setToken } from '../helpers/authentication'
 
-import { useInviteQuery, useRealizeInviteMutation, useSignupInviteMutation } from '../generated/graphql'
+import {
+  InviteT,
+  User,
+  useInviteQuery,
+  useRealizeInviteMutation,
+  useSignupInviteMutation,
+} from '../generated/graphql'
 
 import { LoginPortal } from './users/LoginPortal'
 import { LabelledInput } from './users/LabelledInput'
@@ -34,7 +39,7 @@ function InvalidInvite() {
   )
 }
 
-function ExistingInvite({ invite: { account }, id }: any) {
+function ExistingInvite({ invite: { account }, id, user }: {invite: InviteT, id: any, user: User}) {
   const [mutation, { loading, error }] = useRealizeInviteMutation({
     variables: { id },
     onCompleted: ({ realizeInvite }) => {
@@ -43,33 +48,36 @@ function ExistingInvite({ invite: { account }, id }: any) {
     },
   })
 
+  console.log('user', user)
+
   return (
     <LoginPortal>
-      <Box
-        fill
-        pad="medium"
+      <Flex
+        flexDirection="column"
+        gap="medium"
       >
-        <Box
-          flex={false}
-          gap="medium"
+        {error && (
+          <GqlError
+            error={error}
+            header="Something went wrong!"
+          />
+        )}
+        <P
+          body1
+          color="text-xlight"
         >
-          {error && (
-            <GqlError
-              error={error}
-              header="Something went wrong!"
-            />
-          )}
-          <Box align="center">You were invited to join another account</Box>
-          <Button
-            onClick={() => mutation()}
-            loading={loading}
-            width="100%"
-            padding="medium"
-          >
-            Join {account.name}
-          </Button>
-        </Box>
-      </Box>
+          {account?.name} invited you to join their Plural account.
+          Joining will remove {user?.email} from the {user?.account?.name} account.
+        </P>
+        <Button
+          onClick={() => mutation()}
+          loading={loading}
+          width="100%"
+          padding="medium"
+        >
+          Leave {user?.account?.name} and join {account?.name}
+        </Button>
+      </Flex>
     </LoginPortal>
   )
 }
@@ -90,7 +98,7 @@ export default function Invite() {
     onCompleted: ({ signup }) => {
       setToken(signup?.jwt)
       console.log('signup', signup)
-      // ;(window as Window).location = '/'
+      ;(window as Window).location = '/'
     },
   })
 
@@ -101,7 +109,8 @@ export default function Invite() {
   if (inviteError) return <InvalidInvite />
   if (!data) return null
 
-  const { disabled: passwordDisabled, error: passwordError } = validatePassword(password, confirm)
+  const { disabled: passwordDisabled, error: passwordError } = validatePassword(password,
+    confirm)
 
   const isNameValid = name.length > 0
   const submitEnabled = isNameValid && !passwordDisabled
@@ -111,6 +120,7 @@ export default function Invite() {
       <ExistingInvite
         invite={data.invite}
         id={inviteId}
+        user={data.invite.user}
       />
     )
   }
@@ -125,15 +135,13 @@ export default function Invite() {
   return (
     <LoginPortal>
       <Div marginBottom="xlarge">
-        <WelcomeHeader
-          textAlign="left"
-        />
+        <WelcomeHeader textAlign="left" />
         <P
           body1
           color="text-xlight"
         >
-          {data.invite?.account?.name} invited you to join their Plural account. Create an
-          account to join.
+          {data.invite?.account?.name} invited you to join their Plural account.
+          Create an account to join.
         </P>
       </Div>
       <Form

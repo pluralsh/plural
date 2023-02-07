@@ -22,7 +22,12 @@ import { WelcomeHeader } from '../utils/WelcomeHeader'
 import { HubSpot } from '../utils/HubSpot'
 import { fetchToken, setToken } from '../../helpers/authentication'
 import { GqlError } from '../utils/Alert'
-import { PasswordErrorCode, PasswordErrorMessage, validatePassword } from '../Login'
+import {
+  PasswordError,
+  PasswordErrorCode,
+  PasswordErrorMessage,
+  validatePassword,
+} from '../Login'
 import { host } from '../../helpers/hostname'
 import { useHistory } from '../../router'
 
@@ -46,7 +51,10 @@ function PasswordErrorMsg({ errorCode }: { errorCode: PasswordErrorCode }) {
 export function SetPasswordField({
   errorCode,
   ...props
-}: { errorCode: PasswordErrorCode } & ComponentProps<typeof LabelledInput>) {
+}: { errorCode?: PasswordErrorCode } & Omit<
+  ComponentProps<typeof LabelledInput>,
+  'errorCode'
+>) {
   return (
     <LabelledInput
       label="Password"
@@ -54,8 +62,11 @@ export function SetPasswordField({
       placeholder="Enter password"
       hint="10 character minimum"
       caption={
-        errorCode === 'TOO_SHORT' && <PasswordErrorMsg errorCode={errorCode} />
+        errorCode === PasswordError.TooShort && (
+          <PasswordErrorMsg errorCode={errorCode} />
+        )
       }
+      error={errorCode === PasswordError.TooShort}
       {...props}
     />
   )
@@ -72,8 +83,11 @@ export function ConfirmPasswordField({
       placeholder="Confirm password"
       hint=""
       caption={
-        errorCode === 'NO_MATCH' && <PasswordErrorMsg errorCode={errorCode} />
+        errorCode === PasswordError.NoMatch && (
+          <PasswordErrorMsg errorCode={errorCode} />
+        )
       }
+      error={errorCode === PasswordError.NoMatch}
       {...props}
     />
   )
@@ -124,6 +138,13 @@ export function Signup() {
     mutation()
   }, [mutation])
 
+  const accountError = error?.message.startsWith('name has already been taken')
+    ? 'Name already taken'
+    : undefined
+  const emailError = error?.message.startsWith('email has already been taken')
+    ? 'Email already taken'
+    : undefined
+
   const { disabled, error: passwordError } = validatePassword(password, confirm)
 
   const showEmailError = error?.message?.startsWith('not_found')
@@ -133,7 +154,7 @@ export function Signup() {
       <HubSpot />
       <WelcomeHeader marginBottom="xxlarge" />
       <Form onSubmit={submit}>
-        {!showEmailError && error && (
+        {!showEmailError && !accountError && !emailError && error && (
           <Div marginBottom="medium">
             <GqlError
               error={error}
@@ -147,6 +168,8 @@ export function Signup() {
           value={email}
           onChange={setEmail}
           placeholder="Enter email address"
+          hint={emailError}
+          error={!!emailError}
         />
         <Flex
           flexWrap="wrap"
@@ -161,6 +184,8 @@ export function Signup() {
               value={account}
               onChange={setAccount}
               placeholder="Enter company name"
+              hint={accountError}
+              error={!!accountError}
             />
           </FlexAtBreak>
           <FlexAtBreak>

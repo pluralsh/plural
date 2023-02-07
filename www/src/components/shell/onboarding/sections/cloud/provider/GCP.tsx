@@ -67,7 +67,7 @@ function GCP() {
   const setWorkspaceKeys = useSetWorkspaceKeys()
   const [fileSelected, setFileSelected] = useState<boolean>(!!cloud?.gcp?.fileName)
   const [fileError, setFileError] = useState<FileError>()
-  const isValid = useMemo(() => !IsObjectEmpty(cloud?.gcp) && !IsObjectEmpty(workspace), [cloud, workspace])
+  const isValid = useMemo(() => !IsObjectEmpty(cloud?.gcp) && !!workspace?.region && !!workspace?.project, [cloud?.gcp, workspace?.project, workspace?.region])
 
   const readFile = useCallback(async (files: FileList | undefined | null) => {
     setFileSelected(false)

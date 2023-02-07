@@ -12,6 +12,7 @@ import { OnboardingContext } from '../../context/onboarding'
 import { useSetWorkspaceKeys } from '../../context/hooks'
 import { CloudProvider, WorkspaceProps } from '../../context/types'
 import { IsObjectEmpty } from '../../../../../utils/object'
+import { generateString } from '../../../../../utils/string'
 
 type ValidationFieldKey = keyof WorkspaceProps
 type Validation = {regex: RegExp, message: string}
@@ -21,11 +22,11 @@ type ValidationField = {[key in ValidationFieldKey]?: Validation | ValidationFn}
 const VALIDATOR: ValidationField = {
   clusterName: (provider: CloudProvider) => ({
     regex: provider === CloudProvider.GCP ? /^[a-z][0-9-a-z]{0,11}$/ : /^[a-z][0-9\-a-z]{0,14}$/,
-    message: `must be between 1 and ${provider === CloudProvider.GCP ? 12 : 15} characters and may contain hyphenated alphanumeric string only`,
+    message: `must be between 1 and ${provider === CloudProvider.GCP ? 12 : 15} characters and may contain hyphenated lowercase alphanumeric string only`,
   }),
   bucketPrefix: {
     regex: /^[a-z][a-z0-9-]{1,61}[a-z0-9]$/,
-    message: 'must be between 3 and 64 characters and may contain hyphenated alphanumeric string only',
+    message: 'must be between 3 and 64 characters and may contain hyphenated lowercase alphanumeric string only',
   },
 }
 
@@ -34,6 +35,8 @@ function WorkspaceStep({ onBack, onNext }) {
   const setWorkspaceKeys = useSetWorkspaceKeys()
   const [error, setError] = useState<{[key in ValidationFieldKey]?: string | null}>({})
   const isValid = useMemo(() => workspace?.clusterName && workspace?.bucketPrefix && workspace?.subdomain && IsObjectEmpty(error), [error, workspace?.bucketPrefix, workspace?.clusterName, workspace?.subdomain])
+  const clusterPlaceholder = useMemo(() => `plural-${generateString(5)}`, [])
+  const bucketPrefixPlaceholder = useMemo(() => `plural-${generateString(5)}`, [])
 
   useEffect(() => {
     Object.keys(workspace).forEach(key => {
@@ -57,11 +60,12 @@ function WorkspaceStep({ onBack, onNext }) {
         hint={error.clusterName || 'Give your kubernetes cluster a unique name.'}
         error={!!error.clusterName}
         width="100%"
+        required
       >
         <Input
           value={workspace?.clusterName}
           error={!!error.clusterName}
-          placeholder="plural-demo"
+          placeholder={clusterPlaceholder}
           onChange={({ target: { value } }) => setWorkspaceKeys({ clusterName: value })}
         />
       </FormField>
@@ -71,11 +75,12 @@ function WorkspaceStep({ onBack, onNext }) {
         error={!!error.bucketPrefix}
         hint={error.bucketPrefix || 'A unique prefix to generate bucket names.'}
         width="100%"
+        required
       >
         <Input
           value={workspace?.bucketPrefix}
           error={!!error.bucketPrefix}
-          placeholder="plural"
+          placeholder={bucketPrefixPlaceholder}
           onChange={({ target: { value } }) => setWorkspaceKeys({ bucketPrefix: value })}
         />
       </FormField>
@@ -84,6 +89,7 @@ function WorkspaceStep({ onBack, onNext }) {
         label="Subdomain"
         hint="The domain you'll use for all your applications. Don't worry, you can change your domain later!"
         width="100%"
+        required
       >
         <Input
           value={workspace?.subdomain}

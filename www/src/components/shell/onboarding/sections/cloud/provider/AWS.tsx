@@ -43,7 +43,7 @@ function AWS() {
   const { cloud, setValid, workspace } = useContext(OnboardingContext)
   const setCloudProviderKeys = useSetCloudProviderKeys<AWSCloudProvider>(CloudProvider.AWS)
   const setWorkspaceKeys = useSetWorkspaceKeys()
-  const isValid = useMemo(() => !IsObjectEmpty(cloud?.aws) && !IsObjectEmpty(workspace!), [cloud, workspace])
+  const isValid = useMemo(() => !IsObjectEmpty(cloud?.aws) && !!workspace?.region, [cloud, workspace.region])
 
   useEffect(() => setValid(isValid), [isValid, setValid])
   useEffect(() => (IsEmpty(workspace?.region) ? setWorkspaceKeys({ region: 'us-east-2' }) : undefined), [setWorkspaceKeys, workspace])

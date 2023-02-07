@@ -63,7 +63,7 @@ function Azure() {
   const setCloudProviderKeys = useSetCloudProviderKeys<AzureCloudProvider>(CloudProvider.Azure)
   const setWorkspaceKeys = useSetWorkspaceKeys()
   const [error, setError] = useState<{[key in ValidationFieldKey]?: string | null}>({})
-  const isValid = useMemo(() => !IsObjectEmpty(cloud?.azure) && !IsObjectEmpty(workspace) && IsObjectEmpty(error), [cloud?.azure, error, workspace])
+  const isValid = useMemo(() => !IsObjectEmpty(cloud?.azure) && !!workspace?.region && !!workspace?.project && IsObjectEmpty(error), [cloud?.azure, error, workspace?.project, workspace?.region])
 
   useEffect(() => setValid(isValid), [isValid, setValid])
   useEffect(() => (IsEmpty(workspace?.region) ? setWorkspaceKeys({ region: 'eastus' }) : undefined), [setWorkspaceKeys, workspace])

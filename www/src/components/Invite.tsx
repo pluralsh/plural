@@ -48,8 +48,6 @@ function ExistingInvite({ invite: { account }, id, user }: {invite: InviteT, id:
     },
   })
 
-  console.log('user', user)
-
   return (
     <LoginPortal>
       <Flex
@@ -97,7 +95,6 @@ export default function Invite() {
     },
     onCompleted: ({ signup }) => {
       setToken(signup?.jwt)
-      console.log('signup', signup)
       ;(window as Window).location = '/'
     },
   })

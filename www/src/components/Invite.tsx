@@ -130,7 +130,8 @@ export default function Invite() {
     )
   }
 
-  const onSubmit = () => {
+  const onSubmit = e => {
+    e.preventDefault()
     if (!submitEnabled) {
       return
     }

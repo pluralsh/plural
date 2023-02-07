@@ -135,7 +135,8 @@ export function Signup() {
       history.navigate('/')
     }
   }, [history])
-  const submit = useCallback(() => {
+  const onSubmit = useCallback(e => {
+    e.preventDefault()
     mutation()
   }, [mutation])
 
@@ -154,7 +155,7 @@ export function Signup() {
     <LoginPortal>
       <HubSpot />
       <WelcomeHeader marginBottom="xxlarge" />
-      <Form onSubmit={submit}>
+      <Form onSubmit={onSubmit}>
         {!showEmailError && !accountError && !emailError && error && (
           <Div marginBottom="medium">
             <GqlError

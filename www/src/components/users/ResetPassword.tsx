@@ -34,7 +34,8 @@ export function ResetPassword() {
     error: passwordError,
   } = validatePassword(password, confirm)
 
-  const onSubmit = () => {
+  const onSubmit = e => {
+    e.preventDefault()
     if (!disabled) {
       mutation()
     }

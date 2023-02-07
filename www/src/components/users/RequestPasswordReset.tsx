@@ -33,7 +33,8 @@ export function RequestPasswordReset() {
   const invalidEmail = error?.message === 'not_found'
   const gqlError = !invalidEmail ? error : undefined
   const disabled = !isMinViableEmail(attributes.email)
-  const onSubmit = () => {
+  const onSubmit = e => {
+    e.preventDefault()
     if (!disabled) {
       mutation()
     }

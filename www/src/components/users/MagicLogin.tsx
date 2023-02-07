@@ -404,7 +404,8 @@ export function Login() {
     ? password.length === 0
     : !isMinViableEmail(email)
 
-  const submit = useCallback(() => {
+  const onSubmit = useCallback(e => {
+    e.preventDefault()
     if (disableSubmit) {
       return
     }
@@ -452,7 +453,7 @@ export function Login() {
         )}
         {state !== State.PasswordlessLogin && (
           <>
-            <Form onSubmit={submit}>
+            <Form onSubmit={onSubmit}>
               {loginError && (
                 <Div marginBottom="medium">
                   <GqlError

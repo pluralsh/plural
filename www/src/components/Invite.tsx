@@ -13,7 +13,7 @@ import {
 import { setToken } from '../helpers/authentication'
 
 import {
-  InviteT,
+  Invite as InviteT,
   User,
   useInviteQuery,
   useRealizeInviteMutation,
@@ -39,7 +39,15 @@ function InvalidInvite() {
   )
 }
 
-function ExistingInvite({ invite: { account }, id, user }: {invite: InviteT, id: any, user: User}) {
+function ExistingInvite({
+  invite: { account },
+  id,
+  user,
+}: {
+  invite: InviteT
+  id: any
+  user: User
+}) {
   const [mutation, { loading, error }] = useRealizeInviteMutation({
     variables: { id },
     onCompleted: ({ realizeInvite }) => {
@@ -64,8 +72,8 @@ function ExistingInvite({ invite: { account }, id, user }: {invite: InviteT, id:
           body1
           color="text-xlight"
         >
-          {account?.name} invited you to join their Plural account.
-          Joining will remove {user?.email} from the {user?.account?.name} account.
+          {account?.name} invited you to join their Plural account. Joining will
+          remove {user?.email} from the {user?.account?.name} account.
         </P>
         <Button
           onClick={() => mutation()}

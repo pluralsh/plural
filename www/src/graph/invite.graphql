@@ -14,8 +14,9 @@ query Invite($id: String!) {
   invite(id: $id) {
     id
     email
+    existing
     account {
-      name
+      ...Account
     }
     user {
       ...User

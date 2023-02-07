@@ -29,7 +29,8 @@ export function Footer(props) {
     >
       <FooterList>
         <FooterLink as="div">
-          © Plural Labs {new Date().toLocaleString('en-us', { year: 'numeric' })}
+          © Plural Labs{' '}
+          {new Date().toLocaleString('en-us', { year: 'numeric' })}
         </FooterLink>
         <FooterLink
           href="https://www.plural.sh/legal/privacy-policy"
@@ -37,7 +38,10 @@ export function Footer(props) {
         >
           Privacy Policy
         </FooterLink>
-        <FooterLink href="https://www.plural.sh/legal/terms-and-conditions">
+        <FooterLink
+          href="https://www.plural.sh/legal/terms-and-conditions"
+          target="_blank"
+        >
           Terms & Conditions
         </FooterLink>
         <FooterLink

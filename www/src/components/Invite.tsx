@@ -24,7 +24,7 @@ import { LoginPortal } from './users/LoginPortal'
 import { LabelledInput } from './users/LabelledInput'
 import { WelcomeHeader } from './utils/WelcomeHeader'
 import { ConfirmPasswordField, SetPasswordField } from './users/Signup'
-import { validatePassword } from './Login'
+import { validatePassword } from './users/PasswordValidation'
 
 function InvalidInvite() {
   return (

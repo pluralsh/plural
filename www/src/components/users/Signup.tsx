@@ -22,15 +22,16 @@ import { WelcomeHeader } from '../utils/WelcomeHeader'
 import { HubSpot } from '../utils/HubSpot'
 import { fetchToken, setToken } from '../../helpers/authentication'
 import { GqlError } from '../utils/Alert'
+
+import { host } from '../../helpers/hostname'
+import { useHistory } from '../../router'
+
 import {
   PasswordError,
   PasswordErrorCode,
   PasswordErrorMessage,
   validatePassword,
-} from '../Login'
-import { host } from '../../helpers/hostname'
-import { useHistory } from '../../router'
-
+} from './PasswordValidation'
 import { getDeviceToken } from './utils'
 import { finishedDeviceLogin } from './DeviceLoginNotif'
 import { FlexAtBreak, OAuthOptions } from './MagicLogin'

@@ -101,7 +101,7 @@ function ConfigurationField({
 function BoolConfiguration({
   config: { name, default: def }, ctx, setValue,
 }) {
-  const value: boolean = ctx[name]?.value
+  const value: boolean = `${ctx[name]?.value}`.toLowerCase() === 'true'
 
   useEffect(() => {
     if (value === undefined && def) {

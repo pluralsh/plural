@@ -125,6 +125,37 @@ defmodule Core.Services.AccountsTest do
       assert account.name == "updated"
     end
 
+    test "if billing address is updated, it will update the stripe customer", %{user: user, account: account} do
+      {:ok, _} = update_record(account, %{billing_customer_id: "strp"})
+      me = self()
+      expect(Stripe.Customer, :update, fn "strp", %{address: address, name: name} ->
+        send me, {:stripe, address, name}
+        {:ok, %{}}
+      end)
+
+      {:ok, upd} = Accounts.update_account(%{
+        billing_address: %{
+          line1: "line1",
+          line2: "line2",
+          city: "new york",
+          state: "ny",
+          country: "us",
+          zip: "10023",
+          name: "me"
+        }
+      }, user)
+
+      assert_receive {:stripe, address, name}
+      assert upd.id == account.id
+      assert name == "me"
+      assert address.line1 == upd.billing_address.line1
+      assert address.line2 == upd.billing_address.line2
+      assert address.city == upd.billing_address.city
+      assert address.state == upd.billing_address.state
+      assert address.country == upd.billing_address.country
+      assert address.postal_code == upd.billing_address.zip
+    end
+
     test "account admins can update accounts", %{user: user} do
       admin = insert(:user, account: user.account, roles: %{admin: true})
 

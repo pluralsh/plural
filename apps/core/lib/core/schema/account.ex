@@ -1,7 +1,7 @@
 defmodule Core.Schema.Account do
   use Piazza.Ecto.Schema
   use Arc.Ecto.Schema
-  alias Core.Schema.{User, DomainMapping, PlatformSubscription}
+  alias Core.Schema.{User, DomainMapping, PlatformSubscription, Address}
 
   schema "accounts" do
     field :name,                 :string
@@ -15,6 +15,9 @@ defmodule Core.Schema.Account do
     field :cluster_count,        :integer, default: 0
     field :usage_updated,        :boolean
     field :sa_provisioned,       :boolean
+    field :address_updated,      :boolean, virtual: true
+
+    embeds_one :billing_address, Address, on_replace: :update
 
     belongs_to :root_user, User
     has_many :domain_mappings, DomainMapping, on_replace: :delete
@@ -47,15 +50,24 @@ defmodule Core.Schema.Account do
     model
     |> cast(attrs, @valid)
     |> cast_assoc(:domain_mappings)
+    |> cast_embed(:billing_address)
     |> unique_constraint(:name)
     |> validate_required([:name])
     |> generate_uuid(:icon_id)
     |> cast_attachments(attrs, [:icon], allow_urls: true)
+    |> set_address_updated()
   end
 
 
   def payment_changeset(model, attrs \\ %{}) do
     model
     |> cast(attrs, @payment)
+  end
+
+  defp set_address_updated(cs) do
+    case get_change(cs, :billing_address) do
+      nil -> cs
+      _ -> put_change(cs, :address_updated, true)
+    end
   end
 end

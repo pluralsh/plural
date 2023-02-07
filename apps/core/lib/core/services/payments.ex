@@ -8,6 +8,7 @@ defmodule Core.Services.Payments do
     Publisher,
     Account,
     User,
+    Address,
     Repository,
     Plan,
     Subscription,
@@ -261,8 +262,9 @@ defmodule Core.Services.Payments do
     create_card(account, source_token)
   end
 
-  def create_card(%Account{root_user: %User{email: email}, billing_customer_id: nil} = account, source_token) do
-    with {:ok, %{id: id}} <- Stripe.Customer.create(%{email: email, source: source_token}) do
+  def create_card(%Account{root_user: %User{}, billing_customer_id: nil} = account, source_token) do
+    with {:ok, stripe} <- stripe_attrs(account),
+         {:ok, %{id: id}} <- Stripe.Customer.create(Map.put(stripe, :source, source_token)) do
       account
       |> Account.payment_changeset(%{billing_customer_id: id})
       |> Core.Repo.update()
@@ -273,6 +275,15 @@ defmodule Core.Services.Payments do
     with {:ok, _} <- Stripe.Card.create(%{customer: cus_id, source: source}),
       do: {:ok, account}
   end
+
+  @doc """
+  generate stripe customer attrs from a preloaded account
+  """
+  @spec stripe_attrs(Account.t) :: {:ok, map} | {:error, binary}
+  def stripe_attrs(%Account{root_user: %User{email: email, name: name}, billing_address: %{} = address}) do
+    {:ok, %{email: email, name: Map.get(address, :name) || name, address: Address.to_stripe(address)}}
+  end
+  def stripe_attrs(_), do: {:error, "you must provide a billing address to enable billing"}
 
   @doc """
   Detaches a card from a customer
@@ -366,7 +377,7 @@ defmodule Core.Services.Payments do
     end
   end
 
-  defp discount(amount, :monthly), do: round(amount / 10)
+  defp discount(amount, :yearly), do: round(9 * amount / 10)
   defp discount(amount, _), do: amount
 
   def setup_enterprise_plan(account_id) do

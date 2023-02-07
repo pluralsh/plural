@@ -22,9 +22,10 @@ import SubscriptionContext from '../../../contexts/SubscriptionContext'
 type BillingPreviewPropsType = {
   noCard?: boolean
   discountPreview?: boolean
+  onChange?: (isProfessional: boolean) => void
 }
 
-function BillingPreview({ noCard, discountPreview }: BillingPreviewPropsType) {
+function BillingPreview({ noCard, discountPreview, onChange }: BillingPreviewPropsType) {
   const { clusterMonthlyPricing, userMonthlyPricing, annualDiscount } = useContext(PlatformPlansContext)
   const { isProPlan } = useContext(SubscriptionContext)
   const { nClusters, nUsers } = useContext(BillingConsumptionContext)
@@ -62,6 +63,11 @@ function BillingPreview({ noCard, discountPreview }: BillingPreviewPropsType) {
       pUsers,
     ])
 
+  const handleChange = useCallback((event: any) => {
+    setIsProfessional(event.target.checked)
+    onChange?.(event.target.checked)
+  }, [onChange])
+
   const wrapCard = useCallback((children: ReactNode) => (
     <Card
       padding="large"
@@ -76,7 +82,7 @@ function BillingPreview({ noCard, discountPreview }: BillingPreviewPropsType) {
   const renderProfessionalSwitch = useCallback(() => (
     <Switch
       checked={isProfessional}
-      onChange={event => setIsProfessional(event.target.checked)}
+      onChange={handleChange}
       padding={0}
     >
       <Div
@@ -101,7 +107,7 @@ function BillingPreview({ noCard, discountPreview }: BillingPreviewPropsType) {
       </Div>
       <Switch
         checked={isProfessional}
-        onChange={event => setIsProfessional(event.target.checked)}
+        onChange={handleChange}
         padding={0}
       >
         <Div

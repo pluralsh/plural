@@ -1,5 +1,6 @@
+import { useContext } from 'react'
 import { Link } from 'react-router-dom'
-import { Button, CloseIcon, IconFrame, Modal } from '@pluralsh/design-system'
+import { Button, Modal } from '@pluralsh/design-system'
 import {
   A,
   Div,
@@ -9,9 +10,11 @@ import {
 } from 'honorable'
 
 import usePersistedState from '../../../hooks/usePersistedState'
+import SubscriptionContext from '../../../contexts/SubscriptionContext'
 
 function BillingMigrationModal() {
-  const [open, setOpen] = usePersistedState('billing-migration-modal-open', true)
+  const { isGrandfathered } = useContext(SubscriptionContext)
+  const [open, setOpen] = usePersistedState('billing-migration-modal-open', isGrandfathered)
 
   return (
     <Modal

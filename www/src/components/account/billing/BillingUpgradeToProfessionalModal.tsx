@@ -26,10 +26,13 @@ type BillingUpgradeToProfessionalModalPropsType = {
 }
 
 function BillingUpgradeToProfessionalModal({ open, onClose }: BillingUpgradeToProfessionalModalPropsType) {
-  const { proPlatformPlan } = useContext(PlatformPlansContext)
+  const { proPlatformPlan, proYearlyPlatformPlan } = useContext(PlatformPlansContext)
   const { card } = useContext(BillingBankCardContext)
   const { refetch: refetchSubscription } = useContext(SubscriptionContext)
 
+  const [applyYearlyDiscount, setApplyYearlyDiscount] = useState(false)
+
+  console.log('applyYearlyDiscount', applyYearlyDiscount);
   const [upgradeMutation, { loading: loadingUpgradeMutation }] = useMutation(UPGRADE_TO_PROFESSIONAL_PLAN_MUTATION, {
     variables: {
       planId: proPlatformPlan.id,
@@ -60,6 +63,7 @@ function BillingUpgradeToProfessionalModal({ open, onClose }: BillingUpgradeToPr
       <BillingPreview
         noCard
         discountPreview
+        onChange={setApplyYearlyDiscount}
       />
       <Div
         fontWeight="bold"

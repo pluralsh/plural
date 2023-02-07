@@ -103,7 +103,7 @@ export function Signup() {
   const [account, setAccount] = useState('')
   const [confirm, setConfirm] = useState('')
   const deviceToken = getDeviceToken()
-  const nameRef = useRef<HTMLElement>()
+  const accountInputRef = useRef<HTMLElement>()
   const emailRef = useRef<HTMLElement>()
   const [mutation, { loading, error }] = useSignupMutation({
     variables: {
@@ -122,7 +122,7 @@ export function Signup() {
   const { data } = useOauthUrlsQuery({ variables: { host: host() } })
 
   useEffect(() => {
-    const ref = email ? nameRef : emailRef
+    const ref = email ? accountInputRef : emailRef
 
     ref?.current?.querySelector('input')?.focus()
     // Only set focus on first render
@@ -179,6 +179,7 @@ export function Signup() {
         >
           <FlexAtBreak>
             <LabelledInput
+              ref={accountInputRef}
               width="100%"
               label="Company name"
               value={account}
@@ -194,7 +195,6 @@ export function Signup() {
                 [LOGIN_BREAKPOINT]: { flex: '1 0' },
               }}
               width="100%"
-              ref={nameRef}
               label="Username"
               value={name}
               onChange={setName}

@@ -516,7 +516,7 @@ export function Login() {
                 loading={loading}
                 disabled={disableSubmit}
               >
-                Continue
+                {isPasswordLogin ? 'Log in' : 'Continue'}
               </Button>
             </Form>
             {!deviceToken && <OAuthOptions oauthUrls={oAuthData?.oauthUrls} />}

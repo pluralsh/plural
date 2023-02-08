@@ -1,10 +1,14 @@
 import posthog from 'posthog-js'
 
-import { User } from '../generated/graphql'
+import { ApolloError } from '@apollo/client'
+
+import { Provider, User } from '../generated/graphql'
+
+import { CloudProvider } from '../components/shell/onboarding/context/types'
 
 import Cookiebot from './cookiebot'
 
-export default function PosthogIdentiy(me: User) {
+export default function PosthogIdentify(me: User) {
   if (Cookiebot.consent.statistics) {
     posthog.opt_in_capturing()
     posthog.identify(me.id)
@@ -23,4 +27,30 @@ export default function PosthogIdentiy(me: User) {
   else {
     posthog.opt_out_capturing()
   }
+}
+
+export enum PosthogEvent {
+  Onboarding = 'Onboarding',
+  Installer = 'Installer',
+}
+
+interface PosthogOnboardingEvent {
+  provider?: CloudProvider
+  error?: ApolloError
+  clusterName?: string
+}
+
+interface PosthogInstallerEvent {
+  error?: ApolloError
+  applications?: Array<string>
+  provider?: Provider
+}
+
+type PosthogEventData = {
+  [PosthogEvent.Onboarding]: PosthogOnboardingEvent,
+  [PosthogEvent.Installer]: PosthogInstallerEvent
+}
+
+export function posthogCapture<T extends PosthogEvent>(event: T, data: PosthogEventData[T]): void {
+  posthog.capture(event, data)
 }

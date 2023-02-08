@@ -8,7 +8,7 @@ defmodule RtcWeb.ShellChannelTest do
   describe "ShellChannel" do
     test "users can connect to pods and send commands" do
       user = insert(:user)
-      %{id: id} = cloud_shell = insert(:cloud_shell, user: user, pod_name: "plrl-shell")
+      cloud_shell = insert(:cloud_shell, user: user, pod_name: "plrl-shell")
 
       url = Pods.PodExec.exec_url(cloud_shell.pod_name)
       # expect(Client, :setup, fn %{id: ^id} -> {:ok, true} end)

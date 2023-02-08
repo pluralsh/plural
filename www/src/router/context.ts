@@ -18,7 +18,8 @@ class PluralHistory {
   pop(defaultPath: string): string {
     const path = this._stack.pop() || defaultPath
 
-    localStorage.setItem(BROWSER_HISTORY_STORAGE_KEY, JSON.stringify(this._stack))
+    // TODO: investigate why pop is called multiple times and tie history to the user
+    // localStorage.setItem(BROWSER_HISTORY_STORAGE_KEY, JSON.stringify(this._stack))
 
     return path
   }
@@ -45,7 +46,7 @@ class PluralHistory {
     }
 
     this._stack.push(path)
-    localStorage.setItem(BROWSER_HISTORY_STORAGE_KEY, JSON.stringify(this._stack))
+    // localStorage.setItem(BROWSER_HISTORY_STORAGE_KEY, JSON.stringify(this._stack))
   }
 
   private _restoreHistory(): void {

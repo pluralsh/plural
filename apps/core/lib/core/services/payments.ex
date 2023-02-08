@@ -64,7 +64,7 @@ defmodule Core.Services.Payments do
   """
   @spec list_invoices(Subscription.t | Account.t | User.t, map) :: {:ok, Stripe.List.t(Stripe.Invoice.t)} | {:error, term}
   def list_invoices(object, opts \\ %{})
-  def list_invoices(%Subscription{customer_id: customer} = sub, opts) do
+  def list_invoices(%Subscription{customer_id: customer} = sub, opts) when is_binary(customer) do
     %{installation: %{repository: %{publisher: %{billing_account_id: account_id}}}} =
       Core.Repo.preload(sub, [installation: [repository: :publisher]])
 
@@ -72,7 +72,7 @@ defmodule Core.Services.Payments do
     |> Stripe.Invoice.list(connect_account: account_id)
   end
 
-  def list_invoices(%Account{billing_customer_id: customer}, opts) do
+  def list_invoices(%Account{billing_customer_id: customer}, opts) when is_binary(customer) do
     Map.merge(%{customer: customer}, opts)
     |> Stripe.Invoice.list()
   end
@@ -82,6 +82,8 @@ defmodule Core.Services.Payments do
     |> Map.get(:account)
     |> list_invoices(opts)
   end
+
+  def list_invoices(_, _), do: {:error, "no customer for this account"}
 
   @doc """
   It can list all cards attached to a customer

@@ -7,6 +7,8 @@ import {
   GitLabLogoIcon,
 } from '@pluralsh/design-system'
 
+import { useNavigate } from 'react-router-dom'
+
 import { useDevToken } from '../../../hooks/useDevToken'
 import OnboardingCardButton from '../../OnboardingCardButton'
 import useOnboarded from '../../../hooks/useOnboarded'
@@ -26,6 +28,7 @@ const providerToDisplayName = {
 
 function ProviderSelection({ data }) {
   const devToken = useDevToken()
+  const navigate = useNavigate()
   const { fresh: isOnboarding, mutation } = useOnboarded()
   const [expanded, setExpanded] = useState(false)
 
@@ -88,7 +91,10 @@ function ProviderSelection({ data }) {
         >
           <Button
             secondary
-            onClick={() => mutation()}
+            onClick={() => {
+              mutation()
+              navigate('/marketplace')
+            }}
           >Skip onboarding
           </Button>
         </Flex>

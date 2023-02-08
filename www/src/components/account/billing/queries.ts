@@ -34,6 +34,23 @@ export const SUBSCRIPTION_QUERY = gql`
           id
         }
       }
+      billingAddress {
+        name
+        line1
+        line2
+        zip
+        state
+        city
+        country
+      }
+    }
+  }
+`
+
+export const UPDATE_ACCOUNT_BILLING_MUTATION = gql`
+  mutation UpdateAccountBilling($attributes: AccountAttributes!) {
+    updateAccount(attributes: $attributes) {
+      id
     }
   }
 `

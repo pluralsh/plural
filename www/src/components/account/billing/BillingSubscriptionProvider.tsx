@@ -25,16 +25,18 @@ function BillingSubscriptionProvider({ children }: BillingSubscriptionProviderPr
   const { proPlatformPlan, proYearlyPlatformPlan, enterprisePlatformPlan } = useContext(PlatformPlansContext)
 
   const pricingFeaturesEnabled = useMemo(() => posthog.isFeatureEnabled('pricing'), [])
-  const billingCustomerId = useMemo(() => data?.account?.billingCustomerId, [data])
   const subscription = useMemo(() => data?.account?.subscription as PlatformSubscription | null, [data])
+  const billingAddress = useMemo(() => data?.account?.billingAddress ?? null, [data])
+  const billingCustomerId = useMemo(() => data?.account?.billingCustomerId, [data])
   const isProPlan = useMemo(() => !!subscription?.plan?.id && (subscription.plan.id === proPlatformPlan?.id || subscription.plan.id === proYearlyPlatformPlan?.id), [subscription, proPlatformPlan, proYearlyPlatformPlan])
   const isEnterprisePlan = useMemo(() => !!subscription?.plan?.id && subscription.plan.id === enterprisePlatformPlan?.id, [subscription, enterprisePlatformPlan])
   const isPaidPlan = useMemo(() => isProPlan || isEnterprisePlan, [isProPlan, isEnterprisePlan])
   const isGrandfathered = useMemo(() => moment(data?.account?.grandfatheredUntil).diff(moment()) > 0, [data])
   const subscriptionContextValue = useMemo<SubscriptionContextType>(() => ({
-    pricingFeaturesEnabled,
-    billingCustomerId,
+    pricingFeaturesEnabled: true,
     subscription,
+    billingAddress,
+    billingCustomerId,
     isProPlan,
     isEnterprisePlan,
     isPaidPlan,
@@ -42,8 +44,9 @@ function BillingSubscriptionProvider({ children }: BillingSubscriptionProviderPr
     refetch,
   }), [
     pricingFeaturesEnabled,
-    billingCustomerId,
     subscription,
+    billingAddress,
+    billingCustomerId,
     isProPlan,
     isEnterprisePlan,
     isPaidPlan,

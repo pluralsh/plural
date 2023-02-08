@@ -35,6 +35,7 @@ import {
   WorkspaceProps,
 } from '../../context/types'
 import { toCloudProviderAttributes } from '../../../utils/provider'
+import { PosthogEvent, posthogCapture } from '../../../../../utils/posthog'
 
 import { ShellStatus } from './ShellStatus'
 
@@ -165,6 +166,11 @@ function CreateShell() {
   useEffect(() => {
     if (shell?.alive && !error && setupShellCompleted) navigate('/shell')
   }, [shell, navigate, setupShellCompleted, error])
+
+  // Capture errors and send to posthog
+  useEffect(() => error
+    && posthogCapture(PosthogEvent.Onboarding, { provider: cloud.provider, clusterName: workspace.clusterName, error }),
+  [cloud.provider, error, workspace.clusterName])
 
   return (
     <>

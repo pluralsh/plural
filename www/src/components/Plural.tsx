@@ -20,7 +20,7 @@ import { useHistory } from '../router'
 
 import PluralConfigurationContext from '../contexts/PluralConfigurationContext'
 import CurrentUserContext from '../contexts/CurrentUserContext'
-import PosthogIdentiy from '../utils/posthog'
+import PosthogIdentify from '../utils/posthog'
 
 const ApplicationLayout = lazy(() => import('./layout/ApplicationLayout'))
 const BreadcrumbProvider = lazy(() => import('./Breadcrumbs'))
@@ -157,11 +157,11 @@ function TestBanner() {
 function PosthogIdentifier() {
   const { me } = useContext(CurrentUserContext)
 
-  PosthogIdentiy(me)
+  PosthogIdentify(me)
 
   useEffect(() => {
     const onPrefChange = () => {
-      PosthogIdentiy(me)
+      PosthogIdentify(me)
     }
 
     window.addEventListener('CookiebotOnAccept', onPrefChange)

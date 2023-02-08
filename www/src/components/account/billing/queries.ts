@@ -25,6 +25,7 @@ export const PLATFORM_PLANS_QUERY = gql`
 export const SUBSCRIPTION_QUERY = gql`
   query Subscription {
     account {
+      billingCustomerId
       grandfatheredUntil
       delinquentAt
       subscription {

@@ -1,12 +1,17 @@
 import { Button, PageTitle } from '@pluralsh/design-system'
-import { Div, Flex } from 'honorable'
+import { A, Div, Flex } from 'honorable'
 import { Link, Outlet, useLocation } from 'react-router-dom'
+
+import { useContext } from 'react'
+
+import SubscriptionContext from '../../../contexts/SubscriptionContext'
 
 import BillingConsumptionProvider from './BillingConsumptionProvider'
 import BillingBankCardProvider from './BillingBankCardProvider'
 import BillingLegacyUserBanner from './BillingLegacyUserBanner'
 
 function BillingLayout() {
+  const { pricingFeaturesEnabled } = useContext(SubscriptionContext)
   const { pathname } = useLocation()
 
   return (
@@ -32,15 +37,42 @@ function BillingLayout() {
             </Button>
           </Flex>
         </PageTitle>
-        <BillingLegacyUserBanner marginBottom="large" />
-        <Div
-          flexGrow
-          flexShrink={0}
-          overflowY="auto"
-          paddingRight={1}
-        >
-          <Outlet />
-        </Div>
+        {pricingFeaturesEnabled && (
+          <>
+            <BillingLegacyUserBanner marginBottom="large" />
+            <Div
+              flexGrow
+              flexShrink={0}
+              overflowY="auto"
+              paddingRight={1}
+            >
+              <Outlet />
+            </Div>
+          </>
+        )}
+        {!pricingFeaturesEnabled && (
+          <Div
+            body1
+            textAlign="center"
+            padding="large"
+            color="text-light"
+          >
+            This feature is not available to you yet.
+            <br />
+            Please
+            {' '}
+            <A
+              inline
+              href="https://plural.sh/contact-sales"
+              target="_blank"
+              rel="noreferrer noopener"
+            >
+              contact plural
+            </A>
+            {' '}
+            to learn more.
+          </Div>
+        )}
       </BillingBankCardProvider>
     </BillingConsumptionProvider>
   )

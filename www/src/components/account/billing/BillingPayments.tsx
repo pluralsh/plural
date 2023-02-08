@@ -8,7 +8,7 @@ import BillingBankCards from './BillingBankCards'
 import BillingInvoices from './BillingInvoices'
 
 function BillingPayments() {
-  const { isPaidPlan } = useContext(SubscriptionContext)
+  const { billingCustomerId } = useContext(SubscriptionContext)
 
   return (
     <>
@@ -19,7 +19,7 @@ function BillingPayments() {
         Payment info
       </Div>
       <BillingBankCards />
-      {isPaidPlan && (
+      {billingCustomerId && (
         <>
           <Div
             subtitle1

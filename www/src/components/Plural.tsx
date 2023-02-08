@@ -179,8 +179,6 @@ function PosthogIdentifier() {
 }
 
 export function PluralInner() {
-  // const isChecklistEnabled = useFeature('checklist').on
-
   return (
     <WrapStripe>
       <BreadcrumbProvider>
@@ -190,10 +188,6 @@ export function PluralInner() {
             <VerifyEmailConfirmed />
             <DeviceLoginNotif />
             <TestBanner />
-            {/* Disable checklist for now */}
-            {/* {isChecklistEnabled && ( */}
-            {/*  <OnboardingChecklist /> */}
-            {/* )} */}
             <Routes>
               {/* --- OAUTH --- */}
               <Route

@@ -1,0 +1,28 @@
+mutation SignupInvite($attributes: UserAttributes!, $inviteId: String!) {
+  signup(attributes: $attributes, inviteId: $inviteId) {
+    jwt
+  }
+}
+
+mutation RealizeInvite($id: String!) {
+  realizeInvite(id: $id) {
+    jwt
+  }
+}
+
+query Invite($id: String!) {
+  invite(id: $id) {
+    id
+    email
+    existing
+    account {
+      ...Account
+    }
+    user {
+      ...User
+      account {
+        ...Account
+      }
+    }
+  }
+}

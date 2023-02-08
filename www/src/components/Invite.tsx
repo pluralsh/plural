@@ -1,224 +1,205 @@
 import { useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { gql, useMutation, useQuery } from '@apollo/client'
-import { Box, Keyboard } from 'grommet'
 import { GqlError } from 'forge-core'
-import { AppIcon, Button } from '@pluralsh/design-system'
+import { Button } from '@pluralsh/design-system'
 
-import { Text } from 'honorable'
+import {
+  Div,
+  Flex,
+  Form,
+  P,
+} from 'honorable'
 
 import { setToken } from '../helpers/authentication'
 
-import { UserFragment } from '../models/user'
+import {
+  Invite as InviteT,
+  User,
+  useInviteQuery,
+  useRealizeInviteMutation,
+  useSignupInviteMutation,
+} from '../generated/graphql'
 
-import { LabelledInput, LoginPortal } from './users/MagicLogin'
+import { LoginPortal } from './users/LoginPortal'
+import { LabelledInput } from './users/LabelledInput'
 import { WelcomeHeader } from './utils/WelcomeHeader'
-
-const SIGNUP = gql`
-  mutation Signup($attributes: UserAttributes!, $inviteId: String!) {
-    signup(attributes: $attributes, inviteId: $inviteId) {
-      jwt
-    }
-  }
-`
-
-const REALIZE = gql`
-  mutation Realize($id: String!) {
-    realizeInvite(id: $id) {
-      jwt
-    }
-  }
-`
-
-const INVITE_Q = gql`
-  query Invite($id: String!) {
-    invite(id: $id) {
-      email
-      account { name }
-      user { ...UserFragment }
-    }
-  }
-  ${UserFragment}
-`
+import { ConfirmPasswordField, SetPasswordField } from './users/Signup'
+import { validatePassword } from './users/PasswordValidation'
 
 function InvalidInvite() {
   return (
-    <Box
+    <Flex
       width="100vw"
       height="100vh"
-      justify="center"
-      align="center"
+      justifyContent="center"
+      alignItems="center"
     >
-      That invite code is no longer valid
-    </Box>
+      This invite code is no longer valid
+    </Flex>
   )
 }
 
-function ExistingInvite({ invite: { account }, id }: any) {
-  const [mutation, { loading, error }] = useMutation(REALIZE, {
+function ExistingInvite({
+  invite: { account },
+  id,
+  user,
+}: {
+  invite: InviteT
+  id: any
+  user: User
+}) {
+  const [mutation, { loading, error }] = useRealizeInviteMutation({
     variables: { id },
-    onCompleted: ({ realizeInvite: { jwt } }) => {
-      setToken(jwt)
+    onCompleted: ({ realizeInvite }) => {
+      setToken(realizeInvite?.jwt)
       ;(window as Window).location = '/'
     },
   })
 
   return (
     <LoginPortal>
-      <Box
-        fill
-        pad="medium"
+      <Flex
+        flexDirection="column"
+        gap="medium"
       >
-        <Box
-          flex={false}
-          gap="medium"
+        {error && (
+          <GqlError
+            error={error}
+            header="Something went wrong!"
+          />
+        )}
+        <P
+          body1
+          color="text-xlight"
         >
-          {error && (
-            <GqlError
-              error={error}
-              header="Something went wrong!"
-            />
-          )}
-          <Box align="center">You were invited to join another account</Box>
-          <Button
-            onClick={() => mutation()}
-            loading={loading}
-            width="100%"
-            padding="medium"
-          >
-            Join {account.name}
-          </Button>
-        </Box>
-      </Box>
+          {account?.name} invited you to join their Plural account. Joining will
+          remove {user?.email} from the {user?.account?.name} account.
+        </P>
+        <Button
+          onClick={() => mutation()}
+          loading={loading}
+          width="100%"
+          padding="medium"
+        >
+          Leave {user?.account?.name} and join {account?.name}
+        </Button>
+      </Flex>
     </LoginPortal>
   )
 }
 
 export default function Invite() {
   const { inviteId } = useParams()
-  const [attributes, setAttributes] = useState({ name: '', password: '' })
-  const [passwordConfirmation, setPasswordConfirmation] = useState('')
-  const [mutation, { loading, error }] = useMutation(SIGNUP, {
-    variables: { inviteId, attributes },
-    onCompleted: ({ signup: { jwt } }) => {
-      setToken(jwt)
+  const [name, setName] = useState('')
+  const [password, setPassword] = useState('')
+  const [confirm, setConfirm] = useState('')
+  const [mutation, { loading, error }] = useSignupInviteMutation({
+    variables: {
+      inviteId: inviteId ?? '',
+      attributes: {
+        name,
+        password,
+      },
+    },
+    onCompleted: ({ signup }) => {
+      setToken(signup?.jwt)
       ;(window as Window).location = '/'
     },
   })
 
-  const { data, error: inviteError } = useQuery(INVITE_Q, { variables: { id: inviteId } })
+  const { data, error: inviteError } = useInviteQuery({
+    variables: { id: inviteId ?? '' },
+  })
 
   if (inviteError) return <InvalidInvite />
   if (!data) return null
 
-  const isNameValid = attributes.name.length > 0
-  const isPasswordValid = attributes.password.length >= 10
-  const passwordMatch = attributes.password === passwordConfirmation
-  const isValid = isNameValid && isPasswordValid && passwordMatch
+  const { disabled: passwordDisabled, error: passwordError } = validatePassword(password,
+    confirm)
 
-  if (data.invite.user) {
+  const isNameValid = name.length > 0
+  const submitEnabled = isNameValid && !passwordDisabled
+
+  if (data?.invite?.user) {
     return (
       <ExistingInvite
         invite={data.invite}
         id={inviteId}
+        user={data.invite.user}
       />
     )
   }
 
+  const onSubmit = e => {
+    e.preventDefault()
+    if (!submitEnabled) {
+      return
+    }
+    mutation()
+  }
+
   return (
     <LoginPortal>
-      <Box
-        fill
-        pad="medium"
-      >
-        <Keyboard onEnter={() => isValid && mutation()}>
-          <Box
-            flex={false}
-            gap="small"
-          >
-            {error && (
-              <GqlError
-                error={error}
-                header="Something went wrong!"
-              />
-            )}
-            <WelcomeHeader heading="Accept your invitation" />
-            <Box
-              direction="row"
-              gap="small"
-              align="center"
-              margin={{ vertical: '32px' }}
-            >
-              <AppIcon
-                name={attributes.name || 'John Doe'}
-                size="xsmall"
-                hue="default"
-              />
-              <Box>
-                <Text
-                  body1
-                  fontFamily="Monument Semi-Mono, monospace"
-                  fontWeight="500"
-                >
-                  {attributes.name || 'John Doe'}
-                </Text>
-                <Text
-                  caption
-                  color="text-xlight"
-                >
-                  {data.invite.email}
-                </Text>
-              </Box>
-            </Box>
-            <Box
-              gap="small"
-              fill="horizontal"
-            >
-              <LabelledInput
-                label="Email"
-                value={data.invite.email}
-                disabled
-              />
-              <LabelledInput
-                label="Name"
-                value={attributes.name}
-                placeholder="John Doe"
-                onChange={name => setAttributes({ ...attributes, name })}
-                required
-              />
-              <LabelledInput
-                type="password"
-                label="Password"
-                value={attributes.password}
-                placeholder="Enter password"
-                onChange={password => setAttributes({ ...attributes, password })}
-                error={attributes.password.length > 0 && !isPasswordValid}
-                hint={attributes.password.length > 0 && !isPasswordValid ? 'Password is too short. Use at least 10 characters.' : ''}
-                required
-              />
-              <LabelledInput
-                type="password"
-                label="Confirm password"
-                value={passwordConfirmation}
-                placeholder="Enter password again"
-                onChange={setPasswordConfirmation}
-                error={passwordConfirmation && !passwordMatch}
-                hint={passwordConfirmation && !passwordMatch ? 'Passwords do not match.' : ''}
-                required
-              />
-            </Box>
-            <Button
-              primary
-              width="100%"
-              loading={loading}
-              disabled={!isValid}
-              onClick={() => mutation()}
-            >
-              Sign up
-            </Button>
-          </Box>
-        </Keyboard>
-      </Box>
+      <Div marginBottom="xlarge">
+        <WelcomeHeader
+          textAlign="left"
+          marginBottom="xxsmall"
+        />{' '}
+        <P
+          body1
+          color="text-xlight"
+        >
+          {data.invite?.account?.name} invited you to join their Plural account.
+          Create an account to join.
+        </P>
+      </Div>
+      <Form onSubmit={onSubmit}>
+        {error && (
+          <Div marginBottom="large">
+            <GqlError
+              header="Signup failed"
+              error={error}
+            />
+          </Div>
+        )}
+        <Flex
+          flexDirection="column"
+          gap="small"
+          marginBottom="small"
+        >
+          <LabelledInput
+            label="Email"
+            value={data?.invite?.email}
+            disabled
+          />
+          <LabelledInput
+            label="Username"
+            value={name}
+            placeholder="Enter username"
+            onChange={setName}
+            required
+          />
+          <SetPasswordField
+            value={password}
+            onChange={setPassword}
+            errorCode={passwordError}
+          />
+          <ConfirmPasswordField
+            value={confirm}
+            onChange={setConfirm}
+            errorCode={passwordError}
+          />
+        </Flex>
+        <Button
+          type="submit"
+          primary
+          width="100%"
+          loading={loading}
+          disabled={!submitEnabled}
+        >
+          Sign up
+        </Button>
+      </Form>
     </LoginPortal>
   )
 }

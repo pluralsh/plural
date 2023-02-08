@@ -19,7 +19,7 @@ import { LoopingLogo } from '../utils/AnimatedLogo'
 
 import { CREATE_RESET_TOKEN, REALIZE_TOKEN } from './queries'
 import { ResetTokenType } from './types'
-import { LoginPortal } from './MagicLogin'
+import { LoginPortal } from './LoginPortal'
 
 export function EmailConfirmed() {
   const { id } = useParams()

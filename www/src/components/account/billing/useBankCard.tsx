@@ -76,14 +76,26 @@ function useBankCard(setEdit: Dispatch<SetStateAction<boolean>>, noCancel = fals
 
   const renderEdit = useCallback(() => (
     <form onSubmit={handleSubmit}>
-      <Card padding="medium">
-        <CardElement options={{ style: { base: { color: 'white' } } }} />
-      </Card>
-      <Flex
-        justify="flex-end"
-        marginTop="medium"
-        gap="medium"
+      <Card
+        padding="small"
+        display="flex"
+        align="center"
+        gap="small"
       >
+        <Flex
+          flexGrow={1}
+          direction="column"
+          justify="center"
+        >
+          <CardElement options={{ style: { base: { color: 'white' } } }} />
+        </Flex>
+        <Button
+          type="submit"
+          disabled={!stripe || !elements}
+          loading={loading}
+        >
+          Add card
+        </Button>
         {!noCancel && (
           <Button
             secondary
@@ -93,14 +105,7 @@ function useBankCard(setEdit: Dispatch<SetStateAction<boolean>>, noCancel = fals
             Cancel
           </Button>
         )}
-        <Button
-          type="submit"
-          disabled={!stripe || !elements}
-          loading={loading}
-        >
-          Add card
-        </Button>
-      </Flex>
+      </Card>
     </form>
   ), [noCancel, stripe, elements, loading, setEdit, handleSubmit])
 

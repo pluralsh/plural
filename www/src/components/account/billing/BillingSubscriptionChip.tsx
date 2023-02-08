@@ -19,7 +19,7 @@ function BillingSubscriptionChip() {
         fillLevel={2}
         height={32}
       >
-        {isEnterprisePlan ? 'Enterprise' : isEnterprisePlan ? 'Professional' : 'Open-source'}
+        {isEnterprisePlan ? 'Enterprise' : isProPlan ? 'Professional' : 'Open-source'}
       </Chip>
     </Link>
   )

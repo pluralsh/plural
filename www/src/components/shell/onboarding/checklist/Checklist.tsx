@@ -28,10 +28,11 @@ import {
   User,
 } from '../../../../generated/graphql'
 import { UPDATE_USER } from '../../../users/queries'
-import { isOnboardingChecklistHidden } from '../../persistance'
 import CurrentUserContext from '../../../../contexts/CurrentUserContext'
 
 import { updateUserFragment } from '../../../../utils/graphql'
+
+import { isOnboardingChecklistHidden } from '../../../../helpers/localStorage'
 
 import { ChecklistFooter } from './Footer'
 import { ChecklistComplete } from './Complete'

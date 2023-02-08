@@ -1,0 +1,17 @@
+.terminal {
+  height: 100%;
+  width: 100%;
+}
+
+.xterm-screen {
+  height: 100% !important;
+  width: auto !important;
+}
+
+.xterm-viewport {
+  overflow-y: auto !important;
+}
+
+.xterm-rows > div {
+  width: auto !important;
+}

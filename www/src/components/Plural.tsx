@@ -14,7 +14,6 @@ import {
 } from 'react-router-dom'
 import { StripeProvider } from 'react-stripe-elements'
 import { Toast } from '@pluralsh/design-system'
-import { useFeature } from '@growthbook/growthbook-react'
 
 import { growthbook } from '../helpers/growthbook'
 import { useHistory } from '../router'
@@ -26,7 +25,7 @@ import PosthogIdentiy from '../utils/posthog'
 const ApplicationLayout = lazy(() => import('./layout/ApplicationLayout'))
 const BreadcrumbProvider = lazy(() => import('./Breadcrumbs'))
 const Chart = lazy(() => import('./repos/Chart'))
-const CloudShell = lazy(() => import('./shell/CloudShell'))
+const CloudShell = lazy(() => import('./shell/Shell'))
 const ImagePullMetrics = lazy(() => import('./repos/common/ImagePullMetrics'))
 const ImageVulnerabilities = lazy(() => import('./repos/common/ImageVulnerabilities'))
 const Marketplace = lazy(() => import('./marketplace/Marketplace'))
@@ -63,7 +62,7 @@ const AuditChloropleth = lazy(() => import('./audits/AuditChloropleth').then(mod
 const AuditDirectory = lazy(() => import('./audits/AuditDirectory').then(module => ({ default: module.AuditDirectory })))
 const Audits = lazy(() => import('./audits/Audits').then(module => ({ default: module.Audits })))
 const ChecklistProvider = lazy(() => import('./shell/onboarding/checklist/Checklist').then(module => ({ default: module.ChecklistProvider })))
-const OnboardingChecklist = lazy(() => import('./shell/onboarding/checklist/Checklist').then(module => ({ default: module.OnboardingChecklist })))
+// const OnboardingChecklist = lazy(() => import('./shell/onboarding/checklist/Checklist').then(module => ({ default: module.OnboardingChecklist })))
 const Clusters = lazy(() => import('./clusters/Clusters').then(module => ({ default: module.Clusters })))
 const PluralProvider = lazy(() => import('./login/CurrentUser').then(module => ({ default: module.PluralProvider })))
 const DeviceLoginNotif = lazy(() => import('./users/DeviceLoginNotif').then(module => ({ default: module.DeviceLoginNotif })))
@@ -173,7 +172,7 @@ function PosthogIdentifier() {
 }
 
 export function PluralInner() {
-  const isChecklistEnabled = useFeature('checklist').on
+  // const isChecklistEnabled = useFeature('checklist').on
 
   return (
     <WrapStripe>
@@ -184,9 +183,10 @@ export function PluralInner() {
             <VerifyEmailConfirmed />
             <DeviceLoginNotif />
             <TestBanner />
-            {isChecklistEnabled && (
-              <OnboardingChecklist />
-            )}
+            {/* Disable checklist for now */}
+            {/* {isChecklistEnabled && ( */}
+            {/*  <OnboardingChecklist /> */}
+            {/* )} */}
             <Routes>
               {/* --- OAUTH --- */}
               <Route

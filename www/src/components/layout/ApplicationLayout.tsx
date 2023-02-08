@@ -1,7 +1,7 @@
 import { A, Flex, Span } from 'honorable'
 import { Toast } from '@pluralsh/design-system'
 
-import { useIsCurrentlyOnboarding } from '../shell/onboarding/useOnboarded'
+import { useIsCurrentlyOnboarding } from '../shell/hooks/useOnboarded'
 
 import Sidebar from './Sidebar'
 import WithApplicationUpdate from './WithApplicationUpdate'

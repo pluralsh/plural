@@ -28,7 +28,6 @@ function OnboardingCardButton({ selected = false, children, ...props }: any) {
       paddingRight="large"
       paddingTop="large"
       paddingBottom="large"
-      marginHorizontal="medium"
       alignContent="center"
       justify="center"
       backgroundColor="fill-two"

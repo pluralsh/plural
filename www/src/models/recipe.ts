@@ -10,6 +10,7 @@ export const RecipeFragment = gql`
     name
     description
     provider
+    oidcEnabled
   }
 `
 
@@ -38,6 +39,16 @@ export const RecipeSectionFragment = gql`
       installation { ...InstallationFragment }
     }
     recipeItems { ...RecipeItemFragment }
+    configuration {
+      name
+      default
+      documentation
+      type
+      placeholder
+      optional
+      condition { operation field value }
+      validation { type regex message }
+    }
   }
   ${RepoFragment}
   ${RecipeItemFragment}

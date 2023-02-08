@@ -7,3 +7,11 @@ export function isValidUrl(url) {
 export function isMinViableEmail(text) {
   return text.match(/^[^@]+@[^@]+\.[^@.]+$/)
 }
+
+export function generateString(len: number): string {
+  const dictionary = 'abcdefghijklmnopqrstuvwxyz0123456789'
+  const dictionaryLen = dictionary.length
+
+  return new Array(len).join().split(',').map(_ => dictionary[Math.floor(Math.random() * dictionaryLen)])
+    .join('')
+}

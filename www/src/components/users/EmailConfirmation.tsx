@@ -12,7 +12,7 @@ import { useParams } from 'react-router-dom'
 
 import { Icon } from '../utils/IconOld'
 
-import { useIsCurrentlyOnboarding } from '../shell/onboarding/useOnboarded'
+import { useIsCurrentlyOnboarding } from '../shell/hooks/useOnboarded'
 import CurrentUserContext from '../../contexts/CurrentUserContext'
 import { Alert, AlertStatus, GqlError } from '../utils/Alert'
 import { LoopingLogo } from '../utils/AnimatedLogo'

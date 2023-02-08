@@ -4,10 +4,6 @@ export function isValidUrl(url) {
   return !/^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/.test(url)
 }
 
-export function isMinViableEmail(text) {
-  return text.match(/^[^@]+@[^@]+\.[^@.]+$/)
-}
-
 export function generateString(len: number): string {
   const dictionary = 'abcdefghijklmnopqrstuvwxyz0123456789'
   const dictionaryLen = dictionary.length

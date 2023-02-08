@@ -13,7 +13,7 @@ import {
 import { SuccessIcon } from '@pluralsh/design-system'
 
 import { ResetTokenType, useCreateResetTokenMutation } from '../../generated/graphql'
-import { isMinViableEmail } from '../../utils/string'
+import { isValidEmail } from '../../utils/email'
 import { GqlError } from '../utils/Alert'
 
 import { LoginPortal } from './LoginPortal'
@@ -32,7 +32,7 @@ export function RequestPasswordReset() {
   const resetSuccess = data && data.createResetToken
   const invalidEmail = error?.message === 'not_found'
   const gqlError = !invalidEmail ? error : undefined
-  const disabled = !isMinViableEmail(attributes.email)
+  const disabled = !isValidEmail(attributes.email)
   const onSubmit = e => {
     e.preventDefault()
     if (!disabled) {

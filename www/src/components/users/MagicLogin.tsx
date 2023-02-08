@@ -49,7 +49,7 @@ import { PLURAL_MARK_WHITE } from '../constants'
 import { host } from '../../helpers/hostname'
 import { useHistory } from '../../router'
 
-import { isMinViableEmail } from '../../utils/string'
+import { isValidEmail } from '../../utils/email'
 
 import {
   METHOD_ICONS,
@@ -402,7 +402,7 @@ export function Login() {
     || state === State.PwdLogin_CheckPwd
   const disableSubmit = isPasswordLogin
     ? password.length === 0
-    : !isMinViableEmail(email)
+    : !isValidEmail(email)
 
   const onSubmit = useCallback(e => {
     e.preventDefault()

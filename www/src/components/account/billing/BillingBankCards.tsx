@@ -53,7 +53,7 @@ function BillingBankCards() {
           onClick={() => setEdit(true)}
           marginTop="medium"
         >
-          Add card
+          Add payment card
         </Button>
       </Card>
     )

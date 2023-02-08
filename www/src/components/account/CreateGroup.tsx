@@ -1,6 +1,7 @@
 import {
   ReactNode,
   useCallback,
+  useContext,
   useEffect,
   useState,
 } from 'react'
@@ -13,7 +14,11 @@ import { GqlError } from '../utils/Alert'
 
 import { GroupsDocument, useCreateGroupMutation } from '../../generated/graphql'
 
+import SubscriptionContext from '../../contexts/SubscriptionContext'
+
 export function CreateGroup({ q }: any) {
+  const { isPaidPlan } = useContext(SubscriptionContext)
+
   const [open, setOpen] = useState(false)
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
@@ -50,6 +55,7 @@ export function CreateGroup({ q }: any) {
       <Button
         secondary
         onClick={() => setOpen(true)}
+        disabled={!isPaidPlan}
       >
         Create group
       </Button>

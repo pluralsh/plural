@@ -1,4 +1,9 @@
-import { useCallback, useMemo, useState } from 'react'
+import {
+  useCallback,
+  useContext,
+  useMemo,
+  useState,
+} from 'react'
 import { useMutation } from '@apollo/client'
 import { Button } from 'honorable'
 import { Modal } from '@pluralsh/design-system'
@@ -6,6 +11,8 @@ import uniqWith from 'lodash/uniqWith'
 import isEqual from 'lodash/isEqual'
 
 import { appendConnection, updateCache } from '../../utils/graphql'
+
+import SubscriptionContext from '../../contexts/SubscriptionContext'
 
 import { CREATE_ROLE, ROLES_Q } from './queries'
 
@@ -21,16 +28,21 @@ const defaultAttributes = {
 }
 
 export function CreateRole({ q }: any) {
+  const { isPaidPlan } = useContext(SubscriptionContext)
+
   const [open, setOpen] = useState(false)
   const [attributes, setAttributes] = useState(defaultAttributes)
   const [roleBindings, setRoleBindings] = useState([])
+
   const uniqueRoleBindings = useMemo(() => uniqWith(roleBindings, isEqual),
     [roleBindings])
+
   const resetAndClose = useCallback(() => {
     setAttributes(defaultAttributes)
     setRoleBindings([])
     setOpen(false)
   }, [])
+
   const [mutation, { loading, error }] = useMutation(CREATE_ROLE, {
     variables: {
       attributes: { ...attributes, roleBindings: roleBindings.map(sanitize) },
@@ -48,6 +60,7 @@ export function CreateRole({ q }: any) {
       <Button
         secondary
         onClick={() => setOpen(true)}
+        disabled={!isPaidPlan}
       >
         Create role
       </Button>

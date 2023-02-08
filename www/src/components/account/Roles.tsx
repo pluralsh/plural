@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from '@apollo/client'
 import { Box } from 'grommet'
 import isEmpty from 'lodash/isEmpty'
-import { Flex } from 'honorable'
+import { Div, Flex } from 'honorable'
 import { EmptyState, PageTitle, SearchIcon } from '@pluralsh/design-system'
 import { useContext, useState } from 'react'
 
@@ -31,6 +31,7 @@ import { EditRole } from './EditRole'
 import { CreateRole } from './CreateRole'
 
 import BillingLegacyUserBanner from './billing/BillingLegacyUserBanner'
+import BillingFeatureBlockBanner from './billing/BillingFeatureBlockBanner'
 
 function Header({ q, setQ }: any) {
   return (
@@ -171,13 +172,16 @@ export function Roles() {
         feature="Roles"
         marginBottom="large"
       />
-      <List>
-        <Header
-          q={q}
-          setQ={setQ}
-        />
-        <RolesInner q={q} />
-      </List>
+      <Div position="relative">
+        <List>
+          <Header
+            q={q}
+            setQ={setQ}
+          />
+          <RolesInner q={q} />
+        </List>
+        <BillingFeatureBlockBanner feature="roles" />
+      </Div>
     </Flex>
   )
 }

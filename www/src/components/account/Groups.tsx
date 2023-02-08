@@ -1,4 +1,5 @@
-import { Flex } from 'honorable'
+import { useContext, useState } from 'react'
+import { Div, Flex } from 'honorable'
 import {
   Button,
   GearTrainIcon,
@@ -9,7 +10,6 @@ import {
   PeopleIcon,
   SearchIcon,
 } from '@pluralsh/design-system'
-import { useContext, useState } from 'react'
 
 import CurrentUserContext from '../../contexts/CurrentUserContext'
 import { Group as GroupT, GroupsDocument, useDeleteGroupMutation } from '../../generated/graphql'
@@ -30,6 +30,7 @@ import { hasRbac } from './utils'
 import { GroupsList } from './GroupsList'
 
 import BillingLegacyUserBanner from './billing/BillingLegacyUserBanner'
+import BillingFeatureBlockBanner from './billing/BillingFeatureBlockBanner'
 
 function Header({ q, setQ }: any) {
   return (
@@ -162,13 +163,16 @@ export function Groups() {
         feature="Groups"
         marginBottom="large"
       />
-      <List>
-        <Header
-          q={q}
-          setQ={setQ}
-        />
-        <GroupsList q={q} />
-      </List>
+      <Div position="relative">
+        <List>
+          <Header
+            q={q}
+            setQ={setQ}
+          />
+          <GroupsList q={q} />
+        </List>
+        <BillingFeatureBlockBanner feature="groups" />
+      </Div>
     </Flex>
   )
 }

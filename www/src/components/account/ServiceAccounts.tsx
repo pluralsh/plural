@@ -21,6 +21,7 @@ import { CreateServiceAccount } from './CreateServiceAccount'
 import { ServiceAccount } from './User'
 
 import BillingLegacyUserBanner from './billing/BillingLegacyUserBanner'
+import BillingFeatureBlockBanner from './billing/BillingFeatureBlockBanner'
 
 function Header({ q, setQ }: any) {
   return (
@@ -121,13 +122,16 @@ export function ServiceAccounts() {
         feature="Service accounts"
         marginBottom="large"
       />
-      <List>
-        <Header
-          q={q}
-          setQ={setQ}
-        />
-        <ServiceAccountsInner q={q} />
-      </List>
+      <Div position="relative">
+        <List>
+          <Header
+            q={q}
+            setQ={setQ}
+          />
+          <ServiceAccountsInner q={q} />
+        </List>
+        <BillingFeatureBlockBanner feature="service accounts" />
+      </Div>
     </Flex>
   )
 }

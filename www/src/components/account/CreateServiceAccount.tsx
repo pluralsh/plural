@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
 import { useMutation } from '@apollo/client'
 import { Box } from 'grommet'
 import { Button, Div } from 'honorable'
@@ -8,6 +8,8 @@ import { appendConnection, updateCache } from '../../utils/graphql'
 
 import { DELETE_USER } from '../users/queries'
 import { GqlError } from '../utils/Alert'
+
+import SubscriptionContext from '../../contexts/SubscriptionContext'
 
 import { CREATE_SERVICE_ACCOUNT, UPDATE_SERVICE_ACCOUNT, USERS_Q } from './queries'
 
@@ -183,14 +185,18 @@ export function EditServiceAccount({ user, update }: any) {
 const defaultAttributes = { name: '', email: '' }
 
 export function CreateServiceAccount({ q }: any) {
+  const { isPaidPlan } = useContext(SubscriptionContext)
+
   const [open, setOpen] = useState(false)
   const [attributes, setAttributes] = useState(defaultAttributes)
   const [bindings, setBindings] = useState([])
+
   const resetAndClose = useCallback(() => {
     setBindings([])
     setAttributes(defaultAttributes)
     setOpen(false)
   }, [])
+
   const [mutation, { loading, error }] = useMutation(CREATE_SERVICE_ACCOUNT, {
     variables: {
       attributes: {
@@ -214,6 +220,7 @@ export function CreateServiceAccount({ q }: any) {
         <Button
           secondary
           onClick={() => setOpen(true)}
+          disabled={!isPaidPlan}
         >
           Create service account
         </Button>

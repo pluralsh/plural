@@ -160,6 +160,7 @@ defmodule GraphQl.Schema.User do
   end
 
   object :address do
+    field :name,    :string
     field :line1,   :string
     field :line2,   :string
     field :city,    :string

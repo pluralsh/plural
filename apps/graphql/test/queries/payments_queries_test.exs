@@ -163,6 +163,20 @@ defmodule GraphQl.PaymentsQueriesTest do
   end
 
   describe "invoices" do
+    test "it will fail if not customer id" do
+      account = insert(:account)
+      user = insert(:user, account: account)
+
+      {:ok, %{errors: [_ | _]}} = run_query("""
+        query {
+          invoices(first: 5) {
+            pageInfo { hasNextPage endCursor }
+            edges { node { number } }
+          }
+        }
+      """, %{}, %{current_user: user})
+    end
+
     test "it can list invoices for a user's account" do
       account = insert(:account, billing_customer_id: "cus_id")
       user = insert(:user, account: account)

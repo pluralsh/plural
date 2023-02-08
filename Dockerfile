@@ -1,4 +1,4 @@
-FROM bitwalker/alpine-elixir:1.12.3 AS builder
+FROM bitwalker/alpine-elixir:1.14.0 AS builder
 
 # The following are build arguments used to change variable parts of the image.
 # The name of your application/release (required)

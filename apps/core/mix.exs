@@ -107,7 +107,7 @@ defmodule Core.MixProject do
       {:websockex, "~> 0.4"},
       {:hackney, "~> 1.18.0", override: true},
       {:tzdata, "~> 1.1.0", override: true},
-      {:prometheus_ex, "~> 3.0"},
+      {:prometheus_ex, git: "https://github.com/lanodan/prometheus.ex", branch: "fix/elixir-1.14", override: true},
       {:stripity_stripe, "~> 2.17.1"},
       {:conduit, "~> 0.12"},
       {:conduit_amqp, "~> 0.6.3"},

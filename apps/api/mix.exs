@@ -77,7 +77,7 @@ defmodule Api.MixProject do
       {:plug_cowboy, "~> 2.6.0", override: true},
       {:reverse_proxy_plug, "~> 2.1.1"},
       {:libcluster, "~> 3.3.1"},
-      {:prometheus_ex, "~> 3.0"},
+      {:prometheus_ex, git: "https://github.com/lanodan/prometheus.ex", branch: "fix/elixir-1.14", override: true},
       {:prometheus_plugs, "~> 1.1.1"},
       {:remote_ip, "~> 0.2.0"},
       {:k8s_traffic_plug, github: "Financial-Times/k8s_traffic_plug"},

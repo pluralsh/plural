@@ -172,4 +172,8 @@ config :junit_formatter,
   print_report_file: true,
   automatic_create_dir?: true
 
+config :posthog,
+  api_url: "https://posthog.plural.sh",
+  api_key: "phc_r0v4jbKz8Rr27mfqgO15AN5BMuuvnU8hCFedd6zpSDy"
+
 import_config "#{config_env()}.exs"

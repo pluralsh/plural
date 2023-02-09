@@ -125,6 +125,7 @@ defmodule Core.MixProject do
       {:google_api_cloud_resource_manager, "~> 0.41"},
       {:google_api_cloud_billing, "~> 0.23"},
       {:google_api_service_usage, "~> 0.18"},
+      {:posthog, "~> 0.1"}
     ]
   end
 

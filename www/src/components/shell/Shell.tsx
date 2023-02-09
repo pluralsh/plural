@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import { useMutation, useQuery } from '@apollo/client'
 import { Flex } from 'honorable'
 import { Button, LoopingLogo } from '@pluralsh/design-system'
@@ -39,7 +39,7 @@ function TerminalBootStatus() {
     nextFetchPolicy: 'network-only',
     initialFetchPolicy: 'network-only',
   })
-  const [setupShell, { error }] = useMutation(SETUP_SHELL_MUTATION)
+  const [setupShell, { error, data: bootResult }] = useMutation(SETUP_SHELL_MUTATION)
   const [deleteShell] = useMutation(DELETE_SHELL_MUTATION)
   const loading = useMemo(() => !shell, [shell])
   const isReady = useMemo(() => (shell?.alive ?? false) && !!shell?.status && Object.values(shell.status).every(s => s), [shell])
@@ -57,7 +57,7 @@ function TerminalBootStatus() {
     return <Loading />
   }
 
-  if (!isReady || error) {
+  if (!isReady || error || !bootResult?.setupShell) {
     return (
       <Flex marginTop="xxxlarge">
         <ResponsiveLayoutSpacer />

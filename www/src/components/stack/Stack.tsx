@@ -147,7 +147,7 @@ export default function Stack() {
   const outletContext: StackContext = { stack }
 
   return (
-    <ResponsiveLayoutPage flexDirection="column">
+    <ResponsiveLayoutPage>
       <ResponsiveLayoutSidenavContainer>
         <Sidenav stack={stack} />
       </ResponsiveLayoutSidenavContainer>

@@ -31,5 +31,6 @@ Mimic.copy(Core.Services.Shell.Pods)
 Mimic.copy(Vault)
 Mimic.copy(System)
 Mimic.copy(Core.Clients.Vault)
+Mimic.copy(Posthog)
 
 {:ok, _} = Application.ensure_all_started(:ex_machina)

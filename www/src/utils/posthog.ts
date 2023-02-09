@@ -17,6 +17,9 @@ export default function PosthogIdentify(me: User) {
       email: me.email,
       accountId: me.account?.id,
       accountName: me.account?.name,
+      onboarding: me.onboarding,
+      serviceAccount: me.serviceAccount,
+      hasInstallations: me.hasInstallations,
     })
     if (!Cookiebot.regulations.gdprApplies) {
       posthog.people.set({
@@ -32,6 +35,7 @@ export default function PosthogIdentify(me: User) {
 export enum PosthogEvent {
   Onboarding = 'Onboarding',
   Installer = 'Installer',
+  OIDCLogin = 'OIDC Login'
 }
 
 interface PosthogOnboardingEvent {
@@ -46,9 +50,16 @@ interface PosthogInstallerEvent {
   provider?: Provider
 }
 
+interface PosthogOIDCLoginEvent {
+  applicationName?: string
+  applicationID?: string
+  installationID?: string
+}
+
 type PosthogEventData = {
   [PosthogEvent.Onboarding]: PosthogOnboardingEvent,
-  [PosthogEvent.Installer]: PosthogInstallerEvent
+  [PosthogEvent.Installer]: PosthogInstallerEvent,
+  [PosthogEvent.OIDCLogin]: PosthogOIDCLoginEvent
 }
 
 export function posthogCapture<T extends PosthogEvent>(event: T, data: PosthogEventData[T]): void {

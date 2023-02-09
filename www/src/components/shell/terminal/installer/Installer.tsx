@@ -57,6 +57,10 @@ function Installer() {
         setState(State.Installed)
         mutation()
         refetch()
+        posthogCapture(PosthogEvent.Installer, {
+          provider,
+          applications: selectedApplications,
+        })
       })
       .catch(err => setError(err))
       .finally(() => setStepsLoading(false))

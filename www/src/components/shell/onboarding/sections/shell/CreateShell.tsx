@@ -195,6 +195,7 @@ function CreateShell() {
           >You must create a new, globally unique repo name after the cloud shell fails to build.
           </Callout>
           <Button
+            data-phid="review-configuration"
             onClick={() => onRestart()}
             startIcon={<ReturnIcon />}
             alignSelf="flex-end"

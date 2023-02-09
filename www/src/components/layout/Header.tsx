@@ -31,6 +31,7 @@ export default function Header() {
 
   let consoleButton = (
     <Button
+      data-phid="nav-launch-console"
       small
       {...(consoleLink
         ? {

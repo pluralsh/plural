@@ -545,9 +545,12 @@ export const FlexAtBreak = styled.div(_ => ({
 function OAuthOption({ url: { authorizeUrl, provider }, ...props }: any) {
   const icon = METHOD_ICONS[provider]
 
+  provider = provider.toLowerCase()
+
   return (
     <FlexAtBreak>
       <Button
+        data-phid={`signup-${provider}`}
         width="100%"
         height={48}
         secondary
@@ -561,7 +564,7 @@ function OAuthOption({ url: { authorizeUrl, provider }, ...props }: any) {
         )}
         {...props}
       >
-        {providerToName[provider.toLowerCase()]}
+        {providerToName[provider]}
       </Button>
     </FlexAtBreak>
   )

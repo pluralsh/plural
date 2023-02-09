@@ -1,4 +1,9 @@
-import { Flex, P, Span } from 'honorable'
+import {
+  ButtonProps,
+  Flex,
+  P,
+  Span,
+} from 'honorable'
 import { ApolloError } from '@apollo/client/errors'
 import {
   Button,
@@ -118,7 +123,7 @@ interface ErrorWrapperProps {
   error: ApolloError
 }
 
-function ErrorWrapper({ error }: ErrorWrapperProps) {
+function ErrorWrapper({ error, copyButtonProps = {} }: {copyButtonProps?:ButtonProps} & ErrorWrapperProps) {
   const [hovered, setHovered] = useState(false)
   const [copied, setCopied] = useState(false)
   const message = useMemo(() => {
@@ -163,6 +168,7 @@ function ErrorWrapper({ error }: ErrorWrapperProps) {
         <CopyButton
           copied={copied}
           handleCopy={handleCopy}
+          {...copyButtonProps}
         />
       )}
     </Flex>
@@ -192,6 +198,7 @@ function Community() {
           </P>
         </Flex>
         <Button
+          data-phid="cloud-shell-error-docs"
           as="a"
           href="https://docs.plural.sh/reference/troubleshooting"
           target="_blank"
@@ -220,6 +227,7 @@ function Community() {
           </P>
         </Flex>
         <Button
+          data-phid="cloud-shell-error-discord"
           as="a"
           href="https://discord.gg/pluralsh"
           target="_blank"
@@ -269,7 +277,10 @@ export function ShellStatus({ shell, error, loading }: ShellStatusProps) {
 
       {error && (
         <>
-          <ErrorWrapper error={error} />
+          <ErrorWrapper
+            error={error}
+            copyButtonProps={{ 'data-phid': 'cloud-shell-error-copy' }}
+          />
           <Community />
         </>
       )}

@@ -48,11 +48,13 @@ function RestartModal({ onRestart, open, onClose }) {
         paddingTop="large"
       >
         <Button
+          data-phid="restart-onboarding-cancel"
           secondary
           onClick={onClose}
         >Cancel
         </Button>
         <Button
+          data-phid="restart-onboarding-confirm"
           destructive
           onClick={onRestart}
         >Confirm
@@ -83,6 +85,7 @@ function OnboardingHeader({ onRestart, mode = 'wizard' }: OnboardingHeaderProps)
       </SidebarSection>
       <SidebarSection marginRight="small">
         <SidebarItem
+          data-phid="discord-via-onboarding"
           clickable
           tooltip="Discord"
           href="https://discord.com/invite/qsUfBcC3Ru"
@@ -94,17 +97,19 @@ function OnboardingHeader({ onRestart, mode = 'wizard' }: OnboardingHeaderProps)
           />
         </SidebarItem>
         <SidebarItem
+          data-phid="github-via-onboarding"
           clickable
-          tooltip="Support"
+          tooltip="GitHub"
           href="https://github.com/pluralsh/plural"
         >
           <IconFrame
-            textValue="Support"
+            textValue="GitHub"
             type="secondary"
             icon={<GitHubLogoIcon />}
           />
         </SidebarItem>
         <SidebarItem
+          data-phid="docs-via-onboarding"
           clickable
           tooltip="Documentation"
           href="https://docs.plural.sh/"
@@ -117,6 +122,7 @@ function OnboardingHeader({ onRestart, mode = 'wizard' }: OnboardingHeaderProps)
         </SidebarItem>
         <SidebarItem>
           <Button
+            data-phid="restart-onboarding"
             small
             secondary
             onClick={() => setOpen(true)}

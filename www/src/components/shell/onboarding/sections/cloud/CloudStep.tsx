@@ -41,10 +41,20 @@ function CloudStep({ onBack, onNext }) {
           <CloudCredentials />
           <Callout
             severity="info"
-            title="Why do I need to enter my cloud credentials?"
+            title="Why do I need to enter my cloud credentials and how do I configure them?"
             expandable
             expanded={expanded === CalloutKey.CloudCredentials}
             onExpand={expanded => setExpanded(expanded ? CalloutKey.CloudCredentials : undefined)}
+            buttonProps={{
+              children: 'See the configuration docs',
+              as: A,
+              href: 'https://docs.plural.sh/getting-started/cloud-shell-quickstart#set-up-a-cloud-provider',
+              target: '_blank',
+              style: {
+                textDecoration: 'none',
+                color: 'inherit',
+              },
+            }}
           >
             Plural Cloud Shell uses your cloud credentials to create your infrastructure in your own cloud. Cloud credentials are stored securely using symmetric encryption. If you prefer, you can choose to use the Plural CLI which uses the cloud provider SDK on your local machine to connect to your cloud.
           </Callout>

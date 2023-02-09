@@ -8,7 +8,7 @@ import SubscriptionContext from '../../../contexts/SubscriptionContext'
 
 type BillingFeatureBlockBannerPropsType = {
   feature: 'service accounts' | 'groups' | 'roles'
-  planFeature: string | null
+  planFeature?: string | null
 }
 
 const featureToPunchline = {

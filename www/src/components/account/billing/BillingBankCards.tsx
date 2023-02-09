@@ -10,7 +10,7 @@ function BillingBankCards() {
   const { card } = useContext(BillingBankCardContext)
   const [edit, setEdit] = useState(false)
 
-  const { error: cardError, renderDisplay, renderEdit } = useBankCard(setEdit)
+  const { error: cardError, renderDisplay, renderEdit } = useBankCard(setEdit, null)
 
   if (cardError) {
     return (

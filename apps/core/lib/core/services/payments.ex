@@ -142,6 +142,7 @@ defmodule Core.Services.Payments do
   """
   @spec has_feature?(User.t | Account.t, atom) :: boolean
   def has_feature?(%Account{} = account, feature) do
+    account = Core.Repo.preload(account, [subscription: :plan])
     case {enforce?(), delinquent?(account), grandfathered?(account), account} do
       {false, _, _, _} -> true
       {_, true, _, _} -> false
@@ -379,7 +380,7 @@ defmodule Core.Services.Payments do
     end
   end
 
-  defp discount(amount, :yearly), do: round(9 * amount / 10)
+  defp discount(amount, :yearly), do: round(9 * amount / 10) * 12
   defp discount(amount, _), do: amount
 
   def setup_enterprise_plan(account_id) do

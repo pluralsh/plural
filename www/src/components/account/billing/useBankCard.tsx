@@ -13,6 +13,8 @@ import { capitalize } from 'lodash'
 
 import BillingBankCardContext from '../../../contexts/BillingBankCardContext'
 
+import { GqlError } from '../../utils/Alert'
+
 import { CREATE_CARD_MUTATION, DELETE_CARD_MUTATION } from './queries'
 
 function useBankCard(setEdit: Dispatch<SetStateAction<boolean>>, noCancel = false) {
@@ -20,7 +22,7 @@ function useBankCard(setEdit: Dispatch<SetStateAction<boolean>>, noCancel = fals
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const [createCard] = useMutation(CREATE_CARD_MUTATION)
+  const [createCard, { error: cardError }] = useMutation(CREATE_CARD_MUTATION)
   const [deleteCard] = useMutation(DELETE_CARD_MUTATION)
 
   const stripe = useStripe()
@@ -113,41 +115,49 @@ function useBankCard(setEdit: Dispatch<SetStateAction<boolean>>, noCancel = fals
     if (!card) return null
 
     return (
-      <Flex
-        align="center"
-        gap="small"
-      >
-        <Card padding="small">
-          <Flex
-            align="center"
-            justify="center"
-          >
-            {card.brand}
-          </Flex>
-        </Card>
+      <>
+        {cardError && (
+          <GqlError
+            error={cardError}
+            header="Failed to add card"
+          />
+        )}
         <Flex
-          direction="column"
-          gap="xxxsmall"
+          align="center"
+          gap="small"
         >
-          <Div
-            fontWeight={600}
-            body1
+          <Card padding="small">
+            <Flex
+              align="center"
+              justify="center"
+            >
+              {card.brand}
+            </Flex>
+          </Card>
+          <Flex
+            direction="column"
+            gap="xxxsmall"
           >
-            {capitalize(card.brand)} ending in {card.last4}
-          </Div>
-          <Div color="text-xlight">
-            Expires {card.expMonth.toString().padStart(2, '0')}/{card.expYear}
-          </Div>
+            <Div
+              fontWeight={600}
+              body1
+            >
+              {capitalize(card.brand)} ending in {card.last4}
+            </Div>
+            <Div color="text-xlight">
+              Expires {card.expMonth.toString().padStart(2, '0')}/{card.expYear}
+            </Div>
+          </Flex>
+          <Div flexGrow={1} />
+          <Button
+            secondary
+            onClick={handleDelete}
+            loading={loading}
+          >
+            Delete
+          </Button>
         </Flex>
-        <Div flexGrow={1} />
-        <Button
-          secondary
-          onClick={handleDelete}
-          loading={loading}
-        >
-          Delete
-        </Button>
-      </Flex>
+      </>
     )
   }, [card, loading, handleDelete])
 

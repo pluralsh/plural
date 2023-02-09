@@ -21,7 +21,7 @@ function BillingSubscriptionProvider({ children }: BillingSubscriptionProviderPr
     loading,
     error,
     refetch,
-  } = useQuery(SUBSCRIPTION_QUERY, { fetchPolicy: 'network-only' })
+  } = useQuery(SUBSCRIPTION_QUERY, { fetchPolicy: 'network-only', pollInterval: 60_000 })
   const { proPlatformPlan, proYearlyPlatformPlan, enterprisePlatformPlan } = useContext(PlatformPlansContext)
 
   const pricingFeaturesEnabled = posthog.isFeatureEnabled('pricing')
@@ -41,6 +41,7 @@ function BillingSubscriptionProvider({ children }: BillingSubscriptionProviderPr
     isEnterprisePlan,
     isPaidPlan,
     isGrandfathered,
+    account: data?.account,
     refetch,
   }), [
     pricingFeaturesEnabled,
@@ -52,6 +53,7 @@ function BillingSubscriptionProvider({ children }: BillingSubscriptionProviderPr
     isPaidPlan,
     isGrandfathered,
     refetch,
+    data,
   ])
 
   if (error) return <BillingError />

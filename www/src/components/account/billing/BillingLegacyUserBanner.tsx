@@ -10,10 +10,9 @@ type BillingLegacyUserBannerPropsType = DivProps & {
 }
 
 function BillingLegacyUserBanner({ feature, ...props }: BillingLegacyUserBannerPropsType) {
-  const { isProPlan, isEnterprisePlan, isGrandfathered } = useContext(SubscriptionContext)
-  const open = !(isProPlan || isEnterprisePlan) && isGrandfathered
+  const { account: { availableFeatures } } = useContext(SubscriptionContext)
 
-  if (!open) return null
+  if (availableFeatures?.userManagement) return null
 
   return (
     <Banner

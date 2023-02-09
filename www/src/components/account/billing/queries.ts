@@ -28,6 +28,7 @@ export const SUBSCRIPTION_QUERY = gql`
       billingCustomerId
       grandfatheredUntil
       delinquentAt
+      availableFeatures { userManagement audit }
       subscription {
         id
         plan {

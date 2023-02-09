@@ -9,7 +9,7 @@ export type PlatformPlansContextType = {
   enterprisePlatformPlan: PlatformPlan
   clusterMonthlyPricing: number
   userMonthlyPricing: number
-  annualDiscount: number // Between 0 and 1, e.g. 0.2
+  annualDiscount: number
 }
 
 const PlatformPlansContext = createContext<PlatformPlansContextType>({

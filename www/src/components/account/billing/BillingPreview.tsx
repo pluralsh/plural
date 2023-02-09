@@ -25,43 +25,21 @@ type BillingPreviewPropsType = {
   onChange?: (isProfessional: boolean) => void
 }
 
+function getPrice({ lineItems } : any, dimension: string): number {
+  return (lineItems.find(x => x?.dimension === dimension)?.cost || 0) / 100
+}
+
 function BillingPreview({ noCard, discountPreview, onChange }: BillingPreviewPropsType) {
-  const { clusterMonthlyPricing, userMonthlyPricing, annualDiscount } = useContext(PlatformPlansContext)
+  const { proPlatformPlan, proYearlyPlatformPlan, annualDiscount } = useContext(PlatformPlansContext)
   const { isProPlan } = useContext(SubscriptionContext)
   const { nClusters, nUsers } = useContext(BillingConsumptionContext)
 
   const [isProfessional, setIsProfessional] = useState(isProPlan)
 
-  const pClusters = useMemo(() => (discountPreview
-    ? isProfessional
-      ? Math.ceil(clusterMonthlyPricing * (1 - annualDiscount))
-      : clusterMonthlyPricing
-    : isProfessional
-      ? clusterMonthlyPricing
-      : 0),
-  [discountPreview, clusterMonthlyPricing, annualDiscount, isProfessional])
-  const pUsers = useMemo(() => (discountPreview
-    ? isProfessional
-      ? Math.ceil(userMonthlyPricing * (1 - annualDiscount))
-      : userMonthlyPricing
-    : isProfessional
-      ? userMonthlyPricing
-      : 0),
-  [discountPreview, userMonthlyPricing, annualDiscount, isProfessional])
-  const totalClusters = useMemo(() => (discountPreview && isProfessional ? 12 : 1) * nClusters * pClusters,
-    [
-      discountPreview,
-      isProfessional,
-      nClusters,
-      pClusters,
-    ])
-  const totalUsers = useMemo(() => (discountPreview && isProfessional ? 12 : 1) * nUsers * pUsers,
-    [
-      discountPreview,
-      isProfessional,
-      nUsers,
-      pUsers,
-    ])
+  const pClusters = useMemo(() => (discountPreview ? getPrice(proYearlyPlatformPlan, 'CLUSTER') : getPrice(proPlatformPlan, 'CLUSTER')), [discountPreview, proYearlyPlatformPlan, proPlatformPlan])
+  const pUsers = useMemo(() => (discountPreview ? getPrice(proYearlyPlatformPlan, 'USER') : getPrice(proPlatformPlan, 'USER')), [discountPreview, proYearlyPlatformPlan, proPlatformPlan])
+  const totalClusters = nClusters * pClusters
+  const totalUsers = nUsers * pUsers
 
   const handleChange = useCallback((event: any) => {
     setIsProfessional(event.target.checked)
@@ -147,7 +125,7 @@ function BillingPreview({ noCard, discountPreview, onChange }: BillingPreviewPro
           </Div>
           <CloseIcon size={12} />
           <Div>
-            ${pClusters}/month
+            ${pClusters}
           </Div>
           {discountPreview && isProfessional && (
             <>
@@ -176,7 +154,7 @@ function BillingPreview({ noCard, discountPreview, onChange }: BillingPreviewPro
           </Div>
           <CloseIcon size={12} />
           <Div>
-            ${pUsers}/month
+            ${pUsers}
           </Div>
           {discountPreview && isProfessional && (
             <>

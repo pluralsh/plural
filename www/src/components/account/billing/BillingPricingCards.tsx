@@ -15,10 +15,25 @@ import BillingPricingCard from './BillingPricingCard'
 import BillingDowngradeModal from './BillingDowngradeModal'
 import BillingUpgradeToProfessionalModal from './BillingUpgradeToProfessionalModal'
 
+function ContactUs() {
+  return (
+    <Button
+      as="a"
+      href="https://plural.sh/contact-sales"
+      target="_blank"
+      rel="noopener noreferer"
+      secondary
+      width="100%"
+    >
+      Contact sales
+    </Button>
+  )
+}
+
 function BillingPricingCards() {
   const [searchParams, setSearchParams] = useSearchParams()
   const { clusterMonthlyPricing, userMonthlyPricing } = useContext(PlatformPlansContext)
-  const { isProPlan } = useContext(SubscriptionContext)
+  const { isProPlan, isEnterprisePlan } = useContext(SubscriptionContext)
 
   const [upgradeToProfessionalModalOpen, setUpgradeToProfessionalModalOpen] = useState(false)
   const [downgradeModalOpen, setDowngradeModalOpen] = useState(false)
@@ -83,11 +98,11 @@ function BillingPricingCards() {
             <Button
               tertiary
               width="100%"
-              onClick={() => setDowngradeModalOpen(true)}
+              onClick={isEnterprisePlan ? null : () => setDowngradeModalOpen(true)}
             >
               Downgrade
             </Button>
-          ) : renderCurrentPlanButton()}
+          ) : (isEnterprisePlan ? <ContactUs /> : renderCurrentPlanButton())}
         />
         <BillingPricingCard
           title="Professional"
@@ -120,7 +135,7 @@ function BillingPricingCards() {
               checked: true,
             },
           ]}
-          callToAction={isProPlan ? renderCurrentPlanButton() : (
+          callToAction={isProPlan ? renderCurrentPlanButton() : (isEnterprisePlan ? <ContactUs /> : (
             <Button
               primary
               width="100%"
@@ -128,7 +143,7 @@ function BillingPricingCards() {
             >
               Upgrade now
             </Button>
-          )}
+          ))}
         />
         <BillingPricingCard
           title="Enterprise"
@@ -161,17 +176,8 @@ function BillingPricingCards() {
               checked: true,
             },
           ]}
-          callToAction={(
-            <Button
-              as="a"
-              href="https://plural.sh/contact-sales"
-              target="_blank"
-              rel="noopener noreferer"
-              secondary
-              width="100%"
-            >
-              Contact sales
-            </Button>
+          callToAction={isEnterprisePlan ? renderCurrentPlanButton() : (
+            <ContactUs />
           )}
         />
       </Flex>

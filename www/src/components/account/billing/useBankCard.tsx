@@ -17,7 +17,7 @@ import { GqlError } from '../../utils/Alert'
 
 import { CREATE_CARD_MUTATION, DELETE_CARD_MUTATION } from './queries'
 
-function useBankCard(setEdit: Dispatch<SetStateAction<boolean>>, noCancel = false) {
+function useBankCard(setEdit: Dispatch<SetStateAction<boolean>>, address, noCancel = false) {
   const { card, refetch } = useContext(BillingBankCardContext)
 
   const [loading, setLoading] = useState(false)
@@ -48,6 +48,7 @@ function useBankCard(setEdit: Dispatch<SetStateAction<boolean>>, noCancel = fals
       await createCard({
         variables: {
           source: token.id,
+          address,
         },
       })
 
@@ -59,7 +60,7 @@ function useBankCard(setEdit: Dispatch<SetStateAction<boolean>>, noCancel = fals
     }
 
     setLoading(false)
-  }, [stripe, elements, createCard, refetch, setEdit])
+  }, [stripe, elements, createCard, refetch, setEdit, address])
 
   const handleDelete = useCallback(async () => {
     if (!card) return
@@ -76,18 +77,8 @@ function useBankCard(setEdit: Dispatch<SetStateAction<boolean>>, noCancel = fals
     setLoading(false)
   }, [card, deleteCard, refetch])
 
-  const wrappedSubmit = useCallback((submit : Promise<any> | null) => (e => {
-    e.preventDefault()
-    if (submit) {
-      submit.then(() => handleSubmit(e))
-
-      return
-    }
-    handleSubmit(e)
-  }), [handleSubmit])
-
-  const renderEdit = useCallback(submit => (
-    <form onSubmit={wrappedSubmit(submit)}>
+  const renderEdit = useCallback(() => (
+    <form onSubmit={handleSubmit}>
       <Card
         padding="small"
         display="flex"

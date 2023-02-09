@@ -3,6 +3,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useState,
 } from 'react'
 import { Link } from 'react-router-dom'
@@ -19,7 +20,7 @@ import PlatformPlansContext from '../../../contexts/PlatformPlansContext'
 import BillingBankCardContext from '../../../contexts/BillingBankCardContext'
 import SubscriptionContext from '../../../contexts/SubscriptionContext'
 
-import { SUBSCRIPTION_QUERY, UPDATE_ACCOUNT_BILLING_MUTATION, UPGRADE_TO_PROFESSIONAL_PLAN_MUTATION } from './queries'
+import { SUBSCRIPTION_QUERY, UPGRADE_TO_PROFESSIONAL_PLAN_MUTATION } from './queries'
 
 import useBankCard from './useBankCard'
 
@@ -45,45 +46,32 @@ function BillingUpgradeToProfessionalModal({ open, onClose }: BillingUpgradeToPr
   const [zip, setZip] = useState(billingAddress?.zip || '')
   const [country, setCountry] = useState(billingAddress?.country || '')
 
-  const [updateAccountMutation, { loading: loadingUpdateAccountMutation }] = useMutation(UPDATE_ACCOUNT_BILLING_MUTATION, {
-    variables: {
-      attributes: {
-        billingAddress: {
-          name,
-          line1,
-          line2,
-          state,
-          zip,
-          city,
-          country,
-        },
-      },
-    },
-  })
+  const updatedAddress = useMemo(() => ({
+    name, line1, line2, city, state, zip, country,
+  }), [name, line1, line2, city, state, zip, country])
 
-  const [upgradeMutation, { loading: loadingUpgradeMutation }] = useMutation(UPGRADE_TO_PROFESSIONAL_PLAN_MUTATION, {
+  const [upgradeMutation, { loading }] = useMutation(UPGRADE_TO_PROFESSIONAL_PLAN_MUTATION, {
     variables: {
       planId: applyYearlyDiscount ? proYearlyPlatformPlan.id : proPlatformPlan.id,
     },
     refetchQueries: [SUBSCRIPTION_QUERY],
+    onCompleted: () => setSuccess(true),
+    onError: () => setError(true),
   })
 
   const [edit, setEdit] = useState(true)
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState(false)
 
-  const { error: cardError, renderEdit, renderDisplay } = useBankCard(setEdit, true)
+  const { error: cardError, renderEdit, renderDisplay } = useBankCard(setEdit, updatedAddress, true)
 
   const handleUpgrade = useCallback((event: FormEvent) => {
     event.preventDefault()
 
     if (!card) return
 
-    updateAccountMutation()
-      .then(() => upgradeMutation())
-      .then(() => setSuccess(true))
-      .catch(() => setError(true))
-  }, [card, updateAccountMutation, upgradeMutation])
+    upgradeMutation()
+  }, [card, upgradeMutation])
 
   const renderBillingForm = useCallback(() => (
     <>
@@ -195,7 +183,7 @@ function BillingUpgradeToProfessionalModal({ open, onClose }: BillingUpgradeToPr
         Billing information
       </Div>
       {renderBillingForm()}
-      {edit || !card ? renderEdit(updateAccountMutation) : renderDisplay()}
+      {edit || !card ? renderEdit() : renderDisplay()}
       <form onSubmit={handleUpgrade}>
         <Flex
           justify="flex-end"
@@ -203,7 +191,7 @@ function BillingUpgradeToProfessionalModal({ open, onClose }: BillingUpgradeToPr
         >
           <Button
             type="submit"
-            loading={loadingUpdateAccountMutation || loadingUpgradeMutation}
+            loading={loading}
             disabled={!card}
           >
             Upgrade
@@ -215,13 +203,11 @@ function BillingUpgradeToProfessionalModal({ open, onClose }: BillingUpgradeToPr
     edit,
     card,
     applyYearlyDiscount,
-    loadingUpdateAccountMutation,
-    loadingUpgradeMutation,
+    loading,
     renderDisplay,
     renderEdit,
     renderBillingForm,
     handleUpgrade,
-    updateAccountMutation,
   ])
 
   const renderSuccess = useCallback(() => (

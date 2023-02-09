@@ -97,8 +97,8 @@ export const CARDS_QUERY = gql`
 `
 
 export const CREATE_CARD_MUTATION = gql`
-  mutation CreateCard($source: String!) {
-    createCard(source: $source) {
+  mutation CreateCard($source: String!, $address: AddressAttributes) {
+    createCard(source: $source, address: $address) {
       id
     }
   }

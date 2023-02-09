@@ -31,6 +31,7 @@ const SubscriptionContext = createContext<SubscriptionContextType>({
   isProPlan: false,
   isEnterprisePlan: false,
   isGrandfathered: false,
+  availableFeatures: {},
   refetch: () => {},
 })
 

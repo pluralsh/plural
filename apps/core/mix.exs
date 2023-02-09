@@ -85,6 +85,7 @@ defmodule Core.MixProject do
       {:ex_aws, "~> 2.4.0"},
       {:ex_aws_s3, "~> 2.3.3"},
       {:ex_aws_sts, "~> 2.3.0"},
+      {:posthog, "~> 0.1"},
       {:configparser_ex, "~> 4.0"},
       {:sweet_xml, "~> 0.7.3"},
       {:arc_ecto, "~> 0.11.3"},

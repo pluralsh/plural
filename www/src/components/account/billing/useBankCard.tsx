@@ -92,7 +92,7 @@ function useBankCard(setEdit: Dispatch<SetStateAction<boolean>>, address, noCanc
           marginTop={-10}
           marginBottom={-10}
         >
-          <CardElement />
+          <CardElement options={{ style: { base: { color: '#888' } } }} />
         </Flex>
         <Button
           type="submit"

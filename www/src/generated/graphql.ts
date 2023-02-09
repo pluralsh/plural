@@ -2534,6 +2534,7 @@ export type RootMutationTypeCreateArtifactArgs = {
 
 
 export type RootMutationTypeCreateCardArgs = {
+  address?: InputMaybe<AddressAttributes>;
   source: Scalars['String'];
 };
 

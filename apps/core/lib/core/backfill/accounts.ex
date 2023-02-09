@@ -12,7 +12,7 @@ defmodule Core.Backfill.Accounts do
   end
 
   def grandfather() do
-    grandfathered = Timex.now() |> Timex.shift(days: 30)
+    grandfathered = Timex.now() |> Timex.shift(days: 60)
     Core.Repo.update_all(Account, set: [grandfathered_until: grandfathered])
   end
 end

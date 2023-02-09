@@ -24,6 +24,7 @@ export type Account = {
   __typename?: 'Account';
   availableFeatures?: Maybe<PlanFeatures>;
   backgroundColor?: Maybe<Scalars['String']>;
+  billingAddress?: Maybe<Address>;
   billingCustomerId?: Maybe<Scalars['String']>;
   clusterCount?: Maybe<Scalars['String']>;
   delinquentAt?: Maybe<Scalars['DateTime']>;
@@ -41,6 +42,7 @@ export type Account = {
 };
 
 export type AccountAttributes = {
+  billingAddress?: InputMaybe<AddressAttributes>;
   domainMappings?: InputMaybe<Array<InputMaybe<DomainMappingInput>>>;
   icon?: InputMaybe<Scalars['UploadOrUrl']>;
   name?: InputMaybe<Scalars['String']>;
@@ -69,6 +71,7 @@ export type Address = {
   country?: Maybe<Scalars['String']>;
   line1?: Maybe<Scalars['String']>;
   line2?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
   state?: Maybe<Scalars['String']>;
   zip?: Maybe<Scalars['String']>;
 };
@@ -78,6 +81,7 @@ export type AddressAttributes = {
   country: Scalars['String'];
   line1: Scalars['String'];
   line2: Scalars['String'];
+  name?: InputMaybe<Scalars['String']>;
   state: Scalars['String'];
   zip: Scalars['String'];
 };
@@ -2530,6 +2534,7 @@ export type RootMutationTypeCreateArtifactArgs = {
 
 
 export type RootMutationTypeCreateCardArgs = {
+  address?: InputMaybe<AddressAttributes>;
   source: Scalars['String'];
 };
 

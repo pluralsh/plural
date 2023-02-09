@@ -7,6 +7,7 @@ import { LinkTabWrap } from '../utils/Tabs'
 
 import CurrentUserContext from '../../contexts/CurrentUserContext'
 import { SideNavOffset } from '../utils/layout/SideNavOffset'
+import SubscriptionContext from '../../contexts/SubscriptionContext'
 
 const DIRECTORY = [
   { path: '/account/edit', label: 'Account attributes' },
@@ -15,11 +16,13 @@ const DIRECTORY = [
   { path: '/account/groups', label: 'Groups' },
   { path: '/account/roles', label: 'Roles' },
   { path: '/account/domains', label: 'Domains' },
+  { path: '/account/billing', label: 'Billing' },
 ]
 
 function AccountTabList({ tabStateRef }: any) {
   const { pathname } = useLocation()
   const currentTab = DIRECTORY.find(tab => pathname?.startsWith(tab.path))
+  const { pricingFeaturesEnabled } = useContext(SubscriptionContext)
 
   return (
     <TabList
@@ -29,15 +32,16 @@ function AccountTabList({ tabStateRef }: any) {
         selectedKey: currentTab?.path,
       }}
     >
-      {DIRECTORY.map(({ label, path }) => (
-        <LinkTabWrap
-          key={path}
-          textValue={label}
-          to={path}
-        >
-          <Tab>{label}</Tab>
-        </LinkTabWrap>
-      ))}
+      {DIRECTORY.filter(({ label }) => pricingFeaturesEnabled || label !== 'Billing')
+        .map(({ label, path }) => (
+          <LinkTabWrap
+            key={path}
+            textValue={label}
+            to={path}
+          >
+            <Tab>{label}</Tab>
+          </LinkTabWrap>
+        ))}
     </TabList>
   )
 }
@@ -50,13 +54,7 @@ export default function AccountSideNav({ tabStateRef = {} }: any) {
       <PageCard
         marginBottom="large"
         heading={(
-          <Div
-            display="-webkit-box"
-            webkitLineClamp={2}
-            webkitBoxOrient="vertical"
-            overflowY="hidden"
-            lineBreak="all"
-          >
+          <Div wordBreak="break-word">
             {me?.account?.name || ''}
           </Div>
         )}

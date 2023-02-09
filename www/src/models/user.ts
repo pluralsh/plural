@@ -6,6 +6,8 @@ export const AccountFragment = gql`
     name
     billingCustomerId
     backgroundColor
+    clusterCount
+    userCount
   }
 `
 

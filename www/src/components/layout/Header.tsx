@@ -12,6 +12,9 @@ import { QueueList } from '../clusters/Clusters'
 import { QUEUES } from '../clusters/queries'
 import { useIsCurrentlyOnboarding } from '../shell/hooks/useOnboarded'
 
+import BillingLegacyUserMessage from '../account/billing/BillingLegacyUserMessage'
+import BillingSubscriptionChip from '../account/billing/BillingSubscriptionChip'
+
 const APP_ICON = '/app-logo-white.png'
 
 export default function Header() {
@@ -79,6 +82,8 @@ export default function Header() {
           alt="Plural app"
         />
         <Flex grow={1} />
+        <BillingLegacyUserMessage />
+        <BillingSubscriptionChip />
         {consoleButton}
       </Flex>
     </Div>

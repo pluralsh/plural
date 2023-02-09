@@ -11,3 +11,5 @@ export function generateString(len: number): string {
   return new Array(len).join().split(',').map(_ => dictionary[Math.floor(Math.random() * dictionaryLen)])
     .join('')
 }
+
+export const pluralize = (str: string, val: number) => `${str}${val > 1 || val === 0 ? 's' : ''}`

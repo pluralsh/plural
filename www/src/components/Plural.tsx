@@ -3,6 +3,7 @@ import {
   lazy,
   useContext,
   useEffect,
+  useMemo,
   useState,
 } from 'react'
 import {
@@ -12,7 +13,8 @@ import {
   Routes,
   useMatch,
 } from 'react-router-dom'
-import { StripeProvider } from 'react-stripe-elements'
+import { loadStripe } from '@stripe/stripe-js'
+import { Elements } from '@stripe/react-stripe-js'
 import { Toast } from '@pluralsh/design-system'
 
 import { growthbook } from '../helpers/growthbook'
@@ -55,6 +57,9 @@ const RoadmapChangelog = lazy(() => import('./roadmap/RoadmapChangelog'))
 const RoadmapApplicationRequests = lazy(() => import('./roadmap/RoadmapApplicationRequests'))
 const RoadmapFeatureRequests = lazy(() => import('./roadmap/RoadmapFeatureRequests'))
 const RoadmapFeedback = lazy(() => import('./roadmap/RoadmapFeedback'))
+const BillingLayout = lazy(() => import('./account/billing/BillingLayout'))
+const BillingManagePlan = lazy(() => import('./account/billing/BillingManagePlan'))
+const BillingPayments = lazy(() => import('./account/billing/BillingPayments'))
 const AccessTokens = lazy(() => import('./profile/AccessTokens').then(module => ({ default: module.AccessTokens })))
 const Account = lazy(() => import('./account/Account').then(module => ({ default: module.Account })))
 const AccountAttributes = lazy(() => import('./account/AccountAttributes').then(module => ({ default: module.AccountAttributes })))
@@ -99,12 +104,14 @@ function EditBilling(props) {
 function WrapStripe({ children }: any) {
   const { stripePublishableKey } = useContext(PluralConfigurationContext)
 
+  const stripePromise = useMemo(() => loadStripe(stripePublishableKey), [stripePublishableKey])
+
   if (!stripePublishableKey) return children
 
   return (
-    <StripeProvider apiKey={stripePublishableKey}>
+    <Elements stripe={stripePromise}>
       {children}
-    </StripeProvider>
+    </Elements>
   )
 }
 
@@ -172,8 +179,6 @@ function PosthogIdentifier() {
 }
 
 export function PluralInner() {
-  // const isChecklistEnabled = useFeature('checklist').on
-
   return (
     <WrapStripe>
       <BreadcrumbProvider>
@@ -183,10 +188,6 @@ export function PluralInner() {
             <VerifyEmailConfirmed />
             <DeviceLoginNotif />
             <TestBanner />
-            {/* Disable checklist for now */}
-            {/* {isChecklistEnabled && ( */}
-            {/*  <OnboardingChecklist /> */}
-            {/* )} */}
             <Routes>
               {/* --- OAUTH --- */}
               <Route
@@ -430,6 +431,19 @@ export function PluralInner() {
                   path="domains"
                   element={<Domains />}
                 />
+                <Route
+                  path="billing"
+                  element={<BillingLayout />}
+                >
+                  <Route
+                    index
+                    element={<BillingManagePlan />}
+                  />
+                  <Route
+                    path="payments"
+                    element={<BillingPayments />}
+                  />
+                </Route>
               </Route>
               <Route
                 path="/account/billing/:section"

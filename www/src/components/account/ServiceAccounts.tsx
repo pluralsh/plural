@@ -1,5 +1,4 @@
 import { useQuery } from '@apollo/client'
-
 import { Div, Flex } from 'honorable'
 import isEmpty from 'lodash/isEmpty'
 import { EmptyState, PageTitle, SearchIcon } from '@pluralsh/design-system'
@@ -8,17 +7,15 @@ import { useCallback, useEffect, useState } from 'react'
 import { Placeholder } from '../utils/Placeholder'
 import ListInput from '../utils/ListInput'
 import { List, ListItem } from '../utils/List'
-
 import { extendConnection, removeConnection, updateCache } from '../../utils/graphql'
-
 import { LoopingLogo } from '../utils/AnimatedLogo'
 import { StandardScroller } from '../utils/SmoothScroller'
 
 import { USERS_Q } from './queries'
-
 import { CreateServiceAccount } from './CreateServiceAccount'
-
 import { ServiceAccount } from './User'
+import BillingLegacyUserBanner from './billing/BillingLegacyUserBanner'
+import BillingFeatureBlockBanner from './billing/BillingFeatureBlockBanner'
 
 function Header({ q, setQ }: any) {
   return (
@@ -63,7 +60,7 @@ function ServiceAccountsInner({ q }: any) {
       flexGrow={1}
       width="100%"
     >
-      {edges?.length ? (
+      {edges?.length > 0 ? (
         <StandardScroller
           listRef={listRef}
           setListRef={setListRef}
@@ -115,6 +112,10 @@ export function ServiceAccounts() {
       <PageTitle heading="Service accounts">
         <CreateServiceAccount q={q} />
       </PageTitle>
+      <BillingLegacyUserBanner
+        feature="Service accounts"
+        marginBottom="large"
+      />
       <List>
         <Header
           q={q}
@@ -122,6 +123,7 @@ export function ServiceAccounts() {
         />
         <ServiceAccountsInner q={q} />
       </List>
+      <BillingFeatureBlockBanner feature="service accounts" />
     </Flex>
   )
 }

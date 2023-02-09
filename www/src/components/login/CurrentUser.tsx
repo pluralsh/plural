@@ -15,6 +15,8 @@ import { ME_Q } from '../users/queries'
 import { setPreviousUserData, setToken, wipeToken } from '../../helpers/authentication'
 import { useNotificationSubscription } from '../incidents/Notifications'
 import { LoopingLogo } from '../utils/AnimatedLogo'
+import BillingSubscriptionProvider from '../account/billing/BillingSubscriptionProvider'
+import BillingPlatformPlansProvider from '../account/billing/BillingPlatformPlansProvider'
 
 // const POLL_INTERVAL=30000
 
@@ -76,7 +78,10 @@ export function PluralProvider({ children }: any) {
   const location = useLocation()
   const {
     loading, error, data, refetch,
-  } = useQuery(ME_Q, { pollInterval: 60000 })
+  } = useQuery(ME_Q, {
+    pollInterval: 60000,
+    fetchPolicy: 'network-only',
+  })
   const { boot, update } = useIntercom()
   const userContextValue = useMemo(() => ({ me: data?.me, refetch }), [data, refetch])
 
@@ -107,7 +112,11 @@ export function PluralProvider({ children }: any) {
   return (
     <PluralConfigurationContext.Provider value={configuration}>
       <CurrentUserContext.Provider value={userContextValue}>
-        {children}
+        <BillingPlatformPlansProvider>
+          <BillingSubscriptionProvider>
+            {children}
+          </BillingSubscriptionProvider>
+        </BillingPlatformPlansProvider>
       </CurrentUserContext.Provider>
     </PluralConfigurationContext.Provider>
   )

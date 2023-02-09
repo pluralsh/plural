@@ -33,6 +33,7 @@ const REGIONS = [
   'europe-central2',
   'europe-west2',
   'europe-west3',
+  'us-central1',
   'us-east1',
   'us-west1',
   'us-west2',

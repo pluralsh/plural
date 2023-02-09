@@ -9,7 +9,7 @@ import { CloudProvider } from '../components/shell/onboarding/context/types'
 import Cookiebot from './cookiebot'
 
 export default function PosthogIdentify(me: User) {
-  if (Cookiebot.consent.statistics) {
+  if (Cookiebot?.consent?.statistics) {
     posthog.opt_in_capturing()
     posthog.identify(me.id)
     posthog.people.set({
@@ -21,7 +21,7 @@ export default function PosthogIdentify(me: User) {
       serviceAccount: me.serviceAccount,
       hasInstallations: me.hasInstallations,
     })
-    if (!Cookiebot.regulations.gdprApplies) {
+    if (!Cookiebot?.regulations?.gdprApplies) {
       posthog.people.set({
         name: me.name,
       })

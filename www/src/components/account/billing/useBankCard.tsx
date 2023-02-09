@@ -3,6 +3,7 @@ import {
   SetStateAction,
   useCallback,
   useContext,
+  useMemo,
   useState,
 } from 'react'
 import { useMutation } from '@apollo/client'
@@ -17,6 +18,10 @@ import { GqlError } from '../../utils/Alert'
 
 import { CREATE_CARD_MUTATION, DELETE_CARD_MUTATION } from './queries'
 
+function filledAddress(address) {
+  return Object.values(address).every(f => !!f)
+}
+
 function useBankCard(setEdit: Dispatch<SetStateAction<boolean>>, address, noCancel = false) {
   const { card, refetch } = useContext(BillingBankCardContext)
 
@@ -27,6 +32,8 @@ function useBankCard(setEdit: Dispatch<SetStateAction<boolean>>, address, noCanc
 
   const stripe = useStripe()
   const elements = useElements()
+
+  const active = useMemo(() => !address || filledAddress(address), [address])
 
   const handleSubmit = useCallback(async event => {
     event.preventDefault()
@@ -96,7 +103,7 @@ function useBankCard(setEdit: Dispatch<SetStateAction<boolean>>, address, noCanc
         </Flex>
         <Button
           type="submit"
-          disabled={!stripe || !elements}
+          disabled={!active || !stripe || !elements}
           loading={loading}
         >
           Add card
@@ -112,7 +119,7 @@ function useBankCard(setEdit: Dispatch<SetStateAction<boolean>>, address, noCanc
         )}
       </Card>
     </form>
-  ), [noCancel, stripe, elements, loading, setEdit, handleSubmit])
+  ), [noCancel, stripe, elements, loading, setEdit, handleSubmit, active])
 
   const renderDisplay = useCallback(() => {
     if (!card) return null

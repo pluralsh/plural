@@ -42,6 +42,7 @@ function BillingSubscriptionProvider({ children }: BillingSubscriptionProviderPr
     isPaidPlan,
     isGrandfathered,
     account: data?.account,
+    availableFeatures: data?.account?.availableFeatures,
     refetch,
   }), [
     pricingFeaturesEnabled,

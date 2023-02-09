@@ -28,7 +28,7 @@ const defaultAttributes = {
 }
 
 export function CreateRole({ q }: any) {
-  const { isPaidPlan } = useContext(SubscriptionContext)
+  const { availableFeatures } = useContext(SubscriptionContext)
 
   const [open, setOpen] = useState(false)
   const [attributes, setAttributes] = useState(defaultAttributes)
@@ -60,7 +60,7 @@ export function CreateRole({ q }: any) {
       <Button
         secondary
         onClick={() => setOpen(true)}
-        disabled={!isPaidPlan}
+        disabled={!availableFeatures.userManagement}
       >
         Create role
       </Button>

@@ -17,7 +17,7 @@ import { GroupsDocument, useCreateGroupMutation } from '../../generated/graphql'
 import SubscriptionContext from '../../contexts/SubscriptionContext'
 
 export function CreateGroup({ q }: any) {
-  const { isPaidPlan } = useContext(SubscriptionContext)
+  const { availableFeatures } = useContext(SubscriptionContext)
 
   const [open, setOpen] = useState(false)
   const [name, setName] = useState('')
@@ -55,7 +55,7 @@ export function CreateGroup({ q }: any) {
       <Button
         secondary
         onClick={() => setOpen(true)}
-        disabled={!isPaidPlan}
+        disabled={!availableFeatures?.userManagement}
       >
         Create group
       </Button>

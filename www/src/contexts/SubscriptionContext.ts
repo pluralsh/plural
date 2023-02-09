@@ -1,6 +1,11 @@
 import { createContext } from 'react'
 
-import { Account, AddressAttributes, PlatformSubscription } from '../generated/graphql'
+import {
+  Account,
+  AddressAttributes,
+  PlanFeatures,
+  PlatformSubscription,
+} from '../generated/graphql'
 
 export type SubscriptionContextType = {
   pricingFeaturesEnabled: boolean
@@ -12,6 +17,7 @@ export type SubscriptionContextType = {
   isProPlan: boolean
   isEnterprisePlan: boolean
   isGrandfathered: boolean
+  availableFeatures: PlanFeatures
   refetch: () => void
 }
 

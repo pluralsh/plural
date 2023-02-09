@@ -185,7 +185,7 @@ export function EditServiceAccount({ user, update }: any) {
 const defaultAttributes = { name: '', email: '' }
 
 export function CreateServiceAccount({ q }: any) {
-  const { isPaidPlan } = useContext(SubscriptionContext)
+  const { availableFeatures } = useContext(SubscriptionContext)
 
   const [open, setOpen] = useState(false)
   const [attributes, setAttributes] = useState(defaultAttributes)
@@ -220,7 +220,7 @@ export function CreateServiceAccount({ q }: any) {
         <Button
           secondary
           onClick={() => setOpen(true)}
-          disabled={!isPaidPlan}
+          disabled={!availableFeatures.userManagement}
         >
           Create service account
         </Button>

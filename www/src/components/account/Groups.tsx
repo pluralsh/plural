@@ -163,16 +163,14 @@ export function Groups() {
         feature="Groups"
         marginBottom="large"
       />
-      <Div position="relative">
-        <List>
-          <Header
-            q={q}
-            setQ={setQ}
-          />
-          <GroupsList q={q} />
-        </List>
-        <BillingFeatureBlockBanner feature="groups" />
-      </Div>
+      <List>
+        <Header
+          q={q}
+          setQ={setQ}
+        />
+        <GroupsList q={q} />
+      </List>
+      <BillingFeatureBlockBanner feature="groups" />
     </Flex>
   )
 }

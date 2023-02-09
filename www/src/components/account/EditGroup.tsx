@@ -55,7 +55,6 @@ export function EditGroupMembers({ group, open, onClose }: any) {
   })
 
   useEffect(() => {
-    console.log('error', error?.graphQLErrors[0])
     if (error?.graphQLErrors[0].message === 'group_id has already been taken') {
       setErrorMsg(undefined)
 

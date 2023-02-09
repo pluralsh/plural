@@ -1,22 +1,16 @@
 import { useQuery } from '@apollo/client'
-
 import { Div } from 'honorable'
-
 import { SearchIcon } from '@pluralsh/design-system'
-
 import { useCallback, useEffect, useState } from 'react'
 
 import { List, ListItem } from '../utils/List'
 import ListInput from '../utils/ListInput'
 import { Placeholder } from '../utils/Placeholder'
-
 import { extendConnection, removeConnection, updateCache } from '../../utils/graphql'
-
 import { LoopingLogo } from '../utils/AnimatedLogo'
 import { StandardScroller } from '../utils/SmoothScroller'
 
 import { USERS_Q } from './queries'
-
 import { User } from './User'
 
 export function UsersList() {

@@ -32,7 +32,6 @@ function BillingFeatureBlockBanner({ feature, planFeature }: BillingFeatureBlock
       align="center"
       justify="center"
       direction="column"
-      backgroundColor="#00000066"
       borderRadius="large"
       padding="medium"
     >

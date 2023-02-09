@@ -172,16 +172,14 @@ export function Roles() {
         feature="Roles"
         marginBottom="large"
       />
-      <Div position="relative">
-        <List>
-          <Header
-            q={q}
-            setQ={setQ}
-          />
-          <RolesInner q={q} />
-        </List>
-        <BillingFeatureBlockBanner feature="roles" />
-      </Div>
+      <List>
+        <Header
+          q={q}
+          setQ={setQ}
+        />
+        <RolesInner q={q} />
+      </List>
+      <BillingFeatureBlockBanner feature="roles" />
     </Flex>
   )
 }

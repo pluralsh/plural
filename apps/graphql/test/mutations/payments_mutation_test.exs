@@ -26,6 +26,38 @@ defmodule GraphQl.PaymentsMutationsTest do
 
       assert result["billingCustomerId"] == "cus_id"
     end
+
+    test "It will fail w/o an address" do
+      user = insert(:user, account: build(:account, root_user: build(:user)))
+
+      {:ok, %{errors: [_ | _]}} = run_query("""
+        mutation createCard($source: String!, $address: AddressAttributes) {
+          createCard(source: $source, address: $address) {
+            billingCustomerId
+          }
+        }
+      """, %{"source" => "token"}, %{current_user: user})
+    end
+
+    test "It will fail w an invalid address" do
+      user = insert(:user, account: build(:account, root_user: build(:user)))
+
+      {:ok, %{errors: [_ | _]}} = run_query("""
+        mutation createCard($source: String!, $address: AddressAttributes) {
+          createCard(source: $source, address: $address) {
+            billingCustomerId
+          }
+        }
+      """, %{"source" => "token", "address" => %{
+        "line1" => "",
+        "line2" => "",
+        "city" => "",
+        "state" => "",
+        "country" => "",
+        "zip" => "",
+        "name" => ""
+      }}, %{current_user: user})
+    end
   end
 
   describe "deleteCard" do

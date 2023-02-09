@@ -2,9 +2,20 @@ defmodule GraphQl.Schema.Helpers do
   import Absinthe.Resolution.Helpers
   require Logger
 
-  def resolve_changeset(%Ecto.Changeset{errors: errors}) do
-    Enum.map(errors, fn {field, {msg, _}} -> "#{field} #{msg}" end)
+  def resolve_changeset(%Ecto.Changeset{errors: errors, changes: changes}) do
+    errors
+    |> Enum.map(fn {field, {msg, _}} -> "#{field} #{msg}" end)
+    |> Enum.concat(recurse_changeset(changes))
   end
+
+  defp recurse_changeset(%{} = changes) do
+    Enum.filter(changes, fn
+      {_, %Ecto.Changeset{}} -> true
+      _ -> false
+    end)
+    |> Enum.flat_map(fn {_, changeset} -> resolve_changeset(changeset) end)
+  end
+  defp recurse_changeset(_), do: []
 
   def manual_dataloader(loader, resolver, queryable, args) do
     loader
@@ -20,6 +31,7 @@ defmodule GraphQl.Schema.Helpers do
         case fun.(args, ctx) do
           {:ok, res} -> {:ok, res}
           {:error, %Ecto.Changeset{} = cs} -> {:error, resolve_changeset(cs)}
+          {:error, %Stripe.Error{user_message: umessage, message: message}} -> {:error, "Stripe error: #{umessage || message}"}
           {:error, {:missing_dep, _}} = error ->
             Core.Services.Dependencies.pretty_print(error)
           error -> error

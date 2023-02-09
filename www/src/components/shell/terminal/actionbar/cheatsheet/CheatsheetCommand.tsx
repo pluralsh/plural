@@ -59,6 +59,7 @@ function CopyButtonBase({
   copied,
   handleCopy,
   className,
+  ...props
 }: {
   copied: boolean
   handleCopy: () => any
@@ -72,6 +73,7 @@ function CopyButtonBase({
       small
       startIcon={copied ? <CheckIcon /> : <CopyIcon />}
       onClick={handleCopy}
+      {...props}
     >
       {copied ? 'Copied' : 'Copy'}
     </Button>

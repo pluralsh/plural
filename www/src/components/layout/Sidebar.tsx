@@ -121,6 +121,7 @@ function SidebarMenuItem({
   href,
   className,
   children,
+  ...props
 }: {
   tooltip: string
   href?: string
@@ -135,6 +136,7 @@ function SidebarMenuItem({
       height={32}
       width={32}
       className={className}
+      {...props}
     >
       {children}
     </SidebarItem>
@@ -196,6 +198,7 @@ function Sidebar(props: ComponentProps<typeof DSSidebar>) {
 
             return (
               <SidebarItem
+                data-phid={`sidebar-item-${item.text.split(' ').join('').toLowerCase()}`}
                 key={i}
                 clickable
                 tooltip={item.text}
@@ -224,6 +227,7 @@ function Sidebar(props: ComponentProps<typeof DSSidebar>) {
           SOCIAL
         --- */}
           <SidebarMenuItem
+            data-phid="sidebar-item-discord"
             tooltip="Discord"
             className="sidebar-discord"
             href="https://discord.gg/bEBAMXV64s"
@@ -231,6 +235,7 @@ function Sidebar(props: ComponentProps<typeof DSSidebar>) {
             <DiscordIcon />
           </SidebarMenuItem>
           <SidebarMenuItem
+            data-phid="sidebar-item-github"
             tooltip="GitHub"
             className="sidebar-github"
             href="https://github.com/pluralsh/plural"
@@ -241,6 +246,7 @@ function Sidebar(props: ComponentProps<typeof DSSidebar>) {
           NOTIFICATIONS BELL
         --- */}
           <SidebarItem
+            data-phid="sidebar-item-notifications"
             position="relative"
             clickable
             label="Notifications"
@@ -284,6 +290,7 @@ function Sidebar(props: ComponentProps<typeof DSSidebar>) {
           USER
         --- */}
           <SidebarItem
+            data-phid="sidebar-item-user"
             ref={menuItemRef}
             className="sidebar-menu"
             active={isMenuOpen}

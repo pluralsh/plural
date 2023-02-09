@@ -107,11 +107,13 @@ function WorkspaceStep({ onBack, onNext }) {
         paddingTop="large"
       >
         <Button
+          data-phid="back-from-workspace"
           secondary
           onClick={onBack}
         >Back
         </Button>
         <Button
+          data-phid="cont-from-workspace"
           onClick={onNext}
           disabled={!isValid}
         >Continue

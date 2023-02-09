@@ -4,7 +4,7 @@ import {
   forwardRef,
   useState,
 } from 'react'
-import { Button, Flex } from 'honorable'
+import { Button, ButtonProps, Flex } from 'honorable'
 import { CliIcon, ToolIcon, Tooltip } from '@pluralsh/design-system'
 
 import { TerminalThemeSelector } from './theme/Selector'
@@ -12,15 +12,15 @@ import { TerminalThemeSelector } from './theme/Selector'
 import { Cheatsheet } from './cheatsheet/Cheatsheet'
 import { MoreOptions } from './options/MoreOptions'
 
-interface ActionBarItemProps {
+type ActionBarItemProps = {
   tooltip?: string,
   icon?: ReactElement,
   children?: ReactElement
   onClick?: Dispatch<any>
-}
+} & ButtonProps
 
 function ActionBarItemRef({
-  tooltip, icon, children, onClick,
+  tooltip, icon, children, onClick, ...props
 }: ActionBarItemProps, ref) {
   const content = icon ? (
     <Button
@@ -30,6 +30,7 @@ function ActionBarItemRef({
       small
       secondary
       ref={ref}
+      {...props}
     >{icon}
     </Button>
   ) : children
@@ -61,12 +62,19 @@ function ActionBar({ onRepairViewport }) {
       marginRight="medium"
     >
       <ActionBarItem
+        data-phid="repair-viewport"
         tooltip="Repair Viewport"
         onClick={() => onRepairViewport()}
         icon={<ToolIcon />}
       />
-      <ActionBarItem tooltip="Shell Theme"><TerminalThemeSelector /></ActionBarItem>
       <ActionBarItem
+        data-phid="shell-theme"
+        tooltip="Shell Theme"
+      >
+        <TerminalThemeSelector />
+      </ActionBarItem>
+      <ActionBarItem
+        data-phid="cli-cheat-sheet"
         tooltip="CLI Cheat Sheet"
         onClick={() => setShowCheatsheet(true)}
         icon={<CliIcon />}

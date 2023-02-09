@@ -113,6 +113,7 @@ function NextStepsModal() {
             </Span>
             <Flex>
               <HoveredIcon
+                data-phid="feedback-negative"
                 size="small"
                 icon={feedback === 'bad' ? <ThumbsUpFilledIcon transform="scale(1, -1)" /> : <ThumbsUpIcon transform="scale(1, -1)" />}
                 color={feedback === 'bad' ? 'icon-danger' : 'icon-light'}
@@ -121,6 +122,7 @@ function NextStepsModal() {
                 onClick={() => setFeedback('bad')}
               />
               <HoveredIcon
+                data-phid="feedback-positive"
                 size="small"
                 icon={feedback === 'good' ? <ThumbsUpFilledIcon /> : <ThumbsUpIcon />}
                 color={feedback === 'good' ? 'icon-success' : 'icon-light'}
@@ -145,6 +147,7 @@ function NextStepsModal() {
               Great! Support our project with a star.
             </P>
             <Button
+              data-phid="feedback-positive-github"
               secondary
               small
               startIcon={<StarIcon />}
@@ -170,6 +173,7 @@ function NextStepsModal() {
               We're here to help. Ping us on Discord.
             </P>
             <Button
+              data-phid="feedback-negative-discord"
               secondary
               small
               startIcon={<DiscordIcon />}

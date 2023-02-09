@@ -62,6 +62,7 @@ function DeleteShellModal({ onClose }) {
             </Chip>
             before completing this action. You can learn more&nbsp;
             <A
+              data-phid="delete-shell-learn-more"
               inline
               href="https://docs.plural.sh/operations/uninstall"
               target="_blank"
@@ -88,11 +89,13 @@ function DeleteShellModal({ onClose }) {
           gap="medium"
         >
           <Button
+            data-phid="delete-shell-cancel"
             secondary
             onClick={close}
           >Cancel
           </Button>
           <Button
+            data-phid="delete-shell-confirm"
             destructive
             disabled={!canDelete}
             onClick={() => deleteShell().then(() => window.location.reload())}

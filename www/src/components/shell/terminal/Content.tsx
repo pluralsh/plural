@@ -29,7 +29,12 @@ function WelcomeModal() {
       >
         <Span>Welcome to Plural!</Span>
         <Span>Completing the install wizard will deploy your applications and give you access to your Plural Console.</Span>
-        <Button onClick={() => setOpen(false)}>Start Install</Button>
+        <Button
+          data-phid="start-install-cta"
+          onClick={() => setOpen(false)}
+        >
+          Start Install
+        </Button>
       </Flex>
     </Modal>
   )

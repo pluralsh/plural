@@ -74,6 +74,7 @@ export default function Subheader() {
         width={240}
       >
         <IconFrame
+          data-phid="nav-arrow-back"
           clickable
           size="small"
           icon={<ArrowLeftIcon />}
@@ -82,6 +83,7 @@ export default function Subheader() {
           type="floating"
         />
         <IconFrame
+          data-phid="nav-arrow-forward"
           clickable
           size="small"
           icon={<ArrowRightIcon />}

@@ -97,11 +97,13 @@ function EditCloudCredentialsModal({ onClose }) {
                 gap="medium"
               >
                 <Button
+                  data-phid="update-creds-cancel"
                   secondary
                   onClick={close}
                 >Cancel
                 </Button>
                 <Button
+                  data-phid="update-creds-confirm"
                   onClick={onUpdate}
                   disabled={!valid}
                 >Update

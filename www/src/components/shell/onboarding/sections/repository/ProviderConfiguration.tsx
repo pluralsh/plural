@@ -181,6 +181,7 @@ export function ProviderInput() {
 export function ProviderConfiguration({ onNext }) {
   const { valid } = useContext(OnboardingContext)
   const navigate = useNavigate()
+  const { scm: { provider: scmProvider } } = useContext(OnboardingContext)
 
   return (
     <div>
@@ -193,6 +194,7 @@ export function ProviderConfiguration({ onNext }) {
         paddingTop="large"
       >
         <Button
+          data-phid={`back-from-create-repo${scmProvider ? `-${scmProvider.toLowerCase()}` : ''}`}
           secondary
           onClick={() => {
             navigate('/shell', { state: { hideSplashScreen: true, step: 1 } })
@@ -201,6 +203,7 @@ export function ProviderConfiguration({ onNext }) {
           Back
         </Button>
         <Button
+          data-phid={`cont-from-create-repo${scmProvider ? `-${scmProvider.toLowerCase()}` : ''}`}
           disabled={!valid}
           onClick={onNext}
         >

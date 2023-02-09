@@ -235,11 +235,16 @@ function Summary({ onBack }) {
         paddingTop="large"
       >
         <Button
+          data-phid="back-from-review"
           secondary
           onClick={onBack}
         >Back
         </Button>
-        <Button onClick={onCreate}>Create</Button>
+        <Button
+          data-phid="cont-from-review"
+          onClick={onCreate}
+        >Create
+        </Button>
       </Flex>
     </>
   )

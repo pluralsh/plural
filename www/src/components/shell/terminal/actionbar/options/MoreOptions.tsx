@@ -54,6 +54,7 @@ function MoreOptions() {
       label: 'Cloud info',
       onSelect: () => setSelected(DialogSelection.CloudInfo),
       props: {
+        'data-phid': 'view-cloud-info',
         textAlign: 'start',
         leftContent: <Flex><InfoOutlineIcon /></Flex>,
       },
@@ -62,6 +63,7 @@ function MoreOptions() {
       label: 'Cloud credentials',
       onSelect: () => setSelected(DialogSelection.CloudCredentials),
       props: {
+        'data-phid': 'view-cloud-credentials',
         leftContent: <Flex><CloudIcon /></Flex>,
       },
     },
@@ -69,6 +71,7 @@ function MoreOptions() {
       label: 'Sync shell locally',
       onSelect: () => setSelected(DialogSelection.SyncShell),
       props: {
+        'data-phid': 'view-sync-locally',
         leftContent: <Flex><DownloadIcon /></Flex>,
       },
     },
@@ -76,6 +79,7 @@ function MoreOptions() {
       label: 'Delete cloud shell',
       onSelect: () => setSelected(DialogSelection.DeleteShell),
       props: {
+        'data-phid': 'view-delete-shell',
         leftContent: <Flex><TrashCanIcon color="icon-danger" /></Flex>,
       },
     },

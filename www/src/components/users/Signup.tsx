@@ -215,6 +215,7 @@ export function Signup() {
           errorCode={passwordError}
         />
         <Button
+          data-phid="create-account-cta"
           type="submit"
           primary
           width="100%"

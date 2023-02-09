@@ -1,17 +1,17 @@
 import { ReactNode, useContext, useMemo } from 'react'
 
-import CurrentUserContext from '../../../contexts/CurrentUserContext'
 import BillingConsumptionContext, { BillingConsumptionContextType } from '../../../contexts/BillingConsumptionContext'
+import SubscriptionContext from '../../../contexts/SubscriptionContext'
 
 type BillingConsumptionProviderPropsType = {
   children: ReactNode
 }
 
 function BillingConsumptionProvider({ children }: BillingConsumptionProviderPropsType) {
-  const { me } = useContext(CurrentUserContext)
+  const { account } = useContext(SubscriptionContext)
 
-  const nClusters = useMemo(() => (me?.account?.clusterCount ? parseInt(me?.account?.clusterCount) : 0), [me])
-  const nUsers = useMemo(() => (me?.account?.userCount ? parseInt(me?.account?.userCount) : 0), [me])
+  const nClusters = useMemo(() => (account?.clusterCount ? parseInt(account.clusterCount) : 0), [account])
+  const nUsers = useMemo(() => (account?.userCount ? parseInt(account.userCount) : 0), [account])
 
   const billingConsumptionContextValue = useMemo<BillingConsumptionContextType>(() => ({
     nClusters,

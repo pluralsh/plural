@@ -62,7 +62,7 @@ export function OAuthConsent() {
   }, [navigate])
 
   useEffect(() => {
-    if (repository && userData) {
+    if (repository) {
       posthogCapture(PosthogEvent.OIDCLogin, {
         applicationID: repository.id,
         applicationName: repository.name,

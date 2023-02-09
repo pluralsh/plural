@@ -15,14 +15,15 @@ import BillingPricingCard from './BillingPricingCard'
 import BillingDowngradeModal from './BillingDowngradeModal'
 import BillingUpgradeToProfessionalModal from './BillingUpgradeToProfessionalModal'
 
-function ContactUs() {
+function ContactUs({ primary }: { primary?: boolean }) {
   return (
     <Button
       as="a"
       href="https://plural.sh/contact-sales"
       target="_blank"
       rel="noopener noreferer"
-      secondary
+      primary={primary}
+      secondary={!primary}
       width="100%"
     >
       Contact sales
@@ -96,7 +97,7 @@ function BillingPricingCards() {
           ]}
           callToAction={isProPlan ? (
             <Button
-              tertiary
+              secondary
               width="100%"
               onClick={isEnterprisePlan ? null : () => setDowngradeModalOpen(true)}
             >
@@ -177,7 +178,7 @@ function BillingPricingCards() {
             },
           ]}
           callToAction={isEnterprisePlan ? renderCurrentPlanButton() : (
-            <ContactUs />
+            isProPlan ? <ContactUs primary /> : <ContactUs />
           )}
         />
       </Flex>

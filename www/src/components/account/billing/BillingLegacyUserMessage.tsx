@@ -2,10 +2,14 @@ import { useContext } from 'react'
 import { Link } from 'react-router-dom'
 import { A, P } from 'honorable'
 
+import moment from 'moment'
+
 import SubscriptionContext from '../../../contexts/SubscriptionContext'
 
 function BillingLegacyUserMessage() {
-  const { isProPlan, isEnterprisePlan, isGrandfathered } = useContext(SubscriptionContext)
+  const {
+    isProPlan, isEnterprisePlan, isGrandfathered, account,
+  } = useContext(SubscriptionContext)
 
   const open = !(isProPlan || isEnterprisePlan) && isGrandfathered
   const expired = !isGrandfathered
@@ -17,7 +21,7 @@ function BillingLegacyUserMessage() {
       overline
       color="text-xlight"
     >
-      Legacy user access {expired ? 'expired' : 'until May 1, 2023'}
+      Legacy user access {expired ? 'expired' : `until ${moment(account?.grandfatheredUntil).format('MMM DD, YYYY')}`}
       {' '}
       <A
         inline

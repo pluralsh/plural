@@ -22,6 +22,8 @@ import { ApolloError } from '@apollo/client/errors'
 import { State, TerminalContext } from '../context/terminal'
 import useOnboarded from '../../hooks/useOnboarded'
 
+import { PosthogEvent, posthogCapture } from '../../../../utils/posthog'
+
 import { APPLICATIONS_QUERY } from './queries'
 import { buildSteps, install, toDefaultSteps } from './helpers'
 
@@ -34,8 +36,9 @@ function Installer() {
   const onResetRef = useRef<{onReset: Dispatch<void>}>({ onReset: () => {} })
   const [stepsLoading, setStepsLoading] = useState(false)
   const [steps, setSteps] = useState<Array<WizardStepConfig>>([])
-  const [error, setError] = useState<ApolloError | null>()
+  const [error, setError] = useState<ApolloError | undefined>()
   const [defaultSteps, setDefaultSteps] = useState<Array<WizardStepConfig>>([])
+  const [selectedApplications, setSelectedApplications] = useState<Array<string>>([])
 
   const { data: { repositories: { edges: applicationNodes } = { edges: undefined } } = {}, refetch } = useQuery(APPLICATIONS_QUERY, {
     variables: { provider },
@@ -54,23 +57,31 @@ function Installer() {
         setState(State.Installed)
         mutation()
         refetch()
+        posthogCapture(PosthogEvent.Installer, {
+          provider,
+          applications: selectedApplications,
+        })
       })
       .catch(err => setError(err))
       .finally(() => setStepsLoading(false))
   }, [client, mutation, provider, refetch, setState])
 
-  const onSelect = useCallback(selectedApplications => {
+  const onSelect = useCallback((selectedApplications: Array<WizardStepConfig>) => {
     const build = async () => {
       const steps = await buildSteps(client, provider, selectedApplications)
 
       setSteps(steps)
     }
 
+    setSelectedApplications(selectedApplications.map(app => app.label ?? 'unknown'))
     setStepsLoading(true)
     build().finally(() => setStepsLoading(false))
   }, [client, provider])
 
   useEffect(() => setDefaultSteps(toDefaultSteps(applications, provider)), [applications, provider])
+
+  // Capture errors and send to posthog
+  useEffect(() => error && posthogCapture(PosthogEvent.Installer, { error, applications: selectedApplications, provider }), [error, selectedApplications, provider])
 
   if (!applications || defaultSteps.length === 0) {
     return (
@@ -120,7 +131,7 @@ function Installer() {
         <GraphQLToast
           error={{ graphQLErrors: [...error.graphQLErrors] }}
           header="Error"
-          onClose={() => setError(null)}
+          onClose={() => setError(undefined)}
           margin="medium"
           marginHorizontal="xxxxlarge"
           closeTimeout={20000}

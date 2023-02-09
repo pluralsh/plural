@@ -1,30 +1,21 @@
 import {
+  RefObject,
   createElement,
   useCallback,
   useEffect,
+  useRef,
   useState,
 } from 'react'
 import {
   Box,
   Collapsible,
   Form,
-  Keyboard,
   Text,
 } from 'grommet'
+import { Divider, LoadingSpinner } from '@pluralsh/design-system'
+import { useApolloClient } from '@apollo/client'
 import {
-  Divider,
-  FormField,
-  LoadingSpinner,
-  StatusOkIcon,
-} from '@pluralsh/design-system'
-import {
-  useApolloClient,
-  useLazyQuery,
-  useMutation,
-  useQuery,
-} from '@apollo/client'
-import {
-  Navigate,
+  Link,
   useLocation,
   useNavigate,
   useParams,
@@ -32,189 +23,49 @@ import {
 import queryString from 'query-string'
 import {
   A,
-  Article,
   Button,
   Div,
   Flex,
-  H2,
   Icon,
-  Img,
-  Input,
-  P,
 } from 'honorable'
-import { useResizeDetector } from 'react-resize-detector'
-import useScript from 'react-script-hook'
+
+import styled from 'styled-components'
+
+import {
+  AcceptLoginDocument,
+  LoginMethod,
+  PollLoginTokenDocument,
+  useLoginMethodLazyQuery,
+  useLoginMutation,
+  useOauthUrlsQuery,
+  usePasswordlessLoginMutation,
+} from '../../generated/graphql'
 
 import { WelcomeHeader } from '../utils/WelcomeHeader'
 
 import { fetchToken, setToken } from '../../helpers/authentication'
 import { Alert, AlertStatus, GqlError } from '../utils/Alert'
-import { disableState } from '../Login'
-import { PLURAL_FULL_LOGO_WHITE, PLURAL_MARK_WHITE } from '../constants'
-import { ACCEPT_LOGIN } from '../oidc/queries'
+import { PLURAL_MARK_WHITE } from '../constants'
 import { host } from '../../helpers/hostname'
 import { useHistory } from '../../router'
 
+import { isValidEmail } from '../../utils/email'
+
 import {
   METHOD_ICONS,
-  getDeviceToken,
   saveChallenge,
   saveDeviceToken,
   wipeChallenge,
   wipeDeviceToken,
 } from './utils'
-import { LoginMethod } from './types'
-import {
-  LOGIN_METHOD,
-  LOGIN_MUTATION,
-  OAUTH_URLS,
-  PASSWORDLESS_LOGIN,
-  POLL_LOGIN_TOKEN,
-  SIGNUP_MUTATION,
-} from './queries'
 import { finishedDeviceLogin } from './DeviceLoginNotif'
-
-export function LabelledInput({
-  label, value, onChange, placeholder, type, caption, hint, error = undefined, required = false, disabled = false,
-}: any) {
-  return (
-    <FormField
-      label={label}
-      caption={caption}
-      hint={hint}
-      marginBottom="small"
-      error={error}
-      required={required}
-    >
-      <Input
-        width="100%"
-        name={label}
-        type={type}
-        value={value || ''}
-        onChange={onChange && (({ target: { value } }) => onChange(value))}
-        placeholder={placeholder}
-        error={error}
-        disabled={disabled}
-      />
-    </FormField>
-  )
-}
-
-const RIGHT_CONTENT_MAX_WIDTH = 480
-
-export function LoginPortal({ children }: any) {
-  return (
-    <Flex height="100vh">
-      {/* LEFT SIDE */}
-      <Flex
-        direction="column"
-        align="center"
-        background="fill-one"
-        display-tablet="none"
-        padding="xxlarge"
-        overflowY="auto"
-        overflowX="hidden"
-        height="100%"
-      >
-        <Flex
-          grow={1}
-          width={408}
-          direction="column"
-        >
-          {/* LOGOTYPE */}
-          <Flex
-            paddingBottom="xxxlarge"
-            align="center"
-            gap="xxsmall"
-          >
-            <Img
-              src={PLURAL_FULL_LOGO_WHITE}
-              height={48}
-            />
-          </Flex>
-          {/* HIGHLIGHTS */}
-          <Flex
-            grow={1}
-            direction="column"
-            justify="center"
-          >
-            <LoginHighlight
-              title="Built for the cloud."
-              marginBottom="xxlarge"
-            >
-              Plural is optimized for you to bring your own cloud and run on top of Kubernetes with the ideal cluster
-              distribution.
-            </LoginHighlight>
-            <LoginHighlight
-              title="Developer friendly."
-              marginBottom="xxlarge"
-            >
-              Use our simple GitOps driven workflow for deploying and managing applications, and a centralized
-              configuration in a single repo.
-            </LoginHighlight>
-            <LoginHighlight title="Batteries included.">
-              Baked-in observability, logging, auditing, and user auth.
-            </LoginHighlight>
-          </Flex>
-        </Flex>
-      </Flex>
-      {/* RIGHT SIDE */}
-      <Flex
-        overflow="auto"
-        grow={1}
-        shrink={1}
-        padding="xxlarge"
-      >
-        <Div
-          maxWidth={RIGHT_CONTENT_MAX_WIDTH}
-          width="100%"
-          marginVertical="auto"
-          marginHorizontal="auto"
-        >
-          {children}
-        </Div>
-      </Flex>
-    </Flex>
-  )
-}
-
-function LoginHighlight({ title, children, ...props }: any) {
-  return (
-    <Flex
-      align="flex-start"
-      {...props}
-    >
-      <StatusOkIcon
-        size={16}
-        marginTop="xxsmall"
-        backgroundColor="white"
-        borderRadius="100%"
-        outline="2px solid fill-one" // cover the white background with outline that can be seen on the outside of the icon
-        outlineOffset={-1}
-        color="border-primary"
-      />
-      <Article marginLeft="medium">
-        <H2
-          subtitle1
-          marginBottom="xxsmall"
-        >
-          {title}
-        </H2>
-        <P
-          body2
-          color="text-light"
-        >
-          {children}
-        </P>
-      </Article>
-    </Flex>
-  )
-}
+import { LabelledInput } from './LabelledInput'
+import { LOGIN_BREAKPOINT, LoginPortal } from './LoginPortal'
 
 export function PasswordlessLogin() {
   const { token } = useParams()
-  const [mutation, { error, loading, data }] = useMutation(PASSWORDLESS_LOGIN, {
-    variables: { token },
+  const [mutation, { error, loading, data }] = usePasswordlessLoginMutation({
+    variables: { token: token ?? '' },
   })
 
   useEffect(() => {
@@ -232,9 +83,7 @@ export function PasswordlessLogin() {
             src={PLURAL_MARK_WHITE}
             width="45px"
           />
-          <Text size="large">
-            Passwordless Login
-          </Text>
+          <Text size="large">Passwordless Login</Text>
         </Box>
         {loading && (
           <Text
@@ -263,15 +112,22 @@ export function PasswordlessLogin() {
 }
 
 export function handleOauthChallenge(client, challenge) {
-  client.mutate({
-    mutation: ACCEPT_LOGIN,
-    variables: { challenge },
-  }).then(({ data: { acceptLogin: { redirectTo } } }) => {
-    window.location = redirectTo
-  }).catch(err => {
-    console.error(err)
-    wipeChallenge()
-  })
+  client
+    .mutate({
+      mutation: AcceptLoginDocument,
+      variables: { challenge },
+    })
+    .then(({
+      data: {
+        acceptLogin: { redirectTo },
+      },
+    }) => {
+      window.location = redirectTo
+    })
+    .catch(err => {
+      console.error(err)
+      wipeChallenge()
+    })
 }
 
 function LoginPoller({ challenge, token, deviceToken }: any) {
@@ -281,22 +137,28 @@ function LoginPoller({ challenge, token, deviceToken }: any) {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      client.mutate({
-        mutation: POLL_LOGIN_TOKEN,
-        variables: { token, deviceToken },
-      }).then(({ data: { loginToken: { jwt } } }) => {
-        setToken(jwt)
-        setSuccess(true)
+      client
+        .mutate({
+          mutation: PollLoginTokenDocument,
+          variables: { token, deviceToken },
+        })
+        .then(({
+          data: {
+            loginToken: { jwt },
+          },
+        }) => {
+          setToken(jwt)
+          setSuccess(true)
 
-        if (deviceToken) finishedDeviceLogin()
+          if (deviceToken) finishedDeviceLogin()
 
-        if (challenge) {
-          handleOauthChallenge(client, challenge)
-        }
-        else {
-          history.navigate('/')
-        }
-      })
+          if (challenge) {
+            handleOauthChallenge(client, challenge)
+          }
+          else {
+            history.navigate('/')
+          }
+        })
     }, 2000)
 
     return () => clearInterval(interval)
@@ -321,17 +183,15 @@ function LoginPoller({ challenge, token, deviceToken }: any) {
   )
 }
 
-function OAuthOptions({ oauthUrls }: any) {
-  const { ref, width } = useResizeDetector({
-    handleHeight: false,
-  })
-  const singleColumn = (width as number) < RIGHT_CONTENT_MAX_WIDTH
+const sortOrder = ['GITHUB', 'GITLAB', 'GOOGLE']
 
+function sortOauthUrls(a, b) {
+  return sortOrder.indexOf(a.provider) - sortOrder.indexOf(b.provider)
+}
+
+export function OAuthOptions({ oauthUrls }: any) {
   return (
-    <Div
-      ref={ref}
-      marginBottom="medium"
-    >
+    <Div marginBottom="medium">
       {oauthUrls && (
         <>
           <Divider
@@ -348,12 +208,11 @@ function OAuthOptions({ oauthUrls }: any) {
             wrap="wrap"
             flexWrap="wrap"
           >
-            {oauthUrls.map(url => (
+            {[...oauthUrls].sort(sortOauthUrls).map(url => (
               <OAuthOption
                 key={url.provider}
                 url={url}
                 flexGrow={1}
-                width={singleColumn ? '100%' : 'auto'}
               />
             ))}
           </Flex>
@@ -363,9 +222,37 @@ function OAuthOptions({ oauthUrls }: any) {
   )
 }
 
+type LoginState =
+  | 'Initial'
+  | 'CheckEmail'
+  | 'CheckingEmail'
+  | 'PwdLogin_CheckPwd'
+  | 'PwdLogin_CheckingPwd'
+  | 'PwdLogin'
+  | 'PasswordlessLogin'
+  | 'Signup'
+
+const State = {
+  Initial: 'Initial',
+  CheckEmail: 'CheckEmail',
+  CheckingEmail: 'CheckingEmail',
+  PwdLogin: 'PwdLogin',
+  PwdLogin_CheckPwd: 'PwdLogin_CheckPwd',
+  PwdLogin_CheckingPwd: 'PwdLogin_CheckingPwd',
+  PasswordlessLogin: 'PasswordlessLogin',
+  Signup: 'Signup',
+} as const satisfies Record<LoginState, LoginState>
+
+const setInputFocus = (ref: RefObject<any>) => {
+  requestAnimationFrame(() => {
+    ref.current?.querySelector('input')?.focus()
+  })
+}
+
 export function Login() {
+  const [state, setState] = useState<LoginState>(State.Initial)
+  const prevState = useRef<LoginState>(State.Initial)
   const history = useHistory()
-  const navigate = useNavigate()
   const client = useApolloClient()
   const location = useLocation()
   const jwt = fetchToken()
@@ -373,29 +260,106 @@ export function Login() {
   const { login_challenge: challenge, deviceToken } = queryString.parse(location.search)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [getLoginMethod, { data, loading: qLoading, error: qError }] = useLazyQuery(LOGIN_METHOD, {
-    variables: { email, host: host() },
-  })
+  const navigate = useNavigate()
+  const passwordRef = useRef<HTMLElement>()
+  const emailRef = useRef<HTMLElement>()
 
-  const loginMethod = data?.loginMethod?.loginMethod
-  const open = loginMethod === LoginMethod.PASSWORD
-  const passwordless = loginMethod === LoginMethod.PASSWORDLESS
+  useEffect(() => {
+    setInputFocus(emailRef)
+  }, [])
 
-  const { data: oAuthData } = useQuery(OAUTH_URLS, { variables: { host: host() } })
-
-  const [mutation, { loading: mLoading, error }] = useMutation(LOGIN_MUTATION, {
-    variables: { email, password, deviceToken },
-    onCompleted: ({ login: { jwt } }) => {
-      setToken(jwt)
-      if (deviceToken) finishedDeviceLogin()
-      if (challenge) {
-        handleOauthChallenge(client, challenge)
-      }
-      else {
-        history.navigate('/')
-      }
+  const [
+    loginMethodQuery,
+    {
+      data: loginMethodData,
+      loading: loginMethodLoading,
+      error: loginMethodError,
     },
+  ] = useLoginMethodLazyQuery()
+  const getLoginMethod = useCallback(() => {
+    loginMethodQuery({
+      variables: { email, host: host() },
+    })
+  }, [email, loginMethodQuery])
+
+  const [loginMutation, { loading: loginMLoading, error: loginMError }]
+    = useLoginMutation({
+      variables: {
+        email,
+        password,
+        deviceToken: typeof deviceToken === 'string' ? deviceToken : undefined,
+      },
+      onCompleted: ({ login }) => {
+        setToken(login?.jwt)
+        if (deviceToken) finishedDeviceLogin()
+        if (challenge) {
+          handleOauthChallenge(client, challenge)
+        }
+        else {
+          history.navigate('/')
+        }
+      },
+    })
+
+  useEffect(() => {
+    if (state !== prevState.current) {
+      switch (state) {
+      case State.Initial:
+        setInputFocus(emailRef)
+        break
+      case State.CheckEmail:
+        getLoginMethod()
+        setState(State.CheckingEmail)
+        break
+      case State.PwdLogin_CheckPwd:
+        loginMutation()
+        setState(State.PwdLogin_CheckingPwd)
+        break
+      case State.PwdLogin:
+        setInputFocus(passwordRef)
+        break
+      default:
+        break
+      }
+    }
+    prevState.current = state
+  }, [getLoginMethod, loginMutation, state])
+
+  useEffect(() => {
+    if (state === State.Signup) {
+      navigate('/signup', { state: { email } })
+    }
   })
+
+  useEffect(() => {
+    if (state === State.PwdLogin_CheckingPwd && loginMError) {
+      setState(State.PwdLogin)
+      setPassword('')
+    }
+  }, [loginMError, state])
+  const passwordErrorMsg
+    = loginMError?.message === 'invalid password' ? 'Invalid password' : undefined
+  const loginError = !passwordErrorMsg && loginMError
+
+  useEffect(() => {
+    if (
+      !loginMethodLoading
+      && loginMethodData
+      && state === State.CheckingEmail
+    ) {
+      const loginMethod = loginMethodData?.loginMethod?.loginMethod
+
+      if (!loginMethod) {
+        setState(State.Signup)
+      }
+      else if (loginMethod === LoginMethod.Password) {
+        setState(State.PwdLogin)
+      }
+      else if (loginMethod === LoginMethod.Passwordless) {
+        setState(State.PasswordlessLogin)
+      }
+    }
+  }, [loginMethodData, loginMethodLoading, state])
 
   useEffect(() => {
     wipeChallenge()
@@ -403,11 +367,11 @@ export function Login() {
 
     if (challenge) saveChallenge(challenge)
 
-    if (data?.loginMethod?.authorizeUrl) {
+    if (loginMethodData?.loginMethod?.authorizeUrl) {
       if (deviceToken) saveDeviceToken(deviceToken)
-      window.location = data.loginMethod.authorizeUrl
+      window.location = loginMethodData.loginMethod.authorizeUrl as any
     }
-  }, [data, challenge, deviceToken])
+  }, [loginMethodData, challenge, deviceToken])
 
   useEffect(() => {
     if (jwt && challenge && !ran) {
@@ -419,20 +383,45 @@ export function Login() {
     }
   }, [challenge, deviceToken, history, client, jwt, ran, setRan])
 
-  const submit = useCallback(() => (open ? mutation() : getLoginMethod()), [mutation, getLoginMethod, open])
+  useEffect(() => {
+    if (state === State.CheckingEmail && loginMethodError) {
+      if (deviceToken) saveDeviceToken(deviceToken)
+      setState(State.Signup)
+    }
+  }, [deviceToken, loginMethodError, state])
 
-  const loading = qLoading || mLoading
+  const loginMethod = loginMethodData?.loginMethod
 
-  if (qError) {
-    if (deviceToken) saveDeviceToken(deviceToken)
+  const { data: oAuthData } = useOauthUrlsQuery({
+    variables: { host: host() },
+  })
 
-    return (
-      <Navigate
-        to="/signup"
-        state={{ email }}
-      />
-    )
-  }
+  const isPasswordLogin
+    = state === State.PwdLogin
+    || state === State.PwdLogin_CheckingPwd
+    || state === State.PwdLogin_CheckPwd
+  const disableSubmit = isPasswordLogin
+    ? password.length === 0
+    : !isValidEmail(email)
+
+  const onSubmit = useCallback(e => {
+    e.preventDefault()
+    if (disableSubmit) {
+      return
+    }
+    switch (state) {
+    case State.PwdLogin:
+      setState(State.PwdLogin_CheckPwd)
+      break
+    case State.Initial:
+      setState(State.CheckEmail)
+      break
+    default:
+      break
+    }
+  }, [disableSubmit, state])
+
+  const loading = loginMethodLoading || loginMLoading
 
   // This is to ensure that if both login token and login challenge are
   // available, user will not see the login view while oauth challenge
@@ -451,67 +440,90 @@ export function Login() {
 
   return (
     <LoginPortal>
-      <WelcomeHeader marginBottom="xxlarge" />
-      {passwordless && (
-        <Div>
-          <LoginPoller
-            token={data.loginMethod.token}
-            challenge={challenge}
-            deviceToken={deviceToken}
-          />
-        </Div>
-      )}
-      {!passwordless && (
-        <>
-          <Keyboard onEnter={submit}>
-            <Form onSubmit={submit}>
-              {error && (
+      <Div>
+        <WelcomeHeader marginBottom="xlarge" />
+        {state === State.PasswordlessLogin && (
+          <Div>
+            <LoginPoller
+              token={loginMethod?.token}
+              challenge={challenge}
+              deviceToken={deviceToken}
+            />
+          </Div>
+        )}
+        {state !== State.PasswordlessLogin && (
+          <>
+            <Form onSubmit={onSubmit}>
+              {loginError && (
                 <Div marginBottom="medium">
                   <GqlError
-                    error={error}
+                    error={loginError}
                     header="Login Failed"
                   />
                 </Div>
               )}
               <LabelledInput
+                ref={emailRef}
                 label="Email address"
                 value={email}
-                onChange={open ? null : setEmail}
+                onChange={isPasswordLogin ? undefined : setEmail}
+                disabled={isPasswordLogin}
                 placeholder="Enter email address"
+                caption={
+                  isPasswordLogin ? (
+                    <A
+                      inline
+                      onClick={() => {
+                        setEmail('')
+                        setState(State.Initial)
+                      }}
+                    >
+                      change email
+                    </A>
+                  ) : null
+                }
               />
               <Collapsible
-                open={open}
+                open={state === State.PwdLogin}
                 direction="vertical"
               >
                 <LabelledInput
+                  ref={passwordRef}
                   label="Password"
                   type="password"
                   caption={(
                     <A
                       inline
-                      onClick={() => navigate('/password-reset')}
-                    >forgot your password?
+                      as={Link}
+                      to="/password-reset"
+                      onClick={e => {
+                        e.preventDefault()
+                        navigate('/password-reset', { state: { email } })
+                      }}
+                    >
+                      forgot your password?
                     </A>
                   )}
+                  hint={passwordErrorMsg}
+                  error={!!passwordErrorMsg}
                   value={password}
                   onChange={setPassword}
                   placeholder="Enter password"
                 />
               </Collapsible>
               <Button
+                type="submit"
                 width="100%"
                 loading={loading}
-                onClick={submit}
+                disabled={disableSubmit}
               >
-                Continue
+                {isPasswordLogin ? 'Log in' : 'Continue'}
               </Button>
             </Form>
-          </Keyboard>
-          {!deviceToken && (
-            <OAuthOptions oauthUrls={oAuthData?.oauthUrls} />
-          )}
-        </>
-      )}
+            {!deviceToken && <OAuthOptions oauthUrls={oAuthData?.oauthUrls} />}
+          </>
+        )}
+      </Div>
     </LoginPortal>
   )
 }
@@ -522,161 +534,35 @@ const providerToName = {
   gitlab: 'GitLab',
 }
 
+export const FlexAtBreak = styled.div(_ => ({
+  width: '100%',
+  [LOGIN_BREAKPOINT]: {
+    flex: '1 0',
+    width: 'auto',
+  },
+}))
+
 function OAuthOption({ url: { authorizeUrl, provider }, ...props }: any) {
   const icon = METHOD_ICONS[provider]
 
   return (
-    <Button
-      width={143}
-      height={48}
-      secondary
-      onClick={() => {
-        window.location = authorizeUrl
-      }}
-      startIcon={(
-        <Icon>
-          {createElement(icon, { size: 20, fullColor: true })}
-        </Icon>
-      )}
-      {...props}
-    >
-      {providerToName[provider.toLowerCase()]}
-    </Button>
-  )
-}
-
-export function Signup() {
-  const history = useHistory()
-  const navigate = useNavigate()
-  const location = useLocation()
-  const [email, setEmail] = useState(location?.state?.email || '')
-  const [password, setPassword] = useState('')
-  const [name, setName] = useState('')
-  const [account, setAccount] = useState('')
-  const [confirm, setConfirm] = useState('')
-  const deviceToken = getDeviceToken()
-  const [mutation, { loading, error }] = useMutation(SIGNUP_MUTATION, {
-    variables: { attributes: { email, password, name }, account: { name: account }, deviceToken },
-    onCompleted: ({ signup: { jwt } }) => {
-      if (deviceToken) finishedDeviceLogin()
-      setToken(jwt)
-      history.navigate('/shell')
-    },
-  })
-  const { data } = useQuery(OAUTH_URLS, { variables: { host: host() } })
-
-  useEffect(() => {
-    if (fetchToken()) {
-      history.navigate('/')
-    }
-  }, [history])
-  // we should probably move hubspot to loaded similarly to with the other analytic tools and setup with cookiebot
-  useScript({ src: 'https://js.hs-scripts.com/22363579.js' })
-
-  // @ts-expect-error
-  const { disabled, reason } = disableState(password, confirm, email)
-
-  return (
-    <LoginPortal>
-      <WelcomeHeader marginBottom="xxlarge" />
-      <Keyboard onEnter={() => mutation()}>
-        <Form onSubmit={() => mutation()}>
-          {error && (
-            <Div marginBottom="medium">
-              <GqlError
-                error={error}
-                header="Signup failed"
-              />
-            </Div>
-          )}
-          <LabelledInput
-            label="Email address"
-            value={email}
-            onChange={setEmail}
-            placeholder="Enter email address"
-          />
-          <LabelledInput
-            label="Full name"
-            value={name}
-            onChange={setName}
-            placeholder="Enter first and last name"
-          />
-          <LabelledInput
-            label="Account name"
-            value={account}
-            onChange={setAccount}
-            placeholder="Enter account name (must be unique)"
-          />
-          <LabelledInput
-            label="Password"
-            value={password}
-            type="password"
-            onChange={setPassword}
-            placeholder="Enter password"
-            caption="10 character minimum"
-            hint={reason === 'Password is too short' && (
-              <P
-                caption
-                color="text-error"
-              >
-                Password is too short
-              </P>
-            )}
-          />
-          <LabelledInput
-            label="Confirm password"
-            value={confirm}
-            type="password"
-            onChange={setConfirm}
-            placeholder="Enter password again"
-            hint={reason === 'Passwords do not match' && (
-              <P
-                caption
-                color="text-error"
-              >
-                Password doesn't match
-              </P>
-            )}
-          />
-          <Button
-            primary
-            width="100%"
-            disabled={disabled}
-            loading={loading}
-            onClick={() => mutation()}
-          >
-            Create account
-          </Button>
-        </Form>
-      </Keyboard>
-      <OAuthOptions oauthUrls={data?.oauthUrls} />
-      <P
-        body2
-        textAlign="center"
-        marginTop="medium"
+    <FlexAtBreak>
+      <Button
+        width="100%"
+        height={48}
+        secondary
+        as={A}
+        _hover={{ textDecoration: 'none' }}
+        href={authorizeUrl}
+        startIcon={(
+          <Icon filter="grayscale(1)">
+            {createElement(icon, { size: 20, fullColor: true })}
+          </Icon>
+        )}
+        {...props}
       >
-        Already have an account?{' '}
-        <A
-          inline
-          onClick={() => navigate('/login')}
-        >
-          Login
-        </A>
-      </P>
-      <P
-        body2
-        textAlign="center"
-        marginTop="xxsmall"
-      >
-        <A
-          inline
-          onClick={() => {
-            (window as any)?._hsp?.push(['showBanner'])
-          }}
-        >
-          Cookie settings
-        </A>
-      </P>
-    </LoginPortal>
+        {providerToName[provider.toLowerCase()]}
+      </Button>
+    </FlexAtBreak>
   )
 }

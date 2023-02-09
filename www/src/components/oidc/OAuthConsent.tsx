@@ -8,15 +8,17 @@ import {
   LoopingLogo,
 } from '@pluralsh/design-system'
 import { ThemeContext } from 'grommet'
-import { useCallback, useContext } from 'react'
+import { useCallback, useContext, useEffect } from 'react'
 import { A, Flex, Span } from 'honorable'
 import StartCase from 'lodash/startCase'
 
-import { LoginPortal } from '../users/MagicLogin'
+import { LoginPortal } from '../users/LoginPortal'
 import { GqlError } from '../utils/Alert'
 import { PLURAL_MARK, PLURAL_MARK_WHITE } from '../constants'
-import { ME_Q } from '../users/queries'
+import { useMeQuery } from '../../generated/graphql'
 import { clearLocalStorage } from '../../helpers/localStorage'
+
+import { PosthogEvent, posthogCapture } from '../../utils/posthog'
 
 import { GET_OIDC_CONSENT, OAUTH_CONSENT } from './queries'
 
@@ -42,7 +44,7 @@ function Icon({ icon, darkIcon }: any) {
 export function OAuthConsent() {
   const location = useLocation()
   const navigate = useNavigate()
-  const { data: { me: { email } = { email: '' } } = {}, loading: userLoading } = useQuery(ME_Q)
+  const { data: userData, loading: userLoading } = useMeQuery()
   const { consent_challenge: challenge } = queryString.parse(location.search)
   const { data } = useQuery(GET_OIDC_CONSENT, { variables: { challenge } })
   const repository = data?.oidcConsent?.repository
@@ -59,6 +61,16 @@ export function OAuthConsent() {
     navigate('/login')
   }, [navigate])
 
+  useEffect(() => {
+    if (repository) {
+      posthogCapture(PosthogEvent.OIDCLogin, {
+        applicationID: repository.id,
+        applicationName: repository.name,
+        installationID: repository.installation?.id,
+      })
+    }
+  }, [repository])
+
   if (!data || userLoading) {
     return (
       <Flex
@@ -68,6 +80,10 @@ export function OAuthConsent() {
       ><LoopingLogo />
       </Flex>
     )
+  }
+
+  if (!userData?.me?.email) {
+    logout()
   }
 
   return (
@@ -136,7 +152,7 @@ export function OAuthConsent() {
             caption
             color="text-xlight"
             textAlign="center"
-          >You are currently signed in as {email}.&nbsp;
+          >You are currently signed in as {userData?.me?.email}.&nbsp;
             <A
               inline
               onClick={logout}

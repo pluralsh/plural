@@ -7,9 +7,10 @@ defmodule GraphQl.Schema.Account do
   ecto_enum :oauth_service, Core.Schema.OAuthIntegration.Service
 
   input_object :account_attributes do
-    field :name, :string
-    field :icon, :upload_or_url
+    field :name,            :string
+    field :icon,            :upload_or_url
     field :domain_mappings, list_of(:domain_mapping_input)
+    field :billing_address, :address_attributes
   end
 
   input_object :domain_mapping_input do
@@ -85,6 +86,7 @@ defmodule GraphQl.Schema.Account do
     field :user_count,           :string
     field :delinquent_at,        :datetime
     field :grandfathered_until,  :datetime
+    field :billing_address,      :address
 
     field :icon, :string, resolve: fn
       account, _, _ -> {:ok, Core.Storage.url({account.icon, account}, :original)}

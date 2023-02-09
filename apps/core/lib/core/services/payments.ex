@@ -8,6 +8,7 @@ defmodule Core.Services.Payments do
     Publisher,
     Account,
     User,
+    Address,
     Repository,
     Plan,
     Subscription,
@@ -63,7 +64,7 @@ defmodule Core.Services.Payments do
   """
   @spec list_invoices(Subscription.t | Account.t | User.t, map) :: {:ok, Stripe.List.t(Stripe.Invoice.t)} | {:error, term}
   def list_invoices(object, opts \\ %{})
-  def list_invoices(%Subscription{customer_id: customer} = sub, opts) do
+  def list_invoices(%Subscription{customer_id: customer} = sub, opts) when is_binary(customer) do
     %{installation: %{repository: %{publisher: %{billing_account_id: account_id}}}} =
       Core.Repo.preload(sub, [installation: [repository: :publisher]])
 
@@ -71,7 +72,7 @@ defmodule Core.Services.Payments do
     |> Stripe.Invoice.list(connect_account: account_id)
   end
 
-  def list_invoices(%Account{billing_customer_id: customer}, opts) do
+  def list_invoices(%Account{billing_customer_id: customer}, opts) when is_binary(customer) do
     Map.merge(%{customer: customer}, opts)
     |> Stripe.Invoice.list()
   end
@@ -81,6 +82,8 @@ defmodule Core.Services.Payments do
     |> Map.get(:account)
     |> list_invoices(opts)
   end
+
+  def list_invoices(_, _), do: {:error, "no customer for this account"}
 
   @doc """
   It can list all cards attached to a customer
@@ -139,6 +142,7 @@ defmodule Core.Services.Payments do
   """
   @spec has_feature?(User.t | Account.t, atom) :: boolean
   def has_feature?(%Account{} = account, feature) do
+    account = Core.Repo.preload(account, [subscription: :plan])
     case {enforce?(), delinquent?(account), grandfathered?(account), account} do
       {false, _, _, _} -> true
       {_, true, _, _} -> false
@@ -255,24 +259,49 @@ defmodule Core.Services.Payments do
   Creates a stripe customer with the given source and user email, saves
   the customer back to storage.
   """
-  @spec create_card(User.t | Account.t, binary) :: {:ok, Account.t} | {:error, term}
-  def create_card(%User{} = user, source_token) do
+  @spec create_card(User.t | Account.t, binary, map | nil) :: {:ok, Account.t} | {:error, term}
+  def create_card(user, source, address \\ nil)
+
+  def create_card(%User{} = user, source_token, address) do
     %{account: account} = Core.Repo.preload(user, [account: :root_user], force: true)
-    create_card(account, source_token)
+    create_card(account, source_token, address)
   end
 
-  def create_card(%Account{root_user: %User{email: email}, billing_customer_id: nil} = account, source_token) do
-    with {:ok, %{id: id}} <- Stripe.Customer.create(%{email: email, source: source_token}) do
+  def create_card(%Account{root_user: %User{}, billing_customer_id: nil} = account, source_token, address) do
+    start_transaction()
+    |> add_operation(:account, fn _ ->
+      case address do
+        %{} = address ->
+          Account.changeset(account, %{billing_address: address})
+          |> Core.Repo.update()
+        nil -> {:ok, account}
+      end
+    end)
+    |> add_operation(:stripe, fn %{account: account} ->
+      with {:ok, stripe} <- stripe_attrs(account),
+        do: Stripe.Customer.create(Map.put(stripe, :source, source_token))
+    end)
+    |> add_operation(:customer, fn %{account: account, stripe: %{id: id}} ->
       account
       |> Account.payment_changeset(%{billing_customer_id: id})
       |> Core.Repo.update()
-    end
+    end)
+    |> execute(extract: :customer)
   end
 
-  def create_card(%Account{billing_customer_id: cus_id} = account, source) do
+  def create_card(%Account{billing_customer_id: cus_id} = account, source, _) do
     with {:ok, _} <- Stripe.Card.create(%{customer: cus_id, source: source}),
       do: {:ok, account}
   end
+
+  @doc """
+  generate stripe customer attrs from a preloaded account
+  """
+  @spec stripe_attrs(Account.t) :: {:ok, map} | {:error, binary}
+  def stripe_attrs(%Account{root_user: %User{email: email, name: name}, billing_address: %{} = address}) do
+    {:ok, %{email: email, name: Map.get(address, :name) || name, address: Address.to_stripe(address)}}
+  end
+  def stripe_attrs(_), do: {:error, "you must provide a billing address to enable billing"}
 
   @doc """
   Detaches a card from a customer
@@ -366,7 +395,7 @@ defmodule Core.Services.Payments do
     end
   end
 
-  defp discount(amount, :monthly), do: round(amount / 10)
+  defp discount(amount, :yearly), do: round(9 * amount / 10) * 12
   defp discount(amount, _), do: amount
 
   def setup_enterprise_plan(account_id) do

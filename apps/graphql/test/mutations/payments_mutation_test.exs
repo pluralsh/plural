@@ -5,16 +5,24 @@ defmodule GraphQl.PaymentsMutationsTest do
 
   describe "createCard" do
     test "It will create a customer and persist its id" do
-      expect(Stripe.Customer, :create, fn %{email: _, source: "token"} -> {:ok, %{id: "cus_id"}} end)
       user = insert(:user, account: build(:account, root_user: build(:user)))
+      expect(Stripe.Customer, :create, fn %{email: _, source: "token"} -> {:ok, %{id: "cus_id"}} end)
 
       {:ok, %{data: %{"createCard" => result}}} = run_query("""
-        mutation createCard($source: String!) {
-          createCard(source: $source) {
+        mutation createCard($source: String!, $address: AddressAttributes) {
+          createCard(source: $source, address: $address) {
             billingCustomerId
           }
         }
-      """, %{"source" => "token"}, %{current_user: user})
+      """, %{"source" => "token", "address" => %{
+        "line1" => "line1",
+        "line2" => "line2",
+        "city" => "new york",
+        "state" => "ny",
+        "country" => "us",
+        "zip" => "10023",
+        "name" => "me"
+      }}, %{current_user: user})
 
       assert result["billingCustomerId"] == "cus_id"
     end

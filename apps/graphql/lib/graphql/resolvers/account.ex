@@ -1,7 +1,7 @@
 defmodule GraphQl.Resolvers.Account do
   use GraphQl.Resolvers.Base, model: Core.Schema.Account
   import GraphQl.Resolvers.User, only: [with_jwt: 1]
-  alias Core.Schema.{Group, GroupMember, Role, RoleBinding, IntegrationWebhook, WebhookLog, OAuthIntegration, DomainMapping, Invite, PlatformSubscription, PlatformPlan}
+  alias Core.Schema.{Group, GroupMember, Role, RoleBinding, IntegrationWebhook, WebhookLog, OAuthIntegration, DomainMapping, Invite, PlatformPlan}
   alias Core.Services.Accounts
 
   def query(Group, _), do: Group
@@ -19,7 +19,7 @@ defmodule GraphQl.Resolvers.Account do
     |> ok()
   end
 
-  def available_features(%Account{subscription: %PlatformSubscription{plan: %PlatformPlan{}}} = account) do
+  def available_features(%Account{} = account) do
     PlatformPlan.features()
     |> Enum.into(%{}, & {&1, Core.Services.Payments.has_feature?(account, &1)})
   end

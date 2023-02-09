@@ -45,9 +45,9 @@ defmodule Core.Services.Clusters do
 
     start_transaction()
     |> add_operation(:cluster, fn _ ->
-      case get_cluster_by_owner(uid) do
+      case get_cluster(user.account_id, p, n) do
         %Cluster{} = c ->
-          Cluster.changeset(c, %{console_url: d, provider: p, name: n})
+          Cluster.changeset(c, %{console_url: d, provider: p, name: n, owner_id: uid})
           |> Core.Repo.update()
         _ ->
           create_cluster(%{

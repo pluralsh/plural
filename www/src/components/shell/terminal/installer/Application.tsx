@@ -5,11 +5,9 @@ import {
   useMemo,
   useState,
 } from 'react'
-
 import { Box } from 'grommet'
 import { Div, Span } from 'honorable'
 import { useQuery } from '@apollo/client'
-
 import {
   Chip,
   LoopingLogo,

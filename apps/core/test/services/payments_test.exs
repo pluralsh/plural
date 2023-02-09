@@ -17,11 +17,40 @@ defmodule Core.Services.PaymentsTest do
 
   describe "#create_card" do
     test "It will create a customer and persist its id" do
-      user = insert(:user, account: build(:account, root_user: build(:user)))
-      expect(Stripe.Customer, :create, fn %{email: _, source: "token"} -> {:ok, %{id: "cus_some_id"}} end)
+      user = insert(:user, account: build(:account, root_user: build(:user), billing_address: %{
+        line1: "line1",
+        line2: "line2",
+        city: "new york",
+        state: "ny",
+        country: "us",
+        zip: "10023",
+        name: "me"
+      }))
+
+      me = self()
+      expect(Stripe.Customer, :create, fn %{email: _, name: name, address: address, source: "token"} ->
+        send me, {:stripe, address, name}
+        {:ok, %{id: "cus_some_id"}}
+      end)
+
       {:ok, updated} = Payments.create_card(user, "token")
 
       assert updated.billing_customer_id == "cus_some_id"
+
+      assert_receive {:stripe, address, name}
+      assert name == "me"
+      assert address.line1 == updated.billing_address.line1
+      assert address.line2 == updated.billing_address.line2
+      assert address.city == updated.billing_address.city
+      assert address.state == updated.billing_address.state
+      assert address.country == updated.billing_address.country
+      assert address.postal_code == updated.billing_address.zip
+    end
+
+    test "it will fail w/o billing address" do
+      user = insert(:user, account: build(:account, root_user: build(:user)))
+
+      {:error, _} = Payments.create_card(user, "token")
     end
 
     test "If a customer has already been registered, it will just create a new card" do

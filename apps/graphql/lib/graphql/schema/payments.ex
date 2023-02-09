@@ -249,6 +249,7 @@ defmodule GraphQl.Schema.Payments do
     field :create_card, :account do
       middleware Authenticated
       arg :source, non_null(:string)
+      arg :address, :address_attributes
 
       safe_resolve &Payments.create_card/2
     end

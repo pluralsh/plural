@@ -90,7 +90,7 @@ function useBankCard(setEdit: Dispatch<SetStateAction<boolean>>, address, noCanc
           direction="column"
           justify="center"
           marginTop={-10}
-          marginBottom={-20}
+          marginBottom={-10}
         >
           <CardElement />
         </Flex>

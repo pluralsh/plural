@@ -46,7 +46,7 @@ function CloudStep({ onBack, onNext }) {
             expanded={expanded === CalloutKey.CloudCredentials}
             onExpand={expanded => setExpanded(expanded ? CalloutKey.CloudCredentials : undefined)}
           >
-            Plural uses your cloud credentials to create your infrastructure in your own cloud. All cloud credentials are stored securely using symmetric encryption.
+            Plural Cloud Shell uses your cloud credentials to create your infrastructure in your own cloud. Cloud credentials are stored securely using symmetric encryption. If you prefer, you can choose to use the Plural CLI which uses the cloud provider SDK on your local machine to connect to your cloud.
           </Callout>
 
           <Callout

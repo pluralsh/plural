@@ -24,7 +24,7 @@ function BillingSubscriptionProvider({ children }: BillingSubscriptionProviderPr
   } = useQuery(SUBSCRIPTION_QUERY, { fetchPolicy: 'network-only', pollInterval: 60_000 })
   const { proPlatformPlan, proYearlyPlatformPlan, enterprisePlatformPlan } = useContext(PlatformPlansContext)
 
-  const pricingFeaturesEnabled = posthog.isFeatureEnabled('pricing')
+  const pricingFeaturesEnabled = useMemo(() => posthog.isFeatureEnabled('pricing'), [])
   const subscription = useMemo(() => data?.account?.subscription as PlatformSubscription | null, [data])
   const billingAddress = useMemo(() => data?.account?.billingAddress ?? null, [data])
   const billingCustomerId = useMemo(() => data?.account?.billingCustomerId, [data])

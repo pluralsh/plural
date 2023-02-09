@@ -259,22 +259,37 @@ defmodule Core.Services.Payments do
   Creates a stripe customer with the given source and user email, saves
   the customer back to storage.
   """
-  @spec create_card(User.t | Account.t, binary) :: {:ok, Account.t} | {:error, term}
-  def create_card(%User{} = user, source_token) do
+  @spec create_card(User.t | Account.t, binary, map | nil) :: {:ok, Account.t} | {:error, term}
+  def create_card(user, source, address \\ nil)
+
+  def create_card(%User{} = user, source_token, address) do
     %{account: account} = Core.Repo.preload(user, [account: :root_user], force: true)
-    create_card(account, source_token)
+    create_card(account, source_token, address)
   end
 
-  def create_card(%Account{root_user: %User{}, billing_customer_id: nil} = account, source_token) do
-    with {:ok, stripe} <- stripe_attrs(account),
-         {:ok, %{id: id}} <- Stripe.Customer.create(Map.put(stripe, :source, source_token)) do
+  def create_card(%Account{root_user: %User{}, billing_customer_id: nil} = account, source_token, address) do
+    start_transaction()
+    |> add_operation(:account, fn _ ->
+      case address do
+        %{} = address ->
+          Account.changeset(account, %{billing_address: address})
+          |> Core.Repo.update()
+        nil -> {:ok, account}
+      end
+    end)
+    |> add_operation(:stripe, fn %{account: account} ->
+      with {:ok, stripe} <- stripe_attrs(account),
+        do: Stripe.Customer.create(Map.put(stripe, :source, source_token))
+    end)
+    |> add_operation(:customer, fn %{account: account, stripe: %{id: id}} ->
       account
       |> Account.payment_changeset(%{billing_customer_id: id})
       |> Core.Repo.update()
-    end
+    end)
+    |> execute(extract: :customer)
   end
 
-  def create_card(%Account{billing_customer_id: cus_id} = account, source) do
+  def create_card(%Account{billing_customer_id: cus_id} = account, source, _) do
     with {:ok, _} <- Stripe.Card.create(%{customer: cus_id, source: source}),
       do: {:ok, account}
   end

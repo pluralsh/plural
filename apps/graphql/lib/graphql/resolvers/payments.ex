@@ -73,8 +73,8 @@ defmodule GraphQl.Resolvers.Payments do
   def create_subscription(%{plan_id: plan_id, installation_id: inst_id}, %{context: %{current_user: user}}),
     do: Payments.create_subscription(plan_id, inst_id, user)
 
-  def create_card(%{source: source}, %{context: %{current_user: user}}),
-    do: Payments.create_card(user, source)
+  def create_card(%{source: source} = args, %{context: %{current_user: user}}),
+    do: Payments.create_card(user, source, args[:address])
 
   def delete_card(%{id: id}, %{context: %{current_user: user}}),
     do: Payments.delete_card(id, user)

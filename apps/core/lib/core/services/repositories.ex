@@ -364,7 +364,7 @@ defmodule Core.Services.Repositories do
     |> allow(user, :create)
     |> when_ok(:insert)
     |> notify(:create, user)
-    Posthog.capture("Application Install", %{distinct_id: user.id, application: repo.name}, DateTime.utc_now())
+    Posthog.capture("Application Install", %{distinct_id: user.id, applicationID: repo.id, applicationName: repo.name}, DateTime.utc_now())
   end
   def create_installation(attrs, id, user),
     do: create_installation(attrs, get_repository!(id), user)
@@ -420,7 +420,7 @@ defmodule Core.Services.Repositories do
     end)
     |> execute(extract: :installation)
     |> notify(:delete, user)
-    Posthog.capture("Application Uninstall", %{distinct_id: user.id, application: installation.repository.name}, DateTime.utc_now())
+    Posthog.capture("Application Uninstall", %{distinct_id: user.id, applicationID: installation.repository.id, applicationName: installation.repository.name}, DateTime.utc_now())
   end
   def delete_installation(inst_id, user), do: get_installation!(inst_id) |> delete_installation(user)
 

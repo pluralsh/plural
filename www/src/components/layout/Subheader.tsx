@@ -83,7 +83,7 @@ export default function Subheader() {
           type="floating"
         />
         <IconFrame
-          data-phid="nav-arrow-fwd"
+          data-phid="nav-arrow-forward"
           clickable
           size="small"
           icon={<ArrowRightIcon />}

@@ -2,9 +2,13 @@ import { Link } from 'react-router-dom'
 import { Button, Card } from '@pluralsh/design-system'
 import { Div, Flex, P } from 'honorable'
 import { capitalize } from 'lodash'
+import { useContext } from 'react'
+
+import SubscriptionContext from '../../../contexts/SubscriptionContext'
 
 type BillingFeatureBlockBannerPropsType = {
   feature: 'service accounts' | 'groups' | 'roles'
+  planFeature: string | null
 }
 
 const featureToPunchline = {
@@ -13,7 +17,11 @@ const featureToPunchline = {
   roles: 'Define granular permissions for your organization\'s users and apply them to groups or individuals.',
 }
 
-function BillingFeatureBlockBanner({ feature }: BillingFeatureBlockBannerPropsType) {
+function BillingFeatureBlockBanner({ feature, planFeature }: BillingFeatureBlockBannerPropsType) {
+  const { account } = useContext(SubscriptionContext)
+
+  if ((account?.availableFeatures || {})[planFeature || 'userManagement']) return null
+
   return (
     <Flex
       position="absolute"

@@ -12807,14 +12807,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"posthog-js@npm:1.40.2":
-  version: 1.40.2
-  resolution: "posthog-js@npm:1.40.2"
+"posthog-js@npm:1.43.1":
+  version: 1.43.1
+  resolution: "posthog-js@npm:1.43.1"
   dependencies:
     "@sentry/types": 7.22.0
     fflate: ^0.4.1
     rrweb-snapshot: ^1.1.14
-  checksum: 16748a799168f47e55de8bf1f87ea3206fd797f6ccfa901ee070927e6951f917df291cd22ee728518d5e5e8d505d609b73549b17cf9145a86b8b1e4b81e9f4a6
+  checksum: 76806052495d16c06374c7f4516b61ec09f99fd89e816603f636bde931b653e2c0a2df2f70a68905408f888a9157cd7e7394e6503dca4ede08d258c58d4a49ef
   languageName: node
   linkType: hard
 
@@ -16739,7 +16739,7 @@ __metadata:
     moment: 2.29.4
     phoenix: 1.6.15
     pluralsh-absinthe-socket-apollo-link: 0.2.0
-    posthog-js: 1.40.2
+    posthog-js: 1.43.1
     process: 0.11.10
     prop-types: 15.8.1
     query-string: 7.1.1

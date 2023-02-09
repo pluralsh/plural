@@ -182,7 +182,7 @@ function BillingUpgradeToProfessionalModal({ open, onClose }: BillingUpgradeToPr
       >
         Billing information
       </Div>
-      {renderBillingForm()}
+      {!card ? renderBillingForm() : null}
       {edit || !card ? renderEdit() : renderDisplay()}
       <form onSubmit={handleUpgrade}>
         <Flex

@@ -8,7 +8,7 @@ import {
   LoopingLogo,
 } from '@pluralsh/design-system'
 import { ThemeContext } from 'grommet'
-import { useCallback, useContext } from 'react'
+import { useCallback, useContext, useEffect } from 'react'
 import { A, Flex, Span } from 'honorable'
 import StartCase from 'lodash/startCase'
 
@@ -17,6 +17,8 @@ import { GqlError } from '../utils/Alert'
 import { PLURAL_MARK, PLURAL_MARK_WHITE } from '../constants'
 import { useMeQuery } from '../../generated/graphql'
 import { clearLocalStorage } from '../../helpers/localStorage'
+
+import { PosthogEvent, posthogCapture } from '../../utils/posthog'
 
 import { GET_OIDC_CONSENT, OAUTH_CONSENT } from './queries'
 
@@ -58,6 +60,16 @@ export function OAuthConsent() {
     clearLocalStorage()
     navigate('/login')
   }, [navigate])
+
+  useEffect(() => {
+    if (repository && userData) {
+      posthogCapture(PosthogEvent.OIDCLogin, {
+        applicationID: repository.id,
+        applicationName: repository.name,
+        installationID: repository.installation?.id,
+      })
+    }
+  }, [repository])
 
   if (!data || userLoading) {
     return (

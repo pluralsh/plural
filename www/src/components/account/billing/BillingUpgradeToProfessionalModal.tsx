@@ -19,7 +19,7 @@ import PlatformPlansContext from '../../../contexts/PlatformPlansContext'
 import BillingBankCardContext from '../../../contexts/BillingBankCardContext'
 import SubscriptionContext from '../../../contexts/SubscriptionContext'
 
-import { UPDATE_ACCOUNT_BILLING_MUTATION, UPGRADE_TO_PROFESSIONAL_PLAN_MUTATION } from './queries'
+import { SUBSCRIPTION_QUERY, UPDATE_ACCOUNT_BILLING_MUTATION, UPGRADE_TO_PROFESSIONAL_PLAN_MUTATION } from './queries'
 
 import useBankCard from './useBankCard'
 
@@ -34,7 +34,7 @@ type BillingUpgradeToProfessionalModalPropsType = {
 function BillingUpgradeToProfessionalModal({ open, onClose }: BillingUpgradeToProfessionalModalPropsType) {
   const { proPlatformPlan, proYearlyPlatformPlan } = useContext(PlatformPlansContext)
   const { card } = useContext(BillingBankCardContext)
-  const { billingAddress, refetch: refetchSubscription } = useContext(SubscriptionContext)
+  const { billingAddress } = useContext(SubscriptionContext)
 
   const [applyYearlyDiscount, setApplyYearlyDiscount] = useState(false)
   const [name, setName] = useState(billingAddress?.name || '')
@@ -65,6 +65,7 @@ function BillingUpgradeToProfessionalModal({ open, onClose }: BillingUpgradeToPr
     variables: {
       planId: applyYearlyDiscount ? proYearlyPlatformPlan.id : proPlatformPlan.id,
     },
+    refetchQueries: [SUBSCRIPTION_QUERY],
   })
 
   const [edit, setEdit] = useState(true)
@@ -78,15 +79,11 @@ function BillingUpgradeToProfessionalModal({ open, onClose }: BillingUpgradeToPr
 
     if (!card) return
 
-    Promise.all([updateAccountMutation(), upgradeMutation()])
-      .then(() => {
-        setSuccess(true)
-        refetchSubscription()
-      })
-      .catch(() => {
-        setError(true)
-      })
-  }, [card, updateAccountMutation, upgradeMutation, refetchSubscription])
+    updateAccountMutation()
+      .then(() => upgradeMutation())
+      .then(() => setSuccess(true))
+      .catch(() => setError(true))
+  }, [card, updateAccountMutation, upgradeMutation])
 
   const renderBillingForm = useCallback(() => (
     <>
@@ -187,25 +184,19 @@ function BillingUpgradeToProfessionalModal({ open, onClose }: BillingUpgradeToPr
       <BillingPreview
         noCard
         discountPreview
+        yearly={applyYearlyDiscount}
         onChange={setApplyYearlyDiscount}
       />
       <Div
         fontWeight="bold"
-        marginTop="medium"
-        marginBottom="small"
-      >
-        Your payment details
-      </Div>
-      {edit || !card ? renderEdit() : renderDisplay()}
-      <Div
-        fontWeight="bold"
         marginTop="large"
-        marginBottom="small"
+        marginBottom="medium"
       >
         Billing information
       </Div>
+      {renderBillingForm()}
+      {edit || !card ? renderEdit(updateAccountMutation) : renderDisplay()}
       <form onSubmit={handleUpgrade}>
-        {renderBillingForm()}
         <Flex
           justify="flex-end"
           marginTop="xxlarge"
@@ -223,12 +214,14 @@ function BillingUpgradeToProfessionalModal({ open, onClose }: BillingUpgradeToPr
   ), [
     edit,
     card,
+    applyYearlyDiscount,
     loadingUpdateAccountMutation,
     loadingUpgradeMutation,
     renderDisplay,
     renderEdit,
     renderBillingForm,
     handleUpgrade,
+    updateAccountMutation,
   ])
 
   const renderSuccess = useCallback(() => (

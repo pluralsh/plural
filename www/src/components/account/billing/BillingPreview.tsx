@@ -18,28 +18,72 @@ import PlatformPlansContext from '../../../contexts/PlatformPlansContext'
 
 import BillingConsumptionContext from '../../../contexts/BillingConsumptionContext'
 import SubscriptionContext from '../../../contexts/SubscriptionContext'
+import { pluralize } from '../../../utils/string'
 
 type BillingPreviewPropsType = {
   noCard?: boolean
   discountPreview?: boolean
+  yearly?: boolean
   onChange?: (isProfessional: boolean) => void
+}
+
+type LinePropsType = {
+  count: number
+  price: number
+  yearly: boolean
+  name: string
+  top?: string | null
 }
 
 function getPrice({ lineItems } : any, dimension: string): number {
   return (lineItems.find(x => x?.dimension === dimension)?.cost || 0) / 100
 }
 
-function BillingPreview({ noCard, discountPreview, onChange }: BillingPreviewPropsType) {
+function PriceLine({
+  count, price, yearly, name, top,
+} : LinePropsType) {
+  return (
+    <Flex
+      align="center"
+      gap="medium"
+      marginTop={top}
+    >
+      {name === 'cluster' ? <ClusterIcon /> : <PeopleIcon />}
+      <Div>
+        {count} {pluralize(name, count)}
+      </Div>
+      <CloseIcon size={12} />
+      <Div>
+        ${price}
+      </Div>
+      <Div
+        borderBottom="1px solid border"
+        flexGrow={1}
+      />
+      <Div>
+        ${price * count}/{yearly ? 'year' : 'month'}
+      </Div>
+    </Flex>
+  )
+}
+
+function BillingPreview({
+  noCard, discountPreview, yearly, onChange,
+}: BillingPreviewPropsType) {
   const { proPlatformPlan, proYearlyPlatformPlan, annualDiscount } = useContext(PlatformPlansContext)
-  const { isProPlan } = useContext(SubscriptionContext)
+  const { isProPlan, isEnterprisePlan, account } = useContext(SubscriptionContext)
   const { nClusters, nUsers } = useContext(BillingConsumptionContext)
 
   const [isProfessional, setIsProfessional] = useState(isProPlan)
 
-  const pClusters = useMemo(() => (discountPreview ? getPrice(proYearlyPlatformPlan, 'CLUSTER') : getPrice(proPlatformPlan, 'CLUSTER')), [discountPreview, proYearlyPlatformPlan, proPlatformPlan])
-  const pUsers = useMemo(() => (discountPreview ? getPrice(proYearlyPlatformPlan, 'USER') : getPrice(proPlatformPlan, 'USER')), [discountPreview, proYearlyPlatformPlan, proPlatformPlan])
-  const totalClusters = nClusters * pClusters
-  const totalUsers = nUsers * pUsers
+  const currCluster = useMemo(() => (account?.subscription?.plan ? getPrice(account.subscription?.plan, 'CLUSTER') : 0), [account])
+  const currUser = useMemo(() => (account?.subscription?.plan ? getPrice(account.subscription?.plan, 'USER') : 0), [account])
+  const pClusters = useMemo(() => (yearly ? getPrice(proYearlyPlatformPlan, 'CLUSTER') : getPrice(proPlatformPlan, 'CLUSTER')), [yearly, proYearlyPlatformPlan, proPlatformPlan])
+  const pUsers = useMemo(() => (yearly ? getPrice(proYearlyPlatformPlan, 'USER') : getPrice(proPlatformPlan, 'USER')), [yearly, proYearlyPlatformPlan, proPlatformPlan])
+  const clusterPrice = ((discountPreview || isProfessional) ? pClusters : currCluster)
+  const userPrice = ((discountPreview || isProfessional) ? pUsers : currUser)
+  const totalClusters = nClusters * clusterPrice
+  const totalUsers = nUsers * userPrice
 
   const handleChange = useCallback((event: any) => {
     setIsProfessional(event.target.checked)
@@ -112,66 +156,25 @@ function BillingPreview({ noCard, discountPreview, onChange }: BillingPreviewPro
         >
           Your usage
         </Div>
-        {discountPreview ? renderAnnualDiscountSwitch() : renderProfessionalSwitch()}
+        {discountPreview ? renderAnnualDiscountSwitch() : (!isProPlan && !isEnterprisePlan) ? renderProfessionalSwitch() : null}
       </Flex>
-      <Div marginTop="large">
-        <Flex
-          align="center"
-          gap="medium"
-        >
-          <ClusterIcon />
-          <Div>
-            {nClusters} cluster{nClusters > 1 ? 's' : ''}
-          </Div>
-          <CloseIcon size={12} />
-          <Div>
-            ${pClusters}
-          </Div>
-          {discountPreview && isProfessional && (
-            <>
-              <CloseIcon size={12} />
-              <Div>
-                12 months
-              </Div>
-            </>
-          )}
-          <Div
-            borderBottom="1px solid border"
-            flexGrow={1}
-          />
-          <Div>
-            ${totalClusters}/{discountPreview && isProfessional ? 'year' : 'month'}
-          </Div>
-        </Flex>
-        <Flex
-          align="center"
-          gap="medium"
-          marginTop="small"
-        >
-          <PeopleIcon />
-          <Div>
-            {nUsers} user{nUsers > 1 ? 's' : ''}
-          </Div>
-          <CloseIcon size={12} />
-          <Div>
-            ${pUsers}
-          </Div>
-          {discountPreview && isProfessional && (
-            <>
-              <CloseIcon size={12} />
-              <Div>
-                12 months
-              </Div>
-            </>
-          )}
-          <Div
-            borderBottom="1px solid border"
-            flexGrow={1}
-          />
-          <Div>
-            ${totalUsers}/{discountPreview && isProfessional ? 'year' : 'month'}
-          </Div>
-        </Flex>
+      <Div
+        marginTop="large"
+        gap="small"
+      >
+        <PriceLine
+          count={nClusters}
+          price={clusterPrice}
+          yearly={!!yearly}
+          name="cluster"
+        />
+        <PriceLine
+          count={nUsers}
+          price={userPrice}
+          yearly={!!yearly}
+          name="user"
+          top="small"
+        />
       </Div>
       <Flex
         marginTop="large"
@@ -179,11 +182,11 @@ function BillingPreview({ noCard, discountPreview, onChange }: BillingPreviewPro
         fontWeight={600}
         body1
       >
-        Total: ${totalClusters + totalUsers}/{discountPreview && isProfessional ? 'year' : 'month'}
+        Total: ${totalClusters + totalUsers}/{yearly ? 'year' : 'month'}
       </Flex>
     </Div>
   ), [
-    discountPreview,
+    yearly,
     isProfessional,
     nClusters,
     nUsers,

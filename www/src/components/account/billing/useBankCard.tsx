@@ -76,8 +76,18 @@ function useBankCard(setEdit: Dispatch<SetStateAction<boolean>>, noCancel = fals
     setLoading(false)
   }, [card, deleteCard, refetch])
 
-  const renderEdit = useCallback(() => (
-    <form onSubmit={handleSubmit}>
+  const wrappedSubmit = useCallback((submit : Promise<any> | null) => (e => {
+    e.preventDefault()
+    if (submit) {
+      submit.then(() => handleSubmit(e))
+
+      return
+    }
+    handleSubmit(e)
+  }), [handleSubmit])
+
+  const renderEdit = useCallback(submit => (
+    <form onSubmit={wrappedSubmit(submit)}>
       <Card
         padding="small"
         display="flex"

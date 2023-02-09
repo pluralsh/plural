@@ -35,6 +35,8 @@ export const SUBSCRIPTION_QUERY = gql`
         id
         plan {
           id
+          period
+          lineItems { dimension cost }
         }
       }
       billingAddress {

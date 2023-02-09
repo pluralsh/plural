@@ -187,13 +187,15 @@ function BillingPreview({
     </Div>
   ), [
     yearly,
-    isProfessional,
+    discountPreview,
     nClusters,
     nUsers,
-    pClusters,
-    pUsers,
     totalClusters,
     totalUsers,
+    clusterPrice,
+    isEnterprisePlan,
+    isProPlan,
+    userPrice,
     renderProfessionalSwitch,
     renderAnnualDiscountSwitch,
   ])

@@ -162,7 +162,7 @@ function useBankCard(setEdit: Dispatch<SetStateAction<boolean>>, address, noCanc
         </Flex>
       </>
     )
-  }, [card, loading, handleDelete])
+  }, [card, loading, cardError, handleDelete])
 
   return {
     renderEdit,

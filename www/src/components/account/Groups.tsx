@@ -1,5 +1,5 @@
 import { useContext, useState } from 'react'
-import { Div, Flex } from 'honorable'
+import { Flex } from 'honorable'
 import {
   Button,
   GearTrainIcon,

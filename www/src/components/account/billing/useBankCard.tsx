@@ -82,15 +82,17 @@ function useBankCard(setEdit: Dispatch<SetStateAction<boolean>>, address, noCanc
       <Card
         padding="small"
         display="flex"
-        align="center"
+        alignItems="center"
         gap="small"
       >
         <Flex
           flexGrow={1}
           direction="column"
           justify="center"
+          marginTop={-10}
+          marginBottom={-20}
         >
-          <CardElement options={{ style: { base: { color: 'white' } } }} />
+          <CardElement />
         </Flex>
         <Button
           type="submit"

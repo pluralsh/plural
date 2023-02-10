@@ -157,6 +157,7 @@ defmodule GraphQl.Schema.Repository do
     field :videos,   list_of(:string)
   end
 
+  @desc "Attributes of an application."
   object :repository do
     field :id,             non_null(:id)
     field :name,           non_null(:string), description: "The name of the application."

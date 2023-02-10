@@ -32,6 +32,7 @@ export function MyProfile() {
   const currentTab = DIRECTORY.find(tab => pathname?.startsWith(tab.path))
 
   const url = me.avatar || undefined
+
   return (
     <ResponsiveLayoutPage>
       <ResponsiveLayoutSidenavContainer>

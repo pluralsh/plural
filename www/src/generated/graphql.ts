@@ -14,6 +14,12 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  /**
+   * The `DateTime` scalar type represents a date and time in the UTC
+   * timezone. The DateTime appears in a JSON response as an ISO8601 formatted
+   * string, including UTC timezone ("Z"). The parsed date and time string will
+   * be converted to UTC if there is an offset.
+   */
   DateTime: Date;
   Map: Map<string, unknown>;
   UploadOrUrl: string;

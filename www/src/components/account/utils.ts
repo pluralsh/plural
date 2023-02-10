@@ -1,6 +1,7 @@
 import { apiHost } from '../../helpers/hostname'
 import { Account, Permission, User } from '../../generated/graphql'
 import { notNil } from '../../utils/ts-notNil'
+import { CurrentUser } from '../../contexts/CurrentUserContext'
 
 export const inviteLink = invite => `https://${apiHost()}/invite/${invite.secureId}`
 
@@ -10,7 +11,7 @@ export const canEdit = (user: User, account?: Account) => (
   (user.roles && user.roles.admin) || user.id === account?.rootUser?.id
 )
 
-export function hasRbac(user: User, permission: Permission) {
+export function hasRbac(user: CurrentUser, permission: Permission) {
   if (user.boundRoles != null) {
     const boundRoles = user.boundRoles.filter(notNil)
 

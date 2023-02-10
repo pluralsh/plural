@@ -2,22 +2,22 @@ import { ComponentProps, createContext } from 'react'
 
 import { MeQuery } from '../generated/graphql'
 
-type Me = Exclude<MeQuery['me'], undefined | null>
+export type CurrentUser = Exclude<MeQuery['me'], undefined | null>
 
 const defaultUser = {
   id: '',
   name: '',
   email: '',
   account: { id: '' },
-} as const satisfies Me
+} as const satisfies CurrentUser
 
-const CurrentUserContext = createContext<Me>(defaultUser)
+const CurrentUserContext = createContext<CurrentUser>(defaultUser)
 
 export function CurrentUserContextProvider({
   value,
   ...props
 }: {
-  value?: Me | null
+  value?: CurrentUser | null
 } & Omit<ComponentProps<typeof CurrentUserContext.Provider>, 'value'>) {
   return (
     <CurrentUserContext.Provider

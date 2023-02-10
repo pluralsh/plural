@@ -59,7 +59,7 @@ defmodule Plural.MixProject do
           api: :permanent,
           core: :permanent,
           email: :permanent,
-          graphql: :load
+          graphql: :permanent
         ]
       ],
       rtc: [

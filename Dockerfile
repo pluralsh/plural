@@ -89,7 +89,7 @@ RUN apk add --update --no-cache curl ca-certificates unzip wget openssl && \
     chmod +x /usr/local/bin/terrascan && \
     chmod +x /usr/local/bin/trivy
 
-FROM erlang:24.3.4.6-alpine
+FROM erlang:25.1.2.0-alpine
 
 # The name of your application/release (required)
 ARG APP_NAME

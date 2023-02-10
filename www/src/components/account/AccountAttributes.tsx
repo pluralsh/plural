@@ -19,6 +19,7 @@ import { useTheme } from 'styled-components'
 import { useUpdateState } from '../../hooks/useUpdateState'
 
 import CurrentUserContext from '../../contexts/CurrentUserContext'
+import { notNil, notNilAnd } from '../../utils/ts-notNil'
 
 import SaveButton from '../utils/SaveButton'
 import { GqlError } from '../utils/Alert'
@@ -121,10 +122,12 @@ export function AccountAttributes() {
 
   const [domain, setDomain] = useState('')
 
-  const sortedDomainMappings = useMemo(() => [...(formState.domainMappings || [])].sort((m1, m2) => `${m1?.domain} || ''`
-    .toLowerCase()
-    .localeCompare(`${m2?.domain} || ''`.toLowerCase())),
-  [formState.domainMappings]) as DomainMapping[]
+  const sortedDomainMappings = useMemo(() => (formState.domainMappings || [])
+    .filter(notNil)
+    .sort((m1, m2) => `${m1?.domain} || ''`
+      .toLowerCase()
+      .localeCompare(`${m2?.domain} || ''`.toLowerCase())),
+  [formState.domainMappings])
 
   const [mutation, { loading, error }] = useUpdateAccountMutation({
     variables: {
@@ -148,8 +151,7 @@ export function AccountAttributes() {
   }
 
   const rmDomain = (d?: string) => {
-    const newDomains = ((account?.domainMappings || []) as DomainMapping[])
-      .filter(({ domain }) => domain !== d)
+    const newDomains = (account?.domainMappings || []).filter(notNilAnd(mapping => mapping?.domain !== d))
 
     mutation({ variables: { attributes: { domainMappings: newDomains } } })
   }

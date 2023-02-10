@@ -46,6 +46,30 @@ defmodule Api.MixProject do
       aliases: aliases(),
       deps: deps(),
       test_coverage: [tool: ExCoveralls]
+      releases: releases()
+    ]
+  end
+
+  defp releases() do
+    [
+      dev: [
+        include_executables_for: [:unix],
+        include_erts: true,
+        strip_beams: false,
+        quiet: false
+      ],
+      subsys: [
+        include_executables_for: [:unix],
+        include_erts: true,
+        strip_beams: true,
+        quiet: false
+      ],
+      prd: [
+        include_executables_for: [:unix],
+        include_erts: true,
+        strip_beams: true,
+        quiet: false
+      ]
     ]
   end
 

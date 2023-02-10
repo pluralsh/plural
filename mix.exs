@@ -49,7 +49,6 @@ defmodule Plural.MixProject do
 
   defp deps do
     [
-      {:distillery, "~> 2.1"},
       {:x509, "~> 0.8.5"},
       {:shards, "~> 1.0"},
       {:ecto, "~> 3.9.0", override: true},

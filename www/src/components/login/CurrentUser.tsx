@@ -5,9 +5,9 @@ import { Box } from 'grommet'
 import { useIntercom } from 'react-use-intercom'
 
 import PluralConfigurationContext from '../../contexts/PluralConfigurationContext'
-import { User, useMeQuery } from '../../generated/graphql'
+import { useMeQuery } from '../../generated/graphql'
 
-import CurrentUserContext from '../../contexts/CurrentUserContext'
+import { CurrentUserContextProvider } from '../../contexts/CurrentUserContext'
 
 import { growthbook } from '../../helpers/growthbook'
 
@@ -58,12 +58,12 @@ export default function CurrentUser({ children }: any) {
     return (<Navigate to="/login" />)
   }
 
-  const { me } = data as { me: User }
+  const { me } = data
 
   return (
-    <CurrentUserContext.Provider value={me}>
+    <CurrentUserContextProvider value={me}>
       {children}
-    </CurrentUserContext.Provider>
+    </CurrentUserContextProvider>
   )
 }
 
@@ -80,20 +80,6 @@ export function PluralProvider({ children }: any) {
   } = useMeQuery({ pollInterval: 60000, fetchPolicy: 'network-only' })
   const { boot, update } = useIntercom()
   const userContextValue = useMemo(() => ({ me: data?.me, refetch }), [data, refetch])
-
-  let userContext: User
-
-  if (userContextValue.me) {
-    userContext = userContextValue.me as User
-  }
-  else {
-    userContext = {
-      id: '',
-      name: '',
-      email: '',
-      account: { id: '' },
-    }
-  }
 
   useNotificationSubscription()
 
@@ -121,13 +107,13 @@ export function PluralProvider({ children }: any) {
 
   return (
     <PluralConfigurationContext.Provider value={configuration}>
-      <CurrentUserContext.Provider value={userContext}>
+      <CurrentUserContextProvider value={userContextValue?.me}>
         <BillingPlatformPlansProvider>
           <BillingSubscriptionProvider>
             {children}
           </BillingSubscriptionProvider>
         </BillingPlatformPlansProvider>
-      </CurrentUserContext.Provider>
+      </CurrentUserContextProvider>
     </PluralConfigurationContext.Provider>
   )
 }

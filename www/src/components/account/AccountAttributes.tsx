@@ -106,7 +106,7 @@ function DomainMappingFunc({
   )
 }
 
-function toFormState(account: Partial<Account>) {
+function toFormState(account: Pick<Account, 'name' | 'domainMappings'>) {
   return {
     name: `${account?.name || ''}`,
     domainMappings: account?.domainMappings || [],

@@ -46,6 +46,7 @@ function CheatsheetCommand({ command, description, last }: any) {
 
       {hovered && (
         <CopyButton
+          data-phid="copy-cli-command"
           copied={copied}
           handleCopy={handleCopy}
         />

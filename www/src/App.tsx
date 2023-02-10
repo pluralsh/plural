@@ -40,14 +40,13 @@ const honorableTheme = mergeTheme(theme, {
 })
 
 function PosthogOptInOut() {
-  if (Cookiebot?.consent?.statistics) {
-    posthog.opt_in_capturing()
-  }
-  else {
-    posthog.opt_out_capturing()
-  }
-
   useEffect(() => {
+    if (Cookiebot?.consent?.statistics) {
+      posthog.opt_in_capturing()
+    }
+    else {
+      posthog.opt_out_capturing()
+    }
     const onPrefChange = () => {
       if (Cookiebot?.consent?.statistics) {
         posthog.opt_in_capturing()

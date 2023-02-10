@@ -120,7 +120,7 @@ function WrapStripe({ children }: any) {
 // If anyone knows a better way around this, I'm all ears.
 // - Klink
 function OAuthOrFallback() {
-  const { me } = useContext(CurrentUserContext)
+  const me = useContext(CurrentUserContext)
   const history = useHistory()
   const shellOAuthMatch = useMatch('/oauth/callback/:provider/shell')
 
@@ -162,7 +162,7 @@ function TestBanner() {
 }
 
 function PosthogIdentifier() {
-  const { me } = useContext(CurrentUserContext)
+  const me = useContext(CurrentUserContext)
 
   PosthogIdentify(me)
 

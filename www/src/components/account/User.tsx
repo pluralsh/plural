@@ -17,7 +17,8 @@ import CurrentUserContext from '../../contexts/CurrentUserContext'
 import { Provider } from '../repos/misc'
 import { DELETE_USER } from '../users/queries'
 
-import { Permissions } from './types'
+import { Permission } from '../../generated/graphql'
+
 import { EDIT_USER, IMPERSONATE_SERVICE_ACCOUNT } from './queries'
 
 import { Confirm } from './Confirm'
@@ -110,9 +111,9 @@ function UserEdit({ user, update }: any) {
 }
 
 export function User({ user, update }: any) {
-  const { me: { account, ...me } } = useContext(CurrentUserContext)
+  const me = useContext(CurrentUserContext)
 
-  const editable = canEdit(me, account) || hasRbac(me, Permissions.USERS)
+  const editable = canEdit(me, me.account) || hasRbac(me, Permission.Users)
 
   return (
     <Box
@@ -144,7 +145,7 @@ export function User({ user, update }: any) {
             Admin
           </Chip>
         )}
-        {account.rootUser.id === user.id && <Chip size="medium">Root</Chip>}
+        {me.account.rootUser?.id === user.id && <Chip size="medium">Root</Chip>}
         {editable && (
           <UserEdit
             user={user}
@@ -157,8 +158,8 @@ export function User({ user, update }: any) {
 }
 
 export function ServiceAccount({ user, update }: any) {
-  const { me: { account, ...me } } = useContext(CurrentUserContext)
-  const editable = canEdit(me, account) || hasRbac(me, Permissions.USERS)
+  const me = useContext(CurrentUserContext)
+  const editable = canEdit(me, me.account) || hasRbac(me, Permission.Users)
   const [mutation, { error }] = useMutation(IMPERSONATE_SERVICE_ACCOUNT, {
     variables: { id: user.id },
     update: (_cache,

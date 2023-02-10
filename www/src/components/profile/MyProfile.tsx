@@ -26,10 +26,12 @@ const DIRECTORY = [
 ]
 
 export function MyProfile() {
-  const { me } = useContext(CurrentUserContext)
+  const me = useContext(CurrentUserContext)
   const { pathname } = useLocation()
   const tabStateRef = useRef<any>(null)
   const currentTab = DIRECTORY.find(tab => pathname?.startsWith(tab.path))
+
+  const url = me.avatar || undefined
 
   return (
     <ResponsiveLayoutPage>
@@ -37,7 +39,7 @@ export function MyProfile() {
         <SideNavOffset>
           <PageCard
             heading={me.name}
-            icon={{ name: me.name, url: me.avatar, spacing: 'none' }}
+            icon={{ name: me.name, url, spacing: 'none' }}
             subheading={
               me?.roles?.admin
               && `Admin${me?.account?.name && ` at ${me?.account?.name}`}`

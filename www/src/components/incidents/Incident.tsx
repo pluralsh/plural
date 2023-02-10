@@ -354,7 +354,7 @@ function IncidentInner({
 }: any) {
   const [view, setView] = useState(IncidentView.MSGS)
   const [listRef, setListRef] = useState<any>(null)
-  const { me: currentUser } = useContext(CurrentUserContext)
+  const currentUser = useContext(CurrentUserContext)
   const editable = canEdit(incident, currentUser)
   const [attributes, setAttributes] = useState({
     description: incident.description,

@@ -10,6 +10,8 @@ import { OAuthIntegrations } from '../integrations/OAuthIntegrations'
 
 import { SectionContentContainer } from '../Explore'
 
+import { CurrentUser } from '../../contexts/CurrentUserContext'
+
 import { CardList } from './BillingDetails'
 
 const ViewOptions = {
@@ -18,8 +20,8 @@ const ViewOptions = {
   INTEGRATIONS: 'integrations',
 }
 
-export const canEdit = ({ roles, id }, { rootUser }) => (
-  (roles && roles.admin) || id === rootUser.id
+export const canEdit = (user: CurrentUser, account?: CurrentUser['account']) => (
+  (user.roles && user.roles.admin) || user.id === account?.rootUser?.id
 )
 
 export function EditAccount({ billing }: any) {

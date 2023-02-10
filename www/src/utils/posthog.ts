@@ -2,13 +2,15 @@ import posthog from 'posthog-js'
 
 import { ApolloError } from '@apollo/client'
 
-import { Provider, User } from '../generated/graphql'
+import { Provider } from '../generated/graphql'
 
 import { CloudProvider } from '../components/shell/onboarding/context/types'
 
+import { CurrentUser } from '../contexts/CurrentUserContext'
+
 import Cookiebot from './cookiebot'
 
-export default function PosthogIdentify(me: User) {
+export default function PosthogIdentify(me: CurrentUser) {
   if (Cookiebot?.consent?.statistics) {
     posthog.identify(me.id)
     posthog.people.set({

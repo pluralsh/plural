@@ -1,17 +1,16 @@
-import { useEffect, useMemo, useState } from 'react'
-import { useQuery } from '@apollo/client'
+import { useEffect, useState } from 'react'
 import { Navigate, useLocation } from 'react-router-dom'
 import { Box } from 'grommet'
 
 import { useIntercom } from 'react-use-intercom'
 
 import PluralConfigurationContext from '../../contexts/PluralConfigurationContext'
+import { useMeQuery } from '../../generated/graphql'
 
-import CurrentUserContext from '../../contexts/CurrentUserContext'
+import { CurrentUserContextProvider } from '../../contexts/CurrentUserContext'
 
 import { growthbook } from '../../helpers/growthbook'
 
-import { ME_Q } from '../users/queries'
 import { setPreviousUserData, setToken, wipeToken } from '../../helpers/authentication'
 import { useNotificationSubscription } from '../incidents/Notifications'
 import { LoopingLogo } from '../utils/AnimatedLogo'
@@ -35,7 +34,7 @@ function LoadingSpinner() {
 }
 
 export default function CurrentUser({ children }: any) {
-  const { loading, error, data } = useQuery(ME_Q)
+  const { loading, error, data } = useMeQuery()
 
   useNotificationSubscription()
 
@@ -62,9 +61,9 @@ export default function CurrentUser({ children }: any) {
   const { me } = data
 
   return (
-    <CurrentUserContext.Provider value={me}>
+    <CurrentUserContextProvider value={me}>
       {children}
-    </CurrentUserContext.Provider>
+    </CurrentUserContextProvider>
   )
 }
 
@@ -77,13 +76,9 @@ export function handlePreviousUserClick({ jwt }: any) {
 export function PluralProvider({ children }: any) {
   const location = useLocation()
   const {
-    loading, error, data, refetch,
-  } = useQuery(ME_Q, {
-    pollInterval: 60000,
-    fetchPolicy: 'network-only',
-  })
+    loading, error, data,
+  } = useMeQuery({ pollInterval: 60000, fetchPolicy: 'network-only' })
   const { boot, update } = useIntercom()
-  const userContextValue = useMemo(() => ({ me: data?.me, refetch }), [data, refetch])
 
   useNotificationSubscription()
 
@@ -111,13 +106,13 @@ export function PluralProvider({ children }: any) {
 
   return (
     <PluralConfigurationContext.Provider value={configuration}>
-      <CurrentUserContext.Provider value={userContextValue}>
+      <CurrentUserContextProvider value={data.me}>
         <BillingPlatformPlansProvider>
           <BillingSubscriptionProvider>
             {children}
           </BillingSubscriptionProvider>
         </BillingPlatformPlansProvider>
-      </CurrentUserContext.Provider>
+      </CurrentUserContextProvider>
     </PluralConfigurationContext.Provider>
   )
 }

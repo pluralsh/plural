@@ -12,7 +12,12 @@ import {
 } from '@pluralsh/design-system'
 
 import CurrentUserContext from '../../contexts/CurrentUserContext'
-import { Group as GroupT, GroupsDocument, useDeleteGroupMutation } from '../../generated/graphql'
+import {
+  Group as GroupT,
+  GroupsDocument,
+  Permission,
+  useDeleteGroupMutation,
+} from '../../generated/graphql'
 import { removeConnection, updateCache } from '../../utils/graphql'
 
 import ListInput from '../utils/ListInput'
@@ -20,7 +25,6 @@ import { List } from '../utils/List'
 import { DeleteIconButton } from '../utils/IconButtons'
 import { canEdit } from '../users/EditAccount'
 
-import { Permissions } from './types'
 import { Confirm } from './Confirm'
 import { ViewGroup } from './Group'
 import { CreateGroup } from './CreateGroup'
@@ -46,10 +50,8 @@ function Header({ q, setQ }: any) {
 }
 
 export function Group({ group, q }: { group: GroupT; q: any }) {
-  const {
-    me: { account, ...me },
-  } = useContext(CurrentUserContext)
-  const editable = canEdit(me, account) || hasRbac(me, Permissions.USERS)
+  const me = useContext(CurrentUserContext)
+  const editable = canEdit(me, me.account) || hasRbac(me, Permission.Users)
   const [dialogKey, setDialogKey] = useState<
     'confirmDelete' | 'editAttrs' | 'editMembers' | 'viewGroup' | ''
   >('')

@@ -9,26 +9,11 @@ import {
 } from '../../models/account'
 import { PageInfo } from '../../models/misc'
 import {
-  AccountFragment,
   GroupFragment,
   ImpersonationPolicy,
   RoleFragment,
   UserFragment,
 } from '../../models/user'
-
-export const UPDATE_ACCOUNT = gql`
-  mutation UpdateAccount($attributes: AccountAttributes!) {
-    updateAccount(attributes: $attributes) {
-      ...AccountFragment
-      domainMappings {
-        id
-        domain
-        enableSso
-      }
-    }
-  }
-  ${AccountFragment}
-`
 
 export const USERS_Q = gql`
   query Users($q: String, $serviceAccount: Boolean, $all: Boolean, $cursor: String) {

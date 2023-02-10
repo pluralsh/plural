@@ -11,7 +11,7 @@ import { UserFragment } from '../../../models/user'
 const FORCE_ONBOARDING = 'plural-force-onboarding'
 
 function useOnboarded() {
-  const { me } = useContext(CurrentUserContext)
+  const me = useContext(CurrentUserContext)
 
   const [mutation] = useMutation<RootMutationType, RootMutationTypeUpdateUserArgs>(UPDATE_USER, {
     variables: { attributes: { onboarding: OnboardingState.Onboarded } },

@@ -14,6 +14,12 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  /**
+   * The `DateTime` scalar type represents a date and time in the UTC
+   * timezone. The DateTime appears in a JSON response as an ISO8601 formatted
+   * string, including UTC timezone ("Z"). The parsed date and time string will
+   * be converted to UTC if there is an offset.
+   */
   DateTime: Date;
   Map: Map<string, unknown>;
   UploadOrUrl: string;
@@ -216,6 +222,7 @@ export type CardEdge = {
   node?: Maybe<Card>;
 };
 
+/** Application categories. */
 export enum Category {
   Data = 'DATA',
   Database = 'DATABASE',
@@ -341,29 +348,48 @@ export type CloudShellAttributes = {
   workspace: WorkspaceAttributes;
 };
 
+/** A Kubernetes cluster that can be used to deploy applications on with Plural. */
 export type Cluster = {
   __typename?: 'Cluster';
+  /** The account that the cluster belongs to. */
   account?: Maybe<Account>;
+  /** The URL of the console running on the cluster. */
   consoleUrl?: Maybe<Scalars['String']>;
+  /** The domain name used for applications deployed on the cluster. */
   domain?: Maybe<Scalars['String']>;
+  /** The git repository URL for the cluster. */
   gitUrl?: Maybe<Scalars['String']>;
+  /** The ID of the cluster. */
   id: Scalars['ID'];
   insertedAt?: Maybe<Scalars['DateTime']>;
+  /** The name of the cluster. */
   name: Scalars['String'];
+  /** The user that owns the cluster. */
   owner?: Maybe<User>;
+  /** The last time the cluster was pinged. */
   pingedAt?: Maybe<Scalars['DateTime']>;
+  /** The cluster's cloud provider. */
   provider: Provider;
+  /** The upgrade queue for applications running on the cluster. */
   queue?: Maybe<UpgradeQueue>;
+  /** The source of the cluster. */
   source?: Maybe<Source>;
   updatedAt?: Maybe<Scalars['DateTime']>;
 };
 
+/** Input for creating or updating a cluster. */
 export type ClusterAttributes = {
+  /** The URL of the console running on the cluster. */
   consoleUrl?: InputMaybe<Scalars['String']>;
+  /** The domain name used for applications deployed on the cluster. */
   domain?: InputMaybe<Scalars['String']>;
+  /** The git repository URL for the cluster. */
   gitUrl?: InputMaybe<Scalars['String']>;
+  /** The name of the cluster. */
   name: Scalars['String'];
+  /** The cluster's cloud provider. */
   provider: Provider;
+  /** The source of the cluster. */
   source?: InputMaybe<Source>;
 };
 
@@ -405,12 +431,19 @@ export type Community = {
   videos?: Maybe<Array<Maybe<Scalars['String']>>>;
 };
 
+/** Input for creating or updating the community links of an application. */
 export type CommunityAttributes = {
+  /** The application's Discord server. */
   discord?: InputMaybe<Scalars['String']>;
+  /** The application's git URL. */
   gitUrl?: InputMaybe<Scalars['String']>;
+  /** The application's homepage. */
   homepage?: InputMaybe<Scalars['String']>;
+  /** The application's Slack channel. */
   slack?: InputMaybe<Scalars['String']>;
+  /** The application's Twitter account. */
   twitter?: InputMaybe<Scalars['String']>;
+  /** The videos of the application. */
   videos?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
 };
 
@@ -1115,27 +1148,41 @@ export enum IncidentStatus {
   Resolved = 'RESOLVED'
 }
 
+/** An installation of an application. */
 export type Installation = {
   __typename?: 'Installation';
   acmeKeyId?: Maybe<Scalars['String']>;
   acmeSecret?: Maybe<Scalars['String']>;
+  /** Whether the application should auto upgrade. */
   autoUpgrade?: Maybe<Scalars['Boolean']>;
+  /** A YAML object of context. */
   context?: Maybe<Scalars['Map']>;
+  /** The installation's ID. */
   id: Scalars['ID'];
   insertedAt?: Maybe<Scalars['DateTime']>;
   license?: Maybe<Scalars['String']>;
+  /** The license key for the application. */
   licenseKey?: Maybe<Scalars['String']>;
+  /** The OIDC provider for the application. */
   oidcProvider?: Maybe<OidcProvider>;
+  /** The application that was installed. */
   repository?: Maybe<Repository>;
+  /** The subscription for the application. */
   subscription?: Maybe<RepositorySubscription>;
+  /** The tag to track for auto upgrades. */
   trackTag: Scalars['String'];
   updatedAt?: Maybe<Scalars['DateTime']>;
+  /** The user that installed the application. */
   user?: Maybe<User>;
 };
 
+/** Input for creating or updating the tag attributes of an application installation. */
 export type InstallationAttributes = {
+  /** Whether the application should auto upgrade. */
   autoUpgrade?: InputMaybe<Scalars['Boolean']>;
+  /** A YAML object of context. */
   context?: InputMaybe<Scalars['Yaml']>;
+  /** The tag to track for auto upgrades. */
   trackTag?: InputMaybe<Scalars['String']>;
 };
 
@@ -1525,17 +1572,25 @@ export type OauthSettings = {
   uriFormat: Scalars['String'];
 };
 
+/** Input for the application's OAuth settings. */
 export type OauthSettingsAttributes = {
+  /** The authentication method for the OAuth provider. */
   authMethod: OidcAuthMethod;
+  /** The URI format for the OAuth provider. */
   uriFormat: Scalars['String'];
 };
 
+/** Input for creating or updating the OIDC attributes of an application installation. */
 export type OidcAttributes = {
+  /** The authentication method for the OIDC provider. */
   authMethod: OidcAuthMethod;
+  /** The users or groups that can login through the OIDC provider. */
   bindings?: InputMaybe<Array<InputMaybe<BindingAttributes>>>;
+  /** The redirect URIs for the OIDC provider. */
   redirectUris?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
 };
 
+/** Supported OIDC authentication methods. */
 export enum OidcAuthMethod {
   Basic = 'BASIC',
   Post = 'POST'
@@ -2147,61 +2202,110 @@ export type RecipeValidationAttributes = {
   type: ValidationType;
 };
 
+/** Attributes of an application. */
 export type Repository = {
   __typename?: 'Repository';
+  /** The artifacts of the application. */
   artifacts?: Maybe<Array<Maybe<Artifact>>>;
+  /** The category of the application. */
   category?: Maybe<Category>;
+  /** The community links of the application. */
   community?: Maybe<Community>;
   darkIcon?: Maybe<Scalars['String']>;
+  /** The default tag to deploy. */
   defaultTag?: Maybe<Scalars['String']>;
+  /** The description of the application. */
   description?: Maybe<Scalars['String']>;
+  /** The documentation of the application. */
   docs?: Maybe<Array<Maybe<FileContent>>>;
+  /** The documentation of the application. */
   documentation?: Maybe<Scalars['String']>;
+  /** If the application can be edited by the current user. */
   editable?: Maybe<Scalars['Boolean']>;
+  /** The git URL of the application. */
   gitUrl?: Maybe<Scalars['String']>;
+  /** The homepage of the application. */
   homepage?: Maybe<Scalars['String']>;
   icon?: Maybe<Scalars['String']>;
+  /** The application's ID. */
   id: Scalars['ID'];
   insertedAt?: Maybe<Scalars['DateTime']>;
+  /** The installation of the application by a user. */
   installation?: Maybe<Installation>;
+  /** The license of the application. */
   license?: Maybe<License>;
+  /** The main branch of the application. */
   mainBranch?: Maybe<Scalars['String']>;
+  /** The name of the application. */
   name: Scalars['String'];
+  /** Notes about the application rendered after deploying and displayed to the user. */
   notes?: Maybe<Scalars['String']>;
+  /** The OAuth settings for the application. */
   oauthSettings?: Maybe<OauthSettings>;
+  /** The available plans for the application. */
   plans?: Maybe<Array<Maybe<Plan>>>;
+  /** Whether the application is private. */
   private?: Maybe<Scalars['Boolean']>;
+  /** The application's public key. */
   publicKey?: Maybe<Scalars['String']>;
+  /** The application publisher. */
   publisher?: Maybe<Publisher>;
+  /** The README of the application. */
   readme?: Maybe<Scalars['String']>;
+  /** The recipes used to install the application. */
   recipes?: Maybe<Array<Maybe<Recipe>>>;
+  /** A map of secrets of the application. */
   secrets?: Maybe<Scalars['Map']>;
+  /** The tags of the application. */
   tags?: Maybe<Array<Maybe<Tag>>>;
+  /** Whether the application is trending. */
   trending?: Maybe<Scalars['Boolean']>;
   updatedAt?: Maybe<Scalars['DateTime']>;
+  /** Whether the application is verified. */
   verified?: Maybe<Scalars['Boolean']>;
 };
 
+/** Input for creating or updating an application's attributes. */
 export type RepositoryAttributes = {
+  /** The category of the application. */
   category?: InputMaybe<Category>;
+  /** The application's community links. */
   community?: InputMaybe<CommunityAttributes>;
+  /** The application's dark icon. */
   darkIcon?: InputMaybe<Scalars['UploadOrUrl']>;
+  /** The default tag to use when deploying the application. */
   defaultTag?: InputMaybe<Scalars['String']>;
+  /** A short description of the application. */
   description?: InputMaybe<Scalars['String']>;
+  /** The application's documentation. */
   docs?: InputMaybe<Scalars['UploadOrUrl']>;
+  /** A link to the application's documentation. */
   documentation?: InputMaybe<Scalars['String']>;
+  /** The application's git URL. */
   gitUrl?: InputMaybe<Scalars['String']>;
+  /** The application's homepage. */
   homepage?: InputMaybe<Scalars['String']>;
+  /** The application's icon. */
   icon?: InputMaybe<Scalars['UploadOrUrl']>;
+  /** The application's integration resource definition. */
   integrationResourceDefinition?: InputMaybe<ResourceDefinitionAttributes>;
+  /** The name of the application. */
   name?: InputMaybe<Scalars['String']>;
+  /** Notes about the application rendered after deploying and displayed to the user. */
   notes?: InputMaybe<Scalars['String']>;
+  /** The application's OAuth settings. */
   oauthSettings?: InputMaybe<OauthSettingsAttributes>;
+  /** Whether the application is private. */
   private?: InputMaybe<Scalars['Boolean']>;
+  /** The application's README. */
   readme?: InputMaybe<Scalars['String']>;
+  /** A YAML object of secrets. */
   secrets?: InputMaybe<Scalars['Yaml']>;
+  /** The application's tags. */
   tags?: InputMaybe<Array<InputMaybe<TagAttributes>>>;
+  /** Whether the application is trending. */
   trending?: InputMaybe<Scalars['Boolean']>;
+  /** Whether the application is verified. */
   verified?: InputMaybe<Scalars['Boolean']>;
 };
 
@@ -2375,6 +2479,7 @@ export type RootMutationType = {
   completeIncident?: Maybe<Incident>;
   createArtifact?: Maybe<Artifact>;
   createCard?: Maybe<Account>;
+  /** Create a new cluster. */
   createCluster?: Maybe<Cluster>;
   createCrd?: Maybe<Crd>;
   createDemoProject?: Maybe<DemoProject>;
@@ -2413,6 +2518,7 @@ export type RootMutationType = {
   createZoom?: Maybe<ZoomMeeting>;
   deleteCard?: Maybe<Account>;
   deleteChartInstallation?: Maybe<ChartInstallation>;
+  /** Delete a cluster. */
   deleteCluster?: Maybe<Cluster>;
   deleteDemoProject?: Maybe<DemoProject>;
   deleteDnsRecord?: Maybe<DnsRecord>;
@@ -3209,7 +3315,9 @@ export type RootQueryType = {
   chartInstallations?: Maybe<ChartInstallationConnection>;
   charts?: Maybe<ChartConnection>;
   closure?: Maybe<Array<Maybe<ClosureItem>>>;
+  /** Get a cluster by its ID. */
   cluster?: Maybe<Cluster>;
+  /** Get a list of clusters owned by the current account. */
   clusters?: Maybe<ClusterConnection>;
   configuration?: Maybe<PluralConfiguration>;
   deferredUpdates?: Maybe<DeferredUpdateConnection>;
@@ -3257,6 +3365,7 @@ export type RootQueryType = {
   recipe?: Maybe<Recipe>;
   recipes?: Maybe<RecipeConnection>;
   repositories?: Maybe<RepositoryConnection>;
+  /** Get an application by its ID or name. */
   repository?: Maybe<Repository>;
   repositorySubscription?: Maybe<RepositorySubscription>;
   resetToken?: Maybe<ResetToken>;
@@ -3983,6 +4092,7 @@ export type SlimSubscription = {
   plan?: Maybe<Plan>;
 };
 
+/** Possible cluster sources. */
 export enum Source {
   Default = 'DEFAULT',
   Demo = 'DEMO',
@@ -4332,7 +4442,7 @@ export enum UpgradeType {
 
 export type User = {
   __typename?: 'User';
-  account?: Maybe<Account>;
+  account: Account;
   address?: Maybe<Address>;
   avatar?: Maybe<Scalars['String']>;
   backgroundColor?: Maybe<Scalars['String']>;
@@ -4598,6 +4708,13 @@ export type InviteFragment = { __typename?: 'Invite', id: string, secureId?: str
 
 export type OidcLoginFragment = { __typename?: 'OidcLogin', ip?: string | null, country?: string | null, city?: string | null, latitude?: string | null, longitude?: string | null, insertedAt?: Date | null, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, repository?: { __typename?: 'Repository', id: string, name: string, notes?: string | null, description?: string | null, documentation?: string | null, icon?: string | null, darkIcon?: string | null, private?: boolean | null, trending?: boolean | null, verified?: boolean | null, category?: Category | null, oauthSettings?: { __typename?: 'OauthSettings', uriFormat: string, authMethod: OidcAuthMethod } | null, publisher?: { __typename?: 'Publisher', id?: string | null, name: string, phone?: string | null, avatar?: string | null, description?: string | null, backgroundColor?: string | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, address?: { __typename?: 'Address', line1?: string | null, line2?: string | null, city?: string | null, country?: string | null, state?: string | null, zip?: string | null } | null } | null, recipes?: Array<{ __typename?: 'Recipe', name: string } | null> | null } | null };
 
+export type UpdateAccountMutationVariables = Exact<{
+  attributes: AccountAttributes;
+}>;
+
+
+export type UpdateAccountMutation = { __typename?: 'RootMutationType', updateAccount?: { __typename?: 'Account', id: string, name?: string | null, billingCustomerId?: string | null, backgroundColor?: string | null, domainMappings?: Array<{ __typename?: 'DomainMapping', id: string, domain: string, enableSso?: boolean | null } | null> | null } | null };
+
 export type ArtifactFragment = { __typename?: 'Artifact', id?: string | null, name?: string | null, blob?: string | null, type?: ArtifactType | null, platform?: ArtifactPlatform | null, arch?: string | null, filesize?: number | null, sha?: string | null, readme?: string | null, insertedAt?: Date | null, updatedAt?: Date | null };
 
 export type ListArtifactsQueryVariables = Exact<{
@@ -4849,7 +4966,7 @@ export type InviteQueryVariables = Exact<{
 }>;
 
 
-export type InviteQuery = { __typename?: 'RootQueryType', invite?: { __typename?: 'Invite', id: string, email?: string | null, existing: boolean, account?: { __typename?: 'Account', id: string, name?: string | null, billingCustomerId?: string | null, backgroundColor?: string | null } | null, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, account?: { __typename?: 'Account', id: string, name?: string | null, billingCustomerId?: string | null, backgroundColor?: string | null } | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null } | null };
+export type InviteQuery = { __typename?: 'RootQueryType', invite?: { __typename?: 'Invite', id: string, email?: string | null, existing: boolean, account?: { __typename?: 'Account', id: string, name?: string | null, billingCustomerId?: string | null, backgroundColor?: string | null } | null, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, account: { __typename?: 'Account', id: string, name?: string | null, billingCustomerId?: string | null, backgroundColor?: string | null }, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null } | null };
 
 export type MetricFragment = { __typename?: 'Metric', name: string, tags?: Array<{ __typename?: 'MetricTag', name: string, value: string } | null> | null, values?: Array<{ __typename?: 'MetricValue', time?: Date | null, value?: number | null } | null> | null };
 
@@ -5174,7 +5291,7 @@ export type EabCredentialFragment = { __typename?: 'EabCredential', id: string, 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MeQuery = { __typename?: 'RootQueryType', me?: { __typename?: 'User', id: string, email: string } | null };
+export type MeQuery = { __typename?: 'RootQueryType', me?: { __typename?: 'User', loginMethod?: LoginMethod | null, hasInstallations?: boolean | null, id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, account: { __typename?: 'Account', id: string, name?: string | null, billingCustomerId?: string | null, backgroundColor?: string | null, rootUser?: { __typename?: 'User', id: string, name: string, email: string } | null, domainMappings?: Array<{ __typename?: 'DomainMapping', id: string, domain: string, enableSso?: boolean | null } | null> | null }, publisher?: { __typename?: 'Publisher', billingAccountId?: string | null, id?: string | null, name: string, phone?: string | null, avatar?: string | null, description?: string | null, backgroundColor?: string | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, address?: { __typename?: 'Address', line1?: string | null, line2?: string | null, city?: string | null, country?: string | null, state?: string | null, zip?: string | null } | null } | null, boundRoles?: Array<{ __typename?: 'Role', id: string, name: string, description?: string | null, repositories?: Array<string | null> | null, permissions?: Array<Permission | null> | null, roleBindings?: Array<{ __typename?: 'RoleBinding', id: string, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, group?: { __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null } | null> | null } | null> | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, configuration?: { __typename?: 'PluralConfiguration', stripeConnectId?: string | null, stripePublishableKey?: string | null, registry?: string | null, gitCommit?: string | null } | null };
 
 export type GetLoginMethodQueryVariables = Exact<{
   email: Scalars['String'];
@@ -6480,6 +6597,44 @@ export const VersionTagFragmentDoc = gql`
   }
 }
     `;
+export const UpdateAccountDocument = gql`
+    mutation UpdateAccount($attributes: AccountAttributes!) {
+  updateAccount(attributes: $attributes) {
+    ...Account
+    domainMappings {
+      id
+      domain
+      enableSso
+    }
+  }
+}
+    ${AccountFragmentDoc}`;
+export type UpdateAccountMutationFn = Apollo.MutationFunction<UpdateAccountMutation, UpdateAccountMutationVariables>;
+
+/**
+ * __useUpdateAccountMutation__
+ *
+ * To run a mutation, you first call `useUpdateAccountMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateAccountMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateAccountMutation, { data, loading, error }] = useUpdateAccountMutation({
+ *   variables: {
+ *      attributes: // value for 'attributes'
+ *   },
+ * });
+ */
+export function useUpdateAccountMutation(baseOptions?: Apollo.MutationHookOptions<UpdateAccountMutation, UpdateAccountMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateAccountMutation, UpdateAccountMutationVariables>(UpdateAccountDocument, options);
+      }
+export type UpdateAccountMutationHookResult = ReturnType<typeof useUpdateAccountMutation>;
+export type UpdateAccountMutationResult = Apollo.MutationResult<UpdateAccountMutation>;
+export type UpdateAccountMutationOptions = Apollo.BaseMutationOptions<UpdateAccountMutation, UpdateAccountMutationVariables>;
 export const ListArtifactsDocument = gql`
     query ListArtifacts($id: ID!) {
   repository(id: $id) {
@@ -8516,11 +8671,41 @@ export type PublishLogsMutationOptions = Apollo.BaseMutationOptions<PublishLogsM
 export const MeDocument = gql`
     query Me {
   me {
-    id
-    email
+    ...User
+    loginMethod
+    hasInstallations
+    account {
+      ...Account
+      rootUser {
+        id
+        name
+        email
+      }
+      domainMappings {
+        id
+        domain
+        enableSso
+      }
+    }
+    publisher {
+      ...Publisher
+      billingAccountId
+    }
+    boundRoles {
+      ...Role
+    }
+  }
+  configuration {
+    stripeConnectId
+    stripePublishableKey
+    registry
+    gitCommit
   }
 }
-    `;
+    ${UserFragmentDoc}
+${AccountFragmentDoc}
+${PublisherFragmentDoc}
+${RoleFragmentDoc}`;
 
 /**
  * __useMeQuery__

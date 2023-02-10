@@ -1,4 +1,3 @@
-import { useMutation } from '@apollo/client'
 import {
   Div,
   Flex,
@@ -20,30 +19,32 @@ import { useTheme } from 'styled-components'
 import { useUpdateState } from '../../hooks/useUpdateState'
 
 import CurrentUserContext from '../../contexts/CurrentUserContext'
+import { notNil, notNilAnd } from '../../utils/ts-notNil'
 
 import SaveButton from '../utils/SaveButton'
 import { GqlError } from '../utils/Alert'
 import { DeleteIconButton } from '../utils/IconButtons'
 import { List, ListItem } from '../utils/List'
 
-import { UPDATE_ACCOUNT } from './queries'
+import { Account, DomainMapping, useUpdateAccountMutation } from '../../generated/graphql'
+
+import { removeTypename } from '../../utils/removeTypename'
 
 import { Confirm } from './Confirm'
-import { Account } from './Account'
 
-function sanitize<T extends { [key: string]: any }>({
-  __typename,
-  ...rest
-}: T) {
-  return rest
+type DomainMappingFuncProps = {
+  mapping: DomainMapping
+  remove: () => void
+  first: boolean
+  last: boolean
 }
 
-function DomainMapping({
+function DomainMappingFunc({
   mapping,
   remove,
   first,
   last,
-}: any) {
+}: DomainMappingFuncProps) {
   const theme = useTheme()
   const [confirm, setConfirm] = useState(false)
 
@@ -105,15 +106,15 @@ function DomainMapping({
   )
 }
 
-function toFormState(account: Partial<Account>) {
+function toFormState(account: Pick<Account, 'name' | 'domainMappings'>) {
   return {
     name: `${account?.name || ''}`,
-    domainMappings: account?.domainMappings?.map(sanitize) || [],
+    domainMappings: account?.domainMappings || [],
   }
 }
 
 export function AccountAttributes() {
-  const { me: { account } } = useContext(CurrentUserContext) as { me: {account: Account} }
+  const { account } = useContext(CurrentUserContext)
 
   const {
     state: formState,
@@ -123,15 +124,14 @@ export function AccountAttributes() {
 
   const [domain, setDomain] = useState('')
 
-  const sortedDomainMappings = useMemo(() => [...(formState.domainMappings || [])].sort((m1, m2) => `${m1.domain} || ''`
-    .toLowerCase()
-    .localeCompare(`${m2.domain} || ''`.toLowerCase())),
+  const sortedDomainMappings = useMemo(() => (formState.domainMappings || [])
+    .filter(notNil)
+    .sort((m1, m2) => `${m1?.domain} || ''`
+      .toLowerCase()
+      .localeCompare(`${m2?.domain} || ''`.toLowerCase())),
   [formState.domainMappings])
 
-  const [mutation, { loading, error }] = useMutation<
-    { updateAccount: Partial<Account> },
-    { attributes: Partial<Account> }
-  >(UPDATE_ACCOUNT, {
+  const [mutation, { loading, error }] = useUpdateAccountMutation({
     variables: {
       attributes: {
         name: formState.name,
@@ -146,7 +146,7 @@ export function AccountAttributes() {
   const addDomain = (d: string) => {
     const newDomains = [
       { domain: d },
-      ...(account?.domainMappings?.map(sanitize) || []),
+      ...(account?.domainMappings?.map(removeTypename) || []),
     ]
 
     mutation({ variables: { attributes: { domainMappings: newDomains } } })
@@ -154,8 +154,8 @@ export function AccountAttributes() {
 
   const rmDomain = (d?: string) => {
     const newDomains = (account?.domainMappings || [])
-      .filter(({ domain }) => domain !== d)
-      .map(sanitize)
+      .filter(notNilAnd(mapping => mapping?.domain !== d))
+      .map(removeTypename)
 
     mutation({ variables: { attributes: { domainMappings: newDomains } } })
   }
@@ -242,12 +242,12 @@ export function AccountAttributes() {
           {sortedDomainMappings.length > 0 && (
             <List hue="lighter">
               {sortedDomainMappings.map((mapping, i) => (
-                <DomainMapping
-                  key={mapping.domain}
+                <DomainMappingFunc
+                  key={mapping?.domain}
                   mapping={mapping}
                   first={i === 0}
                   last={i === sortedDomainMappings.length - 1}
-                  remove={() => rmDomain(mapping.domain)}
+                  remove={() => rmDomain(mapping?.domain)}
                 />
               ))}
             </List>

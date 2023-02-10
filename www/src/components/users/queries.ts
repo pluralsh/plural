@@ -2,11 +2,8 @@ import { gql } from '@apollo/client'
 
 import {
   AccountFragment,
-  AddressFragment,
   EabCredentialFragment,
   PublicKeyFragment,
-  PublisherFragment,
-  RoleFragment,
   TokenAuditFragment,
   TokenFragment,
   UserFragment,
@@ -14,37 +11,6 @@ import {
 } from '../../models/user'
 import { CardFragment } from '../../models/payments'
 import { PageInfo } from '../../models/misc'
-
-export const ME_Q = gql`
-  query {
-    me {
-      ...UserFragment
-      loginMethod
-      hasInstallations
-      account {
-        ...AccountFragment
-        rootUser { id }
-        domainMappings { id domain enableSso }
-      }
-      publisher {
-        ...PublisherFragment
-        billingAccountId
-      }
-      boundRoles { ...RoleFragment }
-    }
-    configuration {
-      stripeConnectId
-      stripePublishableKey
-      registry
-      gitCommit
-    }
-  }
-  ${UserFragment}
-  ${AddressFragment}
-  ${AccountFragment}
-  ${PublisherFragment}
-  ${RoleFragment}
-`
 
 export const CARDS = gql`
   query {

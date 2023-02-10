@@ -20,7 +20,7 @@ import { ResponsiveLayoutSidenavContainer } from '../utils/layout/ResponsiveLayo
 export function ServiceAccountBanner() {
   const previousUser = getPreviousUserData()
 
-  const { me } = useContext(CurrentUserContext)
+  const me = useContext(CurrentUserContext)
   const theme = useTheme()
 
   if (!previousUser) {

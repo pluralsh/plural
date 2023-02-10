@@ -18,7 +18,6 @@ import {
   RootMutationType,
   RootMutationTypeUpdateUserArgs,
   RootQueryType,
-  User,
 } from '../../generated/graphql'
 import { OnboardingChecklistContext } from '../../contexts/OnboardingChecklistContext'
 import usePaginatedQuery from '../../hooks/usePaginatedQuery'
@@ -50,11 +49,11 @@ export function NotificationsPanel({ closePanel }: any) {
     { variables: {} },
     data => data.notifications)
 
-  const { me: user } = useContext(CurrentUserContext) as { me: User }
+  const me = useContext(CurrentUserContext)
   const showOnboardingNotification = useCallback(() => (
-    user?.onboardingChecklist?.dismissed || isOnboardingChecklistHidden())
-    && user?.onboardingChecklist?.status !== OnboardingChecklistState.Finished,
-  [user])
+    me.onboardingChecklist?.dismissed || isOnboardingChecklistHidden())
+    && me.onboardingChecklist?.status !== OnboardingChecklistState.Finished,
+  [me])
 
   if (showOnboardingNotification() && !notifications.length) {
     return <OnboardingChecklistNotification closePanel={closePanel} />

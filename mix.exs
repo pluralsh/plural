@@ -56,7 +56,6 @@ defmodule Plural.MixProject do
         strip_beams: true,
         quiet: false,
         applications: [
-          :runtime_tools,
           api: :permanent,
           core: :permanent,
           email: :permanent,
@@ -69,7 +68,6 @@ defmodule Plural.MixProject do
         strip_beams: true,
         quiet: false,
         applications: [
-          :runtime_tools,
           rtc: :permanent,
           core: :permanent,
           graphql: :load
@@ -81,7 +79,6 @@ defmodule Plural.MixProject do
         strip_beams: true,
         quiet: false,
         applications: [
-          :runtime_tools,
           worker: :permanent,
           core: :permanent
         ]
@@ -92,7 +89,6 @@ defmodule Plural.MixProject do
         strip_beams: true,
         quiet: false,
         applications: [
-          :runtime_tools,
           cron: :permanent,
           core: :permanent,
           email: :permanent

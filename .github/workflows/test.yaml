@@ -176,3 +176,37 @@ jobs:
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }} # required
         if: always()
+  updateSchema:
+    name: Check that Schema is up to date
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - uses: erlef/setup-beam@v1
+        with:
+          version-file: .tool-versions
+          version-type: strict
+      - name: Restore dependencies cache
+        uses: actions/cache@v3
+        with:
+          path: deps
+          key: ${{ runner.os }}-mix-6-${{ hashFiles('**/mix.lock') }}
+          restore-keys: ${{ runner.os }}-mix-6
+      - name: Restore _build
+        uses: actions/cache@v3
+        with:
+          path: _build
+          key: ${{ runner.os }}-mix-6-${{ hashFiles('**/mix.lock') }}
+          restore-keys: ${{ runner.os }}-mix-6
+      - name: get dependencies
+        run: mix deps.get
+      - name: update schema
+        run: mix absinthe.schema.sdl --schema GraphQl  schema/schema.graphql
+      - name: Verify Changed files
+        uses: tj-actions/verify-changed-files@v13
+        id: verify-changed-files
+      - name: Run step only when any of the above files change.
+        if: steps.verify-changed-files.outputs.files_changed == 'true'
+        run: |
+          echo "Schema has changed changed"
+          echo "Please run `make update-schema` and commit the changes"
+          exit 1

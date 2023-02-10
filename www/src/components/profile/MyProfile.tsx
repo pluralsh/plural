@@ -31,12 +31,7 @@ export function MyProfile() {
   const tabStateRef = useRef<any>(null)
   const currentTab = DIRECTORY.find(tab => pathname?.startsWith(tab.path))
 
-  let url: string | undefined
-
-  if (me.avatar != null) {
-    url = me.avatar
-  }
-
+  const url = me.avatar || undefined
   return (
     <ResponsiveLayoutPage>
       <ResponsiveLayoutSidenavContainer>

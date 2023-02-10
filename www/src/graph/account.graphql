@@ -51,3 +51,14 @@ fragment OidcLogin on OidcLogin {
   repository { ...Repo }
   insertedAt
 }
+
+mutation UpdateAccount($attributes: AccountAttributes!) {
+  updateAccount(attributes: $attributes) {
+    ...Account
+    domainMappings {
+      id
+      domain
+      enableSso
+    }
+  }
+}

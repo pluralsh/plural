@@ -2941,7 +2941,7 @@ type User {
   roles: Roles
   boundRoles: [Role]
   publisher: Publisher
-  account: Account
+  account: Account!
   impersonationPolicy: ImpersonationPolicy
   jwt: String
   hasInstallations: Boolean

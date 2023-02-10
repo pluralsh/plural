@@ -1,4 +1,3 @@
-import { useMutation } from '@apollo/client'
 import {
   Div,
   Flex,
@@ -26,17 +25,9 @@ import { GqlError } from '../utils/Alert'
 import { DeleteIconButton } from '../utils/IconButtons'
 import { List, ListItem } from '../utils/List'
 
-import { UPDATE_ACCOUNT } from './queries'
+import { Account, DomainMapping, useUpdateAccountMutation } from '../../generated/graphql'
 
 import { Confirm } from './Confirm'
-import { Account } from './Account'
-
-function sanitize<T extends { [key: string]: any }>({
-  __typename,
-  ...rest
-}: T) {
-  return rest
-}
 
 function DomainMapping({
   mapping,
@@ -108,12 +99,12 @@ function DomainMapping({
 function toFormState(account: Partial<Account>) {
   return {
     name: `${account?.name || ''}`,
-    domainMappings: account?.domainMappings?.map(sanitize) || [],
+    domainMappings: account?.domainMappings || [],
   }
 }
 
 export function AccountAttributes() {
-  const { me: { account } } = useContext(CurrentUserContext) as { me: {account: Account} }
+  const { account } = useContext(CurrentUserContext)
 
   const {
     state: formState,
@@ -123,15 +114,12 @@ export function AccountAttributes() {
 
   const [domain, setDomain] = useState('')
 
-  const sortedDomainMappings = useMemo(() => [...(formState.domainMappings || [])].sort((m1, m2) => `${m1.domain} || ''`
+  const sortedDomainMappings = useMemo(() => [...(formState.domainMappings || [])].sort((m1, m2) => `${m1?.domain} || ''`
     .toLowerCase()
-    .localeCompare(`${m2.domain} || ''`.toLowerCase())),
+    .localeCompare(`${m2?.domain} || ''`.toLowerCase())),
   [formState.domainMappings])
 
-  const [mutation, { loading, error }] = useMutation<
-    { updateAccount: Partial<Account> },
-    { attributes: Partial<Account> }
-  >(UPDATE_ACCOUNT, {
+  const [mutation, { loading, error }] = useUpdateAccountMutation({
     variables: {
       attributes: {
         name: formState.name,
@@ -146,16 +134,15 @@ export function AccountAttributes() {
   const addDomain = (d: string) => {
     const newDomains = [
       { domain: d },
-      ...(account?.domainMappings?.map(sanitize) || []),
+      ...(account?.domainMappings || []),
     ]
 
     mutation({ variables: { attributes: { domainMappings: newDomains } } })
   }
 
   const rmDomain = (d?: string) => {
-    const newDomains = (account?.domainMappings || [])
+    const newDomains = ((account?.domainMappings || []) as DomainMapping[])
       .filter(({ domain }) => domain !== d)
-      .map(sanitize)
 
     mutation({ variables: { attributes: { domainMappings: newDomains } } })
   }
@@ -243,11 +230,11 @@ export function AccountAttributes() {
             <List hue="lighter">
               {sortedDomainMappings.map((mapping, i) => (
                 <DomainMapping
-                  key={mapping.domain}
+                  key={mapping?.domain}
                   mapping={mapping}
                   first={i === 0}
                   last={i === sortedDomainMappings.length - 1}
-                  remove={() => rmDomain(mapping.domain)}
+                  remove={() => rmDomain(mapping?.domain)}
                 />
               ))}
             </List>

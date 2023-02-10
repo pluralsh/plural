@@ -45,7 +45,7 @@ export default function CurrentUser({ children }: any) {
       growthbook.setAttributes({
         id: me.id,
         email: me.email,
-        company: me.account?.name,
+        company: me.account.name,
       })
     }
   }, [data])
@@ -58,7 +58,7 @@ export default function CurrentUser({ children }: any) {
     return (<Navigate to="/login" />)
   }
 
-  const { me } = data
+  const { me } = data as { me: User }
 
   return (
     <CurrentUserContext.Provider value={me}>
@@ -84,13 +84,14 @@ export function PluralProvider({ children }: any) {
   let userContext: User
 
   if (userContextValue.me) {
-    userContext = userContextValue.me
+    userContext = userContextValue.me as User
   }
   else {
     userContext = {
       id: '',
       name: '',
       email: '',
+      account: { id: '' },
     }
   }
 
@@ -101,7 +102,7 @@ export function PluralProvider({ children }: any) {
     const { me } = data
 
     boot({ name: me.name, email: me.email, userId: me.id })
-    growthbook.setAttributes({ company: me.account?.name, id: me.id, email: me.email })
+    growthbook.setAttributes({ company: me.account.name, id: me.id, email: me.email })
   }, [data, boot])
 
   useEffect(() => {

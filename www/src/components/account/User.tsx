@@ -111,9 +111,9 @@ function UserEdit({ user, update }: any) {
 }
 
 export function User({ user, update }: any) {
-  const { account, ...me } = useContext(CurrentUserContext)
+  const me = useContext(CurrentUserContext)
 
-  const editable = canEdit(me, account || undefined) || hasRbac(me, Permission.Users)
+  const editable = canEdit(me, me.account) || hasRbac(me, Permission.Users)
 
   return (
     <Box
@@ -145,7 +145,7 @@ export function User({ user, update }: any) {
             Admin
           </Chip>
         )}
-        {account?.rootUser?.id === user.id && <Chip size="medium">Root</Chip>}
+        {me.account.rootUser?.id === user.id && <Chip size="medium">Root</Chip>}
         {editable && (
           <UserEdit
             user={user}
@@ -158,8 +158,8 @@ export function User({ user, update }: any) {
 }
 
 export function ServiceAccount({ user, update }: any) {
-  const { account, ...me } = useContext(CurrentUserContext)
-  const editable = canEdit(me, account || undefined) || hasRbac(me, Permission.Users)
+  const me = useContext(CurrentUserContext)
+  const editable = canEdit(me, me.account) || hasRbac(me, Permission.Users)
   const [mutation, { error }] = useMutation(IMPERSONATE_SERVICE_ACCOUNT, {
     variables: { id: user.id },
     update: (_cache,

@@ -56,7 +56,7 @@ defmodule Plural.MixProject do
         strip_beams: true,
         quiet: false,
         config_providers: [
-          {Config.Reader, {:system, "RELEASE_ROOT", "apps/core/config/runtime.exs"}},
+          {Config.Reader, {:system, "RELEASE_ROOT", "apps/core/config/releases.exs"}},
         ],
         steps: [:assemble, &copy_configs/1],
         applications: [
@@ -72,7 +72,7 @@ defmodule Plural.MixProject do
         strip_beams: true,
         quiet: false,
         config_providers: [
-          {Config.Reader, {:system, "RELEASE_ROOT", "apps/rtc/config/runtime.exs"}},
+          {Config.Reader, {:system, "RELEASE_ROOT", "apps/rtc/config/releases.exs"}},
         ],
         steps: [:assemble, &copy_configs/1],
         applications: [
@@ -87,7 +87,7 @@ defmodule Plural.MixProject do
         strip_beams: true,
         quiet: false,
         config_providers: [
-          {Config.Reader, {:system, "RELEASE_ROOT", "apps/worker/config/runtime.exs"}},
+          {Config.Reader, {:system, "RELEASE_ROOT", "apps/worker/config/releases.exs"}},
         ],
         steps: [:assemble, &copy_configs/1],
         applications: [
@@ -101,7 +101,7 @@ defmodule Plural.MixProject do
         strip_beams: true,
         quiet: false,
         config_providers: [
-          {Config.Reader, {:system, "RELEASE_ROOT", "apps/cron/config/runtime.exs"}},
+          {Config.Reader, {:system, "RELEASE_ROOT", "apps/cron/config/releases.exs"}},
         ],
         steps: [:assemble, &copy_configs/1],
         applications: [

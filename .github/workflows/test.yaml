@@ -204,9 +204,9 @@ jobs:
       - name: Verify Changed files
         uses: tj-actions/verify-changed-files@v13
         id: verify-changed-files
-      - name: Run step only when any of the above files change.
+      - name: Schema changed
         if: steps.verify-changed-files.outputs.files_changed == 'true'
         run: |
-          echo "Schema has changed changed"
-          echo "Please run `make update-schema` and commit the changes"
+          echo "::error Schema has changed changed"
+          echo "::debug::Please run `make update-schema` and commit the changes"
           exit 1

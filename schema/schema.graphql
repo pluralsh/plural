@@ -882,37 +882,95 @@ type Webhook {
   updatedAt: DateTime
 }
 
+"Attributes of an application."
 type Repository {
+  "The application's ID."
   id: ID!
+
+  "The name of the application."
   name: String!
+
+  "The description of the application."
   description: String
+
+  "The documentation of the application."
   documentation: String
+
+  "The category of the application."
   category: Category
+
+  "Whether the application is private."
   private: Boolean
+
+  "Whether the application is verified."
   verified: Boolean
+
+  "Whether the application is trending."
   trending: Boolean
+
+  "Notes about the application rendered after deploying and displayed to the user."
   notes: String
+
+  "The default tag to deploy."
   defaultTag: String
+
+  "The git URL of the application."
   gitUrl: String
+
+  "The main branch of the application."
   mainBranch: String
+
+  "The README of the application."
   readme: String
+
+  "The license of the application."
   license: License
+
+  "The community links of the application."
   community: Community
+
+  "The homepage of the application."
   homepage: String
+
+  "The application publisher."
   publisher: Publisher
+
+  "The available plans for the application."
   plans: [Plan]
+
+  "The tags of the application."
   tags: [Tag]
+
+  "The artifacts of the application."
   artifacts: [Artifact]
+
+  "The recipes used to install the application."
   recipes: [Recipe]
+
+  "The OAuth settings for the application."
   oauthSettings: OauthSettings
+
   icon: String
+
   darkIcon: String
+
+  "The installation of the application by a user."
   installation: Installation
+
+  "If the application can be edited by the current user."
   editable: Boolean
+
+  "A map of secrets of the application."
   secrets: Map
+
+  "The application's public key."
   publicKey: String
+
+  "The documentation of the application."
   docs: [FileContent]
+
   insertedAt: DateTime
+
   updatedAt: DateTime
 }
 
@@ -1206,8 +1264,12 @@ input AzureShellCredentialsAttributes {
   subscriptionId: String!
 }
 
+"Input for the application's OAuth settings."
 input OauthSettingsAttributes {
+  "The URI format for the OAuth provider."
   uriFormat: String!
+
+  "The authentication method for the OAuth provider."
   authMethod: OidcAuthMethod!
 }
 
@@ -1345,19 +1407,43 @@ type ScanError {
   message: String
 }
 
+"A Kubernetes cluster that can be used to deploy applications on with Plural."
 type Cluster {
+  "The ID of the cluster."
   id: ID!
+
+  "The name of the cluster."
   name: String!
+
+  "The cluster's cloud provider."
   provider: Provider!
+
+  "The source of the cluster."
   source: Source
+
+  "The git repository URL for the cluster."
   gitUrl: String
+
+  "The URL of the console running on the cluster."
   consoleUrl: String
+
+  "The domain name used for applications deployed on the cluster."
   domain: String
+
+  "The last time the cluster was pinged."
   pingedAt: DateTime
+
+  "The user that owns the cluster."
   owner: User
+
+  "The account that the cluster belongs to."
   account: Account
+
+  "The upgrade queue for applications running on the cluster."
   queue: UpgradeQueue
+
   insertedAt: DateTime
+
   updatedAt: DateTime
 }
 
@@ -1447,139 +1533,288 @@ type PlatformPlan {
 
 type RootMutationType {
   login(email: String!, password: String!, deviceToken: String): User
+
   deviceLogin: DeviceLogin
+
   passwordlessLogin(token: String!): User
+
   loginToken(token: String!, deviceToken: String): User
+
   externalToken: String
+
   createResetToken(attributes: ResetTokenAttributes!): Boolean
+
   realizeResetToken(id: ID!, attributes: ResetTokenRealization!): Boolean
+
   createToken: PersistedToken
+
   deleteToken(id: ID!): PersistedToken
+
   signup(inviteId: String, attributes: UserAttributes!, account: AccountAttributes, deviceToken: String): User
+
   updateUser(id: ID, attributes: UserAttributes!): User
+
   deleteUser(id: ID!): User
+
   createPublisher(attributes: PublisherAttributes!): Publisher
+
   createWebhook(attributes: WebhookAttributes!): Webhook
+
   pingWebhook(id: ID!, repo: String!, message: String): WebhookResponse
+
   updatePublisher(attributes: PublisherAttributes!): Publisher
+
   createPublicKey(attributes: PublicKeyAttributes!): PublicKey
+
   deletePublicKey(id: ID!): PublicKey
+
   deleteEabKey(id: ID, cluster: String, provider: Provider): EabCredential
+
   createUserEvent(attributes: UserEventAttributes!): Boolean
+
   destroyCluster(name: String!, provider: Provider!, domain: String!): Boolean
+
   createKeyBackup(attributes: KeyBackupAttributes!): KeyBackup
+
   deleteKeyBackup(name: String!): KeyBackup
+
   createCard(source: String!, address: AddressAttributes): Account
+
   deleteCard(id: ID!): Account
+
   linkPublisher(token: String!): Publisher
+
   createPlan(repositoryId: ID!, attributes: PlanAttributes!): Plan
+
   updatePlanAttributes(attributes: UpdatablePlanAttributes!, id: ID!): Plan
+
   createSubscription(installationId: ID!, planId: ID!, attributes: SubscriptionAttributes): RepositorySubscription
+
   updatePlan(planId: ID!, subscriptionId: ID!): RepositorySubscription
+
   updateLineItem(attributes: LimitAttributes!, subscriptionId: ID!): RepositorySubscription
+
   createPlatformSubscription(planId: ID!): PlatformSubscription
+
   deletePlatformSubscription: Account
+
   cancelPlatformSubscription: PlatformSubscription
+
   updatePlatformPlan(planId: ID!): PlatformSubscription
+
   createRepository(id: ID, attributes: RepositoryAttributes!): Repository
+
   updateRepository(repositoryId: ID, repositoryName: String, attributes: RepositoryAttributes!): Repository
+
   upsertRepository(attributes: RepositoryAttributes!, name: String!, publisher: String!): Repository
+
   deleteRepository(repositoryId: ID!): Repository
+
   createInstallation(repositoryId: ID!): Installation
+
   updateInstallation(id: ID!, attributes: InstallationAttributes!): Installation
+
   deleteInstallation(id: ID!): Installation
+
   resetInstallations: Int
+
   createIntegration(repositoryName: String!, attributes: IntegrationAttributes!): Integration
+
   createArtifact(repositoryId: ID, repositoryName: String, attributes: ArtifactAttributes!): Artifact
-  createOidcProvider(installationId: ID!, attributes: OidcAttributes!): OidcProvider
+
+  createOidcProvider(
+    "The installation ID"
+    installationId: ID!
+
+    attributes: OidcAttributes!
+  ): OidcProvider
+
   updateOidcProvider(installationId: ID!, attributes: OidcAttributes!): OidcProvider
+
   upsertOidcProvider(installationId: ID!, attributes: OidcAttributes!): OidcProvider
+
   acquireLock(repository: String!): ApplyLock
+
   releaseLock(repository: String!, attributes: LockAttributes!): ApplyLock
+
   createRecipe(repositoryName: String, repositoryId: String, attributes: RecipeAttributes!): Recipe
+
   deleteRecipe(id: ID!): Recipe
+
   createStack(attributes: StackAttributes!): Stack
+
   quickStack(repositoryIds: [ID], provider: Provider!): Stack
+
   deleteStack(name: String!): Stack
+
   installRecipe(recipeId: ID!, context: Map!): [Installation]
+
   installStack(name: String!, provider: Provider!): [Recipe]
+
   updateChart(id: ID!, attributes: ChartAttributes!): Chart
+
   createCrd(chartId: ID, chartName: ChartName, attributes: CrdAttributes!): Crd
+
   installChart(installationId: ID!, attributes: ChartInstallationAttributes!): ChartInstallation
+
   updateChartInstallation(chartInstallationId: ID!, attributes: ChartInstallationAttributes!): ChartInstallation
+
   deleteChartInstallation(id: ID!): ChartInstallation
+
   createTerraform(repositoryId: ID!, attributes: TerraformAttributes!): Terraform
+
   updateTerraform(id: ID!, attributes: TerraformAttributes!): Terraform
+
   deleteTerraform(id: ID!): Terraform
+
   uploadTerraform(repositoryName: String!, name: String!, attributes: TerraformAttributes!): Terraform
+
   installTerraform(installationId: ID!, attributes: TerraformInstallationAttributes!): TerraformInstallation
+
   uninstallTerraform(id: ID!): TerraformInstallation
+
   updateVersion(id: ID, spec: VersionSpec, attributes: VersionAttributes!): Version
+
   createServiceAccount(attributes: ServiceAccountAttributes!): User
+
   updateServiceAccount(id: ID!, attributes: ServiceAccountAttributes!): User
+
   impersonateServiceAccount(id: ID, email: String): User
+
   updateAccount(attributes: AccountAttributes!): Account
+
   createInvite(attributes: InviteAttributes!): Invite
+
   deleteInvite(id: ID, secureId: String): Invite
+
   realizeInvite(id: String!): User
+
   createGroup(attributes: GroupAttributes!): Group
+
   deleteGroup(groupId: ID!): Group
+
   updateGroup(groupId: ID!, attributes: GroupAttributes!): Group
+
   createGroupMember(groupId: ID!, userId: ID!): GroupMember
+
   deleteGroupMember(groupId: ID!, userId: ID!): GroupMember
+
   createRole(attributes: RoleAttributes!): Role
+
   updateRole(id: ID!, attributes: RoleAttributes!): Role
+
   deleteRole(id: ID!): Role
+
   createIntegrationWebhook(attributes: IntegrationWebhookAttributes!): IntegrationWebhook
+
   updateIntegrationWebhook(id: ID!, attributes: IntegrationWebhookAttributes!): IntegrationWebhook
+
   deleteIntegrationWebhook(id: ID!): IntegrationWebhook
+
   createOauthIntegration(attributes: OauthAttributes!): OauthIntegration
+
   createZoom(attributes: MeetingAttributes!): ZoomMeeting
+
   createIncident(repositoryId: ID, repository: String, attributes: IncidentAttributes!): Incident
+
   updateIncident(id: ID!, attributes: IncidentAttributes!): Incident
+
   deleteIncident(id: ID!): Incident
+
   acceptIncident(id: ID!): Incident
+
   completeIncident(id: ID!, postmortem: PostmortemAttributes!): Incident
+
   followIncident(id: ID!, attributes: FollowerAttributes!): Follower
+
   unfollowIncident(id: ID!): Follower
+
   createMessage(incidentId: ID!, attributes: IncidentMessageAttributes!): IncidentMessage
+
   updateMessage(id: ID!, attributes: IncidentMessageAttributes!): IncidentMessage
+
   deleteMessage(id: ID!): IncidentMessage
+
   createReaction(messageId: ID!, name: String!): IncidentMessage
+
   deleteReaction(messageId: ID!, name: String!): IncidentMessage
+
   readNotifications(incidentId: ID): Int
+
   createQueue(attributes: UpgradeQueueAttributes!): UpgradeQueue
+
   acceptLogin(challenge: String!): OauthResponse
+
   oauthConsent(challenge: String!, scopes: [String]): OauthResponse
+
   oauthCallback(provider: OauthProvider!, host: String, code: String!, deviceToken: String): User
+
   ssoCallback(code: String!, deviceToken: String): User
+
   updateDockerRepository(id: ID!, attributes: DockerRepositoryAttributes!): DockerRepository
+
   createDomain(attributes: DnsDomainAttributes!): DnsDomain
+
   updateDomain(id: ID!, attributes: DnsDomainAttributes!): DnsDomain
+
   deleteDomain(id: ID!): DnsDomain
+
   provisionDomain(name: String!): DnsDomain
+
   createDnsRecord(attributes: DnsRecordAttributes!, cluster: String!, provider: Provider!): DnsRecord
+
   deleteDnsRecord(name: String!, type: DnsRecordType!): DnsRecord
+
   createShell(attributes: CloudShellAttributes!): CloudShell
+
   setupShell: CloudShell
+
   updateShell(attributes: CloudShellAttributes!): CloudShell
+
   updateShellConfiguration(context: Map!): Boolean
+
   installBundle(context: ContextAttributes!, oidc: Boolean!, repo: String!, name: String!): [Installation]
+
   installStackShell(name: String!, oidc: Boolean!, context: ContextAttributes!): [Recipe]
+
   rebootShell: CloudShell
+
   deleteShell: CloudShell
+
   createDemoProject: DemoProject
+
   transferDemoProject(organizationId: String!): DemoProject
+
   deleteDemoProject: DemoProject
+
   stopShell: Boolean
+
   restartShell: Boolean
+
   unlockRepository(name: String!): Int
+
   createTest(repositoryId: ID, name: String, attributes: TestAttributes!): Test
+
   updateTest(id: ID!, attributes: TestAttributes!): Test
+
   updateStep(id: ID!, attributes: TestStepAttributes!): TestStep
+
   publishLogs(id: ID!, logs: String!): TestStep
-  createCluster(attributes: ClusterAttributes!): Cluster
-  deleteCluster(name: String!, provider: Provider!): Cluster
+
+  "Create a new cluster."
+  createCluster(
+    "The input attributes for the cluster that will be created."
+    attributes: ClusterAttributes!
+  ): Cluster
+
+  "Delete a cluster."
+  deleteCluster(
+    "The name of the cluster."
+    name: String!
+
+    "The cluster's cloud provider."
+    provider: Provider!
+  ): Cluster
 }
 
 type DnsRecordConnection {
@@ -1595,20 +1830,43 @@ type Reaction {
   updatedAt: DateTime
 }
 
+"An installation of an application."
 type Installation {
+  "The installation's ID."
   id: ID!
+
+  "A YAML object of context."
   context: Map
+
+  "Whether the application should auto upgrade."
   autoUpgrade: Boolean
+
+  "The application that was installed."
   repository: Repository
+
+  "The user that installed the application."
   user: User
+
+  "The subscription for the application."
   subscription: RepositorySubscription
+
+  "The OIDC provider for the application."
   oidcProvider: OidcProvider
+
+  "The license key for the application."
   licenseKey: String
+
+  "The tag to track for auto upgrades."
   trackTag: String!
+
   acmeKeyId: String
+
   acmeSecret: String
+
   license: String
+
   insertedAt: DateTime
+
   updatedAt: DateTime
 }
 
@@ -1719,103 +1977,203 @@ type Community {
 
 type RootQueryType {
   me: User
+
   loginMethod(email: String!, host: String): LoginMethodResponse
+
   resetToken(id: ID!): ResetToken
+
   tokens(after: String, first: Int, before: String, last: Int): PersistedTokenConnection
+
   token(id: ID!): PersistedToken
+
   publisher(id: ID): Publisher
+
   users(after: String, first: Int, before: String, last: Int, q: String, serviceAccount: Boolean, all: Boolean): UserConnection
+
   searchUsers(after: String, first: Int, before: String, last: Int, incidentId: ID!, q: String!): UserConnection
+
   publishers(after: String, first: Int, before: String, last: Int, accountId: ID, publishable: Boolean): PublisherConnection
+
   webhooks(after: String, first: Int, before: String, last: Int): WebhookConnection
+
   publicKeys(after: String, first: Int, before: String, last: Int, emails: [String]): PublicKeyConnection
+
   eabCredential(cluster: String!, provider: Provider!): EabCredential
+
   eabCredentials: [EabCredential]
+
   keyBackups(after: String, first: Int, before: String, last: Int): KeyBackupConnection
+
   keyBackup(name: String!): KeyBackup
+
   repositorySubscription(id: ID!): RepositorySubscription
+
   subscriptions(after: String, first: Int, before: String, last: Int): RepositorySubscriptionConnection
+
   platformPlans: [PlatformPlan]
+
   platformSubscription: PlatformSubscription
+
   invoices(after: String, first: Int, before: String, last: Int): InvoiceConnection
-  repository(id: ID, name: String): Repository
+
+  "Get an application by its ID or name."
+  repository(
+    "The ID of the application."
+    id: ID
+
+    "The name of the application."
+    name: String
+  ): Repository
+
   installation(id: ID, name: String): Installation
+
   repositories(
     after: String, first: Int, before: String, last: Int, publisherId: ID, q: String, tag: String, supports: Boolean, installed: Boolean, category: Category, provider: Provider, categories: [Category], tags: [String], publishers: [ID]
   ): RepositoryConnection
+
   searchRepositories(after: String, first: Int, before: String, last: Int, query: String!): RepositoryConnection
+
   installations(after: String, first: Int, before: String, last: Int): InstallationConnection
+
   integrations(
     after: String, first: Int, before: String, last: Int, repositoryId: ID, repositoryName: String, tag: String, type: String
   ): IntegrationConnection
+
   closure(id: ID!, type: DependencyType!): [ClosureItem]
+
   categories: [CategoryInfo]
+
   category(name: Category!): CategoryInfo
+
   scaffold(application: String!, category: Category!, publisher: String!, ingress: Boolean, postgres: Boolean): [ScaffoldFile]
+
   recipe(id: ID, name: String, repo: String): Recipe
+
   stack(name: String!, provider: Provider!): Stack
+
   recipes(
     after: String, first: Int, before: String, last: Int, repositoryId: ID, repositoryName: String, provider: Provider
   ): RecipeConnection
+
   stacks(after: String, first: Int, before: String, last: Int, featured: Boolean): StackConnection
+
   chart(id: ID!): Chart
+
   charts(after: String, first: Int, before: String, last: Int, repositoryId: ID!): ChartConnection
+
   chartInstallations(after: String, first: Int, before: String, last: Int, repositoryId: ID!): ChartInstallationConnection
+
   terraformModule(id: ID!): Terraform
+
   terraform(after: String, first: Int, before: String, last: Int, repositoryId: ID!): TerraformConnection
+
   terraformInstallations(after: String, first: Int, before: String, last: Int, repositoryId: ID!): TerraformInstallationConnection
+
   dockerRepositories(after: String, first: Int, before: String, last: Int, repositoryId: ID!): DockerRepositoryConnection
+
   dockerImages(after: String, first: Int, before: String, last: Int, dockerRepositoryId: ID!, q: String): DockerImageConnection
+
   dockerImage(id: ID!): DockerImage
+
   versions(after: String, first: Int, before: String, last: Int, chartId: ID, terraformId: ID): VersionConnection
+
   account: Account
+
   invite(id: String!): Invite
+
   invites(after: String, first: Int, before: String, last: Int): InviteConnection
+
   groups(after: String, first: Int, before: String, last: Int, q: String): GroupConnection
+
   groupMembers(after: String, first: Int, before: String, last: Int, groupId: ID!): GroupMemberConnection
+
   role(id: ID!): Role
+
   roles(after: String, first: Int, before: String, last: Int, q: String, userId: ID): RoleConnection
+
   integrationWebhooks(after: String, first: Int, before: String, last: Int): IntegrationWebhookConnection
+
   integrationWebhook(id: ID!): IntegrationWebhook
+
   oauthIntegrations: [OauthIntegration]
+
   incidents(
     after: String, first: Int, before: String, last: Int, repositoryId: ID, supports: Boolean, q: String, sort: IncidentSort, order: Order, filters: [IncidentFilter]
   ): IncidentConnection
+
   incident(id: ID!): Incident
+
   notifications(after: String, first: Int, before: String, last: Int, incidentId: ID, cli: Boolean): NotificationConnection
+
   audits(after: String, first: Int, before: String, last: Int): AuditConnection
+
   auditMetrics: [GeoMetric]
+
   upgradeQueues: [UpgradeQueue]
+
   deferredUpdates(
     after: String, first: Int, before: String, last: Int, chartInstallationId: ID, terraformInstallationId: ID
   ): DeferredUpdateConnection
+
   upgradeQueue(id: ID): UpgradeQueue
+
   rollouts(after: String, first: Int, before: String, last: Int, repositoryId: ID!): RolloutConnection
+
   oauthLogin(challenge: String!): Repository
+
   oauthConsent(challenge: String!): Repository
+
   oidcLogin(challenge: String!): OidcStepResponse
+
   oidcConsent(challenge: String!): OidcStepResponse
+
   oauthUrls(host: String): [OauthInfo]
+
   oidcLogins(after: String, first: Int, before: String, last: Int): OidcLoginConnection
+
   loginMetrics: [GeoMetric]
+
   dnsDomain(id: ID!): DnsDomain
+
   dnsDomains(after: String, first: Int, before: String, last: Int, q: String): DnsDomainConnection
+
   dnsRecords(after: String, first: Int, before: String, last: Int, domainId: ID, cluster: String, provider: Provider): DnsRecordConnection
+
   shell: CloudShell
+
   shellConfiguration: ShellConfiguration
+
   scmAuthorization: [AuthorizationUrl]
+
   scmToken(provider: ScmProvider!, code: String!): String
+
   demoProject(id: ID): DemoProject
+
   platformMetrics: PlatformMetrics
+
   terraformProviders: [Provider]
+
   terraformProvider(name: Provider!, vsn: String): TerraformProvider
+
   tests(after: String, first: Int, before: String, last: Int, versionId: ID, repositoryId: ID): TestConnection
+
   test(id: ID!): Test
+
   testLogs(id: ID!, step: ID!): String
+
   helpQuestion(prompt: String!): String
-  cluster(id: ID!): Cluster
+
+  "Get a cluster by its ID."
+  cluster(
+    "The ID of the cluster."
+    id: ID!
+  ): Cluster
+
+  "Get a list of clusters owned by the current account."
   clusters(after: String, first: Int, before: String, last: Int): ClusterConnection
+
   configuration: PluralConfiguration
+
   tags(after: String, first: Int, before: String, last: Int, id: ID, type: TagGroup!, q: String): GroupedTagConnection
 }
 
@@ -1962,6 +2320,7 @@ type FileEdge {
   cursor: String
 }
 
+"Possible cluster sources."
 enum Source {
   DEFAULT
   SHELL
@@ -2103,6 +2462,7 @@ enum LoginMethod {
   SSO
 }
 
+"Supported OIDC authentication methods."
 enum OidcAuthMethod {
   POST
   BASIC
@@ -2154,9 +2514,15 @@ input RolesAttributes {
   admin: Boolean
 }
 
+"Input for creating or updating the tag attributes of an application installation."
 input InstallationAttributes {
+  "A YAML object of context."
   context: Yaml
+
+  "Whether the application should auto upgrade."
   autoUpgrade: Boolean
+
+  "The tag to track for auto upgrades."
   trackTag: String
 }
 
@@ -2165,12 +2531,24 @@ input OnboardingChecklistAttributes {
   dismissed: Boolean
 }
 
+"Input for creating or updating a cluster."
 input ClusterAttributes {
+  "The name of the cluster."
   name: String!
+
+  "The cluster's cloud provider."
   provider: Provider!
+
+  "The source of the cluster."
   source: Source
+
+  "The git repository URL for the cluster."
   gitUrl: String
+
+  "The URL of the console running on the cluster."
   consoleUrl: String
+
+  "The domain name used for applications deployed on the cluster."
   domain: String
 }
 
@@ -2185,35 +2563,87 @@ input CrdAttributes {
   blob: UploadOrUrl
 }
 
+"Input for creating or updating an application's attributes."
 input RepositoryAttributes {
+  "The name of the application."
   name: String
+
+  "A short description of the application."
   description: String
+
+  "A link to the application's documentation."
   documentation: String
+
+  "The category of the application."
   category: Category
+
+  "A YAML object of secrets."
   secrets: Yaml
+
+  "The application's icon."
   icon: UploadOrUrl
+
+  "The application's dark icon."
   darkIcon: UploadOrUrl
+
+  "The application's documentation."
   docs: UploadOrUrl
+
+  "The application's tags."
   tags: [TagAttributes]
+
+  "Whether the application is private."
   private: Boolean
+
+  "Whether the application is verified."
   verified: Boolean
+
+  "Whether the application is trending."
   trending: Boolean
+
+  "Notes about the application rendered after deploying and displayed to the user."
   notes: String
+
+  "The default tag to use when deploying the application."
   defaultTag: String
+
+  "The application's git URL."
   gitUrl: String
+
+  "The application's homepage."
   homepage: String
+
+  "The application's README."
   readme: String
+
+  "The application's OAuth settings."
   oauthSettings: OauthSettingsAttributes
+
+  "The application's integration resource definition."
   integrationResourceDefinition: ResourceDefinitionAttributes
+
+  "The application's community links."
   community: CommunityAttributes
 }
 
+"Input for creating or updating the community links of an application."
 input CommunityAttributes {
+  "The application's Discord server."
   discord: String
+
+  "The application's Slack channel."
   slack: String
+
+  "The application's Twitter account."
   twitter: String
+
+  "The application's homepage."
   homepage: String
+
+  "The application's git URL."
   gitUrl: String
+
+  "The videos of the application."
   videos: [String]
 }
 
@@ -2559,6 +2989,7 @@ type Vulnerability {
   updatedAt: DateTime
 }
 
+"Application categories."
 enum Category {
   DEVOPS
   DATABASE
@@ -2883,9 +3314,15 @@ input TestArgumentAttributes {
   key: String!
 }
 
+"Input for creating or updating the OIDC attributes of an application installation."
 input OidcAttributes {
+  "The redirect URIs for the OIDC provider."
   redirectUris: [String]
+
+  "The authentication method for the OIDC provider."
   authMethod: OidcAuthMethod!
+
+  "The users or groups that can login through the OIDC provider."
   bindings: [BindingAttributes]
 }
 

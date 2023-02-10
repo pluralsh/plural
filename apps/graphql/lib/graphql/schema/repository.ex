@@ -11,41 +11,47 @@ defmodule GraphQl.Schema.Repository do
 
   ### INPUTS
 
+  @desc "Application categories."
   ecto_enum :category, Core.Schema.Repository.Category
+
+  @desc "Supported OIDC authentication methods."
   ecto_enum :oidc_auth_method, Core.Schema.OIDCProvider.AuthMethod
 
+  @desc "Input for creating or updating an application's attributes."
   input_object :repository_attributes do
-    field :name,           :string
-    field :description,    :string
-    field :documentation,  :string
-    field :category,       :category
-    field :secrets,        :yml
-    field :icon,           :upload_or_url
-    field :dark_icon,      :upload_or_url
-    field :docs,           :upload_or_url
-    field :tags,           list_of(:tag_attributes)
-    field :private,        :boolean
-    field :verified,       :boolean
-    field :trending,       :boolean
-    field :notes,          :string
-    field :default_tag,    :string
-    field :git_url,        :string
-    field :homepage,       :string
-    field :readme,         :string
-    field :oauth_settings, :oauth_settings_attributes
-    field :integration_resource_definition, :resource_definition_attributes
-    field :community,      :community_attributes
+    field :name,           :string, description: "The name of the application."
+    field :description,    :string, description: "A short description of the application."
+    field :documentation,  :string, description: "A link to the application's documentation."
+    field :category,       :category, description: "The category of the application."
+    field :secrets,        :yml, description: "A YAML object of secrets."
+    field :icon,           :upload_or_url, description: "The application's icon."
+    field :dark_icon,      :upload_or_url, description: "The application's dark icon."
+    field :docs,           :upload_or_url, description: "The application's documentation."
+    field :tags,           list_of(:tag_attributes), description: "The application's tags."
+    field :private,        :boolean, description: "Whether the application is private."
+    field :verified,       :boolean, description: "Whether the application is verified."
+    field :trending,       :boolean, description: "Whether the application is trending."
+    field :notes,          :string, description: "Notes about the application rendered after deploying and displayed to the user."
+    field :default_tag,    :string, description: "The default tag to use when deploying the application."
+    field :git_url,        :string, description: "The application's git URL."
+    field :homepage,       :string, description: "The application's homepage."
+    field :readme,         :string, description: "The application's README."
+    field :oauth_settings, :oauth_settings_attributes, description: "The application's OAuth settings."
+    field :integration_resource_definition, :resource_definition_attributes, description: "The application's integration resource definition."
+    field :community,      :community_attributes, description: "The application's community links."
   end
 
+  @desc "Input for the application's OAuth settings."
   input_object :oauth_settings_attributes do
-    field :uri_format,  non_null(:string)
-    field :auth_method, non_null(:oidc_auth_method)
+    field :uri_format,  non_null(:string), description: "The URI format for the OAuth provider."
+    field :auth_method, non_null(:oidc_auth_method), description: "The authentication method for the OAuth provider."
   end
 
+  @desc "Input for creating or updating the tag attributes of an application installation."
   input_object :installation_attributes do
-    field :context,      :yml
-    field :auto_upgrade, :boolean
-    field :track_tag,    :string
+    field :context,      :yml, description: "A YAML object of context."
+    field :auto_upgrade, :boolean, description: "Whether the application should auto upgrade."
+    field :track_tag,    :string, description: "The tag to track for auto upgrades."
   end
 
   input_object :integration_attributes do
@@ -82,23 +88,25 @@ defmodule GraphQl.Schema.Repository do
     field :blob,     :upload_or_url
   end
 
+  @desc "Input for creating or updating the OIDC attributes of an application installation."
   input_object :oidc_attributes do
-    field :redirect_uris, list_of(:string)
-    field :auth_method, non_null(:oidc_auth_method)
-    field :bindings, list_of(:binding_attributes)
+    field :redirect_uris, list_of(:string), description: "The redirect URIs for the OIDC provider."
+    field :auth_method, non_null(:oidc_auth_method), description: "The authentication method for the OIDC provider."
+    field :bindings, list_of(:binding_attributes), description: "The users or groups that can login through the OIDC provider."
   end
 
   input_object :lock_attributes do
     field :lock, non_null(:string)
   end
 
+  @desc "Input for creating or updating the community links of an application."
   input_object :community_attributes do
-    field :discord,  :string
-    field :slack,    :string
-    field :twitter,  :string
-    field :homepage, :string
-    field :git_url,  :string
-    field :videos,   list_of(:string)
+    field :discord,  :string, description: "The application's Discord server."
+    field :slack,    :string, description: "The application's Slack channel."
+    field :twitter,  :string, description: "The application's Twitter account."
+    field :homepage, :string, description: "The application's homepage."
+    field :git_url,  :string, description: "The application's git URL."
+    field :videos,   list_of(:string), description: "The videos of the application."
   end
 
   ## OBJECTS
@@ -113,16 +121,17 @@ defmodule GraphQl.Schema.Repository do
     end
   end
 
+  @desc "An installation of an application."
   object :installation do
-    field :id,            non_null(:id)
-    field :context,       :map
-    field :auto_upgrade,  :boolean
-    field :repository,    :repository, resolve: dataloader(Repository)
-    field :user,          :user, resolve: dataloader(User)
-    field :subscription,  :repository_subscription, resolve: dataloader(Payments)
-    field :oidc_provider, :oidc_provider, resolve: dataloader(Repository)
-    field :license_key,   :string
-    field :track_tag,     non_null(:string)
+    field :id,            non_null(:id), description: "The installation's ID."
+    field :context,       :map, description: "A YAML object of context."
+    field :auto_upgrade,  :boolean, description: "Whether the application should auto upgrade."
+    field :repository,    :repository, resolve: dataloader(Repository), description: "The application that was installed."
+    field :user,          :user, resolve: dataloader(User), description: "The user that installed the application."
+    field :subscription,  :repository_subscription, resolve: dataloader(Payments), description: "The subscription for the application."
+    field :oidc_provider, :oidc_provider, resolve: dataloader(Repository), description: "The OIDC provider for the application."
+    field :license_key,   :string, description: "The license key for the application."
+    field :track_tag,     non_null(:string), description: "The tag to track for auto upgrades."
 
     field :acme_key_id, :string, resolve: fn
       _, _, _ -> {:ok, Core.conf(:acme_key_id)}
@@ -154,48 +163,52 @@ defmodule GraphQl.Schema.Repository do
     field :videos,   list_of(:string)
   end
 
+  @desc "Attributes of an application."
   object :repository do
-    field :id,             non_null(:id)
-    field :name,           non_null(:string)
-    field :description,    :string
-    field :documentation,  :string
-    field :category,       :category
-    field :private,        :boolean
-    field :verified,       :boolean
-    field :trending,       :boolean
-    field :notes,          :string
-    field :default_tag,    :string
-    field :git_url,        :string
-    field :main_branch,    :string
-    field :readme,         :string
-    field :license,        :license
-    field :community,      :community
-    field :homepage,       :string
-    field :publisher,      :publisher, resolve: dataloader(User)
-    field :plans,          list_of(:plan), resolve: dataloader(Payments)
-    field :tags,           list_of(:tag), resolve: dataloader(Repository)
-    field :artifacts,      list_of(:artifact), resolve: dataloader(Repository)
-    field :recipes,        list_of(:recipe), resolve: dataloader(Repository)
-    field :oauth_settings, :oauth_settings
+    field :id,             non_null(:id), description: "The application's ID."
+    field :name,           non_null(:string), description: "The name of the application."
+    field :description,    :string, description: "The description of the application."
+    field :documentation,  :string, description: "The documentation of the application."
+    field :category,       :category, description: "The category of the application."
+    field :private,        :boolean, description: "Whether the application is private."
+    field :verified,       :boolean, description: "Whether the application is verified."
+    field :trending,       :boolean, description: "Whether the application is trending."
+    field :notes,          :string, description: "Notes about the application rendered after deploying and displayed to the user."
+    field :default_tag,    :string, description: "The default tag to deploy."
+    field :git_url,        :string, description: "The git URL of the application."
+    field :main_branch,    :string, description: "The main branch of the application."
+    field :readme,         :string, description: "The README of the application."
+    field :license,        :license, description: "The license of the application."
+    field :community,      :community, description: "The community links of the application."
+    field :homepage,       :string, description: "The homepage of the application."
+    field :publisher,      :publisher, resolve: dataloader(User), description: "The application publisher."
+    field :plans,          list_of(:plan), resolve: dataloader(Payments), description: "The available plans for the application."
+    field :tags,           list_of(:tag), resolve: dataloader(Repository), description: "The tags of the application."
+    field :artifacts,      list_of(:artifact), resolve: dataloader(Repository), description: "The artifacts of the application."
+    field :recipes,        list_of(:recipe), resolve: dataloader(Repository), description: "The recipes used to install the application."
+    field :oauth_settings, :oauth_settings, description: "The OAuth settings for the application."
 
-    image :icon
-    image :dark_icon
+    image :icon, description: "The application's icon."
+    image :dark_icon, description: "The application's dark icon."
 
-    field :installation, :installation, resolve: dataloader(Repository)
+    field :installation, :installation, resolve: dataloader(Repository), description: "The installation of the application by a user."
 
+    @desc "If the application can be edited by the current user."
     field :editable, :boolean, resolve: fn
       repo, _, %{context: %{current_user: user}} -> Repository.editable(repo, user)
     end
 
+    @desc "A map of secrets of the application."
     field :secrets, :map, resolve: fn
       repo, _, %{context: %{current_user: user}} -> Repository.protected_field(repo, user, :secrets)
     end
 
+    @desc "The application's public key."
     field :public_key, :string, resolve: fn
       repo, _, %{context: %{current_user: user}} -> Repository.resolve_public_key(repo, user)
     end
 
-    field :docs, list_of(:file_content), resolve: &Repository.documentation/3
+    field :docs, list_of(:file_content), resolve: &Repository.documentation/3, description: "The documentation of the application."
 
     timestamps()
   end
@@ -286,10 +299,11 @@ defmodule GraphQl.Schema.Repository do
   connection node_type: :integration
 
   object :repository_queries do
+    @desc "Get an application by its ID or name."
     field :repository, :repository do
       middleware Authenticated
-      arg :id,   :id
-      arg :name, :string
+      arg :id,   :id, description: "The ID of the application."
+      arg :name, :string, description: "The name of the application."
 
       resolve &Repository.resolve_repository/2
     end
@@ -455,7 +469,7 @@ defmodule GraphQl.Schema.Repository do
 
     field :create_oidc_provider, :oidc_provider do
       middleware Authenticated, :external
-      arg :installation_id, non_null(:id)
+      arg :installation_id, non_null(:id), description: "The installation ID"
       arg :attributes, non_null(:oidc_attributes)
 
       safe_resolve &Repository.create_oidc_provider/2

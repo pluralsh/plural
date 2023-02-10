@@ -1,4 +1,4 @@
-interface cookiebot {
+export type cookiebot = {
   consent: {
     necessary: boolean;
     preferences: boolean;
@@ -24,6 +24,6 @@ interface cookiebot {
   submitCustomConsent(optinPreferences: boolean, optinStatistics: boolean, optinMarketing: boolean): void;
 }
 
-declare const Cookiebot: cookiebot
+const { Cookiebot } = window
 
 export default Cookiebot

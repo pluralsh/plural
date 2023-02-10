@@ -10,17 +10,17 @@ function HubSpotScript() {
 }
 
 export function HubSpot() {
-  const [loadScript, setLoadScript] = useState(Cookiebot.consent.marketing)
+  const [loadScript, setLoadScript] = useState(Cookiebot?.consent?.marketing)
 
   useEffect(() => {
     const stop = () => {
-      const _hsq = ((window as any)._hsq = (window as any)._hsq || [])
+      const _hsq = window._hsq = window._hsq || []
 
       _hsq.push(['doNotTrack'])
     }
     const start = () => {
       setLoadScript(true)
-      const _hsq = ((window as any)._hsq = (window as any)._hsq || [])
+      const _hsq = window._hsq = window._hsq || []
 
       _hsq.push(['doNotTrack', { track: true }])
     }

@@ -48,7 +48,7 @@ export function Footer(props) {
           href=""
           onClick={e => {
             e.preventDefault()
-            Cookiebot.show()
+            Cookiebot?.show()
           }}
         >
           Cookie settings

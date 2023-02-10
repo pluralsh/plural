@@ -162,7 +162,7 @@ function TestBanner() {
 }
 
 function PosthogIdentifier() {
-  const { me } = useContext(CurrentUserContext)
+  const me = useContext(CurrentUserContext)
 
   PosthogIdentify(me)
 

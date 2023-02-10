@@ -12,8 +12,8 @@ import usePersistedState from '../../../hooks/usePersistedState'
 import SubscriptionContext from '../../../contexts/SubscriptionContext'
 
 function BillingMigrationModal() {
-  const { isGrandfathered } = useContext(SubscriptionContext)
-  const [open, setOpen] = usePersistedState('billing-migration-modal-open', isGrandfathered)
+  const { isGrandfathered, isPaidPlan } = useContext(SubscriptionContext)
+  const [open, setOpen] = usePersistedState('billing-migration-modal-open', isGrandfathered && !isPaidPlan)
 
   return (
     <Modal

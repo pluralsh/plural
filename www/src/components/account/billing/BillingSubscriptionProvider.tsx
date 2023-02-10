@@ -31,7 +31,7 @@ function BillingSubscriptionProvider({ children }: BillingSubscriptionProviderPr
   const isProPlan = useMemo(() => !!subscription?.plan?.id && (subscription.plan.id === proPlatformPlan?.id || subscription.plan.id === proYearlyPlatformPlan?.id), [subscription, proPlatformPlan, proYearlyPlatformPlan])
   const isEnterprisePlan = useMemo(() => !!subscription?.plan?.id && subscription.plan.id === enterprisePlatformPlan?.id, [subscription, enterprisePlatformPlan])
   const isPaidPlan = useMemo(() => isProPlan || isEnterprisePlan, [isProPlan, isEnterprisePlan])
-  const isGrandfathered = useMemo(() => moment(data?.account?.grandfatheredUntil).diff(moment()) > 0, [data])
+  const isGrandfathered = useMemo(() => moment().isBefore(moment(data?.account?.grandfatheredUntil)), [data])
   const subscriptionContextValue = useMemo<SubscriptionContextType>(() => ({
     pricingFeaturesEnabled,
     subscription,

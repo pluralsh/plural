@@ -19,7 +19,8 @@ import { DeleteIconButton } from '../utils/IconButtons'
 import { LoopingLogo } from '../utils/AnimatedLogo'
 import { StandardScroller } from '../utils/SmoothScroller'
 
-import { Permissions } from './types'
+import { Permission } from '../../generated/graphql'
+
 import { DELETE_ROLE, ROLES_Q } from './queries'
 
 import { hasRbac } from './utils'
@@ -48,8 +49,8 @@ function Header({ q, setQ }: any) {
 
 function Role({ role, q }: any) {
   const [confirm, setConfirm] = useState(false)
-  const { me: { account, ...me } } = useContext(CurrentUserContext)
-  const editable = canEdit(me, account) || hasRbac(me, Permissions.USERS)
+  const { account, ...me } = useContext(CurrentUserContext)
+  const editable = canEdit(me, account || undefined) || hasRbac(me, Permission.Users)
   const [mutation, { loading, error }] = useMutation(DELETE_ROLE, {
     variables: { id: role.id },
     update: (cache, { data }) => updateCache(cache, {

@@ -4,6 +4,7 @@ import { Box, ThemeContext } from 'grommet'
 import { useParams } from 'react-router-dom'
 
 import BreadcrumbsContext from '../../contexts/BreadcrumbsContext'
+import { Account, User } from '../../generated/graphql'
 
 import Invoices from '../payments/Invoices'
 import { OAuthIntegrations } from '../integrations/OAuthIntegrations'
@@ -18,8 +19,8 @@ const ViewOptions = {
   INTEGRATIONS: 'integrations',
 }
 
-export const canEdit = ({ roles, id }, { rootUser }) => (
-  (roles && roles.admin) || id === rootUser.id
+export const canEdit = (user: User, account?: Account) => (
+  (user.roles && user.roles.admin) || user.id === account?.rootUser?.id
 )
 
 export function EditAccount({ billing }: any) {

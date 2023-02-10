@@ -20,7 +20,8 @@ import { List } from '../utils/List'
 import { DeleteIconButton } from '../utils/IconButtons'
 import { canEdit } from '../users/EditAccount'
 
-import { Permissions } from './types'
+import { Permission } from '../../generated/graphql'
+
 import { Confirm } from './Confirm'
 import { ViewGroup } from './Group'
 import { CreateGroup } from './CreateGroup'

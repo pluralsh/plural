@@ -289,10 +289,11 @@ defmodule GraphQl.Schema.Repository do
   connection node_type: :integration
 
   object :repository_queries do
+    @desc "Get an application by its ID or name."
     field :repository, :repository do
       middleware Authenticated
-      arg :id,   :id
-      arg :name, :string
+      arg :id,   :id, description: "The ID of the application."
+      arg :name, :string, description: "The name of the application."
 
       resolve &Repository.resolve_repository/2
     end
@@ -458,7 +459,7 @@ defmodule GraphQl.Schema.Repository do
 
     field :create_oidc_provider, :oidc_provider do
       middleware Authenticated, :external
-      arg :installation_id, non_null(:id)
+      arg :installation_id, non_null(:id), description: "The installation ID"
       arg :attributes, non_null(:oidc_attributes)
 
       safe_resolve &Repository.create_oidc_provider/2

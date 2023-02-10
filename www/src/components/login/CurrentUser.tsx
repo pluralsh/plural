@@ -76,10 +76,9 @@ export function handlePreviousUserClick({ jwt }: any) {
 export function PluralProvider({ children }: any) {
   const location = useLocation()
   const {
-    loading, error, data, refetch,
+    loading, error, data,
   } = useMeQuery({ pollInterval: 60000, fetchPolicy: 'network-only' })
   const { boot, update } = useIntercom()
-  const userContextValue = useMemo(() => ({ me: data?.me, refetch }), [data, refetch])
 
   useNotificationSubscription()
 
@@ -107,7 +106,7 @@ export function PluralProvider({ children }: any) {
 
   return (
     <PluralConfigurationContext.Provider value={configuration}>
-      <CurrentUserContextProvider value={userContextValue?.me}>
+      <CurrentUserContextProvider value={data.me}>
         <BillingPlatformPlansProvider>
           <BillingSubscriptionProvider>
             {children}

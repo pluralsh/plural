@@ -29,12 +29,19 @@ import { Account, DomainMapping, useUpdateAccountMutation } from '../../generate
 
 import { Confirm } from './Confirm'
 
+type DomainMappingFuncProps = {
+  mapping: DomainMapping
+  remove: () => void
+  first: boolean
+  last: boolean
+}
+
 function DomainMappingFunc({
   mapping,
   remove,
   first,
   last,
-}: any) {
+}: DomainMappingFuncProps) {
   const theme = useTheme()
   const [confirm, setConfirm] = useState(false)
 
@@ -117,7 +124,7 @@ export function AccountAttributes() {
   const sortedDomainMappings = useMemo(() => [...(formState.domainMappings || [])].sort((m1, m2) => `${m1?.domain} || ''`
     .toLowerCase()
     .localeCompare(`${m2?.domain} || ''`.toLowerCase())),
-  [formState.domainMappings])
+  [formState.domainMappings]) as DomainMapping[]
 
   const [mutation, { loading, error }] = useUpdateAccountMutation({
     variables: {

@@ -391,6 +391,7 @@ type Account {
   userCount: String
   delinquentAt: DateTime
   grandfatheredUntil: DateTime
+  billingAddress: Address
   icon: String
   rootUser: User
   domainMappings: [DomainMapping]
@@ -424,6 +425,7 @@ input AccountAttributes {
   name: String
   icon: UploadOrUrl
   domainMappings: [DomainMappingInput]
+  billingAddress: AddressAttributes
 }
 
 input IntegrationWebhookAttributes {
@@ -447,6 +449,7 @@ input TerraformAttributes {
 }
 
 input AddressAttributes {
+  name: String
   line1: String!
   line2: String!
   city: String!
@@ -2865,6 +2868,7 @@ type Roles {
 }
 
 type Address {
+  name: String
   line1: String
   line2: String
   city: String

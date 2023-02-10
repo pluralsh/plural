@@ -113,6 +113,7 @@ export function Signup() {
       deviceToken,
     },
     onCompleted: ({ signup }) => {
+      if (!signup?.jwt) return
       if (deviceToken) {
         finishedDeviceLogin()
       }

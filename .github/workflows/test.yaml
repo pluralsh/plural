@@ -146,14 +146,14 @@ jobs:
         uses: actions/cache@v3
         with:
           path: deps
-          key: ${{ runner.os }}-mix-6-${{ hashFiles('**/mix.lock') }}
-          restore-keys: ${{ runner.os }}-mix-6
+          key: ${{ runner.os }}-mix-7-${{ hashFiles('**/mix.lock') }}
+          restore-keys: ${{ runner.os }}-mix-7
       - name: Restore _build
         uses: actions/cache@v3
         with:
           path: _build
-          key: ${{ runner.os }}-mix-6-${{ hashFiles('**/mix.lock') }}
-          restore-keys: ${{ runner.os }}-mix-6
+          key: ${{ runner.os }}-mix-7-${{ hashFiles('**/mix.lock') }}
+          restore-keys: ${{ runner.os }}-mix-7
       - run: mix deps.get
       - run: mix test
       - run: mix coveralls.html

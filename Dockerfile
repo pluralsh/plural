@@ -32,7 +32,7 @@ RUN mix do deps.get, compile
 RUN \
   mkdir -p /opt/built && \
   mix release ${APP_NAME} && \
-  mv _build/${MIX_ENV}/rel/${APP_NAME}/releases/*/* /opt/built
+  mv _build/${MIX_ENV}/rel/${APP_NAME}/* /opt/built
 
 FROM alpine:3.17.0 as tools
 

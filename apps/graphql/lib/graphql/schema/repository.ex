@@ -11,14 +11,17 @@ defmodule GraphQl.Schema.Repository do
 
   ### INPUTS
 
+  @desc "Application categories."
   ecto_enum :category, Core.Schema.Repository.Category
+
   ecto_enum :oidc_auth_method, Core.Schema.OIDCProvider.AuthMethod
 
+  @desc "Input for creating or updating an application's attributes."
   input_object :repository_attributes do
-    field :name,           :string
+    field :name,           :string, description: "The name of the application."
     field :description,    :string
     field :documentation,  :string
-    field :category,       :category
+    field :category,       :category, description: "The category of the application."
     field :secrets,        :yml
     field :icon,           :upload_or_url
     field :dark_icon,      :upload_or_url
@@ -156,10 +159,10 @@ defmodule GraphQl.Schema.Repository do
 
   object :repository do
     field :id,             non_null(:id)
-    field :name,           non_null(:string)
+    field :name,           non_null(:string), description: "The name of the application."
     field :description,    :string
     field :documentation,  :string
-    field :category,       :category
+    field :category,       :category, description: "The category of the application."
     field :private,        :boolean
     field :verified,       :boolean
     field :trending,       :boolean

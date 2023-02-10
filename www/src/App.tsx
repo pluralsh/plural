@@ -39,7 +39,7 @@ const honorableTheme = mergeTheme(theme, {
   ],
 })
 
-function PosthogIdentifier() {
+function PosthogOptInOut() {
   if (Cookiebot?.consent?.statistics) {
     posthog.opt_in_capturing()
   }
@@ -69,7 +69,7 @@ function App() {
 
   return (
     <Suspense>
-      <PosthogIdentifier />
+      <PosthogOptInOut />
       <ApolloProvider client={client}>
         <IntercomProvider appId={INTERCOM_APP_ID}>
           <ThemeProvider theme={honorableTheme}>

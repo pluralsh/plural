@@ -25,7 +25,6 @@ import {
   OnboardingState,
   RootMutationType,
   RootMutationTypeUpdateUserArgs,
-  User,
 } from '../../../../generated/graphql'
 import { UPDATE_USER } from '../../../users/queries'
 import CurrentUserContext from '../../../../contexts/CurrentUserContext'
@@ -48,7 +47,7 @@ function statusToIndex(status: OnboardingChecklistState) : number {
 export function OnboardingChecklist() {
   const navigate = useNavigate()
   const { dismissed: dismissedFromContext, setDismissed: setDismissedFromContext } = useContext(OnboardingChecklistContext)
-  const { me: user } = useContext(CurrentUserContext) as { me: User }
+  const user = useContext(CurrentUserContext)
 
   // State
   const [status, setStatus] = useState<OnboardingChecklistState>(OnboardingChecklistState.New)

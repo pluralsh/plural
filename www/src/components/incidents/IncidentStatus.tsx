@@ -36,7 +36,7 @@ export function StatusSelector({ status, setStatus }: any) {
 }
 
 export function Status({ incident: { status, ...incident }, setActive }: any) {
-  const { me: user } = useContext(CurrentUserContext)
+  const user = useContext(CurrentUserContext)
   const editable = canEdit(incident, user) && setActive
 
   return (

@@ -28,6 +28,8 @@ import { List, ListItem } from '../utils/List'
 
 import { Account, DomainMapping, useUpdateAccountMutation } from '../../generated/graphql'
 
+import { removeTypename } from '../../utils/removeTypename'
+
 import { Confirm } from './Confirm'
 
 type DomainMappingFuncProps = {
@@ -144,14 +146,16 @@ export function AccountAttributes() {
   const addDomain = (d: string) => {
     const newDomains = [
       { domain: d },
-      ...(account?.domainMappings || []),
+      ...(account?.domainMappings?.map(removeTypename) || []),
     ]
 
     mutation({ variables: { attributes: { domainMappings: newDomains } } })
   }
 
   const rmDomain = (d?: string) => {
-    const newDomains = (account?.domainMappings || []).filter(notNilAnd(mapping => mapping?.domain !== d))
+    const newDomains = (account?.domainMappings || [])
+      .filter(notNilAnd(mapping => mapping?.domain !== d))
+      .map(removeTypename)
 
     mutation({ variables: { attributes: { domainMappings: newDomains } } })
   }

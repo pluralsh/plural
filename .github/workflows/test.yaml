@@ -208,5 +208,5 @@ jobs:
         if: steps.verify-changed-files.outputs.files_changed == 'true'
         run: |
           echo "::error Schema has changed changed"
-          echo "::debug::Please run `make update-schema` and commit the changes"
+          echo "::debug::Please execute 'make update-schema' and commit the changes"
           exit 1

@@ -29,7 +29,7 @@ import { Account, DomainMapping, useUpdateAccountMutation } from '../../generate
 
 import { Confirm } from './Confirm'
 
-function DomainMapping({
+function DomainMappingFunc({
   mapping,
   remove,
   first,
@@ -229,7 +229,7 @@ export function AccountAttributes() {
           {sortedDomainMappings.length > 0 && (
             <List hue="lighter">
               {sortedDomainMappings.map((mapping, i) => (
-                <DomainMapping
+                <DomainMappingFunc
                   key={mapping?.domain}
                   mapping={mapping}
                   first={i === 0}

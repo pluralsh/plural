@@ -76,9 +76,9 @@ defmodule Plural.MixProject do
         ],
         steps: [:assemble, &copy_configs/1],
         applications: [
-          rtc: :load,
+          rtc: :permanent,
           core: :permanent,
-          graphql: :load
+          graphql: :permanent
         ]
       ],
       worker: [

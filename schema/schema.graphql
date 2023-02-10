@@ -390,12 +390,13 @@ type Account {
   clusterCount: String
   userCount: String
   delinquentAt: DateTime
-  grandfatheredUnitl: DateTime
+  grandfatheredUntil: DateTime
   icon: String
   rootUser: User
   domainMappings: [DomainMapping]
   subscription: PlatformSubscription
   backgroundColor: String
+  availableFeatures: PlanFeatures
   insertedAt: DateTime
   updatedAt: DateTime
 }
@@ -481,6 +482,8 @@ input StackCollectionAttributes {
 
 type PlanFeatures {
   vpn: Boolean
+  userManagement: Boolean
+  audit: Boolean
 }
 
 type PlatformSubscriptionLineItems {
@@ -1762,6 +1765,7 @@ type RootQueryType {
   dockerImages(after: String, first: Int, before: String, last: Int, dockerRepositoryId: ID!, q: String): DockerImageConnection
   dockerImage(id: ID!): DockerImage
   versions(after: String, first: Int, before: String, last: Int, chartId: ID, terraformId: ID): VersionConnection
+  account: Account
   invite(id: String!): Invite
   invites(after: String, first: Int, before: String, last: Int): InviteConnection
   groups(after: String, first: Int, before: String, last: Int, q: String): GroupConnection

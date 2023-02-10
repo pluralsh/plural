@@ -1469,7 +1469,7 @@ type RootMutationType {
   destroyCluster(name: String!, provider: Provider!, domain: String!): Boolean
   createKeyBackup(attributes: KeyBackupAttributes!): KeyBackup
   deleteKeyBackup(name: String!): KeyBackup
-  createCard(source: String!): Account
+  createCard(source: String!, address: AddressAttributes): Account
   deleteCard(id: ID!): Account
   linkPublisher(token: String!): Publisher
   createPlan(repositoryId: ID!, attributes: PlanAttributes!): Plan

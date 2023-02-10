@@ -55,6 +55,10 @@ defmodule Plural.MixProject do
         include_erts: true,
         strip_beams: true,
         quiet: false,
+        config_providers: [
+          {Config.Reader, {:system, "RELEASE_ROOT", "apps/core/config/runtime.exs"}},
+        ],
+        steps: [:assemble, &copy_configs/1],
         applications: [
           api: :permanent,
           core: :permanent,
@@ -67,6 +71,10 @@ defmodule Plural.MixProject do
         include_erts: true,
         strip_beams: true,
         quiet: false,
+        config_providers: [
+          {Config.Reader, {:system, "RELEASE_ROOT", "apps/rtc/config/runtime.exs"}},
+        ],
+        steps: [:assemble, &copy_configs/1],
         applications: [
           rtc: :load,
           core: :permanent,
@@ -78,6 +86,10 @@ defmodule Plural.MixProject do
         include_erts: true,
         strip_beams: true,
         quiet: false,
+        config_providers: [
+          {Config.Reader, {:system, "RELEASE_ROOT", "apps/worker/config/runtime.exs"}},
+        ],
+        steps: [:assemble, &copy_configs/1],
         applications: [
           worker: :permanent,
           core: :permanent
@@ -88,6 +100,10 @@ defmodule Plural.MixProject do
         include_erts: true,
         strip_beams: true,
         quiet: false,
+        config_providers: [
+          {Config.Reader, {:system, "RELEASE_ROOT", "apps/cron/config/runtime.exs"}},
+        ],
+        steps: [:assemble, &copy_configs/1],
         applications: [
           cron: :permanent,
           core: :permanent,
@@ -95,6 +111,21 @@ defmodule Plural.MixProject do
         ]
       ],
     ]
+  end
+
+  defp copy_configs(%{path: path, config_providers: config_providers} = release) do
+    for {_module, {_context, _root, file_path}} <- config_providers do
+      # Creating new path
+      new_path = path <> "/" <> Path.dirname(file_path)
+      # Removing possible leftover files from previous builds
+      File.rm_rf!(new_path)
+      # Creating directory if it doesn't exist
+      File.mkdir_p!(new_path)
+      # Copying files to the directory with the same name
+      File.cp!(Path.expand(file_path), new_path <> "/" <> Path.basename(file_path))
+    end
+
+    release
   end
 
   defp deps do

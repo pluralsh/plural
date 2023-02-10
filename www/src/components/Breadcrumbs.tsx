@@ -6,13 +6,14 @@ import { lookahead } from '../utils/array'
 
 import BreadcrumbsContext, { BreadcrumbsContextType } from '../contexts/BreadcrumbsContext'
 
-function CrumbLink({ crumb: { url, text, disable } }: any) {
+export function CrumbLink({ crumb: { url, text, disable } }: any) {
   const navigate = useNavigate()
 
   // TODO: new design does not cover the "disabled" state. Should it be removed?
   if (disable) {
     return (
       <Text
+        data-testid="breadcrumb"
         size="small"
         color="dark-6"
       >
@@ -23,6 +24,7 @@ function CrumbLink({ crumb: { url, text, disable } }: any) {
 
   return (
     <Anchor
+      data-testid="breadcrumb"
       size="small"
       onClick={() => navigate(url)}
     >
@@ -40,10 +42,12 @@ export function Breadcrumbs() {
     if (next.url) {
       return [
         <CrumbLink
+          data-testid="breadcrumb"
           key={crumb.url + crumb.text}
           crumb={crumb}
         />,
         <Text
+          data-testid="breadcrumb"
           key={`${crumb.url + crumb.text}next`}
           size="small"
         >/
@@ -53,6 +57,7 @@ export function Breadcrumbs() {
 
     return (
       <Text
+        data-testid="breadcrumb"
         key={crumb.url + crumb.text}
         size="small"
         weight={700}
@@ -63,6 +68,7 @@ export function Breadcrumbs() {
 
   return (
     <Box
+      data-testid="breadcrumb"
       flex={false}
       direction="row"
       gap="xsmall"

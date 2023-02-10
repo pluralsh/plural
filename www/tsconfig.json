@@ -16,9 +16,9 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "noImplicitAny": false,
-    "types": ["vite/client", "vitest/globals"]
+    "types": ["vite/client", "vitest/globals", "@testing-library/jest-dom"]
   },
-  "include": ["src"],
+  "include": ["src", "tests"],
   "exclude": ["src/components/shell/_old"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

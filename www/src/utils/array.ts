@@ -1,10 +1,10 @@
-export function* reverse(array: any[], mapper: (...args) => void = i => i) {
+export function* reverse(array: any[], mapper: (...args) => any = i => i) {
   for (let i = array.length - 1; i >= 0; i--) {
     yield mapper(array[i])
   }
 }
 
-export function* rollup(array: any[], mapper: (...args) => void = i => i) {
+export function* rollup(array: any[], mapper: (...args) => any = i => i) {
   let prev = {}
 
   for (const item of array) {
@@ -13,7 +13,7 @@ export function* rollup(array: any[], mapper: (...args) => void = i => i) {
   }
 }
 
-export function* lookahead(array: any[], mapper: (...args) => void = i => i) {
+export function* lookahead(array: any[], mapper: (...args) => any = i => i) {
   const len = array.length
 
   for (let i = 0; i < len; i++) {

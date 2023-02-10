@@ -23,3 +23,23 @@ describe('Email utils', () => {
     expect(isValidEmail('person@...')).toBeFalsy()
   })
 })
+
+describe('isValidEmail', () => {
+  it('should return true for valid emails', () => {
+    expect(isValidEmail('test@example.com')).toBe(true)
+  })
+
+  it('should return false for invalid emails', () => {
+    expect(isValidEmail('test@example')).toBe(false)
+  })
+
+  it('should return false for empty strings', () => {
+    expect(isValidEmail('')).toBe(false)
+  })
+
+  it('should return false for non-string values', () => {
+    expect(isValidEmail({})).toBe(false)
+    expect(isValidEmail([])).toBe(false)
+    expect(isValidEmail()).toBe(false) // undefined value should return false;
+  })
+})

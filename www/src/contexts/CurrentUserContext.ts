@@ -1,5 +1,7 @@
 import { createContext } from 'react'
 
-const CurrentUserContext = createContext<any>({})
+import { User } from '../generated/graphql'
+
+const CurrentUserContext = createContext<User>({ id: '', name: '', email: '' })
 
 export default CurrentUserContext

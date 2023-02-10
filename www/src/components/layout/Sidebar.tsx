@@ -156,7 +156,7 @@ function Sidebar(props: ComponentProps<typeof DSSidebar>) {
   const sidebarWidth = collapsed ? 65 : 256 - 32 // 64 + 1px border
   const previousUserData = getPreviousUserData()
   const theme = useTheme()
-  const { me } = useContext(CurrentUserContext)
+  const me = useContext(CurrentUserContext)
   const menuItems = MENU_ITEMS
   const { pathname } = useLocation()
   const active = useCallback((menuItem: Parameters<typeof isActiveMenuItem>[0]) => isActiveMenuItem(menuItem, pathname),

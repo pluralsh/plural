@@ -36,20 +36,30 @@ function Attribute({ header, children }: any) {
 
 export function Profile() {
   const { files, onClick, HiddenFileInput } = useFilePicker({})
-  const { me } = useContext(CurrentUserContext)
+  const me = useContext(CurrentUserContext)
   const { dark } = useContext(ThemeContext) as any
   const [name, setName] = useState(me.name)
   const [email, setEmail] = useState(me.email)
-  const [avatar, setAvatar] = useState(me.avatar)
+  const [avatarConst, setAvatar] = useState(me.avatar)
   const [avatarFile, setAvatarFile] = useState<any>()
   const [mutation, { loading }] = useMutation(UPDATE_USER, {
     variables: { attributes: { name, email, avatar: avatarFile } },
   })
 
-  let url = ProviderIcons[me.provider] || DEFAULT_CHART_ICON
+  let url: string | undefined
 
-  if (dark && DarkProviderIcons[me.provider]) {
-    url = DarkProviderIcons[me.provider]
+  if (me.provider) {
+    url = ProviderIcons[me.provider] || DEFAULT_CHART_ICON
+
+    if (dark && DarkProviderIcons[me.provider]) {
+      url = DarkProviderIcons[me.provider]
+    }
+  }
+
+  let avatar: string | undefined
+
+  if (avatarConst) {
+    avatar = avatarConst
   }
 
   useEffect(() => {

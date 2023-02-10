@@ -1,17 +1,16 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useQuery } from '@apollo/client'
 import { Navigate, useLocation } from 'react-router-dom'
 import { Box } from 'grommet'
 
 import { useIntercom } from 'react-use-intercom'
 
 import PluralConfigurationContext from '../../contexts/PluralConfigurationContext'
+import { User, useMeQuery } from '../../generated/graphql'
 
 import CurrentUserContext from '../../contexts/CurrentUserContext'
 
 import { growthbook } from '../../helpers/growthbook'
 
-import { ME_Q } from '../users/queries'
 import { setPreviousUserData, setToken, wipeToken } from '../../helpers/authentication'
 import { useNotificationSubscription } from '../incidents/Notifications'
 import { LoopingLogo } from '../utils/AnimatedLogo'
@@ -35,7 +34,7 @@ function LoadingSpinner() {
 }
 
 export default function CurrentUser({ children }: any) {
-  const { loading, error, data } = useQuery(ME_Q)
+  const { loading, error, data } = useMeQuery()
 
   useNotificationSubscription()
 
@@ -46,7 +45,7 @@ export default function CurrentUser({ children }: any) {
       growthbook.setAttributes({
         id: me.id,
         email: me.email,
-        company: me.account.name,
+        company: me.account?.name,
       })
     }
   }, [data])
@@ -78,12 +77,22 @@ export function PluralProvider({ children }: any) {
   const location = useLocation()
   const {
     loading, error, data, refetch,
-  } = useQuery(ME_Q, {
-    pollInterval: 60000,
-    fetchPolicy: 'network-only',
-  })
+  } = useMeQuery({ pollInterval: 60000, fetchPolicy: 'network-only' })
   const { boot, update } = useIntercom()
   const userContextValue = useMemo(() => ({ me: data?.me, refetch }), [data, refetch])
+
+  let userContext: User
+
+  if (userContextValue.me) {
+    userContext = userContextValue.me
+  }
+  else {
+    userContext = {
+      id: '',
+      name: '',
+      email: '',
+    }
+  }
 
   useNotificationSubscription()
 
@@ -92,7 +101,7 @@ export function PluralProvider({ children }: any) {
     const { me } = data
 
     boot({ name: me.name, email: me.email, userId: me.id })
-    growthbook.setAttributes({ company: me.account.name, id: me.id, email: me.email })
+    growthbook.setAttributes({ company: me.account?.name, id: me.id, email: me.email })
   }, [data, boot])
 
   useEffect(() => {
@@ -111,7 +120,7 @@ export function PluralProvider({ children }: any) {
 
   return (
     <PluralConfigurationContext.Provider value={configuration}>
-      <CurrentUserContext.Provider value={userContextValue}>
+      <CurrentUserContext.Provider value={userContext}>
         <BillingPlatformPlansProvider>
           <BillingSubscriptionProvider>
             {children}

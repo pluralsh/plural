@@ -5174,7 +5174,7 @@ export type EabCredentialFragment = { __typename?: 'EabCredential', id: string, 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MeQuery = { __typename?: 'RootQueryType', me?: { __typename?: 'User', id: string, email: string } | null };
+export type MeQuery = { __typename?: 'RootQueryType', me?: { __typename?: 'User', loginMethod?: LoginMethod | null, hasInstallations?: boolean | null, id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, account?: { __typename?: 'Account', id: string, name?: string | null, billingCustomerId?: string | null, backgroundColor?: string | null, rootUser?: { __typename?: 'User', id: string, name: string, email: string } | null, domainMappings?: Array<{ __typename?: 'DomainMapping', id: string, domain: string, enableSso?: boolean | null } | null> | null } | null, publisher?: { __typename?: 'Publisher', billingAccountId?: string | null, id?: string | null, name: string, phone?: string | null, avatar?: string | null, description?: string | null, backgroundColor?: string | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, address?: { __typename?: 'Address', line1?: string | null, line2?: string | null, city?: string | null, country?: string | null, state?: string | null, zip?: string | null } | null } | null, boundRoles?: Array<{ __typename?: 'Role', id: string, name: string, description?: string | null, repositories?: Array<string | null> | null, permissions?: Array<Permission | null> | null, roleBindings?: Array<{ __typename?: 'RoleBinding', id: string, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, group?: { __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null } | null> | null } | null> | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, configuration?: { __typename?: 'PluralConfiguration', stripeConnectId?: string | null, stripePublishableKey?: string | null, registry?: string | null, gitCommit?: string | null } | null };
 
 export type GetLoginMethodQueryVariables = Exact<{
   email: Scalars['String'];
@@ -8516,11 +8516,41 @@ export type PublishLogsMutationOptions = Apollo.BaseMutationOptions<PublishLogsM
 export const MeDocument = gql`
     query Me {
   me {
-    id
-    email
+    ...User
+    loginMethod
+    hasInstallations
+    account {
+      ...Account
+      rootUser {
+        id
+        name
+        email
+      }
+      domainMappings {
+        id
+        domain
+        enableSso
+      }
+    }
+    publisher {
+      ...Publisher
+      billingAccountId
+    }
+    boundRoles {
+      ...Role
+    }
+  }
+  configuration {
+    stripeConnectId
+    stripePublishableKey
+    registry
+    gitCommit
   }
 }
-    `;
+    ${UserFragmentDoc}
+${AccountFragmentDoc}
+${PublisherFragmentDoc}
+${RoleFragmentDoc}`;
 
 /**
  * __useMeQuery__

@@ -47,7 +47,7 @@ function AccountTabList({ tabStateRef }: any) {
 }
 
 export default function AccountSideNav({ tabStateRef = {} }: any) {
-  const { me } = useContext(CurrentUserContext) as Record<string, any>
+  const me = useContext(CurrentUserContext) as Record<string, any>
 
   return (
     <SideNavOffset>

@@ -49,6 +49,7 @@ import { clearLocalStorage } from '../../helpers/localStorage'
 import Cookiebot from '../../utils/cookiebot'
 
 import { NotificationsPanel, useNotificationsCount } from './WithNotifications'
+import { useContentOverlay } from './Overlay'
 
 export const SIDEBAR_ICON_HEIGHT = '40px'
 export const SIDEBAR_WIDTH = '224px'
@@ -162,6 +163,8 @@ function Sidebar(props: ComponentProps<typeof DSSidebar>) {
   const active = useCallback((menuItem: Parameters<typeof isActiveMenuItem>[0]) => isActiveMenuItem(menuItem, pathname),
     [pathname])
   const notificationsCount = useNotificationsCount()
+
+  useContentOverlay(isNotificationsPanelOpen)
 
   useOutsideClick(menuRef, event => {
     if (!menuItemRef.current?.contains(event.target as any)) {
@@ -387,7 +390,6 @@ function Sidebar(props: ComponentProps<typeof DSSidebar>) {
           left={sidebarWidth}
           right={0}
           align="flex-end"
-          backgroundColor="rgba(0, 0, 0, 0.5)"
           zIndex={theme.zIndexes.selectPopover - 1}
         >
           <Flex

@@ -294,6 +294,7 @@ function Sidebar(props: ComponentProps<typeof DSSidebar>) {
             clickable
             collapsed
             onClick={() => setIsMenuOpened(x => !x)}
+            userSelect="none"
           >
             <Avatar
               name={me.name}

@@ -1,10 +1,61 @@
-import { Dispatch, SetStateAction, useRef } from 'react'
+import {
+  Dispatch,
+  SetStateAction,
+  useMemo,
+  useRef,
+} from 'react'
 import { Flex, P, useOutsideClick } from 'honorable'
 import { CloseIcon } from '@pluralsh/design-system'
-import { useTheme } from 'styled-components'
+import { animated, useTransition } from 'react-spring'
 
-import { NotificationsPanel } from './WithNotifications'
+import styled from 'styled-components'
+
 import { useContentOverlay } from './Overlay'
+import { NotificationsPanel } from './WithNotifications'
+
+const PANEL_WIDTH = 480
+const PANEL_HEIGHT = 464
+
+const getTransitionProps = (isOpen: boolean) => ({
+  from: { opacity: 0, translateX: `${-PANEL_WIDTH}px` },
+  enter: { opacity: 1, translateX: '0px' },
+  leave: { opacity: 0, translateX: `${-PANEL_WIDTH}px` },
+  config: isOpen
+    ? {
+      mass: 0.6,
+      tension: 280,
+      velocity: 0.02,
+    }
+    : {
+      mass: 0.6,
+      tension: 400,
+      velocity: 0.02,
+      restVelocity: 0.1,
+    },
+})
+
+const Wrapper = styled(animated.div)<{$leftOffset:number}>(({ $leftOffset, theme }) => ({
+  position: 'fixed',
+  display: 'flex',
+  alignItems: 'flex-end',
+  top: 0,
+  bottom: 0,
+  left: $leftOffset,
+  right: 0,
+  zIndex: theme.zIndexes.selectPopover - 1,
+  overflow: 'hidden',
+}))
+
+const Animated = styled(animated.div)(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  backgroundColor: theme.colors['fill-one'],
+  width: PANEL_WIDTH,
+  height: PANEL_HEIGHT,
+  borderTop: theme.borders.default,
+  borderRight: theme.borders.default,
+  borderTopRightRadius: 6,
+}))
 
 export function NotificationsPanelOverlay({
   leftOffset,
@@ -15,7 +66,6 @@ export function NotificationsPanelOverlay({
   isOpen: boolean
   setIsOpen: Dispatch<SetStateAction<boolean>>
 }) {
-  const theme = useTheme()
   const notificationsPanelRef = useRef<any>()
 
   useContentOverlay(isOpen)
@@ -24,30 +74,14 @@ export function NotificationsPanelOverlay({
     setIsOpen(false)
   })
 
-  if (!isOpen) {
-    return null
-  }
+  const transitionProps = useMemo(() => getTransitionProps(isOpen),
+    [isOpen])
+  const transitions = useTransition(isOpen ? [true] : [], transitionProps)
 
-  return (
-    <Flex
-      position="fixed"
-      top={0}
-      bottom={0}
-      left={leftOffset}
-      right={0}
-      align="flex-end"
-      zIndex={theme.zIndexes.selectPopover - 1}
-    >
-      <Flex
-        ref={notificationsPanelRef}
-        direction="column"
-        backgroundColor="fill-one"
-        width={480}
-        height={464}
-        borderTop="1px solid border"
-        borderRight="1px solid border"
-        borderTopRightRadius={6}
-      >
+  return transitions(styles => (
+
+    <Wrapper $leftOffset={leftOffset}>
+      <Animated style={styles}>
         <Flex
           align="center"
           justify="space-between"
@@ -76,7 +110,7 @@ export function NotificationsPanelOverlay({
         >
           <NotificationsPanel closePanel={() => setIsOpen(false)} />
         </Flex>
-      </Flex>
-    </Flex>
-  )
+      </Animated>
+    </Wrapper>
+  ))
 }

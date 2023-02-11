@@ -12,14 +12,12 @@ import {
   Flex,
   Menu,
   MenuItem,
-  P,
   Span,
   useOutsideClick,
 } from 'honorable'
 import {
   ArrowTopRightIcon,
   BellIcon,
-  CloseIcon,
   ClusterIcon,
   CompassIcon,
   CookieIcon,
@@ -48,8 +46,8 @@ import { clearLocalStorage } from '../../helpers/localStorage'
 
 import Cookiebot from '../../utils/cookiebot'
 
-import { NotificationsPanel, useNotificationsCount } from './WithNotifications'
-import { useContentOverlay } from './Overlay'
+import { useNotificationsCount } from './WithNotifications'
+import { NotificationsPanelOverlay } from './NotificationsPanelOverlay'
 
 export const SIDEBAR_ICON_HEIGHT = '40px'
 export const SIDEBAR_WIDTH = '224px'
@@ -147,7 +145,6 @@ function SidebarMenuItem({
 function Sidebar(props: ComponentProps<typeof DSSidebar>) {
   const menuItemRef = useRef<HTMLDivElement>(null)
   const menuRef = useRef<HTMLDivElement>(null)
-  const notificationsPanelRef = useRef<HTMLDivElement>(null)
   const [isMenuOpen, setIsMenuOpened] = useState(false)
   const [collapsed, _setCollapsed] = useState(true)
   const [isNotificationsPanelOpen, setIsNotificationsPanelOpen]
@@ -164,16 +161,10 @@ function Sidebar(props: ComponentProps<typeof DSSidebar>) {
     [pathname])
   const notificationsCount = useNotificationsCount()
 
-  useContentOverlay(isNotificationsPanelOpen)
-
   useOutsideClick(menuRef, event => {
     if (!menuItemRef.current?.contains(event.target as any)) {
       setIsMenuOpened(false)
     }
-  })
-
-  useOutsideClick(notificationsPanelRef, () => {
-    setIsNotificationsPanelOpen(false)
   })
 
   const switchPrevious = () => handlePreviousUserClick(previousUserData)
@@ -201,7 +192,10 @@ function Sidebar(props: ComponentProps<typeof DSSidebar>) {
 
             return (
               <SidebarItem
-                data-phid={`sidebar-item-${item.text.split(' ').join('').toLowerCase()}`}
+                data-phid={`sidebar-item-${item.text
+                  .split(' ')
+                  .join('')
+                  .toLowerCase()}`}
                 key={i}
                 clickable
                 tooltip={item.text}
@@ -382,59 +376,11 @@ function Sidebar(props: ComponentProps<typeof DSSidebar>) {
       {/* ---
         NOTIFICATIONS PANEL
       --- */}
-      {isNotificationsPanelOpen && (
-        <Flex
-          position="fixed"
-          top={0}
-          bottom={0}
-          left={sidebarWidth}
-          right={0}
-          align="flex-end"
-          zIndex={theme.zIndexes.selectPopover - 1}
-        >
-          <Flex
-            ref={notificationsPanelRef}
-            direction="column"
-            backgroundColor="fill-one"
-            width={480}
-            height={464}
-            borderTop="1px solid border"
-            borderRight="1px solid border"
-            borderTopRightRadius={6}
-          >
-            <Flex
-              align="center"
-              justify="space-between"
-              padding="medium"
-              borderBottom="1px solid border"
-            >
-              <P subtitle2>Notifications</P>
-              <Flex
-                align="center"
-                justify="center"
-                padding="xsmall"
-                cursor="pointer"
-                _hover={{
-                  backgroundColor: 'fill-one-hover',
-                }}
-                borderRadius="medium"
-                onClick={() => setIsNotificationsPanelOpen(false)}
-              >
-                <CloseIcon />
-              </Flex>
-            </Flex>
-            <Flex
-              flexGrow={1}
-              direction="column"
-              overflowY="auto"
-            >
-              <NotificationsPanel
-                closePanel={() => setIsNotificationsPanelOpen(false)}
-              />
-            </Flex>
-          </Flex>
-        </Flex>
-      )}
+      <NotificationsPanelOverlay
+        leftOffset={sidebarWidth}
+        isOpen={isNotificationsPanelOpen}
+        setIsOpen={setIsNotificationsPanelOpen}
+      />
       {/* ---
         CREATE PUBLISHER MODAL
       --- */}

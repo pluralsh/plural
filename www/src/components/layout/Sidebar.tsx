@@ -220,7 +220,7 @@ function Sidebar(props: ComponentProps<typeof DSSidebar>) {
           <SidebarMenuItem
             tooltip="Discord"
             className="sidebar-discord"
-            href="https://discord.gg/bEBAMXV64s"
+            href="https://discord.gg/pluralsh"
           >
             <DiscordIcon />
           </SidebarMenuItem>

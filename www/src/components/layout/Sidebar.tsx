@@ -230,7 +230,7 @@ function Sidebar(props: ComponentProps<typeof DSSidebar>) {
             data-phid="sidebar-item-discord"
             tooltip="Discord"
             className="sidebar-discord"
-            href="https://discord.gg/bEBAMXV64s"
+            href="https://discord.gg/pluralsh"
           >
             <DiscordIcon />
           </SidebarMenuItem>

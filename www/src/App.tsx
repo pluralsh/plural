@@ -18,6 +18,7 @@ import { DEFAULT_THEME } from './theme'
 import { HistoryRouter, browserHistory } from './router'
 import { growthbook } from './helpers/growthbook'
 import Cookiebot from './utils/cookiebot'
+import { OverlayContextProvider } from './components/layout/Overlay'
 
 const Plural = lazy(() => import('./components/Plural'))
 const Invite = lazy(() => import('./components/Invite'))
@@ -66,6 +67,65 @@ function PosthogOptInOut() {
 function App() {
   const mergedStyledTheme = mergeDeep(DEFAULT_THEME, styledTheme)
 
+  const routes = (
+    <HistoryRouter history={browserHistory}>
+      <Routes>
+        <Route
+          path="/reset-password/:id"
+          element={<ResetPassword />}
+        />
+        <Route
+          path="/password-reset"
+          element={<RequestPasswordReset />}
+        />
+        <Route
+          path="/confirm-email/:id"
+          element={<EmailConfirmed />}
+        />
+        <Route
+          path="/invite/:inviteId"
+          element={<Invite />}
+        />
+        <Route
+          path="/passwordless-login/:token"
+          element={<PasswordlessLogin />}
+        />
+        <Route
+          path="/oauth/callback/github/shell"
+          element={<Plural />}
+        />
+        <Route
+          path="/oauth/callback/gitlab/shell"
+          element={<Plural />}
+        />
+        <Route
+          path="/oauth/callback/:service"
+          element={<OAuthCallback />}
+        />
+        <Route
+          path="/sso/callback"
+          element={<SSOCallback />}
+        />
+        <Route
+          path="/login"
+          element={<Login />}
+        />
+        <Route
+          path="/signup"
+          element={<Signup />}
+        />
+        <Route
+          path="/oauth/consent"
+          element={<OAuthConsent />}
+        />
+        <Route
+          path="*"
+          element={<Plural />}
+        />
+      </Routes>
+    </HistoryRouter>
+  )
+
   return (
     <Suspense>
       <PosthogOptInOut />
@@ -74,76 +134,23 @@ function App() {
           <ThemeProvider theme={honorableTheme}>
             <StyledThemeProvider theme={mergedStyledTheme}>
               <GrowthBookProvider growthbook={growthbook as any as GrowthBook}>
-                <CssBaseline />
-                <GlobalStyle />
-                <Grommet
-                  full
-                  theme={mergedStyledTheme as any as ThemeType}
-                  themeMode="dark"
-                >
-                  <Box
-                    width="100vw"
-                    height="100vh"
-                    background="#171A21"
+                <OverlayContextProvider>
+                  <CssBaseline />
+                  <GlobalStyle />
+                  <Grommet
+                    full
+                    theme={mergedStyledTheme as any as ThemeType}
+                    themeMode="dark"
                   >
-                    <HistoryRouter history={browserHistory}>
-                      <Routes>
-                        <Route
-                          path="/reset-password/:id"
-                          element={<ResetPassword />}
-                        />
-                        <Route
-                          path="/password-reset"
-                          element={<RequestPasswordReset />}
-                        />
-                        <Route
-                          path="/confirm-email/:id"
-                          element={<EmailConfirmed />}
-                        />
-                        <Route
-                          path="/invite/:inviteId"
-                          element={<Invite />}
-                        />
-                        <Route
-                          path="/passwordless-login/:token"
-                          element={<PasswordlessLogin />}
-                        />
-                        <Route
-                          path="/oauth/callback/github/shell"
-                          element={<Plural />}
-                        />
-                        <Route
-                          path="/oauth/callback/gitlab/shell"
-                          element={<Plural />}
-                        />
-                        <Route
-                          path="/oauth/callback/:service"
-                          element={<OAuthCallback />}
-                        />
-                        <Route
-                          path="/sso/callback"
-                          element={<SSOCallback />}
-                        />
-                        <Route
-                          path="/login"
-                          element={<Login />}
-                        />
-                        <Route
-                          path="/signup"
-                          element={<Signup />}
-                        />
-                        <Route
-                          path="/oauth/consent"
-                          element={<OAuthConsent />}
-                        />
-                        <Route
-                          path="*"
-                          element={<Plural />}
-                        />
-                      </Routes>
-                    </HistoryRouter>
-                  </Box>
-                </Grommet>
+                    <Box
+                      width="100vw"
+                      height="100vh"
+                      background="#171A21"
+                    >
+                      {routes}
+                    </Box>
+                  </Grommet>
+                </OverlayContextProvider>
               </GrowthBookProvider>
             </StyledThemeProvider>
           </ThemeProvider>

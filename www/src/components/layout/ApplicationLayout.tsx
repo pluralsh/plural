@@ -9,6 +9,7 @@ import Sidebar from './Sidebar'
 import WithApplicationUpdate from './WithApplicationUpdate'
 import Header from './Header'
 import Subheader from './Subheader'
+import { ContentOverlay } from './Overlay'
 
 function ApplicationLayout({ children }: any) {
   const isProduction = import.meta.env.MODE === 'production'
@@ -59,7 +60,9 @@ function ApplicationLayout({ children }: any) {
             direction="column"
             flexGrow={1}
             overflowX="hidden"
+            position="relative"
           >
+            <ContentOverlay />
             {!isCurrentlyOnboarding && <Subheader />}
             {children}
           </Flex>

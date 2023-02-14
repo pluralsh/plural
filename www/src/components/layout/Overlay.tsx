@@ -12,9 +12,9 @@ import {
 } from 'react'
 
 const getTransitionProps = (isOpen: boolean) => ({
-  from: { opacity: 0, backdropFilter: 'blur(0px)' },
-  enter: { opacity: 1, backdropFilter: 'blur(1px)' },
-  leave: { opacity: 0, backdropFilter: 'blur(0px)' },
+  from: { opacity: 0 /* , backdropFilter: 'blur(0px)' */ },
+  enter: { opacity: 1 /* , backdropFilter: 'blur(1px)' */ },
+  leave: { opacity: 0 /* , backdropFilter: 'blur(0px)' */ },
   config: isOpen
     ? {
       easing: easings.easeOutSine,

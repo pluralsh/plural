@@ -144,6 +144,7 @@ export function Audits() {
             data={audits}
             columns={columns}
             onScrollCapture={e => fetchMoreOnBottomReached(e?.target)}
+            virtualizeRows
             maxHeight="calc(100vh - 244px)"
           />
         ) : <>You do not have any audit logs yet.</>}

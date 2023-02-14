@@ -96,6 +96,7 @@ export function LoginAudits() {
             data={logins}
             columns={columns}
             onScrollCapture={e => fetchMoreOnBottomReached(e?.target)}
+            virtualizeRows
             maxHeight="calc(100vh - 244px)"
           />
         ) : <>You do not have any user logins yet.</>}

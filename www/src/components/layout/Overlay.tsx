@@ -5,11 +5,15 @@ import { easings } from '@react-spring/web'
 import {
   ComponentProps,
   createContext,
+  useCallback,
   useContext,
   useEffect,
+  useId,
   useMemo,
-  useState,
+  useReducer,
 } from 'react'
+import useUnmount from 'components/hooks/useUnmount'
+import { produce } from 'immer'
 
 const getTransitionProps = (isOpen: boolean) => ({
   from: { opacity: 0 /* , backdropFilter: 'blur(0px)' */ },
@@ -40,25 +44,42 @@ export const ContentOverlay = () => {
   const showOverlay = !!useContext(OverlayContext)?.showOverlay
   const transitionProps = useMemo(() => getTransitionProps(showOverlay),
     [showOverlay])
+
   const transitions = useTransition(showOverlay ? [true] : [], transitionProps)
 
   return transitions(styles => <OverlayBG style={{ ...styles }} />)
 }
 
 type OverlayContextT = {
-  setShowOverlay: (show: boolean) => void
+  setShowOverlay: (id: string, show: boolean) => void
   showOverlay: boolean
 }
 
 const OverlayContext = createContext<OverlayContextT | null>(null)
 
+const activeOverlaysReducer = produce((activeOverlays: Record<string, boolean>,
+  { id, show }: { id: string; show: boolean }) => {
+  if (show) {
+    activeOverlays[id] = true
+  }
+  else {
+    delete activeOverlays[id]
+  }
+
+  return activeOverlays
+})
+
 export function OverlayContextProvider(props: Omit<ComponentProps<typeof OverlayContext.Provider>, 'value'>) {
-  const [showOverlay, setShowOverlay] = useState(false)
+  const [activeOverlays, dispatch] = useReducer(activeOverlaysReducer, {})
+
+  const setShowOverlay = useCallback((id: string, show: boolean) => dispatch({ id, show }),
+    [])
+
   const value = useMemo(() => ({
     setShowOverlay,
-    showOverlay,
+    showOverlay: Object.entries(activeOverlays).length !== 0,
   }),
-  [showOverlay])
+  [activeOverlays, setShowOverlay])
 
   return (
     <OverlayContext.Provider
@@ -69,14 +90,17 @@ export function OverlayContextProvider(props: Omit<ComponentProps<typeof Overlay
 }
 
 export const useContentOverlay = (show: boolean) => {
+  const id = useId()
   const overlayCtx = useContext(OverlayContext)
 
   if (!overlayCtx) {
     throw Error('useContentOverlay() must be used inside an <OverlayContextProvider />')
   }
   useEffect(() => {
-    if (overlayCtx.showOverlay !== show) {
-      overlayCtx.setShowOverlay(show)
-    }
-  }, [overlayCtx, show])
+    overlayCtx.setShowOverlay(id, show)
+  }, [id, overlayCtx, show])
+
+  useUnmount(() => {
+    overlayCtx.setShowOverlay(id, false)
+  })
 }

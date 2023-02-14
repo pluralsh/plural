@@ -1,13 +1,12 @@
 defmodule RtcWeb.ShellChannel do
   use RtcWeb, :channel
   alias Core.Services.{Shell.Pods, Shell}
-  alias Core.Shell.Client
   alias Core.Schema.CloudShell
 
   require Logger
 
   def join("shells:me", _, socket) do
-    with %CloudShell{pod_name: name} = shell <- Shell.get_shell(socket.assigns.user.id),
+    with %CloudShell{pod_name: name} <- Shell.get_shell(socket.assigns.user.id),
          url <- Pods.PodExec.exec_url(name),
          {:ok, pid} <- Pods.PodExec.start_link(url, self()) do
       {:ok, assign(socket, :wss_pid, pid)}

@@ -81,7 +81,10 @@ export function NotificationsPanelOverlay({
   return transitions(styles => (
 
     <Wrapper $leftOffset={leftOffset}>
-      <Animated style={styles}>
+      <Animated
+        style={styles}
+        ref={notificationsPanelRef}
+      >
         <Flex
           align="center"
           justify="space-between"

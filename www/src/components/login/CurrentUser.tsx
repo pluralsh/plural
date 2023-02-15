@@ -12,7 +12,7 @@ import { CurrentUserContextProvider } from '../../contexts/CurrentUserContext'
 import { growthbook } from '../../helpers/growthbook'
 
 import { setPreviousUserData, setToken, wipeToken } from '../../helpers/authentication'
-import { useNotificationSubscription } from '../incidents/Notifications'
+import { useNotificationSubscription } from '../../_deprecated/components/incidents/Notifications'
 import { LoopingLogo } from '../utils/AnimatedLogo'
 import BillingSubscriptionProvider from '../account/billing/BillingSubscriptionProvider'
 import BillingPlatformPlansProvider from '../account/billing/BillingPlatformPlansProvider'

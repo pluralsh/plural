@@ -16,7 +16,7 @@ import {
 } from '@pluralsh/design-system'
 
 import { RECIPES_QUERY } from '../../../repository/queries'
-import { RECIPE_Q } from '../../../repos/queries'
+import { RECIPE_Q } from '../../../../_deprecated/components/repos/queries'
 import { Recipe } from '../../../../generated/graphql'
 import { TerminalContext } from '../context/terminal'
 

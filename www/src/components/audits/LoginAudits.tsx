@@ -1,27 +1,19 @@
 import { useQuery } from '@apollo/client'
 import { Box, Text } from 'grommet'
 import { useCallback, useState } from 'react'
-
 import { PageTitle } from '@pluralsh/design-system'
-
 import { Span } from 'honorable'
 
 import { Placeholder } from '../utils/Placeholder'
-
-import { RepoIcon } from '../repos/Repositories'
-
 import { LoopingLogo } from '../utils/AnimatedLogo'
 import { ReturnToBeginning } from '../utils/ReturnToBeginning'
 import { StandardScroller } from '../utils/SmoothScroller'
 import { Table, TableData, TableRow } from '../utils/Table'
-
 import { extendConnection } from '../../utils/graphql'
-
 import { Date } from '../utils/Date'
 
 import { AuditUser } from './AuditUser'
 import { Location } from './Location'
-
 import { LOGINS_Q } from './queries'
 
 function LoginRow({ login, last }: any) {
@@ -44,10 +36,11 @@ function LoginRow({ login, last }: any) {
           gap="xsmall"
           align="center"
         >
-          <RepoIcon
-            repo={login.repository}
-            size="24px"
-          />
+          {/* TODO: Use RepoIcon component */}
+          {/* <RepoIcon */}
+          {/*  repo={login.repository} */}
+          {/*  size="24px" */}
+          {/* /> */}
           <Text size="small">{login.repository.name}</Text>
         </Box>
       </TableData>

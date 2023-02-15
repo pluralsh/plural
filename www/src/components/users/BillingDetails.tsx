@@ -13,9 +13,9 @@ import { HeaderItem } from '../utils/Header'
 import { Icon } from '../utils/IconOld'
 
 import { ModalHeader } from '../ModalHeader'
-import { TagContainer } from '../repos/Tags'
+import { TagContainer } from '../../_deprecated/components/repos/Tags'
 import { Alert, AlertStatus, GqlError } from '../utils/Alert'
-import { SectionPortal } from '../Explore'
+import { SectionPortal } from '../../_deprecated/Explore'
 import CurrentUserContext from '../../contexts/CurrentUserContext'
 
 import { CARDS, DELETE_CARD, REGISTER_CARD } from './queries'

@@ -14,20 +14,16 @@ import {
   ValidatedInput,
 } from '@pluralsh/design-system'
 import { useContext, useMemo, useState } from 'react'
-import { useTheme } from 'styled-components'
+import { ThemeContext } from 'styled-components'
 
 import { useUpdateState } from '../../hooks/useUpdateState'
-
 import CurrentUserContext from '../../contexts/CurrentUserContext'
 import { notNil, notNilAnd } from '../../utils/ts-notNil'
-
 import SaveButton from '../utils/SaveButton'
 import { GqlError } from '../utils/Alert'
 import { DeleteIconButton } from '../utils/IconButtons'
 import { List, ListItem } from '../utils/List'
-
 import { Account, DomainMapping, useUpdateAccountMutation } from '../../generated/graphql'
-
 import { removeTypename } from '../../utils/removeTypename'
 
 import { Confirm } from './Confirm'
@@ -45,7 +41,7 @@ function DomainMappingFunc({
   first,
   last,
 }: DomainMappingFuncProps) {
-  const theme = useTheme()
+  const theme = useContext(ThemeContext)
   const [confirm, setConfirm] = useState(false)
 
   return (

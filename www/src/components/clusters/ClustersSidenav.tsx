@@ -1,4 +1,3 @@
-import { ThemeContext } from 'grommet'
 import { Div, Flex } from 'honorable'
 import truncate from 'lodash/truncate'
 import moment from 'moment'
@@ -18,9 +17,8 @@ import {
 } from 'react'
 
 import QueueContext from '../../contexts/QueueContext'
-import { providerToURL } from '../repos/misc'
-
 import { SideNavOffset } from '../utils/layout/SideNavOffset'
+import { providerToURL } from '../utils/ProviderIcon'
 
 import { Queue } from './Clusters'
 
@@ -85,8 +83,7 @@ export function ClustersSidenav({
 }
 
 function ProfileCard({ queue }: { queue: Queue }): ReactElement {
-  const { dark } = useContext(ThemeContext) as { dark }
-  const url = providerToURL(queue?.provider, dark)
+  const url = providerToURL(queue?.provider, true)
 
   return (
     <SideNavOffset>

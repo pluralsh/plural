@@ -12,21 +12,18 @@ import { useState } from 'react'
 import { ArrowLeftIcon } from '@pluralsh/design-system'
 
 import { Placeholder } from '../utils/Placeholder'
-
 import {
   deepUpdate,
   extendConnection,
   removeConnection,
   updateCache,
 } from '../../utils/graphql'
-
 import { DeleteIconButton } from '../utils/IconButtons'
-import { Provider } from '../repos/misc'
 import { StandardScroller } from '../utils/SmoothScroller'
 import { Table, TableData, TableRow } from '../utils/Table'
+import { ProviderIcon } from '../utils/ProviderIcon'
 
 import { DELETE_DNS_RECORD, DNS_RECORDS } from './queries'
-
 import { Confirm } from './Confirm'
 
 function DeleteRecord({ record, domain }: any) {
@@ -127,7 +124,7 @@ export function DnsRecords({ domain, setDomain }: any) {
                     gap="xsmall"
                     align="center"
                   >
-                    <Provider
+                    <ProviderIcon
                       provider={node.provider}
                       width={30}
                     />

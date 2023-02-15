@@ -18,9 +18,9 @@ const featureToPunchline = {
 }
 
 function BillingFeatureBlockBanner({ feature, planFeature }: BillingFeatureBlockBannerPropsType) {
-  const { account } = useContext(SubscriptionContext)
+  const { account, isPaidPlan } = useContext(SubscriptionContext)
 
-  if ((account?.availableFeatures || {})[planFeature || 'userManagement']) return null
+  if ((account?.availableFeatures || {})[planFeature || 'userManagement'] || isPaidPlan) return null
 
   return (
     <Flex

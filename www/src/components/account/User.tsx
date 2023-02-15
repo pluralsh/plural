@@ -10,20 +10,15 @@ import {
 import { useContext, useState } from 'react'
 
 import { fetchToken, setPreviousUserData, setToken } from '../../helpers/authentication'
-
-import { canEdit } from '../users/EditAccount'
 import CurrentUserContext from '../../contexts/CurrentUserContext'
-
-import { Provider } from '../repos/misc'
 import { DELETE_USER } from '../users/queries'
-
 import { Permission } from '../../generated/graphql'
+import { ProviderIcon } from '../utils/ProviderIcon'
+import { canEdit } from '../../utils/account'
 
 import { EDIT_USER, IMPERSONATE_SERVICE_ACCOUNT } from './queries'
-
 import { Confirm } from './Confirm'
 import { EditServiceAccount } from './CreateServiceAccount'
-
 import { MoreMenu } from './MoreMenu'
 import { hasRbac } from './utils'
 
@@ -132,7 +127,7 @@ export function User({ user, update }: any) {
         align="center"
       >
         {user.provider && (
-          <Provider
+          <ProviderIcon
             provider={user.provider}
             width={25}
           />
@@ -195,7 +190,7 @@ export function ServiceAccount({ user, update }: any) {
           align="center"
         >
           {user.provider && (
-            <Provider
+            <ProviderIcon
               provider={user.provider}
               width={25}
             />

@@ -1,24 +1,19 @@
 import { useMutation, useQuery } from '@apollo/client'
 import moment from 'moment'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { Div, Flex, Text } from 'honorable'
-import { useTheme } from 'styled-components'
+import { ThemeContext } from 'styled-components'
 import { LoopingLogo, SearchIcon } from '@pluralsh/design-system'
 
 import ListInput from '../utils/ListInput'
-
 import { Placeholder } from '../utils/Placeholder'
-
 import CopyableButton from '../utils/CopyableButton'
 import { List, ListItem } from '../utils/List'
-
 import { extendConnection, removeConnection, updateCache } from '../../utils/graphql'
-
 import { DeleteIconButton } from '../utils/IconButtons'
 import { StandardScroller } from '../utils/SmoothScroller'
 
 import { DELETE_INVITE, INVITES_Q } from './queries'
-
 import { Confirm } from './Confirm'
 import { inviteLink } from './utils'
 
@@ -66,7 +61,7 @@ function InviteLink({ invite }: any) {
 }
 
 function Invite(invite: any) {
-  const theme = useTheme()
+  const theme = useContext(ThemeContext)
   const { email, insertedAt } = invite
 
   return (

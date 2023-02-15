@@ -18,7 +18,6 @@ import {
 
 import QueueContext from '../../contexts/QueueContext'
 import { appendConnection, extendConnection } from '../../utils/graphql'
-import { RepoIcon } from '../repos/Repositories'
 import { StandardScroller } from '../utils/SmoothScroller'
 
 import { QUEUE, UPGRADE_SUB } from './queries'
@@ -169,11 +168,12 @@ function UpgradeItem({ upgrade, acked, last }: { upgrade: Upgrade, acked: string
       borderBottom={last ? null : '1px solid border'}
       padding="medium"
     >
-      <RepoIcon
-        repo={upgrade.repository}
-        size="48px"
-        round=""
-      />
+      {/* TODO: Use proper component */}
+      {/* <RepoIcon */}
+      {/*  repo={upgrade.repository} */}
+      {/*  size="48px" */}
+      {/*  round="" */}
+      {/* /> */}
       <Flex
         direction="column"
         paddingLeft={12}

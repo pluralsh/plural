@@ -5,8 +5,10 @@ import {
   Img,
 } from 'honorable'
 import { Button, Tooltip } from '@pluralsh/design-system'
-import { useTheme } from 'styled-components'
+import { ThemeContext } from 'styled-components'
 import { useQuery } from '@apollo/client'
+
+import { useContext } from 'react'
 
 import { QueueList } from '../clusters/Clusters'
 import { QUEUES } from '../clusters/queries'
@@ -18,7 +20,7 @@ import BillingSubscriptionChip from '../account/billing/BillingSubscriptionChip'
 const APP_ICON = '/app-logo-white.png'
 
 export default function Header() {
-  const theme = useTheme()
+  const theme = useContext(ThemeContext)
   const isCurrentlyOnboarding = useIsCurrentlyOnboarding()
 
   const { data: queuesData } = useQuery<QueueList>(QUEUES, {

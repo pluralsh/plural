@@ -1,6 +1,6 @@
 import 'react-credit-cards/es/styles-compiled.css'
-import './stripe.css'
-import './billing.css'
+import '../../../components/users/stripe.css'
+import '../../../components/users/billing.css'
 import { useCallback, useContext, useState } from 'react'
 import { CardElement, Elements, injectStripe } from 'react-stripe-elements'
 import { Box, Layer, Text } from 'grommet'
@@ -8,17 +8,17 @@ import { useMutation, useQuery } from '@apollo/client'
 import { Button, PaymentMethods, Trash } from 'forge-core'
 import { CreditCardIcon as Amex, CreditCardIcon as Mastercard, CreditCardIcon as Visa } from '@pluralsh/design-system'
 
-import { HeaderItem } from '../utils/Header'
+import { HeaderItem } from '../../../components/utils/Header'
 
-import { Icon } from '../utils/IconOld'
+import { Icon } from '../../../components/utils/IconOld'
 
-import { ModalHeader } from '../ModalHeader'
-import { TagContainer } from '../../_deprecated/components/repos/Tags'
-import { Alert, AlertStatus, GqlError } from '../utils/Alert'
-import { SectionPortal } from '../../_deprecated/Explore'
-import CurrentUserContext from '../../contexts/CurrentUserContext'
+import { ModalHeader } from '../../../components/ModalHeader'
+import { TagContainer } from '../repos/Tags'
+import { Alert, AlertStatus, GqlError } from '../../../components/utils/Alert'
+import { SectionPortal } from '../../Explore'
+import CurrentUserContext from '../../../contexts/CurrentUserContext'
 
-import { CARDS, DELETE_CARD, REGISTER_CARD } from './queries'
+import { CARDS, DELETE_CARD, REGISTER_CARD } from '../../../components/users/queries'
 
 function _CardForm({ stripe, onCompleted }: any) {
   const [stripeError, setStripeError] = useState<any>(null)

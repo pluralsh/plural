@@ -5,7 +5,7 @@ import {
   IconFrame,
   InfoIcon,
 } from '@pluralsh/design-system'
-import { useTheme } from 'styled-components'
+import { ThemeContext } from 'styled-components'
 import { useNavigate } from 'react-router-dom'
 import { useContext } from 'react'
 
@@ -21,7 +21,7 @@ export function ServiceAccountBanner() {
   const previousUser = getPreviousUserData()
 
   const me = useContext(CurrentUserContext)
-  const theme = useTheme()
+  const theme = useContext(ThemeContext)
 
   if (!previousUser) {
     return null
@@ -57,7 +57,7 @@ export function ServiceAccountBanner() {
 
 export default function Subheader() {
   const navigate = useNavigate()
-  const theme = useTheme()
+  const theme = useContext(ThemeContext)
   const previousUser = getPreviousUserData()
 
   return (

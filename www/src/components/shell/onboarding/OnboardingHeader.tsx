@@ -1,5 +1,5 @@
-import { useTheme } from 'styled-components'
-import { Dispatch, useState } from 'react'
+import { ThemeContext } from 'styled-components'
+import { Dispatch, useContext, useState } from 'react'
 import {
   Button,
   DiscordIcon,
@@ -65,7 +65,7 @@ function RestartModal({ onRestart, open, onClose }) {
 }
 
 function OnboardingHeader({ onRestart, mode = 'wizard' }: OnboardingHeaderProps) {
-  const theme = useTheme()
+  const theme = useContext(ThemeContext)
   const [open, setOpen] = useState(false)
   const { section } = useSection()
 

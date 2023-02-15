@@ -15,8 +15,9 @@ import {
   RecipeSection,
 } from '../../../../generated/graphql'
 import { RECIPES_QUERY } from '../../../repository/queries'
-import { RECIPE_Q } from '../../../../_deprecated/components/repos/queries'
 import { CREATE_QUICK_STACK_MUTATION, INSTALL_STACK_SHELL_MUTATION } from '../../queries'
+
+import { RECIPE_Q } from '../../../repository/packages/queries'
 
 import { Application } from './Application'
 

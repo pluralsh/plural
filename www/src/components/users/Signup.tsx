@@ -1,6 +1,7 @@
 import {
   ComponentProps,
   useCallback,
+  useContext,
   useEffect,
   useRef,
   useState,
@@ -15,7 +16,7 @@ import {
   P,
 } from 'honorable'
 
-import { useTheme } from 'styled-components'
+import { ThemeContext } from 'styled-components'
 
 import { useOauthUrlsQuery, useSignupMutation } from '../../generated/graphql'
 import { WelcomeHeader } from '../utils/WelcomeHeader'
@@ -95,7 +96,7 @@ export function ConfirmPasswordField({
 }
 
 export function Signup() {
-  const theme = useTheme()
+  const theme = useContext(ThemeContext)
   const history = useHistory()
   const location = useLocation()
   const [email, setEmail] = useState(location?.state?.email || '')

@@ -9,7 +9,7 @@ import {
 } from '@pluralsh/design-system'
 import { useCallback, useContext } from 'react'
 import { Link } from 'react-router-dom'
-import { useTheme } from 'styled-components'
+import { ThemeContext } from 'styled-components'
 
 import {
   Notification as NotificationT,
@@ -216,7 +216,7 @@ function NotificationContent({
 
 function Notification({ notification, closePanel }: any) {
   const { actor, incident, insertedAt } = notification
-  const theme = useTheme()
+  const theme = useContext(ThemeContext)
 
   const url = getUrl(notification)
 

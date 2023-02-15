@@ -37,7 +37,7 @@ import {
   SidebarSection,
   TerminalIcon,
 } from '@pluralsh/design-system'
-import { useTheme } from 'styled-components'
+import { ThemeContext } from 'styled-components'
 
 import { getPreviousUserData } from '../../helpers/authentication'
 import { handlePreviousUserClick } from '../login/CurrentUser'
@@ -155,7 +155,7 @@ function Sidebar(props: ComponentProps<typeof DSSidebar>) {
     = useState(false)
   const sidebarWidth = collapsed ? 65 : 256 - 32 // 64 + 1px border
   const previousUserData = getPreviousUserData()
-  const theme = useTheme()
+  const theme = useContext(ThemeContext)
   const me = useContext(CurrentUserContext)
   const menuItems = MENU_ITEMS
   const { pathname } = useLocation()

@@ -12,8 +12,10 @@ import {
   useMemo,
   useReducer,
 } from 'react'
-import useUnmount from 'components/hooks/useUnmount'
+
 import { produce } from 'immer'
+
+import useUnmount from '../../hooks/useUnmount'
 
 const getTransitionProps = (isOpen: boolean) => ({
   from: { opacity: 0 /* , backdropFilter: 'blur(0px)' */ },

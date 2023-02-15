@@ -1,6 +1,6 @@
 import { useQuery } from '@apollo/client'
 import { Box } from 'grommet'
-import { useCallback, useMemo } from 'react'
+import { memo, useCallback, useMemo } from 'react'
 import { PageTitle, Table } from '@pluralsh/design-system'
 import { createColumnHelper } from '@tanstack/react-table'
 import isEmpty from 'lodash/isEmpty'
@@ -65,6 +65,17 @@ const columns = [
   }),
 ]
 
+const LoginAuditsTable = memo(({ logins, fetchMoreOnBottomReached }: any) => (!isEmpty(logins)
+  ? (
+    <Table
+      data={logins}
+      columns={columns}
+      onScrollCapture={e => fetchMoreOnBottomReached(e?.target)}
+      virtualizeRows
+      maxHeight="calc(100vh - 244px)"
+    />
+  ) : <>You do not have any user logins yet.</>))
+
 export function LoginAudits() {
   const { data, loading, fetchMore } = useQuery(LOGINS_Q, { fetchPolicy: 'cache-and-network' })
   const pageInfo = data?.oidcLogins?.pageInfo
@@ -90,16 +101,10 @@ export function LoginAudits() {
   return (
     <Box fill>
       <PageTitle heading="Logins" />
-      {!isEmpty(logins)
-        ? (
-          <Table
-            data={logins}
-            columns={columns}
-            onScrollCapture={e => fetchMoreOnBottomReached(e?.target)}
-            virtualizeRows
-            maxHeight="calc(100vh - 244px)"
-          />
-        ) : <>You do not have any user logins yet.</>}
+      <LoginAuditsTable
+        logins={logins}
+        fetchMoreOnBottomReached={fetchMoreOnBottomReached}
+      />
     </Box>
   )
 }

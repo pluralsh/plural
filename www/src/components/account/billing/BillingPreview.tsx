@@ -179,8 +179,8 @@ function BillingPreview({
       <Flex
         marginTop="large"
         justify="flex-end"
-        fontWeight={600}
         body1
+        color="text-xlight"
       >
         Total: ${totalClusters + totalUsers}/{yearly ? 'year' : 'month'}
       </Flex>

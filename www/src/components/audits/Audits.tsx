@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react'
+import { memo, useCallback, useMemo } from 'react'
 import { Box } from 'grommet'
 import { Link } from 'react-router-dom'
 import { useQuery } from '@apollo/client'
@@ -102,6 +102,17 @@ function resourceInfo({
   return { link: null, text: '' }
 }
 
+const AuditsTable = memo(({ audits, fetchMoreOnBottomReached }: any) => (!isEmpty(audits)
+  ? (
+    <Table
+      data={audits}
+      columns={columns}
+      onScrollCapture={e => fetchMoreOnBottomReached(e?.target)}
+      virtualizeRows
+      maxHeight="calc(100vh - 244px)"
+    />
+  ) : <>You do not have any audit logs yet.</>))
+
 export function Audits() {
   const { data, loading, fetchMore } = useQuery(AUDITS_Q, { fetchPolicy: 'cache-and-network' })
   const pageInfo = data?.audits?.pageInfo
@@ -138,16 +149,10 @@ export function Audits() {
       fill
     >
       <PageTitle heading="Audit logs" />
-      {!isEmpty(audits)
-        ? (
-          <Table
-            data={audits}
-            columns={columns}
-            onScrollCapture={e => fetchMoreOnBottomReached(e?.target)}
-            virtualizeRows
-            maxHeight="calc(100vh - 244px)"
-          />
-        ) : <>You do not have any audit logs yet.</>}
+      <AuditsTable
+        audits={audits}
+        fetchMoreOnBottomReached={fetchMoreOnBottomReached}
+      />
     </Box>
   )
 }

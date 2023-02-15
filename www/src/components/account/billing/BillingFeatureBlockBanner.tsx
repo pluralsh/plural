@@ -41,7 +41,7 @@ function BillingFeatureBlockBanner({ feature, planFeature }: BillingFeatureBlock
       borderRadius="large"
       padding="xxlarge"
       background={`url(${featureToImageUrl[feature]}) no-repeat top center / cover`}
-      backgroundColor="#191d24" //  Not defined in the design system because adapted from the background images
+      backgroundColor="#191d24" // Not defined in the design system because adapted from the background images
     >
       <Card
         padding="large"

@@ -1,7 +1,5 @@
-import { useContext } from 'react'
 import { Box, Text } from 'grommet'
 import { CheckIcon, ErrorIcon, InfoIcon } from '@pluralsh/design-system'
-import { ThemeContext } from 'styled-components'
 
 export const AlertStatus = {
   ERROR: 'er',

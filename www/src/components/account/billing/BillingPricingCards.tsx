@@ -128,7 +128,7 @@ function BillingPricingCards() {
               checked: true,
             },
             {
-              label: '24 hours SLA\'s',
+              label: '24 hours SLA',
               checked: true,
             },
             {
@@ -165,11 +165,11 @@ function BillingPricingCards() {
               checked: true,
             },
             {
-              label: 'Dedicated enf support',
+              label: 'Dedicated oncall engineer',
               checked: true,
             },
             {
-              label: '4 hours SLA\'s',
+              label: '4 hours SLA',
               checked: true,
             },
             {

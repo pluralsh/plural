@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@react-spring/web": "9.6.1"
+  }
+}

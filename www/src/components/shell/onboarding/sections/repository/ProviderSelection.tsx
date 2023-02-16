@@ -81,7 +81,7 @@ function ProviderSelection({ data }) {
           expanded={expanded}
           onExpand={setExpanded}
         >
-          Plural manages all cluster configurations via Git, and will provision a Github repository on your behalf. This repository is set up using scoped deploy keys to store the state of your workspace, and no oauth credentials are persisted.
+          Plural manages all cluster configurations via Git, and will provision a GitHub repository on your behalf. This repository is set up using scoped deploy keys to store the state of your workspace, and no oauth credentials are persisted.
         </Callout>
       </div>
 

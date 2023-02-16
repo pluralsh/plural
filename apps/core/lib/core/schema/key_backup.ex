@@ -26,7 +26,7 @@ defmodule Core.Schema.KeyBackup do
     |> cast(attrs, @valid)
     |> validate_digest()
     |> unique_constraint(:name, name: index_name(:key_backups, [:user_id, :name]))
-    |> unique_constraint(:digest, name: index_name(:key_backups, [:user_id, :name]))
+    |> unique_constraint(:digest, name: index_name(:key_backups, [:user_id, :digest]))
     |> unique_constraint(:vault_path)
     |> foreign_key_constraint(:user_id)
     |> repositories()

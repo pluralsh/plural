@@ -62,8 +62,6 @@ export function Clusters(): ReactElement | null {
 
   useEffect(() => (data ? setQueue(data?.upgradeQueues[0]) : data), [data])
 
-  console.log(queue)
-
   if (!data) {
     return (
       <Flex

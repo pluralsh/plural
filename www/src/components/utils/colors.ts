@@ -1,7 +1,4 @@
-import { normalizeColor } from 'grommet/utils'
-// @ts-expect-error
-import { randomColor } from 'randomcolor'
-import { useMemo } from 'react'
+import randomColor from 'randomcolor'
 
 // Colors used in graphs.
 export const COLORS = [
@@ -38,8 +35,4 @@ export const COLORS = [
 
 export function generateColor(i = -1) {
   return i >= 0 && i < COLORS.length ? COLORS[i] : randomColor()
-}
-
-export function useColorMap(theme, colors) {
-  return useMemo(() => (colors || COLORS).map(c => normalizeColor(c, theme)), [theme, colors])
 }

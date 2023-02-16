@@ -1,11 +1,15 @@
 import { useMutation, useQuery } from '@apollo/client'
 import { Box } from 'grommet'
-import { Button, Span } from 'honorable'
+import {
+  Button,
+  Div,
+  Flex,
+  Span,
+} from 'honorable'
 import moment from 'moment'
 import { useState } from 'react'
 import lookup from 'country-code-lookup'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
-
 import {
   CopyIcon,
   EmptyState,
@@ -20,7 +24,6 @@ import {
 } from '@pluralsh/design-system'
 
 import { Placeholder } from '../utils/Placeholder'
-
 import {
   appendConnection,
   deepUpdate,
@@ -38,15 +41,10 @@ import {
 import { obscure } from '../users/utils'
 import { LoopingLogo } from '../utils/AnimatedLogo'
 import { StandardScroller } from '../utils/SmoothScroller'
-
 import { Table, TableData, TableRow } from '../utils/Table'
-
 import { formatLocation } from '../../utils/geo'
-
 import { Chloropleth } from '../utils/Chloropleth'
-
 import { Confirm } from '../account/Confirm'
-
 import { DeleteIconButton } from '../utils/IconButtons'
 
 import { ListItem } from './ListItem'
@@ -123,13 +121,19 @@ function TokenMetrics({ token }: any) {
   }))
 
   return (
-    <Box
-      width="70vw"
-      height="50vh"
-      pad="small"
+    <Flex
+      direction="column"
+      gap="large"
     >
-      <Chloropleth data={metrics} />
-    </Box>
+      <Span
+        body2
+        color="text-xlight"
+      >USAGE METRICS
+      </Span>
+      <Div height="400px">
+        <Chloropleth data={metrics} />
+      </Div>
+    </Flex>
   )
 }
 
@@ -200,8 +204,11 @@ function AccessToken({ token, first, last }: any) {
               onClick={() => setGraph(true)}
             />
             <Modal
-              header="Usage metrics"
               open={graph}
+              size="large"
+              style={{ padding: 0 }}
+              maxWidth="900px"
+              width="900px"
               portal
               onClose={() => setGraph(false)}
             >

@@ -1,13 +1,12 @@
 import { useQuery } from '@apollo/client'
 import { Box } from 'grommet'
 import { memo, useCallback, useMemo } from 'react'
-import { PageTitle, Table } from '@pluralsh/design-system'
+import { IconFrame, PageTitle, Table } from '@pluralsh/design-system'
 import { createColumnHelper } from '@tanstack/react-table'
 import isEmpty from 'lodash/isEmpty'
 
 import { Flex } from 'honorable'
 
-import { RepoIcon } from '../repos/Repositories'
 import { LoopingLogo } from '../utils/AnimatedLogo'
 import { extendConnection } from '../../utils/graphql'
 import { Date } from '../utils/Date'
@@ -40,9 +39,15 @@ const columns = [
     id: 'repo',
     cell: (login: any) => (
       <Flex gap="xsmall">
-        <RepoIcon
-          repo={login.getValue().repository}
-          size="24px"
+        <IconFrame
+          size="small"
+          icon={(
+            <img
+              src={login.getValue().repository?.darkIcon || login.getValue().repository?.icon}
+              width="24px"
+              height="24px"
+            />
+          )}
         />{login.getValue().repository.name}
       </Flex>
     ),

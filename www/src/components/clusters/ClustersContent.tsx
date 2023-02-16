@@ -5,6 +5,7 @@ import {
   Banner,
   Button,
   Chip,
+  IconFrame,
   LoopingLogo,
   PageTitle,
   ReloadIcon,
@@ -18,7 +19,6 @@ import {
 
 import QueueContext from '../../contexts/QueueContext'
 import { appendConnection, extendConnection } from '../../utils/graphql'
-import { RepoIcon } from '../repos/Repositories'
 import { StandardScroller } from '../utils/SmoothScroller'
 
 import { QUEUE, UPGRADE_SUB } from './queries'
@@ -163,16 +163,22 @@ function UpgradesList({
 function UpgradeItem({ upgrade, acked, last }: { upgrade: Upgrade, acked: string, last: boolean }): ReactElement | null {
   const delivered = acked && upgrade.id <= acked
   const severity = delivered ? 'success' : 'neutral'
+  const { icon, darkIcon } = upgrade.repository
 
   return (
     <Flex
       borderBottom={last ? null : '1px solid border'}
       padding="medium"
     >
-      <RepoIcon
-        repo={upgrade.repository}
-        size="48px"
-        round=""
+      <IconFrame
+        size="small"
+        icon={(
+          <img
+            src={darkIcon || icon}
+            width="48"
+            height="48"
+          />
+        )}
       />
       <Flex
         direction="column"

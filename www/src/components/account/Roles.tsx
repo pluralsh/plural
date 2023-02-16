@@ -6,31 +6,22 @@ import { EmptyState, PageTitle, SearchIcon } from '@pluralsh/design-system'
 import { useContext, useState } from 'react'
 
 import { Placeholder } from '../utils/Placeholder'
-
 import CurrentUserContext from '../../contexts/CurrentUserContext'
-
 import { List, ListItem } from '../utils/List'
 import ListInput from '../utils/ListInput'
 import { extendConnection, removeConnection, updateCache } from '../../utils/graphql'
-
-import { canEdit } from '../users/EditAccount'
-
 import { DeleteIconButton } from '../utils/IconButtons'
 import { LoopingLogo } from '../utils/AnimatedLogo'
 import { StandardScroller } from '../utils/SmoothScroller'
-
 import { Permission } from '../../generated/graphql'
+import { canEdit } from '../../utils/account'
 
 import { DELETE_ROLE, ROLES_Q } from './queries'
-
 import { hasRbac } from './utils'
-
 import { Confirm } from './Confirm'
-
 import { Info } from './Info'
 import { EditRole } from './EditRole'
 import { CreateRole } from './CreateRole'
-
 import BillingLegacyUserBanner from './billing/BillingLegacyUserBanner'
 import BillingFeatureBlockBanner from './billing/BillingFeatureBlockBanner'
 

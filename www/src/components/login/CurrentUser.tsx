@@ -12,10 +12,10 @@ import { CurrentUserContextProvider } from '../../contexts/CurrentUserContext'
 import { growthbook } from '../../helpers/growthbook'
 
 import { setPreviousUserData, setToken, wipeToken } from '../../helpers/authentication'
-import { useNotificationSubscription } from '../incidents/Notifications'
 import { LoopingLogo } from '../utils/AnimatedLogo'
 import BillingSubscriptionProvider from '../account/billing/BillingSubscriptionProvider'
 import BillingPlatformPlansProvider from '../account/billing/BillingPlatformPlansProvider'
+import { useNotificationSubscription } from '../../hooks/useNotificationSubscription'
 
 // const POLL_INTERVAL=30000
 

@@ -33,12 +33,12 @@ import RepositoryContext from '../../contexts/RepositoryContext'
 import usePaginatedQuery from '../../hooks/usePaginatedQuery'
 import { LoopingLogo } from '../utils/AnimatedLogo'
 import InfiniteScroller from '../utils/InfiniteScroller'
-import { LOGS_SUB, TEST_LOGS } from '../repos/queries'
 import { Table, TableData, TableRow } from '../utils/Table'
 import { XTermTheme } from '../../theme'
 
 import { TESTS_QUERY } from './queries'
 import { RepositoryActions } from './misc'
+import { LOGS_SUB, TEST_LOGS } from './packages/queries'
 
 const statusAttrs = {
   QUEUED: { severity: 'neutral', icon: <StatusIpIcon /> },

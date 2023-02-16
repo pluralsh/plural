@@ -7,15 +7,11 @@ import {
   P,
 } from 'honorable'
 import moment from 'moment'
-
 import Fuse from 'fuse.js'
 
 import RepositoryContext from '../../contexts/RepositoryContext'
-
 import usePaginatedQuery from '../../hooks/usePaginatedQuery'
-
 import PluralConfigurationContext from '../../contexts/PluralConfigurationContext'
-
 import { LoopingLogo } from '../utils/AnimatedLogo'
 import InfiniteScroller from '../utils/InfiniteScroller'
 

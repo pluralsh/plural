@@ -1,7 +1,5 @@
-import { useContext } from 'react'
-import { Box, Text, ThemeContext } from 'grommet'
+import { Box, Text } from 'grommet'
 import { CheckIcon, ErrorIcon, InfoIcon } from '@pluralsh/design-system'
-import { normalizeColor } from 'grommet/utils'
 
 export const AlertStatus = {
   ERROR: 'er',
@@ -57,14 +55,13 @@ export function GqlError({ header, error }: any) {
 
 export function Alert({ status, header, description }: any) {
   const color = StatusToColor[status]
-  const theme = useContext(ThemeContext)
 
   return (
     <Box
       fill="horizontal"
       pad="small"
       border={{ color }}
-      background={`${normalizeColor(color, theme).toLowerCase()}40`}
+      background="fill-two"
       direction="row"
       gap="medium"
       align="center"

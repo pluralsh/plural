@@ -19,11 +19,11 @@ import {
   useDeleteGroupMutation,
 } from '../../generated/graphql'
 import { removeConnection, updateCache } from '../../utils/graphql'
-
 import ListInput from '../utils/ListInput'
 import { List } from '../utils/List'
 import { DeleteIconButton } from '../utils/IconButtons'
-import { canEdit } from '../users/EditAccount'
+
+import { canEdit } from '../../utils/account'
 
 import { Confirm } from './Confirm'
 import { ViewGroup } from './Group'
@@ -32,7 +32,6 @@ import { EditGroupAttributes, EditGroupMembers } from './EditGroup'
 import { Info } from './Info'
 import { hasRbac } from './utils'
 import { GroupsList } from './GroupsList'
-
 import BillingLegacyUserBanner from './billing/BillingLegacyUserBanner'
 import BillingFeatureBlockBanner from './billing/BillingFeatureBlockBanner'
 

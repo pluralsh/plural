@@ -1,6 +1,11 @@
 import { Flex } from 'honorable'
-import { useTheme } from 'styled-components'
-import { ReactElement, useMemo, useState } from 'react'
+import { ThemeContext } from 'styled-components'
+import {
+  ReactElement,
+  useContext,
+  useMemo,
+  useState,
+} from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { useDevTokenInputSecretCode } from '../hooks/useDevToken'
@@ -27,7 +32,7 @@ import {
 function Onboarding({ active, children }: Partial<OnboardingProps>) {
   useDevTokenInputSecretCode()
 
-  const theme = useTheme()
+  const theme = useContext(ThemeContext)
   const { section, setSection } = useSection(active)
   const navigate = useNavigate()
   const { fresh: isOnboarding } = useOnboarded()

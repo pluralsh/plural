@@ -1,14 +1,14 @@
-/// <reference types="vitest" />
+import { defineConfig, mergeConfig } from 'vite'
 
-import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import basicSsl from '@vitejs/plugin-basic-ssl'
 import nodePolyfills from 'rollup-plugin-polyfill-node'
-// import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill'
 import { VitePWA } from 'vite-plugin-pwa'
 
+import vitestConfig from './vitest.config'
+
 // https://vitejs.dev/config/
-export default defineConfig({
+export default mergeConfig(vitestConfig, defineConfig({
   plugins: [
     basicSsl(),
     react(),
@@ -43,9 +43,4 @@ export default defineConfig({
       util: 'util',
     },
   },
-  test: {
-    globals: true,
-    environment: 'jsdom',
-    setupFiles: ['src/setupTests.ts'],
-  },
-})
+}))

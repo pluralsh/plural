@@ -24,12 +24,13 @@ import isEqual from 'lodash/isEqual'
 import { BindingInput, fetchGroups, fetchUsers } from '../account/Typeaheads'
 import { GqlError } from '../utils/Alert'
 import { deepUpdate, updateCache } from '../../utils/graphql'
-import { REPO_Q } from '../repos/queries'
 import { sanitize } from '../account/utils'
 import { CREATE_PROVIDER, UPDATE_PROVIDER } from '../oidc/queries'
 import { AuthMethod } from '../oidc/types'
 import RepositoryContext from '../../contexts/RepositoryContext'
 import usePrevious from '../../hooks/usePrevious'
+
+import { REPO_Q } from './packages/queries'
 
 function UrlsInput({ uriFormat = '', urls, setUrls }: any) {
   const [baseScheme, basePath] = ['https://', '/oauth2/callback']

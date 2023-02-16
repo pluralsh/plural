@@ -4,7 +4,12 @@ import { useRef, useState } from 'react'
 import lookup from 'country-code-lookup'
 import { Box } from 'grommet'
 
-import { PageTitle, SubTab, TabList } from '@pluralsh/design-system'
+import {
+  Card,
+  PageTitle,
+  SubTab,
+  TabList,
+} from '@pluralsh/design-system'
 
 import { Chloropleth } from '../utils/Chloropleth'
 
@@ -50,14 +55,13 @@ export function AuditChloropleth() {
           ))}
         </TabList>
       </PageTitle>
-      <Box
-        fill
-        round="xsmall"
-        background="fill-one"
+      <Card
+        height="450px"
         overflow="hidden"
+        padding="medium"
       >
         <Chloropleth data={metrics} />
-      </Box>
+      </Card>
     </Box>
 
   )

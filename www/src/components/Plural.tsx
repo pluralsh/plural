@@ -19,38 +19,18 @@ import { Toast } from '@pluralsh/design-system'
 
 import { growthbook } from '../helpers/growthbook'
 import { useHistory } from '../router'
-
 import PluralConfigurationContext from '../contexts/PluralConfigurationContext'
 import CurrentUserContext from '../contexts/CurrentUserContext'
 import PosthogIdentify from '../utils/posthog'
 
 const ApplicationLayout = lazy(() => import('./layout/ApplicationLayout'))
 const BreadcrumbProvider = lazy(() => import('./Breadcrumbs'))
-const Chart = lazy(() => import('./repos/Chart'))
 const CloudShell = lazy(() => import('./shell/Shell'))
-const ImagePullMetrics = lazy(() => import('./repos/common/ImagePullMetrics'))
-const ImageVulnerabilities = lazy(() => import('./repos/common/ImageVulnerabilities'))
 const Marketplace = lazy(() => import('./marketplace/Marketplace'))
 const OAuthCallback = lazy(() => import('./shell/OAuthCallback'))
-const PackageConfiguration = lazy(() => import('./repos/common/PackageConfiguration'))
-const PackageDependencies = lazy(() => import('./repos/common/PackageDependencies'))
-const PackageReadme = lazy(() => import('./repos/common/PackageReadme'))
-const PackageSecurity = lazy(() => import('./repos/common/PackageSecurity'))
-const PackageUpdateQueue = lazy(() => import('./repos/common/PackageUpdateQueue'))
 const Publisher = lazy(() => import('./publisher/Publisher'))
-const Repository = lazy(() => import('./repository/Repository'))
-const RepositoryArtifacts = lazy(() => import('./repository/RepositoryArtifacts'))
-const RepositoryDeployments = lazy(() => import('./repository/RepositoryDeployments'))
-const RepositoryDescription = lazy(() => import('./repository/RepositoryDescription'))
-const RepositoryEdit = lazy(() => import('./repository/RepositoryEdit'))
-const RepositoryPackages = lazy(() => import('./repository/RepositoryPackages'))
-const RepositoryPackagesDocker = lazy(() => import('./repository/RepositoryPackagesDocker'))
-const RepositoryPackagesHelm = lazy(() => import('./repository/RepositoryPackagesHelm'))
-const RepositoryPackagesTerraform = lazy(() => import('./repository/RepositoryPackagesTerraform'))
-const RepositoryTests = lazy(() => import('./repository/RepositoryTests'))
 const Stack = lazy(() => import('./stack/Stack'))
 const StackApps = lazy(() => import('./stack/StackApps'))
-const Terraform = lazy(() => import('./repos/Terraform'))
 const Roadmap = lazy(() => import('./roadmap/Roadmap'))
 const RoadmapRoadmap = lazy(() => import('./roadmap/RoadmapRoadmap'))
 const RoadmapChangelog = lazy(() => import('./roadmap/RoadmapChangelog'))
@@ -67,39 +47,70 @@ const AuditChloropleth = lazy(() => import('./audits/AuditChloropleth').then(mod
 const AuditDirectory = lazy(() => import('./audits/AuditDirectory').then(module => ({ default: module.AuditDirectory })))
 const Audits = lazy(() => import('./audits/Audits').then(module => ({ default: module.Audits })))
 const ChecklistProvider = lazy(() => import('./shell/onboarding/checklist/Checklist').then(module => ({ default: module.ChecklistProvider })))
-// const OnboardingChecklist = lazy(() => import('./shell/onboarding/checklist/Checklist').then(module => ({ default: module.OnboardingChecklist })))
 const Clusters = lazy(() => import('./clusters/Clusters').then(module => ({ default: module.Clusters })))
 const PluralProvider = lazy(() => import('./login/CurrentUser').then(module => ({ default: module.PluralProvider })))
 const DeviceLoginNotif = lazy(() => import('./users/DeviceLoginNotif').then(module => ({ default: module.DeviceLoginNotif })))
-const Docker = lazy(() => import('./repos/Docker').then(module => ({ default: module.Docker })))
-const DockerRepository = lazy(() => import('./repos/Docker').then(module => ({ default: module.DockerRepository })))
 const Domains = lazy(() => import('./account/Domains').then(module => ({ default: module.Domains })))
 const EabCredentials = lazy(() => import('./profile/EabCredentials').then(module => ({ default: module.EabCredentials })))
-const EditAccount = lazy(() => import('./users/EditAccount').then(module => ({ default: module.EditAccount })))
 const Groups = lazy(() => import('./account/Groups').then(module => ({ default: module.Groups })))
-const IntegrationPage = lazy(() => import('./repos/Integrations').then(module => ({ default: module.IntegrationPage })))
 const LoginAudits = lazy(() => import('./audits/LoginAudits').then(module => ({ default: module.LoginAudits })))
 const MyProfile = lazy(() => import('./profile/MyProfile').then(module => ({ default: module.MyProfile })))
-const OIDCProvider = lazy(() => import('./repository/OIDCProvider').then(module => ({ default: module.OIDCProvider })))
-const OauthCreator = lazy(() => import('./integrations/OauthCreator').then(module => ({ default: module.OauthCreator })))
 const Profile = lazy(() => import('./profile/Profile').then(module => ({ default: module.Profile })))
 const PublicKeys = lazy(() => import('./profile/PublicKeys').then(module => ({ default: module.PublicKeys })))
 const Roles = lazy(() => import('./account/Roles').then(module => ({ default: module.Roles })))
 const Security = lazy(() => import('./profile/Security').then(module => ({ default: module.Security })))
 const ServiceAccounts = lazy(() => import('./account/ServiceAccounts').then(module => ({ default: module.ServiceAccounts })))
-const UpgradeQueue = lazy(() => import('./clusters/UpgradeQueue').then(module => ({ default: module.UpgradeQueue })))
-const UpgradeQueues = lazy(() => import('./clusters/UpgradeQueues').then(module => ({ default: module.UpgradeQueues })))
 const Users = lazy(() => import('./account/Users').then(module => ({ default: module.Users })))
 const VerifyEmailConfirmed = lazy(() => import('./users/EmailConfirmation').then(module => ({ default: module.VerifyEmailConfirmed })))
 
-function EditBilling(props) {
-  return (
-    <EditAccount
-      {...props}
-      billing
-    />
-  )
-}
+/** Repository - /repository/:name * */
+const Repository = lazy(() => import('./repository/Repository'))
+const RepositoryArtifacts = lazy(() => import('./repository/RepositoryArtifacts'))
+const RepositoryDeployments = lazy(() => import('./repository/RepositoryDeployments'))
+const RepositoryDescription = lazy(() => import('./repository/RepositoryDescription'))
+const RepositoryEdit = lazy(() => import('./repository/RepositoryEdit'))
+const RepositoryPackages = lazy(() => import('./repository/RepositoryPackages'))
+const RepositoryPackagesDocker = lazy(() => import('./repository/RepositoryPackagesDocker'))
+const RepositoryPackagesHelm = lazy(() => import('./repository/RepositoryPackagesHelm'))
+const RepositoryPackagesTerraform = lazy(() => import('./repository/RepositoryPackagesTerraform'))
+const RepositoryTests = lazy(() => import('./repository/RepositoryTests'))
+
+// Packages - Helm - /charts
+const Chart = lazy(() => import('./repository/packages/Chart'))
+const PackageReadme = lazy(() => import('./repository/packages/helm/PackageReadme'))
+const PackageConfiguration = lazy(() => import('./repository/packages/helm/PackageConfiguration'))
+const PackageDependencies = lazy(() => import('./repository/packages/helm/PackageDependencies'))
+const PackageSecurity = lazy(() => import('./repository/packages/helm/PackageSecurity'))
+const PackageUpdateQueue = lazy(() => import('./repository/packages/helm/PackageUpdateQueue'))
+
+// Packages - Docker - /dkr/img
+const Docker = lazy(() => import('./repository/packages/Docker').then(module => ({ default: module.Docker })))
+const DockerRepository = lazy(() => import('./repository/packages/Docker').then(module => ({ default: module.DockerRepository })))
+const ImagePullMetrics = lazy(() => import('./repository/packages/docker/ImagePullMetrics'))
+const ImageVulnerabilities = lazy(() => import('./repository/packages/docker/ImageVulnerabilities'))
+
+// Packages - Terraform - /terraform
+const Terraform = lazy(() => import('./repository/packages/Terraform'))
+
+// OIDC - /oidc
+const OIDCProvider = lazy(() => import('./repository/OIDCProvider').then(module => ({ default: module.OIDCProvider })))
+
+// TODO: Deprecated or unused features
+// const OauthCreator = lazy(() => import('../_deprecated/components/integrations/OauthCreator').then(module => ({ default: module.OauthCreator })))
+// const OnboardingChecklist = lazy(() => import('./shell/onboarding/checklist/Checklist').then(module => ({ default: module.OnboardingChecklist })))
+// const DockerRepository = lazy(() => import('../_deprecated/components/repos/Docker').then(module => ({ default: module.DockerRepository })))
+// const IntegrationPage = lazy(() => import('../_deprecated/components/repos/Integrations').then(module => ({ default: module.IntegrationPage })))
+// const EditAccount = lazy(() => import('./users/EditAccount').then(module => ({ default: module.EditAccount })))
+// const UpgradeQueue = lazy(() => import('./clusters/UpgradeQueue').then(module => ({ default: module.UpgradeQueue })))
+// const UpgradeQueues = lazy(() => import('./clusters/UpgradeQueues').then(module => ({ default: module.UpgradeQueues })))
+// function EditBilling(props) {
+//   return (
+//     <EditAccount
+//       {...props}
+//       billing
+//     />
+//   )
+// }
 
 function WrapStripe({ children }: any) {
   const { stripePublishableKey } = useContext(PluralConfigurationContext)
@@ -190,10 +201,11 @@ export function PluralInner() {
             <TestBanner />
             <Routes>
               {/* --- OAUTH --- */}
-              <Route
-                path="/oauth/accept/:service"
-                element={<OauthCreator />}
-              />
+              {/* TODO: Enable if route will be used by the app */}
+              {/* <Route */}
+              {/*  path="/oauth/accept/:service" */}
+              {/*  element={<OauthCreator />} */}
+              {/* /> */}
               {/* --- APPLICATIONS --- */}
               <Route
                 path="/marketplace"
@@ -204,10 +216,11 @@ export function PluralInner() {
                 element={<Marketplace installed />}
               />
               {/* --- REPOSITORIES --- */}
-              <Route
-                path="/repositories/:id/integrations"
-                element={<IntegrationPage />}
-              />
+              {/* TODO: Enable if route will be accessible within the app */}
+              {/* <Route */}
+              {/*  path="/repositories/:id/integrations" */}
+              {/*  element={<IntegrationPage />} */}
+              {/* /> */}
               {/* --- PROFILE --- */}
               <Route
                 path="/profile"
@@ -406,10 +419,11 @@ export function PluralInner() {
                     index
                     element={<AccountAttributes />}
                   />
-                  <Route
-                    path=":section/*"
-                    element={<EditAccount />}
-                  />
+                  {/* TODO: Enable if route will be accessible within the app */}
+                  {/* <Route */}
+                  {/*  path=":section/*" */}
+                  {/*  element={<EditAccount />} */}
+                  {/* /> */}
                 </Route>
                 <Route
                   path="users"
@@ -445,10 +459,11 @@ export function PluralInner() {
                   />
                 </Route>
               </Route>
-              <Route
-                path="/account/billing/:section"
-                element={<EditBilling />}
-              />
+              {/* TODO: Enable if route will be accessible within the app */}
+              {/* <Route */}
+              {/*  path="/account/billing/:section" */}
+              {/*  element={<EditBilling />} */}
+              {/* /> */}
               <Route
                 path="/audits"
                 element={<AuditDirectory />}
@@ -481,14 +496,15 @@ export function PluralInner() {
                 element={<Publisher />}
               />
               {/* --- UPGRADES --- */}
-              <Route
-                path="/upgrades/:id"
-                element={<UpgradeQueue />}
-              />
-              <Route
-                path="/upgrades"
-                element={<UpgradeQueues />}
-              />
+              {/* TODO: Enable if route will be accessible within the app */}
+              {/* <Route */}
+              {/*  path="/upgrades/:id" */}
+              {/*  element={<UpgradeQueue />} */}
+              {/* /> */}
+              {/* <Route */}
+              {/*  path="/upgrades" */}
+              {/*  element={<UpgradeQueues />} */}
+              {/* /> */}
               <Route
                 path="/clusters"
                 element={<Clusters />}

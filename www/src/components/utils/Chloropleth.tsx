@@ -1,18 +1,19 @@
 import { useContext } from 'react'
-import { Box, Text, ThemeContext } from 'grommet'
+import { Box, Text } from 'grommet'
 import { ResponsiveChoropleth } from '@nivo/geo'
 import max from 'lodash/max'
-import { normalizeColor } from 'grommet/utils'
+import { ThemeContext } from 'styled-components'
+
+import { StyledTheme } from '../../types/styled'
 
 import countries from './world_countries.json'
-import { useColorMap } from './colors'
 
-const COLOR_MAP = [
-  'blue-light-2',
-  'blue-light',
-  'blue',
-  'blue-dark',
-  'blue-dark-2',
+const COLOR_MAP = (theme: StyledTheme) => [
+  theme.global.colors['blue-light-2'],
+  theme.global.colors['blue-light'],
+  theme.global.colors.blue,
+  theme.global.colors['blue-dark'],
+  theme.global.colors['blue-dark-2'],
 ]
 
 function Tooltip({ feature }: any) {
@@ -50,39 +51,33 @@ function Tooltip({ feature }: any) {
 export function Chloropleth({ data }: any) {
   const maximum = max(data.map(({ value }) => value)) as number
   const theme = useContext(ThemeContext)
-  const colors = useColorMap(theme, COLOR_MAP)
 
   return (
     <ResponsiveChoropleth
       data={data}
-      theme={{ textColor: normalizeColor('dark-5', theme) }}
+      theme={{ textColor: theme.colors['text-xlight'] }}
       features={countries.features}
       label="properties.name"
       valueFormat=".2s"
       domain={[0, maximum + 1]}
-      colors={colors}
-      unknownColor={normalizeColor('dark-5', theme)}
+      colors={COLOR_MAP(theme)}
+      unknownColor={theme.colors['fill-two']}
       enableGraticule
-      graticuleLineColor={normalizeColor('card', theme)}
+      graticuleLineColor={theme.colors['fill-three']}
       borderWidth={0.5}
-      isInteractive
-      onClick={console.log}
-      borderColor={normalizeColor('cardHover', theme)}
+      borderColor={theme.global.colors.cardHover}
       projectionType="naturalEarth1"
+      projectionScale={150}
       tooltip={Tooltip}
       legends={[
         {
-          anchor: 'bottom-left',
+          anchor: 'left',
           direction: 'column',
           justify: true,
-          translateX: 20,
-          translateY: -100,
-          itemsSpacing: 0,
-          itemWidth: 94,
-          itemHeight: 18,
-          itemDirection: 'left-to-right',
+          translateX: 50,
+          itemWidth: 96,
+          itemHeight: 16,
           itemOpacity: 0.85,
-          symbolSize: 18,
           effects: [
             {
               on: 'hover',

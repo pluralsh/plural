@@ -1,115 +1,110 @@
 import { useQuery } from '@apollo/client'
-import { Box, Text } from 'grommet'
-import { useCallback, useState } from 'react'
+import { Box } from 'grommet'
+import { memo, useCallback, useMemo } from 'react'
+import { PageTitle, Table } from '@pluralsh/design-system'
+import { createColumnHelper } from '@tanstack/react-table'
+import isEmpty from 'lodash/isEmpty'
 
-import { PageTitle } from '@pluralsh/design-system'
-
-import { Span } from 'honorable'
-
-import { Placeholder } from '../utils/Placeholder'
+import { Flex } from 'honorable'
 
 import { RepoIcon } from '../repos/Repositories'
-
 import { LoopingLogo } from '../utils/AnimatedLogo'
-import { ReturnToBeginning } from '../utils/ReturnToBeginning'
-import { StandardScroller } from '../utils/SmoothScroller'
-import { Table, TableData, TableRow } from '../utils/Table'
-
 import { extendConnection } from '../../utils/graphql'
-
 import { Date } from '../utils/Date'
 
 import { AuditUser } from './AuditUser'
 import { Location } from './Location'
-
 import { LOGINS_Q } from './queries'
 
-function LoginRow({ login, last }: any) {
-  return (
-    <TableRow last={last}>
-      <TableData>
-        <AuditUser
-          user={login.user}
-          width="20%"
-        />
-      </TableData>
-      <TableData><Date date={login.insertedAt} /></TableData>
-      <TableData>
-        <AuditUser user={login.owner} />
-      </TableData>
-      <TableData>
-        <Box
-          flex={false}
-          direction="row"
-          gap="xsmall"
-          align="center"
-        >
-          <RepoIcon
-            repo={login.repository}
-            size="24px"
-          />
-          <Text size="small">{login.repository.name}</Text>
-        </Box>
-      </TableData>
-      <TableData>
+const FETCH_MARGIN = 30
+
+const COLUMN_HELPER = createColumnHelper<any>()
+
+const columns = [
+  COLUMN_HELPER.accessor(login => login.user, {
+    id: 'user',
+    cell: (user: any) => (<AuditUser user={user.getValue()} />),
+    header: 'User',
+  }),
+  COLUMN_HELPER.accessor(login => login.insertedAt, {
+    id: 'insertedAt',
+    cell: (insertedAt: any) => <Date date={insertedAt.getValue()} />,
+    header: 'Event time',
+  }),
+  COLUMN_HELPER.accessor(login => login.owner, {
+    id: 'owner',
+    cell: (owner: any) => <AuditUser user={owner.getValue()} />,
+    header: 'Owner',
+  }),
+  COLUMN_HELPER.accessor(login => login, {
+    id: 'repo',
+    cell: (login: any) => (
+      <Flex gap="xsmall">
+        <RepoIcon
+          repo={login.getValue().repository}
+          size="24px"
+        />{login.getValue().repository.name}
+      </Flex>
+    ),
+    header: 'Repository',
+  }),
+  COLUMN_HELPER.accessor(login => login, {
+    id: 'locationIp',
+    cell: (login: any) => {
+      const { ip, country, city } = login.getValue()
+
+      return (
         <Location
-          ip={login.ip}
-          country={login.country}
-          city={login.city}
+          ip={ip}
+          country={country}
+          city={city}
         />
-      </TableData>
-    </TableRow>
-  )
-}
+      )
+    },
+    header: 'Location / IP',
+  }),
+]
+
+const LoginAuditsTable = memo(({ logins, fetchMoreOnBottomReached }: any) => (!isEmpty(logins)
+  ? (
+    <Table
+      data={logins}
+      columns={columns}
+      onScrollCapture={e => fetchMoreOnBottomReached(e?.target)}
+      virtualizeRows
+      maxHeight="calc(100vh - 244px)"
+    />
+  ) : <>You do not have any user logins yet.</>))
 
 export function LoginAudits() {
-  const [listRef, setListRef] = useState<any>(null)
-  const [scrolled, setScrolled] = useState(false)
   const { data, loading, fetchMore } = useQuery(LOGINS_Q, { fetchPolicy: 'cache-and-network' })
-  const returnToBeginning = useCallback(() => listRef.scrollToItem(0), [listRef])
+  const pageInfo = data?.oidcLogins?.pageInfo
+  const edges = data?.oidcLogins?.edges
+  const logins = useMemo(() => edges?.map(({ node }) => node) || [], [edges])
+
+  const fetchMoreOnBottomReached = useCallback((element?: HTMLDivElement | undefined) => {
+    if (!element) return
+
+    const { scrollHeight, scrollTop, clientHeight } = element
+
+        // Once scrolled within FETCH_MARGIN of the bottom of the table, fetch more data if there is any.
+    if (scrollHeight - scrollTop - clientHeight < FETCH_MARGIN && !loading && pageInfo.hasNextPage) {
+      fetchMore({
+        variables: { cursor: pageInfo.endCursor },
+        updateQuery: (prev, { fetchMoreResult: { oidcLogins } }) => extendConnection(prev, oidcLogins, 'oidcLogins'),
+      })
+    }
+  }, [fetchMore, loading, pageInfo])
 
   if (!data) return <LoopingLogo />
-
-  const { edges, pageInfo } = data.oidcLogins
 
   return (
     <Box fill>
       <PageTitle heading="Logins" />
-      {edges.length
-        ? (
-          <Table
-            headers={['User', 'Event time', 'Owner', 'Repository', 'Location / IP']}
-            sizes={['20%', '20%', '20%', '20%', '20%']}
-            background="fill-one"
-            border="1px solid border"
-            width="100%"
-            height="100%"
-          >
-            <Box fill>
-              {scrolled && <ReturnToBeginning beginning={returnToBeginning} />}
-              <StandardScroller
-                listRef={listRef}
-                setListRef={setListRef}
-                hasNextPage={pageInfo.hasNextPage}
-                items={edges}
-                loading={loading}
-                handleScroll={setScrolled}
-                placeholder={Placeholder}
-                mapper={({ node }, { next }) => (
-                  <LoginRow
-                    key={node.id}
-                    login={node}
-                    last={!next.node}
-                  />
-                )}
-                loadNextPage={() => pageInfo.hasNextPage && fetchMore({
-                  variables: { cursor: pageInfo.endCursor },
-                  updateQuery: (prev, { fetchMoreResult: { oidcLogins } }) => extendConnection(prev, oidcLogins, 'oidcLogins'),
-                })}
-              />
-            </Box>
-          </Table>
-        ) : <Span>You do not have any user logins yet.</Span>}
+      <LoginAuditsTable
+        logins={logins}
+        fetchMoreOnBottomReached={fetchMoreOnBottomReached}
+      />
     </Box>
   )
 }

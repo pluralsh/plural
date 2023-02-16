@@ -5,6 +5,7 @@ import {
   Banner,
   Button,
   Chip,
+  IconFrame,
   LoopingLogo,
   PageTitle,
   ReloadIcon,
@@ -162,18 +163,23 @@ function UpgradesList({
 function UpgradeItem({ upgrade, acked, last }: { upgrade: Upgrade, acked: string, last: boolean }): ReactElement | null {
   const delivered = acked && upgrade.id <= acked
   const severity = delivered ? 'success' : 'neutral'
+  const { icon, darkIcon } = upgrade.repository
 
   return (
     <Flex
       borderBottom={last ? null : '1px solid border'}
       padding="medium"
     >
-      {/* TODO: Use proper component */}
-      {/* <RepoIcon */}
-      {/*  repo={upgrade.repository} */}
-      {/*  size="48px" */}
-      {/*  round="" */}
-      {/* /> */}
+      <IconFrame
+        size="small"
+        icon={(
+          <img
+            src={darkIcon || icon}
+            width="48"
+            height="48"
+          />
+        )}
+      />
       <Flex
         direction="column"
         paddingLeft={12}

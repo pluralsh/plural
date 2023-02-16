@@ -63,7 +63,7 @@ const ServiceAccounts = lazy(() => import('./account/ServiceAccounts').then(modu
 const Users = lazy(() => import('./account/Users').then(module => ({ default: module.Users })))
 const VerifyEmailConfirmed = lazy(() => import('./users/EmailConfirmation').then(module => ({ default: module.VerifyEmailConfirmed })))
 
-/** Repository - /repository * */
+/** Repository - /repository/:name * */
 const Repository = lazy(() => import('./repository/Repository'))
 const RepositoryArtifacts = lazy(() => import('./repository/RepositoryArtifacts'))
 const RepositoryDeployments = lazy(() => import('./repository/RepositoryDeployments'))
@@ -92,7 +92,7 @@ const ImageVulnerabilities = lazy(() => import('./repository/packages/docker/Ima
 // Packages - Terraform - /terraform
 const Terraform = lazy(() => import('./repository/packages/Terraform'))
 
-/** OIDC - /oidc * */
+// OIDC - /oidc
 const OIDCProvider = lazy(() => import('./repository/OIDCProvider').then(module => ({ default: module.OIDCProvider })))
 
 // TODO: Deprecated or unused features

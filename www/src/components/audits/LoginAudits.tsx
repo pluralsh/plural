@@ -1,7 +1,7 @@
 import { useQuery } from '@apollo/client'
 import { Box, Text } from 'grommet'
 import { useCallback, useState } from 'react'
-import { PageTitle } from '@pluralsh/design-system'
+import { IconFrame, PageTitle } from '@pluralsh/design-system'
 import { Span } from 'honorable'
 
 import { Placeholder } from '../utils/Placeholder'
@@ -17,6 +17,8 @@ import { Location } from './Location'
 import { LOGINS_Q } from './queries'
 
 function LoginRow({ login, last }: any) {
+  const { icon, darkIcon } = login.repository
+
   return (
     <TableRow last={last}>
       <TableData>
@@ -36,11 +38,16 @@ function LoginRow({ login, last }: any) {
           gap="xsmall"
           align="center"
         >
-          {/* TODO: Use RepoIcon component */}
-          {/* <RepoIcon */}
-          {/*  repo={login.repository} */}
-          {/*  size="24px" */}
-          {/* /> */}
+          <IconFrame
+            size="small"
+            icon={(
+              <img
+                src={darkIcon || icon}
+                width="24"
+                height="24"
+              />
+            )}
+          />
           <Text size="small">{login.repository.name}</Text>
         </Box>
       </TableData>

@@ -17,6 +17,12 @@ const featureToPunchline = {
   roles: 'Define granular permissions for your organization\'s users and apply them to groups or individuals.',
 }
 
+const featureToImageUrl = {
+  'service accounts': '/placeholder-service-accounts.png',
+  groups: '/placeholder-groups.png',
+  roles: '/placeholder-roles.png',
+}
+
 function BillingFeatureBlockBanner({ feature, planFeature }: BillingFeatureBlockBannerPropsType) {
   const { account } = useContext(SubscriptionContext)
 
@@ -25,15 +31,17 @@ function BillingFeatureBlockBanner({ feature, planFeature }: BillingFeatureBlock
   return (
     <Flex
       position="absolute"
-      top={0}
+      top={88}
       left={0}
       right={0}
       bottom={0}
       align="center"
-      justify="center"
+      justify="flex-start"
       direction="column"
       borderRadius="large"
-      padding="medium"
+      padding="xxlarge"
+      background={`url(${featureToImageUrl[feature]}) no-repeat top center / cover`}
+      backgroundColor="#191d24" // Not defined in the design system because adapted from the background images
     >
       <Card
         padding="large"

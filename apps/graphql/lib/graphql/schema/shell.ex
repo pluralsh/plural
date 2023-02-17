@@ -15,13 +15,17 @@ defmodule GraphQl.Schema.Shell do
   enum :scm_provider do
     value :github
     value :gitlab
+    value :manual
   end
 
   input_object :scm_attributes do
-    field :provider, :scm_provider
-    field :token,    non_null(:string)
-    field :name,     non_null(:string)
-    field :org,      :string
+    field :provider,    :scm_provider
+    field :token,       :string
+    field :name,        :string
+    field :org,         :string
+    field :git_url,     :string
+    field :public_key,  :string
+    field :private_key, :string
   end
 
   input_object :workspace_attributes do
@@ -66,6 +70,7 @@ defmodule GraphQl.Schema.Shell do
     field :provider,    non_null(:provider)
     field :git_url,     non_null(:string)
     field :aes_key,     non_null(:string)
+    field :missing,     list_of(:string)
 
     field :cluster,     non_null(:string), resolve: fn
       %{workspace: %{cluster: cluster}}, _, _ -> {:ok, cluster}

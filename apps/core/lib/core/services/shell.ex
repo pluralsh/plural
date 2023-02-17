@@ -57,28 +57,25 @@ defmodule Core.Services.Shell do
     end)
     |> add_operation(:git, fn
       %{fetch: nil, create: shell} ->
-        %{provider: p, token: t, name: n} = args = attrs[:scm]
-        with {:ok, url, pub, priv, user} <- Scm.setup_repository(p, user.email, t, args[:org], n) do
+        with {:ok, url, pub, priv, user} <- git_info(attrs[:scm], user) do
           shell
           |> CloudShell.changeset(%{git_url: url, ssh_public_key: pub, ssh_private_key: priv, git_info: user})
           |> Core.Repo.update()
         end
       %{create: shell} -> {:ok, shell}
     end)
-    # |> add_operation(:cluster, fn %{git: %CloudShell{workspace: wspace} = shell} ->
-    #   Clusters.create_cluster(%{
-    #     provider: shell.provider,
-    #     name: wspace.cluster,
-    #     domain: wspace.subdomain,
-    #     git_url: shell.git_url
-    #   }, user)
-    # end)
     |> add_operation(:backup, fn %{git: %{git_url: url, aes_key: key, workspace: %{cluster: cluster}}} ->
       Encryption.create_backup(%{name: "shell:#{cluster}:#{Core.random_phrase(2)}", key: key, repositories: [url]}, user)
     end)
     |> add_operation(:init, fn %{create: %CloudShell{} = shell} -> reboot(shell) end)
     |> execute(extract: :git)
   end
+
+  defp git_info(%{provider: :manual, git_url: url, public_key: pub, private_key: priv}, user) when is_binary(url),
+    do: {:ok, url, pub, priv, %{name: user.name, email: user.email}}
+  defp git_info(%{provider: p, token: t, name: n} = args, user) when is_binary(t) and is_binary(n),
+    do: Scm.setup_repository(p, user.email, t, args[:org], n)
+  defp git_info(_, _), do: {:error, "you did not provide enough information to configure a git repository"}
 
   @doc """
   updates your cloud shell instance and restarts it
@@ -102,7 +99,7 @@ defmodule Core.Services.Shell do
   def setup_shell(%User{id: user_id}) do
     shell = get_shell!(user_id)
     case Client.setup(shell) do
-      {:ok, _} -> {:ok, shell}
+      {:ok, %Client.Setup{missing: missing}} -> {:ok, %{shell | missing: missing}}
       error -> error
     end
   end

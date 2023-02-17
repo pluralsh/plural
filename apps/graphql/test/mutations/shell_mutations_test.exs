@@ -50,6 +50,53 @@ defmodule GraphQl.ShellMutationsTest do
       assert created["gitUrl"] == "git@github.com:pluralsh/demo.git"
       assert created["aesKey"]
     end
+
+    test "it will handle manual git credentials" do
+      %{email: e} = user = insert(:user, roles: %{admin: true})
+
+      expect(Pods, :fetch, fn _ -> {:ok, Pods.pod("plrl-shell-1", e)} end)
+      {:ok, priv, pub} = Core.Shell.Scm.keypair(e)
+
+      expect(Core.Clients.Vault, :write, fn _, _ -> {:ok, %{}} end)
+
+      attrs = %{
+        "provider" => "AWS",
+        "scm" => %{
+          "provider" => "MANUAL",
+          "gitUrl" => "git@github.com:pluralsh/demo.git",
+          "publicKey" => pub,
+          "privateKey" => priv
+        },
+        "workspace" => %{
+          "cluster" => "plural",
+          "region" => "us-east-1",
+          "bucketPrefix" => "plrl",
+          "subdomain" => "demo.onplural.sh"
+        },
+        "credentials" => %{
+          "aws" => %{
+            "accessKeyId" => "access-key",
+            "secretAccessKey" => "secret-key"
+          }
+        }
+      }
+
+      {:ok, %{data: %{"createShell" => created}}} = run_query("""
+        mutation Create($attrs: CloudShellAttributes!) {
+          createShell(attributes: $attrs) {
+            id
+            provider
+            gitUrl
+            aesKey
+          }
+        }
+      """, %{"attrs" => attrs}, %{current_user: user})
+
+      assert created["id"]
+      assert created["provider"] == "AWS"
+      assert created["gitUrl"] == "git@github.com:pluralsh/demo.git"
+      assert created["aesKey"]
+    end
   end
 
   describe "updateShell" do
@@ -137,15 +184,19 @@ defmodule GraphQl.ShellMutationsTest do
       user = insert(:user)
       shell = insert(:cloud_shell, user: user)
 
-      expect(Core.Shell.Client, :setup, fn _ -> {:ok, %{}} end)
+      expect(Core.Shell.Client, :setup, fn _ -> {:ok, %Core.Shell.Client.Setup{missing: ["permission"]}} end)
 
       {:ok, %{data: %{"setupShell" => found}}} = run_query("""
         mutation {
-          setupShell { id }
+          setupShell {
+            id
+            missing
+          }
         }
       """, %{}, %{current_user: user})
 
       assert found["id"] == shell.id
+      assert found["missing"] == ["permission"]
     end
   end
 

@@ -232,11 +232,12 @@ defmodule Core.Services.ShellTest do
 
       pod = Pods.pod("plrl-shell-1", "mjg@plural.sh")
       expect(Kazan, :run, fn _ -> {:ok, %{pod | status: %CoreV1.PodStatus{pod_ip: "10.0.1.0"}}} end)
-      expect(HTTPoison, :post, fn _, _, _, _ -> {:ok, %HTTPoison.Response{status_code: 200}} end)
+      expect(HTTPoison, :post, fn _, _, _, _ -> {:ok, %HTTPoison.Response{status_code: 200, body: Jason.encode!(%{missing: ["permission"]})}} end)
 
       {:ok, setup} = Shell.setup_shell(user)
 
       assert setup.id == shell.id
+      assert setup.missing == ["permission"]
     end
   end
 

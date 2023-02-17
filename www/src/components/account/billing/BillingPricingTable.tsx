@@ -80,7 +80,7 @@ function BillingPricingTable() {
           Discord Forum
         </Div>
         <Div {...firstColumnCellProps}>
-          Access to community engineers
+          Community support
         </Div>
         <Div {...firstColumnCellProps}>
           Private Slack Connect to Plural engineers
@@ -101,13 +101,13 @@ function BillingPricingTable() {
           Coverage
         </Div>
         <Div {...firstColumnCellProps}>
-          Enforced SSO
+          Authentication
         </Div>
         <Div {...firstColumnCellProps}>
           VPN
         </Div>
         <Div {...firstColumnCellProps}>
-          Audit log
+          Audit logs
         </Div>
         <Div {...firstColumnCellProps}>
           SOC 2
@@ -186,7 +186,7 @@ function BillingPricingTable() {
           Best effort
         </Div>
         <Div body2>
-          Google SSO + OIDC
+          Google OAuth + OIDC
         </Div>
         <Div>
           <CloseIcon color="icon-default" />
@@ -263,7 +263,7 @@ function BillingPricingTable() {
           Best effort
         </Div>
         <Div body2>
-          Google SSO + OIDC
+          Google OAuth + OIDC
         </Div>
         <Div>
           <CheckIcon color="icon-success" />
@@ -359,7 +359,7 @@ function BillingPricingTable() {
           {...lastColumnCellProps}
           body2
         >
-          SAML + Google SSO + OIDC
+          SSO + Google OAuth + OIDC
         </Div>
         <Div {...lastColumnCellProps}>
           <CheckIcon color="icon-success" />

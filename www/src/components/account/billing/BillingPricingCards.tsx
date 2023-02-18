@@ -87,11 +87,11 @@ function BillingPricingCards() {
               checked: true,
             },
             {
-              label: 'Enforced SSO',
+              label: 'OAuth integration',
               checked: true,
             },
             {
-              label: 'Acces to community',
+              label: 'Community support',
               checked: true,
             },
           ]}
@@ -116,19 +116,23 @@ function BillingPricingCards() {
           )}
           items={[
             {
-              label: 'Open-source perks',
+              label: 'Everything in Open-source plan',
               checked: false,
             },
             {
-              label: 'User management',
+              label: '24 hour SLA',
+              checked: true,
+            },
+            {
+              label: 'Advanced user management',
+              checked: true,
+            },
+            {
+              label: 'Audit logs',
               checked: true,
             },
             {
               label: 'VPN',
-              checked: true,
-            },
-            {
-              label: '24 hours SLA',
               checked: true,
             },
             {
@@ -157,19 +161,19 @@ function BillingPricingCards() {
           )}
           items={[
             {
-              label: 'Professional perks',
+              label: 'Everything in Pro plan',
               checked: false,
             },
             {
-              label: 'Audit logs',
+              label: '4 hour SLA',
               checked: true,
             },
             {
-              label: 'Dedicated oncall engineer',
+              label: 'Dedicated SRE',
               checked: true,
             },
             {
-              label: '4 hours SLA',
+              label: 'SSO',
               checked: true,
             },
             {

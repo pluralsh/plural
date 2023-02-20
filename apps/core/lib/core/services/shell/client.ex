@@ -5,16 +5,33 @@ defmodule Core.Shell.Client do
   alias Core.Shell.Models
   require Logger
 
+  defmodule Setup do
+    require Logger
+
+    @type t :: %__MODULE__{}
+    defstruct [missing: []]
+
+    def decode(str) do
+      case Poison.decode(str, as: %__MODULE__{}) do
+        {:ok, res} -> {:ok, res}
+        _ ->
+          Logger.info "unusual setup response: #{str}"
+          {:ok, %__MODULE__{}}
+      end
+    end
+  end
+
   @timeout 90_000
   @timeout_opts [timeout: @timeout, recv_timeout: @timeout]
 
   @headers [{"accept", "*/*"}, {"content-type", "application/json"}]
 
+  @spec setup(CloudShell.t) :: {:ok, Setup.t} | {:error, term}
   def setup(%CloudShell{pod_name: name} = shell) do
     with {:ok, ip} <- Pods.ip(name),
          {:ok, req} <- request(shell) do
       case HTTPoison.post("http://#{ip}:8080/v1/setup", Poison.encode!(req), @headers, @timeout_opts) do
-        {:ok, %HTTPoison.Response{status_code: 200}} -> {:ok, true}
+        {:ok, %HTTPoison.Response{status_code: 200, body: body}} -> Setup.decode(body)
         error -> handle_error(error)
       end
     end

@@ -129,6 +129,7 @@ defmodule Core.Schema.CloudShell do
     field :ssh_public_key,  EncryptedString
     field :ssh_private_key, EncryptedString
     field :bucket_prefix,   :string
+    field :missing,         {:array, :string}, virtual: true
 
     embeds_one :git_info,    GitInfo, on_replace: :update
     embeds_one :workspace,   Workspace, on_replace: :update

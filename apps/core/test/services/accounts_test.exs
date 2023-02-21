@@ -348,6 +348,22 @@ defmodule Core.Services.AccountsTest do
       assert_receive {:event, %PubSub.UserCreated{item: ^user}}
     end
 
+    test "Existing root users will have account de-rooted", %{user: user, account: account} do
+      %{user: root, account: a2} = setup_root_user([]) |> Map.new()
+      {:ok, invite} = Accounts.create_invite(%{email: root.email}, user)
+
+      {:ok, user} = Accounts.realize_invite(%{
+        password: "some long password",
+        name: "Some User"
+      }, invite.secure_id)
+
+      assert user.email == invite.email
+      assert user.account_id == account.id
+      assert user.name == "Some User"
+
+      refute refetch(a2).root_user_id
+    end
+
     test "it will ignore privileged fields", %{user: user, account: account} do
       {:ok, invite} = Accounts.create_invite(%{email: "some@example.com"}, user)
 

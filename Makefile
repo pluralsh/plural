@@ -82,5 +82,5 @@ release-vsn: # tags and pushes a new release
 	git push origin $$tag
 
 update-schema:
-	mix absinthe.schema.sdl --schema GraphQl  schema/schema.graphql
+	MIX_ENV=test mix absinthe.schema.sdl --schema GraphQl  schema/schema.graphql
 	cd www && yarn graphql:codegen

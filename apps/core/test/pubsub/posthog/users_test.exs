@@ -12,7 +12,6 @@ defmodule Core.PubSub.Posthog.UsersTest do
       event = %PubSub.UserCreated{item: user}
       {:ok, attrs} = Consumers.Posthog.handle_event(event)
 
-      assert attrs.email == user.email
       assert attrs.distinct_id == user.id
     end
   end

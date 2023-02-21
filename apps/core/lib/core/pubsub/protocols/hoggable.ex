@@ -19,3 +19,7 @@ defimpl Core.PubSub.Hoggable, for: [Core.PubSub.InstallationCreated, Core.PubSub
   defp event(PubSub.InstallationCreated), do: "installation.created"
   defp event(PubSub.InstallationDeleted), do: "installation.deleted"
 end
+
+defimpl Core.PubSub.Hoggable, for: Core.PubSub.UserCreated do
+  def hog(%{item: user}), do: {"user.created", user.id, %{}}
+end

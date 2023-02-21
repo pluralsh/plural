@@ -35,4 +35,19 @@ defmodule Core.Backfill.AccountsTest do
         do: assert refetch(account).grandfathered_until
     end
   end
+
+  describe "wipe_dangling/0" do
+    setup [:setup_root_user] # at least one account has a correct root
+
+    test "it can remove root_user_id for dangling accounts", %{account: a, user: u} do
+      accounts = insert_list(3, :account, root_user: insert(:user))
+
+      {3, _} = Accounts.wipe_dangling()
+
+      for a <- accounts,
+        do: refute refetch(a).root_user_id
+
+      assert refetch(a).root_user_id == u.id
+    end
+  end
 end

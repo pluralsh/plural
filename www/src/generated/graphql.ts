@@ -333,6 +333,7 @@ export type CloudShell = {
   gitUrl: Scalars['String'];
   id: Scalars['ID'];
   insertedAt?: Maybe<Scalars['DateTime']>;
+  missing?: Maybe<Array<Maybe<Scalars['String']>>>;
   provider: Provider;
   region: Scalars['String'];
   status?: Maybe<ShellStatus>;
@@ -4024,15 +4025,19 @@ export type ScanViolation = {
 };
 
 export type ScmAttributes = {
-  name: Scalars['String'];
+  gitUrl?: InputMaybe<Scalars['String']>;
+  name?: InputMaybe<Scalars['String']>;
   org?: InputMaybe<Scalars['String']>;
+  privateKey?: InputMaybe<Scalars['String']>;
   provider?: InputMaybe<ScmProvider>;
-  token: Scalars['String'];
+  publicKey?: InputMaybe<Scalars['String']>;
+  token?: InputMaybe<Scalars['String']>;
 };
 
 export enum ScmProvider {
   Github = 'GITHUB',
-  Gitlab = 'GITLAB'
+  Gitlab = 'GITLAB',
+  Manual = 'MANUAL'
 }
 
 export type ServiceAccountAttributes = {

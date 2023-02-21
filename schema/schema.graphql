@@ -1285,9 +1285,12 @@ type PlanLineItems {
 
 input ScmAttributes {
   provider: ScmProvider
-  token: String!
-  name: String!
+  token: String
+  name: String
   org: String
+  gitUrl: String
+  publicKey: String
+  privateKey: String
 }
 
 input WorkspaceAttributes {
@@ -1942,6 +1945,7 @@ type CloudShell {
   provider: Provider!
   gitUrl: String!
   aesKey: String!
+  missing: [String]
   cluster: String!
   subdomain: String!
   alive: Boolean!
@@ -3405,6 +3409,7 @@ enum Order {
 enum ScmProvider {
   GITHUB
   GITLAB
+  MANUAL
 }
 
 type TestDelta {

@@ -30,6 +30,13 @@ defmodule Core.Schema.Account do
     from(a in query, where: a.usage_updated)
   end
 
+  def dangling_root(query \\ __MODULE__) do
+    from(a in query,
+      join: u in assoc(a, :root_user),
+      where: u.account_id != a.id
+    )
+  end
+
   def ordered(query \\ __MODULE__, order \\ [asc: :id]) do
     from(a in query, order_by: ^order)
   end

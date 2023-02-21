@@ -15,4 +15,9 @@ defmodule Core.Backfill.Accounts do
     grandfathered = Timex.now() |> Timex.shift(days: 60)
     Core.Repo.update_all(Account, set: [grandfathered_until: grandfathered])
   end
+
+  def wipe_dangling() do
+    Account.dangling_root()
+    |> Core.Repo.update_all(set: [root_user_id: nil])
+  end
 end

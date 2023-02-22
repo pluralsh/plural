@@ -23,3 +23,15 @@ end
 defimpl Core.PubSub.Hoggable, for: Core.PubSub.UserCreated do
   def hog(%{item: user}), do: {"user.created", user.id, %{}}
 end
+
+defimpl Core.PubSub.Hoggable, for: [Core.PubSub.DemoProjectCreated, Core.PubSub.DemoProjectDeleted] do
+  alias Core.PubSub
+  alias Core.Schema.DemoProject
+
+  def hog(%{item: %DemoProject{user_id: user_id}}) do
+    {event(@for), user_id, %{}}
+  end
+
+  defp event(PubSub.DemoProjectCreated), do: "demo.created"
+  defp event(PubSub.DemoProjectDeleted), do: "demo.deleted"
+end

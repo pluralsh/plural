@@ -75,6 +75,8 @@ defmodule Core.Services.Shell do
     do: {:ok, url, pub, priv, %{name: user.name, email: user.email}}
   defp git_info(%{provider: p, token: t, name: n} = args, user) when is_binary(t) and is_binary(n),
     do: Scm.setup_repository(p, user.email, t, args[:org], n)
+  defp git_info(%{provider: :demo}, user),
+    do: Scm.setup_repository(:github, user.email, Core.conf(:github_demo_token), Core.conf(:github_demo_org), "demo-repo-#{user.id}")
   defp git_info(_, _), do: {:error, "you did not provide enough information to configure a git repository"}
 
   @doc """

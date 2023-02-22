@@ -80,7 +80,8 @@ config :core,
   gcp_identity: get_env("GCP_USER_EMAIL") || "mjg@plural.sh",
   openai_token: get_env("OPENAI_BEARER_TOKEN"),
   enforce_pricing: get_env("ENFORCE_PRICING"),
-  stripe_webhook_secret: get_env("STRIPE_WEBHOOK_SECRET")
+  stripe_webhook_secret: get_env("STRIPE_WEBHOOK_SECRET"),
+  github_demo_token: get_env("GITHUB_DEMO_TOKEN")
 
 
 if get_env("VAULT_HOST") do

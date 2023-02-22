@@ -81,6 +81,11 @@ release-vsn: # tags and pushes a new release
 	git tag -a $$tag -m "new release"; \
 	git push origin $$tag
 
-update-schema:
+update-schema: ## updates gql schema
 	MIX_ENV=test mix absinthe.schema.sdl --schema GraphQl  schema/schema.graphql
 	cd www && yarn graphql:codegen
+
+delete-tag:  ## deletes a tag from git locally and upstream
+	@read -p "Version: " tag; \
+	git tag -d $$tag; \
+	git push origin :$$tag

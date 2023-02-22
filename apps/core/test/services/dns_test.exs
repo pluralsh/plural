@@ -261,8 +261,4 @@ defmodule Core.Services.DnsTest do
       {:error, _} = Dns.delete_record(record.name, record.type, user)
     end
   end
-
-  defp dns_resp(external_id) do
-    {:ok, %Tesla.Env{body: %{"result" => %{"id" => external_id}}}}
-  end
 end

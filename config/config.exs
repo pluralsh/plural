@@ -136,7 +136,9 @@ config :core,
   vault: "https://vault.plural.sh:443",
   docker_env: [],
   openai_token: "openai",
-  stripe_webhook_secret: "bogus"
+  stripe_webhook_secret: "bogus",
+  github_demo_token: "test-pat",
+  github_demo_org: "pluralsh-demos"
 
 config :briefly,
   directory: [{:system, "TMPDIR"}, {:system, "TMP"}, {:system, "TEMP"}, "/tmp"],

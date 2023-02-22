@@ -75,6 +75,25 @@ defmodule Core.Services.Dns do
     |> when_ok(:delete)
   end
 
+  def empty_domain(%DnsDomain{id: id} = domain, %User{} = user) do
+    DnsRecord.for_domain(id)
+    |> Core.Repo.all()
+    |> Enum.reduce(start_transaction(), fn r, xact ->
+      add_operation(xact, {:r, r.id}, fn _ ->
+        delete_record(r.name, r.type, user)
+      end)
+    end)
+    |> add_operation(:domain, fn _ -> delete_domain(domain.id, user) end)
+    |> execute(extract: :domain)
+  end
+
+  def empty_domain(nil, _), do: {:ok, nil}
+
+  def empty_domain(d, user) when is_binary(d) do
+    get_domain(d)
+    |> empty_domain(user)
+  end
+
   @spec provision_domain(binary, User.t) :: domain_resp
   def provision_domain(name, %User{} = user) do
     case get_domain(name) do

@@ -120,6 +120,10 @@ defmodule GraphQl.Schema.User do
         {:ok, Core.Services.Users.has_installations?(user)}
     end
 
+    field :demoing, :boolean, resolve: fn
+      user, _, _ -> {:ok, Core.Services.Users.demoing?(user)}
+    end
+
     field :avatar, :string, resolve: fn
       user, _, _ -> {:ok, Core.Storage.url({user.avatar, user}, :original)}
     end

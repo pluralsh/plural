@@ -50,4 +50,8 @@ defmodule Core.SchemaCase do
     {:ok, %{user: user, account: account}} = Core.Services.Accounts.create_account(user)
     [user: %{user | account: account}, account: account]
   end
+
+  def dns_resp(external_id) do
+    {:ok, %Tesla.Env{body: %{"result" => %{"id" => external_id}}}}
+  end
 end

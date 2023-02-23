@@ -14,8 +14,4 @@ defmodule Worker.Conduit.Subscribers.ClusterTest do
       refute refetch(record)
     end
   end
-
-  defp dns_resp(external_id) do
-    {:ok, %Tesla.Env{body: %{"result" => %{"id" => external_id}}}}
-  end
 end

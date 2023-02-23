@@ -3,7 +3,7 @@ defmodule Core.Shell.Scm do
 
   @providers ~w(github gitlab)a
 
-  @type provider :: :github | :gitlab | :manual
+  @type provider :: :github | :gitlab | :manual | :demo
   @type error :: {:error, term}
 
   @doc """

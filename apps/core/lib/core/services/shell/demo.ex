@@ -1,8 +1,9 @@
 defmodule Core.Services.Shell.Demo do
   use Core.Services.Base
   require Logger
+  alias Core.PubSub
   alias Core.Schema.{User, DemoProject, CloudShell}
-  alias Core.Services.{Locks, Users, Upgrades, Repositories}
+  alias Core.Services.{Locks, Users, Upgrades, Repositories, Dns}
   alias GoogleApi.CloudResourceManager.V3.Api.{Projects, Operations}
   alias GoogleApi.CloudResourceManager.V3.Model.{Project, Operation, SetIamPolicyRequest, MoveProjectRequest}
   alias GoogleApi.CloudResourceManager.V3.Connection, as: ProjectsConnection
@@ -105,6 +106,7 @@ defmodule Core.Services.Shell.Demo do
       Users.update_user(%{demo_count: (count || 0) + 1}, user)
     end)
     |> execute(extract: :final)
+    |> notify(:create)
   end
 
   @doc """
@@ -152,7 +154,7 @@ defmodule Core.Services.Shell.Demo do
     end)
     |> add_operation(:cluster, fn _ ->
       with %{provider: p, workspace: %{cluster: c, subdomain: d}} <- get_shell(proj.id),
-           :ok <- Users.destroy_cluster(%{provider: p, name: c, domain: d}, proj.user) do
+            {:ok, _} <- Dns.empty_domain(d, proj.user) do
         {:ok, true}
       else
         _ -> {:ok, false}
@@ -166,6 +168,7 @@ defmodule Core.Services.Shell.Demo do
       end
     end)
     |> execute(extract: :db)
+    |> notify(:delete)
   end
 
   defp handle_error({:error, %Tesla.Env{body: body}} = err) do
@@ -332,4 +335,8 @@ defmodule Core.Services.Shell.Demo do
   end
 
   defp org_id(), do: Core.conf(:gcp_organization)
+
+  defp notify({:ok, %DemoProject{} = p}, :create), do: handle_notify(PubSub.DemoProjectCreated, p)
+  defp notify({:ok, %DemoProject{} = p}, :delete), do: handle_notify(PubSub.DemoProjectDeleted, p)
+  defp notify(pass, _), do: pass
 end

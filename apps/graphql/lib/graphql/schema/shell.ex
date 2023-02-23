@@ -16,6 +16,7 @@ defmodule GraphQl.Schema.Shell do
     value :github
     value :gitlab
     value :manual
+    value :demo
   end
 
   input_object :scm_attributes do

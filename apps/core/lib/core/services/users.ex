@@ -493,6 +493,15 @@ defmodule Core.Services.Users do
   end
 
   @doc """
+  Determines whether a user has an active demo project
+  """
+  @spec demoing?(User.t) :: boolean
+  def demoing?(%User{id: user_id}) do
+    Core.Schema.DemoProject.for_user(user_id)
+    |> Core.Repo.exists?()
+  end
+
+  @doc """
   Fetches or creates an eab key for the user mapped to that (cluster, provider)
   """
   @spec get_eab_key(binary, binary, User.t) :: {:ok, EabCredential.t} | error

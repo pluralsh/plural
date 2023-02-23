@@ -1,6 +1,7 @@
 defmodule Core.Services.Shell.DemoTest do
   use Core.SchemaCase, async: false
   use Mimic
+  alias Core.PubSub
   alias GoogleApi.CloudResourceManager.V3.Api.Projects
   alias GoogleApi.CloudResourceManager.V3.Api.Operations
   alias GoogleApi.CloudResourceManager.V3.Model.Operation
@@ -28,6 +29,8 @@ defmodule Core.Services.Shell.DemoTest do
 
       assert refetch(user).demo_count == 1
       refute demo.ready
+
+      assert_receive {:event, %PubSub.DemoProjectCreated{item: ^demo}}
     end
 
     test "users that have already created demoes cannot create" do
@@ -41,18 +44,20 @@ defmodule Core.Services.Shell.DemoTest do
     test "a user can delete demo projects" do
       demo = insert(:demo_project)
       insert(:cloud_shell, demo: demo, provider: :aws, workspace: %{cluster: "c", subdomain: "d.onplural.sh"})
-      domain = insert(:dns_domain, name: "d.onplural.sh")
+      domain = insert(:dns_domain, creator: demo.user, name: "d.onplural.sh")
       insert(:dns_record, domain: domain, cluster: "c", provider: :aws, creator: demo.user)
 
       expect(Goth.Token, :for_scope, fn _ -> {:ok, %{token: "token"}} end)
       expect(Projects, :cloudresourcemanager_projects_delete, fn _, _ ->
         {:ok, %{name: "operations/123"}}
       end)
-      expect(Core.Conduit.Broker, :publish, fn _, :cluster -> :ok end)
+      expect(Cloudflare.DnsRecord, :delete, fn _, _ -> dns_resp("ext-id") end)
 
-      {:ok, _} = Demo.delete_demo_project(demo)
+      {:ok, d} = Demo.delete_demo_project(demo)
 
       refute refetch(demo)
+
+      assert_receive {:event, %PubSub.DemoProjectDeleted{item: ^d}}
     end
 
     test "if a user has at most 1 upgrade queue (eg for their demo cluster) we will reset their demo installations" do

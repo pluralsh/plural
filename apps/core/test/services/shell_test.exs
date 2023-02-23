@@ -66,11 +66,70 @@ defmodule Core.Services.ShellTest do
       [backup] = Encryption.get_backups(user)
       assert String.starts_with?(backup.name, "shell:#{shell.workspace.cluster}:")
       assert backup.repositories == ["git@github.com:pluralsh/installations.git"]
+    end
 
-      # cluster = Clusters.get_cluster(user.account_id, :aws, "plural")
-      # assert cluster.owner_id == user.id
-      # assert cluster.domain == "sub.onplural.sh"
-      # assert cluster.git_url == "git@github.com:pluralsh/installations.git"
+    test "a user can create a demo cloud shell against the pluralsh-demos org" do
+      user = insert(:user, roles: %{admin: true})
+
+      expect(Kazan, :run, fn _ ->
+        {:ok, Shell.Pods.pod("plrl-shell-1", user.email)}
+      end)
+
+      repo_name = "demo-repo-#{user.id}"
+      key_path = "https://api.github.com/repos/pluralsh-demos/#{repo_name}/keys"
+      expect(HTTPoison, :post, 2, fn
+        "https://api.github.com/orgs/pluralsh-demos/repos", _, _ ->
+          {:ok, %HTTPoison.Response{status_code: 200, body: Jason.encode!(%{
+            ssh_url: "git@github.com:pluralsh-demos/#{repo_name}.git",
+            full_name: "pluralsh-demos/#{repo_name}"
+          })}}
+        ^key_path, _, _ ->
+          {:ok, %HTTPoison.Response{status_code: 200, body: "OK"}}
+      end)
+
+      expect(OAuth2.Client, :get, 2, fn
+        _, "/user" -> {:ok, %OAuth2.Response{body: %{"name" => "name"}}}
+        _, "/user/emails" -> {:ok, %OAuth2.Response{body: [%{"primary" => true, "email" => "me@example.com"}]}}
+      end)
+
+      expect(Core.Clients.Vault, :write, fn _, _ -> {:ok, %{}} end)
+
+      {:ok, shell} = Shell.create_shell(%{
+        provider: :aws,
+        credentials: %{
+          aws: %{access_key_id: "access_key", secret_access_key: "secret"}
+        },
+        scm: %{provider: :demo},
+        workspace: %{
+          cluster: "plural",
+          bucket_prefix: "plrl",
+          region: "us-east-1",
+          subdomain: "sub.onplural.sh"
+        }
+      }, user)
+
+      assert shell.user_id == user.id
+      assert shell.aes_key
+      assert shell.ssh_public_key
+      assert shell.ssh_private_key
+      assert shell.git_url == "git@github.com:pluralsh-demos/#{repo_name}.git"
+      assert shell.provider == :aws
+      assert shell.git_info.username == "name"
+      assert shell.git_info.email == "me@example.com"
+      assert shell.credentials.aws.access_key_id == "access_key"
+      assert shell.credentials.aws.secret_access_key == "secret"
+      assert shell.workspace.cluster == "plural"
+      assert shell.workspace.bucket_prefix == "plrl"
+      assert shell.workspace.region == "us-east-1"
+      assert shell.workspace.subdomain == "sub.onplural.sh"
+      assert shell.workspace.bucket == "plrl-tf-state"
+      assert shell.bucket_prefix == shell.workspace.bucket_prefix
+
+      assert Dns.get_domain("sub.onplural.sh")
+
+      [backup] = Encryption.get_backups(user)
+      assert String.starts_with?(backup.name, "shell:#{shell.workspace.cluster}:")
+      assert backup.repositories == ["git@github.com:pluralsh-demos/#{repo_name}.git"]
     end
 
     test "a user can create a cloud shell with gitlab for scm" do

@@ -644,4 +644,23 @@ defmodule Core.Services.AccountsTest do
       {:error, _} = Accounts.enable_sso("example.com", "conn", insert(:user, account: account))
     end
   end
+
+  describe "#recompute_usage/1" do
+    test "it correctly recomputes an accounts usage" do
+      ac1 = insert(:account)
+      [u | _] = insert_list(3, :user, account: ac1)
+      insert(:user, account: ac1, service_account: true)
+      insert(:upgrade_queue, user: u)
+      insert(:upgrade_queue, user: u)
+
+      ac2 = insert(:account)
+      insert(:user, account: ac2)
+
+      {:ok, updated} = Accounts.recompute_usage(ac1)
+
+      assert updated.user_count == 3
+      assert updated.cluster_count == 2
+      assert updated.usage_updated
+    end
+  end
 end

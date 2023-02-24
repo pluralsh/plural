@@ -106,6 +106,27 @@ defmodule Core.Services.Accounts do
   end
 
   @doc """
+  self-explanatory
+  """
+  @spec recompute_usage(Account.t) :: account_resp
+  def recompute_usage(%Account{id: id} = account) do
+    start_transaction()
+    |> add_operation(:usage, fn _ ->
+      Account.for_id(id)
+      |> Account.usage()
+      |> Core.Repo.one()
+      |> ok()
+    end)
+    |> add_operation(:update, fn
+      %{usage: %{users: u, clusters: c}} ->
+        Ecto.Changeset.change(account, %{user_count: u, cluster_count: c, usage_updated: true})
+        |> Core.Repo.update()
+      _ -> {:error, "could not compute usage"}
+    end)
+    |> execute(extract: :update)
+  end
+
+  @doc """
   Helper function to simplify sso setup for an account
   """
   @spec enable_sso(binary, binary, User.t) :: account_resp

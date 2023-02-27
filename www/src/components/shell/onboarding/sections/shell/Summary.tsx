@@ -12,6 +12,7 @@ import {
 
 import { OnboardingContext } from '../../context/onboarding'
 import { ScmProvider } from '../../../../../generated/graphql'
+import { CreateCloudShellSectionState } from '../../context/types'
 
 const entryGridStyle = (theme): CSSObject => ({
   borderTop: theme.borders.default,
@@ -213,7 +214,7 @@ function WorkspaceSummaryUnstyled({ ...props }) {
 
 function Summary({ onBack }) {
   const { setSection } = useContext(OnboardingContext)
-  const onCreate = useCallback(() => setSection(s => ({ ...s, state: 'Creating' })), [setSection])
+  const onCreate = useCallback(() => setSection(s => ({ ...s, state: CreateCloudShellSectionState.Creating })), [setSection])
 
   return (
     <>

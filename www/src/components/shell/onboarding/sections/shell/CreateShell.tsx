@@ -99,7 +99,7 @@ function CreateShell() {
   const [created, setCreated] = useState(false)
   const [setupShellCompleted, setSetupShellCompleted] = useState(false)
 
-  const onBack = useCallback(() => setSection({ ...sections[SectionKey.CREATE_REPOSITORY]!, state: undefined }), [sections, setSection])
+  const onBack = useCallback(() => setSection({ ...sections[SectionKey.ONBOARDING_OVERVIEW]!, state: undefined }), [sections, setSection])
   const onRestart = useCallback(() => {
     setShell(undefined)
     setError(undefined)

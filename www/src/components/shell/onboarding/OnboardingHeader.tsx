@@ -11,7 +11,6 @@ import {
   SidebarItem,
   SidebarSection,
 } from '@pluralsh/design-system'
-
 import { Flex, Span } from 'honorable'
 
 import { OnboardingLogo } from './OnboardingLogo'
@@ -126,7 +125,7 @@ function OnboardingHeader({ onRestart, mode = 'wizard' }: OnboardingHeaderProps)
             small
             secondary
             onClick={() => setOpen(true)}
-            disabled={section?.key === SectionKey.CREATE_REPOSITORY || mode === 'shell'}
+            disabled={section?.key === SectionKey.ONBOARDING_OVERVIEW || mode === 'shell'}
           >Restart onboarding
           </Button>
         </SidebarItem>

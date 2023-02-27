@@ -9,7 +9,6 @@ import {
 import { useNavigate } from 'react-router-dom'
 
 import { useDevTokenInputSecretCode } from '../hooks/useDevToken'
-import { AuthorizationUrl, RootQueryType, ScmProvider } from '../../../generated/graphql'
 import useOnboarded from '../hooks/useOnboarded'
 import { ResponsiveLayoutSpacer } from '../../utils/layout/ResponsiveLayoutSpacer'
 import { ResponsiveLayoutContentContainer } from '../../utils/layout/ResponsiveLayoutContentContainer'
@@ -19,7 +18,7 @@ import OnboardingHeader from './OnboardingHeader'
 import OnboardingSidenav from './OnboardingSidenav'
 import { OnboardingFlow } from './OnboardingFlow'
 import { ContextProps, OnboardingContext } from './context/onboarding'
-import { defaultSections, useSection } from './context/hooks'
+import { defaultSections, useContextStorage, useSection } from './context/hooks'
 import {
   CloudProps,
   SCMProps,
@@ -36,6 +35,7 @@ function Onboarding({ active, children }: Partial<OnboardingProps>) {
   const { section, setSection } = useSection(active)
   const navigate = useNavigate()
   const { fresh: isOnboarding } = useOnboarded()
+  const { reset } = useContextStorage()
 
   return (
     <Flex
@@ -45,7 +45,13 @@ function Onboarding({ active, children }: Partial<OnboardingProps>) {
       alignItems="center"
       overflowY="auto"
     >
-      {isOnboarding && <OnboardingHeader onRestart={() => navigate('/shell')} />}
+      {isOnboarding && (
+        <OnboardingHeader onRestart={() => {
+          reset()
+          navigate(0)
+        }}
+        />
+      )}
       <Flex
         position="relative"
         width="100%"
@@ -86,26 +92,20 @@ function Onboarding({ active, children }: Partial<OnboardingProps>) {
 }
 
 interface OnboardingProps {
-  accessToken?: string
-  provider?: ScmProvider;
-  authUrlData?: RootQueryType
-  active?: SectionKey
+  active?: Section
   children?: ReactElement | Array<ReactElement>
 }
 
-function OnboardingWithContext({
-  accessToken, provider, authUrlData, ...props
-}: OnboardingProps): ReactElement {
-  const [scm, setSCM] = useState<SCMProps>({
-    token: accessToken,
-    provider,
-    authUrls: authUrlData?.scmAuthorization as Array<AuthorizationUrl>,
-  })
-  const [valid, setValid] = useState<boolean>(true)
-  const [cloud, setCloud] = useState<CloudProps>({} as CloudProps)
+function OnboardingWithContext({ ...props }: OnboardingProps): ReactElement {
+  const { restore } = useContextStorage()
+  const serializableContext = restore()
+
+  const [scm, setSCM] = useState<SCMProps>(serializableContext?.scm ?? {})
+  const [valid, setValid] = useState<boolean>(serializableContext?.valid ?? true)
+  const [cloud, setCloud] = useState<CloudProps>(serializableContext?.cloud ?? {})
   const [sections, setSections] = useState<Sections>(defaultSections())
-  const [section, setSection] = useState<Section>(sections[SectionKey.CREATE_REPOSITORY]!)
-  const [workspace, setWorkspace] = useState<WorkspaceProps>({} as WorkspaceProps)
+  const [section, setSection] = useState<Section>(sections[SectionKey.ONBOARDING_OVERVIEW]!)
+  const [workspace, setWorkspace] = useState<WorkspaceProps>(serializableContext?.workspace ?? {})
 
   const context = useMemo<ContextProps>(() => ({
     scm,
@@ -124,7 +124,10 @@ function OnboardingWithContext({
 
   return (
     <OnboardingContext.Provider value={context}>
-      <Onboarding {...props} />
+      <Onboarding
+        active={serializableContext?.section}
+        {...props}
+      />
     </OnboardingContext.Provider>
   )
 }

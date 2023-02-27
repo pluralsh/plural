@@ -11,7 +11,6 @@ import {
   Input,
   Spinner,
 } from 'honorable'
-
 import {
   Button,
   FormField,
@@ -22,7 +21,10 @@ import {
 import { OnboardingContext } from '../../context/onboarding'
 import { ScmProvider } from '../../../../../generated/graphql'
 import { isAlphanumeric } from '../../../helpers'
-import { OrgType, SCMOrg } from '../../context/types'
+import { ConfigureCloudSectionState, OrgType, SCMOrg } from '../../context/types'
+import { useContextStorage, useSectionState } from '../../context/hooks'
+
+import useOnboarded from '../../../hooks/useOnboarded'
 
 import { useGithubState } from './provider/github'
 import { useGitlabState } from './provider/gitlab'
@@ -178,37 +180,56 @@ export function ProviderInput() {
   return null
 }
 
-export function ProviderConfiguration({ onNext }) {
-  const { valid } = useContext(OnboardingContext)
+export function ProviderConfiguration() {
+  const context = useContext(OnboardingContext)
+  const { scm: { provider: scmProvider }, valid } = context
+  const setSectionState = useSectionState()
   const navigate = useNavigate()
-  const { scm: { provider: scmProvider } } = useContext(OnboardingContext)
+  const { fresh: isOnboarding, mutation } = useOnboarded()
+
+  const onBack = useCallback(() => setSectionState(ConfigureCloudSectionState.RepositorySelection), [setSectionState])
 
   return (
     <div>
       <ProviderInput />
       <Flex
         gap="medium"
-        justify="space-between"
+        justify={isOnboarding ? 'space-between' : 'flex-end'}
         borderTop="1px solid border"
         marginTop="xlarge"
         paddingTop="large"
       >
-        <Button
-          data-phid={`back-from-create-repo${scmProvider ? `-${scmProvider.toLowerCase()}` : ''}`}
-          secondary
-          onClick={() => {
-            navigate('/shell', { state: { hideSplashScreen: true, step: 1 } })
-          }}
+        {isOnboarding && (
+          <Button
+            data-phid="skip-onboarding"
+            secondary
+            onClick={() => {
+              mutation()
+              navigate('/marketplace')
+            }}
+          >Skip onboarding
+          </Button>
+        )}
+        <Flex
+          grow={isOnboarding ? 0 : 1}
+          gap="medium"
+          justify="space-between"
         >
-          Back
-        </Button>
-        <Button
-          data-phid={`cont-from-create-repo${scmProvider ? `-${scmProvider.toLowerCase()}` : ''}`}
-          disabled={!valid}
-          onClick={onNext}
-        >
-          Continue
-        </Button>
+          <Button
+            data-phid={`back-from-create-repo${scmProvider ? `-${scmProvider.toLowerCase()}` : ''}`}
+            secondary
+            onClick={() => onBack()}
+          >
+            Back
+          </Button>
+          <Button
+            data-phid={`cont-from-create-repo${scmProvider ? `-${scmProvider.toLowerCase()}` : ''}`}
+            disabled={!valid}
+            onClick={() => setSectionState(ConfigureCloudSectionState.CloudConfiguration)}
+          >
+            Continue
+          </Button>
+        </Flex>
       </Flex>
     </div>
   )

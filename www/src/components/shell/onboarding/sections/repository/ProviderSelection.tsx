@@ -1,5 +1,5 @@
 import { Div, Flex, Text } from 'honorable'
-import { useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
 import {
   Button,
   Callout,
@@ -12,6 +12,9 @@ import { useNavigate } from 'react-router-dom'
 import { useDevToken } from '../../../hooks/useDevToken'
 import OnboardingCardButton from '../../OnboardingCardButton'
 import useOnboarded from '../../../hooks/useOnboarded'
+import { useContextStorage, useSectionState } from '../../context/hooks'
+import { ConfigureCloudSectionState } from '../../context/types'
+import { OnboardingContext } from '../../context/onboarding'
 
 const providerToLogo = {
   github: <GitHubLogoIcon size={40} />,
@@ -30,7 +33,12 @@ function ProviderSelection({ data }) {
   const devToken = useDevToken()
   const navigate = useNavigate()
   const { fresh: isOnboarding, mutation } = useOnboarded()
+  const setSectionState = useSectionState()
+  const context = useContext(OnboardingContext)
+  const { save } = useContextStorage()
   const [expanded, setExpanded] = useState(false)
+
+  const onBack = useCallback(() => setSectionState(ConfigureCloudSectionState.CloudSelection), [setSectionState])
 
   return (
     <Flex
@@ -43,6 +51,8 @@ function ProviderSelection({ data }) {
             data-phid={`oauth-${provider.toLowerCase()}`}
             key={provider}
             onClick={() => {
+              save({ ...context, section: { ...context?.section, state: ConfigureCloudSectionState.RepositoryConfiguration } })
+
               // HACK to navigate the onboarding on staging environments
               if (import.meta.env.MODE !== 'production' && devToken) {
                 (window as Window).location = `/oauth/callback/${provider.toLowerCase()}/shell?code=abcd`
@@ -85,13 +95,13 @@ function ProviderSelection({ data }) {
         </Callout>
       </div>
 
-      {isOnboarding && (
-        <Flex
-          gap="medium"
-          justify="space-between"
-          borderTop="1px solid border"
-          paddingTop="large"
-        >
+      <Flex
+        gap="medium"
+        justify={isOnboarding ? 'space-between' : 'flex-end'}
+        borderTop="1px solid border"
+        paddingTop="large"
+      >
+        {isOnboarding && (
           <Button
             data-phid="skip-onboarding"
             secondary
@@ -101,8 +111,20 @@ function ProviderSelection({ data }) {
             }}
           >Skip onboarding
           </Button>
+        )}
+        <Flex
+          grow={isOnboarding ? 0 : 1}
+          gap="medium"
+          justify="space-between"
+        >
+          <Button
+            data-ph-id="back-from-config-cloud"
+            secondary
+            onClick={() => onBack()}
+          >Back
+          </Button>
         </Flex>
-      )}
+      </Flex>
     </Flex>
   )
 }

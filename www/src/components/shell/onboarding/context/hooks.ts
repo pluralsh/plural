@@ -3,6 +3,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
 } from 'react'
 import {
   ChecklistIcon,
@@ -163,13 +164,13 @@ const useContextStorage = () => {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(toSerializableContext(context)))
   }, [])
 
-  const restore = useCallback((): SerializableContextProps => JSON
+  const restoredContext = useMemo((): SerializableContextProps => JSON
     .parse(localStorage.getItem(LOCAL_STORAGE_KEY) ?? '{}') as SerializableContextProps,
   [])
 
   const reset = useCallback(() => localStorage.removeItem(LOCAL_STORAGE_KEY), [])
 
-  return { save, restore, reset }
+  return { save, restoredContext, reset }
 }
 
 export {

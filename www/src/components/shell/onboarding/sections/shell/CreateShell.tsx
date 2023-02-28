@@ -5,7 +5,6 @@ import {
   useEffect,
   useState,
 } from 'react'
-import { useNavigate } from 'react-router-dom'
 import {
   ApolloClient,
   useApolloClient,
@@ -29,6 +28,8 @@ import { CLOUD_SHELL_QUERY, CREATE_SHELL_MUTATION, SETUP_SHELL_MUTATION } from '
 import {
   CloudProps,
   CloudProviderToProvider,
+  ConfigureCloudSectionState,
+  CreateCloudShellSectionState,
   OrgType,
   SCMProps,
   SectionKey,
@@ -36,6 +37,8 @@ import {
 } from '../../context/types'
 import { toCloudProviderAttributes } from '../../../utils/provider'
 import { PosthogEvent, posthogCapture } from '../../../../../utils/posthog'
+
+import { useSectionState } from '../../context/hooks'
 
 import { ShellStatus } from './ShellStatus'
 
@@ -88,18 +91,18 @@ async function createShell(
 }
 
 function CreateShell() {
-  const navigate = useNavigate()
   const client = useApolloClient()
   const {
-    scm, cloud, workspace, sections, setSection,
+    scm, cloud, workspace, setSection, sections,
   } = useContext(OnboardingContext)
+  const setSectionState = useSectionState()
 
   const [shell, setShell] = useState<CloudShell>()
   const [error, setError] = useState<ApolloError | undefined>()
   const [created, setCreated] = useState(false)
   const [setupShellCompleted, setSetupShellCompleted] = useState(false)
 
-  const onBack = useCallback(() => setSection({ ...sections[SectionKey.ONBOARDING_OVERVIEW]!, state: undefined }), [sections, setSection])
+  const onBack = useCallback(() => setSection({ ...sections[SectionKey.CONFIGURE_CLOUD]!, state: ConfigureCloudSectionState.RepositoryConfiguration }), [sections, setSection])
   const onRestart = useCallback(() => {
     setShell(undefined)
     setError(undefined)
@@ -162,10 +165,10 @@ function CreateShell() {
     if (data?.shell?.alive && !error && !setupShellCompleted) setupShell()
   }, [data, error, setupShell, setupShellCompleted])
 
-  // Redirect to shell after checking that shell is alive and accessible
+  // Mark create shell step as finished
   useEffect(() => {
-    if (shell?.alive && !error && setupShellCompleted) navigate('/shell')
-  }, [shell, navigate, setupShellCompleted, error])
+    if (shell?.alive && !error && setupShellCompleted) setSectionState(CreateCloudShellSectionState.Finished)
+  }, [shell, setupShellCompleted, error, setSectionState])
 
   // Capture errors and send to posthog
   useEffect(() => error

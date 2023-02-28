@@ -1,8 +1,10 @@
 import { Flex } from 'honorable'
 import { ThemeContext } from 'styled-components'
 import {
+  Dispatch,
   ReactElement,
   useContext,
+  useEffect,
   useMemo,
   useState,
 } from 'react'
@@ -23,6 +25,7 @@ import { ContextProps, OnboardingContext } from './context/onboarding'
 import { defaultSections, useContextStorage, useSection } from './context/hooks'
 import {
   CloudProps,
+  CreateCloudShellSectionState,
   SCMProps,
   Section,
   SectionKey,
@@ -30,7 +33,7 @@ import {
   WorkspaceProps,
 } from './context/types'
 
-function Onboarding({ active, children }: Partial<OnboardingProps>) {
+function Onboarding({ active, children, onOnboardingFinish }: Partial<OnboardingProps>) {
   useDevTokenInputSecretCode()
 
   const theme = useContext(ThemeContext)
@@ -38,6 +41,10 @@ function Onboarding({ active, children }: Partial<OnboardingProps>) {
   const navigate = useNavigate()
   const { fresh: isOnboarding } = useOnboarded()
   const { reset } = useContextStorage()
+
+  useEffect(() => {
+    if (onOnboardingFinish && section?.state === CreateCloudShellSectionState.Finished) onOnboardingFinish()
+  }, [onOnboardingFinish, section?.state])
 
   return (
     <Flex
@@ -96,11 +103,11 @@ function Onboarding({ active, children }: Partial<OnboardingProps>) {
 interface OnboardingProps {
   active?: Section
   children?: ReactElement | Array<ReactElement>
+  onOnboardingFinish?: Dispatch<void>
 }
 
 function OnboardingWithContext({ ...props }: OnboardingProps): ReactElement {
-  const { restore, reset } = useContextStorage()
-  const restoredContext = restore()
+  const { restoredContext, reset } = useContextStorage()
 
   const [scm, setSCM] = useState<SCMProps>(restoredContext?.scm ?? {})
   const [valid, setValid] = useState<boolean>(restoredContext?.valid ?? true)

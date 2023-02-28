@@ -1,5 +1,10 @@
-import { useCallback, useEffect, useMemo } from 'react'
-import { useMutation, useQuery } from '@apollo/client'
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client'
 import { Flex } from 'honorable'
 import { Button, LoopingLogo } from '@pluralsh/design-system'
 
@@ -64,7 +69,7 @@ function TerminalBootStatus() {
       <Flex marginTop="xxxlarge">
         <ResponsiveLayoutSpacer />
         <ResponsiveLayoutContentContainer>
-          <OnboardingCard mode="Creating">
+          <OnboardingCard mode="Compact">
             <ShellStatus
               shell={shell as CloudShell}
               error={error}
@@ -98,18 +103,21 @@ function TerminalBootStatus() {
 }
 
 function Shell() {
-  const { data } = useQuery(CLOUD_SHELL_QUERY, { fetchPolicy: 'network-only' })
+  const { data, loading: loadingShell, refetch } = useQuery(CLOUD_SHELL_QUERY, { fetchPolicy: 'no-cache' })
   const [rebootMutation] = useMutation(REBOOT_SHELL_MUTATION)
-  const loading = useMemo(() => !data, [data])
+
+  const loading = useMemo(() => !data && loadingShell, [data, loadingShell])
   const hasShell = useMemo(() => !!data?.shell, [data])
   const isAlive = useMemo(() => data?.shell?.alive ?? false, [data?.shell?.alive])
+
+  const onOnboardingFinish = useCallback(() => refetch(), [refetch])
 
   useEffect(() => {
     if (hasShell && !isAlive) rebootMutation()
   }, [hasShell, isAlive, rebootMutation])
 
   if (loading) return <Loading />
-  if (!hasShell) return <Onboarding />
+  if (!hasShell) return <Onboarding onOnboardingFinish={onOnboardingFinish} />
 
   return <TerminalBootStatus />
 }

@@ -2,12 +2,12 @@ import { Flex, H2 } from 'honorable'
 
 interface OnboardingCardProps {
   title?: string,
-  mode: 'Step' | 'Creating'
+  mode: 'Compact' | 'Default'
   children: JSX.Element | Array<JSX.Element> | unknown
 }
 
 function OnboardingCard({
-  title = '', mode = 'Step', children, ...props
+  title = '', mode = 'Default', children, ...props
 }: OnboardingCardProps) {
   return (
     <Flex
@@ -18,8 +18,8 @@ function OnboardingCard({
       backgroundColor="fill-one"
       border="1px solid border"
       borderRadius="large"
-      paddingVertical={mode === 'Step' ? 'xlarge' : 'medium'}
-      paddingHorizontal={mode === 'Step' ? '112px' : 0}
+      paddingVertical={mode === 'Default' ? 'xlarge' : 'medium'}
+      paddingHorizontal={mode === 'Default' ? '112px' : 0}
       overflowY="auto"
       {...props}
     >

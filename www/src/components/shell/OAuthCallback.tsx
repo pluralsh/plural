@@ -27,11 +27,10 @@ function OAuthCallback({ provider }: any) {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const devToken = useDevToken()
-  const { save, restore } = useContextStorage()
-  const serializableContext = restore()
+  const { save, restoredContext } = useContextStorage()
 
   const { data: authUrlData } = useQuery(AUTHENTICATION_URLS_QUERY)
-  const { data } = useQuery(SCM_TOKEN_QUERY, {
+  const { data, error } = useQuery(SCM_TOKEN_QUERY, {
     variables: {
       code: searchParams.get('code'),
       provider: provider.toUpperCase(),
@@ -41,16 +40,16 @@ function OAuthCallback({ provider }: any) {
   // Use dev token for the onboarding on non-production environments
   const token = useMemo(() => (import.meta.env.MODE !== 'production' && devToken ? devToken : data?.scmToken), [data?.scmToken, devToken])
   const updatedContext = useMemo(() => toOnboardingContext(
-    serializableContext, provider, authUrlData, token
-  ), [authUrlData, provider, serializableContext, token])
+    restoredContext, provider, authUrlData, token
+  ), [authUrlData, provider, restoredContext, token])
 
   useEffect(() => {
-    if (!data) return
+    if (!data && !error) return
     if (!token) navigate('shell')
 
     save(updatedContext)
     navigate('/shell')
-  }, [data, navigate, save, token, updatedContext])
+  }, [data, error, navigate, save, token, updatedContext])
 
   return (
     <LoopingLogo />

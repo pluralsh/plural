@@ -10,7 +10,7 @@ import CreateShell from './CreateShell'
 
 function CreateShellStep({ onBack }) {
   const { section } = useContext(OnboardingContext)
-  const isCreating = useMemo(() => section.state === CreateCloudShellSectionState.Creating, [section])
+  const isCreating = useMemo(() => section.state === CreateCloudShellSectionState.Creating, [section.state])
 
   return (
     <Flex

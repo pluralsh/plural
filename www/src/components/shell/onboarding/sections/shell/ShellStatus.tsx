@@ -45,10 +45,14 @@ function StatusChip({ loading, error }: StatusChipProps) {
 interface StatusHeaderProps {
   header: string,
   description: string,
+  errorHeader?: string,
+  errorDescription?: string,
   error: ApolloError | undefined
 }
 
-function StatusHeader({ header, description, error }: StatusHeaderProps) {
+function StatusHeader({
+  header, description, errorHeader = 'Cloud shell failed to start', errorDescription = 'Check the logs then try the options below to troubleshoot.', error,
+}: StatusHeaderProps) {
   return (
     <Flex
       direction="column"
@@ -66,14 +70,14 @@ function StatusHeader({ header, description, error }: StatusHeaderProps) {
           color="text"
           fontWeight={600}
         >
-          {!error ? header : 'Cloud shell failed to start'}
+          {!error ? header : errorHeader}
         </P>
       </Flex>
       <P
         body2
         color="text-light"
       >
-        {!error ? description : 'Check the logs then try the options below to troubleshoot.'}
+        {!error ? description : errorDescription}
       </P>
     </Flex>
   )
@@ -247,7 +251,7 @@ interface ShellStatusProps {
   loading?: boolean
 }
 
-export function ShellStatus({ shell, error, loading }: ShellStatusProps) {
+function ShellStatus({ shell, error, loading }: ShellStatusProps) {
   return (
     <Flex
       paddingTop="xsmall"
@@ -321,4 +325,8 @@ export function ShellStatus({ shell, error, loading }: ShellStatusProps) {
       )}
     </Flex>
   )
+}
+
+export {
+  StatusHeader, ShellStatus, ProgressEntry, ErrorWrapper, Community,
 }

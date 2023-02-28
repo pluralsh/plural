@@ -44,7 +44,8 @@ interface Section {
 type Sections = {[key in keyof typeof SectionKey]?: Section}
 
 enum CreateCloudShellSectionState {
-  Creating
+  Creating,
+  Finished,
 }
 
 enum ConfigureCloudSectionState {

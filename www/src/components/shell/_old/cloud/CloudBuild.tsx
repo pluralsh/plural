@@ -4,9 +4,7 @@ import { Div, Flex, P } from 'honorable'
 import { Button, Chip, ProgressBar } from '@pluralsh/design-system'
 
 import CreateShellContext from '../../../../contexts/CreateShellContext'
-
 import { CREATE_DEMO_PROJECT_MUTATION, POLL_DEMO_PROJECT_QUERY } from '../../queries'
-
 import OnboardingCard from '../../onboarding/OnboardingCard'
 import { GqlError } from '../../../utils/Alert'
 

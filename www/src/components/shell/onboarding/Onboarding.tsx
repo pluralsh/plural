@@ -8,6 +8,8 @@ import {
 } from 'react'
 import { useNavigate } from 'react-router-dom'
 
+import IsEmpty from 'lodash/isEmpty'
+
 import { useDevTokenInputSecretCode } from '../hooks/useDevToken'
 import useOnboarded from '../hooks/useOnboarded'
 import { ResponsiveLayoutSpacer } from '../../utils/layout/ResponsiveLayoutSpacer'
@@ -97,15 +99,19 @@ interface OnboardingProps {
 }
 
 function OnboardingWithContext({ ...props }: OnboardingProps): ReactElement {
-  const { restore } = useContextStorage()
-  const serializableContext = restore()
+  const { restore, reset } = useContextStorage()
+  const restoredContext = restore()
 
-  const [scm, setSCM] = useState<SCMProps>(serializableContext?.scm ?? {})
-  const [valid, setValid] = useState<boolean>(serializableContext?.valid ?? true)
-  const [cloud, setCloud] = useState<CloudProps>(serializableContext?.cloud ?? {})
+  const [scm, setSCM] = useState<SCMProps>(restoredContext?.scm ?? {})
+  const [valid, setValid] = useState<boolean>(restoredContext?.valid ?? true)
+  const [cloud, setCloud] = useState<CloudProps>(restoredContext?.cloud ?? {})
   const [sections, setSections] = useState<Sections>(defaultSections())
   const [section, setSection] = useState<Section>(sections[SectionKey.ONBOARDING_OVERVIEW]!)
-  const [workspace, setWorkspace] = useState<WorkspaceProps>(serializableContext?.workspace ?? {})
+  const [workspace, setWorkspace] = useState<WorkspaceProps>(restoredContext?.workspace ?? {})
+
+  // This is to make sure there is only a one-time state restore after oauth callback.
+  // We should not store any sensitive data in the local storage longer than required.
+  if (!IsEmpty(restoredContext)) reset()
 
   const context = useMemo<ContextProps>(() => ({
     scm,
@@ -125,7 +131,7 @@ function OnboardingWithContext({ ...props }: OnboardingProps): ReactElement {
   return (
     <OnboardingContext.Provider value={context}>
       <Onboarding
-        active={serializableContext?.section}
+        active={restoredContext?.section}
         {...props}
       />
     </OnboardingContext.Provider>

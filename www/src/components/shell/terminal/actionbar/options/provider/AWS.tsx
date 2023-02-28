@@ -1,10 +1,10 @@
 import { FormField, Input } from '@pluralsh/design-system'
 import { useEffect, useMemo } from 'react'
 
-import { IsObjectEmpty } from '../../../../../../utils/object'
+import { IsObjectPartiallyEmpty } from '../../../../../../utils/object'
 
 function AWS({ props, setProps, setValid }) {
-  const isValid = useMemo(() => !IsObjectEmpty(props?.aws), [props])
+  const isValid = useMemo(() => !IsObjectPartiallyEmpty(props?.aws), [props])
 
   // Init props provider object
   useEffect(() => {

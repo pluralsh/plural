@@ -9,8 +9,13 @@ import {
 import { Button, FormField, Input } from '@pluralsh/design-system'
 
 import { OnboardingContext } from '../../context/onboarding'
-import { useSetWorkspaceKeys } from '../../context/hooks'
-import { CloudProvider, WorkspaceProps } from '../../context/types'
+import { useSectionState, useSetWorkspaceKeys } from '../../context/hooks'
+import {
+  CloudProvider,
+  CloudType,
+  ConfigureCloudSectionState,
+  WorkspaceProps,
+} from '../../context/types'
 import { IsObjectEmpty } from '../../../../../utils/object'
 import { generateString } from '../../../../../utils/string'
 
@@ -33,7 +38,10 @@ const VALIDATOR: ValidationField = {
 function WorkspaceStep({ onBack, onNext }) {
   const { workspace, cloud } = useContext(OnboardingContext)
   const setWorkspaceKeys = useSetWorkspaceKeys()
+  const setSectionState = useSectionState()
+
   const [error, setError] = useState<{[key in ValidationFieldKey]?: string | null}>({})
+
   const isValid = useMemo(() => workspace?.clusterName && workspace?.bucketPrefix && workspace?.subdomain && IsObjectEmpty(error), [error, workspace?.bucketPrefix, workspace?.clusterName, workspace?.subdomain])
   const clusterPlaceholder = useMemo(() => `plural-${generateString(5)}`, [])
   const bucketPrefixPlaceholder = useMemo(() => `plural-${generateString(5)}`, [])
@@ -109,7 +117,10 @@ function WorkspaceStep({ onBack, onNext }) {
         <Button
           data-phid="back-from-workspace"
           secondary
-          onClick={onBack}
+          onClick={() => {
+            onBack()
+            if (cloud?.type === CloudType.Cloud) setSectionState(ConfigureCloudSectionState.CloudConfiguration)
+          }}
         >Back
         </Button>
         <Button

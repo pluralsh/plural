@@ -4,7 +4,6 @@ import {
   CloudProps,
   SCMProps,
   Section,
-  SectionKey,
   Sections,
   WorkspaceProps,
 } from './types'

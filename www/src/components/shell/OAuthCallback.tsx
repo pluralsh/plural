@@ -1,4 +1,4 @@
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useSearchParams } from 'react-router-dom'
 import { useQuery } from '@apollo/client'
 
 import { LoopingLogo } from '../utils/AnimatedLogo'
@@ -14,7 +14,6 @@ function OAuthCallback({ provider }: any) {
   const history = useHistory()
   const [searchParams] = useSearchParams()
   const devToken = useDevToken()
-  const navigate = useNavigate()
   const { save, restore } = useContextStorage()
   const serializableContext = restore()
 
@@ -50,7 +49,7 @@ function OAuthCallback({ provider }: any) {
       ...serializableContext.scm, provider: provider.toUpperCase(), authUrls: authUrlData?.scmAuthorization as Array<AuthorizationUrl>, token: data.scmToken,
     },
   } as ContextProps)
-  navigate('/shell')
+  history.navigate('/shell')
 
   return null
 }

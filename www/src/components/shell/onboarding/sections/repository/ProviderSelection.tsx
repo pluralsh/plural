@@ -1,5 +1,10 @@
 import { Div, Flex, Text } from 'honorable'
-import { useCallback, useContext, useState } from 'react'
+import {
+  useCallback,
+  useContext,
+  useMemo,
+  useState,
+} from 'react'
 import {
   Button,
   Callout,
@@ -15,6 +20,7 @@ import useOnboarded from '../../../hooks/useOnboarded'
 import { useContextStorage, useSectionState } from '../../context/hooks'
 import { ConfigureCloudSectionState } from '../../context/types'
 import { OnboardingContext } from '../../context/onboarding'
+import { ScmProvider } from '../../../../../generated/graphql'
 
 const providerToLogo = {
   github: <GitHubLogoIcon size={40} />,
@@ -38,7 +44,10 @@ function ProviderSelection({ data }) {
   const { save } = useContextStorage()
   const [expanded, setExpanded] = useState(false)
 
+  const isSelected = useMemo(() => !!context?.scm?.provider, [context?.scm?.provider])
+
   const onBack = useCallback(() => setSectionState(ConfigureCloudSectionState.CloudSelection), [setSectionState])
+  const onNext = useCallback(() => setSectionState(ConfigureCloudSectionState.RepositoryConfiguration), [setSectionState])
 
   return (
     <Flex
@@ -50,6 +59,7 @@ function ProviderSelection({ data }) {
           <OnboardingCardButton
             data-phid={`oauth-${provider.toLowerCase()}`}
             key={provider}
+            selected={context?.scm?.provider === provider}
             onClick={() => {
               save({ ...context, section: { ...context?.section, state: ConfigureCloudSectionState.RepositoryConfiguration } })
 
@@ -118,10 +128,16 @@ function ProviderSelection({ data }) {
           justify="space-between"
         >
           <Button
-            data-ph-id="back-from-config-cloud"
+            data-ph-id="back-from-config-repository"
             secondary
             onClick={() => onBack()}
           >Back
+          </Button>
+          <Button
+            data-ph-id="cont-from-config-repository"
+            disabled={!isSelected}
+            onClick={() => onNext()}
+          >Continue
           </Button>
         </Flex>
       </Flex>

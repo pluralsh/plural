@@ -17,7 +17,7 @@ import { FileInput } from 'grommet'
 import { ThemeContext } from 'grommet/contexts'
 
 import { OnboardingContext } from '../../../context/onboarding'
-import { IsObjectEmpty } from '../../../../../../utils/object'
+import { IsObjectPartiallyEmpty } from '../../../../../../utils/object'
 import { CloudProvider, GCPCloudProvider } from '../../../context/types'
 import { useSetCloudProviderKeys, useSetWorkspaceKeys } from '../../../context/hooks'
 
@@ -68,7 +68,7 @@ function GCP() {
   const setWorkspaceKeys = useSetWorkspaceKeys()
   const [fileSelected, setFileSelected] = useState<boolean>(!!cloud?.gcp?.fileName)
   const [fileError, setFileError] = useState<FileError>()
-  const isValid = useMemo(() => !IsObjectEmpty(cloud?.gcp) && !!workspace?.region && !!workspace?.project, [cloud?.gcp, workspace?.project, workspace?.region])
+  const isValid = useMemo(() => !IsObjectPartiallyEmpty(cloud?.gcp) && !!workspace?.region && !!workspace?.project, [cloud?.gcp, workspace?.project, workspace?.region])
 
   const readFile = useCallback(async (files: FileList | undefined | null) => {
     setFileSelected(false)

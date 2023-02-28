@@ -2,10 +2,10 @@ import { Flex } from 'honorable'
 import { FormField, Input } from '@pluralsh/design-system'
 import { useEffect, useMemo } from 'react'
 
-import { IsObjectEmpty } from '../../../../../../utils/object'
+import { IsObjectPartiallyEmpty } from '../../../../../../utils/object'
 
 function Azure({ props, setProps, setValid }) {
-  const isValid = useMemo(() => !IsObjectEmpty(props?.azure), [props])
+  const isValid = useMemo(() => !IsObjectPartiallyEmpty(props?.azure), [props])
 
   // Init props provider object
   useEffect(() => {

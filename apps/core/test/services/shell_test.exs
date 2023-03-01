@@ -87,11 +87,6 @@ defmodule Core.Services.ShellTest do
           {:ok, %HTTPoison.Response{status_code: 200, body: "OK"}}
       end)
 
-      expect(OAuth2.Client, :get, 2, fn
-        _, "/user" -> {:ok, %OAuth2.Response{body: %{"name" => "name"}}}
-        _, "/user/emails" -> {:ok, %OAuth2.Response{body: [%{"primary" => true, "email" => "me@example.com"}]}}
-      end)
-
       expect(Core.Clients.Vault, :write, fn _, _ -> {:ok, %{}} end)
 
       {:ok, shell} = Shell.create_shell(%{
@@ -114,8 +109,8 @@ defmodule Core.Services.ShellTest do
       assert shell.ssh_private_key
       assert shell.git_url == "git@github.com:pluralsh-demos/#{repo_name}.git"
       assert shell.provider == :aws
-      assert shell.git_info.username == "name"
-      assert shell.git_info.email == "me@example.com"
+      assert shell.git_info.username == user.name
+      assert shell.git_info.email == user.email
       assert shell.credentials.aws.access_key_id == "access_key"
       assert shell.credentials.aws.secret_access_key == "secret"
       assert shell.workspace.cluster == "plural"

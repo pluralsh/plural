@@ -1,4 +1,5 @@
 defmodule Core.Shell.Scm do
+  alias Core.Schema.User
   alias Core.Shell.Scm.{Github, Gitlab}
 
   @providers ~w(github gitlab)a
@@ -29,13 +30,21 @@ defmodule Core.Shell.Scm do
   @doc """
   Sets up a repository against a common SCM system for use in the shell
   """
-  @spec setup_repository(provider, binary, binary, binary, binary) :: {:ok, binary, binary, binary, map} | error
+  @spec setup_repository(provider, binary | User.t, binary, binary, binary) :: {:ok, binary, binary, binary, map} | error
   def setup_repository(:github, email, token, org, name) do
     client = Github.client(token)
     with {:ok, private, public} <- keypair(email),
          {:ok, %{"ssh_url" => url} = repo} <- Github.create_repository(client, name, org),
          :ok <- Core.retry(fn -> Github.register_keys(client, public, repo) end),
          {:ok, user} <- Github.oauth_client(client) |> Core.OAuth.Github.get_user(),
+      do: {:ok, url, public, private, git_info(user)}
+  end
+
+  def setup_repository(:demo, %User{email: email} = user, token, org, name) do
+    client = Github.client(token)
+    with {:ok, private, public} <- keypair(email),
+         {:ok, %{"ssh_url" => url} = repo} <- Github.create_repository(client, name, org),
+         :ok <- Core.retry(fn -> Github.register_keys(client, public, repo) end),
       do: {:ok, url, public, private, git_info(user)}
   end
 
@@ -58,6 +67,6 @@ defmodule Core.Shell.Scm do
   defp authorize_url(:github), do: Github.authorize_url()
   defp authorize_url(:gitlab), do: Gitlab.authorize_url()
 
-  defp git_info(%{email: email} = user), do: %{username: user[:name], email: email}
+  defp git_info(%{email: email} = user), do: %{username: Map.get(user, :name), email: email}
   defp git_info(_), do: nil
 end

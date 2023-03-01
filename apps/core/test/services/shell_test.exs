@@ -70,12 +70,13 @@ defmodule Core.Services.ShellTest do
 
     test "a user can create a demo cloud shell against the pluralsh-demos org" do
       user = insert(:user, roles: %{admin: true})
+      demo = insert(:demo_project, user: user)
 
       expect(Kazan, :run, fn _ ->
         {:ok, Shell.Pods.pod("plrl-shell-1", user.email)}
       end)
 
-      repo_name = "demo-repo-#{user.id}"
+      repo_name = "demo-repo-#{demo.id}"
       key_path = "https://api.github.com/repos/pluralsh-demos/#{repo_name}/keys"
       expect(HTTPoison, :post, 2, fn
         "https://api.github.com/orgs/pluralsh-demos/repos", _, _ ->

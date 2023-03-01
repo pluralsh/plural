@@ -104,6 +104,7 @@ type CloudProviderBase = AzureCloudProvider | AWSCloudProvider | GCPCloudProvide
 interface CloudProps {
   type?: CloudType
   provider?: CloudProvider
+  demoID?: string
   aws?: AWSCloudProvider
   azure?: AzureCloudProvider
   gcp?: GCPCloudProvider

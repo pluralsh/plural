@@ -1,9 +1,7 @@
 import { Flex, Span } from 'honorable'
 import { Button } from '@pluralsh/design-system'
 import { useNavigate } from 'react-router-dom'
-
-import { PopupButton, PopupModal, PopupWidget } from 'react-calendly'
-
+import { PopupModal } from 'react-calendly'
 import { useState } from 'react'
 
 import useOnboarded from '../../../hooks/useOnboarded'
@@ -64,6 +62,7 @@ function OverviewStep({ onNext }) {
           justify="space-between"
         >
           <Button
+            data-phid="schedule-personalized-onboarding"
             secondary
             backgroundColor="fill-two"
             startIcon={<img src={CalendarIcon} />}
@@ -76,7 +75,11 @@ function OverviewStep({ onNext }) {
             open={calendlyOpen}
             onModalClose={() => setCalendlyOpen(false)}
           />
-          <Button onClick={onNext}>Get started</Button>
+          <Button
+            data-phid="cont-from-onboarding-overview"
+            onClick={onNext}
+          >Get started
+          </Button>
         </Flex>
       </Flex>
     </Flex>

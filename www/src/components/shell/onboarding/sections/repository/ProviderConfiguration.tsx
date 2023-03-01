@@ -216,14 +216,14 @@ export function ProviderConfiguration() {
           justify="space-between"
         >
           <Button
-            data-phid={`back-from-create-repo${scmProvider ? `-${scmProvider.toLowerCase()}` : ''}`}
+            data-phid={`back-from-repo-config${scmProvider ? `-${scmProvider.toLowerCase()}` : ''}`}
             secondary
             onClick={() => onBack()}
           >
             Back
           </Button>
           <Button
-            data-phid={`cont-from-create-repo${scmProvider ? `-${scmProvider.toLowerCase()}` : ''}`}
+            data-phid={`cont-from-repo-config${scmProvider ? `-${scmProvider.toLowerCase()}` : ''}`}
             disabled={!valid}
             onClick={() => setSectionState(ConfigureCloudSectionState.CloudConfiguration)}
           >

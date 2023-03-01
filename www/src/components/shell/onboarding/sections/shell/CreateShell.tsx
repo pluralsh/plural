@@ -62,7 +62,7 @@ function toCloudShellAttributes(
       org: scm.org?.orgType === OrgType.User ? null : scm.org?.name,
     },
     provider,
-    demoId: null,
+    demoId: cloud.demoID ?? null,
     credentials: { [cloud.provider!]: toCloudProviderAttributes(cloud) } as ShellCredentialsAttributes,
   } as CloudShellAttributes
 }

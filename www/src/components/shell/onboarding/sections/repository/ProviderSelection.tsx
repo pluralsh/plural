@@ -11,7 +11,6 @@ import {
   GitHubLogoIcon,
   GitLabLogoIcon,
 } from '@pluralsh/design-system'
-
 import { useNavigate } from 'react-router-dom'
 
 import { useDevToken } from '../../../hooks/useDevToken'
@@ -20,7 +19,6 @@ import useOnboarded from '../../../hooks/useOnboarded'
 import { useContextStorage, useSectionState } from '../../context/hooks'
 import { ConfigureCloudSectionState } from '../../context/types'
 import { OnboardingContext } from '../../context/onboarding'
-import { ScmProvider } from '../../../../../generated/graphql'
 
 const providerToLogo = {
   github: <GitHubLogoIcon size={40} />,
@@ -128,13 +126,13 @@ function ProviderSelection({ data }) {
           justify="space-between"
         >
           <Button
-            data-ph-id="back-from-config-repository"
+            data-ph-id="back-from-repo-select"
             secondary
             onClick={() => onBack()}
           >Back
           </Button>
           <Button
-            data-ph-id="cont-from-config-repository"
+            data-ph-id="cont-from-repo-select"
             disabled={!isSelected}
             onClick={() => onNext()}
           >Continue

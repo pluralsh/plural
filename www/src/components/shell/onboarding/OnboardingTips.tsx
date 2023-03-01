@@ -3,6 +3,7 @@ import {
   Code,
   Div,
   P,
+  Span,
 } from 'honorable'
 import { TipCarousel } from '@pluralsh/design-system'
 
@@ -30,7 +31,7 @@ function OnboardingTips({ autoAdvanceTime = 10000, ...props }: any) {
         paddingHorizontal="xlarge"
       >
         {[
-          <P
+          <Span
             margin={0}
             key="sa"
           >
@@ -43,8 +44,8 @@ function OnboardingTips({ autoAdvanceTime = 10000, ...props }: any) {
             >
               here
             </A>.
-          </P>,
-          <P
+          </Span>,
+          <Span
             margin={0}
             key="oidc"
           >
@@ -57,14 +58,14 @@ function OnboardingTips({ autoAdvanceTime = 10000, ...props }: any) {
             >
               here
             </A>.
-          </P>,
-          <P
+          </Span>,
+          <Span
             margin={0}
             key="watch"
           >
             You can use <TipCode>plural watch &lt;app&gt;</TipCode> to track the status of an application&nbsp;being&nbsp;deployed.
-          </P>,
-          <P
+          </Span>,
+          <Span
             margin={0}
             key="encrypt"
           >
@@ -77,19 +78,19 @@ function OnboardingTips({ autoAdvanceTime = 10000, ...props }: any) {
             >
               here
             </A>.
-          </P>,
-          <P
+          </Span>,
+          <Span
             margin={0}
             key="sync"
           >
             You can use <TipCode>plural shell sync</TipCode> to transfer your state from the Plural Cloud Shell to the command line.
-          </P>,
-          <P
+          </Span>,
+          <Span
             margin={0}
             key="create"
           >
             You can use <TipCode>plural create</TipCode> to try out adding an application to the Plural catalog.
-          </P>,
+          </Span>,
         ]}
       </TipCarousel>
     </Div>

@@ -21,7 +21,6 @@ import { ApolloError } from '@apollo/client/errors'
 
 import { State, TerminalContext } from '../context/terminal'
 import useOnboarded from '../../hooks/useOnboarded'
-
 import { PosthogEvent, posthogCapture } from '../../../../utils/posthog'
 
 import { APPLICATIONS_QUERY } from './queries'

@@ -1,6 +1,5 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
 import { useMutation } from '@apollo/client'
-
 import {
   Chip,
   FormField,
@@ -15,17 +14,30 @@ import {
   Span,
 } from 'honorable'
 
-import { DELETE_SHELL_MUTATION } from '../../../queries'
+import { DELETE_DEMO_PROJECT_MUTATION, DELETE_SHELL_MUTATION } from '../../../queries'
+import CurrentUserContext from '../../../../../contexts/CurrentUserContext'
 
 function DeleteShellModal({ onClose }) {
+  const { demoing } = useContext(CurrentUserContext)
   const [open, setOpen] = useState(true)
   const [canDelete, setCanDelete] = useState(false)
   const [deleteShell] = useMutation(DELETE_SHELL_MUTATION)
+  const [deleteDemoProjectWithShell] = useMutation(DELETE_DEMO_PROJECT_MUTATION)
 
   const close = useCallback(() => {
     setOpen(false)
     onClose()
   }, [onClose])
+
+  const onDelete = useCallback(() => {
+    if (demoing) {
+      deleteDemoProjectWithShell().then(() => window.location.reload())
+
+      return
+    }
+
+    deleteShell().then(() => window.location.reload())
+  }, [deleteDemoProjectWithShell, deleteShell, demoing])
 
   return (
     <Modal
@@ -98,7 +110,7 @@ function DeleteShellModal({ onClose }) {
             data-phid="delete-shell-confirm"
             destructive
             disabled={!canDelete}
-            onClick={() => deleteShell().then(() => window.location.reload())}
+            onClick={() => onDelete()}
           >Delete
           </Button>
         </Flex>

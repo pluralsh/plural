@@ -2,12 +2,18 @@ import { Flex, Span } from 'honorable'
 import { Button } from '@pluralsh/design-system'
 import { useNavigate } from 'react-router-dom'
 
+import { PopupButton, PopupModal, PopupWidget } from 'react-calendly'
+
+import { useState } from 'react'
+
 import useOnboarded from '../../../hooks/useOnboarded'
 import CalendarIcon from '../../assets/CalendarIcon.svg'
 
 function OverviewStep({ onNext }) {
   const navigate = useNavigate()
   const { fresh: isOnboarding, mutation } = useOnboarded()
+
+  const [calendlyOpen, setCalendlyOpen] = useState(false)
 
   return (
     <Flex
@@ -61,8 +67,15 @@ function OverviewStep({ onNext }) {
             secondary
             backgroundColor="fill-two"
             startIcon={<img src={CalendarIcon} />}
+            onClick={() => setCalendlyOpen(true)}
           >Schedule personalized onboarding
           </Button>
+          <PopupModal
+            url="https://calendly.com/m_plural/30min"
+            rootElement={document.getElementById('root')!}
+            open={calendlyOpen}
+            onModalClose={() => setCalendlyOpen(false)}
+          />
           <Button onClick={onNext}>Get started</Button>
         </Flex>
       </Flex>

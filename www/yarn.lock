@@ -13748,6 +13748,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-calendly@npm:^4.1.1":
+  version: 4.1.1
+  resolution: "react-calendly@npm:4.1.1"
+  peerDependencies:
+    react: ">=16.8.0"
+    react-dom: ">=16.8.0"
+  checksum: 7c4953c8b1302c906ecf19b9b449ae3de0f78017b59cb74a83c43502bc9c95eb5731d53c3a1a85e0761d91c8ec724159a054a2746ba67de9e741d1f75c1f81a1
+  languageName: node
+  linkType: hard
+
 "react-collapsible@npm:2.10.0":
   version: 2.10.0
   resolution: "react-collapsible@npm:2.10.0"
@@ -17528,6 +17538,7 @@ __metadata:
     randomcolor: 0.6.2
     react: 18.2.0
     react-animations: 1.0.0
+    react-calendly: ^4.1.1
     react-collapsible: 2.10.0
     react-copy-to-clipboard: 5.1.0
     react-countdown: 2.3.5

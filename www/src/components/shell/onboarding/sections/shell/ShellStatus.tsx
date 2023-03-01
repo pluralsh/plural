@@ -328,5 +328,5 @@ function ShellStatus({ shell, error, loading }: ShellStatusProps) {
 }
 
 export {
-  StatusHeader, ShellStatus, ProgressEntry, ErrorWrapper, Community,
+  StatusHeader, ShellStatus, ProgressEntry, ErrorWrapper,
 }

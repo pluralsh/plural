@@ -17,7 +17,12 @@ function WorkspaceStep({ onBack, onNext }) {
 
   return (
     <>
-      {isDemo && <CreateDemo onBack={onBack} />}
+      {isDemo && (
+        <CreateDemo
+          onBack={onBack}
+          onNext={onNext}
+        />
+      )}
       {!isDemo && (
         <Flex
           direction="column"

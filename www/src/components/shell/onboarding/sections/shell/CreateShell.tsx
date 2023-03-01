@@ -28,6 +28,7 @@ import { CLOUD_SHELL_QUERY, CREATE_SHELL_MUTATION, SETUP_SHELL_MUTATION } from '
 import {
   CloudProps,
   CloudProviderToProvider,
+  CloudType,
   ConfigureCloudSectionState,
   CreateCloudShellSectionState,
   OrgType,
@@ -102,7 +103,10 @@ function CreateShell() {
   const [created, setCreated] = useState(false)
   const [setupShellCompleted, setSetupShellCompleted] = useState(false)
 
-  const onBack = useCallback(() => setSection({ ...sections[SectionKey.CONFIGURE_CLOUD]!, state: ConfigureCloudSectionState.RepositoryConfiguration }), [sections, setSection])
+  const onBack = useCallback(() => setSection({
+    ...sections[SectionKey.CONFIGURE_CLOUD]!,
+    state: cloud?.type === CloudType.Demo ? ConfigureCloudSectionState.CloudSelection : ConfigureCloudSectionState.RepositoryConfiguration,
+  }), [cloud?.type, sections, setSection])
   const onRestart = useCallback(() => {
     setShell(undefined)
     setError(undefined)

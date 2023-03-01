@@ -2,7 +2,6 @@ import { Flex } from 'honorable'
 import { useContext, useMemo } from 'react'
 
 import { OnboardingContext } from '../../context/onboarding'
-
 import { CreateCloudShellSectionState } from '../../context/types'
 
 import { Summary } from './Summary'

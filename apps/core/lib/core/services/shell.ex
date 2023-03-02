@@ -2,7 +2,7 @@ defmodule Core.Services.Shell do
   use Core.Services.Base
   import Core.Policies.Shell
 
-  alias Core.Schema.{CloudShell, User, Recipe, Installation, OIDCProvider, Stack}
+  alias Core.Schema.{CloudShell, DemoProject, User, Recipe, Installation, OIDCProvider, Stack}
   alias Core.Services.{Shell.Pods, Dns, Recipes, Repositories, Encryption}
   alias Core.Shell.{Scm, Client}
 
@@ -75,9 +75,14 @@ defmodule Core.Services.Shell do
     do: {:ok, url, pub, priv, %{name: user.name, email: user.email}}
   defp git_info(%{provider: p, token: t, name: n} = args, user) when is_binary(t) and is_binary(n),
     do: Scm.setup_repository(p, user.email, t, args[:org], n)
-  defp git_info(%{provider: :demo}, user),
-    do: Scm.setup_repository(:github, user.email, Core.conf(:github_demo_token), Core.conf(:github_demo_org), "demo-repo-#{user.id}")
+  defp git_info(%{provider: :demo}, user) do
+    user = Core.Repo.preload(user, [:demo_project])
+    Scm.setup_repository(:demo, user, Core.conf(:github_demo_token), Core.conf(:github_demo_org), "demo-repo-#{repo_id(user)}")
+  end
   defp git_info(_, _), do: {:error, "you did not provide enough information to configure a git repository"}
+
+  defp repo_id(%User{demo_project: %DemoProject{id: id}}), do: id
+  defp repo_id(%User{id: id}), do: id
 
   @doc """
   updates your cloud shell instance and restarts it

@@ -2,7 +2,7 @@ defmodule Core.Services.Users do
   use Core.Services.Base
   use Nebulex.Caching
   import Core.Policies.User
-  alias Core.Services.{Accounts, Dns}
+  alias Core.Services.{Accounts, Dns, Shell.Demo}
   alias Core.Clients.ZeroSSL
   alias Core.PubSub
   alias Core.Schema.{
@@ -499,6 +499,14 @@ defmodule Core.Services.Users do
   def demoing?(%User{id: user_id}) do
     Core.Schema.DemoProject.for_user(user_id)
     |> Core.Repo.exists?()
+  end
+
+  @doc """
+  Determines whether a user has reached the demo project usage limit
+  """
+  @spec demoed?(User.t) :: boolean
+  def demoed?(%User{demo_count: count}) do
+    count >= Core.Services.Shell.Demo.max_demo_count
   end
 
   @doc """

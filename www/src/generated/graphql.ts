@@ -4455,6 +4455,8 @@ export type User = {
   boundRoles?: Maybe<Array<Maybe<Role>>>;
   cards?: Maybe<CardConnection>;
   defaultQueueId?: Maybe<Scalars['ID']>;
+  /** If a user has reached the demo project usage limit. */
+  demoed?: Maybe<Scalars['Boolean']>;
   demoing?: Maybe<Scalars['Boolean']>;
   email: Scalars['String'];
   emailConfirmBy?: Maybe<Scalars['DateTime']>;

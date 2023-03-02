@@ -70,12 +70,13 @@ defmodule Core.Services.ShellTest do
 
     test "a user can create a demo cloud shell against the pluralsh-demos org" do
       user = insert(:user, roles: %{admin: true})
+      demo = insert(:demo_project, user: user)
 
       expect(Kazan, :run, fn _ ->
         {:ok, Shell.Pods.pod("plrl-shell-1", user.email)}
       end)
 
-      repo_name = "demo-repo-#{user.id}"
+      repo_name = "demo-repo-#{demo.id}"
       key_path = "https://api.github.com/repos/pluralsh-demos/#{repo_name}/keys"
       expect(HTTPoison, :post, 2, fn
         "https://api.github.com/orgs/pluralsh-demos/repos", _, _ ->
@@ -85,11 +86,6 @@ defmodule Core.Services.ShellTest do
           })}}
         ^key_path, _, _ ->
           {:ok, %HTTPoison.Response{status_code: 200, body: "OK"}}
-      end)
-
-      expect(OAuth2.Client, :get, 2, fn
-        _, "/user" -> {:ok, %OAuth2.Response{body: %{"name" => "name"}}}
-        _, "/user/emails" -> {:ok, %OAuth2.Response{body: [%{"primary" => true, "email" => "me@example.com"}]}}
       end)
 
       expect(Core.Clients.Vault, :write, fn _, _ -> {:ok, %{}} end)
@@ -114,8 +110,8 @@ defmodule Core.Services.ShellTest do
       assert shell.ssh_private_key
       assert shell.git_url == "git@github.com:pluralsh-demos/#{repo_name}.git"
       assert shell.provider == :aws
-      assert shell.git_info.username == "name"
-      assert shell.git_info.email == "me@example.com"
+      assert shell.git_info.username == user.name
+      assert shell.git_info.email == user.email
       assert shell.credentials.aws.access_key_id == "access_key"
       assert shell.credentials.aws.secret_access_key == "secret"
       assert shell.workspace.cluster == "plural"

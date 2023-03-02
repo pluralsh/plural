@@ -10,6 +10,7 @@ defmodule Core.Services.Shell.DemoTest do
   alias GoogleApi.IAM.V1.Api.Projects, as: IAMProjects
   alias GoogleApi.IAM.V1.Model.{ServiceAccountKey, Policy, ServiceAccount}
   alias GoogleApi.CloudBilling.V1.Api.BillingAccounts
+  alias GoogleApi.ServiceUsage.V1.Model.Operation, as: SvcOperation
   alias Core.Services.Shell.Demo
 
   describe "#create_demo_project/1" do
@@ -139,7 +140,7 @@ defmodule Core.Services.Shell.DemoTest do
     test "if the demo project is ready, then it will query the services enabled op" do
       demo = insert(:demo_project, state: :ready, enabled_op_id: "1234")
       expect(Goth.Token, :for_scope, fn _ -> {:ok, %{token: "token"}} end)
-      expect(GoogleApi.ServiceUsage.V1.Api.Operations, :serviceusage_operations_get, fn _, "1234"-> {:ok, %{done: true}} end)
+      expect(GoogleApi.ServiceUsage.V1.Api.Operations, :serviceusage_operations_get, fn _, "1234"-> {:ok, %SvcOperation{done: true}} end)
 
       {:ok, polled} = Demo.poll_demo_project(demo)
 

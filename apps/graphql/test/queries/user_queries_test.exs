@@ -19,9 +19,29 @@ defmodule GraphQl.UserQueriesTest do
         }
       """, %{}, %{current_user: Core.Services.Rbac.preload(user)})
 
+      IO.inspect(user)
+
       assert me["id"] == user.id
       assert me["name"] == user.name
       assert length(me["boundRoles"]) == 1
+    end
+
+    test "It will mark user as demoed if demo_count reaches the limit" do
+      user = insert(:user, demo_count: 3)
+
+      {:ok, %{data: %{"me" => me}}} = run_query("""
+        query {
+          me {
+            id
+            name
+            demoed
+          }
+        }
+      """, %{}, %{current_user: Core.Services.Rbac.preload(user)})
+
+      assert me["id"] == user.id
+      assert me["name"] == user.name
+      assert me["demoed"] == true
     end
   end
 

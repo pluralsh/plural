@@ -25,6 +25,9 @@ defmodule Core.Services.Shell.Demo do
   @lock "demo-projects"
   @max_count 3
 
+  @spec max_demo_count :: binary
+  def max_demo_count, do: @max_count
+
   @spec has_demo?(binary) :: boolean
   def has_demo?(user_id) do
     DemoProject.for_user(user_id)

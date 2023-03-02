@@ -1,7 +1,7 @@
 import Config
-import System, only: [get_env: 1]
+import System, only: [get_env: 1, fetch_env: 1]
 
-host = get_env("HOST")
+host = fetch_env!("HOST")
 
 config :api, ApiWeb.Endpoint,
   url: [host: host, port: 80],
@@ -17,7 +17,7 @@ config :core, host: "https://#{host}"
 
 config :arc,
   storage: Arc.Storage.GCS,
-  bucket: get_env("BUCKET")
+  bucket: fetch_env!("BUCKET")
 
 config :core, Core.Guardian,
   issuer: "plural",
@@ -26,7 +26,7 @@ config :core, Core.Guardian,
 config :core, Core.Repo,
   database: "plural",
   username: "plural",
-  password: get_env("POSTGRES_PASSWORD"),
+  password: fetch_env!("POSTGRES_PASSWORD"),
   hostname: get_env("DBHOST") || "plural-postgresql",
   ssl: String.to_existing_atom(get_env("DBSSL") || "false"),
   pool_size: 5
@@ -37,28 +37,28 @@ config :cloudflare,
 config :core, Core.Influx,
   database: "plural",
   host: "influxdb.influx",
-  auth: [method: :basic, username: "admin", password: get_env("INFLUX_PAASSWORD")],
+  auth: [method: :basic, username: "admin", password: fetch_env!("INFLUX_PAASSWORD")],
   port: 8086
 
 config :core, :jwt,
-  pk: get_env("JWT_PRIVATE_KEY"),
-  cert: get_env("JWT_CERT"),
-  iss: get_env("JWT_ISS"),
-  aud: get_env("JWT_AUD")
+  pk: fetch_env!("JWT_PRIVATE_KEY"),
+  cert: fetch_env!("JWT_CERT"),
+  iss: fetch_env!("JWT_ISS"),
+  aud: fetch_env!("JWT_AUD")
 
 config :core, Core.Conduit.Broker,
   adapter: ConduitAMQP,
-  url: "amqp://#{get_env("RABBIT_USERNAME")}:#{get_env("RABBIT_PASSWORD")}@rabbitmq.#{get_env("RABBIT_NAMESPACE")}"
+  url: "amqp://#{fetch_env!("RABBIT_USERNAME")}:#{fetch_env!("RABBIT_PASSWORD")}@rabbitmq.#{fetch_env!("RABBIT_NAMESPACE")}"
 
 config :rtc, Rtc.Conduit.Broker,
   adapter: ConduitAMQP,
-  url: "amqp://#{get_env("RABBIT_USERNAME")}:#{get_env("RABBIT_PASSWORD")}@rabbitmq.#{get_env("RABBIT_NAMESPACE")}"
+  url: "amqp://#{fetch_env!("RABBIT_USERNAME")}:#{fetch_env!("RABBIT_PASSWORD")}@rabbitmq.#{fetch_env!("RABBIT_NAMESPACE")}"
 
 config :worker, Worker.Conduit.Broker,
   adapter: ConduitAMQP,
-  url: "amqp://#{get_env("RABBIT_USERNAME")}:#{get_env("RABBIT_PASSWORD")}@rabbitmq.#{get_env("RABBIT_NAMESPACE")}"
+  url: "amqp://#{fetch_env!("RABBIT_USERNAME")}:#{fetch_env!("RABBIT_PASSWORD")}@rabbitmq.#{fetch_env!("RABBIT_NAMESPACE")}"
 
-config :piazza_core, aes_key: get_env("AES_KEY")
+config :piazza_core, aes_key: fetch_env!("AES_KEY")
 
 config :core, Core.Clients.Zoom,
   client_id: get_env("ZOOM_CLIENT_ID"),
@@ -122,7 +122,7 @@ if get_env("GCP_CREDENTIALS") do
 end
 
 config :core,
-  registry: get_env("DKR_DNS")
+  registry: fetch_env!("DKR_DNS")
 
 config :openai,
   token: get_env("OPENAI_BEARER_TOKEN")

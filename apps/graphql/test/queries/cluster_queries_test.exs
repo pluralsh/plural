@@ -1,5 +1,5 @@
 defmodule GraphQl.ClusterQueriesTest do
-  use Core.SchemaCase, async: true
+  use Core.SchemaCase, async: false
   import GraphQl.TestHelpers
 
   describe "cluster" do
@@ -14,6 +14,42 @@ defmodule GraphQl.ClusterQueriesTest do
       """, %{"id" => cluster.id}, %{current_user: user})
 
       assert found["id"] == cluster.id
+    end
+
+    test "it can query upgrade info" do
+      user = insert(:user)
+      cluster = insert(:cluster, owner: user)
+
+      repo1 = insert(:repository)
+      inst1 = insert(:installation, repository: repo1)
+      repo2 = insert(:repository)
+      inst2 = insert(:installation, repository: repo2)
+      insert_list(3, :deferred_update,
+        user: user,
+        pending: true,
+        chart_installation: insert(:chart_installation, installation: inst1)
+      )
+      insert_list(2, :deferred_update,
+        user: user,
+        pending: true,
+        chart_installation: insert(:chart_installation, installation: inst2)
+      )
+
+      {:ok, %{data: %{"cluster" => %{"upgradeInfo" => info}}}} = run_query("""
+        query Cluster($id: ID!) {
+          cluster(id: $id) {
+            id
+            upgradeInfo {
+              installation { repository { id } }
+              count
+            }
+          }
+        }
+      """, %{"id" => cluster.id}, %{current_user: user})
+
+      info = Map.new(info, & {&1["installation"]["repository"]["id"], &1})
+      assert info[repo1.id]["count"] == 3
+      assert info[repo2.id]["count"] == 2
     end
 
     test "a user can access clusters via service account" do

@@ -8,6 +8,7 @@ defmodule Core.Policies.Account do
     GroupMember,
     Invite,
     Role,
+    Cluster,
     IntegrationWebhook,
     OAuthIntegration
   }
@@ -25,20 +26,13 @@ defmodule Core.Policies.Account do
     check_rbac(user, :users, account: account)
   end
 
+  def can?(%User{id: id}, %User{id: id}, :impersonate), do: :pass
   def can?(%User{} = user, %User{service_account: true} = sa, :impersonate) do
-    %{groups: user_groups} = Core.Repo.preload(user, [:groups])
-    %{impersonation_policy: %{bindings: bindings}} =
-      Core.Repo.preload(sa, [impersonation_policy: [:bindings]])
-
-    {users, groups} = Enum.split_with(bindings, & &1.user_id)
-    group_set = Enum.map(groups, & &1.group_id) |> MapSet.new()
-    user_group_set = Enum.map(user_groups, & &1.id) |> MapSet.new()
-
-    with false <- Enum.any?(users, & &1.user_id == user.id),
-         true <- MapSet.disjoint?(group_set, user_group_set) do
-      {:error, "you're not allowed to impersonate this service account, please verify your user is on its access policy"}
+    with %{impersonation_policy: %{bindings: _} = policy} <- Core.Repo.preload(sa, [impersonation_policy: [:bindings]]),
+          :pass <- Core.Services.Rbac.evaluate_policy(user, policy) do
+      :pass
     else
-      _ -> :pass
+      _ -> {:error, "you're not allowed to impersonate this service account, please verify your user is on its access policy"}
     end
   end
 
@@ -76,6 +70,9 @@ defmodule Core.Policies.Account do
     %{account: account} = Core.Repo.preload(oauth, [:account])
     check_rbac(user, :integrations, account: account)
   end
+
+  def can?(%User{} = user, %Cluster{owner: %User{} = owner}, action),
+    do: can?(user, owner, action)
 
   def can?(user, %Ecto.Changeset{} = cs, action),
     do: can?(user, apply_changes(cs), action)

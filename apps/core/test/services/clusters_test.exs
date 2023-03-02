@@ -66,6 +66,61 @@ defmodule Core.Services.ClustersTest do
     end
   end
 
+  describe "#create_dependency/3" do
+    test "a user can create a dependency between accessible clusters" do
+      user = insert(:user)
+      sa = insert(:user, service_account: true, account: user.account)
+      insert(:impersonation_policy_binding,
+        policy: build(:impersonation_policy, user: sa),
+        user: user
+      )
+      dest   = insert(:cluster, owner: user)
+      source = insert(:cluster, owner: sa)
+
+      {:ok, dep} = Clusters.create_dependency(source, dest, user)
+
+      assert dep.cluster_id == dest.id
+      assert dep.dependency_id == source.id
+      assert refetch(user).upgrade_to
+    end
+
+    test "a user cannot create a dependency on inaccessible clusters" do
+      user = insert(:user)
+      sa = insert(:user, service_account: true, account: user.account)
+      dest   = insert(:cluster, owner: user)
+      source = insert(:cluster, owner: sa)
+
+      {:error, _} = Clusters.create_dependency(source, dest, user)
+    end
+
+    test "a user cannot create a dependency between clusters w/ different providers" do
+      user = insert(:user)
+      sa = insert(:user, service_account: true, account: user.account)
+      insert(:impersonation_policy_binding,
+        policy: build(:impersonation_policy, user: sa),
+        user: user
+      )
+      dest   = insert(:cluster, owner: user)
+      source = insert(:cluster, owner: sa, provider: :gcp)
+
+      {:error, _} = Clusters.create_dependency(source, dest, user)
+    end
+  end
+
+  describe "promote/1" do
+    test "a user can promote from their dependency clusters" do
+      user = insert(:user, upgrade_to: uuid(0))
+      def_ups = insert_list(3, :deferred_update, user: user, pending: true)
+
+      {:ok, update} = Clusters.promote(user)
+
+      assert update.upgrade_to > user.upgrade_to
+
+      for def <- def_ups,
+        do: assert refetch(def).dequeue_at
+    end
+  end
+
   describe "#delete_cluster/2" do
     test "a user can delete their own cluster" do
       user = insert(:user)

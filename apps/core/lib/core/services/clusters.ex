@@ -2,29 +2,36 @@ defmodule Core.Services.Clusters do
   use Core.Services.Base
   import Core.Policies.Cluster
   alias Core.Services.{Dns, Repositories}
-  alias Core.Schema.{Cluster, User, DnsRecord, UpgradeQueue}
+  alias Core.Schema.{Cluster, User, DnsRecord, UpgradeQueue, ClusterDependency}
 
   @type error :: {:error, term}
   @type cluster_resp :: {:ok, Cluster.t} | error
+  @type cluster_dep_resp :: {:ok, ClusterDependency.t} | error
 
   @spec get_cluster(binary, atom, binary) :: Cluster.t | nil
   def get_cluster(account_id, provider, name) do
     Core.Repo.get_by(Cluster, account_id: account_id, provider: provider, name: name)
   end
 
-  def get_cluster_by_owner(user_id) do
-    Core.Repo.get_by(Cluster, owner_id: user_id)
-  end
+  @spec get_cluster!(binary) :: Cluster.t | nil
+  def get_cluster!(id), do: Core.Repo.get!(Cluster, id)
+
+  @spec get_cluster_by_owner(binary) :: Cluster.t | nil
+  def get_cluster_by_owner(user_id), do: Core.Repo.get_by(Cluster, owner_id: user_id)
 
   @doc """
   Determines if a user has access to the cluster referenced by `id`
   """
   @spec authorize(binary, User.t) :: cluster_resp
-  def authorize(id, %User{} = user) when is_binary(id) do
-    Core.Repo.get(Cluster, id)
-    |> Core.Repo.preload([owner: [impersonation_policy: :bindings]])
-    |> allow(user, :access)
+  def authorize(%Cluster{} = c, %User{} = u) do
+    Core.Repo.preload(c, [owner: [impersonation_policy: :bindings]], force: true)
+    |> allow(u, :access)
   end
+  def authorize(id, user) when is_binary(id) do
+    Core.Repo.get(Cluster, id)
+    |> authorize(user)
+  end
+  def authorize(nil, _), do: {:error, "not found"}
 
   @doc """
   creates a cluster reference with this user as the marked owner
@@ -74,6 +81,55 @@ defmodule Core.Services.Clusters do
     end
   end
   defp infer_domain(_), do: nil
+
+  @doc """
+  Creates a cluster dependency, which will be used for guiding promotion flows
+  """
+  @spec create_dependency(Cluster.t, Cluster.t, User.t) :: cluster_dep_resp
+  def create_dependency(%Cluster{owner_id: o}, %Cluster{owner_id: o}, _),
+    do: {:error, "the cluster must have a different owner"}
+  def create_dependency(%Cluster{provider: p} = source, %Cluster{provider: p} = dest, %User{} = user) do
+    with {:ok, source} <- authorize(source, user),
+         {:ok, %{owner: dest_owner} = dest} <- authorize(dest, user) do
+      start_transaction()
+      |> add_operation(:dep, fn _ ->
+        %ClusterDependency{}
+        |> ClusterDependency.changeset(%{dependency_id: source.id, cluster_id: dest.id})
+        |> Core.Repo.insert()
+      end)
+      |> add_operation(:promote, fn _ -> do_promote(dest_owner) end)
+      |> execute(extract: :dep)
+    end
+  end
+  def create_dependency(_, _, _), do: {:error, "cluster dependencies must be for the same provider"}
+
+  @doc """
+  Grabs the new promote waterline from a user's cluster deps and writes all pending deferred updates to
+  be dequeueable.
+  """
+  @spec promote(User.t) :: {:ok, User.t} | error
+  def promote(%User{upgrade_to: to} = user) when is_binary(to) do
+    start_transaction()
+    |> add_operation(:user, fn _ -> do_promote(user) end)
+    |> add_operation(:kick, fn _ -> Core.Services.Upgrades.kick(user) end)
+    |> execute(extract: :user)
+  end
+  def promote(_), do: {:error, "this user doesn't have promotions enabled"}
+
+  defp do_promote(%User{} = user) do
+    line = waterline(user)
+    Ecto.Changeset.change(user, %{upgrade_to: line || Piazza.Ecto.UUID.generate_monotonic()})
+    |> Core.Repo.update()
+  end
+
+  @doc """
+  Gets the waterline for a users promotions from all dependency clusters
+  """
+  @spec waterline(User.t) :: integer | nil
+  def waterline(%User{id: user_id}) do
+    ClusterDependency.waterline(user_id)
+    |> Core.Repo.one()
+  end
 
   @doc """
   deletes the cluster reference and flushes associated records

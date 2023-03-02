@@ -99,7 +99,7 @@ defmodule Core.Services.Dependencies do
   def closure(nil), do: []
   def closure(deps) when is_list(deps), do: closure(deps, MapSet.new(), [])
 
-  defp valid_version?([%{locked: true} | _], %{repo: repo}), do: {:locked, repo} # don't deliver updates when an installation is locked
+  # defp valid_version?([%{locked: true} | _], %{repo: repo}), do: {:locked, repo} # don't deliver updates when an installation is locked
   defp valid_version?([_ | _], %{version: nil}), do: true
   defp valid_version?(versions, %{any_of: [_ | _] = deps}) do
     by_name = Enum.into(deps, %{}, & {&1.name, &1})

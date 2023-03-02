@@ -22,13 +22,14 @@ defmodule Core.Schema.DeferredUpdate do
     def changeset(model, attrs \\ %{}) do
       model
       |> cast(attrs, @valid)
-      |> validate_required([:message, :repo, :package])
+      |> validate_required([:message])
     end
   end
 
   schema "deferred_updates" do
     field :attempts,   :integer, default: 0
     field :dequeue_at, :utc_datetime_usec
+    field :pending,    :boolean
 
     belongs_to :chart_installation,     ChartInstallation
     belongs_to :terraform_installation, TerraformInstallation
@@ -41,6 +42,21 @@ defmodule Core.Schema.DeferredUpdate do
   end
 
   def wait_time(%__MODULE__{attempts: attempts}), do: min(attempts + 1, 24)
+
+  def for_user(query \\ __MODULE__, user_id) do
+    from(du in query, where: du.user_id == ^user_id)
+  end
+
+  def info(query \\ __MODULE__) do
+    from(du in query,
+      left_join: c in assoc(du, :chart_installation),
+      left_join: t in assoc(du, :terraform_installation),
+      group_by: coalesce(c.installation_id, t.installation_id),
+      select: %{installation_id: coalesce(c.installation_id, t.installation_id), count: count(du.id, :distinct)}
+    )
+  end
+
+  def pending(query \\ __MODULE__), do: from(du in query, where: du.pending)
 
   def for_chart_installation(query \\ __MODULE__, id) do
     from(u in query, where: u.chart_installation_id == ^id)
@@ -66,7 +82,8 @@ defmodule Core.Schema.DeferredUpdate do
 
   def can_dequeue(query \\ __MODULE__, col) do
     from(d in query,
-      where: not is_nil(field(d, ^col)),
+      join: u in assoc(d, :user),
+      where: not is_nil(field(d, ^col)) and (is_nil(u.upgrade_to) or d.id <= u.upgrade_to),
       group_by: field(d, ^col),
       select: %{group_id: field(d, ^col), first: min(d.id)}
     )
@@ -76,7 +93,7 @@ defmodule Core.Schema.DeferredUpdate do
     from(d in query, order_by: [asc: :dequeue_at])
   end
 
-  @valid ~w(chart_installation_id terraform_installation_id version_id user_id dequeue_at attempts)a
+  @valid ~w(chart_installation_id terraform_installation_id version_id user_id dequeue_at attempts pending)a
 
   def changeset(model, attrs \\ %{}) do
     model

@@ -237,7 +237,12 @@ defmodule Core.Services.Upgrades do
   defp apply_deferred_update(%DeferredUpdate{version: version} = update) do
     start_transaction()
     |> add_operation(:upgrade, fn _ -> install_version(version, update_inst(update)) end)
-    |> add_operation(:clean, fn _ -> Core.Repo.delete(update) end)
+    |> add_operation(:clean, fn _ ->
+      case Core.Repo.get(DeferredUpdate, update.id) do
+        nil -> {:ok, nil}
+        update -> Core.Repo.delete(update)
+      end
+    end)
     |> execute(extract: :clean)
   end
 

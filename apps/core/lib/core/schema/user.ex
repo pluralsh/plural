@@ -55,6 +55,7 @@ defmodule Core.Schema.User do
     field :phone,           :string
     field :external_id,     :string
     field :demo_count,      :integer, default: 0
+    field :upgrade_to,      :binary_id
     field :trusted_icon,    :boolean, default: false, virtual: true
     field :password_change, :boolean, default: false, virtual: true
 

@@ -1,9 +1,7 @@
 defimpl Core.Rollouts.Rollable, for: [Core.PubSub.VersionCreated, Core.PubSub.VersionUpdated] do
   use Core.Rollable.Base
-  import Core.Rollable.Utils
-  alias Core.Services.{Dependencies, Upgrades, Rollouts, Payments}
-  alias Core.Schema.{ChartInstallation, TerraformInstallation, Version}
-  alias Core.Schema.Dependencies, as: Deps
+  alias Core.Services.{Dependencies, Upgrades, Payments}
+  alias Core.Schema.{ChartInstallation, TerraformInstallation, User}
 
   def name(%Core.PubSub.VersionCreated{}), do: "version:created"
   def name(%Core.PubSub.VersionUpdated{}), do: "version:updated"
@@ -26,44 +24,31 @@ defimpl Core.Rollouts.Rollable, for: [Core.PubSub.VersionCreated, Core.PubSub.Ve
     |> TerraformInstallation.ordered()
   end
 
-  # defp maybe_ignore_version(q, Core.PubSub.VersionUpdated, _, _), do: q
-  defp maybe_ignore_version(q, _, mod, id), do: mod.ignore_version(q, id)
+  def process(%{item: vsn}, %{installation: %{user: %User{upgrade_to: to} = user}} = inst) when is_binary(to) do
+    Upgrades.create_deferred_update(%{
+      pending: true,
+      reasons: reason("waiting for promotion")
+    }, vsn.id, inst, user)
+  end
+
+  def process(%{item: vsn}, %{installation: %{user: user}, locked: true} = inst) do
+    Upgrades.create_deferred_update(%{reasons: reason("installation locked")}, vsn.id, inst, user)
+  end
 
   def process(%{item: version}, %{installation: %{user: user}} = inst) do
     case {Dependencies.valid?(version.dependencies, user), Payments.delinquent?(user)} do
-      {true, false} -> directly_install(version, inst)
-      _ -> Upgrades.create_deferred_update(version.id, inst, user)
+      {true, false} -> Upgrades.install_version(version, inst)
+      failed -> Upgrades.create_deferred_update(reasons(failed), version.id, inst, user)
     end
   end
 
-  defp directly_install(version, inst) do
-    start_transaction()
-    |> add_operation(:lock, fn _ -> Rollouts.lock_installation(version, inst) end)
-    |> add_operation(:inst, fn %{lock: inst} ->
-      inst
-      |> Ecto.Changeset.change(%{version_id: version.id})
-      |> Core.Repo.update()
-    end)
-    |> add_operation(:upgrades, fn
-      %{inst: %{locked: true}} -> locked_upgrades(version, inst)
-      %{inst: inst} -> deliver_upgrades(inst.installation.user_id, fn queue ->
-        Core.Services.Upgrades.create_upgrade(%{
-          repository_id: repo_id(version),
-          message: "Upgraded #{type(version)} #{pkg_name(version)} to #{version.version}"
-        }, queue)
-      end)
-    end)
-    |> execute(extract: :upgrades)
-  end
+  # defp maybe_ignore_version(q, Core.PubSub.VersionUpdated, _, _), do: q
+  defp maybe_ignore_version(q, _, mod, id), do: mod.ignore_version(q, id)
 
-  defp locked_upgrades(%Version{dependencies: %Deps{dedicated: true}} = version, inst) do
-    deliver_upgrades(inst.installation.user_id, fn queue ->
-      Core.Services.Upgrades.create_upgrade(%{
-        type: :dedicated,
-        repository_id: repo_id(version),
-        message: "Upgraded #{type(version)} #{pkg_name(version)} to #{version.version}"
-      }, queue)
-    end)
-  end
-  defp locked_upgrades(_, _), do: {:ok, []}
+  defp reasons({false, _}), do: %{reasons: reason("missing dependencies")}
+  defp reasons({{:locked, _}, _}), do: %{reasons: reason("dependency is locked")}
+  defp reasons({_, true}), do: %{reasons: reason("your billing account is delinquent")}
+  defp reasons(_), do: %{}
+
+  defp reason(msg), do: [%{message: msg}]
 end

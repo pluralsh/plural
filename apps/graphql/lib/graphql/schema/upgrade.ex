@@ -56,12 +56,20 @@ defmodule GraphQl.Schema.Upgrade do
     field :id,         non_null(:id)
     field :dequeue_at, :datetime
     field :attempts,   :integer
+    field :pending,    :boolean
+    field :messages,   list_of(:deferred_reason)
 
     field :chart_installation,     :chart_installation, resolve: dataloader(Chart)
     field :terraform_installation, :terraform_installation, resolve: dataloader(Terraform)
     field :version,                :version, resolve: dataloader(Version)
 
     timestamps()
+  end
+
+  object :deferred_reason do
+    field :message,    :string
+    field :package,    :string
+    field :repository, :string
   end
 
   connection node_type: :upgrade

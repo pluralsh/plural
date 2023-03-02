@@ -609,6 +609,13 @@ defmodule Core.Factory do
     }
   end
 
+  def cluster_dependency_factory do
+    %Schema.ClusterDependency{
+      cluster: build(:cluster),
+      dependency: build(:cluster)
+    }
+  end
+
   def with_password(%Schema.User{} = user, password) do
     Schema.User.changeset(user, %{password: password})
     |> Ecto.Changeset.apply_changes()

@@ -62,7 +62,8 @@ defmodule GraphQl do
     Dns,
     Test,
     Cluster,
-    Upgrade
+    Upgrade,
+    GraphQl.InstallationLoader
   ]
 
   def context(ctx) do

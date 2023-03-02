@@ -32,13 +32,20 @@ defmodule Core.Schema.Cluster do
     )
   end
 
-  def for_user(query \\ __MODULE__, %User{id: user_id, account_id: account_id} = user) do
+
+  def for_user(query \\ __MODULE__, user)
+
+  def for_user(query, %User{id: user_id, account_id: account_id} = user) do
     accessible = User.accessible(user)
     from(c in query,
       left_join: u in subquery(accessible),
       where: c.account_id == ^account_id and (c.owner_id == ^user_id or c.owner_id == u.id),
       distinct: true
     )
+  end
+
+  def for_user(query, user_id) when is_binary(user_id) do
+    from(c in query, where: c.owner_id == ^user_id)
   end
 
   def ordered(query \\ __MODULE__, order \\ [asc: :name]) do

@@ -5,6 +5,12 @@ schema {
   subscription: RootSubscriptionType
 }
 
+"The pending upgrades for a repository"
+type UpgradeInfo {
+  installation: Installation
+  count: Int
+}
+
 type PageInfo {
   "When paginating backwards, are there more items?"
   hasPreviousPage: Boolean!
@@ -17,6 +23,29 @@ type PageInfo {
 
   "When paginating forwards, the cursor to continue."
   endCursor: String
+}
+
+enum IncidentAction {
+  EDIT
+  CREATE
+  STATUS
+  SEVERITY
+  ACCEPT
+  COMPLETE
+}
+
+type ChartInstallation {
+  id: ID
+  chart: Chart
+  version: Version
+  installation: Installation
+  insertedAt: DateTime
+  updatedAt: DateTime
+}
+
+type RepositorySubscriptionConnection {
+  pageInfo: PageInfo!
+  edges: [RepositorySubscriptionEdge]
 }
 
 type IncidentConnection {
@@ -39,27 +68,9 @@ type DeferredUpdateConnection {
   edges: [DeferredUpdateEdge]
 }
 
-enum IncidentAction {
-  EDIT
-  CREATE
-  STATUS
-  SEVERITY
-  ACCEPT
-  COMPLETE
-}
-
 type IncidentMessageConnection {
   pageInfo: PageInfo!
   edges: [IncidentMessageEdge]
-}
-
-type ChartInstallation {
-  id: ID
-  chart: Chart
-  version: Version
-  installation: Installation
-  insertedAt: DateTime
-  updatedAt: DateTime
 }
 
 type RecipeSection {
@@ -71,11 +82,6 @@ type RecipeSection {
   configuration: [RecipeConfiguration]
   insertedAt: DateTime
   updatedAt: DateTime
-}
-
-type RepositorySubscriptionConnection {
-  pageInfo: PageInfo!
-  edges: [RepositorySubscriptionEdge]
 }
 
 type UserConnection {
@@ -152,6 +158,14 @@ type ActionItem {
   link: String!
 }
 
+type LineItem {
+  name: String!
+  dimension: String!
+  cost: Int!
+  period: String
+  type: PlanType
+}
+
 type RecipeItem {
   id: ID
   chart: Chart
@@ -160,14 +174,6 @@ type RecipeItem {
   configuration: [RecipeConfiguration]
   insertedAt: DateTime
   updatedAt: DateTime
-}
-
-type LineItem {
-  name: String!
-  dimension: String!
-  cost: Int!
-  period: String
-  type: PlanType
 }
 
 type ClosureItem {
@@ -665,6 +671,12 @@ type RolloutConnection {
   edges: [RolloutEdge]
 }
 
+type DeferredReason {
+  message: String
+  package: String
+  repository: String
+}
+
 type GroupConnection {
   pageInfo: PageInfo!
   edges: [GroupEdge]
@@ -968,6 +980,21 @@ type Repository {
 
   "The documentation of the application."
   docs: [FileContent]
+
+  insertedAt: DateTime
+
+  updatedAt: DateTime
+}
+
+"A dependncy reference between clusters"
+type ClusterDependency {
+  id: ID!
+
+  "the cluster holding this dependency"
+  cluster: Cluster
+
+  "the source cluster of this dependency"
+  dependency: Cluster
 
   insertedAt: DateTime
 
@@ -1436,6 +1463,9 @@ type Cluster {
   "The last time the cluster was pinged."
   pingedAt: DateTime
 
+  "pending upgrades for each installed app"
+  upgradeInfo: [UpgradeInfo]
+
   "The user that owns the cluster."
   owner: User
 
@@ -1809,6 +1839,12 @@ type RootMutationType {
     "The input attributes for the cluster that will be created."
     attributes: ClusterAttributes!
   ): Cluster
+
+  "adds a dependency for this cluster to gate future upgrades"
+  createClusterDependency(sourceId: ID!, destId: ID!): ClusterDependency
+
+  "moves up the upgrade waterline for a user"
+  promote: User
 
   "Delete a cluster."
   deleteCluster(
@@ -2243,6 +2279,8 @@ type DeferredUpdate {
   id: ID!
   dequeueAt: DateTime
   attempts: Int
+  pending: Boolean
+  messages: [DeferredReason]
   chartInstallation: ChartInstallation
   terraformInstallation: TerraformInstallation
   version: Version

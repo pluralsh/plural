@@ -1,6 +1,7 @@
 defmodule GraphQl.Resolvers.Cluster do
   use GraphQl.Resolvers.Base, model: Core.Schema.Cluster
   alias Core.Services.Clusters
+  alias Core.Schema.DeferredUpdate
 
   def query(_, _), do: Cluster
 
@@ -12,6 +13,22 @@ defmodule GraphQl.Resolvers.Cluster do
     |> Cluster.ordered()
     |> paginate(args)
   end
+
+  def create_dependency(%{source_id: sid, dest_id: did}, %{context: %{current_user: user}}) do
+    source = Clusters.get_cluster!(sid)
+    dest   = Clusters.get_cluster!(did)
+    Clusters.create_dependency(source, dest, user)
+  end
+
+  def upgrade_info(%Cluster{owner_id: uid}) do
+    DeferredUpdate.for_user(uid)
+    |> DeferredUpdate.pending()
+    |> DeferredUpdate.info()
+    |> Core.Repo.all()
+    |> ok()
+  end
+
+  def promote(_, %{context: %{current_user: user}}), do: Clusters.promote(user)
 
   def create_cluster(%{attributes: attrs}, %{context: %{current_user: user}}),
     do: Clusters.create_cluster(attrs, user)

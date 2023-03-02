@@ -52,24 +52,54 @@ defmodule Api.MixProject do
 
   defp releases() do
     [
-      dev: [
-        include_executables_for: [:unix],
-        include_erts: true,
-        strip_beams: false,
-        quiet: false
-      ],
-      subsys: [
+      plural: [
         include_executables_for: [:unix],
         include_erts: true,
         strip_beams: true,
-        quiet: false
+        quiet: false,
+        applications: [
+          :runtime_tools,
+          api: :permanent,
+          core: :permanent,
+          email: :permanent,
+          graphql: :load
+        ]
       ],
-      prd: [
+      rtc: [
         include_executables_for: [:unix],
         include_erts: true,
         strip_beams: true,
-        quiet: false
-      ]
+        quiet: false,
+        applications: [
+          :runtime_tools,
+          rtc: :permanent,
+          core: :permanent,
+          graphql: :load
+        ]
+      ],
+      worker: [
+        include_executables_for: [:unix],
+        include_erts: true,
+        strip_beams: true,
+        quiet: false,
+        applications: [
+          :runtime_tools,
+          worker: :permanent,
+          core: :permanent
+        ]
+      ],
+      cron: [
+        include_executables_for: [:unix],
+        include_erts: true,
+        strip_beams: true,
+        quiet: false,
+        applications: [
+          :runtime_tools,
+          cron: :permanent,
+          core: :permanent,
+          email: :permanent
+        ]
+      ],
     ]
   end
 

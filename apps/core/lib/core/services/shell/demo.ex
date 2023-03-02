@@ -206,7 +206,7 @@ defmodule Core.Services.Shell.Demo do
 
   def poll_demo_project(%DemoProject{state: :ready, enabled_op_id: op_id} = proj) when is_binary(op_id) do
     svcs_conn()
-    |> SvcsOperations.serviceusage_operations_get(op_id)
+    |> SvcsOperations.serviceusage_operations_get("operations/#{op_id}")
     |> case do
       {:error, %Tesla.Env{status: 404}} ->
         Logger.info "could not find demo project operation #{op_id}"

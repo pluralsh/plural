@@ -505,9 +505,7 @@ defmodule Core.Services.Users do
   Determines whether a user has reached the demo project usage limit
   """
   @spec demoed?(User.t) :: boolean
-  def demoed?(%User{demo_count: count}) do
-    count >= Core.Services.Shell.Demo.max_demo_count
-  end
+  def demoed?(%User{demo_count: count}), do: count >= Demo.max_demo_count()
 
   @doc """
   Fetches or creates an eab key for the user mapped to that (cluster, provider)

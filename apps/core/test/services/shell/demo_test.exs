@@ -140,7 +140,7 @@ defmodule Core.Services.Shell.DemoTest do
     test "if the demo project is ready, then it will query the services enabled op" do
       demo = insert(:demo_project, state: :ready, enabled_op_id: "1234")
       expect(Goth.Token, :for_scope, fn _ -> {:ok, %{token: "token"}} end)
-      expect(GoogleApi.ServiceUsage.V1.Api.Operations, :serviceusage_operations_get, fn _, "1234"-> {:ok, %SvcOperation{done: true}} end)
+      expect(GoogleApi.ServiceUsage.V1.Api.Operations, :serviceusage_operations_get, fn _, "operations/1234"-> {:ok, %SvcOperation{done: true}} end)
 
       {:ok, polled} = Demo.poll_demo_project(demo)
 

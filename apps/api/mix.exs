@@ -46,60 +46,6 @@ defmodule Api.MixProject do
       aliases: aliases(),
       deps: deps(),
       test_coverage: [tool: ExCoveralls]
-      releases: releases()
-    ]
-  end
-
-  defp releases() do
-    [
-      plural: [
-        include_executables_for: [:unix],
-        include_erts: true,
-        strip_beams: true,
-        quiet: false,
-        applications: [
-          :runtime_tools,
-          api: :permanent,
-          core: :permanent,
-          email: :permanent,
-          graphql: :load
-        ]
-      ],
-      rtc: [
-        include_executables_for: [:unix],
-        include_erts: true,
-        strip_beams: true,
-        quiet: false,
-        applications: [
-          :runtime_tools,
-          rtc: :permanent,
-          core: :permanent,
-          graphql: :load
-        ]
-      ],
-      worker: [
-        include_executables_for: [:unix],
-        include_erts: true,
-        strip_beams: true,
-        quiet: false,
-        applications: [
-          :runtime_tools,
-          worker: :permanent,
-          core: :permanent
-        ]
-      ],
-      cron: [
-        include_executables_for: [:unix],
-        include_erts: true,
-        strip_beams: true,
-        quiet: false,
-        applications: [
-          :runtime_tools,
-          cron: :permanent,
-          core: :permanent,
-          email: :permanent
-        ]
-      ],
     ]
   end
 

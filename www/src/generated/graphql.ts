@@ -376,6 +376,8 @@ export type Cluster = {
   /** The source of the cluster. */
   source?: Maybe<Source>;
   updatedAt?: Maybe<Scalars['DateTime']>;
+  /** pending upgrades for each installed app */
+  upgradeInfo?: Maybe<Array<Maybe<UpgradeInfo>>>;
 };
 
 /** Input for creating or updating a cluster. */
@@ -398,6 +400,18 @@ export type ClusterConnection = {
   __typename?: 'ClusterConnection';
   edges?: Maybe<Array<Maybe<ClusterEdge>>>;
   pageInfo: PageInfo;
+};
+
+/** A dependncy reference between clusters */
+export type ClusterDependency = {
+  __typename?: 'ClusterDependency';
+  /** the cluster holding this dependency */
+  cluster?: Maybe<Cluster>;
+  /** the source cluster of this dependency */
+  dependency?: Maybe<Cluster>;
+  id: Scalars['ID'];
+  insertedAt?: Maybe<Scalars['DateTime']>;
+  updatedAt?: Maybe<Scalars['DateTime']>;
 };
 
 export type ClusterEdge = {
@@ -496,6 +510,13 @@ export enum Datatype {
   String = 'STRING'
 }
 
+export type DeferredReason = {
+  __typename?: 'DeferredReason';
+  message?: Maybe<Scalars['String']>;
+  package?: Maybe<Scalars['String']>;
+  repository?: Maybe<Scalars['String']>;
+};
+
 export type DeferredUpdate = {
   __typename?: 'DeferredUpdate';
   attempts?: Maybe<Scalars['Int']>;
@@ -503,6 +524,8 @@ export type DeferredUpdate = {
   dequeueAt?: Maybe<Scalars['DateTime']>;
   id: Scalars['ID'];
   insertedAt?: Maybe<Scalars['DateTime']>;
+  messages?: Maybe<Array<Maybe<DeferredReason>>>;
+  pending?: Maybe<Scalars['Boolean']>;
   terraformInstallation?: Maybe<TerraformInstallation>;
   updatedAt?: Maybe<Scalars['DateTime']>;
   version?: Maybe<Version>;
@@ -2482,6 +2505,8 @@ export type RootMutationType = {
   createCard?: Maybe<Account>;
   /** Create a new cluster. */
   createCluster?: Maybe<Cluster>;
+  /** adds a dependency for this cluster to gate future upgrades */
+  createClusterDependency?: Maybe<ClusterDependency>;
   createCrd?: Maybe<Crd>;
   createDemoProject?: Maybe<DemoProject>;
   createDnsRecord?: Maybe<DnsRecord>;
@@ -2562,6 +2587,8 @@ export type RootMutationType = {
   oauthConsent?: Maybe<OauthResponse>;
   passwordlessLogin?: Maybe<User>;
   pingWebhook?: Maybe<WebhookResponse>;
+  /** moves up the upgrade waterline for a user */
+  promote?: Maybe<User>;
   provisionDomain?: Maybe<DnsDomain>;
   publishLogs?: Maybe<TestStep>;
   quickStack?: Maybe<Stack>;
@@ -2648,6 +2675,12 @@ export type RootMutationTypeCreateCardArgs = {
 
 export type RootMutationTypeCreateClusterArgs = {
   attributes: ClusterAttributes;
+};
+
+
+export type RootMutationTypeCreateClusterDependencyArgs = {
+  destId: Scalars['ID'];
+  sourceId: Scalars['ID'];
 };
 
 
@@ -4401,6 +4434,13 @@ export type UpgradeEdge = {
   __typename?: 'UpgradeEdge';
   cursor?: Maybe<Scalars['String']>;
   node?: Maybe<Upgrade>;
+};
+
+/** The pending upgrades for a repository */
+export type UpgradeInfo = {
+  __typename?: 'UpgradeInfo';
+  count?: Maybe<Scalars['Int']>;
+  installation?: Maybe<Installation>;
 };
 
 export type UpgradeQueue = {

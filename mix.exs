@@ -68,7 +68,7 @@ defmodule Plural.MixProject do
         strip_beams: true,
         quiet: false,
         applications: [
-          rtc: :permanent,
+          rtc: :load,
           core: :permanent,
           graphql: :load
         ]

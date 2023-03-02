@@ -31,11 +31,8 @@ RUN mix do deps.get, compile
 
 RUN \
   mkdir -p /opt/built && \
-  mix distillery.release --name ${APP_NAME} && \
-  cp _build/${MIX_ENV}/rel/${APP_NAME}/releases/*/${APP_NAME}.tar.gz /opt/built && \
-  cd /opt/built && \
-  tar -xzf ${APP_NAME}.tar.gz && \
-  rm ${APP_NAME}.tar.gz
+  mix release ${APP_NAME} && \
+  mv _build/${MIX_ENV}/rel/${APP_NAME}/releases/*/* /opt/built
 
 FROM alpine:3.17.0 as tools
 

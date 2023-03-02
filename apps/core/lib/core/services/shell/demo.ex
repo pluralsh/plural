@@ -16,7 +16,8 @@ defmodule Core.Services.Shell.Demo do
   alias GoogleApi.ServiceUsage.V1.Api.Services, as: ServiceUsage
   alias GoogleApi.ServiceUsage.V1.Api.Operations, as: SvcsOperations
   alias GoogleApi.ServiceUsage.V1.Connection, as: SvcsConnection
-  alias GoogleApi.ServiceUsage.V1.Model.BatchEnableServicesRequest
+  alias GoogleApi.ServiceUsage.V1.Model.{BatchEnableServicesRequest}
+  alias GoogleApi.ServiceUsage.V1.Model.Operation, as: SvcOperation
 
 
   @type error :: {:error, term}
@@ -203,12 +204,17 @@ defmodule Core.Services.Shell.Demo do
   @spec poll_demo_project(DemoProject.t) :: {:ok, DemoProject.t} | error
   def poll_demo_project(%DemoProject{state: :enabled} = proj), do: {:ok, proj}
 
-  def poll_demo_project(%DemoProject{state: :ready, enabled_op_id: op_id} = proj) do
+  def poll_demo_project(%DemoProject{state: :ready, enabled_op_id: op_id} = proj) when is_binary(op_id) do
     svcs_conn()
     |> SvcsOperations.serviceusage_operations_get(op_id)
     |> case do
-      {:error, %Tesla.Env{status: 404}} -> enable(proj)
-      {:ok, %{done: true}} -> enable(proj)
+      {:error, %Tesla.Env{status: 404}} ->
+        Logger.info "could not find demo project operation #{op_id}"
+        enable(proj)
+      {:ok, %SvcOperation{done: true, error: %{} = error}} ->
+        Logger.info "could not enable services, error: #{inspect(error)}"
+        {:ok, proj}
+      {:ok, %SvcOperation{done: true}} -> enable(proj)
       _ -> {:ok, proj}
     end
   end

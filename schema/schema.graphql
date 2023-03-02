@@ -3394,8 +3394,10 @@ type User {
   impersonationPolicy: ImpersonationPolicy
   jwt: String
   hasInstallations: Boolean
+  demoing: Boolean
   avatar: String
   backgroundColor: String
+  demoed: Boolean
   cards(after: String, first: Int, before: String, last: Int): CardConnection
   insertedAt: DateTime
   updatedAt: DateTime
@@ -3410,6 +3412,7 @@ enum ScmProvider {
   GITHUB
   GITLAB
   MANUAL
+  DEMO
 }
 
 type TestDelta {

@@ -19,8 +19,6 @@ defmodule GraphQl.UserQueriesTest do
         }
       """, %{}, %{current_user: Core.Services.Rbac.preload(user)})
 
-      IO.inspect(user)
-
       assert me["id"] == user.id
       assert me["name"] == user.name
       assert length(me["boundRoles"]) == 1

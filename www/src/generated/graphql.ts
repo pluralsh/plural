@@ -4035,6 +4035,7 @@ export type ScmAttributes = {
 };
 
 export enum ScmProvider {
+  Demo = 'DEMO',
   Github = 'GITHUB',
   Gitlab = 'GITLAB',
   Manual = 'MANUAL'
@@ -4454,6 +4455,8 @@ export type User = {
   boundRoles?: Maybe<Array<Maybe<Role>>>;
   cards?: Maybe<CardConnection>;
   defaultQueueId?: Maybe<Scalars['ID']>;
+  demoed?: Maybe<Scalars['Boolean']>;
+  demoing?: Maybe<Scalars['Boolean']>;
   email: Scalars['String'];
   emailConfirmBy?: Maybe<Scalars['DateTime']>;
   emailConfirmed?: Maybe<Scalars['Boolean']>;

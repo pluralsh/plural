@@ -3375,29 +3375,58 @@ type OidcProvider {
 
 type User {
   id: ID!
+
   name: String!
+
   email: String!
+
   phone: String
+
   address: Address
+
   loginMethod: LoginMethod
+
   onboarding: OnboardingState
+
   onboardingChecklist: OnboardingChecklist
+
   defaultQueueId: ID
+
   serviceAccount: Boolean
+
   emailConfirmed: Boolean
+
   emailConfirmBy: DateTime
+
   provider: Provider
+
   roles: Roles
+
   boundRoles: [Role]
+
   publisher: Publisher
+
   account: Account!
+
   impersonationPolicy: ImpersonationPolicy
+
   jwt: String
+
   hasInstallations: Boolean
+
+  demoing: Boolean
+
   avatar: String
+
   backgroundColor: String
+
+  "If a user has reached the demo project usage limit."
+  demoed: Boolean
+
   cards(after: String, first: Int, before: String, last: Int): CardConnection
+
   insertedAt: DateTime
+
   updatedAt: DateTime
 }
 
@@ -3410,6 +3439,7 @@ enum ScmProvider {
   GITHUB
   GITLAB
   MANUAL
+  DEMO
 }
 
 type TestDelta {

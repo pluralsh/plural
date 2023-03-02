@@ -132,6 +132,11 @@ defmodule GraphQl.Schema.User do
       user, _, _ -> {:ok, User.background_color(user)}
     end
 
+    @desc "If a user has reached the demo project usage limit."
+    field :demoed, :boolean, resolve: fn
+      user, _, _ -> {:ok, Core.Services.Users.demoed?(user)}
+    end
+
     connection field :cards, node_type: :card do
       resolve &Payments.list_cards/3
     end

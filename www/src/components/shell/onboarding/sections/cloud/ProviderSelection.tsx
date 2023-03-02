@@ -15,10 +15,12 @@ import {
 import { OnboardingContext } from '../../context/onboarding'
 import { CloudType } from '../../context/types'
 import GCPLogoIcon from '../../assets/GCPLogoIcon.svg'
+import CurrentUserContext from '../../../../../contexts/CurrentUserContext'
 
 import { CloudOption } from './CloudOption'
 
 function ProviderSelection() {
+  const me = useContext(CurrentUserContext)
   const { cloud, setCloud, setValid } = useContext(OnboardingContext)
   const [path, setPath] = useState(cloud?.type)
   const isValid = useMemo(() => path !== undefined, [path])
@@ -47,6 +49,7 @@ function ProviderSelection() {
         <CloudOption
           selected={path === CloudType.Demo}
           onClick={() => setPath(CloudType.Demo)}
+          disabled={me?.demoed}
           icon={(
             <img
               src={GCPLogoIcon}

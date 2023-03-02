@@ -5,18 +5,13 @@ import {
   useState,
 } from 'react'
 import { Flex } from 'honorable'
-import { Button, FormField, Input } from '@pluralsh/design-system'
+import { FormField, Input } from '@pluralsh/design-system'
 
 import { OnboardingContext } from '../../context/onboarding'
-import { useSectionState, useSetWorkspaceKeys } from '../../context/hooks'
+import { useSetWorkspaceKeys } from '../../context/hooks'
 import { IsObjectEmpty } from '../../../../../utils/object'
 import { generateString } from '../../../../../utils/string'
-import {
-  CloudProvider,
-  CloudType,
-  ConfigureCloudSectionState,
-  WorkspaceProps,
-} from '../../context/types'
+import { CloudProvider, WorkspaceProps } from '../../context/types'
 
 type ValidationFieldKey = keyof WorkspaceProps
 type Validation = {regex: RegExp, message: string}

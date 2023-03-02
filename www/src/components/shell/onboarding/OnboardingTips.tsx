@@ -2,7 +2,6 @@ import {
   A,
   Code,
   Div,
-  P,
   Span,
 } from 'honorable'
 import { TipCarousel } from '@pluralsh/design-system'

@@ -22,8 +22,7 @@ import { OnboardingContext } from '../../context/onboarding'
 import { ScmProvider } from '../../../../../generated/graphql'
 import { isAlphanumeric } from '../../../helpers'
 import { ConfigureCloudSectionState, OrgType, SCMOrg } from '../../context/types'
-import { useContextStorage, useSectionState } from '../../context/hooks'
-
+import { useSectionState } from '../../context/hooks'
 import useOnboarded from '../../../hooks/useOnboarded'
 
 import { useGithubState } from './provider/github'

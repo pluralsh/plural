@@ -1,14 +1,7 @@
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
-import { useLazyQuery, useMutation, useQuery } from '@apollo/client'
+import { useCallback, useEffect, useMemo } from 'react'
+import { useMutation, useQuery } from '@apollo/client'
 import { Flex } from 'honorable'
 import { Button, LoopingLogo } from '@pluralsh/design-system'
-
-import { useLocation, useParams } from 'react-router-dom'
 
 import { CloudShell, RootQueryType } from '../../generated/graphql'
 import { ResponsiveLayoutSpacer } from '../utils/layout/ResponsiveLayoutSpacer'

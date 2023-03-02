@@ -21,8 +21,8 @@ function DeleteShellModal({ onClose }) {
   const { demoing } = useContext(CurrentUserContext)
   const [open, setOpen] = useState(true)
   const [canDelete, setCanDelete] = useState(false)
-  const [deleteShell] = useMutation(DELETE_SHELL_MUTATION)
-  const [deleteDemoProjectWithShell] = useMutation(DELETE_DEMO_PROJECT_MUTATION)
+  const [deleteShell, { loading: deleteShellLoading }] = useMutation(DELETE_SHELL_MUTATION)
+  const [deleteDemoProjectWithShell, { loading: deleteDemoProjectLoading }] = useMutation(DELETE_DEMO_PROJECT_MUTATION)
 
   const close = useCallback(() => {
     setOpen(false)
@@ -111,6 +111,7 @@ function DeleteShellModal({ onClose }) {
             destructive
             disabled={!canDelete}
             onClick={() => onDelete()}
+            loading={deleteShellLoading || deleteDemoProjectLoading}
           >Delete
           </Button>
         </Flex>

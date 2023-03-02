@@ -1,4 +1,5 @@
 import { Div, Flex, Span } from 'honorable'
+import { Tooltip, WrapWithIf } from '@pluralsh/design-system'
 
 import OnboardingCardButton from '../../OnboardingCardButton'
 
@@ -7,41 +8,56 @@ function CloudOption({
   header,
   description,
   selected,
+  disabled,
+  tooltip,
   ...props
 }: any) {
   return (
-    <OnboardingCardButton
-      position="relative"
-      selected={selected}
-      {...props}
+    <WrapWithIf
+      condition={!!tooltip}
+      wrapper={(
+        <Tooltip
+          label={tooltip}
+          placement="top"
+        />
+      )}
     >
-      <Flex
-        direction="column"
-        gap="xxsmall"
-      >
-        <Div
-          marginHorizontal="auto"
-          maxWidth={40}
-          maxHeight={40}
-          overflow="visible"
+      <div>
+        <OnboardingCardButton
+          position="relative"
+          selected={selected}
+          disabled={disabled}
+          {...props}
         >
-          {icon}
-        </Div>
-        <Span
-          body1
-          bold
-          marginTop="small"
-        >
-          {header}
-        </Span>
-        <Span
-          caption
-          color="text-light"
-        >
-          {description}
-        </Span>
-      </Flex>
-    </OnboardingCardButton>
+          <Flex
+            direction="column"
+            gap="xxsmall"
+          >
+            <Div
+              marginHorizontal="auto"
+              maxWidth={40}
+              maxHeight={40}
+              overflow="visible"
+            >
+              {icon}
+            </Div>
+            <Span
+              body1
+              bold
+              marginTop="small"
+            >
+              {header}
+            </Span>
+            <Span
+              caption
+              color={disabled ? 'text-disabled' : 'text-light'}
+            >
+              {description}
+            </Span>
+          </Flex>
+        </OnboardingCardButton>
+      </div>
+    </WrapWithIf>
   )
 }
 

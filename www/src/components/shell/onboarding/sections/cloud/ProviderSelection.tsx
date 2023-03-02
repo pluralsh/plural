@@ -50,6 +50,7 @@ function ProviderSelection() {
           selected={path === CloudType.Demo}
           onClick={() => setPath(CloudType.Demo)}
           disabled={me?.demoed}
+          tooltip={me?.demoed ? 'You have reached the maximum number of demo environment usage.' : undefined}
           icon={(
             <img
               src={GCPLogoIcon}

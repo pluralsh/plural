@@ -25,7 +25,7 @@ defmodule Core.Services.Shell.Demo do
   @lock "demo-projects"
   @max_count 3
 
-  @spec max_demo_count :: binary
+  @spec max_demo_count :: integer
   def max_demo_count, do: @max_count
 
   @spec has_demo?(binary) :: boolean

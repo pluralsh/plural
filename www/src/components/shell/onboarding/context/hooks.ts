@@ -145,6 +145,14 @@ const useSectionState = () => {
   }, [setSection])
 }
 
+const useSectionError = () => {
+  const { setSection } = useContext(OnboardingContext)
+
+  return useCallback((hasError: boolean) => {
+    setSection(section => ({ ...section, hasError }))
+  }, [setSection])
+}
+
 const useSetWorkspaceKeys = (): Dispatch<Partial<WorkspaceProps>> => {
   const { setWorkspace } = useContext(OnboardingContext)
 
@@ -174,5 +182,8 @@ const useContextStorage = () => {
 }
 
 export {
-  useToken, useCloudType, defaultSections, useSection, usePath, useSetWorkspaceKeys, useSetCloudProviderKeys, useSectionState, useContextStorage,
+  useToken, useCloudType, defaultSections,
+  useSection, usePath, useSetWorkspaceKeys,
+  useSetCloudProviderKeys, useSectionState, useContextStorage,
+  useSectionError,
 }

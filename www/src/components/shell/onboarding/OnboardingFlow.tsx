@@ -73,7 +73,7 @@ function OnboardingFlow({ onNext, onBack }) {
           <CLICompletionStep onBack={onBack} />
         )}
       </OnboardingCard>
-      {isCreating && <OnboardingTips />}
+      {isCreating && !section.hasError && <OnboardingTips />}
     </Flex>
   )
 }

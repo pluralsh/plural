@@ -39,7 +39,7 @@ import {
 import { toCloudProviderAttributes } from '../../../utils/provider'
 import { PosthogEvent, posthogCapture } from '../../../../../utils/posthog'
 
-import { useSectionState } from '../../context/hooks'
+import { useSectionError, useSectionState } from '../../context/hooks'
 
 import { ShellStatus } from './ShellStatus'
 
@@ -97,6 +97,7 @@ function CreateShell() {
     scm, cloud, workspace, setSection, sections,
   } = useContext(OnboardingContext)
   const setSectionState = useSectionState()
+  const setSectionError = useSectionError()
 
   const [shell, setShell] = useState<CloudShell>()
   const [error, setError] = useState<ApolloError | undefined>()
@@ -176,8 +177,12 @@ function CreateShell() {
 
   // Capture errors and send to posthog
   useEffect(() => error
-    && posthogCapture(PosthogEvent.Onboarding, { provider: cloud.provider, clusterName: workspace.clusterName, error }),
-  [cloud.provider, error, workspace.clusterName])
+    && posthogCapture(PosthogEvent.Onboarding, {
+      type: cloud.type, provider: cloud.provider, clusterName: workspace.clusterName, error,
+    }),
+  [cloud.provider, cloud.type, error, workspace.clusterName])
+
+  useEffect(() => setSectionError(!!error), [error, setSectionError])
 
   return (
     <>

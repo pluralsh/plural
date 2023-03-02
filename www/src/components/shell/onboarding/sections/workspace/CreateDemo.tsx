@@ -9,8 +9,15 @@ import { Flex } from 'honorable'
 import { useMutation, useQuery } from '@apollo/client'
 import IsEmpty from 'lodash/isEmpty'
 
-import { useSectionState } from '../../context/hooks'
-import { CloudProvider, CreateCloudShellSectionState } from '../../context/types'
+import { useSectionError, useSectionState } from '../../context/hooks'
+import {
+  CloudProps,
+  CloudProvider,
+  CloudType,
+  CreateCloudShellSectionState,
+  SCMProps,
+  WorkspaceProps,
+} from '../../context/types'
 import { CREATE_DEMO_PROJECT_MUTATION, POLL_DEMO_PROJECT_QUERY } from '../../../queries'
 import {
   DemoProjectState,
@@ -21,12 +28,16 @@ import {
 } from '../../../../../generated/graphql'
 import { OnboardingContext } from '../../context/onboarding'
 import { generateString } from '../../../../../utils/string'
+import { PosthogEvent, posthogCapture } from '../../../../../utils/posthog'
 
 import { DemoStatus } from './DemoStatus'
 
 function CreateDemo({ onBack, onNext }): JSX.Element {
   const setSectionState = useSectionState()
-  const { setSCM, setCloud, setWorkspace } = useContext(OnboardingContext)
+  const setSectionError = useSectionError()
+  const {
+    cloud, workspace, setSCM, setCloud, setWorkspace,
+  } = useContext(OnboardingContext)
   const [demoCreated, setDemoCreated] = useState(false)
   const [shouldCreate, setShouldCreate] = useState(true)
 
@@ -59,26 +70,31 @@ function CreateDemo({ onBack, onNext }): JSX.Element {
 
     const suffix = generateString(5)
 
-    setSCM(scm => ({
-      ...scm,
-      provider: ScmProvider.Demo,
-    }))
-    setCloud(cloud => ({
-      ...cloud,
+    setSCM({ provider: ScmProvider.Demo } as SCMProps)
+    setCloud({
+      type: CloudType.Demo,
       demoID: demoProject!.id,
       provider: CloudProvider.GCP,
       gcp: { applicationCredentials: demoProject!.credentials! },
-    }))
-    setWorkspace(workspace => ({
-      ...workspace,
+    } as CloudProps)
+    setWorkspace({
       project: demoProject!.projectId,
       region: 'us-east1',
       clusterName: `demo-${suffix}`,
       bucketPrefix: `plrlb-${suffix}`,
       subdomain: `demo-${suffix}`,
-    }))
+    } as WorkspaceProps)
     setDemoCreated(true)
   }, [demoCreated, demoProject, isProjectReady, setCloud, setSCM, setWorkspace])
+
+  // Capture errors and send to posthog
+  useEffect(() => error
+      && posthogCapture(PosthogEvent.Onboarding, {
+        type: cloud.type, provider: cloud.provider, clusterName: workspace.clusterName, error,
+      }),
+  [cloud.provider, cloud.type, error, workspace.clusterName])
+
+  useEffect(() => setSectionError(!!error), [error, setSectionError])
 
   return (
     <>

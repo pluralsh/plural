@@ -39,13 +39,15 @@ interface Section {
   next?: Section
   prev?: Section
   state?: CreateCloudShellSectionState | ConfigureCloudSectionState
+  hasError?: boolean
 }
 
 type Sections = {[key in keyof typeof SectionKey]?: Section}
 
 enum CreateCloudShellSectionState {
-  Creating,
-  Finished,
+  Summary = 'Summary',
+  Creating = 'Creating',
+  Finished = 'Finished',
 }
 
 enum ConfigureCloudSectionState {

@@ -4,7 +4,7 @@ import { ApolloError } from '@apollo/client'
 
 import { Provider } from '../generated/graphql'
 
-import { CloudProvider } from '../components/shell/onboarding/context/types'
+import { CloudProvider, CloudType } from '../components/shell/onboarding/context/types'
 
 import { CurrentUser } from '../contexts/CurrentUserContext'
 
@@ -38,6 +38,7 @@ export enum PosthogEvent {
 
 interface PosthogOnboardingEvent {
   provider?: CloudProvider
+  type?: CloudType
   error?: ApolloError
   clusterName?: string
 }

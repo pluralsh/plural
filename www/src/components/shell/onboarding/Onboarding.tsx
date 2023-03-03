@@ -1,15 +1,18 @@
 import { Flex } from 'honorable'
 import { ThemeContext } from 'styled-components'
 import {
+  Dispatch,
   ReactElement,
   useContext,
+  useEffect,
   useMemo,
   useState,
 } from 'react'
 import { useNavigate } from 'react-router-dom'
 
+import IsEmpty from 'lodash/isEmpty'
+
 import { useDevTokenInputSecretCode } from '../hooks/useDevToken'
-import { AuthorizationUrl, RootQueryType, ScmProvider } from '../../../generated/graphql'
 import useOnboarded from '../hooks/useOnboarded'
 import { ResponsiveLayoutSpacer } from '../../utils/layout/ResponsiveLayoutSpacer'
 import { ResponsiveLayoutContentContainer } from '../../utils/layout/ResponsiveLayoutContentContainer'
@@ -19,9 +22,10 @@ import OnboardingHeader from './OnboardingHeader'
 import OnboardingSidenav from './OnboardingSidenav'
 import { OnboardingFlow } from './OnboardingFlow'
 import { ContextProps, OnboardingContext } from './context/onboarding'
-import { defaultSections, useSection } from './context/hooks'
+import { defaultSections, useContextStorage, useSection } from './context/hooks'
 import {
   CloudProps,
+  CreateCloudShellSectionState,
   SCMProps,
   Section,
   SectionKey,
@@ -29,13 +33,18 @@ import {
   WorkspaceProps,
 } from './context/types'
 
-function Onboarding({ active, children }: Partial<OnboardingProps>) {
+function Onboarding({ active, children, onOnboardingFinish }: Partial<OnboardingProps>) {
   useDevTokenInputSecretCode()
 
   const theme = useContext(ThemeContext)
   const { section, setSection } = useSection(active)
   const navigate = useNavigate()
   const { fresh: isOnboarding } = useOnboarded()
+  const { reset } = useContextStorage()
+
+  useEffect(() => {
+    if (onOnboardingFinish && section?.state === CreateCloudShellSectionState.Finished) onOnboardingFinish()
+  }, [onOnboardingFinish, section?.state])
 
   return (
     <Flex
@@ -45,7 +54,13 @@ function Onboarding({ active, children }: Partial<OnboardingProps>) {
       alignItems="center"
       overflowY="auto"
     >
-      {isOnboarding && <OnboardingHeader onRestart={() => navigate('/shell')} />}
+      {isOnboarding && (
+        <OnboardingHeader onRestart={() => {
+          reset()
+          navigate(0)
+        }}
+        />
+      )}
       <Flex
         position="relative"
         width="100%"
@@ -86,26 +101,24 @@ function Onboarding({ active, children }: Partial<OnboardingProps>) {
 }
 
 interface OnboardingProps {
-  accessToken?: string
-  provider?: ScmProvider;
-  authUrlData?: RootQueryType
-  active?: SectionKey
+  active?: Section
   children?: ReactElement | Array<ReactElement>
+  onOnboardingFinish?: Dispatch<void>
 }
 
-function OnboardingWithContext({
-  accessToken, provider, authUrlData, ...props
-}: OnboardingProps): ReactElement {
-  const [scm, setSCM] = useState<SCMProps>({
-    token: accessToken,
-    provider,
-    authUrls: authUrlData?.scmAuthorization as Array<AuthorizationUrl>,
-  })
-  const [valid, setValid] = useState<boolean>(true)
-  const [cloud, setCloud] = useState<CloudProps>({} as CloudProps)
+function OnboardingWithContext({ ...props }: OnboardingProps): ReactElement {
+  const { restoredContext, reset } = useContextStorage()
+
+  const [scm, setSCM] = useState<SCMProps>(restoredContext?.scm ?? {})
+  const [valid, setValid] = useState<boolean>(restoredContext?.valid ?? true)
+  const [cloud, setCloud] = useState<CloudProps>(restoredContext?.cloud ?? {})
   const [sections, setSections] = useState<Sections>(defaultSections())
-  const [section, setSection] = useState<Section>(sections[SectionKey.CREATE_REPOSITORY]!)
-  const [workspace, setWorkspace] = useState<WorkspaceProps>({} as WorkspaceProps)
+  const [section, setSection] = useState<Section>(sections[SectionKey.ONBOARDING_OVERVIEW]!)
+  const [workspace, setWorkspace] = useState<WorkspaceProps>(restoredContext?.workspace ?? {})
+
+  // This is to make sure there is only a one-time state restore after oauth callback.
+  // We should not store any sensitive data in the local storage longer than required.
+  if (!IsEmpty(restoredContext)) reset()
 
   const context = useMemo<ContextProps>(() => ({
     scm,
@@ -124,7 +137,10 @@ function OnboardingWithContext({
 
   return (
     <OnboardingContext.Provider value={context}>
-      <Onboarding {...props} />
+      <Onboarding
+        active={restoredContext?.section}
+        {...props}
+      />
     </OnboardingContext.Provider>
   )
 }

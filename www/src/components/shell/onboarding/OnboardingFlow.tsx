@@ -7,21 +7,20 @@ import { AUTHENTICATION_URLS_QUERY } from '../queries'
 import { useDevTokenOutputSecretCode } from '../hooks/useDevToken'
 
 import OnboardingCard from './OnboardingCard'
-import RepositoryStep from './sections/repository/RepositoryStep'
 import CloudStep from './sections/cloud/CloudStep'
 import WorkspaceStep from './sections/workspace/WorkspaceStep'
 import { useSection, useToken } from './context/hooks'
 import CLIInstallationStep from './sections/cli/CLIInstallationStep'
 import CLICompletionStep from './sections/cli/CLICompletionStep'
-import { SectionKey } from './context/types'
+import { CreateCloudShellSectionState, SectionKey } from './context/types'
 import CreateShellStep from './sections/shell/CreateShellStep'
+import OverviewStep from './sections/overview/OverviewStep'
+import OnboardingTips from './OnboardingTips'
 
-function OnboardingFlow({
-  onNext, onBack,
-}) {
+function OnboardingFlow({ onNext, onBack }) {
   const token = useToken() || ''
   const { section } = useSection()
-  const isCreating = useMemo(() => section.key === SectionKey.CREATE_CLOUD_SHELL && section.state === 'Creating', [section])
+  const isCreating = useMemo(() => section.state === CreateCloudShellSectionState.Creating, [section])
   const { data, loading } = useQuery(AUTHENTICATION_URLS_QUERY)
 
   useDevTokenOutputSecretCode(token)
@@ -37,41 +36,45 @@ function OnboardingFlow({
   }
 
   return (
-    <OnboardingCard
-      title={isCreating ? '' : section.title}
-      mode={isCreating ? 'Creating' : 'Step'}
+    <Flex
+      gap="large"
+      direction="column"
     >
-      {section?.key === SectionKey.CREATE_REPOSITORY && (
-        <RepositoryStep
-          data={data}
-          onNext={onNext}
-        />
-      )}
-      {section?.key === SectionKey.CONFIGURE_CLOUD && (
-        <CloudStep
-          onNext={onNext}
-          onBack={onBack}
-        />
-      )}
-      {section?.key === SectionKey.CONFIGURE_WORKSPACE && (
-        <WorkspaceStep
-          onNext={onNext}
-          onBack={onBack}
-        />
-      )}
-      {section?.key === SectionKey.CREATE_CLOUD_SHELL && (
-        <CreateShellStep onBack={onBack} />
-      )}
-      {section?.key === SectionKey.INSTALL_CLI && (
-        <CLIInstallationStep
-          onNext={onNext}
-          onBack={onBack}
-        />
-      )}
-      {section?.key === SectionKey.COMPLETE_SETUP && (
-        <CLICompletionStep onBack={onBack} />
-      )}
-    </OnboardingCard>
+      <OnboardingCard
+        title={isCreating ? '' : section.title}
+        mode={isCreating ? 'Compact' : 'Default'}
+      >
+        {section?.key === SectionKey.ONBOARDING_OVERVIEW && (
+          <OverviewStep onNext={onNext} />
+        )}
+        {section?.key === SectionKey.CONFIGURE_CLOUD && (
+          <CloudStep
+            data={data}
+            onNext={onNext}
+            onBack={onBack}
+          />
+        )}
+        {section?.key === SectionKey.CONFIGURE_WORKSPACE && (
+          <WorkspaceStep
+            onNext={onNext}
+            onBack={onBack}
+          />
+        )}
+        {section?.key === SectionKey.CREATE_CLOUD_SHELL && (
+          <CreateShellStep onBack={onBack} />
+        )}
+        {section?.key === SectionKey.INSTALL_CLI && (
+          <CLIInstallationStep
+            onNext={onNext}
+            onBack={onBack}
+          />
+        )}
+        {section?.key === SectionKey.COMPLETE_SETUP && (
+          <CLICompletionStep onBack={onBack} />
+        )}
+      </OnboardingCard>
+      {isCreating && !section.hasError && <OnboardingTips />}
+    </Flex>
   )
 }
 

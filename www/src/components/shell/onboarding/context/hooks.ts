@@ -3,23 +3,27 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
 } from 'react'
-
 import {
+  ChecklistIcon,
   CloudIcon,
-  GitMerge,
   ListIcon,
-  PackageIcon,
   TerminalIcon,
   WorkspaceIcon,
 } from '@pluralsh/design-system'
 
-import { OnboardingContext } from './onboarding'
+import {
+  ContextProps,
+  OnboardingContext,
+  SerializableContextProps,
+  toSerializableContext,
+} from './onboarding'
 import {
   CloudProvider,
   CloudProviderBase,
   CloudType,
-  SCMProps,
+  Section,
   SectionKey,
   Sections,
   WorkspaceProps,
@@ -27,11 +31,11 @@ import {
 
 const defaultSections = (): Sections => {
   const sections: Sections = {
-    [SectionKey.CREATE_REPOSITORY]: {
-      index: 0, key: SectionKey.CREATE_REPOSITORY, title: 'Create a repository', IconComponent: GitMerge,
+    [SectionKey.ONBOARDING_OVERVIEW]: {
+      index: 0, key: SectionKey.ONBOARDING_OVERVIEW, title: 'Onboarding overview', IconComponent: ChecklistIcon,
     },
     [SectionKey.CONFIGURE_CLOUD]: {
-      index: 1, key: SectionKey.CONFIGURE_CLOUD, title: 'Configure cloud', IconComponent: CloudIcon,
+      index: 1, key: SectionKey.CONFIGURE_CLOUD, title: 'Configure credentials', IconComponent: CloudIcon,
     },
     [SectionKey.CONFIGURE_WORKSPACE]: {
       index: 2, key: SectionKey.CONFIGURE_WORKSPACE, title: 'Configure workspace', IconComponent: WorkspaceIcon,
@@ -42,9 +46,9 @@ const defaultSections = (): Sections => {
   }
 
   // build sections flow
-  sections[SectionKey.CREATE_REPOSITORY]!.next = sections[SectionKey.CONFIGURE_CLOUD]
+  sections[SectionKey.ONBOARDING_OVERVIEW]!.next = sections[SectionKey.CONFIGURE_CLOUD]
 
-  sections[SectionKey.CONFIGURE_CLOUD]!.prev = sections[SectionKey.CREATE_REPOSITORY]
+  sections[SectionKey.CONFIGURE_CLOUD]!.prev = sections[SectionKey.ONBOARDING_OVERVIEW]
   sections[SectionKey.CONFIGURE_CLOUD]!.next = sections[SectionKey.CONFIGURE_WORKSPACE]
 
   sections[SectionKey.CONFIGURE_WORKSPACE]!.prev = sections[SectionKey.CONFIGURE_CLOUD]
@@ -57,11 +61,11 @@ const defaultSections = (): Sections => {
 
 const localCLISections = (): Sections => {
   const sections: Sections = {
-    [SectionKey.CREATE_REPOSITORY]: {
-      index: 0, key: SectionKey.CREATE_REPOSITORY, title: 'Create a repository', IconComponent: PackageIcon,
+    [SectionKey.ONBOARDING_OVERVIEW]: {
+      index: 0, key: SectionKey.ONBOARDING_OVERVIEW, title: 'Onboarding overview', IconComponent: ChecklistIcon,
     },
     [SectionKey.CONFIGURE_CLOUD]: {
-      index: 1, key: SectionKey.CONFIGURE_CLOUD, title: 'Configure cloud', IconComponent: CloudIcon,
+      index: 1, key: SectionKey.CONFIGURE_CLOUD, title: 'Configure credentials', IconComponent: CloudIcon,
     },
     [SectionKey.INSTALL_CLI]: {
       index: 2, key: SectionKey.INSTALL_CLI, title: 'Install Plural CLI', IconComponent: TerminalIcon,
@@ -72,9 +76,9 @@ const localCLISections = (): Sections => {
   }
 
   // build sections flow
-  sections[SectionKey.CREATE_REPOSITORY]!.next = sections[SectionKey.CONFIGURE_CLOUD]
+  sections[SectionKey.ONBOARDING_OVERVIEW]!.next = sections[SectionKey.CONFIGURE_CLOUD]
 
-  sections[SectionKey.CONFIGURE_CLOUD]!.prev = sections[SectionKey.CREATE_REPOSITORY]
+  sections[SectionKey.CONFIGURE_CLOUD]!.prev = sections[SectionKey.ONBOARDING_OVERVIEW]
   sections[SectionKey.CONFIGURE_CLOUD]!.next = sections[SectionKey.INSTALL_CLI]
 
   sections[SectionKey.INSTALL_CLI]!.prev = sections[SectionKey.CONFIGURE_CLOUD]
@@ -91,12 +95,13 @@ const useToken = (): string | undefined => {
   return token
 }
 
-const useSection = (key?: SectionKey) => {
-  const { section, setSection, sections } = useContext(OnboardingContext)
+const useSection = (s?: Section) => {
+  const { section, setSection } = useContext(OnboardingContext)
 
   useEffect(() => {
-    if (key) setSection(sections[key]!)
-  }, [key, sections, setSection])
+    if (s) setSection(section => ({ ...section, ...s }))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [s?.key, setSection])
 
   return {
     section,
@@ -110,14 +115,8 @@ const useCloudType = (): CloudType => {
   return type || CloudType.Cloud
 }
 
-const useSCM = (): SCMProps => {
-  const { scm } = useContext(OnboardingContext)
-
-  return scm
-}
-
 const usePath = (path: CloudType): Dispatch<void> => {
-  const { setSections, section, setSection } = useContext(OnboardingContext)
+  const { setSections, setSection } = useContext(OnboardingContext)
 
   return useCallback(() => {
     let sections: Sections
@@ -126,16 +125,32 @@ const usePath = (path: CloudType): Dispatch<void> => {
     case CloudType.Cloud:
       sections = defaultSections()
       break
+    case CloudType.Demo:
+      sections = defaultSections()
+      break
     case CloudType.Local:
       sections = localCLISections()
     }
 
-    const updatedSection = sections[section.key]
-
     setSections(sections)
-    setSection(updatedSection!)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [path, setSections])
+    setSection(section => ({ ...section, ...sections[section.key] }))
+  }, [path, setSection, setSections])
+}
+
+const useSectionState = () => {
+  const { setSection } = useContext(OnboardingContext)
+
+  return useCallback((state: Section['state']) => {
+    setSection(section => ({ ...section, state }))
+  }, [setSection])
+}
+
+const useSectionError = () => {
+  const { setSection } = useContext(OnboardingContext)
+
+  return useCallback((hasError: boolean) => {
+    setSection(section => ({ ...section, hasError }))
+  }, [setSection])
 }
 
 const useSetWorkspaceKeys = (): Dispatch<Partial<WorkspaceProps>> => {
@@ -150,6 +165,25 @@ const useSetCloudProviderKeys = <T extends CloudProviderBase>(provider: CloudPro
   return useCallback((partial: Partial<T>) => setCloud(c => ({ ...c, [provider]: { ...c[provider], ...partial } })), [provider, setCloud])
 }
 
+const useContextStorage = () => {
+  const LOCAL_STORAGE_KEY = 'plural-onboarding-context'
+
+  const save = useCallback((context: ContextProps) => {
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(toSerializableContext(context)))
+  }, [])
+
+  const restoredContext = useMemo((): SerializableContextProps => JSON
+    .parse(localStorage.getItem(LOCAL_STORAGE_KEY) ?? '{}') as SerializableContextProps,
+  [])
+
+  const reset = useCallback(() => localStorage.removeItem(LOCAL_STORAGE_KEY), [])
+
+  return { save, restoredContext, reset }
+}
+
 export {
-  useToken, useCloudType, useSCM, defaultSections, useSection, usePath, useSetWorkspaceKeys, useSetCloudProviderKeys,
+  useToken, useCloudType, defaultSections,
+  useSection, usePath, useSetWorkspaceKeys,
+  useSetCloudProviderKeys, useSectionState, useContextStorage,
+  useSectionError,
 }

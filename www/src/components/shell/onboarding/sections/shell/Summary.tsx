@@ -12,6 +12,8 @@ import {
 
 import { OnboardingContext } from '../../context/onboarding'
 import { ScmProvider } from '../../../../../generated/graphql'
+import { CreateCloudShellSectionState } from '../../context/types'
+import { useSectionState } from '../../context/hooks'
 
 const entryGridStyle = (theme): CSSObject => ({
   borderTop: theme.borders.default,
@@ -48,6 +50,7 @@ const WorkspaceSummary = styled(WorkspaceSummaryUnstyled)(({ theme }) => entryGr
 const SCMProviderDisplayName = {
   [ScmProvider.Github]: 'GitHub',
   [ScmProvider.Gitlab]: 'GitLab',
+  [ScmProvider.Demo]: 'Demo',
 }
 
 function RepositorySummaryUnstyled({ ...props }) {
@@ -81,7 +84,7 @@ function RepositorySummaryUnstyled({ ...props }) {
               color="text-xlight"
             >Repository Name
             </P>
-            <P body1>{scm?.repositoryName}</P>
+            <P body1>{scm?.repositoryName ?? '-'}</P>
           </div>
         </div>
 
@@ -92,7 +95,7 @@ function RepositorySummaryUnstyled({ ...props }) {
               color="text-xlight"
             >Git Account
             </P>
-            <P body1>{scm?.org?.name || 'User'}</P>
+            <P body1>{scm?.provider === ScmProvider.Demo ? 'Demo' : scm?.org?.name ?? 'User'}</P>
           </div>
         </div>
 
@@ -103,7 +106,7 @@ function RepositorySummaryUnstyled({ ...props }) {
               color="text-xlight"
             >Account Type
             </P>
-            <P body1>{scm?.org?.orgType}</P>
+            <P body1>{scm?.org?.orgType ?? '-'}</P>
           </div>
         </div>
       </div>
@@ -212,8 +215,8 @@ function WorkspaceSummaryUnstyled({ ...props }) {
 }
 
 function Summary({ onBack }) {
-  const { setSection } = useContext(OnboardingContext)
-  const onCreate = useCallback(() => setSection(s => ({ ...s, state: 'Creating' })), [setSection])
+  const setSectionState = useSectionState()
+  const onCreate = useCallback(() => setSectionState(CreateCloudShellSectionState.Creating), [setSectionState])
 
   return (
     <>

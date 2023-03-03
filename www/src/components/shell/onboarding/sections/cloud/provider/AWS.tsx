@@ -10,7 +10,7 @@ import {
 } from '@pluralsh/design-system'
 
 import { OnboardingContext } from '../../../context/onboarding'
-import { IsObjectEmpty } from '../../../../../../utils/object'
+import { IsObjectPartiallyEmpty } from '../../../../../../utils/object'
 import { AWSCloudProvider, CloudProvider } from '../../../context/types'
 import { useSetCloudProviderKeys, useSetWorkspaceKeys } from '../../../context/hooks'
 
@@ -43,7 +43,7 @@ function AWS() {
   const { cloud, setValid, workspace } = useContext(OnboardingContext)
   const setCloudProviderKeys = useSetCloudProviderKeys<AWSCloudProvider>(CloudProvider.AWS)
   const setWorkspaceKeys = useSetWorkspaceKeys()
-  const isValid = useMemo(() => !IsObjectEmpty(cloud?.aws) && !!workspace?.region, [cloud, workspace.region])
+  const isValid = useMemo(() => !IsObjectPartiallyEmpty(cloud?.aws) && !!workspace?.region, [cloud, workspace.region])
 
   useEffect(() => setValid(isValid), [isValid, setValid])
   useEffect(() => (IsEmpty(workspace?.region) ? setWorkspaceKeys({ region: 'us-east-2' }) : undefined), [setWorkspaceKeys, workspace])

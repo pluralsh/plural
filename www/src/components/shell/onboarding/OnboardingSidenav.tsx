@@ -22,7 +22,7 @@ const ResponsiveWidth = styled.div(({ theme }) => {
       width: expandAtWidth,
     },
     [desktopLargeMq]: {
-      width: 256,
+      width: 225,
     },
   }
 })

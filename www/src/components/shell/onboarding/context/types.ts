@@ -23,7 +23,7 @@ enum CloudProviderToProvider {
 }
 
 enum SectionKey {
-  CREATE_REPOSITORY = 'CREATE_REPOSITORY',
+  ONBOARDING_OVERVIEW = 'ONBOARDING_OVERVIEW',
   CONFIGURE_CLOUD = 'CONFIGURE_CLOUD',
   CONFIGURE_WORKSPACE = 'CONFIGURE_WORKSPACE',
   CREATE_CLOUD_SHELL = 'CREATE_CLOUD_SHELL',
@@ -38,11 +38,24 @@ interface Section {
   IconComponent: ComponentType
   next?: Section
   prev?: Section
-  state?: SectionState
+  state?: CreateCloudShellSectionState | ConfigureCloudSectionState
+  hasError?: boolean
 }
 
 type Sections = {[key in keyof typeof SectionKey]?: Section}
-type SectionState = 'Creating' | undefined
+
+enum CreateCloudShellSectionState {
+  Summary = 'Summary',
+  Creating = 'Creating',
+  Finished = 'Finished',
+}
+
+enum ConfigureCloudSectionState {
+  CloudSelection = 'CloudSelection',
+  RepositorySelection = 'RepositorySelection',
+  RepositoryConfiguration = 'RepositoryConfiguration',
+  CloudConfiguration = 'CloudConfiguration',
+}
 
 enum OrgType {
   User = 'User',
@@ -67,6 +80,7 @@ interface SCMOrg {
 enum CloudType {
   Cloud,
   Local,
+  Demo,
 }
 
 interface AWSCloudProvider {
@@ -92,6 +106,7 @@ type CloudProviderBase = AzureCloudProvider | AWSCloudProvider | GCPCloudProvide
 interface CloudProps {
   type?: CloudType
   provider?: CloudProvider
+  demoID?: string
   aws?: AWSCloudProvider
   azure?: AzureCloudProvider
   gcp?: GCPCloudProvider
@@ -106,8 +121,8 @@ interface WorkspaceProps {
 }
 
 export type {
-  Sections, Section, SCMProps, CloudProps, WorkspaceProps, GCPCloudProvider, AWSCloudProvider, AzureCloudProvider, CloudProviderBase, SCMOrg, SectionState,
+  Sections, Section, SCMProps, CloudProps, WorkspaceProps, GCPCloudProvider, AWSCloudProvider, AzureCloudProvider, CloudProviderBase, SCMOrg,
 }
 export {
-  SectionKey, OrgType, CloudType, CloudProviderDisplayName, CloudProvider, CloudProviderToProvider,
+  SectionKey, OrgType, CloudType, CloudProviderDisplayName, CloudProvider, CloudProviderToProvider, CreateCloudShellSectionState, ConfigureCloudSectionState,
 }

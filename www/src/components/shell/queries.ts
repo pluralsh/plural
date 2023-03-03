@@ -77,11 +77,9 @@ export const POLL_DEMO_PROJECT_QUERY = gql`
   ${DemoProjectFragment}
 `
 
-export const DELETE_DEMO_PROJECT_QUERY = gql`
+export const DELETE_DEMO_PROJECT_MUTATION = gql`
   mutation {
-    deleteDemoProject {
-      ...DemoProjectFragment
-    }
+    deleteDemoProject { ...DemoProjectFragment }
   }
   ${DemoProjectFragment}
 `

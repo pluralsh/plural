@@ -23,7 +23,35 @@ interface ContextProps {
   setSection: Dispatch<SetStateAction<Section>>
 }
 
+interface SerializableContextProps {
+  scm: SCMProps
+  cloud: CloudProps
+  workspace: WorkspaceProps
+  valid: boolean
+  section: Section
+  sections?: Sections
+}
+
+const toSerializableSection = (section: Section): Partial<Section> => ({
+  key: section.key,
+  index: section.index,
+  title: section.title,
+  state: section.state,
+})
+
+const toSerializableContext = (context: ContextProps): SerializableContextProps => ({
+  valid: context.valid,
+  scm: context.scm,
+  workspace: context.workspace,
+  cloud: {
+    type: context?.cloud?.type,
+    provider: context?.cloud?.provider,
+  },
+  section: toSerializableSection(context.section) as Section,
+
+})
+
 const OnboardingContext = createContext<ContextProps>({} as ContextProps)
 
-export type { ContextProps }
-export { OnboardingContext }
+export type { ContextProps, SerializableContextProps }
+export { OnboardingContext, toSerializableContext }

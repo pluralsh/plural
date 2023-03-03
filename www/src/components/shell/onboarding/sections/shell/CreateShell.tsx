@@ -5,7 +5,6 @@ import {
   useEffect,
   useState,
 } from 'react'
-import { useNavigate } from 'react-router-dom'
 import {
   ApolloClient,
   useApolloClient,
@@ -29,6 +28,9 @@ import { CLOUD_SHELL_QUERY, CREATE_SHELL_MUTATION, SETUP_SHELL_MUTATION } from '
 import {
   CloudProps,
   CloudProviderToProvider,
+  CloudType,
+  ConfigureCloudSectionState,
+  CreateCloudShellSectionState,
   OrgType,
   SCMProps,
   SectionKey,
@@ -36,6 +38,8 @@ import {
 } from '../../context/types'
 import { toCloudProviderAttributes } from '../../../utils/provider'
 import { PosthogEvent, posthogCapture } from '../../../../../utils/posthog'
+
+import { useSectionError, useSectionState } from '../../context/hooks'
 
 import { ShellStatus } from './ShellStatus'
 
@@ -59,7 +63,7 @@ function toCloudShellAttributes(
       org: scm.org?.orgType === OrgType.User ? null : scm.org?.name,
     },
     provider,
-    demoId: null,
+    demoId: cloud.demoID ?? null,
     credentials: { [cloud.provider!]: toCloudProviderAttributes(cloud) } as ShellCredentialsAttributes,
   } as CloudShellAttributes
 }
@@ -88,18 +92,22 @@ async function createShell(
 }
 
 function CreateShell() {
-  const navigate = useNavigate()
   const client = useApolloClient()
   const {
-    scm, cloud, workspace, sections, setSection,
+    scm, cloud, workspace, setSection, sections,
   } = useContext(OnboardingContext)
+  const setSectionState = useSectionState()
+  const setSectionError = useSectionError()
 
   const [shell, setShell] = useState<CloudShell>()
   const [error, setError] = useState<ApolloError | undefined>()
   const [created, setCreated] = useState(false)
   const [setupShellCompleted, setSetupShellCompleted] = useState(false)
 
-  const onBack = useCallback(() => setSection({ ...sections[SectionKey.CREATE_REPOSITORY]!, state: undefined }), [sections, setSection])
+  const onBack = useCallback(() => setSection({
+    ...sections[SectionKey.CONFIGURE_CLOUD]!,
+    state: cloud?.type === CloudType.Demo ? ConfigureCloudSectionState.CloudSelection : ConfigureCloudSectionState.RepositoryConfiguration,
+  }), [cloud?.type, sections, setSection])
   const onRestart = useCallback(() => {
     setShell(undefined)
     setError(undefined)
@@ -162,15 +170,19 @@ function CreateShell() {
     if (data?.shell?.alive && !error && !setupShellCompleted) setupShell()
   }, [data, error, setupShell, setupShellCompleted])
 
-  // Redirect to shell after checking that shell is alive and accessible
+  // Mark create shell step as finished
   useEffect(() => {
-    if (shell?.alive && !error && setupShellCompleted) navigate('/shell')
-  }, [shell, navigate, setupShellCompleted, error])
+    if (shell?.alive && !error && setupShellCompleted) setSectionState(CreateCloudShellSectionState.Finished)
+  }, [shell, setupShellCompleted, error, setSectionState])
 
   // Capture errors and send to posthog
   useEffect(() => error
-    && posthogCapture(PosthogEvent.Onboarding, { provider: cloud.provider, clusterName: workspace.clusterName, error }),
-  [cloud.provider, error, workspace.clusterName])
+    && posthogCapture(PosthogEvent.Onboarding, {
+      type: cloud.type, provider: cloud.provider, clusterName: workspace.clusterName, error,
+    }),
+  [cloud.provider, cloud.type, error, workspace.clusterName])
+
+  useEffect(() => setSectionError(!!error), [error, setSectionError])
 
   return (
     <>

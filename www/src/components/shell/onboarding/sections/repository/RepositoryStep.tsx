@@ -1,22 +1,23 @@
 import { Flex } from 'honorable'
-import { useMemo } from 'react'
+import { useContext, useMemo } from 'react'
 
-import { useSCM } from '../../context/hooks'
+import { ConfigureCloudSectionState } from '../../context/types'
+import { OnboardingContext } from '../../context/onboarding'
 
 import { ProviderSelection } from './ProviderSelection'
 import { ProviderConfiguration } from './ProviderConfiguration'
 
-function RepositoryStep({ onNext, data }) {
-  const scm = useSCM()
-  const isAuthenticated = useMemo(() => !!(scm.token && scm.provider && scm.authUrls?.length > 0), [scm])
+function RepositoryStep({ data }) {
+  const { section } = useContext(OnboardingContext)
+  const state: ConfigureCloudSectionState = useMemo(() => section?.state as ConfigureCloudSectionState ?? ConfigureCloudSectionState.RepositorySelection, [section?.state])
 
   return (
     <Flex
       direction="column"
       gap="xlarge"
     >
-      {!isAuthenticated && <ProviderSelection data={data} />}
-      {isAuthenticated && <ProviderConfiguration onNext={onNext} />}
+      {state === ConfigureCloudSectionState.RepositorySelection && <ProviderSelection data={data} />}
+      {state === ConfigureCloudSectionState.RepositoryConfiguration && <ProviderConfiguration />}
     </Flex>
   )
 }

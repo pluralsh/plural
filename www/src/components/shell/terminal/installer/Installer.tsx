@@ -21,8 +21,9 @@ import { ApolloError } from '@apollo/client/errors'
 
 import { State, TerminalContext } from '../context/terminal'
 import useOnboarded from '../../hooks/useOnboarded'
-
 import { PosthogEvent, posthogCapture } from '../../../../utils/posthog'
+
+import CurrentUserContext from '../../../../contexts/CurrentUserContext'
 
 import { APPLICATIONS_QUERY } from './queries'
 import { buildSteps, install, toDefaultSteps } from './helpers'
@@ -33,6 +34,7 @@ function Installer() {
   const client = useApolloClient()
   const { mutation } = useOnboarded()
   const { shell: { provider }, configuration, setState } = useContext(TerminalContext)
+  const me = useContext(CurrentUserContext)
   const onResetRef = useRef<{onReset: Dispatch<void>}>({ onReset: () => {} })
   const [stepsLoading, setStepsLoading] = useState(false)
   const [steps, setSteps] = useState<Array<WizardStepConfig>>([])
@@ -47,6 +49,7 @@ function Installer() {
   })
 
   const applications = useMemo(() => applicationNodes?.map(({ node }) => node).filter(app => ((!app?.private ?? true) && !app?.installation) && !FILTERED_APPS.includes(app?.name)), [applicationNodes])
+  const limit = useMemo(() => (me?.demoing ? 3 : 5), [me?.demoing])
 
   const onInstall = useCallback((payload: Array<WizardStepConfig>) => {
     setStepsLoading(true)
@@ -116,13 +119,16 @@ function Installer() {
           onSelect={onSelect}
           defaultSteps={defaultSteps}
           dependencySteps={steps}
-          limit={5}
+          limit={limit}
           loading={stepsLoading || !configuration}
           onResetRef={onResetRef}
         >
           {{
             stepper: <WizardStepper />,
-            navigation: <WizardNavigation onInstall={onInstall} />,
+            navigation: <WizardNavigation
+              onInstall={onInstall}
+              tooltip={me?.demoing ? 'Max 3 applications on GCP demo' : undefined}
+            />,
           }}
         </Wizard>
       </Div>

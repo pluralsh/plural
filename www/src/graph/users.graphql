@@ -18,6 +18,8 @@ fragment User on User {
   email
   avatar
   provider
+  demoing
+  demoed
   onboarding
   onboardingChecklist { dismissed status }
   emailConfirmed

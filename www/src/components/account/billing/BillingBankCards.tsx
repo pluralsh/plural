@@ -47,13 +47,13 @@ function BillingBankCards() {
         padding="medium"
       >
         <Div color="text-xlight">
-          No payment card saved
+          No payment method saved
         </Div>
         <Button
           onClick={() => setEdit(true)}
           marginTop="medium"
         >
-          Add payment card
+          Add payment method
         </Button>
       </Card>
     )

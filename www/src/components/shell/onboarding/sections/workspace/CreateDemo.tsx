@@ -96,6 +96,13 @@ function CreateDemo({ onBack, onNext }): JSX.Element {
 
   useEffect(() => setSectionError(!!error), [error, setSectionError])
 
+  useEffect(() => {
+    if (!demoCreated || error) return
+
+    onNext()
+    setSectionState(CreateCloudShellSectionState.Creating)
+  })
+
   return (
     <>
       <DemoStatus
@@ -103,26 +110,6 @@ function CreateDemo({ onBack, onNext }): JSX.Element {
         error={error}
         project={demoProject ?? undefined}
       />
-      {demoCreated && !error && (
-        <Flex
-          gap="large"
-          borderTop="1px solid border"
-          paddingTop="large"
-          paddingBottom="xsmall"
-          paddingHorizontal="large"
-          align="flex-end"
-          direction="column"
-          marginTop="medium"
-        >
-          <Button onClick={() => {
-            onNext()
-            setSectionState(CreateCloudShellSectionState.Creating)
-          }}
-          >
-            Continue
-          </Button>
-        </Flex>
-      )}
       {!!error && (
         <Flex
           gap="large"

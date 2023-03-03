@@ -99,6 +99,12 @@ function DemoStatus({ loading, error, project }: DemoStatusProps): JSX.Element {
             text="Enabling GCP services"
             loading={project?.state ? project.state === DemoProjectState.Created : true}
             error={error}
+          />
+
+          <ProgressEntry
+            text="Finishing up"
+            loading={project?.state !== DemoProjectState.Enabled || !project?.ready}
+            error={error}
             last
           />
         </>

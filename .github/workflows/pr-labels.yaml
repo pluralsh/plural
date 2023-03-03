@@ -12,4 +12,4 @@ jobs:
         with:
           mode: exactly
           count: 1
-          labels: "bug-fix, enhancement, breaking-change, dependencies"
+          labels: "bug-fix, enhancement, breaking-change, dependencies, release"

@@ -58,7 +58,7 @@ function ProviderSelection() {
             />
           )}
           header="Try free demo"
-          description="A six-hour instance of a GCP cloud to help get you started."
+          description="A six-hour GCP sandbox to help get you testdrive Plural."
         />
       </Flex>
       {(path === CloudType.Cloud || path === CloudType.Local) && (
@@ -72,7 +72,7 @@ function ProviderSelection() {
             onChange={({ target: { checked } }: any) => checked && setPath(CloudType.Cloud)}
           >
             <Flex gap="small">
-              <Span>Use our cloud shell (quickest)</Span>
+              <Span>Use our cloud shell (quick and easy)</Span>
               <Tooltip label="We host a free cloud environment for you to use our CLI and run commands as if it was on your own computer.">
                 <InfoOutlineIcon color="icon-light" />
               </Tooltip>
@@ -82,7 +82,11 @@ function ProviderSelection() {
             value={CloudType.Local.toString()}
             checked={path === CloudType.Local}
             onChange={({ target: { checked } }: any) => checked && setPath(CloudType.Local)}
-          >Install the CLI on your local machine
+          >
+            <Span>Install the CLI on your local machine (most secure)</Span>
+            <Tooltip label="If you'd rather not upload your cloud credentials, you can set up your applications locally w/ our cli in a maximally secure setup">
+              <InfoOutlineIcon color="icon-light" />
+            </Tooltip>
           </Radio>
         </Flex>
       )}

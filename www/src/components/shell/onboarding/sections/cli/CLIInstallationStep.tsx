@@ -44,11 +44,6 @@ const DIRECTORY = [
 \t--volume $HOME/path-to-installation-repo:/home/plural/workspace \\ # optional if you want to manage git via a volume
 \tgcr.io/pluralsh/plural-cli:0.1.1-cloud zsh`,
   },
-  {
-    key: TAB_EC2,
-    label: 'EC2 AMI',
-    command: '',
-  },
 ]
 
 function CliInstallation({ onBack, onNext }) {
@@ -102,36 +97,9 @@ function CliInstallation({ onBack, onNext }) {
           )}
           {tab === TAB_DOCKER && (
             <>
-              We offer a docker image with the plural cli installed along with all cli dependencies: Terraform, Helm, Kubectl, and all the major cloud CLIs: gcr.io/pluralsh/plural-cli:0.1.1-cloud.
+              We offer a docker image with the plural cli installed along with all cli dependencies: Terraform, Helm, Kubectl, and all the major cloud CLIs: gcr.io/pluralsh/plural-cli-cloud:0.6.8
               We also provide a decent configuration of zsh in it, so you can drive the entire plural workflow in an interactive session.
               The best strategy is probably to mount the config dir of the cloud provider you're using, like (~/.aws), in the docker run command:
-            </>
-          )}
-          {tab === TAB_EC2 && (
-            <>
-              We have EC2 AMI's with plural cli installed, along with all cloud provider clis, terraform, helm and kubectl for those interested in creating a remote environment. A registry of the AMIs can be viewed&nbsp;
-              <A
-                inline
-                href="https://github.com/pluralsh/plural-cli/blob/master/packer/manifest.json"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                here
-              </A>.
-              <br />
-              <br />
-              If there's interest in images for GCP and Azure, please to give us a shout in our discord or feel free to open a GitHub issue.
-              <br />
-              <br />
-              <A
-                inline
-                href="https://aws.amazon.com/premiumsupport/knowledge-center/launch-instance-custom-ami/"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                This doc
-              </A>
-              &nbsp;gives more details on launching AMIs if you are unfamiliar. You'll want to select "Public images" within the ami search bar and you can use the ami id embedded in the artifact_id in our manifests, eg ami-0249247d5fc865089. Be sure to chose the one for the appropriate region.
             </>
           )}
         </P>

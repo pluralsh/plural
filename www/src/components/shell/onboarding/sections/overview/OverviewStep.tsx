@@ -22,7 +22,7 @@ function OverviewStep({ onNext }) {
         direction="column"
         gap="large"
       >
-        <Span body2>Deploy your cluster and applications with Plural in about thirty minutes, then access it via Plural Console.&nbsp;
+        <Span body2>Deploy your cluster and applications with Plural in about 30 minutes, then access it via Plural Console.&nbsp;
           <A
             inline
             href="https://www.plural.sh/demo-login"
@@ -43,7 +43,7 @@ function OverviewStep({ onNext }) {
 
           <Span>1. Configure your cloud and git credentials.</Span>
           <Span>2. Configure your cluster’s workspace.</Span>
-          <Span>3. Create your cloud shell where you can install applications. (25mins deploy wait time)</Span>
+          <Span>3. Create your cloud shell where you can install applications. (25 minutes deploy wait time)</Span>
         </Flex>
       </Flex>
       <Flex

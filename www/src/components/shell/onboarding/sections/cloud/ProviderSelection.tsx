@@ -83,10 +83,12 @@ function ProviderSelection() {
             checked={path === CloudType.Local}
             onChange={({ target: { checked } }: any) => checked && setPath(CloudType.Local)}
           >
-            <Span>Install the CLI on your local machine (most secure)</Span>
-            <Tooltip label="If you'd rather not upload your cloud credentials, you can set up your applications locally w/ our cli in a maximally secure setup">
-              <InfoOutlineIcon color="icon-light" />
-            </Tooltip>
+            <Flex gap="small">
+              <Span>Install the CLI on your local machine (most secure)</Span>
+              <Tooltip label="If you'd rather not upload your cloud credentials, you can set up your applications locally w/ our cli in a maximally secure setup">
+                <InfoOutlineIcon color="icon-light" />
+              </Tooltip>
+            </Flex>
           </Radio>
         </Flex>
       )}

@@ -20,6 +20,7 @@ import { CREATE_QUICK_STACK_MUTATION, INSTALL_STACK_SHELL_MUTATION } from '../..
 import { RECIPE_Q } from '../../../repository/packages/queries'
 
 import { Application } from './Application'
+import { APPLICATIONS_QUERY } from './queries'
 
 const FORCED_APPS = {
   console: 'The Plural Console will allow you to monitor, upgrade, and deploy applications easily from one centralized place.',
@@ -125,6 +126,7 @@ const install = async (client: ApolloClient<unknown>, apps: Array<WizardStepConf
   return client.mutate({
     mutation: INSTALL_STACK_SHELL_MUTATION,
     variables: { name: quickStack.name, oidc: true, context: { configuration: JSON.stringify(configuration), domains, buckets } },
+    refetchQueries: [{ query: APPLICATIONS_QUERY, variables: { provider } }],
   })
 }
 

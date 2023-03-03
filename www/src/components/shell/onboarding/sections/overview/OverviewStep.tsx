@@ -1,4 +1,4 @@
-import { Flex, Span } from 'honorable'
+import { A, Flex, Span } from 'honorable'
 import { Button } from '@pluralsh/design-system'
 import { useNavigate } from 'react-router-dom'
 import { PopupModal } from 'react-calendly'
@@ -22,7 +22,14 @@ function OverviewStep({ onNext }) {
         direction="column"
         gap="large"
       >
-        <Span body2>Deploy your cluster and applications with Plural in about thirty minutes, then access it via Plural Console. View a demo environment of our Console.</Span>
+        <Span body2>Deploy your cluster and applications with Plural in about thirty minutes, then access it via Plural Console.&nbsp;
+          <A
+            inline
+            href="https://www.plural.sh/demo-login"
+            target="_blank"
+          >View a demo environment of our Console.
+          </A>
+        </Span>
 
         <Flex
           direction="column"

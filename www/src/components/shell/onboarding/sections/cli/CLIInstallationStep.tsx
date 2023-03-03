@@ -29,10 +29,11 @@ const DIRECTORY = [
   {
     key: TAB_CURL,
     label: 'Curl',
-    command: `curl -L -o plural.tgz 'https://github.com/pluralsh/plural-cli/releases/download/v0.2.57/plural-cli_0.2.57_Darwin_arm64.tar.gz'
-tar -xvf plural.tgz
-chmod +x plural
-mv plural /usr/local/bin/plural`,
+    command: "VSN=$(curl --silent -qI https://github.com/pluralsh/plural-cli/releases/latest | awk -F '/' '/^location/ {print  substr($NF, 1, length($NF)-1)}')\n"
+             + "curl -L -o plural.tgz 'https://github.com/pluralsh/plural-cli/releases/download/${VSN}/plural-cli_${VSN#v}_Darwin_arm64.tar.gz'\n" // eslint-disable-line no-template-curly-in-string
+            + 'tar -xvf plural.tgz\n'
+            + 'chmod +x plural\n'
+            + 'mv plural /usr/local/bin/plural',
   },
   {
     key: TAB_DOCKER,
@@ -96,7 +97,7 @@ function CliInstallation({ onBack, onNext }) {
                 GitHub releases
               </A>.
               <br />
-              For example, you can download v0.2.57 for Darwin arm64 via:
+              For example, you can download the latest version for Darwin arm64 via:
             </>
           )}
           {tab === TAB_DOCKER && (

@@ -72,9 +72,7 @@ function MissingPermissionsModal({ refetch, missing }): JSX.Element {
       style={{ padding: 0 }}
       onClose={() => setOpen(false)}
       header={(
-        <Flex
-          gap="small"
-        >
+        <Flex gap="small">
           <ErrorIcon color="icon-error" />
           <Span lineHeight="normal">cloud credentials error</Span>
         </Flex>

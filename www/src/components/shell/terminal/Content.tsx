@@ -1,11 +1,28 @@
-import { useQuery } from '@apollo/client'
-import { Div, Flex, Span } from 'honorable'
-import { useEffect, useMemo, useState } from 'react'
-import { Button, LoopingLogo, Modal } from '@pluralsh/design-system'
+import { useMutation, useQuery } from '@apollo/client'
+import {
+  A,
+  Div,
+  Flex,
+  Span,
+} from 'honorable'
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
+import {
+  Button,
+  ErrorIcon,
+  LoopingLogo,
+  Modal,
+} from '@pluralsh/design-system'
+import IsEmpty from 'lodash/isEmpty'
 
 import useOnboarded from '../hooks/useOnboarded'
 import OnboardingHeader from '../onboarding/OnboardingHeader'
-import { CLOUD_SHELL_QUERY } from '../queries'
+import { CLOUD_SHELL_QUERY, SETUP_SHELL_MUTATION } from '../queries'
+import { RootMutationType } from '../../../generated/graphql'
 
 import TerminalThemeProvider from './actionbar/theme/Provider'
 import Terminal from './Terminal'
@@ -40,12 +57,70 @@ function WelcomeModal() {
   )
 }
 
+function MissingPermissionsModal({ refetch, missing }): JSX.Element {
+  const [open, setOpen] = useState(true)
+  const [loading, setLoading] = useState(false)
+
+  const rerun = useCallback(() => {
+    setLoading(true)
+    refetch().finally(() => setLoading(false))
+  }, [refetch])
+
+  return (
+    <Modal
+      open={open}
+      style={{ padding: 0 }}
+      onClose={() => setOpen(false)}
+      header={(
+        <Flex
+          gap="small"
+        >
+          <ErrorIcon color="icon-error" />
+          <Span lineHeight="normal">cloud credentials error</Span>
+        </Flex>
+      )}
+      actions={(
+        <Flex gap="medium">
+          <Button
+            secondary
+            onClick={() => setOpen(false)}
+          >Cancel
+          </Button>
+          <Button
+            onClick={() => rerun()}
+            loading={loading}
+          >Rerun permission check
+          </Button>
+        </Flex>
+      )}
+    >
+      <Flex
+        direction="column"
+        gap="large"
+      >
+        <Span>We’ve detected you’re missing the following required credentials for your cloud account: <b>{missing.join(', ')}</b>.</Span>
+        <Span>Please update your credentials in your cloud account and try again.&nbsp;
+          <A
+            inline
+            href="https://docs.plural.sh/getting-started/cloud-shell-quickstart#set-up-a-cloud-provider"
+            target="_blank"
+          >
+            Learn more
+          </A>
+        </Span>
+      </Flex>
+    </Modal>
+  )
+}
+
 function Content() {
   const { fresh: isOnboarding } = useOnboarded()
   const [state, setState] = useState(State.New)
 
   const { data: { shell } = { shell: undefined } } = useQuery(CLOUD_SHELL_QUERY, { fetchPolicy: 'network-only' })
-  const { data: { shellConfiguration } = { shellConfiguration: undefined }, stopPolling } = useQuery(SHELL_CONFIGURATION_QUERY, { skip: !shell, pollInterval: 5000 })
+  const { data: { shellConfiguration } = { shellConfiguration: undefined }, stopPolling, refetch } = useQuery(SHELL_CONFIGURATION_QUERY, { skip: !shell, pollInterval: 5000 })
+  const [setupShell, { data: { setupShell: setupShellData } = {} as RootMutationType }] = useMutation(SETUP_SHELL_MUTATION, { fetchPolicy: 'no-cache' })
+
   const context = useMemo(() => ({
     shell, configuration: shellConfiguration, state, setState,
   }), [shell, shellConfiguration, state])
@@ -53,6 +128,10 @@ function Content() {
   useEffect(() => {
     if (shellConfiguration) stopPolling()
   }, [shellConfiguration, stopPolling])
+
+  useEffect(() => {
+    setupShell()
+  }, [setupShell])
 
   if (!shell?.provider) {
     return (
@@ -76,6 +155,13 @@ function Content() {
         </>
       )}
 
+      {!IsEmpty(setupShellData?.missing) && (
+        <MissingPermissionsModal
+          refetch={setupShell}
+          missing={setupShellData.missing}
+        />
+      )}
+
       <Flex
         flexGrow={1}
         height={isOnboarding ? 'calc(100% - 56px)' : '100%'}
@@ -83,7 +169,7 @@ function Content() {
       >
         <ContentCard>
           <TerminalContext.Provider value={context}>
-            <Installer />
+            <Installer onInstallSuccess={() => refetch()} />
             <TerminalThemeProvider>
               <Terminal provider={shell.provider} />
             </TerminalThemeProvider>

@@ -1,12 +1,6 @@
 <%= row do %>
-  <%= text bold: true do %>
-    Your Installation Has Been Locked
-  <% end %>
-<% end %>
-
-<%= row do %>
   <%= text do %>
-    Repository <b><%= @repo.name %></b> has unapplied breaking changes, to apply them,
+    Repository <b><%= @repo.name %></b> has unapplied manual changes, to apply them,
     check out your repo locally and run the following commands:
   <% end %>
 <% end %>

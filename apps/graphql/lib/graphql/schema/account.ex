@@ -228,7 +228,7 @@ defmodule GraphQl.Schema.Account do
 
   object :account_queries do
     field :account, :account do
-      middleware Authenticated
+      middleware Authenticated, :external
 
       resolve &Account.resolve_account/2
     end

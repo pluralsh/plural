@@ -894,7 +894,7 @@ type Webhook {
   updatedAt: DateTime
 }
 
-"Attributes of an application."
+"Container for all resources to create an application."
 type Repository {
   "The application's ID."
   id: ID!
@@ -1897,6 +1897,9 @@ type Installation {
 
   "The tag to track for auto upgrades."
   trackTag: String!
+
+  "The last ping time of an installed application."
+  pingedAt: DateTime
 
   acmeKeyId: String
 

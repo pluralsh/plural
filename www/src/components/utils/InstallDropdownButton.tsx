@@ -1,7 +1,6 @@
 import {
   Key,
   ReactNode,
-  useContext,
   useEffect,
   useRef,
   useState,
@@ -23,8 +22,6 @@ import {
   Tooltip,
 } from '@pluralsh/design-system'
 import { Link } from 'react-router-dom'
-
-import { LicenseTemplates } from '@gitbeaker/browser/dist/types'
 
 import { Provider, Recipe, useGetShellQuery } from '../../generated/graphql'
 import { useCurrentUser } from '../../contexts/CurrentUserContext'
@@ -258,64 +255,71 @@ function InstallDropdownButton({
 
   return (
     <ExtendTheme theme={extendedTheme({ minMenuWidth: !recipe ? 300 : 470 })}>
-      {!isCliUser ? (
-        <Button
-          primary
-          width="100%"
-          loading={loading}
-          as={Link}
-          to={
-            type === 'stack'
-              ? `/shell${
-                apps && apps.length > 0 ? `?install=${apps.join(',')}` : ''
-              }`
-              : `/shell?install=${name}`
-          }
-        >
-          Install
-        </Button>
-      ) : !recipe && provider ? (
-        <Tooltip
-          label={`This ${
-            type === 'bundle' ? 'app' : 'stack'
-          } is not available for your provider, ${
-            providerToLongName[provider]
-          }`}
-        >
-          <span>
-            <Button
-              primary
-              width="100%"
-              disabled
+      {
+        /* All non-CLI users are redirected to the Cloud Shell with app(s) preselected */
+        /* A CLI user is defined as a user with installed apps, but no Cloud Shell */
+        !isCliUser ? (
+          <Button
+            primary
+            width="100%"
+            loading={loading}
+            as={Link}
+            to={
+              type === 'stack'
+                ? `/shell${
+                  apps && apps.length > 0 ? `?install=${apps.join(',')}` : ''
+                }`
+                : `/shell?install=${name}`
+            }
+          >
+            Install
+          </Button>
+        ) /* CLI user: If user has a provider, but there is no recipe for the provider, show a disabled button */
+          : !recipe && provider ? (
+            <Tooltip
+              label={`This ${
+                type === 'bundle' ? 'app' : 'stack'
+              } is not available for your provider, ${
+                providerToLongName[provider]
+              }`}
             >
-              Install
-            </Button>
-          </span>
-        </Tooltip>
-      ) : (
-        <DropdownButton
-          fade
-          label="Install"
-          endIcon={<DropdownArrowIcon size={16} />}
-          {...props}
-        >
-          {recipe ? (
-            <Div padding="large">
-              <CliCommand
-                name={name}
-                type={type}
-                recipe={recipe}
-              />
-            </Div>
+              <span>
+                <Button
+                  primary
+                  width="100%"
+                  disabled
+                >
+                  Install
+                </Button>
+              </span>
+            </Tooltip>
           ) : (
-            <RecipeTabs
-              name={name}
-              type={type}
-              recipes={recipes}
-            />
-          )}
-        </DropdownButton>
-      )}
+            <DropdownButton
+              fade
+              label="Install"
+              endIcon={<DropdownArrowIcon size={16} />}
+              {...props}
+            >
+              {recipe ? (
+              /* CLI user: If there is a recipe for the user's provider, show it in a dropdown */
+                <Div padding="large">
+                  <CliCommand
+                    name={name}
+                    type={type}
+                    recipe={recipe}
+                  />
+                </Div>
+              ) : (
+              /* CLI user: If the user has no provider, then show all recipes in tabs in the dropdown  */
+                <RecipeTabs
+                  name={name}
+                  type={type}
+                  recipes={recipes}
+                />
+              )}
+            </DropdownButton>
+          )
+      }
     </ExtendTheme>
   )
 }

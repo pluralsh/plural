@@ -38,22 +38,22 @@ type InstallDropDownButtonProps = {
   [x: string]: any
 }
 
-const providerToTabName: Record<Provider, ReactNode> = {
-  AWS: 'AWS',
-  AZURE: 'Azure',
-  EQUINIX: 'Equinix',
-  GCP: 'GCP',
+const providerToDisplayName: Record<Provider, ReactNode> = {
+  AWS: 'Amazon Web Services',
+  AZURE: 'Microsoft Azure',
+  EQUINIX: 'Equinix Metal',
+  GCP: 'Google Cloud Platform',
   KIND: 'Kind',
   CUSTOM: 'Custom',
   KUBERNETES: 'Kubernetes',
   GENERIC: 'Generic',
 }
 
-const providerToLongName: Record<Provider, ReactNode> = {
-  AWS: 'Amazon Web Services',
-  AZURE: 'Microsoft Azure',
-  EQUINIX: 'Equinix Metal',
-  GCP: 'Google Cloud Platform',
+const providerToTabName: Record<Provider, ReactNode> = {
+  AWS: 'AWS',
+  AZURE: 'Azure',
+  EQUINIX: 'Equinix',
+  GCP: 'GCP',
   KIND: 'Kind',
   CUSTOM: 'Custom',
   KUBERNETES: 'Kubernetes',
@@ -280,7 +280,7 @@ function InstallDropdownButton({
               label={`This ${
                 type === 'bundle' ? 'app' : 'stack'
               } is not available for your provider, ${
-                providerToLongName[provider]
+                providerToDisplayName[provider]
               }`}
             >
               <span>

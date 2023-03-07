@@ -55,12 +55,12 @@ function Installer({ onInstallSuccess }) {
 
   const applications = useMemo(() => applicationNodes?.map(({ node }) => node).filter(app => ((!app?.private ?? true) && !app?.installation) && !FILTERED_APPS.includes(app?.name)), [applicationNodes])
   const limit = useMemo(() => (me?.demoing ? 3 : 5), [me?.demoing])
-  const preselectedApp = useMemo(() => {
-    const name = searchParams.get('install')
+  const preselectedApps = useMemo(() => {
+    const names = searchParams.get('install')
 
-    if (!name) return undefined
+    if (!names) return undefined
 
-    return { [name]: 'Application preselected based on user action.' }
+    return Object.fromEntries(names.split(',').map(name => [name, 'Application preselected based on user action.']))
   }, [searchParams])
 
   const onInstall = useCallback((payload: Array<WizardStepConfig>) => {
@@ -95,7 +95,11 @@ function Installer({ onInstallSuccess }) {
     build().finally(() => setStepsLoading(false))
   }, [client, provider])
 
-  useEffect(() => setDefaultSteps(toDefaultSteps(applications, provider, { ...FORCED_APPS, ...preselectedApp })), [applications, preselectedApp, provider])
+  useEffect(() => setDefaultSteps(toDefaultSteps(applications, provider, {
+    ...preselectedApps,
+    ...FORCED_APPS,
+  })),
+  [applications, preselectedApps, provider])
 
   // Capture errors and send to posthog
   useEffect(() => error && posthogCapture(PosthogEvent.Installer, { error, applications: selectedApplications, provider }), [error, selectedApplications, provider])

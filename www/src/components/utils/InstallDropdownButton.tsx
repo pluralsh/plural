@@ -1,8 +1,16 @@
-import { useState } from 'react'
+import {
+  Key,
+  ReactNode,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 import {
   A,
   Button,
   Div,
+  DivProps,
   DropdownButton,
   ExtendTheme,
   Flex,
@@ -16,40 +24,46 @@ import {
   Codeline,
   DropdownArrowIcon,
   Tab,
+  TabList,
+  TabPanel,
 } from '@pluralsh/design-system'
 import { Link } from 'react-router-dom'
 import capitalize from 'lodash/capitalize'
 
-export interface Recipe {
-  name: string
-  description: string
-  provider: string
-}
+import { Provider, Recipe, useGetShellQuery } from '../../generated/graphql'
 
-export const providerToDisplayName = {
-  AWS: 'Amazon Web Services',
+import CurrentUserContext from '../../contexts/CurrentUserContext'
+
+export const providerToDisplayName: Record<Provider, ReactNode> = {
+  AWS: 'AWS',
   AZURE: 'Azure',
   EQUINIX: 'Equinix Metal',
-  GCP: 'Google Cloud Platform',
+  GCP: 'Google',
   KIND: 'Kind',
+  CUSTOM: 'Custom',
+  KUBERNETES: 'Kubernetes',
   GENERIC: 'Generic',
 }
 
-export const providerToIcon = {
+export const providerToIcon: Record<Provider, string | null> = {
   AWS: '/aws-icon.png',
   AZURE: '/azure.png',
   EQUINIX: '/equinix-metal.png',
   GCP: '/gcp.png',
   KIND: '/kind.png',
+  CUSTOM: null,
+  KUBERNETES: null,
   GENERIC: '/chart.png',
 }
 
-export const providerToIconHeight = {
+export const providerToIconHeight: Record<Provider, number> = {
   AWS: 11,
   AZURE: 14,
   EQUINIX: 16,
   GCP: 14,
   KIND: 14,
+  KUBERNETES: 16,
+  CUSTOM: 16,
   GENERIC: 14,
 }
 
@@ -58,7 +72,7 @@ const visuallyHideMaintainWidth = {
   height: 0,
   'aria-hidden': true,
   pointerEvents: 'none',
-}
+} satisfies DivProps
 
 function extendedTheme({ minMenuWidth = 400 }: any) {
   return {
@@ -93,232 +107,199 @@ function extendedTheme({ minMenuWidth = 400 }: any) {
   }
 }
 
-function RecipeMenuItem({ recipe }: { recipe: Recipe }) {
+function CliCommand({
+  recipe,
+  type,
+  appName,
+}: {
+  recipe: Recipe
+  type: string
+  appName: string
+}) {
+  if (!recipe.provider || !type || !appName) {
+    return null
+  }
+
   return (
-    <MenuItem
-      value={recipe}
-      _hover={{ backgroundColor: 'fill-one-hover' }}
+    <Flex
+      flexDirection="column"
+      gap="large"
     >
-      <Flex>
-        <Flex
-          align="center"
-          justify="center"
-          width={40}
-          height={40}
-          flexShrink={0}
-          marginRight="medium"
+      <Div overline>Install {appName}</Div>
+      <Flex
+        flexDirection="column"
+        gap="small"
+      >
+        <P
+          body2
+          bold
+          color="text"
         >
-          <Img
-            alt={recipe.name}
-            src={providerToIcon[recipe.provider]}
-            height={2.0 * providerToIconHeight[recipe.provider]}
-          />
-        </Flex>
-        <Div
-          flexShrink={1}
-          flexGrow={1}
-          flexBasis="calc(100% - 4 * 16px)"
-        >
-          <P
-            fontSize="14"
-            fontWeight="600"
-          >
-            {providerToDisplayName[recipe.provider]}
-          </P>
-          <P
-            caption
-            wordBreak="break-word"
-          >
-            {capitalize(recipe.description)}
-          </P>
-        </Div>
+          1. Copy the command below:
+        </P>
+        <Codeline language="bash">
+          {`plural ${type} install ${appName} ${recipe.name}`}
+        </Codeline>
       </Flex>
-    </MenuItem>
-  )
+      <Div>
+        <P
+          body2
+          bold
+          color="text"
+        >
+          2. Paste and run the command inside of your local Plural repository.
+        </P>
+      </Div>
+    </Flex>
+  ) 
 }
 
 type InstallDropDownButtonProps = {
-  recipes: Recipe[],
-  name?: string,
-  type?: string,
+  recipes: Recipe[]
+  name?: string
+  type?: string
   [x: string]: any
+}
+
+function RecipeTabs({
+  type,
+  appName,
+  recipes,
+}: {
+  recipes: Recipe[]
+  type: string
+  appName: string
+}) {
+  const [tabKey, setTabKey] = useState<Key>(0)
+  const tabStateRef = useRef<any>()
+  const currentRecipe = recipes[tabKey] || recipes[0] || null
+
+  useEffect(() => {
+    if (!recipes[tabKey]) {
+      setTabKey(0)
+    }
+  }, [recipes, tabKey])
+
+  if (!appName!) {
+    return null
+  }
+
+  const tabs = recipes
+    .filter(recipe => recipe.provider && recipe.name)
+    .map((recipe, i) => (
+      <Tab
+        key={i}
+        flexGrow={1}
+        {...{ '&>div': { justifyContent: 'center' } }}
+      >
+        {providerToDisplayName[recipe.provider as Provider]}
+      </Tab>
+    ))
+    .filter(tab => !!tab)
+
+  // return <Div>tab contents</Div>
+
+  return (
+    <Div>
+      <Flex marginTop="xsmall">
+        <TabList
+          width="100%"
+          stateRef={tabStateRef}
+          stateProps={{
+            onSelectionChange: key => {
+              setTabKey(key)
+            },
+          }}
+        >
+          {tabs}
+        </TabList>
+      </Flex>
+      <TabPanel
+        stateRef={tabStateRef}
+        padding="large"
+      >
+        {currentRecipe ? (
+          <CliCommand
+            appName={appName}
+            type={type}
+            recipe={currentRecipe}
+          />
+        ) : (
+          'Installation not supported for this provider'
+        )}
+      </TabPanel>
+    </Div>
+  )
 }
 
 function InstallDropdownButton({
   recipes,
-  name,
+  name: appName,
   type = 'bundle',
   ...props
-} : InstallDropDownButtonProps) {
-  const [recipe, setRecipe] = useState<Recipe>()
-  const [tab, setTab] = useState(0)
+}: InstallDropDownButtonProps) {
+  // const { hasInstallations, provider } = useContext(CurrentUserContext)
+  const { data, loading } = useGetShellQuery()
 
-  function renderTabs() {
-    if (!recipe) return
+  // const hasCloudShell = data?.shell
 
-    return (
-      <Div>
-        <Div
-          padding="large"
-          paddingBottom="medium"
-        >
-          <Flex
-            align="center"
-            marginBottom="xxsmall"
-          >
-            <Img
-              alt={recipe.name}
-              src={providerToIcon[recipe.provider]}
-              height={1.15 * providerToIconHeight[recipe.provider]}
-              marginRight="small"
-            />
-            <H2
-              overline
-              color="text-xlight"
-            >
-              Install on {providerToDisplayName[recipe.provider]}
-            </H2>
-          </Flex>
-          <Flex>
-            <P
-              body1
-              color="text-light"
-              width="min-content"
-              maxWidth="100%"
-              flexGrow={1}
-            >
-              {recipe.provider !== 'KIND' && <>Choose either the Plural CLI or cloud shell to install. </>}
-              Learn more about CLI installation in our{' '}
-              <A
-                inline
-                href="https://docs.plural.sh/getting-started/getting-started#install-plural-cli"
-                target="_blank"
-                textDecoration="none"
-              >
-                docs
-              </A>.
-            </P>
-          </Flex>
-        </Div>
-        <Flex marginTop="xsmall">
-          <Tab
-            active={tab === 0}
-            onClick={() => setTab(0)}
-            flexGrow={1}
-            borderBottom={tab === 0 ? '1px solid border-primary' : '1px solid border-fill-two'}
-            {...{ '&>div': { justifyContent: 'center' } }}
-          >
-            Plural CLI
-          </Tab>
-          {recipe.provider !== 'KIND' && (
-            <Tab
-              active={tab === 1}
-              onClick={() => setTab(1)}
-              flexGrow={1}
-              borderBottom={tab === 1 ? '1px solid border-primary' : '1px solid border-fill-two'}
-              {...{ '&>div': { justifyContent: 'center' } }}
-            >
-              Cloud Shell
-            </Tab>
-          )}
+  // DEBUG VALUES
+  const hasCloudShell = false
+  const provider = null
+  const hasInstallations = true
+  // END DEBUG VALUES
 
-        </Flex>
-        <Div padding="large">
-          <Div {...(tab !== 0 ? visuallyHideMaintainWidth : {})}>
-            <P
-              body2
-              color="text"
-              marginBottom="small"
-            >
-              In your installation repository, run:
-            </P>
-            <Codeline
-              language="bash"
-            >{`plural ${type} install ${name} ${recipe.name || ''}`}
-            </Codeline>
-          </Div>
-          <Div {...(tab !== 1 ? visuallyHideMaintainWidth : {})}>
-            {type !== 'stack' && (
-              <Div>
-                <P
-                  body2
-                  color="text"
-                  marginBottom="xsmall"
-                >
-                  Copy this command:
-                </P>
-                <Codeline
-                  language="bash"
-                >{`plural ${type} install ${name} ${recipe.name || ''}`}
-                </Codeline>
-                <P
-                  body2
-                  color="text"
-                  marginTop="large"
-                  marginBottom="xsmall"
-                >
-                  Open in cloud shell and paste command:
-                </P>
-              </Div>
-            )}
-            <Link
-              to={type === 'stack' ? `/shell?stackName=${name}&stackProvider=${recipe.provider}` : `/shell?appName=${name}`}
-              style={{ textDecoration: 'none' }}
-            >
-              <Button
-                width="100%"
-                endIcon={<ArrowTopRightIcon />}
-              >
-                {type === 'stack' ? 'Install on Cloud Shell' : 'Open Cloud Shell'}
-              </Button>
-            </Link>
-          </Div>
-        </Div>
-      </Div>
-    )
+  const recipe = recipes.find(recipe => recipe.provider === provider)
+
+  const isCliUser = !hasCloudShell && hasInstallations
+
+  console.log('hasCloudShell', hasCloudShell)
+
+  if (!appName) {
+    return null
   }
 
   return (
     <ExtendTheme theme={extendedTheme({ minMenuWidth: !recipe ? 300 : 470 })}>
-      {!recipe && (
+      {!isCliUser || loading ? (
+        <Button
+          primary
+          width="100%"
+          loading={loading}
+          as={Link}
+          to={
+            type === 'stack'
+              ? `/shell?stackName=${appName}&stackProvider=${recipe.provider}`
+              : `/shell?appName=${appName}`
+          }
+        >Install
+        </Button>
+      ) : (
         <DropdownButton
           fade
           label="Install"
-          onChange={event => {
-            setRecipe((event.target as any).value)
-            setTab(0)
-          }}
-          endIcon={(
-            <DropdownArrowIcon size={16} />
-          )}
-          {...props}
+          endIcon={<DropdownArrowIcon size={16} />}
+            {...props}
+            padding=
         >
-          {recipes.map((recipe, i) => (
-            <RecipeMenuItem
-              key={i}
-              recipe={recipe}
-            />
-          ))}
-        </DropdownButton>
-      )}
-      {!!recipe && (
-        <DropdownButton
-          fade
-          defaultOpen
-          onOpen={open => {
-            if (!open) setRecipe(undefined)
-          }}
-          label="Install"
-          onChange={() => {
-            setRecipe(undefined)
-            setTab(0)
-          }}
-          endIcon={(
-            <DropdownArrowIcon size={16} />
-          )}
-          {...props}
-        >
-          {renderTabs()}
+          {loading
+            ? '...loading'
+            : isCliUser
+              && (recipe ? (
+                <Div padding="large">
+                  <CliCommand
+                    appName={appName}
+                    type={type}
+                    recipe={recipe}
+                  />
+                </Div>
+              ) : (
+                <RecipeTabs
+                  appName={appName}
+                  type={type}
+                  recipes={recipes}
+                />
+              ))}
         </DropdownButton>
       )}
     </ExtendTheme>

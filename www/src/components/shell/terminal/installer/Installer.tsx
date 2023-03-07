@@ -30,7 +30,7 @@ import { buildSteps, install, toDefaultSteps } from './helpers'
 
 const FILTERED_APPS = ['bootstrap', 'ingress-nginx', 'postgres']
 
-function Installer() {
+function Installer({ onInstallSuccess }) {
   const client = useApolloClient()
   const { mutation } = useOnboarded()
   const { shell: { provider }, configuration, setState } = useContext(TerminalContext)
@@ -64,9 +64,11 @@ function Installer() {
           provider,
           applications: selectedApplications,
         })
+        onInstallSuccess()
       })
       .catch(err => setError(err))
       .finally(() => setStepsLoading(false))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [client, mutation, provider, refetch, setState])
 
   const onSelect = useCallback((selectedApplications: Array<WizardStepConfig>) => {

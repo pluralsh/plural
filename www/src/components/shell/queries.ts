@@ -30,7 +30,10 @@ export const CLOUD_SHELL_QUERY = gql`
 
 export const SETUP_SHELL_MUTATION = gql`
   mutation {
-    setupShell { id }
+    setupShell {
+      id
+      missing
+    }
   }
 `
 

@@ -39,7 +39,7 @@ function BillingLayout() {
         </PageTitle>
         {pricingFeaturesEnabled && (
           <>
-            <BillingLegacyUserBanner marginBottom="large" />
+            <BillingLegacyUserBanner withBottomMargin={false} />
             <Div
               flexGrow
               flexShrink={0}

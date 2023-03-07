@@ -40,9 +40,8 @@ function BillingMigrationModal() {
         {' '}
         <A
           inline
-          href="#"
+          href="https://www.plural.sh/blog/changes-to-plurals-pricing/"
           target="_blank"
-          rel="noopener noreferrer"
         >
           our blog
         </A>.

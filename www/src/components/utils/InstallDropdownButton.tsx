@@ -1,6 +1,7 @@
 import {
   Key,
   ReactNode,
+  useContext,
   useEffect,
   useRef,
   useState,
@@ -19,11 +20,14 @@ import {
   Tab,
   TabList,
   TabPanel,
+  Tooltip,
 } from '@pluralsh/design-system'
 import { Link } from 'react-router-dom'
 
+import { LicenseTemplates } from '@gitbeaker/browser/dist/types'
+
 import { Provider, Recipe, useGetShellQuery } from '../../generated/graphql'
-import CurrentUserContext from '../../contexts/CurrentUserContext'
+import { useCurrentUser } from '../../contexts/CurrentUserContext'
 
 type RecipeSubset = Pick<Recipe, 'provider' | 'description'> &
   Partial<Pick<Recipe, 'name'>>
@@ -42,6 +46,17 @@ const providerToTabName: Record<Provider, ReactNode> = {
   AZURE: 'Azure',
   EQUINIX: 'Equinix',
   GCP: 'GCP',
+  KIND: 'Kind',
+  CUSTOM: 'Custom',
+  KUBERNETES: 'Kubernetes',
+  GENERIC: 'Generic',
+}
+
+const providerToLongName: Record<Provider, ReactNode> = {
+  AWS: 'Amazon Web Services',
+  AZURE: 'Microsoft Azure',
+  EQUINIX: 'Equinix Metal',
+  GCP: 'Google Cloud Platform',
   KIND: 'Kind',
   CUSTOM: 'Custom',
   KUBERNETES: 'Kubernetes',
@@ -79,7 +94,6 @@ function extendedTheme({ minMenuWidth = 400 }: any) {
           paddingRight: 0,
           paddingBottom: 0,
           paddingLeft: 0,
-          // overflow: 'hidden',
         },
       ],
     },
@@ -213,18 +227,12 @@ function InstallDropdownButton({
   ...props
 }: InstallDropDownButtonProps) {
   const { data: shellData, loading: loadingShell } = useGetShellQuery()
-  // const { hasInstallations, provider } = useContext(CurrentUserContext)
-  // const hasCloudShell = !!shellData?.shell
+  const { hasInstallations, provider } = useCurrentUser()
+  const hasCloudShell = !!shellData?.shell
   const loading = loadingProp || loadingShell
 
-  // DEBUG VALUES
-  const hasCloudShell = true
-  const provider = null
-  const hasInstallations = true
-  // END DEBUG VALUES
-
   const recipe
-    = type === 'stack'
+    = type === 'stack' && !provider
       ? recipes?.[0]
       : recipes?.find(recipe => recipe.provider === provider)
 
@@ -266,6 +274,24 @@ function InstallDropdownButton({
         >
           Install
         </Button>
+      ) : !recipe && provider ? (
+        <Tooltip
+          label={`This ${
+            type === 'bundle' ? 'app' : 'stack'
+          } is not available for your provider, ${
+            providerToLongName[provider]
+          }`}
+        >
+          <span>
+            <Button
+              primary
+              width="100%"
+              disabled
+            >
+              Install
+            </Button>
+          </span>
+        </Tooltip>
       ) : (
         <DropdownButton
           fade
@@ -273,22 +299,21 @@ function InstallDropdownButton({
           endIcon={<DropdownArrowIcon size={16} />}
           {...props}
         >
-          {isCliUser
-            && (recipe ? (
-              <Div padding="large">
-                <CliCommand
-                  name={name}
-                  type={type}
-                  recipe={recipe}
-                />
-              </Div>
-            ) : (
-              <RecipeTabs
+          {recipe ? (
+            <Div padding="large">
+              <CliCommand
                 name={name}
                 type={type}
-                recipes={recipes}
+                recipe={recipe}
               />
-            ))}
+            </Div>
+          ) : (
+            <RecipeTabs
+              name={name}
+              type={type}
+              recipes={recipes}
+            />
+          )}
         </DropdownButton>
       )}
     </ExtendTheme>

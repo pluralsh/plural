@@ -13,6 +13,7 @@ interface ContextProps {
   configuration: ShellConfiguration
   state: State
   setState: Dispatch<SetStateAction<State>>
+  refetchConfiguration: Dispatch<void>
 }
 
 const TerminalContext = createContext<ContextProps>({} as ContextProps)

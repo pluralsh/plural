@@ -28,7 +28,7 @@ import TerminalThemeProvider from './actionbar/theme/Provider'
 import Terminal from './Terminal'
 import ContentCard from './ContentCard'
 import Installer from './installer/Installer'
-import { State, TerminalContext } from './context/terminal'
+import { ContextProps, State, TerminalContext } from './context/terminal'
 import { SHELL_CONFIGURATION_QUERY } from './queries'
 import { NextStepsModal } from './NextSteps'
 
@@ -119,9 +119,9 @@ function Content() {
   const { data: { shellConfiguration } = { shellConfiguration: undefined }, stopPolling, refetch } = useQuery(SHELL_CONFIGURATION_QUERY, { skip: !shell, pollInterval: 5000 })
   const [setupShell, { data: { setupShell: setupShellData } = {} as RootMutationType }] = useMutation(SETUP_SHELL_MUTATION, { fetchPolicy: 'no-cache' })
 
-  const context = useMemo(() => ({
-    shell, configuration: shellConfiguration, state, setState,
-  }), [shell, shellConfiguration, state])
+  const context: ContextProps = useMemo(() => ({
+    shell, configuration: shellConfiguration, state, setState, refetchConfiguration: refetch,
+  }), [refetch, shell, shellConfiguration, state])
 
   useEffect(() => {
     if (shellConfiguration) stopPolling()

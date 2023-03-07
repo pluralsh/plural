@@ -40,7 +40,7 @@ function BillingFeatureBlockBanner({ feature, planFeature }: BillingFeatureBlock
       direction="column"
       borderRadius="large"
       padding="xxlarge"
-      background={`url(${featureToImageUrl[feature]}) no-repeat top center / cover`}
+      background={`url(${featureToImageUrl[feature]}) no-repeat top center`}
       backgroundSize="100% auto"
       backgroundColor="fill-zero"
     >

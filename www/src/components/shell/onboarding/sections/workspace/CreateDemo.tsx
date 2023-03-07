@@ -80,7 +80,7 @@ function CreateDemo({ onBack, onNext }): JSX.Element {
     setWorkspace({
       project: demoProject!.projectId,
       region: 'us-east1',
-      clusterName: `demo-${suffix}`,
+      clusterName: 'demo',
       bucketPrefix: `plrlb-${suffix}`,
       subdomain: `demo-${suffix}`,
     } as WorkspaceProps)

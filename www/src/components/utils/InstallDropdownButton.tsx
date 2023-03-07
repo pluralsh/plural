@@ -1,26 +1,19 @@
 import {
   Key,
   ReactNode,
-  useContext,
   useEffect,
   useRef,
   useState,
 } from 'react'
 import {
-  A,
   Button,
   Div,
-  DivProps,
   DropdownButton,
   ExtendTheme,
   Flex,
-  H2,
-  Img,
-  MenuItem,
   P,
 } from 'honorable'
 import {
-  ArrowTopRightIcon,
   Codeline,
   DropdownArrowIcon,
   Tab,
@@ -28,51 +21,32 @@ import {
   TabPanel,
 } from '@pluralsh/design-system'
 import { Link } from 'react-router-dom'
-import capitalize from 'lodash/capitalize'
 
 import { Provider, Recipe, useGetShellQuery } from '../../generated/graphql'
-
 import CurrentUserContext from '../../contexts/CurrentUserContext'
 
-export const providerToDisplayName: Record<Provider, ReactNode> = {
+type RecipeSubset = Pick<Recipe, 'provider' | 'description'> &
+  Partial<Pick<Recipe, 'name'>>
+
+type InstallDropDownButtonProps = {
+  loading: boolean
+  recipes?: RecipeSubset[]
+  name: string
+  type: 'bundle' | 'stack'
+  apps?: string[]
+  [x: string]: any
+}
+
+const providerToTabName: Record<Provider, ReactNode> = {
   AWS: 'AWS',
   AZURE: 'Azure',
-  EQUINIX: 'Equinix Metal',
-  GCP: 'Google',
+  EQUINIX: 'Equinix',
+  GCP: 'GCP',
   KIND: 'Kind',
   CUSTOM: 'Custom',
   KUBERNETES: 'Kubernetes',
   GENERIC: 'Generic',
 }
-
-export const providerToIcon: Record<Provider, string | null> = {
-  AWS: '/aws-icon.png',
-  AZURE: '/azure.png',
-  EQUINIX: '/equinix-metal.png',
-  GCP: '/gcp.png',
-  KIND: '/kind.png',
-  CUSTOM: null,
-  KUBERNETES: null,
-  GENERIC: '/chart.png',
-}
-
-export const providerToIconHeight: Record<Provider, number> = {
-  AWS: 11,
-  AZURE: 14,
-  EQUINIX: 16,
-  GCP: 14,
-  KIND: 14,
-  KUBERNETES: 16,
-  CUSTOM: 16,
-  GENERIC: 14,
-}
-
-const visuallyHideMaintainWidth = {
-  opacity: '0',
-  height: 0,
-  'aria-hidden': true,
-  pointerEvents: 'none',
-} satisfies DivProps
 
 function extendedTheme({ minMenuWidth = 400 }: any) {
   return {
@@ -94,13 +68,18 @@ function extendedTheme({ minMenuWidth = 400 }: any) {
         {
           backgroundColor: 'fill-two',
           border: '1px solid border-fill-two',
-          borderRadius: 'large',
+          borderRadius: 'medium',
           width: 'max-content',
           minWidth: minMenuWidth,
           maxWidth: 1000,
           left: 'unset',
           marginTop: 'xsmall',
           boxShadow: 'moderate',
+          paddingTop: 0,
+          paddingRight: 0,
+          paddingBottom: 0,
+          paddingLeft: 0,
+          // overflow: 'hidden',
         },
       ],
     },
@@ -110,13 +89,13 @@ function extendedTheme({ minMenuWidth = 400 }: any) {
 function CliCommand({
   recipe,
   type,
-  appName,
+  name,
 }: {
-  recipe: Recipe
+  recipe: RecipeSubset
   type: string
-  appName: string
+  name: string
 }) {
-  if (!recipe.provider || !type || !appName) {
+  if (!recipe.provider || !type || !name) {
     return null
   }
 
@@ -125,7 +104,7 @@ function CliCommand({
       flexDirection="column"
       gap="large"
     >
-      <Div overline>Install {appName}</Div>
+      <Div overline>Install {name}</Div>
       <Flex
         flexDirection="column"
         gap="small"
@@ -138,7 +117,9 @@ function CliCommand({
           1. Copy the command below:
         </P>
         <Codeline language="bash">
-          {`plural ${type} install ${appName} ${recipe.name}`}
+          {`plural ${type} install ${name}${
+            recipe.name ? ` ${recipe.name}` : ''
+          }`}
         </Codeline>
       </Flex>
       <Div>
@@ -151,24 +132,17 @@ function CliCommand({
         </P>
       </Div>
     </Flex>
-  ) 
-}
-
-type InstallDropDownButtonProps = {
-  recipes: Recipe[]
-  name?: string
-  type?: string
-  [x: string]: any
+  )
 }
 
 function RecipeTabs({
   type,
-  appName,
+  name,
   recipes,
 }: {
-  recipes: Recipe[]
+  recipes: RecipeSubset[]
   type: string
-  appName: string
+  name: string
 }) {
   const [tabKey, setTabKey] = useState<Key>(0)
   const tabStateRef = useRef<any>()
@@ -180,28 +154,26 @@ function RecipeTabs({
     }
   }, [recipes, tabKey])
 
-  if (!appName!) {
+  if (!name!) {
     return null
   }
 
   const tabs = recipes
-    .filter(recipe => recipe.provider && recipe.name)
+    .filter(recipe => recipe.provider)
     .map((recipe, i) => (
       <Tab
         key={i}
         flexGrow={1}
         {...{ '&>div': { justifyContent: 'center' } }}
       >
-        {providerToDisplayName[recipe.provider as Provider]}
+        {providerToTabName[recipe.provider as Provider]}
       </Tab>
     ))
     .filter(tab => !!tab)
 
-  // return <Div>tab contents</Div>
-
   return (
     <Div>
-      <Flex marginTop="xsmall">
+      <Flex>
         <TabList
           width="100%"
           stateRef={tabStateRef}
@@ -220,7 +192,7 @@ function RecipeTabs({
       >
         {currentRecipe ? (
           <CliCommand
-            appName={appName}
+            name={name}
             type={type}
             recipe={currentRecipe}
           />
@@ -234,34 +206,51 @@ function RecipeTabs({
 
 function InstallDropdownButton({
   recipes,
-  name: appName,
+  name,
   type = 'bundle',
+  loading: loadingProp = false,
+  apps,
   ...props
 }: InstallDropDownButtonProps) {
+  const { data: shellData, loading: loadingShell } = useGetShellQuery()
   // const { hasInstallations, provider } = useContext(CurrentUserContext)
-  const { data, loading } = useGetShellQuery()
-
-  // const hasCloudShell = data?.shell
+  // const hasCloudShell = !!shellData?.shell
+  const loading = loadingProp || loadingShell
 
   // DEBUG VALUES
-  const hasCloudShell = false
+  const hasCloudShell = true
   const provider = null
   const hasInstallations = true
   // END DEBUG VALUES
 
-  const recipe = recipes.find(recipe => recipe.provider === provider)
+  const recipe
+    = type === 'stack'
+      ? recipes?.[0]
+      : recipes?.find(recipe => recipe.provider === provider)
 
   const isCliUser = !hasCloudShell && hasInstallations
 
-  console.log('hasCloudShell', hasCloudShell)
-
-  if (!appName) {
+  if (!name) {
+    return null
+  }
+  if (loading) {
+    return (
+      <Button
+        primary
+        width="100%"
+        loading
+      >
+        Install
+      </Button>
+    )
+  }
+  if (!recipes || recipes?.length === 0) {
     return null
   }
 
   return (
     <ExtendTheme theme={extendedTheme({ minMenuWidth: !recipe ? 300 : 470 })}>
-      {!isCliUser || loading ? (
+      {!isCliUser ? (
         <Button
           primary
           width="100%"
@@ -269,37 +258,37 @@ function InstallDropdownButton({
           as={Link}
           to={
             type === 'stack'
-              ? `/shell?stackName=${appName}&stackProvider=${recipe.provider}`
-              : `/shell?appName=${appName}`
+              ? `/shell${
+                apps && apps.length > 0 ? `?install=${apps.join(',')}` : ''
+              }`
+              : `/shell?install=${name}`
           }
-        >Install
+        >
+          Install
         </Button>
       ) : (
         <DropdownButton
           fade
           label="Install"
           endIcon={<DropdownArrowIcon size={16} />}
-            {...props}
-            padding=
+          {...props}
         >
-          {loading
-            ? '...loading'
-            : isCliUser
-              && (recipe ? (
-                <Div padding="large">
-                  <CliCommand
-                    appName={appName}
-                    type={type}
-                    recipe={recipe}
-                  />
-                </Div>
-              ) : (
-                <RecipeTabs
-                  appName={appName}
+          {isCliUser
+            && (recipe ? (
+              <Div padding="large">
+                <CliCommand
+                  name={name}
                   type={type}
-                  recipes={recipes}
+                  recipe={recipe}
                 />
-              ))}
+              </Div>
+            ) : (
+              <RecipeTabs
+                name={name}
+                type={type}
+                recipes={recipes}
+              />
+            ))}
         </DropdownButton>
       )}
     </ExtendTheme>

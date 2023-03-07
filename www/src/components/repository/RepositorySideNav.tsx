@@ -1,9 +1,4 @@
-import {
-  MutableRefObject,
-  useContext,
-  useImperativeHandle,
-  useRef,
-} from 'react'
+import { MutableRefObject, useImperativeHandle, useRef } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import {
   A,
@@ -15,7 +10,7 @@ import {
 import { Tab, TabList } from '@pluralsh/design-system'
 import capitalize from 'lodash/capitalize'
 
-import RepositoryContext from '../../contexts/RepositoryContext'
+import { useRepositoryContext } from '../../contexts/RepositoryContext'
 import { LinkTabWrap } from '../utils/Tabs'
 import { SideNavOffset } from '../utils/layout/SideNavOffset'
 
@@ -35,7 +30,7 @@ function RepositorySideNav({
 }: {
   tabStateRef: MutableRefObject<any>
 }) {
-  const repository = useContext(RepositoryContext)
+  const repository = useRepositoryContext()
 
   const { pathname } = useLocation()
   const tabStateRef = useRef<any>()
@@ -48,7 +43,7 @@ function RepositorySideNav({
       return repository.installation && repository.oauthSettings
       break
     case '/artifacts':
-      return repository.artifacts.length > 0
+      return repository.artifacts && repository.artifacts.length > 0
       break
     case '/edit':
       return !!repository.editable
@@ -90,20 +85,22 @@ function RepositorySideNav({
           <P subtitle1>{capitalize(repository.name)}</P>
         </Div>
       </Flex>
-      <P
-        body2
-        color="text-xlight"
-        marginTop="medium"
-      >
-        Published by&nbsp;
-        <A
-          inline
-          as={Link}
-          to={`/publisher/${repository.publisher.id}?backRepositoryName=${repository.name}`}
+      {repository.publisher && (
+        <P
+          body2
+          color="text-xlight"
+          marginTop="medium"
         >
-          {capitalize(repository.publisher.name)}
-        </A>
-      </P>
+          Published by&nbsp;
+          <A
+            inline
+            as={Link}
+            to={`/publisher/${repository.publisher.id}?backRepositoryName=${repository.name}`}
+          >
+            {capitalize(repository.publisher.name)}
+          </A>
+        </P>
+      )}
       <SideNavOffset
         marginTop="medium"
       >

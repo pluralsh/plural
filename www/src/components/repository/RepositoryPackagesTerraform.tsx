@@ -1,4 +1,3 @@
-import { useContext } from 'react'
 import { Link, useOutletContext } from 'react-router-dom'
 import {
   Div,
@@ -11,7 +10,7 @@ import moment from 'moment'
 
 import Fuse from 'fuse.js'
 
-import RepositoryContext from '../../contexts/RepositoryContext'
+import { useRepositoryContext } from '../../contexts/RepositoryContext'
 
 import usePaginatedQuery from '../../hooks/usePaginatedQuery'
 
@@ -97,7 +96,7 @@ function Terraform({ terraform, first, last }: any) {
 }
 
 function RepositoryPackagesTerraform() {
-  const { id } = useContext(RepositoryContext)
+  const { id } = useRepositoryContext()
   const [q] = useOutletContext() as any
   const [terraforms, loadingTerraforms, hasMoreTerraforms, fetchMoreTerraforms] = usePaginatedQuery(TERRAFORM_QUERY,
     {

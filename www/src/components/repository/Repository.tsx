@@ -1,11 +1,10 @@
-import { useQuery } from '@apollo/client'
 import { useRef } from 'react'
 import { Link, Outlet, useParams } from 'react-router-dom'
 import { Flex, P } from 'honorable'
 import { Button, TabPanel } from '@pluralsh/design-system'
 import { validate as uuidValidate } from 'uuid'
 
-import RepositoryContext from '../../contexts/RepositoryContext'
+import { RepositoryContextProvider } from '../../contexts/RepositoryContext'
 
 import { LoopingLogo } from '../utils/AnimatedLogo'
 import { ResponsiveLayoutContentContainer } from '../utils/layout/ResponsiveLayoutContentContainer'
@@ -14,14 +13,15 @@ import { ResponsiveLayoutSpacer } from '../utils/layout/ResponsiveLayoutSpacer'
 import { ResponsiveLayoutSidenavContainer } from '../utils/layout/ResponsiveLayoutSidenavContainer'
 import { ResponsiveLayoutPage } from '../utils/layout/ResponsiveLayoutPage'
 
+import { useRepositoryQuery } from '../../generated/graphql'
+
 import RepositorySideNav from './RepositorySideNav'
 import { RepositorySideCar } from './RepositorySideCar'
-import { REPOSITORY_QUERY } from './queries'
 
 function Repository() {
   const { name } = useParams()
-  const { data, loading } = useQuery(REPOSITORY_QUERY, {
-    variables: uuidValidate(name ?? '') ? { repositoryId: name } : { name },
+  const { data, loading } = useRepositoryQuery({
+    variables: uuidValidate(name ?? '') ? { id: name } : { name },
   })
   const tabStateRef = useRef<any>(null)
 
@@ -63,7 +63,7 @@ function Repository() {
   const { repository } = data
 
   return (
-    <RepositoryContext.Provider value={repository}>
+    <RepositoryContextProvider value={repository}>
       {/* Provide the repository to children */}
       <ResponsiveLayoutPage>
         <ResponsiveLayoutSidenavContainer>
@@ -81,7 +81,7 @@ function Repository() {
         </ResponsiveLayoutSidecarContainer>
         <ResponsiveLayoutSpacer />
       </ResponsiveLayoutPage>
-    </RepositoryContext.Provider>
+    </RepositoryContextProvider>
   )
 }
 

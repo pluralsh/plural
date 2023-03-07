@@ -8,11 +8,11 @@ import {
   TabList,
   TabPanel,
 } from '@pluralsh/design-system'
-import { useContext, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import styled from 'styled-components'
 
 import { LinkTabWrap } from '../utils/Tabs'
-import RepositoryContext from '../../contexts/RepositoryContext'
+import { useRepositoryContext } from '../../contexts/RepositoryContext'
 
 import { RepositoryActions } from './misc'
 
@@ -46,7 +46,7 @@ const DIRECTORY = [
 ]
 
 export default function RepositoryPackages() {
-  const repository = useContext(RepositoryContext)
+  const repository = useRepositoryContext()
   const [q, setQ] = useState('')
   const { pathname } = useLocation()
   const tabStateRef = useRef<any>(null)

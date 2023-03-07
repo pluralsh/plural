@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react'
+import { useState } from 'react'
 import moment from 'moment'
 import {
   Flex,
@@ -19,7 +19,7 @@ import {
 } from '@pluralsh/design-system'
 import { filesize as fs } from 'filesize'
 
-import RepositoryContext from '../../contexts/RepositoryContext'
+import { useRepositoryContext } from '../../contexts/RepositoryContext'
 
 import InfiniteScroller from '../utils/InfiniteScroller'
 import { download } from '../../utils/file'
@@ -172,7 +172,7 @@ function Artifacts({ artifact }: any) {
 }
 
 function RepositoryDeployments() {
-  const { artifacts } = useContext(RepositoryContext)
+  const { artifacts } = useRepositoryContext()
 
   function renderContent() {
     if (!artifacts || artifacts.length === 0) {
@@ -234,10 +234,12 @@ function RepositoryDeployments() {
           height={0}
         >
           {artifacts.map(artifact => (
-            <Artifacts
-              key={artifact.id}
-              artifact={artifact}
-            />
+            artifact && (
+              <Artifacts
+                key={artifact.id}
+                artifact={artifact}
+              />
+            )
           ))}
         </InfiniteScroller>
       </Flex>

@@ -164,5 +164,8 @@
     "vite-plugin-pwa": "0.14.1",
     "vitest": "0.28.4",
     "wait-on": "6.0.1"
+  },
+  "resolutions": {
+    "@pluralsh/design-system": "portal:/home/floreks/Projekty/plural/design-system"
   }
 }

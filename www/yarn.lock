@@ -3953,9 +3953,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pluralsh/design-system@npm:1.320.0":
-  version: 1.320.0
-  resolution: "@pluralsh/design-system@npm:1.320.0"
+"@pluralsh/design-system@portal:/home/floreks/Projekty/plural/design-system::locator=www%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "@pluralsh/design-system@portal:/home/floreks/Projekty/plural/design-system::locator=www%40workspace%3A."
   dependencies:
     "@floating-ui/react-dom-interactions": 0.13.3
     "@monaco-editor/react": 4.4.6
@@ -4009,9 +4009,8 @@ __metadata:
     react-dom: ">=16.0.0"
     react-transition-group: ">=4.4.2"
     styled-components: ">=5.3.5"
-  checksum: 3e2daeaebafbd4bd63ecf0f69445c3422221449333accc33c82288ac647327dd826ad8d18c080189c963bd795e38d1384f1086b6b0799dfcc962084c1a8583eb
   languageName: node
-  linkType: hard
+  linkType: soft
 
 "@pluralsh/eslint-config-pluralsh@npm:1.4.13":
   version: 1.4.13

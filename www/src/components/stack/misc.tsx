@@ -1,18 +1,25 @@
-import InstallDropdownButton, { Recipe } from '../utils/InstallDropdownButton'
+import { StackCollection } from '../../generated/graphql'
+import InstallDropdownButton from '../utils/InstallDropdownButton'
 
 import { StackContext } from './types'
 
 export function StackActions({ stack }: StackContext) {
-  const recipes = stack?.collections?.map(({ name, provider }) => ({
-    name,
+  const filteredCollections = stack?.collections?.filter((sC: StackCollection | null | undefined): sC is StackCollection => !!sC)
+  const recipes = filteredCollections?.map(({ provider }) => ({
     description: `Installs ${stack.displayName || stack.name} on ${provider}`,
     provider,
-  } as Recipe))
+  }))
+
+  const apps = filteredCollections?.[0].bundles
+    ?.map(bundle => bundle?.recipe?.repository?.name)
+    .filter((appName: string | undefined): appName is string => !!appName)
 
   return (
     <InstallDropdownButton
+      loading={false}
       name={stack.name}
       recipes={recipes}
+      apps={apps}
       type="stack"
       width="100%"
     />

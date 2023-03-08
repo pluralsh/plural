@@ -1,6 +1,5 @@
 import {
   useCallback,
-  useContext,
   useEffect,
   useRef,
   useState,
@@ -27,7 +26,7 @@ import { deepUpdate, updateCache } from '../../utils/graphql'
 import { sanitize } from '../account/utils'
 import { CREATE_PROVIDER, UPDATE_PROVIDER } from '../oidc/queries'
 import { AuthMethod } from '../oidc/types'
-import RepositoryContext from '../../contexts/RepositoryContext'
+import { useRepositoryContext } from '../../contexts/RepositoryContext'
 import usePrevious from '../../hooks/usePrevious'
 
 import { REPO_Q } from './packages/queries'
@@ -330,7 +329,7 @@ export function UpdateProvider({
 
 export function OIDCProvider() {
   const navigate = useNavigate()
-  const { installation } = useContext(RepositoryContext)
+  const { installation } = useRepositoryContext()
   const { name } = useParams()
 
   useEffect(() => {

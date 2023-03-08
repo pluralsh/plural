@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react'
+import { useEffect } from 'react'
 import moment from 'moment'
 import { Div, Flex, Span } from 'honorable'
 import {
@@ -8,7 +8,7 @@ import {
   StatusOkIcon,
 } from '@pluralsh/design-system'
 
-import RepositoryContext from '../../contexts/RepositoryContext'
+import { useRepositoryContext } from '../../contexts/RepositoryContext'
 import usePaginatedQuery from '../../hooks/usePaginatedQuery'
 import { LoopingLogo } from '../utils/AnimatedLogo'
 import InfiniteScroller from '../utils/InfiniteScroller'
@@ -75,7 +75,7 @@ function Rollout({ rollout, last }: any) {
 }
 
 function RepositoryDeployments() {
-  const { id } = useContext(RepositoryContext)
+  const { id } = useRepositoryContext()
   const [
     rollouts,
     loadingRollouts,

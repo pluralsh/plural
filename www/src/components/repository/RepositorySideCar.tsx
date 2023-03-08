@@ -1,4 +1,3 @@
-import { useContext } from 'react'
 import {
   Button,
   Div,
@@ -7,12 +6,12 @@ import {
 } from 'honorable'
 import { BrowserIcon, CertificateIcon, GitHubLogoIcon } from '@pluralsh/design-system'
 
-import RepositoryContext from '../../contexts/RepositoryContext'
+import { useRepositoryContext } from '../../contexts/RepositoryContext'
 
 import { RepositoryActions } from './misc'
 
 function RepositorySideCarButtons() {
-  const repository = useContext(RepositoryContext)
+  const repository = useRepositoryContext()
 
   return (
     <>
@@ -65,7 +64,7 @@ function RepositorySideCarButtons() {
 }
 
 export function RepositorySideCar(props: any) {
-  const repository = useContext(RepositoryContext)
+  const repository = useRepositoryContext()
 
   return (
     <Div

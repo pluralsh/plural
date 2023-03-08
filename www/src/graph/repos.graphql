@@ -64,8 +64,41 @@ fragment Integration on Integration {
   publisher { ...Publisher }
 }
 
-query GetRepository($name: String) {
-  repository(name: $name) { ...Repository }
+query Repository($id: ID, $name: String) {
+  repository(id: $id, name: $name) {
+    ...Repo
+    editable
+    publicKey
+    secrets
+    artifacts {
+      ...Artifact
+    }
+    installation {
+      ...Installation
+      oidcProvider {
+        ...OIDCProvider
+      }
+    }
+    tags {
+      tag
+    }
+    readme
+    mainBranch
+    gitUrl
+    homepage
+    license {
+      name
+      url
+    }
+    documentation
+    community {
+      discord
+      slack
+      homepage
+      gitUrl
+      twitter
+    }
+  }
 }
 
 mutation CreateResourceDefinition($name: String!, $input: ResourceDefinitionAttributes!) {

@@ -1,4 +1,3 @@
-import { useContext } from 'react'
 import { Link, useOutletContext } from 'react-router-dom'
 import {
   Div,
@@ -14,7 +13,7 @@ import Fuse from 'fuse.js'
 
 import { Chip } from '@pluralsh/design-system'
 
-import RepositoryContext from '../../contexts/RepositoryContext'
+import { useRepositoryContext } from '../../contexts/RepositoryContext'
 
 import usePaginatedQuery from '../../hooks/usePaginatedQuery'
 
@@ -73,7 +72,7 @@ function Chart({ chart, first, last }: any) {
 }
 
 function RepositoryPackagesHelm() {
-  const { id } = useContext(RepositoryContext)
+  const { id } = useRepositoryContext()
   const [q] = useOutletContext() as any
   const [charts, loadingCharts, hasMoreCharts, fetchMoreCharts] = usePaginatedQuery(CHARTS_QUERY,
     {

@@ -1,13 +1,12 @@
-import { useContext } from 'react'
 import { Flex, P } from 'honorable'
 import { Markdown, PageTitle } from '@pluralsh/design-system'
 
-import RepositoryContext from '../../contexts/RepositoryContext'
+import { useRepositoryContext } from '../../contexts/RepositoryContext'
 
 import { RepositoryActions } from './misc'
 
 export default function RepositoryDescription() {
-  const repository = useContext(RepositoryContext)
+  const repository = useRepositoryContext()
 
   return (
     <Flex
@@ -34,8 +33,8 @@ export default function RepositoryDescription() {
         {repository.readme ? (
           <Markdown
             text={repository.readme}
-            gitUrl={repository.gitUrl}
-            mainBranch={repository.mainBranch}
+            gitUrl={repository.gitUrl ?? undefined}
+            mainBranch={repository.mainBranch ?? undefined}
           />
         ) : (
           <P>This repository does not have a Readme yet.</P>

@@ -30,7 +30,7 @@ const available = (config, context) => {
     return !(context[condition.field]?.value)
   case OperationType.Prefix:
     return context[condition.field]?.value?.startsWith(condition.value) ?? false
-  case OperationType.Suffix:
+  case OperationType.Eq:
     return context[condition.field]?.value
   }
 

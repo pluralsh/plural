@@ -388,8 +388,8 @@ defmodule Core.Services.Payments do
         visible: true,
         features: %{vpn: true, user_management: true, audit: true},
         line_items: [
-          %{name: "User", dimension: :user, period: :monthly, cost: discount(4900, period)},
-          %{name: "Cluster", dimension: :cluster, period: :monthly, cost: discount(39900, period)}
+          %{name: "User", dimension: :user, period: period, cost: discount(4900, period)},
+          %{name: "Cluster", dimension: :cluster, period: period, cost: discount(39900, period)}
         ]
       })
     end

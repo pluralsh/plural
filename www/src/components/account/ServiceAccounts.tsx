@@ -112,10 +112,7 @@ export function ServiceAccounts() {
       <PageTitle heading="Service accounts">
         <CreateServiceAccount q={q} />
       </PageTitle>
-      <BillingLegacyUserBanner
-        feature="Service accounts"
-        marginBottom="large"
-      />
+      <BillingLegacyUserBanner feature="Service accounts" />
       <List>
         <Header
           q={q}

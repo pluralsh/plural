@@ -1189,6 +1189,8 @@ export type Installation = {
   licenseKey?: Maybe<Scalars['String']>;
   /** The OIDC provider for the application. */
   oidcProvider?: Maybe<OidcProvider>;
+  /** The last ping time of an installed application. */
+  pingedAt?: Maybe<Scalars['DateTime']>;
   /** The application that was installed. */
   repository?: Maybe<Repository>;
   /** The subscription for the application. */
@@ -2226,7 +2228,7 @@ export type RecipeValidationAttributes = {
   type: ValidationType;
 };
 
-/** Attributes of an application. */
+/** Container for all resources to create an application. */
 export type Repository = {
   __typename?: 'Repository';
   /** The artifacts of the application. */

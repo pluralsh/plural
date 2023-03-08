@@ -132,6 +132,7 @@ defmodule GraphQl.Schema.Repository do
     field :oidc_provider, :oidc_provider, resolve: dataloader(Repository), description: "The OIDC provider for the application."
     field :license_key,   :string, description: "The license key for the application."
     field :track_tag,     non_null(:string), description: "The tag to track for auto upgrades."
+    field :pinged_at,     :datetime, description: "The last ping time of an installed application."
 
     field :acme_key_id, :string, resolve: fn
       _, _, _ -> {:ok, Core.conf(:acme_key_id)}
@@ -163,7 +164,7 @@ defmodule GraphQl.Schema.Repository do
     field :videos,   list_of(:string)
   end
 
-  @desc "Attributes of an application."
+  @desc "Container for all resources to create an application."
   object :repository do
     field :id,             non_null(:id), description: "The application's ID."
     field :name,           non_null(:string), description: "The name of the application."

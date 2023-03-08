@@ -160,10 +160,7 @@ export function Roles() {
         {' '}
         <CreateRole q={q} />
       </PageTitle>
-      <BillingLegacyUserBanner
-        feature="Roles"
-        marginBottom="large"
-      />
+      <BillingLegacyUserBanner feature="Roles" />
       <List>
         <Header
           q={q}

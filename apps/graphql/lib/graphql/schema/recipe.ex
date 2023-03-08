@@ -20,6 +20,7 @@ defmodule GraphQl.Schema.Recipe do
     field :dependencies,  list_of(:recipe_reference)
     field :oidc_settings, :oidc_settings_attributes
     field :private,       :boolean
+    field :primary,       :boolean
     field :restricted,    :boolean
   end
 
@@ -121,6 +122,7 @@ defmodule GraphQl.Schema.Recipe do
     field :oidc_settings,       :oidc_settings
     field :private,             :boolean
     field :restricted,          :boolean
+    field :primary,             :boolean
     field :oidc_enabled,        :boolean, resolve: fn
       %{oidc_settings: %{}}, _, _ -> {:ok, true}
       %{recipe_dependencies: [_ | _] = deps}, _, _ ->

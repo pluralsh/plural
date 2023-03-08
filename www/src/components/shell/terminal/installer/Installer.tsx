@@ -18,17 +18,20 @@ import {
   WizardStepper,
 } from '@pluralsh/design-system'
 import { ApolloError } from '@apollo/client/errors'
+import { useSearchParams } from 'react-router-dom'
 
 import { State, TerminalContext } from '../context/terminal'
 import useOnboarded from '../../hooks/useOnboarded'
 import { PosthogEvent, posthogCapture } from '../../../../utils/posthog'
-
 import CurrentUserContext from '../../../../contexts/CurrentUserContext'
 
 import { APPLICATIONS_QUERY } from './queries'
 import { buildSteps, install, toDefaultSteps } from './helpers'
 
 const FILTERED_APPS = ['bootstrap', 'ingress-nginx', 'postgres']
+const FORCED_APPS = {
+  console: 'The Plural Console will allow you to monitor, upgrade, and deploy applications easily from one centralized place.',
+}
 
 function Installer({ onInstallSuccess }) {
   const client = useApolloClient()
@@ -36,6 +39,8 @@ function Installer({ onInstallSuccess }) {
   const { shell: { provider }, configuration, setState } = useContext(TerminalContext)
   const me = useContext(CurrentUserContext)
   const onResetRef = useRef<{onReset: Dispatch<void>}>({ onReset: () => {} })
+  const [searchParams] = useSearchParams()
+
   const [stepsLoading, setStepsLoading] = useState(false)
   const [steps, setSteps] = useState<Array<WizardStepConfig>>([])
   const [error, setError] = useState<ApolloError | undefined>()
@@ -50,6 +55,13 @@ function Installer({ onInstallSuccess }) {
 
   const applications = useMemo(() => applicationNodes?.map(({ node }) => node).filter(app => ((!app?.private ?? true) && !app?.installation) && !FILTERED_APPS.includes(app?.name)), [applicationNodes])
   const limit = useMemo(() => (me?.demoing ? 3 : 5), [me?.demoing])
+  const preselectedApp = useMemo(() => {
+    const name = searchParams.get('install')
+
+    if (!name) return undefined
+
+    return { [name]: 'Application preselected based on user action.' }
+  }, [searchParams])
 
   const onInstall = useCallback((payload: Array<WizardStepConfig>) => {
     setStepsLoading(true)
@@ -83,7 +95,7 @@ function Installer({ onInstallSuccess }) {
     build().finally(() => setStepsLoading(false))
   }, [client, provider])
 
-  useEffect(() => setDefaultSteps(toDefaultSteps(applications, provider)), [applications, provider])
+  useEffect(() => setDefaultSteps(toDefaultSteps(applications, provider, { ...FORCED_APPS, ...preselectedApp })), [applications, preselectedApp, provider])
 
   // Capture errors and send to posthog
   useEffect(() => error && posthogCapture(PosthogEvent.Installer, { error, applications: selectedApplications, provider }), [error, selectedApplications, provider])

@@ -561,11 +561,7 @@ defmodule Core.Services.Payments do
       |> allow(user, :delete)
       |> when_ok(:delete)
     end)
-    |> add_operation(:account, fn %{fetch: account} ->
-      Account.payment_changeset(account, %{delinquent_at: nil})
-      |> Core.Repo.update()
-      |> when_ok(&Map.put(&1, :subscription, nil))
-    end)
+    |> add_operation(:account, fn %{fetch: account} -> {:ok, %{account | subscription: nil}} end)
     |> add_operation(:stripe, fn %{db: %{external_id: ext_id}} -> Stripe.Subscription.delete(ext_id, %{prorate: true}) end)
     |> execute(extract: :account)
     |> notify(:delete)

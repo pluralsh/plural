@@ -9,21 +9,22 @@ import StartCase from 'lodash/startCase'
 import { FormField, Input } from '@pluralsh/design-system'
 
 import { TerminalContext } from '../context/terminal'
-import { ShellConfiguration } from '../../../../generated/graphql'
+import { Datatype, ShellConfiguration } from '../../../../generated/graphql'
 
-import { ConfigurationType } from './types'
+import ConfigurationFileInput from './ConfigurationFileInput'
 
 type ModifierFunction = (value: string, trim?: boolean) => string
 
-const modifierFactory = (type: ConfigurationType, configuration: ShellConfiguration): ModifierFunction => {
+const modifierFactory = (type: Datatype,
+  configuration: ShellConfiguration): ModifierFunction => {
   switch (type) {
-  case ConfigurationType.STRING:
-  case ConfigurationType.INT:
-  case ConfigurationType.PASSWORD:
+  case Datatype.String:
+  case Datatype.Int:
+  case Datatype.Password:
     return stringModifier
-  case ConfigurationType.BUCKET:
+  case Datatype.Bucket:
     return bucketModifier.bind({ configuration })
-  case ConfigurationType.DOMAIN:
+  case Datatype.Domain:
     return domainModifier.bind({ configuration })
   }
 
@@ -58,25 +59,50 @@ const createValidator = (regex: RegExp, optional: boolean, error: string) => (va
 })
 
 function ConfigurationField({
-  config, type, ctx, setValue,
+  config, ctx, setValue,
 }) {
   const {
-    name, default: defaultValue, placeholder, documentation, validation, optional,
+    name,
+    default: defaultValue,
+    placeholder,
+    documentation,
+    validation,
+    optional,
+    type,
   } = config
   const { configuration } = useContext(TerminalContext)
 
   const value = useMemo(() => ctx[name]?.value, [ctx, name])
-  const validator = useMemo(() => createValidator(new RegExp(validation?.regex ? `^${validation?.regex}$` : /.*/), config.optional, validation?.message), [config.optional, validation?.message, validation?.regex])
+  const validator = useMemo(() => createValidator(new RegExp(validation?.regex ? `^${validation?.regex}$` : /.*/),
+    config.optional,
+    validation?.message),
+  [config.optional, validation?.message, validation?.regex])
   const { valid, message } = useMemo(() => validator(value), [validator, value])
-  const modifier = useMemo(() => modifierFactory(config.type, configuration), [config.type, configuration])
+  const modifier = useMemo(() => modifierFactory(config.type, configuration),
+    [config.type, configuration])
 
   const [local, setLocal] = useState(modifier(value, true) || defaultValue)
 
-  useEffect(() => (local ? setValue(
-    name, modifier(local), valid, config?.type
-  ) : setValue(
-    name, local, valid, config?.type
-  )), [local, setValue, modifier, name, valid, config])
+  useEffect(() => (local
+    ? setValue(
+      name, modifier(local), valid, type
+    )
+    : setValue(
+      name, local, valid, type
+    )),
+  [local, modifier, name, setValue, type, valid])
+
+  const isInt = type === Datatype.Int
+  const isPassword
+      = type === Datatype.Password
+      || ['private_key', 'public_key'].includes(config.name)
+  const isFile = type === Datatype.File
+
+  const inputFieldType = isInt
+    ? 'number'
+    : isPassword
+      ? 'password'
+      : 'text'
 
   return (
     <FormField
@@ -85,22 +111,35 @@ function ConfigurationField({
       error={!valid}
       required={!optional}
     >
-      <Input
-        placeholder={placeholder}
-        value={local}
-        type={type}
-        error={!valid}
-        prefix={config.type === ConfigurationType.BUCKET ? `${configuration?.workspace?.bucketPrefix}-` : ''}
-        suffix={config.type === ConfigurationType.DOMAIN ? `.${configuration?.workspace?.network?.subdomain}` : ''}
-        onChange={({ target: { value } }) => setLocal(value)}
-      />
+      {isFile ? (
+        <ConfigurationFileInput onChange={val => {
+          setLocal(val?.text ?? '')
+        }}
+        />
+      ) : (
+        <Input
+          placeholder={placeholder}
+          value={local}
+          type={inputFieldType}
+          error={!valid}
+          prefix={
+            config.type === Datatype.Bucket
+              ? `${configuration?.workspace?.bucketPrefix}-`
+              : ''
+          }
+          suffix={
+            config.type === Datatype.Domain
+              ? `.${configuration?.workspace?.network?.subdomain}`
+              : ''
+          }
+          onChange={({ target: { value } }) => setLocal(value)}
+        />
+      )}
     </FormField>
   )
 }
 
-function BoolConfiguration({
-  config: { name, default: def }, ctx, setValue,
-}) {
+function BoolConfiguration({ config: { name, default: def }, ctx, setValue }) {
   const value: boolean = `${ctx[name]?.value}`.toLowerCase() === 'true'
 
   useEffect(() => {
@@ -119,15 +158,9 @@ function BoolConfiguration({
   )
 }
 
-export function ConfigurationItem({
-  config, ctx, setValue,
-}) {
-  const isInt = config.type === ConfigurationType.INT
-  const renderAsPassword = ['private_key', 'public_key']
-  const isPassword = config.type === ConfigurationType.PASSWORD || renderAsPassword.includes(config.name)
-
+export function ConfigurationItem({ config, ctx, setValue }) {
   switch (config.type) {
-  case ConfigurationType.BOOL:
+  case Datatype.Bool:
     return (
       <BoolConfiguration
         config={config}
@@ -141,7 +174,6 @@ export function ConfigurationItem({
         config={config}
         ctx={ctx}
         setValue={setValue}
-        type={isInt ? 'number' : isPassword ? 'password' : 'text'}
       />
     )
   }

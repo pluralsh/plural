@@ -45,7 +45,7 @@ const resize = (fitAddon: FitAddon, channel: any, terminal: XTerm) => {
 function Terminal({ provider }) {
   const terminalRef = useRef<HTMLElement>()
   const { theme } = useContext(TerminalThemeContext)
-  const { state, setState } = useContext(TerminalContext)
+  const { state, setState, setOnAction } = useContext(TerminalContext)
 
   const [channel, setChannel] = useState<any>()
   const [loaded, setLoaded] = useState(false)
@@ -55,6 +55,7 @@ function Terminal({ provider }) {
 
   const onConnectionError = useCallback(err => console.error(`Unknown error during booting into your shell: ${JSON.stringify(err)}`), [])
   const onResize = useCallback(() => resize(fitAddon, channel, terminal), [fitAddon, channel, terminal])
+  const onAction = useCallback(() => cmd => channel?.push(ChannelEvent.OnData, { cmd: `${cmd}\r` }), [channel])
 
   const { ref: terminalContainerRef } = useResizeDetector({ onResize, refreshMode: 'debounce', refreshRate: 250 })
 
@@ -112,6 +113,8 @@ function Terminal({ provider }) {
       setState(State.New)
     }
   }, [state, setState, terminal, channel])
+
+  useEffect(() => setOnAction(onAction), [onAction, setOnAction])
 
   return (
     <Flex

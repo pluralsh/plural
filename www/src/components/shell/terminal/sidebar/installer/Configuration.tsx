@@ -7,7 +7,6 @@ import {
   useMemo,
 } from 'react'
 import { Flex, Span, Switch } from 'honorable'
-
 import { useActive, useNavigation } from '@pluralsh/design-system'
 
 import {
@@ -15,7 +14,7 @@ import {
   Maybe,
   Recipe,
   RecipeConfiguration,
-} from '../../../../generated/graphql'
+} from '../../../../../generated/graphql'
 
 import { ConfigurationItem } from './ConfigurationItem'
 import { OperationType } from './types'

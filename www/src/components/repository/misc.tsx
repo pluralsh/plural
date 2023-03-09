@@ -6,9 +6,8 @@ import { useState } from 'react'
 import { useRepositoryContext } from '../../contexts/RepositoryContext'
 
 import InstallDropdownButton from '../utils/InstallDropdownButton'
+import { RecipeSubset } from '../utils/recipeHelpers'
 import { InferredConsoleButton } from '../clusters/ConsoleButton'
-
-import { RecipeFragment, useListRecipesQuery } from '../../generated/graphql'
 
 import { InstallationConfiguration } from './InstallationConfiguration'
 
@@ -48,14 +47,10 @@ function InstalledRepositoryActions({ installation, ...props }: any) {
 
 export function RepositoryActions() {
   const repository = useRepositoryContext()
-  const { data, loading } = useListRecipesQuery({
-    variables: { repositoryName: repository.name },
-  })
 
-  const recipes
-    = data?.recipes?.edges
-      ?.map(edge => edge?.node)
-      .filter((recipe: RecipeFragment | undefined | null): recipe is RecipeFragment => !!recipe) ?? undefined
+  const recipes = repository?.recipes?.filter(recipe => !!recipe) as
+    | RecipeSubset[]
+    | undefined
 
   if (repository.installation) {
     return <InstalledRepositoryActions installation={repository.installation} />
@@ -63,7 +58,7 @@ export function RepositoryActions() {
 
   return (
     <InstallDropdownButton
-      loading={loading}
+      loading={false}
       type="bundle"
       name={repository.name}
       recipes={recipes}

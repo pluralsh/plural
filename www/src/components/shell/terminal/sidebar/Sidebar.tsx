@@ -105,7 +105,7 @@ function SidebarUnstyled({ refetch, ...props }) {
   const hasPreselectedApp = useMemo(() => !!searchParams.get('install'), [searchParams])
 
   useEffect(() => (hasInstalledApps ? setView(SidebarView.Installed) : undefined), [hasInstalledApps])
-  useEffect(() => (hasPreselectedApp ? setView(SidebarView.Installer) : undefined), [hasInstalledApps])
+  useEffect(() => (hasPreselectedApp ? setView(SidebarView.Installer) : undefined), [hasPreselectedApp])
   useEffect(() => (state === State.Installed ? setView(SidebarView.Installed) : undefined), [state])
 
   return (

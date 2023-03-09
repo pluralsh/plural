@@ -20,13 +20,13 @@ import {
 import { ApolloError } from '@apollo/client/errors'
 import { useSearchParams } from 'react-router-dom'
 
-import { State, TerminalContext } from '../context/terminal'
-import useOnboarded from '../../hooks/useOnboarded'
-import { PosthogEvent, posthogCapture } from '../../../../utils/posthog'
-import CurrentUserContext from '../../../../contexts/CurrentUserContext'
+import useOnboarded from '../../../hooks/useOnboarded'
+import { State, TerminalContext } from '../../context/terminal'
+import CurrentUserContext from '../../../../../contexts/CurrentUserContext'
+import { PosthogEvent, posthogCapture } from '../../../../../utils/posthog'
 
-import { APPLICATIONS_QUERY } from './queries'
 import { buildSteps, install, toDefaultSteps } from './helpers'
+import { APPLICATIONS_QUERY } from './queries'
 
 const FILTERED_APPS = ['bootstrap', 'ingress-nginx', 'postgres']
 const FORCED_APPS = {
@@ -109,10 +109,9 @@ function Installer({ onInstallSuccess }) {
       <Flex
         flexGrow={0}
         width={600}
+        height="100%"
         align="center"
         justify="center"
-        borderRight="1px solid border"
-        padding="medium"
       >
         <LoopingLogo />
       </Flex>
@@ -121,8 +120,8 @@ function Installer({ onInstallSuccess }) {
 
   return (
     <Div
-      padding="medium"
-      borderRight="1px solid border"
+      height="calc(100% - 56px)"
+      paddingTop="large"
     >
       <Div
         height="100%"

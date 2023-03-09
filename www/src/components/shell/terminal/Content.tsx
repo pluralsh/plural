@@ -6,6 +6,7 @@ import {
   Span,
 } from 'honorable'
 import {
+  Dispatch,
   useCallback,
   useEffect,
   useMemo,
@@ -27,10 +28,10 @@ import { RootMutationType } from '../../../generated/graphql'
 import TerminalThemeProvider from './actionbar/theme/Provider'
 import Terminal from './Terminal'
 import ContentCard from './ContentCard'
-import Installer from './installer/Installer'
-import { State, TerminalContext } from './context/terminal'
+import { ContextProps, State, TerminalContext } from './context/terminal'
 import { SHELL_CONFIGURATION_QUERY } from './queries'
 import { NextStepsModal } from './NextSteps'
+import { Sidebar } from './sidebar/Sidebar'
 
 function WelcomeModal() {
   const [open, setOpen] = useState(true)
@@ -114,14 +115,15 @@ function MissingPermissionsModal({ refetch, missing }): JSX.Element {
 function Content() {
   const { fresh: isOnboarding } = useOnboarded()
   const [state, setState] = useState(State.New)
+  const [onAction, setOnAction] = useState<Dispatch<string>>()
 
   const { data: { shell } = { shell: undefined } } = useQuery(CLOUD_SHELL_QUERY, { fetchPolicy: 'network-only' })
   const { data: { shellConfiguration } = { shellConfiguration: undefined }, stopPolling, refetch } = useQuery(SHELL_CONFIGURATION_QUERY, { skip: !shell, pollInterval: 5000 })
   const [setupShell, { data: { setupShell: setupShellData } = {} as RootMutationType }] = useMutation(SETUP_SHELL_MUTATION, { fetchPolicy: 'no-cache' })
 
-  const context = useMemo(() => ({
-    shell, configuration: shellConfiguration, state, setState,
-  }), [shell, shellConfiguration, state])
+  const context: ContextProps = useMemo(() => ({
+    shell, configuration: shellConfiguration, state, setState, onAction, setOnAction,
+  }), [onAction, shell, shellConfiguration, state])
 
   useEffect(() => {
     if (shellConfiguration) stopPolling()
@@ -167,7 +169,7 @@ function Content() {
       >
         <ContentCard>
           <TerminalContext.Provider value={context}>
-            <Installer onInstallSuccess={() => refetch()} />
+            <Sidebar refetch={refetch} />
             <TerminalThemeProvider>
               <Terminal provider={shell.provider} />
             </TerminalThemeProvider>

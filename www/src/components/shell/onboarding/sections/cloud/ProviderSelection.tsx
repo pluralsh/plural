@@ -35,6 +35,7 @@ function ProviderSelection() {
     >
       <Flex gap="xlarge">
         <CloudOption
+          data-phid="select-cloud-shell"
           selected={path === CloudType.Cloud || path === CloudType.Local}
           onClick={() => (!path || path === CloudType.Demo) && setPath(CloudType.Cloud)}
           icon={(
@@ -47,6 +48,7 @@ function ProviderSelection() {
           description="Connect your own cloud credentials and spin up your own cluster."
         />
         <CloudOption
+          data-phid="select-cloud-demo"
           selected={path === CloudType.Demo}
           onClick={() => setPath(CloudType.Demo)}
           disabled={me?.demoed}

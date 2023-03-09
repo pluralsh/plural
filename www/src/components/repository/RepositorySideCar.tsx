@@ -6,23 +6,24 @@ import {
   Sidecar,
 } from '@pluralsh/design-system'
 
+import { forwardRef } from 'react'
+
 import { useRepositoryContext } from '../../contexts/RepositoryContext'
 
 import { ProvidersSidecar, RecipeSubset } from '../utils/recipeHelpers'
 
 import { RepositoryActions } from './misc'
 
-export function SidecarButton({ ...props }) {
-  return (
-    <Button
-      small
-      tertiary
-      width="100%"
-      justifyContent="stretch"
-      {...props}
-    />
-  )
-}
+export const SidecarButton = forwardRef(({ ...props }, ref) => (
+  <Button
+    small
+    tertiary
+    width="100%"
+    justifyContent="stretch"
+    {...props}
+    ref={ref}
+  />
+))
 
 function ResourcesSidecar() {
   const repository = useRepositoryContext()

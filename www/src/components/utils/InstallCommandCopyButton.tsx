@@ -1,5 +1,5 @@
 import { Div, Flex } from 'honorable'
-import { CheckIcon, CopyIcon } from '@pluralsh/design-system'
+import { CheckIcon, CopyIcon, Tooltip } from '@pluralsh/design-system'
 import { useCallback, useEffect, useState } from 'react'
 
 import { SidecarButton } from '../repository/RepositorySideCar'
@@ -14,11 +14,13 @@ import {
 } from './recipeHelpers'
 
 export function InstallCommandCopyButton({
-  name, recipe, type,
+  name,
+  recipe,
+  type,
 }: {
-  name: string;
-  recipe: RecipeSubset;
-  type: RecipeType;
+  name: string
+  recipe: RecipeSubset
+  type: RecipeType
 }) {
   const provider = recipe?.provider
   const [copiedAt, setCopiedAt] = useState<false | number>(false)
@@ -48,31 +50,38 @@ export function InstallCommandCopyButton({
   }
 
   return (
-    <SidecarButton
-      onClick={onClick}
-      width="100%"
-      {...{
-        '& > *:nth-child(2)': {
-          flexGrow: 1,
-          justifyContent: 'start',
-        },
-      }}
-      startIcon={(
-        <Flex
-          width={16}
-          height={16}
-          alignItems="center"
-          justifyContent="center"
-        >
-          <img
-            src={providerToIcon[provider]}
-            width={providerToIconWidth[provider]}
-          />
-        </Flex>
-      )}
-      endIcon={copiedAt ? <CheckIcon /> : <CopyIcon />}
+    <Tooltip
+      label="Copy CLI install command"
+      placement="bottom"
     >
-      <Div textAlign="left">{providerToShortName[provider]}</Div>
-    </SidecarButton>
+      <span>
+        <SidecarButton
+          onClick={onClick}
+          width="100%"
+          {...{
+            '& > *:nth-child(2)': {
+              flexGrow: 1,
+              justifyContent: 'start',
+            },
+          }}
+          startIcon={(
+            <Flex
+              width={16}
+              height={16}
+              alignItems="center"
+              justifyContent="center"
+            >
+              <img
+                src={providerToIcon[provider]}
+                width={providerToIconWidth[provider]}
+              />
+            </Flex>
+          )}
+          endIcon={copiedAt ? <CheckIcon /> : <CopyIcon />}
+        >
+          <Div textAlign="left">{providerToShortName[provider]}</Div>
+        </SidecarButton>
+      </span>
+    </Tooltip>
   )
 }

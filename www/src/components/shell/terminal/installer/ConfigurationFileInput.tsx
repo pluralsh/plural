@@ -49,10 +49,6 @@ export default function ConfigurationFileInput({
   const readFile = useCallback(async (files: FileList | undefined | null) => {
     setFileSelected(false)
 
-    if (files?.length === 0) {
-      return
-    }
-
     const file = files?.item(0) ?? null
     const text = await file?.text() ?? ''
 

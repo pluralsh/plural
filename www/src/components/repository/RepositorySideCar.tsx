@@ -1,4 +1,4 @@
-import { Button, Flex } from 'honorable'
+import { Button, ButtonProps, Flex } from 'honorable'
 import {
   BrowserIcon,
   CertificateIcon,
@@ -14,7 +14,7 @@ import { ProvidersSidecar, RecipeSubset } from '../utils/recipeHelpers'
 
 import { RepositoryActions } from './misc'
 
-export const SidecarButton = forwardRef(({ ...props }, ref) => (
+export const SidecarButton = forwardRef(({ ...props }:ButtonProps, ref) => (
   <Button
     small
     tertiary

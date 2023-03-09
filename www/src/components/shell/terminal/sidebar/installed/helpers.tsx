@@ -8,9 +8,36 @@ import {
   TrashCanIcon,
   WrapWithIf,
 } from '@pluralsh/design-system'
-import { Dispatch } from 'react'
+import { Dispatch, useState } from 'react'
 
 import { Repository, RepositoryEdge, ShellConfiguration } from '../../../../../generated/graphql'
+
+import { LaunchAppModal, useLaunchAppModal } from './LaunchAppModal'
+
+const PROMOTED_APPS = ['console']
+
+const toAppProps = ({ node: repository }: RepositoryEdge, configuration: ShellConfiguration, onAction: Dispatch<string>): AppProps => {
+  const domain = lookupApplicationDomain(repository!.name, configuration)
+  const isAlive = !!repository!.installation?.pingedAt
+  const promoted = PROMOTED_APPS.includes(repository!.name)
+
+  return {
+    isAlive,
+    promoted,
+    name: repository!.name,
+    logoUrl: repository!.icon ?? repository!.darkIcon ?? undefined,
+    description: repository!.description ?? '',
+    primaryAction: domain ? (
+      <PrimaryActionButton
+        isAlive={isAlive}
+        promoted={promoted}
+        domain={domain}
+        name={repository!.name}
+      />
+    ) : undefined,
+    actions: toActions(repository!, onAction),
+  }
+}
 
 const lookupApplicationDomain = (name: string, configuration: ShellConfiguration): string | undefined => {
   const context = configuration?.contextConfiguration?.[name]
@@ -25,29 +52,6 @@ const lookupApplicationDomain = (name: string, configuration: ShellConfiguration
   return domain
 }
 
-const PROMOTED_APPS = ['console']
-
-const toAppProps = ({ node: repository }: RepositoryEdge, configuration: ShellConfiguration, onAction: Dispatch<string>): AppProps => {
-  const domain = lookupApplicationDomain(repository!.name, configuration)
-  const isAlive = !!repository!.installation?.pingedAt
-  const promoted = PROMOTED_APPS.includes(repository!.name)
-
-  return {
-    promoted,
-    name: repository!.name,
-    logoUrl: repository!.icon ?? repository!.darkIcon ?? undefined,
-    description: repository!.description ?? '',
-    primaryAction: domain ? (
-      <PrimaryActionButton
-        isAlive={isAlive}
-        promoted={promoted}
-        domain={domain}
-      />
-    ) : undefined,
-    actions: toActions(repository!, onAction),
-  }
-}
-
 const toActions = (repository: Repository, onAction: Dispatch<string>): Array<AppMenuAction> => {
   const rebuildCommand = `plural build --only ${repository.name} && plural deploy --from ${repository.name} --commit "rebuilding ${repository.name}"`
   const deleteCommand = `plural destroy ${repository.name}`
@@ -60,30 +64,45 @@ const toActions = (repository: Repository, onAction: Dispatch<string>): Array<Ap
   ]
 }
 
-function PrimaryActionButton({ domain, promoted, isAlive }): JSX.Element {
+function PrimaryActionButton({
+  name, domain, promoted, isAlive,
+}): JSX.Element {
+  const [visible, setVisible] = useState(false)
+  const { shown } = useLaunchAppModal()
+
   return (
-    <WrapWithIf
-      condition={!isAlive}
-      wrapper={<Tooltip label="Application not ready" />}
-    >
-      <div>
-        <Button
-          minHeight={32}
-          height={32}
-          secondary={!promoted}
-          disabled={!isAlive}
-          {...(isAlive && {
-            as: 'a',
-            href: `https://${domain}`,
-            target: '_blank',
-            rel: 'noopener noreferer',
-          })}
-        >
-          <div className="app-launch-btn">Launch</div>
-          <ArrowTopRightIcon />
-        </Button>
-      </div>
-    </WrapWithIf>
+    <>
+      {!shown && visible && (
+        <LaunchAppModal
+          setVisible={setVisible}
+          name={name}
+          domain={domain}
+        />
+      )}
+      <WrapWithIf
+        condition={!isAlive}
+        wrapper={<Tooltip label="Application not ready" />}
+      >
+        <div>
+          <Button
+            minHeight={32}
+            height={32}
+            secondary={!promoted}
+            disabled={!isAlive}
+            onClick={() => !shown && setVisible(true)}
+            {...(isAlive && shown && {
+              as: 'a',
+              href: `https://${domain}`,
+              target: '_blank',
+              rel: 'noopener noreferer',
+            })}
+          >
+            <div className="app-launch-btn">Launch</div>
+            <ArrowTopRightIcon />
+          </Button>
+        </div>
+      </WrapWithIf>
+    </>
   )
 }
 

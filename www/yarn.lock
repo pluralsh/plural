@@ -3953,9 +3953,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pluralsh/design-system@npm:1.321.0":
-  version: 1.321.0
-  resolution: "@pluralsh/design-system@npm:1.321.0"
+"@pluralsh/design-system@npm:1.322.0":
+  version: 1.322.0
+  resolution: "@pluralsh/design-system@npm:1.322.0"
   dependencies:
     "@floating-ui/react-dom-interactions": 0.13.3
     "@monaco-editor/react": 4.4.6
@@ -4009,7 +4009,7 @@ __metadata:
     react-dom: ">=16.0.0"
     react-transition-group: ">=4.4.2"
     styled-components: ">=5.3.5"
-  checksum: 0d388de10be73f93001a88183d87f309818966d9e4755b074bed7cacbfc72ccbc2b976c49475e516d67cbcc7b75ebc54facf8d18e345a0f1b220d6529a190c22
+  checksum: c941bff6ba05aaba8b6fde5559b1eb09b350ec2088acac462a58d034a5cf13d5adc71623c1e3b879a6702190c1bd77269bb17df995690297101d4cf893876291
   languageName: node
   linkType: hard
 
@@ -17478,7 +17478,7 @@ __metadata:
     "@nivo/geo": 0.80.0
     "@nivo/line": 0.80.0
     "@octokit/core": 4.2.0
-    "@pluralsh/design-system": 1.321.0
+    "@pluralsh/design-system": 1.322.0
     "@pluralsh/eslint-config-typescript": 2.5.40
     "@pluralsh/stylelint-config": 1.1.3
     "@stripe/react-stripe-js": 1.16.4

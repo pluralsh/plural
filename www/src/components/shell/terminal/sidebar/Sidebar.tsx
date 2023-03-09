@@ -15,6 +15,7 @@ import {
   useState,
 } from 'react'
 import { useQuery } from '@apollo/client'
+import { useSearchParams } from 'react-router-dom'
 
 import { State, TerminalContext } from '../context/terminal'
 
@@ -91,6 +92,7 @@ const Sidebar = styled(SidebarUnstyled)(({ theme }) => ({
 function SidebarUnstyled({ refetch, ...props }) {
   const { shell: { provider }, state } = useContext(TerminalContext)
   const [view, setView] = useState(SidebarView.Installer)
+  const [searchParams] = useSearchParams()
 
   const { data: { repositories: { edges: nodes } = { edges: [] } } = {} } = useQuery(APPLICATIONS_QUERY,
     {
@@ -100,8 +102,10 @@ function SidebarUnstyled({ refetch, ...props }) {
     })
 
   const hasInstalledApps = useMemo(() => nodes?.length > 0, [nodes?.length])
+  const hasPreselectedApp = useMemo(() => !!searchParams.get('install'), [searchParams])
 
   useEffect(() => (hasInstalledApps ? setView(SidebarView.Installed) : undefined), [hasInstalledApps])
+  useEffect(() => (hasPreselectedApp ? setView(SidebarView.Installer) : undefined), [hasInstalledApps])
   useEffect(() => (state === State.Installed ? setView(SidebarView.Installed) : undefined), [state])
 
   return (

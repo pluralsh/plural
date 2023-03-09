@@ -9,7 +9,7 @@ import {
 import moment from 'moment'
 import Fuse from 'fuse.js'
 
-import RepositoryContext from '../../contexts/RepositoryContext'
+import { useRepositoryContext } from '../../contexts/RepositoryContext'
 import usePaginatedQuery from '../../hooks/usePaginatedQuery'
 import PluralConfigurationContext from '../../contexts/PluralConfigurationContext'
 import { LoopingLogo } from '../utils/AnimatedLogo'
@@ -27,7 +27,7 @@ const searchOptions = {
 
 function DockerRepository({ dockerRepository, first, last }: any) {
   const { registry } = useContext(PluralConfigurationContext)
-  const { name } = useContext(RepositoryContext)
+  const { name } = useRepositoryContext()
 
   return (
     <Flex
@@ -65,7 +65,7 @@ function DockerRepository({ dockerRepository, first, last }: any) {
 }
 
 function RepositoryPackagesDocker() {
-  const { id } = useContext(RepositoryContext)
+  const { id } = useRepositoryContext()
   const [q] = useOutletContext() as any
   const [dockerRepositories, loadingCharts, hasMoreCharts, fetchMoreCharts] = usePaginatedQuery(DOCKER_QUERY,
     {

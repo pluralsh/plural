@@ -1,7 +1,6 @@
 import 'xterm/css/xterm.css'
 
 import {
-  useContext,
   useEffect,
   useMemo,
   useRef,
@@ -29,7 +28,7 @@ import {
 } from '@pluralsh/design-system'
 import { Terminal } from 'xterm'
 
-import RepositoryContext from '../../contexts/RepositoryContext'
+import { useRepositoryContext } from '../../contexts/RepositoryContext'
 import usePaginatedQuery from '../../hooks/usePaginatedQuery'
 import { LoopingLogo } from '../utils/AnimatedLogo'
 import InfiniteScroller from '../utils/InfiniteScroller'
@@ -277,7 +276,7 @@ function TestDetail({ test, setTest }: any) {
 }
 
 function RepositoryTests() {
-  const { id } = useContext(RepositoryContext)
+  const { id } = useRepositoryContext()
   const [test, setTest] = useState<any>(null)
   const [tests, loadingTests, hasMoreTests, fetchMoreTests] = usePaginatedQuery(TESTS_QUERY,
     {

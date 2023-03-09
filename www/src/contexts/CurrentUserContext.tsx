@@ -1,4 +1,4 @@
-import { ComponentProps, createContext } from 'react'
+import { ComponentProps, createContext, useContext } from 'react'
 
 import { MeQuery } from '../generated/graphql'
 
@@ -12,6 +12,8 @@ const defaultUser = {
 } as const satisfies CurrentUser
 
 const CurrentUserContext = createContext<CurrentUser>(defaultUser)
+
+export const useCurrentUser = () => useContext(CurrentUserContext)
 
 export function CurrentUserContextProvider({
   value,

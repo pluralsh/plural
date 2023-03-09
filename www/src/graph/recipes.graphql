@@ -83,8 +83,8 @@ query GetRecipe($repo: String, $name: String) {
   }
 }
 
-query ListRecipes($repo: String, $provider: Provider) {
-  recipes(repositoryName: $repo, provider: $provider, first: 500) {
+query ListRecipes($repositoryName: String, $provider: Provider) {
+  recipes(repositoryName: $repositoryName, provider: $provider, first: 500) {
     edges { node { ...Recipe } }
   }
 }

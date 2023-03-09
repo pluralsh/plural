@@ -12,12 +12,12 @@ import { useActive, useNavigation } from '@pluralsh/design-system'
 import {
   Datatype,
   Maybe,
+  Operation as OperationType,
   Recipe,
   RecipeConfiguration,
 } from '../../../../../generated/graphql'
 
 import { ConfigurationItem } from './ConfigurationItem'
-import { OperationType } from './types'
 
 const available = (config, context) => {
   if (!config.condition) return true
@@ -25,11 +25,11 @@ const available = (config, context) => {
   const { condition } = config
 
   switch (condition.operation) {
-  case OperationType.NOT:
+  case OperationType.Not:
     return !(context[condition.field]?.value)
-  case OperationType.PREFIX:
+  case OperationType.Prefix:
     return context[condition.field]?.value?.startsWith(condition.value) ?? false
-  case OperationType.EQUAL:
+  case OperationType.Eq:
     return context[condition.field]?.value
   }
 

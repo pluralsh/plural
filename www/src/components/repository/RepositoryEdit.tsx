@@ -1,5 +1,4 @@
 import React, {
-  useContext,
   useEffect,
   useMemo,
   useRef,
@@ -35,11 +34,9 @@ import filter from 'lodash/filter'
 import styled from '@emotion/styled'
 import capitalize from 'lodash/capitalize'
 
-import { Repository } from '../../generated/graphql'
-
 import { GqlError } from '../utils/Alert'
 
-import RepositoryContext from '../../contexts/RepositoryContext'
+import { useRepositoryContext } from '../../contexts/RepositoryContext'
 import { isValidUrl } from '../../utils/string'
 import { generatePreview } from '../../utils/file'
 import { AuthMethod as authMethods } from '../oidc/types'
@@ -99,7 +96,7 @@ function RepositoryEdit() {
     private: privateRepo,
     community: communityUrls,
     documentation,
-  } = useContext(RepositoryContext) as Repository
+  } = useRepositoryContext()
 
   const {
     state: formState,

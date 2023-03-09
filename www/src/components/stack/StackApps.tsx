@@ -12,9 +12,7 @@ import { StackContext } from './types'
 export default function StackApps() {
   const { stack }: StackContext = useOutletContext()
   const repositories
-    = stack.collections?.length > 0
-      ? stack.collections[0].bundles?.map(b => b.recipe.repository)
-      : []
+    = stack.collections?.[0]?.bundles?.map(b => b?.recipe.repository ?? null) ?? []
 
   return (
     <ScrollablePage

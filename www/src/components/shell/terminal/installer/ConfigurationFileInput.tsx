@@ -38,11 +38,12 @@ const fileInputTheme = ({
 })
 
 export default function ConfigurationFileInput({
+  value,
   onChange, ...props
-}: { onChange: (f:{file: File | null, text: string}) => void; } & Omit<
+}: { onChange: (f:{file: File | null, text: string}) => void; value: string } & Omit<
   ComponentProps<typeof FileInput>, 'onChange'
 >) {
-  const [fileSelected, setFileSelected] = useState<boolean>()
+  const [fileSelected, setFileSelected] = useState<boolean>(!!value)
   const theme = useTheme()
 
   const readFile = useCallback(async (files: FileList | undefined | null) => {
@@ -60,13 +61,15 @@ export default function ConfigurationFileInput({
   },
   [onChange])
 
+  const messages = value ? { dropPrompt: '********', browse: 'Choose a different file' } : {
+    dropPrompt: 'Drop your file here',
+    browse: 'Select file',
+  }
+
   return (
     <ThemeContext.Extend value={fileInputTheme({ selected: fileSelected, theme })}>
       <FileInput
-        messages={{
-          dropPrompt: 'Drop your file here',
-          browse: 'Select file',
-        }}
+        messages={messages}
         multiple={false}
         onChange={event => readFile(event?.target?.files)}
         renderFile={file => (

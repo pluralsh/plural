@@ -81,7 +81,9 @@ function ConfigurationField({
   const modifier = useMemo(() => modifierFactory(config.type, configuration),
     [config.type, configuration])
 
-  const [local, setLocal] = useState(modifier(value, true) || defaultValue)
+  const isFile = type === Datatype.File
+
+  const [local, setLocal] = useState(modifier(value, true) || (isFile ? null : defaultValue))
 
   useEffect(() => (local
     ? setValue(
@@ -96,7 +98,6 @@ function ConfigurationField({
   const isPassword
       = type === Datatype.Password
       || ['private_key', 'public_key'].includes(config.name)
-  const isFile = type === Datatype.File
 
   const inputFieldType = isInt
     ? 'number'
@@ -112,9 +113,11 @@ function ConfigurationField({
       required={!optional}
     >
       {isFile ? (
-        <ConfigurationFileInput onChange={val => {
-          setLocal(val?.text ?? '')
-        }}
+        <ConfigurationFileInput
+          value={local ?? ''}
+          onChange={val => {
+            setLocal(val?.text ?? '')
+          }}
         />
       ) : (
         <Input

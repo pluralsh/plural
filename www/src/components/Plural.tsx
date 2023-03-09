@@ -23,6 +23,8 @@ import PluralConfigurationContext from '../contexts/PluralConfigurationContext'
 import CurrentUserContext from '../contexts/CurrentUserContext'
 import PosthogIdentify from '../utils/posthog'
 
+import { LegacyExpirationNotice } from './login/LegacyExpiration'
+
 const ApplicationLayout = lazy(() => import('./layout/ApplicationLayout'))
 const BreadcrumbProvider = lazy(() => import('./Breadcrumbs'))
 const CloudShell = lazy(() => import('./shell/Shell'))
@@ -195,6 +197,7 @@ export function PluralInner() {
       <BreadcrumbProvider>
         <ChecklistProvider>
           <ApplicationLayout>
+            <LegacyExpirationNotice />
             <PosthogIdentifier />
             <VerifyEmailConfirmed />
             <DeviceLoginNotif />

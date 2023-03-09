@@ -1,5 +1,6 @@
 import { Sidecar } from '@pluralsh/design-system'
-import { ReactNode } from 'react'
+import { A } from 'honorable'
+import { ReactNode, useState } from 'react'
 
 import { Provider, Recipe } from '../../generated/graphql'
 
@@ -71,6 +72,8 @@ export function getInstallCommand({
   return `plural ${type} install ${name}${recipe.name ? ` ${recipe.name}` : ''}`
 }
 
+const MAX_RECIPES = 5
+
 export function ProvidersSidecar({
   type,
   name,
@@ -80,8 +83,15 @@ export function ProvidersSidecar({
   name: string
   recipes?: RecipeSubset[]
 }) {
+  const [expanded, setExpanded] = useState(false)
+
   if (!recipes) {
     return null
+  }
+  const showViewMore = recipes.length > MAX_RECIPES && !expanded
+
+  if (showViewMore) {
+    recipes = recipes.slice(0, MAX_RECIPES - 1)
   }
 
   return (
@@ -105,6 +115,14 @@ export function ProvidersSidecar({
           />
         )
       })}
+      {showViewMore && (
+        <A
+          inline
+          onClick={() => setExpanded(true)}
+        >
+          View more
+        </A>
+      )}
     </Sidecar>
   )
 }

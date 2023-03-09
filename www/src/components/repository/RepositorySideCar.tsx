@@ -8,9 +8,7 @@ import {
 
 import { useRepositoryContext } from '../../contexts/RepositoryContext'
 
-import { ProvidersSidecar, RecipeSubset, RecipeType } from '../utils/recipeHelpers'
-
-import { InstallCommandCopyButton } from '../utils/InstallCommandCopyButton'
+import { ProvidersSidecar, RecipeSubset } from '../utils/recipeHelpers'
 
 import { RepositoryActions } from './misc'
 

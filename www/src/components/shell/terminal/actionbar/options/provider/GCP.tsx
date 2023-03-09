@@ -3,27 +3,14 @@ import { FileInput } from 'grommet'
 import { ThemeContext } from 'grommet/contexts'
 import { Div, Span } from 'honorable'
 import { CloseIcon, FormField } from '@pluralsh/design-system'
+import { useTheme } from 'styled-components'
+
+import { fileInputTheme } from '../../../installer/ConfigurationFileInput'
 
 enum FileError {
   InvalidFormat = 'Invalid file format. Expected JSON.',
   InvalidContent = 'Invalid file content. Could not find \'project_id\'.',
 }
-
-const fileInputTheme = (selected, error) => ({
-  fileInput: {
-    hover: {
-      border: {
-        color: error ? 'error' : selected ? 'success' : 'selected',
-      },
-    },
-    border: {
-      color: error ? 'error' : selected ? 'success' : 'fill-three',
-    },
-    icons: {
-      remove: CloseIcon,
-    },
-  },
-})
 
 function GCP({ setProps, setValid }) {
   const [fileSelected, setFileSelected] = useState<boolean>()
@@ -64,9 +51,17 @@ function GCP({ setProps, setValid }) {
     setProps({ gcp: { applicationCredentials: '' } })
   }, [setProps])
 
+  const theme = useTheme()
+
   return (
     <FormField label="Service account credentials">
-      <ThemeContext.Extend value={fileInputTheme(fileSelected, !!fileError)}>
+      <ThemeContext.Extend
+        value={fileInputTheme({
+          selected: fileSelected,
+          error: !!fileError,
+          theme,
+        })}
+      >
         <FileInput
           messages={{
             dropPrompt: 'Drop your service account credentials file here',

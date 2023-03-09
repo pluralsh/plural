@@ -3,7 +3,9 @@ import {
   AppProps,
   ArrowTopRightIcon,
   Button,
+  ReloadIcon,
   Tooltip,
+  TrashCanIcon,
   WrapWithIf,
 } from '@pluralsh/design-system'
 import { Dispatch } from 'react'
@@ -51,8 +53,10 @@ const toActions = (repository: Repository, onAction: Dispatch<string>): Array<Ap
   const deleteCommand = `plural destroy ${repository.name}`
 
   return [
-    { label: 'Rebuild', onSelect: () => onAction(rebuildCommand) },
-    { label: 'Delete', onSelect: () => onAction(deleteCommand), destructive: true },
+    { label: 'Rebuild', onSelect: () => onAction(rebuildCommand), leftContent: <ReloadIcon /> },
+    {
+      label: 'Delete', onSelect: () => onAction(deleteCommand), destructive: true, leftContent: <TrashCanIcon color="text-danger" />,
+    },
   ]
 }
 

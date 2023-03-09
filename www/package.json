@@ -41,7 +41,7 @@
     "@nivo/geo": "0.80.0",
     "@nivo/line": "0.80.0",
     "@octokit/core": "4.2.0",
-    "@pluralsh/design-system": "1.320.0",
+    "@pluralsh/design-system": "1.321.0",
     "@stripe/react-stripe-js": "1.16.4",
     "@stripe/stripe-js": "1.46.0",
     "@testing-library/react": "13.4.0",
@@ -164,8 +164,5 @@
     "vite-plugin-pwa": "0.14.1",
     "vitest": "0.28.4",
     "wait-on": "6.0.1"
-  },
-  "resolutions": {
-    "@pluralsh/design-system": "portal:/home/floreks/Projekty/plural/design-system"
   }
 }

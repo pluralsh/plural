@@ -80,7 +80,8 @@ function MoreOptions() {
       onSelect: () => setSelected(DialogSelection.DeleteShell),
       props: {
         'data-phid': 'view-delete-shell',
-        leftContent: <Flex><TrashCanIcon color="icon-danger" /></Flex>,
+        leftContent: <Flex><TrashCanIcon color="text-danger" /></Flex>,
+        destructive: true,
       },
     },
   }

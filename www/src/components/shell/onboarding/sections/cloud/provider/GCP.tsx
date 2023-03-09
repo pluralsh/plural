@@ -17,7 +17,7 @@ import { OnboardingContext } from '../../../context/onboarding'
 import { IsObjectPartiallyEmpty } from '../../../../../../utils/object'
 import { CloudProvider, GCPCloudProvider } from '../../../context/types'
 import { useSetCloudProviderKeys, useSetWorkspaceKeys } from '../../../context/hooks'
-import { fileInputTheme } from '../../../../terminal/installer/ConfigurationFileInput'
+import { fileInputTheme } from '../../../../../utils/fileInputTheme'
 
 const REGIONS = [
   'asia-east1',

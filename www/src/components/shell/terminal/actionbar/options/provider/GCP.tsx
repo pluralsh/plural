@@ -5,7 +5,7 @@ import { Div, Span } from 'honorable'
 import { CloseIcon, FormField } from '@pluralsh/design-system'
 import { useTheme } from 'styled-components'
 
-import { fileInputTheme } from '../../../installer/ConfigurationFileInput'
+import { fileInputTheme } from '../../../../../utils/fileInputTheme'
 
 enum FileError {
   InvalidFormat = 'Invalid file format. Expected JSON.',

@@ -25,6 +25,10 @@ import { SideNavOffset } from '../utils/layout/SideNavOffset'
 import { LinkTabWrap } from '../utils/Tabs'
 import { LoopingLogo } from '../utils/AnimatedLogo'
 
+import { ProvidersSidecar } from '../utils/recipeHelpers'
+
+import { StackCollection } from '../../generated/graphql'
+
 import { STACK_QUERY } from './queries'
 import { StackContext } from './types'
 import { StackActions } from './misc'
@@ -111,15 +115,29 @@ function Sidenav({ stack }: StackContext) {
   )
 }
 
-function Sidecar({ stack }: StackContext) {
+function StackSidecar({ stack }: StackContext) {
+  const filteredCollections = stack?.collections?.filter((sC: StackCollection | null | undefined): sC is StackCollection => !!sC)
+  const recipes = filteredCollections?.map(({ provider }) => ({
+    description: `Installs ${stack.displayName || stack.name} on ${provider}`,
+    provider,
+  }))
+
   return (
-    <Div
+    <Flex
+      flexDirection="column"
+      gap="large"
       position="relative"
-      width={200}
-      paddingTop="medium"
     >
-      <StackActions stack={stack} />
-    </Div>
+      <StackActions
+        stack={stack}
+        recipes={recipes}
+      />
+      <ProvidersSidecar
+        recipes={recipes}
+        type="stack"
+        name={stack.name}
+      />
+    </Flex>
   )
 }
 
@@ -159,7 +177,7 @@ export default function Stack() {
         <Outlet context={outletContext} />
       </TabPanel>
       <ResponsiveLayoutSidecarContainer>
-        <Sidecar stack={stack} />
+        <StackSidecar stack={stack} />
       </ResponsiveLayoutSidecarContainer>
       <ResponsiveLayoutSpacer />
     </ResponsiveLayoutPage>

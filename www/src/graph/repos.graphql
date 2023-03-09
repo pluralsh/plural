@@ -20,9 +20,18 @@ fragment Repo on Repository {
   trending
   verified
   category
-  oauthSettings { uriFormat authMethod }
-  publisher { ...Publisher }
-  recipes { name }
+  oauthSettings {
+    uriFormat
+    authMethod
+  }
+  publisher {
+    ...Publisher
+  }
+  recipes {
+    name
+    provider
+    description
+  }
 }
 
 fragment Repository on Repository {

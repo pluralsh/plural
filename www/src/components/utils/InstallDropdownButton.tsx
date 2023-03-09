@@ -1,6 +1,5 @@
 import {
   Key,
-  ReactNode,
   useEffect,
   useRef,
   useState,
@@ -23,42 +22,17 @@ import {
 } from '@pluralsh/design-system'
 import { Link } from 'react-router-dom'
 
-import { Provider, Recipe, useGetShellQuery } from '../../generated/graphql'
+import { Provider, useGetShellQuery } from '../../generated/graphql'
 import { useCurrentUser } from '../../contexts/CurrentUserContext'
 
-type RecipeSubset = Pick<Recipe, 'provider' | 'description'> &
-  Partial<Pick<Recipe, 'name'>>
-
-type InstallDropDownButtonProps = {
-  loading: boolean
-  recipes?: RecipeSubset[]
-  name: string
-  type: 'bundle' | 'stack'
-  apps?: string[]
-  [x: string]: any
-}
-
-const providerToDisplayName: Record<Provider, ReactNode> = {
-  AWS: 'Amazon Web Services',
-  AZURE: 'Microsoft Azure',
-  EQUINIX: 'Equinix Metal',
-  GCP: 'Google Cloud Platform',
-  KIND: 'Kind',
-  CUSTOM: 'Custom',
-  KUBERNETES: 'Kubernetes',
-  GENERIC: 'Generic',
-}
-
-const providerToTabName: Record<Provider, ReactNode> = {
-  AWS: 'AWS',
-  AZURE: 'Azure',
-  EQUINIX: 'Equinix',
-  GCP: 'GCP',
-  KIND: 'Kind',
-  CUSTOM: 'Custom',
-  KUBERNETES: 'Kubernetes',
-  GENERIC: 'Generic',
-}
+import {
+  InstallDropDownButtonProps,
+  RecipeSubset,
+  RecipeType,
+  getInstallCommand,
+  providerToLongName,
+  providerToShortName,
+} from './recipeHelpers'
 
 function extendedTheme({ minMenuWidth = 400 }: any) {
   return {
@@ -103,7 +77,7 @@ function CliCommand({
   name,
 }: {
   recipe: RecipeSubset
-  type: string
+  type: RecipeType
   name: string
 }) {
   if (!recipe.provider || !type || !name) {
@@ -128,9 +102,7 @@ function CliCommand({
           1. Copy the command below:
         </P>
         <Codeline language="bash">
-          {`plural ${type} install ${name}${
-            recipe.name ? ` ${recipe.name}` : ''
-          }`}
+          {getInstallCommand({ type, name, recipe })}
         </Codeline>
       </Flex>
       <Div>
@@ -152,7 +124,7 @@ function RecipeTabs({
   recipes,
 }: {
   recipes: RecipeSubset[]
-  type: string
+  type: RecipeType
   name: string
 }) {
   const [tabKey, setTabKey] = useState<Key>(0)
@@ -177,7 +149,7 @@ function RecipeTabs({
         flexGrow={1}
         {...{ '&>div': { justifyContent: 'center' } }}
       >
-        {providerToTabName[recipe.provider as Provider]}
+        {providerToShortName[recipe.provider as Provider]}
       </Tab>
     ))
     .filter(tab => !!tab)
@@ -280,7 +252,7 @@ function InstallDropdownButton({
               label={`This ${
                 type === 'bundle' ? 'app' : 'stack'
               } is not available for your provider, ${
-                providerToDisplayName[provider]
+                providerToLongName[provider]
               }`}
             >
               <span>

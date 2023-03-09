@@ -1,14 +1,14 @@
 import { StackCollection } from '../../generated/graphql'
 import InstallDropdownButton from '../utils/InstallDropdownButton'
+import { RecipeSubset } from '../utils/recipeHelpers'
 
 import { StackContext } from './types'
 
-export function StackActions({ stack }: StackContext) {
+export function StackActions({
+  stack,
+  recipes,
+}: StackContext & { recipes?: RecipeSubset[] }) {
   const filteredCollections = stack?.collections?.filter((sC: StackCollection | null | undefined): sC is StackCollection => !!sC)
-  const recipes = filteredCollections?.map(({ provider }) => ({
-    description: `Installs ${stack.displayName || stack.name} on ${provider}`,
-    provider,
-  }))
 
   const apps = filteredCollections?.[0].bundles
     ?.map(bundle => bundle?.recipe?.repository?.name)

@@ -1,118 +1,93 @@
+import { Button, ButtonProps, Flex } from 'honorable'
 import {
-  Button,
-  Div,
-  Flex,
-  P,
-} from 'honorable'
-import { BrowserIcon, CertificateIcon, GitHubLogoIcon } from '@pluralsh/design-system'
+  BrowserIcon,
+  CertificateIcon,
+  GitHubLogoIcon,
+  Sidecar,
+} from '@pluralsh/design-system'
+
+import { forwardRef } from 'react'
 
 import { useRepositoryContext } from '../../contexts/RepositoryContext'
 
+import { ProvidersSidecar, RecipeSubset } from '../utils/recipeHelpers'
+
 import { RepositoryActions } from './misc'
 
-function RepositorySideCarButtons() {
+export const SidecarButton = forwardRef(({ ...props }:ButtonProps, ref) => (
+  <Button
+    small
+    tertiary
+    width="100%"
+    justifyContent="stretch"
+    {...props}
+    ref={ref}
+  />
+))
+
+function ResourcesSidecar() {
   const repository = useRepositoryContext()
 
   return (
-    <>
-      <Button
-        small
-        tertiary
-        as="a"
-        target="_blank"
-        href={repository.homepage}
-        width="100%"
-        justifyContent="flex-start"
-        startIcon={(
-          <BrowserIcon />
-        )}
-      >
-        Website
-      </Button>
+    <Sidecar
+      heading={<>{repository.name} resources</>}
+      display="flex"
+      flexDirection="column"
+      gap="xxsmall"
+    >
+      {repository?.homepage && (
+        <SidecarButton
+          as="a"
+          target="_blank"
+          href={repository?.homepage}
+          startIcon={<BrowserIcon />}
+        >
+          Website
+        </SidecarButton>
+      )}
       {repository.license?.url && (
-        <Button
-          small
-          tertiary
+        <SidecarButton
           as="a"
           target="_blank"
           href={repository.license.url}
-          width="100%"
-          justifyContent="flex-start"
-          startIcon={(
-            <CertificateIcon />
-          )}
+          startIcon={<CertificateIcon />}
         >
           License
-        </Button>
+        </SidecarButton>
       )}
-      <Button
-        small
-        tertiary
-        as="a"
-        target="_blank"
-        href={repository.gitUrl}
-        width="100%"
-        justifyContent="flex-start"
-        startIcon={(
-          <GitHubLogoIcon />
-        )}
-      >
-        GitHub
-      </Button>
-    </>
+      {repository.gitUrl && (
+        <SidecarButton
+          as="a"
+          target="_blank"
+          href={repository.gitUrl}
+          justifyContent="flex-start"
+          startIcon={<GitHubLogoIcon />}
+        >
+          GitHub
+        </SidecarButton>
+      )}
+    </Sidecar>
   )
 }
 
 export function RepositorySideCar(props: any) {
   const repository = useRepositoryContext()
+  const recipes = repository?.recipes?.filter(recipe => !!recipe) as RecipeSubset[]
 
-  return (
-    <Div
-      position="relative"
-      width={200}
-      paddingTop="medium"
-      {...props}
-    >
-      <RepositoryActions />
-      <Div
-        marginTop="large"
-        border="1px solid border"
-        borderRadius="large"
-        padding="medium"
-      >
-        <P
-          overline
-          color="text-xlight"
-          wordBreak="break-word"
-        >
-          {repository.name} resources
-        </P>
-        <Flex
-          marginTop="medium"
-          width="100%"
-          direction="column"
-          align="flex-start"
-        >
-          <RepositorySideCarButtons />
-        </Flex>
-      </Div>
-    </Div>
-  )
-}
-
-export function RepositorySideCarCollapsed(props: any) {
   return (
     <Flex
-      align="center"
+      flexDirection="column"
+      gap="large"
+      position="relative"
       {...props}
     >
       <RepositoryActions />
-      <Flex
-        align="center"
-        marginLeft="medium"
-      >
-        <RepositorySideCarButtons />
-      </Flex>
+      <ResourcesSidecar />
+      <ProvidersSidecar
+        type="bundle"
+        name={repository.name}
+        recipes={recipes}
+      />
     </Flex>
   )
 }

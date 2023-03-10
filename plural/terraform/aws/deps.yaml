@@ -2,12 +2,12 @@ dependencies:
 - name: aws-bootstrap
   repo: bootstrap
   type: terraform
-  version: '>= 0.1.46'
+  version: '>= 0.1.51'
 
 providers:
 - aws
 description: plural aws setup
-version: 0.1.10
+version: 0.1.11
 
 wirings:
   terraform: {}

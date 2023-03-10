@@ -151,9 +151,6 @@ function BillingUpgradeToProfessionalModal({
         flexDirection="column"
         gap="xlarge"
       >
-        <FormField label="stuff">
-          <Input placeholder="stuff" />
-        </FormField>
         {!card ? renderBillingForm() : null}
         {edit || !card ? renderEdit() : renderDisplay()}
       </Flex>

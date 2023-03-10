@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { FileInput } from 'grommet'
 import { ThemeContext } from 'grommet/contexts'
 import { Div, Span } from 'honorable'
-import { CloseIcon, FormField } from '@pluralsh/design-system'
+import { FormField } from '@pluralsh/design-system'
 import { useTheme } from 'styled-components'
 
 import { fileInputTheme } from '../../../../../utils/fileInputTheme'

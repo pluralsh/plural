@@ -7,19 +7,17 @@ import {
 } from 'react'
 import { Div, Span } from 'honorable'
 import IsEmpty from 'lodash/isEmpty'
-import {
-  CloseIcon,
-  FormField,
-  ListBoxItem,
-  Select,
-} from '@pluralsh/design-system'
+import { FormField, ListBoxItem, Select } from '@pluralsh/design-system'
 import { FileInput } from 'grommet'
 import { ThemeContext } from 'grommet/contexts'
+
+import { useTheme } from 'styled-components'
 
 import { OnboardingContext } from '../../../context/onboarding'
 import { IsObjectPartiallyEmpty } from '../../../../../../utils/object'
 import { CloudProvider, GCPCloudProvider } from '../../../context/types'
 import { useSetCloudProviderKeys, useSetWorkspaceKeys } from '../../../context/hooks'
+import { fileInputTheme } from '../../../../../utils/fileInputTheme'
 
 const REGIONS = [
   'asia-east1',
@@ -42,24 +40,6 @@ const REGIONS = [
 enum FileError {
   InvalidFormat = 'Invalid file format. Expected JSON.',
   InvalidContent = 'Invalid file content. Could not find \'project_id\'.',
-}
-
-function fileInputTheme(selected, error) {
-  return {
-    fileInput: {
-      hover: {
-        border: {
-          color: error ? 'error' : selected ? 'success' : 'selected',
-        },
-      },
-      border: {
-        color: error ? 'error' : selected ? 'success' : 'fill-three',
-      },
-      icons: {
-        remove: CloseIcon,
-      },
-    },
-  }
 }
 
 function GCP() {
@@ -102,6 +82,7 @@ function GCP() {
 
   useEffect(() => setValid(isValid), [isValid, setValid])
   useEffect(() => (IsEmpty(workspace?.region) ? setWorkspaceKeys({ region: 'us-east1' }) : undefined), [setWorkspaceKeys, workspace])
+  const theme = useTheme()
 
   return (
     <>
@@ -125,7 +106,13 @@ function GCP() {
         label="Service account credentials"
         required
       >
-        <ThemeContext.Extend value={fileInputTheme(fileSelected, !!fileError)}>
+        <ThemeContext.Extend
+          value={fileInputTheme({
+            selected: fileSelected,
+            error: !!fileError,
+            theme,
+          })}
+        >
           <FileInput
             value={cloud?.gcp?.fileName ? [{ name: cloud?.gcp?.fileName }] as any : undefined}
             messages={{

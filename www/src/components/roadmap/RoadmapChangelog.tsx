@@ -38,7 +38,7 @@ function RoadmapFeatureRequests() {
         month,
         issues,
       }))
-  }, [pluralIssues, pluralArtifactsIssues, pluralConsoleIssues])
+  }, [pluralIssues, pluralArtifactsIssues, pluralConsoleIssues, pluralCliIssues])
 
   return (
     <ScrollablePage heading="Changelog">

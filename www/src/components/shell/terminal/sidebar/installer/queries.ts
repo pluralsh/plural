@@ -2,12 +2,13 @@ import { gql } from '@apollo/client'
 
 // TODO: Use virtual scrolling
 export const APPLICATIONS_QUERY = gql`
-  query Repositories($provider: Provider!) {
-    repositories(first: 1000, installed: false, provider: $provider) {
+  query Repositories($provider: Provider!, $installed: Boolean = false) {
+    repositories(first: 1000, installed: $installed, provider: $provider) {
       edges {
         node {
           id
           name
+          description
           private
           icon
           darkIcon
@@ -15,6 +16,7 @@ export const APPLICATIONS_QUERY = gql`
             updatedAt
             id
             context
+            pingedAt
           }
         }
       }

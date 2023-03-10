@@ -8,8 +8,8 @@ import { Switch } from 'honorable'
 import StartCase from 'lodash/startCase'
 import { FormField, Input } from '@pluralsh/design-system'
 
-import { TerminalContext } from '../context/terminal'
-import { Datatype, ShellConfiguration } from '../../../../generated/graphql'
+import { TerminalContext } from '../../context/terminal'
+import { Datatype, ShellConfiguration } from '../../../../../generated/graphql'
 
 import ConfigurationFileInput from './ConfigurationFileInput'
 

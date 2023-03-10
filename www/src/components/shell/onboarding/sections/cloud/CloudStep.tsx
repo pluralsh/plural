@@ -157,13 +157,21 @@ function CloudStep({ onBack, onNext, data }) {
               justify="space-between"
             >
               <Button
-                data-ph-id="back-from-config-cloud"
+                data-phid={
+                  state === ConfigureCloudSectionState.CloudConfiguration
+                    ? 'back-from-config-cloud'
+                    : 'back-from-choose-shell'
+                }
                 secondary
                 onClick={() => (hasPrevious ? previous() : onBack())}
               >Back
               </Button>
               <Button
-                data-ph-id="cont-from-config-cloud"
+                data-phid={
+                  state === ConfigureCloudSectionState.CloudConfiguration
+                    ? 'cont-from-config-cloud'
+                    : 'cont-from-choose-shell'
+                }
                 onClick={() => (hasNext ? next() : onNext())}
                 disabled={!valid}
               >Continue

@@ -3,7 +3,7 @@ import { Span } from 'honorable'
 import { FileInput, ThemeContext } from 'grommet'
 import { useTheme } from 'styled-components'
 
-import { fileInputTheme } from '../../../utils/fileInputTheme'
+import { fileInputTheme } from '../../../../utils/fileInputTheme'
 
 export default function ConfigurationFileInput({
   value,

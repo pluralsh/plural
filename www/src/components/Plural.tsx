@@ -3,7 +3,6 @@ import {
   lazy,
   useContext,
   useEffect,
-  useMemo,
   useState,
 } from 'react'
 import {
@@ -13,15 +12,14 @@ import {
   Routes,
   useMatch,
 } from 'react-router-dom'
-import { loadStripe } from '@stripe/stripe-js'
-import { Elements } from '@stripe/react-stripe-js'
 import { Toast } from '@pluralsh/design-system'
 
 import { growthbook } from '../helpers/growthbook'
 import { useHistory } from '../router'
-import PluralConfigurationContext from '../contexts/PluralConfigurationContext'
 import CurrentUserContext from '../contexts/CurrentUserContext'
 import PosthogIdentify from '../utils/posthog'
+
+import { WrapStripe } from './WrapStripe'
 
 const ApplicationLayout = lazy(() => import('./layout/ApplicationLayout'))
 const BreadcrumbProvider = lazy(() => import('./Breadcrumbs'))
@@ -111,40 +109,6 @@ const OIDCProvider = lazy(() => import('./repository/OIDCProvider').then(module 
 //     />
 //   )
 // }
-
-function WrapStripe({ children }: any) {
-  const { stripePublishableKey } = useContext(PluralConfigurationContext)
-
-  const stripePromise = useMemo(() => loadStripe(stripePublishableKey), [stripePublishableKey])
-
-  const options = {
-    appearance: {
-      theme: 'night' as 'none' | 'flat' | 'night' | 'stripe' | undefined,
-      labels: 'floating' as 'floating' | 'above' | undefined,
-      variables: {
-        // colorPrimary: '#747B8B',
-        // colorBackground: '#747B8B',
-        fontSizeBase: '10px',
-        colorText: '#747B8B',
-        // colorDanger: '#df1b41',
-        // fontFamily: 'Ideal Sans, system-ui, sans-serif',
-        // spacingUnit: '2px',
-        // borderRadius: '4px',
-      },
-    },
-  }
-
-  if (!stripePublishableKey) return children
-
-  return (
-    <Elements
-      stripe={stripePromise}
-      options={options}
-    >
-      {children}
-    </Elements>
-  )
-}
 
 // Weird judo to get around inability to match oauth callback
 // routes as subroutes passed from App.js.

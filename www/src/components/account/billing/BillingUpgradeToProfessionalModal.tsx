@@ -3,7 +3,6 @@ import {
   useCallback,
   useContext,
   useEffect,
-  useMemo,
   useState,
 } from 'react'
 import { Link } from 'react-router-dom'
@@ -15,6 +14,7 @@ import {
   Input,
   Modal,
 } from '@pluralsh/design-system'
+import { AddressElement, useElements } from '@stripe/react-stripe-js'
 
 import PlatformPlansContext from '../../../contexts/PlatformPlansContext'
 import BillingBankCardContext from '../../../contexts/BillingBankCardContext'
@@ -32,139 +32,104 @@ type BillingUpgradeToProfessionalModalPropsType = {
   onClose: () => void
 }
 
-function BillingUpgradeToProfessionalModal({ open, onClose }: BillingUpgradeToProfessionalModalPropsType) {
-  const { proPlatformPlan, proYearlyPlatformPlan } = useContext(PlatformPlansContext)
+function BillingUpgradeToProfessionalModal({
+  open,
+  onClose,
+}: BillingUpgradeToProfessionalModalPropsType) {
+  const { proPlatformPlan, proYearlyPlatformPlan }
+    = useContext(PlatformPlansContext)
   const { card } = useContext(BillingBankCardContext)
   const { billingAddress } = useContext(SubscriptionContext)
 
   const [applyYearlyDiscount, setApplyYearlyDiscount] = useState(false)
-  const [name, setName] = useState(billingAddress?.name || '')
-  const [line1, setLine1] = useState(billingAddress?.line1 || '')
-  const [line2, setLine2] = useState(billingAddress?.line2 || '')
-  const [city, setCity] = useState(billingAddress?.city || '')
-  const [state, setState] = useState(billingAddress?.state || '')
-  const [zip, setZip] = useState(billingAddress?.zip || '')
-  const [country, setCountry] = useState(billingAddress?.country || '')
 
-  const updatedAddress = useMemo(() => ({
-    name, line1, line2, city, state, zip, country,
-  }), [name, line1, line2, city, state, zip, country])
-
-  const [upgradeMutation, { loading }] = useMutation(UPGRADE_TO_PROFESSIONAL_PLAN_MUTATION, {
-    variables: {
-      planId: applyYearlyDiscount ? proYearlyPlatformPlan.id : proPlatformPlan.id,
-    },
-    refetchQueries: [SUBSCRIPTION_QUERY],
-    onCompleted: () => setSuccess(true),
-    onError: () => setError(true),
+  const [updatedAddress, setUpdatedAddress] = useState({
+    name: billingAddress?.name || '',
+    line1: billingAddress?.line1 || '',
+    line2: billingAddress?.line2 || '',
+    city: billingAddress?.city || '',
+    state: billingAddress?.state || '',
+    zip: billingAddress?.zip || '',
+    country: billingAddress?.country || '',
   })
+  const stripeElements = useElements()
+
+  const [upgradeMutation, { loading }] = useMutation(UPGRADE_TO_PROFESSIONAL_PLAN_MUTATION,
+    {
+      variables: {
+        planId: applyYearlyDiscount
+          ? proYearlyPlatformPlan.id
+          : proPlatformPlan.id,
+      },
+      refetchQueries: [SUBSCRIPTION_QUERY],
+      onCompleted: () => setSuccess(true),
+      onError: () => setError(true),
+    })
 
   const [edit, setEdit] = useState(true)
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState(false)
 
-  const { error: cardError, renderEdit, renderDisplay } = useBankCard(setEdit, updatedAddress, true)
+  const {
+    error: cardError,
+    renderEdit,
+    renderDisplay,
+  } = useBankCard(setEdit, updatedAddress, true)
 
   const handleUpgrade = useCallback((event: FormEvent) => {
     event.preventDefault()
 
-    if (!card) return
+    const addressElt = stripeElements?.getElement('address')
 
-    upgradeMutation()
-  }, [card, upgradeMutation])
+    console.log('addressElt', addressElt)
+    ;(addressElt as any)?.getValue().then(v => {
+      console.log('value', v)
+      if (v.complete && card) {
+        upgradeMutation()
+      }
+    })
+  },
+  [card, stripeElements, upgradeMutation])
 
   const renderBillingForm = useCallback(() => (
-    <>
-      <FormField
-        required
-        label="Full name"
-        marginTop="xsmall"
-      >
-        <Input
-          value={name}
-          onChange={event => setName(event.target.value)}
-          placeholder="Enter full name or company name"
-        />
-      </FormField>
-      <FormField
-        required
-        label="Address line 1"
-        marginTop="xsmall"
-      >
-        <Input
-          value={line1}
-          onChange={event => setLine1(event.target.value)}
-          placeholder="Enter street address"
-        />
-      </FormField>
-      <FormField
-        label="Address line 2"
-        marginTop="xsmall"
-      >
-        <Input
-          value={line2}
-          onChange={event => setLine2(event.target.value)}
-          placeholder="Optional"
-        />
-      </FormField>
-      <FormField
-        required
-        label="City"
-        marginTop="xsmall"
-      >
-        <Input
-          value={city}
-          onChange={event => setCity(event.target.value)}
-          placeholder="Enter city name"
-        />
-      </FormField>
-      <FormField
-        required
-        label="State/Province/Region"
-        marginTop="xsmall"
-      >
-        <Input
-          value={state}
-          onChange={event => setState(event.target.value)}
-          placeholder="Enter state, province, or region"
-        />
-      </FormField>
-      <Flex
-        gap="medium"
-        marginTop="xxsmall"
-      >
-        <FormField
-          required
-          label="Zip/Postal code"
-          flexGrow={1}
-        >
-          <Input
-            value={zip}
-            onChange={event => setZip(event.target.value)}
-            placeholder="Enter zip, or postal code"
-          />
-        </FormField>
-        <FormField
-          required
-          label="Country"
-          flexGrow={1}
-        >
-          <Input
-            value={country}
-            onChange={event => setCountry(event.target.value)}
-            placeholder="Enter country"
-          />
-        </FormField>
-      </Flex>
-    </>
-  ), [
-    name,
-    line1,
-    line2,
-    city,
-    state,
-    zip,
-    country,
+    <AddressElement
+      options={{
+        mode: 'billing',
+        defaultValues: {
+          name: updatedAddress.name,
+          address: {
+            line1: updatedAddress.line1,
+            line2: updatedAddress.line2,
+            city: updatedAddress.city,
+            state: updatedAddress.state,
+            country: updatedAddress.country,
+            postal_code: updatedAddress.zip,
+          },
+        },
+      }}
+      onChange={event => {
+        const { name, address } = event?.value || {}
+
+        setUpdatedAddress({
+          name,
+          line1: address.line1,
+          line2: address.line2 ?? '',
+          city: address.city,
+          state: address.state,
+          country: address.country,
+          zip: address.postal_code,
+        })
+      }}
+    />
+  ),
+  [
+    updatedAddress.city,
+    updatedAddress.country,
+    updatedAddress.line1,
+    updatedAddress.line2,
+    updatedAddress.name,
+    updatedAddress.state,
+    updatedAddress.zip,
   ])
 
   const renderContent = useCallback(() => (
@@ -182,8 +147,16 @@ function BillingUpgradeToProfessionalModal({ open, onClose }: BillingUpgradeToPr
       >
         Billing information
       </Div>
-      {!card ? renderBillingForm() : null}
-      {edit || !card ? renderEdit() : renderDisplay()}
+      <Flex
+        flexDirection="column"
+        gap="xlarge"
+      >
+        <FormField label="stuff">
+          <Input placeholder="stuff" />
+        </FormField>
+        {!card ? renderBillingForm() : null}
+        {edit || !card ? renderEdit() : renderDisplay()}
+      </Flex>
       <form onSubmit={handleUpgrade}>
         <Flex
           justify="flex-end"
@@ -192,14 +165,15 @@ function BillingUpgradeToProfessionalModal({ open, onClose }: BillingUpgradeToPr
           <Button
             type="submit"
             loading={loading}
-            disabled={!card}
+            // disabled={!card}
           >
             Upgrade
           </Button>
         </Flex>
       </form>
     </>
-  ), [
+  ),
+  [
     edit,
     card,
     applyYearlyDiscount,
@@ -213,7 +187,8 @@ function BillingUpgradeToProfessionalModal({ open, onClose }: BillingUpgradeToPr
   const renderSuccess = useCallback(() => (
     <>
       <Div>
-        Welcome to the Plural Professional plan! You now have access to groups, roles, service accounts, and more.
+        Welcome to the Plural Professional plan! You now have access to
+        groups, roles, service accounts, and more.
       </Div>
       <Flex
         justify="flex-end"
@@ -227,7 +202,8 @@ function BillingUpgradeToProfessionalModal({ open, onClose }: BillingUpgradeToPr
         </Button>
       </Flex>
     </>
-  ), [])
+  ),
+  [])
 
   useEffect(() => {
     if (!card) return
@@ -242,7 +218,13 @@ function BillingUpgradeToProfessionalModal({ open, onClose }: BillingUpgradeToPr
       header="Upgrade to professional"
       minWidth={512 + 128}
     >
-      {(error || cardError) ? <BillingError /> : success ? renderSuccess() : renderContent()}
+      {error || cardError ? (
+        <BillingError />
+      ) : success ? (
+        renderSuccess()
+      ) : (
+        renderContent()
+      )}
     </Modal>
   )
 }

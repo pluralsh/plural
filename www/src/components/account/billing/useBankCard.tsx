@@ -9,12 +9,7 @@ import {
 import { useMutation } from '@apollo/client'
 import { Button, Card } from '@pluralsh/design-system'
 import { Div, Flex } from 'honorable'
-import {
-  AddressElement,
-  CardElement,
-  useElements,
-  useStripe,
-} from '@stripe/react-stripe-js'
+import { CardElement, useElements, useStripe } from '@stripe/react-stripe-js'
 import { capitalize } from 'lodash'
 
 import BillingBankCardContext from '../../../contexts/BillingBankCardContext'
@@ -104,7 +99,6 @@ function useBankCard(setEdit: Dispatch<SetStateAction<boolean>>, address, noCanc
           marginTop={-10}
           marginBottom={-10}
         >
-          <AddressElement options={{ mode: 'billing' }} />
           <CardElement options={{ hidePostalCode: true, style: { base: { color: '#747B8B' } } }} />
         </Flex>
         <Button

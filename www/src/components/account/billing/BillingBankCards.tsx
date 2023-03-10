@@ -21,7 +21,7 @@ function BillingBankCards() {
         padding="medium"
         color="text-xlight"
       >
-        An error occured, please reload the page or contact support
+        An error occured, please reload the page or contact support (error message: {cardError})
       </Card>
     )
   }

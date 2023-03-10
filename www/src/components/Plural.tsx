@@ -117,10 +117,20 @@ function WrapStripe({ children }: any) {
 
   const stripePromise = useMemo(() => loadStripe(stripePublishableKey), [stripePublishableKey])
 
+  const options = {
+    appearance: {
+      theme: 'night',
+      labels: 'floating',
+    },
+  }
+
   if (!stripePublishableKey) return children
 
   return (
-    <Elements stripe={stripePromise}>
+    <Elements
+      stripe={stripePromise}
+      options={options}
+    >
       {children}
     </Elements>
   )

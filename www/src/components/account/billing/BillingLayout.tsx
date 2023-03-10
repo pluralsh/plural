@@ -1,17 +1,12 @@
 import { Button, PageTitle } from '@pluralsh/design-system'
-import { A, Div, Flex } from 'honorable'
+import { Div, Flex } from 'honorable'
 import { Link, Outlet, useLocation } from 'react-router-dom'
-
-import { useContext } from 'react'
-
-import SubscriptionContext from '../../../contexts/SubscriptionContext'
 
 import BillingConsumptionProvider from './BillingConsumptionProvider'
 import BillingBankCardProvider from './BillingBankCardProvider'
 import BillingLegacyUserBanner from './BillingLegacyUserBanner'
 
 function BillingLayout() {
-  const { pricingFeaturesEnabled } = useContext(SubscriptionContext)
   const { pathname } = useLocation()
 
   return (
@@ -37,42 +32,17 @@ function BillingLayout() {
             </Button>
           </Flex>
         </PageTitle>
-        {pricingFeaturesEnabled && (
-          <>
-            <BillingLegacyUserBanner withBottomMargin={false} />
-            <Div
-              flexGrow
-              flexShrink={0}
-              overflowY="auto"
-              paddingRight={1}
-            >
-              <Outlet />
-            </Div>
-          </>
-        )}
-        {!pricingFeaturesEnabled && (
+        <>
+          <BillingLegacyUserBanner withBottomMargin={false} />
           <Div
-            body1
-            textAlign="center"
-            padding="large"
-            color="text-light"
+            flexGrow
+            flexShrink={0}
+            overflowY="auto"
+            paddingRight={1}
           >
-            This feature is not available to you yet.
-            <br />
-            Please
-            {' '}
-            <A
-              inline
-              href="https://plural.sh/contact-sales"
-              target="_blank"
-              rel="noreferrer noopener"
-            >
-              contact plural
-            </A>
-            {' '}
-            to learn more.
+            <Outlet />
           </Div>
-        )}
+        </>
       </BillingBankCardProvider>
     </BillingConsumptionProvider>
   )

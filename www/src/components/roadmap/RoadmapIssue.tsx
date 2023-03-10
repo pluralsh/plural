@@ -52,7 +52,7 @@ function RoadmapIssue({
               flexShrink={0}
               color="text-xlight"
             >
-              {moment(issue.createdAt).fromNow(true)}
+              {moment(issue.closedAt ? issue.closedAt : issue.createdAt).fromNow(true)}
             </P>
           </Flex>
           <P

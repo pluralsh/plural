@@ -9,4 +9,5 @@ export type IssueType = {
   votes: number
   isPullRequest: boolean
   createdAt: string
+  closedAt: string
 }

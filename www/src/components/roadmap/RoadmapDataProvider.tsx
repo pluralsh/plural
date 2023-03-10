@@ -12,14 +12,17 @@ function RoadmapDataProvider({ children }: RoadmapDataProviderPropsType) {
   const {
     pluralIssues,
     pluralArtifactsIssues,
+    pluralConsoleIssues,
   } = useRoadmapData()
 
   const roadmapContextValue = useMemo<RoadmapContextType>(() => ({
     pluralIssues,
     pluralArtifactsIssues,
+    pluralConsoleIssues,
   }), [
     pluralIssues,
     pluralArtifactsIssues,
+    pluralConsoleIssues,
   ])
 
   return (

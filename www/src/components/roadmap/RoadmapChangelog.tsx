@@ -12,10 +12,10 @@ import { LABEL_ROADMAP } from './constants'
 import RoadmapIssue from './RoadmapIssue'
 
 function RoadmapFeatureRequests() {
-  const { pluralIssues, pluralArtifactsIssues } = useContext(RoadmapContext)
+  const { pluralIssues, pluralArtifactsIssues, pluralConsoleIssues } = useContext(RoadmapContext)
 
   const packs = useMemo(() => {
-    const issues = [...pluralIssues, ...pluralArtifactsIssues].filter(issue => issue.labels.includes(LABEL_ROADMAP) && issue.state === 'closed')
+    const issues = [...pluralIssues, ...pluralArtifactsIssues, ...pluralConsoleIssues].filter(issue => issue.labels.includes(LABEL_ROADMAP) && issue.state === 'closed')
 
     return Object.entries(issues
       .map(issue => ({
@@ -36,7 +36,7 @@ function RoadmapFeatureRequests() {
         month,
         issues,
       }))
-  }, [pluralIssues, pluralArtifactsIssues])
+  }, [pluralIssues, pluralArtifactsIssues, pluralConsoleIssues])
 
   return (
     <ScrollablePage heading="Changelog">

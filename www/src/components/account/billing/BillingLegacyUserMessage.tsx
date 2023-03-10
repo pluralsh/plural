@@ -11,10 +11,10 @@ function BillingLegacyUserMessage() {
     isProPlan, isEnterprisePlan, isGrandfathered, account,
   } = useContext(SubscriptionContext)
 
-  const open = !(isProPlan || isEnterprisePlan) && isGrandfathered
+  const isLegacy = !(isProPlan || isEnterprisePlan) && account?.grandfatheredUntil
   const expired = !isGrandfathered
 
-  if (!open) return null
+  if (!isLegacy) return null
 
   return (
     <P

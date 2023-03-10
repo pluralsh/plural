@@ -11,12 +11,22 @@ export enum ONBOARDING_CHECKLIST_STATE {
   REAPPEAR = 'REAPPEAR',
 }
 
+export const LEGACY_EXPIRATION_NOTICE_STORAGE_KEY = 'legacy-expiration-notice'
+export enum EXPIRATION_NOTICE_STATE {
+  INITIAL = '',
+  DISMISSED_0 = 'DISMISSED_0',
+  DISMISSED_1 = 'DISMISSED_1',
+  DISMISSED_2 = 'DISMISSED_2',
+  DISMISSED_3 = 'DISMISSED_3',
+}
+
 // Clears the user related local storage keys during logout.
 function clearLocalStorage(): void {
   wipeToken()
   posthog.reset()
   localStorage.removeItem(AUTH_PREVIOUS_USER_DATA)
   localStorage.removeItem(BROWSER_HISTORY_STORAGE_KEY)
+  localStorage.removeItem(LEGACY_EXPIRATION_NOTICE_STORAGE_KEY)
 
   if (isOnboardingChecklistHidden()) {
     setOnboardingChecklistState(ONBOARDING_CHECKLIST_STATE.REAPPEAR)

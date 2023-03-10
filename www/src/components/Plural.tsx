@@ -119,8 +119,8 @@ function WrapStripe({ children }: any) {
 
   const options = {
     appearance: {
-      theme: 'night',
-      labels: 'floating',
+      theme: 'night' as 'none' | 'flat' | 'night' | 'stripe' | undefined,
+      labels: 'floating' as 'floating' | 'above' | undefined,
       variables: {
         // colorPrimary: '#747B8B',
         // colorBackground: '#747B8B',

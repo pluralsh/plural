@@ -121,6 +121,16 @@ function WrapStripe({ children }: any) {
     appearance: {
       theme: 'night',
       labels: 'floating',
+      variables: {
+        // colorPrimary: '#747B8B',
+        // colorBackground: '#747B8B',
+        fontSizeBase: '10px',
+        colorText: '#747B8B',
+        // colorDanger: '#df1b41',
+        // fontFamily: 'Ideal Sans, system-ui, sans-serif',
+        // spacingUnit: '2px',
+        // borderRadius: '4px',
+      },
     },
   }
 

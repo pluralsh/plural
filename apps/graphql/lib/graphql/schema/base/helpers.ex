@@ -31,7 +31,9 @@ defmodule GraphQl.Schema.Helpers do
         case fun.(args, ctx) do
           {:ok, res} -> {:ok, res}
           {:error, %Ecto.Changeset{} = cs} -> {:error, resolve_changeset(cs)}
-          {:error, %Stripe.Error{user_message: umessage, message: message}} -> {:error, "Stripe error: #{umessage || message}"}
+          {:error, %Stripe.Error{user_message: umessage, message: message}} ->
+            Logger.info "found stripe error: #{umessage || message}"
+            {:error, "Stripe error: #{umessage || message}"}
           {:error, {:missing_dep, _}} = error ->
             Core.Services.Dependencies.pretty_print(error)
           error -> error

@@ -5,26 +5,13 @@ import { Div } from 'honorable'
 import BillingBankCardContext from '../../../contexts/BillingBankCardContext'
 
 import useBankCard from './useBankCard'
+import BillingError from './BillingError'
 
 function BillingBankCards() {
   const { card } = useContext(BillingBankCardContext)
   const [edit, setEdit] = useState(false)
 
-  const { error: cardError, renderDisplay, renderEdit } = useBankCard(setEdit, null)
-
-  if (cardError) {
-    return (
-      <Card
-        display="flex"
-        alignItems="center"
-        justifyContent="center"
-        padding="medium"
-        color="text-xlight"
-      >
-        An error occured, please reload the page or contact support (error message: {cardError})
-      </Card>
-    )
-  }
+  const { error: cardError, renderDisplay, renderEdit } = useBankCard({ setEdit })
 
   if (edit) {
     return (
@@ -32,8 +19,20 @@ function BillingBankCards() {
         display="flex"
         flexDirection="column"
         padding="medium"
+        gap="medium"
       >
         {renderEdit()}
+        {cardError && (
+          <Card
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            padding="medium"
+            color="text-xlight"
+          >
+            <BillingError>{cardError}</BillingError>
+          </Card>
+        )}
       </Card>
     )
   }

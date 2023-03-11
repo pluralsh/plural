@@ -8,17 +8,9 @@ import {
 import { Link } from 'react-router-dom'
 import { useMutation } from '@apollo/client'
 import { Div, Flex } from 'honorable'
-import {
-  Button,
-  FormField,
-  Input,
-  Modal,
-} from '@pluralsh/design-system'
-import { AddressElement, useElements } from '@stripe/react-stripe-js'
+import { Button, Card, Modal } from '@pluralsh/design-system'
 
 import PlatformPlansContext from '../../../contexts/PlatformPlansContext'
-import BillingBankCardContext from '../../../contexts/BillingBankCardContext'
-import SubscriptionContext from '../../../contexts/SubscriptionContext'
 
 import { SUBSCRIPTION_QUERY, UPGRADE_TO_PROFESSIONAL_PLAN_MUTATION } from './queries'
 
@@ -38,21 +30,7 @@ function BillingUpgradeToProfessionalModal({
 }: BillingUpgradeToProfessionalModalPropsType) {
   const { proPlatformPlan, proYearlyPlatformPlan }
     = useContext(PlatformPlansContext)
-  const { card } = useContext(BillingBankCardContext)
-  const { billingAddress } = useContext(SubscriptionContext)
-
   const [applyYearlyDiscount, setApplyYearlyDiscount] = useState(false)
-
-  const [updatedAddress, setUpdatedAddress] = useState({
-    name: billingAddress?.name || '',
-    line1: billingAddress?.line1 || '',
-    line2: billingAddress?.line2 || '',
-    city: billingAddress?.city || '',
-    state: billingAddress?.state || '',
-    zip: billingAddress?.zip || '',
-    country: billingAddress?.country || '',
-  })
-  const stripeElements = useElements()
 
   const [upgradeMutation, { loading }] = useMutation(UPGRADE_TO_PROFESSIONAL_PLAN_MUTATION,
     {
@@ -74,63 +52,18 @@ function BillingUpgradeToProfessionalModal({
     error: cardError,
     renderEdit,
     renderDisplay,
-  } = useBankCard(setEdit, updatedAddress, true)
+    card,
+  } = useBankCard({ setEdit, noCancel: true })
 
-  const handleUpgrade = useCallback((event: FormEvent) => {
+  const onSubmit = useCallback((event: FormEvent) => {
     event.preventDefault()
+    if (!card) {
+      return
+    }
 
-    const addressElt = stripeElements?.getElement('address')
-
-    console.log('addressElt', addressElt)
-    ;(addressElt as any)?.getValue().then(v => {
-      console.log('value', v)
-      if (v.complete && card) {
-        upgradeMutation()
-      }
-    })
+    upgradeMutation()
   },
-  [card, stripeElements, upgradeMutation])
-
-  const renderBillingForm = useCallback(() => (
-    <AddressElement
-      options={{
-        mode: 'billing',
-        defaultValues: {
-          name: updatedAddress.name,
-          address: {
-            line1: updatedAddress.line1,
-            line2: updatedAddress.line2,
-            city: updatedAddress.city,
-            state: updatedAddress.state,
-            country: updatedAddress.country,
-            postal_code: updatedAddress.zip,
-          },
-        },
-      }}
-      onChange={event => {
-        const { name, address } = event?.value || {}
-
-        setUpdatedAddress({
-          name,
-          line1: address.line1,
-          line2: address.line2 ?? '',
-          city: address.city,
-          state: address.state,
-          country: address.country,
-          zip: address.postal_code,
-        })
-      }}
-    />
-  ),
-  [
-    updatedAddress.city,
-    updatedAddress.country,
-    updatedAddress.line1,
-    updatedAddress.line2,
-    updatedAddress.name,
-    updatedAddress.state,
-    updatedAddress.zip,
-  ])
+  [card, upgradeMutation])
 
   const renderContent = useCallback(() => (
     <>
@@ -151,10 +84,17 @@ function BillingUpgradeToProfessionalModal({
         flexDirection="column"
         gap="xlarge"
       >
-        {!card ? renderBillingForm() : null}
         {edit || !card ? renderEdit() : renderDisplay()}
       </Flex>
-      <form onSubmit={handleUpgrade}>
+      {(error || cardError) && (
+        <Card
+          marginTop="medium"
+          padding="medium"
+        >
+          <BillingError>{error || cardError}</BillingError>
+        </Card>
+      )}
+      <form onSubmit={onSubmit}>
         <Flex
           justify="flex-end"
           marginTop="xxlarge"
@@ -162,7 +102,7 @@ function BillingUpgradeToProfessionalModal({
           <Button
             type="submit"
             loading={loading}
-            // disabled={!card}
+            disabled={!card}
           >
             Upgrade
           </Button>
@@ -171,14 +111,15 @@ function BillingUpgradeToProfessionalModal({
     </>
   ),
   [
+    applyYearlyDiscount,
     edit,
     card,
-    applyYearlyDiscount,
-    loading,
-    renderDisplay,
     renderEdit,
-    renderBillingForm,
-    handleUpgrade,
+    renderDisplay,
+    error,
+    cardError,
+    onSubmit,
+    loading,
   ])
 
   const renderSuccess = useCallback(() => (
@@ -215,13 +156,7 @@ function BillingUpgradeToProfessionalModal({
       header="Upgrade to professional"
       minWidth={512 + 128}
     >
-      {error || cardError ? (
-        <BillingError />
-      ) : success ? (
-        renderSuccess()
-      ) : (
-        renderContent()
-      )}
+      {success ? renderSuccess() : <>{renderContent()}</>}
     </Modal>
   )
 }

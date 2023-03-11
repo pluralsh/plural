@@ -8,7 +8,6 @@ import {
 } from '../generated/graphql'
 
 export type SubscriptionContextType = {
-  pricingFeaturesEnabled: boolean
   billingCustomerId: string | null
   subscription: PlatformSubscription | null
   account: Account | null
@@ -22,7 +21,6 @@ export type SubscriptionContextType = {
 }
 
 const SubscriptionContext = createContext<SubscriptionContextType>({
-  pricingFeaturesEnabled: false,
   billingCustomerId: null,
   subscription: null,
   account: null,

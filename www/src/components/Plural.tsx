@@ -20,6 +20,7 @@ import CurrentUserContext from '../contexts/CurrentUserContext'
 import PosthogIdentify from '../utils/posthog'
 
 import { WrapStripe } from './WrapStripe'
+import { LegacyExpirationNotice } from './login/LegacyExpiration'
 
 const ApplicationLayout = lazy(() => import('./layout/ApplicationLayout'))
 const BreadcrumbProvider = lazy(() => import('./Breadcrumbs'))
@@ -179,6 +180,7 @@ export function PluralInner() {
       <BreadcrumbProvider>
         <ChecklistProvider>
           <ApplicationLayout>
+            <LegacyExpirationNotice />
             <PosthogIdentifier />
             <VerifyEmailConfirmed />
             <DeviceLoginNotif />

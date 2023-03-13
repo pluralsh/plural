@@ -654,6 +654,38 @@ defmodule Core.Services.PaymentsTest do
     end
   end
 
+  describe "#limited?/2" do
+    test "users under the limit are not limited" do
+      account = insert(:account)
+      user = insert(:user, account: account)
+
+      refute Payments.limited?(user, :user)
+    end
+
+    test "users over the limit w/o a subscription are limited" do
+      account = insert(:account, user_count: 5)
+      user = insert(:user, account: account)
+
+      assert Payments.limited?(user, :user)
+    end
+
+    test "users with a subscription over the limit are not limited" do
+      account = insert(:account, user_count: 5)
+      insert(:platform_subscription, account: account)
+      user = insert(:user, account: account)
+
+      refute Payments.limited?(user, :user)
+    end
+
+    test "delinquent users are always limited" do
+      account = insert(:account, delinquent_at: Timex.now())
+      insert(:platform_subscription, account: account)
+      user = insert(:user, account: account)
+
+      assert Payments.limited?(user, :user)
+    end
+  end
+
   describe "#setup_enterprise_plan/1" do
     test "will add an account to the current enterprise plan" do
       account = insert(:account)

@@ -30,9 +30,9 @@ asdf install
 asdf can be finnicky when instlalling erlang with mac, in which case you can reshim it like so from homebrew:
 
 ```sh
-brew install erlang@23
-cp -r /opt/homebrew/opt/erlang@23/lib/erlang ~/.asdf/installs/erlang/23.3
-asdf reshim erlang 23.3
+brew install erlang@24
+cp -r /opt/homebrew/opt/erlang@24/lib/erlang ~/.asdf/installs/erlang/24.3.4.10
+asdf reshim erlang 24.3.4.10
 ```
 
 <!-- >

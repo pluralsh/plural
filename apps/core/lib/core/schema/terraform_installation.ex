@@ -12,6 +12,10 @@ defmodule Core.Schema.TerraformInstallation do
     timestamps()
   end
 
+  def for_installation(query \\ __MODULE__, inst_id) do
+    from(ti in query, where: ti.installation_id == ^inst_id)
+  end
+
   def with_auto_upgrade(query \\ __MODULE__, tags) do
     tags = Enum.map(tags, & &1.tag)
     from(ti in query,

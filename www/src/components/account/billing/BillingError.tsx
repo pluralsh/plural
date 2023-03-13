@@ -1,4 +1,5 @@
 import { Flex } from 'honorable'
+import { ReactNode } from 'react'
 
 function BillingError({ children }: { children?: ReactNode }) {
   return (

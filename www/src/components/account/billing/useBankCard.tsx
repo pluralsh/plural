@@ -99,18 +99,29 @@ function useBankCard({
 
     const { address } = addressVal.value
 
-    const { error, token } = await stripe.createToken(cardElt, {
-      name: addressVal.name,
-      address_line1: address.line1,
-      address_line2: address.line2,
-      address_city: address.city,
-      address_state: address.state,
-      address_zip: address.zip,
-      address_country: address.country,
-    })
+    let error: Awaited<ReturnType<typeof stripe.createToken>>['error'] | undefined
+    let token: Awaited<ReturnType<typeof stripe.createToken>>['token'] | undefined
 
-    if (error) {
-      setError(error.message!)
+    try {
+      ({ error, token } = await stripe.createToken(cardElt, {
+        name: addressVal.name ?? '',
+        address_line1: address.line1 ?? '',
+        address_line2: address.line2 ?? '',
+        address_city: address.city ?? '',
+        address_state: address.state ?? '',
+        address_zip: address.postal_code ?? '',
+        address_country: address.country ?? '',
+      }))
+    }
+    catch (error) {
+      setError((error as Error)?.message)
+      setLoading(false)
+
+      return
+    }
+
+    if (error || !token) {
+      setError(error?.message || 'Unknown issue with card.')
       setLoading(false)
 
       return

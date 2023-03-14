@@ -26,7 +26,7 @@ type BillingUpgradeToProfessionalModalPropsType = {
 
 function BillingUpgradeToProfessionalModal({
   open,
-  onClose,
+  onClose: onCloseProp,
 }: BillingUpgradeToProfessionalModalPropsType) {
   const { proPlatformPlan, proYearlyPlatformPlan }
     = useContext(PlatformPlansContext)
@@ -53,6 +53,7 @@ function BillingUpgradeToProfessionalModal({
     renderEdit,
     renderDisplay,
     card,
+    resetForm,
   } = useBankCard({ setEdit, noCancel: true })
 
   const onSubmit = useCallback((event: FormEvent) => {
@@ -64,6 +65,10 @@ function BillingUpgradeToProfessionalModal({
     upgradeMutation()
   },
   [card, upgradeMutation])
+  const onClose = useCallback(() => {
+    resetForm()
+    onCloseProp()
+  }, [onCloseProp, resetForm])
 
   const renderContent = useCallback(() => (
     <>
@@ -98,7 +103,16 @@ function BillingUpgradeToProfessionalModal({
         <Flex
           justify="flex-end"
           marginTop="xxlarge"
+          gap="small"
         >
+          <Button
+            secondary
+            onClick={() => {
+              onClose()
+            }}
+          >
+            Cancel
+          </Button>
           <Button
             type="submit"
             loading={loading}
@@ -120,6 +134,7 @@ function BillingUpgradeToProfessionalModal({
     cardError,
     onSubmit,
     loading,
+    onClose,
   ])
 
   const renderSuccess = useCallback(() => (
@@ -148,6 +163,7 @@ function BillingUpgradeToProfessionalModal({
 
     setEdit(false)
   }, [card])
+  console.log('open', open)
 
   return (
     <Modal

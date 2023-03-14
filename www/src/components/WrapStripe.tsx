@@ -13,8 +13,6 @@ export function WrapStripe({ children }: any) {
   const stripePromise = useMemo(() => loadStripe(stripePublishableKey),
     [stripePublishableKey])
 
-  console.log('theme', theme)
-
   const options = {
     appearance: {
       theme: 'night' as 'none' | 'flat' | 'night' | 'stripe' | undefined,

@@ -63,3 +63,80 @@ fragment Card on Card {
   name
   brand
 }
+
+query Subscription {
+  account {
+    billingCustomerId
+    grandfatheredUntil
+    delinquentAt
+    userCount
+    clusterCount
+    availableFeatures {
+      userManagement
+      audit
+    }
+    subscription {
+      id
+      plan {
+        id
+        period
+        lineItems {
+          dimension
+          cost
+        }
+      }
+    }
+    billingAddress {
+      name
+      line1
+      line2
+      zip
+      state
+      city
+      country
+    }
+  }
+}
+
+mutation UpdateAccountBilling($attributes: AccountAttributes!) {
+  updateAccount(attributes: $attributes) {
+    id
+  }
+}
+
+mutation UpgradeToProfessionalPlan($planId: ID!) {
+  createPlatformSubscription(planId: $planId) {
+    id
+  }
+}
+
+mutation DowngradeToFreePlanMutation {
+  deletePlatformSubscription {
+    id
+  }
+}
+
+query Cards {
+  me {
+    id
+    cards(first: 100) {
+      edges {
+        node {
+          ...Card
+        }
+      }
+    }
+  }
+}
+
+mutation CreateCard($source: String!, $address: AddressAttributes) {
+  createCard(source: $source, address: $address) {
+    id
+  }
+}
+
+mutation DeleteCard($id: ID!) {
+  deleteCard(id: $id) {
+    id
+  }
+}

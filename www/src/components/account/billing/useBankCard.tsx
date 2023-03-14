@@ -4,9 +4,9 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useState,
 } from 'react'
-import { useMutation } from '@apollo/client'
 import { Button, Card, styledTheme } from '@pluralsh/design-system'
 import { Div, Flex } from 'honorable'
 import {
@@ -25,7 +25,7 @@ import { GqlError } from '../../utils/Alert'
 
 import SubscriptionContext from '../../../contexts/SubscriptionContext'
 
-import { CREATE_CARD_MUTATION, DELETE_CARD_MUTATION } from './queries'
+import { useCreateCardMutation, useDeleteCardMutation } from '../../../generated/graphql'
 
 function useBankCard({
   setEdit,
@@ -34,27 +34,39 @@ function useBankCard({
   setEdit: Dispatch<SetStateAction<boolean>>
   noCancel?: boolean
 }) {
+  const [addressComplete, setAddressComplete] = useState(false)
+  const [cardComplete, setCardComplete] = useState(false)
+
   const theme = useTheme() as typeof styledTheme
   const { card, refetch } = useContext(BillingBankCardContext)
-  const { billingAddress: initialAddress } = useContext(SubscriptionContext)
 
-  const [formAddress, setFormAddress] = useState({
-    name: initialAddress?.name || '',
-    line1: initialAddress?.line1 || '',
-    line2: initialAddress?.line2 || '',
-    city: initialAddress?.city || '',
-    state: initialAddress?.state || '',
-    zip: initialAddress?.zip || '',
-    country: initialAddress?.country || '',
-  })
+  const { billingAddress } = useContext(SubscriptionContext)
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const [createCard, { error: cardError }] = useMutation(CREATE_CARD_MUTATION)
-  const [deleteCard] = useMutation(DELETE_CARD_MUTATION)
+  const [createCard, { error: createCardError }] = useCreateCardMutation()
+
+  const [deleteCard] = useDeleteCardMutation()
 
   const stripe = useStripe()
   const elements = useElements()
+
+  const resetForm = useCallback(() => {
+    const cardElt = elements?.getElement(CardElement)
+
+    cardElt?.clear()
+    setLoading(false)
+    setCardComplete(false)
+  }, [elements])
+
+  const validateForm = useCallback(async () => {
+    if (!elements) {
+      return
+    }
+    const addressElt = elements.getElement(AddressElement)
+
+    await (addressElt as any)?.getValue()
+  }, [elements])
 
   const handleSubmit = useCallback(async event => {
     event.preventDefault()
@@ -64,6 +76,11 @@ function useBankCard({
     setLoading(true)
 
     const addressElt = elements.getElement(AddressElement)
+    const cardElt = elements.getElement(CardElement)
+
+    if (!(addressElt && cardElt)) {
+      return
+    }
 
     const addressVal = await (addressElt as any)?.getValue()
 
@@ -73,8 +90,24 @@ function useBankCard({
 
       return
     }
+    if (!cardComplete) {
+      setLoading(false)
+      setError('Your card information is incomplete.')
 
-    const { error, token } = await stripe.createToken(elements.getElement(CardElement)!)
+      return
+    }
+
+    const { address } = addressVal.value
+
+    const { error, token } = await stripe.createToken(cardElt, {
+      name: addressVal.name,
+      address_line1: address.line1,
+      address_line2: address.line2,
+      address_city: address.city,
+      address_state: address.state,
+      address_zip: address.zip,
+      address_country: address.country,
+    })
 
     if (error) {
       setError(error.message!)
@@ -87,7 +120,15 @@ function useBankCard({
       await createCard({
         variables: {
           source: token.id,
-          address: formAddress,
+          address: {
+            name: token.card?.name ?? '',
+            line1: token.card?.address_line1 ?? '',
+            line2: token.card?.address_line2 ?? '',
+            city: token.card?.address_city ?? '',
+            state: token.card?.address_state ?? '',
+            zip: token.card?.address_zip ?? '',
+            country: token.card?.address_country ?? '',
+          },
         },
       })
 
@@ -100,7 +141,7 @@ function useBankCard({
 
     setLoading(false)
   },
-  [stripe, elements, createCard, formAddress, refetch, setEdit])
+  [cardComplete, createCard, elements, refetch, setEdit, stripe])
 
   const handleDelete = useCallback(async () => {
     if (!card) return
@@ -117,108 +158,118 @@ function useBankCard({
     setLoading(false)
   }, [card, deleteCard, refetch])
 
-  const renderEdit = useCallback(() => (
-    <form onSubmit={handleSubmit}>
-      <Flex
-        flexDirection="column"
-        gap="xlarge"
-      >
-        <AddressElement
-          options={{
-            mode: 'billing',
-            defaultValues: {
-              name: formAddress.name,
-              address: {
-                line1: formAddress.line1,
-                line2: formAddress.line2,
-                city: formAddress.city,
-                state: formAddress.state,
-                country: formAddress.country,
-                postal_code: formAddress.zip,
-              },
-            },
-          }}
-          onChange={event => {
-            const { name, address } = event?.value || {}
+  const defaultAddress = useMemo(() => ({
+    name: billingAddress?.name ?? '',
+    address: {
+      line1: billingAddress?.line1 ?? '',
+      line2: billingAddress?.line2 ?? '',
+      city: billingAddress?.city ?? '',
+      state: billingAddress?.state ?? '',
+      country: billingAddress?.country ?? '',
+      postal_code: billingAddress?.zip ?? '',
+    },
+  }),
+  [billingAddress])
 
-            setFormAddress({
-              name,
-              line1: address.line1,
-              line2: address.line2 ?? '',
-              city: address.city,
-              state: address.state,
-              country: address.country,
-              zip: address.postal_code,
-            })
-          }}
-        />
-        <Card
-          padding="small"
-          display="flex"
-          alignItems="center"
-          gap="small"
+  const renderEdit = useCallback(() => {
+    const disableSubmit
+      = !stripe || !elements || !addressComplete || !cardComplete
+
+    return (
+      <form onSubmit={handleSubmit}>
+        <Flex
+          flexDirection="column"
+          gap="xlarge"
         >
-          <Flex
-            flexGrow={1}
-            direction="column"
-            justify="center"
-            marginTop={-10}
-            marginBottom={-10}
+          <AddressElement
+            options={{
+              mode: 'billing',
+              defaultValues: defaultAddress,
+            }}
+            onChange={event => {
+              setAddressComplete(event.complete)
+            }}
+          />
+          <Card
+            padding="small"
+            display="flex"
+            alignItems="center"
+            gap="small"
           >
-            <CardElement
-              options={{
-                hidePostalCode: true,
-                style: {
-                  base: {
-                    letterSpacing: `${theme.partials.text.body2Bold.letterSpacing}`,
-                    fontSize: `${theme.partials.text.body2.fontSize}px`,
-                    iconColor: theme.colors.text,
-                    color: theme.colors.text,
-                    '::placeholder': {
-                      color: theme.colors['text-xlight'],
+            <Flex
+              flexGrow={1}
+              direction="column"
+              justify="center"
+              marginTop={-10}
+              marginBottom={-10}
+            >
+              <CardElement
+                options={{
+                  hidePostalCode: true,
+                  style: {
+                    base: {
+                      letterSpacing: `${theme.partials.text.body2Bold.letterSpacing}`,
+                      fontSize: `${theme.partials.text.body2.fontSize}px`,
+                      iconColor: theme.colors.text,
+                      color: theme.colors.text,
+                      '::placeholder': {
+                        color: theme.colors['text-xlight'],
+                      },
+                    },
+                    invalid: {
+                      iconColor: theme.colors['text-danger'],
+                      color: theme.colors['text-danger'],
                     },
                   },
-                  invalid: {
-                    iconColor: theme.colors['text-danger'],
-                    color: theme.colors['text-danger'],
-                  },
-                },
+                }}
+                onChange={event => {
+                  setCardComplete(event.complete)
+                }}
+              />
+            </Flex>
+            <Div
+              onClick={() => {
+                validateForm()
               }}
-            />
-          </Flex>
-          <Button
-            type="submit"
-            disabled={!stripe || !elements}
-            loading={loading}
-          >
-            Add card
-          </Button>
-          {!noCancel && (
-            <Button
-              secondary
-              type="button"
-              onClick={() => setEdit(false)}
             >
-              Cancel
-            </Button>
-          )}
-        </Card>
-      </Flex>
-    </form>
-  ),
-  [
-    handleSubmit,
-    formAddress.name,
-    formAddress.line1,
-    formAddress.line2,
-    formAddress.city,
-    formAddress.state,
-    formAddress.country,
-    formAddress.zip,
+              <Button
+                type="submit"
+                disabled={disableSubmit}
+                loading={loading}
+              >
+                Add card
+              </Button>
+            </Div>
+            {!noCancel && (
+              <Button
+                secondary
+                type="button"
+                onClick={() => {
+                  resetForm()
+                  setEdit(false)
+                }}
+              >
+                Cancel
+              </Button>
+            )}
+          </Card>
+        </Flex>
+      </form>
+    )
+  }, [
     stripe,
     elements,
+    addressComplete,
+    cardComplete,
+    handleSubmit,
+    defaultAddress,
+    theme.partials.text.body2Bold.letterSpacing,
+    theme.partials.text.body2.fontSize,
+    theme.colors,
     loading,
     noCancel,
+    validateForm,
+    resetForm,
     setEdit,
   ])
 
@@ -236,21 +287,23 @@ function useBankCard({
         direction="column"
         gap="medium"
       >
-        <Flex
-          direction="column"
-          body2
-        >
-          {formAddress.name && <Div>{formAddress.name}</Div>}
-          {formAddress.line1 && <Div>{formAddress.line1}</Div>}
-          {formAddress.line2 && <Div>{formAddress.line2}</Div>}
-          {formAddress.city && <Div>{formAddress.city}</Div>}
-          {formAddress.state && <Div>{formAddress.state}</Div>}
-          {formAddress.zip && <Div>{formAddress.zip}</Div>}
-          {formAddress.country && <Div>{formAddress.country}</Div>}
-        </Flex>
-        {cardError && (
+        {billingAddress && (
+          <Flex
+            direction="column"
+            body2
+          >
+            {billingAddress?.name && <Div>{billingAddress.name}</Div>}
+            {billingAddress?.line1 && <Div>{billingAddress.line1}</Div>}
+            {billingAddress?.line2 && <Div>{billingAddress.line2}</Div>}
+            {billingAddress?.city && <Div>{billingAddress.city}</Div>}
+            {billingAddress?.state && <Div>{billingAddress.state}</Div>}
+            {billingAddress?.zip && <Div>{billingAddress.zip}</Div>}
+            {billingAddress?.country && <Div>{billingAddress.country}</Div>}
+          </Flex>
+        )}
+        {createCardError && (
           <GqlError
-            error={cardError}
+            error={createCardError}
             header="Failed to add card"
           />
         )}
@@ -291,25 +344,14 @@ function useBankCard({
         </Flex>
       </Flex>
     )
-  }, [
-    card,
-    formAddress.name,
-    formAddress.line1,
-    formAddress.line2,
-    formAddress.city,
-    formAddress.state,
-    formAddress.zip,
-    formAddress.country,
-    cardError,
-    handleDelete,
-    loading,
-  ])
+  }, [card, billingAddress, createCardError, handleDelete, loading])
 
   return {
     renderEdit,
     renderDisplay,
     error,
     card,
+    resetForm,
   }
 }
 

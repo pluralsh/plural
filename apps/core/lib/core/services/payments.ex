@@ -291,6 +291,7 @@ defmodule Core.Services.Payments do
 
   def create_card(%Account{billing_customer_id: cus_id} = account, source, _) do
     with {:ok, _} <- Stripe.Card.create(%{customer: cus_id, source: source}),
+         {:ok, _} <- pay_outstanding_invoices(cus_id, source),
       do: {:ok, account}
   end
 
@@ -314,6 +315,25 @@ defmodule Core.Services.Payments do
     else
       %User{} -> {:error, :invalid_argument}
       error -> error
+    end
+  end
+
+  @doc """
+  Finds and pays any undpaid invoices for this customer.  Useful to quickly pay on card changes and other events
+  """
+  @spec pay_outstanding_invoices(binary, binary) :: {:ok, term} | error
+  def pay_outstanding_invoices(customer_id, source) do
+    with {:ok, %Stripe.List{data: invoices}} <- Stripe.Invoice.list(%{customer: customer_id}) do
+      Enum.filter(invoices, fn
+        %Stripe.Invoice{status: s} when s in ~w(open uncollectible) -> true
+        _ -> false
+      end)
+      |> Enum.reduce(short_circuit(), fn invoice, circuit ->
+        short(circuit, invoice.id, fn ->
+          Stripe.Invoice.pay(invoice.id, %{source: source})
+        end)
+      end)
+      |> execute()
     end
   end
 

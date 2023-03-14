@@ -56,7 +56,7 @@ function BillingUpgradeToProfessionalModal({
     resetForm,
   } = useBankCard({ setEdit, noCancel: true })
 
-  const onSubmit = useCallback((event: FormEvent) => {
+  const onClickUpgrade = useCallback((event: FormEvent) => {
     event.preventDefault()
     if (!card) {
       return
@@ -99,29 +99,27 @@ function BillingUpgradeToProfessionalModal({
           <BillingError>{error || cardError}</BillingError>
         </Card>
       )}
-      <form onSubmit={onSubmit}>
-        <Flex
-          justify="flex-end"
-          marginTop="xxlarge"
-          gap="small"
+      <Flex
+        justify="flex-end"
+        marginTop="xxlarge"
+        gap="small"
+      >
+        <Button
+          secondary
+          onClick={() => {
+            onClose()
+          }}
         >
-          <Button
-            secondary
-            onClick={() => {
-              onClose()
-            }}
-          >
-            Cancel
-          </Button>
-          <Button
-            type="submit"
-            loading={loading}
-            disabled={!card}
-          >
-            Upgrade
-          </Button>
-        </Flex>
-      </form>
+          Cancel
+        </Button>
+        <Button
+          loading={loading}
+          disabled={!card}
+          onClick={onClickUpgrade}
+        >
+          Upgrade
+        </Button>
+      </Flex>
     </>
   ),
   [
@@ -132,7 +130,7 @@ function BillingUpgradeToProfessionalModal({
     renderDisplay,
     error,
     cardError,
-    onSubmit,
+    onClickUpgrade,
     loading,
     onClose,
   ])
@@ -163,7 +161,6 @@ function BillingUpgradeToProfessionalModal({
 
     setEdit(false)
   }, [card])
-  console.log('open', open)
 
   return (
     <Modal

@@ -56,6 +56,13 @@ defmodule Core.Services.PaymentsTest do
     test "If a customer has already been registered, it will just create a new card" do
       user = insert(:user, account: build(:account, billing_customer_id: "cus_id"))
       expect(Stripe.Card, :create, fn %{customer: "cus_id", source: "token"} -> {:ok, %{id: "something"}} end)
+      expect(Stripe.Invoice, :list, fn %{customer: "cus_id"} ->
+        {:ok, %Stripe.List{data: [
+          %Stripe.Invoice{id: "inv_id", status: "uncollectible"},
+          %Stripe.Invoice{id: "inv_id2", status: "paid"},
+        ]}}
+      end)
+      expect(Stripe.Invoice, :pay, fn "inv_id", %{source: "token"} -> {:ok, %{}} end)
 
       {:ok, _} = Payments.create_card(user, "token")
     end

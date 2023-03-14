@@ -12,7 +12,7 @@ function BillingError({ children }: { children?: ReactNode }) {
       {children ? (
         <>An error occured: {children}</>
       ) : (
-        <>An error occured, please relead the page or contact support.</>
+        <>An error occured, please reload the page or contact support.</>
       )}
     </Flex>
   )

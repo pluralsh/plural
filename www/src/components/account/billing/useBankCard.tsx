@@ -97,14 +97,14 @@ function useBankCard({
       return
     }
 
-    const { address } = addressVal.value
+    const { address, name } = addressVal.value
 
     let error: Awaited<ReturnType<typeof stripe.createToken>>['error'] | undefined
     let token: Awaited<ReturnType<typeof stripe.createToken>>['token'] | undefined
 
     try {
       ({ error, token } = await stripe.createToken(cardElt, {
-        name: addressVal.name ?? '',
+        name: name ?? '',
         address_line1: address.line1 ?? '',
         address_line2: address.line2 ?? '',
         address_city: address.city ?? '',

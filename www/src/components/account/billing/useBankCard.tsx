@@ -38,9 +38,10 @@ function useBankCard({
   const [cardComplete, setCardComplete] = useState(false)
 
   const theme = useTheme() as typeof styledTheme
-  const { card, refetch } = useContext(BillingBankCardContext)
+  const { card, refetch: refetchBankCard } = useContext(BillingBankCardContext)
 
-  const { billingAddress } = useContext(SubscriptionContext)
+  const { billingAddress, refetch: refetchSubscription }
+    = useContext(SubscriptionContext)
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -99,8 +100,12 @@ function useBankCard({
 
     const { address, name } = addressVal.value
 
-    let error: Awaited<ReturnType<typeof stripe.createToken>>['error'] | undefined
-    let token: Awaited<ReturnType<typeof stripe.createToken>>['token'] | undefined
+    let error:
+        | Awaited<ReturnType<typeof stripe.createToken>>['error']
+        | undefined
+    let token:
+        | Awaited<ReturnType<typeof stripe.createToken>>['token']
+        | undefined
 
     try {
       ({ error, token } = await stripe.createToken(cardElt, {
@@ -142,8 +147,8 @@ function useBankCard({
           },
         },
       })
-
-      refetch()
+      refetchBankCard()
+      refetchSubscription()
       setEdit(false)
     }
     catch (error) {
@@ -152,7 +157,15 @@ function useBankCard({
 
     setLoading(false)
   },
-  [cardComplete, createCard, elements, refetch, setEdit, stripe])
+  [
+    cardComplete,
+    createCard,
+    elements,
+    refetchBankCard,
+    refetchSubscription,
+    setEdit,
+    stripe,
+  ])
 
   const handleDelete = useCallback(async () => {
     if (!card) return
@@ -165,9 +178,10 @@ function useBankCard({
       },
     })
 
-    refetch()
+    refetchBankCard()
+    refetchSubscription()
     setLoading(false)
-  }, [card, deleteCard, refetch])
+  }, [card, deleteCard, refetchBankCard, refetchSubscription])
 
   const defaultAddress = useMemo(() => ({
     name: billingAddress?.name ?? '',
@@ -303,7 +317,7 @@ function useBankCard({
             direction="column"
             body2
           >
-            {billingAddress?.name && <Div>{billingAddress.name}</Div>}
+            {card?.name && <Div>{card.name}</Div>}
             {billingAddress?.line1 && <Div>{billingAddress.line1}</Div>}
             {billingAddress?.line2 && <Div>{billingAddress.line2}</Div>}
             {billingAddress?.city && <Div>{billingAddress.city}</Div>}

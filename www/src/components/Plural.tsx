@@ -3,7 +3,6 @@ import {
   lazy,
   useContext,
   useEffect,
-  useMemo,
   useState,
 } from 'react'
 import {
@@ -13,16 +12,14 @@ import {
   Routes,
   useMatch,
 } from 'react-router-dom'
-import { loadStripe } from '@stripe/stripe-js'
-import { Elements } from '@stripe/react-stripe-js'
 import { Toast } from '@pluralsh/design-system'
 
 import { growthbook } from '../helpers/growthbook'
 import { useHistory } from '../router'
-import PluralConfigurationContext from '../contexts/PluralConfigurationContext'
 import CurrentUserContext from '../contexts/CurrentUserContext'
 import PosthogIdentify from '../utils/posthog'
 
+import { WrapStripe } from './WrapStripe'
 import { LegacyExpirationNotice } from './login/LegacyExpiration'
 
 const ApplicationLayout = lazy(() => import('./layout/ApplicationLayout'))
@@ -113,20 +110,6 @@ const OIDCProvider = lazy(() => import('./repository/OIDCProvider').then(module 
 //     />
 //   )
 // }
-
-function WrapStripe({ children }: any) {
-  const { stripePublishableKey } = useContext(PluralConfigurationContext)
-
-  const stripePromise = useMemo(() => loadStripe(stripePublishableKey), [stripePublishableKey])
-
-  if (!stripePublishableKey) return children
-
-  return (
-    <Elements stripe={stripePromise}>
-      {children}
-    </Elements>
-  )
-}
 
 // Weird judo to get around inability to match oauth callback
 // routes as subroutes passed from App.js.

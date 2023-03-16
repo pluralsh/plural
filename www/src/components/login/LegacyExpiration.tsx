@@ -65,17 +65,15 @@ function ExpiredModal() {
         gap="medium"
         direction="column"
       >
+        <P body1>Your legacy user feature access has expired.</P>
         <P body1>
-          Your extended feature access to Plural Professional has ended and your
-          account has been transitioned to the Open-source plan. Accounts with
-          more than 5 users will not be able to add more users until the account
-          is upgraded. Current Roles, Groups, Service Accounts, and VPN clients
-          will continue to function but cannot be updated, and new ones cannot be
-          created.
+          Upgrade to Plural professional to add 5+ users and retain access to
+          Roles, Groups, Service accounts, and VPN clients. Current settings
+          will continue to function but can not to be updated.
         </P>
         <P body1>
-          Thank you for being one of our early adopters. If you have any questions
-          or feedback please reach out via{' '}
+          Thank you for being one of our early adopters. If you have any
+          questions or feedback please reach out via{' '}
           <A
             as={Link}
             inline
@@ -98,40 +96,44 @@ function ExpirationToast({
 }: {
   remainingDays: number
   endDate: string
-}) {
-  let message = (
-    <>
-      Extended feature access ending soon. Upgrade to Plural professional to
-      retain access to Roles, Groups, Services accounts, and VPN clients and add
-      more than 5 Plural users.
-    </>
-  )
+  }) {
+  // Defaults for remaining days > 20
+  let messageOpening = <>Extended feature access ending soon.</>
   let severity: ComponentProps<typeof Toast>['severity'] = 'info'
   let dismissState: EXPIRATION_NOTICE_STATE
     = EXPIRATION_NOTICE_STATE.DISMISSED_3
 
   if (remainingDays <= 10) {
-    message = (
-      <>
-        Extended feature access ending {endDate}. Upgrade to Plural professional to
-        retain access to Roles, Groups, Services accounts, and VPN clients and
-        add more than 5 Plural users.
-      </>
+    messageOpening = (
+      <>Last chance to upgrade! Extended feature access ending {endDate}.</>
     )
     severity = 'error'
     dismissState = EXPIRATION_NOTICE_STATE.DISMISSED_2
   }
   else if (remainingDays <= 20) {
-    message = (
-      <>
-        Last chance to upgrade! Extended feature access ending {endDate}. Upgrade
-        to Plural professional to retain access to Roles, Groups, Services
-        accounts, and VPN clients and add more than 5 Plural users.
-      </>
-    )
+    messageOpening = <>Extended feature access ending {endDate}.</>
     severity = 'info'
     dismissState = EXPIRATION_NOTICE_STATE.DISMISSED_1
   }
+  const messageClosing = (
+    <>
+      Upgrade to Plural professional to add 5+ users and retain access to Roles,
+      Groups, Service accounts, and VPN clients.
+    </>
+  )
+  const plansLink = (
+    <A
+      inline
+      as={Link}
+      to="/account/billing"
+      onClick={() => {
+        setCloseTimeout(0)
+        onClose()
+      }}
+    >
+      Review plans
+    </A>
+  )
 
   const [showToast] = useState(localStorage.getItem(LEGACY_EXPIRATION_NOTICE_STORAGE_KEY) !== dismissState)
   const [closeTimeout, setCloseTimeout] = useState(30000)
@@ -152,18 +154,7 @@ function ExpirationToast({
       open={showToast}
       onClose={onClose}
     >
-      {message}{' '}
-      <A
-        inline
-        as={Link}
-        to="/account/billing"
-        onClick={() => {
-          setCloseTimeout(0)
-          onClose()
-        }}
-      >
-        Review plans
-      </A>
+      {messageOpening} {messageClosing} {plansLink}
     </Toast>
   )
 }

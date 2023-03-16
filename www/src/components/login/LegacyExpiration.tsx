@@ -31,10 +31,11 @@ export function LegacyExpirationNotice() {
 }
 
 function ExpiredModal() {
-  const intialOpen
+  console.log('expirationmodal 1')
+  const initialOpen
     = localStorage.getItem(LEGACY_EXPIRATION_NOTICE_STORAGE_KEY)
     !== EXPIRATION_NOTICE_STATE.DISMISSED_0
-  const [isOpen, setIsOpen] = useState(intialOpen)
+  const [isOpen, setIsOpen] = useState(initialOpen)
   const onClose = () => {
     setIsOpen(false)
     localStorage.setItem(LEGACY_EXPIRATION_NOTICE_STORAGE_KEY,
@@ -43,18 +44,12 @@ function ExpiredModal() {
 
   return (
     <Modal
-      header="Edit service account"
+      header="Expired feature access"
       portal
       open={isOpen}
       onClose={onClose}
       actions={(
         <Flex gap="medium">
-          <Button
-            secondary
-            onClick={onClose}
-          >
-            Close
-          </Button>
           <Button
             as={Link}
             to="/account/billing"
@@ -66,10 +61,33 @@ function ExpiredModal() {
       )}
       size="large"
     >
-      <P body1>
-        Extended feature access has ended. Upgrade to Plural professional to
-        retain access to Roles, Groups, Services accounts, and VPN clients.
-      </P>
+      <Flex
+        gap="medium"
+        direction="column"
+      >
+        <P body1>
+          Your extended feature access to Plural Professional has ended and your
+          account has been transitioned to the Open-source plan. Accounts with
+          more than 5 users will not be able to add more users until the account
+          is upgraded. Current Roles, Groups, Service Accounts, and VPN clients
+          will continue to function but cannot be updated, and new ones cannot be
+          created.
+        </P>
+        <P body1>
+          Thank you for being one of our early adopters. If you have any questions
+          or feedback please reach out via{' '}
+          <A
+            as={Link}
+            inline
+            target="_blank"
+            rel="noopener noreferrer"
+            to="https://discord.gg/pluralsh"
+          >
+            discord
+          </A>
+          .
+        </P>
+      </Flex>
     </Modal>
   )
 }
@@ -84,7 +102,8 @@ function ExpirationToast({
   let message = (
     <>
       Extended feature access ending soon. Upgrade to Plural professional to
-      retain access to Roles, Groups, Services accounts, and VPN clients.
+      retain access to Roles, Groups, Services accounts, and VPN clients and add
+      more than 5 Plural users.
     </>
   )
   let severity: ComponentProps<typeof Toast>['severity'] = 'info'
@@ -94,9 +113,9 @@ function ExpirationToast({
   if (remainingDays <= 10) {
     message = (
       <>
-        Last chance to upgrade! Extended feature access ending {endDate}.
-        Upgrade to Plural professional to retain access to Roles, Groups,
-        Services accounts, and VPN clients.
+        Extended feature access ending {endDate}. Upgrade to Plural professional to
+        retain access to Roles, Groups, Services accounts, and VPN clients and
+        add more than 5 Plural users.
       </>
     )
     severity = 'error'
@@ -105,8 +124,9 @@ function ExpirationToast({
   else if (remainingDays <= 20) {
     message = (
       <>
-        Extended feature access ending {endDate}. Upgrade to Plural professional
-        to retain access to Roles, Groups, Services accounts, and VPN clients.
+        Last chance to upgrade! Extended feature access ending {endDate}. Upgrade
+        to Plural professional to retain access to Roles, Groups, Services
+        accounts, and VPN clients and add more than 5 Plural users.
       </>
     )
     severity = 'info'

@@ -2080,6 +2080,7 @@ export type Recipe = {
   name: Scalars['String'];
   oidcEnabled?: Maybe<Scalars['Boolean']>;
   oidcSettings?: Maybe<OidcSettings>;
+  primary?: Maybe<Scalars['Boolean']>;
   private?: Maybe<Scalars['Boolean']>;
   provider?: Maybe<Provider>;
   recipeDependencies?: Maybe<Array<Maybe<Recipe>>>;
@@ -2095,6 +2096,7 @@ export type RecipeAttributes = {
   description?: InputMaybe<Scalars['String']>;
   name: Scalars['String'];
   oidcSettings?: InputMaybe<OidcSettingsAttributes>;
+  primary?: InputMaybe<Scalars['Boolean']>;
   private?: InputMaybe<Scalars['Boolean']>;
   provider?: InputMaybe<Provider>;
   restricted?: InputMaybe<Scalars['Boolean']>;

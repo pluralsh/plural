@@ -481,6 +481,7 @@ input RecipeAttributes {
   dependencies: [RecipeReference]
   oidcSettings: OidcSettingsAttributes
   private: Boolean
+  primary: Boolean
   restricted: Boolean
 }
 
@@ -1134,6 +1135,7 @@ type Recipe {
   oidcSettings: OidcSettings
   private: Boolean
   restricted: Boolean
+  primary: Boolean
   oidcEnabled: Boolean
   tests: [RecipeTest]
   repository: Repository

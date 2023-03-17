@@ -21,6 +21,8 @@ import PosthogIdentify from '../utils/posthog'
 
 import { WrapStripe } from './WrapStripe'
 import { LegacyExpirationNotice } from './login/LegacyExpiration'
+import { UsersList } from './account/UsersList'
+import { Invites } from './account/Invites'
 
 const ApplicationLayout = lazy(() => import('./layout/ApplicationLayout'))
 const BreadcrumbProvider = lazy(() => import('./Breadcrumbs'))
@@ -414,7 +416,16 @@ export function PluralInner() {
                 <Route
                   path="users"
                   element={<Users />}
-                />
+                >
+                  <Route
+                    index
+                    element={<UsersList />}
+                  />
+                  <Route
+                    path="invites"
+                    element={<Invites />}
+                  />
+                </Route>
                 <Route
                   path="groups"
                   element={<Groups />}

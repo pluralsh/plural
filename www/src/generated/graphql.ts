@@ -5068,9 +5068,11 @@ export type SubscriptionFragment = { __typename?: 'RepositorySubscription', id: 
 
 export type InvoiceItemFragment = { __typename?: 'InvoiceItem', amount: number, currency: string, description?: string | null };
 
-export type PaymentIntentFragment = { __typename?: 'PaymentIntent', clientSecret?: string | null, amount?: number | null, captureMethod?: string | null, currency?: string | null, status?: string | null };
+export type PaymentIntentFragment = { __typename?: 'PaymentIntent', id?: string | null, description?: string | null, clientSecret?: string | null, amount?: number | null, captureMethod?: string | null, currency?: string | null, status?: string | null, nextAction?: { __typename?: 'NextAction', type?: string | null, redirectToUrl?: { __typename?: 'RedirectToUrl', url?: string | null, returnUrl?: string | null } | null } | null };
 
-export type InvoiceFragment = { __typename?: 'Invoice', number: string, amountDue: number, amountPaid: number, currency: string, status?: string | null, createdAt?: Date | null, hostedInvoiceUrl?: string | null, lines?: Array<{ __typename?: 'InvoiceItem', amount: number, currency: string, description?: string | null } | null> | null, paymentIntent?: { __typename?: 'PaymentIntent', clientSecret?: string | null, amount?: number | null, captureMethod?: string | null, currency?: string | null, status?: string | null } | null };
+export type NextActionFragment = { __typename?: 'NextAction', type?: string | null, redirectToUrl?: { __typename?: 'RedirectToUrl', url?: string | null, returnUrl?: string | null } | null };
+
+export type InvoiceFragment = { __typename?: 'Invoice', number: string, amountDue: number, amountPaid: number, currency: string, status?: string | null, createdAt?: Date | null, hostedInvoiceUrl?: string | null, lines?: Array<{ __typename?: 'InvoiceItem', amount: number, currency: string, description?: string | null } | null> | null, paymentIntent?: { __typename?: 'PaymentIntent', id?: string | null, description?: string | null, clientSecret?: string | null, amount?: number | null, captureMethod?: string | null, currency?: string | null, status?: string | null, nextAction?: { __typename?: 'NextAction', type?: string | null, redirectToUrl?: { __typename?: 'RedirectToUrl', url?: string | null, returnUrl?: string | null } | null } | null } | null };
 
 export type CardFragment = { __typename?: 'Card', id: string, last4: string, expMonth: number, expYear: number, name?: string | null, brand: string };
 
@@ -5092,7 +5094,7 @@ export type UpgradeToProfessionalPlanMutationVariables = Exact<{
 }>;
 
 
-export type UpgradeToProfessionalPlanMutation = { __typename?: 'RootMutationType', createPlatformSubscription?: { __typename?: 'PlatformSubscription', id: string, latestInvoice?: { __typename?: 'Invoice', number: string, amountDue: number, amountPaid: number, currency: string, status?: string | null, createdAt?: Date | null, hostedInvoiceUrl?: string | null, lines?: Array<{ __typename?: 'InvoiceItem', amount: number, currency: string, description?: string | null } | null> | null, paymentIntent?: { __typename?: 'PaymentIntent', clientSecret?: string | null, amount?: number | null, captureMethod?: string | null, currency?: string | null, status?: string | null } | null } | null } | null };
+export type UpgradeToProfessionalPlanMutation = { __typename?: 'RootMutationType', createPlatformSubscription?: { __typename?: 'PlatformSubscription', id: string, latestInvoice?: { __typename?: 'Invoice', number: string, amountDue: number, amountPaid: number, currency: string, status?: string | null, createdAt?: Date | null, hostedInvoiceUrl?: string | null, lines?: Array<{ __typename?: 'InvoiceItem', amount: number, currency: string, description?: string | null } | null> | null, paymentIntent?: { __typename?: 'PaymentIntent', id?: string | null, description?: string | null, clientSecret?: string | null, amount?: number | null, captureMethod?: string | null, currency?: string | null, status?: string | null, nextAction?: { __typename?: 'NextAction', type?: string | null, redirectToUrl?: { __typename?: 'RedirectToUrl', url?: string | null, returnUrl?: string | null } | null } | null } | null } | null } | null };
 
 export type DowngradeToFreePlanMutationMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -6287,15 +6289,29 @@ export const InvoiceItemFragmentDoc = gql`
   description
 }
     `;
+export const NextActionFragmentDoc = gql`
+    fragment NextAction on NextAction {
+  type
+  redirectToUrl {
+    url
+    returnUrl
+  }
+}
+    `;
 export const PaymentIntentFragmentDoc = gql`
     fragment PaymentIntent on PaymentIntent {
+  id
+  description
   clientSecret
   amount
   captureMethod
   currency
+  nextAction {
+    ...NextAction
+  }
   status
 }
-    `;
+    ${NextActionFragmentDoc}`;
 export const InvoiceFragmentDoc = gql`
     fragment Invoice on Invoice {
   number
@@ -10047,6 +10063,7 @@ export const namedOperations = {
     Subscription: 'Subscription',
     InvoiceItem: 'InvoiceItem',
     PaymentIntent: 'PaymentIntent',
+    NextAction: 'NextAction',
     Invoice: 'Invoice',
     Card: 'Card',
     Recipe: 'Recipe',

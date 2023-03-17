@@ -44,13 +44,23 @@ fragment InvoiceItem on InvoiceItem {
 }
 
 fragment PaymentIntent on PaymentIntent {
+  id
+  description
   clientSecret
   amount
   captureMethod
   currency
+  nextAction { ...NextAction }
   status
 }
 
+fragment NextAction on NextAction {
+  type
+  redirectToUrl {
+    url
+    returnUrl
+  }
+}
 
 fragment Invoice on Invoice {
   number

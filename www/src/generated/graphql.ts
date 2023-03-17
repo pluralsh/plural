@@ -1339,6 +1339,7 @@ export type Invoice = {
   hostedInvoiceUrl?: Maybe<Scalars['String']>;
   lines?: Maybe<Array<Maybe<InvoiceItem>>>;
   number: Scalars['String'];
+  paymentIntent?: Maybe<PaymentIntent>;
   status?: Maybe<Scalars['String']>;
 };
 
@@ -1768,6 +1769,15 @@ export type PageInfo = {
   startCursor?: Maybe<Scalars['String']>;
 };
 
+export type PaymentIntent = {
+  __typename?: 'PaymentIntent';
+  amount?: Maybe<Scalars['Int']>;
+  captureMethod?: Maybe<Scalars['String']>;
+  clientSecret?: Maybe<Scalars['String']>;
+  currency?: Maybe<Scalars['String']>;
+  status?: Maybe<Scalars['String']>;
+};
+
 export enum PaymentPeriod {
   Monthly = 'MONTHLY',
   Yearly = 'YEARLY'
@@ -1943,6 +1953,7 @@ export type PlatformSubscription = {
   __typename?: 'PlatformSubscription';
   externalId?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
+  latestInvoice?: Maybe<Invoice>;
   lineItems?: Maybe<Array<Maybe<PlatformSubscriptionLineItems>>>;
   plan?: Maybe<PlatformPlan>;
 };

@@ -779,6 +779,7 @@ type PlatformSubscription {
   externalId: String
   lineItems: [PlatformSubscriptionLineItems]
   plan: PlatformPlan
+  latestInvoice: Invoice
 }
 
 input ResetTokenRealization {
@@ -1081,6 +1082,7 @@ type Invoice {
   currency: String!
   status: String
   hostedInvoiceUrl: String
+  paymentIntent: PaymentIntent
   createdAt: DateTime
   lines: [InvoiceItem]
 }
@@ -2486,6 +2488,14 @@ type Incident {
 enum PaymentPeriod {
   MONTHLY
   YEARLY
+}
+
+type PaymentIntent {
+  clientSecret: String
+  amount: Int
+  captureMethod: String
+  currency: String
+  status: String
 }
 
 type DnsRecord {

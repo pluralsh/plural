@@ -145,7 +145,8 @@ defmodule Core.Services.Payments do
   """
   @spec limited?(User.t | Account.t, usage_dimension) :: boolean
   def limited?(%Account{delinquent_at: d}, _) when not is_nil(d), do: true
-  def limited?(%Account{user_count: c, subscription: nil}, :user) when c >= @user_limit, do: true
+  def limited?(%Account{user_count: c, subscription: nil} = account, :user) when c >= @user_limit,
+    do: !grandfathered?(account)
   def limited?(%User{} = user, limit) do
     preload(user, force: true)
     |> Map.get(:account)

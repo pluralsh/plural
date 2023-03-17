@@ -569,7 +569,8 @@ defmodule Core.Services.Payments do
     start_transaction()
     |> add_operation(:account, fn _ ->
       case preload(user, force: true) do
-        %{account: %Account{billing_customer_id: nil} = account} -> provision_customer(account)
+        %{account: %Account{billing_customer_id: nil} = account} ->
+          provision_customer(account, attrs[:billing_address])
         %{account: account} -> {:ok, account}
       end
     end)
@@ -585,7 +586,9 @@ defmodule Core.Services.Payments do
     |> add_operation(:stripe, fn %{account: %Account{billing_customer_id: cust_id}, db: db} ->
       Stripe.Subscription.create(%{
         customer: cust_id,
-        items: sub_line_items(plan, db)
+        items: sub_line_items(plan, db),
+        payment_behavior: "default_incomplete",
+        payment_settings: %{save_default_payment_method: "on_subscription"},
       })
     end)
     |> add_operation(:finalized, fn
@@ -607,12 +610,27 @@ defmodule Core.Services.Payments do
     do: create_platform_subscription(attrs, get_platform_plan!(plan_id), user)
 
 
-  defp provision_customer(%Account{} = account) do
-    %{root_user: user} = Core.Repo.preload(account, [:root_user])
-    with {:ok, %Stripe.Customer{id: id}} <- Stripe.Customer.create(%{email: user.email, name: user.name}) do
-      Ecto.Changeset.change(account, %{billing_customer_id: id})
+  defp provision_customer(%Account{} = account, address) do
+    account = Core.Repo.preload(account, [:root_user])
+    start_transaction()
+    |> add_operation(:account, fn _ ->
+      case address do
+        %{} = address ->
+          Account.changeset(account, %{billing_address: address})
+          |> Core.Repo.update()
+        nil -> {:ok, account}
+      end
+    end)
+    |> add_operation(:stripe, fn %{account: account} ->
+      with {:ok, stripe} <- stripe_attrs(account),
+        do: Stripe.Customer.create(stripe)
+    end)
+    |> add_operation(:customer, fn %{account: account, stripe: %Stripe.Customer{id: id}} ->
+      account
+      |> Account.payment_changeset(%{billing_customer_id: id})
       |> Core.Repo.update()
-    end
+    end)
+    |> execute(extract: :customer)
   end
 
   @doc """

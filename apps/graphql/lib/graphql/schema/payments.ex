@@ -323,7 +323,8 @@ defmodule GraphQl.Schema.Payments do
 
     field :create_platform_subscription, :platform_subscription do
       middleware Authenticated
-      arg :plan_id, non_null(:id)
+      arg :plan_id,         non_null(:id)
+      arg :billing_address, :address_attributes
 
       safe_resolve &Payments.create_platform_subscription/2
     end

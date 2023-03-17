@@ -5072,7 +5072,7 @@ export type PaymentIntentFragment = { __typename?: 'PaymentIntent', id?: string 
 
 export type NextActionFragment = { __typename?: 'NextAction', type?: string | null, redirectToUrl?: { __typename?: 'RedirectToUrl', url?: string | null, returnUrl?: string | null } | null };
 
-export type InvoiceFragment = { __typename?: 'Invoice', number: string, amountDue: number, amountPaid: number, currency: string, status?: string | null, createdAt?: Date | null, hostedInvoiceUrl?: string | null, lines?: Array<{ __typename?: 'InvoiceItem', amount: number, currency: string, description?: string | null } | null> | null, paymentIntent?: { __typename?: 'PaymentIntent', id?: string | null, description?: string | null, clientSecret?: string | null, amount?: number | null, captureMethod?: string | null, currency?: string | null, status?: string | null, nextAction?: { __typename?: 'NextAction', type?: string | null, redirectToUrl?: { __typename?: 'RedirectToUrl', url?: string | null, returnUrl?: string | null } | null } | null } | null };
+export type InvoiceFragment = { __typename?: 'Invoice', number: string, amountDue: number, amountPaid: number, currency: string, status?: string | null, createdAt?: Date | null, hostedInvoiceUrl?: string | null, lines?: Array<{ __typename?: 'InvoiceItem', amount: number, currency: string, description?: string | null } | null> | null };
 
 export type CardFragment = { __typename?: 'Card', id: string, last4: string, expMonth: number, expYear: number, name?: string | null, brand: string };
 
@@ -5094,7 +5094,7 @@ export type UpgradeToProfessionalPlanMutationVariables = Exact<{
 }>;
 
 
-export type UpgradeToProfessionalPlanMutation = { __typename?: 'RootMutationType', createPlatformSubscription?: { __typename?: 'PlatformSubscription', id: string, latestInvoice?: { __typename?: 'Invoice', number: string, amountDue: number, amountPaid: number, currency: string, status?: string | null, createdAt?: Date | null, hostedInvoiceUrl?: string | null, lines?: Array<{ __typename?: 'InvoiceItem', amount: number, currency: string, description?: string | null } | null> | null, paymentIntent?: { __typename?: 'PaymentIntent', id?: string | null, description?: string | null, clientSecret?: string | null, amount?: number | null, captureMethod?: string | null, currency?: string | null, status?: string | null, nextAction?: { __typename?: 'NextAction', type?: string | null, redirectToUrl?: { __typename?: 'RedirectToUrl', url?: string | null, returnUrl?: string | null } | null } | null } | null } | null } | null };
+export type UpgradeToProfessionalPlanMutation = { __typename?: 'RootMutationType', createPlatformSubscription?: { __typename?: 'PlatformSubscription', id: string, latestInvoice?: { __typename?: 'Invoice', number: string, amountDue: number, amountPaid: number, currency: string, status?: string | null, createdAt?: Date | null, hostedInvoiceUrl?: string | null, paymentIntent?: { __typename?: 'PaymentIntent', id?: string | null, description?: string | null, clientSecret?: string | null, amount?: number | null, captureMethod?: string | null, currency?: string | null, status?: string | null, nextAction?: { __typename?: 'NextAction', type?: string | null, redirectToUrl?: { __typename?: 'RedirectToUrl', url?: string | null, returnUrl?: string | null } | null } | null } | null, lines?: Array<{ __typename?: 'InvoiceItem', amount: number, currency: string, description?: string | null } | null> | null } | null } | null };
 
 export type DowngradeToFreePlanMutationMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -6282,13 +6282,6 @@ export const SubscriptionFragmentDoc = gql`
 }
     ${PlanFragmentDoc}
 ${LimitFragmentDoc}`;
-export const InvoiceItemFragmentDoc = gql`
-    fragment InvoiceItem on InvoiceItem {
-  amount
-  currency
-  description
-}
-    `;
 export const NextActionFragmentDoc = gql`
     fragment NextAction on NextAction {
   type
@@ -6312,6 +6305,13 @@ export const PaymentIntentFragmentDoc = gql`
   status
 }
     ${NextActionFragmentDoc}`;
+export const InvoiceItemFragmentDoc = gql`
+    fragment InvoiceItem on InvoiceItem {
+  amount
+  currency
+  description
+}
+    `;
 export const InvoiceFragmentDoc = gql`
     fragment Invoice on Invoice {
   number
@@ -6324,12 +6324,8 @@ export const InvoiceFragmentDoc = gql`
   lines {
     ...InvoiceItem
   }
-  paymentIntent {
-    ...PaymentIntent
-  }
 }
-    ${InvoiceItemFragmentDoc}
-${PaymentIntentFragmentDoc}`;
+    ${InvoiceItemFragmentDoc}`;
 export const CardFragmentDoc = gql`
     fragment Card on Card {
   id
@@ -7864,10 +7860,14 @@ export const UpgradeToProfessionalPlanDocument = gql`
     id
     latestInvoice {
       ...Invoice
+      paymentIntent {
+        ...PaymentIntent
+      }
     }
   }
 }
-    ${InvoiceFragmentDoc}`;
+    ${InvoiceFragmentDoc}
+${PaymentIntentFragmentDoc}`;
 export type UpgradeToProfessionalPlanMutationFn = Apollo.MutationFunction<UpgradeToProfessionalPlanMutation, UpgradeToProfessionalPlanMutationVariables>;
 
 /**

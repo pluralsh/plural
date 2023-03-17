@@ -71,9 +71,6 @@ fragment Invoice on Invoice {
   createdAt
   hostedInvoiceUrl
   lines { ...InvoiceItem }
-  paymentIntent {
-    ...PaymentIntent
-  }
 }
 
 fragment Card on Card {
@@ -101,10 +98,7 @@ query Subscription {
       plan {
         id
         period
-        lineItems {
-          dimension
-          cost
-        }
+        lineItems { dimension cost }
       }
     }
     billingAddress {
@@ -120,9 +114,7 @@ query Subscription {
 }
 
 mutation UpdateAccountBilling($attributes: AccountAttributes!) {
-  updateAccount(attributes: $attributes) {
-    id
-  }
+  updateAccount(attributes: $attributes) { id }
 }
 
 mutation UpgradeToProfessionalPlan($planId: ID!, $billingAddress: AddressAttributes) {
@@ -130,37 +122,28 @@ mutation UpgradeToProfessionalPlan($planId: ID!, $billingAddress: AddressAttribu
     id
     latestInvoice {
       ...Invoice
+      paymentIntent { ...PaymentIntent }
     }
   }
 }
 
 mutation DowngradeToFreePlanMutation {
-  deletePlatformSubscription {
-    id
-  }
+  deletePlatformSubscription { id }
 }
 
 query Cards {
   me {
     id
     cards(first: 100) {
-      edges {
-        node {
-          ...Card
-        }
-      }
+      edges { node { ...Card } }
     }
   }
 }
 
 mutation CreateCard($source: String!, $address: AddressAttributes) {
-  createCard(source: $source, address: $address) {
-    id
-  }
+  createCard(source: $source, address: $address) { id }
 }
 
 mutation DeleteCard($id: ID!) {
-  deleteCard(id: $id) {
-    id
-  }
+  deleteCard(id: $id) { id }
 }

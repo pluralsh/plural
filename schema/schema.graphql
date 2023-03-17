@@ -58,6 +58,11 @@ type ChartInstallationConnection {
   edges: [ChartInstallationEdge]
 }
 
+type NextAction {
+  type: String
+  redirectToUrl: RedirectToUrl
+}
+
 type PersistedTokenConnection {
   pageInfo: PageInfo!
   edges: [PersistedTokenEdge]
@@ -193,6 +198,11 @@ type EabCredential {
 }
 
 scalar UploadOrUrl
+
+type RedirectToUrl {
+  url: String
+  returnUrl: String
+}
 
 scalar Yaml
 
@@ -2491,10 +2501,13 @@ enum PaymentPeriod {
 }
 
 type PaymentIntent {
+  id: String
+  description: String
   clientSecret: String
   amount: Int
   captureMethod: String
   currency: String
+  nextAction: NextAction
   status: String
 }
 
@@ -3408,24 +3421,6 @@ input SubscriptionAttributes {
   lineItems: SubscriptionLineItemAttributes
 }
 
-type TerraformProvider {
-  name: Provider
-  content: String
-}
-
-type OidcProvider {
-  id: ID!
-  clientSecret: String!
-  clientId: String!
-  redirectUris: [String]
-  authMethod: OidcAuthMethod!
-  configuration: OuathConfiguration
-  consent: ConsentRequest
-  bindings: [OidcProviderBinding]
-  insertedAt: DateTime
-  updatedAt: DateTime
-}
-
 type User {
   id: ID!
 
@@ -3480,6 +3475,24 @@ type User {
 
   insertedAt: DateTime
 
+  updatedAt: DateTime
+}
+
+type TerraformProvider {
+  name: Provider
+  content: String
+}
+
+type OidcProvider {
+  id: ID!
+  clientSecret: String!
+  clientId: String!
+  redirectUris: [String]
+  authMethod: OidcAuthMethod!
+  configuration: OuathConfiguration
+  consent: ConsentRequest
+  bindings: [OidcProviderBinding]
+  insertedAt: DateTime
   updatedAt: DateTime
 }
 

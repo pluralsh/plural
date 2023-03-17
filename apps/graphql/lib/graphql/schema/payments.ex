@@ -139,11 +139,24 @@ defmodule GraphQl.Schema.Payments do
   end
 
   object :payment_intent do
+    field :id,             :string
+    field :description,    :string
     field :client_secret,  :string
     field :amount,         :integer
     field :capture_method, :string
     field :currency,       :string
+    field :next_action,    :next_action
     field :status,         :string
+  end
+
+  object :next_action do
+    field :type, :string
+    field :redirect_to_url, :redirect_to_url
+  end
+
+  object :redirect_to_url do
+    field :url,        :string
+    field :return_url, :string
   end
 
   object :repository_subscription do

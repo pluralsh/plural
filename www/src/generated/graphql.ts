@@ -1511,6 +1511,12 @@ export type NetworkConfiguration = {
   subdomain?: Maybe<Scalars['String']>;
 };
 
+export type NextAction = {
+  __typename?: 'NextAction';
+  redirectToUrl?: Maybe<RedirectToUrl>;
+  type?: Maybe<Scalars['String']>;
+};
+
 export type Notification = {
   __typename?: 'Notification';
   actor: User;
@@ -1775,6 +1781,9 @@ export type PaymentIntent = {
   captureMethod?: Maybe<Scalars['String']>;
   clientSecret?: Maybe<Scalars['String']>;
   currency?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['String']>;
+  nextAction?: Maybe<NextAction>;
   status?: Maybe<Scalars['String']>;
 };
 
@@ -2239,6 +2248,12 @@ export type RecipeValidationAttributes = {
   message: Scalars['String'];
   regex?: InputMaybe<Scalars['String']>;
   type: ValidationType;
+};
+
+export type RedirectToUrl = {
+  __typename?: 'RedirectToUrl';
+  returnUrl?: Maybe<Scalars['String']>;
+  url?: Maybe<Scalars['String']>;
 };
 
 /** Container for all resources to create an application. */

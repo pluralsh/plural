@@ -96,7 +96,7 @@ function ExpirationToast({
 }: {
   remainingDays: number
   endDate: string
-  }) {
+}) {
   // Defaults for remaining days > 20
   let messageOpening = <>Extended feature access ending soon.</>
   let severity: ComponentProps<typeof Toast>['severity'] = 'info'
@@ -117,8 +117,8 @@ function ExpirationToast({
   }
   const messageClosing = (
     <>
-      Upgrade to Plural professional to add 5+ users and retain access to Roles,
-      Groups, Service accounts, and VPN clients.
+      Upgrade to Plural Professional to add more than 5 users and retain access
+      to Roles, Groups, Service accounts, and VPN clients.
     </>
   )
   const plansLink = (

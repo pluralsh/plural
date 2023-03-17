@@ -677,6 +677,13 @@ defmodule Core.Services.PaymentsTest do
       refute Payments.limited?(user, :user)
     end
 
+    test "grandfathered users are not limited" do
+      account = insert(:account, user_count: 5, grandfathered_until: Timex.now() |> Timex.shift(hours: 1))
+      user = insert(:user, account: account)
+
+      refute Payments.limited?(user, :user)
+    end
+
     test "delinquent users are always limited" do
       account = insert(:account, delinquent_at: Timex.now())
       insert(:platform_subscription, account: account)

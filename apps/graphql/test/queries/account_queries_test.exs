@@ -1,5 +1,6 @@
 defmodule GraphQl.AccountQueriesTest do
   use Core.SchemaCase, async: true
+  use Mimic
   import GraphQl.TestHelpers
 
   describe "account" do
@@ -21,6 +22,27 @@ defmodule GraphQl.AccountQueriesTest do
       assert found["availableFeatures"]["vpn"]
       assert found["availableFeatures"]["userManagement"]
       refute found["availableFeatures"]["audit"]
+    end
+
+    test "it can fetch invoices on a subscription", %{user: user, account: account} do
+      insert(:platform_subscription, account: account, external_id: "sub_id")
+      expect(Stripe.Subscription, :retrieve, fn "sub_id", %{expand: "latest_invoice.payment_intent"} ->
+        {:ok, %Stripe.Subscription{latest_invoice: %Stripe.Invoice{
+          payment_intent: %Stripe.PaymentIntent{client_secret: "secret"}
+        }}}
+      end)
+
+      {:ok, %{data: %{"account" => acc}}} = run_query("""
+        query {
+          account {
+            subscription {
+              latestInvoice { paymentIntent { clientSecret } }
+            }
+          }
+        }
+      """, %{}, %{current_user: user})
+
+      assert acc["subscription"]["latestInvoice"]["paymentIntent"]["clientSecret"] == "secret"
     end
   end
 

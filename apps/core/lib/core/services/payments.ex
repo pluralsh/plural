@@ -190,6 +190,27 @@ defmodule Core.Services.Payments do
     end
   end
 
+  @doc "update plural subscription status"
+  @spec update_subscription_status(map, binary) :: platform_sub_resp | {:ok, nil}
+  def update_subscription_status(attrs, id) do
+    case Core.Repo.get_by(PlatformSubscription, external_id: id) do
+      nil -> {:ok, nil}
+      sub -> PlatformSubscription.stripe_changeset(sub, attrs) |> Core.Repo.update()
+    end
+  end
+
+  @doc """
+  Attempt to fetch the latest invoice for a stripe subscription
+  """
+  @spec latest_invoice(PlatformSubscription.t) :: {:ok, Stripe.Invoice.t} | error
+  def latest_invoice(%PlatformSubscription{external_id: id}) when is_binary(id) do
+    case Stripe.Subscription.retrieve(id, %{expand: "latest_invoice.payment_intent"}) do
+      {:ok, %Stripe.Subscription{latest_invoice: invoice}} -> {:ok, invoice}
+      error -> error
+    end
+  end
+  def latest_invoice(_), do: {:error, "no stripe subscription present"}
+
 
   @doc """
   Modifies delinquency for an account.  If an account is already delinquent, we don't want to move its timestamp into  the future,
@@ -200,9 +221,17 @@ defmodule Core.Services.Payments do
   def toggle_delinquent(%Account{delinquent_at: del} = account, now) when not is_nil(del) and not is_nil(now),
     do: {:ok, account}
   def toggle_delinquent(%Account{} = account, delinquent_at) do
-    account
-    |> Account.payment_changeset(%{delinquent_at: delinquent_at})
-    |> Core.Repo.update()
+    start_transaction()
+    |> add_operation(:account, fn _ ->
+      Core.Repo.preload(account, [:subscription])
+      |> Account.payment_changeset(%{delinquent_at: delinquent_at})
+      |> Core.Repo.update()
+    end)
+    |> add_operation(:subscription, fn %{account: %{subscription: sub}} ->
+      PlatformSubscription.stripe_changeset(sub, %{status: (if delinquent_at, do: :delinquent, else: :current)})
+      |> Core.Repo.update()
+    end)
+    |> execute(extract: :account)
   end
   def toggle_delinquent(nil, _), do: {:error, "account not found"}
   def toggle_delinquent(id, val) when is_binary(id) do
@@ -540,7 +569,7 @@ defmodule Core.Services.Payments do
     start_transaction()
     |> add_operation(:account, fn _ ->
       case preload(user, force: true) do
-        %{account: %Account{billing_customer_id: nil}} -> {:error, "no payment method"}
+        %{account: %Account{billing_customer_id: nil} = account} -> provision_customer(account)
         %{account: account} -> {:ok, account}
       end
     end)
@@ -577,6 +606,14 @@ defmodule Core.Services.Payments do
   def create_platform_subscription(attrs, plan_id, %User{} = user),
     do: create_platform_subscription(attrs, get_platform_plan!(plan_id), user)
 
+
+  defp provision_customer(%Account{} = account) do
+    %{root_user: user} = Core.Repo.preload(account, [:root_user])
+    with {:ok, %Stripe.Customer{id: id}} <- Stripe.Customer.create(%{email: user.email, name: user.name}) do
+      Ecto.Changeset.change(account, %{billing_customer_id: id})
+      |> Core.Repo.update()
+    end
+  end
 
   @doc """
   Cancels a user's subscription in stripe and wipes the reference to it in our db.  This effectively converts the

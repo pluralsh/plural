@@ -129,12 +129,21 @@ defmodule GraphQl.Schema.Payments do
     field :currency,           non_null(:string)
     field :status,             :string
     field :hosted_invoice_url, :string
+    field :payment_intent,     :payment_intent
     field :created_at,  :datetime, resolve: fn %{created: created}, _, _ ->
       {:ok, Timex.from_unix(created)}
     end
     field :lines, list_of(:invoice_item), resolve: fn
       %Stripe.Invoice{lines: %Stripe.List{data: lines}}, _, _ -> {:ok, lines}
     end
+  end
+
+  object :payment_intent do
+    field :client_secret,  :string
+    field :amount,         :integer
+    field :capture_method, :string
+    field :currency,       :string
+    field :status,         :string
   end
 
   object :repository_subscription do
@@ -151,10 +160,13 @@ defmodule GraphQl.Schema.Payments do
   end
 
   object :platform_subscription do
-    field :id,           non_null(:id)
-    field :external_id,  :string
-    field :line_items,   list_of(:platform_subscription_line_items)
-    field :plan,         :platform_plan, resolve: dataloader(Payments)
+    field :id,             non_null(:id)
+    field :external_id,    :string
+    field :line_items,     list_of(:platform_subscription_line_items)
+    field :plan,           :platform_plan, resolve: dataloader(Payments)
+    field :latest_invoice, :invoice, resolve: fn
+      sub, _, _ -> Payments.latest_invoice(sub)
+    end
   end
 
   object :platform_subscription_line_items do

@@ -2,7 +2,13 @@ defmodule Core.Stripe.Handler do
   @behaviour Stripe.WebhookHandler
   alias Core.Services.Payments
 
+  @sub_events ~w(customer.subscription.created customer.subscription.updated )
+
   @impl true
+  def handle_event(%Stripe.Event{type: e, data: %{object: %Stripe.Subscription{id: id, status: status}}}) when e in @sub_events do
+    Payments.update_subscription_status(%{status: to_plural_status(status)}, id)
+  end
+
   def handle_event(%Stripe.Event{type: "invoice.payment_failed", data: %{object: %Stripe.Invoice{customer: id}}}),
     do: Payments.toggle_delinquent(id)
 
@@ -10,4 +16,8 @@ defmodule Core.Stripe.Handler do
     do: Payments.toggle_delinquent(id, nil)
 
   def handle_event(_), do: :ok
+
+  defp to_plural_status("active"), do: :current
+  defp to_plural_statu(s) when s in ~w(incomplete_expired past_due unpaid), do: :delinquent
+  defp to_plural_status(_), do: :open
 end

@@ -2,6 +2,8 @@ defmodule Core.Schema.PlatformSubscription do
   use Piazza.Ecto.Schema
   alias Core.Schema.{Account, PlatformPlan}
 
+  defenum Status, open: 0, current: 1, delinquent: 2
+
   defmodule LineItem do
     use Piazza.Ecto.Schema
     alias Core.Schema.PlatformPlan
@@ -22,6 +24,7 @@ defmodule Core.Schema.PlatformSubscription do
   end
 
   schema "platform_subscriptions" do
+    field :status, Status
     field :external_id, :string
 
     embeds_many :line_items, LineItem, on_replace: :delete
@@ -53,7 +56,7 @@ defmodule Core.Schema.PlatformSubscription do
     |> unique_constraint(:account_id)
   end
 
-  @stripe_valid ~w(external_id)a
+  @stripe_valid ~w(external_id status)a
 
   def stripe_changeset(schema, attrs \\ %{}) do
     schema

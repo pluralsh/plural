@@ -20,6 +20,8 @@ defmodule GraphQl.Resolvers.Payments do
     |> paginate(args)
   end
 
+  def latest_invoice(subscription), do: Payments.latest_invoice(subscription)
+
   def list_invoices(args, %{context: %{current_user: user}}) do
     Payments.list_invoices(user, to_stripe_args(args))
     |> to_connection()

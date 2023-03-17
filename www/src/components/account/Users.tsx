@@ -6,26 +6,35 @@ import {
   TabList,
   TabPanel,
 } from '@pluralsh/design-system'
-import { useRef, useState } from 'react'
+import { useMemo, useRef } from 'react'
+import { Outlet, useLocation } from 'react-router-dom'
 
-import { Invites } from './Invites'
+import { LinkTabWrap } from '../utils/Tabs'
+
 import { InviteUser } from './InviteUser'
-import { UsersList } from './UsersList'
 
 const DIRECTORY = [
   {
-    key: 'Users',
+    path: '/account/users',
     label: 'Users',
   },
   {
-    key: 'Invites',
+    path: '/account/users/invites',
     label: 'Invites',
   },
 ]
 
 export function Users() {
-  const [selectedKey, setSelectedKey] = useState<any>('Users')
+  const { pathname } = useLocation()
+  const currentTab = [...DIRECTORY]
+    .reverse()
+    .find(tab => pathname?.startsWith(tab.path))
   const tabStateRef = useRef<any>(null)
+  const refetchInvites = useRef<() => void | null>(null)
+  const outletContext = useMemo(() => ({
+    refetchInvites,
+  }),
+  [])
 
   return (
     <Flex
@@ -42,20 +51,20 @@ export function Users() {
             stateRef={tabStateRef}
             stateProps={{
               orientation: 'horizontal',
-              selectedKey,
-              onSelectionChange: setSelectedKey,
+              selectedKey: currentTab?.path,
             }}
           >
-            {DIRECTORY.map(({ label, key }) => (
-              <SubTab
-                key={key}
+            {DIRECTORY.map(({ label, path }) => (
+              <LinkTabWrap
+                key={path}
                 textValue={label}
+                to={path}
               >
-                {label}
-              </SubTab>
+                <SubTab>{label}</SubTab>
+              </LinkTabWrap>
             ))}
           </TabList>
-          <InviteUser />
+          <InviteUser refetch={refetchInvites.current} />
         </Flex>
       </PageTitle>
       <TabPanel
@@ -67,8 +76,9 @@ export function Users() {
         )}
         stateRef={tabStateRef}
       >
-        {selectedKey === 'Users' && <UsersList />}
-        {selectedKey === 'Invites' && <Invites />}
+        <Outlet context={outletContext} />
+        {/* {selectedKey === 'Users' && <UsersList />}
+        {selectedKey === 'Invites' && <Invites />} */}
       </TabPanel>
     </Flex>
   )

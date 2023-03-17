@@ -86,9 +86,9 @@ export type AddressAttributes = {
   city: Scalars['String'];
   country: Scalars['String'];
   line1: Scalars['String'];
-  line2: Scalars['String'];
+  line2?: InputMaybe<Scalars['String']>;
   name?: InputMaybe<Scalars['String']>;
-  state: Scalars['String'];
+  state?: InputMaybe<Scalars['String']>;
   zip: Scalars['String'];
 };
 

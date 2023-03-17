@@ -457,9 +457,9 @@ input TerraformAttributes {
 input AddressAttributes {
   name: String
   line1: String!
-  line2: String!
+  line2: String
   city: String!
-  state: String!
+  state: String
   country: String!
   zip: String!
 }

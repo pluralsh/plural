@@ -31,10 +31,11 @@ export function LegacyExpirationNotice() {
 }
 
 function ExpiredModal() {
-  const intialOpen
+  console.log('expirationmodal 1')
+  const initialOpen
     = localStorage.getItem(LEGACY_EXPIRATION_NOTICE_STORAGE_KEY)
     !== EXPIRATION_NOTICE_STATE.DISMISSED_0
-  const [isOpen, setIsOpen] = useState(intialOpen)
+  const [isOpen, setIsOpen] = useState(initialOpen)
   const onClose = () => {
     setIsOpen(false)
     localStorage.setItem(LEGACY_EXPIRATION_NOTICE_STORAGE_KEY,
@@ -43,18 +44,12 @@ function ExpiredModal() {
 
   return (
     <Modal
-      header="Edit service account"
+      header="Expired feature access"
       portal
       open={isOpen}
       onClose={onClose}
       actions={(
         <Flex gap="medium">
-          <Button
-            secondary
-            onClick={onClose}
-          >
-            Close
-          </Button>
           <Button
             as={Link}
             to="/account/billing"
@@ -66,10 +61,31 @@ function ExpiredModal() {
       )}
       size="large"
     >
-      <P body1>
-        Extended feature access has ended. Upgrade to Plural professional to
-        retain access to Roles, Groups, Services accounts, and VPN clients.
-      </P>
+      <Flex
+        gap="medium"
+        direction="column"
+      >
+        <P body1>Your legacy user feature access has expired.</P>
+        <P body1>
+          Upgrade to Plural professional to add 5+ users and retain access to
+          Roles, Groups, Service accounts, and VPN clients. Current settings
+          will continue to function but can not to be updated.
+        </P>
+        <P body1>
+          Thank you for being one of our early adopters. If you have any
+          questions or feedback please reach out via{' '}
+          <A
+            as={Link}
+            inline
+            target="_blank"
+            rel="noopener noreferrer"
+            to="https://discord.gg/pluralsh"
+          >
+            discord
+          </A>
+          .
+        </P>
+      </Flex>
     </Modal>
   )
 }
@@ -81,37 +97,43 @@ function ExpirationToast({
   remainingDays: number
   endDate: string
 }) {
-  let message = (
-    <>
-      Extended feature access ending soon. Upgrade to Plural professional to
-      retain access to Roles, Groups, Services accounts, and VPN clients.
-    </>
-  )
+  // Defaults for remaining days > 20
+  let messageOpening = <>Extended feature access ending soon.</>
   let severity: ComponentProps<typeof Toast>['severity'] = 'info'
   let dismissState: EXPIRATION_NOTICE_STATE
     = EXPIRATION_NOTICE_STATE.DISMISSED_3
 
   if (remainingDays <= 10) {
-    message = (
-      <>
-        Last chance to upgrade! Extended feature access ending {endDate}.
-        Upgrade to Plural professional to retain access to Roles, Groups,
-        Services accounts, and VPN clients.
-      </>
+    messageOpening = (
+      <>Last chance to upgrade! Extended feature access ending {endDate}.</>
     )
     severity = 'error'
     dismissState = EXPIRATION_NOTICE_STATE.DISMISSED_2
   }
   else if (remainingDays <= 20) {
-    message = (
-      <>
-        Extended feature access ending {endDate}. Upgrade to Plural professional
-        to retain access to Roles, Groups, Services accounts, and VPN clients.
-      </>
-    )
+    messageOpening = <>Extended feature access ending {endDate}.</>
     severity = 'info'
     dismissState = EXPIRATION_NOTICE_STATE.DISMISSED_1
   }
+  const messageClosing = (
+    <>
+      Upgrade to Plural Professional to add more than 5 users and retain access
+      to Roles, Groups, Service accounts, and VPN clients.
+    </>
+  )
+  const plansLink = (
+    <A
+      inline
+      as={Link}
+      to="/account/billing"
+      onClick={() => {
+        setCloseTimeout(0)
+        onClose()
+      }}
+    >
+      Review plans
+    </A>
+  )
 
   const [showToast] = useState(localStorage.getItem(LEGACY_EXPIRATION_NOTICE_STORAGE_KEY) !== dismissState)
   const [closeTimeout, setCloseTimeout] = useState(30000)
@@ -132,18 +154,7 @@ function ExpirationToast({
       open={showToast}
       onClose={onClose}
     >
-      {message}{' '}
-      <A
-        inline
-        as={Link}
-        to="/account/billing"
-        onClick={() => {
-          setCloseTimeout(0)
-          onClose()
-        }}
-      >
-        Review plans
-      </A>
+      {messageOpening} {messageClosing} {plansLink}
     </Toast>
   )
 }

@@ -43,6 +43,14 @@ fragment InvoiceItem on InvoiceItem {
   description
 }
 
+fragment PaymentIntent on PaymentIntent {
+  clientSecret
+  amount
+  captureMethod
+  currency
+  status
+}
+
 
 fragment Invoice on Invoice {
   number
@@ -53,6 +61,9 @@ fragment Invoice on Invoice {
   createdAt
   hostedInvoiceUrl
   lines { ...InvoiceItem }
+  paymentIntent {
+    ...PaymentIntent
+  }
 }
 
 fragment Card on Card {
@@ -104,9 +115,12 @@ mutation UpdateAccountBilling($attributes: AccountAttributes!) {
   }
 }
 
-mutation UpgradeToProfessionalPlan($planId: ID!) {
-  createPlatformSubscription(planId: $planId) {
+mutation UpgradeToProfessionalPlan($planId: ID!, $billingAddress: AddressAttributes) {
+  createPlatformSubscription(planId: $planId, billingAddress: $billingAddress) {
     id
+    latestInvoice {
+      ...Invoice
+    }
   }
 }
 

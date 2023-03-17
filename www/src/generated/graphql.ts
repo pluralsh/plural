@@ -5053,7 +5053,9 @@ export type SubscriptionFragment = { __typename?: 'RepositorySubscription', id: 
 
 export type InvoiceItemFragment = { __typename?: 'InvoiceItem', amount: number, currency: string, description?: string | null };
 
-export type InvoiceFragment = { __typename?: 'Invoice', number: string, amountDue: number, amountPaid: number, currency: string, status?: string | null, createdAt?: Date | null, hostedInvoiceUrl?: string | null, lines?: Array<{ __typename?: 'InvoiceItem', amount: number, currency: string, description?: string | null } | null> | null };
+export type PaymentIntentFragment = { __typename?: 'PaymentIntent', clientSecret?: string | null, amount?: number | null, captureMethod?: string | null, currency?: string | null, status?: string | null };
+
+export type InvoiceFragment = { __typename?: 'Invoice', number: string, amountDue: number, amountPaid: number, currency: string, status?: string | null, createdAt?: Date | null, hostedInvoiceUrl?: string | null, lines?: Array<{ __typename?: 'InvoiceItem', amount: number, currency: string, description?: string | null } | null> | null, paymentIntent?: { __typename?: 'PaymentIntent', clientSecret?: string | null, amount?: number | null, captureMethod?: string | null, currency?: string | null, status?: string | null } | null };
 
 export type CardFragment = { __typename?: 'Card', id: string, last4: string, expMonth: number, expYear: number, name?: string | null, brand: string };
 
@@ -5071,10 +5073,11 @@ export type UpdateAccountBillingMutation = { __typename?: 'RootMutationType', up
 
 export type UpgradeToProfessionalPlanMutationVariables = Exact<{
   planId: Scalars['ID'];
+  billingAddress?: InputMaybe<AddressAttributes>;
 }>;
 
 
-export type UpgradeToProfessionalPlanMutation = { __typename?: 'RootMutationType', createPlatformSubscription?: { __typename?: 'PlatformSubscription', id: string } | null };
+export type UpgradeToProfessionalPlanMutation = { __typename?: 'RootMutationType', createPlatformSubscription?: { __typename?: 'PlatformSubscription', id: string, latestInvoice?: { __typename?: 'Invoice', number: string, amountDue: number, amountPaid: number, currency: string, status?: string | null, createdAt?: Date | null, hostedInvoiceUrl?: string | null, lines?: Array<{ __typename?: 'InvoiceItem', amount: number, currency: string, description?: string | null } | null> | null, paymentIntent?: { __typename?: 'PaymentIntent', clientSecret?: string | null, amount?: number | null, captureMethod?: string | null, currency?: string | null, status?: string | null } | null } | null } | null };
 
 export type DowngradeToFreePlanMutationMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -6269,6 +6272,15 @@ export const InvoiceItemFragmentDoc = gql`
   description
 }
     `;
+export const PaymentIntentFragmentDoc = gql`
+    fragment PaymentIntent on PaymentIntent {
+  clientSecret
+  amount
+  captureMethod
+  currency
+  status
+}
+    `;
 export const InvoiceFragmentDoc = gql`
     fragment Invoice on Invoice {
   number
@@ -6281,8 +6293,12 @@ export const InvoiceFragmentDoc = gql`
   lines {
     ...InvoiceItem
   }
+  paymentIntent {
+    ...PaymentIntent
+  }
 }
-    ${InvoiceItemFragmentDoc}`;
+    ${InvoiceItemFragmentDoc}
+${PaymentIntentFragmentDoc}`;
 export const CardFragmentDoc = gql`
     fragment Card on Card {
   id
@@ -7812,12 +7828,15 @@ export type UpdateAccountBillingMutationHookResult = ReturnType<typeof useUpdate
 export type UpdateAccountBillingMutationResult = Apollo.MutationResult<UpdateAccountBillingMutation>;
 export type UpdateAccountBillingMutationOptions = Apollo.BaseMutationOptions<UpdateAccountBillingMutation, UpdateAccountBillingMutationVariables>;
 export const UpgradeToProfessionalPlanDocument = gql`
-    mutation UpgradeToProfessionalPlan($planId: ID!) {
-  createPlatformSubscription(planId: $planId) {
+    mutation UpgradeToProfessionalPlan($planId: ID!, $billingAddress: AddressAttributes) {
+  createPlatformSubscription(planId: $planId, billingAddress: $billingAddress) {
     id
+    latestInvoice {
+      ...Invoice
+    }
   }
 }
-    `;
+    ${InvoiceFragmentDoc}`;
 export type UpgradeToProfessionalPlanMutationFn = Apollo.MutationFunction<UpgradeToProfessionalPlanMutation, UpgradeToProfessionalPlanMutationVariables>;
 
 /**
@@ -7834,6 +7853,7 @@ export type UpgradeToProfessionalPlanMutationFn = Apollo.MutationFunction<Upgrad
  * const [upgradeToProfessionalPlanMutation, { data, loading, error }] = useUpgradeToProfessionalPlanMutation({
  *   variables: {
  *      planId: // value for 'planId'
+ *      billingAddress: // value for 'billingAddress'
  *   },
  * });
  */
@@ -10011,6 +10031,7 @@ export const namedOperations = {
     Plan: 'Plan',
     Subscription: 'Subscription',
     InvoiceItem: 'InvoiceItem',
+    PaymentIntent: 'PaymentIntent',
     Invoice: 'Invoice',
     Card: 'Card',
     Recipe: 'Recipe',

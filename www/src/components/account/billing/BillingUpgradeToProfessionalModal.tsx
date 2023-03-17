@@ -6,13 +6,12 @@ import {
   useState,
 } from 'react'
 import { Link } from 'react-router-dom'
-import { useMutation } from '@apollo/client'
 import { Div, Flex } from 'honorable'
 import { Button, Card, Modal } from '@pluralsh/design-system'
 
 import PlatformPlansContext from '../../../contexts/PlatformPlansContext'
 
-import { SUBSCRIPTION_QUERY, UPGRADE_TO_PROFESSIONAL_PLAN_MUTATION } from './queries'
+import { namedOperations, useUpgradeToProfessionalPlanMutation } from '../../../generated/graphql'
 
 import useBankCard from './useBankCard'
 
@@ -32,17 +31,16 @@ function BillingUpgradeToProfessionalModal({
     = useContext(PlatformPlansContext)
   const [applyYearlyDiscount, setApplyYearlyDiscount] = useState(false)
 
-  const [upgradeMutation, { loading }] = useMutation(UPGRADE_TO_PROFESSIONAL_PLAN_MUTATION,
-    {
-      variables: {
-        planId: applyYearlyDiscount
-          ? proYearlyPlatformPlan.id
-          : proPlatformPlan.id,
-      },
-      refetchQueries: [SUBSCRIPTION_QUERY],
-      onCompleted: () => setSuccess(true),
-      onError: () => setError(true),
-    })
+  const [upgradeMutation, { loading }] = useUpgradeToProfessionalPlanMutation({
+    variables: {
+      planId: applyYearlyDiscount
+        ? proYearlyPlatformPlan.id
+        : proPlatformPlan.id,
+    },
+    refetchQueries: [namedOperations.Query.Subscription],
+    onCompleted: () => setSuccess(true),
+    onError: () => setError(true),
+  })
 
   const [edit, setEdit] = useState(true)
   const [success, setSuccess] = useState(false)

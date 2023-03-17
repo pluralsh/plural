@@ -2600,7 +2600,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphql-codegen/plugin-helpers@npm:^2.7.2":
+"@graphql-codegen/named-operations-object@npm:^2.3.1":
+  version: 2.3.1
+  resolution: "@graphql-codegen/named-operations-object@npm:2.3.1"
+  dependencies:
+    "@graphql-codegen/plugin-helpers": ^2.6.2
+    change-case-all: 1.0.14
+    tslib: ~2.4.0
+  peerDependencies:
+    graphql: ^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
+    graphql-tag: ^2.0.0
+  checksum: 927240fc3d06b87de6ea61d299c89a7c49b166822814d32f0a7dd552c963faa31a57a3dbe56ca091bfc70275e4a13318854168cb1d8107bbbbc9abd7119ae593
+  languageName: node
+  linkType: hard
+
+"@graphql-codegen/plugin-helpers@npm:^2.6.2, @graphql-codegen/plugin-helpers@npm:^2.7.2":
   version: 2.7.2
   resolution: "@graphql-codegen/plugin-helpers@npm:2.7.2"
   dependencies:
@@ -17550,6 +17564,7 @@ __metadata:
     "@graphql-codegen/add": 3.2.3
     "@graphql-codegen/cli": 2.16.5
     "@graphql-codegen/introspection": 2.2.3
+    "@graphql-codegen/named-operations-object": ^2.3.1
     "@graphql-codegen/typescript": 2.8.8
     "@graphql-codegen/typescript-operations": 2.5.13
     "@graphql-codegen/typescript-react-apollo": 3.3.7

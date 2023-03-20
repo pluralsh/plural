@@ -83,7 +83,7 @@ function BillingPricingCards() {
               checked: true,
             },
             {
-              label: 'Unlimited users',
+              label: 'Up to 5 users',
               checked: true,
             },
             {

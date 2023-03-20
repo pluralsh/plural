@@ -9,12 +9,7 @@ import { Button, LoopingLogo, Modal } from '@pluralsh/design-system'
 
 import PlatformPlansContext from '../../../contexts/PlatformPlansContext'
 
-import {
-  Maybe,
-  PaymentIntentFragment,
-  namedOperations,
-  useUpgradeToProfessionalPlanMutation,
-} from '../../../generated/graphql'
+import { PaymentIntentFragment, namedOperations, useUpgradeToProfessionalPlanMutation } from '../../../generated/graphql'
 
 import { GqlError } from '../../utils/Alert'
 
@@ -72,7 +67,7 @@ function BillingUpgradeToProfessionalModal({
 
   const insideContent = paymentIntent?.clientSecret ? (
     <StripeElements
-      options={{ clientSecret: paymentIntent.clientSecret ?? undefined }}
+      options={{ clientSecret: paymentIntent?.clientSecret ?? undefined }}
     >
       <PaymentForm />
     </StripeElements>

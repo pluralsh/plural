@@ -5,20 +5,16 @@ import { Button, LoopingLogo, Modal } from '@pluralsh/design-system'
 import { useStripe } from '@stripe/react-stripe-js'
 import { PaymentIntent, StripeError } from '@stripe/stripe-js'
 
+/*
+clientSecret example:
+pi_1Dt1kr2eZvKYlo2CaOFCmxSj_secret_Xn95XrK2KAOtYbGmDBGlsjJTo
+*/
+
 export default function ConfirmPayment() {
   const stripe = useStripe()
   const [searchParams] = useSearchParams()
 
-  console.log('stripe', stripe)
-
-  console.log('searchParams', searchParams)
   const clientSecret = searchParams.get('payment_intent_client_secret')
-
-  // const { payment_intent_client_secret: clientSecret } = searchParams as {
-  //   payment_intent?: string;
-  //   payment_intent_client_secret?: string;
-  // }
-  console.log('clientSecret', clientSecret)
 
   const [error, setError] = useState<StripeError>()
   const [paymentIntent, setPaymentIntent] = useState<PaymentIntent | null>()
@@ -26,7 +22,7 @@ export default function ConfirmPayment() {
 
   useEffect(() => {
     if (stripe && clientSecret) {
-      console.log('stripe confirmCardPayment')
+      console.log('stripe confirmCardPayment', clientSecret)
       try {
         stripe.retrievePaymentIntent(clientSecret).then(({ paymentIntent, error }) => {
           console.log('stripe confirmCardPayment returned, ', paymentIntent, error)
@@ -36,7 +32,7 @@ export default function ConfirmPayment() {
         })
       }
       catch (e) {
-        setError(e)
+        setError(e as any)
       }
     }
   }, [clientSecret, stripe])

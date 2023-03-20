@@ -8,6 +8,7 @@ import {
 import {
   CloudIcon,
   InfoOutlineIcon,
+  PricingCalculator,
   Radio,
   Tooltip,
 } from '@pluralsh/design-system'
@@ -63,6 +64,7 @@ function ProviderSelection() {
           description="A six-hour GCP sandbox to help get you testdrive Plural."
         />
       </Flex>
+      <PricingCalculator />
       {(path === CloudType.Cloud || path === CloudType.Local) && (
         <Flex
           direction="column"

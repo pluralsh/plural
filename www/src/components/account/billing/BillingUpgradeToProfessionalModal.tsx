@@ -1,22 +1,26 @@
 import {
-  FormEvent,
   useCallback,
   useContext,
   useEffect,
   useState,
 } from 'react'
-import { Link } from 'react-router-dom'
 import { Div, Flex } from 'honorable'
-import { Button, Card, Modal } from '@pluralsh/design-system'
+import { Button, LoopingLogo, Modal } from '@pluralsh/design-system'
 
 import PlatformPlansContext from '../../../contexts/PlatformPlansContext'
 
-import { namedOperations, useUpgradeToProfessionalPlanMutation } from '../../../generated/graphql'
+import {
+  Maybe,
+  PaymentIntentFragment,
+  namedOperations,
+  useUpgradeToProfessionalPlanMutation,
+} from '../../../generated/graphql'
 
-import useBankCard from './useBankCard'
+import { GqlError } from '../../utils/Alert'
 
 import BillingPreview from './BillingPreview'
-import BillingError from './BillingError'
+import { StripeElements } from './StripeElements'
+import PaymentForm from './PaymentForm'
 
 type BillingUpgradeToProfessionalModalPropsType = {
   open: boolean
@@ -30,45 +34,58 @@ function BillingUpgradeToProfessionalModal({
   const { proPlatformPlan, proYearlyPlatformPlan }
     = useContext(PlatformPlansContext)
   const [applyYearlyDiscount, setApplyYearlyDiscount] = useState(false)
+  const [paymentIntent, setPaymentIntent] = useState<
+    PaymentIntentFragment | null | undefined
+  >(undefined)
 
-  const [upgradeMutation, { loading }] = useUpgradeToProfessionalPlanMutation({
-    variables: {
-      planId: applyYearlyDiscount
-        ? proYearlyPlatformPlan.id
-        : proPlatformPlan.id,
-    },
-    refetchQueries: [namedOperations.Query.Subscription],
-    onCompleted: () => setSuccess(true),
-    onError: () => setError(true),
-  })
+  const planId = applyYearlyDiscount
+    ? proYearlyPlatformPlan.id
+    : proPlatformPlan.id
 
-  const [edit, setEdit] = useState(true)
-  const [success, setSuccess] = useState(false)
-  const [error, setError] = useState(false)
+  console.log('planId', planId)
 
-  const {
-    error: cardError,
-    renderEdit,
-    renderDisplay,
-    card,
-    resetForm,
-  } = useBankCard({ setEdit, noCancel: true })
+  const [upgradeMutation, { loading, error }]
+    = useUpgradeToProfessionalPlanMutation({
+      refetchQueries: [namedOperations.Query.Subscription],
+      onCompleted: ret => {
+        const intent
+          = ret.createPlatformSubscription?.latestInvoice?.paymentIntent
 
-  const onClickUpgrade = useCallback((event: FormEvent) => {
-    event.preventDefault()
-    if (!card) {
-      return
-    }
+        console.log('paymentIntent', intent)
+        setPaymentIntent(intent)
+      },
+      onError: error => {
+        console.log('mutation error', error.message)
+      },
+    })
 
-    upgradeMutation()
-  },
-  [card, upgradeMutation])
+  console.log('loading', loading)
+
+  useEffect(() => {
+    console.log('run upgradeMutation', upgradeMutation)
+    upgradeMutation({ variables: { planId } })
+  }, [planId, upgradeMutation])
+
   const onClose = useCallback(() => {
-    resetForm()
     onCloseProp()
-  }, [onCloseProp, resetForm])
+  }, [onCloseProp])
 
-  const renderContent = useCallback(() => (
+  const insideContent = paymentIntent?.clientSecret ? (
+    <StripeElements
+      options={{ clientSecret: paymentIntent.clientSecret ?? undefined }}
+    >
+      <PaymentForm />
+    </StripeElements>
+  ) : (
+    <Div
+      width="100%"
+      overflow="hidden"
+    >
+      {error ? <GqlError error={error} /> : <LoopingLogo />}
+    </Div>
+  )
+
+  const content = (
     <>
       <BillingPreview
         noCard
@@ -87,16 +104,8 @@ function BillingUpgradeToProfessionalModal({
         flexDirection="column"
         gap="xlarge"
       >
-        {edit || !card ? renderEdit() : renderDisplay()}
+        {insideContent}
       </Flex>
-      {(error || cardError) && (
-        <Card
-          marginTop="medium"
-          padding="medium"
-        >
-          <BillingError>{error || cardError}</BillingError>
-        </Card>
-      )}
       <Flex
         justify="flex-end"
         marginTop="xxlarge"
@@ -110,55 +119,16 @@ function BillingUpgradeToProfessionalModal({
         >
           Cancel
         </Button>
-        <Button
+        {/* <Button
           loading={loading}
           disabled={!card}
           onClick={onClickUpgrade}
         >
           Upgrade
-        </Button>
+        </Button> */}
       </Flex>
     </>
-  ),
-  [
-    applyYearlyDiscount,
-    edit,
-    card,
-    renderEdit,
-    renderDisplay,
-    error,
-    cardError,
-    onClickUpgrade,
-    loading,
-    onClose,
-  ])
-
-  const renderSuccess = useCallback(() => (
-    <>
-      <Div>
-        Welcome to the Plural Professional plan! You now have access to
-        groups, roles, service accounts, and more.
-      </Div>
-      <Flex
-        justify="flex-end"
-        marginTop="large"
-      >
-        <Button
-          as={Link}
-          to="/marketplace"
-        >
-          Explore the app
-        </Button>
-      </Flex>
-    </>
-  ),
-  [])
-
-  useEffect(() => {
-    if (!card) return
-
-    setEdit(false)
-  }, [card])
+  )
 
   return (
     <Modal
@@ -167,7 +137,7 @@ function BillingUpgradeToProfessionalModal({
       header="Upgrade to professional"
       minWidth={512 + 128}
     >
-      {success ? renderSuccess() : <>{renderContent()}</>}
+      {content}
     </Modal>
   )
 }

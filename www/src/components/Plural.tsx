@@ -19,7 +19,7 @@ import { useHistory } from '../router'
 import CurrentUserContext from '../contexts/CurrentUserContext'
 import PosthogIdentify from '../utils/posthog'
 
-import { WrapStripe } from './WrapStripe'
+import { StripeElements } from './WrapStripe'
 import { LegacyExpirationNotice } from './login/LegacyExpiration'
 import { UsersList } from './account/UsersList'
 import { Invites } from './account/Invites'
@@ -178,7 +178,7 @@ function PosthogIdentifier() {
 
 export function PluralInner() {
   return (
-    <WrapStripe>
+    <StripeElements>
       <BreadcrumbProvider>
         <ChecklistProvider>
           <ApplicationLayout>
@@ -543,7 +543,7 @@ export function PluralInner() {
           </ApplicationLayout>
         </ChecklistProvider>
       </BreadcrumbProvider>
-    </WrapStripe>
+    </StripeElements>
   )
 }
 

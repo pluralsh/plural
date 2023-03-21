@@ -68,7 +68,7 @@ export function OAuthConsent() {
     }
   }, [repository])
 
-  if (!data || userLoading) <LoadingIndicator />
+  if (!data || userLoading) return <LoadingIndicator />
 
   if (!userData?.me?.email) {
     logout()

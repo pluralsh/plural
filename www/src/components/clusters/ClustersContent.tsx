@@ -66,7 +66,7 @@ export function ClustersContent(): ReactElement | null {
     }),
   }), [queue.id, subscribeToMore])
 
-  if (!data) <LoadingIndicator />
+  if (!data) return <LoadingIndicator />
 
   return (
     <Flex

@@ -1,5 +1,6 @@
 import { ReactNode, useMemo } from 'react'
 import { useQuery } from '@apollo/client'
+import { isEmpty } from 'lodash'
 
 import { PlatformPlan } from '../../../generated/graphql'
 import PlatformPlansContext, { PlatformPlansContextType } from '../../../contexts/PlatformPlansContext'
@@ -55,8 +56,8 @@ function BillingPlatformPlansProvider({ children }: BillingPlatformPlansProvider
   ])
 
   if (error) return <BillingError />
-  if (loading) <LoadingIndicator />
-  if (!(platformPlans?.length && proPlatformPlan)) return <BillingError /> // The children should always have access to the core data
+  if (loading) return <LoadingIndicator />
+  if (isEmpty(platformPlans)) return <BillingError /> // The children should always have access to the core data
 
   return (
     <PlatformPlansContext.Provider value={platformPlansContextValue}>

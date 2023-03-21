@@ -172,6 +172,31 @@ defmodule GraphQl.AccountMutationTest do
 
       assert create["email"] == "some@email.com"
     end
+
+    test "if a users account is over the limit, then the mutation fails" do
+      account = insert(:account, user_count: 5)
+      user = insert(:user, account: account, roles: %{admin: true})
+
+      {:ok, %{errors: [_ | _]}} = run_query("""
+        mutation Create($attributes: InviteAttributes!) {
+          createInvite(attributes: $attributes) { email }
+        }
+      """, %{"attributes" => %{"email" => "some@email.com"}}, %{current_user: user})
+    end
+
+    test "if a users account is over the limit, but they have an active subscription, then the mutation succeeds" do
+      account = insert(:account, user_count: 5)
+      insert(:platform_subscription, account: account)
+      user = insert(:user, account: account, roles: %{admin: true})
+
+      {:ok, %{data: %{"createInvite" => invite}}} = run_query("""
+        mutation Create($attributes: InviteAttributes!) {
+          createInvite(attributes: $attributes) { email }
+        }
+      """, %{"attributes" => %{"email" => "some@email.com"}}, %{current_user: user})
+
+      assert invite["email"]
+    end
   end
 
   describe "deleteInvite" do

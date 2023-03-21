@@ -17,6 +17,9 @@ defmodule Core.Services.Payments do
     PlatformSubscription
   }
 
+  @user_limit 5
+
+  @type usage_dimension :: :user | :cluster
   @type error :: {:error, term}
   @type plan_resp :: {:ok, Plan.t} | error
   @type platform_plan_resp :: {:ok, PlatformPlan.t} | error
@@ -136,6 +139,20 @@ defmodule Core.Services.Payments do
   def grandfathered?(%User{account: account}), do: grandfathered?(account)
   def grandfathered?(%Account{grandfathered_until: at}) when not is_nil(at), do: Timex.after?(at, Timex.now())
   def grandfathered?(_), do: false
+
+  @doc """
+  Determine whether an account has reached a usage limit (currently only supported for users)
+  """
+  @spec limited?(User.t | Account.t, usage_dimension) :: boolean
+  def limited?(%Account{delinquent_at: d}, _) when not is_nil(d), do: true
+  def limited?(%Account{user_count: c, subscription: nil} = account, :user) when c >= @user_limit,
+    do: !grandfathered?(account)
+  def limited?(%User{} = user, limit) do
+    preload(user, force: true)
+    |> Map.get(:account)
+    |> limited?(limit)
+  end
+  def limited?(_, _), do: false
 
   @doc """
   Determine's if a user's account has access to the given feature.  Returns `true` if enforcement is not enabled yet.

@@ -65,7 +65,7 @@ function BillingPricingTable() {
           Clusters
         </Div>
         <Div {...firstColumnCellProps}>
-          User accounts
+          Users
         </Div>
         <Div {...firstColumnCellProps}>
           Roles
@@ -150,7 +150,7 @@ function BillingPricingTable() {
           Free
         </Div>
         <Div body2>
-          Unlimited
+          Up to 5
         </Div>
         <Div>
           <CloseIcon color="icon-default" />

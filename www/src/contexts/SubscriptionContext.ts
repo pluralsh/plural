@@ -8,10 +8,10 @@ import {
 } from '../generated/graphql'
 
 export type SubscriptionContextType = {
-  billingCustomerId: string | null
-  subscription: PlatformSubscription | null
-  account: Account | null
-  billingAddress: AddressAttributes | null
+  billingCustomerId?: string
+  subscription?: PlatformSubscription
+  account?: Account
+  billingAddress?: AddressAttributes
   isPaidPlan: boolean
   isProPlan: boolean
   isEnterprisePlan: boolean
@@ -21,10 +21,6 @@ export type SubscriptionContextType = {
 }
 
 const SubscriptionContext = createContext<SubscriptionContextType>({
-  billingCustomerId: null,
-  subscription: null,
-  account: null,
-  billingAddress: null,
   isPaidPlan: false,
   isProPlan: false,
   isEnterprisePlan: false,

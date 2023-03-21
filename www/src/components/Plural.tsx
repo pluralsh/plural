@@ -21,6 +21,7 @@ import PosthogIdentify from '../utils/posthog'
 
 import { WrapStripe } from './WrapStripe'
 import { LegacyExpirationNotice } from './login/LegacyExpiration'
+import LoadingIndicator from './utils/LoadingIndicator'
 
 const ApplicationLayout = lazy(() => import('./layout/ApplicationLayout'))
 const BreadcrumbProvider = lazy(() => import('./Breadcrumbs'))
@@ -538,7 +539,7 @@ export function PluralInner() {
 
 export default function Plural() {
   return (
-    <Suspense>
+    <Suspense fallback={<LoadingIndicator />}>
       <PluralProvider>
         <PluralInner />
       </PluralProvider>

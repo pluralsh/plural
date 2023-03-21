@@ -63,7 +63,7 @@ export function PluralProvider({ children }: any) {
     if (data && data.me) update()
   }, [location, data, update])
 
-  if (loading
+  if ((!data && loading)
     || (!platformPlansData && platformPlansLoading)
     || (!subscriptionData && subscriptionLoading)) return <LoadingIndicator />
 

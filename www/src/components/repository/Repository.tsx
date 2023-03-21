@@ -26,9 +26,9 @@ function Repository() {
   })
   const tabStateRef = useRef<any>(null)
 
-  if (loading) return <LoadingIndicator />
+  if (!data && loading) return <LoadingIndicator />
 
-  if (!data || !data.repository) {
+  if (!data?.repository) {
     return (
       <Flex
         direction="column"

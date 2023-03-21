@@ -322,6 +322,7 @@ function Sidebar(props: ComponentProps<typeof DSSidebar>) {
               borderTop: theme.borders['fill-two'],
             },
           }}
+          onClick={() => setIsMenuOpened(false)}
         >
           <MenuItem
             as={Link}

@@ -2,11 +2,16 @@ import { useContext, useState } from 'react'
 import { Button, Card } from '@pluralsh/design-system'
 import { Div } from 'honorable'
 
+import SubscriptionContext from '../../../contexts/SubscriptionContext'
 import BillingBankCardContext from '../../../contexts/BillingBankCardContext'
 
 function BillingBankCards() {
+  console.log('BillingBankCards')
   const { card } = useContext(BillingBankCardContext)
   const [edit, setEdit] = useState(false)
+  const subscription = useContext(SubscriptionContext)
+
+  console.log('subscription', subscription)
 
   // const { error: cardError, renderDisplay, renderEdit } = useBankCard({ setEdit })
 

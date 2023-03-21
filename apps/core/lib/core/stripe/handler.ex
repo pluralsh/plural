@@ -18,6 +18,6 @@ defmodule Core.Stripe.Handler do
   def handle_event(_), do: :ok
 
   defp to_plural_status("active"), do: :current
-  defp to_plural_statu(s) when s in ~w(incomplete_expired past_due unpaid), do: :delinquent
+  defp to_plural_status(s) when s in ~w(incomplete_expired past_due unpaid), do: :delinquent
   defp to_plural_status(_), do: :open
 end

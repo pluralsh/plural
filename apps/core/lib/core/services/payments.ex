@@ -239,6 +239,27 @@ defmodule Core.Services.Payments do
     |> toggle_delinquent(val)
   end
 
+  @doc """
+  auto-provisions a customer and creates a new setup intent for them
+  """
+  @spec setup_intent(map, User.t | Account.t) :: {:ok, Stripe.SetupIntent.t} | error
+  def setup_intent(args \\ %{}, user)
+
+  def setup_intent(args, %User{} = user) do
+    Core.Repo.preload(user, [:account], force: true)
+    |> Map.get(:account)
+    |> allow(user, :pay)
+    |> when_ok(&setup_intent(args, &1))
+  end
+
+  def setup_intent(args, %Account{} = account) do
+    start_transaction()
+    |> add_operation(:customer, fn _ -> provision_customer(account, args[:billing_address]) end)
+    |> add_operation(:stripe, fn %{customer: %{billing_customer_id: cus_id}} ->
+      Stripe.SetupIntent.create(%{customer: cus_id})
+    end)
+    |> execute(extract: :stripe)
+  end
 
   @doc """
   Cancels a subscription for a user, and deletes the record in our database
@@ -569,11 +590,8 @@ defmodule Core.Services.Payments do
   def create_platform_subscription(attrs, %PlatformPlan{} = plan, %User{} = user) do
     start_transaction()
     |> add_operation(:account, fn _ ->
-      case preload(user, force: true) do
-        %{account: %Account{billing_customer_id: nil} = account} ->
-          provision_customer(account, attrs[:billing_address])
-        %{account: account} -> {:ok, account}
-      end
+      %{account: account} = preload(user, force: true)
+      provision_customer(account, attrs[:billing_address])
     end)
     |> add_operation(:db, fn %{account: %Account{cluster_count: cc, user_count: uc} = account} ->
       %PlatformSubscription{plan_id: plan.id, plan: plan, account_id: account.id}
@@ -611,7 +629,7 @@ defmodule Core.Services.Payments do
     do: create_platform_subscription(attrs, get_platform_plan!(plan_id), user)
 
 
-  defp provision_customer(%Account{} = account, address) do
+  defp provision_customer(%Account{billing_customer_id: nil} = account, address) do
     account = Core.Repo.preload(account, [:root_user])
     start_transaction()
     |> add_operation(:account, fn _ ->
@@ -633,6 +651,7 @@ defmodule Core.Services.Payments do
     end)
     |> execute(extract: :customer)
   end
+  defp provision_customer(%Account{} = account, _), do: {:ok, account}
 
   @doc """
   Cancels a user's subscription in stripe and wipes the reference to it in our db.  This effectively converts the

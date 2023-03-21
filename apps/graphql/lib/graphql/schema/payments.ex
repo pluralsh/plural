@@ -149,6 +149,14 @@ defmodule GraphQl.Schema.Payments do
     field :status,         :string
   end
 
+  object :setup_intent do
+    field :id,                   :string
+    field :client_secret,        :string
+    field :next_action,          :next_action
+    field :payment_method_types, list_of(:string)
+    field :status,               :string
+  end
+
   object :next_action do
     field :type, :string
     field :redirect_to_url, :redirect_to_url
@@ -277,6 +285,13 @@ defmodule GraphQl.Schema.Payments do
       arg :address, :address_attributes
 
       safe_resolve &Payments.create_card/2
+    end
+
+    field :setup_intent, :setup_intent do
+      middleware Authenticated
+      arg :address, :address_attributes
+
+      safe_resolve &Payments.setup_intent/2
     end
 
     field :delete_card, :account do

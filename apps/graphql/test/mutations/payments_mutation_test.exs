@@ -508,4 +508,34 @@ defmodule GraphQl.PaymentsMutationsTest do
       assert sub["id"] == subscription.id
     end
   end
+
+  describe "setupIntent" do
+    setup [:setup_root_user]
+    test "It will create a customer and persist its id", %{user: %{email: email} = user} do
+      expect(Stripe.Customer, :create, fn %{email: ^email} -> {:ok, %Stripe.Customer{id: "cus_id"}} end)
+      expect(Stripe.SetupIntent, :create, fn %{customer: "cus_id"} -> {:ok, %Stripe.SetupIntent{client_secret: "sec"}} end)
+
+      {:ok, %{data: %{"setupIntent" => result}}} = run_query("""
+        mutation {
+          setupIntent {
+            clientSecret
+          }
+        }
+      """, %{}, %{current_user: user})
+
+      assert result["clientSecret"] == "sec"
+    end
+
+    test "non admins cannot create intents", %{account: account} do
+      user = insert(:user, account: account)
+
+      {:ok, %{errors: [_ | _]}} = run_query("""
+        mutation {
+          setupIntent {
+            clientSecret
+          }
+        }
+      """, %{}, %{current_user: user})
+    end
+  end
 end

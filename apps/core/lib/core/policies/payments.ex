@@ -1,14 +1,16 @@
 defmodule Core.Policies.Payments do
   use Piazza.Policy
   import Core.Policies.Utils
-  alias Core.Schema.{Plan, Subscription, PlatformPlan, PlatformSubscription, User}
-  alias Core.Policies.Publisher
+  alias Core.Schema.{Account, Plan, Subscription, PlatformPlan, PlatformSubscription, User}
+  alias Core.Policies.{Publisher}
 
   def can?(user, %PlatformPlan{}, _),
     do: check_rbac(user, :billing, account: user.account)
 
   def can?(user, %PlatformSubscription{}, _),
     do: check_rbac(user, :billing, account: user.account)
+
+  def can?(user, %Account{} = account, :pay), do: check_rbac(user, :billing, account: account)
 
   def can?(user, %Plan{} = plan, action) do
     %{repository: %{publisher: pub}} = Core.Repo.preload(plan, [repository: :publisher])

@@ -338,7 +338,7 @@ defmodule Core.Services.Accounts do
       |> Core.Repo.insert_or_update()
     end)
     |> add_operation(:limit, fn %{upsert: user} ->
-      case Payments.limited?(user) do
+      case Payments.limited?(user, :user) do
         true -> {:error, "your account is over the user limit, contact your administrator to upgrade and try again"}
         _ -> {:ok, user}
       end

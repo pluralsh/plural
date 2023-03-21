@@ -380,6 +380,17 @@ defmodule Core.Services.AccountsTest do
 
       assert_receive {:event, %PubSub.UserCreated{item: ^user}}
     end
+
+    test "it will block realizing invites on user limit", %{user: user, account: account} do
+      {:ok, invite} = Accounts.create_invite(%{email: "some@example.com"}, user)
+      {:ok, account} = update_record(account, %{user_count: 5})
+
+      {:error, _} = Accounts.realize_invite(%{
+        password: "some long password",
+        name: "Some User",
+        roles: %{admin: true}
+      }, invite.secure_id)
+    end
   end
 
   describe "#create_role/2" do

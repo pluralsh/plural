@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { useQuery } from '@apollo/client'
 import { Navigate, useLocation } from 'react-router-dom'
 import { useIntercom } from 'react-use-intercom'
 
@@ -11,6 +12,7 @@ import BillingSubscriptionProvider from '../account/billing/BillingSubscriptionP
 import BillingPlatformPlansProvider from '../account/billing/BillingPlatformPlansProvider'
 import { useNotificationSubscription } from '../../hooks/useNotificationSubscription'
 import LoadingIndicator from '../utils/LoadingIndicator'
+import { PLATFORM_PLANS_QUERY, SUBSCRIPTION_QUERY } from '../account/billing/queries'
 
 export function handlePreviousUserClick({ jwt }: any) {
   setToken(jwt)
@@ -20,9 +22,31 @@ export function handlePreviousUserClick({ jwt }: any) {
 
 export function PluralProvider({ children }: any) {
   const location = useLocation()
+
   const {
     loading, error, data,
-  } = useMeQuery({ pollInterval: 60000, fetchPolicy: 'network-only' })
+  } = useMeQuery({ fetchPolicy: 'network-only', pollInterval: 60_000 })
+
+  // Below queries were extracted from providers to use less loading animations.
+  // This should be handled by parent Suspense element once Apollo Client will support it.
+  //
+  // See:
+  // - https://react.dev/reference/react/Suspense
+  // - https://github.com/apollographql/apollo-client/issues/9627
+  // - https://github.com/apollographql/apollo-client/issues/10231
+  const {
+    data: platformPlansData,
+    loading: platformPlansLoading,
+    error: platformPlansError,
+  } = useQuery(PLATFORM_PLANS_QUERY)
+
+  const {
+    data: subscriptionData,
+    loading: subscriptionLoading,
+    error: subscriptionError,
+    refetch: subscriptionRefetch,
+  } = useQuery(SUBSCRIPTION_QUERY, { fetchPolicy: 'network-only', pollInterval: 60_000 })
+
   const { boot, update } = useIntercom()
 
   useNotificationSubscription()
@@ -39,7 +63,9 @@ export function PluralProvider({ children }: any) {
     if (data && data.me) update()
   }, [location, data, update])
 
-  if (loading) return <LoadingIndicator />
+  if (loading
+    || (!platformPlansData && platformPlansLoading)
+    || (!subscriptionData && subscriptionLoading)) return <LoadingIndicator />
 
   if (error || !data?.me?.id) {
     wipeToken()
@@ -52,8 +78,15 @@ export function PluralProvider({ children }: any) {
   return (
     <PluralConfigurationContext.Provider value={configuration}>
       <CurrentUserContextProvider value={data.me}>
-        <BillingPlatformPlansProvider>
-          <BillingSubscriptionProvider>
+        <BillingPlatformPlansProvider
+          data={platformPlansData}
+          error={platformPlansError}
+        >
+          <BillingSubscriptionProvider
+            data={subscriptionData}
+            error={subscriptionError}
+            refetch={subscriptionRefetch}
+          >
             {children}
           </BillingSubscriptionProvider>
         </BillingPlatformPlansProvider>

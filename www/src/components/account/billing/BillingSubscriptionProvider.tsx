@@ -1,25 +1,21 @@
 import { ReactNode, useMemo } from 'react'
-import { useQuery } from '@apollo/client'
 import moment from 'moment'
+import { ApolloError } from '@apollo/client'
 
 import SubscriptionContext, { SubscriptionContextType } from '../../../contexts/SubscriptionContext'
-import LoadingIndicator from '../../utils/LoadingIndicator'
 
 import BillingError from './BillingError'
-import { SUBSCRIPTION_QUERY } from './queries'
 
 type BillingSubscriptionProviderPropsType = {
+  data?: any
+  error?: ApolloError
+  refetch: () => void
   children: ReactNode
 }
 
-function BillingSubscriptionProvider({ children }: BillingSubscriptionProviderPropsType) {
-  const {
-    data,
-    loading,
-    error,
-    refetch,
-  } = useQuery(SUBSCRIPTION_QUERY, { fetchPolicy: 'network-only', pollInterval: 60_000 })
-
+function BillingSubscriptionProvider({
+  data, error, refetch, children,
+}: BillingSubscriptionProviderPropsType) {
   const subscriptionContextValue = useMemo<SubscriptionContextType>(() => {
     const account = data?.account
     const availableFeatures = account?.availableFeatures
@@ -47,7 +43,6 @@ function BillingSubscriptionProvider({ children }: BillingSubscriptionProviderPr
   }, [data, refetch])
 
   if (error) return <BillingError />
-  if (!data && loading) return <LoadingIndicator />
 
   return (
     <SubscriptionContext.Provider value={subscriptionContextValue}>

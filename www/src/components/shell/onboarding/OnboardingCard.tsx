@@ -19,7 +19,7 @@ function OnboardingCard({
       border="1px solid border"
       borderRadius="large"
       paddingVertical={mode === 'Default' ? 'xlarge' : 'medium'}
-      paddingHorizontal={mode === 'Default' ? '112px' : 0}
+      paddingHorizontal={mode === 'Default' ? 64 : 0}
       overflowY="auto"
       {...props}
     >

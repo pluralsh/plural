@@ -3953,9 +3953,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pluralsh/design-system@npm:1.322.0":
-  version: 1.322.0
-  resolution: "@pluralsh/design-system@npm:1.322.0"
+"@pluralsh/design-system@npm:1.324.2":
+  version: 1.324.2
+  resolution: "@pluralsh/design-system@npm:1.324.2"
   dependencies:
     "@floating-ui/react-dom-interactions": 0.13.3
     "@monaco-editor/react": 4.4.6
@@ -3968,6 +3968,7 @@ __metadata:
     "@react-aria/overlays": 3.13.0
     "@react-aria/radio": 3.5.0
     "@react-aria/select": 3.9.0
+    "@react-aria/slider": 3.3.0
     "@react-aria/tabs": 3.4.0
     "@react-aria/utils": 3.15.0
     "@react-aria/visually-hidden": 3.7.0
@@ -3975,6 +3976,7 @@ __metadata:
     "@react-stately/combobox": 3.4.0
     "@react-stately/overlays": 3.5.0
     "@react-stately/radio": 3.7.0
+    "@react-stately/slider": 3.3.0
     "@react-stately/tabs": 3.3.0
     "@react-stately/toggle": 3.5.0
     "@react-types/shared": 3.17.0
@@ -3999,6 +4001,7 @@ __metadata:
     react-virtual: 2.10.4
     rehype-raw: 6.1.1
     resize-observer-polyfill: 1.5.1
+    styled-container-query: 1.3.5
     use-immer: 0.8.1
   peerDependencies:
     "@emotion/react": ">=11.9.3"
@@ -4009,7 +4012,7 @@ __metadata:
     react-dom: ">=16.0.0"
     react-transition-group: ">=4.4.2"
     styled-components: ">=5.3.5"
-  checksum: c941bff6ba05aaba8b6fde5559b1eb09b350ec2088acac462a58d034a5cf13d5adc71623c1e3b879a6702190c1bd77269bb17df995690297101d4cf893876291
+  checksum: e05d151286a36a0b33f26fc780286f5769bfc58b8952a9d8ff34cb7086c00a06cfdffcb05df845ee51c95cc8c0dc669c6bf6963321308a47512a93c2ba5b5d90
   languageName: node
   linkType: hard
 
@@ -4351,6 +4354,27 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@react-aria/slider@npm:3.3.0":
+  version: 3.3.0
+  resolution: "@react-aria/slider@npm:3.3.0"
+  dependencies:
+    "@react-aria/focus": ^3.11.0
+    "@react-aria/i18n": ^3.7.0
+    "@react-aria/interactions": ^3.14.0
+    "@react-aria/label": ^3.5.0
+    "@react-aria/utils": ^3.15.0
+    "@react-stately/radio": ^3.7.0
+    "@react-stately/slider": ^3.3.0
+    "@react-types/radio": ^3.4.0
+    "@react-types/shared": ^3.17.0
+    "@react-types/slider": ^3.4.0
+    "@swc/helpers": ^0.4.14
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0
+  checksum: 136493430c64f38f1147a6f94c4f3560f8b58adc0efce168190064c1c1ceb2b9a560194552b8315390183a33523b858589feb46a9e59424255df8d332ea78fa4
+  languageName: node
+  linkType: hard
+
 "@react-aria/ssr@npm:^3.5.0":
   version: 3.5.0
   resolution: "@react-aria/ssr@npm:3.5.0"
@@ -4633,7 +4657,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-spring/web@npm:~9.6.1":
+"@react-spring/web@npm:9.6.1, @react-spring/web@npm:~9.6.1":
   version: 9.6.1
   resolution: "@react-spring/web@npm:9.6.1"
   dependencies:
@@ -4825,6 +4849,22 @@ __metadata:
   peerDependencies:
     react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0
   checksum: 9a71f78b4f5e105602120e6682b3cf3aad467a3d85010bafa08cbfc7d0ba34bc7d77cff8e1f165f46083aecfb897308b130a4dad7512fb8c83823283813b80c7
+  languageName: node
+  linkType: hard
+
+"@react-stately/slider@npm:3.3.0, @react-stately/slider@npm:^3.3.0":
+  version: 3.3.0
+  resolution: "@react-stately/slider@npm:3.3.0"
+  dependencies:
+    "@react-aria/i18n": ^3.7.0
+    "@react-aria/utils": ^3.15.0
+    "@react-stately/utils": ^3.6.0
+    "@react-types/shared": ^3.17.0
+    "@react-types/slider": ^3.4.0
+    "@swc/helpers": ^0.4.14
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0
+  checksum: 07f4c7e367cc5f1a017c5acb84fef11e6468528289c58003a9629c9c2a12b31d1800b766b46729fcfa9ad6d428b931ea05231f2782f3b357f873b5a6df158bed
   languageName: node
   linkType: hard
 
@@ -5029,6 +5069,17 @@ __metadata:
   peerDependencies:
     react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0
   checksum: 004fc58ab0d3d64a84ce5a98e7e201b88bbb64f8b4a8309d50be30fe6172d0f172f00c666074aa96f13bbbfbced8b986901ad6b35b6d2d32d8dc25e251fcdb31
+  languageName: node
+  linkType: hard
+
+"@react-types/slider@npm:^3.4.0":
+  version: 3.4.0
+  resolution: "@react-types/slider@npm:3.4.0"
+  dependencies:
+    "@react-types/shared": ^3.17.0
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0
+  checksum: df6bc5b3713984d8f8416ad4f4f7e86388e72cb1a40b1d860dcf23bc52787e3044690b29ee3633510b85471b8336be8f0b7b7a4b2bc16128078865779bbdf521
   languageName: node
   linkType: hard
 
@@ -14587,6 +14638,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"resize-observer@npm:^1.0.0":
+  version: 1.0.4
+  resolution: "resize-observer@npm:1.0.4"
+  checksum: 43e2f45e40507279cad474f6bd2fe62e92de1fd1d67cd5285ece1fec6c1b664c4d3795b094b2be292244bf542b1b5402578670400beadc2cfedac8fb483a0976
+  languageName: node
+  linkType: hard
+
 "resolve-from@npm:5.0.0, resolve-from@npm:^5.0.0":
   version: 5.0.0
   resolution: "resolve-from@npm:5.0.0"
@@ -15071,6 +15129,13 @@ __metadata:
   version: 1.7.4
   resolution: "shell-quote@npm:1.7.4"
   checksum: 2874ea9c1a7c3ebfc9ec5734a897e16533d0d06f2e4cddc22ba3d1cab5cdc07d0f825364c1b1e39abe61236f44d8e60e933c7ad7349ce44de4f5dddc7b4354e9
+  languageName: node
+  linkType: hard
+
+"shorthash@npm:0.0.2":
+  version: 0.0.2
+  resolution: "shorthash@npm:0.0.2"
+  checksum: 4048833f2a7f324350cc1a48a6b64bca268e5a2e9c59cb6cad3607c41fd800bf1739498fe4b8b6737709cdb540fb74125fb7254eba98bdd3dc41e8d9f7990b20
   languageName: node
   linkType: hard
 
@@ -15657,6 +15722,22 @@ __metadata:
     react-dom: ">= 16.8.0"
     react-is: ">= 16.8.0"
   checksum: 68eac1e451be81d66739cf86de8ec9e72f46e7584aa359271761a2437468210bd7cf0a864281fc97dab08c32b35e6bf7513dc8b4104ed6b196cf8d65674dd289
+  languageName: node
+  linkType: hard
+
+"styled-container-query@npm:1.3.5":
+  version: 1.3.5
+  resolution: "styled-container-query@npm:1.3.5"
+  dependencies:
+    classnames: ^2.2.6
+    hoist-non-react-statics: ^3.3.2
+    resize-observer: ^1.0.0
+    shorthash: 0.0.2
+  peerDependencies:
+    react: ^16.9.0
+    react-dom: ^16.9.0
+    styled-components: ^4.3.2
+  checksum: 4bc8e046234ce39b33df199603bf4a3887abb5239966d5b3904b45b79889385320bd0df7129a0805c945947aa692ca6b950296d041ee68b6b667f912926c3b77
   languageName: node
   linkType: hard
 
@@ -17478,9 +17559,10 @@ __metadata:
     "@nivo/geo": 0.80.0
     "@nivo/line": 0.80.0
     "@octokit/core": 4.2.0
-    "@pluralsh/design-system": 1.322.0
+    "@pluralsh/design-system": 1.324.2
     "@pluralsh/eslint-config-typescript": 2.5.40
     "@pluralsh/stylelint-config": 1.1.3
+    "@react-spring/web": 9.6.1
     "@stripe/react-stripe-js": 1.16.4
     "@stripe/stripe-js": 1.46.0
     "@testing-library/react": 13.4.0

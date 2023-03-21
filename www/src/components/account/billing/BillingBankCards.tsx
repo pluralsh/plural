@@ -4,14 +4,11 @@ import { Div } from 'honorable'
 
 import BillingBankCardContext from '../../../contexts/BillingBankCardContext'
 
-import useBankCard from './useBankCard'
-import BillingError from './BillingError'
-
 function BillingBankCards() {
   const { card } = useContext(BillingBankCardContext)
   const [edit, setEdit] = useState(false)
 
-  const { error: cardError, renderDisplay, renderEdit } = useBankCard({ setEdit })
+  // const { error: cardError, renderDisplay, renderEdit } = useBankCard({ setEdit })
 
   if (edit) {
     return (
@@ -21,8 +18,9 @@ function BillingBankCards() {
         padding="medium"
         gap="medium"
       >
-        {renderEdit()}
-        {cardError && (
+        TODO: Show Payment Form here
+        {/* {renderEdit()} */}
+        {/* {cardError && (
           <Card
             display="flex"
             alignItems="center"
@@ -32,7 +30,7 @@ function BillingBankCards() {
           >
             <BillingError>{cardError}</BillingError>
           </Card>
-        )}
+        )} */}
       </Card>
     )
   }
@@ -64,7 +62,8 @@ function BillingBankCards() {
       flexDirection="column"
       padding="medium"
     >
-      {renderDisplay()}
+      TODO: Show card information here
+      {/* {renderDisplay()} */}
     </Card>
   )
 }

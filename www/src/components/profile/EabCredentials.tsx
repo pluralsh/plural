@@ -1,20 +1,19 @@
 import { useMutation, useQuery } from '@apollo/client'
 import { Box } from 'grommet'
 import { useState } from 'react'
-
-import { InfoIcon, PageTitle, Tooltip } from '@pluralsh/design-system'
-
+import {
+  Date,
+  InfoIcon,
+  PageTitle,
+  Tooltip,
+} from '@pluralsh/design-system'
 import { Span } from 'honorable'
 
 import { updateCache } from '../../utils/graphql'
 import { Confirm } from '../account/Confirm'
-
 import { DELETE_EAB_CREDENTIALS, EAB_CREDENTIALS } from '../users/queries'
 import { obscure } from '../users/utils'
 import { Table, TableData, TableRow } from '../utils/Table'
-
-import { Date } from '../utils/Date'
-
 import { DeleteIconButton } from '../utils/IconButtons'
 import LoadingIndicator from '../utils/LoadingIndicator'
 

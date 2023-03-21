@@ -13,51 +13,42 @@ type BillingPlatformPlansProviderPropsType = {
   children: ReactNode
 }
 
-const errorPricing = {
-  clusterMonthlyPricing: 0,
-  userMonthlyPricing: 0,
-}
-
 function BillingPlatformPlansProvider({ children }: BillingPlatformPlansProviderPropsType) {
   const { data, loading, error } = useQuery(PLATFORM_PLANS_QUERY)
 
-  const platformPlans = useMemo(() => data?.platformPlans as PlatformPlan[], [data])
-  const proPlatformPlan = useMemo(() => (platformPlans ? platformPlans.find(p => p.name === 'Pro' && p.period === 'MONTHLY')! : {} as PlatformPlan), [platformPlans])
-  const proYearlyPlatformPlan = useMemo(() => (platformPlans ? platformPlans.find(p => p.name === 'Pro' && p.period === 'YEARLY')! : {} as PlatformPlan), [platformPlans])
-  const enterprisePlatformPlan = useMemo(() => (platformPlans ? platformPlans.find(p => p.name === 'Enterprise')! : {} as PlatformPlan), [platformPlans])
+  const platformPlansContextValue = useMemo<PlatformPlansContextType>(() => {
+    const platformPlans = data?.platformPlans as PlatformPlan[]
+    const proPlatformPlan = platformPlans
+      ?.find(({ name, period }) => name === 'Pro' && period === 'MONTHLY') || {} as PlatformPlan
+    const proYearlyPlatformPlan = platformPlans
+      ?.find(({ name, period }) => name === 'Pro' && period === 'YEARLY') || {} as PlatformPlan
 
-  const { clusterMonthlyPricing, userMonthlyPricing } = useMemo(() => {
-    if (!proPlatformPlan) return errorPricing
+    let clusterMonthlyPricing = 0
+    let userMonthlyPricing = 0
 
-    const clusterMonthlyPricing = proPlatformPlan.lineItems?.find(x => x?.dimension === 'CLUSTER' && x?.period === 'MONTHLY')?.cost
-    const userMonthlyPricing = proPlatformPlan.lineItems?.find(x => x?.dimension === 'USER' && x?.period === 'MONTHLY')?.cost
+    if (proPlatformPlan) {
+      const clusterMPCents = proPlatformPlan.lineItems
+        ?.find(x => x?.dimension === 'CLUSTER' && x?.period === 'MONTHLY')?.cost || 0
+      const userMPCents = proPlatformPlan.lineItems
+        ?.find(x => x?.dimension === 'USER' && x?.period === 'MONTHLY')?.cost || 0
+
+      clusterMonthlyPricing = clusterMPCents / 100
+      userMonthlyPricing = userMPCents / 100
+    }
 
     return {
-      clusterMonthlyPricing: clusterMonthlyPricing ? clusterMonthlyPricing / 100 : 0, // Stripe conventions are in cents
-      userMonthlyPricing: userMonthlyPricing ? userMonthlyPricing / 100 : 0,
+      platformPlans,
+      proPlatformPlan,
+      proYearlyPlatformPlan,
+      clusterMonthlyPricing,
+      userMonthlyPricing,
+      annualDiscount: 0.1, // Hardcoded for now
     }
-  }, [proPlatformPlan])
-
-  const platformPlansContextValue = useMemo<PlatformPlansContextType>(() => ({
-    platformPlans,
-    proPlatformPlan,
-    proYearlyPlatformPlan,
-    enterprisePlatformPlan,
-    clusterMonthlyPricing,
-    userMonthlyPricing,
-    annualDiscount: 0.1, // Hardcoded for now
-  }), [
-    platformPlans,
-    proPlatformPlan,
-    proYearlyPlatformPlan,
-    enterprisePlatformPlan,
-    clusterMonthlyPricing,
-    userMonthlyPricing,
-  ])
+  }, [data])
 
   if (error) return <BillingError />
   if (!data && loading) return <LoadingIndicator />
-  if (isEmpty(platformPlans)) return <BillingError /> // The children should always have access to the core data
+  if (isEmpty(platformPlansContextValue?.platformPlans)) return <BillingError /> // The children should always have access to the core data
 
   return (
     <PlatformPlansContext.Provider value={platformPlansContextValue}>

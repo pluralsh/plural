@@ -3,6 +3,7 @@ fragment Account on Account {
   name
   billingCustomerId
   backgroundColor
+  userCount
 }
 
 fragment Group on Group {

@@ -5,6 +5,8 @@ import { Div, Flex, Text } from 'honorable'
 import { ThemeContext } from 'styled-components'
 import { LoopingLogo, SearchIcon } from '@pluralsh/design-system'
 
+import { useOutletContext } from 'react-router-dom'
+
 import ListInput from '../utils/ListInput'
 import { Placeholder } from '../utils/Placeholder'
 import CopyableButton from '../utils/CopyableButton'
@@ -92,11 +94,18 @@ function Invite(invite: any) {
 export function Invites() {
   const [q, setQ] = useState('')
   const [listRef, setListRef] = useState<any>(null)
-  const { data, loading, fetchMore } = useQuery(INVITES_Q, {
+  const {
+    data, loading, fetchMore, refetch,
+  } = useQuery(INVITES_Q, {
     variables: { q },
     fetchPolicy: 'cache-and-network',
   })
   const [dataCache, setDataCache] = useState(data)
+  const outletContext = useOutletContext() as Record<string, any>
+
+  if (outletContext?.refetchInvites) {
+    outletContext.refetchInvites.current = refetch
+  }
 
   useEffect(() => {
     if (data) {

@@ -348,6 +348,7 @@ defmodule Core.Services.Payments do
   def stripe_attrs(%Account{root_user: %User{email: email, name: name}, billing_address: %{} = address}) do
     {:ok, %{email: email, name: Map.get(address, :name) || name, address: Address.to_stripe(address)}}
   end
+  def stripe_attrs(%Account{root_user: %User{email: email, name: name}}), do: {:ok, %{email: email, name: name}}
   def stripe_attrs(_), do: {:error, "you must provide a billing address to enable billing"}
 
   @doc """

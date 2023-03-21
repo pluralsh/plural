@@ -418,6 +418,14 @@ type Account {
   updatedAt: DateTime
 }
 
+type SetupIntent {
+  id: String
+  clientSecret: String
+  nextAction: NextAction
+  paymentMethodTypes: [String]
+  status: String
+}
+
 input TestAttributes {
   name: String
   status: TestStatus
@@ -1626,6 +1634,8 @@ type RootMutationType {
   deleteKeyBackup(name: String!): KeyBackup
 
   createCard(source: String!, address: AddressAttributes): Account
+
+  setupIntent(address: AddressAttributes): SetupIntent
 
   deleteCard(id: ID!): Account
 
@@ -3277,6 +3287,10 @@ type Limit {
   quantity: Int!
 }
 
+input FollowerAttributes {
+  preferences: NotificationPreferencesAttributes
+}
+
 type Dependencies {
   dependencies: [Dependency]
   providers: [Provider]
@@ -3358,10 +3372,6 @@ input UpgradeQueueAttributes {
   domain: String
   git: String
   provider: Provider
-}
-
-input FollowerAttributes {
-  preferences: NotificationPreferencesAttributes
 }
 
 type Roles {

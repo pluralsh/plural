@@ -2629,6 +2629,7 @@ export type RootMutationType = {
   releaseLock?: Maybe<ApplyLock>;
   resetInstallations?: Maybe<Scalars['Int']>;
   restartShell?: Maybe<Scalars['Boolean']>;
+  setupIntent?: Maybe<SetupIntent>;
   setupShell?: Maybe<CloudShell>;
   signup?: Maybe<User>;
   ssoCallback?: Maybe<User>;
@@ -3160,6 +3161,11 @@ export type RootMutationTypeRealizeResetTokenArgs = {
 export type RootMutationTypeReleaseLockArgs = {
   attributes: LockAttributes;
   repository: Scalars['String'];
+};
+
+
+export type RootMutationTypeSetupIntentArgs = {
+  address?: InputMaybe<AddressAttributes>;
 };
 
 
@@ -4122,6 +4128,15 @@ export type ServiceLevelAttributes = {
   maxSeverity?: InputMaybe<Scalars['Int']>;
   minSeverity?: InputMaybe<Scalars['Int']>;
   responseTime?: InputMaybe<Scalars['Int']>;
+};
+
+export type SetupIntent = {
+  __typename?: 'SetupIntent';
+  clientSecret?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['String']>;
+  nextAction?: Maybe<NextAction>;
+  paymentMethodTypes?: Maybe<Array<Maybe<Scalars['String']>>>;
+  status?: Maybe<Scalars['String']>;
 };
 
 export type ShellConfiguration = {

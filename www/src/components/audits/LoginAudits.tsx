@@ -4,12 +4,11 @@ import { memo, useCallback, useMemo } from 'react'
 import { IconFrame, PageTitle, Table } from '@pluralsh/design-system'
 import { createColumnHelper } from '@tanstack/react-table'
 import isEmpty from 'lodash/isEmpty'
-
 import { Flex } from 'honorable'
 
-import { LoopingLogo } from '../utils/AnimatedLogo'
 import { extendConnection } from '../../utils/graphql'
 import { Date } from '../utils/Date'
+import LoadingIndicator from '../utils/LoadingIndicator'
 
 import { AuditUser } from './AuditUser'
 import { Location } from './Location'
@@ -101,7 +100,7 @@ export function LoginAudits() {
     }
   }, [fetchMore, loading, pageInfo])
 
-  if (!data) return <LoopingLogo />
+  if (!data) return <LoadingIndicator />
 
   return (
     <Box fill>

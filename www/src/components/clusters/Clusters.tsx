@@ -1,6 +1,6 @@
 import { useQuery } from '@apollo/client'
 import { A, Flex, Span } from 'honorable'
-import { Button, EmptyState, LoopingLogo } from '@pluralsh/design-system'
+import { Button, EmptyState } from '@pluralsh/design-system'
 import { ReactElement, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 
@@ -11,6 +11,8 @@ import { ResponsiveLayoutSpacer } from '../utils/layout/ResponsiveLayoutSpacer'
 import { ResponsiveLayoutSidenavContainer } from '../utils/layout/ResponsiveLayoutSidenavContainer'
 
 import { ResponsiveLayoutPage } from '../utils/layout/ResponsiveLayoutPage'
+
+import LoadingIndicator from '../utils/LoadingIndicator'
 
 import { ClustersContent, Upgrade } from './ClustersContent'
 import { ClustersSidecar } from './ClustersSidecar'
@@ -62,17 +64,7 @@ export function Clusters(): ReactElement | null {
 
   useEffect(() => (data ? setQueue(data?.upgradeQueues[0]) : data), [data])
 
-  if (!data) {
-    return (
-      <Flex
-        align="center"
-        justify="center"
-        flexGrow={1}
-      >
-        <LoopingLogo />
-      </Flex>
-    )
-  }
+  if (!data) return <LoadingIndicator />
 
   if (!data || !queue) {
     return (

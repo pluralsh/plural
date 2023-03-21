@@ -6,7 +6,6 @@ import {
   Button,
   Chip,
   IconFrame,
-  LoopingLogo,
   PageTitle,
   ReloadIcon,
 } from '@pluralsh/design-system'
@@ -20,6 +19,8 @@ import {
 import QueueContext from '../../contexts/QueueContext'
 import { appendConnection, extendConnection } from '../../utils/graphql'
 import { StandardScroller } from '../utils/SmoothScroller'
+
+import LoadingIndicator from '../utils/LoadingIndicator'
 
 import { QUEUE, UPGRADE_SUB } from './queries'
 
@@ -65,17 +66,7 @@ export function ClustersContent(): ReactElement | null {
     }),
   }), [queue.id, subscribeToMore])
 
-  if (!data) {
-    return (
-      <Flex
-        grow={1}
-        justify="center"
-        align="center"
-      >
-        <LoopingLogo />
-      </Flex>
-    )
-  }
+  if (!data) <LoadingIndicator />
 
   return (
     <Flex

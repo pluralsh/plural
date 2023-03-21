@@ -1,23 +1,16 @@
 import { useEffect, useState } from 'react'
 import { Navigate, useLocation } from 'react-router-dom'
-import { Box } from 'grommet'
-
 import { useIntercom } from 'react-use-intercom'
 
 import PluralConfigurationContext from '../../contexts/PluralConfigurationContext'
 import { useMeQuery } from '../../generated/graphql'
-
 import { CurrentUserContextProvider } from '../../contexts/CurrentUserContext'
-
 import { growthbook } from '../../helpers/growthbook'
-
 import { setPreviousUserData, setToken, wipeToken } from '../../helpers/authentication'
-import { LoopingLogo } from '../utils/AnimatedLogo'
 import BillingSubscriptionProvider from '../account/billing/BillingSubscriptionProvider'
 import BillingPlatformPlansProvider from '../account/billing/BillingPlatformPlansProvider'
 import { useNotificationSubscription } from '../../hooks/useNotificationSubscription'
-
-// const POLL_INTERVAL=30000
+import LoadingIndicator from '../utils/LoadingIndicator'
 
 function LoadingSpinner() {
   const [showLogo, setShowLogo] = useState(false)
@@ -30,41 +23,7 @@ function LoadingSpinner() {
     return () => clearTimeout(timer)
   }, [])
 
-  return showLogo ? <LoopingLogo /> : null
-}
-
-export default function CurrentUser({ children }: any) {
-  const { loading, error, data } = useMeQuery()
-
-  useNotificationSubscription()
-
-  useEffect(() => {
-    if (data?.me) {
-      const { me } = data
-
-      growthbook.setAttributes({
-        id: me.id,
-        email: me.email,
-        company: me.account.name,
-      })
-    }
-  }, [data])
-
-  if (loading) return (<Box height="100vh"><LoadingSpinner /></Box>)
-
-  if (error || !data?.me?.id) {
-    wipeToken()
-
-    return (<Navigate to="/login" />)
-  }
-
-  const { me } = data
-
-  return (
-    <CurrentUserContextProvider value={me}>
-      {children}
-    </CurrentUserContextProvider>
-  )
+  return showLogo ? <LoadingIndicator /> : null
 }
 
 export function handlePreviousUserClick({ jwt }: any) {
@@ -94,7 +53,7 @@ export function PluralProvider({ children }: any) {
     if (data && data.me) update()
   }, [location, data, update])
 
-  if (loading) return (<Box height="100vh"><LoadingSpinner /></Box>)
+  if (loading) return <LoadingSpinner />
 
   if (error || !data || !data.me || !data.me.id) {
     wipeToken()

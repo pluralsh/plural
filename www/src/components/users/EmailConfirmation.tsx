@@ -11,11 +11,10 @@ import moment from 'moment'
 import { useParams } from 'react-router-dom'
 
 import { Icon } from '../utils/IconOld'
-
 import { useIsCurrentlyOnboarding } from '../shell/hooks/useOnboarded'
 import CurrentUserContext from '../../contexts/CurrentUserContext'
 import { Alert, AlertStatus, GqlError } from '../utils/Alert'
-import { LoopingLogo } from '../utils/AnimatedLogo'
+import LoadingIndicator from '../utils/LoadingIndicator'
 
 import { CREATE_RESET_TOKEN, REALIZE_TOKEN } from './queries'
 import { ResetTokenType } from './types'
@@ -42,7 +41,7 @@ export function EmailConfirmed() {
         gap="small"
         width="400px"
       >
-        {!data && !error && <LoopingLogo scale="0.75" />}
+        {!data && !error && <LoadingIndicator />}
         {data && (
           <Alert
             status={AlertStatus.SUCCESS}

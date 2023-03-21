@@ -11,12 +11,12 @@ import { Confirm } from '../account/Confirm'
 
 import { DELETE_EAB_CREDENTIALS, EAB_CREDENTIALS } from '../users/queries'
 import { obscure } from '../users/utils'
-import { LoopingLogo } from '../utils/AnimatedLogo'
 import { Table, TableData, TableRow } from '../utils/Table'
 
 import { Date } from '../utils/Date'
 
 import { DeleteIconButton } from '../utils/IconButtons'
+import LoadingIndicator from '../utils/LoadingIndicator'
 
 const TOOLTIP = 'EAB credentials are used to generate an ACME account for certificate issuance in your clusters. '
   + 'These should be recycled on `plural destroy`.'
@@ -61,7 +61,7 @@ function EabCredential({ credential, last }: any) {
 export function EabCredentials() {
   const { data } = useQuery(EAB_CREDENTIALS, { fetchPolicy: 'cache-and-network' })
 
-  if (!data) return <LoopingLogo />
+  if (!data) return <LoadingIndicator />
 
   return (
     <Box fill>

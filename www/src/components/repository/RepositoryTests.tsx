@@ -30,10 +30,11 @@ import { Terminal } from 'xterm'
 
 import { useRepositoryContext } from '../../contexts/RepositoryContext'
 import usePaginatedQuery from '../../hooks/usePaginatedQuery'
-import { LoopingLogo } from '../utils/AnimatedLogo'
 import InfiniteScroller from '../utils/InfiniteScroller'
 import { Table, TableData, TableRow } from '../utils/Table'
 import { XTermTheme } from '../../theme'
+
+import LoadingIndicator from '../utils/LoadingIndicator'
 
 import { TESTS_QUERY } from './queries'
 import { RepositoryActions } from './misc'
@@ -287,14 +288,7 @@ function RepositoryTests() {
     data => data.tests)
 
   if (tests.length === 0 && loadingTests) {
-    return (
-      <Flex
-        pt={2}
-        justify="center"
-      >
-        <LoopingLogo />
-      </Flex>
-    )
+    return <LoadingIndicator />
   }
 
   if (test) {

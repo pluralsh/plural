@@ -37,8 +37,8 @@ import { ResponsiveLayoutPage } from '../../utils/layout/ResponsiveLayoutPage'
 import { SideNavOffset } from '../../utils/layout/SideNavOffset'
 import { LinkTabWrap } from '../../utils/Tabs'
 import PluralConfigurationContext from '../../../contexts/PluralConfigurationContext'
-import { LoopingLogo } from '../../utils/AnimatedLogo'
 import { DEFAULT_DKR_ICON } from '../../constants'
+import LoadingIndicator from '../../utils/LoadingIndicator'
 
 import {
   DetailContainer,
@@ -103,7 +103,7 @@ export function DockerRepository() {
     navigate(`/dkr/img/${edges[0].node.id}`, { replace: true })
   }, [data, navigate])
 
-  return <LoopingLogo />
+  return <LoadingIndicator />
 }
 
 const DEFAULT_FILTER = {
@@ -223,7 +223,7 @@ export function Docker() {
 
   useEffect(() => setFilter(DEFAULT_FILTER), [id])
 
-  if (!data) return <LoopingLogo />
+  if (!data) return <LoadingIndicator />
 
   const { dockerImage: image } = data
   const imageName = dockerPull(registry, {

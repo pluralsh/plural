@@ -2,17 +2,13 @@ import { useEffect } from 'react'
 import { useApolloClient, useMutation } from '@apollo/client'
 import { useLocation, useParams } from 'react-router-dom'
 import qs from 'query-string'
-
 import { Box } from 'grommet'
 
 import { setToken } from '../../helpers/authentication'
 import { host } from '../../helpers/hostname'
-
 import { OnboardingStatus } from '../profile/types'
-
-import { LoopingLogo } from '../utils/AnimatedLogo'
-
 import { GqlError } from '../utils/Alert'
+import LoadingIndicator from '../utils/LoadingIndicator'
 
 import { handleOauthChallenge } from './MagicLogin'
 import { OAUTH_CALLBACK } from './queries'
@@ -48,20 +44,19 @@ export function OAuthCallback() {
     mutation()
   }, [mutation])
 
-  return (
+  if (loading) return <LoadingIndicator />
+
+  return error ? (
     <Box
       height="100vh"
       width="100vw"
       align="center"
       justify="center"
     >
-      {loading && <LoopingLogo />}
-      {error && (
-        <GqlError
-          error={error}
-          header="Failed to log in"
-        />
-      )}
+      <GqlError
+        error={error}
+        header="Failed to log in"
+      />
     </Box>
-  )
+  ) : null
 }

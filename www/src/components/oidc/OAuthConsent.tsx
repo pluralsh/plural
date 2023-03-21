@@ -1,12 +1,7 @@
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useMutation, useQuery } from '@apollo/client'
 import queryString from 'query-string'
-import {
-  ArrowRightLeftIcon,
-  Button,
-  IconFrame,
-  LoopingLogo,
-} from '@pluralsh/design-system'
+import { ArrowRightLeftIcon, Button, IconFrame } from '@pluralsh/design-system'
 import { ThemeContext } from 'grommet'
 import { useCallback, useContext, useEffect } from 'react'
 import { A, Flex, Span } from 'honorable'
@@ -19,6 +14,8 @@ import { useMeQuery } from '../../generated/graphql'
 import { clearLocalStorage } from '../../helpers/localStorage'
 
 import { PosthogEvent, posthogCapture } from '../../utils/posthog'
+
+import LoadingIndicator from '../utils/LoadingIndicator'
 
 import { GET_OIDC_CONSENT, OAUTH_CONSENT } from './queries'
 
@@ -71,16 +68,7 @@ export function OAuthConsent() {
     }
   }, [repository])
 
-  if (!data || userLoading) {
-    return (
-      <Flex
-        grow={1}
-        align="center"
-        justify="center"
-      ><LoopingLogo />
-      </Flex>
-    )
-  }
+  if (!data || userLoading) <LoadingIndicator />
 
   if (!userData?.me?.email) {
     logout()

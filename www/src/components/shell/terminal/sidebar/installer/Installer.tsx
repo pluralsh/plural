@@ -11,7 +11,6 @@ import {
 import { useApolloClient, useQuery } from '@apollo/client'
 import {
   GraphQLToast,
-  LoopingLogo,
   Wizard,
   WizardNavigation,
   WizardStepConfig,
@@ -24,6 +23,8 @@ import useOnboarded from '../../../hooks/useOnboarded'
 import { State, TerminalContext } from '../../context/terminal'
 import CurrentUserContext from '../../../../../contexts/CurrentUserContext'
 import { PosthogEvent, posthogCapture } from '../../../../../utils/posthog'
+
+import LoadingIndicator from '../../../../utils/LoadingIndicator'
 
 import { buildSteps, install, toDefaultSteps } from './helpers'
 import { APPLICATIONS_QUERY } from './queries'
@@ -107,13 +108,10 @@ function Installer({ onInstallSuccess }) {
   if (!applications || defaultSteps.length === 0) {
     return (
       <Flex
-        flexGrow={0}
         width={600}
         height="100%"
-        align="center"
-        justify="center"
       >
-        <LoopingLogo />
+        <LoadingIndicator />
       </Flex>
     )
   }

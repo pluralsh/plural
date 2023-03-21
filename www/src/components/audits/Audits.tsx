@@ -2,15 +2,15 @@ import { memo, useCallback, useMemo } from 'react'
 import { Box } from 'grommet'
 import { Link } from 'react-router-dom'
 import { useQuery } from '@apollo/client'
-import { A, Div, Flex } from 'honorable'
+import { A, Div } from 'honorable'
 import { PageTitle, Table } from '@pluralsh/design-system'
 import { createColumnHelper } from '@tanstack/react-table'
 import isEmpty from 'lodash/isEmpty'
 
 import { extendConnection } from '../../utils/graphql'
-import { LoopingLogo } from '../utils/AnimatedLogo'
 import { AUDITS_Q } from '../account/queries'
 import { Date } from '../utils/Date'
+import LoadingIndicator from '../utils/LoadingIndicator'
 
 import { AuditUser } from './AuditUser'
 import { Location } from './Location'
@@ -133,21 +133,10 @@ export function Audits() {
     }
   }, [fetchMore, loading, pageInfo])
 
-  if (!data) {
-    return (
-      <Flex
-        grow={1}
-        justify="center"
-      >
-        <LoopingLogo />
-      </Flex>
-    )
-  }
+  if (!data) return <LoadingIndicator />
 
   return (
-    <Box
-      fill
-    >
+    <Box fill>
       <PageTitle heading="Audit logs" />
       <AuditsTable
         audits={audits}

@@ -6,8 +6,9 @@ import SubscriptionContext, { SubscriptionContextType } from '../../../contexts/
 import { PlatformSubscription } from '../../../generated/graphql'
 import PlatformPlansContext from '../../../contexts/PlatformPlansContext'
 
+import LoadingIndicator from '../../utils/LoadingIndicator'
+
 import BillingError from './BillingError'
-import BillingLoading from './BillingLoading'
 import { SUBSCRIPTION_QUERY } from './queries'
 
 type BillingSubscriptionProviderPropsType = {
@@ -54,7 +55,7 @@ function BillingSubscriptionProvider({ children }: BillingSubscriptionProviderPr
   ])
 
   if (error) return <BillingError />
-  if (loading) return <BillingLoading />
+  if (loading) return <LoadingIndicator />
 
   return (
     <SubscriptionContext.Provider value={subscriptionContextValue}>

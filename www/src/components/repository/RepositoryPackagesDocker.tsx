@@ -12,8 +12,9 @@ import Fuse from 'fuse.js'
 import { useRepositoryContext } from '../../contexts/RepositoryContext'
 import usePaginatedQuery from '../../hooks/usePaginatedQuery'
 import PluralConfigurationContext from '../../contexts/PluralConfigurationContext'
-import { LoopingLogo } from '../utils/AnimatedLogo'
 import InfiniteScroller from '../utils/InfiniteScroller'
+
+import LoadingIndicator from '../utils/LoadingIndicator'
 
 import { DOCKER_QUERY } from './queries'
 import { packageCardStyle } from './RepositoryPackages'
@@ -78,16 +79,7 @@ function RepositoryPackagesDocker() {
   const fuse = new Fuse(dockerRepositories, searchOptions)
   const filteredDockerRepositories = q ? fuse.search(q).map(({ item }) => item) : dockerRepositories
 
-  if (dockerRepositories.length === 0 && loadingCharts) {
-    return (
-      <Flex
-        pt={2}
-        justify="center"
-      >
-        <LoopingLogo />
-      </Flex>
-    )
-  }
+  if (dockerRepositories.length === 0 && loadingCharts) return <LoadingIndicator />
 
   return (
     <InfiniteScroller

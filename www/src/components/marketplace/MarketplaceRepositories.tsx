@@ -32,7 +32,6 @@ import { growthbook } from '../../helpers/growthbook'
 import usePaginatedQuery from '../../hooks/usePaginatedQuery'
 
 import { GoBack } from '../utils/GoBack'
-import { LoopingLogo } from '../utils/AnimatedLogo'
 import { LinkTabWrap } from '../utils/Tabs'
 
 import { ResponsiveLayoutSidecarContainer } from '../utils/layout/ResponsiveLayoutSidecarContainer'
@@ -40,6 +39,8 @@ import { ResponsiveLayoutSpacer } from '../utils/layout/ResponsiveLayoutSpacer'
 
 import PublisherSideNav from '../publisher/PublisherSideNav'
 import PublisherSideCar from '../publisher/PublisherSideCar'
+
+import LoadingIndicator from '../utils/LoadingIndicator'
 
 import { MARKETPLACE_QUERY } from './queries'
 
@@ -128,16 +129,7 @@ function MarketplaceRepositories({ installed, publisher }: any) {
   ])
 
   if (repositories.length === 0 && loadingRepositories) {
-    return (
-      <Flex
-        pt={2}
-        align="center"
-        justify="center"
-        flexGrow={1}
-      >
-        <LoopingLogo />
-      </Flex>
-    )
+    return <LoadingIndicator />
   }
 
   const sortedRepositories = orderBy(repositories.slice(),
@@ -389,15 +381,7 @@ function MarketplaceRepositories({ installed, publisher }: any) {
               repositories={resultRepositories}
               marginTop={publisher ? 0 : 'medium'}
             />
-            {loadingRepositories && (
-              <Flex
-                marginTop="xlarge"
-                align="center"
-                justify="center"
-              >
-                <LoopingLogo />
-              </Flex>
-            )}
+            {loadingRepositories && <LoadingIndicator />}
             {!resultRepositories?.length
               && installed
               && ![...searchParams]?.length

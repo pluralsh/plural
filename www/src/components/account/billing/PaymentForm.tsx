@@ -104,9 +104,7 @@ const paymentElementOptions: StripePaymentElementOptions = {
   layout: 'tabs',
 }
 
-function PaymentFormProvider({
-  children,
-}: PropsWithChildren) {
+function PaymentFormProvider({ children }: PropsWithChildren) {
   const [contextState, dispatch] = useImmerReducer(reducer, defaultState)
 
   const contextVal = useMemo(() => ({
@@ -320,6 +318,7 @@ function AddressForm({
   [billingAddress])
 
   const handleSubmit = useCallback(async event => {
+    console.log('handleSubmit')
     event.preventDefault()
 
     if (!(stripe && elements)) return
@@ -327,9 +326,8 @@ function AddressForm({
     setValidating(true)
 
     const addressElt = elements.getElement(AddressElement)
-    const cardElt = elements.getElement(CardElement)
 
-    if (!(addressElt && cardElt)) {
+    if (!(addressElt)) {
       return
     }
 
@@ -369,6 +367,8 @@ function AddressForm({
 
   const error = formError || errorProp
 
+  console.log('loading', loading)
+
   return (
     <form onSubmit={handleSubmit}>
       <Flex
@@ -381,26 +381,26 @@ function AddressForm({
             defaultValues: defaultAddress,
           }}
           onChange={event => {
+            console.log('changed', event)
             setAddressComplete(event.complete)
-            setFormError('')
+            if (event.complete) {
+              setFormError('')
+            }
           }}
         />
         {error && <BillingError>{error}</BillingError>}
 
-        <Flex justify="end"><Button
-          primary
-          disabled={disableSubmit}
-          loading={loading}
-          onClick={() => {
-            validateForm()
-          }}
-        >
-          Continue to payment
-                            </Button>
+        <Flex justify="end">
+          <Button
+            type="submit"
+            primary
+            disabled={disableSubmit}
+            loading={loading}
+          >
+            Continue to payment
+          </Button>
         </Flex>
-
       </Flex>
-
     </form>
   )
 }

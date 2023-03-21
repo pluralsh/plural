@@ -176,20 +176,16 @@ query Cards {
   }
 }
 
-# query LatestInvoice {
-#   invoices() {
-
-#   }
-# }
-
-mutation CreateCard($source: String!, $address: AddressAttributes) {
-  createCard(source: $source, address: $address) {
-    id
-  }
+fragment SetupIntent on SetupIntent {
+  id
+  status
+  clientSecret
+  nextAction
+  paymentMethodTypes
 }
 
-mutation DeleteCard($id: ID!) {
-  deleteCard(id: $id) {
-    id
+mutation SetupIntent($address: AddressAttributes) {
+  setupIntent(address: $address) {
+    ...SetupIntent
   }
 }

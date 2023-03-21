@@ -1,9 +1,8 @@
-import { ReactNode, useContext, useMemo } from 'react'
+import { ReactNode, useMemo } from 'react'
 import { useQuery } from '@apollo/client'
 import moment from 'moment'
 
 import SubscriptionContext, { SubscriptionContextType } from '../../../contexts/SubscriptionContext'
-import PlatformPlansContext from '../../../contexts/PlatformPlansContext'
 import LoadingIndicator from '../../utils/LoadingIndicator'
 
 import BillingError from './BillingError'
@@ -20,7 +19,6 @@ function BillingSubscriptionProvider({ children }: BillingSubscriptionProviderPr
     error,
     refetch,
   } = useQuery(SUBSCRIPTION_QUERY, { fetchPolicy: 'network-only', pollInterval: 60_000 })
-  const { proPlatformPlan, proYearlyPlatformPlan, enterprisePlatformPlan } = useContext(PlatformPlansContext)
 
   const subscriptionContextValue = useMemo<SubscriptionContextType>(() => {
     const account = data?.account
@@ -28,10 +26,11 @@ function BillingSubscriptionProvider({ children }: BillingSubscriptionProviderPr
     const billingAddress = account?.billingAddress
     const billingCustomerId = account?.billingCustomerId
     const subscription = account?.subscription
-    const isProPlan = !!subscription?.plan?.id && (subscription.plan.id === proPlatformPlan?.id || subscription.plan.id === proYearlyPlatformPlan?.id)
-    const isEnterprisePlan = !!subscription?.plan?.id && subscription.plan.id === enterprisePlatformPlan?.id
+    const plan = subscription?.plan
+    const isProPlan = plan?.name === 'Pro'
+    const isEnterprisePlan = plan?.name === 'Enterprise'
     const isPaidPlan = isProPlan || isEnterprisePlan
-    const isGrandfathered = moment().isBefore(moment(data?.account?.grandfatheredUntil))
+    const isGrandfathered = moment().isBefore(moment(account?.grandfatheredUntil))
 
     return {
       subscription,
@@ -45,7 +44,7 @@ function BillingSubscriptionProvider({ children }: BillingSubscriptionProviderPr
       availableFeatures,
       refetch,
     }
-  }, [data, refetch, proPlatformPlan, proYearlyPlatformPlan, enterprisePlatformPlan])
+  }, [data, refetch])
 
   if (error) return <BillingError />
   if (!data && loading) return <LoadingIndicator />

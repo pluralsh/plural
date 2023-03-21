@@ -33,12 +33,10 @@ function ContactUs({ primary }: { primary?: boolean }) {
 
 function BillingPricingCards() {
   const [searchParams, setSearchParams] = useSearchParams()
-  const { clusterMonthlyPricing, userMonthlyPricing }
-    = useContext(PlatformPlansContext)
+  const { clusterMonthlyPricing, userMonthlyPricing } = useContext(PlatformPlansContext)
   const { isProPlan, isEnterprisePlan } = useContext(SubscriptionContext)
 
-  const [upgradeToProfessionalModalOpen, setUpgradeToProfessionalModalOpen]
-    = useState(false)
+  const [upgradeToProfessionalModalOpen, setUpgradeToProfessionalModalOpen] = useState(false)
   const [downgradeModalOpen, setDowngradeModalOpen] = useState(false)
 
   const renderCurrentPlanButton = useCallback(() => (
@@ -49,8 +47,7 @@ function BillingPricingCards() {
     >
       Current plan
     </Button>
-  ),
-  [])
+  ), [])
 
   useEffect(() => {
     if (!searchParams.get('upgrade')) return
@@ -98,30 +95,23 @@ function BillingPricingCards() {
               checked: true,
             },
           ]}
-          callToAction={
-            isProPlan ? (
-              <Button
-                secondary
-                width="100%"
-                onClick={
-                  isEnterprisePlan ? null : () => setDowngradeModalOpen(true)
-                }
-              >
-                Downgrade
-              </Button>
-            ) : isEnterprisePlan ? (
-              <ContactUs />
-            ) : (
-              renderCurrentPlanButton()
-            )
-          }
+          callToAction={isProPlan ? (
+            <Button
+              secondary
+              width="100%"
+              onClick={isEnterprisePlan ? null : () => setDowngradeModalOpen(true)}
+            >
+              Downgrade
+            </Button>
+          ) : (isEnterprisePlan ? <ContactUs /> : renderCurrentPlanButton())}
         />
         <BillingPricingCard
           title="Professional"
           subtitle={(
             <>
               ${clusterMonthlyPricing}/cluster/month
-              <br />${userMonthlyPricing}/user/month
+              <br />
+              ${userMonthlyPricing}/user/month
             </>
           )}
           items={[
@@ -154,21 +144,15 @@ function BillingPricingCards() {
               checked: true,
             },
           ]}
-          callToAction={
-            isProPlan ? (
-              renderCurrentPlanButton()
-            ) : isEnterprisePlan ? (
-              <ContactUs />
-            ) : (
-              <Button
-                primary
-                width="100%"
-                onClick={() => setUpgradeToProfessionalModalOpen(true)}
-              >
-                Upgrade now
-              </Button>
-            )
-          }
+          callToAction={isProPlan ? renderCurrentPlanButton() : (isEnterprisePlan ? <ContactUs /> : (
+            <Button
+              primary
+              width="100%"
+              onClick={() => setUpgradeToProfessionalModalOpen(true)}
+            >
+              Upgrade now
+            </Button>
+          ))}
         />
         <BillingPricingCard
           title="Enterprise"
@@ -201,15 +185,9 @@ function BillingPricingCards() {
               checked: true,
             },
           ]}
-          callToAction={
-            isEnterprisePlan ? (
-              renderCurrentPlanButton()
-            ) : isProPlan ? (
-              <ContactUs primary />
-            ) : (
-              <ContactUs />
-            )
-          }
+          callToAction={isEnterprisePlan ? renderCurrentPlanButton() : (
+            isProPlan ? <ContactUs primary /> : <ContactUs />
+          )}
         />
       </Flex>
       <BillingUpgradeToProfessionalModal

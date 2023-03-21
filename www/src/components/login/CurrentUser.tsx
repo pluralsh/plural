@@ -41,7 +41,7 @@ export function PluralProvider({ children }: any) {
 
   if (loading) return <LoadingIndicator />
 
-  if (error || !data || !data.me || !data.me.id) {
+  if (error || !data?.me?.id) {
     wipeToken()
 
     return (<Navigate to="/login" />)

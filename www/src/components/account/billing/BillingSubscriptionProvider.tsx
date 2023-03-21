@@ -55,7 +55,7 @@ function BillingSubscriptionProvider({ children }: BillingSubscriptionProviderPr
   ])
 
   if (error) return <BillingError />
-  if (loading) return <LoadingIndicator />
+  if (!data && loading) return <LoadingIndicator />
 
   return (
     <SubscriptionContext.Provider value={subscriptionContextValue}>

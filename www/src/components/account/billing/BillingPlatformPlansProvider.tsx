@@ -56,7 +56,7 @@ function BillingPlatformPlansProvider({ children }: BillingPlatformPlansProvider
   ])
 
   if (error) return <BillingError />
-  if (loading) return <LoadingIndicator />
+  if (!data && loading) return <LoadingIndicator />
   if (isEmpty(platformPlans)) return <BillingError /> // The children should always have access to the core data
 
   return (

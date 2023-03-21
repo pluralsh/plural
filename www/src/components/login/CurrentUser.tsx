@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { Navigate, useLocation } from 'react-router-dom'
 import { useIntercom } from 'react-use-intercom'
 
@@ -11,20 +11,6 @@ import BillingSubscriptionProvider from '../account/billing/BillingSubscriptionP
 import BillingPlatformPlansProvider from '../account/billing/BillingPlatformPlansProvider'
 import { useNotificationSubscription } from '../../hooks/useNotificationSubscription'
 import LoadingIndicator from '../utils/LoadingIndicator'
-
-function LoadingSpinner() {
-  const [showLogo, setShowLogo] = useState(false)
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowLogo(true)
-    }, 500)
-
-    return () => clearTimeout(timer)
-  }, [])
-
-  return showLogo ? <LoadingIndicator /> : null
-}
 
 export function handlePreviousUserClick({ jwt }: any) {
   setToken(jwt)
@@ -53,7 +39,7 @@ export function PluralProvider({ children }: any) {
     if (data && data.me) update()
   }, [location, data, update])
 
-  if (loading) return <LoadingSpinner />
+  if (loading) return <LoadingIndicator />
 
   if (error || !data || !data.me || !data.me.id) {
     wipeToken()

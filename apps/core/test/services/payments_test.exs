@@ -714,6 +714,42 @@ defmodule Core.Services.PaymentsTest do
     end
   end
 
+  describe "#delete_payment_method/2" do
+    test "it can detach a payment method from the customer" do
+      account = insert(:account, billing_customer_id: "cus_id")
+      user = admin_user(account)
+      expect(Stripe.PaymentMethod, :detach, fn %{payment_method: "card"} -> {:ok, %Stripe.PaymentMethod{id: "card"}} end)
+
+      {:ok, _} = Payments.delete_payment_method("card", user)
+    end
+
+    test "non admins cannot delete" do
+      account = insert(:account, billing_customer_id: "cus_id")
+      user    = insert(:user, account: account)
+
+      {:error, _} = Payments.delete_payment_method("card", user)
+    end
+  end
+
+  describe "#default_payment_method/2" do
+    test "it can detach a payment method from the customer" do
+      account = insert(:account, billing_customer_id: "cus_id")
+      user = admin_user(account)
+      expect(Stripe.Customer, :update, fn "cus_id", %{invoice_settings: %{default_payment_method: "card"}} ->
+        {:ok, %Stripe.Customer{id: "cus_id"}}
+      end)
+
+      {:ok, _} = Payments.default_payment_method(user, "card")
+    end
+
+    test "non admins cannot delete" do
+      account = insert(:account, billing_customer_id: "cus_id")
+      user    = insert(:user, account: account)
+
+      {:error, _} = Payments.default_payment_method(user, "card")
+    end
+  end
+
   describe "#limited?/2" do
     test "users under the limit are not limited" do
       account = insert(:account)

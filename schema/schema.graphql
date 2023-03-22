@@ -1652,6 +1652,8 @@ type RootMutationType {
 
   deleteCard(id: ID!): Account
 
+  deletePaymentMethod(id: ID!): PaymentMethod
+
   linkPublisher(token: String!): Publisher
 
   createPlan(repositoryId: ID!, attributes: PlanAttributes!): Plan

@@ -77,6 +77,22 @@ defmodule GraphQl.PaymentsMutationsTest do
     end
   end
 
+  describe "deletePaymentMethod" do
+    test "It can delete a user's registered card" do
+      account = insert(:account, billing_customer_id: "cus_id")
+      user = admin_user(account)
+      expect(Stripe.PaymentMethod, :detach, fn %{payment_method: "card"} -> {:ok, %Stripe.PaymentMethod{id: "card"}} end)
+
+      {:ok, %{data: %{"deletePaymentMethod" => deleted}}} = run_query("""
+        mutation deletePaymentMethod($id: ID!) {
+          deletePaymentMethod(id: $id) { id }
+        }
+      """, %{"id" => "card"}, %{current_user: user})
+
+      assert deleted["id"] == "card"
+    end
+  end
+
   describe "linkPublisher" do
     test "It will fetch an account id and persist it" do
       expect(Stripe.Connect.OAuth, :token, fn "oauth_code" ->

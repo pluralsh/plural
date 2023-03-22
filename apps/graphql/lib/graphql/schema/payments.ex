@@ -321,6 +321,13 @@ defmodule GraphQl.Schema.Payments do
       safe_resolve &Payments.delete_card/2
     end
 
+    field :delete_payment_method, :payment_method do
+      middleware Authenticated
+      arg :id, non_null(:id)
+
+      safe_resolve &Payments.delete_payment_method/2
+    end
+
     field :link_publisher, :publisher do
       middleware Authenticated
       arg :token, non_null(:string)

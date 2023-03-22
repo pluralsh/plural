@@ -2618,6 +2618,7 @@ export type RootMutationType = {
   deleteInvite?: Maybe<Invite>;
   deleteKeyBackup?: Maybe<KeyBackup>;
   deleteMessage?: Maybe<IncidentMessage>;
+  deletePaymentMethod?: Maybe<PaymentMethod>;
   deletePlatformSubscription?: Maybe<Account>;
   deletePublicKey?: Maybe<PublicKey>;
   deleteReaction?: Maybe<IncidentMessage>;
@@ -3008,6 +3009,11 @@ export type RootMutationTypeDeleteKeyBackupArgs = {
 
 
 export type RootMutationTypeDeleteMessageArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type RootMutationTypeDeletePaymentMethodArgs = {
   id: Scalars['ID'];
 };
 

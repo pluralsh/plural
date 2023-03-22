@@ -127,7 +127,7 @@ defmodule Core.Services.Payments do
   @doc """
   It can list all payment methods attached to a customer
   """
-  @spec list_payment_methods(Account.t, User.t, map) :: {:ok, Stripe.List.t(Stripe.PaymentMethod.t)} | {:error, term}
+  @spec list_payment_methods(Account.t, User.t, map) :: {:ok, Stripe.List.t(Stripe.PaymentMethod.t)} | error
   def list_payment_methods(%Account{billing_customer_id: id} = account, %User{} = user, opts) when is_binary(id) do
     with {:ok, _} <- allow(account, user, :pay) do
       Map.merge(%{customer: id}, opts)
@@ -136,6 +136,17 @@ defmodule Core.Services.Payments do
   end
 
   def list_payment_methods(_, _, _), do: {:ok, %Stripe.List{has_more: false, data: []}}
+
+  @doc """
+  Deletes a payment method if the user has permissions
+  """
+  @spec delete_payment_method(binary, User.t) :: {:ok, Stripe.PaymentMethod.t} | error
+  def delete_payment_method(id, %User{} = user) do
+    %{account: account} = Core.Repo.preload(user, [:account])
+    with {:ok, _} <- allow(account, user, :pay) do
+      Stripe.PaymentMethod.detach(%{payment_method: id})
+    end
+  end
 
   @spec has_plans?(binary) :: boolean
   def has_plans?(repository_id) do

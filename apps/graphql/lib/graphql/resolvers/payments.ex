@@ -86,6 +86,9 @@ defmodule GraphQl.Resolvers.Payments do
   def delete_card(%{id: id}, %{context: %{current_user: user}}),
     do: Payments.delete_card(id, user)
 
+  def delete_payment_method(%{id: id}, %{context: %{current_user: user}}),
+    do: Payments.delete_payment_method(id, user)
+
   def setup_intent(args, %{context: %{current_user: user}}),
     do: Payments.setup_intent(args, user)
 

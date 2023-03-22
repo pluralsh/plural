@@ -381,6 +381,22 @@ defmodule GraphQl.PaymentsMutationsTest do
     end
   end
 
+  describe "defaultPaymentMethod" do
+    test "it will set the default payment method for an account" do
+      account = insert(:account, billing_customer_id: "cus_id", user_count: 2, cluster_count: 0)
+      user = insert(:user, roles: %{admin: true}, account: account)
+      expect(Stripe.Customer, :update, fn "cus_id", %{invoice_settings: %{default_payment_method: "pay_id"}} ->
+        {:ok, %Stripe.Customer{}}
+      end)
+
+      {:ok, %{data: %{"defaultPaymentMethod" => true}}} = run_query("""
+        mutation Default($id: String!) {
+          defaultPaymentMethod(id: $id)
+        }
+      """, %{"id" => "pay_id"}, %{current_user: user})
+    end
+  end
+
   describe "createPlatformSubscription" do
     test "it can create a platform subscription" do
       account = insert(:account, billing_customer_id: "cus_id", user_count: 2, cluster_count: 0)

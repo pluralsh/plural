@@ -2,7 +2,7 @@ defmodule GraphQl.Resolvers.Payments do
   use GraphQl.Resolvers.Base, model: Core.Schema.Subscription
   import Piazza.Utils
   alias Core.Services.{Payments, Users}
-  alias Core.Schema.{PlatformPlan, PlatformSubscription, Plan, User}
+  alias Core.Schema.{PlatformPlan, PlatformSubscription, Plan, User, Account}
 
   def query(Plan, _), do: Plan.ordered()
   def query(PlatformPlan, _), do: PlatformPlan
@@ -47,6 +47,11 @@ defmodule GraphQl.Resolvers.Payments do
     |> to_connection()
   end
   def list_cards(_, _, _), do: {:error, :forbidden}
+
+  def list_payment_methods(%Account{} = account, args, %{context: %{current_user: %User{} = user}}) do
+    Payments.list_payment_methods(account, user, to_stripe_args(args))
+    |> to_connection()
+  end
 
   defp to_connection({:ok, %Stripe.List{has_more: has_more, data: list}}) do
     {edges, end_cursor} = build_edges(list)
@@ -107,6 +112,11 @@ defmodule GraphQl.Resolvers.Payments do
 
   def cancel_platform_subscription(_, %{context: %{current_user: user}}),
     do: Payments.cancel_platform_subscription(user)
+
+  def default_payment_method(%{id: id}, %{context: %{current_user: user}}) do
+    with {:ok, _} <- Payments.default_payment_method(user, id),
+      do: {:ok, true}
+  end
 
   def link_publisher(%{token: token}, %{context: %{current_user: user}}) do
     Users.get_publisher_by_owner!(user.id)

@@ -370,6 +370,11 @@ type ClusterEdge {
   cursor: String
 }
 
+type PaymentMethodEdge {
+  node: PaymentMethod
+  cursor: String
+}
+
 input DomainMappingInput {
   id: ID
   domain: String
@@ -409,6 +414,7 @@ type Account {
   grandfatheredUntil: DateTime
   billingAddress: Address
   icon: String
+  paymentMethods(after: String, first: Int, before: String, last: Int): PaymentMethodConnection
   rootUser: User
   domainMappings: [DomainMapping]
   subscription: PlatformSubscription
@@ -798,6 +804,11 @@ type PlatformSubscription {
   lineItems: [PlatformSubscriptionLineItems]
   plan: PlatformPlan
   latestInvoice: Invoice
+}
+
+type PaymentMethodConnection {
+  pageInfo: PageInfo!
+  edges: [PaymentMethodEdge]
 }
 
 input ResetTokenRealization {
@@ -1636,6 +1647,8 @@ type RootMutationType {
   createCard(source: String!, address: AddressAttributes): Account
 
   setupIntent(address: AddressAttributes): SetupIntent
+
+  defaultPaymentMethod(id: String!): Boolean
 
   deleteCard(id: ID!): Account
 
@@ -2574,6 +2587,13 @@ type Chart {
   updatedAt: DateTime
 }
 
+type PaymentMethod {
+  id: String
+  card: Card
+  type: String
+  isDefault: Boolean
+}
+
 input PlanMetadataAttributes {
   freeform: Yaml
   features: [PlanFeatureAttributes]
@@ -3102,6 +3122,14 @@ type OidcProviderBinding {
   updatedAt: DateTime
 }
 
+enum MediaType {
+  IMAGE
+  VIDEO
+  AUDIO
+  OTHER
+  PDF
+}
+
 enum OauthService {
   ZOOM
 }
@@ -3148,14 +3176,6 @@ enum WebhookLogState {
 type PersistedTokenEdge {
   node: PersistedToken
   cursor: String
-}
-
-enum MediaType {
-  IMAGE
-  VIDEO
-  AUDIO
-  OTHER
-  PDF
 }
 
 enum MessageEntityType {

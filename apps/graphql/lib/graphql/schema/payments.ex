@@ -138,6 +138,18 @@ defmodule GraphQl.Schema.Payments do
     end
   end
 
+  object :payment_method do
+    field :id,   :string
+    field :card, :card
+    field :type, :string
+
+    field :is_default, :boolean, resolve: fn
+      %Stripe.PaymentMethod{id: id, customer: %Stripe.Customer{invoice_settings: %{default_payment_method: id}}}, _, _ ->
+        {:ok, true}
+      _, _, _ -> {:ok, false}
+    end
+  end
+
   object :payment_intent do
     field :id,             :string
     field :description,    :string
@@ -245,6 +257,7 @@ defmodule GraphQl.Schema.Payments do
 
   connection node_type: :invoice
   connection node_type: :card
+  connection node_type: :payment_method
   connection node_type: :repository_subscription
 
   object :payment_queries do
@@ -292,6 +305,13 @@ defmodule GraphQl.Schema.Payments do
       arg :address, :address_attributes
 
       safe_resolve &Payments.setup_intent/2
+    end
+
+    field :default_payment_method, :boolean do
+      middleware Authenticated
+      arg :id, non_null(:string)
+
+      safe_resolve &Payments.default_payment_method/2
     end
 
     field :delete_card, :account do

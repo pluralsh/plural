@@ -40,11 +40,20 @@ export type Account = {
   id: Scalars['ID'];
   insertedAt?: Maybe<Scalars['DateTime']>;
   name?: Maybe<Scalars['String']>;
+  paymentMethods?: Maybe<PaymentMethodConnection>;
   rootUser?: Maybe<User>;
   subscription?: Maybe<PlatformSubscription>;
   updatedAt?: Maybe<Scalars['DateTime']>;
   userCount?: Maybe<Scalars['String']>;
   workosConnectionId?: Maybe<Scalars['String']>;
+};
+
+
+export type AccountPaymentMethodsArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
 };
 
 export type AccountAttributes = {
@@ -1787,6 +1796,26 @@ export type PaymentIntent = {
   status?: Maybe<Scalars['String']>;
 };
 
+export type PaymentMethod = {
+  __typename?: 'PaymentMethod';
+  card?: Maybe<Card>;
+  id?: Maybe<Scalars['String']>;
+  isDefault?: Maybe<Scalars['Boolean']>;
+  type?: Maybe<Scalars['String']>;
+};
+
+export type PaymentMethodConnection = {
+  __typename?: 'PaymentMethodConnection';
+  edges?: Maybe<Array<Maybe<PaymentMethodEdge>>>;
+  pageInfo: PageInfo;
+};
+
+export type PaymentMethodEdge = {
+  __typename?: 'PaymentMethodEdge';
+  cursor?: Maybe<Scalars['String']>;
+  node?: Maybe<PaymentMethod>;
+};
+
 export enum PaymentPeriod {
   Monthly = 'MONTHLY',
   Yearly = 'YEARLY'
@@ -2572,6 +2601,7 @@ export type RootMutationType = {
   createUserEvent?: Maybe<Scalars['Boolean']>;
   createWebhook?: Maybe<Webhook>;
   createZoom?: Maybe<ZoomMeeting>;
+  defaultPaymentMethod?: Maybe<Scalars['Boolean']>;
   deleteCard?: Maybe<Account>;
   deleteChartInstallation?: Maybe<ChartInstallation>;
   /** Delete a cluster. */
@@ -2898,6 +2928,11 @@ export type RootMutationTypeCreateWebhookArgs = {
 
 export type RootMutationTypeCreateZoomArgs = {
   attributes: MeetingAttributes;
+};
+
+
+export type RootMutationTypeDefaultPaymentMethodArgs = {
+  id: Scalars['String'];
 };
 
 

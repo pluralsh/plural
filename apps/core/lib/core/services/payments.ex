@@ -106,6 +106,37 @@ defmodule Core.Services.Payments do
 
   def list_cards(_, _), do: {:ok, %Stripe.List{has_more: false, data: []}}
 
+
+  @doc """
+  Updates the default payment method for an account
+  """
+  @spec default_payment_method(User.t | Account.t, binary) :: {:ok, Stripe.Customer.t} | error
+  def default_payment_method(%User{} = user, id) do
+    %{account: account} = Core.Repo.preload(user, [:account])
+    with {:ok, account} <- allow(account, user, :pay) do
+      default_payment_method(account, id)
+    end
+  end
+
+  def default_payment_method(%Account{billing_customer_id: cus_id}, id) when is_binary(cus_id) do
+    Stripe.Customer.update(cus_id, %{invoice_settings: %{default_payment_method: id}})
+  end
+
+  def default_payment_method(_, _), do: {:error, "you have yet to set up billing for your account"}
+
+  @doc """
+  It can list all payment methods attached to a customer
+  """
+  @spec list_payment_methods(Account.t, User.t, map) :: {:ok, Stripe.List.t(Stripe.PaymentMethod.t)} | {:error, term}
+  def list_payment_methods(%Account{billing_customer_id: id} = account, %User{} = user, opts) when is_binary(id) do
+    with {:ok, _} <- allow(account, user, :pay) do
+      Map.merge(%{customer: id}, opts)
+      |> Stripe.PaymentMethod.list(expand: "customer")
+    end
+  end
+
+  def list_payment_methods(_, _, _), do: {:ok, %Stripe.List{has_more: false, data: []}}
+
   @spec has_plans?(binary) :: boolean
   def has_plans?(repository_id) do
     Plan.for_repository(repository_id)

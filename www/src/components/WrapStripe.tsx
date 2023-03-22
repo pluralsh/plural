@@ -67,7 +67,7 @@ export const useStripeAppearance = () => {
   ])
 }
 
-export function StripeElements({ children }: any) {
+export function WrapStripe({ children }: any) {
   const { stripePublishableKey } = useContext(PluralConfigurationContext)
   const appearance = useStripeAppearance()
 

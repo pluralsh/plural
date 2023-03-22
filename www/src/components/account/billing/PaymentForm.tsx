@@ -1,7 +1,6 @@
 import { Button } from '@pluralsh/design-system'
 import {
   AddressElement,
-  CardElement,
   PaymentElement,
   useElements,
   useStripe,
@@ -13,20 +12,22 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
 } from 'react'
 import { type ImmerReducer, useImmerReducer } from 'use-immer'
 
-import PlatformPlansContext from '../../../contexts/PlatformPlansContext'
 import SubscriptionContext from '../../../contexts/SubscriptionContext'
-import { PaymentIntentFragment, namedOperations, useUpgradeToProfessionalPlanMutation } from '../../../generated/graphql'
+import { SetupIntentFragment, namedOperations, useSetupIntentMutation } from '../../../generated/graphql'
+import type { AddressAttributes } from '../../../generated/graphql'
 
 import { host } from '../../../helpers/hostname'
-import { GqlError } from '../../utils/Alert'
+import { ErrorMessage } from '../../utils/Alert'
 
 import BillingError from './BillingError'
 import BillingPreview from './BillingPreview'
+import { StripeElements } from './StripeElements'
 
 enum PaymentFormState {
   CollectAddress = 'ADDRESS',
@@ -36,23 +37,27 @@ enum PaymentFormState {
 type PaymentFormContextState = {
   formState: PaymentFormState
   clientSecret?: string | undefined | null
-  paymentIntent?: PaymentIntentFragment | undefined | null
+  intent?: SetupIntentFragment | undefined | null
+  plan: PlanType
 }
 
 type PaymentFormContextVal = PaymentFormContextState & {
   setClientSecret: (
     clientSecret?: PaymentFormContextState['clientSecret']
   ) => void
-  setPaymentIntent: (
-    paymentIntent?: PaymentFormContextState['paymentIntent']
-  ) => void
+  setIntent: (intent?: PaymentFormContextState['intent']) => void
+
   setFormState: (state: PaymentFormState) => void
+  setPlan: (plan: PlanType) => void
 }
+
+export type PlanType = 'yearly' | 'monthly'
 
 const defaultState: PaymentFormContextState = {
   formState: PaymentFormState.CollectAddress,
   clientSecret: undefined,
-  paymentIntent: undefined,
+  intent: undefined,
+  plan: 'monthly',
 }
 
 const PaymentFormContext = createContext<PaymentFormContextVal | null>(null)
@@ -74,32 +79,39 @@ const reducer: ImmerReducer<
       payload: PaymentFormContextState['clientSecret']
     }
   | {
-      type: 'setPaymentIntent'
-      payload: PaymentFormContextState['paymentIntent']
+      type: 'setIntent'
+      payload: PaymentFormContextState['intent']
     }
-  | { type: 'setFormState'; payload: PaymentFormState }
-> = (draft, action) => {
-  switch (action.type) {
-  case 'setClientSecret':
-    draft.clientSecret = action.payload
+    | { type: 'setFormState'; payload: PaymentFormState }
+    | { type: 'setPlan'; payload: PlanType }
+    > = (draft, action) => {
+      switch (action.type) {
+      case 'setClientSecret':
+        draft.clientSecret = action.payload
 
-    return draft
-    break
-  case 'setFormState':
-    draft.formState = action.payload
+        return draft
+        break
+      case 'setFormState':
+        draft.formState = action.payload
+        if (draft.formState === PaymentFormState.CollectAddress) {
+          draft.clientSecret = undefined
+        }
 
-    return draft
-  case 'setPaymentIntent':
-    draft.paymentIntent = action.payload
+        return draft
+      case 'setIntent':
+        draft.intent = action.payload
 
-    return draft
+        return draft
+      case 'setPlan':
+        draft.plan = action.payload
 
-  default:
-    console.error('Incorrect action type sent to reducer')
+        return draft
+      default:
+        console.error('Incorrect action type sent to reducer')
 
-    return draft
-  }
-}
+        return draft
+      }
+    }
 const paymentElementOptions: StripePaymentElementOptions = {
   layout: 'tabs',
 }
@@ -115,8 +127,11 @@ function PaymentFormProvider({ children }: PropsWithChildren) {
     setFormState: (state: PaymentFormContextState['formState']) => {
       dispatch({ type: 'setFormState', payload: state })
     },
-    setPaymentIntent: (paymentIntent: PaymentFormContextState['paymentIntent']) => {
-      dispatch({ type: 'setPaymentIntent', payload: paymentIntent })
+    setIntent: (intent: PaymentFormContextState['intent']) => {
+      dispatch({ type: 'setIntent', payload: intent })
+    },
+    setPlan: (plan: PaymentFormContextState['plan']) => {
+      dispatch({ type: 'setPlan', payload: plan })
     },
   }),
   [dispatch, contextState])
@@ -129,33 +144,21 @@ function PaymentFormProvider({ children }: PropsWithChildren) {
 }
 
 function PaymentFormInner() {
-  const { proPlatformPlan, proYearlyPlatformPlan }
-    = useContext(PlatformPlansContext)
-  const { formState, setClientSecret, setPaymentIntent } = usePaymentForm()
-  const [applyYearlyDiscount, setApplyYearlyDiscount] = useState(false)
-  const planId = applyYearlyDiscount
-    ? proYearlyPlatformPlan.id
-    : proPlatformPlan.id
-  // const [loading, setLoading] = useState(false)
+  const {
+    formState, plan, setPlan, clientSecret, setFormState,
+  } = usePaymentForm()
 
   if (formState === PaymentFormState.CollectAddress) {
     console.log('thing')
   }
-  const [upgradeMutation, { loading, error }]
-    = useUpgradeToProfessionalPlanMutation({
-      refetchQueries: [namedOperations.Query.Subscription],
-      onCompleted: ret => {
-        const intent
-          = ret.createPlatformSubscription?.latestInvoice?.paymentIntent
-
-        console.log('paymentIntent', intent)
-        setPaymentIntent(intent)
-        setClientSecret(intent?.clientSecret)
-      },
-      onError: error => {
-        console.log('mutation error', error.message)
-      },
-    })
+  useEffect(() => {
+    if (clientSecret) {
+      setFormState(PaymentFormState.CollectPayment)
+    }
+    else {
+      setFormState(PaymentFormState.CollectAddress)
+    }
+  }, [clientSecret, setFormState])
 
   return (
     <>
@@ -164,8 +167,10 @@ function PaymentFormInner() {
           <BillingPreview
             noCard
             discountPreview
-            yearly={applyYearlyDiscount}
-            onChange={setApplyYearlyDiscount}
+            yearly={plan === 'yearly'}
+            onChange={isYearly => {
+              setPlan(isYearly ? 'yearly' : 'monthly')
+            }}
           />
           <Div
             fontWeight="bold"
@@ -178,20 +183,15 @@ function PaymentFormInner() {
             flexDirection="column"
             gap="xlarge"
           >
-            <AddressForm
-              loading={loading}
-              error={error?.message}
-              onSubmit={address => {
-                console.log('address submit')
-                upgradeMutation({
-                  variables: { planId, billingAddress: address },
-                })
-              }}
-            />
+            <AddressForm />
           </Flex>
         </>
       )}
-      {/* {formState === PaymentFormState.CollectPayment} && <Payment /> */}
+      {formState === PaymentFormState.CollectPayment && clientSecret && (
+        <StripeElements options={{ clientSecret }}>
+          <Payment />
+        </StripeElements>
+      ) }
     </>
   )
 }
@@ -205,6 +205,7 @@ export default function PaymentForm() {
 }
 
 function Payment() {
+  const { clientSecret, plan, setFormState } = usePaymentForm()
   const [message, setMessage] = useState<string | null | undefined>()
   const [isLoading, setIsLoading] = useState(false)
   const stripe = useStripe()
@@ -213,7 +214,7 @@ function Payment() {
   const handleSubmit = async e => {
     e.preventDefault()
 
-    if (!stripe || !elements) {
+    if (!stripe || !elements || !clientSecret) {
       // Stripe.js has not yet loaded.
       // Make sure to disable form submission until Stripe.js has loaded.
       return
@@ -221,11 +222,13 @@ function Payment() {
 
     setIsLoading(true)
 
-    const { error } = await stripe.confirmPayment({
+    const { error } = await stripe.confirmSetup({
       elements,
       confirmParams: {
         // Make sure to change this to your payment completion page
-        return_url: `${host()}/account/billing`,
+        return_url: `${host()}/account/billing?plan=${
+          plan
+        }`,
       },
     })
 
@@ -244,27 +247,44 @@ function Payment() {
     setIsLoading(false)
   }
 
+  if (!clientSecret) {
+    return null
+  }
+
   return (
     <form
       id="payment-form"
       onSubmit={handleSubmit}
     >
-      <PaymentElement
-        id="payment-element"
-        options={paymentElementOptions}
-      />
-      {/* Show any error or success messages */}
-
-      {message && <BillingError>{message}</BillingError>}
-
-      <Button
-        type="submit"
-        loading={isLoading}
-        disabled={isLoading || !stripe || !elements}
-        id="submit"
+      <Flex
+        direction="column"
+        gap="xlarge"
       >
-        Upgrade now
-      </Button>
+        <PaymentElement
+          id="payment-element"
+          options={paymentElementOptions}
+        />
+        {/* Show any error or success messages */}
+
+        {message && <BillingError>{message}</BillingError>}
+
+        <Flex justify="space-between">
+          <Button
+            secondary
+            onClick={() => setFormState(PaymentFormState.CollectAddress)}
+          >
+            Change address
+          </Button>
+          <Button
+            type="submit"
+            loading={isLoading}
+            disabled={isLoading || !stripe || !elements}
+            id="submit"
+          >
+            Upgrade now
+          </Button>
+        </Flex>
+      </Flex>
     </form>
   )
 }
@@ -272,27 +292,19 @@ function Payment() {
 function AddressForm({
   loading: loadingProp = false,
   error: errorProp = '',
-  onSubmit,
-}: {
+}: // onComplete,
+{
   loading?: boolean
   error?: string
-  onSubmit: (addr: {
-    city: string
-    country: string
-    line1: string
-    line2: string
-    name: string
-    state: string
-    zip: string
-  }) => void
+  // onComplete?: ({ address: AddressAttributes, intent }) => void
 }) {
   const [addressComplete, setAddressComplete] = useState(false)
-
   const [validating, setValidating] = useState(loadingProp)
   const [formError, setFormError] = useState(errorProp)
   const loading = loadingProp || validating
   const stripe = useStripe()
   const elements = useElements()
+  const { setClientSecret, setIntent } = usePaymentForm()
   const validateForm = useCallback(async () => {
     if (!elements) {
       return
@@ -302,6 +314,11 @@ function AddressForm({
     await (addressElt as any)?.getValue()
   }, [elements])
   const { billingAddress } = useContext(SubscriptionContext)
+
+  const [setupIntentMut] = useSetupIntentMutation({
+    refetchQueries: [namedOperations.Query.Subscription],
+  })
+
   const disableSubmit = !stripe || !elements || !addressComplete || loading
 
   const defaultAddress = useMemo(() => ({
@@ -327,7 +344,7 @@ function AddressForm({
 
     const addressElt = elements.getElement(AddressElement)
 
-    if (!(addressElt)) {
+    if (!addressElt) {
       return
     }
 
@@ -343,27 +360,38 @@ function AddressForm({
 
     const { address, name } = addressVal.value
 
-    try {
-      onSubmit({
-        name: name || '',
-        line1: address.line1 || '',
-        line2: address.line2 || '',
-        zip: address.zip || '',
-        state: address.state || '',
-        city: address.city || '',
-        country: address.country || '',
-      })
+    const setupIntentAddress:AddressAttributes = {
+      name: `${name || ''}`,
+      line1: `${address.line1 || ''}`,
+      line2: `${address.line2 || ''}`,
+      zip: `${address.zip || ''}`,
+      state: `${address.state || ''}`,
+      city: `${address.city || ''}`,
+      country: `${address.country || ''}`,
     }
-    catch (error) {
-      setFormError((error as Error)?.message)
-      setValidating(false)
 
-      return
+    const setupResult = await setupIntentMut({
+      variables: { address: setupIntentAddress },
+    })
+
+    if (setupResult.errors) {
+      setFormError(setupResult.errors[0].message)
+      console.log('setupIntent errors', setupResult.errors)
+      setValidating(false)
     }
+
+    const intent = setupResult.data?.setupIntent
+
+    if (intent) {
+      setIntent(intent)
+      setClientSecret(intent.clientSecret)
+    }
+
+    console.log('x', setupResult.data)
 
     setValidating(false)
   },
-  [elements, onSubmit, stripe])
+  [elements, setClientSecret, setIntent, setupIntentMut, stripe])
 
   const error = formError || errorProp
 
@@ -388,17 +416,25 @@ function AddressForm({
             }
           }}
         />
-        {error && <BillingError>{error}</BillingError>}
+        {error && (
+          <ErrorMessage
+            header="Error"
+            message={error}
+          />
+        )}
 
         <Flex justify="end">
-          <Button
-            type="submit"
-            primary
-            disabled={disableSubmit}
-            loading={loading}
-          >
-            Continue to payment
-          </Button>
+          {/* Wrap the button so you can still validate the form on click while disabled */}
+          <Div onClick={() => validateForm()}>
+            <Button
+              type="submit"
+              primary
+              disabled={disableSubmit}
+              loading={loading}
+            >
+              Continue to payment
+            </Button>
+          </Div>
         </Flex>
       </Flex>
     </form>

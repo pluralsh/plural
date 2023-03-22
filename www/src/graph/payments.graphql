@@ -180,7 +180,9 @@ fragment SetupIntent on SetupIntent {
   id
   status
   clientSecret
-  nextAction
+  nextAction {
+    ...NextAction
+  }
   paymentMethodTypes
 }
 

@@ -32,7 +32,7 @@ import { StripeElements } from './StripeElements'
 
 export enum PaymentFormVariant {
   Upgrade = 'UPGRADE',
-    AddCard = 'ADD_CARD',
+  AddCard = 'ADD_CARD',
 }
 
 enum PaymentFormState {
@@ -123,7 +123,10 @@ const paymentElementOptions: StripePaymentElementOptions = {
   layout: 'tabs',
 }
 
-function PaymentFormProvider({ formVariant, children }: PropsWithChildren<{formVariant: PaymentFormVariant}>) {
+function PaymentFormProvider({
+  formVariant,
+  children,
+}: PropsWithChildren<{ formVariant: PaymentFormVariant }>) {
   const [contextState, dispatch] = useImmerReducer(reducer, defaultState)
 
   const contextVal = useMemo(() => ({
@@ -211,7 +214,9 @@ function PaymentFormInner() {
 export default function PaymentForm({
   formVariant,
   ...props
-}: { formVariant: PaymentFormVariant } & ComponentProps<typeof PaymentFormInner>) {
+}: { formVariant: PaymentFormVariant } & ComponentProps<
+  typeof PaymentFormInner
+>) {
   return (
     <PaymentFormProvider formVariant={formVariant}>
       <PaymentFormInner {...props} />
@@ -221,7 +226,7 @@ export default function PaymentForm({
 
 function Payment() {
   const {
-    clientSecret, plan, setFormState,
+    clientSecret, plan, setFormState, formVariant,
   } = usePaymentForm()
   const [message, setMessage] = useState<string | null | undefined>()
   const [isLoading, setIsLoading] = useState(false)
@@ -243,7 +248,10 @@ function Payment() {
       elements,
       confirmParams: {
         // Make sure to change this to your payment completion page
-        return_url: `${host()}/account/billing?plan=${plan}`,
+        return_url:
+          formVariant === PaymentFormVariant.Upgrade
+            ? `${host()}/account/billing?plan=${plan}`
+            : `${host()}/account/billing/payments`,
       },
     })
 

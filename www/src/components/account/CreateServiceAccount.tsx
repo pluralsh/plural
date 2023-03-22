@@ -220,7 +220,7 @@ export function CreateServiceAccount({ q }: any) {
         <Button
           secondary
           onClick={() => setOpen(true)}
-          disabled={!availableFeatures.userManagement}
+          disabled={!availableFeatures?.userManagement}
         >
           Create service account
         </Button>

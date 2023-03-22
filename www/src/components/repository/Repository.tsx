@@ -6,7 +6,6 @@ import { validate as uuidValidate } from 'uuid'
 
 import { RepositoryContextProvider } from '../../contexts/RepositoryContext'
 
-import { LoopingLogo } from '../utils/AnimatedLogo'
 import { ResponsiveLayoutContentContainer } from '../utils/layout/ResponsiveLayoutContentContainer'
 import { ResponsiveLayoutSidecarContainer } from '../utils/layout/ResponsiveLayoutSidecarContainer'
 import { ResponsiveLayoutSpacer } from '../utils/layout/ResponsiveLayoutSpacer'
@@ -14,6 +13,8 @@ import { ResponsiveLayoutSidenavContainer } from '../utils/layout/ResponsiveLayo
 import { ResponsiveLayoutPage } from '../utils/layout/ResponsiveLayoutPage'
 
 import { useRepositoryQuery } from '../../generated/graphql'
+
+import LoadingIndicator from '../utils/LoadingIndicator'
 
 import RepositorySideNav from './RepositorySideNav'
 import { RepositorySideCar } from './RepositorySideCar'
@@ -25,22 +26,9 @@ function Repository() {
   })
   const tabStateRef = useRef<any>(null)
 
-  if (loading) {
-    return (
-      <Flex
-        // These mp values are to align the looping logo with the previous looping logo.
-        // Reload the page on /repository/foo to see it in action.
-        paddingTop={24.25 * 16}
-        marginLeft={-5 * 16}
-        align="center"
-        justify="center"
-      >
-        <LoopingLogo />
-      </Flex>
-    )
-  }
+  if (!data && loading) return <LoadingIndicator />
 
-  if (!data || !data.repository) {
+  if (!data?.repository) {
     return (
       <Flex
         direction="column"

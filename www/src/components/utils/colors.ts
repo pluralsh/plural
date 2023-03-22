@@ -1,7 +1,7 @@
 import randomColor from 'randomcolor'
 
 // Colors used in graphs.
-export const COLORS = [
+const COLORS = [
   '#99DAFF',
   '#D596F4',
   '#99F5D5',

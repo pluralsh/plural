@@ -10,11 +10,12 @@ import {
 
 import { useRepositoryContext } from '../../contexts/RepositoryContext'
 import usePaginatedQuery from '../../hooks/usePaginatedQuery'
-import { LoopingLogo } from '../utils/AnimatedLogo'
 import InfiniteScroller from '../utils/InfiniteScroller'
 import { ROLLOUT_SUB } from '../clusters/queries'
 import { appendConnection } from '../../utils/graphql'
 import { Table, TableData, TableRow } from '../utils/Table'
+
+import LoadingIndicator from '../utils/LoadingIndicator'
 
 import { DEPLOYMENTS_QUERY } from './queries'
 import { RepositoryActions } from './misc'
@@ -108,16 +109,7 @@ function RepositoryDeployments() {
 
   const len = rollouts.length
 
-  if (len === 0 && loadingRollouts) {
-    return (
-      <Flex
-        pt={2}
-        justify="center"
-      >
-        <LoopingLogo />
-      </Flex>
-    )
-  }
+  if (len === 0 && loadingRollouts) return <LoadingIndicator />
 
   return (
     <Flex

@@ -1,11 +1,13 @@
 import { useCallback, useEffect, useMemo } from 'react'
 import { useMutation, useQuery } from '@apollo/client'
 import { Flex } from 'honorable'
-import { Button, LoopingLogo } from '@pluralsh/design-system'
+import { Button } from '@pluralsh/design-system'
 
 import { CloudShell, RootQueryType } from '../../generated/graphql'
 import { ResponsiveLayoutSpacer } from '../utils/layout/ResponsiveLayoutSpacer'
 import { ResponsiveLayoutContentContainer } from '../utils/layout/ResponsiveLayoutContentContainer'
+
+import LoadingIndicator from '../utils/LoadingIndicator'
 
 import { Onboarding } from './onboarding/Onboarding'
 import {
@@ -17,18 +19,6 @@ import {
 import OnboardingCard from './onboarding/OnboardingCard'
 import { ShellStatus } from './onboarding/sections/shell/ShellStatus'
 import Content from './terminal/Content'
-
-function Loading() {
-  return (
-    <Flex
-      grow={1}
-      align="center"
-      justify="center"
-    >
-      <LoopingLogo />
-    </Flex>
-  )
-}
 
 const SHELL_POLL_INTERVAL = 5000
 
@@ -53,9 +43,7 @@ function TerminalBootStatus() {
     if (isReady && !error) stopPolling()
   }, [isReady, error, stopPolling])
 
-  if (loading) {
-    return <Loading />
-  }
+  if (loading) return <LoadingIndicator />
 
   if (!isReady || error || !bootResult?.setupShell) {
     return (
@@ -109,7 +97,7 @@ function Shell() {
     if (hasShell && !isAlive) rebootMutation()
   }, [hasShell, isAlive, rebootMutation])
 
-  if (loading) return <Loading />
+  if (loading) return <LoadingIndicator />
   if (!hasShell) return <Onboarding onOnboardingFinish={onOnboardingFinish} />
 
   return <TerminalBootStatus />

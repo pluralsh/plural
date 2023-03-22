@@ -14,10 +14,11 @@ import { extendConnection } from '../../utils/graphql'
 import { Confirm } from '../account/Confirm'
 
 import { DELETE_KEY, LIST_KEYS } from '../users/queries'
-import { LoopingLogo } from '../utils/AnimatedLogo'
 import { StandardScroller } from '../utils/SmoothScroller'
 
 import { DeleteIconButton } from '../utils/IconButtons'
+
+import LoadingIndicator from '../utils/LoadingIndicator'
 
 import { ListItem } from './ListItem'
 
@@ -89,7 +90,7 @@ export function PublicKeys() {
   const [listRef, setListRef] = useState<any>(null)
   const { data, loading, fetchMore } = useQuery(LIST_KEYS)
 
-  if (!data) return <LoopingLogo />
+  if (!data) return <LoadingIndicator />
 
   const { edges, pageInfo } = data.publicKeys
 

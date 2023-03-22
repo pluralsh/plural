@@ -6,10 +6,9 @@ import { Div } from 'honorable'
 import { Placeholder } from '../utils/Placeholder'
 import { extendConnection } from '../../utils/graphql'
 import { ListItem } from '../utils/List'
-import { LoopingLogo } from '../utils/AnimatedLogo'
 import { StandardScroller } from '../utils/SmoothScroller'
-
 import { useGroupsQuery } from '../../generated/graphql'
+import LoadingIndicator from '../utils/LoadingIndicator'
 
 import { CreateGroup } from './CreateGroup'
 import { Group } from './Groups'
@@ -18,9 +17,7 @@ export function GroupsList({ q }: any) {
   const [listRef, setListRef] = useState<any>(null)
   const { data, loading, fetchMore } = useGroupsQuery({ variables: { q } })
 
-  if (!data?.groups) {
-    return <LoopingLogo />
-  }
+  if (!data?.groups) return <LoadingIndicator />
 
   const { edges, pageInfo } = data.groups
 

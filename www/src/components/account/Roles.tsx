@@ -11,10 +11,10 @@ import { List, ListItem } from '../utils/List'
 import ListInput from '../utils/ListInput'
 import { extendConnection, removeConnection, updateCache } from '../../utils/graphql'
 import { DeleteIconButton } from '../utils/IconButtons'
-import { LoopingLogo } from '../utils/AnimatedLogo'
 import { StandardScroller } from '../utils/SmoothScroller'
 import { Permission } from '../../generated/graphql'
 import { canEdit } from '../../utils/account'
+import LoadingIndicator from '../utils/LoadingIndicator'
 
 import { DELETE_ROLE, ROLES_Q } from './queries'
 import { hasRbac } from './utils'
@@ -98,7 +98,7 @@ function RolesInner({ q }: any) {
     fetchPolicy: 'cache-and-network',
   })
 
-  if (!data) return <LoopingLogo />
+  if (!data) return <LoadingIndicator />
 
   const { edges, pageInfo } = data.roles
 

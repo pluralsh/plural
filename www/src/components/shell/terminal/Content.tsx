@@ -12,18 +12,15 @@ import {
   useMemo,
   useState,
 } from 'react'
-import {
-  Button,
-  ErrorIcon,
-  LoopingLogo,
-  Modal,
-} from '@pluralsh/design-system'
+import { Button, ErrorIcon, Modal } from '@pluralsh/design-system'
 import IsEmpty from 'lodash/isEmpty'
 
 import useOnboarded from '../hooks/useOnboarded'
 import OnboardingHeader from '../onboarding/OnboardingHeader'
 import { CLOUD_SHELL_QUERY, SETUP_SHELL_MUTATION } from '../queries'
 import { RootMutationType } from '../../../generated/graphql'
+
+import LoadingIndicator from '../../utils/LoadingIndicator'
 
 import TerminalThemeProvider from './actionbar/theme/Provider'
 import Terminal from './Terminal'
@@ -133,18 +130,7 @@ function Content() {
     setupShell()
   }, [setupShell])
 
-  if (!shell?.provider) {
-    return (
-      <Flex
-        flexGrow={1}
-        align="center"
-        justify="center"
-        padding="xlarge"
-      >
-        <LoopingLogo />
-      </Flex>
-    )
-  }
+  if (!shell?.provider) return <LoadingIndicator />
 
   return (
     <Div height={isOnboarding ? '100%' : 'calc(100% - 48px)'}>

@@ -6,19 +6,14 @@ import {
   P,
   Span,
 } from 'honorable'
-
 import moment from 'moment'
-
 import Fuse from 'fuse.js'
-
 import { Chip } from '@pluralsh/design-system'
 
 import { useRepositoryContext } from '../../contexts/RepositoryContext'
-
 import usePaginatedQuery from '../../hooks/usePaginatedQuery'
-
-import { LoopingLogo } from '../utils/AnimatedLogo'
 import InfiniteScroller from '../utils/InfiniteScroller'
+import LoadingIndicator from '../utils/LoadingIndicator'
 
 import { CHARTS_QUERY } from './queries'
 import { packageCardStyle } from './RepositoryPackages'
@@ -86,14 +81,7 @@ function RepositoryPackagesHelm() {
   const filteredCharts = q ? fuse.search(q).map(({ item }) => item) : charts
 
   if (charts.length === 0 && loadingCharts) {
-    return (
-      <Flex
-        pt={2}
-        justify="center"
-      >
-        <LoopingLogo />
-      </Flex>
-    )
+    return <LoadingIndicator />
   }
 
   return (

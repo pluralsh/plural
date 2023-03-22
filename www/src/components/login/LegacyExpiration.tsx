@@ -31,7 +31,6 @@ export function LegacyExpirationNotice() {
 }
 
 function ExpiredModal() {
-  console.log('expirationmodal 1')
   const initialOpen
     = localStorage.getItem(LEGACY_EXPIRATION_NOTICE_STORAGE_KEY)
     !== EXPIRATION_NOTICE_STATE.DISMISSED_0

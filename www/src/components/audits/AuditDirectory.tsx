@@ -9,6 +9,7 @@ import { ResponsiveLayoutSidenavContainer } from '../utils/layout/ResponsiveLayo
 import { LinkTabWrap } from '../utils/Tabs'
 import { SideNavOffset } from '../utils/layout/SideNavOffset'
 import { ResponsiveLayoutPage } from '../utils/layout/ResponsiveLayoutPage'
+import { ResponsiveLayoutSidecarContainer } from '../utils/layout/ResponsiveLayoutSidecarContainer'
 
 const DIRECTORY = [
   { path: '/audits/logs', label: 'Audit logs' },
@@ -48,6 +49,7 @@ export function AuditDirectory() {
       <ResponsiveLayoutContentContainer>
         <Outlet />
       </ResponsiveLayoutContentContainer>
+      <ResponsiveLayoutSidecarContainer width={200} />
       <ResponsiveLayoutSpacer />
     </ResponsiveLayoutPage>
   )

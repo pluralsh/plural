@@ -39,13 +39,14 @@ import {
   TOKEN_METRICS,
 } from '../users/queries'
 import { obscure } from '../users/utils'
-import { LoopingLogo } from '../utils/AnimatedLogo'
 import { StandardScroller } from '../utils/SmoothScroller'
 import { Table, TableData, TableRow } from '../utils/Table'
 import { formatLocation } from '../../utils/geo'
 import { Chloropleth } from '../utils/Chloropleth'
 import { Confirm } from '../account/Confirm'
 import { DeleteIconButton } from '../utils/IconButtons'
+
+import LoadingIndicator from '../utils/LoadingIndicator'
 
 import { ListItem } from './ListItem'
 
@@ -261,7 +262,7 @@ export function AccessTokens() {
     }),
   })
 
-  if (!data) return <LoopingLogo />
+  if (!data) return <LoadingIndicator />
 
   const { edges, pageInfo } = data.tokens
 

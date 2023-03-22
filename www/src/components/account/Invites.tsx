@@ -3,7 +3,7 @@ import moment from 'moment'
 import { useContext, useEffect, useState } from 'react'
 import { Div, Flex, Text } from 'honorable'
 import { ThemeContext } from 'styled-components'
-import { LoopingLogo, SearchIcon } from '@pluralsh/design-system'
+import { SearchIcon } from '@pluralsh/design-system'
 
 import { useOutletContext } from 'react-router-dom'
 
@@ -14,6 +14,8 @@ import { List, ListItem } from '../utils/List'
 import { extendConnection, removeConnection, updateCache } from '../../utils/graphql'
 import { DeleteIconButton } from '../utils/IconButtons'
 import { StandardScroller } from '../utils/SmoothScroller'
+
+import LoadingIndicator from '../utils/LoadingIndicator'
 
 import { DELETE_INVITE, INVITES_Q } from './queries'
 import { Confirm } from './Confirm'
@@ -132,7 +134,7 @@ export function Invites() {
         width="100%"
       >
         {!data && !dataCache ? (
-          <LoopingLogo />
+          <LoadingIndicator />
         ) : (
           <StandardScroller
             listRef={listRef}

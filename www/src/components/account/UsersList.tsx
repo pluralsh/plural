@@ -7,8 +7,9 @@ import { List, ListItem } from '../utils/List'
 import ListInput from '../utils/ListInput'
 import { Placeholder } from '../utils/Placeholder'
 import { extendConnection, removeConnection, updateCache } from '../../utils/graphql'
-import { LoopingLogo } from '../utils/AnimatedLogo'
 import { StandardScroller } from '../utils/SmoothScroller'
+
+import LoadingIndicator from '../utils/LoadingIndicator'
 
 import { USERS_Q } from './queries'
 import { User } from './User'
@@ -52,7 +53,7 @@ export function UsersList() {
         width="100%"
       >
         {!data && !dataCache ? (
-          <LoopingLogo />
+          <LoadingIndicator />
         ) : (
           <StandardScroller
             listRef={listRef}

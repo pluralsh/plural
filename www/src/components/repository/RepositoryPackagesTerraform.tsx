@@ -5,17 +5,13 @@ import {
   Img,
   P,
 } from 'honorable'
-
 import moment from 'moment'
-
 import Fuse from 'fuse.js'
 
 import { useRepositoryContext } from '../../contexts/RepositoryContext'
-
 import usePaginatedQuery from '../../hooks/usePaginatedQuery'
-
-import { LoopingLogo } from '../utils/AnimatedLogo'
 import InfiniteScroller from '../utils/InfiniteScroller'
+import LoadingIndicator from '../utils/LoadingIndicator'
 
 import { TERRAFORM_QUERY } from './queries'
 import { packageCardStyle } from './RepositoryPackages'
@@ -109,16 +105,7 @@ function RepositoryPackagesTerraform() {
   const fuse = new Fuse(terraforms, searchOptions)
   const filteredTerraforms = q ? fuse.search(q).map(({ item }) => item) : terraforms
 
-  if (terraforms.length === 0 && loadingTerraforms) {
-    return (
-      <Flex
-        pt={2}
-        justify="center"
-      >
-        <LoopingLogo />
-      </Flex>
-    )
-  }
+  if (terraforms.length === 0 && loadingTerraforms) return <LoadingIndicator />
 
   return (
     <InfiniteScroller

@@ -1,10 +1,9 @@
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useQuery } from '@apollo/client'
-
 import { useEffect, useMemo } from 'react'
 
-import { LoopingLogo } from '../utils/AnimatedLogo'
 import { AuthorizationUrl, RootQueryType, ScmProvider } from '../../generated/graphql'
+import LoadingIndicator from '../utils/LoadingIndicator'
 
 import { AUTHENTICATION_URLS_QUERY, SCM_TOKEN_QUERY } from './queries'
 import { useDevToken } from './hooks/useDevToken'
@@ -51,9 +50,7 @@ function OAuthCallback({ provider }: any) {
     navigate('/shell')
   }, [data, error, navigate, save, token, updatedContext])
 
-  return (
-    <LoopingLogo />
-  )
+  return <LoadingIndicator />
 }
 
 export default OAuthCallback

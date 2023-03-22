@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { GraphQLToast, LoopingLogo, Modal } from '@pluralsh/design-system'
+import { GraphQLToast, Modal } from '@pluralsh/design-system'
 import { Button, Flex, Span } from 'honorable'
 import { ServerError, useMutation, useQuery } from '@apollo/client'
 
@@ -8,6 +8,8 @@ import { CLOUD_SHELL_QUERY } from '../../../queries'
 import { UPDATE_SHELL_MUTATION } from '../../queries'
 import { CloudShellAttributes, ShellCredentialsAttributes, WorkspaceAttributes } from '../../../../../generated/graphql'
 import { toCloudProviderAttributes } from '../../../utils/provider'
+
+import LoadingIndicator from '../../../../utils/LoadingIndicator'
 
 import Provider from './provider/Provider'
 
@@ -75,14 +77,7 @@ function EditCloudCredentialsModal({ onClose }) {
             color="text-xlight"
           >UPDATE CLOUD CREDENTIALS
           </Span>
-          {(!shell || !provider) && (
-            <Flex
-              align="center"
-              justify="center"
-              flexGrow={1}
-            ><LoopingLogo />
-            </Flex>
-          )}
+          {(!shell || !provider) && <LoadingIndicator />}
           {shell && provider && (
             <>
               <Provider

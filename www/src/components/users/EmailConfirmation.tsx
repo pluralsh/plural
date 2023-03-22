@@ -6,16 +6,19 @@ import {
 } from 'react'
 import { useMutation } from '@apollo/client'
 import { Box, Layer, Text } from 'grommet'
-import { CloseIcon, ErrorIcon, ReloadIcon } from '@pluralsh/design-system'
+import {
+  CloseIcon,
+  ErrorIcon,
+  IconFrame,
+  ReloadIcon,
+} from '@pluralsh/design-system'
 import moment from 'moment'
 import { useParams } from 'react-router-dom'
-
-import { Icon } from '../utils/IconOld'
 
 import { useIsCurrentlyOnboarding } from '../shell/hooks/useOnboarded'
 import CurrentUserContext from '../../contexts/CurrentUserContext'
 import { Alert, AlertStatus, GqlError } from '../utils/Alert'
-import { LoopingLogo } from '../utils/AnimatedLogo'
+import LoadingIndicator from '../utils/LoadingIndicator'
 
 import { CREATE_RESET_TOKEN, REALIZE_TOKEN } from './queries'
 import { ResetTokenType } from './types'
@@ -42,7 +45,7 @@ export function EmailConfirmed() {
         gap="small"
         width="400px"
       >
-        {!data && !error && <LoopingLogo scale="0.75" />}
+        {!data && !error && <LoadingIndicator />}
         {data && (
           <Alert
             status={AlertStatus.SUCCESS}
@@ -118,14 +121,20 @@ export function VerifyEmailConfirmed() {
           direction="row"
           align="center"
         >
-          <Icon
-            icon={ReloadIcon}
-            tooltip="Resend"
+          <IconFrame
+            icon={<ReloadIcon />}
+            clickable
+            textValue="Resend"
+            tooltip
+            tooltipProps={{ placement: 'bottom' }}
             onClick={() => mutation()}
           />
-          <Icon
-            icon={CloseIcon}
-            tooltip="Close"
+          <IconFrame
+            icon={<CloseIcon />}
+            clickable
+            textValue="Close"
+            tooltip
+            tooltipProps={{ placement: 'bottom' }}
             onClick={() => setOpen(false)}
           />
         </Box>

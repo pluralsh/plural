@@ -2,12 +2,11 @@ import { Box } from 'grommet'
 import { useEffect } from 'react'
 import { useApolloClient, useMutation } from '@apollo/client'
 import { useLocation } from 'react-router-dom'
-
 import qs from 'query-string'
 
 import { setToken } from '../../helpers/authentication'
 import { GqlError } from '../utils/Alert'
-import { LoopingLogo } from '../utils/AnimatedLogo'
+import LoadingIndicator from '../utils/LoadingIndicator'
 
 import { handleOauthChallenge } from './MagicLogin'
 import { SSO_CALLBACK } from './queries'
@@ -40,20 +39,19 @@ export function SSOCallback() {
     mutation()
   }, [mutation])
 
-  return (
+  if (loading) return <LoadingIndicator />
+
+  return error ? (
     <Box
       height="100vh"
       width="100vw"
       align="center"
       justify="center"
     >
-      {loading && <LoopingLogo />}
-      {error && (
-        <GqlError
-          error={error}
-          header="Failed to log in"
-        />
-      )}
+      <GqlError
+        error={error}
+        header="Failed to log in"
+      />
     </Box>
-  )
+  ) : null
 }

@@ -8,8 +8,8 @@ import { Placeholder } from '../utils/Placeholder'
 import ListInput from '../utils/ListInput'
 import { List, ListItem } from '../utils/List'
 import { extendConnection, removeConnection, updateCache } from '../../utils/graphql'
-import { LoopingLogo } from '../utils/AnimatedLogo'
 import { StandardScroller } from '../utils/SmoothScroller'
+import LoadingIndicator from '../utils/LoadingIndicator'
 
 import { USERS_Q } from './queries'
 import { CreateServiceAccount } from './CreateServiceAccount'
@@ -51,7 +51,7 @@ function ServiceAccountsInner({ q }: any) {
     }
   }, [data])
 
-  if (!data && !dataCache) return <LoopingLogo />
+  if (!data && !dataCache) return <LoadingIndicator />
 
   const { edges, pageInfo } = data?.users || dataCache?.users || {}
 

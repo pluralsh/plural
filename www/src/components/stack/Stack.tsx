@@ -23,11 +23,12 @@ import { ResponsiveLayoutPage } from '../utils/layout/ResponsiveLayoutPage'
 import { SideNavOffset } from '../utils/layout/SideNavOffset'
 
 import { LinkTabWrap } from '../utils/Tabs'
-import { LoopingLogo } from '../utils/AnimatedLogo'
 
 import { ProvidersSidecar } from '../utils/recipeHelpers'
 
 import { StackCollection } from '../../generated/graphql'
+
+import LoadingIndicator from '../utils/LoadingIndicator'
 
 import { STACK_QUERY } from './queries'
 import { StackContext } from './types'
@@ -148,18 +149,7 @@ export default function Stack() {
   })
   const tabStateRef = useRef<any>(null)
 
-  if (!data) {
-    return (
-      <Flex
-        paddingTop={388}
-        marginLeft={-80}
-        align="center"
-        justify="center"
-      >
-        <LoopingLogo />
-      </Flex>
-    )
-  }
+  if (!data) return <LoadingIndicator />
 
   const { stack } = data
   const outletContext: StackContext = { stack }

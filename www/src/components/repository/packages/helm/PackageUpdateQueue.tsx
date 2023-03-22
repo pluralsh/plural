@@ -2,16 +2,15 @@ import { useState } from 'react'
 import { useQuery } from '@apollo/client'
 import { Box } from 'grommet'
 import { useOutletContext } from 'react-router-dom'
-import { PageTitle } from '@pluralsh/design-system'
+import { Date, PageTitle } from '@pluralsh/design-system'
 import { Div, Flex } from 'honorable'
 
 import { Table, TableData, TableRow } from '../../../utils/Table'
 import { extendConnection } from '../../../../utils/graphql'
 import { StandardScroller } from '../../../utils/SmoothScroller'
 import { DEFERRED_UPDATES } from '../queries'
-import { LoopingLogo } from '../../../utils/AnimatedLogo'
-import { Date } from '../../../utils/Date'
 import { PackageActions } from '../misc'
+import LoadingIndicator from '../../../utils/LoadingIndicator'
 
 export default function PackageUpdateQueue() {
   const { helmChart, terraformChart } = useOutletContext() as any
@@ -24,7 +23,7 @@ export default function PackageUpdateQueue() {
     fetchPolicy: 'cache-and-network',
   })
 
-  if (!data) return <LoopingLogo />
+  if (!data) return <LoadingIndicator />
 
   const { edges, pageInfo } = data.deferredUpdates
 

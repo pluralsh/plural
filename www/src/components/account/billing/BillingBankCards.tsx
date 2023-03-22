@@ -1,4 +1,9 @@
-import { useContext, useState } from 'react'
+import {
+  ComponentProps,
+  useCallback,
+  useContext,
+  useState,
+} from 'react'
 import { Button, Card, Modal } from '@pluralsh/design-system'
 import { Div, Flex } from 'honorable'
 import isEmpty from 'lodash/isEmpty'
@@ -6,27 +11,32 @@ import isEmpty from 'lodash/isEmpty'
 import capitalize from 'lodash/capitalize'
 
 import SubscriptionContext from '../../../contexts/SubscriptionContext'
-import BillingBankCardContext from '../../../contexts/BillingBankCardContext'
 
-import { PaymentMethodFragment, usePaymentMethodsQuery } from '../../../generated/graphql'
+import { PaymentMethodFragment, namedOperations, useDefaultPaymentMethodMutation } from '../../../generated/graphql'
 
-import { GqlError } from '../../utils/Alert'
-
-import PaymentForm from './PaymentForm'
+import PaymentForm, { PaymentFormVariant } from './PaymentForm'
 
 function PaymentMethod({
   method,
 }: {
   method: PaymentMethodFragment | null | undefined
-}) {
+  }) {
+  console.log('method', method)
+
+  const [makeDefault] = useDefaultPaymentMethodMutation({
+    variables: { id: method?.id || '' },
+    refetchQueries: [namedOperations.Query.PaymentMethods],
+  })
+
+  const handleDelete = useCallback(() => {}, [])
+  const handleMakeDefault = useCallback(() => {
+    makeDefault()
+  }, [makeDefault])
+
   if (!method?.card) {
     return null
   }
   const { card } = method
-  const [loading, setLoading] = useState(false)
-
-  const handleDelete = () => {}
-  const handleMakeDefault = () => {}
 
   return (
     <Flex
@@ -67,22 +77,23 @@ function PaymentMethod({
         justify="end"
         flexGrow={1}
       >
+        {method.isDefault ? 'Default card'
+          : (
+            <Button
+              small
+              secondary
+              onClick={handleMakeDefault}
+            >
+              Make default
+            </Button>
+          )}
         <Button
           small
           secondary
           destructive
           onClick={handleDelete}
-          loading={loading}
         >
-          Delete card
-        </Button>
-        <Button
-          small
-          secondary
-          onClick={handleDelete}
-          loading={loading}
-        >
-          Make default
+          Remove
         </Button>
       </Flex>
     </Flex>
@@ -98,9 +109,8 @@ function AddPaymentMethodModal({
       open={open}
       onClose={onClose}
       header="Upgrade to professional"
-      minWidth={512 + 128}
     >
-      <PaymentForm type="update" />
+      <PaymentForm formVariant={PaymentFormVariant.AddCard} />
     </Modal>
   )
 }
@@ -158,7 +168,10 @@ function BillingBankCards({
       >
         Add payment method
       </Button>
-      <AddPaymentMethodModal open={addPayment} />
+      <AddPaymentMethodModal
+        open={addPayment}
+        onClose={() => setAddPayment(false)}
+      />
     </Card>
   )
 }

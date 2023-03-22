@@ -5172,12 +5172,12 @@ export type SetupIntentMutationVariables = Exact<{
 
 export type SetupIntentMutation = { __typename?: 'RootMutationType', setupIntent?: { __typename?: 'SetupIntent', id?: string | null, status?: string | null, clientSecret?: string | null, paymentMethodTypes?: Array<string | null> | null, nextAction?: { __typename?: 'NextAction', type?: string | null, redirectToUrl?: { __typename?: 'RedirectToUrl', url?: string | null, returnUrl?: string | null } | null } | null } | null };
 
-export type PaymentMethodFragment = { __typename?: 'PaymentMethod', id?: string | null, type?: string | null, card?: { __typename?: 'Card', last4: string, expMonth: number, expYear: number, name?: string | null, brand: string } | null };
+export type PaymentMethodFragment = { __typename?: 'PaymentMethod', id?: string | null, type?: string | null, isDefault?: boolean | null, card?: { __typename?: 'Card', last4: string, expMonth: number, expYear: number, name?: string | null, brand: string } | null };
 
 export type PaymentMethodsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type PaymentMethodsQuery = { __typename?: 'RootQueryType', account?: { __typename?: 'Account', paymentMethods?: { __typename?: 'PaymentMethodConnection', edges?: Array<{ __typename?: 'PaymentMethodEdge', node?: { __typename?: 'PaymentMethod', id?: string | null, type?: string | null, card?: { __typename?: 'Card', last4: string, expMonth: number, expYear: number, name?: string | null, brand: string } | null } | null } | null> | null } | null } | null };
+export type PaymentMethodsQuery = { __typename?: 'RootQueryType', account?: { __typename?: 'Account', paymentMethods?: { __typename?: 'PaymentMethodConnection', edges?: Array<{ __typename?: 'PaymentMethodEdge', node?: { __typename?: 'PaymentMethod', id?: string | null, type?: string | null, isDefault?: boolean | null, card?: { __typename?: 'Card', last4: string, expMonth: number, expYear: number, name?: string | null, brand: string } | null } | null } | null> | null } | null } | null };
 
 export type DefaultPaymentMethodMutationVariables = Exact<{
   id: Scalars['String'];
@@ -6418,6 +6418,7 @@ export const PaymentMethodFragmentDoc = gql`
     ...Card
   }
   type
+  isDefault
 }
     ${CardFragmentDoc}`;
 export const OidcProviderFragmentDoc = gql`

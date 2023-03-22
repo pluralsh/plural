@@ -1,7 +1,6 @@
-import { useCallback } from 'react'
 import { Modal } from '@pluralsh/design-system'
 
-import PaymentForm from './PaymentForm'
+import PaymentForm, { PaymentFormVariant } from './PaymentForm'
 
 type BillingUpgradeToProfessionalModalPropsType = {
   open: boolean
@@ -19,7 +18,7 @@ function BillingUpgradeToProfessionalModal({
       header="Upgrade to professional"
       minWidth={512 + 128}
     >
-      <PaymentForm type="upgrade" />
+      <PaymentForm formVariant={PaymentFormVariant.Upgrade} />
     </Modal>
   )
 }

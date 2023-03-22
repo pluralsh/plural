@@ -3,7 +3,7 @@ import { Div, Flex } from 'honorable'
 import { Link, Outlet, useLocation } from 'react-router-dom'
 
 import BillingConsumptionProvider from './BillingConsumptionProvider'
-import BillingBankCardProvider from './BillingBankCardProvider'
+import PaymentMethodsProvider from './PaymentMethodsContext'
 import BillingLegacyUserBanner from './BillingLegacyUserBanner'
 
 function BillingLayout() {
@@ -11,7 +11,7 @@ function BillingLayout() {
 
   return (
     <BillingConsumptionProvider>
-      <BillingBankCardProvider>
+      <PaymentMethodsProvider>
         <PageTitle heading="Billing">
           <Flex>
             <Button
@@ -46,7 +46,7 @@ function BillingLayout() {
             <Outlet />
           </Div>
         </Flex>
-      </BillingBankCardProvider>
+      </PaymentMethodsProvider>
     </BillingConsumptionProvider>
   )
 }

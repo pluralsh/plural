@@ -3,19 +3,15 @@ import { Div } from 'honorable'
 import { useContext } from 'react'
 
 import SubscriptionContext from '../../../contexts/SubscriptionContext'
-import { usePaymentMethodsQuery } from '../../../generated/graphql'
 import { LoopingLogo } from '../../utils/AnimatedLogo'
 
 import BillingBankCards from './BillingBankCards'
 import BillingInvoices from './BillingInvoices'
+import { usePaymentMethods } from './PaymentMethodsContext'
 
 function BillingPayments() {
   const { billingCustomerId } = useContext(SubscriptionContext)
-  const { data, error } = usePaymentMethodsQuery()
-
-  console.log('data', data)
-  console.log('error', error)
-  const paymentMethods = data?.account?.paymentMethods?.edges?.map(edge => edge?.node)
+  const { paymentMethods } = usePaymentMethods()
 
   if (!paymentMethods) {
     return <LoopingLogo />

@@ -83,7 +83,7 @@ function BillingPricingCards() {
               checked: true,
             },
             {
-              label: 'Unlimited users',
+              label: 'Up to 5 users',
               checked: true,
             },
             {
@@ -118,6 +118,10 @@ function BillingPricingCards() {
             {
               label: 'Everything in Open-source plan',
               checked: false,
+            },
+            {
+              label: 'Unlimited users',
+              checked: true,
             },
             {
               label: '24 hour SLA',

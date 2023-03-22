@@ -2,7 +2,7 @@ defmodule Core.Services.Accounts do
   use Core.Services.Base
   import Core.Policies.Account
   alias Core.PubSub
-  alias Core.Services.Users
+  alias Core.Services.{Users, Payments}
   alias Core.Schema.{
     User,
     Account,
@@ -336,6 +336,12 @@ defmodule Core.Services.Accounts do
       |> User.invite_changeset(Map.put(attributes, :email, invite.email))
       |> Ecto.Changeset.change(%{account_id: invite.account_id})
       |> Core.Repo.insert_or_update()
+    end)
+    |> add_operation(:limit, fn %{upsert: user} ->
+      case Payments.limited?(user, :user) do
+        true -> {:error, "your account is over the user limit, contact your administrator to upgrade and try again"}
+        _ -> {:ok, user}
+      end
     end)
     |> add_operation(:invite, fn _ -> Core.Repo.delete(invite) end)
     |> add_operation(:account, fn

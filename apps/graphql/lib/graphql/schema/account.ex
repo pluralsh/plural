@@ -1,5 +1,6 @@
 defmodule GraphQl.Schema.Account do
   use GraphQl.Schema.Base
+  alias GraphQl.Middleware.Limited
   alias GraphQl.Resolvers.{Account, User, Payments}
 
   enum_from_list :permission, Core.Schema.Role, :permissions, []
@@ -326,6 +327,8 @@ defmodule GraphQl.Schema.Account do
     end
 
     field :create_invite, :invite do
+      middleware Authenticated
+      middleware Limited, limit: :user
       arg :attributes, non_null(:invite_attributes)
 
       safe_resolve &Account.create_invite/2

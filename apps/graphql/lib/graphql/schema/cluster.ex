@@ -1,6 +1,5 @@
 defmodule GraphQl.Schema.Cluster do
   use GraphQl.Schema.Base
-  alias GraphQl.Middleware.Differentiate
   alias GraphQl.Resolvers.{User, Account, Upgrade, Cluster}
   alias GraphQl.InstallationLoader
 

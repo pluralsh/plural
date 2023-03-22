@@ -30,6 +30,7 @@ export function LoginPortal({ children }: any) {
           height="100%"
           objectFit="cover"
           objectPosition="top center"
+          borderRight="1px solid border-fill-two"
         />
       </Flex>
       {/* RIGHT SIDE */}

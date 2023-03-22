@@ -32,7 +32,10 @@ function BillingLayout() {
             </Button>
           </Flex>
         </PageTitle>
-        <>
+        <Flex
+          direction="column"
+          gap="xlarge"
+        >
           <BillingLegacyUserBanner withBottomMargin={false} />
           <Div
             flexGrow
@@ -42,7 +45,7 @@ function BillingLayout() {
           >
             <Outlet />
           </Div>
-        </>
+        </Flex>
       </BillingBankCardProvider>
     </BillingConsumptionProvider>
   )

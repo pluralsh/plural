@@ -8,6 +8,7 @@ import {
 import { StripePaymentElementOptions } from '@stripe/stripe-js'
 import { Div, Flex } from 'honorable'
 import {
+  ComponentProps,
   PropsWithChildren,
   createContext,
   useCallback,
@@ -29,6 +30,8 @@ import BillingError from './BillingError'
 import BillingPreview from './BillingPreview'
 import { StripeElements } from './StripeElements'
 
+type PaymentFormVariant = 'upgrade' | 'update'
+
 enum PaymentFormState {
   CollectAddress = 'ADDRESS',
   CollectPayment = 'PAYMENT',
@@ -36,6 +39,7 @@ enum PaymentFormState {
 
 type PaymentFormContextState = {
   formState: PaymentFormState
+  formVariant: PaymentFormVariant
   clientSecret?: string | undefined | null
   intent?: SetupIntentFragment | undefined | null
   plan: PlanType
@@ -82,36 +86,36 @@ const reducer: ImmerReducer<
       type: 'setIntent'
       payload: PaymentFormContextState['intent']
     }
-    | { type: 'setFormState'; payload: PaymentFormState }
-    | { type: 'setPlan'; payload: PlanType }
-    > = (draft, action) => {
-      switch (action.type) {
-      case 'setClientSecret':
-        draft.clientSecret = action.payload
+  | { type: 'setFormState'; payload: PaymentFormState }
+  | { type: 'setPlan'; payload: PlanType }
+> = (draft, action) => {
+  switch (action.type) {
+  case 'setClientSecret':
+    draft.clientSecret = action.payload
 
-        return draft
-        break
-      case 'setFormState':
-        draft.formState = action.payload
-        if (draft.formState === PaymentFormState.CollectAddress) {
-          draft.clientSecret = undefined
-        }
-
-        return draft
-      case 'setIntent':
-        draft.intent = action.payload
-
-        return draft
-      case 'setPlan':
-        draft.plan = action.payload
-
-        return draft
-      default:
-        console.error('Incorrect action type sent to reducer')
-
-        return draft
-      }
+    return draft
+    break
+  case 'setFormState':
+    draft.formState = action.payload
+    if (draft.formState === PaymentFormState.CollectAddress) {
+      draft.clientSecret = undefined
     }
+
+    return draft
+  case 'setIntent':
+    draft.intent = action.payload
+
+    return draft
+  case 'setPlan':
+    draft.plan = action.payload
+
+    return draft
+  default:
+    console.error('Incorrect action type sent to reducer')
+
+    return draft
+  }
+}
 const paymentElementOptions: StripePaymentElementOptions = {
   layout: 'tabs',
 }
@@ -146,7 +150,8 @@ function PaymentFormProvider({ children }: PropsWithChildren) {
 function PaymentFormInner() {
   const {
     formState, plan, setPlan, clientSecret, setFormState,
-  } = usePaymentForm()
+  }
+    = usePaymentForm()
 
   if (formState === PaymentFormState.CollectAddress) {
     console.log('thing')
@@ -162,16 +167,16 @@ function PaymentFormInner() {
 
   return (
     <>
+      <BillingPreview
+        noCard
+        discountPreview
+        yearly={plan === 'yearly'}
+        onChange={isYearly => {
+          setPlan(isYearly ? 'yearly' : 'monthly')
+        }}
+      />
       {formState === PaymentFormState.CollectAddress && (
         <>
-          <BillingPreview
-            noCard
-            discountPreview
-            yearly={plan === 'yearly'}
-            onChange={isYearly => {
-              setPlan(isYearly ? 'yearly' : 'monthly')
-            }}
-          />
           <Div
             fontWeight="bold"
             marginTop="large"
@@ -191,20 +196,22 @@ function PaymentFormInner() {
         <StripeElements options={{ clientSecret }}>
           <Payment />
         </StripeElements>
-      ) }
+      )}
     </>
   )
 }
 
-export default function PaymentForm() {
+export default function PaymentForm({
+  props,
+}: { type: 'upgrade' | 'update' } & ComponentProps<typeof PaymentFormInner>) {
   return (
-    <PaymentFormProvider>
-      <PaymentFormInner />
+    <PaymentFormProvider type="">
+      <PaymentFormInner {...props} />
     </PaymentFormProvider>
   )
 }
 
-function Payment() {
+function Payment({ type }: {}) {
   const { clientSecret, plan, setFormState } = usePaymentForm()
   const [message, setMessage] = useState<string | null | undefined>()
   const [isLoading, setIsLoading] = useState(false)
@@ -226,9 +233,7 @@ function Payment() {
       elements,
       confirmParams: {
         // Make sure to change this to your payment completion page
-        return_url: `${host()}/account/billing?plan=${
-          plan
-        }`,
+        return_url: `${host()}/account/billing?plan=${plan}`,
       },
     })
 
@@ -360,7 +365,7 @@ function AddressForm({
 
     const { address, name } = addressVal.value
 
-    const setupIntentAddress:AddressAttributes = {
+    const setupIntentAddress: AddressAttributes = {
       name: `${name || ''}`,
       line1: `${address.line1 || ''}`,
       line2: `${address.line2 || ''}`,

@@ -10,12 +10,8 @@ type BillingUpgradeToProfessionalModalPropsType = {
 
 function BillingUpgradeToProfessionalModal({
   open,
-  onClose: onCloseProp,
+  onClose,
 }: BillingUpgradeToProfessionalModalPropsType) {
-  const onClose = useCallback(() => {
-    onCloseProp()
-  }, [onCloseProp])
-
   return (
     <Modal
       open={open}
@@ -23,7 +19,7 @@ function BillingUpgradeToProfessionalModal({
       header="Upgrade to professional"
       minWidth={512 + 128}
     >
-      <PaymentForm />
+      <PaymentForm type="upgrade" />
     </Modal>
   )
 }

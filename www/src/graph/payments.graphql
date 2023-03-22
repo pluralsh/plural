@@ -94,7 +94,6 @@ fragment Invoice on Invoice {
 }
 
 fragment Card on Card {
-  id
   last4
   expMonth
   expYear
@@ -186,8 +185,32 @@ fragment SetupIntent on SetupIntent {
   paymentMethodTypes
 }
 
-mutation SetupIntent($address: AddressAttributes) {
+mutation SetupIntent($address: AddressAttributes!) {
   setupIntent(address: $address) {
     ...SetupIntent
   }
+}
+
+fragment PaymentMethod on PaymentMethod {
+  id
+  card {
+    ...Card
+  }
+  type
+}
+
+query PaymentMethods {
+  account {
+    paymentMethods( first:20) {
+      edges {
+        node {
+          ...PaymentMethod
+        }
+      }
+    }
+  }
+}
+
+mutation defaultPaymentMethod($id: String!) {
+  defaultPaymentMethod(id:$id)
 }

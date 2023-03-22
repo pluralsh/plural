@@ -1,9 +1,20 @@
-import { ReactNode, useEffect, useState } from 'react'
+import {
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { Div, Flex, P } from 'honorable'
 import { Button, LoopingLogo, Modal } from '@pluralsh/design-system'
 import { useStripe } from '@stripe/react-stripe-js'
-import { PaymentIntent, StripeError } from '@stripe/stripe-js'
+import { SetupIntent } from '@stripe/stripe-js'
+
+import PlatformPlansContext from '../../../contexts/PlatformPlansContext'
+
+import { namedOperations, useUpgradeToProfessionalPlanMutation } from '../../../generated/graphql'
+
+import { PlanType } from './PaymentForm'
 
 export default function ConfirmPayment() {
   const stripe = useStripe()
@@ -12,47 +23,93 @@ export default function ConfirmPayment() {
   console.log('stripe', stripe)
 
   console.log('searchParams', searchParams)
-  const clientSecret = searchParams.get('payment_intent_client_secret')
+  const clientSecret = searchParams.get('setup_intent_client_secret')
+  const plan: PlanType
+    = searchParams.get('plan') === 'yearly' ? 'yearly' : 'monthly'
+  const { proPlatformPlan, proYearlyPlatformPlan }
+    = useContext(PlatformPlansContext)
+  const planId
+    = plan === 'yearly' ? proYearlyPlatformPlan.id : proPlatformPlan.id
 
-  // const { payment_intent_client_secret: clientSecret } = searchParams as {
-  //   payment_intent?: string;
-  //   payment_intent_client_secret?: string;
-  // }
   console.log('clientSecret', clientSecret)
 
-  const [error, setError] = useState<StripeError>()
-  const [paymentIntent, setPaymentIntent] = useState<PaymentIntent | null>()
+  const [upgradeSuccess, setUpgradeSuccess] = useState(false)
+  const [error, setError] = useState<{ message?: string } | undefined>()
+  const [setupIntent, setPaymentIntent] = useState<SetupIntent | null>()
   const [isOpen, setIsOpen] = useState(!!clientSecret)
 
+  // Upgrade mutation
+  const [upgradeMutation] = useUpgradeToProfessionalPlanMutation({
+    variables: { planId },
+    refetchQueries: [namedOperations.Query.Subscription],
+    onCompleted: ret => {
+      const intent
+        = ret.createPlatformSubscription?.latestInvoice?.paymentIntent
+
+      console.log('paymentIntent', intent)
+      setUpgradeSuccess(true)
+    },
+    onError: error => {
+      setError(error)
+      console.log('Mutation error', error.message)
+    },
+  })
+
+  // Confirm payment
   useEffect(() => {
     if (stripe && clientSecret) {
       console.log('stripe confirmCardPayment')
       try {
-        stripe.retrievePaymentIntent(clientSecret).then(({ paymentIntent, error }) => {
-          console.log('stripe confirmCardPayment returned, ', paymentIntent, error)
+        stripe
+          .retrieveSetupIntent(clientSecret)
+          .then(({ setupIntent, error }) => {
+            console.log('stripe confirmCardPayment returned, ',
+              setupIntent,
+              error)
 
-          setError(error)
-          setPaymentIntent(paymentIntent)
-        })
+            setError(error)
+            setPaymentIntent(setupIntent)
+            if (setupIntent?.status === 'succeeded') {
+              console.log('succeeded payment', "don't mutate yet")
+              console.log('setupIntent', setupIntent)
+              console.log('UPGRADE MUTATION REQUESTED')
+
+              upgradeMutation().then(r => {
+                console.log('UPGRADE MUTATION COMPLETE', r)
+              })
+            }
+          })
       }
       catch (e) {
-        setError(e)
+        setError(e as Error)
       }
     }
-  }, [clientSecret, stripe])
+  }, [clientSecret, stripe, upgradeMutation])
 
   let message: ReactNode | undefined
   let header: string | undefined
 
-  if (paymentIntent) {
-    switch (paymentIntent?.status) {
+  if (upgradeSuccess) {
+    header = 'Payment success'
+    message = (
+      <P>
+        Welcome to the Plural Professional plan! You now have access to groups,
+        roles, service accounts, and more.
+      </P>
+    )
+  }
+  else if (setupIntent) {
+    switch (setupIntent?.status) {
     case 'succeeded':
-      header = 'Payment success'
+        // TODO: Actually do the plan
+      header = 'Processing'
       message = (
-        <P>
-          Welcome to the Plural Professional plan! You now have access to
-          groups, roles, service accounts, and more.
-        </P>
+        <Div
+          width="100%"
+          overflow="hidden"
+        >
+          <LoopingLogo />
+        </Div>
       )
       break
     case 'processing':

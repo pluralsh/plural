@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback } from 'react'
 import { Modal } from '@pluralsh/design-system'
 
 import PaymentForm from './PaymentForm'

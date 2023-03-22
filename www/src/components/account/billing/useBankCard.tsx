@@ -25,8 +25,6 @@ import { GqlError } from '../../utils/Alert'
 
 import SubscriptionContext from '../../../contexts/SubscriptionContext'
 
-import { useCreateCardMutation, useDeleteCardMutation } from '../../../generated/graphql'
-
 function useBankCard({
   setEdit,
   noCancel = false,

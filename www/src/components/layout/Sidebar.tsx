@@ -18,6 +18,7 @@ import {
 import {
   ArrowTopRightIcon,
   BellIcon,
+  BrowseAppsIcon,
   ClusterIcon,
   CompassIcon,
   CookieIcon,
@@ -26,7 +27,6 @@ import {
   GitHubLogoIcon,
   ListIcon,
   LogoutIcon,
-  MarketIcon,
   MarketPlusIcon,
   PeopleIcon,
   PersonIcon,
@@ -64,7 +64,7 @@ type MenuItem = {
 const MENU_ITEMS: MenuItem[] = [
   {
     text: 'Marketplace',
-    icon: <MarketIcon />,
+    icon: <BrowseAppsIcon />,
     path: '/marketplace',
     pathRegexp: /^\/(marketplace|installed|repository|stack)/,
   },

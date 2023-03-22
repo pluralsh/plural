@@ -204,7 +204,7 @@ defmodule Core.Services.Payments do
   """
   @spec latest_invoice(PlatformSubscription.t) :: {:ok, Stripe.Invoice.t} | error
   def latest_invoice(%PlatformSubscription{external_id: id}) when is_binary(id) do
-    case Stripe.Subscription.retrieve(id, %{expand: "latest_invoice.payment_intent"}) do
+    case Stripe.Subscription.retrieve(id, expand: "latest_invoice.payment_intent") do
       {:ok, %Stripe.Subscription{latest_invoice: invoice}} -> {:ok, invoice}
       error -> error
     end

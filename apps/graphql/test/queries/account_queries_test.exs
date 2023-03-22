@@ -26,7 +26,7 @@ defmodule GraphQl.AccountQueriesTest do
 
     test "it can fetch invoices on a subscription", %{user: user, account: account} do
       insert(:platform_subscription, account: account, external_id: "sub_id")
-      expect(Stripe.Subscription, :retrieve, fn "sub_id", %{expand: "latest_invoice.payment_intent"} ->
+      expect(Stripe.Subscription, :retrieve, fn "sub_id", [expand: "latest_invoice.payment_intent"] ->
         {:ok, %Stripe.Subscription{latest_invoice: %Stripe.Invoice{
           payment_intent: %Stripe.PaymentIntent{client_secret: "secret"}
         }}}

@@ -212,6 +212,12 @@ query PaymentMethods {
   }
 }
 
-mutation defaultPaymentMethod($id: String!) {
+mutation DefaultPaymentMethod($id: String!) {
   defaultPaymentMethod(id: $id)
+}
+
+mutation DeletePaymentMethod($id: ID!) {
+  deletePaymentMethod(id: $id) {
+    ...PaymentMethod
+  }
 }

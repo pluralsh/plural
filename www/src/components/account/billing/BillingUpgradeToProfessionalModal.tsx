@@ -15,8 +15,8 @@ function BillingUpgradeToProfessionalModal({
     <Modal
       open={open}
       onClose={onClose}
+      size="large"
       header="Upgrade to professional"
-      minWidth={512 + 128}
     >
       <PaymentForm formVariant={PaymentFormVariant.Upgrade} />
     </Modal>

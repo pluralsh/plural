@@ -164,15 +164,16 @@ mutation SetupIntent($address: AddressAttributes!) {
 
 fragment PaymentMethod on PaymentMethod {
   id
+  type
+  isDefault
   card {
     ...Card
   }
-  type
 }
 
 query PaymentMethods {
   account {
-    paymentMethods( first:20) {
+    paymentMethods(first: 20) {
       edges {
         node {
           ...PaymentMethod
@@ -183,5 +184,5 @@ query PaymentMethods {
 }
 
 mutation defaultPaymentMethod($id: String!) {
-  defaultPaymentMethod(id:$id)
+  defaultPaymentMethod(id: $id)
 }

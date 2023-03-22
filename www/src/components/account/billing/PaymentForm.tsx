@@ -30,7 +30,10 @@ import BillingError from './BillingError'
 import BillingPreview from './BillingPreview'
 import { StripeElements } from './StripeElements'
 
-type PaymentFormVariant = 'upgrade' | 'update'
+export enum PaymentFormVariant {
+  Upgrade = 'UPGRADE',
+    AddCard = 'ADD_CARD',
+}
 
 enum PaymentFormState {
   CollectAddress = 'ADDRESS',
@@ -39,13 +42,13 @@ enum PaymentFormState {
 
 type PaymentFormContextState = {
   formState: PaymentFormState
-  formVariant: PaymentFormVariant
   clientSecret?: string | undefined | null
   intent?: SetupIntentFragment | undefined | null
   plan: PlanType
 }
 
 type PaymentFormContextVal = PaymentFormContextState & {
+  formVariant: PaymentFormVariant
   setClientSecret: (
     clientSecret?: PaymentFormContextState['clientSecret']
   ) => void
@@ -120,10 +123,11 @@ const paymentElementOptions: StripePaymentElementOptions = {
   layout: 'tabs',
 }
 
-function PaymentFormProvider({ children }: PropsWithChildren) {
+function PaymentFormProvider({ formVariant, children }: PropsWithChildren<{formVariant: PaymentFormVariant}>) {
   const [contextState, dispatch] = useImmerReducer(reducer, defaultState)
 
   const contextVal = useMemo(() => ({
+    formVariant,
     ...contextState,
     setClientSecret: (clientSecret: PaymentFormContextState['clientSecret']) => {
       dispatch({ type: 'setClientSecret', payload: clientSecret })
@@ -138,7 +142,7 @@ function PaymentFormProvider({ children }: PropsWithChildren) {
       dispatch({ type: 'setPlan', payload: plan })
     },
   }),
-  [dispatch, contextState])
+  [formVariant, contextState, dispatch])
 
   return (
     <PaymentFormContext.Provider value={contextVal}>
@@ -149,7 +153,7 @@ function PaymentFormProvider({ children }: PropsWithChildren) {
 
 function PaymentFormInner() {
   const {
-    formState, plan, setPlan, clientSecret, setFormState,
+    formState, plan, setPlan, clientSecret, setFormState, formVariant,
   }
     = usePaymentForm()
 
@@ -167,14 +171,17 @@ function PaymentFormInner() {
 
   return (
     <>
-      <BillingPreview
-        noCard
-        discountPreview
-        yearly={plan === 'yearly'}
-        onChange={isYearly => {
-          setPlan(isYearly ? 'yearly' : 'monthly')
-        }}
-      />
+      {formVariant === PaymentFormVariant.Upgrade && (
+        <BillingPreview
+          noCard
+          discountPreview
+          yearly={plan === 'yearly'}
+          onChange={isYearly => {
+            setPlan(isYearly ? 'yearly' : 'monthly')
+          }}
+        />
+      )}
+
       {formState === PaymentFormState.CollectAddress && (
         <>
           <Div
@@ -202,17 +209,20 @@ function PaymentFormInner() {
 }
 
 export default function PaymentForm({
-  props,
-}: { type: 'upgrade' | 'update' } & ComponentProps<typeof PaymentFormInner>) {
+  formVariant,
+  ...props
+}: { formVariant: PaymentFormVariant } & ComponentProps<typeof PaymentFormInner>) {
   return (
-    <PaymentFormProvider type="">
+    <PaymentFormProvider formVariant={formVariant}>
       <PaymentFormInner {...props} />
     </PaymentFormProvider>
   )
 }
 
-function Payment({ type }: {}) {
-  const { clientSecret, plan, setFormState } = usePaymentForm()
+function Payment() {
+  const {
+    clientSecret, plan, setFormState,
+  } = usePaymentForm()
   const [message, setMessage] = useState<string | null | undefined>()
   const [isLoading, setIsLoading] = useState(false)
   const stripe = useStripe()

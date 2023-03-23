@@ -220,7 +220,7 @@ function PaymentFormInner() {
       )}
       <StripeElements clientSecret={clientSecret}>
         {formState === PaymentFormState.CollectAddress && (
-          <>
+          <Div>
             <Div
               fontWeight="bold"
               marginBottom="medium"
@@ -233,7 +233,7 @@ function PaymentFormInner() {
             >
               <AddressForm />
             </Flex>
-          </>
+          </Div>
         )}
         {formState === PaymentFormState.CollectPayment && clientSecret && (
           <Payment />
@@ -612,7 +612,7 @@ function SelectPaymentMethod() {
       <Card
         display="flex"
         flexDirection="column"
-        maxHeight="200px"
+        maxHeight="230px"
         overflow="auto"
         gap="medium"
         width="100%"

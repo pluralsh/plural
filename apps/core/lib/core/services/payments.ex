@@ -131,7 +131,7 @@ defmodule Core.Services.Payments do
   def list_payment_methods(%Account{billing_customer_id: id} = account, %User{} = user, opts) when is_binary(id) do
     with {:ok, _} <- allow(account, user, :pay) do
       Map.merge(%{customer: id}, opts)
-      |> Stripe.PaymentMethod.list(expand: "customer")
+      |> Stripe.PaymentMethod.list(expand: ["data.customer"])
     end
   end
 
@@ -246,7 +246,7 @@ defmodule Core.Services.Payments do
   """
   @spec latest_invoice(PlatformSubscription.t) :: {:ok, Stripe.Invoice.t} | error
   def latest_invoice(%PlatformSubscription{external_id: id}) when is_binary(id) do
-    case Stripe.Subscription.retrieve(id, expand: "latest_invoice.payment_intent") do
+    case Stripe.Subscription.retrieve(id, expand: ["latest_invoice.payment_intent"]) do
       {:ok, %Stripe.Subscription{latest_invoice: invoice}} -> {:ok, invoice}
       error -> error
     end

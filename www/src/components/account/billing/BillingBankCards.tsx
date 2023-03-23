@@ -31,14 +31,16 @@ function PaymentMethod({
 }: {
   method: PaymentMethodFragment | null | undefined
 }) {
-  const [makeDefaultMutation, { loading: defaultLoading }] = useDefaultPaymentMethodMutation({
-    variables: { id: method?.id || '' },
-    refetchQueries: [namedOperations.Query.PaymentMethods],
-  })
-  const [deleteCardMutation, { loading: deleteLoading }] = useDeletePaymentMethodMutation({
-    variables: { id: method?.id || '' },
-    refetchQueries: [namedOperations.Query.PaymentMethods],
-  })
+  const [makeDefaultMutation, { loading: defaultLoading }]
+    = useDefaultPaymentMethodMutation({
+      variables: { id: method?.id || '' },
+      refetchQueries: [namedOperations.Query.PaymentMethods],
+    })
+  const [deleteCardMutation, { loading: deleteLoading }]
+    = useDeletePaymentMethodMutation({
+      variables: { id: method?.id || '' },
+      refetchQueries: [namedOperations.Query.PaymentMethods],
+    })
 
   const handleDelete = useCallback(() => {
     deleteCardMutation().then(result => {
@@ -138,14 +140,38 @@ function AddPaymentMethodModal({
   )
 }
 
+export function BillingAddress() {
+  const subscription = useContext(SubscriptionContext)
+  const { billingAddress } = subscription
+
+  return billingAddress ? (
+    <Flex
+      direction="column"
+      body2
+      marginBottom="xlarge"
+    >
+      <H3
+        subtitle2
+        marginBottom="xsmall"
+      >
+        Billing address
+      </H3>
+      {billingAddress?.line1 && <Div>{billingAddress.line1}</Div>}
+      {billingAddress?.line2 && <Div>{billingAddress.line2}</Div>}
+      {billingAddress?.city && <Div>{billingAddress.city}</Div>}
+      {billingAddress?.state && <Div>{billingAddress.state}</Div>}
+      {billingAddress?.zip && <Div>{billingAddress.zip}</Div>}
+      {billingAddress?.country && <Div>{billingAddress.country}</Div>}
+    </Flex>
+  ) : null
+}
+
 function BillingBankCards({
   paymentMethods,
 }: {
   paymentMethods: (PaymentMethodFragment | null | undefined)[]
 }) {
   const [addPayment, setAddPayment] = useState(false)
-  const subscription = useContext(SubscriptionContext)
-  const { billingAddress } = subscription
 
   return (
     <Card
@@ -154,36 +180,13 @@ function BillingBankCards({
       alignItems="start"
       padding="medium"
     >
-      {billingAddress && (
-        <Flex
-          direction="column"
-          body2
-          marginBottom="xlarge"
-        >
-          <H3
-            subtitle2
-            marginBottom="xsmall"
-          >
-            Billing address
-          </H3>
-          {billingAddress?.line1 && <Div>{billingAddress.line1}</Div>}
-          {billingAddress?.line2 && <Div>{billingAddress.line2}</Div>}
-          {billingAddress?.city && <Div>{billingAddress.city}</Div>}
-          {billingAddress?.state && <Div>{billingAddress.state}</Div>}
-          {billingAddress?.zip && <Div>{billingAddress.zip}</Div>}
-          {billingAddress?.country && <Div>{billingAddress.country}</Div>}
-        </Flex>
-      )}
-
       <Flex
         direction="column"
         gap="medium"
         width="100%"
       >
         {' '}
-        <H3 subtitle2>
-          Payment methods
-        </H3>
+        <H3 subtitle2>Payment methods</H3>
         {isEmpty(paymentMethods) ? (
           <Div color="text-xlight">No payment method saved</Div>
         ) : (
@@ -192,7 +195,6 @@ function BillingBankCards({
             gap="medium"
             width="100%"
           >
-
             {paymentMethods.map(paymentMethod => (
               <PaymentMethod method={paymentMethod} />
             ))}

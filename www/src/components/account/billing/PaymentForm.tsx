@@ -333,7 +333,7 @@ function AddressForm({
 
     await (addressElt as any)?.getValue()
   }, [elements])
-  const { billingAddress } = useContext(SubscriptionContext)
+  // const { billingAddress } = useContext(SubscriptionContext)
 
   const [setupIntentMut] = useSetupIntentMutation({
     refetchQueries: [namedOperations.Query.Subscription],
@@ -341,18 +341,22 @@ function AddressForm({
 
   const disableSubmit = !stripe || !elements || !addressComplete || loading
 
-  const defaultAddress = useMemo(() => ({
-    name: billingAddress?.name ?? '',
-    address: {
-      line1: billingAddress?.line1 ?? '',
-      line2: billingAddress?.line2 ?? '',
-      city: billingAddress?.city ?? '',
-      state: billingAddress?.state ?? '',
-      country: billingAddress?.country ?? '',
-      postal_code: billingAddress?.zip ?? '',
-    },
-  }),
-  [billingAddress])
+  /* Temporarily disabling default address form filling, since we don't currently
+  have a way for customers to change the billing address on their account or even
+  know what their current billing address is. */
+
+  // const defaultAddress = useMemo(() => ({
+  //   name: billingAddress?.name ?? '',
+  //   address: {
+  //     line1: billingAddress?.line1 ?? '',
+  //     line2: billingAddress?.line2 ?? '',
+  //     city: billingAddress?.city ?? '',
+  //     state: billingAddress?.state ?? '',
+  //     country: billingAddress?.country ?? '',
+  //     postal_code: billingAddress?.zip ?? '',
+  //   },
+  // }),
+  // [billingAddress])
 
   const handleSubmit = useCallback(async event => {
     event.preventDefault()
@@ -420,7 +424,8 @@ function AddressForm({
         <AddressElement
           options={{
             mode: 'billing',
-            defaultValues: defaultAddress,
+            /* Temporarily disabled: See note above */
+            // defaultValues: defaultAddress,
           }}
           onChange={event => {
             setAddressComplete(event.complete)

@@ -160,9 +160,6 @@ function PaymentFormInner() {
   }
     = usePaymentForm()
 
-  if (formState === PaymentFormState.CollectAddress) {
-    console.log('thing')
-  }
   useEffect(() => {
     if (clientSecret) {
       setFormState(PaymentFormState.CollectPayment)
@@ -304,7 +301,9 @@ function Payment() {
             disabled={isLoading || !stripe || !elements}
             id="submit"
           >
-            Upgrade now
+            {formVariant === PaymentFormVariant.Upgrade
+              ? 'Upgrade now'
+              : 'Add card'}
           </Button>
         </Flex>
       </Flex>
@@ -315,11 +314,9 @@ function Payment() {
 function AddressForm({
   loading: loadingProp = false,
   error: errorProp = '',
-}: // onComplete,
-{
+}: {
   loading?: boolean
   error?: string
-  // onComplete?: ({ address: AddressAttributes, intent }) => void
 }) {
   const [addressComplete, setAddressComplete] = useState(false)
   const [validating, setValidating] = useState(loadingProp)
@@ -358,7 +355,6 @@ function AddressForm({
   [billingAddress])
 
   const handleSubmit = useCallback(async event => {
-    console.log('handleSubmit')
     event.preventDefault()
 
     if (!(stripe && elements)) return
@@ -399,7 +395,6 @@ function AddressForm({
 
     if (setupResult.errors) {
       setFormError(setupResult.errors[0].message)
-      console.log('setupIntent errors', setupResult.errors)
       setValidating(false)
     }
 
@@ -410,15 +405,11 @@ function AddressForm({
       setClientSecret(intent.clientSecret)
     }
 
-    console.log('x', setupResult.data)
-
     setValidating(false)
   },
   [elements, setClientSecret, setIntent, setupIntentMut, stripe])
 
   const error = formError || errorProp
-
-  console.log('loading', loading)
 
   return (
     <form onSubmit={handleSubmit}>
@@ -432,7 +423,6 @@ function AddressForm({
             defaultValues: defaultAddress,
           }}
           onChange={event => {
-            console.log('changed', event)
             setAddressComplete(event.complete)
             if (event.complete) {
               setFormError('')

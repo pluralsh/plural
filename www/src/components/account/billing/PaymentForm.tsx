@@ -69,7 +69,7 @@ type PaymentFormContextVal = PaymentFormContextState & {
   setFormState: (state: PaymentFormState) => void
   setPlan: (plan: PlanType) => void
   resetForm: () => void
-  onClose: (e?:Event) => void
+  onClose: (e?: Event) => void
 }
 
 export type PlanType = 'yearly' | 'monthly'
@@ -218,27 +218,27 @@ function PaymentFormInner() {
       {formState === PaymentFormState.SelectPaymentMethod && (
         <SelectPaymentMethod />
       )}
-      {formState === PaymentFormState.CollectAddress && (
-        <>
-          <Div
-            fontWeight="bold"
-            marginBottom="medium"
-          >
-            Billing information
-          </Div>
-          <Flex
-            flexDirection="column"
-            gap="xlarge"
-          >
-            <AddressForm />
-          </Flex>
-        </>
-      )}
-      {formState === PaymentFormState.CollectPayment && clientSecret && (
-        <StripeElements options={{ clientSecret }}>
+      <StripeElements clientSecret={clientSecret}>
+        {formState === PaymentFormState.CollectAddress && (
+          <>
+            <Div
+              fontWeight="bold"
+              marginBottom="medium"
+            >
+              Billing information
+            </Div>
+            <Flex
+              flexDirection="column"
+              gap="xlarge"
+            >
+              <AddressForm />
+            </Flex>
+          </>
+        )}
+        {formState === PaymentFormState.CollectPayment && clientSecret && (
           <Payment />
-        </StripeElements>
-      )}
+        )}
+      </StripeElements>
     </Flex>
   )
 }

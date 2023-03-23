@@ -130,7 +130,7 @@ function AddPaymentMethodModal({
     <Modal
       open={open}
       onClose={onClose}
-      header="Upgrade to professional"
+      header="Add payment method"
       size="large"
     >
       <PaymentForm formVariant={PaymentFormVariant.AddCard} />

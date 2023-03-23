@@ -58,8 +58,6 @@ export function PaymentMethodsProvider({ children }: PropsWithChildren) {
     }
   }, [data?.account?.paymentMethods?.edges])
 
-  console.log('paymentMethods', paymentMethods)
-
   const contextVal = useMemo<PaymentMethodsContextType>(() => ({
     paymentMethods, // paymentMethods.sort((a, b) => (a.isDefault ? -1 : b.isDefault ? 1 : 0)),
     defaultPaymentMethod,

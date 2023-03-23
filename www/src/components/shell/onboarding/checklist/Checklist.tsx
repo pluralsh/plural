@@ -1,12 +1,12 @@
 import { useMutation } from '@apollo/client'
 import { A, Flex, Span } from 'honorable'
 import {
+  BrowseAppsIcon,
   Button,
   Checklist,
   ChecklistItem,
   ChecklistStateProps,
   DownloadIcon,
-  MarketIcon,
   TerminalIcon,
   Toast,
 } from '@pluralsh/design-system'
@@ -213,7 +213,7 @@ export function OnboardingChecklist() {
             <Button
               small
               secondary
-              startIcon={<MarketIcon />}
+              startIcon={<BrowseAppsIcon />}
               onClick={() => {
                 setOpen(false)
                 navigate('/marketplace')

@@ -32,9 +32,7 @@ export function PaymentMethodsProvider({
 }: PropsWithChildren) {
   const {
     data, loading, error, refetch,
-  } = usePaymentMethodsQuery({
-    fetchPolicy: 'network-only',
-  })
+  } = usePaymentMethodsQuery()
 
   const paymentMethods = useMemo(() => data?.account?.paymentMethods?.edges?.map(edge => edge?.node),
     [data?.account?.paymentMethods?.edges])

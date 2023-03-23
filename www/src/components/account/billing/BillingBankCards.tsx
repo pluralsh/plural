@@ -31,29 +31,25 @@ function PaymentMethod({
 }: {
   method: PaymentMethodFragment | null | undefined
 }) {
-  console.log('method', method)
-
-  const [makeDefaultMutation] = useDefaultPaymentMethodMutation({
+  const [makeDefaultMutation, { loading: defaultLoading }] = useDefaultPaymentMethodMutation({
     variables: { id: method?.id || '' },
     refetchQueries: [namedOperations.Query.PaymentMethods],
   })
-  const [deleteCardMutation] = useDeletePaymentMethodMutation({
+  const [deleteCardMutation, { loading: deleteLoading }] = useDeletePaymentMethodMutation({
     variables: { id: method?.id || '' },
     refetchQueries: [namedOperations.Query.PaymentMethods],
   })
 
   const handleDelete = useCallback(() => {
-    console.log('deleteCard', method?.id)
     deleteCardMutation().then(result => {
       console.log('deleteCardMutation result', result)
     })
-  }, [deleteCardMutation, method?.id])
+  }, [deleteCardMutation])
   const handleMakeDefault = useCallback(() => {
-    console.log('makeDefault', method?.id)
     makeDefaultMutation().then(result => {
       console.log('makeDefault result:', result)
     })
-  }, [makeDefaultMutation, method?.id])
+  }, [makeDefaultMutation])
 
   if (!method?.card) {
     return null
@@ -106,6 +102,7 @@ function PaymentMethod({
           <Button
             small
             secondary
+            loading={defaultLoading}
             onClick={handleMakeDefault}
           >
             Make default
@@ -115,6 +112,7 @@ function PaymentMethod({
           small
           secondary
           destructive
+          loading={deleteLoading}
           onClick={handleDelete}
         >
           Remove
@@ -145,13 +143,9 @@ function BillingBankCards({
 }: {
   paymentMethods: (PaymentMethodFragment | null | undefined)[]
 }) {
-  console.log('BillingBankCards')
   const [addPayment, setAddPayment] = useState(false)
   const subscription = useContext(SubscriptionContext)
   const { billingAddress } = subscription
-
-  console.log('kk billingAddress', billingAddress)
-  console.log('kk paymentMethods', paymentMethods)
 
   return (
     <Card

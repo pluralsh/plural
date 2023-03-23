@@ -1,10 +1,16 @@
 import {
   ReactNode,
+  useCallback,
   useContext,
   useEffect,
   useState,
 } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
+import {
+  Link,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from 'react-router-dom'
 import { Div, Flex, P } from 'honorable'
 import {
   Button,
@@ -15,13 +21,13 @@ import {
 import { useStripe } from '@stripe/react-stripe-js'
 import { SetupIntent } from '@stripe/stripe-js'
 
+import isEmpty from 'lodash/isEmpty'
+
 import PlatformPlansContext from '../../../contexts/PlatformPlansContext'
 
 import { namedOperations, useDefaultPaymentMethodMutation, useUpgradeToProfessionalPlanMutation } from '../../../generated/graphql'
 
 import { type PlanType } from './PaymentForm'
-
-/// TODO: Make sure payment is set to default before upgrade mutation
 
 const useConfirmAndSetDefault = ({
   clientSecret,
@@ -65,7 +71,6 @@ const useConfirmAndSetDefault = ({
     if (stripe && clientSecret) {
       let cancelled = false
 
-      console.log('stripe confirmCardPayment')
       try {
         stripe
           .retrieveSetupIntent(clientSecret)
@@ -73,17 +78,9 @@ const useConfirmAndSetDefault = ({
             if (cancelled) {
               return
             }
-            console.log('stripe confirmCardPayment returned, ',
-              setupIntent,
-              error)
-
             setError(error)
             setSetupIntent(setupIntent)
             if (setupIntent?.status === 'succeeded') {
-              console.log('succeeded payment', "don't mutate yet")
-              console.log('setupIntent', setupIntent)
-              console.log('UPGRADE MUTATION REQUESTED')
-
               const paymentMethodId
                 = typeof setupIntent?.payment_method === 'string'
                   ? setupIntent?.payment_method
@@ -95,14 +92,12 @@ const useConfirmAndSetDefault = ({
                     if (cancelled) {
                       return
                     }
-                    console.log('DEFAULT PAYMENT METHOD MUTATION COMPLETE', r)
                     setDefaultPaymentId(paymentMethodId)
                   })
                   .catch(e => {
                     if (cancelled) {
                       return
                     }
-                    console.log('DEFAULT PAYMENT METHOD MUTATION ERROR', e)
                     setError(e)
                   })
               }
@@ -141,12 +136,10 @@ export function UpgradeSuccessMessage() {
 }
 
 export default function ConfirmPayment() {
-  const stripe = useStripe()
   const [searchParams] = useSearchParams()
+  const location = useLocation()
+  const navigate = useNavigate()
 
-  console.log('stripe', stripe)
-
-  console.log('searchParams', searchParams)
   const clientSecret = searchParams.get('setup_intent_client_secret')
   const plan: PlanType
     = searchParams.get('plan') === 'yearly' ? 'yearly' : 'monthly'
@@ -155,10 +148,19 @@ export default function ConfirmPayment() {
   const planId
     = plan === 'yearly' ? proYearlyPlatformPlan.id : proPlatformPlan.id
 
-  console.log('clientSecret', clientSecret)
-
   const [upgradeSuccess, setUpgradeSuccess] = useState(false)
   const [isOpen, setIsOpen] = useState(!!clientSecret)
+
+  const onClose = useCallback(() => {
+    setIsOpen(false)
+    navigate(location.pathname)
+  }, [location.pathname, navigate])
+
+  useEffect(() => {
+    if (upgradeSuccess && !isEmpty(searchParams.values)) {
+      navigate(location.pathname)
+    }
+  }, [location.pathname, navigate, searchParams.values, upgradeSuccess])
 
   // Upgrade mutation
   const [upgradeMutation, { error: upgradeError }]
@@ -166,26 +168,28 @@ export default function ConfirmPayment() {
       variables: { planId },
       refetchQueries: [namedOperations.Query.Subscription],
       onCompleted: ret => {
-        console.log('completed upgrade', ret)
         setUpgradeSuccess(true)
       },
-      onError: error => {
-        console.log('Mutation error', error.message)
-      },
+
     })
 
   // Confirm payment
+  const onComplete = useCallback(setupIntent => {
+    upgradeMutation()
+  },
+  [upgradeMutation])
   const { error: setDefaultError, setupIntent } = useConfirmAndSetDefault({
     clientSecret,
-    onComplete: setupIntent => {
-      console.log('set default complete', setupIntent)
-      upgradeMutation().then(r => {
-        console.log('UPGRADE MUTATION COMPLETE', r)
-      })
-    },
+    onComplete,
   })
 
   const error = upgradeError || setDefaultError
+
+  useEffect(() => {
+    if (error?.message === 'account_id has already been taken') {
+      onClose()
+    }
+  }, [error, onClose])
 
   let message: ReactNode | undefined
   let header: string | undefined
@@ -194,47 +198,46 @@ export default function ConfirmPayment() {
     header = 'Payment success'
     message = <UpgradeSuccessMessage />
   }
-  else if (setupIntent) {
-    switch (setupIntent?.status) {
-    case 'succeeded':
-        // TODO: Actually do the plan
-      header = 'Processing'
-      message = (
-        <Div
-          width="100%"
-          overflow="hidden"
-        >
-          <LoopingLogo />
-        </Div>
-      )
-      break
-    case 'processing':
-      header = 'Payment processing'
-      message = (
-        <P>Payment processing. We'll update you when payment is received.</P>
-      )
-      break
-    case 'requires_payment_method':
-      header = 'Payment failed'
-      message = <P>Payment failed. Please try another payment method.</P>
-      break
-    default:
-      header = 'Payment issue'
-      message = (
-        <P>
-          There was an {error ? '' : 'unknown '}issue processing your payment
-          {error ? <>': '{error.message}</> : '.'}
-        </P>
-      )
-    }
-  }
   else if (error) {
     header = 'Error processing payment'
     message = <P>Error processing payment: {error.message}</P>
-  }
 
-  const onClose = () => {
-    setIsOpen(false)
+    if (setupIntent) {
+      switch (setupIntent?.status) {
+      case 'succeeded':
+        header = 'Processing'
+        message = (
+          <Div
+            width="100%"
+            overflow="hidden"
+          >
+            <LoopingLogo />
+          </Div>
+        )
+        break
+      case 'processing':
+        header = 'Payment processing'
+        message = (
+          <P>
+            Payment processing. We'll update you when payment is received.
+          </P>
+        )
+        break
+      case 'requires_payment_method':
+        header = 'Payment failed'
+        message = <P>Payment failed. Please try another payment method.</P>
+        break
+      default:
+        header = 'Payment issue'
+        message = (
+          <P>
+            There was an {error ? '' : 'unknown '}issue processing your
+            payment
+            {error ? <>': '{error.message}</> : '.'}
+          </P>
+        )
+      }
+    }
   }
 
   if (!clientSecret) {

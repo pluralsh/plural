@@ -50,6 +50,7 @@ enum PaymentFormState {
   CollectAddress = 'CollectAddress',
   CollectPayment = 'CollectPayment',
   SelectPaymentMethod = 'SelectPaymentMethod',
+  UpgradeSuccess = 'UpgradeSuccess',
 }
 
 type PaymentFormContextState = {
@@ -169,7 +170,6 @@ function PaymentFormProvider({
         dispatch({ type: 'setClientSecret', payload: clientSecret })
       },
       setFormState: (state: PaymentFormContextState['formState']) => {
-        console.log('setFormState', state)
         dispatch({ type: 'setFormState', payload: state })
       },
       setIntent: (intent: PaymentFormContextState['intent']) => {
@@ -199,6 +199,10 @@ function PaymentFormInner() {
     formState, plan, setPlan, clientSecret, formVariant,
   }
     = usePaymentForm()
+
+  if (formState === PaymentFormState.UpgradeSuccess) {
+    return <UpgradeSuccess />
+  }
 
   return (
     <Flex
@@ -271,7 +275,6 @@ function Payment() {
 
   useEffect(() => {
     if (!clientSecret) {
-      console.log('clientSecretChanged', setFormState)
       setFormState(PaymentFormState.CollectAddress)
     }
   }, [clientSecret, setFormState])
@@ -537,7 +540,6 @@ function AddressForm({
             <Div
               marginLeft="auto"
               onClick={() => {
-                console.log('validate')
                 validateForm()
               }}
             >
@@ -575,34 +577,18 @@ function SelectPaymentMethod() {
       const intent
         = ret.createPlatformSubscription?.latestInvoice?.paymentIntent
 
-      console.log('paymentIntent', intent)
       setUpgradeSuccess(true)
     },
     onError: error => {
       setError(error)
-      console.log('Mutation error', error.message)
     },
   })
 
-  if (upgradeSuccess) {
-    return (
-      <Flex
-        direction="column"
-        gap="large"
-      >
-        <UpgradeSuccessMessage />
-        <Flex justifyContent="end">
-          <Button
-            as={Link}
-            to="/marketplace"
-            onClick={() => onClose()}
-          >
-            Explore the app
-          </Button>
-        </Flex>
-      </Flex>
-    )
-  }
+  useEffect(() => {
+    if (upgradeSuccess) {
+      setFormState(PaymentFormState.UpgradeSuccess)
+    }
+  })
 
   return (
     <Flex
@@ -650,6 +636,26 @@ function SelectPaymentMethod() {
           }}
         >
           Upgrade with selected card
+        </Button>
+      </Flex>
+    </Flex>
+  )
+}
+
+function UpgradeSuccess() {
+  return (
+    <Flex
+      direction="column"
+      gap="large"
+    >
+      <UpgradeSuccessMessage />
+      <Flex justifyContent="end">
+        <Button
+          as={Link}
+          to="/marketplace"
+          onClick={() => onClose()}
+        >
+          Explore the app
         </Button>
       </Flex>
     </Flex>

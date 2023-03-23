@@ -6,9 +6,9 @@ import PluralConfigurationContext from '../../../contexts/PluralConfigurationCon
 import { useStripeAppearance } from '../../WrapStripe'
 
 export function StripeElements({
-  options,
+  clientSecret,
   children,
-}: PropsWithChildren<{ options: StripeElementsOptions }>) {
+}: PropsWithChildren<{ clientSecret: string | null | undefined }>) {
   const { stripePublishableKey } = useContext(PluralConfigurationContext)
 
   const appearance = useStripeAppearance()
@@ -18,26 +18,23 @@ export function StripeElements({
     }
   }, [stripePublishableKey])
 
-  const elementsOptions = useMemo(() => {
-    const { clientSecret } = options
+  const elementsOptions = useMemo(() => ({
+    appearance,
+    ...(clientSecret ? { clientSecret } : {}),
+  } satisfies StripeElementsOptions),
+  [appearance, clientSecret])
 
-    if (!clientSecret) {
-      return null
-    }
-
-    return {
-      appearance,
-      ...options,
-      clientSecret,
-    } satisfies StripeElementsOptions
-  }, [appearance, options])
-
-  if (!stripePromise || !elementsOptions) {
-    return <>children</>
+  if (!stripePromise) {
+    // eslint-disable-next-line react/jsx-no-useless-fragment
+    return <>{children}</>
   }
 
   return (
     <Elements
+      // Must pass key to make sure a new <Elements> element is created
+      // any time clientSecret changes. Otherwise it will error when creating
+      // a <PaymentElement> in a descendant
+      key={clientSecret}
       stripe={stripePromise}
       options={elementsOptions}
     >

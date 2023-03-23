@@ -103,7 +103,7 @@ export function PaymentMethod({
         direction="row"
         gap="small"
         align="center"
-        justify="end"
+        justify="flex-end"
         flexGrow={1}
       >
         {method.isDefault ? (
@@ -149,7 +149,13 @@ function AddPaymentMethodModal({
       header="Add payment method"
       size="large"
     >
-      <PaymentForm formVariant={PaymentFormVariant.AddCard} />
+      <PaymentForm
+        formVariant={PaymentFormVariant.AddCard}
+        onClose={() => {
+          console.log('onClose modal')
+          onClose()
+        }}
+      />
     </Modal>
   )
 }
@@ -209,7 +215,10 @@ function BillingBankCards({
             width="100%"
           >
             {paymentMethods.map(paymentMethod => (
-              <PaymentMethod method={paymentMethod} />
+              <PaymentMethod
+                key={paymentMethod?.id}
+                method={paymentMethod}
+              />
             ))}
           </Flex>
         )}

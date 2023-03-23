@@ -19,6 +19,8 @@ import {
 } from 'react'
 import { type ImmerReducer, useImmerReducer } from 'use-immer'
 
+import { Link } from 'react-router-dom'
+
 import {
   SetupIntentFragment,
   namedOperations,
@@ -67,7 +69,7 @@ type PaymentFormContextVal = PaymentFormContextState & {
   setFormState: (state: PaymentFormState) => void
   setPlan: (plan: PlanType) => void
   resetForm: () => void
-  onClose: () => void
+  onClose: (e?:Event) => void
 }
 
 export type PlanType = 'yearly' | 'monthly'
@@ -177,7 +179,8 @@ function PaymentFormProvider({
         dispatch({ type: 'setPlan', payload: plan })
       },
       resetForm,
-      onClose: () => {
+      onClose: e => {
+        e?.preventDefault()
         resetForm()
         onClose?.()
       },
@@ -197,8 +200,6 @@ function PaymentFormInner() {
   }
     = usePaymentForm()
 
-  console.log('formState', formState)
-
   return (
     <Flex
       flexDirection="column"
@@ -217,7 +218,6 @@ function PaymentFormInner() {
       {formState === PaymentFormState.SelectPaymentMethod && (
         <SelectPaymentMethod />
       )}
-
       {formState === PaymentFormState.CollectAddress && (
         <>
           <Div
@@ -346,14 +346,12 @@ function Payment() {
             Change address
           </Button>
           <Flex
-            justify="end"
+            justify="flex-end"
             gap="large"
           >
             <Button
               secondary
-              onClick={() => {
-                onClose()
-              }}
+              onClick={onClose}
             >
               Cancel
             </Button>
@@ -393,6 +391,7 @@ function AddressForm({
     setIntent,
     setFormState,
     formVariant,
+    onClose,
   } = usePaymentForm()
   const validateForm = useCallback(async () => {
     if (!elements) {
@@ -524,20 +523,34 @@ function AddressForm({
               Go back
             </Button>
           )}
-          {/* Wrap the button so you can still validate the form on click while disabled */}
-          <Div
+          <Flex
+            gap="medium"
             marginLeft="auto"
-            onClick={() => validateForm()}
           >
             <Button
-              type="submit"
-              primary
-              disabled={disableSubmit}
-              loading={loading}
+              secondary
+              onClick={onClose}
             >
-              Continue to payment
+              Cancel
             </Button>
-          </Div>
+            {/* Wrap the button so you can still validate the form on click while disabled */}
+            <Div
+              marginLeft="auto"
+              onClick={() => {
+                console.log('validate')
+                validateForm()
+              }}
+            >
+              <Button
+                type="submit"
+                primary
+                disabled={disableSubmit}
+                loading={loading}
+              >
+                Continue to payment
+              </Button>
+            </Div>
+          </Flex>
         </Flex>
       </Flex>
     </form>
@@ -545,7 +558,7 @@ function AddressForm({
 }
 
 function SelectPaymentMethod() {
-  const { setFormState, plan } = usePaymentForm()
+  const { setFormState, plan, onClose } = usePaymentForm()
   const { defaultPaymentMethod, paymentMethods } = usePaymentMethods()
   const [error, setError] = useState<Error | undefined>()
   const [upgradeSuccess, setUpgradeSuccess] = useState(false)
@@ -608,6 +621,7 @@ function SelectPaymentMethod() {
       >
         {paymentMethods.map(method => (
           <PaymentMethod
+            key={method.id}
             variant={PaymentFormVariant.Upgrade}
             method={method}
           />
@@ -616,7 +630,7 @@ function SelectPaymentMethod() {
       {error && <BillingError>{error.message}</BillingError>}
       <Flex
         gap="large"
-        justify="end"
+        justify="flex-end"
       >
         <Button
           secondary

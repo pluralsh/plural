@@ -560,7 +560,7 @@ function AddressForm({
 }
 
 function SelectPaymentMethod() {
-  const { setFormState, plan, onClose } = usePaymentForm()
+  const { setFormState, plan } = usePaymentForm()
   const { defaultPaymentMethod, paymentMethods } = usePaymentMethods()
   const [error, setError] = useState<Error | undefined>()
   const [upgradeSuccess, setUpgradeSuccess] = useState(false)
@@ -573,10 +573,7 @@ function SelectPaymentMethod() {
   const [upgradeMutation, { loading }] = useUpgradeToProfessionalPlanMutation({
     variables: { planId },
     refetchQueries: [namedOperations.Query.Subscription],
-    onCompleted: ret => {
-      const intent
-        = ret.createPlatformSubscription?.latestInvoice?.paymentIntent
-
+    onCompleted: () => {
       setUpgradeSuccess(true)
     },
     onError: error => {
@@ -643,6 +640,8 @@ function SelectPaymentMethod() {
 }
 
 function UpgradeSuccess() {
+  const { onClose } = usePaymentForm()
+
   return (
     <Flex
       direction="column"

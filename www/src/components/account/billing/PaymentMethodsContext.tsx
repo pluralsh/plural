@@ -11,7 +11,8 @@ import BillingError from './BillingError'
 import BillingLoading from './BillingLoading'
 
 export type PaymentMethodsContextType = {
-  paymentMethods: (PaymentMethodFragment | null | undefined)[]
+  paymentMethods: PaymentMethodFragment[]
+  defaultPaymentMethod?: PaymentMethodFragment
   refetch: () => void
 }
 
@@ -27,23 +28,46 @@ export function usePaymentMethods() {
   return context
 }
 
-export function PaymentMethodsProvider({
-  children,
-}: PropsWithChildren) {
+export function PaymentMethodsProvider({ children }: PropsWithChildren) {
   const {
     data, loading, error, refetch,
   } = usePaymentMethodsQuery()
 
-  const paymentMethods = useMemo(() => data?.account?.paymentMethods?.edges?.map(edge => edge?.node),
-    [data?.account?.paymentMethods?.edges])
+  const { paymentMethods, defaultPaymentMethod } = useMemo(() => {
+    const result = (data?.account?.paymentMethods?.edges || [])?.reduce((prev, edge) => {
+      const curNode = edge?.node
+
+      return {
+        defaultPaymentMethod: curNode?.isDefault
+          ? curNode
+          : prev.defaultPaymentMethod,
+        paymentMethods: [
+          ...prev.paymentMethods,
+          ...(curNode ? [curNode] : []),
+        ],
+      }
+    },
+      { paymentMethods: [], defaultPaymentMethod: undefined } as {
+        paymentMethods: PaymentMethodFragment[]
+        defaultPaymentMethod: PaymentMethodFragment | undefined
+      })
+
+    return {
+      paymentMethods: result.paymentMethods,
+      defaultPaymentMethod: result.defaultPaymentMethod,
+    }
+  }, [data?.account?.paymentMethods?.edges])
+
+  console.log('paymentMethods', paymentMethods)
 
   const contextVal = useMemo<PaymentMethodsContextType>(() => ({
-    paymentMethods: paymentMethods || [],
+    paymentMethods, // paymentMethods.sort((a, b) => (a.isDefault ? -1 : b.isDefault ? 1 : 0)),
+    defaultPaymentMethod,
     refetch,
   }),
-  [paymentMethods, refetch])
+  [defaultPaymentMethod, paymentMethods, refetch])
 
-  if (error) return <BillingError />
+  if (error) return <BillingError>{error.message}</BillingError>
   if (loading) return <BillingLoading />
 
   return (

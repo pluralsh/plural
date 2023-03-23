@@ -4,13 +4,13 @@ import {
   useContext,
   useState,
 } from 'react'
-import { Button, Card, Modal } from '@pluralsh/design-system'
 import {
-  Div,
-  Flex,
-  H3,
-  P,
-} from 'honorable'
+  Button,
+  Card,
+  Chip,
+  Modal,
+} from '@pluralsh/design-system'
+import { Div, Flex, H3 } from 'honorable'
 import isEmpty from 'lodash/isEmpty'
 
 import capitalize from 'lodash/capitalize'
@@ -26,10 +26,18 @@ import {
 
 import PaymentForm, { PaymentFormVariant } from './PaymentForm'
 
-function PaymentMethod({
+export enum PaymentMethodActions {
+  MakeDefault = 'makeDefault',
+  Remove = 'remove',
+  Select = 'select',
+}
+
+export function PaymentMethod({
   method,
+  variant = PaymentFormVariant.AddCard,
 }: {
   method: PaymentMethodFragment | null | undefined
+  variant?: PaymentFormVariant
 }) {
   const [makeDefaultMutation, { loading: defaultLoading }]
     = useDefaultPaymentMethodMutation({
@@ -99,7 +107,11 @@ function PaymentMethod({
         flexGrow={1}
       >
         {method.isDefault ? (
-          <P body2>Default card</P>
+          <Chip severity="success">
+            {variant === PaymentFormVariant.AddCard
+              ? 'Default card'
+              : 'Selected'}
+          </Chip>
         ) : (
           <Button
             small
@@ -107,18 +119,20 @@ function PaymentMethod({
             loading={defaultLoading}
             onClick={handleMakeDefault}
           >
-            Make default
+            {variant === PaymentFormVariant.AddCard ? 'Make default' : 'Select'}
           </Button>
         )}
-        <Button
-          small
-          secondary
-          destructive
-          loading={deleteLoading}
-          onClick={handleDelete}
-        >
-          Remove
-        </Button>
+        {variant === PaymentFormVariant.AddCard && (
+          <Button
+            small
+            secondary
+            destructive
+            loading={deleteLoading}
+            onClick={handleDelete}
+          >
+            Remove
+          </Button>
+        )}
       </Flex>
     </Flex>
   )
@@ -185,8 +199,7 @@ function BillingBankCards({
         gap="medium"
         width="100%"
       >
-        {' '}
-        <H3 subtitle2>Payment methods</H3>
+        {/* <H3 subtitle2>Payment methods</H3> */}
         {isEmpty(paymentMethods) ? (
           <Div color="text-xlight">No payment method saved</Div>
         ) : (
@@ -201,13 +214,17 @@ function BillingBankCards({
           </Flex>
         )}
       </Flex>
-
-      <Button
-        onClick={() => setAddPayment(true)}
-        marginTop="medium"
+      <Flex
+        width="100%"
+        justifyContent="center"
       >
-        Add payment method
-      </Button>
+        <Button
+          onClick={() => setAddPayment(true)}
+          marginTop="medium"
+        >
+          Add payment method
+        </Button>
+      </Flex>
       <AddPaymentMethodModal
         open={addPayment}
         onClose={() => setAddPayment(false)}

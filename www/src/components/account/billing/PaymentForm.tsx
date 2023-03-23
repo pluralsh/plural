@@ -1,4 +1,4 @@
-import { Button } from '@pluralsh/design-system'
+import { Button, Card } from '@pluralsh/design-system'
 import {
   AddressElement,
   PaymentElement,
@@ -19,16 +19,25 @@ import {
 } from 'react'
 import { type ImmerReducer, useImmerReducer } from 'use-immer'
 
-import SubscriptionContext from '../../../contexts/SubscriptionContext'
-import { SetupIntentFragment, namedOperations, useSetupIntentMutation } from '../../../generated/graphql'
+import {
+  SetupIntentFragment,
+  namedOperations,
+  useSetupIntentMutation,
+  useUpgradeToProfessionalPlanMutation,
+} from '../../../generated/graphql'
 import type { AddressAttributes } from '../../../generated/graphql'
 
 import { host } from '../../../helpers/hostname'
 import { ErrorMessage } from '../../utils/Alert'
 
+import PlatformPlansContext from '../../../contexts/PlatformPlansContext'
+
 import BillingError from './BillingError'
 import BillingPreview from './BillingPreview'
 import { StripeElements } from './StripeElements'
+import { PaymentMethod } from './BillingBankCards'
+import { usePaymentMethods } from './PaymentMethodsContext'
+import { UpgradeSuccessMessage } from './ConfirmPayment'
 
 export enum PaymentFormVariant {
   Upgrade = 'UPGRADE',
@@ -36,8 +45,9 @@ export enum PaymentFormVariant {
 }
 
 enum PaymentFormState {
-  CollectAddress = 'ADDRESS',
-  CollectPayment = 'PAYMENT',
+  CollectAddress = 'CollectAddress',
+  CollectPayment = 'CollectPayment',
+  SelectPaymentMethod = 'SelectPaymentMethod',
 }
 
 type PaymentFormContextState = {
@@ -56,6 +66,8 @@ type PaymentFormContextVal = PaymentFormContextState & {
 
   setFormState: (state: PaymentFormState) => void
   setPlan: (plan: PlanType) => void
+  resetForm: () => void
+  onClose: () => void
 }
 
 export type PlanType = 'yearly' | 'monthly'
@@ -125,27 +137,52 @@ const paymentElementOptions: StripePaymentElementOptions = {
 
 function PaymentFormProvider({
   formVariant,
+  onClose,
   children,
-}: PropsWithChildren<{ formVariant: PaymentFormVariant }>) {
-  const [contextState, dispatch] = useImmerReducer(reducer, defaultState)
+}: PropsWithChildren<{
+  formVariant: PaymentFormVariant
+  onClose?: () => void
+}>) {
+  const initialFormState
+    = formVariant === PaymentFormVariant.Upgrade
+      ? PaymentFormState.SelectPaymentMethod
+      : PaymentFormState.CollectAddress
+  const [contextState, dispatch] = useImmerReducer(reducer, {
+    ...defaultState,
+    formState: initialFormState,
+  })
 
-  const contextVal = useMemo(() => ({
-    formVariant,
-    ...contextState,
-    setClientSecret: (clientSecret: PaymentFormContextState['clientSecret']) => {
-      dispatch({ type: 'setClientSecret', payload: clientSecret })
-    },
-    setFormState: (state: PaymentFormContextState['formState']) => {
-      dispatch({ type: 'setFormState', payload: state })
-    },
-    setIntent: (intent: PaymentFormContextState['intent']) => {
-      dispatch({ type: 'setIntent', payload: intent })
-    },
-    setPlan: (plan: PaymentFormContextState['plan']) => {
-      dispatch({ type: 'setPlan', payload: plan })
-    },
-  }),
-  [formVariant, contextState, dispatch])
+  const contextVal = useMemo(() => {
+    const resetForm = () => {
+      dispatch({
+        type: 'setFormState',
+        payload: initialFormState,
+      })
+    }
+
+    return {
+      formVariant,
+      ...contextState,
+      setClientSecret: (clientSecret: PaymentFormContextState['clientSecret']) => {
+        dispatch({ type: 'setClientSecret', payload: clientSecret })
+      },
+      setFormState: (state: PaymentFormContextState['formState']) => {
+        console.log('setFormState', state)
+        dispatch({ type: 'setFormState', payload: state })
+      },
+      setIntent: (intent: PaymentFormContextState['intent']) => {
+        dispatch({ type: 'setIntent', payload: intent })
+      },
+      setPlan: (plan: PaymentFormContextState['plan']) => {
+        dispatch({ type: 'setPlan', payload: plan })
+      },
+      resetForm,
+      onClose: () => {
+        resetForm()
+        onClose?.()
+      },
+    }
+  }, [formVariant, contextState, dispatch, initialFormState, onClose])
 
   return (
     <PaymentFormContext.Provider value={contextVal}>
@@ -156,21 +193,17 @@ function PaymentFormProvider({
 
 function PaymentFormInner() {
   const {
-    formState, plan, setPlan, clientSecret, setFormState, formVariant,
+    formState, plan, setPlan, clientSecret, formVariant,
   }
     = usePaymentForm()
 
-  useEffect(() => {
-    if (clientSecret) {
-      setFormState(PaymentFormState.CollectPayment)
-    }
-    else {
-      setFormState(PaymentFormState.CollectAddress)
-    }
-  }, [clientSecret, setFormState])
+  console.log('formState', formState)
 
   return (
-    <>
+    <Flex
+      flexDirection="column"
+      gap="large"
+    >
       {formVariant === PaymentFormVariant.Upgrade && (
         <BillingPreview
           noCard
@@ -181,12 +214,14 @@ function PaymentFormInner() {
           }}
         />
       )}
+      {formState === PaymentFormState.SelectPaymentMethod && (
+        <SelectPaymentMethod />
+      )}
 
       {formState === PaymentFormState.CollectAddress && (
         <>
           <Div
             fontWeight="bold"
-            marginTop="large"
             marginBottom="medium"
           >
             Billing information
@@ -204,18 +239,21 @@ function PaymentFormInner() {
           <Payment />
         </StripeElements>
       )}
-    </>
+    </Flex>
   )
 }
 
 export default function PaymentForm({
   formVariant,
+  onClose,
   ...props
-}: { formVariant: PaymentFormVariant } & ComponentProps<
-  typeof PaymentFormInner
->) {
+}: Omit<ComponentProps<typeof PaymentFormProvider>, 'children'> &
+  ComponentProps<typeof PaymentFormInner>) {
   return (
-    <PaymentFormProvider formVariant={formVariant}>
+    <PaymentFormProvider
+      formVariant={formVariant}
+      onClose={onClose}
+    >
       <PaymentFormInner {...props} />
     </PaymentFormProvider>
   )
@@ -223,19 +261,27 @@ export default function PaymentForm({
 
 function Payment() {
   const {
-    clientSecret, plan, setFormState, formVariant,
-  } = usePaymentForm()
+    clientSecret, plan, setFormState, formVariant, onClose,
+  }
+    = usePaymentForm()
   const [message, setMessage] = useState<string | null | undefined>()
   const [isLoading, setIsLoading] = useState(false)
   const stripe = useStripe()
   const elements = useElements()
 
-  const handleSubmit = async e => {
+  useEffect(() => {
+    if (!clientSecret) {
+      console.log('clientSecretChanged', setFormState)
+      setFormState(PaymentFormState.CollectAddress)
+    }
+  }, [clientSecret, setFormState])
+
+  const handleSubmit = useCallback(async e => {
     e.preventDefault()
 
     if (!stripe || !elements || !clientSecret) {
-      // Stripe.js has not yet loaded.
-      // Make sure to disable form submission until Stripe.js has loaded.
+        // Stripe.js has not yet loaded.
+        // Make sure to disable form submission until Stripe.js has loaded.
       return
     }
 
@@ -244,19 +290,19 @@ function Payment() {
     const { error } = await stripe.confirmSetup({
       elements,
       confirmParams: {
-        // Make sure to change this to your payment completion page
+          // Make sure to change this to your payment completion page
         return_url:
-          formVariant === PaymentFormVariant.Upgrade
-            ? `${host()}/account/billing?plan=${plan}`
-            : `${host()}/account/billing/payments`,
+            formVariant === PaymentFormVariant.Upgrade
+              ? `${host()}/account/billing?plan=${plan}`
+              : `${host()}/account/billing/payments`,
       },
     })
 
-    // This point will only be reached if there is an immediate error when
-    // confirming the payment. Otherwise, your customer will be redirected to
-    // your `return_url`. For some payment methods like iDEAL, your customer will
-    // be redirected to an intermediate site first to authorize the payment, then
-    // redirected to the `return_url`.
+      // This point will only be reached if there is an immediate error when
+      // confirming the payment. Otherwise, your customer will be redirected to
+      // your `return_url`. For some payment methods like iDEAL, your customer will
+      // be redirected to an intermediate site first to authorize the payment, then
+      // redirected to the `return_url`.
     if (error.type === 'card_error' || error.type === 'validation_error') {
       setMessage(error.message)
     }
@@ -265,7 +311,8 @@ function Payment() {
     }
 
     setIsLoading(false)
-  }
+  },
+  [clientSecret, elements, formVariant, plan, stripe])
 
   if (!clientSecret) {
     return null
@@ -284,27 +331,43 @@ function Payment() {
           id="payment-element"
           options={paymentElementOptions}
         />
-        {/* Show any error or success messages */}
 
+        {/* Show any error or success messages */}
         {message && <BillingError>{message}</BillingError>}
 
-        <Flex justify="space-between">
+        <Flex
+          justify="space-between"
+          gap="large"
+        >
           <Button
             secondary
             onClick={() => setFormState(PaymentFormState.CollectAddress)}
           >
             Change address
           </Button>
-          <Button
-            type="submit"
-            loading={isLoading}
-            disabled={isLoading || !stripe || !elements}
-            id="submit"
+          <Flex
+            justify="end"
+            gap="large"
           >
-            {formVariant === PaymentFormVariant.Upgrade
-              ? 'Upgrade now'
-              : 'Add card'}
-          </Button>
+            <Button
+              secondary
+              onClick={() => {
+                onClose()
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              loading={isLoading}
+              disabled={isLoading || !stripe || !elements}
+              id="submit"
+            >
+              {formVariant === PaymentFormVariant.Upgrade
+                ? 'Upgrade now'
+                : 'Add card'}
+            </Button>
+          </Flex>
         </Flex>
       </Flex>
     </form>
@@ -324,7 +387,13 @@ function AddressForm({
   const loading = loadingProp || validating
   const stripe = useStripe()
   const elements = useElements()
-  const { setClientSecret, setIntent } = usePaymentForm()
+  const {
+    clientSecret,
+    setClientSecret,
+    setIntent,
+    setFormState,
+    formVariant,
+  } = usePaymentForm()
   const validateForm = useCallback(async () => {
     if (!elements) {
       return
@@ -357,7 +426,11 @@ function AddressForm({
   //   },
   // }),
   // [billingAddress])
-
+  useEffect(() => {
+    if (clientSecret) {
+      setFormState(PaymentFormState.CollectPayment)
+    }
+  }, [clientSecret, setFormState])
   const handleSubmit = useCallback(async event => {
     event.preventDefault()
 
@@ -441,9 +514,21 @@ function AddressForm({
           />
         )}
 
-        <Flex justify="end">
+        <Flex justify="space-between">
+          {formVariant === PaymentFormVariant.Upgrade && (
+            <Button
+              onClick={() => {
+                setFormState(PaymentFormState.SelectPaymentMethod)
+              }}
+            >
+              Go back
+            </Button>
+          )}
           {/* Wrap the button so you can still validate the form on click while disabled */}
-          <Div onClick={() => validateForm()}>
+          <Div
+            marginLeft="auto"
+            onClick={() => validateForm()}
+          >
             <Button
               type="submit"
               primary
@@ -456,5 +541,103 @@ function AddressForm({
         </Flex>
       </Flex>
     </form>
+  )
+}
+
+function SelectPaymentMethod() {
+  const { setFormState, plan } = usePaymentForm()
+  const { defaultPaymentMethod, paymentMethods } = usePaymentMethods()
+  const [error, setError] = useState<Error | undefined>()
+  const [upgradeSuccess, setUpgradeSuccess] = useState(false)
+  const { proPlatformPlan, proYearlyPlatformPlan }
+    = useContext(PlatformPlansContext)
+  const planId
+    = plan === 'yearly' ? proYearlyPlatformPlan.id : proPlatformPlan.id
+
+  // Upgrade mutation
+  const [upgradeMutation, { loading }] = useUpgradeToProfessionalPlanMutation({
+    variables: { planId },
+    refetchQueries: [namedOperations.Query.Subscription],
+    onCompleted: ret => {
+      const intent
+        = ret.createPlatformSubscription?.latestInvoice?.paymentIntent
+
+      console.log('paymentIntent', intent)
+      setUpgradeSuccess(true)
+    },
+    onError: error => {
+      setError(error)
+      console.log('Mutation error', error.message)
+    },
+  })
+
+  if (upgradeSuccess) {
+    return (
+      <Flex
+        direction="column"
+        gap="large"
+      >
+        <UpgradeSuccessMessage />
+        <Flex justifyContent="end">
+          <Button
+            as={Link}
+            to="/marketplace"
+            onClick={() => onClose()}
+          >
+            Explore the app
+          </Button>
+        </Flex>
+      </Flex>
+    )
+  }
+
+  return (
+    <Flex
+      direction="column"
+      gap="large"
+    >
+      <Card
+        display="flex"
+        flexDirection="column"
+        maxHeight="200px"
+        overflow="auto"
+        gap="medium"
+        width="100%"
+        padding="medium"
+        fillLevel={2}
+      >
+        {paymentMethods.map(method => (
+          <PaymentMethod
+            variant={PaymentFormVariant.Upgrade}
+            method={method}
+          />
+        ))}
+      </Card>
+      {error && <BillingError>{error.message}</BillingError>}
+      <Flex
+        gap="large"
+        justify="end"
+      >
+        <Button
+          secondary
+          loading={loading}
+          onClick={() => {
+            setFormState(PaymentFormState.CollectAddress)
+          }}
+        >
+          Use new payment method
+        </Button>
+        <Button
+          loading={loading}
+          disabled={loading || !defaultPaymentMethod}
+          onClick={e => {
+            e.preventDefault()
+            upgradeMutation()
+          }}
+        >
+          Upgrade with selected card
+        </Button>
+      </Flex>
+    </Flex>
   )
 }

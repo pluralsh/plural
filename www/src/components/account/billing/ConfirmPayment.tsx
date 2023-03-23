@@ -88,7 +88,7 @@ const useConfirmAndSetDefault = ({
 
               if (paymentMethodId) {
                 makeDefaultMutation({ variables: { id: paymentMethodId } })
-                  .then(r => {
+                  .then(() => {
                     if (cancelled) {
                       return
                     }
@@ -167,14 +167,13 @@ export default function ConfirmPayment() {
     = useUpgradeToProfessionalPlanMutation({
       variables: { planId },
       refetchQueries: [namedOperations.Query.Subscription],
-      onCompleted: ret => {
+      onCompleted: () => {
         setUpgradeSuccess(true)
       },
-
     })
 
   // Confirm payment
-  const onComplete = useCallback(setupIntent => {
+  const onComplete = useCallback(() => {
     upgradeMutation()
   },
   [upgradeMutation])

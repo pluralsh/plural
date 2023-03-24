@@ -726,7 +726,13 @@ defmodule Core.Services.Payments do
       |> when_ok(:delete)
     end)
     |> add_operation(:account, fn %{fetch: account} -> {:ok, %{account | subscription: nil}} end)
-    |> add_operation(:stripe, fn %{db: %{external_id: ext_id}} -> Stripe.Subscription.delete(ext_id, %{prorate: true}) end)
+    |> add_operation(:stripe, fn %{db: %{external_id: ext_id}} ->
+      case Stripe.Subscription.delete(ext_id, %{prorate: true}) do
+        {:ok, _} = success -> success
+        {:error, %Stripe.Error{extra: %{http_status: 404}}} -> {:ok, nil}
+        error -> error
+      end
+    end)
     |> execute(extract: :account)
     |> notify(:delete)
   end

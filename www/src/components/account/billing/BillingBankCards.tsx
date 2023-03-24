@@ -56,7 +56,7 @@ function CardBrandToDisplayName(brand: string) {
 function CardBrandToImgPath(brand: string) {
   const lookup = {
     mastercard: 'mastercard.svg',
-    visa: 'mastercard.svg',
+    visa: 'visa.svg',
     amex: 'amex.svg',
     diners: 'diners.svg',
     unionpay: 'unionpay.svg',

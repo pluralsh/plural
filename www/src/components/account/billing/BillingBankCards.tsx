@@ -51,14 +51,10 @@ export function PaymentMethod({
     })
 
   const handleDelete = useCallback(() => {
-    deleteCardMutation().then(result => {
-      console.log('deleteCardMutation result', result)
-    })
+    deleteCardMutation()
   }, [deleteCardMutation])
   const handleMakeDefault = useCallback(() => {
-    makeDefaultMutation().then(result => {
-      console.log('makeDefault result:', result)
-    })
+    makeDefaultMutation()
   }, [makeDefaultMutation])
 
   if (!method?.card) {
@@ -152,7 +148,6 @@ function AddPaymentMethodModal({
       <PaymentForm
         formVariant={PaymentFormVariant.AddCard}
         onClose={() => {
-          console.log('onClose modal')
           onClose()
         }}
       />

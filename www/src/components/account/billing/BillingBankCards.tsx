@@ -42,12 +42,12 @@ export function PaymentMethod({
   const [makeDefaultMutation, { loading: defaultLoading }]
     = useDefaultPaymentMethodMutation({
       variables: { id: method?.id || '' },
-      refetchQueries: [namedOperations.Query.PaymentMethods],
+      refetchQueries: [namedOperations.Query.Subscription],
     })
   const [deleteCardMutation, { loading: deleteLoading }]
     = useDeletePaymentMethodMutation({
       variables: { id: method?.id || '' },
-      refetchQueries: [namedOperations.Query.PaymentMethods],
+      refetchQueries: [namedOperations.Query.Subscription],
     })
 
   const handleDelete = useCallback(() => {

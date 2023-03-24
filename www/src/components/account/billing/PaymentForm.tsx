@@ -21,6 +21,8 @@ import { type ImmerReducer, useImmerReducer } from 'use-immer'
 
 import { Link } from 'react-router-dom'
 
+import isEmpty from 'lodash/isEmpty'
+
 import {
   SetupIntentFragment,
   namedOperations,
@@ -38,8 +40,8 @@ import BillingError from './BillingError'
 import BillingPreview from './BillingPreview'
 import { StripeElements } from './StripeElements'
 import { PaymentMethod } from './BillingBankCards'
-import { usePaymentMethods } from './PaymentMethodsContext'
 import { UpgradeSuccessMessage } from './ConfirmPayment'
+import { useBillingSubscription } from './BillingSubscriptionProvider'
 
 export enum PaymentFormVariant {
   Upgrade = 'UPGRADE',
@@ -66,7 +68,6 @@ type PaymentFormContextVal = PaymentFormContextState & {
     clientSecret?: PaymentFormContextState['clientSecret']
   ) => void
   setIntent: (intent?: PaymentFormContextState['intent']) => void
-
   setFormState: (state: PaymentFormState) => void
   setPlan: (plan: PlanType) => void
   resetForm: () => void
@@ -561,7 +562,7 @@ function AddressForm({
 
 function SelectPaymentMethod() {
   const { setFormState, plan } = usePaymentForm()
-  const { defaultPaymentMethod, paymentMethods } = usePaymentMethods()
+  const { defaultPaymentMethod, paymentMethods } = useBillingSubscription()
   const [error, setError] = useState<Error | undefined>()
   const [upgradeSuccess, setUpgradeSuccess] = useState(false)
   const { proPlatformPlan, proYearlyPlatformPlan }
@@ -582,6 +583,12 @@ function SelectPaymentMethod() {
   })
 
   useEffect(() => {
+    if (isEmpty(paymentMethods)) {
+      setFormState(PaymentFormState.CollectAddress)
+    }
+  })
+
+  useEffect(() => {
     if (upgradeSuccess) {
       setFormState(PaymentFormState.UpgradeSuccess)
     }
@@ -592,24 +599,26 @@ function SelectPaymentMethod() {
       direction="column"
       gap="large"
     >
-      <Card
-        display="flex"
-        flexDirection="column"
-        maxHeight="230px"
-        overflow="auto"
-        gap="medium"
-        width="100%"
-        padding="medium"
-        fillLevel={2}
-      >
-        {paymentMethods.map(method => (
-          <PaymentMethod
-            key={method.id}
-            variant={PaymentFormVariant.Upgrade}
-            method={method}
-          />
-        ))}
-      </Card>
+      {!isEmpty(paymentMethods) && (
+        <Card
+          display="flex"
+          flexDirection="column"
+          maxHeight="230px"
+          overflow="auto"
+          gap="medium"
+          width="100%"
+          padding="medium"
+          fillLevel={2}
+        >
+          {paymentMethods.map(method => (
+            <PaymentMethod
+              key={method.id}
+              variant={PaymentFormVariant.Upgrade}
+              method={method}
+            />
+          ))}
+        </Card>
+      )}
       {error && <BillingError>{error.message}</BillingError>}
       <Flex
         gap="large"

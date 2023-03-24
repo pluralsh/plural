@@ -1,17 +1,13 @@
 import { Div } from 'honorable'
 
-import { useContext } from 'react'
-
-import SubscriptionContext from '../../../contexts/SubscriptionContext'
 import { LoopingLogo } from '../../utils/AnimatedLogo'
 
 import BillingBankCards from './BillingBankCards'
 import BillingInvoices from './BillingInvoices'
-import { usePaymentMethods } from './PaymentMethodsContext'
+import { useBillingSubscription } from './BillingSubscriptionProvider'
 
 function BillingPayments() {
-  const { billingCustomerId } = useContext(SubscriptionContext)
-  const { paymentMethods } = usePaymentMethods()
+  const { billingCustomerId, paymentMethods } = useBillingSubscription()
 
   if (!paymentMethods) {
     return <LoopingLogo />

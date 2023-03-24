@@ -41,7 +41,7 @@ const useConfirmAndSetDefault = ({
   const [error, setError] = useState<{ message?: string } | undefined>()
   const [setupIntent, setSetupIntent] = useState<SetupIntent | null>()
   const [makeDefaultMutation] = useDefaultPaymentMethodMutation({
-    refetchQueries: [namedOperations.Query.PaymentMethods],
+    refetchQueries: [namedOperations.Query.Subscription],
   })
   const prevClientSecret = usePrevious(clientSecret)
   const [defaultPaymentId, setDefaultPaymentId] = useState<string | undefined>()

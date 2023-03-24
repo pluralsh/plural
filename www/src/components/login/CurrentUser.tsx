@@ -4,7 +4,7 @@ import { Navigate, useLocation } from 'react-router-dom'
 import { useIntercom } from 'react-use-intercom'
 
 import PluralConfigurationContext from '../../contexts/PluralConfigurationContext'
-import { useMeQuery } from '../../generated/graphql'
+import { useMeQuery, useSubscriptionQuery } from '../../generated/graphql'
 import { CurrentUserContextProvider } from '../../contexts/CurrentUserContext'
 import { growthbook } from '../../helpers/growthbook'
 import { setPreviousUserData, setToken, wipeToken } from '../../helpers/authentication'
@@ -12,7 +12,7 @@ import BillingSubscriptionProvider from '../account/billing/BillingSubscriptionP
 import BillingPlatformPlansProvider from '../account/billing/BillingPlatformPlansProvider'
 import { useNotificationSubscription } from '../../hooks/useNotificationSubscription'
 import LoadingIndicator from '../utils/LoadingIndicator'
-import { PLATFORM_PLANS_QUERY, SUBSCRIPTION_QUERY } from '../account/billing/queries'
+import { PLATFORM_PLANS_QUERY } from '../account/billing/queries'
 
 export function handlePreviousUserClick({ jwt }: any) {
   setToken(jwt)
@@ -45,7 +45,11 @@ export function PluralProvider({ children }: any) {
     loading: subscriptionLoading,
     error: subscriptionError,
     refetch: subscriptionRefetch,
-  } = useQuery(SUBSCRIPTION_QUERY, { fetchPolicy: 'network-only', pollInterval: 60_000 })
+  } = useSubscriptionQuery({
+    errorPolicy: 'all',
+    fetchPolicy: 'network-only',
+    pollInterval: 60_000,
+  })
 
   const { boot, update } = useIntercom()
 

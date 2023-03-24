@@ -5150,6 +5150,7 @@ export type UpdateAccountBillingMutation = { __typename?: 'RootMutationType', up
 export type UpgradeToProfessionalPlanMutationVariables = Exact<{
   planId: Scalars['ID'];
   billingAddress?: InputMaybe<AddressAttributes>;
+  paymentMethod?: InputMaybe<Scalars['String']>;
 }>;
 
 
@@ -7962,8 +7963,12 @@ export type UpdateAccountBillingMutationHookResult = ReturnType<typeof useUpdate
 export type UpdateAccountBillingMutationResult = Apollo.MutationResult<UpdateAccountBillingMutation>;
 export type UpdateAccountBillingMutationOptions = Apollo.BaseMutationOptions<UpdateAccountBillingMutation, UpdateAccountBillingMutationVariables>;
 export const UpgradeToProfessionalPlanDocument = gql`
-    mutation UpgradeToProfessionalPlan($planId: ID!, $billingAddress: AddressAttributes) {
-  createPlatformSubscription(planId: $planId, billingAddress: $billingAddress) {
+    mutation UpgradeToProfessionalPlan($planId: ID!, $billingAddress: AddressAttributes, $paymentMethod: String) {
+  createPlatformSubscription(
+    planId: $planId
+    billingAddress: $billingAddress
+    paymentMethod: $paymentMethod
+  ) {
     id
     latestInvoice {
       ...Invoice
@@ -7992,6 +7997,7 @@ export type UpgradeToProfessionalPlanMutationFn = Apollo.MutationFunction<Upgrad
  *   variables: {
  *      planId: // value for 'planId'
  *      billingAddress: // value for 'billingAddress'
+ *      paymentMethod: // value for 'paymentMethod'
  *   },
  * });
  */

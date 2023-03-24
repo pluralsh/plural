@@ -156,8 +156,13 @@ mutation UpdateAccountBilling($attributes: AccountAttributes!) {
 mutation UpgradeToProfessionalPlan(
   $planId: ID!
   $billingAddress: AddressAttributes
+  $paymentMethod: String
 ) {
-  createPlatformSubscription(planId: $planId, billingAddress: $billingAddress) {
+  createPlatformSubscription(
+    planId: $planId
+    billingAddress: $billingAddress
+    paymentMethod: $paymentMethod
+  ) {
     id
     latestInvoice {
       ...Invoice

@@ -11,7 +11,12 @@ import {
   useNavigate,
   useSearchParams,
 } from 'react-router-dom'
-import { Div, Flex, P } from 'honorable'
+import {
+  Div,
+  Flex,
+  P,
+  Spinner,
+} from 'honorable'
 import {
   Button,
   LoopingLogo,
@@ -27,16 +32,18 @@ import PlatformPlansContext from '../../../contexts/PlatformPlansContext'
 
 import { namedOperations, useDefaultPaymentMethodMutation, useUpgradeToProfessionalPlanMutation } from '../../../generated/graphql'
 
+import { host } from '../../../helpers/hostname'
+
 import { type PlanType } from './PaymentForm'
 
-const useConfirmAndSetDefault = ({
+const useRetrieveSetupIntent = ({
   clientSecret,
   onComplete,
   onError,
 }: {
   clientSecret?: string | null
-  onError?: (e: { message?: string }) => void
   onComplete?: (setupIntent: SetupIntent) => void
+  onError?: (e: { message?: string }) => void
 }) => {
   const [error, setError] = useState<{ message?: string } | undefined>()
   const [setupIntent, setSetupIntent] = useState<SetupIntent | null>()
@@ -68,59 +75,28 @@ const useConfirmAndSetDefault = ({
   }, [error, onError])
 
   useEffect(() => {
-    if (stripe && clientSecret) {
-      let cancelled = false
+    let cancelled = false
 
-      try {
-        stripe
-          .retrieveSetupIntent(clientSecret)
-          .then(({ setupIntent, error }) => {
-            if (cancelled) {
-              return
-            }
-            setError(error)
-            setSetupIntent(setupIntent)
-            if (setupIntent?.status === 'succeeded') {
-              const paymentMethodId
-                = typeof setupIntent?.payment_method === 'string'
-                  ? setupIntent?.payment_method
-                  : setupIntent.payment_method?.id
+    ;(async function x() {
+      if (stripe && clientSecret) {
+        try {
+          const { setupIntent, error } = await stripe.retrieveSetupIntent(clientSecret)
 
-              if (paymentMethodId) {
-                makeDefaultMutation({ variables: { id: paymentMethodId } })
-                  .then(() => {
-                    if (cancelled) {
-                      return
-                    }
-                    setDefaultPaymentId(paymentMethodId)
-                  })
-                  .catch(e => {
-                    if (cancelled) {
-                      return
-                    }
-                    setError(e)
-                  })
-              }
-              else {
-                setError(new Error('No payment method id returend'))
-              }
-            }
-          })
-          .catch(e => {
-            if (cancelled) {
-              return
-            }
-            setError(e)
-          })
-      }
-      catch (e) {
-        setError(e as Error)
-      }
+          if (cancelled) {
+            return
+          }
+          setError(error)
+          setSetupIntent(setupIntent)
+        }
+        catch (e) {
+          setError(e as Error)
+        }
 
-      return () => {
-        cancelled = true
+        return () => {
+          cancelled = true
+        }
       }
-    }
+    }())
   }, [clientSecret, makeDefaultMutation, stripe])
 
   return { error, setupIntent }
@@ -139,6 +115,7 @@ export default function ConfirmPayment() {
   const [searchParams] = useSearchParams()
   const location = useLocation()
   const navigate = useNavigate()
+  const stripe = useStripe()
 
   const clientSecret = searchParams.get('setup_intent_client_secret')
   const plan: PlanType
@@ -162,27 +139,48 @@ export default function ConfirmPayment() {
     }
   }, [location.pathname, navigate, searchParams.values, upgradeSuccess])
 
+  // Confirm payment
+  const { error: confirmIntentError, setupIntent } = useRetrieveSetupIntent({
+    clientSecret,
+  })
+
+  const paymentMethodId
+    = typeof setupIntent?.payment_method === 'string'
+      ? setupIntent?.payment_method
+      : setupIntent?.payment_method?.id
+
   // Upgrade mutation
   const [upgradeMutation, { error: upgradeError }]
     = useUpgradeToProfessionalPlanMutation({
-      variables: { planId },
+      variables: { planId, paymentMethod: paymentMethodId },
       refetchQueries: [namedOperations.Query.Subscription],
-      onCompleted: () => {
-        setUpgradeSuccess(true)
+      onCompleted: result => {
+        const clientSecret
+          = result.createPlatformSubscription?.latestInvoice?.paymentIntent
+            ?.clientSecret
+
+        if (clientSecret) {
+          const confirmPromise = stripe?.confirmPayment({
+            clientSecret,
+            confirmParams: { return_url: `${host()}/account/billing?confirmReturn=1` },
+          } as any)
+
+          console.log('confirmPromise', confirmPromise)
+        }
+        else {
+          console.log('no client secret after upgrade')
+          setUpgradeSuccess(true)
+        }
       },
     })
 
-  // Confirm payment
-  const onComplete = useCallback(() => {
-    upgradeMutation()
-  },
-  [upgradeMutation])
-  const { error: setDefaultError, setupIntent } = useConfirmAndSetDefault({
-    clientSecret,
-    onComplete,
+  useEffect(() => {
+    if (setupIntent) {
+      upgradeMutation()
+    }
   })
 
-  const error = upgradeError || setDefaultError
+  const error = upgradeError || confirmIntentError
 
   useEffect(() => {
     if (error?.message === 'account_id has already been taken') {
@@ -226,6 +224,12 @@ export default function ConfirmPayment() {
         header = 'Payment failed'
         message = <P>Payment failed. Please try another payment method.</P>
         break
+      case 'requires_action':
+          // Possibly (hopefully) this case should never happen? Investigate to make sure
+          // https://stackoverflow.com/questions/62454487/stripe-v3-setupintents-and-subscriptions
+        header = 'Requires action'
+        message = <P>payment requires an action</P>
+        break
       default:
         header = 'Payment issue'
         message = (
@@ -267,7 +271,7 @@ export default function ConfirmPayment() {
             width="100%"
             overflow="hidden"
           >
-            <LoopingLogo />
+            <Spinner />
           </Div>
         )}
       </Flex>

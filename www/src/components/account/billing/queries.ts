@@ -75,18 +75,3 @@ export const DOWNGRADE_TO_FREE_PLAN_MUTATION = gql`
     }
   }
 `
-
-export const INVOICES_QUERY = gql`
-  query Users {
-    invoices(first: 500) {
-      edges {
-        node {
-          number
-          amountPaid
-          hostedInvoiceUrl
-          createdAt
-        }
-      }
-    }
-  }
-`

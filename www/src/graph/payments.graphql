@@ -221,3 +221,13 @@ mutation DeletePaymentMethod($id: ID!) {
     ...PaymentMethod
   }
 }
+
+query Invoices {
+  invoices(first: 500) {
+    edges {
+      node {
+        ...Invoice
+      }
+    }
+  }
+}

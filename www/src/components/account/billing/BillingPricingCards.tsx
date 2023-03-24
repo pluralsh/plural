@@ -1,9 +1,4 @@
-import {
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { Flex } from 'honorable'
 import { Button } from '@pluralsh/design-system'
@@ -31,6 +26,18 @@ function ContactUs({ primary }: { primary?: boolean }) {
   )
 }
 
+function CurrentPlanButton() {
+  return (
+    <Button
+      primary
+      disabled
+      width="100%"
+    >
+      Current plan
+    </Button>
+  )
+}
+
 function BillingPricingCards() {
   const [searchParams, setSearchParams] = useSearchParams()
   const { clusterMonthlyPricing, userMonthlyPricing }
@@ -40,17 +47,6 @@ function BillingPricingCards() {
   const [upgradeToProfessionalModalOpen, setUpgradeToProfessionalModalOpen]
     = useState(false)
   const [downgradeModalOpen, setDowngradeModalOpen] = useState(false)
-
-  const renderCurrentPlanButton = useCallback(() => (
-    <Button
-      primary
-      disabled
-      width="100%"
-    >
-      Current plan
-    </Button>
-  ),
-  [])
 
   useEffect(() => {
     if (!searchParams.get('upgrade')) return
@@ -112,7 +108,7 @@ function BillingPricingCards() {
             ) : isEnterprisePlan ? (
               <ContactUs />
             ) : (
-              renderCurrentPlanButton()
+              <CurrentPlanButton />
             )
           }
         />
@@ -156,7 +152,7 @@ function BillingPricingCards() {
           ]}
           callToAction={
             isProPlan ? (
-              renderCurrentPlanButton()
+              <CurrentPlanButton />
             ) : isEnterprisePlan ? (
               <ContactUs />
             ) : (
@@ -203,7 +199,7 @@ function BillingPricingCards() {
           ]}
           callToAction={
             isEnterprisePlan ? (
-              renderCurrentPlanButton()
+              <CurrentPlanButton />
             ) : isProPlan ? (
               <ContactUs primary />
             ) : (

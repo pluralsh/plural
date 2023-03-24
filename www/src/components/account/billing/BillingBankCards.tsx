@@ -10,7 +10,12 @@ import {
   Chip,
   Modal,
 } from '@pluralsh/design-system'
-import { Div, Flex, H3 } from 'honorable'
+import {
+  Div,
+  Flex,
+  H3,
+  Span,
+} from 'honorable'
 import isEmpty from 'lodash/isEmpty'
 
 import capitalize from 'lodash/capitalize'
@@ -24,12 +29,42 @@ import {
   useDeletePaymentMethodMutation,
 } from '../../../generated/graphql'
 
+import { DeleteIconButton } from '../../utils/IconButtons'
+
 import PaymentForm, { PaymentFormVariant } from './PaymentForm'
 
 export enum PaymentMethodActions {
   MakeDefault = 'makeDefault',
   Remove = 'remove',
   Select = 'select',
+}
+
+function CardBrandToDisplayName(brand: string) {
+  const lookup = {
+    mastercard: 'Mastercard',
+    visa: 'Visa',
+    amex: 'American Express',
+    diners: 'Diners Club',
+    unionpay: 'UnionPay',
+    jcb: 'JCB',
+    discover: 'Discover',
+  }
+
+  return `${lookup[brand.toLowerCase()] || 'default.svg'}`
+}
+
+function CardBrandToImgPath(brand: string) {
+  const lookup = {
+    mastercard: 'mastercard.svg',
+    visa: 'mastercard.svg',
+    amex: 'amex.svg',
+    diners: 'diners.svg',
+    unionpay: 'unionpay.svg',
+    jcb: 'jcb.svg',
+    discover: 'discover.svg',
+  }
+
+  return `/payment_icons/${lookup[brand.toLowerCase()] || 'default.svg'}`
 }
 
 export function PaymentMethod({
@@ -44,7 +79,7 @@ export function PaymentMethod({
       variables: { id: method?.id || '' },
       refetchQueries: [namedOperations.Query.Subscription],
     })
-  const [deleteCardMutation, { loading: deleteLoading }]
+  const [deleteCardMutation, { loading: _deleteLoading }]
     = useDeletePaymentMethodMutation({
       variables: { id: method?.id || '' },
       refetchQueries: [namedOperations.Query.Subscription],
@@ -72,14 +107,15 @@ export function PaymentMethod({
         align="center"
         gap="small"
       >
-        <Card padding="small">
-          <Flex
-            align="center"
-            justify="center"
-          >
-            {card.brand}
-          </Flex>
-        </Card>
+        <Flex
+          align="center"
+          justify="center"
+        >
+          <img
+            width="48px"
+            src={CardBrandToImgPath(card.brand)}
+          />
+        </Flex>
         <Flex
           direction="column"
           gap="xxxsmall"
@@ -88,7 +124,7 @@ export function PaymentMethod({
             fontWeight={600}
             body1
           >
-            {capitalize(card.brand)} ending in {card.last4}
+            {CardBrandToDisplayName(card.brand)} ending in {card.last4}
           </Div>
           <Div color="text-xlight">
             Expires {card.expMonth.toString().padStart(2, '0')}/{card.expYear}
@@ -119,15 +155,7 @@ export function PaymentMethod({
           </Button>
         )}
         {variant === PaymentFormVariant.AddCard && (
-          <Button
-            small
-            secondary
-            destructive
-            loading={deleteLoading}
-            onClick={handleDelete}
-          >
-            Remove
-          </Button>
+          <DeleteIconButton onClick={handleDelete} />
         )}
       </Flex>
     </Flex>
@@ -200,7 +228,6 @@ function BillingBankCards({
         gap="medium"
         width="100%"
       >
-        {/* <H3 subtitle2>Payment methods</H3> */}
         {isEmpty(paymentMethods) ? (
           <Div color="text-xlight">No payment method saved</Div>
         ) : (

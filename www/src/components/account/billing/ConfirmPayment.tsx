@@ -160,12 +160,12 @@ export default function ConfirmPayment() {
             ?.clientSecret
 
         if (clientSecret) {
-          const confirmPromise = stripe?.confirmPayment({
+          stripe?.confirmPayment({
             clientSecret,
-            confirmParams: { return_url: `${host()}/account/billing?confirmReturn=1` },
+            confirmParams: {
+              return_url: `${host()}/account/billing?confirmReturn=1`,
+            },
           } as any)
-
-          console.log('confirmPromise', confirmPromise)
         }
         else {
           console.log('no client secret after upgrade')

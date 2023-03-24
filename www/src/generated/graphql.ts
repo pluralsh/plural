@@ -2834,6 +2834,7 @@ export type RootMutationTypeCreatePlanArgs = {
 
 export type RootMutationTypeCreatePlatformSubscriptionArgs = {
   billingAddress?: InputMaybe<AddressAttributes>;
+  paymentMethod?: InputMaybe<Scalars['String']>;
   planId: Scalars['ID'];
 };
 

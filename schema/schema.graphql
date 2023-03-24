@@ -1666,7 +1666,7 @@ type RootMutationType {
 
   updateLineItem(attributes: LimitAttributes!, subscriptionId: ID!): RepositorySubscription
 
-  createPlatformSubscription(planId: ID!, billingAddress: AddressAttributes): PlatformSubscription
+  createPlatformSubscription(planId: ID!, billingAddress: AddressAttributes, paymentMethod: String): PlatformSubscription
 
   deletePlatformSubscription: Account
 

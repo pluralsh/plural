@@ -112,7 +112,7 @@ defmodule Core.Services.Payments do
   """
   @spec default_payment_method(User.t | Account.t, binary) :: {:ok, Stripe.Customer.t} | error
   def default_payment_method(%User{} = user, id) do
-    %{account: account} = Core.Repo.preload(user, [:account])
+    %{account: account} = force_preload(user)
     with {:ok, account} <- allow(account, user, :pay) do
       default_payment_method(account, id)
     end
@@ -296,9 +296,9 @@ defmodule Core.Services.Payments do
 
   def setup_intent(args, %Account{} = account) do
     start_transaction()
-    |> add_operation(:customer, fn _ -> provision_customer(account, args[:billing_address]) end)
+    |> add_operation(:customer, fn _ -> provision_customer(account, args) end)
     |> add_operation(:stripe, fn %{customer: %{billing_customer_id: cus_id}} ->
-      Stripe.SetupIntent.create(%{customer: cus_id})
+      Stripe.SetupIntent.create(%{customer: cus_id, usage: "off_session"})
     end)
     |> execute(extract: :stripe)
   end
@@ -633,7 +633,7 @@ defmodule Core.Services.Payments do
     start_transaction()
     |> add_operation(:account, fn _ ->
       %{account: account} = preload(user, force: true)
-      provision_customer(account, attrs[:billing_address])
+      provision_customer(account, attrs)
     end)
     |> add_operation(:db, fn %{account: %Account{cluster_count: cc, user_count: uc} = account} ->
       %PlatformSubscription{plan_id: plan.id, plan: plan, account_id: account.id}
@@ -649,7 +649,7 @@ defmodule Core.Services.Payments do
         customer: cust_id,
         items: sub_line_items(plan, db),
         payment_behavior: "default_incomplete",
-        payment_settings: %{save_default_payment_method: "on_subscription"},
+        off_session: true
       })
     end)
     |> add_operation(:finalized, fn
@@ -671,15 +671,15 @@ defmodule Core.Services.Payments do
     do: create_platform_subscription(attrs, get_platform_plan!(plan_id), user)
 
 
-  defp provision_customer(%Account{billing_customer_id: nil} = account, address) do
+  defp provision_customer(%Account{billing_customer_id: nil} = account, args) do
     account = Core.Repo.preload(account, [:root_user])
     start_transaction()
     |> add_operation(:account, fn _ ->
-      case address do
-        %{} = address ->
+      case args do
+        %{billing_address: %{} = address} ->
           Account.changeset(account, %{billing_address: address})
           |> Core.Repo.update()
-        nil -> {:ok, account}
+        _ -> {:ok, account}
       end
     end)
     |> add_operation(:stripe, fn %{account: account} ->
@@ -691,7 +691,17 @@ defmodule Core.Services.Payments do
       |> Account.payment_changeset(%{billing_customer_id: id})
       |> Core.Repo.update()
     end)
+    |> add_operation(:default, fn %{customer: account} ->
+      case args do
+        %{payment_method: method} when is_binary(method) -> default_payment_method(account, method)
+        _ -> {:ok, account}
+      end
+    end)
     |> execute(extract: :customer)
+  end
+  defp provision_customer(%Account{} = account, %{payment_method: method}) when is_binary(method) do
+    with {:ok, _} <- default_payment_method(account, method),
+      do: {:ok, account}
   end
   defp provision_customer(%Account{} = account, _), do: {:ok, account}
 

@@ -1,22 +1,19 @@
 import { createContext } from 'react'
 
-import {
-  Account,
-  AddressAttributes,
-  PlanFeatures,
-  PlatformSubscription,
-} from '../generated/graphql'
+import { Address, PaymentMethodFragment, SubscriptionAccountFragment } from '../generated/graphql'
 
 export type SubscriptionContextType = {
   billingCustomerId: string | null
-  subscription: PlatformSubscription | null
-  account: Account | null
-  billingAddress: AddressAttributes | null
+  subscription: SubscriptionAccountFragment['subscription']
+  account: SubscriptionAccountFragment | null
+  billingAddress: Address | null
   isPaidPlan: boolean
   isProPlan: boolean
   isEnterprisePlan: boolean
   isGrandfathered: boolean
-  availableFeatures: PlanFeatures
+  availableFeatures: SubscriptionAccountFragment['availableFeatures'] | null
+  paymentMethods: PaymentMethodFragment[]
+  defaultPaymentMethod: PaymentMethodFragment | null | undefined
   refetch: () => void
 }
 
@@ -30,6 +27,8 @@ const SubscriptionContext = createContext<SubscriptionContextType>({
   isEnterprisePlan: false,
   isGrandfathered: false,
   availableFeatures: {},
+  paymentMethods: [],
+  defaultPaymentMethod: null,
   refetch: () => {},
 })
 

@@ -1,47 +1,98 @@
 import { ReactNode, useContext, useMemo } from 'react'
-import { useQuery } from '@apollo/client'
 import moment from 'moment'
 
 import SubscriptionContext, { SubscriptionContextType } from '../../../contexts/SubscriptionContext'
-import { PlatformSubscription } from '../../../generated/graphql'
+import { PaymentMethodFragment, SubscriptionAccountFragment, useSubscriptionQuery } from '../../../generated/graphql'
 import PlatformPlansContext from '../../../contexts/PlatformPlansContext'
 
 import BillingError from './BillingError'
 import BillingLoading from './BillingLoading'
-import { SUBSCRIPTION_QUERY } from './queries'
 
 type BillingSubscriptionProviderPropsType = {
   children: ReactNode
 }
 
-function BillingSubscriptionProvider({ children }: BillingSubscriptionProviderPropsType) {
-  const {
-    data,
-    loading,
-    error,
-    refetch,
-  } = useQuery(SUBSCRIPTION_QUERY, { fetchPolicy: 'network-only', pollInterval: 60_000 })
-  const { proPlatformPlan, proYearlyPlatformPlan, enterprisePlatformPlan } = useContext(PlatformPlansContext)
+function useExtractPaymentMethods(methodsConnection:
+    | SubscriptionAccountFragment['paymentMethods']
+    | null
+    | undefined) {
+  const { paymentMethods, defaultPaymentMethod } = useMemo(() => {
+    const result = (methodsConnection?.edges || [])?.reduce((prev, edge) => {
+      const curNode = edge?.node
 
-  const subscription = useMemo(() => data?.account?.subscription as PlatformSubscription | null, [data])
-  const billingAddress = useMemo(() => data?.account?.billingAddress ?? null, [data])
-  const billingCustomerId = useMemo(() => data?.account?.billingCustomerId, [data])
-  const isProPlan = useMemo(() => !!subscription?.plan?.id && (subscription.plan.id === proPlatformPlan?.id || subscription.plan.id === proYearlyPlatformPlan?.id), [subscription, proPlatformPlan, proYearlyPlatformPlan])
-  const isEnterprisePlan = useMemo(() => !!subscription?.plan?.id && subscription.plan.id === enterprisePlatformPlan?.id, [subscription, enterprisePlatformPlan])
-  const isPaidPlan = useMemo(() => isProPlan || isEnterprisePlan, [isProPlan, isEnterprisePlan])
-  const isGrandfathered = useMemo(() => moment().isBefore(moment(data?.account?.grandfatheredUntil)), [data])
+      return {
+        defaultPaymentMethod: curNode?.isDefault
+          ? curNode
+          : prev.defaultPaymentMethod,
+        paymentMethods: [
+          ...prev.paymentMethods,
+          ...(curNode ? [curNode] : []),
+        ],
+      }
+    },
+      { paymentMethods: [], defaultPaymentMethod: undefined } as {
+        paymentMethods: PaymentMethodFragment[]
+        defaultPaymentMethod: PaymentMethodFragment | undefined
+      })
+
+    return {
+      paymentMethods: result.paymentMethods,
+      defaultPaymentMethod: result.defaultPaymentMethod,
+    }
+  }, [methodsConnection])
+
+  return {
+    paymentMethods,
+    defaultPaymentMethod,
+  }
+}
+
+function BillingSubscriptionProvider({
+  children,
+}: BillingSubscriptionProviderPropsType) {
+  const {
+    data, loading, error, refetch,
+  } = useSubscriptionQuery({
+    errorPolicy: 'all',
+    fetchPolicy: 'network-only',
+    pollInterval: 60_000,
+  })
+  const { proPlatformPlan, proYearlyPlatformPlan, enterprisePlatformPlan }
+    = useContext(PlatformPlansContext)
+
+  const subscription = useMemo(() => data?.account?.subscription ?? null,
+    [data])
+  const billingAddress = useMemo(() => data?.account?.billingAddress ?? null,
+    [data])
+  const billingCustomerId = useMemo(() => data?.account?.billingCustomerId,
+    [data])
+  const isProPlan = useMemo(() => !!subscription?.plan?.id
+      && (subscription.plan.id === proPlatformPlan?.id
+        || subscription.plan.id === proYearlyPlatformPlan?.id),
+  [subscription, proPlatformPlan, proYearlyPlatformPlan])
+  const isEnterprisePlan = useMemo(() => !!subscription?.plan?.id
+      && subscription.plan.id === enterprisePlatformPlan?.id,
+  [subscription, enterprisePlatformPlan])
+  const isPaidPlan = useMemo(() => isProPlan || isEnterprisePlan,
+    [isProPlan, isEnterprisePlan])
+  const isGrandfathered = useMemo(() => moment().isBefore(moment(data?.account?.grandfatheredUntil)),
+    [data])
+  const { paymentMethods, defaultPaymentMethod } = useExtractPaymentMethods(data?.account?.paymentMethods)
   const subscriptionContextValue = useMemo<SubscriptionContextType>(() => ({
     subscription,
     billingAddress,
-    billingCustomerId,
+    billingCustomerId: billingCustomerId ?? null,
     isProPlan,
     isEnterprisePlan,
     isPaidPlan,
     isGrandfathered,
-    account: data?.account,
+    account: data?.account ?? null,
     availableFeatures: data?.account?.availableFeatures,
+    paymentMethods,
+    defaultPaymentMethod,
     refetch,
-  }), [
+  }),
+  [
     subscription,
     billingAddress,
     billingCustomerId,
@@ -49,11 +100,17 @@ function BillingSubscriptionProvider({ children }: BillingSubscriptionProviderPr
     isEnterprisePlan,
     isPaidPlan,
     isGrandfathered,
+    data?.account,
+    paymentMethods,
+    defaultPaymentMethod,
     refetch,
-    data,
   ])
 
-  if (error) return <BillingError />
+  // Query could error if not allowed to fetch paymentMethods, but still return
+  // the rest of the account data, so don't show error unless no data was received.
+  if (error && !data) {
+    return <BillingError>{`${error.name}: ${error.message}`}</BillingError>
+  }
   if (loading) return <BillingLoading />
 
   return (
@@ -61,6 +118,16 @@ function BillingSubscriptionProvider({ children }: BillingSubscriptionProviderPr
       {children}
     </SubscriptionContext.Provider>
   )
+}
+
+export function useBillingSubscription() {
+  const ctx = useContext(SubscriptionContext)
+
+  if (!ctx) {
+    throw Error('useBillingSubscription() must be used inside of a <BillingSubscriptionProvider>')
+  }
+
+  return ctx
 }
 
 export default BillingSubscriptionProvider

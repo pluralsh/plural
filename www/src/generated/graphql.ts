@@ -5133,10 +5133,12 @@ export type InvoiceFragment = { __typename?: 'Invoice', number: string, amountDu
 
 export type CardFragment = { __typename?: 'Card', last4: string, expMonth: number, expYear: number, name?: string | null, brand: string };
 
+export type SubscriptionAccountFragment = { __typename?: 'Account', id: string, billingCustomerId?: string | null, grandfatheredUntil?: Date | null, delinquentAt?: Date | null, userCount?: string | null, clusterCount?: string | null, availableFeatures?: { __typename?: 'PlanFeatures', userManagement?: boolean | null, audit?: boolean | null } | null, subscription?: { __typename?: 'PlatformSubscription', id: string, plan?: { __typename?: 'PlatformPlan', id: string, period: PaymentPeriod, lineItems?: Array<{ __typename?: 'PlatformPlanItem', dimension: LineItemDimension, cost: number } | null> | null } | null } | null, billingAddress?: { __typename?: 'Address', name?: string | null, line1?: string | null, line2?: string | null, zip?: string | null, state?: string | null, city?: string | null, country?: string | null } | null, paymentMethods?: { __typename?: 'PaymentMethodConnection', edges?: Array<{ __typename?: 'PaymentMethodEdge', node?: { __typename?: 'PaymentMethod', id?: string | null, type?: string | null, isDefault?: boolean | null, card?: { __typename?: 'Card', last4: string, expMonth: number, expYear: number, name?: string | null, brand: string } | null } | null } | null> | null } | null };
+
 export type SubscriptionQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type SubscriptionQuery = { __typename?: 'RootQueryType', account?: { __typename?: 'Account', billingCustomerId?: string | null, grandfatheredUntil?: Date | null, delinquentAt?: Date | null, userCount?: string | null, clusterCount?: string | null, availableFeatures?: { __typename?: 'PlanFeatures', userManagement?: boolean | null, audit?: boolean | null } | null, subscription?: { __typename?: 'PlatformSubscription', id: string, plan?: { __typename?: 'PlatformPlan', id: string, period: PaymentPeriod, lineItems?: Array<{ __typename?: 'PlatformPlanItem', dimension: LineItemDimension, cost: number } | null> | null } | null } | null, billingAddress?: { __typename?: 'Address', name?: string | null, line1?: string | null, line2?: string | null, zip?: string | null, state?: string | null, city?: string | null, country?: string | null } | null } | null };
+export type SubscriptionQuery = { __typename?: 'RootQueryType', account?: { __typename?: 'Account', id: string, billingCustomerId?: string | null, grandfatheredUntil?: Date | null, delinquentAt?: Date | null, userCount?: string | null, clusterCount?: string | null, availableFeatures?: { __typename?: 'PlanFeatures', userManagement?: boolean | null, audit?: boolean | null } | null, subscription?: { __typename?: 'PlatformSubscription', id: string, plan?: { __typename?: 'PlatformPlan', id: string, period: PaymentPeriod, lineItems?: Array<{ __typename?: 'PlatformPlanItem', dimension: LineItemDimension, cost: number } | null> | null } | null } | null, billingAddress?: { __typename?: 'Address', name?: string | null, line1?: string | null, line2?: string | null, zip?: string | null, state?: string | null, city?: string | null, country?: string | null } | null, paymentMethods?: { __typename?: 'PaymentMethodConnection', edges?: Array<{ __typename?: 'PaymentMethodEdge', node?: { __typename?: 'PaymentMethod', id?: string | null, type?: string | null, isDefault?: boolean | null, card?: { __typename?: 'Card', last4: string, expMonth: number, expYear: number, name?: string | null, brand: string } | null } | null } | null> | null } | null } | null };
 
 export type UpdateAccountBillingMutationVariables = Exact<{
   attributes: AccountAttributes;
@@ -5173,11 +5175,6 @@ export type SetupIntentMutationVariables = Exact<{
 export type SetupIntentMutation = { __typename?: 'RootMutationType', setupIntent?: { __typename?: 'SetupIntent', id?: string | null, status?: string | null, clientSecret?: string | null, paymentMethodTypes?: Array<string | null> | null, nextAction?: { __typename?: 'NextAction', type?: string | null, redirectToUrl?: { __typename?: 'RedirectToUrl', url?: string | null, returnUrl?: string | null } | null } | null } | null };
 
 export type PaymentMethodFragment = { __typename?: 'PaymentMethod', id?: string | null, type?: string | null, isDefault?: boolean | null, card?: { __typename?: 'Card', last4: string, expMonth: number, expYear: number, name?: string | null, brand: string } | null };
-
-export type PaymentMethodsQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type PaymentMethodsQuery = { __typename?: 'RootQueryType', account?: { __typename?: 'Account', paymentMethods?: { __typename?: 'PaymentMethodConnection', edges?: Array<{ __typename?: 'PaymentMethodEdge', node?: { __typename?: 'PaymentMethod', id?: string | null, type?: string | null, isDefault?: boolean | null, card?: { __typename?: 'Card', last4: string, expMonth: number, expYear: number, name?: string | null, brand: string } | null } | null } | null> | null } | null } | null };
 
 export type DefaultPaymentMethodMutationVariables = Exact<{
   id: Scalars['String'];
@@ -6398,17 +6395,6 @@ export const InvoiceFragmentDoc = gql`
   }
 }
     ${InvoiceItemFragmentDoc}`;
-export const SetupIntentFragmentDoc = gql`
-    fragment SetupIntent on SetupIntent {
-  id
-  status
-  clientSecret
-  nextAction {
-    ...NextAction
-  }
-  paymentMethodTypes
-}
-    ${NextActionFragmentDoc}`;
 export const CardFragmentDoc = gql`
     fragment Card on Card {
   last4
@@ -6428,6 +6414,58 @@ export const PaymentMethodFragmentDoc = gql`
   }
 }
     ${CardFragmentDoc}`;
+export const SubscriptionAccountFragmentDoc = gql`
+    fragment SubscriptionAccount on Account {
+  id
+  billingCustomerId
+  grandfatheredUntil
+  delinquentAt
+  userCount
+  clusterCount
+  availableFeatures {
+    userManagement
+    audit
+  }
+  subscription {
+    id
+    plan {
+      id
+      period
+      lineItems {
+        dimension
+        cost
+      }
+    }
+  }
+  billingAddress {
+    name
+    line1
+    line2
+    zip
+    state
+    city
+    country
+  }
+  paymentMethods(first: 20) {
+    edges {
+      node {
+        ...PaymentMethod
+      }
+    }
+  }
+}
+    ${PaymentMethodFragmentDoc}`;
+export const SetupIntentFragmentDoc = gql`
+    fragment SetupIntent on SetupIntent {
+  id
+  status
+  clientSecret
+  nextAction {
+    ...NextAction
+  }
+  paymentMethodTypes
+}
+    ${NextActionFragmentDoc}`;
 export const OidcProviderFragmentDoc = gql`
     fragment OIDCProvider on OidcProvider {
   id
@@ -7854,38 +7892,10 @@ export type InviteQueryResult = Apollo.QueryResult<InviteQuery, InviteQueryVaria
 export const SubscriptionDocument = gql`
     query Subscription {
   account {
-    billingCustomerId
-    grandfatheredUntil
-    delinquentAt
-    userCount
-    clusterCount
-    availableFeatures {
-      userManagement
-      audit
-    }
-    subscription {
-      id
-      plan {
-        id
-        period
-        lineItems {
-          dimension
-          cost
-        }
-      }
-    }
-    billingAddress {
-      name
-      line1
-      line2
-      zip
-      state
-      city
-      country
-    }
+    ...SubscriptionAccount
   }
 }
-    `;
+    ${SubscriptionAccountFragmentDoc}`;
 
 /**
  * __useSubscriptionQuery__
@@ -8093,46 +8103,6 @@ export function useSetupIntentMutation(baseOptions?: Apollo.MutationHookOptions<
 export type SetupIntentMutationHookResult = ReturnType<typeof useSetupIntentMutation>;
 export type SetupIntentMutationResult = Apollo.MutationResult<SetupIntentMutation>;
 export type SetupIntentMutationOptions = Apollo.BaseMutationOptions<SetupIntentMutation, SetupIntentMutationVariables>;
-export const PaymentMethodsDocument = gql`
-    query PaymentMethods {
-  account {
-    paymentMethods(first: 20) {
-      edges {
-        node {
-          ...PaymentMethod
-        }
-      }
-    }
-  }
-}
-    ${PaymentMethodFragmentDoc}`;
-
-/**
- * __usePaymentMethodsQuery__
- *
- * To run a query within a React component, call `usePaymentMethodsQuery` and pass it any options that fit your needs.
- * When your component renders, `usePaymentMethodsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = usePaymentMethodsQuery({
- *   variables: {
- *   },
- * });
- */
-export function usePaymentMethodsQuery(baseOptions?: Apollo.QueryHookOptions<PaymentMethodsQuery, PaymentMethodsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<PaymentMethodsQuery, PaymentMethodsQueryVariables>(PaymentMethodsDocument, options);
-      }
-export function usePaymentMethodsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<PaymentMethodsQuery, PaymentMethodsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<PaymentMethodsQuery, PaymentMethodsQueryVariables>(PaymentMethodsDocument, options);
-        }
-export type PaymentMethodsQueryHookResult = ReturnType<typeof usePaymentMethodsQuery>;
-export type PaymentMethodsLazyQueryHookResult = ReturnType<typeof usePaymentMethodsLazyQuery>;
-export type PaymentMethodsQueryResult = Apollo.QueryResult<PaymentMethodsQuery, PaymentMethodsQueryVariables>;
 export const DefaultPaymentMethodDocument = gql`
     mutation DefaultPaymentMethod($id: String!) {
   defaultPaymentMethod(id: $id)
@@ -10107,7 +10077,6 @@ export const namedOperations = {
     Invite: 'Invite',
     Subscription: 'Subscription',
     Cards: 'Cards',
-    PaymentMethods: 'PaymentMethods',
     GetRecipe: 'GetRecipe',
     ListRecipes: 'ListRecipes',
     GetStack: 'GetStack',
@@ -10230,6 +10199,7 @@ export const namedOperations = {
     NextAction: 'NextAction',
     Invoice: 'Invoice',
     Card: 'Card',
+    SubscriptionAccount: 'SubscriptionAccount',
     SetupIntent: 'SetupIntent',
     PaymentMethod: 'PaymentMethod',
     Recipe: 'Recipe',

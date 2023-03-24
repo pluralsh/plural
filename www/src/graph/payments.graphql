@@ -101,37 +101,49 @@ fragment Card on Card {
   brand
 }
 
-query Subscription {
-  account {
-    billingCustomerId
-    grandfatheredUntil
-    delinquentAt
-    userCount
-    clusterCount
-    availableFeatures {
-      userManagement
-      audit
-    }
-    subscription {
+fragment SubscriptionAccount on Account {
+  id
+  billingCustomerId
+  grandfatheredUntil
+  delinquentAt
+  userCount
+  clusterCount
+  availableFeatures {
+    userManagement
+    audit
+  }
+  subscription {
+    id
+    plan {
       id
-      plan {
-        id
-        period
-        lineItems {
-          dimension
-          cost
-        }
+      period
+      lineItems {
+        dimension
+        cost
       }
     }
-    billingAddress {
-      name
-      line1
-      line2
-      zip
-      state
-      city
-      country
+  }
+  billingAddress {
+    name
+    line1
+    line2
+    zip
+    state
+    city
+    country
+  }
+  paymentMethods(first: 20) {
+    edges {
+      node {
+        ...PaymentMethod
+      }
     }
+  }
+}
+
+query Subscription {
+  account {
+    ...SubscriptionAccount
   }
 }
 
@@ -197,18 +209,6 @@ fragment PaymentMethod on PaymentMethod {
   isDefault
   card {
     ...Card
-  }
-}
-
-query PaymentMethods {
-  account {
-    paymentMethods(first: 20) {
-      edges {
-        node {
-          ...PaymentMethod
-        }
-      }
-    }
   }
 }
 

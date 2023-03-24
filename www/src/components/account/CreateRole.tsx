@@ -60,7 +60,7 @@ export function CreateRole({ q }: any) {
       <Button
         secondary
         onClick={() => setOpen(true)}
-        disabled={!availableFeatures.userManagement}
+        disabled={!availableFeatures?.userManagement}
       >
         Create role
       </Button>

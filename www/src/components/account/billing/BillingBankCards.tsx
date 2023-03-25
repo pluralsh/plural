@@ -10,15 +10,8 @@ import {
   Chip,
   Modal,
 } from '@pluralsh/design-system'
-import {
-  Div,
-  Flex,
-  H3,
-  Span,
-} from 'honorable'
+import { Div, Flex, H3 } from 'honorable'
 import isEmpty from 'lodash/isEmpty'
-
-import capitalize from 'lodash/capitalize'
 
 import SubscriptionContext from '../../../contexts/SubscriptionContext'
 

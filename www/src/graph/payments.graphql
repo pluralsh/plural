@@ -131,7 +131,7 @@ mutation UpdateAccountBilling($attributes: AccountAttributes!) {
   updateAccount(attributes: $attributes) { id }
 }
 
-mutation UpgradeToProfessionalPlan(
+mutation CreatePlatformSubscription(
   $planId: ID!
   $billingAddress: AddressAttributes
   $paymentMethod: String

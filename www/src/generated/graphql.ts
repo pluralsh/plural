@@ -5147,14 +5147,14 @@ export type UpdateAccountBillingMutationVariables = Exact<{
 
 export type UpdateAccountBillingMutation = { __typename?: 'RootMutationType', updateAccount?: { __typename?: 'Account', id: string } | null };
 
-export type UpgradeToProfessionalPlanMutationVariables = Exact<{
+export type CreatePlatformSubscriptionMutationVariables = Exact<{
   planId: Scalars['ID'];
   billingAddress?: InputMaybe<AddressAttributes>;
   paymentMethod?: InputMaybe<Scalars['String']>;
 }>;
 
 
-export type UpgradeToProfessionalPlanMutation = { __typename?: 'RootMutationType', createPlatformSubscription?: { __typename?: 'PlatformSubscription', id: string, latestInvoice?: { __typename?: 'Invoice', number: string, amountDue: number, amountPaid: number, currency: string, status?: string | null, createdAt?: Date | null, hostedInvoiceUrl?: string | null, paymentIntent?: { __typename?: 'PaymentIntent', id?: string | null, description?: string | null, clientSecret?: string | null, amount?: number | null, captureMethod?: string | null, currency?: string | null, status?: string | null, nextAction?: { __typename?: 'NextAction', type?: string | null, redirectToUrl?: { __typename?: 'RedirectToUrl', url?: string | null, returnUrl?: string | null } | null } | null } | null, lines?: Array<{ __typename?: 'InvoiceItem', amount: number, currency: string, description?: string | null } | null> | null } | null } | null };
+export type CreatePlatformSubscriptionMutation = { __typename?: 'RootMutationType', createPlatformSubscription?: { __typename?: 'PlatformSubscription', id: string, latestInvoice?: { __typename?: 'Invoice', number: string, amountDue: number, amountPaid: number, currency: string, status?: string | null, createdAt?: Date | null, hostedInvoiceUrl?: string | null, paymentIntent?: { __typename?: 'PaymentIntent', id?: string | null, description?: string | null, clientSecret?: string | null, amount?: number | null, captureMethod?: string | null, currency?: string | null, status?: string | null, nextAction?: { __typename?: 'NextAction', type?: string | null, redirectToUrl?: { __typename?: 'RedirectToUrl', url?: string | null, returnUrl?: string | null } | null } | null } | null, lines?: Array<{ __typename?: 'InvoiceItem', amount: number, currency: string, description?: string | null } | null> | null } | null } | null };
 
 export type DowngradeToFreePlanMutationMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -7962,8 +7962,8 @@ export function useUpdateAccountBillingMutation(baseOptions?: Apollo.MutationHoo
 export type UpdateAccountBillingMutationHookResult = ReturnType<typeof useUpdateAccountBillingMutation>;
 export type UpdateAccountBillingMutationResult = Apollo.MutationResult<UpdateAccountBillingMutation>;
 export type UpdateAccountBillingMutationOptions = Apollo.BaseMutationOptions<UpdateAccountBillingMutation, UpdateAccountBillingMutationVariables>;
-export const UpgradeToProfessionalPlanDocument = gql`
-    mutation UpgradeToProfessionalPlan($planId: ID!, $billingAddress: AddressAttributes, $paymentMethod: String) {
+export const CreatePlatformSubscriptionDocument = gql`
+    mutation CreatePlatformSubscription($planId: ID!, $billingAddress: AddressAttributes, $paymentMethod: String) {
   createPlatformSubscription(
     planId: $planId
     billingAddress: $billingAddress
@@ -7980,20 +7980,20 @@ export const UpgradeToProfessionalPlanDocument = gql`
 }
     ${InvoiceFragmentDoc}
 ${PaymentIntentFragmentDoc}`;
-export type UpgradeToProfessionalPlanMutationFn = Apollo.MutationFunction<UpgradeToProfessionalPlanMutation, UpgradeToProfessionalPlanMutationVariables>;
+export type CreatePlatformSubscriptionMutationFn = Apollo.MutationFunction<CreatePlatformSubscriptionMutation, CreatePlatformSubscriptionMutationVariables>;
 
 /**
- * __useUpgradeToProfessionalPlanMutation__
+ * __useCreatePlatformSubscriptionMutation__
  *
- * To run a mutation, you first call `useUpgradeToProfessionalPlanMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpgradeToProfessionalPlanMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useCreatePlatformSubscriptionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreatePlatformSubscriptionMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [upgradeToProfessionalPlanMutation, { data, loading, error }] = useUpgradeToProfessionalPlanMutation({
+ * const [createPlatformSubscriptionMutation, { data, loading, error }] = useCreatePlatformSubscriptionMutation({
  *   variables: {
  *      planId: // value for 'planId'
  *      billingAddress: // value for 'billingAddress'
@@ -8001,13 +8001,13 @@ export type UpgradeToProfessionalPlanMutationFn = Apollo.MutationFunction<Upgrad
  *   },
  * });
  */
-export function useUpgradeToProfessionalPlanMutation(baseOptions?: Apollo.MutationHookOptions<UpgradeToProfessionalPlanMutation, UpgradeToProfessionalPlanMutationVariables>) {
+export function useCreatePlatformSubscriptionMutation(baseOptions?: Apollo.MutationHookOptions<CreatePlatformSubscriptionMutation, CreatePlatformSubscriptionMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpgradeToProfessionalPlanMutation, UpgradeToProfessionalPlanMutationVariables>(UpgradeToProfessionalPlanDocument, options);
+        return Apollo.useMutation<CreatePlatformSubscriptionMutation, CreatePlatformSubscriptionMutationVariables>(CreatePlatformSubscriptionDocument, options);
       }
-export type UpgradeToProfessionalPlanMutationHookResult = ReturnType<typeof useUpgradeToProfessionalPlanMutation>;
-export type UpgradeToProfessionalPlanMutationResult = Apollo.MutationResult<UpgradeToProfessionalPlanMutation>;
-export type UpgradeToProfessionalPlanMutationOptions = Apollo.BaseMutationOptions<UpgradeToProfessionalPlanMutation, UpgradeToProfessionalPlanMutationVariables>;
+export type CreatePlatformSubscriptionMutationHookResult = ReturnType<typeof useCreatePlatformSubscriptionMutation>;
+export type CreatePlatformSubscriptionMutationResult = Apollo.MutationResult<CreatePlatformSubscriptionMutation>;
+export type CreatePlatformSubscriptionMutationOptions = Apollo.BaseMutationOptions<CreatePlatformSubscriptionMutation, CreatePlatformSubscriptionMutationVariables>;
 export const DowngradeToFreePlanMutationDocument = gql`
     mutation DowngradeToFreePlanMutation {
   deletePlatformSubscription {
@@ -10165,7 +10165,7 @@ export const namedOperations = {
     SignupInvite: 'SignupInvite',
     RealizeInvite: 'RealizeInvite',
     UpdateAccountBilling: 'UpdateAccountBilling',
-    UpgradeToProfessionalPlan: 'UpgradeToProfessionalPlan',
+    CreatePlatformSubscription: 'CreatePlatformSubscription',
     DowngradeToFreePlanMutation: 'DowngradeToFreePlanMutation',
     SetupIntent: 'SetupIntent',
     DefaultPaymentMethod: 'DefaultPaymentMethod',

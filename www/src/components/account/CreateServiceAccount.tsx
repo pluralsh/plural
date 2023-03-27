@@ -18,6 +18,7 @@ import { MoreMenu } from './MoreMenu'
 
 import { BindingInput } from './Typeaheads'
 import { sanitize } from './utils'
+import BillingFeatureBlockModal from './billing/BillingFeatureBlockModal'
 
 function ServiceAccountForm({
   error,
@@ -186,15 +187,16 @@ const defaultAttributes = { name: '', email: '' }
 
 export function CreateServiceAccount({ q }: any) {
   const { availableFeatures } = useContext(SubscriptionContext)
-
-  const [open, setOpen] = useState(false)
+  const isAvailable = !!availableFeatures?.userManagement
+  const [createModalVisible, setCreateModalVisible] = useState(false)
+  const [blockModalVisible, setBlockModalVisible] = useState(false)
   const [attributes, setAttributes] = useState(defaultAttributes)
   const [bindings, setBindings] = useState([])
 
   const resetAndClose = useCallback(() => {
     setBindings([])
     setAttributes(defaultAttributes)
-    setOpen(false)
+    setCreateModalVisible(false)
   }, [])
 
   const [mutation, { loading, error }] = useMutation(CREATE_SERVICE_ACCOUNT, {
@@ -219,18 +221,19 @@ export function CreateServiceAccount({ q }: any) {
       <Div>
         <Button
           secondary
-          onClick={() => setOpen(true)}
-          disabled={!availableFeatures?.userManagement}
+          onClick={() => (isAvailable ? setCreateModalVisible(true) : setBlockModalVisible(true))}
         >
           Create service account
         </Button>
       </Div>
+
+      {/* Modals */}
       <Modal
         header="Create service account"
-        open={open}
+        open={createModalVisible}
         onClose={() => {
           resetAndClose()
-          setOpen(false)
+          setCreateModalVisible(false)
         }}
         size="large"
         actions={(
@@ -267,6 +270,11 @@ export function CreateServiceAccount({ q }: any) {
 
         </Box>
       </Modal>
+      <BillingFeatureBlockModal
+        open={blockModalVisible}
+        message="Upgrade to Plural Professional to create a service account."
+        onClose={() => setBlockModalVisible(false)}
+      />
     </>
   )
 }

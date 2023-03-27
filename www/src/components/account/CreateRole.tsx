@@ -19,6 +19,7 @@ import { CREATE_ROLE, ROLES_Q } from './queries'
 import { Actions } from './Actions'
 import { sanitize } from './utils'
 import { RoleForm } from './RoleForm'
+import BillingFeatureBlockModal from './billing/BillingFeatureBlockModal'
 
 const defaultAttributes = {
   name: '',
@@ -29,8 +30,9 @@ const defaultAttributes = {
 
 export function CreateRole({ q }: any) {
   const { availableFeatures } = useContext(SubscriptionContext)
-
-  const [open, setOpen] = useState(false)
+  const isAvailable = !!availableFeatures?.userManagement
+  const [createModalVisible, setCreateModalVisible] = useState(false)
+  const [blockModalVisible, setBlockModalVisible] = useState(false)
   const [attributes, setAttributes] = useState(defaultAttributes)
   const [roleBindings, setRoleBindings] = useState([])
 
@@ -40,7 +42,7 @@ export function CreateRole({ q }: any) {
   const resetAndClose = useCallback(() => {
     setAttributes(defaultAttributes)
     setRoleBindings([])
-    setOpen(false)
+    setCreateModalVisible(false)
   }, [])
 
   const [mutation, { loading, error }] = useMutation(CREATE_ROLE, {
@@ -59,14 +61,15 @@ export function CreateRole({ q }: any) {
     <>
       <Button
         secondary
-        onClick={() => setOpen(true)}
-        disabled={!availableFeatures?.userManagement}
+        onClick={() => (isAvailable ? setCreateModalVisible(true) : setBlockModalVisible(true))}
       >
         Create role
       </Button>
+
+      {/* Modals */}
       <Modal
         header="Create role"
-        open={open}
+        open={createModalVisible}
         onClose={() => resetAndClose()}
         marginVertical={16}
         size="large"
@@ -86,6 +89,11 @@ export function CreateRole({ q }: any) {
           error={error}
         />
       </Modal>
+      <BillingFeatureBlockModal
+        open={blockModalVisible}
+        message="Upgrade to Plural Professional to create a role."
+        onClose={() => setBlockModalVisible(false)}
+      />
     </>
   )
 }

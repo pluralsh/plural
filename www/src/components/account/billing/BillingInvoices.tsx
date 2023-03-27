@@ -45,7 +45,7 @@ const columns = [
     cell: info => capitalize(info.getValue() || ''),
     header: () => <>Status</>,
   }),
-  columnHelper.accessor(row => row, {
+  columnHelper.accessor(row => row.hostedInvoiceUrl, {
     id: 'viewInvoice',
     cell: info => (
       <Flex

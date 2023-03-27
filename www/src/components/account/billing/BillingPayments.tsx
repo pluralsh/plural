@@ -1,6 +1,6 @@
 import { Div } from 'honorable'
 
-import { LoopingLogo } from '../../utils/AnimatedLogo'
+import LoadingIndicator from '../../utils/LoadingIndicator'
 
 import BillingBankCards from './BillingBankCards'
 import BillingInvoices from './BillingInvoices'
@@ -10,7 +10,7 @@ function BillingPayments() {
   const { billingCustomerId, paymentMethods } = useBillingSubscription()
 
   if (!paymentMethods) {
-    return <LoopingLogo />
+    return <LoadingIndicator />
   }
 
   return (

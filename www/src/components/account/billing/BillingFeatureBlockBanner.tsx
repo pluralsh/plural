@@ -1,77 +1,65 @@
-import { Link } from 'react-router-dom'
 import { Button, Card } from '@pluralsh/design-system'
-import { Div, Flex, P } from 'honorable'
-import { capitalize } from 'lodash'
-import { useContext } from 'react'
-
-import SubscriptionContext from '../../../contexts/SubscriptionContext'
+import styled from 'styled-components'
 
 type BillingFeatureBlockBannerPropsType = {
-  feature: 'service accounts' | 'groups' | 'roles'
-  planFeature?: string | null
+  feature: string
+  description?: string
+  placeholderImageURL?: string
 }
 
-const featureToPunchline = {
-  'service accounts': 'Create assumable identities that enable multiple people to manage Plural installations.',
-  groups: 'Organize your users into groups to more easily apply permissions to sub-sections of your team. e.g. ops, end-users, and admins.',
-  roles: 'Define granular permissions for your organization\'s users and apply them to groups or individuals.',
-}
+const Wrapper = styled.div<{backgroundImage?: string}>(({ theme, backgroundImage }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  flexGrow: 1,
+  alignItems: 'center',
+  justifyItems: 'flex-start',
+  padding: theme.spacing.large,
+  borderRadius: theme.borderRadiuses.medium,
+  backgroundColor: theme.colors['fill-zero'],
+  zIndex: 10,
 
-const featureToImageUrl = {
-  'service accounts': '/placeholder-service-accounts.png',
-  groups: '/placeholder-groups.png',
-  roles: '/placeholder-roles.png',
-}
+  ...(backgroundImage && {
+    backgroundImage: `url(${backgroundImage})`,
+    backgroundRepeat: 'no-repeat',
+    backgroundPosition: 'top center',
+    backgroundSize: '100% auto',
+  }),
+}))
 
-function BillingFeatureBlockBanner({ feature, planFeature }: BillingFeatureBlockBannerPropsType) {
-  const { account, isPaidPlan } = useContext(SubscriptionContext)
+const Header = styled.div(({ theme }) => ({
+  ...theme.partials.text.body1,
+  fontWeight: '600',
+}))
 
-  if ((account?.availableFeatures || {})[planFeature || 'userManagement'] || isPaidPlan) return null
+const Description = styled.div(({ theme }) => ({
+  ...theme.partials.text.body2,
+  color: theme.colors['text-light'],
+  marginTop: theme.spacing.medium,
+}))
 
+export default function BillingFeatureBlockBanner({
+  feature, description, placeholderImageURL,
+}: BillingFeatureBlockBannerPropsType) {
   return (
-    <Flex
-      position="absolute"
-      top={88}
-      left={0}
-      right={0}
-      bottom={0}
-      align="center"
-      justify="flex-start"
-      direction="column"
-      borderRadius="large"
-      padding="xxlarge"
-      background={`url(${featureToImageUrl[feature]}) no-repeat top center`}
-      backgroundSize="100% auto"
-      backgroundColor="fill-zero"
-    >
+    <Wrapper backgroundImage={placeholderImageURL}>
       <Card
         padding="large"
         fillLevel={2}
+        width="100%"
       >
-        <Div
-          body1
-          fontWeight="bold"
+        <Header>Upgrade your plan to access {feature}.</Header>
+        <Description>{description}</Description>
+        <Button
+          as="a"
+          href="https://app.plural.sh/account/billing"
+          target="_blank"
+          rel="noopener noreferrer"
+          width="max-content"
+          marginTop="large"
         >
-          Upgrade your plan to access {capitalize(feature)}.
-        </Div>
-        <P
-          body2
-          color="text-light"
-          marginTop="medium"
-        >
-          {featureToPunchline[feature]}
-        </P>
-        <Flex marginTop="large">
-          <Button
-            as={Link}
-            to="/account/billing"
-          >
-            Review plans
-          </Button>
-        </Flex>
+          Review plans
+        </Button>
       </Card>
-    </Flex>
+    </Wrapper>
   )
 }
-
-export default BillingFeatureBlockBanner

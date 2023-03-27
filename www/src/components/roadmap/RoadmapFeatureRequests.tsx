@@ -1,4 +1,4 @@
-import { useContext, useMemo } from 'react'
+import { useContext } from 'react'
 import { PageTitle } from '@pluralsh/design-system'
 
 import { Flex } from 'honorable'
@@ -10,10 +10,9 @@ import RoadmapSearchBox from './RoadmapSearchBox'
 import { LABEL_REQUEST } from './constants'
 
 function RoadmapFeatureRequests() {
-  const { pluralIssues } = useContext(RoadmapContext)
+  const { pluralIssues, pluralConsoleIssues } = useContext(RoadmapContext)
 
-  const issues = useMemo(() => pluralIssues.filter(issue => issue.labels.includes(LABEL_REQUEST)),
-    [pluralIssues])
+  const issues = [...pluralIssues, ...pluralConsoleIssues].filter(issue => issue.labels.includes(LABEL_REQUEST))
 
   return (
     <Flex

@@ -40,11 +40,20 @@ export type Account = {
   id: Scalars['ID'];
   insertedAt?: Maybe<Scalars['DateTime']>;
   name?: Maybe<Scalars['String']>;
+  paymentMethods?: Maybe<PaymentMethodConnection>;
   rootUser?: Maybe<User>;
   subscription?: Maybe<PlatformSubscription>;
   updatedAt?: Maybe<Scalars['DateTime']>;
   userCount?: Maybe<Scalars['String']>;
   workosConnectionId?: Maybe<Scalars['String']>;
+};
+
+
+export type AccountPaymentMethodsArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
 };
 
 export type AccountAttributes = {
@@ -86,9 +95,9 @@ export type AddressAttributes = {
   city: Scalars['String'];
   country: Scalars['String'];
   line1: Scalars['String'];
-  line2: Scalars['String'];
+  line2?: InputMaybe<Scalars['String']>;
   name?: InputMaybe<Scalars['String']>;
-  state: Scalars['String'];
+  state?: InputMaybe<Scalars['String']>;
   zip: Scalars['String'];
 };
 
@@ -1339,6 +1348,7 @@ export type Invoice = {
   hostedInvoiceUrl?: Maybe<Scalars['String']>;
   lines?: Maybe<Array<Maybe<InvoiceItem>>>;
   number: Scalars['String'];
+  paymentIntent?: Maybe<PaymentIntent>;
   status?: Maybe<Scalars['String']>;
 };
 
@@ -1508,6 +1518,12 @@ export type NetworkConfiguration = {
   __typename?: 'NetworkConfiguration';
   pluralDns?: Maybe<Scalars['Boolean']>;
   subdomain?: Maybe<Scalars['String']>;
+};
+
+export type NextAction = {
+  __typename?: 'NextAction';
+  redirectToUrl?: Maybe<RedirectToUrl>;
+  type?: Maybe<Scalars['String']>;
 };
 
 export type Notification = {
@@ -1768,6 +1784,38 @@ export type PageInfo = {
   startCursor?: Maybe<Scalars['String']>;
 };
 
+export type PaymentIntent = {
+  __typename?: 'PaymentIntent';
+  amount?: Maybe<Scalars['Int']>;
+  captureMethod?: Maybe<Scalars['String']>;
+  clientSecret?: Maybe<Scalars['String']>;
+  currency?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['String']>;
+  nextAction?: Maybe<NextAction>;
+  status?: Maybe<Scalars['String']>;
+};
+
+export type PaymentMethod = {
+  __typename?: 'PaymentMethod';
+  card?: Maybe<Card>;
+  id?: Maybe<Scalars['String']>;
+  isDefault?: Maybe<Scalars['Boolean']>;
+  type?: Maybe<Scalars['String']>;
+};
+
+export type PaymentMethodConnection = {
+  __typename?: 'PaymentMethodConnection';
+  edges?: Maybe<Array<Maybe<PaymentMethodEdge>>>;
+  pageInfo: PageInfo;
+};
+
+export type PaymentMethodEdge = {
+  __typename?: 'PaymentMethodEdge';
+  cursor?: Maybe<Scalars['String']>;
+  node?: Maybe<PaymentMethod>;
+};
+
 export enum PaymentPeriod {
   Monthly = 'MONTHLY',
   Yearly = 'YEARLY'
@@ -1943,6 +1991,7 @@ export type PlatformSubscription = {
   __typename?: 'PlatformSubscription';
   externalId?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
+  latestInvoice?: Maybe<Invoice>;
   lineItems?: Maybe<Array<Maybe<PlatformSubscriptionLineItems>>>;
   plan?: Maybe<PlatformPlan>;
 };
@@ -2228,6 +2277,12 @@ export type RecipeValidationAttributes = {
   message: Scalars['String'];
   regex?: InputMaybe<Scalars['String']>;
   type: ValidationType;
+};
+
+export type RedirectToUrl = {
+  __typename?: 'RedirectToUrl';
+  returnUrl?: Maybe<Scalars['String']>;
+  url?: Maybe<Scalars['String']>;
 };
 
 /** Container for all resources to create an application. */
@@ -2546,6 +2601,7 @@ export type RootMutationType = {
   createUserEvent?: Maybe<Scalars['Boolean']>;
   createWebhook?: Maybe<Webhook>;
   createZoom?: Maybe<ZoomMeeting>;
+  defaultPaymentMethod?: Maybe<Scalars['Boolean']>;
   deleteCard?: Maybe<Account>;
   deleteChartInstallation?: Maybe<ChartInstallation>;
   /** Delete a cluster. */
@@ -2562,6 +2618,7 @@ export type RootMutationType = {
   deleteInvite?: Maybe<Invite>;
   deleteKeyBackup?: Maybe<KeyBackup>;
   deleteMessage?: Maybe<IncidentMessage>;
+  deletePaymentMethod?: Maybe<PaymentMethod>;
   deletePlatformSubscription?: Maybe<Account>;
   deletePublicKey?: Maybe<PublicKey>;
   deleteReaction?: Maybe<IncidentMessage>;
@@ -2603,6 +2660,7 @@ export type RootMutationType = {
   releaseLock?: Maybe<ApplyLock>;
   resetInstallations?: Maybe<Scalars['Int']>;
   restartShell?: Maybe<Scalars['Boolean']>;
+  setupIntent?: Maybe<SetupIntent>;
   setupShell?: Maybe<CloudShell>;
   signup?: Maybe<User>;
   ssoCallback?: Maybe<User>;
@@ -2775,6 +2833,8 @@ export type RootMutationTypeCreatePlanArgs = {
 
 
 export type RootMutationTypeCreatePlatformSubscriptionArgs = {
+  billingAddress?: InputMaybe<AddressAttributes>;
+  paymentMethod?: InputMaybe<Scalars['String']>;
   planId: Scalars['ID'];
 };
 
@@ -2873,6 +2933,11 @@ export type RootMutationTypeCreateZoomArgs = {
 };
 
 
+export type RootMutationTypeDefaultPaymentMethodArgs = {
+  id: Scalars['String'];
+};
+
+
 export type RootMutationTypeDeleteCardArgs = {
   id: Scalars['ID'];
 };
@@ -2945,6 +3010,11 @@ export type RootMutationTypeDeleteKeyBackupArgs = {
 
 
 export type RootMutationTypeDeleteMessageArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type RootMutationTypeDeletePaymentMethodArgs = {
   id: Scalars['ID'];
 };
 
@@ -3133,6 +3203,11 @@ export type RootMutationTypeRealizeResetTokenArgs = {
 export type RootMutationTypeReleaseLockArgs = {
   attributes: LockAttributes;
   repository: Scalars['String'];
+};
+
+
+export type RootMutationTypeSetupIntentArgs = {
+  address?: InputMaybe<AddressAttributes>;
 };
 
 
@@ -4097,6 +4172,15 @@ export type ServiceLevelAttributes = {
   responseTime?: InputMaybe<Scalars['Int']>;
 };
 
+export type SetupIntent = {
+  __typename?: 'SetupIntent';
+  clientSecret?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['String']>;
+  nextAction?: Maybe<NextAction>;
+  paymentMethodTypes?: Maybe<Array<Maybe<Scalars['String']>>>;
+  status?: Maybe<Scalars['String']>;
+};
+
 export type ShellConfiguration = {
   __typename?: 'ShellConfiguration';
   buckets?: Maybe<Array<Maybe<Scalars['String']>>>;
@@ -5041,6 +5125,10 @@ export type SubscriptionFragment = { __typename?: 'RepositorySubscription', id: 
 
 export type InvoiceItemFragment = { __typename?: 'InvoiceItem', amount: number, currency: string, description?: string | null };
 
+export type PaymentIntentFragment = { __typename?: 'PaymentIntent', id?: string | null, description?: string | null, clientSecret?: string | null, amount?: number | null, captureMethod?: string | null, currency?: string | null, status?: string | null, nextAction?: { __typename?: 'NextAction', type?: string | null, redirectToUrl?: { __typename?: 'RedirectToUrl', url?: string | null, returnUrl?: string | null } | null } | null };
+
+export type NextActionFragment = { __typename?: 'NextAction', type?: string | null, redirectToUrl?: { __typename?: 'RedirectToUrl', url?: string | null, returnUrl?: string | null } | null };
+
 export type InvoiceFragment = { __typename?: 'Invoice', number: string, amountDue: number, amountPaid: number, currency: string, status?: string | null, createdAt?: Date | null, hostedInvoiceUrl?: string | null, lines?: Array<{ __typename?: 'InvoiceItem', amount: number, currency: string, description?: string | null } | null> | null };
 
 export type CardFragment = { __typename?: 'Card', id: string, last4: string, expMonth: number, expYear: number, name?: string | null, brand: string };
@@ -5059,10 +5147,11 @@ export type UpdateAccountBillingMutation = { __typename?: 'RootMutationType', up
 
 export type UpgradeToProfessionalPlanMutationVariables = Exact<{
   planId: Scalars['ID'];
+  billingAddress?: InputMaybe<AddressAttributes>;
 }>;
 
 
-export type UpgradeToProfessionalPlanMutation = { __typename?: 'RootMutationType', createPlatformSubscription?: { __typename?: 'PlatformSubscription', id: string } | null };
+export type UpgradeToProfessionalPlanMutation = { __typename?: 'RootMutationType', createPlatformSubscription?: { __typename?: 'PlatformSubscription', id: string, latestInvoice?: { __typename?: 'Invoice', number: string, amountDue: number, amountPaid: number, currency: string, status?: string | null, createdAt?: Date | null, hostedInvoiceUrl?: string | null, paymentIntent?: { __typename?: 'PaymentIntent', id?: string | null, description?: string | null, clientSecret?: string | null, amount?: number | null, captureMethod?: string | null, currency?: string | null, status?: string | null, nextAction?: { __typename?: 'NextAction', type?: string | null, redirectToUrl?: { __typename?: 'RedirectToUrl', url?: string | null, returnUrl?: string | null } | null } | null } | null, lines?: Array<{ __typename?: 'InvoiceItem', amount: number, currency: string, description?: string | null } | null> | null } | null } | null };
 
 export type DowngradeToFreePlanMutationMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -6250,6 +6339,29 @@ export const SubscriptionFragmentDoc = gql`
 }
     ${PlanFragmentDoc}
 ${LimitFragmentDoc}`;
+export const NextActionFragmentDoc = gql`
+    fragment NextAction on NextAction {
+  type
+  redirectToUrl {
+    url
+    returnUrl
+  }
+}
+    `;
+export const PaymentIntentFragmentDoc = gql`
+    fragment PaymentIntent on PaymentIntent {
+  id
+  description
+  clientSecret
+  amount
+  captureMethod
+  currency
+  nextAction {
+    ...NextAction
+  }
+  status
+}
+    ${NextActionFragmentDoc}`;
 export const InvoiceItemFragmentDoc = gql`
     fragment InvoiceItem on InvoiceItem {
   amount
@@ -7800,12 +7912,19 @@ export type UpdateAccountBillingMutationHookResult = ReturnType<typeof useUpdate
 export type UpdateAccountBillingMutationResult = Apollo.MutationResult<UpdateAccountBillingMutation>;
 export type UpdateAccountBillingMutationOptions = Apollo.BaseMutationOptions<UpdateAccountBillingMutation, UpdateAccountBillingMutationVariables>;
 export const UpgradeToProfessionalPlanDocument = gql`
-    mutation UpgradeToProfessionalPlan($planId: ID!) {
-  createPlatformSubscription(planId: $planId) {
+    mutation UpgradeToProfessionalPlan($planId: ID!, $billingAddress: AddressAttributes) {
+  createPlatformSubscription(planId: $planId, billingAddress: $billingAddress) {
     id
+    latestInvoice {
+      ...Invoice
+      paymentIntent {
+        ...PaymentIntent
+      }
+    }
   }
 }
-    `;
+    ${InvoiceFragmentDoc}
+${PaymentIntentFragmentDoc}`;
 export type UpgradeToProfessionalPlanMutationFn = Apollo.MutationFunction<UpgradeToProfessionalPlanMutation, UpgradeToProfessionalPlanMutationVariables>;
 
 /**
@@ -7822,6 +7941,7 @@ export type UpgradeToProfessionalPlanMutationFn = Apollo.MutationFunction<Upgrad
  * const [upgradeToProfessionalPlanMutation, { data, loading, error }] = useUpgradeToProfessionalPlanMutation({
  *   variables: {
  *      planId: // value for 'planId'
+ *      billingAddress: // value for 'billingAddress'
  *   },
  * });
  */
@@ -9866,3 +9986,179 @@ export function useUpdateVersionMutation(baseOptions?: Apollo.MutationHookOption
 export type UpdateVersionMutationHookResult = ReturnType<typeof useUpdateVersionMutation>;
 export type UpdateVersionMutationResult = Apollo.MutationResult<UpdateVersionMutation>;
 export type UpdateVersionMutationOptions = Apollo.BaseMutationOptions<UpdateVersionMutation, UpdateVersionMutationVariables>;
+export const namedOperations = {
+  Query: {
+    ListArtifacts: 'ListArtifacts',
+    GetCharts: 'GetCharts',
+    GetVersions: 'GetVersions',
+    GetChartInstallations: 'GetChartInstallations',
+    GetPackageInstallations: 'GetPackageInstallations',
+    GetDnsRecords: 'GetDnsRecords',
+    GroupMembers: 'GroupMembers',
+    Groups: 'Groups',
+    GetInstallation: 'GetInstallation',
+    GetInstallationById: 'GetInstallationById',
+    GetInstallations: 'GetInstallations',
+    Invite: 'Invite',
+    Subscription: 'Subscription',
+    Cards: 'Cards',
+    GetRecipe: 'GetRecipe',
+    ListRecipes: 'ListRecipes',
+    GetStack: 'GetStack',
+    ListStacks: 'ListStacks',
+    Repository: 'Repository',
+    ListRepositories: 'ListRepositories',
+    Scaffolds: 'Scaffolds',
+    GetTfProviders: 'GetTfProviders',
+    GetTfProviderScaffold: 'GetTfProviderScaffold',
+    GetShell: 'GetShell',
+    GetTerraform: 'GetTerraform',
+    GetTerraformInstallations: 'GetTerraformInstallations',
+    Me: 'Me',
+    GetLoginMethod: 'GetLoginMethod',
+    ListTokens: 'ListTokens',
+    ListKeys: 'ListKeys',
+    GetEabCredential: 'GetEabCredential',
+    LoginMethod: 'LoginMethod',
+    OauthUrls: 'OauthUrls',
+    ResetToken: 'ResetToken'
+  },
+  Mutation: {
+    UpdateAccount: 'UpdateAccount',
+    CreateArtifact: 'CreateArtifact',
+    CreateCrd: 'CreateCrd',
+    UninstallChart: 'UninstallChart',
+    CreateDnsRecord: 'CreateDnsRecord',
+    DeleteDnsRecord: 'DeleteDnsRecord',
+    CreateDomain: 'CreateDomain',
+    CreateGroupMember: 'CreateGroupMember',
+    DeleteGroupMember: 'DeleteGroupMember',
+    CreateGroup: 'CreateGroup',
+    UpdateGroup: 'UpdateGroup',
+    DeleteGroup: 'DeleteGroup',
+    UpsertOidcProvider: 'UpsertOidcProvider',
+    SignupInvite: 'SignupInvite',
+    RealizeInvite: 'RealizeInvite',
+    UpdateAccountBilling: 'UpdateAccountBilling',
+    UpgradeToProfessionalPlan: 'UpgradeToProfessionalPlan',
+    DowngradeToFreePlanMutation: 'DowngradeToFreePlanMutation',
+    CreateCard: 'CreateCard',
+    DeleteCard: 'DeleteCard',
+    CreateRecipe: 'CreateRecipe',
+    InstallRecipe: 'InstallRecipe',
+    CreateStack: 'CreateStack',
+    CreateResourceDefinition: 'CreateResourceDefinition',
+    CreateIntegration: 'CreateIntegration',
+    UpdateRepository: 'UpdateRepository',
+    CreateRepository: 'CreateRepository',
+    AcquireLock: 'AcquireLock',
+    ReleaseLock: 'ReleaseLock',
+    UnlockRepository: 'UnlockRepository',
+    DeleteRepository: 'DeleteRepository',
+    DeleteShell: 'DeleteShell',
+    UploadTerraform: 'UploadTerraform',
+    UninstallTerraform: 'UninstallTerraform',
+    CreateTest: 'CreateTest',
+    UpdateTest: 'UpdateTest',
+    UpdateStep: 'UpdateStep',
+    PublishLogs: 'PublishLogs',
+    DevLogin: 'DevLogin',
+    Login: 'Login',
+    ImpersonateServiceAccount: 'ImpersonateServiceAccount',
+    CreateAccessToken: 'CreateAccessToken',
+    CreateKey: 'CreateKey',
+    DeleteEabCredential: 'DeleteEabCredential',
+    CreateEvent: 'CreateEvent',
+    Signup: 'Signup',
+    PasswordlessLogin: 'PasswordlessLogin',
+    PollLoginToken: 'PollLoginToken',
+    AcceptLogin: 'AcceptLogin',
+    CreateResetToken: 'CreateResetToken',
+    RealizeResetToken: 'RealizeResetToken',
+    UpdateVersion: 'UpdateVersion'
+  },
+  Fragment: {
+    Audit: 'Audit',
+    PolicyBinding: 'PolicyBinding',
+    DnsDomain: 'DnsDomain',
+    Invite: 'Invite',
+    OidcLogin: 'OidcLogin',
+    Artifact: 'Artifact',
+    Chart: 'Chart',
+    Crd: 'Crd',
+    ChartInstallation: 'ChartInstallation',
+    ScanViolation: 'ScanViolation',
+    ScanError: 'ScanError',
+    PackageScan: 'PackageScan',
+    DnsRecord: 'DnsRecord',
+    DockerRepo: 'DockerRepo',
+    DockerRepository: 'DockerRepository',
+    DockerImage: 'DockerImage',
+    Vulnerability: 'Vulnerability',
+    Postmortem: 'Postmortem',
+    Follower: 'Follower',
+    SlimSubscription: 'SlimSubscription',
+    ClusterInformation: 'ClusterInformation',
+    Incident: 'Incident',
+    IncidentHistory: 'IncidentHistory',
+    File: 'File',
+    IncidentMessage: 'IncidentMessage',
+    Notification: 'Notification',
+    Installation: 'Installation',
+    IntegrationWebhook: 'IntegrationWebhook',
+    WebhookLog: 'WebhookLog',
+    OauthIntegration: 'OauthIntegration',
+    ZoomMeeting: 'ZoomMeeting',
+    Metric: 'Metric',
+    PageInfo: 'PageInfo',
+    OIDCProvider: 'OIDCProvider',
+    OAuthInfo: 'OAuthInfo',
+    Limit: 'Limit',
+    LineItem: 'LineItem',
+    ServiceLevel: 'ServiceLevel',
+    Plan: 'Plan',
+    Subscription: 'Subscription',
+    InvoiceItem: 'InvoiceItem',
+    PaymentIntent: 'PaymentIntent',
+    NextAction: 'NextAction',
+    Invoice: 'Invoice',
+    Card: 'Card',
+    Recipe: 'Recipe',
+    RecipeItem: 'RecipeItem',
+    RecipeSection: 'RecipeSection',
+    RecipeConfiguration: 'RecipeConfiguration',
+    Stack: 'Stack',
+    ApplyLock: 'ApplyLock',
+    Category: 'Category',
+    Repo: 'Repo',
+    Repository: 'Repository',
+    Dependencies: 'Dependencies',
+    Integration: 'Integration',
+    CloudShell: 'CloudShell',
+    DemoProject: 'DemoProject',
+    Terraform: 'Terraform',
+    TerraformInstallation: 'TerraformInstallation',
+    Step: 'Step',
+    Test: 'Test',
+    UpgradeQueue: 'UpgradeQueue',
+    Rollout: 'Rollout',
+    Upgrade: 'Upgrade',
+    DeferredUpdate: 'DeferredUpdate',
+    Account: 'Account',
+    Group: 'Group',
+    User: 'User',
+    ImpersonationPolicy: 'ImpersonationPolicy',
+    GroupMember: 'GroupMember',
+    Token: 'Token',
+    TokenAudit: 'TokenAudit',
+    Address: 'Address',
+    Publisher: 'Publisher',
+    Webhook: 'Webhook',
+    RoleBinding: 'RoleBinding',
+    Role: 'Role',
+    PublicKey: 'PublicKey',
+    EabCredential: 'EabCredential',
+    VersionTag: 'VersionTag',
+    Version: 'Version'
+  }
+}

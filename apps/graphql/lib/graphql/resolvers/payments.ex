@@ -2,7 +2,7 @@ defmodule GraphQl.Resolvers.Payments do
   use GraphQl.Resolvers.Base, model: Core.Schema.Subscription
   import Piazza.Utils
   alias Core.Services.{Payments, Users}
-  alias Core.Schema.{PlatformPlan, PlatformSubscription, Plan, User}
+  alias Core.Schema.{PlatformPlan, PlatformSubscription, Plan, User, Account}
 
   def query(Plan, _), do: Plan.ordered()
   def query(PlatformPlan, _), do: PlatformPlan
@@ -19,6 +19,8 @@ defmodule GraphQl.Resolvers.Payments do
     |> Subscription.ordered()
     |> paginate(args)
   end
+
+  def latest_invoice(subscription), do: Payments.latest_invoice(subscription)
 
   def list_invoices(args, %{context: %{current_user: user}}) do
     Payments.list_invoices(user, to_stripe_args(args))
@@ -45,6 +47,11 @@ defmodule GraphQl.Resolvers.Payments do
     |> to_connection()
   end
   def list_cards(_, _, _), do: {:error, :forbidden}
+
+  def list_payment_methods(%Account{} = account, args, %{context: %{current_user: %User{} = user}}) do
+    Payments.list_payment_methods(account, user, to_stripe_args(args))
+    |> to_connection()
+  end
 
   defp to_connection({:ok, %Stripe.List{has_more: has_more, data: list}}) do
     {edges, end_cursor} = build_edges(list)
@@ -79,6 +86,12 @@ defmodule GraphQl.Resolvers.Payments do
   def delete_card(%{id: id}, %{context: %{current_user: user}}),
     do: Payments.delete_card(id, user)
 
+  def delete_payment_method(%{id: id}, %{context: %{current_user: user}}),
+    do: Payments.delete_payment_method(id, user)
+
+  def setup_intent(args, %{context: %{current_user: user}}),
+    do: Payments.setup_intent(args, user)
+
   def create_plan(%{attributes: attrs, repository_id: id}, %{context: %{current_user: user}}),
     do: Payments.create_plan(attrs, id, user)
 
@@ -91,8 +104,8 @@ defmodule GraphQl.Resolvers.Payments do
   def update_plan(%{plan_id: plan_id, subscription_id: id}, %{context: %{current_user: user}}),
     do: Payments.update_plan(plan_id, id, user)
 
-  def create_platform_subscription(%{plan_id: id}, %{context: %{current_user: user}}),
-    do: Payments.create_platform_subscription(id, user)
+  def create_platform_subscription(%{plan_id: id} = args, %{context: %{current_user: user}}),
+    do: Payments.create_platform_subscription(args, id, user)
 
   def delete_platform_subscription(_, %{context: %{current_user: user}}),
     do: Payments.delete_platform_subscription(user)
@@ -102,6 +115,11 @@ defmodule GraphQl.Resolvers.Payments do
 
   def cancel_platform_subscription(_, %{context: %{current_user: user}}),
     do: Payments.cancel_platform_subscription(user)
+
+  def default_payment_method(%{id: id}, %{context: %{current_user: user}}) do
+    with {:ok, _} <- Payments.default_payment_method(user, id),
+      do: {:ok, true}
+  end
 
   def link_publisher(%{token: token}, %{context: %{current_user: user}}) do
     Users.get_publisher_by_owner!(user.id)

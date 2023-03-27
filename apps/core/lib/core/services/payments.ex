@@ -106,6 +106,48 @@ defmodule Core.Services.Payments do
 
   def list_cards(_, _), do: {:ok, %Stripe.List{has_more: false, data: []}}
 
+
+  @doc """
+  Updates the default payment method for an account
+  """
+  @spec default_payment_method(User.t | Account.t, binary) :: {:ok, Stripe.Customer.t} | error
+  def default_payment_method(%User{} = user, id) do
+    %{account: account} = force_preload(user)
+    with {:ok, account} <- allow(account, user, :pay) do
+      default_payment_method(account, id)
+    end
+  end
+
+  def default_payment_method(%Account{billing_customer_id: cus_id}, id) when is_binary(cus_id) do
+    Stripe.Customer.update(cus_id, %{invoice_settings: %{default_payment_method: id}})
+  end
+
+  def default_payment_method(_, _), do: {:error, "you have yet to set up billing for your account"}
+
+  @doc """
+  It can list all payment methods attached to a customer
+  """
+  @spec list_payment_methods(Account.t, User.t, map) :: {:ok, Stripe.List.t(Stripe.PaymentMethod.t)} | error
+  def list_payment_methods(%Account{billing_customer_id: id} = account, %User{} = user, opts) when is_binary(id) do
+    with {:ok, _} <- allow(account, user, :pay) do
+      Map.merge(%{customer: id}, opts)
+      |> Stripe.PaymentMethod.list(expand: ["data.customer"])
+    end
+  end
+
+  def list_payment_methods(_, _, _), do: {:ok, %Stripe.List{has_more: false, data: []}}
+
+  @doc """
+  Deletes a payment method if the user has permissions
+  """
+  @spec delete_payment_method(binary, User.t) :: {:ok, Stripe.PaymentMethod.t} | error
+  def delete_payment_method(id, %User{} = user) do
+    %{account: account} = Core.Repo.preload(user, [:account])
+    with {:ok, _} <- allow(account, user, :pay) do
+      Stripe.PaymentMethod.detach(%{payment_method: id})
+    end
+  end
+
   @spec has_plans?(binary) :: boolean
   def has_plans?(repository_id) do
     Plan.for_repository(repository_id)
@@ -190,6 +232,27 @@ defmodule Core.Services.Payments do
     end
   end
 
+  @doc "update plural subscription status"
+  @spec update_subscription_status(map, binary) :: platform_sub_resp | {:ok, nil}
+  def update_subscription_status(attrs, id) do
+    case Core.Repo.get_by(PlatformSubscription, external_id: id) do
+      nil -> {:ok, nil}
+      sub -> PlatformSubscription.stripe_changeset(sub, attrs) |> Core.Repo.update()
+    end
+  end
+
+  @doc """
+  Attempt to fetch the latest invoice for a stripe subscription
+  """
+  @spec latest_invoice(PlatformSubscription.t) :: {:ok, Stripe.Invoice.t} | error
+  def latest_invoice(%PlatformSubscription{external_id: id}) when is_binary(id) do
+    case Stripe.Subscription.retrieve(id, expand: ["latest_invoice.payment_intent"]) do
+      {:ok, %Stripe.Subscription{latest_invoice: invoice}} -> {:ok, invoice}
+      error -> error
+    end
+  end
+  def latest_invoice(_), do: {:error, "no stripe subscription present"}
+
 
   @doc """
   Modifies delinquency for an account.  If an account is already delinquent, we don't want to move its timestamp into  the future,
@@ -200,9 +263,17 @@ defmodule Core.Services.Payments do
   def toggle_delinquent(%Account{delinquent_at: del} = account, now) when not is_nil(del) and not is_nil(now),
     do: {:ok, account}
   def toggle_delinquent(%Account{} = account, delinquent_at) do
-    account
-    |> Account.payment_changeset(%{delinquent_at: delinquent_at})
-    |> Core.Repo.update()
+    start_transaction()
+    |> add_operation(:account, fn _ ->
+      Core.Repo.preload(account, [:subscription])
+      |> Account.payment_changeset(%{delinquent_at: delinquent_at})
+      |> Core.Repo.update()
+    end)
+    |> add_operation(:subscription, fn %{account: %{subscription: sub}} ->
+      PlatformSubscription.stripe_changeset(sub, %{status: (if delinquent_at, do: :delinquent, else: :current)})
+      |> Core.Repo.update()
+    end)
+    |> execute(extract: :account)
   end
   def toggle_delinquent(nil, _), do: {:error, "account not found"}
   def toggle_delinquent(id, val) when is_binary(id) do
@@ -210,6 +281,31 @@ defmodule Core.Services.Payments do
     |> toggle_delinquent(val)
   end
 
+  @doc """
+  auto-provisions a customer and creates a new setup intent for them
+  """
+  @spec setup_intent(map, User.t | Account.t) :: {:ok, Stripe.SetupIntent.t} | error
+  def setup_intent(args \\ %{}, user)
+
+  def setup_intent(args, %User{} = user) do
+    Core.Repo.preload(user, [:account], force: true)
+    |> Map.get(:account)
+    |> allow(user, :pay)
+    |> when_ok(&setup_intent(args, &1))
+  end
+
+  def setup_intent(args, %Account{} = account) do
+    start_transaction()
+    |> add_operation(:customer, fn _ -> provision_customer(account, args) end)
+    |> add_operation(:stripe, fn %{customer: %{billing_customer_id: cus_id}} ->
+      Stripe.SetupIntent.create(%{
+        customer: cus_id,
+        usage: "off_session",
+        automatic_payment_methods: %{enabled: true}
+      })
+    end)
+    |> execute(extract: :stripe)
+  end
 
   @doc """
   Cancels a subscription for a user, and deletes the record in our database
@@ -319,6 +415,7 @@ defmodule Core.Services.Payments do
   def stripe_attrs(%Account{root_user: %User{email: email, name: name}, billing_address: %{} = address}) do
     {:ok, %{email: email, name: Map.get(address, :name) || name, address: Address.to_stripe(address)}}
   end
+  def stripe_attrs(%Account{root_user: %User{email: email, name: name}}), do: {:ok, %{email: email, name: name}}
   def stripe_attrs(_), do: {:error, "you must provide a billing address to enable billing"}
 
   @doc """
@@ -539,10 +636,8 @@ defmodule Core.Services.Payments do
   def create_platform_subscription(attrs, %PlatformPlan{} = plan, %User{} = user) do
     start_transaction()
     |> add_operation(:account, fn _ ->
-      case preload(user, force: true) do
-        %{account: %Account{billing_customer_id: nil}} -> {:error, "no payment method"}
-        %{account: account} -> {:ok, account}
-      end
+      %{account: account} = preload(user, force: true)
+      provision_customer(account, attrs)
     end)
     |> add_operation(:db, fn %{account: %Account{cluster_count: cc, user_count: uc} = account} ->
       %PlatformSubscription{plan_id: plan.id, plan: plan, account_id: account.id}
@@ -556,7 +651,9 @@ defmodule Core.Services.Payments do
     |> add_operation(:stripe, fn %{account: %Account{billing_customer_id: cust_id}, db: db} ->
       Stripe.Subscription.create(%{
         customer: cust_id,
-        items: sub_line_items(plan, db)
+        items: sub_line_items(plan, db),
+        payment_behavior: "default_incomplete",
+        off_session: true
       })
     end)
     |> add_operation(:finalized, fn
@@ -577,6 +674,40 @@ defmodule Core.Services.Payments do
   def create_platform_subscription(attrs, plan_id, %User{} = user),
     do: create_platform_subscription(attrs, get_platform_plan!(plan_id), user)
 
+
+  defp provision_customer(%Account{billing_customer_id: nil} = account, args) do
+    account = Core.Repo.preload(account, [:root_user])
+    start_transaction()
+    |> add_operation(:account, fn _ ->
+      case args do
+        %{billing_address: %{} = address} ->
+          Account.changeset(account, %{billing_address: address})
+          |> Core.Repo.update()
+        _ -> {:ok, account}
+      end
+    end)
+    |> add_operation(:stripe, fn %{account: account} ->
+      with {:ok, stripe} <- stripe_attrs(account),
+        do: Stripe.Customer.create(stripe)
+    end)
+    |> add_operation(:customer, fn %{account: account, stripe: %Stripe.Customer{id: id}} ->
+      account
+      |> Account.payment_changeset(%{billing_customer_id: id})
+      |> Core.Repo.update()
+    end)
+    |> add_operation(:default, fn %{customer: account} ->
+      case args do
+        %{payment_method: method} when is_binary(method) -> default_payment_method(account, method)
+        _ -> {:ok, account}
+      end
+    end)
+    |> execute(extract: :customer)
+  end
+  defp provision_customer(%Account{} = account, %{payment_method: method}) when is_binary(method) do
+    with {:ok, _} <- default_payment_method(account, method),
+      do: {:ok, account}
+  end
+  defp provision_customer(%Account{} = account, _), do: {:ok, account}
 
   @doc """
   Cancels a user's subscription in stripe and wipes the reference to it in our db.  This effectively converts the
@@ -599,7 +730,13 @@ defmodule Core.Services.Payments do
       |> when_ok(:delete)
     end)
     |> add_operation(:account, fn %{fetch: account} -> {:ok, %{account | subscription: nil}} end)
-    |> add_operation(:stripe, fn %{db: %{external_id: ext_id}} -> Stripe.Subscription.delete(ext_id, %{prorate: true}) end)
+    |> add_operation(:stripe, fn %{db: %{external_id: ext_id}} ->
+      case Stripe.Subscription.delete(ext_id, %{prorate: true}) do
+        {:ok, _} = success -> success
+        {:error, %Stripe.Error{extra: %{http_status: 404}}} -> {:ok, nil}
+        error -> error
+      end
+    end)
     |> execute(extract: :account)
     |> notify(:delete)
   end

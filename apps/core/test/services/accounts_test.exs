@@ -383,7 +383,7 @@ defmodule Core.Services.AccountsTest do
 
     test "it will block realizing invites on user limit", %{user: user, account: account} do
       {:ok, invite} = Accounts.create_invite(%{email: "some@example.com"}, user)
-      {:ok, account} = update_record(account, %{user_count: 5})
+      {:ok, _} = update_record(account, %{user_count: 5})
 
       {:error, _} = Accounts.realize_invite(%{
         password: "some long password",

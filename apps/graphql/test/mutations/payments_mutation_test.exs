@@ -77,6 +77,22 @@ defmodule GraphQl.PaymentsMutationsTest do
     end
   end
 
+  describe "deletePaymentMethod" do
+    test "It can delete a user's registered card" do
+      account = insert(:account, billing_customer_id: "cus_id")
+      user = admin_user(account)
+      expect(Stripe.PaymentMethod, :detach, fn %{payment_method: "card"} -> {:ok, %Stripe.PaymentMethod{id: "card"}} end)
+
+      {:ok, %{data: %{"deletePaymentMethod" => deleted}}} = run_query("""
+        mutation deletePaymentMethod($id: ID!) {
+          deletePaymentMethod(id: $id) { id }
+        }
+      """, %{"id" => "card"}, %{current_user: user})
+
+      assert deleted["id"] == "card"
+    end
+  end
+
   describe "linkPublisher" do
     test "It will fetch an account id and persist it" do
       expect(Stripe.Connect.OAuth, :token, fn "oauth_code" ->
@@ -381,6 +397,22 @@ defmodule GraphQl.PaymentsMutationsTest do
     end
   end
 
+  describe "defaultPaymentMethod" do
+    test "it will set the default payment method for an account" do
+      account = insert(:account, billing_customer_id: "cus_id", user_count: 2, cluster_count: 0)
+      user = insert(:user, roles: %{admin: true}, account: account)
+      expect(Stripe.Customer, :update, fn "cus_id", %{invoice_settings: %{default_payment_method: "pay_id"}} ->
+        {:ok, %Stripe.Customer{}}
+      end)
+
+      {:ok, %{data: %{"defaultPaymentMethod" => true}}} = run_query("""
+        mutation Default($id: String!) {
+          defaultPaymentMethod(id: $id)
+        }
+      """, %{"id" => "pay_id"}, %{current_user: user})
+    end
+  end
+
   describe "createPlatformSubscription" do
     test "it can create a platform subscription" do
       account = insert(:account, billing_customer_id: "cus_id", user_count: 2, cluster_count: 0)
@@ -506,6 +538,36 @@ defmodule GraphQl.PaymentsMutationsTest do
       """, %{}, %{current_user: user})
 
       assert sub["id"] == subscription.id
+    end
+  end
+
+  describe "setupIntent" do
+    setup [:setup_root_user]
+    test "It will create a customer and persist its id", %{user: %{email: email} = user} do
+      expect(Stripe.Customer, :create, fn %{email: ^email} -> {:ok, %Stripe.Customer{id: "cus_id"}} end)
+      expect(Stripe.SetupIntent, :create, fn %{customer: "cus_id"} -> {:ok, %Stripe.SetupIntent{client_secret: "sec"}} end)
+
+      {:ok, %{data: %{"setupIntent" => result}}} = run_query("""
+        mutation {
+          setupIntent {
+            clientSecret
+          }
+        }
+      """, %{}, %{current_user: user})
+
+      assert result["clientSecret"] == "sec"
+    end
+
+    test "non admins cannot create intents", %{account: account} do
+      user = insert(:user, account: account)
+
+      {:ok, %{errors: [_ | _]}} = run_query("""
+        mutation {
+          setupIntent {
+            clientSecret
+          }
+        }
+      """, %{}, %{current_user: user})
     end
   end
 end

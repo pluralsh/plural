@@ -294,8 +294,6 @@ defmodule Core.Services.Payments do
     |> when_ok(&setup_intent(args, &1))
   end
 
-  @payment_method_types ~w(card sepa_debit ideal us_bank_account)
-
   def setup_intent(args, %Account{} = account) do
     start_transaction()
     |> add_operation(:customer, fn _ -> provision_customer(account, args) end)
@@ -303,7 +301,6 @@ defmodule Core.Services.Payments do
       Stripe.SetupIntent.create(%{
         customer: cus_id,
         usage: "off_session",
-        payment_method_types: @payment_method_types,
         automatic_payment_methods: %{enabled: true}
       })
     end)

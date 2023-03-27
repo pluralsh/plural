@@ -47,6 +47,7 @@ function BillingPricingCard({
       >
         {items.map(item => (
           <Flex
+            key={item.label}
             align="center"
             gap="small"
           >

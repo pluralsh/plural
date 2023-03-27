@@ -8,7 +8,7 @@ import { useStripeAppearance } from '../../WrapStripe'
 export function StripeElements({
   clientSecret,
   children,
-}: PropsWithChildren<{ clientSecret: string | null | undefined }>) {
+}: PropsWithChildren<{ clientSecret?: string | null | undefined }>) {
   const { stripePublishableKey } = useContext(PluralConfigurationContext)
 
   const appearance = useStripeAppearance()
@@ -20,9 +20,10 @@ export function StripeElements({
 
   const elementsOptions = useMemo(() => ({
     appearance,
-    ...(clientSecret ? { clientSecret } : {}),
+    mode: 'setup',
+    currency: 'usd',
   } satisfies StripeElementsOptions),
-  [appearance, clientSecret])
+  [appearance])
 
   if (!stripePromise) {
     // eslint-disable-next-line react/jsx-no-useless-fragment

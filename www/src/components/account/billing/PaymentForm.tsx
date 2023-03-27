@@ -23,12 +23,7 @@ import { Link } from 'react-router-dom'
 
 import isEmpty from 'lodash/isEmpty'
 
-import {
-  SetupIntentFragment,
-  namedOperations,
-  useSetupIntentMutation,
-  useUpgradeToProfessionalPlanMutation,
-} from '../../../generated/graphql'
+import { namedOperations, useCreatePlatformSubscriptionMutation, useSetupIntentMutation } from '../../../generated/graphql'
 import type { AddressAttributes } from '../../../generated/graphql'
 
 import { host } from '../../../helpers/hostname'
@@ -57,19 +52,15 @@ enum PaymentFormState {
 
 type PaymentFormContextState = {
   formState: PaymentFormState
-  clientSecret?: string | undefined | null
-  intent?: SetupIntentFragment | undefined | null
   plan: PlanType
+  address?: AddressAttributes
 }
 
 type PaymentFormContextVal = PaymentFormContextState & {
   formVariant: PaymentFormVariant
-  setClientSecret: (
-    clientSecret?: PaymentFormContextState['clientSecret']
-  ) => void
-  setIntent: (intent?: PaymentFormContextState['intent']) => void
   setFormState: (state: PaymentFormState) => void
   setPlan: (plan: PlanType) => void
+  setAddress: (address: AddressAttributes) => void
   resetForm: () => void
   onClose: (e?: Event) => void
 }
@@ -78,9 +69,8 @@ export type PlanType = 'yearly' | 'monthly'
 
 const defaultState: PaymentFormContextState = {
   formState: PaymentFormState.CollectAddress,
-  clientSecret: undefined,
-  intent: undefined,
   plan: 'monthly',
+  address: undefined,
 }
 
 const PaymentFormContext = createContext<PaymentFormContextVal | null>(null)
@@ -97,36 +87,21 @@ export const usePaymentForm = () => {
 
 const reducer: ImmerReducer<
   PaymentFormContextState,
-  | {
-      type: 'setClientSecret'
-      payload: PaymentFormContextState['clientSecret']
-    }
-  | {
-      type: 'setIntent'
-      payload: PaymentFormContextState['intent']
-    }
   | { type: 'setFormState'; payload: PaymentFormState }
   | { type: 'setPlan'; payload: PlanType }
+  | { type: 'setAddress'; payload: AddressAttributes | undefined }
 > = (draft, action) => {
   switch (action.type) {
-  case 'setClientSecret':
-    draft.clientSecret = action.payload
-
-    return draft
-    break
   case 'setFormState':
     draft.formState = action.payload
-    if (draft.formState === PaymentFormState.CollectAddress) {
-      draft.clientSecret = undefined
-    }
-
-    return draft
-  case 'setIntent':
-    draft.intent = action.payload
 
     return draft
   case 'setPlan':
     draft.plan = action.payload
+
+    return draft
+  case 'setAddress':
+    draft.address = action.payload
 
     return draft
   default:
@@ -137,6 +112,11 @@ const reducer: ImmerReducer<
 }
 const paymentElementOptions: StripePaymentElementOptions = {
   layout: 'tabs',
+  fields: {
+    billingDetails: {
+      address: 'never',
+    },
+  },
 }
 
 function PaymentFormProvider({
@@ -167,17 +147,14 @@ function PaymentFormProvider({
     return {
       formVariant,
       ...contextState,
-      setClientSecret: (clientSecret: PaymentFormContextState['clientSecret']) => {
-        dispatch({ type: 'setClientSecret', payload: clientSecret })
-      },
       setFormState: (state: PaymentFormContextState['formState']) => {
         dispatch({ type: 'setFormState', payload: state })
       },
-      setIntent: (intent: PaymentFormContextState['intent']) => {
-        dispatch({ type: 'setIntent', payload: intent })
-      },
       setPlan: (plan: PaymentFormContextState['plan']) => {
         dispatch({ type: 'setPlan', payload: plan })
+      },
+      setAddress: (address: AddressAttributes) => {
+        dispatch({ type: 'setAddress', payload: address })
       },
       resetForm,
       onClose: e => {
@@ -197,9 +174,8 @@ function PaymentFormProvider({
 
 function PaymentFormInner() {
   const {
-    formState, plan, setPlan, clientSecret, formVariant,
-  }
-    = usePaymentForm()
+    formState, plan, setPlan, formVariant,
+  } = usePaymentForm()
 
   if (formState === PaymentFormState.UpgradeSuccess) {
     return <UpgradeSuccess />
@@ -223,7 +199,7 @@ function PaymentFormInner() {
       {formState === PaymentFormState.SelectPaymentMethod && (
         <SelectPaymentMethod />
       )}
-      <StripeElements clientSecret={clientSecret}>
+      <StripeElements>
         {formState === PaymentFormState.CollectAddress && (
           <Div>
             <Div
@@ -240,9 +216,7 @@ function PaymentFormInner() {
             </Flex>
           </Div>
         )}
-        {formState === PaymentFormState.CollectPayment && clientSecret && (
-          <Payment />
-        )}
+        {formState === PaymentFormState.CollectPayment && <Payment />}
       </StripeElements>
     </Flex>
   )
@@ -266,61 +240,122 @@ export default function PaymentForm({
 
 function Payment() {
   const {
-    clientSecret, plan, setFormState, formVariant, onClose,
-  }
-    = usePaymentForm()
+    plan, setFormState, formVariant, onClose, address,
+  } = usePaymentForm()
+
   const [message, setMessage] = useState<string | null | undefined>()
   const [isLoading, setIsLoading] = useState(false)
   const stripe = useStripe()
   const elements = useElements()
 
+  const [setupIntentMut] = useSetupIntentMutation({
+    refetchQueries: [namedOperations.Query.Subscription],
+  })
+
   useEffect(() => {
-    if (!clientSecret) {
+    if (!address) {
       setFormState(PaymentFormState.CollectAddress)
     }
-  }, [clientSecret, setFormState])
+  }, [address, setFormState])
 
   const handleSubmit = useCallback(async e => {
-    e.preventDefault()
+    const startSubmit = () => {
+      setIsLoading(true)
+    }
+    const endSubmit = () => {
+      setIsLoading(false)
+    }
 
-    if (!stripe || !elements || !clientSecret) {
+    e.preventDefault()
+    if (!address) {
+      setFormState(PaymentFormState.CollectAddress)
+
+      endSubmit()
+
+      return
+    }
+
+    if (!stripe || !elements) {
         // Stripe.js has not yet loaded.
         // Make sure to disable form submission until Stripe.js has loaded.
       return
     }
 
-    setIsLoading(true)
+    startSubmit()
 
-    const { error } = await stripe.confirmSetup({
-      elements,
-      confirmParams: {
-          // Make sure to change this to your payment completion page
-        return_url:
-            formVariant === PaymentFormVariant.Upgrade
-              ? `${host()}/account/billing?plan=${plan}`
-              : `${host()}/account/billing/payments`,
-      },
+      // Trigger form validation and wallet collection
+    const { error: submitError } = await elements.submit()
+
+    if (submitError) {
+      endSubmit()
+
+      return
+    }
+
+    const setupIntentResult = await setupIntentMut({
+      variables: { address },
     })
 
-      // This point will only be reached if there is an immediate error when
-      // confirming the payment. Otherwise, your customer will be redirected to
-      // your `return_url`. For some payment methods like iDEAL, your customer will
-      // be redirected to an intermediate site first to authorize the payment, then
-      // redirected to the `return_url`.
-    if (error.type === 'card_error' || error.type === 'validation_error') {
-      setMessage(error.message)
-    }
-    else {
-      setMessage('An unexpected error occurred.')
+    if (setupIntentResult.errors) {
+      setMessage(setupIntentResult.errors[0].message)
+      endSubmit()
+
+      return
     }
 
-    setIsLoading(false)
+    const intent = setupIntentResult.data?.setupIntent
+
+    if (!intent?.clientSecret) {
+      setMessage('Unable to create setup intent')
+      endSubmit()
+
+      return
+    }
+
+    try {
+      const { error } = await stripe.confirmSetup({
+        elements,
+        clientSecret: intent?.clientSecret,
+        confirmParams: {
+            // Make sure to change this to your payment completion page
+          payment_method_data: {
+            billing_details: {
+              name: address?.name ?? '',
+              address: {
+                line1: address?.line1 ?? '',
+                line2: address?.line2 ?? '',
+                city: address?.city ?? '',
+                state: address?.state ?? '',
+                country: address?.country ?? '',
+                postal_code: address.zip ?? '',
+              },
+            },
+          },
+          return_url:
+              formVariant === PaymentFormVariant.Upgrade
+                ? `${host()}/account/billing?plan=${plan}`
+                : `${host()}/account/billing/payments`,
+        },
+      })
+
+        // This point will only be reached if there is an immediate error when
+        // confirming the payment. Otherwise, your customer will be redirected to
+        // your `return_url`. For some payment methods like iDEAL, your customer will
+        // be redirected to an intermediate site first to authorize the payment, then
+        // redirected to the `return_url`.
+      if (error.type === 'card_error' || error.type === 'validation_error') {
+        setMessage(error.message)
+      }
+      else {
+        setMessage('An unexpected error occurred.')
+      }
+    }
+    catch (e) {
+      setMessage(`An unexpected error occurred: ${(e as Error)?.message}`)
+    }
+    endSubmit()
   },
-  [clientSecret, elements, formVariant, plan, stripe])
-
-  if (!clientSecret) {
-    return null
-  }
+  [address, elements, formVariant, plan, setFormState, setupIntentMut, stripe])
 
   return (
     <form
@@ -390,12 +425,7 @@ function AddressForm({
   const stripe = useStripe()
   const elements = useElements()
   const {
-    clientSecret,
-    setClientSecret,
-    setIntent,
-    setFormState,
-    formVariant,
-    onClose,
+    setFormState, setAddress, formVariant, onClose,
   } = usePaymentForm()
   const validateForm = useCallback(async () => {
     if (!elements) {
@@ -405,11 +435,6 @@ function AddressForm({
 
     await (addressElt as any)?.getValue()
   }, [elements])
-  // const { billingAddress } = useContext(SubscriptionContext)
-
-  const [setupIntentMut] = useSetupIntentMutation({
-    refetchQueries: [namedOperations.Query.Subscription],
-  })
 
   const disableSubmit = !stripe || !elements || !addressComplete || loading
 
@@ -429,11 +454,7 @@ function AddressForm({
   //   },
   // }),
   // [billingAddress])
-  useEffect(() => {
-    if (clientSecret) {
-      setFormState(PaymentFormState.CollectPayment)
-    }
-  }, [clientSecret, setFormState])
+
   const handleSubmit = useCallback(async event => {
     event.preventDefault()
 
@@ -469,25 +490,11 @@ function AddressForm({
       country: `${address.country || ''}`,
     }
 
-    const setupResult = await setupIntentMut({
-      variables: { address: setupIntentAddress },
-    })
-
-    if (setupResult.errors) {
-      setFormError(setupResult.errors[0].message)
-      setValidating(false)
-    }
-
-    const intent = setupResult.data?.setupIntent
-
-    if (intent) {
-      setIntent(intent)
-      setClientSecret(intent.clientSecret)
-    }
-
+    setAddress(setupIntentAddress)
+    setFormState(PaymentFormState.CollectPayment)
     setValidating(false)
   },
-  [elements, setClientSecret, setIntent, setupIntentMut, stripe])
+  [elements, setAddress, setFormState, stripe])
 
   const error = formError || errorProp
 
@@ -571,7 +578,7 @@ function SelectPaymentMethod() {
     = plan === 'yearly' ? proYearlyPlatformPlan.id : proPlatformPlan.id
 
   // Upgrade mutation
-  const [upgradeMutation, { loading }] = useUpgradeToProfessionalPlanMutation({
+  const [upgradeMutation, { loading }] = useCreatePlatformSubscriptionMutation({
     variables: { planId },
     refetchQueries: [namedOperations.Query.Subscription],
     onCompleted: () => {

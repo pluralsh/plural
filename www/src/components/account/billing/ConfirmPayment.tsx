@@ -11,18 +11,8 @@ import {
   useNavigate,
   useSearchParams,
 } from 'react-router-dom'
-import {
-  Div,
-  Flex,
-  P,
-  Spinner,
-} from 'honorable'
-import {
-  Button,
-  LoopingLogo,
-  Modal,
-  usePrevious,
-} from '@pluralsh/design-system'
+import { Flex, P, Spinner } from 'honorable'
+import { Button, Modal, usePrevious } from '@pluralsh/design-system'
 import { useStripe } from '@stripe/react-stripe-js'
 import { PaymentIntent, SetupIntent } from '@stripe/stripe-js'
 
@@ -38,12 +28,14 @@ import { type PlanType } from './PaymentForm'
 
 function ModalLoading() {
   return (
-    <Div
+    <Flex
       width="100%"
       overflow="hidden"
+      align="center"
+      justify="center"
     >
       <Spinner />
-    </Div>
+    </Flex>
   )
 }
 
@@ -214,13 +206,21 @@ function ModalActions({
       Explore the app
     </Button>
   ) : (
-    <Button
-      as={Link}
-      to="/account/billing/payment"
-      onClick={() => onClose()}
-    >
-      View payment details
-    </Button>
+    <Flex gap="medium">
+      <Button
+        secondary
+        onClick={onClose}
+      >
+        Close
+      </Button>
+      <Button
+        as={Link}
+        to="/account/billing/payment"
+        onClick={onClose}
+      >
+        Manage payment methods
+      </Button>
+    </Flex>
   )
 }
 
@@ -331,7 +331,6 @@ function ConfirmSetupIntent({ clientSecret }: { clientSecret: string }) {
       variables: { planId, paymentMethod: paymentMethodId },
       refetchQueries: [namedOperations.Query.Subscription],
       onCompleted: result => {
-        console.log('upgrade completed result', result)
         const clientSecret
           = result.createPlatformSubscription?.latestInvoice?.paymentIntent
             ?.clientSecret
@@ -339,7 +338,6 @@ function ConfirmSetupIntent({ clientSecret }: { clientSecret: string }) {
         if (clientSecret) {
           const nextPath = '/account/billing?confirmReturn=1'
 
-          console.log('confirmPayment')
           stripe
             ?.confirmPayment({
               clientSecret,
@@ -349,9 +347,6 @@ function ConfirmSetupIntent({ clientSecret }: { clientSecret: string }) {
               },
             } as any)
             .then(result => {
-              console.log('confirmPayment: paymentIntent:',
-                result.paymentIntent)
-              console.log('confirmPayment: error:', result.error)
               if (result.error) {
                 setConfirmPaymentError(result.error)
               }
@@ -361,7 +356,8 @@ function ConfirmSetupIntent({ clientSecret }: { clientSecret: string }) {
             })
         }
         else {
-          console.log('no client secret after upgrade')
+          // If didn't receive a paymentIntent or clientSecret after mutation
+          // assume successful upgrade
           setUpgradeSuccess(true)
         }
       },
@@ -391,48 +387,32 @@ function ConfirmSetupIntent({ clientSecret }: { clientSecret: string }) {
   else if (error) {
     header = 'Error processing payment'
     message = <P>Error processing payment: {error.message}</P>
-
-    if (setupIntent) {
-      switch (setupIntent?.status) {
-      case 'succeeded':
-        header = 'Processing'
-        message = (
-          <Div
-            width="100%"
-            overflow="hidden"
-          >
-            <LoopingLogo />
-          </Div>
-        )
-        break
-      case 'processing':
-        header = 'Payment processing'
-        message = (
-          <P>
-            Payment processing. We'll update you when payment is received.
-          </P>
-        )
-        break
-      case 'requires_payment_method':
-        header = 'Payment failed'
-        message = <P>Payment failed. Please try another payment method.</P>
-        break
-      case 'requires_action':
-          // Possibly (hopefully) this case should never happen? Investigate to make sure
-          // https://stackoverflow.com/questions/62454487/stripe-v3-setupintents-and-subscriptions
-        header = 'Requires action'
-        message = <P>payment requires an action</P>
-        break
-      default:
-        header = 'Payment issue'
-        message = (
-          <P>
-            There was an {error ? '' : 'unknown '}issue processing your
-            payment
-            {error ? <>': '{error.message}</> : '.'}
-          </P>
-        )
-      }
+  }
+  else if (setupIntent) {
+    switch (setupIntent?.status) {
+    case 'succeeded':
+      header = 'Processing'
+      message = <ModalLoading />
+      break
+    case 'processing':
+      header = 'Payment processing'
+      message = (
+        <P>Payment processing. We'll update you when payment is received.</P>
+      )
+      break
+    case 'requires_payment_method':
+      header = 'Payment failed'
+      message = <P>Payment failed. Please try another payment method.</P>
+      break
+    case 'requires_action':
+        // Possibly (hopefully) this case should never happen? Investigate to make sure
+        // https://stackoverflow.com/questions/62454487/stripe-v3-setupintents-and-subscriptions
+      header = 'Requires action'
+      message = <P>payment requires an action</P>
+      break
+    default:
+      header = 'Payment issue'
+      message = <P>There was an unknown issue processing your payment.</P>
     }
   }
 
@@ -470,16 +450,12 @@ export default function ConfirmPayment() {
   const paymentClientSecret = searchParams.get('payment_intent_client_secret')
 
   if (confirmReturn && paymentClientSecret) {
-    console.log('confirm payment intent')
-
     return <ConfirmPaymentIntent clientSecret={paymentClientSecret} />
   }
 
   const setupClientSecret = searchParams.get('setup_intent_client_secret')
 
   if (setupClientSecret) {
-    console.log('confirm setup intent')
-
     return <ConfirmSetupIntent clientSecret={setupClientSecret} />
   }
 }

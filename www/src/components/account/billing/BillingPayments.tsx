@@ -31,7 +31,7 @@ function BillingPayments() {
           >
             Invoices
           </Div>
-          <BillingInvoices customerId={billingCustomerId} />
+          <BillingInvoices />
         </>
       )}
     </>

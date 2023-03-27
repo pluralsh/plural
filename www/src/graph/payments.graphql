@@ -117,18 +117,25 @@ mutation UpdateAccountBilling($attributes: AccountAttributes!) {
   updateAccount(attributes: $attributes) { id }
 }
 
-mutation UpgradeToProfessionalPlan($planId: ID!, $billingAddress: AddressAttributes) {
+mutation UpgradeToProfessionalPlan(
+  $planId: ID!
+  $billingAddress: AddressAttributes
+) {
   createPlatformSubscription(planId: $planId, billingAddress: $billingAddress) {
     id
     latestInvoice {
       ...Invoice
-      paymentIntent { ...PaymentIntent }
+      paymentIntent {
+        ...PaymentIntent
+      }
     }
   }
 }
 
 mutation DowngradeToFreePlanMutation {
-  deletePlatformSubscription { id }
+  deletePlatformSubscription {
+    id
+  }
 }
 
 query Cards {
@@ -140,10 +147,20 @@ query Cards {
   }
 }
 
+# query LatestInvoice {
+#   invoices() {
+
+#   }
+# }
+
 mutation CreateCard($source: String!, $address: AddressAttributes) {
-  createCard(source: $source, address: $address) { id }
+  createCard(source: $source, address: $address) {
+    id
+  }
 }
 
 mutation DeleteCard($id: ID!) {
-  deleteCard(id: $id) { id }
+  deleteCard(id: $id) {
+    id
+  }
 }

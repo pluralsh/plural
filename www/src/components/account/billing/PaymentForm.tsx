@@ -317,7 +317,6 @@ function Payment() {
         elements,
         clientSecret: intent?.clientSecret,
         confirmParams: {
-            // Make sure to change this to your payment completion page
           payment_method_data: {
             billing_details: {
               name: address?.name ?? '',

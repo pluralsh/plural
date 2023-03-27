@@ -458,4 +458,6 @@ export default function ConfirmPayment() {
   if (setupClientSecret) {
     return <ConfirmSetupIntent clientSecret={setupClientSecret} />
   }
+
+  return null
 }

@@ -24,17 +24,46 @@ import {
   usePrevious,
 } from '@pluralsh/design-system'
 import { useStripe } from '@stripe/react-stripe-js'
-import { SetupIntent } from '@stripe/stripe-js'
+import { PaymentIntent, SetupIntent } from '@stripe/stripe-js'
 
 import isEmpty from 'lodash/isEmpty'
 
 import PlatformPlansContext from '../../../contexts/PlatformPlansContext'
 
-import { namedOperations, useDefaultPaymentMethodMutation, useUpgradeToProfessionalPlanMutation } from '../../../generated/graphql'
+import { namedOperations, useCreatePlatformSubscriptionMutation, useDefaultPaymentMethodMutation } from '../../../generated/graphql'
 
 import { host } from '../../../helpers/hostname'
 
 import { type PlanType } from './PaymentForm'
+
+function ModalLoading() {
+  return (
+    <Div
+      width="100%"
+      overflow="hidden"
+    >
+      <Spinner />
+    </Div>
+  )
+}
+
+export function UpgradeSuccessMessage() {
+  return (
+    <P>
+      Welcome to the Plural Professional plan! You now have access to groups,
+      roles, service accounts, and more.
+    </P>
+  )
+}
+
+const useClearSearchParams = () => {
+  const location = useLocation()
+  const navigate = useNavigate()
+
+  return () => {
+    navigate(location.pathname)
+  }
+}
 
 const useRetrieveSetupIntent = ({
   clientSecret,
@@ -46,28 +75,26 @@ const useRetrieveSetupIntent = ({
   onError?: (e: { message?: string }) => void
 }) => {
   const [error, setError] = useState<{ message?: string } | undefined>()
-  const [setupIntent, setSetupIntent] = useState<SetupIntent | null>()
+  const [intent, setIntent] = useState<SetupIntent | null>()
   const [makeDefaultMutation] = useDefaultPaymentMethodMutation({
     refetchQueries: [namedOperations.Query.Subscription],
   })
   const prevClientSecret = usePrevious(clientSecret)
-  const [defaultPaymentId, setDefaultPaymentId] = useState<string | undefined>()
 
   const stripe = useStripe()
 
   useEffect(() => {
     if (clientSecret !== prevClientSecret) {
       setError(undefined)
-      setSetupIntent(undefined)
-      setDefaultPaymentId(undefined)
+      setIntent(undefined)
     }
   }, [clientSecret, prevClientSecret])
 
   useEffect(() => {
-    if (defaultPaymentId && setupIntent) {
-      onComplete?.(setupIntent)
+    if (intent) {
+      onComplete?.(intent)
     }
-  }, [defaultPaymentId, onComplete, setupIntent])
+  }, [onComplete, intent])
   useEffect(() => {
     if (error) {
       onError?.(error)
@@ -86,7 +113,7 @@ const useRetrieveSetupIntent = ({
             return
           }
           setError(error)
-          setSetupIntent(setupIntent)
+          setIntent(setupIntent)
         }
         catch (e) {
           setError(e as Error)
@@ -99,25 +126,171 @@ const useRetrieveSetupIntent = ({
     }())
   }, [clientSecret, makeDefaultMutation, stripe])
 
-  return { error, setupIntent }
+  return { error, setupIntent: intent }
 }
 
-export function UpgradeSuccessMessage() {
-  return (
-    <P>
-      Welcome to the Plural Professional plan! You now have access to groups,
-      roles, service accounts, and more.
-    </P>
+const useRetrievePaymentIntent = ({
+  clientSecret,
+  onComplete,
+  onError,
+}: {
+  clientSecret?: string | null
+  onComplete?: (setupIntent: PaymentIntent) => void
+  onError?: (e: { message?: string }) => void
+}) => {
+  const [error, setError] = useState<{ message?: string } | undefined>()
+  const [intent, setIntent] = useState<PaymentIntent | null>()
+  const [makeDefaultMutation] = useDefaultPaymentMethodMutation({
+    refetchQueries: [namedOperations.Query.Subscription],
+  })
+  const prevClientSecret = usePrevious(clientSecret)
+
+  const stripe = useStripe()
+
+  useEffect(() => {
+    if (clientSecret !== prevClientSecret) {
+      setError(undefined)
+      setIntent(undefined)
+    }
+  }, [clientSecret, prevClientSecret])
+
+  useEffect(() => {
+    if (intent) {
+      onComplete?.(intent)
+    }
+  }, [onComplete, intent])
+  useEffect(() => {
+    if (error) {
+      onError?.(error)
+    }
+  }, [error, onError])
+
+  useEffect(() => {
+    let cancelled = false
+
+    ;(async function x() {
+      if (stripe && clientSecret) {
+        try {
+          const { paymentIntent: intent, error }
+            = await stripe.retrievePaymentIntent(clientSecret)
+
+          if (cancelled) {
+            return
+          }
+          setError(error)
+          setIntent(intent)
+        }
+        catch (e) {
+          setError(e as Error)
+        }
+
+        return () => {
+          cancelled = true
+        }
+      }
+    }())
+  }, [clientSecret, makeDefaultMutation, stripe])
+
+  return { error, paymentIntent: intent }
+}
+
+type BasicError = { message?: string } | undefined
+
+function ModalActions({
+  success = false,
+  loading = false,
+  onClose,
+}: {
+  success: boolean
+  loading: boolean
+  onClose: () => void
+}) {
+  return loading ? null : success ? (
+    <Button
+      as={Link}
+      to="/marketplace"
+      onClick={() => onClose()}
+    >
+      Explore the app
+    </Button>
+  ) : (
+    <Button
+      as={Link}
+      to="/account/billing/payment"
+      onClick={() => onClose()}
+    >
+      View payment details
+    </Button>
   )
 }
 
-export default function ConfirmPayment() {
+export function ConfirmPaymentIntent({
+  clientSecret,
+}: {
+  clientSecret: string
+}) {
+  const { paymentIntent, error } = useRetrievePaymentIntent({ clientSecret })
+  const [isOpen, setIsOpen] = useState(!!clientSecret)
+  let message: ReactNode | undefined
+  let header: string | undefined
+  const clearSearchParams = useClearSearchParams()
+
+  const onClose = useCallback(() => {
+    setIsOpen(false)
+    clearSearchParams()
+  }, [clearSearchParams])
+
+  const loading = !error && !paymentIntent
+
+  const paymentSuccess = paymentIntent?.status === 'succeeded'
+
+  if (loading) {
+    header = 'Checking payment'
+    message = <ModalLoading />
+  }
+  if (paymentSuccess) {
+    header = 'Payment success'
+    message = <UpgradeSuccessMessage />
+  }
+  else {
+    header = 'Error completing payment'
+    message = (
+      <P body1>
+        There was an error completing your payment. Check the Payments page to
+        complete payment.
+      </P>
+    )
+  }
+
+  return (
+    <Modal
+      open={isOpen}
+      header={header}
+      actions={(
+        <ModalActions
+          loading={loading}
+          success={paymentSuccess}
+          onClose={onClose}
+        />
+      )}
+      onClose={onClose}
+    >
+      <Flex
+        body1
+        gap="medium"
+      >
+        {message || <ModalLoading />}
+      </Flex>
+    </Modal>
+  )
+}
+
+function ConfirmSetupIntent({ clientSecret }: { clientSecret: string }) {
   const [searchParams] = useSearchParams()
-  const location = useLocation()
+  const clearSearchParams = useClearSearchParams()
   const navigate = useNavigate()
   const stripe = useStripe()
 
-  const clientSecret = searchParams.get('setup_intent_client_secret')
   const plan: PlanType
     = searchParams.get('plan') === 'yearly' ? 'yearly' : 'monthly'
   const { proPlatformPlan, proYearlyPlatformPlan }
@@ -130,19 +303,22 @@ export default function ConfirmPayment() {
 
   const onClose = useCallback(() => {
     setIsOpen(false)
-    navigate(location.pathname)
-  }, [location.pathname, navigate])
+    clearSearchParams()
+  }, [clearSearchParams])
 
   useEffect(() => {
     if (upgradeSuccess && !isEmpty(searchParams.values)) {
-      navigate(location.pathname)
+      clearSearchParams()
     }
-  }, [location.pathname, navigate, searchParams.values, upgradeSuccess])
+  }, [clearSearchParams, searchParams.values, upgradeSuccess])
 
   // Confirm payment
-  const { error: confirmIntentError, setupIntent } = useRetrieveSetupIntent({
-    clientSecret,
-  })
+  const { error: retrieveSetupIntentError, setupIntent }
+    = useRetrieveSetupIntent({
+      clientSecret,
+    })
+  const [confirmPaymentError, setConfirmPaymentError]
+    = useState<BasicError>(undefined)
 
   const paymentMethodId
     = typeof setupIntent?.payment_method === 'string'
@@ -151,21 +327,38 @@ export default function ConfirmPayment() {
 
   // Upgrade mutation
   const [upgradeMutation, { error: upgradeError }]
-    = useUpgradeToProfessionalPlanMutation({
+    = useCreatePlatformSubscriptionMutation({
       variables: { planId, paymentMethod: paymentMethodId },
       refetchQueries: [namedOperations.Query.Subscription],
       onCompleted: result => {
+        console.log('upgrade completed result', result)
         const clientSecret
           = result.createPlatformSubscription?.latestInvoice?.paymentIntent
             ?.clientSecret
 
         if (clientSecret) {
-          stripe?.confirmPayment({
-            clientSecret,
-            confirmParams: {
-              return_url: `${host()}/account/billing?confirmReturn=1`,
-            },
-          } as any)
+          const nextPath = '/account/billing?confirmReturn=1'
+
+          console.log('confirmPayment')
+          stripe
+            ?.confirmPayment({
+              clientSecret,
+              redirect: 'if_required',
+              confirmParams: {
+                return_url: `${host()}${nextPath}`,
+              },
+            } as any)
+            .then(result => {
+              console.log('confirmPayment: paymentIntent:',
+                result.paymentIntent)
+              console.log('confirmPayment: error:', result.error)
+              if (result.error) {
+                setConfirmPaymentError(result.error)
+              }
+              else {
+                navigate(`${nextPath}&payment_intent_client_secret=${result.paymentIntent.client_secret}`)
+              }
+            })
         }
         else {
           console.log('no client secret after upgrade')
@@ -178,9 +371,9 @@ export default function ConfirmPayment() {
     if (setupIntent) {
       upgradeMutation()
     }
-  })
+  }, [setupIntent, upgradeMutation])
 
-  const error = upgradeError || confirmIntentError
+  const error = confirmPaymentError || upgradeError || retrieveSetupIntentError
 
   useEffect(() => {
     if (error?.message === 'account_id has already been taken') {
@@ -252,13 +445,11 @@ export default function ConfirmPayment() {
       open={isOpen}
       header={header}
       actions={(
-        <Button
-          as={Link}
-          to="/marketplace"
-          onClick={() => onClose()}
-        >
-          Explore the app
-        </Button>
+        <ModalActions
+          loading={!message}
+          success={upgradeSuccess}
+          onClose={onClose}
+        />
       )}
       onClose={onClose}
     >
@@ -266,15 +457,29 @@ export default function ConfirmPayment() {
         body1
         gap="medium"
       >
-        {message || (
-          <Div
-            width="100%"
-            overflow="hidden"
-          >
-            <Spinner />
-          </Div>
-        )}
+        {message || <ModalLoading />}
       </Flex>
     </Modal>
   )
+}
+
+export default function ConfirmPayment() {
+  const [searchParams] = useSearchParams()
+
+  const confirmReturn = searchParams.get('confirmReturn')
+  const paymentClientSecret = searchParams.get('payment_intent_client_secret')
+
+  if (confirmReturn && paymentClientSecret) {
+    console.log('confirm payment intent')
+
+    return <ConfirmPaymentIntent clientSecret={paymentClientSecret} />
+  }
+
+  const setupClientSecret = searchParams.get('setup_intent_client_secret')
+
+  if (setupClientSecret) {
+    console.log('confirm setup intent')
+
+    return <ConfirmSetupIntent clientSecret={setupClientSecret} />
+  }
 }

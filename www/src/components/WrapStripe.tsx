@@ -29,7 +29,7 @@ export const useStripeAppearance = () => {
       spacingTab: `${theme.spacing.medium}px`,
     },
     rules: {
-      '.Label, .Input, .Dropdown': {
+      '.Label, .Input': {
         fontSize: `${theme.partials.text.body2Bold.fontSize}px`,
         letterSpacing: `${theme.partials.text.body2Bold.letterSpacing}`,
       },

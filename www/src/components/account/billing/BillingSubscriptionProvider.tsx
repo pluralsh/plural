@@ -26,7 +26,14 @@ function BillingSubscriptionProvider({
     const isProPlan = plan?.name === 'Pro'
     const isEnterprisePlan = plan?.name === 'Enterprise'
     const isPaidPlan = isProPlan || isEnterprisePlan
-    const isGrandfathered = moment().isBefore(moment(account?.grandfatheredUntil))
+    const grandfatheredUntil = account?.grandfatheredUntil
+    const isLegacyUser = !!grandfatheredUntil
+    const isGrandfathered = isLegacyUser && moment().isBefore(moment(grandfatheredUntil))
+
+    // Marking grandfathering as expired only for a month after expiry date.
+    // Afterwards expiry banners will not be visible and UI will be the same as for open-source users.
+    const isGrandfathetingExpired = isLegacyUser
+      && moment().isBetween(moment(grandfatheredUntil), moment(grandfatheredUntil).add(1, 'M'))
 
     return {
       subscription,
@@ -35,7 +42,9 @@ function BillingSubscriptionProvider({
       isProPlan,
       isEnterprisePlan,
       isPaidPlan,
+      isLegacyUser,
       isGrandfathered,
+      isGrandfathetingExpired,
       account,
       availableFeatures,
       refetch,

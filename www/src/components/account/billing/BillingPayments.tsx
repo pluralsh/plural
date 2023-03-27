@@ -1,14 +1,17 @@
 import { Div } from 'honorable'
 
-import { useContext } from 'react'
-
-import SubscriptionContext from '../../../contexts/SubscriptionContext'
+import LoadingIndicator from '../../utils/LoadingIndicator'
 
 import BillingBankCards from './BillingBankCards'
 import BillingInvoices from './BillingInvoices'
+import { useBillingSubscription } from './BillingSubscriptionProvider'
 
 function BillingPayments() {
-  const { billingCustomerId } = useContext(SubscriptionContext)
+  const { billingCustomerId, paymentMethods } = useBillingSubscription()
+
+  if (!paymentMethods) {
+    return <LoadingIndicator />
+  }
 
   return (
     <>
@@ -18,7 +21,7 @@ function BillingPayments() {
       >
         Payment info
       </Div>
-      <BillingBankCards />
+      <BillingBankCards paymentMethods={paymentMethods} />
       {billingCustomerId && (
         <>
           <Div

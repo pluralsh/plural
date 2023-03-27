@@ -74,7 +74,6 @@ fragment Invoice on Invoice {
 }
 
 fragment Card on Card {
-  id
   last4
   expMonth
   expYear
@@ -82,34 +81,49 @@ fragment Card on Card {
   brand
 }
 
-query Subscription {
-  account {
-    billingCustomerId
-    grandfatheredUntil
-    delinquentAt
-    userCount
-    clusterCount
-    availableFeatures {
-      userManagement
-      audit
-    }
-    subscription {
+fragment SubscriptionAccount on Account {
+  id
+  billingCustomerId
+  grandfatheredUntil
+  delinquentAt
+  userCount
+  clusterCount
+  availableFeatures {
+    userManagement
+    audit
+  }
+  subscription {
+    id
+    plan {
       id
-      plan {
-        id
-        period
-        lineItems { dimension cost }
+      period
+      lineItems {
+        dimension
+        cost
       }
     }
-    billingAddress {
-      name
-      line1
-      line2
-      zip
-      state
-      city
-      country
+  }
+  billingAddress {
+    name
+    line1
+    line2
+    zip
+    state
+    city
+    country
+  }
+  paymentMethods(first: 20) {
+    edges {
+      node {
+        ...PaymentMethod
+      }
     }
+  }
+}
+
+query Subscription {
+  account {
+    ...SubscriptionAccount
   }
 }
 
@@ -117,18 +131,30 @@ mutation UpdateAccountBilling($attributes: AccountAttributes!) {
   updateAccount(attributes: $attributes) { id }
 }
 
-mutation UpgradeToProfessionalPlan($planId: ID!, $billingAddress: AddressAttributes) {
-  createPlatformSubscription(planId: $planId, billingAddress: $billingAddress) {
+mutation CreatePlatformSubscription(
+  $planId: ID!
+  $billingAddress: AddressAttributes
+  $paymentMethod: String
+) {
+  createPlatformSubscription(
+    planId: $planId
+    billingAddress: $billingAddress
+    paymentMethod: $paymentMethod
+  ) {
     id
     latestInvoice {
       ...Invoice
-      paymentIntent { ...PaymentIntent }
+      paymentIntent {
+        ...PaymentIntent
+      }
     }
   }
 }
 
 mutation DowngradeToFreePlanMutation {
-  deletePlatformSubscription { id }
+  deletePlatformSubscription {
+    id
+  }
 }
 
 query Cards {
@@ -140,10 +166,47 @@ query Cards {
   }
 }
 
-mutation CreateCard($source: String!, $address: AddressAttributes) {
-  createCard(source: $source, address: $address) { id }
+fragment SetupIntent on SetupIntent {
+  id
+  status
+  clientSecret
+  nextAction {
+    ...NextAction
+  }
+  paymentMethodTypes
 }
 
-mutation DeleteCard($id: ID!) {
-  deleteCard(id: $id) { id }
+mutation SetupIntent($address: AddressAttributes!) {
+  setupIntent(address: $address) {
+    ...SetupIntent
+  }
+}
+
+fragment PaymentMethod on PaymentMethod {
+  id
+  type
+  isDefault
+  card {
+    ...Card
+  }
+}
+
+mutation DefaultPaymentMethod($id: String!) {
+  defaultPaymentMethod(id: $id)
+}
+
+mutation DeletePaymentMethod($id: ID!) {
+  deletePaymentMethod(id: $id) {
+    ...PaymentMethod
+  }
+}
+
+query Invoices {
+  invoices(first: 500) {
+    edges {
+      node {
+        ...Invoice
+      }
+    }
+  }
 }

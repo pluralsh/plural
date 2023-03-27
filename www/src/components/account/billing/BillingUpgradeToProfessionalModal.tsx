@@ -1,22 +1,6 @@
-import {
-  FormEvent,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from 'react'
-import { Link } from 'react-router-dom'
-import { Div, Flex } from 'honorable'
-import { Button, Card, Modal } from '@pluralsh/design-system'
+import { Modal } from '@pluralsh/design-system'
 
-import PlatformPlansContext from '../../../contexts/PlatformPlansContext'
-
-import { namedOperations, useUpgradeToProfessionalPlanMutation } from '../../../generated/graphql'
-
-import useBankCard from './useBankCard'
-
-import BillingPreview from './BillingPreview'
-import BillingError from './BillingError'
+import PaymentForm, { PaymentFormVariant } from './PaymentForm'
 
 type BillingUpgradeToProfessionalModalPropsType = {
   open: boolean
@@ -25,149 +9,23 @@ type BillingUpgradeToProfessionalModalPropsType = {
 
 function BillingUpgradeToProfessionalModal({
   open,
-  onClose: onCloseProp,
+  onClose,
 }: BillingUpgradeToProfessionalModalPropsType) {
-  const { proPlatformPlan, proYearlyPlatformPlan }
-    = useContext(PlatformPlansContext)
-  const [applyYearlyDiscount, setApplyYearlyDiscount] = useState(false)
-
-  const [upgradeMutation, { loading }] = useUpgradeToProfessionalPlanMutation({
-    variables: {
-      planId: applyYearlyDiscount
-        ? proYearlyPlatformPlan.id
-        : proPlatformPlan.id,
-    },
-    refetchQueries: [namedOperations.Query.Subscription],
-    onCompleted: () => setSuccess(true),
-    onError: () => setError(true),
-  })
-
-  const [edit, setEdit] = useState(true)
-  const [success, setSuccess] = useState(false)
-  const [error, setError] = useState(false)
-
-  const {
-    error: cardError,
-    renderEdit,
-    renderDisplay,
-    card,
-    resetForm,
-  } = useBankCard({ setEdit, noCancel: true })
-
-  const onClickUpgrade = useCallback((event: FormEvent) => {
-    event.preventDefault()
-    if (!card) {
-      return
-    }
-
-    upgradeMutation()
-  },
-  [card, upgradeMutation])
-  const onClose = useCallback(() => {
-    resetForm()
-    onCloseProp()
-  }, [onCloseProp, resetForm])
-
-  const renderContent = useCallback(() => (
-    <>
-      <BillingPreview
-        noCard
-        discountPreview
-        yearly={applyYearlyDiscount}
-        onChange={setApplyYearlyDiscount}
-      />
-      <Div
-        fontWeight="bold"
-        marginTop="large"
-        marginBottom="medium"
-      >
-        Billing information
-      </Div>
-      <Flex
-        flexDirection="column"
-        gap="xlarge"
-      >
-        {edit || !card ? renderEdit() : renderDisplay()}
-      </Flex>
-      {(error || cardError) && (
-        <Card
-          marginTop="medium"
-          padding="medium"
-        >
-          <BillingError>{error || cardError}</BillingError>
-        </Card>
-      )}
-      <Flex
-        justify="flex-end"
-        marginTop="xxlarge"
-        gap="small"
-      >
-        <Button
-          secondary
-          onClick={() => {
-            onClose()
-          }}
-        >
-          Cancel
-        </Button>
-        <Button
-          loading={loading}
-          disabled={!card}
-          onClick={onClickUpgrade}
-        >
-          Upgrade
-        </Button>
-      </Flex>
-    </>
-  ),
-  [
-    applyYearlyDiscount,
-    edit,
-    card,
-    renderEdit,
-    renderDisplay,
-    error,
-    cardError,
-    onClickUpgrade,
-    loading,
-    onClose,
-  ])
-
-  const renderSuccess = useCallback(() => (
-    <>
-      <Div>
-        Welcome to the Plural Professional plan! You now have access to
-        groups, roles, service accounts, and more.
-      </Div>
-      <Flex
-        justify="flex-end"
-        marginTop="large"
-      >
-        <Button
-          as={Link}
-          to="/marketplace"
-        >
-          Explore the app
-        </Button>
-      </Flex>
-    </>
-  ),
-  [])
-
-  useEffect(() => {
-    if (!card) return
-
-    setEdit(false)
-  }, [card])
+  // const [upgradeSuccess, setUpgradeSuccess] = useState()
 
   return (
     <Modal
       open={open}
       onClose={onClose}
+      size="large"
       header="Upgrade to professional"
-      minWidth={512 + 128}
+      // header={upgradeSuccess ? 'Successful upgrade' : 'Upgrade to professional'}
     >
-      {success ? renderSuccess() : <>{renderContent()}</>}
+      <PaymentForm
+        formVariant={PaymentFormVariant.Upgrade}
+        onClose={onClose}
+        // onUpgradeSuccess={()=>setUpgradeSuccess)}
+      />
     </Modal>
   )
 }

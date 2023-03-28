@@ -3,6 +3,8 @@ import { Callout } from '@pluralsh/design-system'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 
+import { upperFirst } from 'lodash'
+
 import SubscriptionContext from '../../../contexts/SubscriptionContext'
 
 type BillingLegacyUserBannerPropsType = {
@@ -43,12 +45,7 @@ export default function BillingLegacyUserBanner({ feature }: BillingLegacyUserBa
           : (
             <span>
               {feature
-                ? (
-                  <>
-                    {feature.charAt(0).toUpperCase() + feature.slice(1)} are
-                    a Professional plan feature.
-                  </>
-                )
+                ? <>{upperFirst(feature)} are a Professional plan feature.</>
                 : <>You have access to Professional features for a short period of time.</>}
             </span>
           )}

@@ -4,7 +4,7 @@ import { useContext, useMemo } from 'react'
 import { useQuery } from '@apollo/client'
 
 import { TerminalContext } from '../../context/terminal'
-import { APPLICATIONS_QUERY } from '../installer/queries'
+import { FULL_APPLICATIONS_QUERY } from '../installer/queries'
 
 import { toAppProps } from './helpers'
 
@@ -25,20 +25,32 @@ const Installed = styled(InstalledUnstyled)(({ theme }) => ({
   },
 }))
 
-const POLL_INTERVAL = 15000
+const POLL_INTERVAL = 5000
+
+function buildAppInfo(shellApplications) {
+  return (shellApplications || []).reduce((res, app) => {
+    res[app.name] = app
+
+    return res
+  }, {})
+}
 
 function InstalledUnstyled({ ...props }): JSX.Element {
-  const { shell: { provider }, configuration, onAction } = useContext(TerminalContext)
+  const { shell: { provider }, onAction } = useContext(TerminalContext)
 
-  const { data: { repositories: { edges: nodes } = { edges: [] } } = {}, loading } = useQuery(APPLICATIONS_QUERY,
+  const { data: { repositories: { edges: nodes } = { edges: [] }, shellApplications } = {}, loading } = useQuery(FULL_APPLICATIONS_QUERY,
     {
       variables: { provider, installed: true },
       skip: !provider,
       fetchPolicy: 'network-only',
+      errorPolicy: 'all',
       pollInterval: POLL_INTERVAL,
     })
 
-  const apps: Array<AppProps> = useMemo(() => (onAction ? nodes.map(node => toAppProps(node, configuration, onAction)) : []), [configuration, nodes, onAction])
+  const appInfo = buildAppInfo(shellApplications)
+
+  console.log(appInfo)
+  const apps: Array<AppProps> = useMemo(() => (onAction ? nodes.map(node => toAppProps(node, appInfo, onAction)) : []), [nodes, appInfo, onAction])
 
   if (loading) {
     return (

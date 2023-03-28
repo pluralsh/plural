@@ -3,22 +3,41 @@ import {
   AppProps,
   ArrowTopRightIcon,
   Button,
+  Chip,
   LifePreserverIcon,
   ReloadIcon,
   Tooltip,
   TrashCanIcon,
   WrapWithIf,
 } from '@pluralsh/design-system'
+import { Flex } from 'honorable'
 import { Dispatch, useState } from 'react'
 
-import { Repository, RepositoryEdge, ShellConfiguration } from '../../../../../generated/graphql'
+import { Repository, RepositoryEdge } from '../../../../../generated/graphql'
 
 import { LaunchAppModal, useLaunchAppModal } from './LaunchAppModal'
 
 const PROMOTED_APPS = ['console']
 
-const toAppProps = ({ node: repository }: RepositoryEdge, configuration: ShellConfiguration, onAction: Dispatch<string>): AppProps => {
-  const domain = lookupApplicationDomain(repository!.name, configuration)
+function Status({ app }) {
+  if (!app) return null
+
+  const { ready, componentsReady } = app
+  const pending = componentsReady ? `${componentsReady} Ready` : 'Pending'
+  const text = ready ? 'Ready' : pending
+
+  return (
+    <Chip
+      size="small"
+      severity={ready ? 'success' : 'warning'}
+    >{text}
+    </Chip>
+  )
+}
+
+const toAppProps = ({ node: repository }: RepositoryEdge, appInfo: any, onAction: Dispatch<string>): AppProps => {
+  const app = appInfo[repository!.name]
+  const domain = app?.spec?.links?.length > 0 ? app.spec?.links[0].url : null
   const isAlive = !!repository!.installation?.pingedAt
   const promoted = PROMOTED_APPS.includes(repository!.name)
 
@@ -33,24 +52,12 @@ const toAppProps = ({ node: repository }: RepositoryEdge, configuration: ShellCo
         isAlive={isAlive}
         promoted={promoted}
         domain={domain}
+        app={app}
         name={repository!.name}
       />
-    ) : undefined,
+    ) : <Status app={app} />,
     actions: toActions(repository!, onAction),
   }
-}
-
-const lookupApplicationDomain = (name: string, configuration: ShellConfiguration): string | undefined => {
-  const context = configuration?.contextConfiguration?.[name]
-  const domains = configuration?.domains
-
-  if (!context || !domains) return undefined
-
-  const domain = Object.values(context).find(v => domains.includes(v?.toString() ?? '')) as string
-
-  if (!domain) return undefined
-
-  return domain
 }
 
 const toActions = (repository: Repository, onAction: Dispatch<string>): Array<AppMenuAction> => {
@@ -68,13 +75,16 @@ const toActions = (repository: Repository, onAction: Dispatch<string>): Array<Ap
 }
 
 function PrimaryActionButton({
-  name, domain, promoted, isAlive,
+  name, domain, promoted, isAlive, app,
 }): JSX.Element {
   const [visible, setVisible] = useState(false)
   const { shown } = useLaunchAppModal()
 
   return (
-    <>
+    <Flex
+      direction="row"
+      gap="xsmall"
+    >
       {!shown && visible && (
         <LaunchAppModal
           setVisible={setVisible}
@@ -82,6 +92,7 @@ function PrimaryActionButton({
           domain={domain}
         />
       )}
+      <Status app={app} />
       <WrapWithIf
         condition={!isAlive}
         wrapper={<Tooltip label="Application not ready" />}
@@ -105,7 +116,7 @@ function PrimaryActionButton({
           </Button>
         </div>
       </WrapWithIf>
-    </>
+    </Flex>
   )
 }
 

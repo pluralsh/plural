@@ -1,5 +1,6 @@
 defmodule GraphQl.AccountQueriesTest do
   use Core.SchemaCase, async: true
+  use Mimic
   import GraphQl.TestHelpers
 
   describe "account" do
@@ -21,6 +22,59 @@ defmodule GraphQl.AccountQueriesTest do
       assert found["availableFeatures"]["vpn"]
       assert found["availableFeatures"]["userManagement"]
       refute found["availableFeatures"]["audit"]
+    end
+
+    test "it can fetch invoices on a subscription" do
+      account = insert(:account, billing_customer_id: "cus_id")
+      user    = admin_user(account)
+      insert(:platform_subscription, account: account, external_id: "sub_id")
+
+      expect(Stripe.Subscription, :retrieve, fn "sub_id", [expand: ["latest_invoice.payment_intent"]] ->
+        {:ok, %Stripe.Subscription{latest_invoice: %Stripe.Invoice{
+          payment_intent: %Stripe.PaymentIntent{client_secret: "secret"}
+        }}}
+      end)
+      expect(Stripe.PaymentMethod, :list, fn %{customer: "cus_id"}, [expand: ["data.customer"]] ->
+        {:ok, %Stripe.List{data: [
+          %Stripe.PaymentMethod{
+            id: "pay_id",
+            customer: %Stripe.Customer{invoice_settings: %{default_payment_method: "pay_id"}},
+            card: %Stripe.Card{
+              id: "some_id",
+              brand: "amex",
+              last4: "0123",
+              exp_month: 1,
+              exp_year: 2020,
+              name: "Someone"
+            }
+          }
+        ]}}
+      end)
+
+      {:ok, %{data: %{"account" => acc}}} = run_query("""
+        query {
+          account {
+            subscription {
+              latestInvoice { paymentIntent { clientSecret } }
+            }
+            paymentMethods(first: 5) {
+              edges {
+                node {
+                  id
+                  isDefault
+                  card { brand last4 }
+                }
+              }
+            }
+          }
+        }
+      """, %{}, %{current_user: user})
+
+      assert acc["subscription"]["latestInvoice"]["paymentIntent"]["clientSecret"] == "secret"
+      [%{"id" => id, "card" => card, "isDefault" => true}] = from_connection(acc["paymentMethods"])
+      assert id == "pay_id"
+      assert card["brand"] == "amex"
+      assert card["last4"] == "0123"
     end
   end
 

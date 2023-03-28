@@ -53,6 +53,22 @@ export function GqlError({ header, error }: any) {
   )
 }
 
+export function ErrorMessage({
+  header,
+  message,
+}: {
+  header: string
+  message: string
+}) {
+  return (
+    <Alert
+      status={AlertStatus.ERROR}
+      header={header}
+      description={message}
+    />
+  )
+}
+
 export function Alert({ status, header, description }: any) {
   const color = StatusToColor[status]
 

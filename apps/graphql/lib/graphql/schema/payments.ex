@@ -129,12 +129,54 @@ defmodule GraphQl.Schema.Payments do
     field :currency,           non_null(:string)
     field :status,             :string
     field :hosted_invoice_url, :string
+    field :payment_intent,     :payment_intent
     field :created_at,  :datetime, resolve: fn %{created: created}, _, _ ->
       {:ok, Timex.from_unix(created)}
     end
     field :lines, list_of(:invoice_item), resolve: fn
       %Stripe.Invoice{lines: %Stripe.List{data: lines}}, _, _ -> {:ok, lines}
     end
+  end
+
+  object :payment_method do
+    field :id,   :string
+    field :card, :card
+    field :type, :string
+
+    field :is_default, :boolean, resolve: fn
+      %Stripe.PaymentMethod{id: id, customer: %Stripe.Customer{invoice_settings: %{default_payment_method: id}}}, _, _ ->
+        {:ok, true}
+      _, _, _ -> {:ok, false}
+    end
+  end
+
+  object :payment_intent do
+    field :id,             :string
+    field :description,    :string
+    field :client_secret,  :string
+    field :amount,         :integer
+    field :capture_method, :string
+    field :currency,       :string
+    field :next_action,    :next_action
+    field :status,         :string
+  end
+
+  object :setup_intent do
+    field :id,                   :string
+    field :client_secret,        :string
+    field :next_action,          :next_action
+    field :payment_method_types, list_of(:string)
+    field :status,               :string
+  end
+
+  object :next_action do
+    field :type, :string
+    field :redirect_to_url, :redirect_to_url
+  end
+
+  object :redirect_to_url do
+    field :url,        :string
+    field :return_url, :string
   end
 
   object :repository_subscription do
@@ -151,10 +193,13 @@ defmodule GraphQl.Schema.Payments do
   end
 
   object :platform_subscription do
-    field :id,           non_null(:id)
-    field :external_id,  :string
-    field :line_items,   list_of(:platform_subscription_line_items)
-    field :plan,         :platform_plan, resolve: dataloader(Payments)
+    field :id,             non_null(:id)
+    field :external_id,    :string
+    field :line_items,     list_of(:platform_subscription_line_items)
+    field :plan,           :platform_plan, resolve: dataloader(Payments)
+    field :latest_invoice, :invoice, resolve: fn
+      sub, _, _ -> Payments.latest_invoice(sub)
+    end
   end
 
   object :platform_subscription_line_items do
@@ -212,6 +257,7 @@ defmodule GraphQl.Schema.Payments do
 
   connection node_type: :invoice
   connection node_type: :card
+  connection node_type: :payment_method
   connection node_type: :repository_subscription
 
   object :payment_queries do
@@ -254,11 +300,32 @@ defmodule GraphQl.Schema.Payments do
       safe_resolve &Payments.create_card/2
     end
 
+    field :setup_intent, :setup_intent do
+      middleware Authenticated
+      arg :address, :address_attributes
+
+      safe_resolve &Payments.setup_intent/2
+    end
+
+    field :default_payment_method, :boolean do
+      middleware Authenticated
+      arg :id, non_null(:string)
+
+      safe_resolve &Payments.default_payment_method/2
+    end
+
     field :delete_card, :account do
       middleware Authenticated
       arg :id, non_null(:id)
 
       safe_resolve &Payments.delete_card/2
+    end
+
+    field :delete_payment_method, :payment_method do
+      middleware Authenticated
+      arg :id, non_null(:id)
+
+      safe_resolve &Payments.delete_payment_method/2
     end
 
     field :link_publisher, :publisher do
@@ -311,7 +378,9 @@ defmodule GraphQl.Schema.Payments do
 
     field :create_platform_subscription, :platform_subscription do
       middleware Authenticated
-      arg :plan_id, non_null(:id)
+      arg :plan_id,         non_null(:id)
+      arg :billing_address, :address_attributes
+      arg :payment_method,  :string
 
       safe_resolve &Payments.create_platform_subscription/2
     end

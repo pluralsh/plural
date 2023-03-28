@@ -15,13 +15,16 @@ type BillingDowngradeModalPropsType = {
   onClose: () => void
 }
 
-function BillingDowngradeModal({ open, onClose }: BillingDowngradeModalPropsType) {
+function BillingDowngradeModal({
+  open,
+  onClose,
+}: BillingDowngradeModalPropsType) {
   const { refetch: refetchSubscription } = useContext(SubscriptionContext)
 
   const [downgradeMutation, { loading }] = useMutation(DOWNGRADE_TO_FREE_PLAN_MUTATION)
 
   const [success, setSuccess] = useState(false)
-  const [error, setError] = useState(false)
+  const [error, setError] = useState<Error | undefined>(undefined)
 
   const handleDowngrade = useCallback(() => {
     downgradeMutation()
@@ -29,16 +32,14 @@ function BillingDowngradeModal({ open, onClose }: BillingDowngradeModalPropsType
         setSuccess(true)
         refetchSubscription()
       })
-      .catch(() => {
-        setError(true)
+      .catch(e => {
+        setError(e)
       })
   }, [downgradeMutation, refetchSubscription])
 
   const renderContent = useCallback(() => (
     <>
-      <Div>
-        Are you certain you want to downgrade to the free plan?
-      </Div>
+      <Div>Are you certain you want to downgrade to the free plan?</Div>
       <Flex
         justify="flex-end"
         marginTop="xxlarge"
@@ -51,16 +52,12 @@ function BillingDowngradeModal({ open, onClose }: BillingDowngradeModalPropsType
         </Button>
       </Flex>
     </>
-  ), [
-    loading,
-    handleDowngrade,
-  ])
+  ),
+  [loading, handleDowngrade])
 
   const renderSuccess = useCallback(() => (
     <>
-      <Div>
-        You've successfully downgraded to the free plan.
-      </Div>
+      <Div>You've successfully downgraded to the free plan.</Div>
       <Flex
         justify="flex-end"
         marginTop="large"
@@ -73,7 +70,8 @@ function BillingDowngradeModal({ open, onClose }: BillingDowngradeModalPropsType
         </Button>
       </Flex>
     </>
-  ), [])
+  ),
+  [])
 
   return (
     <Modal
@@ -82,7 +80,13 @@ function BillingDowngradeModal({ open, onClose }: BillingDowngradeModalPropsType
       header="Downgrade to free"
       minWidth={512 + 128}
     >
-      {error ? <BillingError /> : success ? renderSuccess() : renderContent()}
+      {error ? (
+        <BillingError>{error.message}</BillingError>
+      ) : success ? (
+        renderSuccess()
+      ) : (
+        renderContent()
+      )}
     </Modal>
   )
 }

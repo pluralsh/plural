@@ -268,6 +268,59 @@ defmodule Core.Services.PaymentsTest do
       assert cluster.quantity == 0
       assert cluster.external_id == "cluster_id"
     end
+
+    test "It can autoprovision stripe customers" do
+      account = insert(:account, user_count: 2, cluster_count: 0, root_user: build(:user))
+      user = insert(:user, roles: %{admin: true}, account: account)
+      plan = insert(:platform_plan,
+        external_id: "plan_id",
+        line_items: [
+          %{name: "user", dimension: :user, external_id: "id_user", period: :monthly},
+          %{name: "cluster", dimension: :cluster, external_id: "id_cluster", period: :monthly},
+        ]
+      )
+
+      expect(Stripe.Customer, :create, fn _ -> {:ok, %Stripe.Customer{id: "cus_id"}} end)
+      expect(Stripe.Subscription, :create, fn %{
+        customer: "cus_id",
+        items: [%{plan: "id_user", quantity: 2}, %{plan: "id_cluster", quantity: 0}]
+      } ->
+        {:ok, %{
+          id: "sub_id",
+          items: %{
+            data: [
+              %{id: "user_id", plan: %{id: "id_user"}},
+              %{id: "cluster_id", plan: %{id: "id_cluster"}}
+            ]
+          }
+        }}
+      end)
+
+      {:ok, subscription} = Payments.create_platform_subscription(%{billing_address: %{
+        line1: "blah",
+        line2: "blah",
+        city:  "blah",
+        state: "blah",
+        country: "blah",
+        zip:   "blah",
+      }}, plan, user)
+
+      assert refetch(account).billing_customer_id == "cus_id"
+      assert subscription.plan_id == plan.id
+      assert subscription.account_id == user.account_id
+      assert subscription.external_id == "sub_id"
+
+      %{user: user, cluster: cluster} = Enum.into(subscription.line_items, %{}, & {&1.dimension, &1})
+      assert user.id
+      assert user.dimension == :user
+      assert user.quantity == 2
+      assert user.external_id == "user_id"
+
+      assert cluster.id
+      assert cluster.dimension == :cluster
+      assert cluster.quantity == 0
+      assert cluster.external_id == "cluster_id"
+    end
   end
 
   describe "#create_subscription" do
@@ -658,6 +711,42 @@ defmodule Core.Services.PaymentsTest do
       user = insert(:user, account: account)
 
       {:error, _} = Payments.delete_platform_subscription(user)
+    end
+  end
+
+  describe "#delete_payment_method/2" do
+    test "it can detach a payment method from the customer" do
+      account = insert(:account, billing_customer_id: "cus_id")
+      user = admin_user(account)
+      expect(Stripe.PaymentMethod, :detach, fn %{payment_method: "card"} -> {:ok, %Stripe.PaymentMethod{id: "card"}} end)
+
+      {:ok, _} = Payments.delete_payment_method("card", user)
+    end
+
+    test "non admins cannot delete" do
+      account = insert(:account, billing_customer_id: "cus_id")
+      user    = insert(:user, account: account)
+
+      {:error, _} = Payments.delete_payment_method("card", user)
+    end
+  end
+
+  describe "#default_payment_method/2" do
+    test "it can detach a payment method from the customer" do
+      account = insert(:account, billing_customer_id: "cus_id")
+      user = admin_user(account)
+      expect(Stripe.Customer, :update, fn "cus_id", %{invoice_settings: %{default_payment_method: "card"}} ->
+        {:ok, %Stripe.Customer{id: "cus_id"}}
+      end)
+
+      {:ok, _} = Payments.default_payment_method(user, "card")
+    end
+
+    test "non admins cannot delete" do
+      account = insert(:account, billing_customer_id: "cus_id")
+      user    = insert(:user, account: account)
+
+      {:error, _} = Payments.default_payment_method(user, "card")
     end
   end
 

@@ -52,7 +52,7 @@ function RoadmapIssue({
               flexShrink={0}
               color="text-xlight"
             >
-              {moment(issue.createdAt).fromNow(true)}
+              {moment(issue.closedAt ? issue.closedAt : issue.createdAt).fromNow(true)}
             </P>
           </Flex>
           <P
@@ -82,7 +82,7 @@ function RoadmapIssue({
             fillLevel={2}
             severity={issue.state === 'open' ? 'info' : 'success'}
           >
-            {issue.state === 'open' ? 'In progress' : 'Shipped'}
+            {issue.state === 'open' ? 'Open' : 'Shipped'}
           </Chip>
         )}
         <Button

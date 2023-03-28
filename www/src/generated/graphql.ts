@@ -40,11 +40,20 @@ export type Account = {
   id: Scalars['ID'];
   insertedAt?: Maybe<Scalars['DateTime']>;
   name?: Maybe<Scalars['String']>;
+  paymentMethods?: Maybe<PaymentMethodConnection>;
   rootUser?: Maybe<User>;
   subscription?: Maybe<PlatformSubscription>;
   updatedAt?: Maybe<Scalars['DateTime']>;
   userCount?: Maybe<Scalars['String']>;
   workosConnectionId?: Maybe<Scalars['String']>;
+};
+
+
+export type AccountPaymentMethodsArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
 };
 
 export type AccountAttributes = {
@@ -86,9 +95,9 @@ export type AddressAttributes = {
   city: Scalars['String'];
   country: Scalars['String'];
   line1: Scalars['String'];
-  line2: Scalars['String'];
+  line2?: InputMaybe<Scalars['String']>;
   name?: InputMaybe<Scalars['String']>;
-  state: Scalars['String'];
+  state?: InputMaybe<Scalars['String']>;
   zip: Scalars['String'];
 };
 
@@ -1339,6 +1348,7 @@ export type Invoice = {
   hostedInvoiceUrl?: Maybe<Scalars['String']>;
   lines?: Maybe<Array<Maybe<InvoiceItem>>>;
   number: Scalars['String'];
+  paymentIntent?: Maybe<PaymentIntent>;
   status?: Maybe<Scalars['String']>;
 };
 
@@ -1508,6 +1518,12 @@ export type NetworkConfiguration = {
   __typename?: 'NetworkConfiguration';
   pluralDns?: Maybe<Scalars['Boolean']>;
   subdomain?: Maybe<Scalars['String']>;
+};
+
+export type NextAction = {
+  __typename?: 'NextAction';
+  redirectToUrl?: Maybe<RedirectToUrl>;
+  type?: Maybe<Scalars['String']>;
 };
 
 export type Notification = {
@@ -1768,6 +1784,38 @@ export type PageInfo = {
   startCursor?: Maybe<Scalars['String']>;
 };
 
+export type PaymentIntent = {
+  __typename?: 'PaymentIntent';
+  amount?: Maybe<Scalars['Int']>;
+  captureMethod?: Maybe<Scalars['String']>;
+  clientSecret?: Maybe<Scalars['String']>;
+  currency?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['String']>;
+  nextAction?: Maybe<NextAction>;
+  status?: Maybe<Scalars['String']>;
+};
+
+export type PaymentMethod = {
+  __typename?: 'PaymentMethod';
+  card?: Maybe<Card>;
+  id?: Maybe<Scalars['String']>;
+  isDefault?: Maybe<Scalars['Boolean']>;
+  type?: Maybe<Scalars['String']>;
+};
+
+export type PaymentMethodConnection = {
+  __typename?: 'PaymentMethodConnection';
+  edges?: Maybe<Array<Maybe<PaymentMethodEdge>>>;
+  pageInfo: PageInfo;
+};
+
+export type PaymentMethodEdge = {
+  __typename?: 'PaymentMethodEdge';
+  cursor?: Maybe<Scalars['String']>;
+  node?: Maybe<PaymentMethod>;
+};
+
 export enum PaymentPeriod {
   Monthly = 'MONTHLY',
   Yearly = 'YEARLY'
@@ -1943,6 +1991,7 @@ export type PlatformSubscription = {
   __typename?: 'PlatformSubscription';
   externalId?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
+  latestInvoice?: Maybe<Invoice>;
   lineItems?: Maybe<Array<Maybe<PlatformSubscriptionLineItems>>>;
   plan?: Maybe<PlatformPlan>;
 };
@@ -2228,6 +2277,12 @@ export type RecipeValidationAttributes = {
   message: Scalars['String'];
   regex?: InputMaybe<Scalars['String']>;
   type: ValidationType;
+};
+
+export type RedirectToUrl = {
+  __typename?: 'RedirectToUrl';
+  returnUrl?: Maybe<Scalars['String']>;
+  url?: Maybe<Scalars['String']>;
 };
 
 /** Container for all resources to create an application. */
@@ -2546,6 +2601,7 @@ export type RootMutationType = {
   createUserEvent?: Maybe<Scalars['Boolean']>;
   createWebhook?: Maybe<Webhook>;
   createZoom?: Maybe<ZoomMeeting>;
+  defaultPaymentMethod?: Maybe<Scalars['Boolean']>;
   deleteCard?: Maybe<Account>;
   deleteChartInstallation?: Maybe<ChartInstallation>;
   /** Delete a cluster. */
@@ -2562,6 +2618,7 @@ export type RootMutationType = {
   deleteInvite?: Maybe<Invite>;
   deleteKeyBackup?: Maybe<KeyBackup>;
   deleteMessage?: Maybe<IncidentMessage>;
+  deletePaymentMethod?: Maybe<PaymentMethod>;
   deletePlatformSubscription?: Maybe<Account>;
   deletePublicKey?: Maybe<PublicKey>;
   deleteReaction?: Maybe<IncidentMessage>;
@@ -2603,6 +2660,7 @@ export type RootMutationType = {
   releaseLock?: Maybe<ApplyLock>;
   resetInstallations?: Maybe<Scalars['Int']>;
   restartShell?: Maybe<Scalars['Boolean']>;
+  setupIntent?: Maybe<SetupIntent>;
   setupShell?: Maybe<CloudShell>;
   signup?: Maybe<User>;
   ssoCallback?: Maybe<User>;
@@ -2775,6 +2833,8 @@ export type RootMutationTypeCreatePlanArgs = {
 
 
 export type RootMutationTypeCreatePlatformSubscriptionArgs = {
+  billingAddress?: InputMaybe<AddressAttributes>;
+  paymentMethod?: InputMaybe<Scalars['String']>;
   planId: Scalars['ID'];
 };
 
@@ -2873,6 +2933,11 @@ export type RootMutationTypeCreateZoomArgs = {
 };
 
 
+export type RootMutationTypeDefaultPaymentMethodArgs = {
+  id: Scalars['String'];
+};
+
+
 export type RootMutationTypeDeleteCardArgs = {
   id: Scalars['ID'];
 };
@@ -2945,6 +3010,11 @@ export type RootMutationTypeDeleteKeyBackupArgs = {
 
 
 export type RootMutationTypeDeleteMessageArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type RootMutationTypeDeletePaymentMethodArgs = {
   id: Scalars['ID'];
 };
 
@@ -3133,6 +3203,11 @@ export type RootMutationTypeRealizeResetTokenArgs = {
 export type RootMutationTypeReleaseLockArgs = {
   attributes: LockAttributes;
   repository: Scalars['String'];
+};
+
+
+export type RootMutationTypeSetupIntentArgs = {
+  address?: InputMaybe<AddressAttributes>;
 };
 
 
@@ -4097,6 +4172,15 @@ export type ServiceLevelAttributes = {
   responseTime?: InputMaybe<Scalars['Int']>;
 };
 
+export type SetupIntent = {
+  __typename?: 'SetupIntent';
+  clientSecret?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['String']>;
+  nextAction?: Maybe<NextAction>;
+  paymentMethodTypes?: Maybe<Array<Maybe<Scalars['String']>>>;
+  status?: Maybe<Scalars['String']>;
+};
+
 export type ShellConfiguration = {
   __typename?: 'ShellConfiguration';
   buckets?: Maybe<Array<Maybe<Scalars['String']>>>;
@@ -5041,14 +5125,20 @@ export type SubscriptionFragment = { __typename?: 'RepositorySubscription', id: 
 
 export type InvoiceItemFragment = { __typename?: 'InvoiceItem', amount: number, currency: string, description?: string | null };
 
+export type PaymentIntentFragment = { __typename?: 'PaymentIntent', id?: string | null, description?: string | null, clientSecret?: string | null, amount?: number | null, captureMethod?: string | null, currency?: string | null, status?: string | null, nextAction?: { __typename?: 'NextAction', type?: string | null, redirectToUrl?: { __typename?: 'RedirectToUrl', url?: string | null, returnUrl?: string | null } | null } | null };
+
+export type NextActionFragment = { __typename?: 'NextAction', type?: string | null, redirectToUrl?: { __typename?: 'RedirectToUrl', url?: string | null, returnUrl?: string | null } | null };
+
 export type InvoiceFragment = { __typename?: 'Invoice', number: string, amountDue: number, amountPaid: number, currency: string, status?: string | null, createdAt?: Date | null, hostedInvoiceUrl?: string | null, lines?: Array<{ __typename?: 'InvoiceItem', amount: number, currency: string, description?: string | null } | null> | null };
 
-export type CardFragment = { __typename?: 'Card', id: string, last4: string, expMonth: number, expYear: number, name?: string | null, brand: string };
+export type CardFragment = { __typename?: 'Card', last4: string, expMonth: number, expYear: number, name?: string | null, brand: string };
+
+export type SubscriptionAccountFragment = { __typename?: 'Account', id: string, billingCustomerId?: string | null, grandfatheredUntil?: Date | null, delinquentAt?: Date | null, userCount?: string | null, clusterCount?: string | null, availableFeatures?: { __typename?: 'PlanFeatures', userManagement?: boolean | null, audit?: boolean | null } | null, subscription?: { __typename?: 'PlatformSubscription', id: string, plan?: { __typename?: 'PlatformPlan', name: string, id: string, period: PaymentPeriod, lineItems?: Array<{ __typename?: 'PlatformPlanItem', dimension: LineItemDimension, cost: number } | null> | null } | null } | null, billingAddress?: { __typename?: 'Address', name?: string | null, line1?: string | null, line2?: string | null, zip?: string | null, state?: string | null, city?: string | null, country?: string | null } | null, paymentMethods?: { __typename?: 'PaymentMethodConnection', edges?: Array<{ __typename?: 'PaymentMethodEdge', node?: { __typename?: 'PaymentMethod', id?: string | null, type?: string | null, isDefault?: boolean | null, card?: { __typename?: 'Card', last4: string, expMonth: number, expYear: number, name?: string | null, brand: string } | null } | null } | null> | null } | null };
 
 export type SubscriptionQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type SubscriptionQuery = { __typename?: 'RootQueryType', account?: { __typename?: 'Account', billingCustomerId?: string | null, grandfatheredUntil?: Date | null, delinquentAt?: Date | null, userCount?: string | null, clusterCount?: string | null, availableFeatures?: { __typename?: 'PlanFeatures', userManagement?: boolean | null, audit?: boolean | null } | null, subscription?: { __typename?: 'PlatformSubscription', id: string, plan?: { __typename?: 'PlatformPlan', id: string, period: PaymentPeriod, lineItems?: Array<{ __typename?: 'PlatformPlanItem', dimension: LineItemDimension, cost: number } | null> | null } | null } | null, billingAddress?: { __typename?: 'Address', name?: string | null, line1?: string | null, line2?: string | null, zip?: string | null, state?: string | null, city?: string | null, country?: string | null } | null } | null };
+export type SubscriptionQuery = { __typename?: 'RootQueryType', account?: { __typename?: 'Account', id: string, billingCustomerId?: string | null, grandfatheredUntil?: Date | null, delinquentAt?: Date | null, userCount?: string | null, clusterCount?: string | null, availableFeatures?: { __typename?: 'PlanFeatures', userManagement?: boolean | null, audit?: boolean | null } | null, subscription?: { __typename?: 'PlatformSubscription', id: string, plan?: { __typename?: 'PlatformPlan', name: string, id: string, period: PaymentPeriod, lineItems?: Array<{ __typename?: 'PlatformPlanItem', dimension: LineItemDimension, cost: number } | null> | null } | null } | null, billingAddress?: { __typename?: 'Address', name?: string | null, line1?: string | null, line2?: string | null, zip?: string | null, state?: string | null, city?: string | null, country?: string | null } | null, paymentMethods?: { __typename?: 'PaymentMethodConnection', edges?: Array<{ __typename?: 'PaymentMethodEdge', node?: { __typename?: 'PaymentMethod', id?: string | null, type?: string | null, isDefault?: boolean | null, card?: { __typename?: 'Card', last4: string, expMonth: number, expYear: number, name?: string | null, brand: string } | null } | null } | null> | null } | null } | null };
 
 export type UpdateAccountBillingMutationVariables = Exact<{
   attributes: AccountAttributes;
@@ -5057,12 +5147,14 @@ export type UpdateAccountBillingMutationVariables = Exact<{
 
 export type UpdateAccountBillingMutation = { __typename?: 'RootMutationType', updateAccount?: { __typename?: 'Account', id: string } | null };
 
-export type UpgradeToProfessionalPlanMutationVariables = Exact<{
+export type CreatePlatformSubscriptionMutationVariables = Exact<{
   planId: Scalars['ID'];
+  billingAddress?: InputMaybe<AddressAttributes>;
+  paymentMethod?: InputMaybe<Scalars['String']>;
 }>;
 
 
-export type UpgradeToProfessionalPlanMutation = { __typename?: 'RootMutationType', createPlatformSubscription?: { __typename?: 'PlatformSubscription', id: string } | null };
+export type CreatePlatformSubscriptionMutation = { __typename?: 'RootMutationType', createPlatformSubscription?: { __typename?: 'PlatformSubscription', id: string, latestInvoice?: { __typename?: 'Invoice', number: string, amountDue: number, amountPaid: number, currency: string, status?: string | null, createdAt?: Date | null, hostedInvoiceUrl?: string | null, paymentIntent?: { __typename?: 'PaymentIntent', id?: string | null, description?: string | null, clientSecret?: string | null, amount?: number | null, captureMethod?: string | null, currency?: string | null, status?: string | null, nextAction?: { __typename?: 'NextAction', type?: string | null, redirectToUrl?: { __typename?: 'RedirectToUrl', url?: string | null, returnUrl?: string | null } | null } | null } | null, lines?: Array<{ __typename?: 'InvoiceItem', amount: number, currency: string, description?: string | null } | null> | null } | null } | null };
 
 export type DowngradeToFreePlanMutationMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -5072,22 +5164,37 @@ export type DowngradeToFreePlanMutationMutation = { __typename?: 'RootMutationTy
 export type CardsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type CardsQuery = { __typename?: 'RootQueryType', me?: { __typename?: 'User', id: string, cards?: { __typename?: 'CardConnection', edges?: Array<{ __typename?: 'CardEdge', node?: { __typename?: 'Card', id: string, last4: string, expMonth: number, expYear: number, name?: string | null, brand: string } | null } | null> | null } | null } | null };
+export type CardsQuery = { __typename?: 'RootQueryType', me?: { __typename?: 'User', id: string, cards?: { __typename?: 'CardConnection', edges?: Array<{ __typename?: 'CardEdge', node?: { __typename?: 'Card', last4: string, expMonth: number, expYear: number, name?: string | null, brand: string } | null } | null> | null } | null } | null };
 
-export type CreateCardMutationVariables = Exact<{
-  source: Scalars['String'];
-  address?: InputMaybe<AddressAttributes>;
+export type SetupIntentFragment = { __typename?: 'SetupIntent', id?: string | null, status?: string | null, clientSecret?: string | null, paymentMethodTypes?: Array<string | null> | null, nextAction?: { __typename?: 'NextAction', type?: string | null, redirectToUrl?: { __typename?: 'RedirectToUrl', url?: string | null, returnUrl?: string | null } | null } | null };
+
+export type SetupIntentMutationVariables = Exact<{
+  address: AddressAttributes;
 }>;
 
 
-export type CreateCardMutation = { __typename?: 'RootMutationType', createCard?: { __typename?: 'Account', id: string } | null };
+export type SetupIntentMutation = { __typename?: 'RootMutationType', setupIntent?: { __typename?: 'SetupIntent', id?: string | null, status?: string | null, clientSecret?: string | null, paymentMethodTypes?: Array<string | null> | null, nextAction?: { __typename?: 'NextAction', type?: string | null, redirectToUrl?: { __typename?: 'RedirectToUrl', url?: string | null, returnUrl?: string | null } | null } | null } | null };
 
-export type DeleteCardMutationVariables = Exact<{
+export type PaymentMethodFragment = { __typename?: 'PaymentMethod', id?: string | null, type?: string | null, isDefault?: boolean | null, card?: { __typename?: 'Card', last4: string, expMonth: number, expYear: number, name?: string | null, brand: string } | null };
+
+export type DefaultPaymentMethodMutationVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type DefaultPaymentMethodMutation = { __typename?: 'RootMutationType', defaultPaymentMethod?: boolean | null };
+
+export type DeletePaymentMethodMutationVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
 
-export type DeleteCardMutation = { __typename?: 'RootMutationType', deleteCard?: { __typename?: 'Account', id: string } | null };
+export type DeletePaymentMethodMutation = { __typename?: 'RootMutationType', deletePaymentMethod?: { __typename?: 'PaymentMethod', id?: string | null, type?: string | null, isDefault?: boolean | null, card?: { __typename?: 'Card', last4: string, expMonth: number, expYear: number, name?: string | null, brand: string } | null } | null };
+
+export type InvoicesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type InvoicesQuery = { __typename?: 'RootQueryType', invoices?: { __typename?: 'InvoiceConnection', edges?: Array<{ __typename?: 'InvoiceEdge', node?: { __typename?: 'Invoice', number: string, amountDue: number, amountPaid: number, currency: string, status?: string | null, createdAt?: Date | null, hostedInvoiceUrl?: string | null, lines?: Array<{ __typename?: 'InvoiceItem', amount: number, currency: string, description?: string | null } | null> | null } | null } | null> | null } | null };
 
 export type RecipeFragment = { __typename?: 'Recipe', id: string, name: string, description?: string | null, restricted?: boolean | null, provider?: Provider | null, tests?: Array<{ __typename?: 'RecipeTest', type: TestType, name: string, message?: string | null, args?: Array<{ __typename?: 'TestArgument', name: string, repo: string, key: string } | null> | null } | null> | null, repository?: { __typename?: 'Repository', id: string, name: string } | null, oidcSettings?: { __typename?: 'OidcSettings', uriFormat?: string | null, uriFormats?: Array<string | null> | null, authMethod: OidcAuthMethod, domainKey?: string | null, subdomain?: boolean | null } | null, recipeSections?: Array<{ __typename?: 'RecipeSection', index?: number | null, repository?: { __typename?: 'Repository', id: string, name: string, notes?: string | null, description?: string | null, documentation?: string | null, icon?: string | null, darkIcon?: string | null, private?: boolean | null, trending?: boolean | null, verified?: boolean | null, category?: Category | null, installation?: { __typename?: 'Installation', id: string, context?: Map<string, unknown> | null, license?: string | null, licenseKey?: string | null, acmeKeyId?: string | null, acmeSecret?: string | null, autoUpgrade?: boolean | null, trackTag: string, repository?: { __typename?: 'Repository', id: string, name: string, notes?: string | null, description?: string | null, documentation?: string | null, icon?: string | null, darkIcon?: string | null, private?: boolean | null, trending?: boolean | null, verified?: boolean | null, category?: Category | null, oauthSettings?: { __typename?: 'OauthSettings', uriFormat: string, authMethod: OidcAuthMethod } | null, publisher?: { __typename?: 'Publisher', id?: string | null, name: string, phone?: string | null, avatar?: string | null, description?: string | null, backgroundColor?: string | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoing?: boolean | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, address?: { __typename?: 'Address', line1?: string | null, line2?: string | null, city?: string | null, country?: string | null, state?: string | null, zip?: string | null } | null } | null, recipes?: Array<{ __typename?: 'Recipe', name: string, provider?: Provider | null, description?: string | null } | null> | null } | null, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoing?: boolean | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, oidcProvider?: { __typename?: 'OidcProvider', id: string, clientId: string, authMethod: OidcAuthMethod, clientSecret: string, redirectUris?: Array<string | null> | null, bindings?: Array<{ __typename?: 'OidcProviderBinding', id: string, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoing?: boolean | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, group?: { __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null } | null> | null, configuration?: { __typename?: 'OuathConfiguration', issuer?: string | null, authorizationEndpoint?: string | null, tokenEndpoint?: string | null, jwksUri?: string | null, userinfoEndpoint?: string | null } | null } | null } | null, oauthSettings?: { __typename?: 'OauthSettings', uriFormat: string, authMethod: OidcAuthMethod } | null, publisher?: { __typename?: 'Publisher', id?: string | null, name: string, phone?: string | null, avatar?: string | null, description?: string | null, backgroundColor?: string | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoing?: boolean | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, address?: { __typename?: 'Address', line1?: string | null, line2?: string | null, city?: string | null, country?: string | null, state?: string | null, zip?: string | null } | null } | null, recipes?: Array<{ __typename?: 'Recipe', name: string, provider?: Provider | null, description?: string | null } | null> | null } | null, recipeItems?: Array<{ __typename?: 'RecipeItem', id?: string | null, chart?: { __typename?: 'Chart', id?: string | null, name: string, description?: string | null, latestVersion?: string | null, insertedAt?: Date | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', name?: string | null, repo?: string | null, type?: DependencyType | null, version?: string | null, optional?: boolean | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null } | null, terraform?: { __typename?: 'Terraform', id?: string | null, name?: string | null, readme?: string | null, package?: string | null, description?: string | null, latestVersion?: string | null, valuesTemplate?: string | null, insertedAt?: Date | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', name?: string | null, repo?: string | null, type?: DependencyType | null, version?: string | null, optional?: boolean | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null } | null, configuration?: Array<{ __typename?: 'RecipeConfiguration', name?: string | null, type?: Datatype | null, default?: string | null, documentation?: string | null, optional?: boolean | null, placeholder?: string | null, functionName?: string | null, condition?: { __typename?: 'RecipeCondition', field: string, operation: Operation, value?: string | null } | null, validation?: { __typename?: 'RecipeValidation', type: ValidationType, regex?: string | null, message: string } | null } | null> | null } | null> | null, configuration?: Array<{ __typename?: 'RecipeConfiguration', name?: string | null, type?: Datatype | null, default?: string | null, documentation?: string | null, optional?: boolean | null, placeholder?: string | null, functionName?: string | null, condition?: { __typename?: 'RecipeCondition', field: string, operation: Operation, value?: string | null } | null, validation?: { __typename?: 'RecipeValidation', type: ValidationType, regex?: string | null, message: string } | null } | null> | null } | null> | null };
 
@@ -6250,6 +6357,29 @@ export const SubscriptionFragmentDoc = gql`
 }
     ${PlanFragmentDoc}
 ${LimitFragmentDoc}`;
+export const NextActionFragmentDoc = gql`
+    fragment NextAction on NextAction {
+  type
+  redirectToUrl {
+    url
+    returnUrl
+  }
+}
+    `;
+export const PaymentIntentFragmentDoc = gql`
+    fragment PaymentIntent on PaymentIntent {
+  id
+  description
+  clientSecret
+  amount
+  captureMethod
+  currency
+  nextAction {
+    ...NextAction
+  }
+  status
+}
+    ${NextActionFragmentDoc}`;
 export const InvoiceItemFragmentDoc = gql`
     fragment InvoiceItem on InvoiceItem {
   amount
@@ -6273,7 +6403,6 @@ export const InvoiceFragmentDoc = gql`
     ${InvoiceItemFragmentDoc}`;
 export const CardFragmentDoc = gql`
     fragment Card on Card {
-  id
   last4
   expMonth
   expYear
@@ -6281,6 +6410,69 @@ export const CardFragmentDoc = gql`
   brand
 }
     `;
+export const PaymentMethodFragmentDoc = gql`
+    fragment PaymentMethod on PaymentMethod {
+  id
+  type
+  isDefault
+  card {
+    ...Card
+  }
+}
+    ${CardFragmentDoc}`;
+export const SubscriptionAccountFragmentDoc = gql`
+    fragment SubscriptionAccount on Account {
+  id
+  billingCustomerId
+  grandfatheredUntil
+  delinquentAt
+  userCount
+  clusterCount
+  availableFeatures {
+    userManagement
+    audit
+  }
+  subscription {
+    id
+    plan {
+      name
+      id
+      period
+      lineItems {
+        dimension
+        cost
+      }
+    }
+  }
+  billingAddress {
+    name
+    line1
+    line2
+    zip
+    state
+    city
+    country
+  }
+  paymentMethods(first: 20) {
+    edges {
+      node {
+        ...PaymentMethod
+      }
+    }
+  }
+}
+    ${PaymentMethodFragmentDoc}`;
+export const SetupIntentFragmentDoc = gql`
+    fragment SetupIntent on SetupIntent {
+  id
+  status
+  clientSecret
+  nextAction {
+    ...NextAction
+  }
+  paymentMethodTypes
+}
+    ${NextActionFragmentDoc}`;
 export const OidcProviderFragmentDoc = gql`
     fragment OIDCProvider on OidcProvider {
   id
@@ -7707,38 +7899,10 @@ export type InviteQueryResult = Apollo.QueryResult<InviteQuery, InviteQueryVaria
 export const SubscriptionDocument = gql`
     query Subscription {
   account {
-    billingCustomerId
-    grandfatheredUntil
-    delinquentAt
-    userCount
-    clusterCount
-    availableFeatures {
-      userManagement
-      audit
-    }
-    subscription {
-      id
-      plan {
-        id
-        period
-        lineItems {
-          dimension
-          cost
-        }
-      }
-    }
-    billingAddress {
-      name
-      line1
-      line2
-      zip
-      state
-      city
-      country
-    }
+    ...SubscriptionAccount
   }
 }
-    `;
+    ${SubscriptionAccountFragmentDoc}`;
 
 /**
  * __useSubscriptionQuery__
@@ -7799,39 +7963,52 @@ export function useUpdateAccountBillingMutation(baseOptions?: Apollo.MutationHoo
 export type UpdateAccountBillingMutationHookResult = ReturnType<typeof useUpdateAccountBillingMutation>;
 export type UpdateAccountBillingMutationResult = Apollo.MutationResult<UpdateAccountBillingMutation>;
 export type UpdateAccountBillingMutationOptions = Apollo.BaseMutationOptions<UpdateAccountBillingMutation, UpdateAccountBillingMutationVariables>;
-export const UpgradeToProfessionalPlanDocument = gql`
-    mutation UpgradeToProfessionalPlan($planId: ID!) {
-  createPlatformSubscription(planId: $planId) {
+export const CreatePlatformSubscriptionDocument = gql`
+    mutation CreatePlatformSubscription($planId: ID!, $billingAddress: AddressAttributes, $paymentMethod: String) {
+  createPlatformSubscription(
+    planId: $planId
+    billingAddress: $billingAddress
+    paymentMethod: $paymentMethod
+  ) {
     id
+    latestInvoice {
+      ...Invoice
+      paymentIntent {
+        ...PaymentIntent
+      }
+    }
   }
 }
-    `;
-export type UpgradeToProfessionalPlanMutationFn = Apollo.MutationFunction<UpgradeToProfessionalPlanMutation, UpgradeToProfessionalPlanMutationVariables>;
+    ${InvoiceFragmentDoc}
+${PaymentIntentFragmentDoc}`;
+export type CreatePlatformSubscriptionMutationFn = Apollo.MutationFunction<CreatePlatformSubscriptionMutation, CreatePlatformSubscriptionMutationVariables>;
 
 /**
- * __useUpgradeToProfessionalPlanMutation__
+ * __useCreatePlatformSubscriptionMutation__
  *
- * To run a mutation, you first call `useUpgradeToProfessionalPlanMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpgradeToProfessionalPlanMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useCreatePlatformSubscriptionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreatePlatformSubscriptionMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [upgradeToProfessionalPlanMutation, { data, loading, error }] = useUpgradeToProfessionalPlanMutation({
+ * const [createPlatformSubscriptionMutation, { data, loading, error }] = useCreatePlatformSubscriptionMutation({
  *   variables: {
  *      planId: // value for 'planId'
+ *      billingAddress: // value for 'billingAddress'
+ *      paymentMethod: // value for 'paymentMethod'
  *   },
  * });
  */
-export function useUpgradeToProfessionalPlanMutation(baseOptions?: Apollo.MutationHookOptions<UpgradeToProfessionalPlanMutation, UpgradeToProfessionalPlanMutationVariables>) {
+export function useCreatePlatformSubscriptionMutation(baseOptions?: Apollo.MutationHookOptions<CreatePlatformSubscriptionMutation, CreatePlatformSubscriptionMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpgradeToProfessionalPlanMutation, UpgradeToProfessionalPlanMutationVariables>(UpgradeToProfessionalPlanDocument, options);
+        return Apollo.useMutation<CreatePlatformSubscriptionMutation, CreatePlatformSubscriptionMutationVariables>(CreatePlatformSubscriptionDocument, options);
       }
-export type UpgradeToProfessionalPlanMutationHookResult = ReturnType<typeof useUpgradeToProfessionalPlanMutation>;
-export type UpgradeToProfessionalPlanMutationResult = Apollo.MutationResult<UpgradeToProfessionalPlanMutation>;
-export type UpgradeToProfessionalPlanMutationOptions = Apollo.BaseMutationOptions<UpgradeToProfessionalPlanMutation, UpgradeToProfessionalPlanMutationVariables>;
+export type CreatePlatformSubscriptionMutationHookResult = ReturnType<typeof useCreatePlatformSubscriptionMutation>;
+export type CreatePlatformSubscriptionMutationResult = Apollo.MutationResult<CreatePlatformSubscriptionMutation>;
+export type CreatePlatformSubscriptionMutationOptions = Apollo.BaseMutationOptions<CreatePlatformSubscriptionMutation, CreatePlatformSubscriptionMutationVariables>;
 export const DowngradeToFreePlanMutationDocument = gql`
     mutation DowngradeToFreePlanMutation {
   deletePlatformSubscription {
@@ -7905,73 +8082,141 @@ export function useCardsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Card
 export type CardsQueryHookResult = ReturnType<typeof useCardsQuery>;
 export type CardsLazyQueryHookResult = ReturnType<typeof useCardsLazyQuery>;
 export type CardsQueryResult = Apollo.QueryResult<CardsQuery, CardsQueryVariables>;
-export const CreateCardDocument = gql`
-    mutation CreateCard($source: String!, $address: AddressAttributes) {
-  createCard(source: $source, address: $address) {
-    id
+export const SetupIntentDocument = gql`
+    mutation SetupIntent($address: AddressAttributes!) {
+  setupIntent(address: $address) {
+    ...SetupIntent
   }
 }
-    `;
-export type CreateCardMutationFn = Apollo.MutationFunction<CreateCardMutation, CreateCardMutationVariables>;
+    ${SetupIntentFragmentDoc}`;
+export type SetupIntentMutationFn = Apollo.MutationFunction<SetupIntentMutation, SetupIntentMutationVariables>;
 
 /**
- * __useCreateCardMutation__
+ * __useSetupIntentMutation__
  *
- * To run a mutation, you first call `useCreateCardMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateCardMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useSetupIntentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSetupIntentMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [createCardMutation, { data, loading, error }] = useCreateCardMutation({
+ * const [setupIntentMutation, { data, loading, error }] = useSetupIntentMutation({
  *   variables: {
- *      source: // value for 'source'
  *      address: // value for 'address'
  *   },
  * });
  */
-export function useCreateCardMutation(baseOptions?: Apollo.MutationHookOptions<CreateCardMutation, CreateCardMutationVariables>) {
+export function useSetupIntentMutation(baseOptions?: Apollo.MutationHookOptions<SetupIntentMutation, SetupIntentMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateCardMutation, CreateCardMutationVariables>(CreateCardDocument, options);
+        return Apollo.useMutation<SetupIntentMutation, SetupIntentMutationVariables>(SetupIntentDocument, options);
       }
-export type CreateCardMutationHookResult = ReturnType<typeof useCreateCardMutation>;
-export type CreateCardMutationResult = Apollo.MutationResult<CreateCardMutation>;
-export type CreateCardMutationOptions = Apollo.BaseMutationOptions<CreateCardMutation, CreateCardMutationVariables>;
-export const DeleteCardDocument = gql`
-    mutation DeleteCard($id: ID!) {
-  deleteCard(id: $id) {
-    id
-  }
+export type SetupIntentMutationHookResult = ReturnType<typeof useSetupIntentMutation>;
+export type SetupIntentMutationResult = Apollo.MutationResult<SetupIntentMutation>;
+export type SetupIntentMutationOptions = Apollo.BaseMutationOptions<SetupIntentMutation, SetupIntentMutationVariables>;
+export const DefaultPaymentMethodDocument = gql`
+    mutation DefaultPaymentMethod($id: String!) {
+  defaultPaymentMethod(id: $id)
 }
     `;
-export type DeleteCardMutationFn = Apollo.MutationFunction<DeleteCardMutation, DeleteCardMutationVariables>;
+export type DefaultPaymentMethodMutationFn = Apollo.MutationFunction<DefaultPaymentMethodMutation, DefaultPaymentMethodMutationVariables>;
 
 /**
- * __useDeleteCardMutation__
+ * __useDefaultPaymentMethodMutation__
  *
- * To run a mutation, you first call `useDeleteCardMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useDeleteCardMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useDefaultPaymentMethodMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDefaultPaymentMethodMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [deleteCardMutation, { data, loading, error }] = useDeleteCardMutation({
+ * const [defaultPaymentMethodMutation, { data, loading, error }] = useDefaultPaymentMethodMutation({
  *   variables: {
  *      id: // value for 'id'
  *   },
  * });
  */
-export function useDeleteCardMutation(baseOptions?: Apollo.MutationHookOptions<DeleteCardMutation, DeleteCardMutationVariables>) {
+export function useDefaultPaymentMethodMutation(baseOptions?: Apollo.MutationHookOptions<DefaultPaymentMethodMutation, DefaultPaymentMethodMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<DeleteCardMutation, DeleteCardMutationVariables>(DeleteCardDocument, options);
+        return Apollo.useMutation<DefaultPaymentMethodMutation, DefaultPaymentMethodMutationVariables>(DefaultPaymentMethodDocument, options);
       }
-export type DeleteCardMutationHookResult = ReturnType<typeof useDeleteCardMutation>;
-export type DeleteCardMutationResult = Apollo.MutationResult<DeleteCardMutation>;
-export type DeleteCardMutationOptions = Apollo.BaseMutationOptions<DeleteCardMutation, DeleteCardMutationVariables>;
+export type DefaultPaymentMethodMutationHookResult = ReturnType<typeof useDefaultPaymentMethodMutation>;
+export type DefaultPaymentMethodMutationResult = Apollo.MutationResult<DefaultPaymentMethodMutation>;
+export type DefaultPaymentMethodMutationOptions = Apollo.BaseMutationOptions<DefaultPaymentMethodMutation, DefaultPaymentMethodMutationVariables>;
+export const DeletePaymentMethodDocument = gql`
+    mutation DeletePaymentMethod($id: ID!) {
+  deletePaymentMethod(id: $id) {
+    ...PaymentMethod
+  }
+}
+    ${PaymentMethodFragmentDoc}`;
+export type DeletePaymentMethodMutationFn = Apollo.MutationFunction<DeletePaymentMethodMutation, DeletePaymentMethodMutationVariables>;
+
+/**
+ * __useDeletePaymentMethodMutation__
+ *
+ * To run a mutation, you first call `useDeletePaymentMethodMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeletePaymentMethodMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deletePaymentMethodMutation, { data, loading, error }] = useDeletePaymentMethodMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeletePaymentMethodMutation(baseOptions?: Apollo.MutationHookOptions<DeletePaymentMethodMutation, DeletePaymentMethodMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeletePaymentMethodMutation, DeletePaymentMethodMutationVariables>(DeletePaymentMethodDocument, options);
+      }
+export type DeletePaymentMethodMutationHookResult = ReturnType<typeof useDeletePaymentMethodMutation>;
+export type DeletePaymentMethodMutationResult = Apollo.MutationResult<DeletePaymentMethodMutation>;
+export type DeletePaymentMethodMutationOptions = Apollo.BaseMutationOptions<DeletePaymentMethodMutation, DeletePaymentMethodMutationVariables>;
+export const InvoicesDocument = gql`
+    query Invoices {
+  invoices(first: 500) {
+    edges {
+      node {
+        ...Invoice
+      }
+    }
+  }
+}
+    ${InvoiceFragmentDoc}`;
+
+/**
+ * __useInvoicesQuery__
+ *
+ * To run a query within a React component, call `useInvoicesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useInvoicesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useInvoicesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useInvoicesQuery(baseOptions?: Apollo.QueryHookOptions<InvoicesQuery, InvoicesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<InvoicesQuery, InvoicesQueryVariables>(InvoicesDocument, options);
+      }
+export function useInvoicesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<InvoicesQuery, InvoicesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<InvoicesQuery, InvoicesQueryVariables>(InvoicesDocument, options);
+        }
+export type InvoicesQueryHookResult = ReturnType<typeof useInvoicesQuery>;
+export type InvoicesLazyQueryHookResult = ReturnType<typeof useInvoicesLazyQuery>;
+export type InvoicesQueryResult = Apollo.QueryResult<InvoicesQuery, InvoicesQueryVariables>;
 export const GetRecipeDocument = gql`
     query GetRecipe($repo: String, $name: String) {
   recipe(repo: $repo, name: $name) {
@@ -9866,3 +10111,184 @@ export function useUpdateVersionMutation(baseOptions?: Apollo.MutationHookOption
 export type UpdateVersionMutationHookResult = ReturnType<typeof useUpdateVersionMutation>;
 export type UpdateVersionMutationResult = Apollo.MutationResult<UpdateVersionMutation>;
 export type UpdateVersionMutationOptions = Apollo.BaseMutationOptions<UpdateVersionMutation, UpdateVersionMutationVariables>;
+export const namedOperations = {
+  Query: {
+    ListArtifacts: 'ListArtifacts',
+    GetCharts: 'GetCharts',
+    GetVersions: 'GetVersions',
+    GetChartInstallations: 'GetChartInstallations',
+    GetPackageInstallations: 'GetPackageInstallations',
+    GetDnsRecords: 'GetDnsRecords',
+    GroupMembers: 'GroupMembers',
+    Groups: 'Groups',
+    GetInstallation: 'GetInstallation',
+    GetInstallationById: 'GetInstallationById',
+    GetInstallations: 'GetInstallations',
+    Invite: 'Invite',
+    Subscription: 'Subscription',
+    Cards: 'Cards',
+    Invoices: 'Invoices',
+    GetRecipe: 'GetRecipe',
+    ListRecipes: 'ListRecipes',
+    GetStack: 'GetStack',
+    ListStacks: 'ListStacks',
+    Repository: 'Repository',
+    ListRepositories: 'ListRepositories',
+    Scaffolds: 'Scaffolds',
+    GetTfProviders: 'GetTfProviders',
+    GetTfProviderScaffold: 'GetTfProviderScaffold',
+    GetShell: 'GetShell',
+    GetTerraform: 'GetTerraform',
+    GetTerraformInstallations: 'GetTerraformInstallations',
+    Me: 'Me',
+    GetLoginMethod: 'GetLoginMethod',
+    ListTokens: 'ListTokens',
+    ListKeys: 'ListKeys',
+    GetEabCredential: 'GetEabCredential',
+    LoginMethod: 'LoginMethod',
+    OauthUrls: 'OauthUrls',
+    ResetToken: 'ResetToken'
+  },
+  Mutation: {
+    UpdateAccount: 'UpdateAccount',
+    CreateArtifact: 'CreateArtifact',
+    CreateCrd: 'CreateCrd',
+    UninstallChart: 'UninstallChart',
+    CreateDnsRecord: 'CreateDnsRecord',
+    DeleteDnsRecord: 'DeleteDnsRecord',
+    CreateDomain: 'CreateDomain',
+    CreateGroupMember: 'CreateGroupMember',
+    DeleteGroupMember: 'DeleteGroupMember',
+    CreateGroup: 'CreateGroup',
+    UpdateGroup: 'UpdateGroup',
+    DeleteGroup: 'DeleteGroup',
+    UpsertOidcProvider: 'UpsertOidcProvider',
+    SignupInvite: 'SignupInvite',
+    RealizeInvite: 'RealizeInvite',
+    UpdateAccountBilling: 'UpdateAccountBilling',
+    CreatePlatformSubscription: 'CreatePlatformSubscription',
+    DowngradeToFreePlanMutation: 'DowngradeToFreePlanMutation',
+    SetupIntent: 'SetupIntent',
+    DefaultPaymentMethod: 'DefaultPaymentMethod',
+    DeletePaymentMethod: 'DeletePaymentMethod',
+    CreateRecipe: 'CreateRecipe',
+    InstallRecipe: 'InstallRecipe',
+    CreateStack: 'CreateStack',
+    CreateResourceDefinition: 'CreateResourceDefinition',
+    CreateIntegration: 'CreateIntegration',
+    UpdateRepository: 'UpdateRepository',
+    CreateRepository: 'CreateRepository',
+    AcquireLock: 'AcquireLock',
+    ReleaseLock: 'ReleaseLock',
+    UnlockRepository: 'UnlockRepository',
+    DeleteRepository: 'DeleteRepository',
+    DeleteShell: 'DeleteShell',
+    UploadTerraform: 'UploadTerraform',
+    UninstallTerraform: 'UninstallTerraform',
+    CreateTest: 'CreateTest',
+    UpdateTest: 'UpdateTest',
+    UpdateStep: 'UpdateStep',
+    PublishLogs: 'PublishLogs',
+    DevLogin: 'DevLogin',
+    Login: 'Login',
+    ImpersonateServiceAccount: 'ImpersonateServiceAccount',
+    CreateAccessToken: 'CreateAccessToken',
+    CreateKey: 'CreateKey',
+    DeleteEabCredential: 'DeleteEabCredential',
+    CreateEvent: 'CreateEvent',
+    Signup: 'Signup',
+    PasswordlessLogin: 'PasswordlessLogin',
+    PollLoginToken: 'PollLoginToken',
+    AcceptLogin: 'AcceptLogin',
+    CreateResetToken: 'CreateResetToken',
+    RealizeResetToken: 'RealizeResetToken',
+    UpdateVersion: 'UpdateVersion'
+  },
+  Fragment: {
+    Audit: 'Audit',
+    PolicyBinding: 'PolicyBinding',
+    DnsDomain: 'DnsDomain',
+    Invite: 'Invite',
+    OidcLogin: 'OidcLogin',
+    Artifact: 'Artifact',
+    Chart: 'Chart',
+    Crd: 'Crd',
+    ChartInstallation: 'ChartInstallation',
+    ScanViolation: 'ScanViolation',
+    ScanError: 'ScanError',
+    PackageScan: 'PackageScan',
+    DnsRecord: 'DnsRecord',
+    DockerRepo: 'DockerRepo',
+    DockerRepository: 'DockerRepository',
+    DockerImage: 'DockerImage',
+    Vulnerability: 'Vulnerability',
+    Postmortem: 'Postmortem',
+    Follower: 'Follower',
+    SlimSubscription: 'SlimSubscription',
+    ClusterInformation: 'ClusterInformation',
+    Incident: 'Incident',
+    IncidentHistory: 'IncidentHistory',
+    File: 'File',
+    IncidentMessage: 'IncidentMessage',
+    Notification: 'Notification',
+    Installation: 'Installation',
+    IntegrationWebhook: 'IntegrationWebhook',
+    WebhookLog: 'WebhookLog',
+    OauthIntegration: 'OauthIntegration',
+    ZoomMeeting: 'ZoomMeeting',
+    Metric: 'Metric',
+    PageInfo: 'PageInfo',
+    OIDCProvider: 'OIDCProvider',
+    OAuthInfo: 'OAuthInfo',
+    Limit: 'Limit',
+    LineItem: 'LineItem',
+    ServiceLevel: 'ServiceLevel',
+    Plan: 'Plan',
+    Subscription: 'Subscription',
+    InvoiceItem: 'InvoiceItem',
+    PaymentIntent: 'PaymentIntent',
+    NextAction: 'NextAction',
+    Invoice: 'Invoice',
+    Card: 'Card',
+    SubscriptionAccount: 'SubscriptionAccount',
+    SetupIntent: 'SetupIntent',
+    PaymentMethod: 'PaymentMethod',
+    Recipe: 'Recipe',
+    RecipeItem: 'RecipeItem',
+    RecipeSection: 'RecipeSection',
+    RecipeConfiguration: 'RecipeConfiguration',
+    Stack: 'Stack',
+    ApplyLock: 'ApplyLock',
+    Category: 'Category',
+    Repo: 'Repo',
+    Repository: 'Repository',
+    Dependencies: 'Dependencies',
+    Integration: 'Integration',
+    CloudShell: 'CloudShell',
+    DemoProject: 'DemoProject',
+    Terraform: 'Terraform',
+    TerraformInstallation: 'TerraformInstallation',
+    Step: 'Step',
+    Test: 'Test',
+    UpgradeQueue: 'UpgradeQueue',
+    Rollout: 'Rollout',
+    Upgrade: 'Upgrade',
+    DeferredUpdate: 'DeferredUpdate',
+    Account: 'Account',
+    Group: 'Group',
+    User: 'User',
+    ImpersonationPolicy: 'ImpersonationPolicy',
+    GroupMember: 'GroupMember',
+    Token: 'Token',
+    TokenAudit: 'TokenAudit',
+    Address: 'Address',
+    Publisher: 'Publisher',
+    Webhook: 'Webhook',
+    RoleBinding: 'RoleBinding',
+    Role: 'Role',
+    PublicKey: 'PublicKey',
+    EabCredential: 'EabCredential',
+    VersionTag: 'VersionTag',
+    Version: 'Version'
+  }
+}

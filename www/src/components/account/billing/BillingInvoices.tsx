@@ -1,78 +1,106 @@
-import { useCallback, useMemo } from 'react'
-import { Button, Card, DownloadIcon } from '@pluralsh/design-system'
+import { useMemo } from 'react'
+import {
+  Button,
+  Card,
+  DocumentIcon,
+  EmptyState,
+  Table,
+} from '@pluralsh/design-system'
 import { Div, Flex } from 'honorable'
 import moment from 'moment'
-import { useQuery } from '@apollo/client'
+import { createColumnHelper } from '@tanstack/react-table'
 
-import { Invoice } from '../../../generated/graphql'
+import capitalize from 'lodash/capitalize'
+import isEmpty from 'lodash/isEmpty'
 
-import { INVOICES_QUERY } from './queries'
+import { Invoice, useInvoicesQuery } from '../../../generated/graphql'
+
 import BillingError from './BillingError'
 import BillingLoading from './BillingLoading'
 
-function BillingInvoices() {
-  const { data, loading, error } = useQuery(INVOICES_QUERY)
+const columnHelper = createColumnHelper<Invoice>()
 
-  const invoices = useMemo(() => data?.invoices?.edges?.map(e => e.node) as Invoice[], [data])
-
-  const renderContent = useCallback(() => (
-    <>
-      <Div
-        display="grid"
-        gridTemplateColumns="repeat(3, 1fr)"
-        padding="medium"
+const columns = [
+  columnHelper.accessor(row => row.createdAt, {
+    id: 'date',
+    enableSorting: true,
+    cell: info => moment(info.getValue()).format('MM/DD/YY'),
+    header: () => <>Date</>,
+  }),
+  columnHelper.accessor(row => row.amountDue, {
+    id: 'amountDue',
+    enableSorting: true,
+    cell: info => `$${(info.getValue() / 100).toFixed(2)}`,
+    header: () => <>Amount due</>,
+  }),
+  columnHelper.accessor(row => row.amountPaid, {
+    id: 'amountPaid',
+    enableSorting: true,
+    cell: info => `$${(info.getValue() / 100).toFixed(2)}`,
+    header: () => <>Amount paid</>,
+  }),
+  columnHelper.accessor(row => row.status, {
+    id: 'status',
+    enableSorting: true,
+    cell: info => capitalize(info.getValue() || ''),
+    header: () => <>Status</>,
+  }),
+  columnHelper.accessor(row => row.hostedInvoiceUrl, {
+    id: 'viewInvoice',
+    cell: info => (
+      <Flex
+        width="100%"
+        justifyContent="flex-end"
       >
-        <Div
-          body2
-          fontWeight={600}
+        <Button
+          as="a"
+          href={info.getValue()}
+          target="_blank"
+          rel="noopener noreferer"
+          secondary
+          small
+          padding={0}
+          startIcon={<DocumentIcon />}
         >
-          Date
-        </Div>
-        <Div
-          body2
-          fontWeight={600}
-        >
-          Amount
-        </Div>
-      </Div>
-      <Div>
-        {invoices.map((invoice, i) => (
-          <Div
-            key={invoice.number}
-            backgroundColor={i % 2 ? 'fill-one' : 'fill-two'}
-            display="grid"
-            gridTemplateColumns="repeat(3, 1fr)"
-            paddingVertical="xsmall"
-            paddingHorizontal="medium"
-          >
-            <Flex align="center">
-              {moment(invoice.createdAt).format('MM/DD/YY')}
-            </Flex>
-            <Flex align="center">
-              ${invoice.amountPaid / 100}
-            </Flex>
-            <Flex justify="flex-end">
-              <Button
-                as="a"
-                href={invoice.hostedInvoiceUrl}
-                target="_blank"
-                rel="noopener noreferer"
-                tertiary
-                padding={0}
-              >
-                <DownloadIcon color="icon-light" />
-              </Button>
-            </Flex>
-          </Div>
-        ))}
-      </Div>
-    </>
-  ), [invoices])
+          View/pay invoice
+        </Button>
+      </Flex>
+    ),
+    header: () => <Div />,
+  }),
+]
+
+function BillingInvoices() {
+  const { data, loading, error } = useInvoicesQuery()
+
+  const invoices = useMemo(() => data?.invoices?.edges?.map(e => e?.node),
+    [data])
+
+  if (error) {
+    return (
+      <Card>
+        <BillingError />
+      </Card>
+    )
+  }
+  if (loading) {
+    return (
+      <Card>
+        <BillingLoading />
+      </Card>
+    )
+  }
+
+  if (isEmpty(invoices)) {
+    return <Card><EmptyState message="No invoices created yet" /></Card>
+  }
 
   return (
-    <Card>
-      {error ? <BillingError /> : loading ? <BillingLoading /> : renderContent()}
-    </Card>
+    <Table
+      loose
+      data={invoices || []}
+      columns={columns}
+    />
   )
 }
 

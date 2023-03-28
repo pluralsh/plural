@@ -625,4 +625,6 @@ defmodule Core.Factory do
     features = Enum.into(features, %{}, & {&1, true})
     insert(:platform_subscription, account: account, plan: build(:platform_plan, features: features))
   end
+
+  def admin_user(%Schema.Account{} = account), do: insert(:user, account: account, roles: %{admin: true})
 end

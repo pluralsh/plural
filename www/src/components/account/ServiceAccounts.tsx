@@ -123,7 +123,7 @@ export function ServiceAccounts() {
       <PageTitle heading="Service accounts">
         <CreateServiceAccount q={q} />
       </PageTitle>
-      <BillingLegacyUserBanner feature="Service accounts" />
+      <BillingLegacyUserBanner feature="service accounts" />
       {isAvailable ? (
         <List>
           <Header

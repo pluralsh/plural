@@ -164,7 +164,7 @@ export function Groups() {
       <PageTitle heading="Groups">
         <CreateGroup q={q} />
       </PageTitle>
-      <BillingLegacyUserBanner feature="Groups" />
+      <BillingLegacyUserBanner feature="groups" />
       {isAvailable ? (
         <List>
           <Header

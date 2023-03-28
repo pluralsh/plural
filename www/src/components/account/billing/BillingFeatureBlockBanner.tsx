@@ -1,4 +1,5 @@
 import { Button, Card } from '@pluralsh/design-system'
+import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 
 type BillingFeatureBlockBannerPropsType = {
@@ -50,10 +51,8 @@ export default function BillingFeatureBlockBanner({
         <Header>Upgrade your plan to access {feature}.</Header>
         <Description>{description}</Description>
         <Button
-          as="a"
-          href="https://app.plural.sh/account/billing"
-          target="_blank"
-          rel="noopener noreferrer"
+          as={Link}
+          to="/account/billing"
           width="max-content"
           marginTop="large"
         >

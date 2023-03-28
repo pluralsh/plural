@@ -160,7 +160,7 @@ export function Roles() {
       flexDirection="column"
       maxHeight="100%"
     >
-      <PageTitle heading="Roles">
+      <PageTitle heading="roles">
         {' '}
         <CreateRole q={q} />
       </PageTitle>

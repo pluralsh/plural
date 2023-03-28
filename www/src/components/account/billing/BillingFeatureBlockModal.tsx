@@ -1,5 +1,6 @@
 import { Button, Modal, WarningIcon } from '@pluralsh/design-system'
 import { Dispatch } from 'react'
+import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 
 type BillingFeatureBlockModalProps = {
@@ -39,10 +40,8 @@ export default function BillingFeatureBlockModal({ message = 'Upgrade to Plural 
       {message}
       <ActionsWrap>
         <Button
-          as="a"
-          href="https://app.plural.sh/account/billing"
-          target="_blank"
-          rel="noopener noreferrer"
+          as={Link}
+          to="/account/billing"
           width="max-content"
           marginTop="large"
           onClick={() => onClose()}

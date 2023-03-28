@@ -36,7 +36,7 @@ function BillingPricingCards() {
   const { clusterMonthlyPricing, userMonthlyPricing } = useContext(PlatformPlansContext)
   const { isProPlan, isEnterprisePlan } = useContext(SubscriptionContext)
 
-  const [upgradeToProfessionalModalOpen, setUpgradeToProfessionalModalOpen] = useState(false)
+  const [upgradeToProfessionalModalOpen, setUpgradeToProfessionalModalOpen] = useState(!!searchParams.get('upgrade'))
   const [downgradeModalOpen, setDowngradeModalOpen] = useState(false)
 
   const renderCurrentPlanButton = useCallback(() => (

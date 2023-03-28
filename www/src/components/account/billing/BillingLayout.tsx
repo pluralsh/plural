@@ -33,7 +33,7 @@ function BillingLayout() {
           </Flex>
         </PageTitle>
         <>
-          <BillingLegacyUserBanner withBottomMargin={false} />
+          <BillingLegacyUserBanner />
           <Div
             flexGrow
             flexShrink={0}

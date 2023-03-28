@@ -38,7 +38,7 @@ function BillingLegacyUserMessage() {
         {message}
         <MessageLink
           as={Link}
-          to="/account/billing"
+          to="/account/billing?upgrade=true"
         >
           upgrade now
         </MessageLink>

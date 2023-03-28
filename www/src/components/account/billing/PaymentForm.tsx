@@ -21,7 +21,7 @@ import {
 } from 'react'
 import { type ImmerReducer, useImmerReducer } from 'use-immer'
 
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 import isEmpty from 'lodash/isEmpty'
 
@@ -178,10 +178,6 @@ function PaymentFormInner() {
   const {
     formState, plan, setPlan, formVariant,
   } = usePaymentForm()
-
-  if (formState === PaymentFormState.UpgradeSuccess) {
-    return <UpgradeSuccess />
-  }
 
   return (
     <Flex
@@ -674,24 +670,3 @@ function SelectPaymentMethod() {
   )
 }
 
-// function UpgradeSuccess() {
-//   const { onClose } = usePaymentForm()
-
-//   return (
-//     <Flex
-//       direction="column"
-//       gap="large"
-//     >
-//       <UpgradeSuccessMessage />
-//       <Flex justifyContent="end">
-//         <Button
-//           as={Link}
-//           to="/marketplace"
-//           onClick={() => onClose()}
-//         >
-//           Explore the app
-//         </Button>
-//       </Flex>
-//     </Flex>
-//   )
-// }

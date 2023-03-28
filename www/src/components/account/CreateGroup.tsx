@@ -16,10 +16,13 @@ import { GroupsDocument, useCreateGroupMutation } from '../../generated/graphql'
 
 import SubscriptionContext from '../../contexts/SubscriptionContext'
 
+import BillingFeatureBlockModal from './billing/BillingFeatureBlockModal'
+
 export function CreateGroup({ q }: any) {
   const { availableFeatures } = useContext(SubscriptionContext)
-
-  const [open, setOpen] = useState(false)
+  const isAvailable = !!availableFeatures?.userManagement
+  const [createModalVisible, setCreateModalVisible] = useState(false)
+  const [blockModalVisible, setBlockModalVisible] = useState(false)
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
   const [errorMsg, setErrorMsg] = useState<ReactNode>()
@@ -27,7 +30,7 @@ export function CreateGroup({ q }: any) {
   const resetAndClose = useCallback(() => {
     setName('')
     setDescription('')
-    setOpen(false)
+    setCreateModalVisible(false)
     setErrorMsg(undefined)
   }, [])
 
@@ -54,14 +57,15 @@ export function CreateGroup({ q }: any) {
     <>
       <Button
         secondary
-        onClick={() => setOpen(true)}
-        disabled={!availableFeatures?.userManagement}
+        onClick={() => (isAvailable ? setCreateModalVisible(true) : setBlockModalVisible(true))}
       >
         Create group
       </Button>
+
+      {/* Modals */}
       <Modal
         header="Create group"
-        open={open}
+        open={createModalVisible}
         onClose={() => resetAndClose()}
         actions={(
           <>
@@ -99,6 +103,11 @@ export function CreateGroup({ q }: any) {
           />
         </Box>
       </Modal>
+      <BillingFeatureBlockModal
+        open={blockModalVisible}
+        message="Upgrade to Plural Professional to create a group."
+        onClose={() => setBlockModalVisible(false)}
+      />
     </>
   )
 }

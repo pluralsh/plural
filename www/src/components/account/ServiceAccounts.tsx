@@ -2,7 +2,12 @@ import { useQuery } from '@apollo/client'
 import { Div, Flex } from 'honorable'
 import isEmpty from 'lodash/isEmpty'
 import { EmptyState, PageTitle, SearchIcon } from '@pluralsh/design-system'
-import { useCallback, useEffect, useState } from 'react'
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from 'react'
 
 import { Placeholder } from '../utils/Placeholder'
 import ListInput from '../utils/ListInput'
@@ -10,6 +15,8 @@ import { List, ListItem } from '../utils/List'
 import { extendConnection, removeConnection, updateCache } from '../../utils/graphql'
 import { StandardScroller } from '../utils/SmoothScroller'
 import LoadingIndicator from '../utils/LoadingIndicator'
+
+import SubscriptionContext from '../../contexts/SubscriptionContext'
 
 import { USERS_Q } from './queries'
 import { CreateServiceAccount } from './CreateServiceAccount'
@@ -30,12 +37,10 @@ function Header({ q, setQ }: any) {
   )
 }
 
-function ServiceAccountsInner({ q }: any) {
+function ServiceAccountsInner({
+  q, data, loading, fetchMore,
+}: any) {
   const [listRef, setListRef] = useState<any>(null)
-  const { data, loading, fetchMore } = useQuery(USERS_Q, {
-    variables: { q, serviceAccount: true },
-    fetchPolicy: 'cache-and-network',
-  })
   const update = useCallback((cache, { data: { deleteUser } }) => updateCache(cache, {
     query: USERS_Q,
     variables: { q, serviceAccount: true },
@@ -102,6 +107,12 @@ function ServiceAccountsInner({ q }: any) {
 
 export function ServiceAccounts() {
   const [q, setQ] = useState('')
+  const { data, loading, fetchMore } = useQuery(USERS_Q, {
+    variables: { q, serviceAccount: true },
+    fetchPolicy: 'cache-and-network',
+  })
+  const { availableFeatures } = useContext(SubscriptionContext)
+  const isAvailable = !!availableFeatures?.userManagement || !isEmpty(data?.users?.edges)
 
   return (
     <Flex
@@ -112,15 +123,27 @@ export function ServiceAccounts() {
       <PageTitle heading="Service accounts">
         <CreateServiceAccount q={q} />
       </PageTitle>
-      <BillingLegacyUserBanner feature="Service accounts" />
-      <List>
-        <Header
-          q={q}
-          setQ={setQ}
+      <BillingLegacyUserBanner feature="service accounts" />
+      {isAvailable ? (
+        <List>
+          <Header
+            q={q}
+            setQ={setQ}
+          />
+          <ServiceAccountsInner
+            q={q}
+            data={data}
+            loading={loading}
+            fetchMore={fetchMore}
+          />
+        </List>
+      ) : (
+        <BillingFeatureBlockBanner
+          feature="service acccounts"
+          description="Create assumable identities that enable multiple people to manage Plural installations."
+          placeholderImageURL="/placeholder-service-accounts.png"
         />
-        <ServiceAccountsInner q={q} />
-      </List>
-      <BillingFeatureBlockBanner feature="service accounts" />
+      )}
     </Flex>
   )
 }

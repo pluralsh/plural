@@ -25,6 +25,8 @@ import { DeleteIconButton } from '../utils/IconButtons'
 
 import { canEdit } from '../../utils/account'
 
+import SubscriptionContext from '../../contexts/SubscriptionContext'
+
 import { Confirm } from './Confirm'
 import { ViewGroup } from './Group'
 import { CreateGroup } from './CreateGroup'
@@ -150,6 +152,8 @@ export function Group({ group, q }: { group: GroupT; q: any }) {
 
 export function Groups() {
   const [q, setQ] = useState('')
+  const { availableFeatures } = useContext(SubscriptionContext)
+  const isAvailable = !!availableFeatures?.userManagement
 
   return (
     <Flex
@@ -160,15 +164,22 @@ export function Groups() {
       <PageTitle heading="Groups">
         <CreateGroup q={q} />
       </PageTitle>
-      <BillingLegacyUserBanner feature="Groups" />
-      <List>
-        <Header
-          q={q}
-          setQ={setQ}
+      <BillingLegacyUserBanner feature="groups" />
+      {isAvailable ? (
+        <List>
+          <Header
+            q={q}
+            setQ={setQ}
+          />
+          <GroupsList q={q} />
+        </List>
+      ) : (
+        <BillingFeatureBlockBanner
+          feature="groups"
+          description="Organize your users into groups to more easily apply permissions to sub-sections of your team. e.g. ops, end-users, and admins."
+          placeholderImageURL="/placeholder-groups.png"
         />
-        <GroupsList q={q} />
-      </List>
-      <BillingFeatureBlockBanner feature="groups" />
+      )}
     </Flex>
   )
 }

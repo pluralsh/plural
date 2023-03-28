@@ -1,49 +1,57 @@
 import { useContext } from 'react'
-import { Link } from 'react-router-dom'
 import { Callout } from '@pluralsh/design-system'
-import { A, DivProps } from 'honorable'
 import styled from 'styled-components'
+import { Link } from 'react-router-dom'
+
+import { upperFirst } from 'lodash'
 
 import SubscriptionContext from '../../../contexts/SubscriptionContext'
 
-type BillingLegacyUserBannerPropsType = DivProps & {
+type BillingLegacyUserBannerPropsType = {
   feature?: string
-  withBottomMargin?: boolean
 }
 
-const Wrapper = styled.div<{withBottomMargin: boolean}>(({ theme, withBottomMargin }) => ({ marginBottom: withBottomMargin ? theme.spacing.large : undefined }))
+const Wrapper = styled.div(({ theme }) => ({ marginBottom: theme.spacing.large }))
 
-function BillingLegacyUserBanner({ feature, withBottomMargin = true, ...props }: BillingLegacyUserBannerPropsType) {
-  const { isProPlan, isEnterprisePlan, isGrandfathered } = useContext(SubscriptionContext)
-  const open = !(isProPlan || isEnterprisePlan) && isGrandfathered
+export default function BillingLegacyUserBanner({ feature }: BillingLegacyUserBannerPropsType) {
+  const { isPaidPlan, isGrandfathered, isGrandfatheringExpired } = useContext(SubscriptionContext)
 
-  if (!open) return null
+  if (isPaidPlan || !(isGrandfathered || isGrandfatheringExpired)) return null
 
   return (
-    <Wrapper withBottomMargin={withBottomMargin}>
+    <Wrapper>
       <Callout
-        severity="warning"
-        title="Legacy user access ends soon."
-        {...props}
+        severity={isGrandfatheringExpired ? 'danger' : 'warning'}
+        title={isGrandfatheringExpired ? 'Legacy user access expired.' : 'Legacy user access ends soon.'}
       >
-        {!!feature && (
-          <>
-            {feature} are a Professional plan feature.
-            {' '}
-            <A
-              inline
-              as={Link}
-              to="/account/billing"
-            >
-              Upgrade now
-            </A>
-            .
-          </>
-        )}
-        {!feature && 'You have access to Professional features for a short period of time.'}
+        {isGrandfatheringExpired
+          ? (
+            <span>
+              {feature
+                ? (
+                  <>
+                    You may still use existing {feature} but creating new
+                    and editing existing {feature} requires a Plural Professional Plan.
+                  </>
+                )
+                : (
+                  <>
+                    You may still use existing roles, groups, and service accounts but creating
+                    new and editing requires a Plural Professional Plan.
+                  </>
+                )}
+            </span>
+          )
+          : (
+            <span>
+              {feature
+                ? <>{upperFirst(feature)} are a Professional plan feature.</>
+                : <>You have access to Professional features for a short period of time.</>}
+            </span>
+          )}
+        {' '}
+        <Link to="/account/billing?upgrade=true">Upgrade now.</Link>
       </Callout>
     </Wrapper>
   )
 }
-
-export default BillingLegacyUserBanner

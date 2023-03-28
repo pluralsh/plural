@@ -16,6 +16,8 @@ import { Permission } from '../../generated/graphql'
 import { canEdit } from '../../utils/account'
 import LoadingIndicator from '../utils/LoadingIndicator'
 
+import SubscriptionContext from '../../contexts/SubscriptionContext'
+
 import { DELETE_ROLE, ROLES_Q } from './queries'
 import { hasRbac } from './utils'
 import { Confirm } from './Confirm'
@@ -149,6 +151,8 @@ function RolesInner({ q }: any) {
 
 export function Roles() {
   const [q, setQ] = useState('')
+  const { availableFeatures } = useContext(SubscriptionContext)
+  const isAvailable = !!availableFeatures?.userManagement
 
   return (
     <Flex
@@ -160,15 +164,22 @@ export function Roles() {
         {' '}
         <CreateRole q={q} />
       </PageTitle>
-      <BillingLegacyUserBanner feature="Roles" />
-      <List>
-        <Header
-          q={q}
-          setQ={setQ}
+      <BillingLegacyUserBanner feature="roles" />
+      {isAvailable ? (
+        <List>
+          <Header
+            q={q}
+            setQ={setQ}
+          />
+          <RolesInner q={q} />
+        </List>
+      ) : (
+        <BillingFeatureBlockBanner
+          feature="roles"
+          description="Define granular permissions for your organization’s users and apply them to groups or individuals."
+          placeholderImageURL="/placeholder-roles.png"
         />
-        <RolesInner q={q} />
-      </List>
-      <BillingFeatureBlockBanner feature="roles" />
+      )}
     </Flex>
   )
 }

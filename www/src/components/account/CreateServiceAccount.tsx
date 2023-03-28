@@ -1,8 +1,20 @@
-import { useCallback, useContext, useState } from 'react'
+import {
+  Dispatch,
+  useCallback,
+  useContext,
+  useState,
+} from 'react'
 import { useMutation } from '@apollo/client'
 import { Box } from 'grommet'
 import { Button, Div } from 'honorable'
-import { ListBoxItem, Modal, ValidatedInput } from '@pluralsh/design-system'
+import {
+  ListBoxItem,
+  Modal,
+  Tooltip,
+  ValidatedInput,
+} from '@pluralsh/design-system'
+
+import styled from 'styled-components'
 
 import { appendConnection, updateCache } from '../../utils/graphql'
 
@@ -18,6 +30,7 @@ import { MoreMenu } from './MoreMenu'
 
 import { BindingInput } from './Typeaheads'
 import { sanitize } from './utils'
+import BillingFeatureBlockModal from './billing/BillingFeatureBlockModal'
 
 function ServiceAccountForm({
   error,
@@ -71,7 +84,30 @@ function ServiceAccountForm({
   )
 }
 
+interface MenuItem {
+  label: string
+  disabledTooltip?: string
+  onSelect: Dispatch<void>
+  props?: Record<string, unknown>
+}
+
+enum MenuItemSelection {
+  Edit = 'edit',
+  Delete = 'delete',
+}
+
+type MenuItems = {[key in MenuItemSelection]: MenuItem}
+
+const DisabledItem = styled.div(() => ({
+  '&:focus, &:focus-visible': {
+    outline: 'none',
+    boxShadow: 'none',
+  },
+}))
+
 export function EditServiceAccount({ user, update }: any) {
+  const { availableFeatures } = useContext(SubscriptionContext)
+  const isAvailable = !!availableFeatures?.userManagement
   const [confirm, setConfirm] = useState(false)
   const [edit, setEdit] = useState(false)
   const [attributes, setAttributes] = useState({
@@ -96,17 +132,26 @@ export function EditServiceAccount({ user, update }: any) {
     onCompleted: () => setConfirm(false),
   })
 
-  const menuItems = {
-    editUser: {
+  const menuItems: MenuItems = {
+    [MenuItemSelection.Edit]: {
       label: 'Edit',
-      onSelect: () => setEdit(true),
-      props: {},
+      onSelect: () => {
+        if (isAvailable) setEdit(true)
+      },
+      disabledTooltip: !isAvailable ? 'Upgrade to Plural Professional to manage service accounts.' : undefined,
+      props: {
+        disabled: !isAvailable,
+      },
     },
-    deleteUser: {
+    [MenuItemSelection.Delete]: {
       label: 'Delete user',
-      onSelect: () => setConfirm(true),
+      onSelect: () => {
+        if (isAvailable) setConfirm(true)
+      },
+      disabledTooltip: !isAvailable ? 'Upgrade to Plural Professional to manage service accounts.' : undefined,
       props: {
         destructive: true,
+        disabled: !isAvailable,
       },
     },
   }
@@ -118,15 +163,23 @@ export function EditServiceAccount({ user, update }: any) {
           menuItems[selectedKey]?.onSelect()
         }}
       >
-        {Object.entries(menuItems).map(([key, { label, props = {} }]) => (
-          <ListBoxItem
-            key={key}
-            textValue={label}
-            label={label}
-            {...props}
-            color="blue"
-          />
-        ))}
+        {Object.entries(menuItems).map(([key, { label, props = {}, disabledTooltip }]) => {
+          const item = (
+            <ListBoxItem
+              key={key}
+              textValue={label}
+              label={label}
+              {...props}
+              color="blue"
+            />
+          )
+
+          return disabledTooltip ? (
+            <DisabledItem>
+              <Tooltip label={disabledTooltip}>{item}</Tooltip>
+            </DisabledItem>
+          ) : item
+        })}
       </MoreMenu>
       <Confirm
         open={confirm}
@@ -186,15 +239,16 @@ const defaultAttributes = { name: '', email: '' }
 
 export function CreateServiceAccount({ q }: any) {
   const { availableFeatures } = useContext(SubscriptionContext)
-
-  const [open, setOpen] = useState(false)
+  const isAvailable = !!availableFeatures?.userManagement
+  const [createModalVisible, setCreateModalVisible] = useState(false)
+  const [blockModalVisible, setBlockModalVisible] = useState(false)
   const [attributes, setAttributes] = useState(defaultAttributes)
   const [bindings, setBindings] = useState([])
 
   const resetAndClose = useCallback(() => {
     setBindings([])
     setAttributes(defaultAttributes)
-    setOpen(false)
+    setCreateModalVisible(false)
   }, [])
 
   const [mutation, { loading, error }] = useMutation(CREATE_SERVICE_ACCOUNT, {
@@ -219,18 +273,19 @@ export function CreateServiceAccount({ q }: any) {
       <Div>
         <Button
           secondary
-          onClick={() => setOpen(true)}
-          disabled={!availableFeatures?.userManagement}
+          onClick={() => (isAvailable ? setCreateModalVisible(true) : setBlockModalVisible(true))}
         >
           Create service account
         </Button>
       </Div>
+
+      {/* Modals */}
       <Modal
         header="Create service account"
-        open={open}
+        open={createModalVisible}
         onClose={() => {
           resetAndClose()
-          setOpen(false)
+          setCreateModalVisible(false)
         }}
         size="large"
         actions={(
@@ -267,6 +322,11 @@ export function CreateServiceAccount({ q }: any) {
 
         </Box>
       </Modal>
+      <BillingFeatureBlockModal
+        open={blockModalVisible}
+        message="Upgrade to Plural Professional to create a service account."
+        onClose={() => setBlockModalVisible(false)}
+      />
     </>
   )
 }

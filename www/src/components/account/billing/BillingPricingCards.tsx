@@ -45,7 +45,8 @@ function BillingPricingCards() {
   const { isProPlan, isEnterprisePlan } = useContext(SubscriptionContext)
 
   const [upgradeToProfessionalModalOpen, setUpgradeToProfessionalModalOpen]
-    = useState(false)
+    = useState(!!searchParams.get('upgrade'))
+
   const [downgradeModalOpen, setDowngradeModalOpen] = useState(false)
 
   useEffect(() => {

@@ -160,11 +160,11 @@ export function Roles() {
       flexDirection="column"
       maxHeight="100%"
     >
-      <PageTitle heading="roles">
+      <PageTitle heading="Roles">
         {' '}
         <CreateRole q={q} />
       </PageTitle>
-      <BillingLegacyUserBanner feature="Roles" />
+      <BillingLegacyUserBanner feature="roles" />
       {isAvailable ? (
         <List>
           <Header

@@ -12,17 +12,17 @@ type BillingLegacyUserBannerPropsType = {
 const Wrapper = styled.div(({ theme }) => ({ marginBottom: theme.spacing.large }))
 
 export default function BillingLegacyUserBanner({ feature }: BillingLegacyUserBannerPropsType) {
-  const { isPaidPlan, isGrandfathered, isGrandfathetingExpired } = useContext(SubscriptionContext)
+  const { isPaidPlan, isGrandfathered, isGrandfatheringExpired } = useContext(SubscriptionContext)
 
-  if (isPaidPlan || !(isGrandfathered || isGrandfathetingExpired)) return null
+  if (isPaidPlan || !(isGrandfathered || isGrandfatheringExpired)) return null
 
   return (
     <Wrapper>
       <Callout
-        severity={isGrandfathetingExpired ? 'danger' : 'warning'}
-        title={isGrandfathetingExpired ? 'Legacy user access expired.' : 'Legacy user access ends soon.'}
+        severity={isGrandfatheringExpired ? 'danger' : 'warning'}
+        title={isGrandfatheringExpired ? 'Legacy user access expired.' : 'Legacy user access ends soon.'}
       >
-        {isGrandfathetingExpired
+        {isGrandfatheringExpired
           ? (
             <span>
               {feature

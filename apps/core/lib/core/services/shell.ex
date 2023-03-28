@@ -245,6 +245,15 @@ defmodule Core.Services.Shell do
   end
 
   @doc """
+  gets the application crd results for the current shell
+  """
+  @spec applications(User.t) :: {:ok, [Client.Application.t]} | error
+  def applications(%User{id: id}) do
+    get_shell!(id)
+    |> Client.applications()
+  end
+
+  @doc """
   Determines if a shell's pod is currently alive
   """
   @spec alive?(CloudShell.t) :: boolean

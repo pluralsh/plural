@@ -3,6 +3,7 @@ defmodule Core.Shell.Client do
   alias Core.Schema.CloudShell
   alias Core.Services.Shell.Pods
   alias Core.Shell.Models
+  alias Core.Shell.Client.Application
   require Logger
 
   defmodule Setup do
@@ -36,6 +37,8 @@ defmodule Core.Shell.Client do
       end
     end
   end
+
+  def applications(%CloudShell{} = shell), do: api(shell, :get, "/v1/applications", "", as: [Application.spec()])
 
   def configuration(%CloudShell{} = shell), do: api(shell, :get, "/v1/configuration", "", as: Models.Configuration.as())
 

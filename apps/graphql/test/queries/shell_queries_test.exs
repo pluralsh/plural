@@ -3,7 +3,7 @@ defmodule GraphQl.ShellQueriesTest do
   import GraphQl.TestHelpers
   use Mimic
   alias Core.Services.Shell.Pods
-  alias Core.Shell.Models
+  alias Core.Shell.{Models, Client}
   alias GoogleApi.CloudResourceManager.V3
 
   describe "shell" do
@@ -94,6 +94,47 @@ defmodule GraphQl.ShellQueriesTest do
       assert found["contextConfiguration"] == %{"some" => "config"}
       assert found["buckets"] == ["bucket"]
       assert found["domains"] == ["some.example.com"]
+    end
+  end
+
+  describe "shellApplications" do
+    test "it can fetch the applications from your cloud shell" do
+      expect(Pods, :ip, fn "plrl-shell-1" -> {:ok, "0.0.0.0"} end)
+
+      shell = insert(:cloud_shell, pod_name: "plrl-shell-1", workspace: %{cluster: "cluster"})
+
+      expect(HTTPoison, :request, fn :get, "http://0.0.0.0:8080/v1/applications", _, _, _ ->
+        {:ok, %HTTPoison.Response{status_code: 200, body: Poison.encode!([
+          %Client.Application{
+            metadata: %Client.Application.Metadata{name: "airbyte"},
+            spec: %Client.ApplicationSpec{
+              descriptor: %Client.ApplicationSpec.Descriptor{
+                links: [%Client.ApplicationSpec.Link{url: "airbyte.plural.sh"}]
+              }
+            },
+            status: %Client.ApplicationStatus{
+              components: [%Client.ApplicationStatus.Component{group: "v1", kind: "deployment", name: "airbyte", status: "Ready"}],
+              conditions: [%Client.ApplicationStatus.Condition{type: "Ready", status: "True"}],
+            }
+          }
+        ])}}
+      end)
+
+      {:ok, %{data: %{"shellApplications" => [found]}}} = run_query("""
+        query {
+          shellApplications {
+            name
+            ready
+            components { kind name status }
+            spec { links { url } }
+          }
+        }
+      """, %{}, %{current_user: shell.user})
+
+      assert found["ready"]
+      assert found["name"] == "airbyte"
+      assert found["components"] == [%{"kind" => "deployment", "status" => "Ready", "name" => "airbyte"}]
+      assert found["spec"]["links"] == [%{"url" => "airbyte.plural.sh"}]
     end
   end
 

@@ -15,6 +15,9 @@ defmodule GraphQl.Resolvers.Shell do
   def resolve_shell_configuration(_, %{context: %{current_user: user}}),
     do: Shell.shell_configuration(user)
 
+  def resolve_applications(_, %{context: %{current_user: user}}),
+    do: Shell.applications(user)
+
   def delete_shell(_, %{context: %{current_user: user}}),
     do: Shell.delete(user.id)
 

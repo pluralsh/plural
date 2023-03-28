@@ -659,7 +659,6 @@ function SelectPaymentMethod() {
       >
         <Button
           secondary
-          loading={loading}
           onClick={() => {
             setFormState(PaymentFormState.CollectAddress)
           }}

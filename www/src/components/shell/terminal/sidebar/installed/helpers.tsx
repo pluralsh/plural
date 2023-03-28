@@ -3,6 +3,7 @@ import {
   AppProps,
   ArrowTopRightIcon,
   Button,
+  LifePreserverIcon,
   ReloadIcon,
   Tooltip,
   TrashCanIcon,
@@ -55,9 +56,11 @@ const lookupApplicationDomain = (name: string, configuration: ShellConfiguration
 const toActions = (repository: Repository, onAction: Dispatch<string>): Array<AppMenuAction> => {
   const rebuildCommand = `plural build --only ${repository.name} && plural deploy --from ${repository.name} --commit "rebuilding ${repository.name}"`
   const deleteCommand = `plural destroy ${repository.name}`
+  const watchCommand = `plural watch ${repository.name}`
 
   return [
     { label: 'Rebuild', onSelect: () => onAction(rebuildCommand), leftContent: <ReloadIcon /> },
+    { label: 'Check Health', onSelect: () => onAction(watchCommand), leftContent: <LifePreserverIcon /> },
     {
       label: 'Delete', onSelect: () => onAction(deleteCommand), destructive: true, leftContent: <TrashCanIcon color="text-danger" />,
     },

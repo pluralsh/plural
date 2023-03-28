@@ -37,7 +37,7 @@ import BillingError from './BillingError'
 import BillingPreview from './BillingPreview'
 import { StripeElements } from './StripeElements'
 import { PaymentMethod } from './BillingBankCards'
-import { CONFIRM_PAYMENT_RETURN_PATH, UpgradeSuccessMessage } from './ConfirmPayment'
+import { CONFIRM_PAYMENT_RETURN_PATH } from './ConfirmPayment'
 import { useBillingSubscription } from './BillingSubscriptionProvider'
 
 export enum PaymentFormVariant {
@@ -49,7 +49,7 @@ enum PaymentFormState {
   CollectAddress = 'CollectAddress',
   CollectPayment = 'CollectPayment',
   SelectPaymentMethod = 'SelectPaymentMethod',
-  UpgradeSuccess = 'UpgradeSuccess',
+  // UpgradeSuccess = 'UpgradeSuccess',
 }
 
 type PaymentFormContextState = {
@@ -572,7 +572,6 @@ function SelectPaymentMethod() {
   const { setFormState, plan } = usePaymentForm()
   const { defaultPaymentMethod, paymentMethods } = useBillingSubscription()
   const [error, setError] = useState<Error | StripeError | undefined>()
-  const [upgradeSuccess, setUpgradeSuccess] = useState(false)
   const { proPlatformPlan, proYearlyPlatformPlan }
     = useContext(PlatformPlansContext)
   const planId
@@ -585,6 +584,7 @@ function SelectPaymentMethod() {
     variables: { planId },
     refetchQueries: [namedOperations.Query.Subscription],
     onCompleted: result => {
+      console.log('upgrade mutation result', result)
       const clientSecret
       = result.createPlatformSubscription?.latestInvoice?.paymentIntent
         ?.clientSecret
@@ -599,16 +599,16 @@ function SelectPaymentMethod() {
             },
           } as any)
           .then(result => {
+            console.log('confirm payment result', result)
             if (result.error) {
               setError(result.error)
             }
             else {
+              // Consider handling success without redirect
               navigate(`${CONFIRM_PAYMENT_RETURN_PATH}&payment_intent_client_secret=${result.paymentIntent.client_secret}`)
             }
           })
       }
-
-      setUpgradeSuccess(true)
     },
     onError: error => {
       setError(error)
@@ -618,12 +618,6 @@ function SelectPaymentMethod() {
   useEffect(() => {
     if (isEmpty(paymentMethods)) {
       setFormState(PaymentFormState.CollectAddress)
-    }
-  })
-
-  useEffect(() => {
-    if (upgradeSuccess) {
-      setFormState(PaymentFormState.UpgradeSuccess)
     }
   })
 
@@ -680,24 +674,24 @@ function SelectPaymentMethod() {
   )
 }
 
-function UpgradeSuccess() {
-  const { onClose } = usePaymentForm()
+// function UpgradeSuccess() {
+//   const { onClose } = usePaymentForm()
 
-  return (
-    <Flex
-      direction="column"
-      gap="large"
-    >
-      <UpgradeSuccessMessage />
-      <Flex justifyContent="end">
-        <Button
-          as={Link}
-          to="/marketplace"
-          onClick={() => onClose()}
-        >
-          Explore the app
-        </Button>
-      </Flex>
-    </Flex>
-  )
-}
+//   return (
+//     <Flex
+//       direction="column"
+//       gap="large"
+//     >
+//       <UpgradeSuccessMessage />
+//       <Flex justifyContent="end">
+//         <Button
+//           as={Link}
+//           to="/marketplace"
+//           onClick={() => onClose()}
+//         >
+//           Explore the app
+//         </Button>
+//       </Flex>
+//     </Flex>
+//   )
+// }

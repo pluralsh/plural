@@ -14,7 +14,7 @@ import {
 import { Flex, P, Spinner } from 'honorable'
 import { Button, Modal, usePrevious } from '@pluralsh/design-system'
 import { useStripe } from '@stripe/react-stripe-js'
-import { PaymentIntent, SetupIntent } from '@stripe/stripe-js'
+import { PaymentIntent, SetupIntent, StripeError } from '@stripe/stripe-js'
 
 import isEmpty from 'lodash/isEmpty'
 
@@ -186,8 +186,6 @@ const useRetrievePaymentIntent = ({
   return { error, paymentIntent: intent }
 }
 
-type BasicError = { message?: string } | undefined
-
 function ModalActions({
   success = false,
   loading = false,
@@ -285,6 +283,8 @@ export function ConfirmPaymentIntent({
   )
 }
 
+export const CONFIRM_PAYMENT_RETURN_PATH = '/account/billing?confirmReturn=1'
+
 function ConfirmSetupIntent({ clientSecret }: { clientSecret: string }) {
   const [searchParams] = useSearchParams()
   const clearSearchParams = useClearSearchParams()
@@ -317,8 +317,9 @@ function ConfirmSetupIntent({ clientSecret }: { clientSecret: string }) {
     = useRetrieveSetupIntent({
       clientSecret,
     })
-  const [confirmPaymentError, setConfirmPaymentError]
-    = useState<BasicError>(undefined)
+  const [confirmPaymentError, setConfirmPaymentError] = useState<
+    StripeError | undefined
+  >(undefined)
 
   const paymentMethodId
     = typeof setupIntent?.payment_method === 'string'
@@ -336,14 +337,12 @@ function ConfirmSetupIntent({ clientSecret }: { clientSecret: string }) {
             ?.clientSecret
 
         if (clientSecret) {
-          const nextPath = '/account/billing?confirmReturn=1'
-
           stripe
             ?.confirmPayment({
               clientSecret,
               redirect: 'if_required',
               confirmParams: {
-                return_url: `${host()}${nextPath}`,
+                return_url: `${host()}${CONFIRM_PAYMENT_RETURN_PATH}`,
               },
             } as any)
             .then(result => {
@@ -351,7 +350,8 @@ function ConfirmSetupIntent({ clientSecret }: { clientSecret: string }) {
                 setConfirmPaymentError(result.error)
               }
               else {
-                navigate(`${nextPath}&payment_intent_client_secret=${result.paymentIntent.client_secret}`)
+                // Maybe do something else here to avoid double-spinner
+                navigate(`${CONFIRM_PAYMENT_RETURN_PATH}&payment_intent_client_secret=${result.paymentIntent.client_secret}`)
               }
             })
         }

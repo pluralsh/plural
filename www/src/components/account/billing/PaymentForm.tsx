@@ -1,3 +1,5 @@
+// TODO: Make sure confirmPayment happens on upgrade with existing payment
+
 import { Button, Card } from '@pluralsh/design-system'
 import {
   AddressElement,
@@ -5,7 +7,7 @@ import {
   useElements,
   useStripe,
 } from '@stripe/react-stripe-js'
-import { StripePaymentElementOptions } from '@stripe/stripe-js'
+import { StripeError, StripePaymentElementOptions } from '@stripe/stripe-js'
 import { Div, Flex } from 'honorable'
 import {
   ComponentProps,
@@ -19,7 +21,7 @@ import {
 } from 'react'
 import { type ImmerReducer, useImmerReducer } from 'use-immer'
 
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 import isEmpty from 'lodash/isEmpty'
 
@@ -35,7 +37,7 @@ import BillingError from './BillingError'
 import BillingPreview from './BillingPreview'
 import { StripeElements } from './StripeElements'
 import { PaymentMethod } from './BillingBankCards'
-import { UpgradeSuccessMessage } from './ConfirmPayment'
+import { CONFIRM_PAYMENT_RETURN_PATH, UpgradeSuccessMessage } from './ConfirmPayment'
 import { useBillingSubscription } from './BillingSubscriptionProvider'
 
 export enum PaymentFormVariant {
@@ -569,18 +571,43 @@ function AddressForm({
 function SelectPaymentMethod() {
   const { setFormState, plan } = usePaymentForm()
   const { defaultPaymentMethod, paymentMethods } = useBillingSubscription()
-  const [error, setError] = useState<Error | undefined>()
+  const [error, setError] = useState<Error | StripeError | undefined>()
   const [upgradeSuccess, setUpgradeSuccess] = useState(false)
   const { proPlatformPlan, proYearlyPlatformPlan }
     = useContext(PlatformPlansContext)
   const planId
     = plan === 'yearly' ? proYearlyPlatformPlan.id : proPlatformPlan.id
+  const stripe = useStripe()
+  const navigate = useNavigate()
 
   // Upgrade mutation
   const [upgradeMutation, { loading }] = useCreatePlatformSubscriptionMutation({
     variables: { planId },
     refetchQueries: [namedOperations.Query.Subscription],
-    onCompleted: () => {
+    onCompleted: result => {
+      const clientSecret
+      = result.createPlatformSubscription?.latestInvoice?.paymentIntent
+        ?.clientSecret
+
+      if (clientSecret) {
+        stripe
+          ?.confirmPayment({
+            clientSecret,
+            redirect: 'if_required',
+            confirmParams: {
+              return_url: `${host()}${CONFIRM_PAYMENT_RETURN_PATH}`,
+            },
+          } as any)
+          .then(result => {
+            if (result.error) {
+              setError(result.error)
+            }
+            else {
+              navigate(`${CONFIRM_PAYMENT_RETURN_PATH}&payment_intent_client_secret=${result.paymentIntent.client_secret}`)
+            }
+          })
+      }
+
       setUpgradeSuccess(true)
     },
     onError: error => {

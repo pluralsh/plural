@@ -12,19 +12,20 @@ import {
   useSearchParams,
 } from 'react-router-dom'
 import { Flex, P, Spinner } from 'honorable'
-import { Button, Modal, usePrevious } from '@pluralsh/design-system'
+import { Button, Modal } from '@pluralsh/design-system'
 import { useStripe } from '@stripe/react-stripe-js'
-import { PaymentIntent, SetupIntent, StripeError } from '@stripe/stripe-js'
+import { StripeError } from '@stripe/stripe-js'
 
 import isEmpty from 'lodash/isEmpty'
 
 import PlatformPlansContext from '../../../contexts/PlatformPlansContext'
 
-import { namedOperations, useCreatePlatformSubscriptionMutation, useDefaultPaymentMethodMutation } from '../../../generated/graphql'
+import { namedOperations, useCreatePlatformSubscriptionMutation } from '../../../generated/graphql'
 
 import { host } from '../../../helpers/hostname'
 
 import { type PlanType } from './PaymentForm'
+import { useRetrievePaymentIntent, useRetrieveSetupIntent } from './useRetrieveIntent'
 
 function ModalLoading() {
   return (
@@ -55,135 +56,6 @@ const useClearSearchParams = () => {
   return () => {
     navigate(location.pathname)
   }
-}
-
-const useRetrieveSetupIntent = ({
-  clientSecret,
-  onComplete,
-  onError,
-}: {
-  clientSecret?: string | null
-  onComplete?: (setupIntent: SetupIntent) => void
-  onError?: (e: StripeError | Error) => void
-}) => {
-  const [error, setError] = useState<StripeError | Error | undefined>()
-  const [intent, setIntent] = useState<SetupIntent | null>()
-  const [makeDefaultMutation] = useDefaultPaymentMethodMutation({
-    refetchQueries: [namedOperations.Query.Subscription],
-  })
-  const prevClientSecret = usePrevious(clientSecret)
-
-  const stripe = useStripe()
-
-  useEffect(() => {
-    if (clientSecret !== prevClientSecret) {
-      setError(undefined)
-      setIntent(undefined)
-    }
-  }, [clientSecret, prevClientSecret])
-
-  useEffect(() => {
-    if (intent) {
-      onComplete?.(intent)
-    }
-  }, [onComplete, intent])
-  useEffect(() => {
-    if (error) {
-      onError?.(error)
-    }
-  }, [error, onError])
-
-  useEffect(() => {
-    let cancelled = false
-
-    ;(async function x() {
-      if (stripe && clientSecret) {
-        try {
-          const { setupIntent, error } = await stripe.retrieveSetupIntent(clientSecret)
-
-          if (cancelled) {
-            return
-          }
-          setError(error)
-          setIntent(setupIntent)
-        }
-        catch (e) {
-          setError(e as Error)
-        }
-
-        return () => {
-          cancelled = true
-        }
-      }
-    }())
-  }, [clientSecret, makeDefaultMutation, stripe])
-
-  return { error, setupIntent: intent }
-}
-
-const useRetrievePaymentIntent = ({
-  clientSecret,
-  onComplete,
-  onError,
-}: {
-  clientSecret?: string | null
-  onComplete?: (setupIntent: PaymentIntent) => void
-  onError?: (e: { message?: string }) => void
-}) => {
-  const [error, setError] = useState<{ message?: string } | undefined>()
-  const [intent, setIntent] = useState<PaymentIntent | null>()
-  const [makeDefaultMutation] = useDefaultPaymentMethodMutation({
-    refetchQueries: [namedOperations.Query.Subscription],
-  })
-  const prevClientSecret = usePrevious(clientSecret)
-
-  const stripe = useStripe()
-
-  useEffect(() => {
-    if (clientSecret !== prevClientSecret) {
-      setError(undefined)
-      setIntent(undefined)
-    }
-  }, [clientSecret, prevClientSecret])
-
-  useEffect(() => {
-    if (intent) {
-      onComplete?.(intent)
-    }
-  }, [onComplete, intent])
-  useEffect(() => {
-    if (error) {
-      onError?.(error)
-    }
-  }, [error, onError])
-
-  useEffect(() => {
-    let cancelled = false
-
-    ;(async function x() {
-      if (stripe && clientSecret) {
-        try {
-          const { paymentIntent: intent, error }
-            = await stripe.retrievePaymentIntent(clientSecret)
-
-          if (cancelled) {
-            return
-          }
-          setError(error)
-          setIntent(intent)
-        }
-        catch (e) {
-          setError(e as Error)
-        }
-
-        return () => {
-          cancelled = true
-        }
-      }
-    }())
-  }, [clientSecret, makeDefaultMutation, stripe])
-
-  return { error, paymentIntent: intent }
 }
 
 function ModalActions({
@@ -323,7 +195,9 @@ export function ConfirmPaymentIntent({
 }: {
   clientSecret: string
 }) {
-  const { paymentIntent, error } = useRetrievePaymentIntent({ clientSecret: paymentIntentSecret })
+  const { intent: paymentIntent, error } = useRetrievePaymentIntent({
+    clientSecret: paymentIntentSecret,
+  })
   const [isOpen, setIsOpen] = useState(!!paymentIntentSecret)
   const clearSearchParams = useClearSearchParams()
 
@@ -359,7 +233,11 @@ export function ConfirmPaymentIntent({
 
 export const CONFIRM_PAYMENT_RETURN_PATH = '/account/billing?confirmReturn=1'
 
-function ConfirmSetupIntent({ clientSecret: setupIntentSecret }: { clientSecret: string }) {
+function ConfirmSetupIntent({
+  clientSecret: setupIntentSecret,
+}: {
+  clientSecret: string
+}) {
   const [searchParams] = useSearchParams()
   const clearSearchParams = useClearSearchParams()
   const navigate = useNavigate()
@@ -387,7 +265,7 @@ function ConfirmSetupIntent({ clientSecret: setupIntentSecret }: { clientSecret:
   }, [clearSearchParams, searchParams.values, upgradeSuccess])
 
   // Confirm payment
-  const { error: retrieveSetupIntentError, setupIntent }
+  const { error: retrieveSetupIntentError, intent: setupIntent }
     = useRetrieveSetupIntent({
       clientSecret: setupIntentSecret,
     })

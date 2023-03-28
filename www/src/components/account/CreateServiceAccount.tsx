@@ -1,8 +1,20 @@
-import { useCallback, useContext, useState } from 'react'
+import {
+  Dispatch,
+  useCallback,
+  useContext,
+  useState,
+} from 'react'
 import { useMutation } from '@apollo/client'
 import { Box } from 'grommet'
 import { Button, Div } from 'honorable'
-import { ListBoxItem, Modal, ValidatedInput } from '@pluralsh/design-system'
+import {
+  ListBoxItem,
+  Modal,
+  Tooltip,
+  ValidatedInput,
+} from '@pluralsh/design-system'
+
+import styled from 'styled-components'
 
 import { appendConnection, updateCache } from '../../utils/graphql'
 
@@ -72,7 +84,30 @@ function ServiceAccountForm({
   )
 }
 
+interface MenuItem {
+  label: string
+  disabledTooltip?: string
+  onSelect: Dispatch<void>
+  props?: Record<string, unknown>
+}
+
+enum MenuItemSelection {
+  Edit = 'edit',
+  Delete = 'delete',
+}
+
+type MenuItems = {[key in MenuItemSelection]: MenuItem}
+
+const DisabledItem = styled.div(() => ({
+  '&:focus, &:focus-visible': {
+    outline: 'none',
+    boxShadow: 'none',
+  },
+}))
+
 export function EditServiceAccount({ user, update }: any) {
+  const { availableFeatures } = useContext(SubscriptionContext)
+  const isAvailable = !!availableFeatures?.userManagement
   const [confirm, setConfirm] = useState(false)
   const [edit, setEdit] = useState(false)
   const [attributes, setAttributes] = useState({
@@ -97,17 +132,26 @@ export function EditServiceAccount({ user, update }: any) {
     onCompleted: () => setConfirm(false),
   })
 
-  const menuItems = {
-    editUser: {
+  const menuItems: MenuItems = {
+    [MenuItemSelection.Edit]: {
       label: 'Edit',
-      onSelect: () => setEdit(true),
-      props: {},
+      onSelect: () => {
+        if (isAvailable) setEdit(true)
+      },
+      disabledTooltip: !isAvailable ? 'Upgrade to Plural Professional to manage service accounts.' : undefined,
+      props: {
+        disabled: !isAvailable,
+      },
     },
-    deleteUser: {
+    [MenuItemSelection.Delete]: {
       label: 'Delete user',
-      onSelect: () => setConfirm(true),
+      onSelect: () => {
+        if (isAvailable) setConfirm(true)
+      },
+      disabledTooltip: !isAvailable ? 'Upgrade to Plural Professional to manage service accounts.' : undefined,
       props: {
         destructive: true,
+        disabled: !isAvailable,
       },
     },
   }
@@ -119,15 +163,23 @@ export function EditServiceAccount({ user, update }: any) {
           menuItems[selectedKey]?.onSelect()
         }}
       >
-        {Object.entries(menuItems).map(([key, { label, props = {} }]) => (
-          <ListBoxItem
-            key={key}
-            textValue={label}
-            label={label}
-            {...props}
-            color="blue"
-          />
-        ))}
+        {Object.entries(menuItems).map(([key, { label, props = {}, disabledTooltip }]) => {
+          const item = (
+            <ListBoxItem
+              key={key}
+              textValue={label}
+              label={label}
+              {...props}
+              color="blue"
+            />
+          )
+
+          return disabledTooltip ? (
+            <DisabledItem>
+              <Tooltip label={disabledTooltip}>{item}</Tooltip>
+            </DisabledItem>
+          ) : item
+        })}
       </MoreMenu>
       <Confirm
         open={confirm}

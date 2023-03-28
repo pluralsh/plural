@@ -20,11 +20,10 @@ import isEmpty from 'lodash/isEmpty'
 
 import PlatformPlansContext from '../../../contexts/PlatformPlansContext'
 
-import { namedOperations, useCreatePlatformSubscriptionMutation, useDefaultPaymentMethodMutation } from '../../../generated/graphql'
-
-import { host } from '../../../helpers/hostname'
+import { namedOperations, useDefaultPaymentMethodMutation } from '../../../generated/graphql'
 
 import { type PlanType } from './PaymentForm'
+import { useUpgradeSubscription } from './hooks'
 
 function ModalLoading() {
   return (
@@ -289,7 +288,6 @@ function ConfirmSetupIntent({ clientSecret }: { clientSecret: string }) {
   const [searchParams] = useSearchParams()
   const clearSearchParams = useClearSearchParams()
   const navigate = useNavigate()
-  const stripe = useStripe()
 
   const plan: PlanType
     = searchParams.get('plan') === 'yearly' ? 'yearly' : 'monthly'
@@ -326,42 +324,12 @@ function ConfirmSetupIntent({ clientSecret }: { clientSecret: string }) {
       : setupIntent?.payment_method?.id
 
   // Upgrade mutation
-  const [upgradeMutation, { error: upgradeError }]
-    = useCreatePlatformSubscriptionMutation({
-      variables: { planId, paymentMethod: paymentMethodId },
-      refetchQueries: [namedOperations.Query.Subscription],
-      onCompleted: result => {
-        const clientSecret
-          = result.createPlatformSubscription?.latestInvoice?.paymentIntent
-            ?.clientSecret
-
-        if (clientSecret) {
-          const nextPath = '/account/billing?confirmReturn=1'
-
-          stripe
-            ?.confirmPayment({
-              clientSecret,
-              redirect: 'if_required',
-              confirmParams: {
-                return_url: `${host()}${nextPath}`,
-              },
-            } as any)
-            .then(result => {
-              if (result.error) {
-                setConfirmPaymentError(result.error)
-              }
-              else {
-                navigate(`${nextPath}&payment_intent_client_secret=${result.paymentIntent.client_secret}`)
-              }
-            })
-        }
-        else {
-          // If didn't receive a paymentIntent or clientSecret after mutation
-          // assume successful upgrade
-          setUpgradeSuccess(true)
-        }
-      },
-    })
+  const [upgradeMutation, { error: upgradeError }] = useUpgradeSubscription(
+    { planId, paymentMethod: paymentMethodId },
+    (result, nextPath) => navigate(`${nextPath}&payment_intent_client_secret=${result.paymentIntent.client_secret}`),
+    result => setConfirmPaymentError(result.error),
+    () => setUpgradeSuccess(true)
+  )
 
   useEffect(() => {
     if (setupIntent) {

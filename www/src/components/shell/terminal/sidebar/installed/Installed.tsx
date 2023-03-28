@@ -47,10 +47,7 @@ function InstalledUnstyled({ ...props }): JSX.Element {
       pollInterval: POLL_INTERVAL,
     })
 
-  const appInfo = buildAppInfo(shellApplications)
-
-  console.log(appInfo)
-  const apps: Array<AppProps> = useMemo(() => (onAction ? nodes.map(node => toAppProps(node, appInfo, onAction)) : []), [nodes, appInfo, onAction])
+  const apps: Array<AppProps> = useMemo(() => (onAction ? nodes.map(node => toAppProps(node, buildAppInfo(shellApplications), onAction)) : []), [nodes, shellApplications, onAction])
 
   if (loading) {
     return (

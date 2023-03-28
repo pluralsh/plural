@@ -68,6 +68,14 @@ type PersistedTokenConnection {
   edges: [PersistedTokenEdge]
 }
 
+type ApplicationInformation {
+  name: String!
+  ready: Boolean
+  componentsReady: String
+  components: [ApplicationComponent]
+  spec: ApplicationSpec
+}
+
 type DeferredUpdateConnection {
   pageInfo: PageInfo!
   edges: [DeferredUpdateEdge]
@@ -1324,6 +1332,12 @@ input AzureShellCredentialsAttributes {
   subscriptionId: String!
 }
 
+type ApplicationSpec {
+  description: String
+  version: String
+  links: [AppLink]
+}
+
 "Input for the application's OAuth settings."
 input OauthSettingsAttributes {
   "The URI format for the OAuth provider."
@@ -2225,6 +2239,8 @@ type RootQueryType {
 
   shellConfiguration: ShellConfiguration
 
+  shellApplications: [ApplicationInformation]
+
   scmAuthorization: [AuthorizationUrl]
 
   scmToken(provider: ScmProvider!, code: String!): String
@@ -3039,6 +3055,11 @@ type Terraform {
   updatedAt: DateTime
 }
 
+type AppLink {
+  url: String
+  description: String
+}
+
 type IntegrationWebhook {
   id: ID!
   name: String!
@@ -3268,6 +3289,13 @@ type DemoProject {
   state: DemoProjectState
   insertedAt: DateTime
   updatedAt: DateTime
+}
+
+type ApplicationComponent {
+  group: String
+  name: String
+  kind: String
+  status: String
 }
 
 enum VulnRequirement {

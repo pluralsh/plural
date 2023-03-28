@@ -4,12 +4,12 @@ import { ApolloError } from '@apollo/client'
 
 import SubscriptionContext, { SubscriptionContextType } from '../../../contexts/SubscriptionContext'
 
-import { PaymentMethodFragment, SubscriptionAccountFragment } from '../../../generated/graphql'
+import { PaymentMethodFragment, SubscriptionAccountFragment, SubscriptionQuery } from '../../../generated/graphql'
 
 import BillingError from './BillingError'
 
 type BillingSubscriptionProviderPropsType = {
-  data?: any
+  data?: SubscriptionQuery
   error?: ApolloError
   refetch: () => void
   children: ReactNode
@@ -56,10 +56,10 @@ function BillingSubscriptionProvider({
   const { paymentMethods, defaultPaymentMethod } = useExtractPaymentMethods(data?.account?.paymentMethods)
 
   const subscriptionContextValue = useMemo<SubscriptionContextType>(() => {
-    const account = data?.account
-    const availableFeatures = account?.availableFeatures
-    const billingAddress = account?.billingAddress
-    const billingCustomerId = account?.billingCustomerId
+    const account = data?.account ?? null
+    const availableFeatures = account?.availableFeatures ?? null
+    const billingAddress = account?.billingAddress ?? null
+    const billingCustomerId = account?.billingCustomerId ?? null
     const subscription = account?.subscription
     const plan = subscription?.plan
     const isProPlan = plan?.name === 'Pro'

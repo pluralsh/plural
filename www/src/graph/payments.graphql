@@ -95,12 +95,7 @@ fragment SubscriptionAccount on Account {
   subscription {
     id
     plan {
-      id
-      period
-      lineItems {
-        dimension
-        cost
-      }
+      ...Plan
     }
   }
   billingAddress {

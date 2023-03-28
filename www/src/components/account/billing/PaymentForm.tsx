@@ -19,7 +19,7 @@ import {
 } from 'react'
 import { type ImmerReducer, useImmerReducer } from 'use-immer'
 
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 import isEmpty from 'lodash/isEmpty'
 
@@ -573,6 +573,8 @@ function SelectPaymentMethod() {
   const [upgradeSuccess, setUpgradeSuccess] = useState(false)
   const { proPlatformPlan, proYearlyPlatformPlan }
     = useContext(PlatformPlansContext)
+  const stripe = useStripe()
+  const navigate = useNavigate()
   const planId
     = plan === 'yearly' ? proYearlyPlatformPlan.id : proPlatformPlan.id
 
@@ -580,8 +582,33 @@ function SelectPaymentMethod() {
   const [upgradeMutation, { loading }] = useCreatePlatformSubscriptionMutation({
     variables: { planId },
     refetchQueries: [namedOperations.Query.Subscription],
-    onCompleted: () => {
-      setUpgradeSuccess(true)
+    onCompleted: result => {
+      const clientSecret
+          = result.createPlatformSubscription?.latestInvoice?.paymentIntent
+            ?.clientSecret
+
+      if (clientSecret) {
+        const nextPath = '/account/billing?confirmReturn=1'
+
+        stripe
+          ?.confirmPayment({
+            clientSecret,
+            redirect: 'if_required',
+            confirmParams: {
+              return_url: `${host()}${nextPath}`,
+            },
+          } as any)
+          .then(result => {
+            if (!result.error) {
+              navigate(`${nextPath}&payment_intent_client_secret=${result.paymentIntent.client_secret}`)
+            }
+          })
+      }
+      else {
+        // If didn't receive a paymentIntent or clientSecret after mutation
+        // assume successful upgrade
+        setUpgradeSuccess(true)
+      }
     },
     onError: error => {
       setError(error)
@@ -632,7 +659,6 @@ function SelectPaymentMethod() {
       >
         <Button
           secondary
-          loading={loading}
           onClick={() => {
             setFormState(PaymentFormState.CollectAddress)
           }}

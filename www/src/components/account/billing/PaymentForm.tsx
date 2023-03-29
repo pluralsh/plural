@@ -579,7 +579,6 @@ function SelectUpgradePaymentMethod() {
     variables: { planId },
     refetchQueries: [namedOperations.Query.Subscription],
     onCompleted: result => {
-      console.log('upgrade mutation result', result)
       const clientSecret
         = result.createPlatformSubscription?.latestInvoice?.paymentIntent
           ?.clientSecret

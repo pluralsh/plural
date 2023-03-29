@@ -132,8 +132,6 @@ function ModalActions({
   upgradeResult: UpgradeResult
   onClose: () => void
 }) {
-  console.log('upgrade result', upgradeResult)
-
   return upgradeResult === UpgradeResult.Loading ? null : upgradeResult
     === UpgradeResult.Success ? (
       <Button

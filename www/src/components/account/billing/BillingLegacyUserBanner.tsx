@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom'
 import { upperFirst } from 'lodash'
 
 import SubscriptionContext from '../../../contexts/SubscriptionContext'
+import usePersistedState from '../../../hooks/usePersistedState'
 
 type BillingLegacyUserBannerPropsType = {
   feature?: string
@@ -15,6 +16,9 @@ const Wrapper = styled.div(({ theme }) => ({ marginBottom: theme.spacing.large }
 
 export default function BillingLegacyUserBanner({ feature }: BillingLegacyUserBannerPropsType) {
   const { isPaidPlan, isGrandfathered, isGrandfatheringExpired } = useContext(SubscriptionContext)
+  const featureId = feature ? `${feature.replace(/\s+/g, '-').toLowerCase()}-` : ''
+  const localStorageId = `${isGrandfatheringExpired ? 'expired-' : ''}legacy-banner-${featureId}closed`
+  const [closed, setClosed] = usePersistedState(localStorageId, false)
 
   if (isPaidPlan || !(isGrandfathered || isGrandfatheringExpired)) return null
 
@@ -23,6 +27,9 @@ export default function BillingLegacyUserBanner({ feature }: BillingLegacyUserBa
       <Callout
         severity={isGrandfatheringExpired ? 'danger' : 'warning'}
         title={isGrandfatheringExpired ? 'Legacy user access expired.' : 'Legacy user access ends soon.'}
+        closeable
+        closed={closed}
+        onClose={setClosed}
       >
         {isGrandfatheringExpired
           ? (

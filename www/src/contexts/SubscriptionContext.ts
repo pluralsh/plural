@@ -14,7 +14,7 @@ export type SubscriptionContextType = {
   availableFeatures: SubscriptionAccountFragment['availableFeatures'] | null
   paymentMethods: PaymentMethodFragment[]
   defaultPaymentMethod: PaymentMethodFragment | null | undefined
-  refetch: () => void
+  refetch: () => Promise<any>
 }
 
 const SubscriptionContext = createContext<SubscriptionContextType>({
@@ -29,7 +29,9 @@ const SubscriptionContext = createContext<SubscriptionContextType>({
   availableFeatures: {},
   paymentMethods: [],
   defaultPaymentMethod: null,
-  refetch: () => {},
+  refetch: () => new Promise(resolve => {
+    resolve({})
+  }),
 })
 
 export default SubscriptionContext

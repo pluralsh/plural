@@ -11,7 +11,7 @@ import BillingError from './BillingError'
 type BillingSubscriptionProviderPropsType = {
   data?: SubscriptionQuery
   error?: ApolloError
-  refetch: () => void
+  refetch: () => Promise<any>
   children: ReactNode
 }
 

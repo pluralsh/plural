@@ -34,7 +34,7 @@ function BillingLayout() {
         direction="column"
         gap="xlarge"
       >
-        <BillingLegacyUserBanner withBottomMargin={false} />
+        <BillingLegacyUserBanner />
         <Div
           flexGrow
           flexShrink={0}

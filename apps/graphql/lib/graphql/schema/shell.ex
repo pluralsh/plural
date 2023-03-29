@@ -1,6 +1,7 @@
 defmodule GraphQl.Schema.Shell do
   use GraphQl.Schema.Base
   alias GraphQl.Resolvers.Shell
+  alias Core.Shell.Client.{Application, ApplicationStatus, ApplicationSpec}
 
   ecto_enum :demo_project_state, Core.Schema.DemoProject.State
 
@@ -145,6 +146,55 @@ defmodule GraphQl.Schema.Shell do
     timestamps()
   end
 
+  object :application_information do
+    field :name, non_null(:string), resolve: fn
+      %Application{metadata: %{name: name}}, _, _ -> {:ok, name}
+    end
+
+    field :ready, :boolean, resolve: fn
+      app, _, _ -> {:ok, Application.ready?(app)}
+    end
+
+    field :components_ready, :string, resolve: fn
+      %Application{status: %ApplicationStatus{componentsReady: r}} -> {:ok, r}
+    end
+
+    field :components, list_of(:application_component), resolve: fn
+      %Application{status: %ApplicationStatus{components: components}}, _, _ -> {:ok, components}
+    end
+
+    field :spec, :application_spec
+  end
+
+  object :application_spec do
+    field :description, :string, resolve: fn
+      %ApplicationSpec{descriptor: %ApplicationSpec.Descriptor{description: desc}}, _, _ ->
+        {:ok, desc}
+    end
+
+    field :version, :string, resolve: fn
+      %ApplicationSpec{descriptor: %ApplicationSpec.Descriptor{version: vsn}}, _, _ ->
+        {:ok, vsn}
+    end
+
+    field :links, list_of(:app_link), resolve: fn
+      %ApplicationSpec{descriptor: %ApplicationSpec.Descriptor{links: links}}, _, _ ->
+        {:ok, links}
+    end
+  end
+
+  object :app_link do
+    field :url,         :string
+    field :description, :string
+  end
+
+  object :application_component do
+    field :group,   :string
+    field :name,    :string
+    field :kind,    :string
+    field :status,  :string
+  end
+
   object :shell_queries do
     field :shell, :cloud_shell do
       middleware Authenticated
@@ -154,6 +204,11 @@ defmodule GraphQl.Schema.Shell do
     field :shell_configuration, :shell_configuration do
       middleware Authenticated
       resolve &Shell.resolve_shell_configuration/2
+    end
+
+    field :shell_applications, list_of(:application_information) do
+      middleware Authenticated
+      resolve &Shell.resolve_applications/2
     end
 
     field :scm_authorization, list_of(:authorization_url) do

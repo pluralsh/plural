@@ -570,9 +570,9 @@ function SelectUpgradePaymentMethod() {
   const [error, setError] = useState<Error | StripeError | undefined>()
   const { proPlatformPlan, proYearlyPlatformPlan }
     = useContext(PlatformPlansContext)
+  const navigate = useNavigate()
   const planId
     = plan === 'yearly' ? proYearlyPlatformPlan.id : proPlatformPlan.id
-  const navigate = useNavigate()
 
   // Upgrade mutation
   const [upgradeMutation, { loading }] = useCreatePlatformSubscriptionMutation({
@@ -632,7 +632,7 @@ function SelectUpgradePaymentMethod() {
           ))}
         </Card>
       )}
-      {error && <BillingError>{error.message}</BillingError>}
+      {error && <BillingError>Payment failed: {error.message}</BillingError>}
       <Flex
         gap="large"
         justify="flex-end"

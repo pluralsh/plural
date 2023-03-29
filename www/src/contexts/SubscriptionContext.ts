@@ -10,7 +10,9 @@ export type SubscriptionContextType = {
   isPaidPlan: boolean
   isProPlan: boolean
   isEnterprisePlan: boolean
+  isLegacyUser: boolean
   isGrandfathered: boolean
+  isGrandfatheringExpired: boolean
   availableFeatures: SubscriptionAccountFragment['availableFeatures'] | null
   paymentMethods: PaymentMethodFragment[]
   defaultPaymentMethod: PaymentMethodFragment | null | undefined
@@ -25,7 +27,9 @@ const SubscriptionContext = createContext<SubscriptionContextType>({
   isPaidPlan: false,
   isProPlan: false,
   isEnterprisePlan: false,
+  isLegacyUser: false,
   isGrandfathered: false,
+  isGrandfatheringExpired: false,
   availableFeatures: {},
   paymentMethods: [],
   defaultPaymentMethod: null,

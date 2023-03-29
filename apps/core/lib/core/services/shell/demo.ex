@@ -164,13 +164,13 @@ defmodule Core.Services.Shell.Demo do
         _ -> {:ok, false}
       end
     end)
-    |> add_operation(:db, fn _ -> Core.Repo.delete(proj) end)
-    |> add_operation(:maybe_reset, fn _ ->
-      case {Upgrades.queue_count(proj.user_id), proj.user} do
-        {n, %User{provider: :gcp}} when n <= 1 -> Repositories.reset_installations(proj.user)
+    |> add_operation(:maybe_reset, fn _  ->
+      case {Upgrades.queue_count(proj.user_id), proj.user, get_shell(proj.id)} do
+        {n, %User{provider: :gcp}, %CloudShell{}} when n <= 1 -> Repositories.reset_installations(proj.user)
         _ -> {:ok, nil}
       end
     end)
+    |> add_operation(:db, fn _ -> Core.Repo.delete(proj) end)
     |> execute(extract: :db)
     |> notify(:delete)
   end

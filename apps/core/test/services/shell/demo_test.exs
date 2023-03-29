@@ -63,6 +63,7 @@ defmodule Core.Services.Shell.DemoTest do
 
     test "if a user has at most 1 upgrade queue (eg for their demo cluster) we will reset their demo installations" do
       demo = insert(:demo_project, user: build(:user, provider: :gcp))
+      shell = insert(:cloud_shell, demo: demo)
       inst = insert(:installation, user: demo.user)
       insert(:upgrade_queue, user: demo.user)
 
@@ -74,6 +75,7 @@ defmodule Core.Services.Shell.DemoTest do
       {:ok, _} = Demo.delete_demo_project(demo)
 
       refute refetch(inst)
+      refute refetch(shell)
     end
 
     test "if a user has 2 or more upgrade queues, we will not reset installations" do

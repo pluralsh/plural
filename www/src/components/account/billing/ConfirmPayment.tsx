@@ -18,7 +18,6 @@ import { PaymentIntent, SetupIntent, StripeError } from '@stripe/stripe-js'
 
 import PlatformPlansContext from '../../../contexts/PlatformPlansContext'
 
-<<<<<<< HEAD
 import { namedOperations, useCreatePlatformSubscriptionMutation } from '../../../generated/graphql'
 
 import { host } from '../../../helpers/hostname'
@@ -26,12 +25,6 @@ import { host } from '../../../helpers/hostname'
 import { type PlanType } from './PaymentForm'
 import { useRetrievePaymentIntent, useRetrieveSetupIntent } from './useRetrieveIntent'
 import { useBillingSubscription } from './BillingSubscriptionProvider'
-=======
-import { namedOperations, useDefaultPaymentMethodMutation } from '../../../generated/graphql'
-
-import { type PlanType } from './PaymentForm'
-import { useUpgradeSubscription } from './hooks'
->>>>>>> origin/master
 
 function ModalLoading() {
   return (
@@ -209,14 +202,7 @@ function UpgradeResultModal({
   )
 }
 
-<<<<<<< HEAD
 export const CONFIRM_RETURN_PATH = '/account/billing?confirmUpgrade=1'
-=======
-function ConfirmSetupIntent({ clientSecret }: { clientSecret: string }) {
-  const [searchParams] = useSearchParams()
-  const clearSearchParams = useClearSearchParams()
-  const navigate = useNavigate()
->>>>>>> origin/master
 
 const setupIntentToResult: Record<SetupIntent.Status, UpgradeResult> = {
   succeeded: UpgradeResult.Loading,
@@ -278,7 +264,6 @@ export default function ConfirmPayment() {
       : setupIntent?.payment_method?.id
 
   // Upgrade mutation
-<<<<<<< HEAD
   const [upgradeMutation, { error: upgradeError }]
     = useCreatePlatformSubscriptionMutation({
       variables: { planId, paymentMethod: paymentMethodId },
@@ -313,14 +298,6 @@ export default function ConfirmPayment() {
         }
       },
     })
-=======
-  const [upgradeMutation, { error: upgradeError }] = useUpgradeSubscription(
-    { planId, paymentMethod: paymentMethodId },
-    (result, nextPath) => navigate(`${nextPath}&payment_intent_client_secret=${result.paymentIntent.client_secret}`),
-    result => setConfirmPaymentError(result.error),
-    () => setUpgradeSuccess(true)
-  )
->>>>>>> origin/master
 
   useEffect(() => {
     if (setupIntent) {

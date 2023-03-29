@@ -24,6 +24,7 @@ import { LegacyExpirationNotice } from './login/LegacyExpiration'
 import LoadingIndicator from './utils/LoadingIndicator'
 import { UsersList } from './account/UsersList'
 import { Invites } from './account/Invites'
+import { DelinquencyNotice } from './account/billing/DelinquencyNotices'
 
 const ApplicationLayout = lazy(() => import('./layout/ApplicationLayout'))
 const BreadcrumbProvider = lazy(() => import('./Breadcrumbs'))
@@ -183,6 +184,7 @@ export function PluralInner() {
       <BreadcrumbProvider>
         <ChecklistProvider>
           <ApplicationLayout>
+            <DelinquencyNotice />
             <LegacyExpirationNotice />
             <PosthogIdentifier />
             <VerifyEmailConfirmed />

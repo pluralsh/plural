@@ -74,8 +74,6 @@ defmodule GraphQl.Schema.Shell do
     field :aes_key,     non_null(:string)
     field :missing,     list_of(:string)
 
-    field :demo_project, :demo_project, resolve: dataloader(Shell)
-
     field :cluster,     non_null(:string), resolve: fn
       %{workspace: %{cluster: cluster}}, _, _ -> {:ok, cluster}
     end
@@ -158,7 +156,7 @@ defmodule GraphQl.Schema.Shell do
     end
 
     field :components_ready, :string, resolve: fn
-      %Application{status: %ApplicationStatus{componentsReady: r}} -> {:ok, r}
+      %Application{status: %ApplicationStatus{componentsReady: r}}, _, _ -> {:ok, r}
     end
 
     field :components, list_of(:application_component), resolve: fn

@@ -13,18 +13,14 @@ import {
   Spinner,
 } from 'honorable'
 import { Button, Modal } from '@pluralsh/design-system'
-import { useStripe } from '@stripe/react-stripe-js'
 import { PaymentIntent, SetupIntent, StripeError } from '@stripe/stripe-js'
 
 import PlatformPlansContext from '../../../contexts/PlatformPlansContext'
 
-import { namedOperations, useCreatePlatformSubscriptionMutation } from '../../../generated/graphql'
-
-import { host } from '../../../helpers/hostname'
-
 import { type PlanType } from './PaymentForm'
 import { useRetrievePaymentIntent, useRetrieveSetupIntent } from './useRetrieveIntent'
 import { useBillingSubscription } from './BillingSubscriptionProvider'
+import { useUpgradeSubscription } from './hooks'
 
 function ModalLoading() {
   return (
@@ -202,8 +198,6 @@ function UpgradeResultModal({
   )
 }
 
-export const CONFIRM_RETURN_PATH = '/account/billing?confirmUpgrade=1'
-
 const setupIntentToResult: Record<SetupIntent.Status, UpgradeResult> = {
   succeeded: UpgradeResult.Loading,
   processing: UpgradeResult.StripePaymentProcessing,
@@ -228,8 +222,6 @@ export default function ConfirmPayment() {
   const [paymentIntent, setPaymentIntent] = useState<
     PaymentIntent | undefined
   >()
-
-  const stripe = useStripe()
 
   const { proPlatformPlan, proYearlyPlatformPlan }
     = useContext(PlatformPlansContext)
@@ -263,41 +255,20 @@ export default function ConfirmPayment() {
       ? setupIntent?.payment_method
       : setupIntent?.payment_method?.id
 
-  // Upgrade mutation
-  const [upgradeMutation, { error: upgradeError }]
-    = useCreatePlatformSubscriptionMutation({
-      variables: { planId, paymentMethod: paymentMethodId },
-      refetchQueries: [namedOperations.Query.Subscription],
-      onCompleted: result => {
-        const clientSecret
-          = result.createPlatformSubscription?.latestInvoice?.paymentIntent
-            ?.clientSecret
-
-        if (clientSecret) {
-          stripe
-            ?.confirmPayment({
-              clientSecret,
-              redirect: 'if_required',
-              confirmParams: {
-                return_url: `${host()}${CONFIRM_RETURN_PATH}`,
-              },
-            } as any)
-            .then(result => {
-              if (result.error) {
-                setConfirmPaymentError(result.error)
-              }
-              else if (result.paymentIntent) {
-                setPaymentIntent(result.paymentIntent)
-              }
-            })
-        }
-        else {
-          // If didn't receive a paymentIntent or clientSecret after mutation
-          // completed, assume successful upgrade
-          setUpgradeSuccess(true)
-        }
-      },
-    })
+  const [upgradeMutation, { error: upgradeError }] = useUpgradeSubscription({
+    variables: { planId, paymentMethod: paymentMethodId },
+    onSuccess: result => {
+      setPaymentIntent(result.paymentIntent)
+    },
+    onFailure: result => {
+      setConfirmPaymentError(result.error)
+    },
+    fallback: () => {
+      // If didn't receive a paymentIntent or clientSecret after mutation
+      // completed, assume successful upgrade
+      setUpgradeSuccess(true)
+    },
+  })
 
   useEffect(() => {
     if (setupIntent) {

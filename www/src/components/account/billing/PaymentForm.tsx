@@ -37,8 +37,8 @@ import BillingError from './BillingError'
 import BillingPreview from './BillingPreview'
 import { StripeElements } from './StripeElements'
 import { PaymentMethod } from './BillingBankCards'
-import { CONFIRM_RETURN_PATH } from './ConfirmPayment'
 import { useBillingSubscription } from './BillingSubscriptionProvider'
+import { CONFIRM_RETURN_PATH } from './hooks'
 
 export enum PaymentFormVariant {
   Upgrade = 'UPGRADE',

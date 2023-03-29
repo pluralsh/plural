@@ -157,7 +157,7 @@ defmodule Core.Services.Shell.Demo do
       end
     end)
     |> add_operation(:cluster, fn _ ->
-      with %{provider: p, workspace: %{cluster: c, subdomain: d}} <- get_shell(proj.id),
+      with %{workspace: %{subdomain: d}} <- get_shell(proj.id),
             {:ok, _} <- Dns.empty_domain(d, proj.user) do
         {:ok, true}
       else
@@ -166,8 +166,8 @@ defmodule Core.Services.Shell.Demo do
     end)
     |> add_operation(:db, fn _ -> Core.Repo.delete(proj) end)
     |> add_operation(:maybe_reset, fn _ ->
-      case Upgrades.queue_count(proj.user_id) do
-        n when n <= 1 -> Repositories.reset_installations(proj.user)
+      case {Upgrades.queue_count(proj.user_id), proj.user} do
+        {n, %User{provider: :gcp}} when n <= 1 -> Repositories.reset_installations(proj.user)
         _ -> {:ok, nil}
       end
     end)

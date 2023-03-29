@@ -2,15 +2,19 @@ import {
   Dispatch,
   ReactElement,
   forwardRef,
+  useContext,
   useState,
 } from 'react'
 import { Button, ButtonProps, Flex } from 'honorable'
 import { CliIcon, ToolIcon, Tooltip } from '@pluralsh/design-system'
 
+import CurrentUserContext from '../../../../contexts/CurrentUserContext'
+
 import { TerminalThemeSelector } from './theme/Selector'
 
 import { Cheatsheet } from './cheatsheet/Cheatsheet'
 import { MoreOptions } from './options/MoreOptions'
+import { DeleteDemoModal } from './options/DeleteShellModal'
 
 type ActionBarItemProps = {
   tooltip?: string,
@@ -50,6 +54,8 @@ function ActionBarItemRef({
 const ActionBarItem = forwardRef(ActionBarItemRef)
 
 function ActionBar({ onRepairViewport }) {
+  const [demoDelete, setDemoDelete] = useState(false)
+  const { demoing } = useContext(CurrentUserContext)
   const [showCheatsheet, setShowCheatsheet] = useState(false)
 
   return (
@@ -61,6 +67,14 @@ function ActionBar({ onRepairViewport }) {
       justify="flex-end"
       marginRight="medium"
     >
+      {demoDelete && <DeleteDemoModal onClose={() => setDemoDelete(false)} />}
+      {demoing && (
+        <Button
+          small
+          onClick={() => setDemoDelete(true)}
+        >Delete Demo
+        </Button>
+      ) }
       <ActionBarItem
         data-phid="repair-viewport"
         tooltip="Repair Viewport"

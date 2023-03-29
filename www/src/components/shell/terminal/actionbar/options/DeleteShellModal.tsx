@@ -17,6 +17,68 @@ import {
 import { DELETE_DEMO_PROJECT_MUTATION, DELETE_SHELL_MUTATION } from '../../../queries'
 import CurrentUserContext from '../../../../../contexts/CurrentUserContext'
 
+function DeleteDemoModal({ onClose }) {
+  const [open, setOpen] = useState(true)
+  const close = useCallback(() => {
+    setOpen(false)
+    onClose()
+  }, [onClose])
+
+  const [mutation, { loading }] = useMutation(DELETE_DEMO_PROJECT_MUTATION, {
+    onCompleted: () => window.location.reload(),
+  })
+
+  return (
+    <Modal
+      size="large"
+      open={open}
+      onClose={close}
+      style={{ padding: 0 }}
+      borderTop="4px solid border-warning"
+    >
+      <Flex
+        direction="column"
+        gap="large"
+      >
+        <Flex gap="medium">
+          <WarningIcon color="icon-warning" />
+          <Span
+            body2
+            color="text-xlight"
+          >CONFIRM DEMO PROJECT DELETION
+          </Span>
+        </Flex>
+
+        <Flex
+          direction="column"
+          gap="large"
+        >
+          <Span body1>This will delete your 6 hour demo environment.</Span>
+          <Span body1>You'll still be able to create clusters on your cloud environment in the future&nbsp;</Span>
+        </Flex>
+        <Flex
+          justify="flex-end"
+          gap="medium"
+        >
+          <Button
+            data-phid="delete-shell-cancel"
+            secondary
+            onClick={close}
+          >Cancel
+          </Button>
+          <Button
+            data-phid="delete-shell-confirm"
+            destructive
+            onClick={mutation}
+            loading={loading}
+          >Delete
+          </Button>
+        </Flex>
+      </Flex>
+    </Modal>
+  )
+}
+
 function DeleteShellModal({ onClose }) {
   const { demoing } = useContext(CurrentUserContext)
   const [open, setOpen] = useState(true)
@@ -120,4 +182,4 @@ function DeleteShellModal({ onClose }) {
   )
 }
 
-export { DeleteShellModal }
+export { DeleteShellModal, DeleteDemoModal }

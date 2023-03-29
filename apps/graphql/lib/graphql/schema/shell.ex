@@ -74,6 +74,8 @@ defmodule GraphQl.Schema.Shell do
     field :aes_key,     non_null(:string)
     field :missing,     list_of(:string)
 
+    field :demo_project, :demo_project, resolve: dataloader(Shell)
+
     field :cluster,     non_null(:string), resolve: fn
       %{workspace: %{cluster: cluster}}, _, _ -> {:ok, cluster}
     end

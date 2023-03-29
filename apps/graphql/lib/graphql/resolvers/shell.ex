@@ -1,7 +1,11 @@
 defmodule GraphQl.Resolvers.Shell do
   use GraphQl.Resolvers.Base, model: Core.Schema.CloudShell
+  alias Core.Schema.DemoProject
   alias Core.Services.{Recipes, Shell}
   alias Core.Shell.Scm
+
+  def query(DemoProject, _), do: DemoProject
+  def query(_, _), do: CloudShell
 
   def resolve_shell(_, %{context: %{current_user: user}}),
     do: {:ok, Shell.get_shell(user.id)}

@@ -19,7 +19,6 @@ fragment User on User {
   email
   avatar
   provider
-  demoing
   demoed
   onboarding
   onboardingChecklist { dismissed status }
@@ -123,6 +122,7 @@ fragment EabCredential on EabCredential {
 query Me{
   me { 
     ...User
+    demoing
     loginMethod
     hasInstallations
     account {
@@ -135,7 +135,7 @@ query Me{
       billingAccountId
     }
     boundRoles { ...Role }
-    }
+  }
   configuration {
     stripeConnectId
     stripePublishableKey

@@ -15,47 +15,8 @@ type BillingDowngradeModalPropsType = {
   onClose: () => void
 }
 
-function BillingDowngradeModal({
-  open,
-  onClose,
-}: BillingDowngradeModalPropsType) {
-  const { refetch: refetchSubscription } = useContext(SubscriptionContext)
-
-  const [downgradeMutation, { loading }] = useMutation(DOWNGRADE_TO_FREE_PLAN_MUTATION)
-
-  const [success, setSuccess] = useState(false)
-  const [error, setError] = useState<Error | undefined>(undefined)
-
-  const handleDowngrade = useCallback(() => {
-    downgradeMutation()
-      .then(() => {
-        setSuccess(true)
-        refetchSubscription()
-      })
-      .catch(e => {
-        setError(e)
-      })
-  }, [downgradeMutation, refetchSubscription])
-
-  const renderContent = useCallback(() => (
-    <>
-      <Div>Are you certain you want to downgrade to the free plan?</Div>
-      <Flex
-        justify="flex-end"
-        marginTop="xxlarge"
-      >
-        <Button
-          onClick={handleDowngrade}
-          loading={loading}
-        >
-          Downgrade
-        </Button>
-      </Flex>
-    </>
-  ),
-  [loading, handleDowngrade])
-
-  const renderSuccess = useCallback(() => (
+function Success() {
+  return (
     <>
       <Div>You've successfully downgraded to the free plan.</Div>
       <Flex
@@ -70,22 +31,55 @@ function BillingDowngradeModal({
         </Button>
       </Flex>
     </>
-  ),
-  [])
+  )
+}
+
+function BillingDowngradeModal({
+  open,
+  onClose,
+}: BillingDowngradeModalPropsType) {
+  const { refetch: refetchSubscription, isProPlan } = useContext(SubscriptionContext)
+
+  const [downgradeMutation, { loading }] = useMutation(DOWNGRADE_TO_FREE_PLAN_MUTATION)
+
+  const [error, setError] = useState<Error | undefined>(undefined)
+
+  const handleDowngrade = useCallback(() => {
+    downgradeMutation()
+      .then(() => {
+        refetchSubscription()
+      })
+      .catch(e => {
+        setError(e)
+      })
+  }, [downgradeMutation, refetchSubscription])
 
   return (
     <Modal
       open={open}
       onClose={onClose}
       header="Downgrade to free"
-      minWidth={512 + 128}
+      size="large"
     >
       {error ? (
         <BillingError>{error.message}</BillingError>
-      ) : success ? (
-        renderSuccess()
+      ) : !isProPlan ? (
+        <Success />
       ) : (
-        renderContent()
+        <>
+          <Div>Are you certain you want to downgrade to the free plan?</Div>
+          <Flex
+            justify="flex-end"
+            marginTop="xxlarge"
+          >
+            <Button
+              onClick={handleDowngrade}
+              loading={loading}
+            >
+              Downgrade
+            </Button>
+          </Flex>
+        </>
       )}
     </Modal>
   )

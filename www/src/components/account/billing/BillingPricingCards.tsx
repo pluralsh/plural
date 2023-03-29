@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { Flex } from 'honorable'
 import { Button } from '@pluralsh/design-system'
@@ -47,7 +47,7 @@ function BillingPricingCards() {
   const [downgradeModalOpen, setDowngradeModalOpen] = useState(false)
 
   const upgradeToProfessionalModalOpen = typeof searchParams.get('upgrade') === 'string'
-  const setUpgradeToProfessionalModalOpen = isOpen => {
+  const setUpgradeToProfessionalModalOpen = useCallback(isOpen => {
     setSearchParams(sp => {
       if (isOpen) {
         sp.set('upgrade', '1')
@@ -58,7 +58,7 @@ function BillingPricingCards() {
 
       return sp
     })
-  }
+  }, [setSearchParams])
 
   return (
     <>

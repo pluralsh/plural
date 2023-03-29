@@ -37,7 +37,7 @@ import BillingError from './BillingError'
 import BillingPreview from './BillingPreview'
 import { StripeElements } from './StripeElements'
 import { PaymentMethod } from './BillingBankCards'
-import { CONFIRM_PAYMENT_RETURN_PATH } from './ConfirmPayment'
+import { CONFIRM_RETURN_PATH } from './ConfirmPayment'
 import { useBillingSubscription } from './BillingSubscriptionProvider'
 
 export enum PaymentFormVariant {
@@ -48,8 +48,7 @@ export enum PaymentFormVariant {
 enum PaymentFormState {
   CollectAddress = 'CollectAddress',
   CollectPayment = 'CollectPayment',
-  SelectPaymentMethod = 'SelectPaymentMethod',
-  // UpgradeSuccess = 'UpgradeSuccess',
+  SelectUpgradePaymentMethod = 'SelectPaymentMethod',
 }
 
 type PaymentFormContextState = {
@@ -131,7 +130,7 @@ function PaymentFormProvider({
 }>) {
   const initialFormState
     = formVariant === PaymentFormVariant.Upgrade
-      ? PaymentFormState.SelectPaymentMethod
+      ? PaymentFormState.SelectUpgradePaymentMethod
       : PaymentFormState.CollectAddress
   const [contextState, dispatch] = useImmerReducer(reducer, {
     ...defaultState,
@@ -194,8 +193,8 @@ function PaymentFormInner() {
           }}
         />
       )}
-      {formState === PaymentFormState.SelectPaymentMethod && (
-        <SelectPaymentMethod />
+      {formState === PaymentFormState.SelectUpgradePaymentMethod && (
+        <SelectUpgradePaymentMethod />
       )}
       <StripeElements>
         {formState === PaymentFormState.CollectAddress && (
@@ -330,7 +329,7 @@ function Payment() {
           },
           return_url:
               formVariant === PaymentFormVariant.Upgrade
-                ? `${host()}/account/billing?plan=${plan}`
+                ? `${host()}${CONFIRM_RETURN_PATH}&plan=${plan}`
                 : `${host()}/account/billing/payments`,
         },
       })
@@ -525,7 +524,7 @@ function AddressForm({
           {formVariant === PaymentFormVariant.Upgrade && (
             <Button
               onClick={() => {
-                setFormState(PaymentFormState.SelectPaymentMethod)
+                setFormState(PaymentFormState.SelectUpgradePaymentMethod)
               }}
             >
               Go back
@@ -564,15 +563,15 @@ function AddressForm({
   )
 }
 
-function SelectPaymentMethod() {
+function SelectUpgradePaymentMethod() {
   const { setFormState, plan } = usePaymentForm()
-  const { defaultPaymentMethod, paymentMethods } = useBillingSubscription()
+  const { defaultPaymentMethod, paymentMethods, refetch }
+    = useBillingSubscription()
   const [error, setError] = useState<Error | StripeError | undefined>()
   const { proPlatformPlan, proYearlyPlatformPlan }
     = useContext(PlatformPlansContext)
   const planId
     = plan === 'yearly' ? proYearlyPlatformPlan.id : proPlatformPlan.id
-  const stripe = useStripe()
   const navigate = useNavigate()
 
   // Upgrade mutation
@@ -582,28 +581,20 @@ function SelectPaymentMethod() {
     onCompleted: result => {
       console.log('upgrade mutation result', result)
       const clientSecret
-      = result.createPlatformSubscription?.latestInvoice?.paymentIntent
-        ?.clientSecret
+        = result.createPlatformSubscription?.latestInvoice?.paymentIntent
+          ?.clientSecret
 
       if (clientSecret) {
-        stripe
-          ?.confirmPayment({
-            clientSecret,
-            redirect: 'if_required',
-            confirmParams: {
-              return_url: `${host()}${CONFIRM_PAYMENT_RETURN_PATH}`,
-            },
-          } as any)
-          .then(result => {
-            console.log('confirm payment result', result)
-            if (result.error) {
-              setError(result.error)
-            }
-            else {
-              // Consider handling success without redirect
-              navigate(`${CONFIRM_PAYMENT_RETURN_PATH}&payment_intent_client_secret=${result.paymentIntent.client_secret}`)
-            }
-          })
+        // Redirect to <ConfirmPayment> with payment_intent_client_secret to confirm payment
+        navigate(`${CONFIRM_RETURN_PATH}&payment_intent_client_secret=${clientSecret}`)
+      }
+      else {
+        // No payment intent, redirect to <ConfirmPayment> to verify upgrade
+        (refetch() as any).then(() => {
+          // Refetch BillingSubscription before showing <ConfirmPayment> to make
+          // sure isPro is fresh value
+          navigate(`${CONFIRM_RETURN_PATH}`)
+        })
       }
     },
     onError: error => {
@@ -669,4 +660,3 @@ function SelectPaymentMethod() {
     </Flex>
   )
 }
-

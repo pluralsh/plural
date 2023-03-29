@@ -5,7 +5,7 @@ import {
   useElements,
   useStripe,
 } from '@stripe/react-stripe-js'
-import { StripePaymentElementOptions } from '@stripe/stripe-js'
+import { StripeError, StripePaymentElementOptions } from '@stripe/stripe-js'
 import { Div, Flex } from 'honorable'
 import {
   ComponentProps,
@@ -19,11 +19,11 @@ import {
 } from 'react'
 import { type ImmerReducer, useImmerReducer } from 'use-immer'
 
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 import isEmpty from 'lodash/isEmpty'
 
-import { namedOperations, useSetupIntentMutation } from '../../../generated/graphql'
+import { namedOperations, useCreatePlatformSubscriptionMutation, useSetupIntentMutation } from '../../../generated/graphql'
 import type { AddressAttributes } from '../../../generated/graphql'
 
 import { host } from '../../../helpers/hostname'
@@ -35,9 +35,8 @@ import BillingError from './BillingError'
 import BillingPreview from './BillingPreview'
 import { StripeElements } from './StripeElements'
 import { PaymentMethod } from './BillingBankCards'
-import { UpgradeSuccessMessage } from './ConfirmPayment'
 import { useBillingSubscription } from './BillingSubscriptionProvider'
-import { useUpgradeSubscription } from './hooks'
+import { CONFIRM_RETURN_PATH } from './hooks'
 
 export enum PaymentFormVariant {
   Upgrade = 'UPGRADE',
@@ -47,8 +46,7 @@ export enum PaymentFormVariant {
 enum PaymentFormState {
   CollectAddress = 'CollectAddress',
   CollectPayment = 'CollectPayment',
-  SelectPaymentMethod = 'SelectPaymentMethod',
-  UpgradeSuccess = 'UpgradeSuccess',
+  SelectUpgradePaymentMethod = 'SelectPaymentMethod',
 }
 
 type PaymentFormContextState = {
@@ -130,7 +128,7 @@ function PaymentFormProvider({
 }>) {
   const initialFormState
     = formVariant === PaymentFormVariant.Upgrade
-      ? PaymentFormState.SelectPaymentMethod
+      ? PaymentFormState.SelectUpgradePaymentMethod
       : PaymentFormState.CollectAddress
   const [contextState, dispatch] = useImmerReducer(reducer, {
     ...defaultState,
@@ -178,10 +176,6 @@ function PaymentFormInner() {
     formState, plan, setPlan, formVariant,
   } = usePaymentForm()
 
-  if (formState === PaymentFormState.UpgradeSuccess) {
-    return <UpgradeSuccess />
-  }
-
   return (
     <Flex
       flexDirection="column"
@@ -197,8 +191,8 @@ function PaymentFormInner() {
           }}
         />
       )}
-      {formState === PaymentFormState.SelectPaymentMethod && (
-        <SelectPaymentMethod />
+      {formState === PaymentFormState.SelectUpgradePaymentMethod && (
+        <SelectUpgradePaymentMethod />
       )}
       <StripeElements>
         {formState === PaymentFormState.CollectAddress && (
@@ -333,7 +327,7 @@ function Payment() {
           },
           return_url:
               formVariant === PaymentFormVariant.Upgrade
-                ? `${host()}/account/billing?plan=${plan}`
+                ? `${host()}${CONFIRM_RETURN_PATH}&plan=${plan}`
                 : `${host()}/account/billing/payments`,
         },
       })
@@ -528,7 +522,7 @@ function AddressForm({
           {formVariant === PaymentFormVariant.Upgrade && (
             <Button
               onClick={() => {
-                setFormState(PaymentFormState.SelectPaymentMethod)
+                setFormState(PaymentFormState.SelectUpgradePaymentMethod)
               }}
             >
               Go back
@@ -567,10 +561,11 @@ function AddressForm({
   )
 }
 
-function SelectPaymentMethod() {
+function SelectUpgradePaymentMethod() {
   const { setFormState, plan } = usePaymentForm()
-  const { defaultPaymentMethod, paymentMethods } = useBillingSubscription()
-  const [upgradeSuccess, setUpgradeSuccess] = useState(false)
+  const { defaultPaymentMethod, paymentMethods, refetch }
+    = useBillingSubscription()
+  const [error, setError] = useState<Error | StripeError | undefined>()
   const { proPlatformPlan, proYearlyPlatformPlan }
     = useContext(PlatformPlansContext)
   const navigate = useNavigate()
@@ -578,22 +573,35 @@ function SelectPaymentMethod() {
     = plan === 'yearly' ? proYearlyPlatformPlan.id : proPlatformPlan.id
 
   // Upgrade mutation
-  const [upgradeMutation, { loading, error }] = useUpgradeSubscription(
-    { planId },
-    (result, nextPath) => navigate(`${nextPath}&payment_intent_client_secret=${result.paymentIntent.client_secret}`),
-    () => null,
-    () => setUpgradeSuccess(true)
-  )
+  const [upgradeMutation, { loading }] = useCreatePlatformSubscriptionMutation({
+    variables: { planId },
+    refetchQueries: [namedOperations.Query.Subscription],
+    onCompleted: result => {
+      const clientSecret
+        = result.createPlatformSubscription?.latestInvoice?.paymentIntent
+          ?.clientSecret
+
+      if (clientSecret) {
+        // Redirect to <ConfirmPayment> with payment_intent_client_secret to confirm payment
+        navigate(`${CONFIRM_RETURN_PATH}&payment_intent_client_secret=${clientSecret}`)
+      }
+      else {
+        // No payment intent, redirect to <ConfirmPayment> to verify upgrade
+        (refetch() as any).then(() => {
+          // Refetch BillingSubscription before showing <ConfirmPayment> to make
+          // sure isPro is fresh value
+          navigate(`${CONFIRM_RETURN_PATH}`)
+        })
+      }
+    },
+    onError: error => {
+      setError(error)
+    },
+  })
 
   useEffect(() => {
     if (isEmpty(paymentMethods)) {
       setFormState(PaymentFormState.CollectAddress)
-    }
-  })
-
-  useEffect(() => {
-    if (upgradeSuccess) {
-      setFormState(PaymentFormState.UpgradeSuccess)
     }
   })
 
@@ -644,28 +652,6 @@ function SelectPaymentMethod() {
           }}
         >
           Upgrade with selected card
-        </Button>
-      </Flex>
-    </Flex>
-  )
-}
-
-function UpgradeSuccess() {
-  const { onClose } = usePaymentForm()
-
-  return (
-    <Flex
-      direction="column"
-      gap="large"
-    >
-      <UpgradeSuccessMessage />
-      <Flex justifyContent="end">
-        <Button
-          as={Link}
-          to="/marketplace"
-          onClick={() => onClose()}
-        >
-          Explore the app
         </Button>
       </Flex>
     </Flex>

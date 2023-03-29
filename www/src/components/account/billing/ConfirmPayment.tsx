@@ -5,24 +5,21 @@ import {
   useEffect,
   useState,
 } from 'react'
+import { Link, useSearchParams } from 'react-router-dom'
 import {
-  Link,
-  useLocation,
-  useNavigate,
-  useSearchParams,
-} from 'react-router-dom'
-import { Flex, P, Spinner } from 'honorable'
-import { Button, Modal, usePrevious } from '@pluralsh/design-system'
-import { useStripe } from '@stripe/react-stripe-js'
-import { PaymentIntent, SetupIntent } from '@stripe/stripe-js'
-
-import isEmpty from 'lodash/isEmpty'
+  Flex,
+  P,
+  PProps,
+  Spinner,
+} from 'honorable'
+import { Button, Modal } from '@pluralsh/design-system'
+import { PaymentIntent, SetupIntent, StripeError } from '@stripe/stripe-js'
 
 import PlatformPlansContext from '../../../contexts/PlatformPlansContext'
 
-import { namedOperations, useDefaultPaymentMethodMutation } from '../../../generated/graphql'
-
 import { type PlanType } from './PaymentForm'
+import { useRetrievePaymentIntent, useRetrieveSetupIntent } from './useRetrieveIntent'
+import { useBillingSubscription } from './BillingSubscriptionProvider'
 import { useUpgradeSubscription } from './hooks'
 
 function ModalLoading() {
@@ -38,237 +35,154 @@ function ModalLoading() {
   )
 }
 
-export function UpgradeSuccessMessage() {
+function ResultMessage(props: PProps) {
   return (
-    <P>
-      Welcome to the Plural Professional plan! You now have access to groups,
-      roles, service accounts, and more.
-    </P>
+    <P
+      body1
+      {...props}
+    />
   )
 }
 
-const useClearSearchParams = () => {
-  const location = useLocation()
-  const navigate = useNavigate()
+export const useClearSearchParams = () => {
+  const [_, setSearchParams] = useSearchParams()
 
   return () => {
-    navigate(location.pathname)
+    setSearchParams()
   }
 }
 
-const useRetrieveSetupIntent = ({
-  clientSecret,
-  onComplete,
-  onError,
-}: {
-  clientSecret?: string | null
-  onComplete?: (setupIntent: SetupIntent) => void
-  onError?: (e: { message?: string }) => void
-}) => {
-  const [error, setError] = useState<{ message?: string } | undefined>()
-  const [intent, setIntent] = useState<SetupIntent | null>()
-  const [makeDefaultMutation] = useDefaultPaymentMethodMutation({
-    refetchQueries: [namedOperations.Query.Subscription],
-  })
-  const prevClientSecret = usePrevious(clientSecret)
-
-  const stripe = useStripe()
-
-  useEffect(() => {
-    if (clientSecret !== prevClientSecret) {
-      setError(undefined)
-      setIntent(undefined)
-    }
-  }, [clientSecret, prevClientSecret])
-
-  useEffect(() => {
-    if (intent) {
-      onComplete?.(intent)
-    }
-  }, [onComplete, intent])
-  useEffect(() => {
-    if (error) {
-      onError?.(error)
-    }
-  }, [error, onError])
-
-  useEffect(() => {
-    let cancelled = false
-
-    ;(async function x() {
-      if (stripe && clientSecret) {
-        try {
-          const { setupIntent, error } = await stripe.retrieveSetupIntent(clientSecret)
-
-          if (cancelled) {
-            return
-          }
-          setError(error)
-          setIntent(setupIntent)
-        }
-        catch (e) {
-          setError(e as Error)
-        }
-
-        return () => {
-          cancelled = true
-        }
-      }
-    }())
-  }, [clientSecret, makeDefaultMutation, stripe])
-
-  return { error, setupIntent: intent }
+enum UpgradeResult {
+  Success = 'Success',
+  Loading = 'Loading',
+  Error = 'Error',
+  ConfirmPaymentError = 'ConfirmPaymentError',
+  StripeRequiresAction = 'StripeRequiresAction',
+  StripePaymentProcessing = 'StripePaymentProcessing',
+  StripeRequiresPaymentMethod = 'StripeRequiresPaymentMethod',
+  StripeCancelled = 'StripeCancelled',
 }
 
-const useRetrievePaymentIntent = ({
-  clientSecret,
-  onComplete,
-  onError,
-}: {
-  clientSecret?: string | null
-  onComplete?: (setupIntent: PaymentIntent) => void
-  onError?: (e: { message?: string }) => void
-}) => {
-  const [error, setError] = useState<{ message?: string } | undefined>()
-  const [intent, setIntent] = useState<PaymentIntent | null>()
-  const [makeDefaultMutation] = useDefaultPaymentMethodMutation({
-    refetchQueries: [namedOperations.Query.Subscription],
-  })
-  const prevClientSecret = usePrevious(clientSecret)
-
-  const stripe = useStripe()
-
-  useEffect(() => {
-    if (clientSecret !== prevClientSecret) {
-      setError(undefined)
-      setIntent(undefined)
-    }
-  }, [clientSecret, prevClientSecret])
-
-  useEffect(() => {
-    if (intent) {
-      onComplete?.(intent)
-    }
-  }, [onComplete, intent])
-  useEffect(() => {
-    if (error) {
-      onError?.(error)
-    }
-  }, [error, onError])
-
-  useEffect(() => {
-    let cancelled = false
-
-    ;(async function x() {
-      if (stripe && clientSecret) {
-        try {
-          const { paymentIntent: intent, error }
-            = await stripe.retrievePaymentIntent(clientSecret)
-
-          if (cancelled) {
-            return
-          }
-          setError(error)
-          setIntent(intent)
-        }
-        catch (e) {
-          setError(e as Error)
-        }
-
-        return () => {
-          cancelled = true
-        }
-      }
-    }())
-  }, [clientSecret, makeDefaultMutation, stripe])
-
-  return { error, paymentIntent: intent }
-}
-
-type BasicError = { message?: string } | undefined
-
-function ModalActions({
-  success = false,
-  loading = false,
-  onClose,
-}: {
-  success: boolean
-  loading: boolean
-  onClose: () => void
-}) {
-  return loading ? null : success ? (
-    <Button
-      as={Link}
-      to="/marketplace"
-      onClick={() => onClose()}
-    >
-      Explore the app
-    </Button>
-  ) : (
-    <Flex gap="medium">
-      <Button
-        secondary
-        onClick={onClose}
-      >
-        Close
-      </Button>
-      <Button
-        as={Link}
-        to="/account/billing/payment"
-        onClick={onClose}
-      >
-        Manage payment methods
-      </Button>
-    </Flex>
-  )
-}
-
-export function ConfirmPaymentIntent({
-  clientSecret,
-}: {
-  clientSecret: string
-}) {
-  const { paymentIntent, error } = useRetrievePaymentIntent({ clientSecret })
-  const [isOpen, setIsOpen] = useState(!!clientSecret)
-  let message: ReactNode | undefined
+function upgradeResultToMessaging(result: UpgradeResult,
+  error?: Error | StripeError) {
   let header: string | undefined
-  const clearSearchParams = useClearSearchParams()
+  let message: ReactNode
 
-  const onClose = useCallback(() => {
-    setIsOpen(false)
-    clearSearchParams()
-  }, [clearSearchParams])
-
-  const loading = !error && !paymentIntent
-
-  const paymentSuccess = paymentIntent?.status === 'succeeded'
-
-  if (loading) {
-    header = 'Checking payment'
-    message = <ModalLoading />
-  }
-  if (paymentSuccess) {
-    header = 'Payment success'
-    message = <UpgradeSuccessMessage />
-  }
-  else {
+  switch (result) {
+  case UpgradeResult.Success:
+    header = 'Upgrade success'
+    message = (
+      <ResultMessage>
+        Welcome to the Plural Professional plan! You now have access to
+        groups, roles, service accounts, and more.
+      </ResultMessage>
+    )
+    break
+  case UpgradeResult.Error:
+    header = 'Error processing payment'
+    message = (
+      <ResultMessage>
+        Error processing payment${error ? `: ${error.message}` : '.'}`
+      </ResultMessage>
+    )
+    break
+  case UpgradeResult.ConfirmPaymentError:
     header = 'Error completing payment'
     message = (
-      <P body1>
-        There was an error completing your payment. Check the Payments page to
-        complete payment.
-      </P>
+      <ResultMessage>
+        There was an error completing your payment. Check invoice on Payments
+        page to complete payment.
+      </ResultMessage>
     )
+    break
+  case UpgradeResult.StripeRequiresAction:
+    header = 'Requires action'
+    message = <ResultMessage>Payment requires an action.</ResultMessage>
+    break
+  case UpgradeResult.StripePaymentProcessing:
+    header = 'Payment processing'
+    message = <ResultMessage>Payment processing.</ResultMessage>
+    break
+  case UpgradeResult.StripeRequiresPaymentMethod:
+    header = 'Payment failed'
+    message = (
+      <ResultMessage>
+        Payment failed. Please try another payment method.
+      </ResultMessage>
+    )
+    break
+  case UpgradeResult.Loading:
+  default:
+    header = 'Payment processing'
+    message = <ModalLoading />
+    break
   }
+
+  return { header, message }
+}
+
+function ModalActions({
+  upgradeResult,
+  onClose,
+}: {
+  upgradeResult: UpgradeResult
+  onClose: () => void
+}) {
+  return upgradeResult === UpgradeResult.Loading ? null : upgradeResult
+    === UpgradeResult.Success ? (
+      <Button
+        as={Link}
+        to="/marketplace"
+        onClick={() => onClose()}
+      >
+        Explore the app
+      </Button>
+    ) : (
+      <Flex gap="medium">
+        <Button
+          secondary
+          onClick={onClose}
+        >
+          Close
+        </Button>
+        {upgradeResult === UpgradeResult.ConfirmPaymentError ? (
+          <Button
+            as={Link}
+            to="/account/billing/payments"
+            onClick={onClose}
+          >
+            Go to Payments
+          </Button>
+        ) : (
+          <Button
+            as={Link}
+            to="/account/billing?upgrade=1"
+            onClick={onClose}
+          >
+            Retry
+          </Button>
+        )}
+      </Flex>
+    )
+}
+
+function UpgradeResultModal({
+  result,
+  onClose,
+  open,
+  error,
+}: {
+  result: UpgradeResult
+} & { open: boolean; onClose: () => void; error?: StripeError | Error }) {
+  const { header, message } = upgradeResultToMessaging(result, error)
 
   return (
     <Modal
-      open={isOpen}
+      open={open}
       header={header}
       actions={(
         <ModalActions
-          loading={loading}
-          success={paymentSuccess}
+          upgradeResult={result}
           onClose={onClose}
         />
       )}
@@ -284,52 +198,77 @@ export function ConfirmPaymentIntent({
   )
 }
 
-function ConfirmSetupIntent({ clientSecret }: { clientSecret: string }) {
-  const [searchParams] = useSearchParams()
-  const clearSearchParams = useClearSearchParams()
-  const navigate = useNavigate()
+const setupIntentToResult: Record<SetupIntent.Status, UpgradeResult> = {
+  succeeded: UpgradeResult.Loading,
+  processing: UpgradeResult.StripePaymentProcessing,
+  requires_payment_method: UpgradeResult.StripeRequiresPaymentMethod,
+  requires_action: UpgradeResult.StripeRequiresAction,
+  canceled: UpgradeResult.StripeCancelled,
+  requires_confirmation: UpgradeResult.Error,
+}
 
+export default function ConfirmPayment() {
+  const { isProPlan } = useBillingSubscription()
+  const [searchParams, setSearchParams] = useSearchParams()
+
+  const confirmUpgradeParam = searchParams.get('confirmUpgrade')
+  const shouldConfirm = typeof confirmUpgradeParam === 'string'
+  const forceSuccess = isProPlan
+  const paymentIntentSecret = searchParams.get('payment_intent_client_secret')
+  const setupIntentSecret = searchParams.get('setup_intent_client_secret')
   const plan: PlanType
     = searchParams.get('plan') === 'yearly' ? 'yearly' : 'monthly'
+
+  const [paymentIntent, setPaymentIntent] = useState<
+    PaymentIntent | undefined
+  >()
+
   const { proPlatformPlan, proYearlyPlatformPlan }
     = useContext(PlatformPlansContext)
   const planId
     = plan === 'yearly' ? proYearlyPlatformPlan.id : proPlatformPlan.id
 
   const [upgradeSuccess, setUpgradeSuccess] = useState(false)
-  const [isOpen, setIsOpen] = useState(!!clientSecret)
 
   const onClose = useCallback(() => {
-    setIsOpen(false)
-    clearSearchParams()
-  }, [clearSearchParams])
-
-  useEffect(() => {
-    if (upgradeSuccess && !isEmpty(searchParams.values)) {
-      clearSearchParams()
-    }
-  }, [clearSearchParams, searchParams.values, upgradeSuccess])
+    setSearchParams()
+  }, [setSearchParams])
 
   // Confirm payment
-  const { error: retrieveSetupIntentError, setupIntent }
+  const { error: retrieveSetupIntentError, intent: setupIntent }
     = useRetrieveSetupIntent({
-      clientSecret,
+      clientSecret: setupIntentSecret,
     })
-  const [confirmPaymentError, setConfirmPaymentError]
-    = useState<BasicError>(undefined)
+
+  useRetrievePaymentIntent({
+    clientSecret: paymentIntentSecret,
+    onComplete: paymentIntent => {
+      setPaymentIntent(paymentIntent)
+    },
+  })
+  const [confirmPaymentError, setConfirmPaymentError] = useState<
+    StripeError | undefined
+  >(undefined)
 
   const paymentMethodId
     = typeof setupIntent?.payment_method === 'string'
       ? setupIntent?.payment_method
       : setupIntent?.payment_method?.id
 
-  // Upgrade mutation
-  const [upgradeMutation, { error: upgradeError }] = useUpgradeSubscription(
-    { planId, paymentMethod: paymentMethodId },
-    (result, nextPath) => navigate(`${nextPath}&payment_intent_client_secret=${result.paymentIntent.client_secret}`),
-    result => setConfirmPaymentError(result.error),
-    () => setUpgradeSuccess(true)
-  )
+  const [upgradeMutation, { error: upgradeError }] = useUpgradeSubscription({
+    variables: { planId, paymentMethod: paymentMethodId },
+    onSuccess: result => {
+      setPaymentIntent(result.paymentIntent)
+    },
+    onFailure: result => {
+      setConfirmPaymentError(result.error)
+    },
+    fallback: () => {
+      // If didn't receive a paymentIntent or clientSecret after mutation
+      // completed, assume successful upgrade
+      setUpgradeSuccess(true)
+    },
+  })
 
   useEffect(() => {
     if (setupIntent) {
@@ -345,87 +284,46 @@ function ConfirmSetupIntent({ clientSecret }: { clientSecret: string }) {
     }
   }, [error, onClose])
 
-  let message: ReactNode | undefined
-  let header: string | undefined
+  let upgradeResult: UpgradeResult = UpgradeResult.Loading
 
   if (upgradeSuccess) {
-    header = 'Payment success'
-    message = <UpgradeSuccessMessage />
+    upgradeResult = UpgradeResult.Success
+  }
+  else if (confirmPaymentError) {
+    upgradeResult = UpgradeResult.ConfirmPaymentError
+  }
+  else if (forceSuccess) {
+    upgradeResult = UpgradeResult.Success
   }
   else if (error) {
-    header = 'Error processing payment'
-    message = <P>Error processing payment: {error.message}</P>
+    upgradeResult = UpgradeResult.Error
   }
-  else if (setupIntent) {
-    switch (setupIntent?.status) {
-    case 'succeeded':
-      header = 'Processing'
-      message = <ModalLoading />
-      break
-    case 'processing':
-      header = 'Payment processing'
-      message = (
-        <P>Payment processing. We'll update you when payment is received.</P>
-      )
-      break
-    case 'requires_payment_method':
-      header = 'Payment failed'
-      message = <P>Payment failed. Please try another payment method.</P>
-      break
-    case 'requires_action':
-        // Possibly (hopefully) this case should never happen? Investigate to make sure
-        // https://stackoverflow.com/questions/62454487/stripe-v3-setupintents-and-subscriptions
-      header = 'Requires action'
-      message = <P>payment requires an action</P>
-      break
-    default:
-      header = 'Payment issue'
-      message = <P>There was an unknown issue processing your payment.</P>
+  else if (paymentIntent) {
+    if (paymentIntent.status === 'succeeded') {
+      upgradeResult = UpgradeResult.Success
+    }
+    else {
+      upgradeResult = UpgradeResult.ConfirmPaymentError
     }
   }
+  else if (setupIntent) {
+    upgradeResult
+      = setupIntentToResult[setupIntent.status] ?? UpgradeResult.Error
+  }
 
-  if (!clientSecret) {
+  if (
+    shouldConfirm
+    && !(setupIntentSecret || paymentIntentSecret || forceSuccess)
+  ) {
     return null
   }
 
   return (
-    <Modal
-      open={isOpen}
-      header={header}
-      actions={(
-        <ModalActions
-          loading={!message}
-          success={upgradeSuccess}
-          onClose={onClose}
-        />
-      )}
+    <UpgradeResultModal
+      result={upgradeResult}
+      error={error}
+      open={shouldConfirm}
       onClose={onClose}
-    >
-      <Flex
-        body1
-        gap="medium"
-      >
-        {message || <ModalLoading />}
-      </Flex>
-    </Modal>
+    />
   )
-}
-
-export default function ConfirmPayment() {
-  const [searchParams] = useSearchParams()
-
-  const confirmReturn = searchParams.get('confirmReturn')
-  const paymentClientSecret = searchParams.get('payment_intent_client_secret')
-
-  if (confirmReturn && paymentClientSecret) {
-    return <ConfirmPaymentIntent clientSecret={paymentClientSecret} />
-  }
-
-  const setupClientSecret = searchParams.get('setup_intent_client_secret')
-
-  if (setupClientSecret) {
-    return <ConfirmSetupIntent clientSecret={setupClientSecret} />
-  }
-
-  return null
 }

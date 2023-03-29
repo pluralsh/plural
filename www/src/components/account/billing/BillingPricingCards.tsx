@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { Flex } from 'honorable'
 import { Button } from '@pluralsh/design-system'
@@ -44,21 +44,21 @@ function BillingPricingCards() {
     = useContext(PlatformPlansContext)
   const { isProPlan, isEnterprisePlan } = useContext(SubscriptionContext)
 
-  const [upgradeToProfessionalModalOpen, setUpgradeToProfessionalModalOpen]
-    = useState(!!searchParams.get('upgrade'))
-
   const [downgradeModalOpen, setDowngradeModalOpen] = useState(false)
 
-  useEffect(() => {
-    if (!searchParams.get('upgrade')) return
-
-    setUpgradeToProfessionalModalOpen(true)
+  const upgradeToProfessionalModalOpen = typeof searchParams.get('upgrade') === 'string'
+  const setUpgradeToProfessionalModalOpen = useCallback(isOpen => {
     setSearchParams(sp => {
-      sp.delete('upgrade')
+      if (isOpen) {
+        sp.set('upgrade', '1')
+      }
+      else {
+        sp.delete('upgrade')
+      }
 
       return sp
     })
-  }, [searchParams, setSearchParams])
+  }, [setSearchParams])
 
   return (
     <>

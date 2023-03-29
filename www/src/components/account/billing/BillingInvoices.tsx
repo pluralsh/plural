@@ -73,8 +73,11 @@ const columns = [
 function BillingInvoices() {
   const { data, loading, error } = useInvoicesQuery()
 
-  const invoices = useMemo(() => data?.invoices?.edges?.map(e => e?.node),
-    [data])
+  const invoices = useMemo(() => data?.invoices?.edges?.map((e, i) => ({
+    id: `${e?.node?.hostedInvoiceUrl || i}`,
+    ...e?.node,
+  })),
+  [data])
 
   if (error) {
     return (
@@ -92,7 +95,11 @@ function BillingInvoices() {
   }
 
   if (isEmpty(invoices)) {
-    return <Card><EmptyState message="No invoices created yet" /></Card>
+    return (
+      <Card>
+        <EmptyState message="No invoices created yet" />
+      </Card>
+    )
   }
 
   return (

@@ -1,5 +1,3 @@
-// TODO: Make sure confirmPayment happens on upgrade with existing payment
-
 import { Button, Card } from '@pluralsh/design-system'
 import {
   AddressElement,

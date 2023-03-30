@@ -23,20 +23,18 @@ const PROMOTED_APPS = ['console']
 
 function ComponentStatuses({ components }) {
   const theme = useTheme()
+  const name = ({ group, kind, name }) => `${group || 'v1'}/${kind.toLowerCase()} ${name}`
 
   return (
     <Flex
       direction="column"
-      gap="xsmall"
     >
-      {components.map(({
-        group, kind, name, status,
-      }) => (
+      {components.map(comp => (
         <ListBoxItem
-          key={`${group}/${kind} ${name}`}
-          textValue={`${group}/${kind} ${name}`}
-          label={`${group}/${kind} ${name}`}
-          labelProps={{ color: status === 'Ready' ? theme.colors['text-success'] : theme.colors['text-warning'] }}
+          key={name(comp)}
+          textValue={name(comp)}
+          label={name(comp)}
+          labelProps={{ color: comp.status === 'Ready' ? theme.colors['text-success'] : theme.colors['text-warning'] }}
         />
       ))}
     </Flex>

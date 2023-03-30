@@ -11,9 +11,14 @@ import {
   TrashCanIcon,
   WrapWithIf,
 } from '@pluralsh/design-system'
-import { Flex, useTheme } from 'honorable'
+import { Div, Flex } from 'honorable'
 import { Drop } from 'grommet'
-import { Dispatch, useRef, useState } from 'react'
+import {
+  Dispatch,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 
 import { Repository, RepositoryEdge } from '../../../../../generated/graphql'
 
@@ -21,20 +26,48 @@ import { LaunchAppModal, useLaunchAppModal } from './LaunchAppModal'
 
 const PROMOTED_APPS = ['console']
 
+function StatusIndicator({ ready }) {
+  return (
+    <Div
+      width={10}
+      height={10}
+      borderRadius="50%"
+      backgroundColor={ready ? 'success' : 'warning'}
+    />
+  )
+}
+
+const ORDER = {
+  deployment: 1,
+  statefulset: 2,
+  certificate: 3,
+  ingress: 4,
+  cronjob: 5,
+  service: 6,
+  job: 7,
+}
+
+const kindInd = kind => ORDER[kind.toLowerCase()] || 7
+
+function orderBy({ kind: k1, name: n1, status: s1 }, { kind: k2, name: n2, status: s2 }) {
+  if (s1 !== s2) return s1 > s2 ? 1 : -1 // Ready > Pending, and all ready comps should follow pending ones
+  if (k1 === k2) return (n1 > n2) ? 1 : ((n1 === n2) ? 0 : -1)
+
+  return kindInd(k1) - kindInd(k2)
+}
+
 function ComponentStatuses({ components }) {
-  const theme = useTheme()
   const name = ({ group, kind, name }) => `${group || 'v1'}/${kind.toLowerCase()} ${name}`
+  const sorted = useMemo(() => components.sort(orderBy), [components])
 
   return (
-    <Flex
-      direction="column"
-    >
-      {components.map(comp => (
+    <Flex direction="column">
+      {sorted.map(comp => (
         <ListBoxItem
           key={name(comp)}
           textValue={name(comp)}
+          leftContent={<StatusIndicator ready={comp.status === 'Ready'} />}
           label={name(comp)}
-          labelProps={{ color: comp.status === 'Ready' ? theme.colors['text-success'] : theme.colors['text-warning'] }}
         />
       ))}
     </Flex>

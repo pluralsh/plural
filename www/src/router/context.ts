@@ -1,6 +1,8 @@
 import { createContext } from 'react'
 
-export const BROWSER_HISTORY_STORAGE_KEY = 'browser-history'
+import { LocalStorageKeys } from '../constants'
+
+export const BROWSER_HISTORY_STORAGE_KEY = LocalStorageKeys.BrowserHistory
 
 class PluralHistory {
   private _stack: Array<string> = []

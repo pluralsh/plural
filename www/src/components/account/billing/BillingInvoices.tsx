@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import {
   Button,
   Card,
@@ -13,12 +12,9 @@ import { createColumnHelper } from '@tanstack/react-table'
 import capitalize from 'lodash/capitalize'
 import isEmpty from 'lodash/isEmpty'
 
-import { Invoice, useInvoicesQuery } from '../../../generated/graphql'
+import { InvoiceFragment } from '../../../generated/graphql'
 
-import BillingError from './BillingError'
-import BillingLoading from './BillingLoading'
-
-const columnHelper = createColumnHelper<Invoice>()
+const columnHelper = createColumnHelper<InvoiceFragment & { id: string }>()
 
 const columns = [
   columnHelper.accessor(row => row.createdAt, {
@@ -70,30 +66,11 @@ const columns = [
   }),
 ]
 
-function BillingInvoices() {
-  const { data, loading, error } = useInvoicesQuery()
-
-  const invoices = useMemo(() => data?.invoices?.edges?.map((e, i) => ({
-    id: `${e?.node?.hostedInvoiceUrl || i}`,
-    ...e?.node,
-  })),
-  [data])
-
-  if (error) {
-    return (
-      <Card>
-        <BillingError />
-      </Card>
-    )
-  }
-  if (loading) {
-    return (
-      <Card>
-        <BillingLoading />
-      </Card>
-    )
-  }
-
+function BillingInvoices({
+  invoices,
+}: {
+  invoices: (InvoiceFragment | null | undefined)[]
+}) {
   if (isEmpty(invoices)) {
     return (
       <Card>

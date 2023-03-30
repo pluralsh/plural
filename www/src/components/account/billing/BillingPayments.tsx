@@ -1,4 +1,7 @@
-import { Div } from 'honorable'
+import { useMemo } from 'react'
+import { H2 } from 'honorable'
+
+import { useInvoicesQuery } from '../../../generated/graphql'
 
 import LoadingIndicator from '../../utils/LoadingIndicator'
 
@@ -8,30 +11,40 @@ import { useBillingSubscription } from './BillingSubscriptionProvider'
 
 function BillingPayments() {
   const { billingCustomerId, paymentMethods } = useBillingSubscription()
+  const { data: invoicesData, loading: invoicesLoading } = useInvoicesQuery()
 
-  if (!paymentMethods) {
+  const invoicesWithIds = useMemo(() => invoicesData?.invoices?.edges?.map((e, i) => (e?.node ? {
+    id: `${e?.node?.hostedInvoiceUrl || i}`,
+    ...e?.node,
+  } : undefined)),
+  [invoicesData])
+
+  if (!paymentMethods || (billingCustomerId && invoicesLoading)) {
     return <LoadingIndicator />
   }
 
   return (
     <>
-      <Div
+      <H2
         subtitle1
         marginBottom="medium"
       >
         Payment info
-      </Div>
-      <BillingBankCards paymentMethods={paymentMethods} />
-      {billingCustomerId && (
+      </H2>
+      <BillingBankCards
+        paymentMethods={paymentMethods}
+        invoices={invoicesWithIds}
+      />
+      {billingCustomerId && invoicesWithIds && (
         <>
-          <Div
+          <H2
             subtitle1
             marginTop="xlarge"
             marginBottom="medium"
           >
             Invoices
-          </Div>
-          <BillingInvoices />
+          </H2>
+          <BillingInvoices invoices={invoicesWithIds} />
         </>
       )}
     </>

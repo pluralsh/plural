@@ -5,7 +5,8 @@ import { ComponentProps, useContext, useState } from 'react'
 import { Link } from 'react-router-dom'
 
 import SubscriptionContext from '../../contexts/SubscriptionContext'
-import { EXPIRATION_NOTICE_STATE, LEGACY_EXPIRATION_NOTICE_STORAGE_KEY } from '../../helpers/localStorage'
+import { LocalStorageKeys } from '../../constants'
+import { EXPIRATION_NOTICE_STATE } from '../../helpers/localStorage'
 
 export function LegacyExpirationNotice() {
   const { isProPlan, isEnterprisePlan, account }
@@ -32,12 +33,12 @@ export function LegacyExpirationNotice() {
 
 function ExpiredModal() {
   const initialOpen
-    = localStorage.getItem(LEGACY_EXPIRATION_NOTICE_STORAGE_KEY)
+    = localStorage.getItem(LocalStorageKeys.LegacyExpirationNotice)
     !== EXPIRATION_NOTICE_STATE.DISMISSED_0
   const [isOpen, setIsOpen] = useState(initialOpen)
   const onClose = () => {
     setIsOpen(false)
-    localStorage.setItem(LEGACY_EXPIRATION_NOTICE_STORAGE_KEY,
+    localStorage.setItem(LocalStorageKeys.LegacyExpirationNotice,
       EXPIRATION_NOTICE_STATE.DISMISSED_0)
   }
 
@@ -134,14 +135,15 @@ function ExpirationToast({
     </A>
   )
 
-  const [showToast] = useState(localStorage.getItem(LEGACY_EXPIRATION_NOTICE_STORAGE_KEY) !== dismissState)
+  const [showToast] = useState(localStorage.getItem(LocalStorageKeys.LegacyExpirationNotice)
+      !== dismissState)
   const [closeTimeout, setCloseTimeout] = useState(30000)
 
   if (!showToast) {
     return null
   }
   const onClose = () => {
-    localStorage.setItem(LEGACY_EXPIRATION_NOTICE_STORAGE_KEY, dismissState)
+    localStorage.setItem(LocalStorageKeys.LegacyExpirationNotice, dismissState)
   }
 
   return (
@@ -150,7 +152,7 @@ function ExpirationToast({
       marginBottom="medium"
       marginRight="xxxxlarge"
       closeTimeout={closeTimeout}
-      open={showToast}
+      show={showToast}
       onClose={onClose}
     >
       {messageOpening} {messageClosing} {plansLink}

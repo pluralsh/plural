@@ -2,6 +2,16 @@ import { gql } from '@apollo/client'
 
 import { PageInfo } from '../../models/misc'
 import { RolloutFragment, UpgradeFragment, UpgradeQueueFragment } from '../../models/upgrades'
+import { UserFragment } from '../../models/user'
+
+export const CLUSTERS = gql`
+query {
+  clusters(first: 100) {
+    edges { node { id name source gitUrl owner { ...UserFragment } } }
+  }
+}
+${UserFragment}
+`
 
 export const QUEUES = gql`
   query Queues {

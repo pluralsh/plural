@@ -11,7 +11,7 @@ import isEmpty from 'lodash/isEmpty'
 import { Placeholder } from '../utils/Placeholder'
 
 import { extendConnection } from '../../utils/graphql'
-import { Confirm } from '../account/Confirm'
+import { Confirm } from '../utils/Confirm'
 
 import { DELETE_KEY, LIST_KEYS } from '../users/queries'
 import { StandardScroller } from '../utils/SmoothScroller'

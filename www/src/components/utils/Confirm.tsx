@@ -3,7 +3,7 @@ import { ApolloError } from '@apollo/client'
 import { Div } from 'honorable'
 import { Button, Modal } from '@pluralsh/design-system'
 
-import { GqlError } from '../utils/Alert'
+import { GqlError } from './Alert'
 
 type ConfirmProps = {
   open: boolean

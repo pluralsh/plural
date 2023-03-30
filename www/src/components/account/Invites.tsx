@@ -17,8 +17,9 @@ import { StandardScroller } from '../utils/SmoothScroller'
 
 import LoadingIndicator from '../utils/LoadingIndicator'
 
+import { Confirm } from '../utils/Confirm'
+
 import { DELETE_INVITE, INVITES_Q } from './queries'
-import { Confirm } from './Confirm'
 import { inviteLink } from './utils'
 
 function DeleteInvite({ invite }: any) {

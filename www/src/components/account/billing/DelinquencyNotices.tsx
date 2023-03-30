@@ -1,6 +1,11 @@
-import { Button, Callout, CalloutProps, Toast } from '@pluralsh/design-system'
+import {
+  Button,
+  Callout,
+  CalloutProps,
+  Toast,
+} from '@pluralsh/design-system'
 import { A, Flex, P } from 'honorable'
-import { useCallback, useMemo } from 'react'
+import { useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { useTheme } from 'styled-components'
 
@@ -21,22 +26,29 @@ export function DelinquencyCallout({
   invoices,
   ...props
 }: CalloutProps & { invoices?: (InvoiceFragment | null | undefined)[] }) {
-  const { isDelinquent, account } = useBillingSubscription()
+  const { isDelinquent } = useBillingSubscription()
+
   if (!isDelinquent) {
     return null
   }
-  const openInvoice = invoices?.find(invoice => {
-    return invoice?.status?.toLowerCase() === 'open'
-  })
+  const openInvoice = invoices?.find(invoice => invoice?.status?.toLowerCase() === 'open')
   const invoiceLink = openInvoice?.hostedInvoiceUrl
 
   return (
-    <Callout severity="danger" size="compact" {...props}>
+    <Callout
+      severity="danger"
+      size="compact"
+      {...props}
+    >
       Payment failed.{' '}
       {invoiceLink ? (
         <>
           Complete your payment{' '}
-          <A href={invoiceLink} target="_blank" rel="noopener noreferrer">
+          <A
+            href={invoiceLink}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             here
           </A>{' '}
           to retain full account access.
@@ -51,8 +63,8 @@ export function DelinquencyCallout({
 export function DelinquencyToast() {
   const theme = useTheme()
   const { account, isDelinquent } = useBillingSubscription()
-  const [notificationState, setNotificationState] =
-    usePersistedState<NotificationState>(LocalStorageKeys.DelinquencyNotice, {
+  const [notificationState, setNotificationState]
+    = usePersistedState<NotificationState>(LocalStorageKeys.DelinquencyNotice, {
       lastDismissedDelinquentAt: '',
     })
   const onClose = useCallback(() => {
@@ -65,9 +77,9 @@ export function DelinquencyToast() {
     return null
   }
   const delinquentAt = account?.delinquentAt?.toString() || ''
-  const showToast =
-    isDelinquent &&
-    notificationState?.lastDismissedDelinquentAt !== delinquentAt
+  const showToast
+    = isDelinquent
+    && notificationState?.lastDismissedDelinquentAt !== delinquentAt
 
   return (
     <Toast
@@ -79,8 +91,14 @@ export function DelinquencyToast() {
       onClose={onClose}
       heading="Payment failed"
     >
-      <Flex direction="column" gap="small">
-        <P body2 color="text-xlight">
+      <Flex
+        direction="column"
+        gap="small"
+      >
+        <P
+          body2
+          color="text-xlight"
+        >
           Update payment information to retain full account access.
         </P>
         <Flex>

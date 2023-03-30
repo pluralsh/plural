@@ -1,0 +1,44 @@
+fragment KeyBackupUser on User {
+  email
+}
+
+fragment KeyBackup on KeyBackup {
+  digest
+  id
+  insertedAt
+  name
+  repositories
+  updatedAt
+  user {
+    ...KeyBackupUser
+  }
+  value
+}
+
+query KeyBackups {
+  keyBackups(first: 1000) {
+    edges {
+      node {
+        ...KeyBackup
+      }
+    }
+  }
+}
+
+query KeyBackup($name: String!) {
+  keyBackup(name: $name) {
+    ...KeyBackup
+  }
+}
+
+mutation DeleteKeyBackup($name: String!) {
+  deleteKeyBackup(name: $name) {
+    ...KeyBackup
+  }
+}
+
+mutation CreateKeyBackup($attributes: KeyBackupAttributes!) {
+  createKeyBackup(attributes: $attributes) {
+    ...KeyBackup
+  }
+}

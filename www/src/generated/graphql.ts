@@ -101,6 +101,36 @@ export type AddressAttributes = {
   zip: Scalars['String'];
 };
 
+export type AppLink = {
+  __typename?: 'AppLink';
+  description?: Maybe<Scalars['String']>;
+  url?: Maybe<Scalars['String']>;
+};
+
+export type ApplicationComponent = {
+  __typename?: 'ApplicationComponent';
+  group?: Maybe<Scalars['String']>;
+  kind?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+  status?: Maybe<Scalars['String']>;
+};
+
+export type ApplicationInformation = {
+  __typename?: 'ApplicationInformation';
+  components?: Maybe<Array<Maybe<ApplicationComponent>>>;
+  componentsReady?: Maybe<Scalars['String']>;
+  name: Scalars['String'];
+  ready?: Maybe<Scalars['Boolean']>;
+  spec?: Maybe<ApplicationSpec>;
+};
+
+export type ApplicationSpec = {
+  __typename?: 'ApplicationSpec';
+  description?: Maybe<Scalars['String']>;
+  links?: Maybe<Array<Maybe<AppLink>>>;
+  version?: Maybe<Scalars['String']>;
+};
+
 export type ApplyLock = {
   __typename?: 'ApplyLock';
   id: Scalars['ID'];
@@ -3491,6 +3521,7 @@ export type RootQueryType = {
   searchRepositories?: Maybe<RepositoryConnection>;
   searchUsers?: Maybe<UserConnection>;
   shell?: Maybe<CloudShell>;
+  shellApplications?: Maybe<Array<Maybe<ApplicationInformation>>>;
   shellConfiguration?: Maybe<ShellConfiguration>;
   stack?: Maybe<Stack>;
   stacks?: Maybe<StackConnection>;
@@ -5133,12 +5164,14 @@ export type InvoiceFragment = { __typename?: 'Invoice', number: string, amountDu
 
 export type CardFragment = { __typename?: 'Card', last4: string, expMonth: number, expYear: number, name?: string | null, brand: string };
 
-export type SubscriptionAccountFragment = { __typename?: 'Account', id: string, billingCustomerId?: string | null, grandfatheredUntil?: Date | null, delinquentAt?: Date | null, userCount?: string | null, clusterCount?: string | null, availableFeatures?: { __typename?: 'PlanFeatures', userManagement?: boolean | null, audit?: boolean | null } | null, subscription?: { __typename?: 'PlatformSubscription', id: string, plan?: { __typename?: 'PlatformPlan', name: string, id: string, period: PaymentPeriod, lineItems?: Array<{ __typename?: 'PlatformPlanItem', dimension: LineItemDimension, cost: number } | null> | null } | null } | null, billingAddress?: { __typename?: 'Address', name?: string | null, line1?: string | null, line2?: string | null, zip?: string | null, state?: string | null, city?: string | null, country?: string | null } | null, paymentMethods?: { __typename?: 'PaymentMethodConnection', edges?: Array<{ __typename?: 'PaymentMethodEdge', node?: { __typename?: 'PaymentMethod', id?: string | null, type?: string | null, isDefault?: boolean | null, card?: { __typename?: 'Card', last4: string, expMonth: number, expYear: number, name?: string | null, brand: string } | null } | null } | null> | null } | null };
+export type PlatformPlanFragment = { __typename?: 'PlatformPlan', id: string, name: string, cost: number, period: PaymentPeriod, enterprise?: boolean | null, features?: { __typename?: 'PlanFeatures', vpn?: boolean | null, userManagement?: boolean | null, audit?: boolean | null } | null, lineItems?: Array<{ __typename?: 'PlatformPlanItem', name: string, dimension: LineItemDimension, cost: number, period: PaymentPeriod } | null> | null };
+
+export type SubscriptionAccountFragment = { __typename?: 'Account', id: string, billingCustomerId?: string | null, grandfatheredUntil?: Date | null, delinquentAt?: Date | null, userCount?: string | null, clusterCount?: string | null, availableFeatures?: { __typename?: 'PlanFeatures', userManagement?: boolean | null, audit?: boolean | null } | null, subscription?: { __typename?: 'PlatformSubscription', id: string, plan?: { __typename?: 'PlatformPlan', id: string, name: string, cost: number, period: PaymentPeriod, enterprise?: boolean | null, features?: { __typename?: 'PlanFeatures', vpn?: boolean | null, userManagement?: boolean | null, audit?: boolean | null } | null, lineItems?: Array<{ __typename?: 'PlatformPlanItem', name: string, dimension: LineItemDimension, cost: number, period: PaymentPeriod } | null> | null } | null } | null, billingAddress?: { __typename?: 'Address', name?: string | null, line1?: string | null, line2?: string | null, zip?: string | null, state?: string | null, city?: string | null, country?: string | null } | null, paymentMethods?: { __typename?: 'PaymentMethodConnection', edges?: Array<{ __typename?: 'PaymentMethodEdge', node?: { __typename?: 'PaymentMethod', id?: string | null, type?: string | null, isDefault?: boolean | null, card?: { __typename?: 'Card', last4: string, expMonth: number, expYear: number, name?: string | null, brand: string } | null } | null } | null> | null } | null };
 
 export type SubscriptionQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type SubscriptionQuery = { __typename?: 'RootQueryType', account?: { __typename?: 'Account', id: string, billingCustomerId?: string | null, grandfatheredUntil?: Date | null, delinquentAt?: Date | null, userCount?: string | null, clusterCount?: string | null, availableFeatures?: { __typename?: 'PlanFeatures', userManagement?: boolean | null, audit?: boolean | null } | null, subscription?: { __typename?: 'PlatformSubscription', id: string, plan?: { __typename?: 'PlatformPlan', name: string, id: string, period: PaymentPeriod, lineItems?: Array<{ __typename?: 'PlatformPlanItem', dimension: LineItemDimension, cost: number } | null> | null } | null } | null, billingAddress?: { __typename?: 'Address', name?: string | null, line1?: string | null, line2?: string | null, zip?: string | null, state?: string | null, city?: string | null, country?: string | null } | null, paymentMethods?: { __typename?: 'PaymentMethodConnection', edges?: Array<{ __typename?: 'PaymentMethodEdge', node?: { __typename?: 'PaymentMethod', id?: string | null, type?: string | null, isDefault?: boolean | null, card?: { __typename?: 'Card', last4: string, expMonth: number, expYear: number, name?: string | null, brand: string } | null } | null } | null> | null } | null } | null };
+export type SubscriptionQuery = { __typename?: 'RootQueryType', account?: { __typename?: 'Account', id: string, billingCustomerId?: string | null, grandfatheredUntil?: Date | null, delinquentAt?: Date | null, userCount?: string | null, clusterCount?: string | null, availableFeatures?: { __typename?: 'PlanFeatures', userManagement?: boolean | null, audit?: boolean | null } | null, subscription?: { __typename?: 'PlatformSubscription', id: string, plan?: { __typename?: 'PlatformPlan', id: string, name: string, cost: number, period: PaymentPeriod, enterprise?: boolean | null, features?: { __typename?: 'PlanFeatures', vpn?: boolean | null, userManagement?: boolean | null, audit?: boolean | null } | null, lineItems?: Array<{ __typename?: 'PlatformPlanItem', name: string, dimension: LineItemDimension, cost: number, period: PaymentPeriod } | null> | null } | null } | null, billingAddress?: { __typename?: 'Address', name?: string | null, line1?: string | null, line2?: string | null, zip?: string | null, state?: string | null, city?: string | null, country?: string | null } | null, paymentMethods?: { __typename?: 'PaymentMethodConnection', edges?: Array<{ __typename?: 'PaymentMethodEdge', node?: { __typename?: 'PaymentMethod', id?: string | null, type?: string | null, isDefault?: boolean | null, card?: { __typename?: 'Card', last4: string, expMonth: number, expYear: number, name?: string | null, brand: string } | null } | null } | null> | null } | null } | null };
 
 export type UpdateAccountBillingMutationVariables = Exact<{
   attributes: AccountAttributes;
@@ -6401,6 +6434,26 @@ export const InvoiceFragmentDoc = gql`
   }
 }
     ${InvoiceItemFragmentDoc}`;
+export const PlatformPlanFragmentDoc = gql`
+    fragment PlatformPlan on PlatformPlan {
+  id
+  name
+  cost
+  period
+  enterprise
+  features {
+    vpn
+    userManagement
+    audit
+  }
+  lineItems {
+    name
+    dimension
+    cost
+    period
+  }
+}
+    `;
 export const CardFragmentDoc = gql`
     fragment Card on Card {
   last4
@@ -6435,13 +6488,7 @@ export const SubscriptionAccountFragmentDoc = gql`
   subscription {
     id
     plan {
-      name
-      id
-      period
-      lineItems {
-        dimension
-        cost
-      }
+      ...PlatformPlan
     }
   }
   billingAddress {
@@ -6461,7 +6508,8 @@ export const SubscriptionAccountFragmentDoc = gql`
     }
   }
 }
-    ${PaymentMethodFragmentDoc}`;
+    ${PlatformPlanFragmentDoc}
+${PaymentMethodFragmentDoc}`;
 export const SetupIntentFragmentDoc = gql`
     fragment SetupIntent on SetupIntent {
   id
@@ -10250,6 +10298,7 @@ export const namedOperations = {
     NextAction: 'NextAction',
     Invoice: 'Invoice',
     Card: 'Card',
+    PlatformPlan: 'PlatformPlan',
     SubscriptionAccount: 'SubscriptionAccount',
     SetupIntent: 'SetupIntent',
     PaymentMethod: 'PaymentMethod',

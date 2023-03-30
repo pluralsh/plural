@@ -81,6 +81,16 @@ fragment Card on Card {
   brand
 }
 
+fragment PlatformPlan on PlatformPlan {
+  id
+  name
+  cost
+  period
+  enterprise
+  features { vpn userManagement audit }
+  lineItems { name dimension cost period }
+}
+
 fragment SubscriptionAccount on Account {
   id
   billingCustomerId
@@ -95,7 +105,7 @@ fragment SubscriptionAccount on Account {
   subscription {
     id
     plan {
-      ...Plan
+      ...PlatformPlan
     }
   }
   billingAddress {

@@ -3,22 +3,114 @@ import {
   AppProps,
   ArrowTopRightIcon,
   Button,
+  Chip,
   LifePreserverIcon,
+  ListBoxItem,
   ReloadIcon,
   Tooltip,
   TrashCanIcon,
   WrapWithIf,
 } from '@pluralsh/design-system'
-import { Dispatch, useState } from 'react'
+import { Div, Flex } from 'honorable'
+import { Drop } from 'grommet'
+import {
+  Dispatch,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 
-import { Repository, RepositoryEdge, ShellConfiguration } from '../../../../../generated/graphql'
+import { Repository, RepositoryEdge } from '../../../../../generated/graphql'
 
 import { LaunchAppModal, useLaunchAppModal } from './LaunchAppModal'
 
 const PROMOTED_APPS = ['console']
 
-const toAppProps = ({ node: repository }: RepositoryEdge, configuration: ShellConfiguration, onAction: Dispatch<string>): AppProps => {
-  const domain = lookupApplicationDomain(repository!.name, configuration)
+function StatusIndicator({ ready }) {
+  return (
+    <Div
+      width={10}
+      height={10}
+      borderRadius="50%"
+      backgroundColor={ready ? 'success' : 'warning'}
+    />
+  )
+}
+
+const ORDER = {
+  deployment: 1,
+  statefulset: 2,
+  certificate: 3,
+  ingress: 4,
+  cronjob: 5,
+  service: 6,
+  job: 7,
+}
+
+const kindInd = kind => ORDER[kind.toLowerCase()] || 7
+
+function orderBy({ kind: k1, name: n1, status: s1 }, { kind: k2, name: n2, status: s2 }) {
+  if (s1 !== s2) return s1 > s2 ? 1 : -1 // Ready > Pending, and all ready comps should follow pending ones
+  if (k1 === k2) return (n1 > n2) ? 1 : ((n1 === n2) ? 0 : -1)
+
+  return kindInd(k1) - kindInd(k2)
+}
+
+function ComponentStatuses({ components }) {
+  const name = ({ group, kind, name }) => `${group || 'v1'}/${kind.toLowerCase()} ${name}`
+  const sorted = useMemo(() => components.sort(orderBy), [components])
+
+  return (
+    <Flex direction="column">
+      {sorted.map(comp => (
+        <ListBoxItem
+          key={name(comp)}
+          textValue={name(comp)}
+          leftContent={<StatusIndicator ready={comp.status === 'Ready'} />}
+          label={name(comp)}
+        />
+      ))}
+    </Flex>
+  )
+}
+
+function Status({ app }) {
+  const ref = useRef()
+  const [open, setOpen] = useState(false)
+
+  if (!app) return null
+
+  const { ready, componentsReady } = app
+  const pending = componentsReady ? `${componentsReady} Ready` : 'Pending'
+  const text = ready ? 'Ready' : pending
+
+  return (
+    <>
+      <Chip
+        ref={ref}
+        cursor="pointer"
+        size="small"
+        whiteSpace="nowrap"
+        onClick={() => setOpen(true)}
+        severity={ready ? 'success' : 'warning'}
+      >{text}
+      </Chip>
+      {open && (
+        <Drop
+          target={ref.current}
+          align={{ top: 'bottom' }}
+          onClickOutside={() => setOpen(false)}
+        >
+          <ComponentStatuses components={app.components} />
+        </Drop>
+      )}
+    </>
+  )
+}
+
+const toAppProps = ({ node: repository }: RepositoryEdge, appInfo: any, onAction: Dispatch<string>): AppProps => {
+  const app = appInfo[repository!.name]
+  const domain = app?.spec?.links?.length > 0 ? app.spec?.links[0].url : null
   const isAlive = !!repository!.installation?.pingedAt
   const promoted = PROMOTED_APPS.includes(repository!.name)
 
@@ -33,24 +125,12 @@ const toAppProps = ({ node: repository }: RepositoryEdge, configuration: ShellCo
         isAlive={isAlive}
         promoted={promoted}
         domain={domain}
+        app={app}
         name={repository!.name}
       />
     ) : undefined,
     actions: toActions(repository!, onAction),
   }
-}
-
-const lookupApplicationDomain = (name: string, configuration: ShellConfiguration): string | undefined => {
-  const context = configuration?.contextConfiguration?.[name]
-  const domains = configuration?.domains
-
-  if (!context || !domains) return undefined
-
-  const domain = Object.values(context).find(v => domains.includes(v?.toString() ?? '')) as string
-
-  if (!domain) return undefined
-
-  return domain
 }
 
 const toActions = (repository: Repository, onAction: Dispatch<string>): Array<AppMenuAction> => {
@@ -68,13 +148,16 @@ const toActions = (repository: Repository, onAction: Dispatch<string>): Array<Ap
 }
 
 function PrimaryActionButton({
-  name, domain, promoted, isAlive,
+  name, domain, promoted, isAlive, app,
 }): JSX.Element {
   const [visible, setVisible] = useState(false)
   const { shown } = useLaunchAppModal()
 
   return (
-    <>
+    <Flex
+      direction="row"
+      gap="xsmall"
+    >
       {!shown && visible && (
         <LaunchAppModal
           setVisible={setVisible}
@@ -82,6 +165,7 @@ function PrimaryActionButton({
           domain={domain}
         />
       )}
+      <Status app={app} />
       <WrapWithIf
         condition={!isAlive}
         wrapper={<Tooltip label="Application not ready" />}
@@ -105,7 +189,7 @@ function PrimaryActionButton({
           </Button>
         </div>
       </WrapWithIf>
-    </>
+    </Flex>
   )
 }
 

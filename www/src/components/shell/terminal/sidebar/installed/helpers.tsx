@@ -128,7 +128,7 @@ const toAppProps = ({ node: repository }: RepositoryEdge, appInfo: any, onAction
         app={app}
         name={repository!.name}
       />
-    ) : <Status app={app} />,
+    ) : undefined,
     actions: toActions(repository!, onAction),
   }
 }

@@ -30,6 +30,7 @@ export const FULL_APPLICATIONS_QUERY = gql`
       name
       ready
       componentsReady
+      components { group kind name status }
       spec { links { url } }
     }
     repositories(first: 1000, installed: $installed, provider: $provider) {

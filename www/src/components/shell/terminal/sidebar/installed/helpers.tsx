@@ -5,13 +5,15 @@ import {
   Button,
   Chip,
   LifePreserverIcon,
+  ListBoxItem,
   ReloadIcon,
   Tooltip,
   TrashCanIcon,
   WrapWithIf,
 } from '@pluralsh/design-system'
-import { Flex } from 'honorable'
-import { Dispatch, useState } from 'react'
+import { Flex, useTheme } from 'honorable'
+import { Drop } from 'grommet'
+import { Dispatch, useRef, useState } from 'react'
 
 import { Repository, RepositoryEdge } from '../../../../../generated/graphql'
 
@@ -19,7 +21,32 @@ import { LaunchAppModal, useLaunchAppModal } from './LaunchAppModal'
 
 const PROMOTED_APPS = ['console']
 
+function ComponentStatuses({ components }) {
+  const theme = useTheme()
+
+  return (
+    <Flex
+      direction="column"
+      gap="xsmall"
+    >
+      {components.map(({
+        group, kind, name, status,
+      }) => (
+        <ListBoxItem
+          key={`${group}/${kind} ${name}`}
+          textValue={`${group}/${kind} ${name}`}
+          label={`${group}/${kind} ${name}`}
+          labelProps={{ color: status === 'Ready' ? theme.colors['text-success'] : theme.colors['text-warning'] }}
+        />
+      ))}
+    </Flex>
+  )
+}
+
 function Status({ app }) {
+  const ref = useRef()
+  const [open, setOpen] = useState(false)
+
   if (!app) return null
 
   const { ready, componentsReady } = app
@@ -27,11 +54,26 @@ function Status({ app }) {
   const text = ready ? 'Ready' : pending
 
   return (
-    <Chip
-      size="small"
-      severity={ready ? 'success' : 'warning'}
-    >{text}
-    </Chip>
+    <>
+      <Chip
+        ref={ref}
+        cursor="pointer"
+        size="small"
+        whiteSpace="nowrap"
+        onClick={() => setOpen(true)}
+        severity={ready ? 'success' : 'warning'}
+      >{text}
+      </Chip>
+      {open && (
+        <Drop
+          target={ref.current}
+          align={{ top: 'bottom' }}
+          onClickOutside={() => setOpen(false)}
+        >
+          <ComponentStatuses components={app.components} />
+        </Drop>
+      )}
+    </>
   )
 }
 

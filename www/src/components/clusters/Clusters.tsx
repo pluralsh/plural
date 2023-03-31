@@ -10,6 +10,8 @@ import { ReactElement, useMemo } from 'react'
 import { Cluster, RootQueryType, RootQueryTypeClustersArgs } from '../../generated/graphql'
 import LoadingIndicator from '../utils/LoadingIndicator'
 
+import ClustersHelpSection from './ClustersHelpSection'
+
 import {
   ClustersList,
   ColActions,
@@ -142,6 +144,7 @@ export function Clusters(): ReactElement | null {
         clusters={clusters}
         columns={columns}
       />
+      <ClustersHelpSection />
     </Flex>
     // <QueueContext.Provider value={queue}>
     //   <ResponsiveLayoutPage>

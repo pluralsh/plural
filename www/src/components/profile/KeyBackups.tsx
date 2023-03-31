@@ -30,12 +30,11 @@ import LoadingIndicator from '../utils/LoadingIndicator'
 import {
   KeyBackupFragment,
   KeyBackupsDocument,
-  useCreateKeyBackupMutation,
   useDeleteKeyBackupMutation,
   useKeyBackupsQuery,
 } from '../../generated/graphql'
 import { GqlError } from '../utils/Alert'
-import { appendConnection, removeConnection, updateCache } from '../../utils/graphql'
+import { removeConnection, updateCache } from '../../utils/graphql'
 import useOnOff from '../../hooks/useOnOff'
 import { useShellType } from '../../hooks/useShellType'
 
@@ -286,48 +285,6 @@ export function mapExistingConnectionNodes<T, R>(connection: Connection<T> | nul
   }, [] as R[])
 }
 
-function CreateDummyKeyButton() {
-  const [keyi, setkeyi] = useState(0)
-
-  const [createMutation, { loading: createLoading }]
-    = useCreateKeyBackupMutation({
-      variables: {
-        attributes: {
-          name: `name${String(Math.trunc(keyi)).padStart(5, '0')}`,
-          repositories: [
-            'git@github.com:/pluralsh/plural.git',
-            'git@github.com:/pluralsh/some-long-name-of-something-or-other/plural.git',
-          ],
-          key: `value${String(Math.trunc(keyi)).padStart(5, '0')}`,
-        },
-      },
-      onCompleted: data => {
-        console.log('create dummy complete', data)
-      },
-      onError: error => {
-        console.log('create dummy error', error)
-      },
-      update: (cache, { data }) => updateCache(cache, {
-        query: KeyBackupsDocument,
-        variables: {},
-        update: prev => appendConnection(prev, data?.createKeyBackup, 'keyBackups'),
-      }),
-    })
-
-  return (
-    <Button
-      secondary
-      loading={createLoading}
-      onClick={() => {
-        createMutation()
-        setkeyi(keyi + 1)
-      }}
-    >
-      Create dummy key
-    </Button>
-  )
-}
-
 export function KeyBackups() {
   const { data, error } = useKeyBackupsQuery({
     pollInterval: 10000,
@@ -375,7 +332,6 @@ export function KeyBackups() {
           alignItems="flex-start"
           justifyContent="flex-end"
         >
-          <CreateDummyKeyButton />
           <CreateKeyButton />
         </Flex>
       </PageTitle>

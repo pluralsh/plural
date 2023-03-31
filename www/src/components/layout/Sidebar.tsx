@@ -80,14 +80,14 @@ const MENU_ITEMS: MenuItem[] = [
     pathRegexp: /^\/(marketplace|installed|repository|stack)/,
   },
   {
-    text: 'Account',
-    icon: <PeopleIcon />,
-    path: '/account',
-  },
-  {
     text: 'Audits',
     icon: <ListIcon />,
     path: '/audits',
+  },
+  {
+    text: 'Account',
+    icon: <PeopleIcon />,
+    path: '/account',
   },
   {
     text: 'Roadmap',

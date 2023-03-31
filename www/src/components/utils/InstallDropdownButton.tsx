@@ -22,7 +22,7 @@ import {
 } from '@pluralsh/design-system'
 import { Link } from 'react-router-dom'
 
-import { Provider, useGetShellQuery } from '../../generated/graphql'
+import { Provider } from '../../generated/graphql'
 import { useCurrentUser } from '../../contexts/CurrentUserContext'
 
 import { useShellType } from '../../hooks/useShellType'
@@ -198,9 +198,8 @@ function InstallDropdownButton({
   ...props
 }: InstallDropDownButtonProps) {
   const { provider } = useCurrentUser()
-  const { type: shellType, loading: loadingShell } = useShellType()
-  const loading = loadingProp || loadingShell
-  const isCliUser = shellType === 'cli'
+  const isCliUser = useShellType() === 'cli'
+  const loading = loadingProp
   const recipe
     = type === 'stack' && !provider
       ? recipes?.[0]

@@ -1,21 +1,16 @@
-import { useGetShellQuery } from '../generated/graphql'
+import { useMemo } from 'react'
+
 import { useCurrentUser } from '../contexts/CurrentUserContext'
 
-export function useShellType(): {
-  type: 'cli' | 'cloud' | 'unknown'
-  loading: boolean
-  } {
-  const { data, loading } = useGetShellQuery({
-    fetchPolicy: 'cache-first',
-  })
-  const { hasInstallations } = useCurrentUser()
-  const hasCloudShell = !!data?.shell
+export function useShellType() {
+  const { hasInstallations, hasShell } = useCurrentUser()
 
-  const isCliUser = !hasCloudShell && hasInstallations
-  const isCloudShellUser = hasCloudShell
+  return useMemo(() => {
+    const isCliUser = !hasShell && hasInstallations
+    const isCloudShellUser = hasShell
 
-  return {
-    type: isCliUser ? 'cli' : isCloudShellUser ? 'cloud' : 'unknown',
-    loading,
-  }
+    return isCliUser ? 'cli' : isCloudShellUser ? 'cloud' : 'unknown'
+  }, [hasInstallations, hasShell])
 }
+
+export type ShellType = ReturnType<typeof useShellType>

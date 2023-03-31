@@ -36,7 +36,7 @@ import {
 import { GqlError } from '../utils/Alert'
 import { removeConnection, updateCache } from '../../utils/graphql'
 import useOnOff from '../../hooks/useOnOff'
-import { useShellType } from '../../hooks/useShellType'
+import { ShellType, useShellType } from '../../hooks/useShellType'
 
 const columnHelper = createColumnHelper<KeyBackupFragment>()
 
@@ -182,7 +182,7 @@ export function DeleteKeyBackup({ name }) {
 }
 
 const shellToHelpSuffix: Record<
-  ReturnType<typeof useShellType>['type'],
+  ShellType,
   ReactNode
 > = {
   cli: <>run this command in the Plural CLI on your local machine:</>,
@@ -197,7 +197,7 @@ const shellToHelpSuffix: Record<
 
 function LocalSyncButton() {
   const openState = useOnOff(false)
-  const { type: shellType } = useShellType()
+  const shellType = useShellType()
 
   return (
     <>
@@ -232,7 +232,7 @@ function LocalSyncButton() {
 
 function CreateKeyButton() {
   const openState = useOnOff(false)
-  const { type: shellType } = useShellType()
+  const shellType = useShellType()
 
   return (
     <>

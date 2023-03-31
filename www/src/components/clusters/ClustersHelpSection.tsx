@@ -100,7 +100,7 @@ export default function ClustersHelpSection(): ReactElement {
             <Button>Get started</Button> {/* TODO: Link to cluster creation. */}
           </div>
         </Card>
-        <ReactPlayer url="https://www.youtube.com/watch?v=LgwnBjYOCbg" />
+        <ReactPlayer url="https://www.youtube.com/watch?v=LgwnBjYOCbg" /> {/* TODO: Replace. */}
       </div>
       <Card
         fillLevel={2}

@@ -2315,6 +2315,13 @@ export type RedirectToUrl = {
   url?: Maybe<Scalars['String']>;
 };
 
+/** The release status of a repository, defaults to ALPHA, GA if it is ready for general consumption */
+export enum ReleaseStatus {
+  Alpha = 'ALPHA',
+  Beta = 'BETA',
+  Ga = 'GA'
+}
+
 /** Container for all resources to create an application. */
 export type Repository = {
   __typename?: 'Repository';
@@ -2367,6 +2374,8 @@ export type Repository = {
   readme?: Maybe<Scalars['String']>;
   /** The recipes used to install the application. */
   recipes?: Maybe<Array<Maybe<Recipe>>>;
+  /** release status of the repository */
+  releaseStatus?: Maybe<ReleaseStatus>;
   /** A map of secrets of the application. */
   secrets?: Maybe<Scalars['Map']>;
   /** The tags of the application. */
@@ -2412,6 +2421,8 @@ export type RepositoryAttributes = {
   private?: InputMaybe<Scalars['Boolean']>;
   /** The application's README. */
   readme?: InputMaybe<Scalars['String']>;
+  /** release status of the repository */
+  releaseStatus?: InputMaybe<ReleaseStatus>;
   /** A YAML object of secrets. */
   secrets?: InputMaybe<Scalars['Yaml']>;
   /** The application's tags. */

@@ -551,6 +551,13 @@ input ChartAttributes {
   tags: [VersionTagAttributes]
 }
 
+"The release status of a repository, defaults to ALPHA, GA if it is ready for general consumption"
+enum ReleaseStatus {
+  GA
+  BETA
+  ALPHA
+}
+
 input PlanFeatureAttributes {
   name: String!
   description: String!
@@ -949,6 +956,9 @@ type Repository {
 
   "The category of the application."
   category: Category
+
+  "release status of the repository"
+  releaseStatus: ReleaseStatus
 
   "Whether the application is private."
   private: Boolean
@@ -2697,6 +2707,9 @@ input RepositoryAttributes {
 
   "A YAML object of secrets."
   secrets: Yaml
+
+  "release status of the repository"
+  releaseStatus: ReleaseStatus
 
   "The application's icon."
   icon: UploadOrUrl

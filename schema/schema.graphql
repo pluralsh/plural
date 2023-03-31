@@ -3524,6 +3524,8 @@ type User {
 
   demoing: Boolean
 
+  hasShell: Boolean
+
   avatar: String
 
   backgroundColor: String

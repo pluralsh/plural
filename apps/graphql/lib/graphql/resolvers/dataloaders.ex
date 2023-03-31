@@ -17,3 +17,23 @@ defmodule GraphQl.InstallationLoader do
     |> Map.new(& {&1.id, &1})
   end
 end
+
+defmodule GraphQl.ShellLoader do
+  alias Core.Schema.CloudShell
+
+  def data(_) do
+    Dataloader.KV.new(&query/2, max_concurrency: 1)
+  end
+
+  def query(_, ids) do
+    shells = fetch_shells(ids)
+    Map.new(ids, & {&1, !!shells[&1]})
+  end
+
+  def fetch_shells(ids) do
+    MapSet.to_list(ids)
+    |> CloudShell.for_users()
+    |> Core.Repo.all()
+    |> Map.new(& {&1.user_id, &1})
+  end
+end

@@ -93,19 +93,31 @@ defmodule GraphQl.ClusterQueriesTest do
       )
       insert(:group_member, user: user, group: group)
 
-      c1 = insert(:cluster, account: user.account, owner: user)
+      c1 = insert(:cluster, account: user.account, owner: user, queue: build(:upgrade_queue))
       c2 = insert(:cluster, account: sa.account, owner: sa)
+
+      insert(:cloud_shell, user: user)
 
       {:ok, %{data: %{"clusters" => found}}} = run_query("""
         query {
           clusters(first: 5) {
-            edges { node { id } }
+            edges {
+              node {
+                id
+                queue { id }
+                owner { id hasShell }
+              }
+            }
           }
         }
       """, %{}, %{current_user: Core.Services.Rbac.preload(user)})
 
-      assert from_connection(found)
-             |> ids_equal([c1, c2])
+      clusters = from_connection(found)
+      assert ids_equal(clusters, [c1, c2])
+
+      cluster = Enum.find(clusters, & &1["owner"]["id"] == user.id)
+      assert cluster["queue"]["id"] == c1.queue.id
+      assert cluster["owner"]["hasShell"]
     end
   end
 end

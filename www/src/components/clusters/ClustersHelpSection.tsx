@@ -7,6 +7,8 @@ import {
 } from '@pluralsh/design-system'
 import { ReactElement } from 'react'
 import ReactPlayer from 'react-player'
+import { useNavigate } from 'react-router-dom'
+import { useIntercom } from 'react-use-intercom'
 import styled from 'styled-components'
 
 const Wrap = styled.div(({ theme }) => ({
@@ -14,7 +16,16 @@ const Wrap = styled.div(({ theme }) => ({
   flexDirection: 'column',
   gap: theme.spacing.medium,
 
-  a: {
+  'ol, ul': {
+    ...theme.partials.text.body2,
+    paddingLeft: theme.spacing.large,
+  },
+
+  ol: {
+    ...theme.partials.text.body2Bold,
+  },
+
+  'a.link': {
     ...theme.partials.text.inlineLink,
   },
 
@@ -52,13 +63,15 @@ const Wrap = styled.div(({ theme }) => ({
       display: 'flex',
       gap: theme.spacing.medium,
       flexGrow: 1,
-      alignItems: 'end',
-      marginBottom: theme.spacing.medium,
+      alignItems: 'center',
     },
   },
 }))
 
 export default function ClustersHelpSection(): ReactElement {
+  const navigate = useNavigate()
+  const { show } = useIntercom()
+
   return (
     <Wrap>
       <div className="row">
@@ -80,10 +93,11 @@ export default function ClustersHelpSection(): ReactElement {
             <Button
               secondary
               startIcon={<BrowseAppsIcon />}
+              onClick={() => navigate('/marketplace')}
             >
               Browse the marketplace
             </Button>
-            <Button>Get started</Button>
+            <Button>Get started</Button> {/* TODO: Link to cluster creation. */}
           </div>
         </Card>
         <ReactPlayer url="https://www.youtube.com/watch?v=LgwnBjYOCbg" />
@@ -99,6 +113,7 @@ export default function ClustersHelpSection(): ReactElement {
             <ul>
               <li>
                 <a
+                  className="link"
                   href="https://docs.plural.sh/getting-started/quickstart"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -108,6 +123,7 @@ export default function ClustersHelpSection(): ReactElement {
               </li>
               <li>
                 <a
+                  className="link"
                   href="https://docs.plural.sh/getting-started/video-cli-quickstart"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -117,6 +133,7 @@ export default function ClustersHelpSection(): ReactElement {
               </li>
               <li>
                 <a
+                  className="link"
                   href="https://docs.plural.sh/getting-started/cloud-shell-quickstart"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -132,6 +149,9 @@ export default function ClustersHelpSection(): ReactElement {
               floating
               small
               startIcon={<DiscordIcon />}
+              as="a"
+              href="https://discord.gg/pluralsh"
+              target="_blank"
             >
               Join the community
             </Button>
@@ -142,6 +162,7 @@ export default function ClustersHelpSection(): ReactElement {
               floating
               small
               startIcon={<LifePreserverIcon />}
+              onClick={() => show()}
             >
               Ask us on Intercom
             </Button>

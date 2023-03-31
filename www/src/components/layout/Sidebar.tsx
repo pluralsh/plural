@@ -68,16 +68,16 @@ const MENU_ITEMS: MenuItem[] = [
     path: '/clusters',
   },
   {
-    text: 'Marketplace',
-    icon: <BrowseAppsIcon />,
-    path: '/marketplace',
-    pathRegexp: /^\/(marketplace|installed|repository|stack)/,
-  },
-  {
     text: 'Cloud Shell',
     icon: <TerminalIcon />,
     path: '/shell',
     pathRegexp: /^\/(shell|oauth\/callback\/.+\/shell)/,
+  },
+  {
+    text: 'Marketplace',
+    icon: <BrowseAppsIcon />,
+    path: '/marketplace',
+    pathRegexp: /^\/(marketplace|installed|repository|stack)/,
   },
   {
     text: 'Account',

@@ -22,13 +22,13 @@ export function GqlError({
   error,
   ...props
 }: {
-  error: { graphQLErrors: GraphQLErrors }
+  error?: { graphQLErrors: GraphQLErrors }
 } & Omit<AlertProps, 'status' | 'description'>) {
   return (
     <Alert
       status={AlertStatus.ERROR}
       header={header}
-      description={error.graphQLErrors[0].message}
+      description={error?.graphQLErrors[0].message}
       {...props}
     />
   )

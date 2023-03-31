@@ -1,4 +1,11 @@
-import { AppIcon, Button, Table } from '@pluralsh/design-system'
+import {
+  AppIcon,
+  ArrowRightIcon,
+  Button,
+  CaretRightIcon,
+  IconFrame,
+  Table,
+} from '@pluralsh/design-system'
 import { ComponentProps, memo, useMemo } from 'react'
 import { createColumnHelper } from '@tanstack/react-table'
 import styled from 'styled-components'
@@ -131,18 +138,30 @@ export const ColActions = columnHelper.accessor(row => row.consoleUrl, {
   cell: props => {
     const consoleUrl = props.getValue()
 
-    return consoleUrl ? (
-      <Button
-        secondary
-        small
-        as="a"
-        href={ensureURLValidity(consoleUrl)}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Launch Console
-      </Button>
-    ) : null
+    return (
+      <CellWrap>
+        {consoleUrl && (
+          <Button
+            secondary
+            small
+            as="a"
+            href={ensureURLValidity(consoleUrl)}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Launch Console
+          </Button>
+        )}
+        <IconFrame
+          clickable
+          size="medium"
+          icon={<CaretRightIcon />}
+          onClick={() => null} // TODO: Navigate to details page.
+          textValue="Forward"
+          type="tertiary"
+        />
+      </CellWrap>
+    )
   },
   header: '',
 })

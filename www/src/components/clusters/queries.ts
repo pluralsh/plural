@@ -7,9 +7,20 @@ import { UserFragment } from '../../models/user'
 export const CLUSTERS = gql`
 query {
   clusters(first: 100) {
-    edges { node { id name source gitUrl owner { ...UserFragment } } }
+    pageInfo { ...PageInfo }
+    edges {
+      node {
+        id 
+        name
+        provider
+        source
+        gitUrl
+        owner { ...UserFragment }
+      }
+    }
   }
 }
+${PageInfo}
 ${UserFragment}
 `
 

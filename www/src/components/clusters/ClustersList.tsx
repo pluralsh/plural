@@ -1,18 +1,40 @@
-import { CopyIcon, IconFrame, Table } from '@pluralsh/design-system'
+import { AppIcon, Table } from '@pluralsh/design-system'
 import { ComponentProps, memo, useMemo } from 'react'
 import { createColumnHelper } from '@tanstack/react-table'
+import styled from 'styled-components'
 
-import { Cluster, Maybe, Source } from '../../generated/graphql'
+import { Cluster, Provider, Source } from '../../generated/graphql'
+import CopyButton from '../utils/CopyButton'
+import { ProviderIcon } from '../utils/ProviderIcon'
 
 type ClusterListElement = {
     name: string
-    source?: Source
-    gitUrl?: string
+    provider: Provider
+    source?: Source | null
+    gitUrl?: string | null
     owner?: {
       name?: string
       email?: string
+      avatar?: string | null
     }
   }
+
+const sourceDisplayNames = {
+  [Source.Default]: 'CLI',
+  [Source.Shell]: 'Cloud shell',
+  [Source.Demo]: 'Demo',
+}
+
+const CellWrap = styled.div(({ theme }) => ({
+  alignItems: 'center',
+  display: 'flex',
+  gap: theme.spacing.small,
+}))
+
+const CellCaption = styled.div(({ theme }) => ({
+  ...theme.partials.text.caption,
+  color: theme.colors['text-xlight'],
+}))
 
 const columnHelper = createColumnHelper<ClusterListElement>()
 
@@ -24,20 +46,31 @@ export const ColCluster = columnHelper.accessor(row => row, {
     const cluster = props.getValue()
 
     return (
-      <>
-        <div>{cluster?.name}</div>
-        <div>{cluster?.source}</div>
-      </>
+      <CellWrap>
+        <AppIcon
+          size="xxsmall"
+          icon={(
+            <ProviderIcon
+              provider={cluster.provider}
+              width={16}
+            />
+          )}
+        />
+        <div>
+          <div>{cluster?.name}</div>
+          <CellCaption>{sourceDisplayNames[cluster?.source || '']}</CellCaption>
+        </div>
+      </CellWrap>
     )
   },
   header: 'Cluster',
 })
 
-export const ColHealth = columnHelper.accessor(row => row, {
+export const ColHealth = columnHelper.accessor(row => row.name, {
   id: 'health',
   enableGlobalFilter: true,
   enableSorting: true,
-  cell: ({ row: { original }, ...props }) => original.name,
+  cell: props => props.getValue(),
   header: 'Health',
 })
 
@@ -45,27 +78,15 @@ export const ColGit = columnHelper.accessor(row => row.gitUrl, {
   id: 'git',
   enableGlobalFilter: true,
   enableSorting: true,
-  cell: props => {
-    const gitUrl = props.getValue()
-
-    return (
-      <IconFrame
-        clickable
-        icon={<CopyIcon />}
-        textValue={gitUrl}
-        tooltip
-        type="floating"
-      />
-    )
-  },
+  cell: props => <CopyButton text={props.getValue() || ''} />,
   header: 'Git',
 })
 
-export const ColCloudshell = columnHelper.accessor(row => row, {
+export const ColCloudshell = columnHelper.accessor(row => row.name, {
   id: 'cloudshell',
   enableGlobalFilter: true,
   enableSorting: true,
-  cell: ({ row: { original }, ...props }) => original.name,
+  cell: props => props.getValue(),
   header: 'Cloudshell',
 })
 
@@ -77,33 +98,40 @@ export const ColOwner = columnHelper.accessor(row => row.owner, {
     const owner = props.getValue()
 
     return (
-      <>
-        <div>{owner?.name}</div>
-        <div>{owner?.email}</div>
-      </>
+      <CellWrap>
+        <AppIcon
+          name={owner?.name}
+          url={owner?.avatar || undefined}
+          size="xxsmall"
+        />
+        <div>
+          <div>{owner?.name}</div>
+          <CellCaption>{owner?.email}</CellCaption>
+        </div>
+      </CellWrap>
     )
   },
   header: 'Owner',
 })
 
-export const ColUpgrades = columnHelper.accessor(row => row, {
+export const ColUpgrades = columnHelper.accessor(row => row.name, {
   id: 'upgrades',
   enableGlobalFilter: true,
   enableSorting: true,
-  cell: ({ row: { original }, ...props }) => original.name,
+  cell: props => props.getValue(),
   header: 'Upgrades',
 })
 
-export const ColActions = columnHelper.accessor(row => row, {
+export const ColActions = columnHelper.accessor(row => row.name, {
   id: 'actions',
   enableGlobalFilter: true,
   enableSorting: true,
-  cell: ({ row: { original }, ...props }) => original.name,
+  cell: props => props.getValue(),
   header: '',
 })
 
 type ClustersListProps = Omit<ComponentProps<typeof Table>, 'data'> & {
-    clusters?: Maybe<Cluster>[]
+    clusters?: (Cluster | null)[]
     columns: any[]
   }
 
@@ -112,11 +140,13 @@ export const ClustersList = memo(({ clusters, columns, ...props }: ClustersListP
     .filter((cluster): cluster is Cluster => !!cluster)
     .map(cluster => ({
       name: cluster.name,
+      provider: cluster.provider,
       source: cluster.source,
       gitUrl: cluster.gitUrl,
       owner: {
         name: cluster.owner?.name,
         email: cluster.owner?.email,
+        avatar: cluster.owner?.avatar,
       },
     })),
   [clusters])

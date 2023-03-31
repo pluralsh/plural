@@ -259,7 +259,7 @@ function CreatePublisherModal({ open, onClose }: CreatePublisherModalProps) {
       {!!preMutationError && (
         <Alert
           status={AlertStatus.ERROR}
-          hearder="Error"
+          header="Error"
           description={preMutationError}
         />
       )}

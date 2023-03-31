@@ -25,6 +25,8 @@ import { Link } from 'react-router-dom'
 import { Provider, useGetShellQuery } from '../../generated/graphql'
 import { useCurrentUser } from '../../contexts/CurrentUserContext'
 
+import { useShellType } from '../../hooks/useShellType'
+
 import {
   InstallDropDownButtonProps,
   RecipeSubset,
@@ -195,17 +197,14 @@ function InstallDropdownButton({
   apps,
   ...props
 }: InstallDropDownButtonProps) {
-  const { data: shellData, loading: loadingShell } = useGetShellQuery()
-  const { hasInstallations, provider } = useCurrentUser()
-  const hasCloudShell = !!shellData?.shell
+  const { provider } = useCurrentUser()
+  const { type: shellType, loading: loadingShell } = useShellType()
   const loading = loadingProp || loadingShell
-
+  const isCliUser = shellType === 'cli'
   const recipe
     = type === 'stack' && !provider
       ? recipes?.[0]
       : recipes?.find(recipe => recipe.provider === provider)
-
-  const isCliUser = !hasCloudShell && hasInstallations
 
   if (!name) {
     return null

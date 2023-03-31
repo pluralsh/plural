@@ -6,7 +6,7 @@ import {
   P,
 } from 'honorable'
 import moment from 'moment'
-import { useCallback, useState } from 'react'
+import { ReactNode, useCallback, useState } from 'react'
 import { createColumnHelper } from '@tanstack/react-table'
 
 import {
@@ -36,6 +36,8 @@ import {
 } from '../../generated/graphql'
 import { GqlError } from '../utils/Alert'
 import { appendConnection, removeConnection, updateCache } from '../../utils/graphql'
+import useOnOff from '../../hooks/useOnOff'
+import { useShellType } from '../../hooks/useShellType'
 
 const columnHelper = createColumnHelper<KeyBackupFragment>()
 
@@ -111,23 +113,21 @@ const columns = [
   }),
   columnHelper.accessor(() => null, {
     id: 'actions',
-    cell: ({ row: { original } }) => (
+    cell: ({ row: { original: _ } }) => (
       <Flex
         flexDirection="row"
         gap="xxsmall"
       >
         <LocalSyncButton />
-        <DeleteKeyBackup name={original.name} />
+        {/* Disable until delete mutation works */}
+        {/* <DeleteKeyBackup name={original.name} /> */}
       </Flex>
     ),
     header: '',
   }),
 ]
 
-function DeleteKeyBackup({ name }) {
-  // Disable until deleteKeyBackup mutation is working
-  // return null
-
+export function DeleteKeyBackup({ name }) {
   const [confirm, setConfirm] = useState(false)
   const [mutation, { loading, error, reset }] = useDeleteKeyBackupMutation({
     variables: { name },
@@ -182,9 +182,23 @@ function DeleteKeyBackup({ name }) {
   )
 }
 
+const shellToHelpSuffix: Record<
+  ReturnType<typeof useShellType>['type'],
+  ReactNode
+> = {
+  cli: <>run this command in the Plural CLI on your local machine:</>,
+  cloud: <>run this command inside of the cloud shell:</>,
+  unknown: (
+    <>
+      run the command below on either your local machine or inside of the cloud
+      shell, depending on your workspace setup:
+    </>
+  ),
+}
+
 function LocalSyncButton() {
-  const [isOpen, setIsOpen] = useState(false)
-  const close = useCallback(() => setIsOpen(false), [])
+  const openState = useOnOff(false)
+  const { type: shellType } = useShellType()
 
   return (
     <>
@@ -192,14 +206,12 @@ function LocalSyncButton() {
         textValue="Sync locally"
         tooltip
         clickable
-        onClick={() => {
-          setIsOpen(!isOpen)
-        }}
+        onClick={openState.setOn}
         icon={<DownloadIcon />}
       />
       <Modal
-        open={isOpen}
-        onClose={close}
+        open={openState.on}
+        onClose={openState.setOff}
         header="Sync encryption keys locally"
         size="large"
         portal
@@ -209,8 +221,8 @@ function LocalSyncButton() {
           gap="medium"
         >
           <P body1>
-            To sync your encryption keys locally, run this command in the Plural
-            CLI on your local machine:
+            To sync your encryption keys locally,{' '}
+            {shellToHelpSuffix[shellType] || shellToHelpSuffix.unknown}
           </P>
           <Codeline>plural crypto backups restore</Codeline>
         </Flex>
@@ -220,26 +232,35 @@ function LocalSyncButton() {
 }
 
 function CreateKeyButton() {
-  const [isOpen, setIsOpen] = useState(false)
+  const openState = useOnOff(false)
+  const { type: shellType } = useShellType()
 
   return (
     <>
       <Button
         secondary
-        onClick={() => {
-          setIsOpen(true)
-        }}
+        onClick={openState.setOn}
       >
         Create key backup
       </Button>
-      {isOpen && (
-        <Modal
-          open={isOpen}
-          onClose={setIsOpen(false)}
+      <Modal
+        open={openState.on}
+        onClose={openState.setOff}
+        header="Sync encryption keys locally"
+        size="large"
+        portal
+      >
+        <Flex
+          direction="column"
+          gap="medium"
         >
-          Sync messaging
-        </Modal>
-      )}
+          <P body1>
+            To create new encryption key backups,{' '}
+            {shellToHelpSuffix[shellType] || shellToHelpSuffix.unknown}
+          </P>
+          <Codeline>plural crypto backups create</Codeline>
+        </Flex>
+      </Modal>
     </>
   )
 }
@@ -281,10 +302,10 @@ function CreateDummyKeyButton() {
         },
       },
       onCompleted: data => {
-        console.log('completed', data)
+        console.log('create dummy complete', data)
       },
       onError: error => {
-        console.log('error', error)
+        console.log('create dummy error', error)
       },
       update: (cache, { data }) => updateCache(cache, {
         query: KeyBackupsDocument,
@@ -302,7 +323,7 @@ function CreateDummyKeyButton() {
         setkeyi(keyi + 1)
       }}
     >
-      Debug create
+      Create dummy key
     </Button>
   )
 }
@@ -314,8 +335,6 @@ export function KeyBackups() {
 
   const keyBackups = mapExistingConnectionNodes(data?.keyBackups,
     edge => edge)?.sort((a, b) => (a.name === b.name ? 0 : a.name < b.name ? -1 : 1))
-
-  console.log('k', keyBackups)
 
   if (error) return <GqlError error={error} />
 
@@ -351,7 +370,6 @@ export function KeyBackups() {
         justifyContent="flex-start"
       >
         <Flex
-          // height="100%"
           flexGrow={1}
           flexShrink={1}
           alignItems="flex-start"

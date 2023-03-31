@@ -4,6 +4,7 @@ import {
   CaretRightIcon,
   IconFrame,
   Table,
+  TerminalIcon,
 } from '@pluralsh/design-system'
 import { ComponentProps, memo, useMemo } from 'react'
 import { createColumnHelper } from '@tanstack/react-table'
@@ -93,11 +94,26 @@ export const ColGit = columnHelper.accessor(row => row.gitUrl, {
   header: 'Git',
 })
 
-export const ColCloudshell = columnHelper.accessor(row => row.name, {
+export const ColCloudshell = columnHelper.accessor(row => row, {
   id: 'cloudshell',
   enableGlobalFilter: true,
   enableSorting: true,
-  cell: props => props.getValue(),
+  cell: props => {
+    const cluster = props.getValue()
+
+    return ([Source.Demo, Source.Shell] as any[]).includes(cluster.source)
+      ? (
+        <IconFrame
+          clickable
+          icon={<TerminalIcon />}
+          onClick={() => null} // TODO: Navigate to cloudshell.
+          textValue="Go to cloudshell"
+          tooltip
+          type="floating"
+        />
+      )
+      : null
+  },
   header: 'Cloudshell',
 })
 

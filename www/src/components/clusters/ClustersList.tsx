@@ -1,6 +1,5 @@
 import {
   AppIcon,
-  ArrowRightIcon,
   Button,
   CaretRightIcon,
   IconFrame,
@@ -15,10 +14,13 @@ import CopyButton from '../utils/CopyButton'
 import { ProviderIcon } from '../utils/ProviderIcon'
 import { ensureURLValidity } from '../../utils/url'
 
+import ClusterHealth from './ClusterHealth'
+
 type ClusterListElement = {
     name: string
     provider: Provider
     source?: Source | null
+    pingedAt?: Date | null
     gitUrl?: string | null
     consoleUrl?: string | null
     owner?: {
@@ -75,11 +77,11 @@ export const ColCluster = columnHelper.accessor(row => row, {
   header: 'Cluster',
 })
 
-export const ColHealth = columnHelper.accessor(row => row.name, {
+export const ColHealth = columnHelper.accessor(row => row.pingedAt, {
   id: 'health',
   enableGlobalFilter: true,
   enableSorting: true,
-  cell: props => props.getValue(),
+  cell: props => <ClusterHealth pingedAt={props.getValue()} />,
   header: 'Health',
 })
 
@@ -180,6 +182,7 @@ export const ClustersList = memo(({ clusters, columns, ...props }: ClustersListP
       source: cluster.source,
       gitUrl: cluster.gitUrl,
       consoleUrl: cluster.consoleUrl,
+      pingedAt: cluster.pingedAt,
       owner: {
         name: cluster.owner?.name,
         email: cluster.owner?.email,

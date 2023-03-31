@@ -14,6 +14,7 @@ query {
         name
         provider
         source
+        pingedAt
         gitUrl
         consoleUrl
         owner { ...UserFragment }

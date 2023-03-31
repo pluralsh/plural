@@ -1,4 +1,4 @@
-import { AppIcon, Table } from '@pluralsh/design-system'
+import { AppIcon, Button, Table } from '@pluralsh/design-system'
 import { ComponentProps, memo, useMemo } from 'react'
 import { createColumnHelper } from '@tanstack/react-table'
 import styled from 'styled-components'
@@ -6,12 +6,14 @@ import styled from 'styled-components'
 import { Cluster, Provider, Source } from '../../generated/graphql'
 import CopyButton from '../utils/CopyButton'
 import { ProviderIcon } from '../utils/ProviderIcon'
+import { ensureURLValidity } from '../../utils/url'
 
 type ClusterListElement = {
     name: string
     provider: Provider
     source?: Source | null
     gitUrl?: string | null
+    consoleUrl?: string | null
     owner?: {
       name?: string
       email?: string
@@ -122,11 +124,26 @@ export const ColUpgrades = columnHelper.accessor(row => row.name, {
   header: 'Upgrades',
 })
 
-export const ColActions = columnHelper.accessor(row => row.name, {
+export const ColActions = columnHelper.accessor(row => row.consoleUrl, {
   id: 'actions',
   enableGlobalFilter: true,
   enableSorting: true,
-  cell: props => props.getValue(),
+  cell: props => {
+    const consoleUrl = props.getValue()
+
+    return consoleUrl ? (
+      <Button
+        secondary
+        small
+        as="a"
+        href={ensureURLValidity(consoleUrl)}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Launch Console
+      </Button>
+    ) : null
+  },
   header: '',
 })
 
@@ -143,6 +160,7 @@ export const ClustersList = memo(({ clusters, columns, ...props }: ClustersListP
       provider: cluster.provider,
       source: cluster.source,
       gitUrl: cluster.gitUrl,
+      consoleUrl: cluster.consoleUrl,
       owner: {
         name: cluster.owner?.name,
         email: cluster.owner?.email,
@@ -150,8 +168,6 @@ export const ClustersList = memo(({ clusters, columns, ...props }: ClustersListP
       },
     })),
   [clusters])
-
-  console.log(tableData)
 
   if (!clusters || clusters.length === 0) {
     return <>No clusters available.</>

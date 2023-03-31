@@ -15,6 +15,7 @@ query {
         provider
         source
         gitUrl
+        consoleUrl
         owner { ...UserFragment }
       }
     }

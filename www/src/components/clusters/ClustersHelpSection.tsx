@@ -14,6 +14,10 @@ const Wrap = styled.div(({ theme }) => ({
   flexDirection: 'column',
   gap: theme.spacing.medium,
 
+  a: {
+    ...theme.partials.text.inlineLink,
+  },
+
   '.row': {
     display: 'flex',
     gap: theme.spacing.medium,
@@ -41,8 +45,7 @@ const Wrap = styled.div(({ theme }) => ({
     '.resources': {
       display: 'flex',
       flexDirection: 'row',
-      gap: theme.spacing.large,
-      justifyContent: 'space-between',
+      gap: theme.spacing.xxlarge,
     },
 
     '.cta': {
@@ -59,7 +62,10 @@ export default function ClustersHelpSection(): ReactElement {
   return (
     <Wrap>
       <div className="row">
-        <Card className="card">
+        <Card
+          fillLevel={2}
+          className="card"
+        >
           <div className="header">Get started in 3 easy steps</div>
           <ol>
             <li>Configure your cloud and Git credentials.</li>
@@ -82,21 +88,48 @@ export default function ClustersHelpSection(): ReactElement {
         </Card>
         <ReactPlayer url="https://www.youtube.com/watch?v=LgwnBjYOCbg" />
       </div>
-      <Card className="card">
+      <Card
+        fillLevel={2}
+        className="card"
+      >
         <div className="header">Helpful resources</div>
         <div className="resources">
           <div>
             <div className="subheader">Docs</div>
             <ul>
-              <li>CLI Quick start guide</li>
-              <li>Video: Installing with CLI</li>
-              <li>In-Browser Quickstart</li>
+              <li>
+                <a
+                  href="https://docs.plural.sh/getting-started/quickstart"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Quickstart: CLI
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://docs.plural.sh/getting-started/video-cli-quickstart"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Video: CLI Quickstart
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://docs.plural.sh/getting-started/cloud-shell-quickstart"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Quickstart: In-Browser
+                </a>
+              </li>
             </ul>
           </div>
           <div>
             <div className="subheader">Questions or feedback?</div>
             <Button
-              secondary
+              floating
               small
               startIcon={<DiscordIcon />}
             >
@@ -106,7 +139,7 @@ export default function ClustersHelpSection(): ReactElement {
           <div>
             <div className="subheader">Need support?</div>
             <Button
-              secondary
+              floating
               small
               startIcon={<LifePreserverIcon />}
             >

@@ -108,20 +108,6 @@ export function Clusters(): ReactElement | null {
   //       overflow="auto"
   //     >
   //       <EmptyState message="Looks like you don't have any clusters registered yet.">
-  //         <Span maxWidth={500}>
-  //           Clusters are registered here once you've installed and deployed
-  //           Plural
-  //           Console. If you need support installing it, read our&nbsp;
-  //           <A
-  //             inline
-  //             href="https://docs.plural.sh/getting-started/getting-started"
-  //             target="_blank"
-  //             rel="noopener noreferrer"
-  //           >
-  //             quickstart guide
-  //           </A>
-  //           .
-  //         </Span>
   //         <Button
   //           as={Link}
   //           to="/repository/a051a0bf-61b5-4ab5-813d-2c541c83a979"
@@ -144,7 +130,7 @@ export function Clusters(): ReactElement | null {
         clusters={clusters}
         columns={columns}
       />
-      <ClustersHelpSection />
+      <ClustersHelpSection /> {/* TODO: Visible only if there are no clusters. */}
     </Flex>
     // <QueueContext.Provider value={queue}>
     //   <ResponsiveLayoutPage>

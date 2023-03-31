@@ -63,6 +63,11 @@ type MenuItem = {
 /* TODO: Make sure urlRegexp is working with new Sidebar */
 const MENU_ITEMS: MenuItem[] = [
   {
+    text: 'Clusters',
+    icon: <ClusterIcon />,
+    path: '/clusters',
+  },
+  {
     text: 'Marketplace',
     icon: <BrowseAppsIcon />,
     path: '/marketplace',
@@ -78,11 +83,6 @@ const MENU_ITEMS: MenuItem[] = [
     text: 'Account',
     icon: <PeopleIcon />,
     path: '/account',
-  },
-  {
-    text: 'Clusters',
-    icon: <ClusterIcon />,
-    path: '/clusters',
   },
   {
     text: 'Audits',

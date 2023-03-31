@@ -245,7 +245,7 @@ function CreateKeyButton() {
       <Modal
         open={openState.on}
         onClose={openState.setOff}
-        header="Sync encryption keys locally"
+        header="Create encryption key"
         size="large"
         portal
       >

@@ -63,7 +63,8 @@ defmodule GraphQl do
     Test,
     Cluster,
     Upgrade,
-    GraphQl.InstallationLoader
+    GraphQl.InstallationLoader,
+    GraphQl.ShellLoader
   ]
 
   def context(ctx) do

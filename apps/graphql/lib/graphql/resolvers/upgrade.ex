@@ -1,7 +1,10 @@
 defmodule GraphQl.Resolvers.Upgrade do
   use GraphQl.Resolvers.Base, model: Core.Schema.Upgrade
-  alias Core.Schema.DeferredUpdate
+  alias Core.Schema.{DeferredUpdate, UpgradeQueue}
   alias Core.Services.{Upgrades, Repositories}
+
+  def query(UpgradeQueue, _), do: UpgradeQueue
+  def query(_, _), do: Upgrade
 
   def resolve_queue(%{id: id}, %{context: %{current_user: user}}) when is_binary(id),
     do: Upgrades.authorize(id, user)

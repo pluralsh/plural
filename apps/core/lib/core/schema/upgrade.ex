@@ -3,11 +3,20 @@ defmodule Core.Schema.Upgrade do
   alias Core.Schema.{UpgradeQueue, Repository}
   alias Piazza.Ecto.UUID
 
-  defenum Type, deploy: 0, approval: 1, bounce: 2, dedicated: 3
+  defenum Type, deploy: 0, approval: 1, bounce: 2, dedicated: 3, config: 4
+  defenum ValueType, int: 0, string: 1, float: 2
 
   schema "upgrades" do
     field :type,    Type
     field :message, :string
+
+    embeds_one :config, UpgradeConfig, on_replace: :update do
+      embeds_many :paths, UpgradePath, on_replace: :delete do
+        field :path,  :string
+        field :value, :string
+        field :type,  Core.Schema.Upgrade.ValueType
+      end
+    end
 
     belongs_to :queue,      UpgradeQueue
     belongs_to :repository, Repository
@@ -38,10 +47,25 @@ defmodule Core.Schema.Upgrade do
   def changeset(model, attrs \\ %{}) do
     model
     |> cast(attrs, @valid)
+    |> cast_embed(:config, with: &config_changeset/2)
     |> put_change(:id, UUID.generate_monotonic())
     |> validate_length(:message, max: 10_000)
     |> foreign_key_constraint(:queue_id)
     |> foreign_key_constraint(:repository_id)
     |> validate_required([:queue_id, :repository_id])
+  end
+
+  def config_changeset(model, attrs \\ %{}) do
+    model
+    |> cast(attrs, [])
+    |> cast_embed(:paths, with: &path_changeset/2)
+  end
+
+  @path_valid ~w(path value type)a
+
+  def path_changeset(model, attrs \\ %{}) do
+    model
+    |> cast(attrs, @path_valid)
+    |> validate_required(@path_valid)
   end
 end

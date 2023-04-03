@@ -2639,6 +2639,7 @@ export type RootMutationType = {
   createTerraform?: Maybe<Terraform>;
   createTest?: Maybe<Test>;
   createToken?: Maybe<PersistedToken>;
+  createUpgrade?: Maybe<Upgrade>;
   createUserEvent?: Maybe<Scalars['Boolean']>;
   createWebhook?: Maybe<Webhook>;
   createZoom?: Maybe<ZoomMeeting>;
@@ -2956,6 +2957,14 @@ export type RootMutationTypeCreateTestArgs = {
   attributes: TestAttributes;
   name?: InputMaybe<Scalars['String']>;
   repositoryId?: InputMaybe<Scalars['ID']>;
+};
+
+
+export type RootMutationTypeCreateUpgradeArgs = {
+  attributes: UpgradeAttributes;
+  queue: Scalars['String'];
+  repositoryId?: InputMaybe<Scalars['ID']>;
+  repositoryName?: InputMaybe<Scalars['String']>;
 };
 
 
@@ -4546,12 +4555,28 @@ export type UpdatablePlanAttributes = {
 
 export type Upgrade = {
   __typename?: 'Upgrade';
+  config?: Maybe<UpgradeConfig>;
   id: Scalars['ID'];
   insertedAt?: Maybe<Scalars['DateTime']>;
   message?: Maybe<Scalars['String']>;
   repository?: Maybe<Repository>;
   type?: Maybe<UpgradeType>;
   updatedAt?: Maybe<Scalars['DateTime']>;
+};
+
+export type UpgradeAttributes = {
+  config?: InputMaybe<UpgradeConfigAttributes>;
+  message: Scalars['String'];
+  type?: InputMaybe<UpgradeType>;
+};
+
+export type UpgradeConfig = {
+  __typename?: 'UpgradeConfig';
+  paths?: Maybe<Array<Maybe<UpgradePath>>>;
+};
+
+export type UpgradeConfigAttributes = {
+  paths?: InputMaybe<Array<InputMaybe<UpgradePathAttributes>>>;
 };
 
 export type UpgradeConnection = {
@@ -4571,6 +4596,19 @@ export type UpgradeInfo = {
   __typename?: 'UpgradeInfo';
   count?: Maybe<Scalars['Int']>;
   installation?: Maybe<Installation>;
+};
+
+export type UpgradePath = {
+  __typename?: 'UpgradePath';
+  path: Scalars['String'];
+  type: ValueType;
+  value: Scalars['String'];
+};
+
+export type UpgradePathAttributes = {
+  path: Scalars['String'];
+  type: ValueType;
+  value: Scalars['String'];
 };
 
 export type UpgradeQueue = {
@@ -4612,6 +4650,7 @@ export type UpgradeQueueDelta = {
 export enum UpgradeType {
   Approval = 'APPROVAL',
   Bounce = 'BOUNCE',
+  Config = 'CONFIG',
   Dedicated = 'DEDICATED',
   Deploy = 'DEPLOY'
 }
@@ -4694,6 +4733,12 @@ export enum UserEventStatus {
 
 export enum ValidationType {
   Regex = 'REGEX'
+}
+
+export enum ValueType {
+  Float = 'FLOAT',
+  Int = 'INT',
+  String = 'STRING'
 }
 
 /** The version of a package. */

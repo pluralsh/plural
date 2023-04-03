@@ -496,6 +496,12 @@ input AddressAttributes {
   zip: String!
 }
 
+input UpgradePathAttributes {
+  path: String!
+  value: String!
+  type: ValueType!
+}
+
 input VersionAttributes {
   tags: [VersionTagAttributes]
 }
@@ -1459,6 +1465,10 @@ input ShellCredentialsAttributes {
   azure: AzureShellCredentialsAttributes
 }
 
+input UpgradeConfigAttributes {
+  paths: [UpgradePathAttributes]
+}
+
 input SpecificationAttributes {
   name: String!
   type: SpecDatatype!
@@ -1838,6 +1848,8 @@ type RootMutationType {
   readNotifications(incidentId: ID): Int
 
   createQueue(attributes: UpgradeQueueAttributes!): UpgradeQueue
+
+  createUpgrade(repositoryName: String, repositoryId: ID, queue: String!, attributes: UpgradeAttributes!): Upgrade
 
   acceptLogin(challenge: String!): OauthResponse
 
@@ -2326,6 +2338,12 @@ type DockerRepository {
   updatedAt: DateTime
 }
 
+type UpgradePath {
+  path: String!
+  value: String!
+  type: ValueType!
+}
+
 type RoleBinding {
   id: ID!
   user: User
@@ -2395,6 +2413,7 @@ type Upgrade {
   id: ID!
   type: UpgradeType
   message: String
+  config: UpgradeConfig
   repository: Repository
   insertedAt: DateTime
   updatedAt: DateTime
@@ -2465,6 +2484,12 @@ be converted to UTC if there is an offset.
 """
 scalar DateTime
 
+enum ValueType {
+  INT
+  STRING
+  FLOAT
+}
+
 type PersistedTokenAuditEdge {
   node: PersistedTokenAudit
   cursor: String
@@ -2492,6 +2517,7 @@ enum UpgradeType {
   APPROVAL
   BOUNCE
   DEDICATED
+  CONFIG
 }
 
 type DockerImage {
@@ -2905,6 +2931,26 @@ type OauthInfo {
   authorizeUrl: String!
 }
 
+type SlimSubscription {
+  id: ID!
+  lineItems: SubscriptionLineItems
+  plan: Plan
+}
+
+type PersistedToken {
+  id: ID
+  token: String
+  audits(after: String, first: Int, before: String, last: Int): PersistedTokenAuditConnection
+  metrics: [GeoMetric]
+  insertedAt: DateTime
+  updatedAt: DateTime
+}
+
+type GroupedTagConnection {
+  pageInfo: PageInfo!
+  edges: [GroupedTagEdge]
+}
+
 type OuathConfiguration {
   issuer: String
   authorizationEndpoint: String
@@ -2947,12 +2993,6 @@ type TestConnection {
   edges: [TestEdge]
 }
 
-type SlimSubscription {
-  id: ID!
-  lineItems: SubscriptionLineItems
-  plan: Plan
-}
-
 enum Permission {
   INSTALL
   PUBLISH
@@ -2975,20 +3015,6 @@ type TerraformConnection {
 enum LineItemDimension {
   USER
   CLUSTER
-}
-
-type PersistedToken {
-  id: ID
-  token: String
-  audits(after: String, first: Int, before: String, last: Int): PersistedTokenAuditConnection
-  metrics: [GeoMetric]
-  insertedAt: DateTime
-  updatedAt: DateTime
-}
-
-type GroupedTagConnection {
-  pageInfo: PageInfo!
-  edges: [GroupedTagEdge]
 }
 
 type IncidentHistoryConnection {
@@ -3135,6 +3161,10 @@ enum Category {
   PRODUCTIVITY
   NETWORK
   STORAGE
+}
+
+type UpgradeConfig {
+  paths: [UpgradePath]
 }
 
 type ImpersonationPolicyBinding {
@@ -3413,6 +3443,12 @@ input UserEventAttributes {
   event: String!
   data: String
   status: UserEventStatus
+}
+
+input UpgradeAttributes {
+  message: String!
+  type: UpgradeType
+  config: UpgradeConfigAttributes
 }
 
 input ImpersonationPolicyBindingAttributes {

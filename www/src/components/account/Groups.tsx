@@ -27,7 +27,8 @@ import { canEdit } from '../../utils/account'
 
 import SubscriptionContext from '../../contexts/SubscriptionContext'
 
-import { Confirm } from './Confirm'
+import { Confirm } from '../utils/Confirm'
+
 import { ViewGroup } from './Group'
 import { CreateGroup } from './CreateGroup'
 import { EditGroupAttributes, EditGroupMembers } from './EditGroup'

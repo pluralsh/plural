@@ -60,6 +60,7 @@ const LoginAudits = lazy(() => import('./audits/LoginAudits').then(module => ({ 
 const MyProfile = lazy(() => import('./profile/MyProfile').then(module => ({ default: module.MyProfile })))
 const Profile = lazy(() => import('./profile/Profile').then(module => ({ default: module.Profile })))
 const PublicKeys = lazy(() => import('./profile/PublicKeys').then(module => ({ default: module.PublicKeys })))
+const KeyBackups = lazy(() => import('./profile/KeyBackups').then(module => ({ default: module.KeyBackups })))
 const Roles = lazy(() => import('./account/Roles').then(module => ({ default: module.Roles })))
 const Security = lazy(() => import('./profile/Security').then(module => ({ default: module.Security })))
 const ServiceAccounts = lazy(() => import('./account/ServiceAccounts').then(module => ({ default: module.ServiceAccounts })))
@@ -237,6 +238,10 @@ export function PluralInner() {
                 <Route
                   path="tokens"
                   element={<AccessTokens />}
+                />
+                <Route
+                  path="encryption-keys"
+                  element={<KeyBackups />}
                 />
                 <Route
                   path="keys"

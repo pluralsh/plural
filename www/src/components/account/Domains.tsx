@@ -20,9 +20,10 @@ import { Table, TableData, TableRow } from '../utils/Table'
 import ListInput from '../utils/ListInput'
 import { List } from '../utils/List'
 
+import { Confirm } from '../utils/Confirm'
+
 import { DELETE_DOMAIN, DNS_DOMAINS, UPDATE_DOMAIN } from './queries'
 import { Actions } from './Actions'
-import { Confirm } from './Confirm'
 import { MoreMenu } from './MoreMenu'
 import { BindingInput } from './Typeaheads'
 import { sanitize } from './utils'

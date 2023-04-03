@@ -5148,6 +5148,36 @@ export type InviteQueryVariables = Exact<{
 
 export type InviteQuery = { __typename?: 'RootQueryType', invite?: { __typename?: 'Invite', id: string, email?: string | null, existing: boolean, account?: { __typename?: 'Account', id: string, name?: string | null, billingCustomerId?: string | null, backgroundColor?: string | null, userCount?: string | null } | null, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, account: { __typename?: 'Account', id: string, name?: string | null, billingCustomerId?: string | null, backgroundColor?: string | null, userCount?: string | null }, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null } | null };
 
+export type KeyBackupUserFragment = { __typename?: 'User', email: string };
+
+export type KeyBackupFragment = { __typename?: 'KeyBackup', digest: string, id: string, insertedAt?: Date | null, name: string, repositories?: Array<string> | null, updatedAt?: Date | null, value: string, user: { __typename?: 'User', email: string } };
+
+export type KeyBackupsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type KeyBackupsQuery = { __typename?: 'RootQueryType', keyBackups?: { __typename?: 'KeyBackupConnection', edges?: Array<{ __typename?: 'KeyBackupEdge', node?: { __typename?: 'KeyBackup', digest: string, id: string, insertedAt?: Date | null, name: string, repositories?: Array<string> | null, updatedAt?: Date | null, value: string, user: { __typename?: 'User', email: string } } | null } | null> | null } | null };
+
+export type KeyBackupQueryVariables = Exact<{
+  name: Scalars['String'];
+}>;
+
+
+export type KeyBackupQuery = { __typename?: 'RootQueryType', keyBackup?: { __typename?: 'KeyBackup', digest: string, id: string, insertedAt?: Date | null, name: string, repositories?: Array<string> | null, updatedAt?: Date | null, value: string, user: { __typename?: 'User', email: string } } | null };
+
+export type DeleteKeyBackupMutationVariables = Exact<{
+  name: Scalars['String'];
+}>;
+
+
+export type DeleteKeyBackupMutation = { __typename?: 'RootMutationType', deleteKeyBackup?: { __typename?: 'KeyBackup', digest: string, id: string, insertedAt?: Date | null, name: string, repositories?: Array<string> | null, updatedAt?: Date | null, value: string, user: { __typename?: 'User', email: string } } | null };
+
+export type CreateKeyBackupMutationVariables = Exact<{
+  attributes: KeyBackupAttributes;
+}>;
+
+
+export type CreateKeyBackupMutation = { __typename?: 'RootMutationType', createKeyBackup?: { __typename?: 'KeyBackup', digest: string, id: string, insertedAt?: Date | null, name: string, repositories?: Array<string> | null, updatedAt?: Date | null, value: string, user: { __typename?: 'User', email: string } } | null };
+
 export type MetricFragment = { __typename?: 'Metric', name: string, tags?: Array<{ __typename?: 'MetricTag', name: string, value: string } | null> | null, values?: Array<{ __typename?: 'MetricValue', time?: Date | null, value?: number | null } | null> | null };
 
 export type PageInfoFragment = { __typename?: 'PageInfo', endCursor?: string | null, hasNextPage: boolean };
@@ -5541,7 +5571,7 @@ export type EabCredentialFragment = { __typename?: 'EabCredential', id: string, 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MeQuery = { __typename?: 'RootQueryType', me?: { __typename?: 'User', demoing?: boolean | null, loginMethod?: LoginMethod | null, hasInstallations?: boolean | null, id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, account: { __typename?: 'Account', id: string, name?: string | null, billingCustomerId?: string | null, backgroundColor?: string | null, userCount?: string | null, rootUser?: { __typename?: 'User', id: string, name: string, email: string } | null, domainMappings?: Array<{ __typename?: 'DomainMapping', id: string, domain: string, enableSso?: boolean | null } | null> | null }, publisher?: { __typename?: 'Publisher', billingAccountId?: string | null, id?: string | null, name: string, phone?: string | null, avatar?: string | null, description?: string | null, backgroundColor?: string | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, address?: { __typename?: 'Address', line1?: string | null, line2?: string | null, city?: string | null, country?: string | null, state?: string | null, zip?: string | null } | null } | null, boundRoles?: Array<{ __typename?: 'Role', id: string, name: string, description?: string | null, repositories?: Array<string | null> | null, permissions?: Array<Permission | null> | null, roleBindings?: Array<{ __typename?: 'RoleBinding', id: string, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, group?: { __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null } | null> | null } | null> | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, configuration?: { __typename?: 'PluralConfiguration', stripeConnectId?: string | null, stripePublishableKey?: string | null, registry?: string | null, gitCommit?: string | null } | null };
+export type MeQuery = { __typename?: 'RootQueryType', me?: { __typename?: 'User', demoing?: boolean | null, loginMethod?: LoginMethod | null, hasInstallations?: boolean | null, hasShell?: boolean | null, id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, account: { __typename?: 'Account', id: string, name?: string | null, billingCustomerId?: string | null, backgroundColor?: string | null, userCount?: string | null, rootUser?: { __typename?: 'User', id: string, name: string, email: string } | null, domainMappings?: Array<{ __typename?: 'DomainMapping', id: string, domain: string, enableSso?: boolean | null } | null> | null }, publisher?: { __typename?: 'Publisher', billingAccountId?: string | null, id?: string | null, name: string, phone?: string | null, avatar?: string | null, description?: string | null, backgroundColor?: string | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, address?: { __typename?: 'Address', line1?: string | null, line2?: string | null, city?: string | null, country?: string | null, state?: string | null, zip?: string | null } | null } | null, boundRoles?: Array<{ __typename?: 'Role', id: string, name: string, description?: string | null, repositories?: Array<string | null> | null, permissions?: Array<Permission | null> | null, roleBindings?: Array<{ __typename?: 'RoleBinding', id: string, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, group?: { __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null } | null> | null } | null> | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, configuration?: { __typename?: 'PluralConfiguration', stripeConnectId?: string | null, stripePublishableKey?: string | null, registry?: string | null, gitCommit?: string | null } | null };
 
 export type GetLoginMethodQueryVariables = Exact<{
   email: Scalars['String'];
@@ -6362,6 +6392,25 @@ export const ZoomMeetingFragmentDoc = gql`
   password
 }
     `;
+export const KeyBackupUserFragmentDoc = gql`
+    fragment KeyBackupUser on User {
+  email
+}
+    `;
+export const KeyBackupFragmentDoc = gql`
+    fragment KeyBackup on KeyBackup {
+  digest
+  id
+  insertedAt
+  name
+  repositories
+  updatedAt
+  user {
+    ...KeyBackupUser
+  }
+  value
+}
+    ${KeyBackupUserFragmentDoc}`;
 export const MetricFragmentDoc = gql`
     fragment Metric on Metric {
   name
@@ -7955,6 +8004,145 @@ export function useInviteLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Inv
 export type InviteQueryHookResult = ReturnType<typeof useInviteQuery>;
 export type InviteLazyQueryHookResult = ReturnType<typeof useInviteLazyQuery>;
 export type InviteQueryResult = Apollo.QueryResult<InviteQuery, InviteQueryVariables>;
+export const KeyBackupsDocument = gql`
+    query KeyBackups {
+  keyBackups(first: 1000) {
+    edges {
+      node {
+        ...KeyBackup
+      }
+    }
+  }
+}
+    ${KeyBackupFragmentDoc}`;
+
+/**
+ * __useKeyBackupsQuery__
+ *
+ * To run a query within a React component, call `useKeyBackupsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useKeyBackupsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useKeyBackupsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useKeyBackupsQuery(baseOptions?: Apollo.QueryHookOptions<KeyBackupsQuery, KeyBackupsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<KeyBackupsQuery, KeyBackupsQueryVariables>(KeyBackupsDocument, options);
+      }
+export function useKeyBackupsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<KeyBackupsQuery, KeyBackupsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<KeyBackupsQuery, KeyBackupsQueryVariables>(KeyBackupsDocument, options);
+        }
+export type KeyBackupsQueryHookResult = ReturnType<typeof useKeyBackupsQuery>;
+export type KeyBackupsLazyQueryHookResult = ReturnType<typeof useKeyBackupsLazyQuery>;
+export type KeyBackupsQueryResult = Apollo.QueryResult<KeyBackupsQuery, KeyBackupsQueryVariables>;
+export const KeyBackupDocument = gql`
+    query KeyBackup($name: String!) {
+  keyBackup(name: $name) {
+    ...KeyBackup
+  }
+}
+    ${KeyBackupFragmentDoc}`;
+
+/**
+ * __useKeyBackupQuery__
+ *
+ * To run a query within a React component, call `useKeyBackupQuery` and pass it any options that fit your needs.
+ * When your component renders, `useKeyBackupQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useKeyBackupQuery({
+ *   variables: {
+ *      name: // value for 'name'
+ *   },
+ * });
+ */
+export function useKeyBackupQuery(baseOptions: Apollo.QueryHookOptions<KeyBackupQuery, KeyBackupQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<KeyBackupQuery, KeyBackupQueryVariables>(KeyBackupDocument, options);
+      }
+export function useKeyBackupLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<KeyBackupQuery, KeyBackupQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<KeyBackupQuery, KeyBackupQueryVariables>(KeyBackupDocument, options);
+        }
+export type KeyBackupQueryHookResult = ReturnType<typeof useKeyBackupQuery>;
+export type KeyBackupLazyQueryHookResult = ReturnType<typeof useKeyBackupLazyQuery>;
+export type KeyBackupQueryResult = Apollo.QueryResult<KeyBackupQuery, KeyBackupQueryVariables>;
+export const DeleteKeyBackupDocument = gql`
+    mutation DeleteKeyBackup($name: String!) {
+  deleteKeyBackup(name: $name) {
+    ...KeyBackup
+  }
+}
+    ${KeyBackupFragmentDoc}`;
+export type DeleteKeyBackupMutationFn = Apollo.MutationFunction<DeleteKeyBackupMutation, DeleteKeyBackupMutationVariables>;
+
+/**
+ * __useDeleteKeyBackupMutation__
+ *
+ * To run a mutation, you first call `useDeleteKeyBackupMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteKeyBackupMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteKeyBackupMutation, { data, loading, error }] = useDeleteKeyBackupMutation({
+ *   variables: {
+ *      name: // value for 'name'
+ *   },
+ * });
+ */
+export function useDeleteKeyBackupMutation(baseOptions?: Apollo.MutationHookOptions<DeleteKeyBackupMutation, DeleteKeyBackupMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteKeyBackupMutation, DeleteKeyBackupMutationVariables>(DeleteKeyBackupDocument, options);
+      }
+export type DeleteKeyBackupMutationHookResult = ReturnType<typeof useDeleteKeyBackupMutation>;
+export type DeleteKeyBackupMutationResult = Apollo.MutationResult<DeleteKeyBackupMutation>;
+export type DeleteKeyBackupMutationOptions = Apollo.BaseMutationOptions<DeleteKeyBackupMutation, DeleteKeyBackupMutationVariables>;
+export const CreateKeyBackupDocument = gql`
+    mutation CreateKeyBackup($attributes: KeyBackupAttributes!) {
+  createKeyBackup(attributes: $attributes) {
+    ...KeyBackup
+  }
+}
+    ${KeyBackupFragmentDoc}`;
+export type CreateKeyBackupMutationFn = Apollo.MutationFunction<CreateKeyBackupMutation, CreateKeyBackupMutationVariables>;
+
+/**
+ * __useCreateKeyBackupMutation__
+ *
+ * To run a mutation, you first call `useCreateKeyBackupMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateKeyBackupMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createKeyBackupMutation, { data, loading, error }] = useCreateKeyBackupMutation({
+ *   variables: {
+ *      attributes: // value for 'attributes'
+ *   },
+ * });
+ */
+export function useCreateKeyBackupMutation(baseOptions?: Apollo.MutationHookOptions<CreateKeyBackupMutation, CreateKeyBackupMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateKeyBackupMutation, CreateKeyBackupMutationVariables>(CreateKeyBackupDocument, options);
+      }
+export type CreateKeyBackupMutationHookResult = ReturnType<typeof useCreateKeyBackupMutation>;
+export type CreateKeyBackupMutationResult = Apollo.MutationResult<CreateKeyBackupMutation>;
+export type CreateKeyBackupMutationOptions = Apollo.BaseMutationOptions<CreateKeyBackupMutation, CreateKeyBackupMutationVariables>;
 export const SubscriptionDocument = gql`
     query Subscription {
   account {
@@ -9385,6 +9573,7 @@ export const MeDocument = gql`
     demoing
     loginMethod
     hasInstallations
+    hasShell
     account {
       ...Account
       rootUser {
@@ -10185,6 +10374,8 @@ export const namedOperations = {
     GetInstallationById: 'GetInstallationById',
     GetInstallations: 'GetInstallations',
     Invite: 'Invite',
+    KeyBackups: 'KeyBackups',
+    KeyBackup: 'KeyBackup',
     Subscription: 'Subscription',
     Cards: 'Cards',
     Invoices: 'Invoices',
@@ -10225,6 +10416,8 @@ export const namedOperations = {
     UpsertOidcProvider: 'UpsertOidcProvider',
     SignupInvite: 'SignupInvite',
     RealizeInvite: 'RealizeInvite',
+    DeleteKeyBackup: 'DeleteKeyBackup',
+    CreateKeyBackup: 'CreateKeyBackup',
     UpdateAccountBilling: 'UpdateAccountBilling',
     CreatePlatformSubscription: 'CreatePlatformSubscription',
     DowngradeToFreePlanMutation: 'DowngradeToFreePlanMutation',
@@ -10296,6 +10489,8 @@ export const namedOperations = {
     WebhookLog: 'WebhookLog',
     OauthIntegration: 'OauthIntegration',
     ZoomMeeting: 'ZoomMeeting',
+    KeyBackupUser: 'KeyBackupUser',
+    KeyBackup: 'KeyBackup',
     Metric: 'Metric',
     PageInfo: 'PageInfo',
     OIDCProvider: 'OIDCProvider',

@@ -125,6 +125,7 @@ query Me{
     demoing
     loginMethod
     hasInstallations
+    hasShell
     account {
       ...Account
       rootUser { id, name, email }

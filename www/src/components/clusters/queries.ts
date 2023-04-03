@@ -17,13 +17,15 @@ query {
         pingedAt
         gitUrl
         consoleUrl
-        owner { ...UserFragment }
+        owner { ...UserFragment hasShell }
+        queue { ...UpgradeQueueFragment }
       }
     }
   }
 }
 ${PageInfo}
 ${UserFragment}
+${UpgradeQueueFragment}
 `
 
 export const QUEUES = gql`

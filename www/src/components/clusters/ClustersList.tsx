@@ -28,6 +28,7 @@ type ClusterListElement = {
       name?: string
       email?: string
       avatar?: string | null
+      hasShell?: boolean | null
     }
   }
 
@@ -94,14 +95,14 @@ export const ColGit = columnHelper.accessor(row => row.gitUrl, {
   header: 'Git',
 })
 
-export const ColCloudshell = columnHelper.accessor(row => row, {
+export const ColCloudshell = columnHelper.accessor(row => row.owner?.hasShell, {
   id: 'cloudshell',
   enableGlobalFilter: true,
   enableSorting: true,
   cell: props => {
-    const cluster = props.getValue()
+    const hasShell = props.getValue()
 
-    return ([Source.Demo, Source.Shell] as any[]).includes(cluster.source)
+    return hasShell
       ? (
         <IconFrame
           clickable
@@ -203,6 +204,7 @@ export const ClustersList = memo(({ clusters, columns, ...props }: ClustersListP
         name: cluster.owner?.name,
         email: cluster.owner?.email,
         avatar: cluster.owner?.avatar,
+        hasShell: cluster.owner?.hasShell,
       },
     })),
   [clusters])

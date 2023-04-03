@@ -51,12 +51,12 @@ const CellCaption = styled.div(({ theme }) => ({
 
 const columnHelper = createColumnHelper<ClusterListElement>()
 
-export const ColCluster = columnHelper.accessor(row => row, {
+export const ColCluster = columnHelper.accessor(row => row.name, {
   id: 'cluster',
   enableGlobalFilter: true,
   enableSorting: true,
-  cell: props => {
-    const cluster = props.getValue()
+  cell: ({ row: { original } }) => {
+    const cluster = original
 
     return (
       <CellWrap>
@@ -99,31 +99,27 @@ export const ColCloudshell = columnHelper.accessor(row => row.owner?.hasShell, {
   id: 'cloudshell',
   enableGlobalFilter: true,
   enableSorting: true,
-  cell: props => {
-    const hasShell = props.getValue()
-
-    return hasShell
-      ? (
-        <IconFrame
-          clickable
-          icon={<TerminalIcon />}
-          onClick={() => null} // TODO: Navigate to cloudshell.
-          textValue="Go to cloudshell"
-          tooltip
-          type="floating"
-        />
-      )
-      : null
-  },
+  cell: props => (props.getValue()
+    ? (
+      <IconFrame
+        clickable
+        icon={<TerminalIcon />}
+        onClick={() => null} // TODO: Navigate to cloudshell.
+        textValue="Go to cloudshell"
+        tooltip
+        type="floating"
+      />
+    )
+    : null),
   header: 'Cloudshell',
 })
 
-export const ColOwner = columnHelper.accessor(row => row.owner, {
+export const ColOwner = columnHelper.accessor(row => row.owner?.name, {
   id: 'owner',
   enableGlobalFilter: true,
   enableSorting: true,
-  cell: props => {
-    const owner = props.getValue()
+  cell: ({ row: { original } }) => {
+    const { owner } = original
 
     return (
       <CellWrap>
@@ -152,8 +148,11 @@ export const ColUpgrades = columnHelper.accessor(row => row.name, {
 
 export const ColActions = columnHelper.accessor(row => row.consoleUrl, {
   id: 'actions',
-  enableGlobalFilter: true,
-  enableSorting: true,
+  enableGlobalFilter: false,
+  enableSorting: false,
+  meta: {
+    gridTemplate: '200px',
+  },
   cell: props => {
     const consoleUrl = props.getValue()
 
@@ -164,7 +163,7 @@ export const ColActions = columnHelper.accessor(row => row.consoleUrl, {
             secondary
             small
             as="a"
-            href={ensureURLValidity(consoleUrl)}
+            href={consoleUrl}
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -198,7 +197,7 @@ export const ClustersList = memo(({ clusters, columns, ...props }: ClustersListP
       provider: cluster.provider,
       source: cluster.source,
       gitUrl: cluster.gitUrl,
-      consoleUrl: cluster.consoleUrl,
+      consoleUrl: ensureURLValidity(cluster.consoleUrl),
       pingedAt: cluster.pingedAt,
       owner: {
         name: cluster.owner?.name,

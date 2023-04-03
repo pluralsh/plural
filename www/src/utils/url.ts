@@ -75,7 +75,9 @@ export function isValidURL(url: string): boolean {
 // In most of the cases if URL fails validity check it is missing protocol.
 // This method adds protocol shorthand when it is missing.
 // It doesn't support local paths.
-export function ensureURLValidity(url: string): string {
+export function ensureURLValidity(url: string | null | undefined): string | null | undefined {
+  if (!url) return url
+
   if (isValidURL(url)) return url
 
   return `//${url}`

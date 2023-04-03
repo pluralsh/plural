@@ -7,6 +7,8 @@ import { useQuery } from '@apollo/client'
 import { Flex } from 'honorable'
 import { ReactElement, useMemo } from 'react'
 
+import { isEmpty } from 'lodash'
+
 import { Cluster, RootQueryType, RootQueryTypeClustersArgs } from '../../generated/graphql'
 import LoadingIndicator from '../utils/LoadingIndicator'
 
@@ -130,7 +132,7 @@ export function Clusters(): ReactElement | null {
         clusters={clusters}
         columns={columns}
       />
-      <ClustersHelpSection /> {/* TODO: Visible only if there are no clusters. */}
+      {isEmpty(clusters) && <ClustersHelpSection />}
     </Flex>
     // <QueueContext.Provider value={queue}>
     //   <ResponsiveLayoutPage>

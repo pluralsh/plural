@@ -266,7 +266,7 @@ export const ClustersList = memo(({ clusters, columns, ...props }: ClustersListP
 
   return (
     <Table
-      data={isEmpty(clusters) ? tableData : emptyTableData}
+      data={!isEmpty(clusters) ? tableData : emptyTableData}
       columns={columns}
       virtualizeRows
       {...props}

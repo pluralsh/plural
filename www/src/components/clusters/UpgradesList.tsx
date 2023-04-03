@@ -34,8 +34,14 @@ const Wrap = styled(Card)(({ theme }) => ({
     justifyContent: 'space-between',
 
     '.select': {
-      width: 420,
+      width: 450,
       boxShadow: theme.boxShadows.slight,
+
+      '.select-title': {
+        display: 'flex',
+        gap: theme.spacing.xsmall,
+        whiteSpace: 'nowrap',
+      },
     },
   },
 
@@ -43,10 +49,12 @@ const Wrap = styled(Card)(({ theme }) => ({
     backgroundColor: theme.colors['fill-one'],
     borderBottomLeftRadius: theme.borderRadiuses.large,
     borderBottomRightRadius: theme.borderRadiuses.large,
+    minHeight: 300, // TODO: Change to grow automatically.
 
-    // TODO:
-    flexGrow: 1,
-    minHeight: 200,
+    '.empty': {
+      color: theme.colors['text-xlight'],
+      padding: `${theme.spacing.small}px ${theme.spacing.medium}px`,
+    },
   },
 }))
 
@@ -65,6 +73,8 @@ export default function UpgradesList({ clusters }: UpgradesListProps) {
     setCluster(clusters.find(({ id }) => id === cluster?.id))
   }, [clusters]) // eslint-disable-line react-hooks/exhaustive-deps
 
+  if (isEmpty(clusters)) return null // TODO: Update.
+
   return (
     <Wrap
       fillLevel={2}
@@ -79,7 +89,12 @@ export default function UpgradesList({ clusters }: UpgradesListProps) {
             label="Select cluster"
             selectedKey={cluster?.id}
             onSelectionChange={onSelectionChange}
-            titleContent={<><ClusterIcon marginRight="xsmall" />Cluster</>}
+            titleContent={(
+              <div className="select-title">
+                <ClusterIcon />
+                Cluster upgrades
+              </div>
+            )}
             leftContent={(
               <ProviderIcon
                 provider={cluster?.provider}
@@ -123,7 +138,7 @@ export default function UpgradesList({ clusters }: UpgradesListProps) {
               )
               : <UpgradesListInternal cluster={cluster} />
           )
-          : 'No queue.'}
+          : <div className="empty">Looks like you don’t have any upgrades.</div>}
       </div>
     </Wrap>
   )

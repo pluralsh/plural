@@ -1,15 +1,9 @@
-import {
-  createContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { ApolloProvider, useMutation } from '@apollo/client'
 
 import { buildClient } from '../../helpers/client'
 import { IMPERSONATE_SERVICE_ACCOUNT } from '../account/queries'
 
-export const PluralApiContext = createContext({})
 const SA_CLIENT_CACHE = {} // TODO: Change it.
 
 export function ImpersonateServiceAccount({ id, children }) { // TODO: Loading, errors etc.

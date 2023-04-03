@@ -113,9 +113,17 @@ export default function UpgradesList({ clusters }: UpgradesListProps) {
         </Button>
       </div>
       <div className="container">
-        <ImpersonateServiceAccount id={cluster?.owner?.id}>
-          {cluster?.queue?.id && <UpgradesListInternal cluster={cluster} />}
-        </ImpersonateServiceAccount>
+        {cluster?.queue?.id
+          ? (
+            cluster?.owner?.serviceAccount
+              ? (
+                <ImpersonateServiceAccount id={cluster?.owner?.id}>
+                  <UpgradesListInternal cluster={cluster} />
+                </ImpersonateServiceAccount>
+              )
+              : <UpgradesListInternal cluster={cluster} />
+          )
+          : 'No queue.'}
       </div>
     </Wrap>
   )

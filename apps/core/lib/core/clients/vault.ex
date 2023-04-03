@@ -5,7 +5,11 @@ defmodule Core.Clients.Vault do
 
   def write(path, value), do: call(:write, [vpath(path), value])
 
-  def delete(path), do: call(:delete, [vpath(path)])
+  def delete(path) do
+    with {:ok, vault} <- client() do
+      Vault.request(vault, :delete, v2_path(vpath(path), "metadata"))
+    end
+  end
 
   def client() do
     Vault.new(
@@ -25,6 +29,11 @@ defmodule Core.Clients.Vault do
   def vpath(path), do: "plural/#{path}"
 
   defp host(), do: Core.conf(:vault)
+
+  defp v2_path(path, prefix) do
+    String.split(path, "/", parts: 2)
+    |> Enum.join("/#{prefix}/")
+  end
 
   defp kube_jwt() do
     Path.join("/var/run/secrets/kubernetes.io/serviceaccount", "token")

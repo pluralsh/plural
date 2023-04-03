@@ -79,9 +79,9 @@ defmodule Core.Services.EncryptionTest do
     test "it will delete by name" do
       backup = insert(:key_backup)
 
-      vpath = "plural#{backup.vault_path}"
+      vpath = "plural/metadata#{backup.vault_path}"
       expect(Vault, :auth, fn _, %{role: "plural", jwt: _} -> {:ok, :vault} end)
-      expect(Vault, :delete, fn :vault, ^vpath -> {:ok, %{}} end)
+      expect(Vault, :request, fn :vault, :delete, ^vpath -> {:ok, %{}} end)
 
       {:ok, del} = Encryption.delete_backup(backup.name, backup.user)
 

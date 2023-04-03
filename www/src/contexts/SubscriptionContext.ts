@@ -13,6 +13,7 @@ export type SubscriptionContextType = {
   isLegacyUser: boolean
   isGrandfathered: boolean
   isGrandfatheringExpired: boolean
+  isDelinquent: boolean
   availableFeatures: SubscriptionAccountFragment['availableFeatures'] | null
   paymentMethods: PaymentMethodFragment[]
   defaultPaymentMethod: PaymentMethodFragment | null | undefined
@@ -30,6 +31,7 @@ const SubscriptionContext = createContext<SubscriptionContextType>({
   isLegacyUser: false,
   isGrandfathered: false,
   isGrandfatheringExpired: false,
+  isDelinquent: false,
   availableFeatures: {},
   paymentMethods: [],
   defaultPaymentMethod: null,

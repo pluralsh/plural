@@ -68,6 +68,14 @@ type PersistedTokenConnection {
   edges: [PersistedTokenEdge]
 }
 
+type ApplicationInformation {
+  name: String!
+  ready: Boolean
+  componentsReady: String
+  components: [ApplicationComponent]
+  spec: ApplicationSpec
+}
+
 type DeferredUpdateConnection {
   pageInfo: PageInfo!
   edges: [DeferredUpdateEdge]
@@ -543,6 +551,13 @@ input ChartAttributes {
   tags: [VersionTagAttributes]
 }
 
+"The release status of a repository, defaults to ALPHA, GA if it is ready for general consumption"
+enum ReleaseStatus {
+  GA
+  BETA
+  ALPHA
+}
+
 input PlanFeatureAttributes {
   name: String!
   description: String!
@@ -942,6 +957,9 @@ type Repository {
   "The category of the application."
   category: Category
 
+  "release status of the repository"
+  releaseStatus: ReleaseStatus
+
   "Whether the application is private."
   private: Boolean
 
@@ -1322,6 +1340,12 @@ input AzureShellCredentialsAttributes {
   clientSecret: String!
   storageAccount: String!
   subscriptionId: String!
+}
+
+type ApplicationSpec {
+  description: String
+  version: String
+  links: [AppLink]
 }
 
 "Input for the application's OAuth settings."
@@ -2225,6 +2249,8 @@ type RootQueryType {
 
   shellConfiguration: ShellConfiguration
 
+  shellApplications: [ApplicationInformation]
+
   scmAuthorization: [AuthorizationUrl]
 
   scmToken(provider: ScmProvider!, code: String!): String
@@ -2682,6 +2708,9 @@ input RepositoryAttributes {
   "A YAML object of secrets."
   secrets: Yaml
 
+  "release status of the repository"
+  releaseStatus: ReleaseStatus
+
   "The application's icon."
   icon: UploadOrUrl
 
@@ -3039,6 +3068,11 @@ type Terraform {
   updatedAt: DateTime
 }
 
+type AppLink {
+  url: String
+  description: String
+}
+
 type IntegrationWebhook {
   id: ID!
   name: String!
@@ -3270,6 +3304,13 @@ type DemoProject {
   updatedAt: DateTime
 }
 
+type ApplicationComponent {
+  group: String
+  name: String
+  kind: String
+  status: String
+}
+
 enum VulnRequirement {
   NONE
   REQUIRED
@@ -3495,6 +3536,8 @@ type User {
   hasInstallations: Boolean
 
   demoing: Boolean
+
+  hasShell: Boolean
 
   avatar: String
 

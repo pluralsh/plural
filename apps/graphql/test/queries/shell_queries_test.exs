@@ -113,6 +113,7 @@ defmodule GraphQl.ShellQueriesTest do
               }
             },
             status: %Client.ApplicationStatus{
+              componentsReady: "11 / 12",
               components: [%Client.ApplicationStatus.Component{group: "v1", kind: "deployment", name: "airbyte", status: "Ready"}],
               conditions: [%Client.ApplicationStatus.Condition{type: "Ready", status: "True"}],
             }
@@ -125,14 +126,16 @@ defmodule GraphQl.ShellQueriesTest do
           shellApplications {
             name
             ready
-            components { kind name status }
             spec { links { url } }
+            components { kind name status }
+            componentsReady
           }
         }
       """, %{}, %{current_user: shell.user})
 
       assert found["ready"]
       assert found["name"] == "airbyte"
+      assert found["componentsReady"] == "11 / 12"
       assert found["components"] == [%{"kind" => "deployment", "status" => "Ready", "name" => "airbyte"}]
       assert found["spec"]["links"] == [%{"url" => "airbyte.plural.sh"}]
     end

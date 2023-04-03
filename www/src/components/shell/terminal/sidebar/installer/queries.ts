@@ -23,3 +23,33 @@ export const APPLICATIONS_QUERY = gql`
     }
   }
 `
+
+export const FULL_APPLICATIONS_QUERY = gql`
+ query Applications($provider: Provider!, $installed: Boolean = false) {
+    shellApplications {
+      name
+      ready
+      componentsReady
+      components { group kind name status }
+      spec { links { url } }
+    }
+    repositories(first: 1000, installed: $installed, provider: $provider) {
+      edges {
+        node {
+          id
+          name
+          description
+          private
+          icon
+          darkIcon
+          installation {
+            updatedAt
+            id
+            context
+            pingedAt
+          }
+        }
+      }
+    }
+ }
+`

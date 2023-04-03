@@ -1,6 +1,7 @@
 defmodule GraphQl.Schema.User do
   use GraphQl.Schema.Base
   alias Core.Schema
+  alias GraphQl.ShellLoader
   alias GraphQl.Resolvers.{
     User,
     Payments,
@@ -122,6 +123,11 @@ defmodule GraphQl.Schema.User do
 
     field :demoing, :boolean, resolve: fn
       user, _, _ -> {:ok, Core.Services.Users.demoing?(user)}
+    end
+
+    field :has_shell, :boolean, resolve: fn
+      %{id: id}, _, %{context: %{loader: loader}} ->
+        manual_dataloader(loader, ShellLoader, :ids, id)
     end
 
     field :avatar, :string, resolve: fn

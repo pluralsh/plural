@@ -1,24 +1,27 @@
-import { AUTH_PREVIOUS_USER_DATA, AUTH_TOKEN } from '../constants'
+import { LocalStorageKeys } from '../constants'
 
 export function wipeToken() {
-  localStorage.removeItem(AUTH_TOKEN)
+  localStorage.removeItem(LocalStorageKeys.AuthToken)
 }
 
 export function fetchToken() {
-  return localStorage.getItem(AUTH_TOKEN)
+  return localStorage.getItem(LocalStorageKeys.AuthToken)
 }
 
 export function setToken(token) {
-  localStorage.setItem(AUTH_TOKEN, token)
+  localStorage.setItem(LocalStorageKeys.AuthToken, token)
 }
 
 export function setPreviousUserData(userData) {
-  localStorage.setItem(AUTH_PREVIOUS_USER_DATA, JSON.stringify(userData))
+  localStorage.setItem(LocalStorageKeys.AuthPreviousUserData,
+    JSON.stringify(userData))
 }
 
 export function getPreviousUserData() {
   try {
-    return JSON.parse(localStorage.getItem(AUTH_PREVIOUS_USER_DATA) as string) || null
+    return (
+      JSON.parse(localStorage.getItem(LocalStorageKeys.AuthPreviousUserData) as string) || null
+    )
   }
   catch (error) {
     return null

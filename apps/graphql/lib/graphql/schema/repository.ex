@@ -14,6 +14,9 @@ defmodule GraphQl.Schema.Repository do
   @desc "Application categories."
   ecto_enum :category, Core.Schema.Repository.Category
 
+  @desc "The release status of a repository, defaults to ALPHA, GA if it is ready for general consumption"
+  ecto_enum :release_status, Core.Schema.Repository.ReleaseStatus
+
   @desc "Supported OIDC authentication methods."
   ecto_enum :oidc_auth_method, Core.Schema.OIDCProvider.AuthMethod
 
@@ -24,6 +27,7 @@ defmodule GraphQl.Schema.Repository do
     field :documentation,  :string, description: "A link to the application's documentation."
     field :category,       :category, description: "The category of the application."
     field :secrets,        :yml, description: "A YAML object of secrets."
+    field :release_status, :release_status, description: "release status of the repository"
     field :icon,           :upload_or_url, description: "The application's icon."
     field :dark_icon,      :upload_or_url, description: "The application's dark icon."
     field :docs,           :upload_or_url, description: "The application's documentation."
@@ -171,6 +175,7 @@ defmodule GraphQl.Schema.Repository do
     field :description,    :string, description: "The description of the application."
     field :documentation,  :string, description: "The documentation of the application."
     field :category,       :category, description: "The category of the application."
+    field :release_status, :release_status, description: "release status of the repository"
     field :private,        :boolean, description: "Whether the application is private."
     field :verified,       :boolean, description: "Whether the application is verified."
     field :trending,       :boolean, description: "Whether the application is trending."

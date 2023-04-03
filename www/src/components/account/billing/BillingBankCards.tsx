@@ -16,6 +16,7 @@ import isEmpty from 'lodash/isEmpty'
 import SubscriptionContext from '../../../contexts/SubscriptionContext'
 
 import {
+  InvoiceFragment,
   PaymentMethodFragment,
   namedOperations,
   useDefaultPaymentMethodMutation,
@@ -25,6 +26,7 @@ import {
 import { DeleteIconButton } from '../../utils/IconButtons'
 
 import PaymentForm, { PaymentFormVariant } from './PaymentForm'
+import { DelinquencyCallout } from './DelinquencyNotices'
 
 export enum PaymentMethodActions {
   MakeDefault = 'makeDefault',
@@ -204,8 +206,10 @@ export function BillingAddress() {
 
 function BillingBankCards({
   paymentMethods,
+  invoices,
 }: {
   paymentMethods: (PaymentMethodFragment | null | undefined)[]
+  invoices?: (InvoiceFragment | null | undefined)[]
 }) {
   const [addPayment, setAddPayment] = useState(false)
 
@@ -216,6 +220,12 @@ function BillingBankCards({
       alignItems="start"
       padding="medium"
     >
+      <Div
+        width="100%"
+        marginBottom="medium"
+      >
+        <DelinquencyCallout invoices={invoices} />
+      </Div>
       <Flex
         direction="column"
         gap="medium"

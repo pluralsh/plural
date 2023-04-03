@@ -145,6 +145,10 @@ defmodule Core.Schema.CloudShell do
     from(cs in query, where: cs.user_id == ^user_id)
   end
 
+  def for_users(query \\ __MODULE__, user_ids) when is_list(user_ids) do
+    from(cs in query, where: cs.user_id in ^user_ids)
+  end
+
   @valid ~w(provider git_url ssh_public_key ssh_private_key demo_id)a
 
   def changeset(model, attrs \\ %{}) do

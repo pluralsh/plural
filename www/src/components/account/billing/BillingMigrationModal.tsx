@@ -10,10 +10,11 @@ import {
 
 import usePersistedState from '../../../hooks/usePersistedState'
 import SubscriptionContext from '../../../contexts/SubscriptionContext'
+import { LocalStorageKeys } from '../../../constants'
 
 function BillingMigrationModal() {
   const { isGrandfathered, isPaidPlan } = useContext(SubscriptionContext)
-  const [open, setOpen] = usePersistedState('billing-migration-modal-open', isGrandfathered && !isPaidPlan)
+  const [open, setOpen] = usePersistedState(LocalStorageKeys.BillingMigrationModalOpen, isGrandfathered && !isPaidPlan)
 
   return (
     <Modal

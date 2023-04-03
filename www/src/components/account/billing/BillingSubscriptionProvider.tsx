@@ -68,6 +68,7 @@ function BillingSubscriptionProvider({
     const grandfatheredUntil = account?.grandfatheredUntil
     const isLegacyUser = !!grandfatheredUntil
     const isGrandfathered = isLegacyUser && moment().isBefore(moment(grandfatheredUntil))
+    const isDelinquent = moment().isSameOrAfter(moment(account?.delinquentAt))
 
     // Marking grandfathering as expired only for a month after expiry date.
     // Afterwards expiry banners will not be visible and UI will be the same as for open-source users.
@@ -84,6 +85,7 @@ function BillingSubscriptionProvider({
       isLegacyUser,
       isGrandfathered,
       isGrandfatheringExpired,
+      isDelinquent,
       account,
       availableFeatures,
       paymentMethods,

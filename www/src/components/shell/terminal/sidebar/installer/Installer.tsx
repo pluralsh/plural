@@ -29,7 +29,7 @@ import LoadingIndicator from '../../../../utils/LoadingIndicator'
 import { buildSteps, install, toDefaultSteps } from './helpers'
 import { APPLICATIONS_QUERY } from './queries'
 
-const FILTERED_APPS = ['bootstrap', 'ingress-nginx', 'postgres']
+const FILTERED_APPS = ['bootstrap', 'ingress-nginx', 'postgres', 'monitoring']
 const FORCED_APPS = {
   console: 'The Plural Console will allow you to monitor, upgrade, and deploy applications easily from one centralized place.',
 }
@@ -54,7 +54,7 @@ function Installer({ onInstallSuccess }) {
     fetchPolicy: 'network-only',
   })
 
-  const applications = useMemo(() => applicationNodes?.map(({ node }) => node).filter(app => ((!app?.private ?? true) && !app?.installation) && !FILTERED_APPS.includes(app?.name)), [applicationNodes])
+  const applications = useMemo(() => applicationNodes?.map(({ node }) => node).filter(app => !FILTERED_APPS.includes(app?.name)), [applicationNodes])
   const limit = useMemo(() => (me?.demoing ? 3 : 5), [me?.demoing])
   const preselectedApps = useMemo(() => {
     const names = searchParams.get('install')

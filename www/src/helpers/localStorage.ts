@@ -1,17 +1,15 @@
 import posthog from 'posthog-js'
 
-import { AUTH_PREVIOUS_USER_DATA } from '../constants'
-import { BROWSER_HISTORY_STORAGE_KEY } from '../router/context'
+import { LocalStorageKeys } from '../constants'
 
 import { wipeToken } from './authentication'
 
-export const ONBOARDING_CHECKLIST_LOCAL_STORAGE_KEY = 'onboarding-checklist'
+export const ONBOARDING_CHECKLIST_LOCAL_STORAGE_KEY = LocalStorageKeys.OnboardingChecklist
 export enum ONBOARDING_CHECKLIST_STATE {
   HIDDEN = 'HIDDEN',
   REAPPEAR = 'REAPPEAR',
 }
 
-export const LEGACY_EXPIRATION_NOTICE_STORAGE_KEY = 'legacy-expiration-notice'
 export enum EXPIRATION_NOTICE_STATE {
   INITIAL = '',
   DISMISSED_0 = 'DISMISSED_0',
@@ -24,9 +22,9 @@ export enum EXPIRATION_NOTICE_STATE {
 function clearLocalStorage(): void {
   wipeToken()
   posthog.reset()
-  localStorage.removeItem(AUTH_PREVIOUS_USER_DATA)
-  localStorage.removeItem(BROWSER_HISTORY_STORAGE_KEY)
-  localStorage.removeItem(LEGACY_EXPIRATION_NOTICE_STORAGE_KEY)
+  localStorage.removeItem(LocalStorageKeys.AuthPreviousUserData)
+  localStorage.removeItem(LocalStorageKeys.BrowserHistory)
+  localStorage.removeItem(LocalStorageKeys.LegacyExpirationNotice)
 
   if (isOnboardingChecklistHidden()) {
     setOnboardingChecklistState(ONBOARDING_CHECKLIST_STATE.REAPPEAR)
@@ -34,19 +32,19 @@ function clearLocalStorage(): void {
 }
 
 export function isOnboardingChecklistHidden(): boolean {
-  return localStorage.getItem(ONBOARDING_CHECKLIST_LOCAL_STORAGE_KEY) === ONBOARDING_CHECKLIST_STATE.HIDDEN
+  return localStorage.getItem(LocalStorageKeys.OnboardingChecklist) === ONBOARDING_CHECKLIST_STATE.HIDDEN
 }
 
 export function shouldOnboardingChecklistReappear(): boolean {
-  return localStorage.getItem(ONBOARDING_CHECKLIST_LOCAL_STORAGE_KEY) === ONBOARDING_CHECKLIST_STATE.REAPPEAR
+  return localStorage.getItem(LocalStorageKeys.OnboardingChecklist) === ONBOARDING_CHECKLIST_STATE.REAPPEAR
 }
 
 export function setOnboardingChecklistState(state: ONBOARDING_CHECKLIST_STATE): void {
-  localStorage.setItem(ONBOARDING_CHECKLIST_LOCAL_STORAGE_KEY, state)
+  localStorage.setItem(LocalStorageKeys.OnboardingChecklist, state)
 }
 
 export function clearOnboardingChecklistState(): void {
-  localStorage.removeItem(ONBOARDING_CHECKLIST_LOCAL_STORAGE_KEY)
+  localStorage.removeItem(LocalStorageKeys.OnboardingChecklist)
 }
 
 export { clearLocalStorage }

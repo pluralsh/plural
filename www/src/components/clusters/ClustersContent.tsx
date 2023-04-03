@@ -41,21 +41,6 @@ interface Repository {
 }
 
 export function ClustersContent(): ReactElement | null {
-  const queue = useContext(QueueContext)
-  const [success, setSuccess] = useState(false)
-  const [initialLoad, setInitialLoad] = useState(true)
-
-  const {
-    data, loading, fetchMore, subscribeToMore, refetch,
-  } = useQuery(QUEUE, {
-    variables: { id: queue.id },
-    fetchPolicy: 'cache-and-network',
-    onCompleted: () => {
-      setSuccess(!initialLoad)
-      setInitialLoad(false)
-      setTimeout(() => setSuccess(false), 3000)
-    },
-  })
 
   useEffect(() => subscribeToMore({
     document: UPGRADE_SUB,
@@ -85,73 +70,18 @@ export function ClustersContent(): ReactElement | null {
         >
           <ReloadIcon marginRight="xsmall" />Refresh
         </Button>
-        {success && (
-          <Banner
-            heading="Successfully refreshed your cluster data!"
-            severity="success"
-            position="absolute"
-            bottom="16px"
-            right={100}
-            zIndex={100}
-            onClose={() => setSuccess(false)}
-          />
-        )}
       </PageTitle>
-      <UpgradesList
+      {/* <UpgradesList
         upgrades={data.upgradeQueue?.upgrades}
         acked={data.upgradeQueue?.acked}
         loading={loading}
         fetchMore={fetchMore}
-      />
+      /> */}
     </Flex>
   )
 }
 
-function UpgradesList({
-  upgrades, acked, loading, fetchMore,
-}): ReactElement {
-  const [listRef, setListRef] = useState<any>(null)
-  const { edges, pageInfo } = upgrades
-
-  return (
-    <Flex
-      grow={1}
-      backgroundColor="fill-one"
-      color="text-light"
-      border="1px solid border"
-      borderRadius="large"
-      paddingRight="xxxsmall"
-    >
-      <StandardScroller
-        listRef={listRef}
-        setListRef={setListRef}
-        hasNextPage={pageInfo.hasNextPage}
-        items={edges}
-        loading={loading}
-        mapper={({ node }, { next }) => (
-          <UpgradeItem
-            key={node.id}
-            upgrade={node as Upgrade}
-            acked={acked}
-            last={!next.node}
-          />
-        )}
-        loadNextPage={() => pageInfo.hasNextPage && fetchMore({
-          variables: { cursor: pageInfo.endCursor },
-          updateQuery: (prev, { fetchMoreResult: { upgradeQueue: { upgrades } } }) => ({
-            ...prev, upgradeQueue: extendConnection(prev.upgradeQueue, upgrades, 'upgrades'),
-          }),
-        })}
-        placeholder={undefined}
-        handleScroll={undefined}
-        refreshKey={undefined}
-        setLoader={undefined}
-      />
-    </Flex>
-  )
-}
-
-function UpgradeItem({ upgrade, acked, last }: { upgrade: Upgrade, acked: string, last: boolean }): ReactElement | null {
+export function UpgradeItem({ upgrade, acked, last }: { upgrade: Upgrade, acked: string, last: boolean }): ReactElement | null {
   const delivered = acked && upgrade.id <= acked
   const severity = delivered ? 'success' : 'neutral'
   const { icon, darkIcon } = upgrade.repository

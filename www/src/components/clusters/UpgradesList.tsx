@@ -7,11 +7,19 @@ import {
   Select,
 } from '@pluralsh/design-system'
 import styled from 'styled-components'
-import { truncate } from 'lodash'
+import { isEmpty, truncate } from 'lodash'
 import { useEffect, useState } from 'react'
+import { useQuery } from '@apollo/client'
 
 import { Cluster } from '../../generated/graphql'
 import { ProviderIcon } from '../utils/ProviderIcon'
+import { StandardScroller } from '../utils/SmoothScroller'
+import { extendConnection } from '../../utils/graphql'
+import LoadingIndicator from '../utils/LoadingIndicator'
+
+import { ImpersonateServiceAccount } from './ImpersonateServiceAccount'
+import { UpgradeItem } from './ClustersContent'
+import { QUEUE } from './queries'
 
 const Wrap = styled(Card)(({ theme }) => ({
   borderRadius: theme.borderRadiuses.large,
@@ -23,11 +31,11 @@ const Wrap = styled(Card)(({ theme }) => ({
     borderTopRightRadius: theme.borderRadiuses.large,
     padding: 10,
     display: 'flex',
-    flexGrow: 1,
     justifyContent: 'space-between',
 
     '.select': {
       width: 420,
+      boxShadow: theme.boxShadows.slight,
     },
   },
 
@@ -35,6 +43,10 @@ const Wrap = styled(Card)(({ theme }) => ({
     backgroundColor: theme.colors['fill-one'],
     borderBottomLeftRadius: theme.borderRadiuses.large,
     borderBottomRightRadius: theme.borderRadiuses.large,
+
+    // TODO:
+    flexGrow: 1,
+    minHeight: 200,
   },
 }))
 
@@ -43,46 +55,47 @@ type UpgradesListProps = {
 }
 
 export default function UpgradesList({ clusters }: UpgradesListProps) {
-  const [selectedKey, setSelectedKey] = useState<Cluster | undefined>(clusters.length > 0 ? clusters[0] : undefined)
+  const [cluster, setCluster] = useState<Cluster | undefined>(!isEmpty(clusters) ? clusters[0] : undefined)
 
   const onSelectionChange = id => {
-    const cluster = clusters.find(q => q.id === id)
-
-    setSelectedKey(cluster)
+    setCluster(clusters.find(c => c.id === id))
   }
 
   useEffect(() => {
-    const cluster = clusters.find(({ id }) => id === selectedKey?.id)
-
-    setSelectedKey(cluster)
-  }, [clusters, selectedKey, setSelectedKey])
+    setCluster(clusters.find(({ id }) => id === cluster?.id))
+  }, [clusters]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <Wrap fillLevel={2}>
+    <Wrap
+      fillLevel={2}
+      display="flex"
+      flexDirection="column"
+      flexGrow={1}
+    >
       <div className="header">
         <div className="select">
           <Select
             size="small"
             label="Select cluster"
-            selectedKey={selectedKey?.id}
+            selectedKey={cluster?.id}
             onSelectionChange={onSelectionChange}
             titleContent={<><ClusterIcon marginRight="xsmall" />Cluster</>}
             leftContent={(
               <ProviderIcon
-                provider={selectedKey?.provider}
+                provider={cluster?.provider}
                 width={16}
               />
             )}
             width={420}
           >
-            {clusters.map(cluster => (
+            {clusters.map(({ id, name, provider }) => (
               <ListBoxItem
-                key={cluster.id}
-                label={truncate(cluster.name, { length: 14 })}
-                textValue={cluster.name}
+                key={id}
+                label={truncate(name, { length: 14 })}
+                textValue={name}
                 leftContent={(
                   <ProviderIcon
-                    provider={cluster.provider}
+                    provider={provider}
                     width={16}
                   />
                 )}
@@ -94,11 +107,61 @@ export default function UpgradesList({ clusters }: UpgradesListProps) {
           floating
           small
           startIcon={<ReloadIcon />}
+          onClick={() => null}
         >
           Refresh
         </Button>
       </div>
-      <div className="container">content</div>
+      <div className="container">
+        <ImpersonateServiceAccount id={cluster?.owner?.id}>
+          {cluster?.queue?.id && <UpgradesListInternal cluster={cluster} />}
+        </ImpersonateServiceAccount>
+      </div>
     </Wrap>
+  )
+}
+
+function UpgradesListInternal({ cluster }: {cluster: Cluster}) {
+  const [listRef, setListRef] = useState<any>(null)
+
+  const {
+    data, loading, error, fetchMore, // subscribeToMore, refetch,
+  } = useQuery(QUEUE, {
+    variables: { id: cluster?.queue?.id },
+    fetchPolicy: 'cache-and-network',
+  })
+
+  if (error) return <>Error loading {cluster?.name} queue: {error?.message}</>
+  if (!data && loading) return <LoadingIndicator />
+
+  const edges = data.upgradeQueue?.upgrades?.edges
+  const pageInfo = data.upgradeQueue?.upgrades?.pageInfo
+
+  return (
+    <StandardScroller
+      listRef={listRef}
+      setListRef={setListRef}
+      hasNextPage={pageInfo.hasNextPage}
+      items={edges}
+      loading={loading}
+      mapper={({ node }, { next }) => (
+        <UpgradeItem
+          key={node.id}
+          upgrade={node}
+          acked={cluster?.queue?.acked || ''}
+          last={!next.node}
+        />
+      )}
+      loadNextPage={() => pageInfo.hasNextPage && fetchMore({
+        variables: { cursor: pageInfo.endCursor },
+        updateQuery: (prev, { fetchMoreResult: { upgradeQueue: { upgrades } } }) => ({
+          ...prev, upgradeQueue: extendConnection(prev.upgradeQueue, upgrades, 'upgrades'),
+        }),
+      })}
+      placeholder={undefined}
+      handleScroll={undefined}
+      refreshKey={undefined}
+      setLoader={undefined}
+    />
   )
 }

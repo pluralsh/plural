@@ -24,10 +24,6 @@ import { CLUSTERS } from './queries'
 import UpgradesList from './UpgradesList'
 
 export function Clusters(): ReactElement | null {
-  // const [queue, setQueue] = useState<Queue | undefined>({} as Queue)
-  // const { data, subscribeToMore } = useQuery<QueueList>(QUEUES, {
-  //   fetchPolicy: 'cache-and-network',
-  // })
   const { data, loading, error } = useQuery<Pick<RootQueryType, 'clusters'>, RootQueryTypeClustersArgs>(CLUSTERS,
     { pollInterval: 2000 })
 
@@ -52,9 +48,7 @@ export function Clusters(): ReactElement | null {
   // }),
   // [subscribeToMore])
 
-  // useEffect(() => (data ? setQueue(data?.upgradeQueues[0]) : data), [data])
-
-  // if (!data) return <LoadingIndicator />
+  console.log(clusters)
 
   return (
     <Flex
@@ -69,9 +63,5 @@ export function Clusters(): ReactElement | null {
       <UpgradesList clusters={clusters} />
       {isEmpty(clusters) && <ClustersHelpSection />}
     </Flex>
-    // <QueueContext.Provider value={queue}>
-    //       <ClustersContent />
-    //       <ClustersSidecar />
-    // </QueueContext.Provider>
   )
 }

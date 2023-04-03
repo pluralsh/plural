@@ -9,6 +9,7 @@
     "preview": "vite preview",
     "analyze": "source-map-explorer 'build/static/js/*.js'",
     "start": "vite",
+    "start:dev-api": "vite --mode dev-api",
     "start:prod": "yarn build:staging && serve -s -p 3001 build",
     "test": "vitest --run",
     "test:watch": "vitest",

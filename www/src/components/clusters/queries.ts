@@ -17,8 +17,20 @@ query {
         pingedAt
         gitUrl
         consoleUrl
-        owner { ...UserFragment hasShell }
-        queue { ...UpgradeQueueFragment }
+        owner {
+          ...UserFragment
+          hasShell
+        }
+        queue { 
+          ...UpgradeQueueFragment 
+          upgrades(first: 5) { 
+            edges { 
+              node { 
+                ...UpgradeFragment 
+              } 
+            } 
+          } 
+        }
       }
     }
   }
@@ -26,6 +38,7 @@ query {
 ${PageInfo}
 ${UserFragment}
 ${UpgradeQueueFragment}
+${UpgradeFragment}
 `
 
 export const QUEUES = gql`

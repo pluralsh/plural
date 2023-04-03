@@ -2,6 +2,7 @@ import {
   AppIcon,
   Button,
   CaretRightIcon,
+  Chip,
   IconFrame,
   Table,
   TerminalIcon,
@@ -24,6 +25,7 @@ type ClusterListElement = {
     pingedAt?: Date | null
     gitUrl?: string | null
     consoleUrl?: string | null
+    delivered: boolean
     owner?: {
       name?: string
       email?: string
@@ -138,11 +140,22 @@ export const ColOwner = columnHelper.accessor(row => row.owner?.name, {
   header: 'Owner',
 })
 
-export const ColUpgrades = columnHelper.accessor(row => row.name, {
+export const ColUpgrades = columnHelper.accessor(row => row.delivered, {
   id: 'upgrades',
   enableGlobalFilter: true,
   enableSorting: true,
-  cell: props => props.getValue(),
+  cell: props => {
+    const delivered = props.getValue()
+
+    return (
+      <Chip
+        severity={delivered ? 'success' : 'warning'}
+        hue="lighter"
+      >
+        {delivered ? 'Delivered' : 'Pending'}
+      </Chip>
+    )
+  },
   header: 'Upgrades',
 })
 
@@ -192,20 +205,31 @@ type ClustersListProps = Omit<ComponentProps<typeof Table>, 'data'> & {
 export const ClustersList = memo(({ clusters, columns, ...props }: ClustersListProps) => {
   const tableData: ClusterListElement[] = useMemo(() => (clusters || [])
     .filter((cluster): cluster is Cluster => !!cluster)
-    .map(cluster => ({
-      name: cluster.name,
-      provider: cluster.provider,
-      source: cluster.source,
-      gitUrl: cluster.gitUrl,
-      consoleUrl: ensureURLValidity(cluster.consoleUrl),
-      pingedAt: cluster.pingedAt,
-      owner: {
-        name: cluster.owner?.name,
-        email: cluster.owner?.email,
-        avatar: cluster.owner?.avatar,
-        hasShell: cluster.owner?.hasShell,
-      },
-    })),
+    .map(cluster => {
+      const acked = cluster.queue?.acked
+      const deliveryStatuses = cluster.queue?.upgrades?.edges?.map(edge => {
+        const id = edge?.node?.id
+
+        return (!!id && !!acked && id <= acked)
+      })
+      const delivered = !!deliveryStatuses && !deliveryStatuses.includes(false)
+
+      return {
+        name: cluster.name,
+        provider: cluster.provider,
+        source: cluster.source,
+        gitUrl: cluster.gitUrl,
+        consoleUrl: ensureURLValidity(cluster.consoleUrl),
+        pingedAt: cluster.pingedAt,
+        delivered,
+        owner: {
+          name: cluster.owner?.name,
+          email: cluster.owner?.email,
+          avatar: cluster.owner?.avatar,
+          hasShell: cluster.owner?.hasShell,
+        },
+      }
+    }),
   [clusters])
 
   if (!clusters || clusters.length === 0) {

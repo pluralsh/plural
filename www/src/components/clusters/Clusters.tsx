@@ -55,6 +55,8 @@ export function Clusters(): ReactElement | null {
       direction="column"
       padding="large"
       gap="large"
+      flexGrow={1}
+      overflow="auto"
     >
       <ClustersList
         clusters={clusters}

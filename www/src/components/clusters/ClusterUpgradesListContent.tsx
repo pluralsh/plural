@@ -1,6 +1,5 @@
 import { Dispatch, useEffect, useState } from 'react'
 import { useQuery } from '@apollo/client'
-
 import { isEmpty } from 'lodash'
 
 import { Cluster } from '../../generated/graphql'

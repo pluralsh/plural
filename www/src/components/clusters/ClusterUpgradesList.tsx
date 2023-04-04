@@ -15,9 +15,13 @@ import { ProviderIcon } from '../utils/ProviderIcon'
 
 import { ImpersonateServiceAccount } from './ImpersonateServiceAccount'
 import ClusterUpgradesListContent from './ClusterUpgradesListContent'
+import { EmptyListMessage } from './misc'
 
 const Wrap = styled(Card)(({ theme }) => ({
   borderRadius: theme.borderRadiuses.large,
+  display: 'flex',
+  flexGrow: 1,
+  flexDirection: 'column',
 
   '.header': {
     backgroundColor: theme.colors['fill-two'],
@@ -44,12 +48,8 @@ const Wrap = styled(Card)(({ theme }) => ({
     backgroundColor: theme.colors['fill-one'],
     borderBottomLeftRadius: theme.borderRadiuses.large,
     borderBottomRightRadius: theme.borderRadiuses.large,
-    minHeight: 250, // TODO: Change to grow automatically.
-
-    '.empty': {
-      color: theme.colors['text-xlight'],
-      padding: `${theme.spacing.small}px ${theme.spacing.medium}px`,
-    },
+    flexGrow: 1,
+    minHeight: 180, // TODO: Adjust scaling.
   },
 }))
 
@@ -73,12 +73,7 @@ export default function ClusterUpgradesList({ clusters }: UpgradesListProps) {
   if (isEmpty(clusters)) return null // TODO: Update.
 
   return (
-    <Wrap
-      fillLevel={2}
-      display="flex"
-      flexDirection="column"
-      flexGrow={1}
-    >
+    <Wrap fillLevel={2}>
       <div className="header">
         <div className="select">
           <Select
@@ -149,7 +144,7 @@ export default function ClusterUpgradesList({ clusters }: UpgradesListProps) {
                 />
               )
           )
-          : <div className="empty">Cannot access upgrade queue.</div>}
+          : <EmptyListMessage>Cannot access upgrade queue.</EmptyListMessage>}
       </div>
     </Wrap>
   )

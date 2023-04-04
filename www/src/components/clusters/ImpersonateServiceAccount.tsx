@@ -6,7 +6,7 @@ import { buildClient } from '../../helpers/client'
 import { IMPERSONATE_SERVICE_ACCOUNT } from '../account/queries'
 import LoadingIndicator from '../utils/LoadingIndicator'
 
-import { Error } from './misc'
+import { EmptyListMessage } from './misc'
 
 // TODO: Make sure that below caches are properly destroyed on logout/impersonation
 // and invalidated after some time.
@@ -31,7 +31,7 @@ export function ImpersonateServiceAccount({ id, children }) {
     getImpersonatedToken(id, mutation).then(jwt => setClient(getClient(jwt)))
   }, [id]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  if (error) return <Error>Error while impersonating service account: {error.message}</Error>
+  if (error) return <EmptyListMessage>Error while impersonating service account: {error.message}</EmptyListMessage>
   if (!client) return <LoadingIndicator />
 
   return (

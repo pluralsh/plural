@@ -1,5 +1,7 @@
-import { useEffect, useState } from 'react'
+import { Dispatch, useEffect, useState } from 'react'
 import { useQuery } from '@apollo/client'
+
+import { isEmpty } from 'lodash'
 
 import { Cluster } from '../../generated/graphql'
 import { StandardScroller } from '../utils/SmoothScroller'
@@ -8,9 +10,14 @@ import LoadingIndicator from '../utils/LoadingIndicator'
 
 import { ClusterUpgradesListItem } from './ClusterUpgradesListItem'
 import { QUEUE, UPGRADE_SUB } from './queries'
-import { Error } from './misc'
+import { EmptyListMessage } from './misc'
 
-export default function ClusterUpgradesListContent({ cluster }: {cluster: Cluster}) {
+type ClusterUpgradesListContentProps = {
+  cluster: Cluster,
+  setRefreshing: Dispatch<boolean>
+}
+
+export default function ClusterUpgradesListContent({ cluster, setRefreshing }: ClusterUpgradesListContentProps) {
   const [listRef, setListRef] = useState<any>(null)
 
   const {
@@ -19,6 +26,8 @@ export default function ClusterUpgradesListContent({ cluster }: {cluster: Cluste
     variables: { id: cluster?.queue?.id },
     fetchPolicy: 'cache-and-network',
   })
+
+  useEffect(() => setRefreshing(loading), [setRefreshing, loading])
 
   useEffect(() => subscribeToMore({
     document: UPGRADE_SUB,
@@ -29,11 +38,13 @@ export default function ClusterUpgradesListContent({ cluster }: {cluster: Cluste
     }),
   }), [cluster?.queue?.id, subscribeToMore])
 
-  if (error) return <Error>Error loading {cluster?.name} queue: {error.message}</Error>
+  if (error) return <EmptyListMessage>Error loading {cluster?.name} queue: {error.message}</EmptyListMessage>
   if (!data && loading) return <LoadingIndicator />
 
   const edges = data.upgradeQueue?.upgrades?.edges
   const pageInfo = data.upgradeQueue?.upgrades?.pageInfo
+
+  if (isEmpty(edges)) return <EmptyListMessage>Looks like you don’t have any upgrades.</EmptyListMessage>
 
   return (
     <StandardScroller

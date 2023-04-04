@@ -59,6 +59,7 @@ type UpgradesListProps = {
 
 export default function ClusterUpgradesList({ clusters }: UpgradesListProps) {
   const [cluster, setCluster] = useState<Cluster | undefined>(!isEmpty(clusters) ? clusters[0] : undefined)
+  const [refreshing, setRefreshing] = useState(true)
 
   const onSelectionChange = id => {
     setCluster(clusters.find(c => c.id === id))
@@ -118,7 +119,7 @@ export default function ClusterUpgradesList({ clusters }: UpgradesListProps) {
           small
           startIcon={<ReloadIcon />}
           onClick={() => null} // TODO:
-          loading={null} // TODO:
+          loading={refreshing}
         >
           Refresh
         </Button>
@@ -129,12 +130,20 @@ export default function ClusterUpgradesList({ clusters }: UpgradesListProps) {
             cluster?.owner?.serviceAccount
               ? (
                 <ImpersonateServiceAccount id={cluster?.owner?.id}>
-                  <ClusterUpgradesListContent cluster={cluster} />
+                  <ClusterUpgradesListContent
+                    cluster={cluster}
+                    setRefreshing={setRefreshing}
+                  />
                 </ImpersonateServiceAccount>
               )
-              : <ClusterUpgradesListContent cluster={cluster} />
+              : (
+                <ClusterUpgradesListContent
+                  cluster={cluster}
+                  setRefreshing={setRefreshing}
+                />
+              )
           )
-          : <div className="empty">Looks like you don’t have any upgrades.</div>}
+          : <div className="empty">Cannot access upgrade queue.</div>}
       </div>
     </Wrap>
   )

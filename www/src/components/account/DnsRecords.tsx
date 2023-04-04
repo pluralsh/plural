@@ -23,8 +23,9 @@ import { StandardScroller } from '../utils/SmoothScroller'
 import { Table, TableData, TableRow } from '../utils/Table'
 import { ProviderIcon } from '../utils/ProviderIcon'
 
+import { Confirm } from '../utils/Confirm'
+
 import { DELETE_DNS_RECORD, DNS_RECORDS } from './queries'
-import { Confirm } from './Confirm'
 
 function DeleteRecord({ record, domain }: any) {
   const [confirm, setConfirm] = useState(false)

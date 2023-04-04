@@ -31,6 +31,7 @@ export function RepoCardList({
           installed={!!repository.installation}
           verified={repository.verified}
           trending={repository.trending}
+          releaseStatus={repository.releaseStatus}
           size={size}
           {...repoProps}
         />

@@ -21,6 +21,7 @@ const DIRECTORY = [
   { path: '/profile/me', label: 'Profile' },
   { path: '/profile/security', label: 'Security' },
   { path: '/profile/tokens', label: 'Access tokens' },
+  { path: '/profile/encryption-keys', label: 'Encryption keys' },
   { path: '/profile/keys', label: 'Public keys' },
   { path: '/profile/eab', label: 'EAB credentials' },
 ]

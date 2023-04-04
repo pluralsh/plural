@@ -16,8 +16,9 @@ import { Permission } from '../../generated/graphql'
 import { ProviderIcon } from '../utils/ProviderIcon'
 import { canEdit } from '../../utils/account'
 
+import { Confirm } from '../utils/Confirm'
+
 import { EDIT_USER, IMPERSONATE_SERVICE_ACCOUNT } from './queries'
-import { Confirm } from './Confirm'
 import { EditServiceAccount } from './CreateServiceAccount'
 import { MoreMenu } from './MoreMenu'
 import { hasRbac } from './utils'

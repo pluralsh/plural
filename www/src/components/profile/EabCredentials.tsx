@@ -10,7 +10,7 @@ import {
 import { Span } from 'honorable'
 
 import { updateCache } from '../../utils/graphql'
-import { Confirm } from '../account/Confirm'
+import { Confirm } from '../utils/Confirm'
 import { DELETE_EAB_CREDENTIALS, EAB_CREDENTIALS } from '../users/queries'
 import { obscure } from '../users/utils'
 import { Table, TableData, TableRow } from '../utils/Table'

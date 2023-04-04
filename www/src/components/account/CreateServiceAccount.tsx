@@ -23,9 +23,10 @@ import { GqlError } from '../utils/Alert'
 
 import SubscriptionContext from '../../contexts/SubscriptionContext'
 
+import { Confirm } from '../utils/Confirm'
+
 import { CREATE_SERVICE_ACCOUNT, UPDATE_SERVICE_ACCOUNT, USERS_Q } from './queries'
 
-import { Confirm } from './Confirm'
 import { MoreMenu } from './MoreMenu'
 
 import { BindingInput } from './Typeaheads'

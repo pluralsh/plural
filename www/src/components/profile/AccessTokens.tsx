@@ -43,7 +43,7 @@ import { StandardScroller } from '../utils/SmoothScroller'
 import { Table, TableData, TableRow } from '../utils/Table'
 import { formatLocation } from '../../utils/geo'
 import { Chloropleth } from '../utils/Chloropleth'
-import { Confirm } from '../account/Confirm'
+import { Confirm } from '../utils/Confirm'
 import { DeleteIconButton } from '../utils/IconButtons'
 
 import LoadingIndicator from '../utils/LoadingIndicator'

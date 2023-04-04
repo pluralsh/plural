@@ -1,54 +1,35 @@
-import { Box, Text } from 'grommet'
-import { CheckIcon, ErrorIcon, InfoIcon } from '@pluralsh/design-system'
+import { Callout } from '@pluralsh/design-system'
+import { GraphQLErrors } from '@apollo/client/errors'
+import { ReactNode } from 'react'
+import { CalloutProps, CalloutSeverity } from '@pluralsh/design-system/dist/components/Callout'
+
+type Status = 'er' | 'su' | 'in'
 
 export const AlertStatus = {
   ERROR: 'er',
   SUCCESS: 'su',
   INFO: 'in',
+} satisfies Record<string, Status>
+
+const StatusToSeverity: Record<Status, CalloutSeverity> = {
+  er: 'danger',
+  su: 'success',
+  in: 'info',
 }
 
-const StatusToColor = {
-  er: 'error',
-  su: 'good',
-  in: 'progress',
-}
-
-function AlertIcon({ status, color }: any) {
-  switch (status) {
-  case AlertStatus.SUCCESS:
-    return (
-      <CheckIcon
-        color={color}
-        size={16}
-      />
-    )
-  case AlertStatus.ERROR:
-    return (
-      <ErrorIcon
-        color={color}
-        size={16}
-      />
-    )
-  case AlertStatus.INFO:
-    return (
-      <InfoIcon
-        color={color}
-        size={16}
-      />
-    )
-  default:
-    // nothing
-  }
-
-  return null
-}
-
-export function GqlError({ header, error }: any) {
+export function GqlError({
+  header,
+  error,
+  ...props
+}: {
+  error?: { graphQLErrors: GraphQLErrors }
+} & Omit<AlertProps, 'status' | 'description'>) {
   return (
     <Alert
       status={AlertStatus.ERROR}
       header={header}
-      description={error.graphQLErrors[0].message}
+      description={error?.graphQLErrors[0].message}
+      {...props}
     />
   )
 }
@@ -56,46 +37,34 @@ export function GqlError({ header, error }: any) {
 export function ErrorMessage({
   header,
   message,
-}: {
-  header: string
-  message: string
-}) {
+  ...props
+}: { message: ReactNode } & Omit<AlertProps, 'status' | 'description'>) {
   return (
     <Alert
       status={AlertStatus.ERROR}
       header={header}
       description={message}
+      {...props}
     />
   )
 }
 
-export function Alert({ status, header, description }: any) {
-  const color = StatusToColor[status]
+type AlertProps = {
+  status?: Status
+  header?: string
+  description: ReactNode
+} & Omit<CalloutProps, 'title' | 'children'>
 
+export function Alert({
+  status, header, description, ...props
+}: AlertProps) {
   return (
-    <Box
-      fill="horizontal"
-      pad="small"
-      border={{ color }}
-      background="fill-two"
-      direction="row"
-      gap="medium"
-      align="center"
-      round="xsmall"
+    <Callout
+      {...(header ? { title: header } : {})}
+      severity={(status && StatusToSeverity[status]) || 'info'}
+      {...props}
     >
-      <AlertIcon
-        status={status}
-        color={color}
-      />
-      <Box gap="2px">
-        <Text
-          size="small"
-          weight={500}
-        >
-          {header}
-        </Text>
-        <Text size="small">{description}</Text>
-      </Box>
-    </Box>
+      {description}
+    </Callout>
   )
 }

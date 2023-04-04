@@ -18,9 +18,10 @@ import LoadingIndicator from '../utils/LoadingIndicator'
 
 import SubscriptionContext from '../../contexts/SubscriptionContext'
 
+import { Confirm } from '../utils/Confirm'
+
 import { DELETE_ROLE, ROLES_Q } from './queries'
 import { hasRbac } from './utils'
-import { Confirm } from './Confirm'
 import { Info } from './Info'
 import { EditRole } from './EditRole'
 import { CreateRole } from './CreateRole'

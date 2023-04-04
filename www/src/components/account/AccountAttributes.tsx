@@ -26,7 +26,7 @@ import { List, ListItem } from '../utils/List'
 import { Account, DomainMapping, useUpdateAccountMutation } from '../../generated/graphql'
 import { removeTypename } from '../../utils/removeTypename'
 
-import { Confirm } from './Confirm'
+import { Confirm } from '../utils/Confirm'
 
 type DomainMappingFuncProps = {
   mapping: DomainMapping

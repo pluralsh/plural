@@ -14,6 +14,7 @@ export const RepoFragment = gql`
     id
     name
     description
+    releaseStatus
     documentation
     icon
     darkIcon

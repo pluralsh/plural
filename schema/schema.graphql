@@ -496,9 +496,15 @@ input AddressAttributes {
   zip: String!
 }
 
+"attributes of a path update"
 input UpgradePathAttributes {
+  "path the upgrade will occur on, formatted like .some.key[0].here"
   path: String!
+
+  "the stringified value that will be applied on this path"
   value: String!
+
+  "the ultimate type of the value"
   type: ValueType!
 }
 
@@ -1465,7 +1471,9 @@ input ShellCredentialsAttributes {
   azure: AzureShellCredentialsAttributes
 }
 
+"the attributes of the config upgrade"
 input UpgradeConfigAttributes {
+  "paths for a configuration change"
   paths: [UpgradePathAttributes]
 }
 
@@ -3445,9 +3453,15 @@ input UserEventAttributes {
   status: UserEventStatus
 }
 
+"The information for this upgrade"
 input UpgradeAttributes {
+  "a simple message to explain this upgrade"
   message: String!
+
+  "the type of upgrade"
   type: UpgradeType
+
+  "information for a config upgrade"
   config: UpgradeConfigAttributes
 }
 

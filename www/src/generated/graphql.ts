@@ -4564,9 +4564,13 @@ export type Upgrade = {
   updatedAt?: Maybe<Scalars['DateTime']>;
 };
 
+/** The information for this upgrade */
 export type UpgradeAttributes = {
+  /** information for a config upgrade */
   config?: InputMaybe<UpgradeConfigAttributes>;
+  /** a simple message to explain this upgrade */
   message: Scalars['String'];
+  /** the type of upgrade */
   type?: InputMaybe<UpgradeType>;
 };
 
@@ -4575,7 +4579,9 @@ export type UpgradeConfig = {
   paths?: Maybe<Array<Maybe<UpgradePath>>>;
 };
 
+/** the attributes of the config upgrade */
 export type UpgradeConfigAttributes = {
+  /** paths for a configuration change */
   paths?: InputMaybe<Array<InputMaybe<UpgradePathAttributes>>>;
 };
 
@@ -4605,9 +4611,13 @@ export type UpgradePath = {
   value: Scalars['String'];
 };
 
+/** attributes of a path update */
 export type UpgradePathAttributes = {
+  /** path the upgrade will occur on, formatted like .some.key[0].here */
   path: Scalars['String'];
+  /** the ultimate type of the value */
   type: ValueType;
+  /** the stringified value that will be applied on this path */
   value: Scalars['String'];
 };
 

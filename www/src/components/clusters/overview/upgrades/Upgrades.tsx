@@ -8,13 +8,13 @@ import {
 } from '@pluralsh/design-system'
 import styled from 'styled-components'
 import { isEmpty, truncate } from 'lodash'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import { Cluster } from '../../../../generated/graphql'
 import { ProviderIcon } from '../../../utils/ProviderIcon'
-
 import { ImpersonateServiceAccount } from '../../ImpersonateServiceAccount'
 import { EmptyListMessage } from '../../misc'
+import ClustersContext from '../../ClustersContext'
 
 import UpgradeList from './UpgradeList'
 
@@ -54,11 +54,8 @@ const Wrap = styled(Card)(({ theme }) => ({
   },
 }))
 
-type UpgradesListProps = {
-  clusters: Cluster[]
-}
-
-export default function Upgrades({ clusters }: UpgradesListProps) {
+export default function Upgrades() {
+  const { clusters } = useContext(ClustersContext)
   const [cluster, setCluster] = useState<Cluster | undefined>(!isEmpty(clusters) ? clusters[0] : undefined)
   const [refreshing, setRefreshing] = useState(true)
   const [refetch, setRefetch] = useState<any>()

@@ -1,65 +1,24 @@
-import { Button, SubTab, TabList } from '@pluralsh/design-system'
-import { ReactElement, useRef } from 'react'
-import { Outlet, useLocation } from 'react-router-dom'
+import { ReactElement } from 'react'
+import { Outlet } from 'react-router-dom'
 import styled from 'styled-components'
 
-import { LinkTabWrap } from '../utils/Tabs'
+import { ClustersContextProvider } from './ClustersContextProvider'
+import ClustersHeader from './ClustersHeader'
 
 const Wrap = styled.div(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
   flexGrow: 1,
   padding: theme.spacing.large,
-
-  '.header': {
-    display: 'flex',
-    marginBottom: theme.spacing.medium,
-
-    '.actions': {
-      display: 'flex',
-      flexGrow: 1,
-      gap: theme.spacing.small,
-      justifyContent: 'end',
-    },
-  },
 }))
 
-const DIRECTORY = [
-  { path: '/clusters/overview', label: 'Cluster overview' },
-  // { path: '/clusters/apps', label: 'Installed applications' },
-]
-
 export function Clusters(): ReactElement {
-  const tabStateRef = useRef<any>(null)
-  const { pathname } = useLocation()
-  const currentTab = DIRECTORY.find(tab => pathname?.startsWith(tab.path))
-
   return (
-    <Wrap>
-      <div className="header">
-        <TabList
-          stateRef={tabStateRef}
-          stateProps={{
-            orientation: 'horizontal',
-            selectedKey: currentTab?.path,
-          }}
-        >
-          {DIRECTORY.map(({ label, path }) => (
-            <LinkTabWrap
-              key={path}
-              textValue={label}
-              to={path}
-            >
-              <SubTab>{label}</SubTab>
-            </LinkTabWrap>
-          ))}
-        </TabList>
-        <div className="actions">
-          <Button secondary>Promote cluster</Button>
-          <Button>Create cluster</Button>
-        </div>
-      </div>
-      <Outlet />
-    </Wrap>
+    <ClustersContextProvider>
+      <Wrap>
+        <ClustersHeader />
+        <Outlet />
+      </Wrap>
+    </ClustersContextProvider>
   )
 }

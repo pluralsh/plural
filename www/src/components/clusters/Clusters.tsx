@@ -1,69 +1,53 @@
-import { useQuery } from '@apollo/client'
-import { Flex } from 'honorable'
-import { ReactElement, useMemo } from 'react'
+import { SubTab, TabList } from '@pluralsh/design-system'
+import { ReactElement, useRef } from 'react'
+import { Outlet, useLocation } from 'react-router-dom'
+import styled from 'styled-components'
 
-import { isEmpty } from 'lodash'
+import { LinkTabWrap } from '../utils/Tabs'
 
-import { Cluster, RootQueryType, RootQueryTypeClustersArgs } from '../../generated/graphql'
-import LoadingIndicator from '../utils/LoadingIndicator'
+const Wrap = styled.div(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  flexGrow: 1,
+  padding: theme.spacing.large,
 
-import ClustersHelpSection from './ClustersHelpSection'
+  '.header': {
+    marginBottom: theme.spacing.medium,
+  },
+}))
 
-import {
-  ClustersList,
-  ColActions,
-  ColCloudshell,
-  ColCluster,
-  ColGit,
-  ColHealth,
-  ColOwner,
-  ColUpgrades,
-} from './ClustersList'
+const DIRECTORY = [
+  { path: '/clusters/overview', label: 'Cluster overview' },
+  { path: '/clusters/apps', label: 'Installed applications' },
+]
 
-import { CLUSTERS } from './queries'
-import ClusterUpgradesList from './ClusterUpgradesList'
-
-export function Clusters(): ReactElement | null {
-  const { data, loading, error } = useQuery<Pick<RootQueryType, 'clusters'>, RootQueryTypeClustersArgs>(CLUSTERS,
-    { pollInterval: 60_000 })
-
-  const clusters: Cluster[] = useMemo(() => data?.clusters?.edges?.map(edge => edge?.node).filter((node): node is Cluster => !!node) || [], [data])
-  const columns = useMemo(() => [ColCluster, ColHealth, ColGit, ColCloudshell, ColOwner, ColUpgrades, ColActions], [])
-
-  if (error) return <p>{error.message}</p>
-  if (!data && loading) return <LoadingIndicator />
-
-  // useEffect(() => subscribeToMore<QueueSubscription>({
-  //   document: UPGRADE_QUEUE_SUB,
-  //   updateQuery: (prev,
-  //     {
-  //       subscriptionData: {
-  //         data: {
-  //           upgradeQueueDelta: { delta, payload },
-  //         },
-  //       },
-  //     }) => (delta === 'CREATE'
-  //     ? { ...prev, upgradeQueues: [payload, ...prev.upgradeQueues] }
-  //     : prev),
-  // }),
-  // [subscribeToMore])
-
-  console.log(clusters)
+export function Clusters(): ReactElement {
+  const tabStateRef = useRef<any>(null)
+  const { pathname } = useLocation()
+  const currentTab = DIRECTORY.find(tab => pathname?.startsWith(tab.path))
 
   return (
-    <Flex
-      direction="column"
-      padding="large"
-      gap="large"
-      flexGrow={1}
-      overflow="auto"
-    >
-      <ClustersList
-        clusters={clusters}
-        columns={columns}
-      />
-      <ClusterUpgradesList clusters={clusters} />
-      {isEmpty(clusters) && <ClustersHelpSection />}
-    </Flex>
+    <Wrap>
+      <div className="header">
+        <TabList
+          stateRef={tabStateRef}
+          stateProps={{
+            orientation: 'horizontal',
+            selectedKey: currentTab?.path,
+          }}
+        >
+          {DIRECTORY.map(({ label, path }) => (
+            <LinkTabWrap
+              key={path}
+              textValue={label}
+              to={path}
+            >
+              <SubTab>{label}</SubTab>
+            </LinkTabWrap>
+          ))}
+        </TabList>
+      </div>
+      <Outlet />
+    </Wrap>
   )
 }

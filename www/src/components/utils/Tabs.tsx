@@ -23,6 +23,7 @@ export const LinkTabWrap = styled(forwardRef(({
 )))(({
   theme, vertical, subTab, $extendStyle,
 }) => ({
+  ...(!vertical ? { marginRight: theme.spacing.xsmall } : {}),
   ...(vertical ? { width: '100%' } : {}),
   ...(subTab ? { borderRadius: theme.borderRadiuses.medium } : {}),
   ...$extendStyle,

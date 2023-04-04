@@ -51,6 +51,8 @@ const AuditDirectory = lazy(() => import('./audits/AuditDirectory').then(module 
 const Audits = lazy(() => import('./audits/Audits').then(module => ({ default: module.Audits })))
 const ChecklistProvider = lazy(() => import('./shell/onboarding/checklist/Checklist').then(module => ({ default: module.ChecklistProvider })))
 const Clusters = lazy(() => import('./clusters/Clusters').then(module => ({ default: module.Clusters })))
+const ClustersOverview = lazy(() => import('./clusters/ClustersOverview').then(module => ({ default: module.ClustersOverview })))
+const ClustersApps = lazy(() => import('./clusters/ClustersApps').then(module => ({ default: module.ClustersApps })))
 const PluralProvider = lazy(() => import('./login/CurrentUser').then(module => ({ default: module.PluralProvider })))
 const DeviceLoginNotif = lazy(() => import('./users/DeviceLoginNotif').then(module => ({ default: module.DeviceLoginNotif })))
 const Domains = lazy(() => import('./account/Domains').then(module => ({ default: module.Domains })))
@@ -133,7 +135,7 @@ function OAuthOrFallback() {
       // @ts-expect-error
       shellOAuthMatch={shellOAuthMatch}
       replace
-      to={history.pop(me.hasInstallations ? '/installed' : '/marketplace')}
+      to={history.pop('/clusters')}
     />
   )
 }
@@ -505,10 +507,29 @@ export function PluralInner() {
               {/*  path="/upgrades" */}
               {/*  element={<UpgradeQueues />} */}
               {/* /> */}
+              {/* --- CLUSTERS --- */}
               <Route
                 path="/clusters"
                 element={<Clusters />}
-              />
+              >
+                <Route
+                  index
+                  element={(
+                    <Navigate
+                      replace
+                      to="overview"
+                    />
+                  )}
+                />
+                <Route
+                  path="overview"
+                  element={<ClustersOverview />}
+                />
+                <Route
+                  path="apps"
+                  element={<ClustersApps />}
+                />
+              </Route>
               {/* --- ROADMAP --- */}
               <Route
                 path="/roadmap"

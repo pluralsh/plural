@@ -30,16 +30,19 @@ export const Wrap = styled.div<{$last: boolean}>(({ theme, $last: last }) => ({
   },
 }))
 
-export function ClusterUpgradesListItem({ upgrade, acked, last }: { upgrade: Upgrade, acked: string, last: boolean }): ReactElement | null {
-  const delivered = acked && upgrade.id <= acked
-  const severity = delivered ? 'success' : 'neutral'
+export function ClusterUpgradesListItem({
+  upgrade: {
+    id, insertedAt, repository, message,
+  }, acked, last,
+}: { upgrade: Upgrade, acked: string, last: boolean }): ReactElement | null {
+  const delivered = acked && id <= acked
 
   return (
     <Wrap $last={last}>
       <IconFrame
         icon={(
           <img
-            src={upgrade.repository?.darkIcon || upgrade.repository?.icon || ''}
+            src={repository?.darkIcon || repository?.icon || ''}
             width="16"
             height="16"
           />
@@ -48,12 +51,12 @@ export function ClusterUpgradesListItem({ upgrade, acked, last }: { upgrade: Upg
         size="medium"
         type="floating"
       />
-      <span className="repo-name">{upgrade.repository?.name}</span>
-      <span className="message">{upgrade.message}</span>
-      <span className="date">{moment(upgrade.insertedAt).format('lll')}</span>
+      <span className="repo-name">{repository?.name}</span>
+      <span className="message">{message}</span>
+      <span className="date">{!!insertedAt && moment(insertedAt).format('lll')}</span>
       <Chip
         alignSelf="center"
-        severity={severity}
+        severity={delivered ? 'success' : 'neutral'}
         hue="lighter"
       >
         {delivered ? 'Delivered' : 'Pending'}

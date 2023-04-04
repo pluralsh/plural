@@ -18,7 +18,7 @@ const Wrap = styled.div(({ theme }) => ({
 
 const DIRECTORY = [
   { path: '/clusters/overview', label: 'Cluster overview' },
-  { path: '/clusters/apps', label: 'Installed applications' },
+  // { path: '/clusters/apps', label: 'Installed applications' },
 ]
 
 export function Clusters(): ReactElement {

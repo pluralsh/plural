@@ -122,7 +122,6 @@ const OIDCProvider = lazy(() => import('./repository/OIDCProvider').then(module 
 // If anyone knows a better way around this, I'm all ears.
 // - Klink
 function OAuthOrFallback() {
-  const me = useContext(CurrentUserContext)
   const history = useHistory()
   const shellOAuthMatch = useMatch('/oauth/callback/:provider/shell')
 

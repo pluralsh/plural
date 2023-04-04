@@ -1,16 +1,15 @@
 import { useQuery } from '@apollo/client'
 import { Flex } from 'honorable'
 import { ReactElement, useMemo } from 'react'
-
 import { isEmpty } from 'lodash'
 
-import { Cluster, RootQueryType, RootQueryTypeClustersArgs } from '../../generated/graphql'
-import LoadingIndicator from '../utils/LoadingIndicator'
+import { Cluster, RootQueryType, RootQueryTypeClustersArgs } from '../../../generated/graphql'
+import LoadingIndicator from '../../utils/LoadingIndicator'
 
-import ClustersHelpSection from './ClustersHelpSection'
+import { CLUSTERS } from '../queries'
 
 import {
-  ClustersList,
+  Clusters,
   ColActions,
   ColCloudshell,
   ColCluster,
@@ -18,12 +17,12 @@ import {
   ColHealth,
   ColOwner,
   ColUpgrades,
-} from './ClustersList'
+} from './clusters/Clusters'
 
-import { CLUSTERS } from './queries'
-import ClusterUpgradesList from './ClusterUpgradesList'
+import OverviewHelpSection from './OverviewHelpSection'
+import Upgrades from './upgrades/Upgrades'
 
-export function ClustersOverview(): ReactElement | null {
+export function Overview(): ReactElement | null {
   const { data, loading, error } = useQuery<Pick<RootQueryType, 'clusters'>, RootQueryTypeClustersArgs>(CLUSTERS,
     { pollInterval: 60_000 })
 
@@ -57,12 +56,12 @@ export function ClustersOverview(): ReactElement | null {
       flexGrow={1}
       overflow="auto"
     >
-      <ClustersList
+      <Clusters
         clusters={clusters}
         columns={columns}
       />
-      <ClusterUpgradesList clusters={clusters} />
-      {isEmpty(clusters) && <ClustersHelpSection />}
+      <Upgrades clusters={clusters} />
+      {isEmpty(clusters) && <OverviewHelpSection />}
     </Flex>
   )
 }

@@ -1,4 +1,4 @@
-import { SubTab, TabList } from '@pluralsh/design-system'
+import { Button, SubTab, TabList } from '@pluralsh/design-system'
 import { ReactElement, useRef } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
 import styled from 'styled-components'
@@ -12,7 +12,15 @@ const Wrap = styled.div(({ theme }) => ({
   padding: theme.spacing.large,
 
   '.header': {
+    display: 'flex',
     marginBottom: theme.spacing.medium,
+
+    '.actions': {
+      display: 'flex',
+      flexGrow: 1,
+      gap: theme.spacing.small,
+      justifyContent: 'end',
+    },
   },
 }))
 
@@ -46,6 +54,10 @@ export function Clusters(): ReactElement {
             </LinkTabWrap>
           ))}
         </TabList>
+        <div className="actions">
+          <Button secondary>Promote cluster</Button>
+          <Button>Create cluster</Button>
+        </div>
       </div>
       <Outlet />
     </Wrap>

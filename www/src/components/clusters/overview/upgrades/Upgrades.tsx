@@ -10,12 +10,13 @@ import styled from 'styled-components'
 import { isEmpty, truncate } from 'lodash'
 import { useEffect, useState } from 'react'
 
-import { Cluster } from '../../generated/graphql'
-import { ProviderIcon } from '../utils/ProviderIcon'
+import { Cluster } from '../../../../generated/graphql'
+import { ProviderIcon } from '../../../utils/ProviderIcon'
 
-import { ImpersonateServiceAccount } from './ImpersonateServiceAccount'
-import ClusterUpgradesListContent from './ClusterUpgradesListContent'
-import { EmptyListMessage } from './misc'
+import { ImpersonateServiceAccount } from '../../ImpersonateServiceAccount'
+import { EmptyListMessage } from '../../misc'
+
+import UpgradeList from './UpgradeList'
 
 const Wrap = styled(Card)(({ theme }) => ({
   borderRadius: theme.borderRadiuses.large,
@@ -57,7 +58,7 @@ type UpgradesListProps = {
   clusters: Cluster[]
 }
 
-export default function ClusterUpgradesList({ clusters }: UpgradesListProps) {
+export default function Upgrades({ clusters }: UpgradesListProps) {
   const [cluster, setCluster] = useState<Cluster | undefined>(!isEmpty(clusters) ? clusters[0] : undefined)
   const [refreshing, setRefreshing] = useState(true)
   const [refetch, setRefetch] = useState<any>()
@@ -129,7 +130,7 @@ export default function ClusterUpgradesList({ clusters }: UpgradesListProps) {
             cluster?.owner?.serviceAccount
               ? (
                 <ImpersonateServiceAccount id={cluster?.owner?.id}>
-                  <ClusterUpgradesListContent
+                  <UpgradeList
                     cluster={cluster}
                     setRefreshing={setRefreshing}
                     setRefetch={setRefetch}
@@ -137,7 +138,7 @@ export default function ClusterUpgradesList({ clusters }: UpgradesListProps) {
                 </ImpersonateServiceAccount>
               )
               : (
-                <ClusterUpgradesListContent
+                <UpgradeList
                   cluster={cluster}
                   setRefreshing={setRefreshing}
                   setRefetch={setRefetch}

@@ -2,14 +2,15 @@ import { Dispatch, useEffect, useState } from 'react'
 import { useQuery } from '@apollo/client'
 import { isEmpty } from 'lodash'
 
-import { Cluster } from '../../generated/graphql'
-import { StandardScroller } from '../utils/SmoothScroller'
-import { appendConnection, extendConnection } from '../../utils/graphql'
-import LoadingIndicator from '../utils/LoadingIndicator'
+import { Cluster } from '../../../../generated/graphql'
+import { StandardScroller } from '../../../utils/SmoothScroller'
+import { appendConnection, extendConnection } from '../../../../utils/graphql'
+import LoadingIndicator from '../../../utils/LoadingIndicator'
 
-import { ClusterUpgradesListItem } from './ClusterUpgradesListItem'
-import { QUEUE, UPGRADE_SUB } from './queries'
-import { EmptyListMessage } from './misc'
+import { QUEUE, UPGRADE_SUB } from '../../queries'
+import { EmptyListMessage } from '../../misc'
+
+import UpgradeListItem from './Upgrade'
 
 type ClusterUpgradesListContentProps = {
   cluster: Cluster,
@@ -17,7 +18,7 @@ type ClusterUpgradesListContentProps = {
   setRefetch: any
 }
 
-export default function ClusterUpgradesListContent({ cluster, setRefreshing, setRefetch }: ClusterUpgradesListContentProps) {
+export default function UpgradeList({ cluster, setRefreshing, setRefetch }: ClusterUpgradesListContentProps) {
   const [listRef, setListRef] = useState<any>(null)
 
   const {
@@ -56,7 +57,7 @@ export default function ClusterUpgradesListContent({ cluster, setRefreshing, set
       items={edges}
       loading={loading}
       mapper={({ node }, { next }) => (
-        <ClusterUpgradesListItem
+        <UpgradeListItem
           key={node.id}
           upgrade={node}
           acked={cluster?.queue?.acked || ''}

@@ -3,7 +3,7 @@ import { Chip, IconFrame } from '@pluralsh/design-system'
 import { ReactElement } from 'react'
 import styled from 'styled-components'
 
-import { Upgrade } from '../../generated/graphql'
+import { Upgrade } from '../../../../generated/graphql'
 
 export const Wrap = styled.div<{$last: boolean}>(({ theme, $last: last }) => ({
   alignItems: 'center',
@@ -30,7 +30,7 @@ export const Wrap = styled.div<{$last: boolean}>(({ theme, $last: last }) => ({
   },
 }))
 
-export function ClusterUpgradesListItem({
+export default function UpgradeListItem({
   upgrade: {
     id, insertedAt, repository, message,
   }, acked, last,

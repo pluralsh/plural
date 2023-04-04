@@ -15,19 +15,22 @@ import { EmptyListMessage } from './misc'
 type ClusterUpgradesListContentProps = {
   cluster: Cluster,
   setRefreshing: Dispatch<boolean>
+  setRefetch: any
 }
 
-export default function ClusterUpgradesListContent({ cluster, setRefreshing }: ClusterUpgradesListContentProps) {
+export default function ClusterUpgradesListContent({ cluster, setRefreshing, setRefetch }: ClusterUpgradesListContentProps) {
   const [listRef, setListRef] = useState<any>(null)
 
   const {
-    data, loading, error, fetchMore, subscribeToMore, // refetch,
+    data, loading, error, fetchMore, subscribeToMore, refetch,
   } = useQuery(QUEUE, {
     variables: { id: cluster?.queue?.id },
     fetchPolicy: 'cache-and-network',
   })
 
   useEffect(() => setRefreshing(loading), [setRefreshing, loading])
+
+  useEffect(() => setRefetch(() => refetch), [setRefetch, refetch])
 
   useEffect(() => subscribeToMore({
     document: UPGRADE_SUB,

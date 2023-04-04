@@ -60,6 +60,7 @@ type UpgradesListProps = {
 export default function ClusterUpgradesList({ clusters }: UpgradesListProps) {
   const [cluster, setCluster] = useState<Cluster | undefined>(!isEmpty(clusters) ? clusters[0] : undefined)
   const [refreshing, setRefreshing] = useState(true)
+  const [refetch, setRefetch] = useState<any>()
 
   const onSelectionChange = id => {
     setCluster(clusters.find(c => c.id === id))
@@ -118,8 +119,11 @@ export default function ClusterUpgradesList({ clusters }: UpgradesListProps) {
           floating
           small
           startIcon={<ReloadIcon />}
-          onClick={() => null} // TODO:
           loading={refreshing}
+          disabled={!cluster?.queue?.id}
+          onClick={() => {
+            if (refetch) refetch()
+          }}
         >
           Refresh
         </Button>
@@ -133,6 +137,7 @@ export default function ClusterUpgradesList({ clusters }: UpgradesListProps) {
                   <ClusterUpgradesListContent
                     cluster={cluster}
                     setRefreshing={setRefreshing}
+                    setRefetch={setRefetch}
                   />
                 </ImpersonateServiceAccount>
               )
@@ -140,6 +145,7 @@ export default function ClusterUpgradesList({ clusters }: UpgradesListProps) {
                 <ClusterUpgradesListContent
                   cluster={cluster}
                   setRefreshing={setRefreshing}
+                  setRefetch={setRefetch}
                 />
               )
           )

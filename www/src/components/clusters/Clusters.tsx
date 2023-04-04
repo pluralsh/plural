@@ -21,11 +21,11 @@ import {
 } from './ClustersList'
 
 import { CLUSTERS } from './queries'
-import UpgradesList from './UpgradesList'
+import ClusterUpgradesList from './ClusterUpgradesList'
 
 export function Clusters(): ReactElement | null {
   const { data, loading, error } = useQuery<Pick<RootQueryType, 'clusters'>, RootQueryTypeClustersArgs>(CLUSTERS,
-    { pollInterval: 2000 })
+    { pollInterval: 60_000 })
 
   const clusters: Cluster[] = useMemo(() => data?.clusters?.edges?.map(edge => edge?.node).filter((node): node is Cluster => !!node) || [], [data])
   const columns = useMemo(() => [ColCluster, ColHealth, ColGit, ColCloudshell, ColOwner, ColUpgrades, ColActions], [])
@@ -60,7 +60,7 @@ export function Clusters(): ReactElement | null {
         clusters={clusters}
         columns={columns}
       />
-      <UpgradesList clusters={clusters} />
+      <ClusterUpgradesList clusters={clusters} />
       {isEmpty(clusters) && <ClustersHelpSection />}
     </Flex>
   )

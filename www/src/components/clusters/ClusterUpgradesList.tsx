@@ -9,17 +9,12 @@ import {
 import styled from 'styled-components'
 import { isEmpty, truncate } from 'lodash'
 import { useEffect, useState } from 'react'
-import { useQuery } from '@apollo/client'
 
 import { Cluster } from '../../generated/graphql'
 import { ProviderIcon } from '../utils/ProviderIcon'
-import { StandardScroller } from '../utils/SmoothScroller'
-import { extendConnection } from '../../utils/graphql'
-import LoadingIndicator from '../utils/LoadingIndicator'
 
 import { ImpersonateServiceAccount } from './ImpersonateServiceAccount'
-import { UpgradeItem } from './ClustersContent'
-import { QUEUE } from './queries'
+import ClusterUpgradesListContent from './ClusterUpgradesListContent'
 
 const Wrap = styled(Card)(({ theme }) => ({
   borderRadius: theme.borderRadiuses.large,
@@ -49,7 +44,7 @@ const Wrap = styled(Card)(({ theme }) => ({
     backgroundColor: theme.colors['fill-one'],
     borderBottomLeftRadius: theme.borderRadiuses.large,
     borderBottomRightRadius: theme.borderRadiuses.large,
-    minHeight: 300, // TODO: Change to grow automatically.
+    minHeight: 250, // TODO: Change to grow automatically.
 
     '.empty': {
       color: theme.colors['text-xlight'],
@@ -62,7 +57,7 @@ type UpgradesListProps = {
   clusters: Cluster[]
 }
 
-export default function UpgradesList({ clusters }: UpgradesListProps) {
+export default function ClusterUpgradesList({ clusters }: UpgradesListProps) {
   const [cluster, setCluster] = useState<Cluster | undefined>(!isEmpty(clusters) ? clusters[0] : undefined)
 
   const onSelectionChange = id => {
@@ -122,7 +117,8 @@ export default function UpgradesList({ clusters }: UpgradesListProps) {
           floating
           small
           startIcon={<ReloadIcon />}
-          onClick={() => null}
+          onClick={() => null} // TODO:
+          loading={null} // TODO:
         >
           Refresh
         </Button>
@@ -133,10 +129,10 @@ export default function UpgradesList({ clusters }: UpgradesListProps) {
             cluster?.owner?.serviceAccount
               ? (
                 <ImpersonateServiceAccount id={cluster?.owner?.id}>
-                  <UpgradesListInternal cluster={cluster} />
+                  <ClusterUpgradesListContent cluster={cluster} />
                 </ImpersonateServiceAccount>
               )
-              : <UpgradesListInternal cluster={cluster} />
+              : <ClusterUpgradesListContent cluster={cluster} />
           )
           : <div className="empty">Looks like you don’t have any upgrades.</div>}
       </div>
@@ -144,47 +140,3 @@ export default function UpgradesList({ clusters }: UpgradesListProps) {
   )
 }
 
-function UpgradesListInternal({ cluster }: {cluster: Cluster}) {
-  const [listRef, setListRef] = useState<any>(null)
-
-  const {
-    data, loading, error, fetchMore, // subscribeToMore, refetch,
-  } = useQuery(QUEUE, {
-    variables: { id: cluster?.queue?.id },
-    fetchPolicy: 'cache-and-network',
-  })
-
-  if (error) return <>Error loading {cluster?.name} queue: {error?.message}</>
-  if (!data && loading) return <LoadingIndicator />
-
-  const edges = data.upgradeQueue?.upgrades?.edges
-  const pageInfo = data.upgradeQueue?.upgrades?.pageInfo
-
-  return (
-    <StandardScroller
-      listRef={listRef}
-      setListRef={setListRef}
-      hasNextPage={pageInfo.hasNextPage}
-      items={edges}
-      loading={loading}
-      mapper={({ node }, { next }) => (
-        <UpgradeItem
-          key={node.id}
-          upgrade={node}
-          acked={cluster?.queue?.acked || ''}
-          last={!next.node}
-        />
-      )}
-      loadNextPage={() => pageInfo.hasNextPage && fetchMore({
-        variables: { cursor: pageInfo.endCursor },
-        updateQuery: (prev, { fetchMoreResult: { upgradeQueue: { upgrades } } }) => ({
-          ...prev, upgradeQueue: extendConnection(prev.upgradeQueue, upgrades, 'upgrades'),
-        }),
-      })}
-      placeholder={undefined}
-      handleScroll={undefined}
-      refreshKey={undefined}
-      setLoader={undefined}
-    />
-  )
-}

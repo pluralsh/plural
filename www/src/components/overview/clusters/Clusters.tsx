@@ -2,6 +2,8 @@ import { Flex } from 'honorable'
 import { ReactElement, useContext, useMemo } from 'react'
 import { isEmpty } from 'lodash'
 
+import { useNavigate } from 'react-router-dom'
+
 import ClustersContext from '../../../contexts/ClustersContext'
 
 import Upgrades from './upgrades/Upgrades'
@@ -17,8 +19,9 @@ import { ClusterList } from './clusters/ClusterList'
 
 export function Clusters(): ReactElement | null {
   const { clusters } = useContext(ClustersContext)
+  const navigate = useNavigate()
 
-  const columns = useMemo(() => [ColCluster, ColHealth, ColGit, ColCloudshell, ColOwner, ColUpgrades, ColActions], [])
+  const columns = useMemo(() => [ColCluster, ColHealth, ColGit, ColCloudshell, ColOwner, ColUpgrades, ColActions(navigate)], [navigate])
 
   // useEffect(() => subscribeToMore<QueueSubscription>({
   //   document: UPGRADE_QUEUE_SUB,

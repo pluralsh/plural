@@ -6,13 +6,12 @@ export const ColOwner = columnHelper.accessor(row => row.owner?.name, {
   id: 'owner',
   enableGlobalFilter: true,
   enableSorting: true,
-  cell: ({ row: { original: { owner, mock } } }) => (
+  cell: ({ row: { original: { owner } } }) => (
     <CellWrap>
       <AppIcon
         name={owner?.name}
         url={owner?.avatar || undefined}
         size="xxsmall"
-        spacing={mock ? 'none' : undefined}
       />
       <div>
         <div>{owner?.name}</div>

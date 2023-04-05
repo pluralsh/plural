@@ -5,24 +5,12 @@ import { CellWrap, columnHelper } from './misc'
 
 const Wrap = styled(CellWrap)({ alignSelf: 'end' })
 
-export const ColActions = columnHelper.accessor(row => row.consoleUrl, {
+export const ColActions = navigate => (columnHelper.accessor(row => row.consoleUrl, {
   id: 'actions',
   enableGlobalFilter: false,
   enableSorting: false,
-  cell: ({ row: { original: { consoleUrl, mock } } }) => (
+  cell: ({ row: { original: { id, consoleUrl } } }) => (
     <Wrap>
-      {mock && (
-        <Button
-          secondary
-          small
-          as="a"
-          href="https://www.plural.sh/demo-login"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          View live demo console
-        </Button>
-      )}
       {consoleUrl && (
         <Button
           secondary
@@ -36,14 +24,14 @@ export const ColActions = columnHelper.accessor(row => row.consoleUrl, {
         </Button>
       )}
       <IconFrame
-        clickable={!mock}
+        clickable
         size="medium"
         icon={<CaretRightIcon />}
-        onClick={() => null} // TODO: Navigate to details page.
+        onClick={() => navigate(`/clusters/${id}`)}
         textValue=""
         type="tertiary"
       />
     </Wrap>
   ),
   header: '',
-})
+}))

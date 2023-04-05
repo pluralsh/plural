@@ -5,25 +5,12 @@ import {
   useContext,
   useMemo,
 } from 'react'
-import isEmpty from 'lodash/isEmpty'
 
-import { Cluster, Provider } from '../../../../generated/graphql'
+import { Cluster } from '../../../../generated/graphql'
 import { ensureURLValidity } from '../../../../utils/url'
 import ClustersContext from '../../../../contexts/ClustersContext'
 
 import { ClusterListElement } from './types'
-
-const emptyTableData: ClusterListElement[] = [{
-  name: 'Not a cluster, yet...',
-  delivered: false,
-  provider: Provider.Custom,
-  owner: {
-    name: 'Singular',
-    email: 'singular@plural.sh',
-    avatar: '/singular.svg',
-  },
-  mock: true,
-}]
 
 type ClustersListProps = Omit<ComponentProps<typeof Table>, 'data'> & {
     clusters?: (Cluster | null)[]
@@ -45,6 +32,7 @@ export const ClusterList = memo(({ columns, ...props }: ClustersListProps) => {
       const delivered = !!deliveryStatuses && !deliveryStatuses.includes(false)
 
       return {
+        id: cluster.id,
         name: cluster.name,
         provider: cluster.provider,
         source: cluster.source,
@@ -62,9 +50,11 @@ export const ClusterList = memo(({ columns, ...props }: ClustersListProps) => {
     }),
   [clusters])
 
+  // TODO: Handle empty list.
+
   return (
     <Table
-      data={!isEmpty(clusters) ? tableData : emptyTableData}
+      data={tableData}
       columns={columns}
       virtualizeRows
       {...props}

@@ -12,13 +12,16 @@ export default function ListCard({ header, children }) {
     >
       {header && (
         <Flex
+          align="center"
           backgroundColor="fill-two"
           body2
           fontWeight={600}
           borderBottom="1px solid border-fill-two"
           borderTopLeftRadius={6}
           borderTopRightRadius={6}
-          padding={10}
+          minHeight={44}
+          paddingHorizontal={16}
+          paddingVertical={8}
         >
           {header}
         </Flex>

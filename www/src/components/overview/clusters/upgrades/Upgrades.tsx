@@ -1,58 +1,22 @@
 import {
   Button,
-  Card,
   ClusterIcon,
   ListBoxItem,
   ReloadIcon,
   Select,
 } from '@pluralsh/design-system'
-import styled from 'styled-components'
 import { isEmpty, truncate } from 'lodash'
 import { useContext, useEffect, useState } from 'react'
+import { Div, Flex } from 'honorable'
 
 import { Cluster } from '../../../../generated/graphql'
 import { ProviderIcon } from '../../../utils/ProviderIcon'
-import { ImpersonateServiceAccount } from '../ImpersonateServiceAccount'
+import { ImpersonateServiceAccountWithSkip } from '../ImpersonateServiceAccount'
 import { EmptyListMessage } from '../misc'
 import ClustersContext from '../../../../contexts/ClustersContext'
+import ListCard from '../../../utils/ListCard'
 
 import UpgradeList from './UpgradeList'
-
-const Wrap = styled(Card)(({ theme }) => ({
-  borderRadius: theme.borderRadiuses.large,
-  display: 'flex',
-  flexGrow: 1,
-  flexDirection: 'column',
-
-  '.header': {
-    backgroundColor: theme.colors['fill-two'],
-    borderBottom: theme.borders['fill-two'],
-    borderTopLeftRadius: theme.borderRadiuses.large,
-    borderTopRightRadius: theme.borderRadiuses.large,
-    padding: 10,
-    display: 'flex',
-    justifyContent: 'space-between',
-
-    '.select': {
-      width: 450,
-      boxShadow: theme.boxShadows.slight,
-
-      '.select-title': {
-        display: 'flex',
-        gap: theme.spacing.xsmall,
-        whiteSpace: 'nowrap',
-      },
-    },
-  },
-
-  '.container': {
-    backgroundColor: theme.colors['fill-one'],
-    borderBottomLeftRadius: theme.borderRadiuses.large,
-    borderBottomRightRadius: theme.borderRadiuses.large,
-    flexGrow: 1,
-    minHeight: 180, // TODO: Adjust scaling.
-  },
-}))
 
 export default function Upgrades() {
   const { clusters } = useContext(ClustersContext)
@@ -71,19 +35,22 @@ export default function Upgrades() {
   if (isEmpty(clusters)) return null // TODO: Update.
 
   return (
-    <Wrap fillLevel={2}>
-      <div className="header">
-        <div className="select">
+    <ListCard header={(
+      <>
+        <Div width={450}>
           <Select
             size="small"
             label="Select cluster"
             selectedKey={cluster?.id}
             onSelectionChange={onSelectionChange}
             titleContent={(
-              <div className="select-title">
+              <Flex
+                gap="xsmall"
+                whiteSpace="nowrap"
+              >
                 <ClusterIcon />
                 Cluster upgrades
-              </div>
+              </Flex>
             )}
             leftContent={(
               <ProviderIcon
@@ -91,7 +58,7 @@ export default function Upgrades() {
                 width={16}
               />
             )}
-            width={420}
+            width={450}
           >
             {clusters.map(({ id, name, provider }) => (
               <ListBoxItem
@@ -107,7 +74,8 @@ export default function Upgrades() {
               />
             ))}
           </Select>
-        </div>
+        </Div>
+        <Flex grow={1} />
         <Button
           floating
           small
@@ -120,31 +88,29 @@ export default function Upgrades() {
         >
           Refresh
         </Button>
-      </div>
+      </>
+    )}
+    >
+
       <div className="container">
         {cluster?.queue?.id
           ? (
-            cluster?.owner?.serviceAccount
-              ? (
-                <ImpersonateServiceAccount id={cluster?.owner?.id}>
-                  <UpgradeList
-                    cluster={cluster}
-                    setRefreshing={setRefreshing}
-                    setRefetch={setRefetch}
-                  />
-                </ImpersonateServiceAccount>
-              )
-              : (
-                <UpgradeList
-                  cluster={cluster}
-                  setRefreshing={setRefreshing}
-                  setRefetch={setRefetch}
-                />
-              )
+            <ImpersonateServiceAccountWithSkip
+              id={cluster?.owner?.id}
+              skip={!cluster?.owner?.serviceAccount}
+            >
+              <UpgradeList
+                cluster={cluster}
+                setRefreshing={setRefreshing}
+                setRefetch={setRefetch}
+              />
+            </ImpersonateServiceAccountWithSkip>
           )
           : <EmptyListMessage>Cannot access upgrade queue.</EmptyListMessage>}
       </div>
-    </Wrap>
+
+    </ListCard>
+
   )
 }
 

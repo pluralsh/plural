@@ -1,23 +1,10 @@
 import { Button, SubTab, TabList } from '@pluralsh/design-system'
 import { ReactElement, useContext, useRef } from 'react'
 import { useLocation } from 'react-router-dom'
-import styled from 'styled-components'
+import { Flex } from 'honorable'
 
 import { LinkTabWrap } from '../utils/Tabs'
-
 import ClustersContext from '../../contexts/ClustersContext'
-
-const Wrap = styled.div(({ theme }) => ({
-  display: 'flex',
-  marginBottom: theme.spacing.medium,
-
-  '.actions': {
-    display: 'flex',
-    flexGrow: 1,
-    gap: theme.spacing.small,
-    justifyContent: 'end',
-  },
-}))
 
 const DIRECTORY = [
   { path: '/overview/clusters', label: 'Cluster overview' },
@@ -31,7 +18,7 @@ export default function OverviewHeader(): ReactElement {
   const currentTab = DIRECTORY.find(tab => pathname?.startsWith(tab.path))
 
   return (
-    <Wrap>
+    <Flex marginBottom="medium">
       <TabList
         stateRef={tabStateRef}
         stateProps={{
@@ -49,9 +36,12 @@ export default function OverviewHeader(): ReactElement {
           </LinkTabWrap>
         ))}
       </TabList>
-      <div className="actions">
+      <Flex
+        grow={1}
+        justify="end"
+      >
         {hasClusters && <Button secondary>Promote cluster</Button>} {/* TODO: Implement handler. */}
-      </div>
-    </Wrap>
+      </Flex>
+    </Flex>
   )
 }

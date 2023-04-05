@@ -1,26 +1,16 @@
 import { BrowseAppsIcon, Button, Card } from '@pluralsh/design-system'
+import { Div, Flex } from 'honorable'
 import { useNavigate } from 'react-router-dom'
-import styled from 'styled-components'
-
-const Wrapper = styled.div<{backgroundImage?: string}>(({ theme }) => ({
-  ...theme.partials.text.body1Bold,
-  borderRadius: theme.borderRadiuses.large,
-  minHeight: 180,
-  minWidth: 500,
-  position: 'relative',
-
-  '.cta': {
-    display: 'flex',
-    gap: theme.spacing.medium,
-    marginTop: theme.spacing.large,
-  },
-}))
 
 export default function ClusterListEmptyState() {
   const navigate = useNavigate()
 
   return (
-    <Wrapper backgroundImage="/placeholders/clusters.png">
+    <Div
+      minHeight={180}
+      minWidth={500}
+      position="relative"
+    >
       <img
         src="/placeholders/clusters.png"
         width="100%"
@@ -37,8 +27,11 @@ export default function ClusterListEmptyState() {
         width="max-content"
         fillLevel={2}
       >
-        <div>Create your first cluster and install applications.</div>
-        <div className="cta">
+        <Div body1Bold>Create your first cluster and install applications.</Div>
+        <Flex
+          gap="medium"
+          marginTop="large"
+        >
           <Button>Start onboarding</Button> {/* TODO: Navigate. */}
           <Button
             secondary
@@ -47,8 +40,8 @@ export default function ClusterListEmptyState() {
           >
             Browse the marketplace
           </Button>
-        </div>
+        </Flex>
       </Card>
-    </Wrapper>
+    </Div>
   )
 }

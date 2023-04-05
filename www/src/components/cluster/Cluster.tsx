@@ -11,8 +11,11 @@ import { Div, Flex } from 'honorable'
 
 import ClustersContext from '../../contexts/ClustersContext'
 import { ProviderIcon } from '../utils/ProviderIcon'
+import { ImpersonateServiceAccountWithSkip } from '../overview/clusters/ImpersonateServiceAccount'
 
 import { ClusterSidecar } from './ClusterSidecar'
+import { ClusterApps } from './ClusterApps'
+import { ClusterUpgrades } from './ClusterUpgrades'
 
 export function Cluster() {
   const navigate = useNavigate()
@@ -35,7 +38,10 @@ export function Cluster() {
         direction="column"
         grow={1}
       >
-        <Flex gap="large">
+        <Flex
+          gap="large"
+          marginBottom="medium"
+        >
           <Div flexGrow={1}>
             <Select
               label="Select cluster"
@@ -76,9 +82,19 @@ export function Cluster() {
             Administrators
           </Button>
         </Flex>
-        <div>
-          content
-        </div>
+        <Flex
+          direction="column"
+          gap="medium"
+          grow={1}
+        >
+          <ImpersonateServiceAccountWithSkip
+            id={cluster?.owner?.id}
+            skip={!cluster.owner?.serviceAccount}
+          >
+            <ClusterUpgrades cluster={cluster} />
+            <ClusterApps clusterId={cluster.id} />
+          </ImpersonateServiceAccountWithSkip>
+        </Flex>
       </Flex>
       <ClusterSidecar cluster={cluster} />
     </Flex>

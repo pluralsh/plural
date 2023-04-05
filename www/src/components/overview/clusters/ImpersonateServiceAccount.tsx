@@ -18,6 +18,10 @@ const getImpersonatedToken = memoize((id, mutation) => mutation()
 // Cache clients with impersonated service account tokens as keys.
 const getClient = memoize(token => buildClient(() => token).client)
 
+export function ImpersonateServiceAccountWithSkip({ id, skip, children }) {
+  return skip ? children : <ImpersonateServiceAccount id={id}>{children}</ImpersonateServiceAccount>
+}
+
 export function ImpersonateServiceAccount({ id, children }) {
   const [client, setClient] = useState<ApolloClient<unknown> | undefined>()
   const [mutation, { error }] = useMutation(IMPERSONATE_SERVICE_ACCOUNT, { variables: { id } })

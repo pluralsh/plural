@@ -1,21 +1,18 @@
 import { ReactElement } from 'react'
 import { Outlet } from 'react-router-dom'
-import styled from 'styled-components'
+import { Flex } from 'honorable'
 
 import OverviewHeader from './OverviewHeader'
 
-const Wrap = styled.div(({ theme }) => ({
-  display: 'flex',
-  flexDirection: 'column',
-  flexGrow: 1,
-  padding: theme.spacing.large,
-}))
-
 export function Overview(): ReactElement {
   return (
-    <Wrap>
+    <Flex
+      direction="column"
+      grow={1}
+      padding="large"
+    >
       <OverviewHeader />
       <Outlet />
-    </Wrap>
+    </Flex>
   )
 }

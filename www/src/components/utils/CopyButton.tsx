@@ -5,14 +5,14 @@ import {
   useEffect,
   useState,
 } from 'react'
-
 import { CheckIcon, CopyIcon, IconFrame } from '@pluralsh/design-system'
 
 type CopyButtonProps = {
   text?: string
+  type?: 'secondary' | 'tertiary' | 'floating'
 }
 
-function CopyButtonRef({ text }: CopyButtonProps, ref: Ref<any>) {
+function CopyButtonRef({ text, type = 'floating' }: CopyButtonProps, ref: Ref<any>) {
   const [copied, setCopied] = useState(false)
 
   useEffect(() => {
@@ -33,7 +33,7 @@ function CopyButtonRef({ text }: CopyButtonProps, ref: Ref<any>) {
       ref={ref}
       textValue={text}
       tooltip
-      type="floating"
+      type={type}
     />
   )
 }

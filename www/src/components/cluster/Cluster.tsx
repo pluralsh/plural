@@ -7,28 +7,12 @@ import {
   PersonPlusIcon,
   Select,
 } from '@pluralsh/design-system'
-
-import styled from 'styled-components'
+import { Div, Flex } from 'honorable'
 
 import ClustersContext from '../../contexts/ClustersContext'
 import { ProviderIcon } from '../utils/ProviderIcon'
 
-const Wrap = styled.div(({ theme }) => ({
-  display: 'flex',
-  flexDirection: 'column',
-  flexGrow: 1,
-  padding: theme.spacing.large,
-
-  '.header': {
-    display: 'flex',
-    flexDirection: 'row',
-    gap: theme.spacing.large,
-
-    '.cluster-select': {
-      flexGrow: 1,
-    },
-  },
-}))
+import { ClusterSidecar } from './ClusterSidecar'
 
 export function Cluster() {
   const navigate = useNavigate()
@@ -42,49 +26,61 @@ export function Cluster() {
   console.log(cluster)
 
   return (
-    <Wrap>
-      <div className="header">
-        <div className="cluster-select">
-          <Select
-            label="Select cluster"
-            selectedKey={cluster?.id}
-            onSelectionChange={onSelectionChange}
-            titleContent={(
-              <>
-                <ClusterIcon marginRight="xsmall" />
-                Cluster
-              </>
-            )}
-            leftContent={(
-              <ProviderIcon
-                provider={cluster?.provider}
-                width={16}
-              />
-            )}
+    <Flex
+      grow={1}
+      gap="large"
+      padding="large"
+    >
+      <Flex
+        direction="column"
+        grow={1}
+      >
+        <Flex gap="large">
+          <Div flexGrow={1}>
+            <Select
+              label="Select cluster"
+              selectedKey={cluster?.id}
+              onSelectionChange={onSelectionChange}
+              titleContent={(
+                <Flex gap="xsmall">
+                  <ClusterIcon />
+                  Cluster
+                </Flex>
+              )}
+              leftContent={(
+                <ProviderIcon
+                  provider={cluster?.provider}
+                  width={16}
+                />
+              )}
+            >
+              {clusters.map(({ id, name, provider }) => (
+                <ListBoxItem
+                  key={id}
+                  label={name}
+                  textValue={name}
+                  leftContent={(
+                    <ProviderIcon
+                      provider={provider}
+                      width={16}
+                    />
+                  )}
+                />
+              ))}
+            </Select>
+          </Div>
+          <Button
+            secondary
+            startIcon={<PersonPlusIcon />}
           >
-            {clusters.map(({ id, name, provider }) => (
-              <ListBoxItem
-                key={id}
-                label={name}
-                textValue={name}
-                leftContent={(
-                  <ProviderIcon
-                    provider={provider}
-                    width={16}
-                  />
-                )}
-              />
-            ))}
-          </Select>
+            Administrators
+          </Button>
+        </Flex>
+        <div>
+          content
         </div>
-        <Button
-          secondary
-          startIcon={<PersonPlusIcon />}
-        >
-          Administrators
-        </Button>
-      </div>
-      <div>content</div>
-    </Wrap>
+      </Flex>
+      <ClusterSidecar cluster={cluster} />
+    </Flex>
   )
 }

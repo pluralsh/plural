@@ -6,29 +6,28 @@ import { ReactElement } from 'react'
 import { Cluster } from '../../generated/graphql'
 import CopyButton from '../utils/CopyButton'
 import ClusterHealth from '../overview/clusters/ClusterHealth'
+import { ensureURLValidity } from '../../utils/url'
+import ClusterOwner from '../overview/clusters/ClusterOwner'
 
 type ClusterSidecarProps = {cluster: Cluster}
 
 export function ClusterSidecar({ cluster }: ClusterSidecarProps): ReactElement {
   return (
     <Flex
-      gap={24}
+      gap="large"
       direction="column"
-      overflow="hidden"
+      width={200}
     >
-      <Button
-        secondary
-        as={A}
-        target="_blank"
-        href={`https://${cluster.queue?.domain}`}
-        {...{
-          '&:hover': {
-            textDecoration: 'none',
-          },
-        }}
-      >
-        Launch Console
-      </Button>
+      {cluster.consoleUrl && (
+        <Button
+          as="a"
+          href={ensureURLValidity(cluster.consoleUrl)}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Launch Console
+        </Button>
+      )}
       <Sidecar heading="Metadata">
         <SidecarItem heading="Cluster name">
           {cluster.name}
@@ -37,7 +36,11 @@ export function ClusterSidecar({ cluster }: ClusterSidecarProps): ReactElement {
           <ClusterHealth pingedAt={cluster.queue?.pingedAt} />
         </SidecarItem>
         <SidecarItem heading="Owner">
-          owner
+          <ClusterOwner
+            name={cluster.owner?.name}
+            email={cluster.owner?.email}
+            avatar={cluster.owner?.avatar}
+          />
         </SidecarItem>
         <SidecarItem heading="Git URL">
           <CopyButton
@@ -46,10 +49,10 @@ export function ClusterSidecar({ cluster }: ClusterSidecarProps): ReactElement {
           />
         </SidecarItem>
         <SidecarItem heading="Acked">
-          {cluster.queue?.acked}
+          {cluster.queue?.acked || '-'}
         </SidecarItem>
         <SidecarItem heading="Last pinged">
-          {moment(cluster.queue?.pingedAt).format('lll')}
+          {cluster.queue?.pingedAt ? moment(cluster.queue?.pingedAt).format('lll') : '-'}
         </SidecarItem>
         <SidecarItem heading="Docs">
           <A

@@ -14,6 +14,8 @@ import { Source } from '../../../../generated/graphql'
 import ClusterHealth from '../ClusterHealth'
 import CopyButton from '../../../utils/CopyButton'
 
+import ClusterOwner from '../ClusterOwner'
+
 import { ClusterListElement } from './types'
 
 export const columnHelper = createColumnHelper<ClusterListElement>()
@@ -99,17 +101,11 @@ export const ColOwner = columnHelper.accessor(row => row.owner?.name, {
   enableGlobalFilter: true,
   enableSorting: true,
   cell: ({ row: { original: { owner } } }) => (
-    <CellWrap>
-      <AppIcon
-        name={owner?.name}
-        url={owner?.avatar || undefined}
-        size="xxsmall"
-      />
-      <div>
-        <div>{owner?.name}</div>
-        <CellCaption>{owner?.email}</CellCaption>
-      </div>
-    </CellWrap>
+    <ClusterOwner
+      name={owner?.name}
+      email={owner?.email}
+      avatar={owner?.avatar}
+    />
   ),
   header: 'Owner',
 })

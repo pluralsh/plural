@@ -5,11 +5,12 @@ import { Flex } from 'honorable'
 import ListCard from '../utils/ListCard'
 import UpgradeList from '../overview/clusters/upgrades/UpgradeList'
 import { Cluster } from '../../generated/graphql'
+import { EmptyListMessage } from '../overview/clusters/misc'
 
 type ClusterUpgradesProps = {cluster: Cluster}
 
 export function ClusterUpgrades({ cluster }: ClusterUpgradesProps): ReactElement {
-  const [refreshing, setRefreshing] = useState(true)
+  const [refreshing, setRefreshing] = useState(false)
   const [refetch, setRefetch] = useState<any>()
 
   return (
@@ -36,11 +37,13 @@ export function ClusterUpgrades({ cluster }: ClusterUpgradesProps): ReactElement
       </>
     )}
     >
-      <UpgradeList
-        cluster={cluster}
-        setRefreshing={setRefreshing}
-        setRefetch={setRefetch}
-      />
+      {cluster?.queue?.id ? (
+        <UpgradeList
+          cluster={cluster}
+          setRefreshing={setRefreshing}
+          setRefetch={setRefetch}
+        />
+      ) : <EmptyListMessage>Cannot access upgrade queue.</EmptyListMessage>}
     </ListCard>
   )
 }

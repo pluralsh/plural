@@ -21,7 +21,7 @@ import UpgradeList from './UpgradeList'
 export default function Upgrades() {
   const { clusters } = useContext(ClustersContext)
   const [cluster, setCluster] = useState<Cluster | undefined>(!isEmpty(clusters) ? clusters[0] : undefined)
-  const [refreshing, setRefreshing] = useState(true)
+  const [refreshing, setRefreshing] = useState(false)
   const [refetch, setRefetch] = useState<any>()
 
   const onSelectionChange = id => {

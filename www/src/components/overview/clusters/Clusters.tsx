@@ -7,21 +7,23 @@ import { useNavigate } from 'react-router-dom'
 import ClustersContext from '../../../contexts/ClustersContext'
 
 import Upgrades from './upgrades/Upgrades'
-import { ColCluster } from './clusters/columns/ColCluster'
-import { ColHealth } from './clusters/columns/ColHealth'
-import { ColGit } from './clusters/columns/ColGit'
-import { ColCloudshell } from './clusters/columns/ColCloudshell'
-import { ColOwner } from './clusters/columns/ColOwner'
-import { ColUpgrades } from './clusters/columns/ColUpgrades'
-import { ColActions } from './clusters/columns/ColActions'
 import ClustersHelpSection from './ClustersHelpSection'
 import { ClusterList } from './clusters/ClusterList'
+import {
+  ColActions,
+  ColCloudShell,
+  ColCluster,
+  ColGit,
+  ColHealth,
+  ColOwner,
+  ColUpgrades,
+} from './clusters/columns'
 
 export function Clusters(): ReactElement | null {
   const { clusters } = useContext(ClustersContext)
   const navigate = useNavigate()
 
-  const columns = useMemo(() => [ColCluster, ColHealth, ColGit, ColCloudshell, ColOwner, ColUpgrades, ColActions(navigate)], [navigate])
+  const columns = useMemo(() => [ColCluster, ColHealth, ColGit, ColCloudShell, ColOwner, ColUpgrades, ColActions(navigate)], [navigate])
 
   // useEffect(() => subscribeToMore<QueueSubscription>({
   //   document: UPGRADE_QUEUE_SUB,

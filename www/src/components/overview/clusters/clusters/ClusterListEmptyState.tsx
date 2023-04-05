@@ -39,7 +39,7 @@ export default function ClusterListEmptyState() {
       >
         <div>Create your first cluster and install applications.</div>
         <div className="cta">
-          <Button>Start onboarding</Button> {/* TODO: Add handler. */}
+          <Button>Start onboarding</Button> {/* TODO: Navigate. */}
           <Button
             secondary
             startIcon={<BrowseAppsIcon />}

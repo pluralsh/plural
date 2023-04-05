@@ -3,9 +3,11 @@ import { useNavigate, useParams } from 'react-router-dom'
 import {
   Button,
   ClusterIcon,
+  EmptyState,
   ListBoxItem,
   PersonPlusIcon,
   Select,
+  WarningOutlineIcon,
 } from '@pluralsh/design-system'
 import { Div, Flex } from 'honorable'
 
@@ -24,9 +26,17 @@ export function Cluster() {
   const cluster = clusters.find(c => c.id === id)
   const onSelectionChange = id => navigate(`/clusters/${id}`)
 
-  if (!cluster) return <>error</>
-
-  console.log(cluster)
+  if (!cluster) {
+    return (
+      <EmptyState
+        icon={<WarningOutlineIcon size={100} />}
+        message="Cluster not found"
+        description={`No clusters found with ID ${id}.`}
+      >
+        <Button onClick={() => navigate('/overview/clusters')}>Go to cluster overview</Button>
+      </EmptyState>
+    )
+  }
 
   return (
     <Flex

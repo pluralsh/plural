@@ -1,14 +1,12 @@
 import { Flex } from 'honorable'
-
 import { Button, GearTrainIcon } from '@pluralsh/design-system'
 import { useState } from 'react'
 
 import { useRepositoryContext } from '../../contexts/RepositoryContext'
-
 import InstallDropdownButton from '../utils/InstallDropdownButton'
 import { RecipeSubset } from '../utils/recipeHelpers'
-import { InferredConsoleButton } from '../clusters/ConsoleButton'
 
+import { InferredConsoleButton } from './ConsoleButton'
 import { InstallationConfiguration } from './InstallationConfiguration'
 
 function InstalledRepositoryActions({ installation, ...props }: any) {

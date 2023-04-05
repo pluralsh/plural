@@ -1,19 +1,28 @@
+import { createContext, useMemo } from 'react'
 import { useQuery } from '@apollo/client'
-import { useMemo } from 'react'
 import isEmpty from 'lodash/isEmpty'
 
-import { Cluster, RootQueryType, RootQueryTypeClustersArgs } from '../../generated/graphql'
-import LoadingIndicator from '../utils/LoadingIndicator'
+import { Cluster, RootQueryType, RootQueryTypeClustersArgs } from '../generated/graphql'
+import LoadingIndicator from '../components/utils/LoadingIndicator'
+import { CLUSTERS } from '../components/overview/queries'
 
-import { CLUSTERS } from './queries'
-import ClustersContext, { ClustersContextType } from './ClustersContext'
+type ClustersContextType = {
+  clusters: Cluster[],
+  hasClusters: boolean,
+}
+
+const ClustersContext = createContext<ClustersContextType>({
+  clusters: [],
+  hasClusters: false,
+})
 
 export function ClustersContextProvider({ children }) {
   const { data, loading, error }
   = useQuery<Pick<RootQueryType, 'clusters'>, RootQueryTypeClustersArgs>(CLUSTERS, { pollInterval: 30_000 })
 
   const clustersContextValue = useMemo<ClustersContextType>(() => {
-    const clusters = data?.clusters?.edges?.map(edge => edge?.node).filter((node): node is Cluster => !!node) || []
+    const clusters = data?.clusters?.edges?.map(edge => edge?.node)
+      .filter((node): node is Cluster => !!node) || []
     const hasClusters = !isEmpty(clusters)
 
     return {
@@ -31,3 +40,5 @@ export function ClustersContextProvider({ children }) {
     </ClustersContext.Provider>
   )
 }
+
+export default ClustersContext

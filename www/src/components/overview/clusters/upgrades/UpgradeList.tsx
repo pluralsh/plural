@@ -8,7 +8,7 @@ import { appendConnection, extendConnection } from '../../../../utils/graphql'
 import LoadingIndicator from '../../../utils/LoadingIndicator'
 
 import { QUEUE, UPGRADE_SUB } from '../../queries'
-import { EmptyListMessage } from '../../misc'
+import { EmptyListMessage } from '../misc'
 
 import UpgradeListItem from './Upgrade'
 

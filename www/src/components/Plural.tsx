@@ -50,9 +50,10 @@ const AuditChloropleth = lazy(() => import('./audits/AuditChloropleth').then(mod
 const AuditDirectory = lazy(() => import('./audits/AuditDirectory').then(module => ({ default: module.AuditDirectory })))
 const Audits = lazy(() => import('./audits/Audits').then(module => ({ default: module.Audits })))
 const ChecklistProvider = lazy(() => import('./shell/onboarding/checklist/Checklist').then(module => ({ default: module.ChecklistProvider })))
-const Clusters = lazy(() => import('./clusters/Clusters').then(module => ({ default: module.Clusters })))
-const ClustersOverview = lazy(() => import('./clusters/overview/Overview').then(module => ({ default: module.Overview })))
-const ClustersApps = lazy(() => import('./clusters/apps/Apps').then(module => ({ default: module.Apps })))
+const Overview = lazy(() => import('./overview/Overview').then(module => ({ default: module.Overview })))
+const Clusters = lazy(() => import('./overview/clusters/Clusters').then(module => ({ default: module.Clusters })))
+const Cluster = lazy(() => import('./cluster/Cluster').then(module => ({ default: module.Cluster })))
+const Apps = lazy(() => import('./overview/apps/Apps').then(module => ({ default: module.Apps })))
 const PluralProvider = lazy(() => import('./login/CurrentUser').then(module => ({ default: module.PluralProvider })))
 const DeviceLoginNotif = lazy(() => import('./users/DeviceLoginNotif').then(module => ({ default: module.DeviceLoginNotif })))
 const Domains = lazy(() => import('./account/Domains').then(module => ({ default: module.Domains })))
@@ -135,7 +136,7 @@ function OAuthOrFallback() {
       // @ts-expect-error
       shellOAuthMatch={shellOAuthMatch}
       replace
-      to={history.pop('/clusters')}
+      to={history.pop('/overview')}
     />
   )
 }
@@ -511,29 +512,34 @@ export function PluralInner() {
               {/*  path="/upgrades" */}
               {/*  element={<UpgradeQueues />} */}
               {/* /> */}
-              {/* --- CLUSTERS --- */}
+              {/* --- Overview --- */}
               <Route
-                path="/clusters"
-                element={<Clusters />}
+                path="/overview"
+                element={<Overview />}
               >
                 <Route
                   index
                   element={(
                     <Navigate
                       replace
-                      to="overview"
+                      to="clusters"
                     />
                   )}
                 />
                 <Route
-                  path="overview"
-                  element={<ClustersOverview />}
+                  path="clusters"
+                  element={<Clusters />}
                 />
                 <Route
                   path="apps"
-                  element={<ClustersApps />}
+                  element={<Apps />}
                 />
               </Route>
+              {/* CLUSTERS  */}
+              <Route
+                path="/clusters/:id"
+                element={<Cluster />}
+              />
               {/* --- ROADMAP --- */}
               <Route
                 path="/roadmap"

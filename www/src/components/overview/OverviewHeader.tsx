@@ -5,7 +5,7 @@ import styled from 'styled-components'
 
 import { LinkTabWrap } from '../utils/Tabs'
 
-import ClustersContext from './ClustersContext'
+import ClustersContext from '../../contexts/ClustersContext'
 
 const Wrap = styled.div(({ theme }) => ({
   display: 'flex',
@@ -20,11 +20,11 @@ const Wrap = styled.div(({ theme }) => ({
 }))
 
 const DIRECTORY = [
-  { path: '/clusters/overview', label: 'Cluster overview' },
-  // { path: '/clusters/apps', label: 'Installed applications' },
+  { path: '/overview/clusters', label: 'Cluster overview' },
+  // { path: '/overview/apps', label: 'Installed applications' },
 ]
 
-export default function ClustersHeader(): ReactElement {
+export default function OverviewHeader(): ReactElement {
   const { hasClusters } = useContext(ClustersContext)
   const tabStateRef = useRef<any>(null)
   const { pathname } = useLocation()
@@ -50,10 +50,7 @@ export default function ClustersHeader(): ReactElement {
         ))}
       </TabList>
       <div className="actions">
-        {hasClusters
-          // TODO: Implement logic for both buttons.
-          ? <Button secondary>Promote cluster</Button>
-          : <Button>Create cluster</Button>}
+        {hasClusters && <Button secondary>Promote cluster</Button>} {/* TODO: Implement handler. */}
       </div>
     </Wrap>
   )

@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react'
 import { ApolloClient, ApolloProvider, useMutation } from '@apollo/client'
 import memoize from 'lodash/memoize'
 
-import { buildClient } from '../../helpers/client'
-import { IMPERSONATE_SERVICE_ACCOUNT } from '../account/queries'
-import LoadingIndicator from '../utils/LoadingIndicator'
+import { buildClient } from '../../../helpers/client'
+import { IMPERSONATE_SERVICE_ACCOUNT } from '../../account/queries'
+import LoadingIndicator from '../../utils/LoadingIndicator'
 
 import { EmptyListMessage } from './misc'
 

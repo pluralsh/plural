@@ -1,6 +1,6 @@
 import { Chip } from '@pluralsh/design-system'
 
-import ClusterHealth from '../../../ClusterHealth'
+import ClusterHealth from '../../ClusterHealth'
 
 import { columnHelper } from './misc'
 

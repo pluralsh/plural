@@ -2,7 +2,7 @@ import { useQuery } from '@apollo/client'
 import { Button } from 'honorable'
 import { ArrowTopRightIcon } from '@pluralsh/design-system'
 
-import { QUEUES } from './queries'
+import { QUEUES } from '../overview/queries'
 
 export function ConsoleButton({ q = {}, text, ...props }: any) {
   return (

@@ -10,8 +10,8 @@ import { useQuery } from '@apollo/client'
 
 import { useContext } from 'react'
 
-import { QueueList } from '../clusters/Clusters'
-import { QUEUES } from '../clusters/queries'
+import { QueueList } from '../overview/Overview'
+import { QUEUES } from '../overview/queries'
 import { useIsCurrentlyOnboarding } from '../shell/hooks/useOnboarded'
 
 import BillingLegacyUserMessage from '../account/billing/BillingLegacyUserMessage'

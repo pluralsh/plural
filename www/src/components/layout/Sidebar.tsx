@@ -60,12 +60,12 @@ type MenuItem = {
   pathRegexp?: RegExp
 }
 
-/* TODO: Make sure urlRegexp is working with new Sidebar */
 const MENU_ITEMS: MenuItem[] = [
   {
     text: 'Clusters',
     icon: <ClusterIcon />,
-    path: '/clusters',
+    path: '/overview',
+    pathRegexp: /^\/(overview|clusters)/,
   },
   {
     text: 'Cloud Shell',

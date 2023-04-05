@@ -3,9 +3,9 @@ import moment from 'moment'
 import { Button, Sidecar, SidecarItem } from '@pluralsh/design-system'
 import { ReactElement, useContext } from 'react'
 
-import QueueContext from '../../contexts/QueueContext'
+import QueueContext from '../../../contexts/QueueContext'
 
-import { Queue } from './Clusters'
+import { Queue } from '../Overview'
 
 export function ClustersSidecar(): ReactElement {
   const queue: Queue = useContext(QueueContext)

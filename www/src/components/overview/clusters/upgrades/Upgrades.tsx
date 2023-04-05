@@ -12,9 +12,9 @@ import { useContext, useEffect, useState } from 'react'
 
 import { Cluster } from '../../../../generated/graphql'
 import { ProviderIcon } from '../../../utils/ProviderIcon'
-import { ImpersonateServiceAccount } from '../../ImpersonateServiceAccount'
-import { EmptyListMessage } from '../../misc'
-import ClustersContext from '../../ClustersContext'
+import { ImpersonateServiceAccount } from '../ImpersonateServiceAccount'
+import { EmptyListMessage } from '../misc'
+import ClustersContext from '../../../../contexts/ClustersContext'
 
 import UpgradeList from './UpgradeList'
 

@@ -2,9 +2,8 @@ import { Flex } from 'honorable'
 import { ReactElement, useContext, useMemo } from 'react'
 import { isEmpty } from 'lodash'
 
-import ClustersContext from '../ClustersContext'
+import ClustersContext from '../../../contexts/ClustersContext'
 
-import OverviewHelpSection from './OverviewHelpSection'
 import Upgrades from './upgrades/Upgrades'
 import { ColCluster } from './clusters/columns/ColCluster'
 import { ColHealth } from './clusters/columns/ColHealth'
@@ -13,9 +12,10 @@ import { ColCloudshell } from './clusters/columns/ColCloudshell'
 import { ColOwner } from './clusters/columns/ColOwner'
 import { ColUpgrades } from './clusters/columns/ColUpgrades'
 import { ColActions } from './clusters/columns/ColActions'
-import { Clusters } from './clusters/Clusters'
+import ClustersHelpSection from './ClustersHelpSection'
+import { ClusterList } from './clusters/ClusterList'
 
-export function Overview(): ReactElement | null {
+export function Clusters(): ReactElement | null {
   const { clusters } = useContext(ClustersContext)
 
   const columns = useMemo(() => [ColCluster, ColHealth, ColGit, ColCloudshell, ColOwner, ColUpgrades, ColActions], [])
@@ -42,9 +42,9 @@ export function Overview(): ReactElement | null {
       flexGrow={1}
       overflow="auto"
     >
-      <Clusters columns={columns} />
+      <ClusterList columns={columns} />
       <Upgrades />
-      {isEmpty(clusters) && <OverviewHelpSection />}
+      {isEmpty(clusters) && <ClustersHelpSection />}
     </Flex>
   )
 }

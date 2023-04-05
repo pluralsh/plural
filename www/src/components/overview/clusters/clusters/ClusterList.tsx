@@ -9,7 +9,7 @@ import isEmpty from 'lodash/isEmpty'
 
 import { Cluster, Provider } from '../../../../generated/graphql'
 import { ensureURLValidity } from '../../../../utils/url'
-import ClustersContext from '../../ClustersContext'
+import ClustersContext from '../../../../contexts/ClustersContext'
 
 import { ClusterListElement } from './types'
 
@@ -30,7 +30,7 @@ type ClustersListProps = Omit<ComponentProps<typeof Table>, 'data'> & {
     columns: any[]
   }
 
-export const Clusters = memo(({ columns, ...props }: ClustersListProps) => {
+export const ClusterList = memo(({ columns, ...props }: ClustersListProps) => {
   const { clusters } = useContext(ClustersContext)
 
   const tableData: ClusterListElement[] = useMemo(() => (clusters || [])

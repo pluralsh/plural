@@ -2,8 +2,9 @@ import { ReactElement } from 'react'
 import { Outlet } from 'react-router-dom'
 import styled from 'styled-components'
 
-import { ClustersContextProvider } from './ClustersContextProvider'
-import ClustersHeader from './ClustersHeader'
+import { ClustersContextProvider } from '../../contexts/ClustersContext'
+
+import OverviewHeader from './OverviewHeader'
 
 const Wrap = styled.div(({ theme }) => ({
   display: 'flex',
@@ -12,11 +13,11 @@ const Wrap = styled.div(({ theme }) => ({
   padding: theme.spacing.large,
 }))
 
-export function Clusters(): ReactElement {
+export function Overview(): ReactElement {
   return (
     <ClustersContextProvider>
       <Wrap>
-        <ClustersHeader />
+        <OverviewHeader />
         <Outlet />
       </Wrap>
     </ClustersContextProvider>

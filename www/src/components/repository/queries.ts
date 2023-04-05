@@ -223,3 +223,24 @@ export const TAGS_SEARCH_QUERY = gql`
   }
   ${PageInfo}
 `
+
+export const ROLLOUTS = gql`
+  query Rollouts($repositoryId: ID!, $cursor: String) {
+    rollouts(repositoryId: $repositoryId, after: $cursor, first: 50) {
+      pageInfo { ...PageInfo }
+      edges { node { ...RolloutFragment } }
+    }
+  }
+  ${PageInfo}
+  ${RolloutFragment}
+`
+
+export const ROLLOUT_SUB = gql`
+  subscription Rollout($repositoryId: ID!) {
+    rolloutDelta(repositoryId: $repositoryId) {
+      delta
+      payload { ...RolloutFragment }
+    }
+  }
+  ${RolloutFragment}
+`

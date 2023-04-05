@@ -68,7 +68,7 @@ const Wrap = styled.div(({ theme }) => ({
   },
 }))
 
-export default function OverviewHelpSection(): ReactElement {
+export default function ClustersHelpSection(): ReactElement {
   const navigate = useNavigate()
   const { show } = useIntercom()
 

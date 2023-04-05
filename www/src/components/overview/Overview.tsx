@@ -2,8 +2,6 @@ import { ReactElement } from 'react'
 import { Outlet } from 'react-router-dom'
 import styled from 'styled-components'
 
-import { ClustersContextProvider } from '../../contexts/ClustersContext'
-
 import OverviewHeader from './OverviewHeader'
 
 const Wrap = styled.div(({ theme }) => ({
@@ -15,11 +13,9 @@ const Wrap = styled.div(({ theme }) => ({
 
 export function Overview(): ReactElement {
   return (
-    <ClustersContextProvider>
-      <Wrap>
-        <OverviewHeader />
-        <Outlet />
-      </Wrap>
-    </ClustersContextProvider>
+    <Wrap>
+      <OverviewHeader />
+      <Outlet />
+    </Wrap>
   )
 }

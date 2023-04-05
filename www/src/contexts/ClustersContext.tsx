@@ -1,6 +1,7 @@
 import { createContext, useMemo } from 'react'
 import { useQuery } from '@apollo/client'
 import isEmpty from 'lodash/isEmpty'
+import styled from 'styled-components'
 
 import { Cluster, RootQueryType, RootQueryTypeClustersArgs } from '../generated/graphql'
 import LoadingIndicator from '../components/utils/LoadingIndicator'
@@ -15,6 +16,14 @@ const ClustersContext = createContext<ClustersContextType>({
   clusters: [],
   hasClusters: false,
 })
+
+const Error = styled.div(({ theme }) => ({
+  ...theme.partials.text.body2,
+  display: 'flex',
+  flexGrow: 1,
+  justifyContent: 'center',
+  alignItems: 'center',
+}))
 
 export function ClustersContextProvider({ children }) {
   const { data, loading, error }
@@ -31,7 +40,7 @@ export function ClustersContextProvider({ children }) {
     }
   }, [data])
 
-  if (error) return <p>{error.message}</p>
+  if (error) return <Error>{error.message}</Error>
   if (!data && loading) return <LoadingIndicator />
 
   return (

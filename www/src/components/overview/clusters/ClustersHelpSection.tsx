@@ -1,5 +1,4 @@
 import {
-  BrowseAppsIcon,
   Button,
   Card,
   DiscordIcon,
@@ -7,7 +6,6 @@ import {
 } from '@pluralsh/design-system'
 import { ReactElement } from 'react'
 import ReactPlayer from 'react-player'
-import { useNavigate } from 'react-router-dom'
 import { useIntercom } from 'react-use-intercom'
 import styled from 'styled-components'
 
@@ -61,7 +59,6 @@ const Wrap = styled.div(({ theme }) => ({
 
     '.cta': {
       display: 'flex',
-      gap: theme.spacing.medium,
       flexGrow: 1,
       alignItems: 'center',
     },
@@ -69,7 +66,6 @@ const Wrap = styled.div(({ theme }) => ({
 }))
 
 export default function ClustersHelpSection(): ReactElement {
-  const navigate = useNavigate()
   const { show } = useIntercom()
 
   return (
@@ -92,12 +88,10 @@ export default function ClustersHelpSection(): ReactElement {
           <div className="cta">
             <Button
               secondary
-              startIcon={<BrowseAppsIcon />}
-              onClick={() => navigate('/marketplace')}
+              width="max-content"
             >
-              Browse the marketplace
-            </Button>
-            <Button>Get started</Button> {/* TODO: Link to cluster creation. */}
+              Get started
+            </Button> {/* TODO: Link to cluster creation. */}
           </div>
         </Card>
         <ReactPlayer url="https://www.youtube.com/watch?v=LgwnBjYOCbg" /> {/* TODO: Replace. */}

@@ -178,7 +178,7 @@ export function Groups() {
         <BillingFeatureBlockBanner
           feature="groups"
           description="Organize your users into groups to more easily apply permissions to sub-sections of your team. e.g. ops, end-users, and admins."
-          placeholderImageURL="/placeholder-groups.png"
+          placeholderImageURL="/placeholders/groups.png"
         />
       )}
     </Flex>

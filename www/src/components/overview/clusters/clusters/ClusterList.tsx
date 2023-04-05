@@ -5,12 +5,14 @@ import {
   useContext,
   useMemo,
 } from 'react'
+import isEmpty from 'lodash/isEmpty'
 
 import { Cluster } from '../../../../generated/graphql'
 import { ensureURLValidity } from '../../../../utils/url'
 import ClustersContext from '../../../../contexts/ClustersContext'
 
 import { ClusterListElement } from './types'
+import ClusterListEmptyState from './ClusterListEmptyState'
 
 type ClustersListProps = Omit<ComponentProps<typeof Table>, 'data'> & {
     clusters?: (Cluster | null)[]
@@ -50,7 +52,7 @@ export const ClusterList = memo(({ columns, ...props }: ClustersListProps) => {
     }),
   [clusters])
 
-  // TODO: Handle empty list.
+  if (isEmpty(clusters)) return <ClusterListEmptyState />
 
   return (
     <Table

@@ -1,7 +1,13 @@
 import { Card } from '@pluralsh/design-system'
 import { Div, Flex } from 'honorable'
 
-export default function ListCard({ header, input, children }) {
+type ListCardProps = {
+  header?: any
+  input?: any
+  children: any
+}
+
+export default function ListCard({ header, input, children }: ListCardProps) {
   return (
     <Card
       borderRadius={6}
@@ -28,10 +34,7 @@ export default function ListCard({ header, input, children }) {
       )}
       {input && (
         <Flex
-          align="center"
           backgroundColor="fill-one"
-          body2
-          fontWeight={600}
           borderBottom="1px solid border-fill-two"
         >
           {input}

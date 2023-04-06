@@ -1,7 +1,7 @@
 defmodule GraphQl.Resolvers.Upgrade do
   use GraphQl.Resolvers.Base, model: Core.Schema.Upgrade
   alias Core.Schema.{DeferredUpdate, UpgradeQueue}
-  alias Core.Services.{Upgrades, Repositories}
+  alias Core.Services.{Upgrades}
 
   def query(UpgradeQueue, _), do: UpgradeQueue
   def query(_, _), do: Upgrade
@@ -39,15 +39,8 @@ defmodule GraphQl.Resolvers.Upgrade do
   def create_upgrade_queue(%{attributes: attrs}, %{context: %{current_user: user}}),
     do: Upgrades.create_queue(attrs, user)
 
-  def create_upgrade(%{repository_name: name} = args, context) do
-    repo = Repositories.get_repository_by_name!(name)
-
-    Map.put(args, :repository_id, repo.id)
-    |> create_upgrade(context)
-  end
-
-  def create_upgrade(%{queue: name, repository_id: id, attributes: attrs}, %{context: %{current_user: user}}) do
-    Map.put(attrs, :repository_id, id)
+  def create_upgrade(%{queue: name, attributes: attrs}, %{context: %{repo: repo, current_user: user}}) do
+    Map.put(attrs, :repository_id, repo.id)
     |> Upgrades.create_upgrade(name, user)
   end
 end

@@ -1,6 +1,6 @@
 defmodule GraphQl.Schema.Upgrade do
   use GraphQl.Schema.Base
-  alias GraphQl.Middleware.{Authenticated}
+  alias GraphQl.Middleware.{Authenticated, Accessible}
   alias GraphQl.Resolvers.{
     User,
     Upgrade,
@@ -16,7 +16,7 @@ defmodule GraphQl.Schema.Upgrade do
   @desc "The information for this upgrade"
   input_object :upgrade_attributes do
     field :message, non_null(:string), description: "a simple message to explain this upgrade"
-    field :type,    :upgrade_type, description: "the type of upgrade"
+    field :type,    non_null(:upgrade_type), description: "the type of upgrade"
     field :config,  :upgrade_config_attributes, description: "information for a config upgrade"
   end
 
@@ -136,6 +136,7 @@ defmodule GraphQl.Schema.Upgrade do
 
     field :create_upgrade, :upgrade do
       middleware Authenticated
+      middleware Accessible
       arg :repository_name, :string
       arg :repository_id,   :id
       arg :queue,           non_null(:string)

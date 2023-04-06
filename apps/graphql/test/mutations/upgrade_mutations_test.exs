@@ -9,14 +9,14 @@ defmodule GraphQl.UpgradeMutationsTest do
       repo  = insert(:repository)
 
       {:ok, %{data: %{"createUpgrade" => upg}}} = run_query("""
-        mutation Create($id: ID!, $queue: String!, $attrs: UpgradeAttributes!) {
-          createUpgrade(repositoryId: $id, queue: $queue, attributes: $attrs) {
+        mutation Create($name: String!, $queue: String!, $attrs: UpgradeAttributes!) {
+          createUpgrade(repositoryName: $name, queue: $queue, attributes: $attrs) {
             id
             repository { id }
             config { paths { path value type } }
           }
         }
-      """, %{"id" => repo.id, "queue" => queue.name, "attrs" => %{
+      """, %{"name" => repo.name, "queue" => queue.name, "attrs" => %{
         "type" => "CONFIG",
         "message" => "a test upgrade",
         "config" => %{"paths" => [%{"path" => ".some.path", "value" => "hey", "type" => "STRING"}]},

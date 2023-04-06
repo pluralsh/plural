@@ -31,7 +31,8 @@ export default function ListCard({ header, children }) {
         borderBottomLeftRadius={6}
         borderBottomRightRadius={6}
         flexGrow={1}
-        minHeight={180} // TODO: Adjust scaling.
+        direction="column"
+        overflowY="auto"
       >
         {children}
       </Div>

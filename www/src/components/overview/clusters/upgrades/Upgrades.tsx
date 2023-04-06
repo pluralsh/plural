@@ -92,7 +92,7 @@ export default function Upgrades() {
     )}
     >
 
-      <div className="container">
+      <Flex height="100%">
         {cluster?.queue?.id
           ? (
             <ImpersonateServiceAccountWithSkip
@@ -107,8 +107,7 @@ export default function Upgrades() {
             </ImpersonateServiceAccountWithSkip>
           )
           : <EmptyListMessage>Cannot access upgrade queue.</EmptyListMessage>}
-      </div>
-
+      </Flex>
     </ListCard>
 
   )

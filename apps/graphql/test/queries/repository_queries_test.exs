@@ -332,8 +332,12 @@ defmodule GraphQl.RepositoryQueriesTest do
       assert found["id"] == repo.id
     end
 
-    test "It can sideload installations" do
+    test "It can sideload installations and upgradeChannels" do
       %{repository: repo, user: user} = insert(:installation)
+      insert(:version_tag, tag: "one", chart: build(:chart, repository: repo))
+      insert(:version_tag, tag: "two", terraform: build(:terraform, repository: repo))
+      insert(:version_tag, tag: "one", terraform: build(:terraform, repository: repo))
+      insert(:version_tag, tag: "three", chart: build(:chart, repository: repo))
 
       {:ok, %{data: %{"repository" => found}}} = run_query("""
         query Repo($repoId: ID!) {
@@ -342,6 +346,7 @@ defmodule GraphQl.RepositoryQueriesTest do
             installation {
               user { id }
             }
+            upgradeChannels
             editable
           }
         }
@@ -349,6 +354,7 @@ defmodule GraphQl.RepositoryQueriesTest do
 
       assert found["id"] == repo.id
       assert found["installation"]["user"]["id"] == user.id
+      assert MapSet.new(found["upgradeChannels"]) |> MapSet.equal?(MapSet.new(~w(one two three)))
       refute found["editable"]
     end
 

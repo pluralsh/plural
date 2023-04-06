@@ -199,6 +199,11 @@ defmodule GraphQl.Schema.Repository do
 
     field :installation, :installation, resolve: dataloader(Repository), description: "The installation of the application by a user."
 
+    @desc "version tags that can be followed to control upgrade flow"
+    field :upgrade_channels, list_of(:string), resolve: fn
+      repo, _, _ -> Repository.upgrade_channels(repo)
+    end
+
     @desc "If the application can be edited by the current user."
     field :editable, :boolean, resolve: fn
       repo, _, %{context: %{current_user: user}} -> Repository.editable(repo, user)

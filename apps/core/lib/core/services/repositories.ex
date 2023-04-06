@@ -19,7 +19,8 @@ defmodule Core.Services.Repositories do
     Plan,
     Artifact,
     OIDCProvider,
-    ApplyLock
+    ApplyLock,
+    VersionTag
   }
   alias Piazza.Crypto.RSA
 
@@ -83,6 +84,16 @@ defmodule Core.Services.Repositories do
   def get_oidc_provider_by_client!(client_id) do
     Core.Repo.get_by!(OIDCProvider, client_id: client_id)
     |> Core.Repo.preload([:bindings, installation: :repository])
+  end
+
+  @doc """
+  Finds all distinct version tags in the repository that can be followed for upgrades
+  """
+  @spec upgrade_channels(Repository.t) :: [binary]
+  def upgrade_channels(%Repository{id: id}) do
+    VersionTag.for_repository(id)
+    |> VersionTag.distinct()
+    |> Core.Repo.all()
   end
 
   @doc """

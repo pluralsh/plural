@@ -51,6 +51,8 @@ defmodule GraphQl.Resolvers.Repository do
     end
   end
 
+  def upgrade_channels(repo), do: {:ok, Repositories.upgrade_channels(repo)}
+
   def resolve_repository(%{id: repo_id}, %{context: %{current_user: user}}) do
     Repositories.get_repository!(repo_id)
     |> preload()

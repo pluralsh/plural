@@ -21,7 +21,7 @@ export function QueueHealth({ queue, size }: any) {
     return () => clearInterval(int)
   }, [queue.id])
 
-  const healthy = now.subtract(2, 'minutes').isBefore(pinged)
+  const healthy = now.clone().subtract(2, 'minutes').isBefore(pinged)
   const color = normalizeColor(healthy ? 'good' : 'error', theme)
 
   return (

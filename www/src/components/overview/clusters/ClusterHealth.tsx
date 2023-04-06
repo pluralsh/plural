@@ -15,7 +15,7 @@ export default function ClusterHealth({ pingedAt }: QueueHealthProps) {
     return () => clearInterval(int)
   }, [])
 
-  const healthy = pingedAt && now.subtract(2, 'minutes').isBefore(pingedAt)
+  const healthy = pingedAt && now.clone().subtract(2, 'minutes').isBefore(pingedAt)
 
   return (
     <Chip severity={healthy ? 'success' : 'error'}>

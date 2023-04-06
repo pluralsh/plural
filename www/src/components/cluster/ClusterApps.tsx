@@ -8,10 +8,14 @@ import usePaginatedQuery from '../../hooks/usePaginatedQuery'
 import LoadingIndicator from '../utils/LoadingIndicator'
 import { EmptyListMessage } from '../overview/clusters/misc'
 import InfiniteScroller from '../utils/InfiniteScroller'
+import { Cluster } from '../../generated/graphql'
+import { ensureURLValidity } from '../../utils/url'
 
 import { ClusterApp } from './ClusterApp'
 
-export function ClusterApps(): ReactElement {
+type ClusterAppsProps = {cluster: Cluster}
+
+export function ClusterApps({ cluster: { consoleUrl } }: ClusterAppsProps): ReactElement {
   const [
     repos,
     loading,
@@ -22,6 +26,8 @@ export function ClusterApps(): ReactElement {
   const apps = useMemo(() => repos.filter(({ installation }) => !isEmpty(installation)), [repos])
 
   if (isEmpty(repos) && loading) return <LoadingIndicator />
+
+  console.log(apps)
 
   return (
     <ListCard header="Installed apps">
@@ -43,6 +49,7 @@ export function ClusterApps(): ReactElement {
               {apps.map((app, i) => (
                 <ClusterApp
                   app={app}
+                  consoleUrl={ensureURLValidity(consoleUrl)}
                   last={i === apps.length - 1}
                 />
               ))}

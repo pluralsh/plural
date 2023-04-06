@@ -1,15 +1,33 @@
 import { ReactElement } from 'react'
-import { IconFrame } from '@pluralsh/design-system'
+import { IconFrame, ListBoxItem } from '@pluralsh/design-system'
 import { Flex, Span } from 'honorable'
+import { useNavigate } from 'react-router-dom'
 
 import { Repository } from '../../generated/graphql'
+import { MoreMenu } from '../account/MoreMenu'
+
+import ClusterAppHealth from './ClusterAppHealth'
 
 type ClusterAppProps = {
   app: Repository
+  consoleUrl?: string | null
   last: boolean
 }
 
-export function ClusterApp({ app: { name, icon, darkIcon }, last }: ClusterAppProps): ReactElement {
+export function ClusterApp({
+  app: {
+    name, icon, darkIcon, installation: { pingedAt },
+  }, consoleUrl, last,
+}: ClusterAppProps): ReactElement {
+  const navigate = useNavigate()
+
+  const menuItems = {
+    editAccessPolicy: {
+      label: 'Manage on Console',
+      onSelect: () => navigate(`${consoleUrl}/apps/${name}`),
+    },
+  }
+
   return (
     <Flex
       gap="xsmall"
@@ -22,8 +40,8 @@ export function ClusterApp({ app: { name, icon, darkIcon }, last }: ClusterAppPr
         icon={(
           <img
             src={darkIcon || icon || ''}
-            width="16"
-            height="16"
+            width={16}
+            height={16}
           />
         )}
         marginRight="xxsmall"
@@ -36,6 +54,21 @@ export function ClusterApp({ app: { name, icon, darkIcon }, last }: ClusterAppPr
       >
         {name}
       </Span>
+      <Flex grow={1} />
+      <ClusterAppHealth pingedAt={pingedAt} />
+      <MoreMenu
+        onSelectionChange={selectedKey => menuItems[selectedKey]?.onSelect()}
+        floating
+      >
+        {Object.entries(menuItems).map(([key, { label }]) => (
+          <ListBoxItem
+            key={key}
+            textValue={label}
+            label={label}
+            color="blue"
+          />
+        ))}
+      </MoreMenu>
     </Flex>
   )
 }

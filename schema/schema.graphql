@@ -3462,7 +3462,7 @@ input UpgradeAttributes {
   message: String!
 
   "the type of upgrade"
-  type: UpgradeType
+  type: UpgradeType!
 
   "information for a config upgrade"
   config: UpgradeConfigAttributes

@@ -4573,7 +4573,7 @@ export type UpgradeAttributes = {
   /** a simple message to explain this upgrade */
   message: Scalars['String'];
   /** the type of upgrade */
-  type?: InputMaybe<UpgradeType>;
+  type: UpgradeType;
 };
 
 export type UpgradeConfig = {

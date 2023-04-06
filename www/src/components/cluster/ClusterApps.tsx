@@ -44,6 +44,7 @@ export function ClusterApps({ cluster: { consoleUrl } }: ClusterAppsProps): Reac
         <Input
           startIcon={<MagnifyingGlassIcon />}
           placeholder="Search for a repository"
+          disabled={isEmpty(apps)}
           border="none"
           value={search}
           width="100%"

@@ -1030,6 +1030,9 @@ type Repository {
   "The installation of the application by a user."
   installation: Installation
 
+  "version tags that can be followed to control upgrade flow"
+  upgradeChannels: [String]
+
   "If the application can be edited by the current user."
   editable: Boolean
 

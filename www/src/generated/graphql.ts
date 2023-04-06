@@ -2383,6 +2383,8 @@ export type Repository = {
   /** Whether the application is trending. */
   trending?: Maybe<Scalars['Boolean']>;
   updatedAt?: Maybe<Scalars['DateTime']>;
+  /** version tags that can be followed to control upgrade flow */
+  upgradeChannels?: Maybe<Array<Maybe<Scalars['String']>>>;
   /** Whether the application is verified. */
   verified?: Maybe<Scalars['Boolean']>;
 };

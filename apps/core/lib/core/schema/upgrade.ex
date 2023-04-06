@@ -69,3 +69,14 @@ defmodule Core.Schema.Upgrade do
     |> validate_required(@path_valid)
   end
 end
+
+
+defimpl Jason.Encoder, for: [
+  Core.Schema.Upgrade.UpgradeConfig,
+  Core.Schema.Upgrade.UpgradeConfig.UpgradePath
+] do
+  def encode(struct, opts) do
+    Piazza.Ecto.Schema.mapify(struct)
+    |> Jason.Encode.map(opts)
+  end
+end

@@ -25,9 +25,8 @@ export default function ListCard({ header, input, children }: ListCardProps) {
           borderBottom="1px solid border-fill-two"
           borderTopLeftRadius={6}
           borderTopRightRadius={6}
-          minHeight={44}
+          height={44}
           paddingHorizontal={16}
-          paddingVertical={8}
         >
           {header}
         </Flex>

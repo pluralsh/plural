@@ -19,7 +19,10 @@ export default function ClusterAppHealth({ pingedAt }: ClusterAppHealthProps) {
   const healthy = now.clone().subtract(1, 'hour').isBefore(pinged)
 
   return (
-    <Chip severity={healthy ? 'success' : 'error'}>
+    <Chip
+      severity={healthy ? 'success' : 'error'}
+      marginHorizontal="xxsmall"
+    >
       {healthy ? 'Healthy' : 'Unhealthy'}
     </Chip>
   )

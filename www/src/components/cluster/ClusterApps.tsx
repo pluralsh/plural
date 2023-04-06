@@ -1,6 +1,8 @@
-import { ReactElement, useMemo } from 'react'
+import { ReactElement, useMemo, useState } from 'react'
 import { isEmpty } from 'lodash'
 import { Flex } from 'honorable'
+import Fuse from 'fuse.js'
+import { Input, MagnifyingGlassIcon } from '@pluralsh/design-system'
 
 import ListCard from '../utils/ListCard'
 import { MARKETPLACE_QUERY } from '../marketplace/queries'
@@ -13,9 +15,15 @@ import { ensureURLValidity } from '../../utils/url'
 
 import { ClusterApp } from './ClusterApp'
 
+const searchOptions = {
+  keys: ['name'],
+  threshold: 0.25,
+}
+
 type ClusterAppsProps = {cluster: Cluster}
 
 export function ClusterApps({ cluster: { consoleUrl } }: ClusterAppsProps): ReactElement {
+  const [search, setSearch] = useState('')
   const [
     repos,
     loading,
@@ -24,13 +32,25 @@ export function ClusterApps({ cluster: { consoleUrl } }: ClusterAppsProps): Reac
   ] = usePaginatedQuery(MARKETPLACE_QUERY, { }, data => data.repositories)
 
   const apps = useMemo(() => repos.filter(({ installation }) => !isEmpty(installation)), [repos])
+  const fuse = useMemo(() => new Fuse(apps, searchOptions), [apps])
+  const filteredApps = useMemo(() => (search ? fuse.search(search).map(({ item }) => item) : apps), [apps, search, fuse])
 
   if (isEmpty(repos) && loading) return <LoadingIndicator />
 
-  console.log(apps)
-
   return (
-    <ListCard header="Installed apps">
+    <ListCard
+      header="Installed apps"
+      input={(
+        <Input
+          startIcon={<MagnifyingGlassIcon />}
+          placeholder="Search for a repository"
+          border="none"
+          value={search}
+          width="100%"
+          onChange={({ target: { value } }) => setSearch(value)}
+        />
+      )}
+    >
       {!isEmpty(apps)
         ? (
           <Flex
@@ -46,7 +66,7 @@ export function ClusterApps({ cluster: { consoleUrl } }: ClusterAppsProps): Reac
               flexGrow={1}
               height={0}
             >
-              {apps.map((app, i) => (
+              {filteredApps.map((app, i) => (
                 <ClusterApp
                   app={app}
                   consoleUrl={ensureURLValidity(consoleUrl)}

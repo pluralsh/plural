@@ -1,25 +1,30 @@
 import { ArrowLeftIcon, Button, Modal } from '@pluralsh/design-system'
 import { Div, Flex } from 'honorable'
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 
 import { Cluster } from '../../generated/graphql'
 
 import { ClusterPicker } from './ClusterPicker'
 
 export function PromoteClusterModal({ open, setOpen }) {
-  const [fromCluster, setFromCluster] = useState<Cluster | undefined>(undefined)
-  const [toCluster, setToCluster] = useState<Cluster | undefined>(undefined)
+  const [fromCluster, setFromCluster] = useState<Cluster | undefined>()
+  const [toCluster, setToCluster] = useState<Cluster | undefined>()
+  const close = useCallback(() => {
+    setOpen(false)
+    setToCluster(undefined)
+    setFromCluster(undefined)
+  }, [setOpen, setFromCluster, setToCluster])
 
   return (
     <Modal
       portal
       open={open}
-      onClose={() => setOpen(false)}
+      onClose={close}
       actions={(
         <>
           <Button
             secondary
-            onClick={() => setOpen(false)}
+            onClick={close}
           >
             Cancel
           </Button>

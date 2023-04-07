@@ -37,6 +37,10 @@ query {
             } 
           } 
         }
+        upgradeInfo {
+          installation { repository { id } }
+          count
+        }
       }
     }
   }

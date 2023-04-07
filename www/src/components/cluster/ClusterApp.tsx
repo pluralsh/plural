@@ -43,8 +43,7 @@ export function ClusterApp({
     <Flex
       gap="xsmall"
       align="center"
-      paddingHorizontal="medium"
-      paddingVertical="small"
+      padding="small"
       borderBottom={last ? undefined : '1px solid border'}
     >
       <IconFrame

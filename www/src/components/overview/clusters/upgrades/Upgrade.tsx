@@ -16,8 +16,7 @@ export default function UpgradeListItem({
     <Flex
       gap="xsmall"
       align="center"
-      paddingHorizontal="medium"
-      paddingVertical="small"
+      padding="small"
       borderBottom={last ? undefined : '1px solid border'}
     >
       <IconFrame

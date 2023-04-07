@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import {
   Button,
@@ -18,8 +18,10 @@ import { ImpersonateServiceAccountWithSkip } from '../overview/clusters/Imperson
 import { ClusterSidecar } from './ClusterSidecar'
 import { ClusterApps } from './ClusterApps'
 import { ClusterUpgrades } from './ClusterUpgrades'
+import { ClusterAdmins } from './ClusterAdmins'
 
 export function Cluster() {
+  const [adminsOpen, setAdminsOpen] = useState(false)
   const navigate = useNavigate()
   const { id } = useParams()
   const { clusters } = useContext(ClustersContext)
@@ -85,12 +87,22 @@ export function Cluster() {
               ))}
             </Select>
           </Div>
-          <Button
-            secondary
-            startIcon={<PersonPlusIcon />}
-          >
-            Administrators
-          </Button>
+          {cluster.owner?.serviceAccount && (
+            <>
+              <Button
+                secondary
+                startIcon={<PersonPlusIcon />}
+                onClick={() => setAdminsOpen(true)}
+              >
+                Administrators
+              </Button>
+              <ClusterAdmins
+                open={adminsOpen}
+                setOpen={setAdminsOpen}
+                serviceAccount={cluster.owner}
+              />
+            </>
+          )}
         </Flex>
         <Flex
           direction="column"

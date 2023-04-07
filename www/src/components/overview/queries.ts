@@ -2,7 +2,7 @@ import { gql } from '@apollo/client'
 
 import { PageInfo } from '../../models/misc'
 import { UpgradeFragment, UpgradeQueueFragment } from '../../models/upgrades'
-import { UserFragment } from '../../models/user'
+import { ImpersonationPolicy, UserFragment } from '../../models/user'
 
 export const CLUSTERS = gql`
 query {
@@ -19,6 +19,7 @@ query {
         consoleUrl
         owner {
           ...UserFragment
+          impersonationPolicy { ...ImpersonationPolicy }
           hasShell
         }
         queue { 
@@ -37,6 +38,7 @@ query {
 }
 ${PageInfo}
 ${UserFragment}
+${ImpersonationPolicy}
 ${UpgradeQueueFragment}
 ${UpgradeFragment}
 `

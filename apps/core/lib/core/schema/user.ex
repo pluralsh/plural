@@ -147,6 +147,10 @@ defmodule Core.Schema.User do
     from(u in query, where: u.account_id == ^account_id)
   end
 
+  def for_emails(query \\ __MODULE__, emails) do
+    from(u in query, where: u.email in ^emails)
+  end
+
   def not_member(query \\ __MODULE__, group_id) do
     groups = GroupMember.for_group(group_id)
     from(u in query,

@@ -26,6 +26,12 @@ defmodule Core.Services.Users do
 
   @ttl :timer.hours(12)
 
+  @spec for_emails([binary]) :: [User.t]
+  def for_emails(emails) do
+    User.for_emails(emails)
+    |> Core.Repo.all()
+  end
+
   @spec get_user(binary) :: User.t | nil
   def get_user(user_id), do: Core.Repo.get(User, user_id)
 

@@ -316,6 +316,22 @@ defmodule GraphQl.RepositoryQueriesTest do
       assert found["id"] == repo.id
     end
 
+    test "contributors can bypass privacy" do
+      repo = insert(:repository, private: true)
+      %{user: user} = insert(:contributor, repository: repo)
+
+      {:ok, %{data: %{"repository" => found}}} = run_query("""
+        query Repo($repoId: ID!) {
+          repository(id: $repoId) {
+            id
+            editable
+          }
+        }
+      """, %{"repoId" => repo.id}, %{current_user: user})
+
+      assert found["id"] == repo.id
+    end
+
     test "it can fetch a repository by name" do
       user = insert(:user)
       repo = insert(:repository)

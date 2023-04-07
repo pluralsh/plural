@@ -12,7 +12,8 @@ defmodule Core.Schema.Repository do
     Database,
     Shell,
     User,
-    Recipe
+    Recipe,
+    Contributor
   }
 
   defenum Category,
@@ -75,7 +76,9 @@ defmodule Core.Schema.Repository do
     has_one  :database,      Database, on_replace: :update
     has_one  :shell,         Shell, on_replace: :update
     has_one  :installation,  Installation # for use in sideloads
+
     has_many :installations, Installation
+    has_many :contributors,  Contributor, on_replace: :delete
     has_many :plans,         Plan
     has_many :artifacts,     Artifact
     has_many :recipes,       Recipe
@@ -219,6 +222,7 @@ defmodule Core.Schema.Repository do
     |> cast_embed(:license, with: &license_changeset/2)
     |> cast_embed(:community, with: &community_changeset/2)
     |> cast_assoc(:tags, with: &Tag.tag_changeset(&1, &2, :repository))
+    |> cast_assoc(:contributors)
     |> cast_assoc(:dashboards)
     |> cast_assoc(:database)
     |> cast_assoc(:shell)

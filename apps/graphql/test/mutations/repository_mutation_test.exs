@@ -6,6 +6,7 @@ defmodule GraphQl.RepositoryMutationsTest do
   describe "createRepository" do
     test "A user can create a repo for his publisher" do
       %{owner: user, id: id} = insert(:publisher)
+      contribs = insert_list(3, :user)
 
       {:ok, %{data: %{"createRepository" => repo}}} = run_query("""
         mutation CreateRepository($attrs: RepositoryAttributes!) {
@@ -13,11 +14,13 @@ defmodule GraphQl.RepositoryMutationsTest do
             id
             name
             publisher { id }
+            contributors { user { id } }
           }
         }
       """, %{"attrs" => %{
         "name" => "my-repo",
         "category" => "DATA",
+        "contributors" => Enum.map(contribs, & &1.email),
         "integration_resource_definition" => %{
           "name" => "definition",
           "spec" => [
@@ -32,6 +35,8 @@ defmodule GraphQl.RepositoryMutationsTest do
       assert repo["id"]
       assert repo["name"] == "my-repo"
       assert repo["publisher"]["id"] == id
+      assert Enum.map(repo["contributors"], & &1["user"])
+             |> ids_equal(contribs)
     end
 
     test "users with publish permissions can create repositories" do
@@ -74,34 +79,27 @@ defmodule GraphQl.RepositoryMutationsTest do
     test "Users can update their repositories" do
       user = insert(:user)
       repo = insert(:repository, publisher: build(:publisher, owner: user))
+      contribs = insert_list(3, :user)
 
       {:ok, %{data: %{"updateRepository" => updated}}} = run_query("""
-        mutation updateRepository($repositoryName: String!, $name: String, $resource: ResourceDefinitionAttributes) {
-          updateRepository(repositoryName: $repositoryName, attributes: {name: $name, integrationResourceDefinition: $resource}) {
+        mutation updateRepository($repositoryName: String!, $name: String, $contribs: [String]) {
+          updateRepository(repositoryName: $repositoryName, attributes: {name: $name, contributors: $contribs}) {
             id
             name
+            contributors { user { id } }
           }
         }
       """, %{
         "repositoryName" => repo.name,
         "name" => "updated-repo",
-        "resource" => %{
-          "name" => "definition",
-          "spec" => [
-            %{"type" => "STRING", "name" => "str", "spec" => []},
-            %{"type" => "OBJECT", "name" => "nest", "spec" => [
-              %{"type" => "STRING", "name" => "nested"}
-            ]}
-          ]
-        }
+        "contribs" => Enum.map(contribs, & &1.email)
       }, %{current_user: user})
 
       assert updated["id"] == repo.id
       assert updated["name"] == "updated-repo"
 
-      %{integration_resource_definition: def} = Core.Repo.preload(refetch(repo), [:integration_resource_definition])
-
-      assert def.name == "definition"
+      assert Enum.map(updated["contributors"], & &1["user"])
+             |> ids_equal(contribs)
     end
   end
 

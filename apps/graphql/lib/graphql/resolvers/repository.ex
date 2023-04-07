@@ -12,7 +12,8 @@ defmodule GraphQl.Resolvers.Repository do
     Database,
     OIDCProvider,
     OIDCProviderBinding,
-    Recipe
+    Recipe,
+    Contributor
   }
 
   def query(Tag, _), do: Tag
@@ -20,6 +21,7 @@ defmodule GraphQl.Resolvers.Repository do
   def query(ResourceDefinition, _), do: ResourceDefinition
   def query(Installation, %{current_user: user}), do: Installation.for_user(user.id)
   def query(Installation, _), do: Installation
+  def query(Contributor, _), do: Contributor
   def query(Dashboard, _), do: Dashboard
   def query(Artifact, _), do: Artifact.ordered()
   def query(Database, _), do: Database

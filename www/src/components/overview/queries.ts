@@ -24,7 +24,7 @@ query {
         }
         queue { 
           ...UpgradeQueueFragment 
-          upgrades(first: 5) { 
+          upgrades(first: 3) { 
             edges { 
               node { 
                 ...UpgradeFragment 

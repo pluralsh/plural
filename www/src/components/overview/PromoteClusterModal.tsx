@@ -55,6 +55,7 @@ export function PromoteClusterModal({ open, setOpen }) {
         <ClusterPicker
           cluster={toCluster}
           setCluster={setToCluster}
+          filter={cluster => cluster?.id !== fromCluster?.id}
           heading="Promote app versions to"
           disabled={!fromCluster}
         />

@@ -14,6 +14,7 @@ export const Wrap = styled.div<{$last: boolean}>(({ theme, $last: last }) => ({
 
   '.repo-name': {
     ...theme.partials.text.body2Bold,
+    whiteSpace: 'nowrap',
   },
 
   '.message, .date': {
@@ -27,6 +28,7 @@ export const Wrap = styled.div<{$last: boolean}>(({ theme, $last: last }) => ({
     justifyContent: 'end',
     marginLeft: theme.spacing.large,
     marginRight: theme.spacing.medium,
+    whiteSpace: 'nowrap',
   },
 }))
 
@@ -50,6 +52,7 @@ export default function UpgradeListItem({
         marginRight="xxsmall"
         size="medium"
         type="floating"
+        minWidth={32}
       />
       <span className="repo-name">{repository?.name}</span>
       <span className="message">{message}</span>

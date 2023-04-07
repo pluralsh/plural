@@ -52,7 +52,6 @@ export function ClusterSidecar({ cluster }: ClusterSidecarProps): ReactElement {
           {cluster.queue?.acked || '-'}
         </SidecarItem>
         <SidecarItem heading="Last pinged">
-          {/* TODO: Display in 3 minutes ago format? */}
           {cluster.queue?.pingedAt ? moment(cluster.queue?.pingedAt).format('lll') : '-'}
         </SidecarItem>
         <SidecarItem heading="Docs">

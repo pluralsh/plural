@@ -8,9 +8,6 @@ import LoadingIndicator from '../../utils/LoadingIndicator'
 
 import { EmptyListMessage } from './misc'
 
-// TODO: Make sure that below caches are properly destroyed on logout/impersonation
-// and invalidated after some time.
-
 // Cache tokens with service account ID as keys.
 const getImpersonatedToken = memoize((id, mutation) => mutation()
   .then(({ data: { impersonateServiceAccount: { jwt } } }) => jwt))
@@ -27,11 +24,10 @@ export function ImpersonateServiceAccount({ id, children }) {
   const [mutation, { error }] = useMutation(IMPERSONATE_SERVICE_ACCOUNT, { variables: { id } })
 
   useEffect(() => {
-    // Reset client on each service account ID change.
-    // It will be set once matching client will be retrieved.
+    // Reset client until matching client will be retrieved.
     setClient(undefined)
 
-    // Retrieve client matching given service account ID.
+    // Retrieve client matching given service account.
     getImpersonatedToken(id, mutation).then(jwt => setClient(getClient(jwt)))
   }, [id]) // eslint-disable-line react-hooks/exhaustive-deps
 

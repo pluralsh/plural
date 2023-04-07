@@ -1,20 +1,14 @@
-import {
-  Button,
-  ClusterIcon,
-  ListBoxItem,
-  ReloadIcon,
-  Select,
-} from '@pluralsh/design-system'
-import { isEmpty, truncate } from 'lodash'
-import { useContext, useEffect, useState } from 'react'
+import { Button, ClusterIcon, ReloadIcon } from '@pluralsh/design-system'
+import { isEmpty } from 'lodash'
+import { useContext, useState } from 'react'
 import { Div, Flex } from 'honorable'
 
 import { Cluster } from '../../../../generated/graphql'
-import { ProviderIcon } from '../../../utils/ProviderIcon'
 import { ImpersonateServiceAccountWithSkip } from '../ImpersonateServiceAccount'
 import { EmptyListMessage } from '../misc'
 import ClustersContext from '../../../../contexts/ClustersContext'
 import ListCard from '../../../utils/ListCard'
+import { ClusterPicker } from '../../ClusterPicker'
 
 import UpgradeList from './UpgradeList'
 
@@ -24,26 +18,17 @@ export default function Upgrades() {
   const [refreshing, setRefreshing] = useState(false)
   const [refetch, setRefetch] = useState<any>()
 
-  const onSelectionChange = id => {
-    setCluster(clusters.find(c => c.id === id))
-  }
-
-  useEffect(() => {
-    setCluster(clusters.find(({ id }) => id === cluster?.id))
-  }, [clusters]) // eslint-disable-line react-hooks/exhaustive-deps
-
   if (isEmpty(clusters)) return null // TODO: Update.
 
   return (
     <ListCard header={(
       <>
-        <Div width={450}>
-          <Select
+        <Div width={500}>
+          <ClusterPicker
+            cluster={cluster}
+            setCluster={setCluster}
             size="small"
-            label="Select cluster"
-            selectedKey={cluster?.id}
-            onSelectionChange={onSelectionChange}
-            titleContent={(
+            title={(
               <Flex
                 gap="xsmall"
                 whiteSpace="nowrap"
@@ -52,28 +37,7 @@ export default function Upgrades() {
                 Cluster upgrades
               </Flex>
             )}
-            leftContent={(
-              <ProviderIcon
-                provider={cluster?.provider}
-                width={16}
-              />
-            )}
-            width={450}
-          >
-            {clusters.map(({ id, name, provider }) => (
-              <ListBoxItem
-                key={id}
-                label={truncate(name, { length: 14 })}
-                textValue={name}
-                leftContent={(
-                  <ProviderIcon
-                    provider={provider}
-                    width={16}
-                  />
-                )}
-              />
-            ))}
-          </Select>
+          />
         </Div>
         <Flex grow={1} />
         <Button

@@ -127,6 +127,9 @@ function BillingPricingTable() {
         <Div {...firstColumnCellProps}>
           Commercial license
         </Div>
+        <Div {...firstColumnCellProps}>
+          Cost optimization
+        </Div>
         <Div
           {...firstColumnCellProps}
           borderBottomLeftRadius={6}
@@ -199,6 +202,9 @@ function BillingPricingTable() {
         </Div>
         <Div>
           <CheckIcon color="icon-success" />
+        </Div>
+        <Div>
+          <CloseIcon color="icon-default" />
         </Div>
         <Div>
           <CloseIcon color="icon-default" />
@@ -289,6 +295,9 @@ function BillingPricingTable() {
         <Div>
           <CloseIcon color="icon-default" />
         </Div>
+        <Div>
+          <CloseIcon color="icon-default" />
+        </Div>
         <Div borderBottom="1px solid border-fill-two">
           <CloseIcon color="icon-default" />
         </Div>
@@ -299,7 +308,7 @@ function BillingPricingTable() {
           subtitle2
           borderTopRightRadius={6}
         >
-          Enterprise
+          Custom
         </Div>
         <Div
           {...lastColumnCellProps}
@@ -378,6 +387,9 @@ function BillingPricingTable() {
         </Div>
         <Div {...lastColumnCellProps}>
           Available
+        </Div>
+        <Div {...lastColumnCellProps}>
+          <CheckIcon color="icon-success" />
         </Div>
         <Div {...lastColumnCellProps}>
           <CheckIcon color="icon-success" />

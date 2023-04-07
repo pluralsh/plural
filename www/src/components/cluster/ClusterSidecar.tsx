@@ -1,6 +1,11 @@
 import { A, Flex } from 'honorable'
 import moment from 'moment'
-import { Button, Sidecar, SidecarItem } from '@pluralsh/design-system'
+import {
+  Button,
+  Sidecar,
+  SidecarItem,
+  Tooltip,
+} from '@pluralsh/design-system'
 import { ReactElement } from 'react'
 
 import { Cluster } from '../../generated/graphql'
@@ -52,7 +57,14 @@ export function ClusterSidecar({ cluster }: ClusterSidecarProps): ReactElement {
           {cluster.queue?.acked || '-'}
         </SidecarItem>
         <SidecarItem heading="Last pinged">
-          {cluster.queue?.pingedAt ? moment(cluster.queue?.pingedAt).format('lll') : '-'}
+          {cluster.queue?.pingedAt ? (
+            <Tooltip
+              label={moment(cluster.queue.pingedAt).format('lll')}
+              placement="top"
+            >
+              <span>{moment(cluster.queue.pingedAt).fromNow()}</span>
+            </Tooltip>
+          ) : '-'}
         </SidecarItem>
         <SidecarItem heading="Docs">
           <A

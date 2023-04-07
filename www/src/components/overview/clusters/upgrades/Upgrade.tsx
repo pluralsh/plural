@@ -1,36 +1,9 @@
 import moment from 'moment'
-import { Chip, IconFrame } from '@pluralsh/design-system'
+import { Chip, IconFrame, Tooltip } from '@pluralsh/design-system'
 import { ReactElement } from 'react'
-import styled from 'styled-components'
+import { Flex } from 'honorable'
 
 import { Upgrade } from '../../../../generated/graphql'
-
-export const Wrap = styled.div<{$last: boolean}>(({ theme, $last: last }) => ({
-  alignItems: 'center',
-  borderBottom: last ? undefined : theme.borders.default,
-  display: 'flex',
-  gap: theme.spacing.xsmall,
-  padding: `${theme.spacing.small}px ${theme.spacing.medium}px`,
-
-  '.repo-name': {
-    ...theme.partials.text.body2Bold,
-    whiteSpace: 'nowrap',
-  },
-
-  '.message, .date': {
-    ...theme.partials.text.caption,
-    color: theme.colors['text-xlight'],
-  },
-
-  '.date': {
-    display: 'flex',
-    flexGrow: 1,
-    justifyContent: 'end',
-    marginLeft: theme.spacing.large,
-    marginRight: theme.spacing.medium,
-    whiteSpace: 'nowrap',
-  },
-}))
 
 export default function UpgradeListItem({
   upgrade: {
@@ -40,7 +13,13 @@ export default function UpgradeListItem({
   const delivered = acked && id <= acked
 
   return (
-    <Wrap $last={last}>
+    <Flex
+      gap="xsmall"
+      align="center"
+      paddingHorizontal="medium"
+      paddingVertical="small"
+      borderBottom={last ? undefined : '1px solid border'}
+    >
       <IconFrame
         icon={(
           <img
@@ -54,9 +33,36 @@ export default function UpgradeListItem({
         type="floating"
         minWidth={32}
       />
-      <span className="repo-name">{repository?.name}</span>
-      <span className="message">{message}</span>
-      <span className="date">{!!insertedAt && moment(insertedAt).format('lll')}</span>
+      <Flex
+        body2
+        fontWeight={600}
+        whiteSpace="nowrap"
+      >
+        {repository?.name}
+      </Flex>
+      <Flex
+        caption
+        color="text-xlight"
+      >
+        {message}
+      </Flex>
+      <Flex grow={1} />
+      {insertedAt && (
+        <Tooltip
+          label={moment(insertedAt).format('lll')}
+          placement="top"
+        >
+          <Flex
+            caption
+            color="text-xlight"
+            marginLeft="large"
+            marginRight="medium"
+            whiteSpace="nowrap"
+          >
+            {moment(insertedAt).fromNow()}
+          </Flex>
+        </Tooltip>
+      )}
       <Chip
         alignSelf="center"
         severity={delivered ? 'success' : 'neutral'}
@@ -64,6 +70,6 @@ export default function UpgradeListItem({
       >
         {delivered ? 'Delivered' : 'Pending'}
       </Chip>
-    </Wrap>
+    </Flex>
   )
 }

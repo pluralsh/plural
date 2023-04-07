@@ -22,12 +22,13 @@ query {
           name
           email
           avatar
+          hasShell
           serviceAccount
           impersonationPolicy { ...ImpersonationPolicy }
-          hasShell
         }
         queue { 
-          ...UpgradeQueueFragment 
+          id
+          acked
           upgrades(first: 3) { 
             edges { 
               node { 
@@ -43,7 +44,6 @@ query {
 ${PageInfo}
 ${UserFragment}
 ${ImpersonationPolicy}
-${UpgradeQueueFragment}
 ${UpgradeFragment}
 `
 

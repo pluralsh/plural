@@ -18,7 +18,7 @@ import { ImpersonateServiceAccountWithSkip } from '../overview/clusters/Imperson
 import { ClusterSidecar } from './ClusterSidecar'
 import { ClusterApps } from './ClusterApps'
 import { ClusterUpgrades } from './ClusterUpgrades'
-import { ClusterAdmins } from './ClusterAdmins'
+import { ClusterAdminsModal } from './ClusterAdminsModal'
 
 export function Cluster() {
   const [adminsOpen, setAdminsOpen] = useState(false)
@@ -96,7 +96,7 @@ export function Cluster() {
               >
                 Administrators
               </Button>
-              <ClusterAdmins
+              <ClusterAdminsModal
                 open={adminsOpen}
                 setOpen={setAdminsOpen}
                 serviceAccount={cluster.owner}

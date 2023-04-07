@@ -8,7 +8,7 @@ import { GqlError } from '../utils/Alert'
 import { UPDATE_SERVICE_ACCOUNT } from '../account/queries'
 import { sanitize } from '../account/utils'
 
-export function ClusterAdmins({ open, setOpen, serviceAccount }) {
+export function ClusterAdminsModal({ open, setOpen, serviceAccount }) {
   const [bindings, setBindings] = useState(serviceAccount.impersonationPolicy?.bindings || [])
 
   const [mutation, { loading, error }] = useMutation(UPDATE_SERVICE_ACCOUNT,

@@ -32,7 +32,7 @@ query {
           upgrades(first: 3) { 
             edges { 
               node { 
-                ...UpgradeFragment 
+                id
               } 
             } 
           } 
@@ -42,9 +42,7 @@ query {
   }
 }
 ${PageInfo}
-${UserFragment}
 ${ImpersonationPolicy}
-${UpgradeFragment}
 `
 
 export const QUEUES = gql`

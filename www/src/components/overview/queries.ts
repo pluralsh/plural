@@ -18,7 +18,11 @@ query {
         gitUrl
         consoleUrl
         owner {
-          ...UserFragment
+          id
+          name
+          email
+          avatar
+          serviceAccount
           impersonationPolicy { ...ImpersonationPolicy }
           hasShell
         }

@@ -2,7 +2,7 @@ import { gql } from '@apollo/client'
 
 import { PageInfo } from '../../models/misc'
 import { UpgradeFragment, UpgradeQueueFragment } from '../../models/upgrades'
-import { ImpersonationPolicy, UserFragment } from '../../models/user'
+import { ImpersonationPolicy } from '../../models/user'
 
 export const CLUSTERS = gql`
 query {

@@ -1,6 +1,7 @@
 name: <%= application %>-<%= provider %>
 description: Installs <%= application %> on an aws eks cluster
 provider: <%= String.upcase(provider) %>
+primary: true
 dependencies:
 - repo: bootstrap
   name: <%= provider %>-k8s

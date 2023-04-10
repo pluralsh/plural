@@ -1,6 +1,6 @@
-import { Tab, TabList } from '@pluralsh/design-system'
-import { Outlet, useLocation } from 'react-router-dom'
-import { useRef } from 'react'
+import { Tab, TabList, useSetBreadcrumbs } from '@pluralsh/design-system'
+import { Outlet, useLocation, useParams } from 'react-router-dom'
+import { useMemo, useRef } from 'react'
 
 import { ResponsiveLayoutContentContainer } from '../utils/layout/ResponsiveLayoutContentContainer'
 import { ResponsiveLayoutSpacer } from '../utils/layout/ResponsiveLayoutSpacer'
@@ -21,6 +21,26 @@ export function AuditDirectory() {
   const { pathname } = useLocation()
   const tabStateRef = useRef<any>(null)
   const currentTab = DIRECTORY.find(tab => pathname?.startsWith(tab.path))
+
+  const params = useParams()
+  const subPath = params?.['*']?.split?.('/')[0]
+  const breadcrumbs = useMemo(() => [
+    {
+      label: 'audits',
+      url: '/audits',
+    },
+    ...(subPath
+      ? [
+        {
+          label: subPath,
+          url: `/audits/${subPath}`,
+        },
+      ]
+      : []),
+  ],
+  [subPath])
+
+  useSetBreadcrumbs(breadcrumbs)
 
   return (
     <ResponsiveLayoutPage>

@@ -256,7 +256,7 @@ export function PluralInner() {
               </Route>
               {/* --- REPOSITORY --- */}
               <Route
-                path="/repository/:name"
+                path="/repository/:name/*"
                 element={<Repository />}
               >
                 <Route
@@ -397,7 +397,7 @@ export function PluralInner() {
               />
               {/* --- ACCOUNT --- */}
               <Route
-                path="/account"
+                path="/account/*"
                 element={<Account />}
               >
                 <Route
@@ -472,7 +472,7 @@ export function PluralInner() {
               {/*  element={<EditBilling />} */}
               {/* /> */}
               <Route
-                path="/audits"
+                path="/audits/*"
                 element={<AuditDirectory />}
               >
                 <Route
@@ -542,7 +542,7 @@ export function PluralInner() {
               />
               {/* --- ROADMAP --- */}
               <Route
-                path="/roadmap"
+                path="/roadmap/*"
                 element={<Roadmap />}
               >
                 <Route

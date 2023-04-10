@@ -7,6 +7,7 @@ import {
 import {
   ArrowLeftIcon,
   ArrowRightIcon,
+  Breadcrumbs,
   IconFrame,
   InfoIcon,
 } from '@pluralsh/design-system'
@@ -59,28 +60,26 @@ export function ServiceAccountBanner() {
 const SubheaderContent = styled.div(({ theme }) => ({
   display: 'flex',
   flexWrap: 'wrap',
-  columnGap: theme.spacing.xxlarge,
   rowGap: theme.spacing.small,
   paddingTop: theme.spacing.small,
   paddingBottom: theme.spacing.small,
-  alignItems: 'stretch',
+  alignItems: 'center',
   backgroundColor: theme.colors['fill-one'],
-  justifyContent: 'space-between',
   maxHeight: '100%',
   paddingLeft: theme.spacing.large,
   paddingRight: theme.spacing.large,
 }))
 
-const SubheaderLeft = styled.div(({ theme }) => ({
+const NavButtons = styled.div(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   gap: theme.spacing.small,
-
 }))
 
-const SubheaderRight = styled.div(({ theme }) => ({
+const SubheaderRight = styled.div(({ theme: _ }) => ({
   display: 'flex',
   justifyContent: 'flex-end',
+  flexShrink: 'none',
 }))
 
 export default function Subheader() {
@@ -89,7 +88,7 @@ export default function Subheader() {
 
   return (
     <SubheaderContent>
-      <SubheaderLeft>
+      <NavButtons>
         <IconFrame
           data-phid="nav-arrow-back"
           clickable
@@ -108,7 +107,14 @@ export default function Subheader() {
           textValue="Forward"
           type="floating"
         />
-      </SubheaderLeft>
+      </NavButtons>
+      <Breadcrumbs
+        flexGrow="1"
+        marginLeft="large"
+        marginRight="large"
+        minWidth={16}
+        flexBasis={16}
+      />
       <SubheaderRight>
         {!!previousUser && <ServiceAccountBanner />}
       </SubheaderRight>

@@ -1,7 +1,12 @@
-import { useRef } from 'react'
-import { Link, Outlet, useParams } from 'react-router-dom'
+import { useMemo, useRef } from 'react'
+import {
+  Link,
+  Outlet,
+  useMatches,
+  useParams,
+} from 'react-router-dom'
 import { Flex, P } from 'honorable'
-import { Button, TabPanel } from '@pluralsh/design-system'
+import { Button, TabPanel, useSetBreadcrumbs } from '@pluralsh/design-system'
 import { validate as uuidValidate } from 'uuid'
 
 import { RepositoryContextProvider } from '../../contexts/RepositoryContext'
@@ -16,15 +21,29 @@ import { useRepositoryQuery } from '../../generated/graphql'
 
 import LoadingIndicator from '../utils/LoadingIndicator'
 
+import { MARKETPLACE_CRUMB } from '../marketplace/Marketplace'
+
 import RepositorySideNav from './RepositorySideNav'
 import { RepositorySideCar } from './RepositorySideCar'
 
 function Repository() {
-  const { name } = useParams()
+  const { name, ...restParams } = useParams()
+  const subPath = restParams?.['*']?.split?.('/')[0]
+
   const { data, loading } = useRepositoryQuery({
     variables: uuidValidate(name ?? '') ? { id: name } : { name },
   })
   const tabStateRef = useRef<any>(null)
+  const breadcrumbs = useMemo(() => [
+    MARKETPLACE_CRUMB,
+    {
+      label: `${name}-${subPath || 'readme'}` ?? '',
+      url: `/repository/${name}`,
+    },
+  ],
+  [subPath, name])
+
+  useSetBreadcrumbs(breadcrumbs)
 
   if (!data && loading) return <LoadingIndicator />
 

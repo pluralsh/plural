@@ -1,10 +1,5 @@
 import { useMemo, useRef } from 'react'
-import {
-  Link,
-  Outlet,
-  useMatches,
-  useParams,
-} from 'react-router-dom'
+import { Link, Outlet, useParams } from 'react-router-dom'
 import { Flex, P } from 'honorable'
 import { Button, TabPanel, useSetBreadcrumbs } from '@pluralsh/design-system'
 import { validate as uuidValidate } from 'uuid'

@@ -1,9 +1,4 @@
-import {
-  A,
-  Div,
-  Flex,
-  Text,
-} from 'honorable'
+import { A, Flex, Text } from 'honorable'
 import {
   ArrowLeftIcon,
   ArrowRightIcon,

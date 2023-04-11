@@ -1,14 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
+import { useSearchParams } from 'react-router-dom'
 import {
-  A,
-  Br,
   Button,
   Div,
   Flex,
   H1,
   Hr,
-  Span,
 } from 'honorable'
 import {
   ArrowTopRightIcon,
@@ -17,8 +14,6 @@ import {
   FiltersIcon,
   Input,
   MagnifyingGlassIcon,
-  Tab,
-  TabList,
   TabPanel,
 } from '@pluralsh/design-system'
 import Fuse from 'fuse.js'
@@ -27,12 +22,13 @@ import isEmpty from 'lodash/isEmpty'
 import capitalize from 'lodash/capitalize'
 import orderBy from 'lodash/orderBy'
 
+import { upperFirst } from 'lodash'
+
 import { growthbook } from '../../helpers/growthbook'
 
 import usePaginatedQuery from '../../hooks/usePaginatedQuery'
 
 import { GoBack } from '../utils/GoBack'
-import { LinkTabWrap } from '../utils/Tabs'
 
 import { ResponsiveLayoutSidecarContainer } from '../utils/layout/ResponsiveLayoutSidecarContainer'
 import { ResponsiveLayoutSpacer } from '../utils/layout/ResponsiveLayoutSpacer'
@@ -70,7 +66,7 @@ const StyledTabPanel = styled(TabPanel)(() => ({
   flexGrow: 1,
 }))
 
-function MarketplaceRepositories({ installed, publisher }: any) {
+function MarketplaceRepositories({ publisher }: {publisher?: any}) {
   const scrollRef = useRef<HTMLDivElement>(null)
   const [searchParams, setSearchParams] = useSearchParams()
   const categories = searchParams.getAll('category')
@@ -95,9 +91,8 @@ function MarketplaceRepositories({ installed, publisher }: any) {
 
   const shouldRenderStacks
     = growthbook.isOn('stacks')
-    && !categories.length
-    && !tags.length
-    && !installed
+    && !isEmpty(categories)
+    && !isEmpty(tags)
     && !search
 
   useEffect(() => {
@@ -136,7 +131,8 @@ function MarketplaceRepositories({ installed, publisher }: any) {
     ['trending', r => r.name.toLowerCase()],
     ['desc', 'asc'])
     .filter(repository => (categories.length
-      ? categories.includes(repository.category.toLowerCase())
+      ? categories.some(category => category === repository.category.toLowerCase()
+              || (category === 'installed' && repository.installation))
       : true))
     .filter(repository => {
       if (!tags.length) return true
@@ -145,7 +141,6 @@ function MarketplaceRepositories({ installed, publisher }: any) {
 
       return tags.some(tag => repositoryTags.includes(tag))
     })
-    .filter(repository => (installed ? repository.installation : true))
 
   const fuse = new Fuse(sortedRepositories, searchOptions)
 
@@ -174,7 +169,7 @@ function MarketplaceRepositories({ installed, publisher }: any) {
   }
 
   function renderTitle() {
-    let title = installed ? 'Installed Repositories' : 'All Repositories'
+    let title = 'All Repositories'
 
     if (categories.length || tags.length) title += ', filtered'
 
@@ -196,30 +191,6 @@ function MarketplaceRepositories({ installed, publisher }: any) {
         height={57}
         alignItems="flex-end"
       >
-        {!publisher && (
-          <TabList
-            stateRef={tabStateRef}
-            stateProps={{
-              orientation: 'horizontal',
-              selectedKey: installed ? 'installed' : 'marketplace',
-            }}
-          >
-            <LinkTabWrap
-              key="marketplace"
-              textValue="Marketplace"
-              to="/marketplace"
-            >
-              <Tab>Marketplace</Tab>
-            </LinkTabWrap>
-            <LinkTabWrap
-              key="installed"
-              textValue="Installed"
-              to="/installed"
-            >
-              <Tab>Installed</Tab>
-            </LinkTabWrap>
-          </TabList>
-        )}
         {publisher && !backRepositoryName && (
           <GoBack
             text="Back to marketplace"
@@ -324,7 +295,7 @@ function MarketplaceRepositories({ installed, publisher }: any) {
                       onKeyDown={event => (event.key === 'Enter' || event.key === ' ')
                       && handleClearToken('category', category)}
                     >
-                      {capitalize(category)}
+                      {upperFirst(category)}
                     </Chip>
                   </Flex>
                 ))}
@@ -339,7 +310,7 @@ function MarketplaceRepositories({ installed, publisher }: any) {
                       onKeyDown={event => (event.key === 'Enter' || event.key === ' ')
                     && handleClearToken('tag', tag)}
                     >
-                      {capitalize(tag)}
+                      {(tag)}
                     </Chip>
                   </Flex>
                 ))}
@@ -382,36 +353,7 @@ function MarketplaceRepositories({ installed, publisher }: any) {
               marginTop={publisher ? 0 : 'medium'}
             />
             {loadingRepositories && <LoadingIndicator />}
-            {!resultRepositories?.length
-              && installed
-              && ![...searchParams]?.length
-              && isEmpty(search) && (
-              <EmptyState message="Looks like you haven't installed your first app yet.">
-                <Span>
-                  Head back to the marketplace to select your first
-                  application! If you need
-                  <Br />
-                  support installing your first app, read our&nbsp;
-                  <A
-                    inline
-                    href="https://docs.plural.sh/getting-started/getting-started"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    quickstart guide
-                  </A>
-                  .
-                </Span>
-                <Button
-                  as={Link}
-                  to="/marketplace"
-                  marginTop="medium"
-                >
-                  Go to marketplace
-                </Button>
-              </EmptyState>
-            )}
-            {!resultRepositories?.length && !installed && (
+            {!resultRepositories?.length && (
               <EmptyState
                 message="Oops! We couldn't find any apps."
                 description="If you can't find what you're looking for, you can onboard the application."

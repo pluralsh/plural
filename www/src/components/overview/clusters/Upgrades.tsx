@@ -3,12 +3,13 @@ import { isEmpty } from 'lodash'
 import { useContext, useState } from 'react'
 import { Div, Flex } from 'honorable'
 
-import { Cluster } from '../../../../generated/graphql'
-import { ImpersonateServiceAccountWithSkip } from '../ImpersonateServiceAccount'
-import { EmptyListMessage } from '../misc'
-import ClustersContext from '../../../../contexts/ClustersContext'
-import ListCard from '../../../utils/ListCard'
-import { ClusterPicker } from '../../ClusterPicker'
+import { Cluster } from '../../../generated/graphql'
+import ClustersContext from '../../../contexts/ClustersContext'
+import ListCard from '../../utils/ListCard'
+import { ClusterPicker } from '../ClusterPicker'
+
+import { EmptyListMessage } from './misc'
+import { ImpersonateServiceAccountWithSkip } from './ImpersonateServiceAccount'
 
 import UpgradeList from './UpgradeList'
 
@@ -18,7 +19,7 @@ export default function Upgrades() {
   const [refreshing, setRefreshing] = useState(false)
   const [refetch, setRefetch] = useState<any>()
 
-  if (isEmpty(clusters)) return null // TODO: Update.
+  if (isEmpty(clusters)) return null
 
   return (
     <ListCard header={(
@@ -55,25 +56,21 @@ export default function Upgrades() {
       </>
     )}
     >
-
-      <Flex height="100%">
-        {cluster?.queue?.id
-          ? (
-            <ImpersonateServiceAccountWithSkip
-              id={cluster?.owner?.id}
-              skip={!cluster?.owner?.serviceAccount}
-            >
-              <UpgradeList
-                cluster={cluster}
-                setRefreshing={setRefreshing}
-                setRefetch={setRefetch}
-              />
-            </ImpersonateServiceAccountWithSkip>
-          )
-          : <EmptyListMessage>Cannot access upgrade queue.</EmptyListMessage>}
-      </Flex>
+      {cluster?.queue?.id
+        ? (
+          <ImpersonateServiceAccountWithSkip
+            id={cluster?.owner?.id}
+            skip={!cluster?.owner?.serviceAccount}
+          >
+            <UpgradeList
+              cluster={cluster}
+              setRefreshing={setRefreshing}
+              setRefetch={setRefetch}
+            />
+          </ImpersonateServiceAccountWithSkip>
+        )
+        : <EmptyListMessage>Cannot access upgrade queue.</EmptyListMessage>}
     </ListCard>
-
   )
 }
 

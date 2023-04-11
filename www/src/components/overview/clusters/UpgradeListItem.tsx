@@ -3,7 +3,7 @@ import { Chip, IconFrame, Tooltip } from '@pluralsh/design-system'
 import { ReactElement } from 'react'
 import { Flex } from 'honorable'
 
-import { Upgrade } from '../../../../generated/graphql'
+import { Upgrade } from '../../../generated/graphql'
 
 export default function UpgradeListItem({
   upgrade: {

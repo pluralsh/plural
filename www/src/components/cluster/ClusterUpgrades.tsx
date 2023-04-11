@@ -3,7 +3,7 @@ import { Button, ReloadIcon } from '@pluralsh/design-system'
 import { Flex } from 'honorable'
 
 import ListCard from '../utils/ListCard'
-import UpgradeList from '../overview/clusters/upgrades/UpgradeList'
+import UpgradeList from '../overview/clusters/UpgradeList'
 import { Cluster } from '../../generated/graphql'
 import { EmptyListMessage } from '../overview/clusters/misc'
 

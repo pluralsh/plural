@@ -9,12 +9,14 @@ import {
 import styled from 'styled-components'
 import { createColumnHelper } from '@tanstack/react-table'
 
-import { ProviderIcon } from '../../../utils/ProviderIcon'
-import { Source } from '../../../../generated/graphql'
-import ClusterHealth from '../ClusterHealth'
-import CopyButton from '../../../utils/CopyButton'
+import { ProviderIcon } from '../../utils/ProviderIcon'
+import { Source } from '../../../generated/graphql'
 
-import ClusterOwner from '../ClusterOwner'
+import CopyButton from '../../utils/CopyButton'
+
+import ClusterHealth from './ClusterHealth'
+
+import ClusterOwner from './ClusterOwner'
 
 import { ClusterListElement } from './types'
 

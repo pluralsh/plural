@@ -48,7 +48,7 @@ export default function OverviewHeader(): ReactElement {
         grow={1}
         justify="end"
       >
-        {clusters?.length > 1 && (
+        {currentTab?.path?.endsWith('clusters') && clusters?.length > 1 && (
           <>
             <Button
               secondary

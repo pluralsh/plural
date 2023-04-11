@@ -1,4 +1,4 @@
-import { Provider, Source } from '../../../../generated/graphql'
+import { Provider, Source } from '../../../generated/graphql'
 
 export type ClusterListElement = {
   id: string

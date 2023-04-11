@@ -2,15 +2,14 @@ import { Dispatch, useEffect, useState } from 'react'
 import { useQuery } from '@apollo/client'
 import { isEmpty } from 'lodash'
 
-import { Cluster } from '../../../../generated/graphql'
-import { StandardScroller } from '../../../utils/SmoothScroller'
-import { appendConnection, extendConnection } from '../../../../utils/graphql'
-import LoadingIndicator from '../../../utils/LoadingIndicator'
+import { Cluster } from '../../../generated/graphql'
+import { StandardScroller } from '../../utils/SmoothScroller'
+import { appendConnection, extendConnection } from '../../../utils/graphql'
+import LoadingIndicator from '../../utils/LoadingIndicator'
+import { QUEUE, UPGRADE_SUB } from '../queries'
 
-import { QUEUE, UPGRADE_SUB } from '../../queries'
-import { EmptyListMessage } from '../misc'
-
-import UpgradeListItem from './Upgrade'
+import { EmptyListMessage } from './misc'
+import UpgradeListItem from './UpgradeListItem'
 
 type ClusterUpgradesListContentProps = {
   cluster: Cluster,

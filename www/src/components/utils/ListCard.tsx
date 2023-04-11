@@ -7,6 +7,7 @@ type ListCardProps = {
   children: any
 }
 
+// TODO: Adjust list sizing.
 export default function ListCard({ header, input, children }: ListCardProps) {
   return (
     <Card

@@ -6,9 +6,9 @@ import { useNavigate } from 'react-router-dom'
 
 import ClustersContext from '../../../contexts/ClustersContext'
 
-import Upgrades from './upgrades/Upgrades'
+import Upgrades from './Upgrades'
 import ClustersHelpSection from './ClustersHelpSection'
-import { ClusterList } from './clusters/ClusterList'
+import { ClusterList } from './ClusterList'
 import {
   ColActions,
   ColCloudShell,
@@ -17,7 +17,7 @@ import {
   ColHealth,
   ColOwner,
   ColUpgrades,
-} from './clusters/columns'
+} from './columns'
 
 export function Clusters(): ReactElement | null {
   const { clusters } = useContext(ClustersContext)
@@ -44,7 +44,7 @@ export function Clusters(): ReactElement | null {
     <Flex
       direction="column"
       gap="medium"
-      flexGrow={1}
+      grow={1}
       overflow="auto"
     >
       <ClusterList columns={columns} />

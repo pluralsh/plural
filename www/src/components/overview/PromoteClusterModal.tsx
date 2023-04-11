@@ -6,6 +6,7 @@ import { Cluster } from '../../generated/graphql'
 
 import { ClusterPicker } from './ClusterPicker'
 
+// TODO: Implement logic. Use createClusterDependency before promote.
 export function PromoteClusterModal({ open, setOpen }) {
   const [fromCluster, setFromCluster] = useState<Cluster | undefined>()
   const [toCluster, setToCluster] = useState<Cluster | undefined>()

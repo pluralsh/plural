@@ -7,9 +7,9 @@ import {
 } from 'react'
 import isEmpty from 'lodash/isEmpty'
 
-import { Cluster } from '../../../../generated/graphql'
-import { ensureURLValidity } from '../../../../utils/url'
-import ClustersContext from '../../../../contexts/ClustersContext'
+import { Cluster } from '../../../generated/graphql'
+import { ensureURLValidity } from '../../../utils/url'
+import ClustersContext from '../../../contexts/ClustersContext'
 
 import { ClusterListElement } from './types'
 import ClusterListEmptyState from './ClusterListEmptyState'

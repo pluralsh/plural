@@ -108,6 +108,7 @@ export function DnsRecords({ domain, setDomain }: any) {
             placeholder={Placeholder}
             mapper={({ node }, { next }) => (
               <TableRow
+                key={node.id}
                 last={!next.node}
                 suffix={(
                   <DeleteRecord

@@ -33,6 +33,7 @@ export function GroupsList({ q }: any) {
           items={edges}
           mapper={({ node: group }, { prev, next }) => (
             <ListItem
+              key={group.id}
               first={!prev.node}
               last={!next.node}
             >

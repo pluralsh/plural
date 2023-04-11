@@ -65,6 +65,7 @@ export const TokenFragment = gql`
 
 export const TokenAuditFragment = gql`
   fragment TokenAuditFragment on PersistedTokenAudit {
+    id
     ip
     timestamp
     count

@@ -263,6 +263,7 @@ function DomainsInner({ q, setDomainSelected }: any) {
               placeholder={Placeholder}
               mapper={({ node }, { next }) => (
                 <Domain
+                  key={node.id}
                   node={node}
                   last={!next.node}
                   setDomain={setDomainWrapper}

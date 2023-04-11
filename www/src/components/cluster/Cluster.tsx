@@ -16,18 +16,18 @@ import { Div, Flex } from 'honorable'
 import ClustersContext from '../../contexts/ClustersContext'
 import { ProviderIcon } from '../utils/ProviderIcon'
 import { ImpersonateServiceAccountWithSkip } from '../overview/clusters/ImpersonateServiceAccount'
-
 import { CLUSTERS_ROOT_CRUMB } from '../overview/Overview'
-
 import { ensureURLValidity } from '../../utils/url'
 
 import { ClusterSidecar } from './ClusterSidecar'
 import { ClusterApps } from './ClusterApps'
 import { ClusterUpgrades } from './ClusterUpgrades'
 import { ClusterAdminsModal } from './ClusterAdminsModal'
+import ClusterMetadataPanel from './ClusterMetadataPanel'
 
 export function Cluster() {
   const [adminsOpen, setAdminsOpen] = useState(false)
+  const [metadataOpen, setMetadataOpen] = useState(false)
   const navigate = useNavigate()
   const { id } = useParams()
   const { clusters } = useContext(ClustersContext)
@@ -146,11 +146,16 @@ export function Cluster() {
             <Button
               secondary
               height="max-content"
-              onClick={() => null} // TODO: Add.
+              onClick={() => setMetadataOpen(true)}
               display-desktopSmall-up="none"
             >
               Metadata
             </Button>
+            <ClusterMetadataPanel
+              cluster={cluster}
+              open={metadataOpen}
+              setOpen={setMetadataOpen}
+            />
           </Flex>
         </Flex>
         <Flex

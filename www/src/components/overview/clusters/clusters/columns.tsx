@@ -150,7 +150,8 @@ export const ColActions = navigate => (columnHelper.accessor(row => row.consoleU
         size="medium"
         icon={<CaretRightIcon />}
         onClick={() => navigate(`/clusters/${id}`)}
-        textValue=""
+        textValue="Go to cluster details"
+        tooltip
         type="tertiary"
       />
     </ActionsWrap>

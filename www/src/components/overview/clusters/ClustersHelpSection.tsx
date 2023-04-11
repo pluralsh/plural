@@ -9,74 +9,79 @@ import ReactPlayer from 'react-player'
 import { useIntercom } from 'react-use-intercom'
 import styled from 'styled-components'
 
-const Wrap = styled.div(({ theme }) => ({
-  display: 'flex',
-  flexDirection: 'column',
-  gap: theme.spacing.medium,
-  marginTop: theme.spacing.xsmall,
+const Wrap = styled.div(({ theme }) => {
+  const smallMediaQuery = `@media only screen and (min-width: ${theme.breakpoints.desktopSmall}px)`
 
-  'ol, ul': {
-    ...theme.partials.text.body2,
-    paddingLeft: theme.spacing.large,
-  },
+  return {
 
-  ol: {
-    ...theme.partials.text.body2Bold,
-    lineHeight: '24px',
-  },
-
-  'a.link': {
-    ...theme.partials.text.inlineLink,
-  },
-
-  '.get-started': {
     display: 'flex',
-    gap: theme.spacing.medium,
-
-    '@media (max-width: 999px)': {
-      flexDirection: 'column',
-    },
-  },
-
-  '.video': {
-    '@media (min-width: 999px)': {
-      minWidth: 540,
-      width: 640,
-    },
-  },
-
-  '.card': {
-    ...theme.partials.text.body2,
-    display: 'flex',
-    flexGrow: 1,
     flexDirection: 'column',
-    padding: theme.spacing.large,
-    color: theme.colors['text-light'],
+    gap: theme.spacing.medium,
+    marginTop: theme.spacing.xsmall,
 
-    '.header': {
-      ...theme.partials.text.overline,
-      color: theme.colors['text-xlight'],
-      marginBottom: theme.spacing.medium,
+    'ol, ul': {
+      ...theme.partials.text.body2,
+      paddingLeft: theme.spacing.large,
     },
 
-    '.subheader': {
-      fontWeight: 600,
-      marginBottom: theme.spacing.medium,
+    ol: {
+      ...theme.partials.text.body2Bold,
+      lineHeight: '24px',
     },
 
-    '.resources': {
+    'a.link': {
+      ...theme.partials.text.inlineLink,
+    },
+
+    '.get-started': {
       display: 'flex',
-      flexDirection: 'row',
-      gap: theme.spacing.xxlarge,
+      gap: theme.spacing.medium,
+
+      '@media (max-width: 999px)': {
+        flexDirection: 'column',
+      },
     },
 
-    '.cta': {
+    '.video': {
+      [smallMediaQuery]: {
+        minWidth: 540,
+        width: 640,
+      },
+    },
+
+    '.card': {
+      ...theme.partials.text.body2,
       display: 'flex',
       flexGrow: 1,
-      alignItems: 'center',
+      flexDirection: 'column',
+      padding: theme.spacing.large,
+      color: theme.colors['text-light'],
+
+      '.header': {
+        ...theme.partials.text.overline,
+        color: theme.colors['text-xlight'],
+        marginBottom: theme.spacing.medium,
+      },
+
+      '.subheader': {
+        fontWeight: 600,
+        marginBottom: theme.spacing.medium,
+      },
+
+      '.resources': {
+        display: 'flex',
+        flexDirection: 'row',
+        gap: theme.spacing.xxlarge,
+      },
+
+      '.cta': {
+        display: 'flex',
+        flexGrow: 1,
+        alignItems: 'center',
+      },
     },
-  },
-}))
+  }
+})
 
 export default function ClustersHelpSection(): ReactElement {
   const { show } = useIntercom()

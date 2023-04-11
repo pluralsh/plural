@@ -22,6 +22,7 @@ export function ClusterSidecar({ cluster }: ClusterSidecarProps): ReactElement {
       gap="large"
       direction="column"
       width={200}
+      display-desktopSmall-down="none"
     >
       {cluster.consoleUrl && (
         <Button

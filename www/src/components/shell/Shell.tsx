@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo } from 'react'
 import { useMutation, useQuery } from '@apollo/client'
 import { Flex } from 'honorable'
-import { Button } from '@pluralsh/design-system'
+import { Button, useSetBreadcrumbs } from '@pluralsh/design-system'
 
 import { CloudShell, RootQueryType } from '../../generated/graphql'
 import { ResponsiveLayoutSpacer } from '../utils/layout/ResponsiveLayoutSpacer'
@@ -83,9 +83,13 @@ function TerminalBootStatus() {
   return <Content />
 }
 
+const breadcrumbs = [{ label: 'shell', url: '/shell' }]
+
 function Shell() {
   const { data, loading: loadingShell, refetch } = useQuery(CLOUD_SHELL_QUERY, { fetchPolicy: 'no-cache' })
   const [rebootMutation] = useMutation(REBOOT_SHELL_MUTATION)
+
+  useSetBreadcrumbs(breadcrumbs)
 
   const loading = useMemo(() => !data && loadingShell, [data, loadingShell])
   const hasShell = useMemo(() => !!data?.shell, [data])

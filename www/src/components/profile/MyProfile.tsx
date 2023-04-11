@@ -3,6 +3,7 @@ import {
   Tab,
   TabList,
   TabPanel,
+  useSetBreadcrumbs,
 } from '@pluralsh/design-system'
 import { Outlet, useLocation } from 'react-router-dom'
 
@@ -26,9 +27,13 @@ const DIRECTORY = [
   { path: '/profile/eab', label: 'EAB credentials' },
 ]
 
+export const profileCrumbs = [{ label: 'profile', url: '/profile' }]
+
 export function MyProfile() {
   const me = useContext(CurrentUserContext)
   const { pathname } = useLocation()
+
+  useSetBreadcrumbs(profileCrumbs)
   const tabStateRef = useRef<any>(null)
   const currentTab = DIRECTORY.find(tab => pathname?.startsWith(tab.path))
 

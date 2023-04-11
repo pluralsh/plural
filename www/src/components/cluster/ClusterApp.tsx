@@ -22,7 +22,9 @@ type ClusterAppProps = {
 export function ClusterApp({
   app: {
     name, icon, darkIcon, installation,
-  }, consoleUrl, last,
+  },
+  consoleUrl,
+  last,
 }: ClusterAppProps): ReactElement {
   const navigate = useNavigate()
 

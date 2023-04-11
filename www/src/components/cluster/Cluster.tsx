@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react'
+import { useContext, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import {
   Button,
@@ -8,12 +8,15 @@ import {
   PersonPlusIcon,
   Select,
   WarningOutlineIcon,
+  useSetBreadcrumbs,
 } from '@pluralsh/design-system'
 import { Div, Flex } from 'honorable'
 
 import ClustersContext from '../../contexts/ClustersContext'
 import { ProviderIcon } from '../utils/ProviderIcon'
 import { ImpersonateServiceAccountWithSkip } from '../overview/clusters/ImpersonateServiceAccount'
+
+import { CLUSTERS_ROOT_CRUMB } from '../overview/Overview'
 
 import { ClusterSidecar } from './ClusterSidecar'
 import { ClusterApps } from './ClusterApps'
@@ -27,6 +30,13 @@ export function Cluster() {
   const { clusters } = useContext(ClustersContext)
   const cluster = clusters.find(c => c.id === id)
   const onSelectionChange = id => navigate(`/clusters/${id}`)
+  const breadcrumbs = useMemo(() => [
+    CLUSTERS_ROOT_CRUMB,
+    { label: `${cluster?.name}`, url: `/clusters/${id}` },
+  ],
+  [cluster?.name, id])
+
+  useSetBreadcrumbs(breadcrumbs)
 
   if (!cluster) {
     return (
@@ -35,7 +45,9 @@ export function Cluster() {
         message="Cluster not found"
         description={`No clusters found with ID ${id}.`}
       >
-        <Button onClick={() => navigate('/overview/clusters')}>Go to cluster overview</Button>
+        <Button onClick={() => navigate('/overview/clusters')}>
+          Go to cluster overview
+        </Button>
       </EmptyState>
     )
   }

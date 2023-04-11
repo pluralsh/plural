@@ -20,20 +20,21 @@ const searchOptions = {
   threshold: 0.25,
 }
 
-type ClusterAppsProps = {cluster: Cluster}
+type ClusterAppsProps = { cluster: Cluster }
 
-export function ClusterApps({ cluster: { consoleUrl } }: ClusterAppsProps): ReactElement {
+export function ClusterApps({
+  cluster: { consoleUrl },
+}: ClusterAppsProps): ReactElement {
   const [search, setSearch] = useState('')
-  const [
-    repos,
-    loading,
-    hasMore,
-    loadMore,
-  ] = usePaginatedQuery(MARKETPLACE_QUERY, { }, data => data.repositories)
+  const [repos, loading, hasMore, loadMore] = usePaginatedQuery(MARKETPLACE_QUERY,
+    {},
+    data => data.repositories)
 
-  const apps = useMemo(() => repos.filter(({ installation }) => !isEmpty(installation)), [repos])
+  const apps = useMemo(() => repos.filter(({ installation }) => !isEmpty(installation)),
+    [repos])
   const fuse = useMemo(() => new Fuse(apps, searchOptions), [apps])
-  const filteredApps = useMemo(() => (search ? fuse.search(search).map(({ item }) => item) : apps), [apps, search, fuse])
+  const filteredApps = useMemo(() => (search ? fuse.search(search).map(({ item }) => item) : apps),
+    [apps, search, fuse])
 
   if (isEmpty(repos) && loading) return <LoadingIndicator />
 
@@ -52,32 +53,34 @@ export function ClusterApps({ cluster: { consoleUrl } }: ClusterAppsProps): Reac
         />
       )}
     >
-      {!isEmpty(apps)
-        ? (
-          <Flex
+      {!isEmpty(apps) ? (
+        <Flex
+          flexGrow={1}
+          direction="column"
+          height="100%"
+        >
+          <InfiniteScroller
+            loading={loading}
+            hasMore={hasMore}
+            loadMore={loadMore}
+            // Allow for scrolling in a flexbox layout
             flexGrow={1}
-            direction="column"
-            height="100%"
+            height={0}
           >
-            <InfiniteScroller
-              loading={loading}
-              hasMore={hasMore}
-              loadMore={loadMore}
-              // Allow for scrolling in a flexbox layout
-              flexGrow={1}
-              height={0}
-            >
-              {filteredApps.map((app, i) => (
-                <ClusterApp
-                  app={app}
-                  consoleUrl={ensureURLValidity(consoleUrl)}
-                  last={i === apps.length - 1}
-                />
-              ))}
-            </InfiniteScroller>
-          </Flex>
-        )
-        : <EmptyListMessage>Looks like you haven't installed your first app yet.</EmptyListMessage>}
+            {filteredApps.map((app, i) => (
+              <ClusterApp
+                app={app}
+                consoleUrl={ensureURLValidity(consoleUrl)}
+                last={i === apps.length - 1}
+              />
+            ))}
+          </InfiniteScroller>
+        </Flex>
+      ) : (
+        <EmptyListMessage>
+          Looks like you haven't installed your first app yet.
+        </EmptyListMessage>
+      )}
     </ListCard>
   )
 }

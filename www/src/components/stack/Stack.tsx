@@ -12,8 +12,9 @@ import {
   TabList,
   TabPanel,
   VerifiedIcon,
+  useSetBreadcrumbs,
 } from '@pluralsh/design-system'
-import { useRef } from 'react'
+import { useMemo, useRef } from 'react'
 
 import { ResponsiveLayoutContentContainer } from '../utils/layout/ResponsiveLayoutContentContainer'
 import { ResponsiveLayoutSidecarContainer } from '../utils/layout/ResponsiveLayoutSidecarContainer'
@@ -29,6 +30,8 @@ import { ProvidersSidecar } from '../utils/recipeHelpers'
 import { StackCollection } from '../../generated/graphql'
 
 import LoadingIndicator from '../utils/LoadingIndicator'
+
+import { MARKETPLACE_CRUMB } from '../marketplace/Marketplace'
 
 import { STACK_QUERY } from './queries'
 import { StackContext } from './types'
@@ -148,6 +151,12 @@ export default function Stack() {
     variables: { name, provider: 'AWS' },
   })
   const tabStateRef = useRef<any>(null)
+  const breadcrumbs = useMemo(() => [
+    MARKETPLACE_CRUMB,
+    { label: `${name} stack` }],
+  [name])
+
+  useSetBreadcrumbs(breadcrumbs)
 
   if (!data) return <LoadingIndicator />
 

@@ -4,7 +4,12 @@ import { Route, Routes } from 'react-router-dom'
 import { ApolloProvider } from '@apollo/client'
 import { IntercomProvider } from 'react-use-intercom'
 import { Box, Grommet, ThemeType } from 'grommet'
-import { GlobalStyle, styledTheme, theme } from '@pluralsh/design-system'
+import {
+  BreadcrumbsProvider,
+  GlobalStyle,
+  styledTheme,
+  theme,
+} from '@pluralsh/design-system'
 import { CssBaseline, ThemeProvider, mergeTheme } from 'honorable'
 import { ThemeProvider as StyledThemeProvider } from 'styled-components'
 import { mergeDeep } from '@apollo/client/utilities'
@@ -19,6 +24,7 @@ import { HistoryRouter, browserHistory } from './router'
 import { growthbook } from './helpers/growthbook'
 import Cookiebot from './utils/cookiebot'
 import { OverlayContextProvider } from './components/layout/Overlay'
+import NavContextProvider from './contexts/NavigationContext'
 
 const Plural = lazy(() => import('./components/Plural'))
 const Invite = lazy(() => import('./components/Invite'))
@@ -134,23 +140,27 @@ function App() {
           <ThemeProvider theme={honorableTheme}>
             <StyledThemeProvider theme={mergedStyledTheme}>
               <GrowthBookProvider growthbook={growthbook as any as GrowthBook}>
-                <OverlayContextProvider>
-                  <CssBaseline />
-                  <GlobalStyle />
-                  <Grommet
-                    full
-                    theme={mergedStyledTheme as any as ThemeType}
-                    themeMode="dark"
-                  >
-                    <Box
-                      width="100vw"
-                      height="100vh"
-                      background="#171A21"
-                    >
-                      {routes}
-                    </Box>
-                  </Grommet>
-                </OverlayContextProvider>
+                <NavContextProvider>
+                  <OverlayContextProvider>
+                    <BreadcrumbsProvider>
+                      <CssBaseline />
+                      <GlobalStyle />
+                      <Grommet
+                        full
+                        theme={mergedStyledTheme as any as ThemeType}
+                        themeMode="dark"
+                      >
+                        <Box
+                          width="100vw"
+                          height="100vh"
+                          background="#171A21"
+                        >
+                          {routes}
+                        </Box>
+                      </Grommet>
+                    </BreadcrumbsProvider>
+                  </OverlayContextProvider>
+                </NavContextProvider>
               </GrowthBookProvider>
             </StyledThemeProvider>
           </ThemeProvider>

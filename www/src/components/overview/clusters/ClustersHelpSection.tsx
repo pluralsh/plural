@@ -13,6 +13,7 @@ const Wrap = styled.div(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
   gap: theme.spacing.medium,
+  marginTop: theme.spacing.xsmall,
 
   'ol, ul': {
     ...theme.partials.text.body2,
@@ -21,15 +22,27 @@ const Wrap = styled.div(({ theme }) => ({
 
   ol: {
     ...theme.partials.text.body2Bold,
+    lineHeight: '24px',
   },
 
   'a.link': {
     ...theme.partials.text.inlineLink,
   },
 
-  '.row': {
+  '.get-started': {
     display: 'flex',
     gap: theme.spacing.medium,
+
+    '@media (max-width: 999px)': {
+      flexDirection: 'column',
+    },
+  },
+
+  '.video': {
+    '@media (min-width: 999px)': {
+      minWidth: 540,
+      width: 640,
+    },
   },
 
   '.card': {
@@ -70,7 +83,7 @@ export default function ClustersHelpSection(): ReactElement {
 
   return (
     <Wrap>
-      <div className="row">
+      <div className="get-started">
         <Card
           fillLevel={2}
           className="card"
@@ -94,7 +107,12 @@ export default function ClustersHelpSection(): ReactElement {
             </Button> {/* TODO: Link to cluster creation. */}
           </div>
         </Card>
-        <ReactPlayer url="https://www.youtube.com/watch?v=LgwnBjYOCbg" />
+        <div className="video">
+          <ReactPlayer
+            url="https://www.youtube.com/watch?v=LgwnBjYOCbg"
+            width="100%"
+          />
+        </div>
       </div>
       <Card
         fillLevel={2}

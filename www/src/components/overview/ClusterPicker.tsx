@@ -21,12 +21,20 @@ type ClusterPickerProps = {
     filter?: (Cluster) => boolean
     heading?: string
     title?: any
+    placeholder?: string
     size?: 'small' | 'medium' | 'large'
     disabled?: boolean
 }
 
 export function ClusterPicker({
-  cluster, setCluster, filter, heading, title, size = 'medium', disabled = false,
+  cluster,
+  setCluster,
+  filter,
+  heading,
+  title,
+  placeholder = 'Select cluster',
+  size = 'medium',
+  disabled = false,
 }: ClusterPickerProps) {
   const { clusters: raw } = useContext(ClustersContext)
 
@@ -40,7 +48,7 @@ export function ClusterPicker({
   return (
     <FormField label={heading}>
       <Select
-        label="Select cluster"
+        label={placeholder}
         selectedKey={cluster?.id}
         onSelectionChange={id => setCluster(clusters.find(c => c.id === id))}
         size={size}

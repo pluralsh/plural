@@ -27,7 +27,12 @@ export default function ClusterListEmptyState() {
         width="max-content"
         fillLevel={2}
       >
-        <Div body1Bold>Create your first cluster and install applications.</Div>
+        <Div
+          body1
+          fontWeight={600}
+        >
+          Create your first cluster and install applications.
+        </Div>
         <Flex
           gap="medium"
           marginTop="large"

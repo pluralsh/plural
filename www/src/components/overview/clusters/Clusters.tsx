@@ -43,7 +43,7 @@ export function Clusters(): ReactElement | null {
   return (
     <Flex
       direction="column"
-      gap="large"
+      gap="medium"
       flexGrow={1}
       overflow="auto"
     >

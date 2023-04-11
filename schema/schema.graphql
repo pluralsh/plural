@@ -1027,6 +1027,9 @@ type Repository {
 
   darkIcon: String
 
+  "The external contributors to this repository"
+  contributors: [Contributor]
+
   "The installation of the application by a user."
   installation: Installation
 
@@ -1543,6 +1546,9 @@ type Cluster {
 
   "pending upgrades for each installed app"
   upgradeInfo: [UpgradeInfo]
+
+  "the dependencies a cluster has"
+  dependency: ClusterDependency!
 
   "The user that owns the cluster."
   owner: User
@@ -2784,6 +2790,9 @@ input RepositoryAttributes {
   "The application's README."
   readme: String
 
+  "List of emails of external users contributing to this repository and who will be granted access"
+  contributors: [String]
+
   "The application's OAuth settings."
   oauthSettings: OauthSettingsAttributes
 
@@ -2917,6 +2926,14 @@ type Follower {
   user: User!
   incident: Incident
   preferences: NotificationPreferences
+  insertedAt: DateTime
+  updatedAt: DateTime
+}
+
+"An external repository contributor"
+type Contributor {
+  id: ID!
+  user: User
   insertedAt: DateTime
   updatedAt: DateTime
 }

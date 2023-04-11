@@ -1,8 +1,9 @@
 defmodule GraphQl.Resolvers.Cluster do
   use GraphQl.Resolvers.Base, model: Core.Schema.Cluster
   alias Core.Services.Clusters
-  alias Core.Schema.DeferredUpdate
+  alias Core.Schema.{DeferredUpdate, ClusterDependency}
 
+  def query(ClusterDependency, _), do: ClusterDependency
   def query(_, _), do: Cluster
 
   def resolve_cluster(%{id: id}, %{context: %{current_user: user}}),

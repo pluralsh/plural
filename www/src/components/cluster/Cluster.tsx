@@ -4,6 +4,7 @@ import {
   Button,
   ClusterIcon,
   EmptyState,
+  IconFrame,
   ListBoxItem,
   PersonPlusIcon,
   Select,
@@ -17,6 +18,8 @@ import { ProviderIcon } from '../utils/ProviderIcon'
 import { ImpersonateServiceAccountWithSkip } from '../overview/clusters/ImpersonateServiceAccount'
 
 import { CLUSTERS_ROOT_CRUMB } from '../overview/Overview'
+
+import { ensureURLValidity } from '../../utils/url'
 
 import { ClusterSidecar } from './ClusterSidecar'
 import { ClusterApps } from './ClusterApps'
@@ -99,22 +102,56 @@ export function Cluster() {
               ))}
             </Select>
           </Div>
-          {cluster.owner?.serviceAccount && (
-            <>
+          <Flex gap="medium">
+            {cluster.owner?.serviceAccount && (
+              <>
+                <Button
+                  secondary
+                  startIcon={<PersonPlusIcon />}
+                  onClick={() => setAdminsOpen(true)}
+                  display-desktopSmall-down="none"
+                >
+                  Administrators
+                </Button>
+                <IconFrame
+                  clickable
+                  icon={<PersonPlusIcon width={16} />}
+                  size="large"
+                  type="secondary"
+                  onClick={() => setAdminsOpen(true)}
+                  textValue="Administrators"
+                  tooltip
+                  minWidth={40}
+                  display-desktopSmall-up="none"
+                />
+                <ClusterAdminsModal
+                  open={adminsOpen}
+                  setOpen={setAdminsOpen}
+                  serviceAccount={cluster.owner}
+                />
+              </>
+            )}
+            {cluster.consoleUrl && (
               <Button
-                secondary
-                startIcon={<PersonPlusIcon />}
-                onClick={() => setAdminsOpen(true)}
+                as="a"
+                href={ensureURLValidity(cluster.consoleUrl)}
+                target="_blank"
+                rel="noopener noreferrer"
+                height="max-content"
+                display-desktopSmall-up="none"
               >
-                Administrators
+                Launch Console
               </Button>
-              <ClusterAdminsModal
-                open={adminsOpen}
-                setOpen={setAdminsOpen}
-                serviceAccount={cluster.owner}
-              />
-            </>
-          )}
+            )}
+            <Button
+              secondary
+              height="max-content"
+              onClick={() => null} // TODO: Add.
+              display-desktopSmall-up="none"
+            >
+              Metadata
+            </Button>
+          </Flex>
         </Flex>
         <Flex
           direction="column"

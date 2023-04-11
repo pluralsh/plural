@@ -124,6 +124,7 @@ export function PublicKeys() {
               placeholder={Placeholder}
               mapper={({ node }, { prev, next }) => (
                 <PublicKey
+                  key={node.id}
                   pubkey={node}
                   first={isEmpty(prev.node)}
                   last={isEmpty(next.node)}

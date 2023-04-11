@@ -56,7 +56,10 @@ export default function PackageUpdateQueue() {
               items={edges}
               loading={loading}
               mapper={({ node }, { next }) => (
-                <TableRow last={!next.node}>
+                <TableRow
+                  key={node.id}
+                  last={!next.node}
+                >
                   <TableData>{node?.version?.version}</TableData>
                   <TableData>
                     <Date date={node?.dequeueAt} />

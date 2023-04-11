@@ -1,12 +1,12 @@
-import { useEffect, useState } from 'react'
+import { ReactElement, useEffect, useState } from 'react'
 import { ApolloClient, ApolloProvider, useMutation } from '@apollo/client'
 import memoize from 'lodash/memoize'
 
-import { buildClient } from '../../../helpers/client'
-import { IMPERSONATE_SERVICE_ACCOUNT } from '../../account/queries'
-import LoadingIndicator from '../../utils/LoadingIndicator'
+import { buildClient } from '../../helpers/client'
+import { IMPERSONATE_SERVICE_ACCOUNT } from '../account/queries'
+import { EmptyListMessage } from '../overview/clusters/misc'
 
-import { EmptyListMessage } from './misc'
+import LoadingIndicator from './LoadingIndicator'
 
 // Cache tokens with service account ID as keys.
 const getImpersonatedToken = memoize((id, mutation) => mutation()
@@ -15,11 +15,26 @@ const getImpersonatedToken = memoize((id, mutation) => mutation()
 // Cache clients with impersonated service account tokens as keys.
 const getClient = memoize(token => buildClient(() => token).client)
 
-export function ImpersonateServiceAccountWithSkip({ id, skip, children }) {
-  return skip ? children : <ImpersonateServiceAccount id={id}>{children}</ImpersonateServiceAccount>
+type ImpersonateServiceAccountProps = {
+  id?: string | null
+  skip?: boolean
+  children: ReactElement
 }
 
-export function ImpersonateServiceAccount({ id, children }) {
+export default function ImpersonateServiceAccount({
+  id,
+  skip = false,
+  children,
+}: ImpersonateServiceAccountProps): ReactElement {
+  if (skip) return children
+
+  return <ImpersonateServiceAccountInternal id={id}>{children}</ImpersonateServiceAccountInternal>
+}
+
+function ImpersonateServiceAccountInternal({
+  id,
+  children,
+}: Omit<ImpersonateServiceAccountProps, 'skip'>): ReactElement {
   const [client, setClient] = useState<ApolloClient<unknown> | undefined>()
   const [mutation, { error }] = useMutation(IMPERSONATE_SERVICE_ACCOUNT, { variables: { id } })
 

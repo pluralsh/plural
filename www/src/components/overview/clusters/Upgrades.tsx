@@ -6,11 +6,11 @@ import { Div, Flex } from 'honorable'
 import { Cluster } from '../../../generated/graphql'
 import ClustersContext from '../../../contexts/ClustersContext'
 import ListCard from '../../utils/ListCard'
-import { ClusterPicker } from '../ClusterPicker'
+import { ClusterPicker } from '../../utils/ClusterPicker'
+
+import ImpersonateServiceAccount from '../../utils/ImpersonateServiceAccount'
 
 import { EmptyListMessage } from './misc'
-import { ImpersonateServiceAccountWithSkip } from './ImpersonateServiceAccount'
-
 import UpgradeList from './UpgradeList'
 
 export default function Upgrades() {
@@ -58,7 +58,7 @@ export default function Upgrades() {
     >
       {cluster?.queue?.id
         ? (
-          <ImpersonateServiceAccountWithSkip
+          <ImpersonateServiceAccount
             id={cluster?.owner?.id}
             skip={!cluster?.owner?.serviceAccount}
           >
@@ -67,7 +67,7 @@ export default function Upgrades() {
               setRefreshing={setRefreshing}
               setRefetch={setRefetch}
             />
-          </ImpersonateServiceAccountWithSkip>
+          </ImpersonateServiceAccount>
         )
         : <EmptyListMessage>Cannot access upgrade queue.</EmptyListMessage>}
     </ListCard>

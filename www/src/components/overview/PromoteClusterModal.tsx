@@ -4,7 +4,7 @@ import { useCallback, useState } from 'react'
 
 import { Cluster } from '../../generated/graphql'
 
-import { ClusterPicker } from './ClusterPicker'
+import { ClusterPicker } from '../utils/ClusterPicker'
 
 // TODO: Implement logic. Use createClusterDependency before promote.
 export function PromoteClusterModal({ open, setOpen }) {

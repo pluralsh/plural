@@ -3,6 +3,7 @@ import {
   FormField,
   ListBoxItem,
   Select,
+  WrapWithIf,
 } from '@pluralsh/design-system'
 import {
   Dispatch,
@@ -12,8 +13,9 @@ import {
 } from 'react'
 
 import ClustersContext from '../../contexts/ClustersContext'
-import { ProviderIcon } from '../utils/ProviderIcon'
 import { Cluster } from '../../generated/graphql'
+
+import { ProviderIcon } from './ProviderIcon'
 
 type ClusterPickerProps = {
     cluster: Cluster | undefined
@@ -46,7 +48,10 @@ export function ClusterPicker({
   }, [clusters]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <FormField label={heading}>
+    <WrapWithIf
+      condition={!!heading}
+      wrapper={<FormField label={heading} />}
+    >
       <Select
         label={placeholder}
         selectedKey={cluster?.id}
@@ -77,6 +82,6 @@ export function ClusterPicker({
           />
         ))}
       </Select>
-    </FormField>
+    </WrapWithIf>
   )
 }

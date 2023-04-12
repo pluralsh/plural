@@ -5341,7 +5341,7 @@ export type CategoryFragment = { __typename?: 'CategoryInfo', category?: Categor
 
 export type RepoFragment = { __typename?: 'Repository', id: string, name: string, notes?: string | null, description?: string | null, documentation?: string | null, icon?: string | null, darkIcon?: string | null, private?: boolean | null, trending?: boolean | null, verified?: boolean | null, category?: Category | null, oauthSettings?: { __typename?: 'OauthSettings', uriFormat: string, authMethod: OidcAuthMethod } | null, publisher?: { __typename?: 'Publisher', id?: string | null, name: string, phone?: string | null, avatar?: string | null, description?: string | null, backgroundColor?: string | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, address?: { __typename?: 'Address', line1?: string | null, line2?: string | null, city?: string | null, country?: string | null, state?: string | null, zip?: string | null } | null } | null, recipes?: Array<{ __typename?: 'Recipe', name: string, provider?: Provider | null, description?: string | null } | null> | null };
 
-export type RepositoryFragment = { __typename?: 'Repository', id: string, name: string, notes?: string | null, icon?: string | null, darkIcon?: string | null, description?: string | null, publisher?: { __typename?: 'Publisher', name: string } | null, recipes?: Array<{ __typename?: 'Recipe', name: string } | null> | null };
+export type MarketplaceRepositoryFragment = { __typename?: 'Repository', id: string, name: string, description?: string | null, releaseStatus?: ReleaseStatus | null, documentation?: string | null, icon?: string | null, darkIcon?: string | null, private?: boolean | null, trending?: boolean | null, verified?: boolean | null, category?: Category | null, oauthSettings?: { __typename?: 'OauthSettings', uriFormat: string, authMethod: OidcAuthMethod } | null, publisher?: { __typename?: 'Publisher', id?: string | null, name: string, phone?: string | null, avatar?: string | null, description?: string | null, backgroundColor?: string | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, address?: { __typename?: 'Address', line1?: string | null, line2?: string | null, city?: string | null, country?: string | null, state?: string | null, zip?: string | null } | null } | null, installation?: { __typename?: 'Installation', id: string, context?: Map<string, unknown> | null, license?: string | null, licenseKey?: string | null, acmeKeyId?: string | null, acmeSecret?: string | null, autoUpgrade?: boolean | null, trackTag: string, repository?: { __typename?: 'Repository', id: string, name: string, notes?: string | null, description?: string | null, documentation?: string | null, icon?: string | null, darkIcon?: string | null, private?: boolean | null, trending?: boolean | null, verified?: boolean | null, category?: Category | null, oauthSettings?: { __typename?: 'OauthSettings', uriFormat: string, authMethod: OidcAuthMethod } | null, publisher?: { __typename?: 'Publisher', id?: string | null, name: string, phone?: string | null, avatar?: string | null, description?: string | null, backgroundColor?: string | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, address?: { __typename?: 'Address', line1?: string | null, line2?: string | null, city?: string | null, country?: string | null, state?: string | null, zip?: string | null } | null } | null, recipes?: Array<{ __typename?: 'Recipe', name: string, provider?: Provider | null, description?: string | null } | null> | null } | null, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, oidcProvider?: { __typename?: 'OidcProvider', id: string, clientId: string, authMethod: OidcAuthMethod, clientSecret: string, redirectUris?: Array<string | null> | null, bindings?: Array<{ __typename?: 'OidcProviderBinding', id: string, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, group?: { __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null } | null> | null, configuration?: { __typename?: 'OuathConfiguration', issuer?: string | null, authorizationEndpoint?: string | null, tokenEndpoint?: string | null, jwksUri?: string | null, userinfoEndpoint?: string | null } | null } | null } | null, tags?: Array<{ __typename?: 'Tag', tag: string } | null> | null };
 
 export type DependenciesFragment = { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', name?: string | null, repo?: string | null, type?: DependencyType | null, version?: string | null, optional?: boolean | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null };
 
@@ -5410,12 +5410,14 @@ export type UnlockRepositoryMutationVariables = Exact<{
 
 export type UnlockRepositoryMutation = { __typename?: 'RootMutationType', unlockRepository?: number | null };
 
-export type ListRepositoriesQueryVariables = Exact<{
-  q?: InputMaybe<Scalars['String']>;
+export type MarketplaceRepositoriesQueryVariables = Exact<{
+  publisherId?: InputMaybe<Scalars['ID']>;
+  tag?: InputMaybe<Scalars['String']>;
+  cursor?: InputMaybe<Scalars['String']>;
 }>;
 
 
-export type ListRepositoriesQuery = { __typename?: 'RootQueryType', repositories?: { __typename?: 'RepositoryConnection', edges?: Array<{ __typename?: 'RepositoryEdge', node?: { __typename?: 'Repository', id: string, name: string, notes?: string | null, icon?: string | null, darkIcon?: string | null, description?: string | null, publisher?: { __typename?: 'Publisher', name: string } | null, recipes?: Array<{ __typename?: 'Recipe', name: string } | null> | null } | null } | null> | null } | null };
+export type MarketplaceRepositoriesQuery = { __typename?: 'RootQueryType', repositories?: { __typename?: 'RepositoryConnection', pageInfo: { __typename?: 'PageInfo', endCursor?: string | null, hasNextPage: boolean }, edges?: Array<{ __typename?: 'RepositoryEdge', node?: { __typename?: 'Repository', id: string, name: string, description?: string | null, releaseStatus?: ReleaseStatus | null, documentation?: string | null, icon?: string | null, darkIcon?: string | null, private?: boolean | null, trending?: boolean | null, verified?: boolean | null, category?: Category | null, oauthSettings?: { __typename?: 'OauthSettings', uriFormat: string, authMethod: OidcAuthMethod } | null, publisher?: { __typename?: 'Publisher', id?: string | null, name: string, phone?: string | null, avatar?: string | null, description?: string | null, backgroundColor?: string | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, address?: { __typename?: 'Address', line1?: string | null, line2?: string | null, city?: string | null, country?: string | null, state?: string | null, zip?: string | null } | null } | null, installation?: { __typename?: 'Installation', id: string, context?: Map<string, unknown> | null, license?: string | null, licenseKey?: string | null, acmeKeyId?: string | null, acmeSecret?: string | null, autoUpgrade?: boolean | null, trackTag: string, repository?: { __typename?: 'Repository', id: string, name: string, notes?: string | null, description?: string | null, documentation?: string | null, icon?: string | null, darkIcon?: string | null, private?: boolean | null, trending?: boolean | null, verified?: boolean | null, category?: Category | null, oauthSettings?: { __typename?: 'OauthSettings', uriFormat: string, authMethod: OidcAuthMethod } | null, publisher?: { __typename?: 'Publisher', id?: string | null, name: string, phone?: string | null, avatar?: string | null, description?: string | null, backgroundColor?: string | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, address?: { __typename?: 'Address', line1?: string | null, line2?: string | null, city?: string | null, country?: string | null, state?: string | null, zip?: string | null } | null } | null, recipes?: Array<{ __typename?: 'Recipe', name: string, provider?: Provider | null, description?: string | null } | null> | null } | null, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, oidcProvider?: { __typename?: 'OidcProvider', id: string, clientId: string, authMethod: OidcAuthMethod, clientSecret: string, redirectUris?: Array<string | null> | null, bindings?: Array<{ __typename?: 'OidcProviderBinding', id: string, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, group?: { __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null } | null> | null, configuration?: { __typename?: 'OuathConfiguration', issuer?: string | null, authorizationEndpoint?: string | null, tokenEndpoint?: string | null, jwksUri?: string | null, userinfoEndpoint?: string | null } | null } | null } | null, tags?: Array<{ __typename?: 'Tag', tag: string } | null> | null } | null } | null> | null } | null };
 
 export type ScaffoldsQueryVariables = Exact<{
   app: Scalars['String'];
@@ -6774,22 +6776,35 @@ export const CategoryFragmentDoc = gql`
   count
 }
     `;
-export const RepositoryFragmentDoc = gql`
-    fragment Repository on Repository {
+export const MarketplaceRepositoryFragmentDoc = gql`
+    fragment MarketplaceRepository on Repository {
   id
   name
-  notes
+  description
+  releaseStatus
+  documentation
   icon
   darkIcon
-  description
-  publisher {
-    name
+  private
+  trending
+  verified
+  category
+  oauthSettings {
+    uriFormat
+    authMethod
   }
-  recipes {
-    name
+  publisher {
+    ...Publisher
+  }
+  installation {
+    ...Installation
+  }
+  tags {
+    tag
   }
 }
-    `;
+    ${PublisherFragmentDoc}
+${InstallationFragmentDoc}`;
 export const IntegrationFragmentDoc = gql`
     fragment Integration on Integration {
   id
@@ -9027,45 +9042,51 @@ export function useUnlockRepositoryMutation(baseOptions?: Apollo.MutationHookOpt
 export type UnlockRepositoryMutationHookResult = ReturnType<typeof useUnlockRepositoryMutation>;
 export type UnlockRepositoryMutationResult = Apollo.MutationResult<UnlockRepositoryMutation>;
 export type UnlockRepositoryMutationOptions = Apollo.BaseMutationOptions<UnlockRepositoryMutation, UnlockRepositoryMutationVariables>;
-export const ListRepositoriesDocument = gql`
-    query ListRepositories($q: String) {
-  repositories(q: $q, first: 100) {
+export const MarketplaceRepositoriesDocument = gql`
+    query MarketplaceRepositories($publisherId: ID, $tag: String, $cursor: String) {
+  repositories(publisherId: $publisherId, tag: $tag, after: $cursor, first: 200) {
+    pageInfo {
+      ...PageInfo
+    }
     edges {
       node {
-        ...Repository
+        ...MarketplaceRepository
       }
     }
   }
 }
-    ${RepositoryFragmentDoc}`;
+    ${PageInfoFragmentDoc}
+${MarketplaceRepositoryFragmentDoc}`;
 
 /**
- * __useListRepositoriesQuery__
+ * __useMarketplaceRepositoriesQuery__
  *
- * To run a query within a React component, call `useListRepositoriesQuery` and pass it any options that fit your needs.
- * When your component renders, `useListRepositoriesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useMarketplaceRepositoriesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMarketplaceRepositoriesQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useListRepositoriesQuery({
+ * const { data, loading, error } = useMarketplaceRepositoriesQuery({
  *   variables: {
- *      q: // value for 'q'
+ *      publisherId: // value for 'publisherId'
+ *      tag: // value for 'tag'
+ *      cursor: // value for 'cursor'
  *   },
  * });
  */
-export function useListRepositoriesQuery(baseOptions?: Apollo.QueryHookOptions<ListRepositoriesQuery, ListRepositoriesQueryVariables>) {
+export function useMarketplaceRepositoriesQuery(baseOptions?: Apollo.QueryHookOptions<MarketplaceRepositoriesQuery, MarketplaceRepositoriesQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<ListRepositoriesQuery, ListRepositoriesQueryVariables>(ListRepositoriesDocument, options);
+        return Apollo.useQuery<MarketplaceRepositoriesQuery, MarketplaceRepositoriesQueryVariables>(MarketplaceRepositoriesDocument, options);
       }
-export function useListRepositoriesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ListRepositoriesQuery, ListRepositoriesQueryVariables>) {
+export function useMarketplaceRepositoriesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MarketplaceRepositoriesQuery, MarketplaceRepositoriesQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<ListRepositoriesQuery, ListRepositoriesQueryVariables>(ListRepositoriesDocument, options);
+          return Apollo.useLazyQuery<MarketplaceRepositoriesQuery, MarketplaceRepositoriesQueryVariables>(MarketplaceRepositoriesDocument, options);
         }
-export type ListRepositoriesQueryHookResult = ReturnType<typeof useListRepositoriesQuery>;
-export type ListRepositoriesLazyQueryHookResult = ReturnType<typeof useListRepositoriesLazyQuery>;
-export type ListRepositoriesQueryResult = Apollo.QueryResult<ListRepositoriesQuery, ListRepositoriesQueryVariables>;
+export type MarketplaceRepositoriesQueryHookResult = ReturnType<typeof useMarketplaceRepositoriesQuery>;
+export type MarketplaceRepositoriesLazyQueryHookResult = ReturnType<typeof useMarketplaceRepositoriesLazyQuery>;
+export type MarketplaceRepositoriesQueryResult = Apollo.QueryResult<MarketplaceRepositoriesQuery, MarketplaceRepositoriesQueryVariables>;
 export const ScaffoldsDocument = gql`
     query Scaffolds($app: String!, $pub: String!, $cat: Category!, $ing: Boolean, $pg: Boolean) {
   scaffold(
@@ -10384,7 +10405,7 @@ export const namedOperations = {
     GetStack: 'GetStack',
     ListStacks: 'ListStacks',
     Repository: 'Repository',
-    ListRepositories: 'ListRepositories',
+    MarketplaceRepositories: 'MarketplaceRepositories',
     Scaffolds: 'Scaffolds',
     GetTfProviders: 'GetTfProviders',
     GetTfProviderScaffold: 'GetTfProviderScaffold',
@@ -10517,7 +10538,7 @@ export const namedOperations = {
     ApplyLock: 'ApplyLock',
     Category: 'Category',
     Repo: 'Repo',
-    Repository: 'Repository',
+    MarketplaceRepository: 'MarketplaceRepository',
     Dependencies: 'Dependencies',
     Integration: 'Integration',
     CloudShell: 'CloudShell',

@@ -14,7 +14,6 @@ import {
   FiltersIcon,
   Input,
   MagnifyingGlassIcon,
-  TabPanel,
 } from '@pluralsh/design-system'
 import Fuse from 'fuse.js'
 import styled from 'styled-components'
@@ -26,8 +25,6 @@ import { upperFirst } from 'lodash'
 
 import { growthbook } from '../../helpers/growthbook'
 
-import usePaginatedQuery from '../../hooks/usePaginatedQuery'
-
 import { GoBack } from '../utils/GoBack'
 
 import { ResponsiveLayoutSidecarContainer } from '../utils/layout/ResponsiveLayoutSidecarContainer'
@@ -38,7 +35,9 @@ import PublisherSideCar from '../publisher/PublisherSideCar'
 
 import LoadingIndicator from '../utils/LoadingIndicator'
 
-import { MARKETPLACE_QUERY } from './queries'
+import { useMarketplaceRepositoriesQuery } from '../../generated/graphql'
+
+import { usePaginatedQueryHook } from '../../hooks/usePaginatedQuery'
 
 import MarketplaceSidebar from './MarketplaceSidebar'
 import MarketplaceStacks from './MarketplaceStacks'
@@ -60,7 +59,7 @@ const chipProps = {
 const sidebarWidth = 256 - 32
 
 // @ts-expect-error
-const StyledTabPanel = styled(TabPanel)(() => ({
+const MainContentArea = styled(Div)(() => ({
   display: 'flex',
   flexDirection: 'column',
   flexGrow: 1,
@@ -74,14 +73,13 @@ function MarketplaceRepositories({ publisher }: {publisher?: any}) {
   const backRepositoryName = searchParams.get('backRepositoryName')
   const [search, setSearch] = useState('')
   const [areFiltersOpen, setAreFiltersOpen] = useState(true)
-  const tabStateRef = useRef<any>(null)
 
   const [
     repositories,
     loadingRepositories,
     hasMoreRepositories,
     fetchMoreRepositories,
-  ] = usePaginatedQuery(MARKETPLACE_QUERY,
+  ] = usePaginatedQueryHook(useMarketplaceRepositoriesQuery,
     {
       variables: {
         ...(publisher ? { publisherId: publisher.id } : {}),
@@ -127,27 +125,27 @@ function MarketplaceRepositories({ publisher }: {publisher?: any}) {
     return <LoadingIndicator />
   }
 
-  const sortedRepositories = orderBy(repositories.slice(),
-    ['trending', r => r.name.toLowerCase()],
-    ['desc', 'asc'])
+  const sortedRepositories = (orderBy(repositories,
+    ['trending', r => (r as typeof repositories[number])?.name?.toLowerCase()],
+    ['desc', 'asc']) as typeof repositories)
     .filter(repository => (categories.length
-      ? categories.some(category => category === repository.category.toLowerCase()
-              || (category === 'installed' && repository.installation))
+      ? categories.some(category => category === repository?.category?.toLowerCase()
+              || (category === 'installed' && repository?.installation))
       : true))
     .filter(repository => {
       if (!tags.length) return true
 
-      const repositoryTags = repository.tags.map(({ tag }) => tag.toLowerCase())
+      const repositoryTags = repository?.tags?.map(t => t?.tag.toLowerCase())
 
-      return tags.some(tag => repositoryTags.includes(tag))
+      return tags.some(tag => repositoryTags?.includes(tag))
     })
 
   const fuse = new Fuse(sortedRepositories, searchOptions)
 
   const resultRepositories = search
-    ? orderBy(fuse.search(search).map(({ item }) => item),
-      ['trending', r => r.name.toLowerCase()],
-      ['desc', 'asc'])
+    ? (orderBy(fuse.search(search).map(({ item }) => item),
+      ['trending', r => (r as typeof repositories[number])?.name.toLowerCase()],
+      ['desc', 'asc']) as typeof repositories)
     : sortedRepositories
 
   function handleClearToken(key, value) {

@@ -34,7 +34,7 @@ import {
   useKeyBackupsQuery,
 } from '../../generated/graphql'
 import { GqlError } from '../utils/Alert'
-import { removeConnection, updateCache } from '../../utils/graphql'
+import { mapExistingNodes, removeConnection, updateCache } from '../../utils/graphql'
 import useOnOff from '../../hooks/useOnOff'
 import { ShellType, useShellType } from '../../hooks/useShellType'
 
@@ -264,34 +264,12 @@ function CreateKeyButton() {
   )
 }
 
-type Edge<T> = { node?: T } | null | undefined
-type Connection<T> = {
-  edges?: Edge<T | null | undefined>[] | null | undefined
-}
-
-export function mapExistingConnectionNodes<T, R>(connection: Connection<T> | null | undefined,
-  mapper: (node: T) => R) {
-  if (!connection?.edges) {
-    return undefined
-  }
-  const { edges } = connection
-
-  return edges.reduce((prev, edge) => {
-    if (edge?.node) {
-      return [...prev, mapper(edge.node)]
-    }
-
-    return prev
-  }, [] as R[])
-}
-
 export function KeyBackups() {
   const { data, error } = useKeyBackupsQuery({
     pollInterval: 10000,
   })
 
-  const keyBackups = mapExistingConnectionNodes(data?.keyBackups,
-    edge => edge)?.sort((a, b) => (a.name === b.name ? 0 : a.name < b.name ? -1 : 1))
+  const keyBackups = mapExistingNodes(data?.keyBackups)?.sort((a, b) => (a.name === b.name ? 0 : a.name < b.name ? -1 : 1))
 
   if (error) return <GqlError error={error} />
 

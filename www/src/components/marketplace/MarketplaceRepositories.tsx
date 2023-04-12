@@ -236,14 +236,16 @@ function MarketplaceRepositories({ publisher }: {publisher?: any}) {
             <ResponsiveLayoutSpacer />
           </>
         )}
-        <StyledTabPanel
-          stateRef={tabStateRef}
+        <MainContentArea
           width={publisher ? 928 : null} // 896 + 32 margin
           maxWidth-desktopLarge-up={publisher ? 928 : null}
           width-desktopLarge-up={publisher ? 928 : null}
         >
           {publisher && (
-            <Div paddingLeft="large">
+            <Div
+              paddingLeft="large"
+              paddingRight="large"
+            >
               <H1 title1>{capitalize(publisher.name)}'s Apps</H1>
               <Hr
                 marginTop="large"
@@ -384,7 +386,7 @@ function MarketplaceRepositories({ publisher }: {publisher?: any}) {
               </EmptyState>
             )}
           </Div>
-        </StyledTabPanel>
+        </MainContentArea>
         {!publisher && (
           <Div
             display="flex"
@@ -410,8 +412,13 @@ function MarketplaceRepositories({ publisher }: {publisher?: any}) {
         )}
         {publisher && (
           <>
-            <ResponsiveLayoutSidecarContainer>
-              <PublisherSideCar publisher={publisher} />
+            <ResponsiveLayoutSidecarContainer
+              marginRight="large"
+              marginLeft={0}
+            >
+              <PublisherSideCar
+                publisher={publisher}
+              />
             </ResponsiveLayoutSidecarContainer>
             <ResponsiveLayoutSpacer />
           </>

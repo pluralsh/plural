@@ -19,11 +19,7 @@ function Marketplace({ publisher = null }: any) {
   useSetBreadcrumbs(breadcrumbs)
 
   return (
-    <ResponsiveLayoutPage padding={0}>
-      {!publisher && <ResponsiveLayoutSpacer />}
-      <MarketplaceRepositories publisher={publisher} />
-      {!publisher && <ResponsiveLayoutSpacer />}
-    </ResponsiveLayoutPage>
+    <MarketplaceRepositories publisher={publisher} />
   )
 }
 

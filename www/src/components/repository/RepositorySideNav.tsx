@@ -95,7 +95,7 @@ function RepositorySideNav({
           <A
             inline
             as={Link}
-            to={`/publisher/${repository.publisher.id}?backRepositoryName=${repository.name}`}
+            to={`/publisher/${repository.publisher.id}`}
           >
             {capitalize(repository.publisher.name)}
           </A>

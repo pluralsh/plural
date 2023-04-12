@@ -1,13 +1,7 @@
 import { useCallback, useMemo, useState } from 'react'
 import { useQuery } from '@apollo/client'
 import { useSearchParams } from 'react-router-dom'
-import {
-  A,
-  Accordion,
-  Div,
-  Flex,
-  P,
-} from 'honorable'
+import { A, Accordion, Div } from 'honorable'
 import {
   Card,
   Checkbox,
@@ -18,8 +12,6 @@ import Fuse from 'fuse.js'
 import capitalize from 'lodash/capitalize'
 
 import styled from 'styled-components'
-
-import { Sidebar } from 'grommet'
 
 import usePaginatedQuery from '../../hooks/usePaginatedQuery'
 

@@ -53,11 +53,10 @@ export function usePaginatedQueryHook<Q, V extends OperationVars, N>(hook: Apoll
 
   const results = hook({
     ...options,
-    // @ts-expect-error
     variables: {
       ...(options?.variables || {}),
       cursor,
-    },
+    } as any,
   })
 
   const workingResults = useMemo(() => (results?.data ? getResults(results.data) : undefined),

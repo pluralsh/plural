@@ -2,10 +2,6 @@ import { useSetBreadcrumbs } from '@pluralsh/design-system'
 
 import { useMemo } from 'react'
 
-import { ResponsiveLayoutPage } from '../utils/layout/ResponsiveLayoutPage'
-
-import { ResponsiveLayoutSpacer } from '../utils/layout/ResponsiveLayoutSpacer'
-
 import MarketplaceRepositories from './MarketplaceRepositories'
 
 export const MARKETPLACE_CRUMB = { label: 'marketplace', url: '/marketplace' }

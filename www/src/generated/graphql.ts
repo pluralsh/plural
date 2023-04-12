@@ -395,6 +395,8 @@ export type Cluster = {
   account?: Maybe<Account>;
   /** The URL of the console running on the cluster. */
   consoleUrl?: Maybe<Scalars['String']>;
+  /** the dependencies a cluster has */
+  dependency: ClusterDependency;
   /** The domain name used for applications deployed on the cluster. */
   domain?: Maybe<Scalars['String']>;
   /** The git repository URL for the cluster. */
@@ -511,6 +513,15 @@ export type ContextAttributes = {
   buckets?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   configuration: Scalars['Map'];
   domains?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+};
+
+/** An external repository contributor */
+export type Contributor = {
+  __typename?: 'Contributor';
+  id: Scalars['ID'];
+  insertedAt?: Maybe<Scalars['DateTime']>;
+  updatedAt?: Maybe<Scalars['DateTime']>;
+  user?: Maybe<User>;
 };
 
 export type Crd = {
@@ -2331,6 +2342,8 @@ export type Repository = {
   category?: Maybe<Category>;
   /** The community links of the application. */
   community?: Maybe<Community>;
+  /** The external contributors to this repository */
+  contributors?: Maybe<Array<Maybe<Contributor>>>;
   darkIcon?: Maybe<Scalars['String']>;
   /** The default tag to deploy. */
   defaultTag?: Maybe<Scalars['String']>;
@@ -2395,6 +2408,8 @@ export type RepositoryAttributes = {
   category?: InputMaybe<Category>;
   /** The application's community links. */
   community?: InputMaybe<CommunityAttributes>;
+  /** List of emails of external users contributing to this repository and who will be granted access */
+  contributors?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   /** The application's dark icon. */
   darkIcon?: InputMaybe<Scalars['UploadOrUrl']>;
   /** The default tag to use when deploying the application. */

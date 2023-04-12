@@ -5,6 +5,7 @@ defmodule Core.Schema.Cluster do
     Account,
     UpgradeQueue,
     Recipe.Provider,
+    ClusterDependency,
     Installation.Source
   }
 
@@ -21,7 +22,9 @@ defmodule Core.Schema.Cluster do
 
     belongs_to :owner,   User
     belongs_to :account, Account
+
     has_one :queue,      UpgradeQueue
+    has_one :dependency, ClusterDependency
 
     timestamps()
   end

@@ -30,6 +30,8 @@ defmodule GraphQl.Schema.Cluster do
       cluster, _, _ -> Cluster.upgrade_info(cluster)
     end
 
+    field :dependency, non_null(:cluster_dependency), resolve: dataloader(Cluster), description: "the dependencies a cluster has"
+
     field :owner,   :user, resolve: dataloader(User), description: "The user that owns the cluster."
     field :account, :account, resolve: dataloader(Account), description: "The account that the cluster belongs to."
     field :queue,   :upgrade_queue, resolve: dataloader(Upgrade), description: "The upgrade queue for applications running on the cluster."

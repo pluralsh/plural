@@ -130,7 +130,8 @@ function MarketplaceRepositories({ publisher }: {publisher?: any}) {
     ['desc', 'asc']) as typeof repositories)
     .filter(repository => (categories.length
       ? categories.some(category => category === repository?.category?.toLowerCase()
-              || (category === 'installed' && repository?.installation))
+        || (category === 'installed' && repository?.installation)
+        || category === 'trending' && repository.trending)
       : true))
     .filter(repository => {
       if (!tags.length) return true

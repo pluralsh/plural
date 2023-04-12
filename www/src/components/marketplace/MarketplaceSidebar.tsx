@@ -98,7 +98,10 @@ function MarketplaceSidebar(props) {
   }
 
   function renderCategories() {
-    const sortedCategories = [{ category: 'Installed' }, ...filteredCategories.slice().sort((a, b) => a.category.localeCompare(b.category))]
+    const sortedCategories = [
+      { category: 'Installed' },
+      { category: 'Trending' },
+      ...filteredCategories.slice().sort((a, b) => a.category.localeCompare(b.category))]
 
     return (
       <AccordionWithExpanded

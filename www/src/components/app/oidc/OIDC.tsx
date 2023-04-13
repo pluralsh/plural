@@ -17,19 +17,19 @@ import {
   PageTitle,
   Toast,
 } from '@pluralsh/design-system'
-import { useNavigate, useParams } from 'react-router-dom'
+// import { useNavigate, useParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 
-import { BindingInput, fetchGroups, fetchUsers } from '../account/Typeaheads'
-import { GqlError } from '../utils/Alert'
-import { deepUpdate, updateCache } from '../../utils/graphql'
-import { sanitize } from '../account/utils'
-import { CREATE_PROVIDER, UPDATE_PROVIDER } from '../oidc/queries'
-import { AuthMethod } from '../oidc/types'
-import { useRepositoryContext } from '../../contexts/RepositoryContext'
-import usePrevious from '../../hooks/usePrevious'
+import { BindingInput, fetchGroups, fetchUsers } from '../../account/Typeaheads'
+import { GqlError } from '../../utils/Alert'
+import { deepUpdate, updateCache } from '../../../utils/graphql'
+import { sanitize } from '../../account/utils'
+import { CREATE_PROVIDER, UPDATE_PROVIDER } from '../../oidc/queries'
+import { AuthMethod } from '../../oidc/types'
+// import { useRepositoryContext } from '../../../../contexts/RepositoryContext'
+import usePrevious from '../../../hooks/usePrevious'
 
-import { REPO_Q } from './packages/queries'
+import { REPO_Q } from '../../repository/packages/queries'
 
 function UrlsInput({ uriFormat = '', urls, setUrls }: any) {
   const [baseScheme, basePath] = ['https://', '/oauth2/callback']
@@ -327,17 +327,19 @@ export function UpdateProvider({
   )
 }
 
-export function OIDCProvider() {
-  const navigate = useNavigate()
-  const { installation } = useRepositoryContext()
-  const { name } = useParams()
+export function OIDC() {
+  // const navigate = useNavigate()
+  // const { installation } = useRepositoryContext()
+  // const { name } = useParams()
 
-  useEffect(() => {
-    if (!installation) navigate(-1)
-  }, [name, installation, navigate])
+  // useEffect(() => {
+  //   if (!installation) navigate(-1)
+  // }, [name, installation, navigate])
 
-  if (!installation) return null
-  if (installation.oidcProvider) return <UpdateProvider installation={installation} />
+  // if (!installation) return null
+  // if (installation.oidcProvider) return <UpdateProvider installation={installation} />
 
-  return <CreateProvider installation={installation} />
+  // return <CreateProvider installation={installation} />
+
+  return <>oidc</>
 }

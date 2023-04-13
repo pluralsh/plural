@@ -65,7 +65,7 @@ const MENU_ITEMS: MenuItem[] = [
     text: 'Clusters',
     icon: <ClusterIcon />,
     path: '/overview',
-    pathRegexp: /^\/(overview|clusters)/,
+    pathRegexp: /^\/(overview|clusters|apps)/,
   },
   {
     text: 'Cloud Shell',

@@ -32,14 +32,14 @@ export function Cluster() {
   const [adminsOpen, setAdminsOpen] = useState(false)
   const [metadataOpen, setMetadataOpen] = useState(false)
   const navigate = useNavigate()
-  const { id } = useParams()
+  const { clusterId } = useParams()
   const { clusters } = useContext(ClustersContext)
-  const [cluster, setCluster] = useState(clusters.find(c => c.id === id))
+  const [cluster, setCluster] = useState(clusters.find(({ id }) => id === clusterId))
   const breadcrumbs = useMemo(() => [
     CLUSTERS_ROOT_CRUMB,
-    { label: `${cluster?.name}`, url: `/clusters/${id}` },
+    { label: `${cluster?.name}`, url: `/clusters/${clusterId}` },
   ],
-  [cluster?.name, id])
+  [cluster?.name, clusterId])
 
   useEffect(() => navigate(`/clusters/${cluster?.id}`), [cluster?.id, navigate])
   useSetBreadcrumbs(breadcrumbs)
@@ -49,7 +49,7 @@ export function Cluster() {
       <EmptyState
         icon={<WarningOutlineIcon size={100} />}
         message="Cluster not found"
-        description={`No clusters found with ID ${id}.`}
+        description={`No clusters found with ID ${clusterId}.`}
       >
         <Button onClick={() => navigate('/overview/clusters')}>
           Go to cluster overview

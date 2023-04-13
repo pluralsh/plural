@@ -19,7 +19,7 @@ import capitalize from 'lodash/capitalize'
 import { Actions } from '../account/Actions'
 import { GqlError } from '../utils/Alert'
 
-import { DELETE_INSTALLATION_MUTATION, UPDATE_INSTALLATION } from './queries'
+import { DELETE_INSTALLATION_MUTATION, UPDATE_INSTALLATION } from '../repository/queries'
 
 function MiniHeader({ header, description }: any) {
   return (

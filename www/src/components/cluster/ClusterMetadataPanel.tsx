@@ -70,12 +70,12 @@ export default function ClusterMetadataPanel({ cluster, open, setOpen }: Cluster
         title="Last pinged"
         margin={0}
       >
-        {cluster.queue?.pingedAt ? (
+        {cluster.pingedAt ? (
           <Tooltip
-            label={moment(cluster.queue.pingedAt).format('lll')}
+            label={moment(cluster.pingedAt).format('lll')}
             placement="top"
           >
-            <span>{moment(cluster.queue.pingedAt).fromNow()}</span>
+            <span>{moment(cluster.pingedAt).fromNow()}</span>
           </Tooltip>
         ) : '-'}
       </Prop>

@@ -58,12 +58,12 @@ export function ClusterSidecar({ cluster }: ClusterSidecarProps): ReactElement {
           {cluster.queue?.acked || '-'}
         </SidecarItem>
         <SidecarItem heading="Last pinged">
-          {cluster.queue?.pingedAt ? (
+          {cluster.pingedAt ? (
             <Tooltip
-              label={moment(cluster.queue.pingedAt).format('lll')}
+              label={moment(cluster.pingedAt).format('lll')}
               placement="top"
             >
-              <span>{moment(cluster.queue.pingedAt).fromNow()}</span>
+              <span>{moment(cluster.pingedAt).fromNow()}</span>
             </Tooltip>
           ) : '-'}
         </SidecarItem>

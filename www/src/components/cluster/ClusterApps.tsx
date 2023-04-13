@@ -69,6 +69,7 @@ export function ClusterApps({
           >
             {filteredApps.map((app, i) => (
               <ClusterApp
+                key={app.id}
                 app={app}
                 consoleUrl={ensureURLValidity(consoleUrl)}
                 last={i === apps.length - 1}

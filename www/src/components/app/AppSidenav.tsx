@@ -1,7 +1,6 @@
 import { MutableRefObject, useImperativeHandle, useRef } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { useLocation, useParams } from 'react-router-dom'
 import {
-  A,
   Div,
   Flex,
   Img,
@@ -15,35 +14,29 @@ import { LinkTabWrap } from '../utils/Tabs'
 import { SideNavOffset } from '../utils/layout/SideNavOffset'
 
 const DIRECTORY = [
-  { label: 'Readme', path: '' },
-  { label: 'Packages', path: '/packages' },
-  { label: 'Tests', path: '/tests' },
-  { label: 'Deployments', path: '/deployments' },
-  { label: 'Artifacts', path: '/artifacts' },
-  { label: 'Edit', path: '/edit' },
+  { label: 'Upgrade channel', path: '/upgrade' },
+  { label: 'OpenID Connect', path: '/oidc' },
+  { label: 'Uninstall', path: '/uninstall' },
 ]
 
-function RepositorySideNav({
+export default function AppSidenav({
   tabStateRef: outerTabStateRef,
   ...props
 }: {
   tabStateRef: MutableRefObject<any>
 }) {
+  const { clusterId, appId } = useParams()
   const repository = useRepositoryContext()
 
   const { pathname } = useLocation()
   const tabStateRef = useRef<any>()
 
   useImperativeHandle(outerTabStateRef, () => ({ ...(tabStateRef.current || {}) }))
-  const pathPrefix = `/repository/${repository.name}`
+  const pathPrefix = `/apps/${clusterId}/${appId}`
   const filteredDirectory = DIRECTORY.filter(({ path }) => {
     switch (path) {
-    case '/artifacts':
-      return repository.artifacts && repository.artifacts.length > 0
-      break
-    case '/edit':
-      return !!repository.editable
-      break
+    case '/oidc':
+      return repository.oauthSettings
     default:
       return true
     }
@@ -81,22 +74,6 @@ function RepositorySideNav({
           <P subtitle1>{capitalize(repository.name)}</P>
         </Div>
       </Flex>
-      {repository.publisher && (
-        <P
-          body2
-          color="text-xlight"
-          marginTop="medium"
-        >
-          Published by&nbsp;
-          <A
-            inline
-            as={Link}
-            to={`/publisher/${repository.publisher.id}`}
-          >
-            {capitalize(repository.publisher.name)}
-          </A>
-        </P>
-      )}
       <SideNavOffset
         marginTop="medium"
       >
@@ -121,5 +98,3 @@ function RepositorySideNav({
     </Flex>
   )
 }
-
-export default RepositorySideNav

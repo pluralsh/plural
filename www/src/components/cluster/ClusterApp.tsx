@@ -6,7 +6,7 @@ import {
   ListBoxItem,
 } from '@pluralsh/design-system'
 import { Flex, Span } from 'honorable'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 
 import { Repository } from '../../generated/graphql'
 import { MoreMenu } from '../account/MoreMenu'
@@ -27,6 +27,7 @@ export function ClusterApp({
   last,
 }: ClusterAppProps): ReactElement {
   const navigate = useNavigate()
+  const { clusterId } = useParams()
 
   const menuItems = {
     manageOnConsole: {
@@ -37,7 +38,7 @@ export function ClusterApp({
     appSettings: {
       icon: <GearTrainIcon />,
       label: 'App settings',
-      onSelect: () => navigate('/'), // TODO: Navigate.
+      onSelect: () => navigate(`/apps/${clusterId}/${name}`),
     },
   }
 

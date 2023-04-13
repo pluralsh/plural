@@ -12,10 +12,12 @@ import {
   useRef,
   useState,
 } from 'react'
+
 import { Terminal as XTerm } from 'xterm'
 import { FitAddon } from 'xterm-addon-fit'
 import { useResizeDetector } from 'react-resize-detector'
 
+import { useAuthToken } from '../../../contexts/AuthTokenContext'
 import { socket } from '../../../helpers/client'
 
 import { normalizedThemes } from './actionbar/theme/themes'
@@ -45,7 +47,24 @@ const resize = (fitAddon: FitAddon, channel: any, terminal: XTerm) => {
 function Terminal({ provider }) {
   const terminalRef = useRef<HTMLElement>()
   const { theme } = useContext(TerminalThemeContext)
-  const { state, setState, setOnAction } = useContext(TerminalContext)
+  const terminalCtx = useContext(TerminalContext)
+  const { state, setState, setOnAction } = terminalCtx
+  const authToken = useAuthToken()
+
+  useEffect(() => {
+    let skipCallback = false
+    const callback = () => {
+      if (!skipCallback) {
+        socket.connect(authToken ? { Authorization: `Bearer ${authToken}` } : {})
+      }
+    }
+
+    socket.disconnect(callback)
+
+    return () => {
+      skipCallback = true
+    }
+  }, [authToken])
 
   const [channel, setChannel] = useState<any>()
   const [loaded, setLoaded] = useState(false)

@@ -133,7 +133,9 @@ function ImpersonatedShell() {
   const { clusters } = useContext(ClustersContext)
   const [params, setSearchParams] = useSearchParams()
   const clusterId = params.get('cluster')
-  const [cluster, setCluster] = useState<Cluster | undefined>(!isEmpty(clusters) ? getCluster(clusterId, clusters) || clusters[0] : undefined)
+  const [cluster, setCluster] = useState<Cluster | undefined>(!isEmpty(clusters)
+    ? getCluster(clusterId, clusters) || clusters[0]
+    : undefined)
 
   useEffect(() => {
     const newCluster = getCluster(clusterId, clusters)

@@ -17,7 +17,7 @@ import {
 } from 'react'
 import { useQuery } from '@apollo/client'
 import { useSearchParams } from 'react-router-dom'
-import { Div, Flex } from 'honorable'
+import { Flex } from 'honorable'
 
 import { Cluster } from '../../../../generated/graphql'
 import ClustersContext from '../../../../contexts/ClustersContext'

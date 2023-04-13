@@ -9,6 +9,8 @@ import {
 import styled from 'styled-components'
 import { createColumnHelper } from '@tanstack/react-table'
 
+import { Link } from 'react-router-dom'
+
 import { ProviderIcon } from '../../utils/ProviderIcon'
 import { Source } from '../../../generated/graphql'
 
@@ -83,12 +85,14 @@ export const ColCloudShell = columnHelper.accessor(row => row.owner?.hasShell, {
   id: 'cloudshell',
   enableGlobalFilter: true,
   enableSorting: true,
-  cell: ({ row: { original: { owner } } }) => (owner?.hasShell
+  cell: ({ row: { original: { owner, id } } }) => (owner?.hasShell
     ? (
       <IconFrame
         clickable
         icon={<TerminalIcon />}
-        onClick={() => null} // TODO: Navigate.
+        // @ts-expect-error
+        as={Link}
+        to={`/shell?cluster=${id}`}
         textValue="Go to cloudshell"
         tooltip
         type="floating"
@@ -129,7 +133,7 @@ export const ColUpgrades = columnHelper.accessor(row => row.delivered, {
 
 const ActionsWrap = styled(CellWrap)({ alignSelf: 'end' })
 
-export const ColActions = navigate => (columnHelper.accessor(row => row.consoleUrl, {
+export const ColActions = columnHelper.accessor(row => row.consoleUrl, {
   id: 'actions',
   enableGlobalFilter: false,
   enableSorting: false,
@@ -151,7 +155,9 @@ export const ColActions = navigate => (columnHelper.accessor(row => row.consoleU
         clickable
         size="medium"
         icon={<CaretRightIcon />}
-        onClick={() => navigate(`/clusters/${id}`)}
+        // @ts-expect-error
+        as={Link}
+        to={`/clusters/${id}`}
         textValue="Go to cluster details"
         tooltip
         type="tertiary"
@@ -159,4 +165,4 @@ export const ColActions = navigate => (columnHelper.accessor(row => row.consoleU
     </ActionsWrap>
   ),
   header: '',
-}))
+})

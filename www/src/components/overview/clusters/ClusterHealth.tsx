@@ -1,4 +1,5 @@
-import { Chip } from '@pluralsh/design-system'
+import { Chip, InfoOutlineIcon, Tooltip } from '@pluralsh/design-system'
+import { Flex } from 'honorable'
 import moment from 'moment'
 import { useEffect, useState } from 'react'
 
@@ -18,8 +19,18 @@ export default function ClusterHealth({ pingedAt }: QueueHealthProps) {
   const healthy = pingedAt && now.clone().subtract(2, 'minutes').isBefore(pingedAt)
 
   return (
-    <Chip severity={healthy ? 'success' : 'error'}>
-      {healthy ? 'Healthy' : 'Unhealthy'}
-    </Chip>
+    <Flex gap="xsmall">
+      <Chip severity={healthy ? 'success' : 'error'}>
+        {healthy ? 'Healthy' : 'Unhealthy'}
+      </Chip>
+      {!healthy && (
+        <Tooltip
+          label="Clusters that have recently been destroyed will show as Unhealthy while resources are cleaned up. All references should be removed within 24 hours."
+          width={350}
+        >
+          <InfoOutlineIcon cursor="help" />
+        </Tooltip>
+      )}
+    </Flex>
   )
 }

@@ -50,8 +50,8 @@ function Roadmap() {
     ...(subPath
       ? [
         {
-          label: subPath === 'edit' ? 'attributes' : subPath.replace('-', ' '),
-          url: `/audits/${subPath}`,
+          label: subPath,
+          url: `/roadmap/${subPath}`,
         },
       ]
       : []),

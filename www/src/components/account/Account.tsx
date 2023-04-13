@@ -41,7 +41,7 @@ export function Account() {
       ? [
         {
           label: subPath === 'edit' ? 'attributes' : subPath,
-          url: `/audits/${subPath}`,
+          url: `/account/${subPath}`,
         },
       ]
       : []),

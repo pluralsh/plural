@@ -3,7 +3,7 @@ import { Button, GearTrainIcon } from '@pluralsh/design-system'
 import { useState } from 'react'
 
 import { useRepositoryContext } from '../../contexts/RepositoryContext'
-import InstallDropdownButton from '../utils/InstallDropdownButton'
+import InstallAppButton from '../utils/InstallAppButton'
 import { RecipeSubset } from '../utils/recipeHelpers'
 
 import { InferredConsoleButton } from './ConsoleButton'
@@ -55,7 +55,7 @@ export function RepositoryActions() {
   }
 
   return (
-    <InstallDropdownButton
+    <InstallAppButton
       loading={false}
       type="bundle"
       name={repository.name}

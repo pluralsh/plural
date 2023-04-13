@@ -11,7 +11,7 @@ export type RecipeSubset = Pick<Recipe, 'provider' | 'description'> &
 
 export type RecipeType = 'bundle' | 'stack'
 
-export type InstallDropDownButtonProps = {
+export type InstallAppButtonProps = {
   loading: boolean
   recipes?: RecipeSubset[]
   name: string

@@ -118,8 +118,9 @@ function Installer({ onInstallSuccess }) {
 
   return (
     <Div
-      height="calc(100% - 56px)"
-      paddingTop="large"
+      overflowY="auto"
+      overflowX="hidden"
+      flexGrow={1}
     >
       <Div
         height="100%"

@@ -10,8 +10,9 @@ import { toAppProps } from './helpers'
 
 const Installed = styled(InstalledUnstyled)(({ theme }) => ({
   width: '600px',
-  paddingTop: theme.spacing.large,
-  height: 'calc(100% - 56px)',
+  paddingTop: theme.spacing.xxsmall,
+  flexGrow: 1,
+  overflow: 'hidden',
 
   '.app-launch-btn': {
     marginRight: theme.spacing.xsmall,

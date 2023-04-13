@@ -1,13 +1,27 @@
-import { useCallback, useEffect, useMemo } from 'react'
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
 import { useMutation, useQuery } from '@apollo/client'
 import { Flex } from 'honorable'
 import { Button, useSetBreadcrumbs } from '@pluralsh/design-system'
 
-import { CloudShell, RootQueryType } from '../../generated/graphql'
+import { useSearchParams } from 'react-router-dom'
+
+import isEmpty from 'lodash/isEmpty'
+
+import { CloudShell, Cluster, RootQueryType } from '../../generated/graphql'
 import { ResponsiveLayoutSpacer } from '../utils/layout/ResponsiveLayoutSpacer'
 import { ResponsiveLayoutContentContainer } from '../utils/layout/ResponsiveLayoutContentContainer'
 
 import LoadingIndicator from '../utils/LoadingIndicator'
+
+import ImpersonateServiceAccount from '../utils/ImpersonateServiceAccount'
+
+import ClustersContext from '../../contexts/ClustersContext'
 
 import { Onboarding } from './onboarding/Onboarding'
 import {
@@ -107,4 +121,41 @@ function Shell() {
   return <TerminalBootStatus />
 }
 
-export default Shell
+function getCluster(id: string | null | undefined, clusters: Cluster[]) {
+  if (!id) {
+    return undefined
+  }
+
+  return clusters.find(cl => cl.id === id)
+}
+
+function ImpersonatedShell() {
+  const { clusters } = useContext(ClustersContext)
+  const [params, setSearchParams] = useSearchParams()
+  const clusterId = params.get('cluster')
+  const [cluster, setCluster] = useState<Cluster | undefined>(!isEmpty(clusters) ? getCluster(clusterId, clusters) || clusters[0] : undefined)
+
+  useEffect(() => {
+    const newCluster = getCluster(clusterId, clusters)
+
+    if (!newCluster) {
+      setSearchParams(sp => {
+        sp.delete('cluster')
+
+        return sp
+      })
+    }
+    setCluster(newCluster)
+  }, [clusterId, clusters, setSearchParams])
+
+  return (
+    <ImpersonateServiceAccount
+      id={cluster?.owner?.id}
+      skip={!cluster?.owner?.serviceAccount}
+    >
+      <Shell />
+    </ImpersonateServiceAccount>
+  )
+}
+
+export default ImpersonatedShell

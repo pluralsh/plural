@@ -1,10 +1,4 @@
-import {
-  type Dispatch,
-  type SetStateAction,
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import {
   Button,
@@ -18,7 +12,6 @@ import {
   ArrowTopRightIcon,
   Chip,
   EmptyState,
-  FiltersIcon,
   Input,
   MagnifyingGlassIcon,
 } from '@pluralsh/design-system'
@@ -92,7 +85,7 @@ function MarketplaceRepositories({ publisher }: {publisher?: any}) {
   const categories = searchParams.getAll('category')
   const tags = searchParams.getAll('tag')
   const [search, setSearch] = useState('')
-  const [areFiltersOpen, setAreFiltersOpen] = useState(true)
+  const [areFiltersOpen] = useState(true)
 
   const [
     repositories,
@@ -254,10 +247,10 @@ function MarketplaceRepositories({ publisher }: {publisher?: any}) {
                     search={search}
                     setSearch={setSearch}
                   />
-                  <FiltersButton
+                  {/* <FiltersButton
                     setAreFiltersOpen={setAreFiltersOpen}
                     areFiltersOpen={areFiltersOpen}
-                  />
+                  /> */}
                 </Flex>
                 {(isFiltered) && (
                   <FilterChips
@@ -348,25 +341,28 @@ function MarketplaceRepositories({ publisher }: {publisher?: any}) {
 
 export default MarketplaceRepositories
 
-function FiltersButton({
-  setAreFiltersOpen,
-  areFiltersOpen,
-}: {
-  setAreFiltersOpen: Dispatch<SetStateAction<boolean>>
-  areFiltersOpen: boolean
-}) {
-  return (
-    <Button
-      tertiary
-      small
-      startIcon={<FiltersIcon />}
-      onClick={() => setAreFiltersOpen(x => !x)}
-      backgroundColor={areFiltersOpen ? 'fill-zero-selected' : 'fill-zero'}
-    >
-      Filters
-    </Button>
-  )
-}
+// NOTE: Disabling Filters column expand/collapse functionality, but leaving
+// code here in case we want to revert that decision.
+
+// function FiltersButton({
+//   setAreFiltersOpen,
+//   areFiltersOpen,
+// }: {
+//   setAreFiltersOpen: Dispatch<SetStateAction<boolean>>
+//   areFiltersOpen: boolean
+// }) {
+//   return (
+//     <Button
+//       tertiary
+//       small
+//       startIcon={<FiltersIcon />}
+//       onClick={() => setAreFiltersOpen(x => !x)}
+//       backgroundColor={areFiltersOpen ? 'fill-zero-selected' : 'fill-zero'}
+//     >
+//       Filters
+//     </Button>
+//   )
+// }
 
 function FilterChips({
   categories,

@@ -39,7 +39,7 @@ export default function ClusterMetadataPanel({ cluster, open, setOpen }: Cluster
         title="Status"
         margin={0}
       >
-        <ClusterHealth pingedAt={cluster.queue?.pingedAt} />
+        <ClusterHealth pingedAt={cluster.pingedAt} />
       </Prop>
       <Prop
         title="Owner"

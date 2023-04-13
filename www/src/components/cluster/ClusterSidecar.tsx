@@ -39,7 +39,7 @@ export function ClusterSidecar({ cluster }: ClusterSidecarProps): ReactElement {
           {cluster.name}
         </SidecarItem>
         <SidecarItem heading="Status">
-          <ClusterHealth pingedAt={cluster.queue?.pingedAt} />
+          <ClusterHealth pingedAt={cluster.pingedAt} />
         </SidecarItem>
         <SidecarItem heading="Owner">
           <ClusterOwner

@@ -168,10 +168,10 @@ function BillingPricingCards() {
           }
         />
         <BillingPricingCard
-          title="Enterprise"
+          title="Custom"
           subtitle={(
             <>
-              Custom
+              Tailored
               <br />
               <br />
             </>
@@ -195,6 +195,10 @@ function BillingPricingCards() {
             },
             {
               label: 'Commercial license',
+              checked: true,
+            },
+            {
+              label: 'Cost optimization',
               checked: true,
             },
           ]}

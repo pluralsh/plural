@@ -88,7 +88,10 @@ function TokenAudits({ token }: any) {
             loading={loading}
             placeholder={Placeholder}
             mapper={({ node }, { next }) => (
-              <TableRow last={!next.node}>
+              <TableRow
+                key={node.id}
+                last={!next.node}
+              >
                 <TableData>{node.ip}</TableData>
                 <TableData>{formatLocation(node.country, node.city)}</TableData>
                 <TableData>{moment(node.timestamp).format('lll')}</TableData>
@@ -327,6 +330,7 @@ export function AccessTokens() {
               items={edges}
               mapper={({ node }, { next, prev }) => (
                 <AccessToken
+                  key={node.id}
                   token={node}
                   first={!prev.node}
                   last={!next.node}

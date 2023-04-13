@@ -5,7 +5,8 @@ defmodule RtcWeb.UpgradeChannelTest do
     test "it can send and ack the next upgrade through the socket" do
       user = insert(:user)
       q    = insert(:upgrade_queue, user: user)
-      up   = insert(:upgrade, queue: q)
+      up   = insert(:upgrade, queue: q, config: %{paths: [%{path: ".c", value: "a", type: :string}]})
+      {:ok, _} = Jason.encode(up)
 
       {:ok, socket} = mk_socket(user)
       {:ok, _, socket} = subscribe_and_join(socket, "queues:#{q.id}", %{})

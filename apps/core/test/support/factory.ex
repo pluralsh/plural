@@ -616,6 +616,13 @@ defmodule Core.Factory do
     }
   end
 
+  def contributor_factory do
+    %Schema.Contributor{
+      user: build(:user),
+      repository: build(:repository)
+    }
+  end
+
   def with_password(%Schema.User{} = user, password) do
     Schema.User.changeset(user, %{password: password})
     |> Ecto.Changeset.apply_changes()

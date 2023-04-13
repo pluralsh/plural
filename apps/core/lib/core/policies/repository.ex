@@ -1,6 +1,7 @@
 defmodule Core.Policies.Repository do
   use Piazza.Policy
   import Core.Policies.Utils
+  alias Core.Services.Repositories
   alias Core.Schema.{User, Installation, Repository, Integration, Artifact, DockerRepository, ApplyLock}
 
   def can?(%User{} = user, %Integration{} = integ, policy) do
@@ -21,12 +22,15 @@ defmodule Core.Policies.Repository do
     end
   end
 
-  def can?(%User{account_id: aid}, %Repository{private: true} = repo, :access) do
+  def can?(%User{account_id: aid} = user, %Repository{private: true} = repo, :access) do
     case Core.Repo.preload(repo, [:publisher]) do
       %{publisher: %{account_id: ^aid}} -> :continue
-      _ -> {:error, :forbidden}
+      _ ->
+        if Repositories.contributor?(repo, user), do: :continue, else: {:error, :forbidden}
     end
   end
+
+  def can?(%User{}, %Repository{}, :access), do: :continue
 
   def can?(%User{} = user, %DockerRepository{} = dkr, :edit) do
     %{repository: repo} = Core.Repo.preload(dkr, [repository: [publisher: :account]])
@@ -48,8 +52,6 @@ defmodule Core.Policies.Repository do
       false -> :pass
     end
   end
-
-  def can?(%User{}, %Repository{}, :access), do: :continue
 
   def can?(%User{account_id: aid, id: user_id}, %Repository{} = repo, :pull) do
     case Core.Repo.preload(repo, [:publisher]) do

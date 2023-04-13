@@ -40,6 +40,7 @@ defmodule GraphQl.Schema.Repository do
     field :git_url,        :string, description: "The application's git URL."
     field :homepage,       :string, description: "The application's homepage."
     field :readme,         :string, description: "The application's README."
+    field :contributors,   list_of(:string), description: "List of emails of external users contributing to this repository and who will be granted access"
     field :oauth_settings, :oauth_settings_attributes, description: "The application's OAuth settings."
     field :integration_resource_definition, :resource_definition_attributes, description: "The application's integration resource definition."
     field :community,      :community_attributes, description: "The application's community links."
@@ -197,7 +198,13 @@ defmodule GraphQl.Schema.Repository do
     image :icon, description: "The application's icon."
     image :dark_icon, description: "The application's dark icon."
 
+    field :contributors, list_of(:contributor), resolve: dataloader(Repository), description: "The external contributors to this repository"
     field :installation, :installation, resolve: dataloader(Repository), description: "The installation of the application by a user."
+
+    @desc "version tags that can be followed to control upgrade flow"
+    field :upgrade_channels, list_of(:string), resolve: fn
+      repo, _, _ -> Repository.upgrade_channels(repo)
+    end
 
     @desc "If the application can be edited by the current user."
     field :editable, :boolean, resolve: fn
@@ -215,6 +222,14 @@ defmodule GraphQl.Schema.Repository do
     end
 
     field :docs, list_of(:file_content), resolve: &Repository.documentation/3, description: "The documentation of the application."
+
+    timestamps()
+  end
+
+  @desc "An external repository contributor"
+  object :contributor do
+    field :id, non_null(:id)
+    field :user, :user, resolve: dataloader(User)
 
     timestamps()
   end

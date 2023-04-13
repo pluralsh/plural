@@ -144,6 +144,7 @@ export function Invites() {
             items={edges}
             mapper={({ node }, { prev, next }) => (
               <ListItem
+                key={node.id}
                 first={!prev.node}
                 last={!next.node}
               >

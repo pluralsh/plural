@@ -6,14 +6,19 @@ defmodule GraphQl.ClusterQueriesTest do
     test "it can fetch a cluster by id" do
       user = insert(:user)
       cluster = insert(:cluster, owner: user)
+      dep = insert(:cluster_dependency, cluster: cluster)
 
       {:ok, %{data: %{"cluster" => found}}} = run_query("""
         query Cluster($id: ID!) {
-          cluster(id: $id) { id }
+          cluster(id: $id) {
+            id
+            dependency { id }
+          }
         }
       """, %{"id" => cluster.id}, %{current_user: user})
 
       assert found["id"] == cluster.id
+      assert found["dependency"]["id"] == dep.id
     end
 
     test "it can query upgrade info" do

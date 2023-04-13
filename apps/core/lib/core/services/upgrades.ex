@@ -93,7 +93,7 @@ defmodule Core.Services.Upgrades do
   end
 
   @doc """
-  Create an upgrade queue
+  Create an upgrade in a q
   """
   @spec create_upgrade(map, UpgradeQueue.t) :: upgrade_resp
   def create_upgrade(params, %UpgradeQueue{} = queue) do
@@ -103,6 +103,10 @@ defmodule Core.Services.Upgrades do
     |> when_ok(& %{&1 | queue: queue})
     |> notify(:create)
   end
+
+  def create_upgrade(params, name, %User{id: user_id}), do: create_upgrade(params, get_queue(user_id, name))
+
+  def create_upgrade(_, name, nil), do: {:error, "could not find queue for #{name}"}
 
   @doc """
   Fetch the next unacked upgrade in this queue

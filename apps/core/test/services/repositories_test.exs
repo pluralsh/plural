@@ -49,6 +49,23 @@ defmodule Core.Services.RepositoriesTest do
     end
   end
 
+  describe "#release_channels/1" do
+    test "it can fetch eligible release channels" do
+      repo  = insert(:repository)
+      repo2 = insert(:repository)
+      insert(:version_tag, tag: "one", chart: build(:chart, repository: repo))
+      insert(:version_tag, tag: "two", terraform: build(:terraform, repository: repo))
+      insert(:version_tag, tag: "one", terraform: build(:terraform, repository: repo))
+      insert(:version_tag, tag: "three", chart: build(:chart, repository: repo))
+
+      insert(:version_tag, tag: "four", terraform: build(:terraform, repository: repo2))
+
+      result = Repositories.upgrade_channels(repo)
+      assert MapSet.new(result)
+            |> MapSet.equal?(MapSet.new(~w(one two three)))
+    end
+  end
+
   describe "#upsert_repository" do
     test "It will create a repository for the user's publisher" do
       %{owner: user} = pub = insert(:publisher)
@@ -99,20 +116,6 @@ defmodule Core.Services.RepositoriesTest do
       assert updated.id == repo.id
       assert updated.integration_resource_definition.name == "piazza"
       [%{type: :int, name: "int"}, %{type: :string, name: "str"}] = updated.integration_resource_definition.spec
-    end
-
-    test "It can update dashboards" do
-      %{owner: user} = publisher = insert(:publisher)
-      repo = insert(:repository, publisher: publisher)
-
-      {:ok, updated} = Repositories.update_repository(%{
-        name: "piazza",
-        dashboards: [%{name: "postgres", uid: "piazza-postgres"}]
-      }, repo.id, user)
-
-      assert updated.id == repo.id
-      [%{name: "postgres", uid: "piazza-postgres", repository_id: repo_id}] = updated.dashboards
-      assert repo_id == repo.id
     end
 
     test "Nonpublishers cannot update other's repositories" do

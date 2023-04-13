@@ -1,6 +1,6 @@
 defmodule GraphQl.Schema.Upgrade do
   use GraphQl.Schema.Base
-  alias GraphQl.Middleware.{Authenticated}
+  alias GraphQl.Middleware.{Authenticated, Accessible}
   alias GraphQl.Resolvers.{
     User,
     Upgrade,
@@ -11,10 +11,25 @@ defmodule GraphQl.Schema.Upgrade do
   }
 
   ecto_enum :upgrade_type, Core.Schema.Upgrade.Type
+  ecto_enum :value_type, Core.Schema.Upgrade.ValueType
 
+  @desc "The information for this upgrade"
   input_object :upgrade_attributes do
-    field :message, non_null(:string)
-    field :type,    :upgrade_type
+    field :message, non_null(:string), description: "a simple message to explain this upgrade"
+    field :type,    non_null(:upgrade_type), description: "the type of upgrade"
+    field :config,  :upgrade_config_attributes, description: "information for a config upgrade"
+  end
+
+  @desc "the attributes of the config upgrade"
+  input_object :upgrade_config_attributes do
+    field :paths, list_of(:upgrade_path_attributes), description: "paths for a configuration change"
+  end
+
+  @desc "attributes of a path update"
+  input_object :upgrade_path_attributes do
+    field :path,  non_null(:string), description: "path the upgrade will occur on, formatted like .some.key[0].here"
+    field :value, non_null(:string), description: "the stringified value that will be applied on this path"
+    field :type,  non_null(:value_type), description: "the ultimate type of the value"
   end
 
   input_object :upgrade_queue_attributes do
@@ -46,10 +61,21 @@ defmodule GraphQl.Schema.Upgrade do
     field :id,      non_null(:id)
     field :type,    :upgrade_type
     field :message, :string
+    field :config,  :upgrade_config
 
     field :repository, :repository, resolve: dataloader(Repository)
 
     timestamps()
+  end
+
+  object :upgrade_config do
+    field :paths, list_of(:upgrade_path)
+  end
+
+  object :upgrade_path do
+    field :path,  non_null(:string)
+    field :value, non_null(:string)
+    field :type,  non_null(:value_type)
   end
 
   object :deferred_update do
@@ -106,6 +132,17 @@ defmodule GraphQl.Schema.Upgrade do
 
       arg :attributes, non_null(:upgrade_queue_attributes)
       resolve &Upgrade.create_upgrade_queue/2
+    end
+
+    field :create_upgrade, :upgrade do
+      middleware Authenticated
+      middleware Accessible
+      arg :repository_name, :string
+      arg :repository_id,   :id
+      arg :queue,           non_null(:string)
+      arg :attributes,      non_null(:upgrade_attributes)
+
+      resolve &Upgrade.create_upgrade/2
     end
   end
 

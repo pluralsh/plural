@@ -395,6 +395,8 @@ export type Cluster = {
   account?: Maybe<Account>;
   /** The URL of the console running on the cluster. */
   consoleUrl?: Maybe<Scalars['String']>;
+  /** the dependencies a cluster has */
+  dependency: ClusterDependency;
   /** The domain name used for applications deployed on the cluster. */
   domain?: Maybe<Scalars['String']>;
   /** The git repository URL for the cluster. */
@@ -511,6 +513,15 @@ export type ContextAttributes = {
   buckets?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   configuration: Scalars['Map'];
   domains?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+};
+
+/** An external repository contributor */
+export type Contributor = {
+  __typename?: 'Contributor';
+  id: Scalars['ID'];
+  insertedAt?: Maybe<Scalars['DateTime']>;
+  updatedAt?: Maybe<Scalars['DateTime']>;
+  user?: Maybe<User>;
 };
 
 export type Crd = {
@@ -2331,6 +2342,8 @@ export type Repository = {
   category?: Maybe<Category>;
   /** The community links of the application. */
   community?: Maybe<Community>;
+  /** The external contributors to this repository */
+  contributors?: Maybe<Array<Maybe<Contributor>>>;
   darkIcon?: Maybe<Scalars['String']>;
   /** The default tag to deploy. */
   defaultTag?: Maybe<Scalars['String']>;
@@ -2383,6 +2396,8 @@ export type Repository = {
   /** Whether the application is trending. */
   trending?: Maybe<Scalars['Boolean']>;
   updatedAt?: Maybe<Scalars['DateTime']>;
+  /** version tags that can be followed to control upgrade flow */
+  upgradeChannels?: Maybe<Array<Maybe<Scalars['String']>>>;
   /** Whether the application is verified. */
   verified?: Maybe<Scalars['Boolean']>;
 };
@@ -2393,6 +2408,8 @@ export type RepositoryAttributes = {
   category?: InputMaybe<Category>;
   /** The application's community links. */
   community?: InputMaybe<CommunityAttributes>;
+  /** List of emails of external users contributing to this repository and who will be granted access */
+  contributors?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   /** The application's dark icon. */
   darkIcon?: InputMaybe<Scalars['UploadOrUrl']>;
   /** The default tag to use when deploying the application. */
@@ -2639,6 +2656,7 @@ export type RootMutationType = {
   createTerraform?: Maybe<Terraform>;
   createTest?: Maybe<Test>;
   createToken?: Maybe<PersistedToken>;
+  createUpgrade?: Maybe<Upgrade>;
   createUserEvent?: Maybe<Scalars['Boolean']>;
   createWebhook?: Maybe<Webhook>;
   createZoom?: Maybe<ZoomMeeting>;
@@ -2956,6 +2974,14 @@ export type RootMutationTypeCreateTestArgs = {
   attributes: TestAttributes;
   name?: InputMaybe<Scalars['String']>;
   repositoryId?: InputMaybe<Scalars['ID']>;
+};
+
+
+export type RootMutationTypeCreateUpgradeArgs = {
+  attributes: UpgradeAttributes;
+  queue: Scalars['String'];
+  repositoryId?: InputMaybe<Scalars['ID']>;
+  repositoryName?: InputMaybe<Scalars['String']>;
 };
 
 
@@ -4546,12 +4572,34 @@ export type UpdatablePlanAttributes = {
 
 export type Upgrade = {
   __typename?: 'Upgrade';
+  config?: Maybe<UpgradeConfig>;
   id: Scalars['ID'];
   insertedAt?: Maybe<Scalars['DateTime']>;
   message?: Maybe<Scalars['String']>;
   repository?: Maybe<Repository>;
   type?: Maybe<UpgradeType>;
   updatedAt?: Maybe<Scalars['DateTime']>;
+};
+
+/** The information for this upgrade */
+export type UpgradeAttributes = {
+  /** information for a config upgrade */
+  config?: InputMaybe<UpgradeConfigAttributes>;
+  /** a simple message to explain this upgrade */
+  message: Scalars['String'];
+  /** the type of upgrade */
+  type: UpgradeType;
+};
+
+export type UpgradeConfig = {
+  __typename?: 'UpgradeConfig';
+  paths?: Maybe<Array<Maybe<UpgradePath>>>;
+};
+
+/** the attributes of the config upgrade */
+export type UpgradeConfigAttributes = {
+  /** paths for a configuration change */
+  paths?: InputMaybe<Array<InputMaybe<UpgradePathAttributes>>>;
 };
 
 export type UpgradeConnection = {
@@ -4571,6 +4619,23 @@ export type UpgradeInfo = {
   __typename?: 'UpgradeInfo';
   count?: Maybe<Scalars['Int']>;
   installation?: Maybe<Installation>;
+};
+
+export type UpgradePath = {
+  __typename?: 'UpgradePath';
+  path: Scalars['String'];
+  type: ValueType;
+  value: Scalars['String'];
+};
+
+/** attributes of a path update */
+export type UpgradePathAttributes = {
+  /** path the upgrade will occur on, formatted like .some.key[0].here */
+  path: Scalars['String'];
+  /** the ultimate type of the value */
+  type: ValueType;
+  /** the stringified value that will be applied on this path */
+  value: Scalars['String'];
 };
 
 export type UpgradeQueue = {
@@ -4612,6 +4677,7 @@ export type UpgradeQueueDelta = {
 export enum UpgradeType {
   Approval = 'APPROVAL',
   Bounce = 'BOUNCE',
+  Config = 'CONFIG',
   Dedicated = 'DEDICATED',
   Deploy = 'DEPLOY'
 }
@@ -4694,6 +4760,12 @@ export enum UserEventStatus {
 
 export enum ValidationType {
   Regex = 'REGEX'
+}
+
+export enum ValueType {
+  Float = 'FLOAT',
+  Int = 'INT',
+  String = 'STRING'
 }
 
 /** The version of a package. */

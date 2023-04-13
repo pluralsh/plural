@@ -12,6 +12,18 @@ defmodule Core.Schema.VersionTag do
     timestamps()
   end
 
+  def for_repository(query \\ __MODULE__, repo_id) do
+    from(v in query,
+      left_join: c in assoc(v, :chart),
+      left_join: t in assoc(v, :terraform),
+      where: c.repository_id == ^repo_id or t.repository_id == ^repo_id
+    )
+  end
+
+  def distinct(query \\ __MODULE__) do
+    from(v in query, distinct: v.tag, select: v.tag)
+  end
+
   def for_chart(query \\ __MODULE__, chart_id) do
     from(v in query, where: v.chart_id == ^chart_id)
   end

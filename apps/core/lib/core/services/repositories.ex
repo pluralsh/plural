@@ -19,7 +19,9 @@ defmodule Core.Services.Repositories do
     Plan,
     Artifact,
     OIDCProvider,
-    ApplyLock
+    ApplyLock,
+    VersionTag,
+    Contributor
   }
   alias Piazza.Crypto.RSA
 
@@ -55,6 +57,14 @@ defmodule Core.Services.Repositories do
   def get_license_token(token),
     do: Core.Repo.get_by(LicenseToken, token: token)
 
+  @spec contributor?(Repository.t | binary, User.t | binary) :: boolean
+  def contributor?(%Repository{id: repo_id}, %User{id: user_id}), do: contributor?(repo_id, user_id)
+  def contributor?(repo_id, user_id) do
+    Contributor.for_user(user_id)
+    |> Contributor.for_repository(repo_id)
+    |> Core.Repo.exists?()
+  end
+
   def get_artifact(repo_id, name, platform, arch) do
     Core.Repo.get_by(
       Artifact,
@@ -86,6 +96,16 @@ defmodule Core.Services.Repositories do
   end
 
   @doc """
+  Finds all distinct version tags in the repository that can be followed for upgrades
+  """
+  @spec upgrade_channels(Repository.t) :: [binary]
+  def upgrade_channels(%Repository{id: id}) do
+    VersionTag.for_repository(id)
+    |> VersionTag.distinct()
+    |> Core.Repo.all()
+  end
+
+  @doc """
   Creates a new repository for the user's publisher
 
   Will throw if there is no publisher
@@ -105,7 +125,7 @@ defmodule Core.Services.Repositories do
     start_transaction()
     |> add_operation(:repo, fn _ ->
       %Repository{publisher_id: publisher_id}
-      |> Repository.changeset(attrs)
+      |> Repository.changeset(add_contributors(attrs))
       |> allow(user, :create)
       |> when_ok(:insert)
     end)
@@ -124,12 +144,18 @@ defmodule Core.Services.Repositories do
   @spec update_repository(map, binary, User.t) :: repository_resp
   def update_repository(attrs, repo_id, %User{} = user) do
     get_repository!(repo_id)
-    |> Core.Repo.preload([:integration_resource_definition, :tags, :dashboards, :shell, :database])
-    |> Repository.changeset(attrs)
+    |> Core.Repo.preload([:integration_resource_definition, :tags, :contributors])
+    |> Repository.changeset(add_contributors(attrs))
     |> allow(user, :edit)
     |> when_ok(:update)
     |> notify(:update, user)
   end
+
+  defp add_contributors(%{contributors: [_ | _] = emails} = attrs) do
+    users = Users.for_emails(emails)
+    Map.put(attrs, :contributors, Enum.map(users, & %{user_id: &1.id}))
+  end
+  defp add_contributors(attrs), do: attrs
 
   @doc """
   Deletes the repository.  This might be deprecated as it's inherently unsafe.

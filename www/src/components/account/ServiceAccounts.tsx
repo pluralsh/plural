@@ -72,6 +72,7 @@ function ServiceAccountsInner({
           items={edges}
           mapper={({ node: user }, { prev, next }) => (
             <ListItem
+              key={user.id}
               first={!prev.node}
               last={!next.node}
             >

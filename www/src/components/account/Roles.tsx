@@ -117,6 +117,7 @@ function RolesInner({ q }: any) {
           items={edges}
           mapper={({ node: role }, { prev, next }) => (
             <ListItem
+              key={role.id}
               first={!prev.node}
               last={!next.node}
             >

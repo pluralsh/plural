@@ -5,8 +5,11 @@ defmodule Core.Schema.Cluster do
     Account,
     UpgradeQueue,
     Recipe.Provider,
+    ClusterDependency,
     Installation.Source
   }
+
+  @expiry 1
 
   schema "clusters" do
     field :provider,    Provider
@@ -19,9 +22,16 @@ defmodule Core.Schema.Cluster do
 
     belongs_to :owner,   User
     belongs_to :account, Account
+
     has_one :queue,      UpgradeQueue
+    has_one :dependency, ClusterDependency
 
     timestamps()
+  end
+
+  def expired(query \\ __MODULE__) do
+    expiry = Timex.now() |> Timex.shift(days: -@expiry)
+    from(q in query, where: q.pinged_at < ^expiry)
   end
 
   def for_expired_queue(query \\ __MODULE__) do
@@ -31,7 +41,6 @@ defmodule Core.Schema.Cluster do
         on: q.cluster_id == c.id
     )
   end
-
 
   def for_user(query \\ __MODULE__, user)
 

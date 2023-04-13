@@ -1,25 +1,23 @@
 import { useContext, useMemo, useRef } from 'react'
 import { Link, Outlet, useParams } from 'react-router-dom'
 import { Button, TabPanel, useSetBreadcrumbs } from '@pluralsh/design-system'
-import { validate as uuidValidate } from 'uuid'
-
 import { Flex, P } from 'honorable'
+import { useQuery } from '@apollo/client'
 
 import { ResponsiveLayoutContentContainer } from '../utils/layout/ResponsiveLayoutContentContainer'
 import { ResponsiveLayoutSidecarContainer } from '../utils/layout/ResponsiveLayoutSidecarContainer'
 import { ResponsiveLayoutSpacer } from '../utils/layout/ResponsiveLayoutSpacer'
 import { ResponsiveLayoutSidenavContainer } from '../utils/layout/ResponsiveLayoutSidenavContainer'
 import { ResponsiveLayoutPage } from '../utils/layout/ResponsiveLayoutPage'
-import { useRepositoryQuery } from '../../generated/graphql'
 import LoadingIndicator from '../utils/LoadingIndicator'
 import { MARKETPLACE_CRUMB } from '../marketplace/Marketplace'
 import ClustersContext from '../../contexts/ClustersContext'
 import ImpersonateServiceAccount from '../utils/ImpersonateServiceAccount'
-
 import { RepositoryContextProvider } from '../../contexts/RepositoryContext'
 
 import { AppSidecar } from './AppSidecar'
 import AppSidenav from './AppSidenav'
+import { REPO_Q } from './queries'
 
 export function App() {
   const { clusterId } = useParams()
@@ -39,10 +37,7 @@ export function App() {
 function AppInternal() {
   const { appId: name, ...restParams } = useParams()
   const subPath = restParams?.['*']?.split?.('/')[0]
-
-  const { data, loading } = useRepositoryQuery({
-    variables: uuidValidate(name ?? '') ? { id: name } : { name },
-  })
+  const { data, loading } = useQuery(REPO_Q, { variables: { name } })
   const tabStateRef = useRef<any>(null)
   const breadcrumbs = useMemo(() => [
     MARKETPLACE_CRUMB,
@@ -80,7 +75,7 @@ function AppInternal() {
   const { repository } = data
 
   return (
-    <RepositoryContextProvider value={repository}>
+    <RepositoryContextProvider value={repository}> {/* TODO: Use different context. */}
       <ResponsiveLayoutPage>
         <ResponsiveLayoutSidenavContainer>
           <AppSidenav tabStateRef={tabStateRef} />

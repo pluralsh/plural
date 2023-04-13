@@ -113,9 +113,6 @@ function MarketplaceRepositories({ publisher }: {publisher?: any}) {
     = growthbook.isOn('stacks')
     && !isFilteredOrSearched
 
-  console.log('categories', categories)
-  console.log('tags', tags)
-
   useEffect(() => {
     const { current } = scrollRef
 

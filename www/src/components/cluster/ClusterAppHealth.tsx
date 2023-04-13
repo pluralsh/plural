@@ -1,6 +1,6 @@
 import { Chip } from '@pluralsh/design-system'
 import moment from 'moment'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 type ClusterAppHealthProps = {
     pingedAt?: Date | null
@@ -8,7 +8,6 @@ type ClusterAppHealthProps = {
 
 export default function ClusterAppHealth({ pingedAt }: ClusterAppHealthProps) {
   const [now, setNow] = useState(moment())
-  const pinged = useMemo(() => moment(pingedAt), [pingedAt])
 
   useEffect(() => {
     const int = setInterval(() => setNow(moment()), 1000)
@@ -16,7 +15,7 @@ export default function ClusterAppHealth({ pingedAt }: ClusterAppHealthProps) {
     return () => clearInterval(int)
   }, [])
 
-  const healthy = now.clone().subtract(1, 'hour').isBefore(pinged)
+  const healthy = pingedAt && now.clone().subtract(1, 'hour').isBefore(pingedAt)
 
   return (
     <Chip

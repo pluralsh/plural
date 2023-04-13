@@ -90,7 +90,7 @@ function AppInternal() {
           as={<ResponsiveLayoutContentContainer overflow="visible" />}
           stateRef={tabStateRef}
         >
-          <Outlet context={{ repository }} />
+          <Outlet />
         </TabPanel>
         <ResponsiveLayoutSidecarContainer>
           <AppSidecar />

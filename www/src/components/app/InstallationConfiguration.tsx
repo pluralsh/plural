@@ -1,10 +1,5 @@
 import { useMutation } from '@apollo/client'
-import {
-  Flex,
-  Input,
-  RadioGroup,
-  Span,
-} from 'honorable'
+import { Flex, RadioGroup, Span } from 'honorable'
 import {
   Modal,
   Radio,
@@ -13,13 +8,11 @@ import {
   TabPanel,
 } from '@pluralsh/design-system'
 import { useCallback, useRef, useState } from 'react'
-import { Keyboard } from 'grommet'
 import capitalize from 'lodash/capitalize'
 
 import { Actions } from '../account/Actions'
-import { GqlError } from '../utils/Alert'
 
-import { DELETE_INSTALLATION_MUTATION, UPDATE_INSTALLATION } from '../repository/queries'
+import { UPDATE_INSTALLATION } from '../repository/queries'
 
 function MiniHeader({ header, description }: any) {
   return (
@@ -90,35 +83,6 @@ function UpdateUpgrades({
   )
 }
 
-function UninstallApp({
-  installation, deleteMutation, deleteError, confirm, setConfirm,
-}: any) {
-  return (
-    <Keyboard onEnter={confirm !== installation.repository.name ? null : deleteMutation}>
-      <Flex
-        direction="column"
-        gap="medium"
-      >
-        {deleteError && (
-          <GqlError
-            error={deleteError}
-            header="Failed to uninstall"
-          />
-        )}
-        <MiniHeader
-          header="Uninstall this application"
-          description={`Type the application name, "${installation.repository.name}", to confirm uninstall. Note that this will uninstall this app from the API but not destroy any of its infrastructure.`}
-        />
-        <Input
-          value={confirm}
-          onChange={({ target: { value } }) => setConfirm(value)}
-          placeholder="Confirm application name"
-        />
-      </Flex>
-    </Keyboard>
-  )
-}
-
 export function InstallationConfiguration({ installation, open, setOpen }: any) {
   const tabStateRef = useRef<any>(null)
   const [selectedTabKey, setSelectedKey] = useState<any>('')
@@ -129,13 +93,6 @@ export function InstallationConfiguration({ installation, open, setOpen }: any) 
   const [updateMutation, { loading: updateLoading }] = useMutation(UPDATE_INSTALLATION, {
     variables: { id: installation.id, attributes: { trackTag, autoUpgrade } },
     onCompleted: () => setOpen(false),
-  })
-
-  // Delete tab controls.
-  const [confirm, setConfirm] = useState('')
-  const [deleteMutation, { loading: deleteLoading, error: deleteError }] = useMutation(DELETE_INSTALLATION_MUTATION, {
-    variables: { id: installation.id },
-    onCompleted: () => window.location.reload(),
   })
 
   const tabs = {
@@ -152,23 +109,6 @@ export function InstallationConfiguration({ installation, open, setOpen }: any) 
         submit={updateMutation}
         loading={updateLoading}
         action="Update"
-      />,
-    },
-    uninstall: {
-      label: 'Uninstall',
-      content: <UninstallApp
-        installation={installation}
-        deleteMutation={deleteMutation}
-        deleteError={deleteError}
-        confirm={confirm}
-        setConfirm={setConfirm}
-      />,
-      actions: <Actions
-        cancel={() => setOpen(false)}
-        submit={confirm !== installation.repository.name ? null : deleteMutation}
-        loading={deleteLoading}
-        destructive
-        action={`Uninstall ${installation.repository.name}`}
       />,
     },
   }

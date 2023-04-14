@@ -68,7 +68,10 @@ export function ClusterApp({
         {name}
       </Span>
       <Flex grow={1} />
-      <ClusterAppHealth pingedAt={installation?.pingedAt} />
+      <ClusterAppHealth
+        pingedAt={installation?.pingedAt}
+        marginHorizontal="xsmall"
+      />
       <MoreMenu
         onSelectionChange={selectedKey => menuItems[selectedKey]?.onSelect()}
         floating

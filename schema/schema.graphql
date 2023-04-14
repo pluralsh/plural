@@ -1938,6 +1938,9 @@ type RootMutationType {
   "moves up the upgrade waterline for a user"
   promote: User
 
+  "transfers ownership of a cluster to a service account"
+  transferOwnership(name: String!, email: String!): Cluster
+
   "Delete a cluster."
   deleteCluster(
     "The name of the cluster."

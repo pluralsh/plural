@@ -2725,6 +2725,8 @@ export type RootMutationType = {
   ssoCallback?: Maybe<User>;
   stopShell?: Maybe<Scalars['Boolean']>;
   transferDemoProject?: Maybe<DemoProject>;
+  /** transfers ownership of a cluster to a service account */
+  transferOwnership?: Maybe<Cluster>;
   unfollowIncident?: Maybe<Follower>;
   uninstallTerraform?: Maybe<TerraformInstallation>;
   unlockRepository?: Maybe<Scalars['Int']>;
@@ -3294,6 +3296,12 @@ export type RootMutationTypeSsoCallbackArgs = {
 
 export type RootMutationTypeTransferDemoProjectArgs = {
   organizationId: Scalars['String'];
+};
+
+
+export type RootMutationTypeTransferOwnershipArgs = {
+  email: Scalars['String'];
+  name: Scalars['String'];
 };
 
 

@@ -77,4 +77,22 @@ defmodule GraphQl.ClusterMutationsTest do
       assert refetch(user).upgrade_to > user.upgrade_to
     end
   end
+
+  describe "transferOwnership" do
+    test "it can transfer cluster ownership" do
+      %{owner: user} = cluster = insert(:cluster, provider: :aws, owner: insert(:user, provider: :aws))
+      sa = bound_service_account(user, roles: %{admin: true})
+
+      {:ok, %{data: %{"transferOwnership" => updated}}} = run_query("""
+        mutation Transfer($name: String!, $email: String!) {
+          transferOwnership(name: $name, email: $email) {
+            id
+            owner { id }
+          }
+        }
+      """, %{"name" => cluster.name, "email" => sa.email}, %{current_user: user})
+
+      assert updated["owner"]["id"] == sa.id
+    end
+  end
 end

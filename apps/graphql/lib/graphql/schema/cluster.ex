@@ -96,6 +96,14 @@ defmodule GraphQl.Schema.Cluster do
       safe_resolve &Cluster.promote/2
     end
 
+    @desc "transfers ownership of a cluster to a service account"
+    field :transfer_ownership, :cluster do
+      arg :name,  non_null(:string)
+      arg :email, non_null(:string)
+
+      safe_resolve &Cluster.transfer_ownership/2
+    end
+
     @desc "Delete a cluster."
     field :delete_cluster, :cluster do
       arg :name,     non_null(:string), description: "The name of the cluster."

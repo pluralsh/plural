@@ -36,4 +36,7 @@ defmodule GraphQl.Resolvers.Cluster do
 
   def delete_cluster(%{name: n, provider: p}, %{context: %{current_user: user}}),
     do: Clusters.delete_cluster(n, p, user)
+
+  def transfer_ownership(%{name: n, email: e}, %{context: %{current_user: user}}),
+    do: Clusters.transfer_ownership(n, e, user)
 end

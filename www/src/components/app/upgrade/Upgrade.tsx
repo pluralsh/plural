@@ -15,7 +15,7 @@ import { UPDATE_INSTALLATION } from '../../repository/queries'
 import { useAppContext } from '../../../contexts/AppContext'
 
 export function Upgrade() {
-  const { installation } = useAppContext()
+  const { installation, upgradeChannels = [] } = useAppContext()
   const [autoUpgrade, setAutoUpgrade] = useState(installation?.autoUpgrade || false)
   const [trackTag, setTrackTag] = useState(installation?.trackTag || '')
   const [mutation, { loading }] = useMutation(UPDATE_INSTALLATION, {
@@ -63,7 +63,7 @@ export function Upgrade() {
           direction="row"
           gap="medium"
         >
-          {['latest', 'stable', 'warm'].map(t => (
+          {upgradeChannels?.flatMap(t => (t ? [(
             <Radio
               key={t}
               value={t}
@@ -72,7 +72,7 @@ export function Upgrade() {
             >
               {capitalize(t)}
             </Radio>
-          ))}
+          )] : []))}
           <Radio
             value="none"
             checked={!autoUpgrade}

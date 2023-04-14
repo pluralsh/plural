@@ -7,6 +7,7 @@ export const REPO_Q = gql`
   query Repo($name: String!) {
     repository(name: $name) {
       ...RepoFragment
+      upgradeChannels
       installation {
         ...InstallationFragment
         oidcProvider { ...OIDCProvider }

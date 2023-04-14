@@ -6,13 +6,13 @@ import { useContext } from 'react'
 import ClustersContext from '../../contexts/ClustersContext'
 import { ensureURLValidity } from '../../utils/url'
 import ClusterAppHealth from '../cluster/ClusterAppHealth'
-import { useRepositoryContext } from '../../contexts/RepositoryContext'
+import { useAppContext } from '../../contexts/AppContext'
 
 export function AppSidecar() {
   const { clusterId, appId } = useParams()
   const { clusters } = useContext(ClustersContext)
   const cluster = clusters.find(({ id }) => id === clusterId)
-  const app = useRepositoryContext()
+  const app = useAppContext()
 
   return (
     <Flex

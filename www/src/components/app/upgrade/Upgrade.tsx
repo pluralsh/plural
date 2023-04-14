@@ -11,11 +11,12 @@ import { capitalize } from 'lodash'
 import { useCallback, useState } from 'react'
 import { useMutation } from '@apollo/client'
 
-import { useRepositoryContext } from '../../../contexts/RepositoryContext'
 import { UPDATE_INSTALLATION } from '../../repository/queries'
+import { useAppContext } from '../../../contexts/AppContext'
 
 export function Upgrade() {
-  const { installation } = useRepositoryContext()
+  const app = useAppContext()
+  const installation = app?.installation
   const [autoUpgrade, setAutoUpgrade] = useState(installation?.autoUpgrade || false)
   const [trackTag, setTrackTag] = useState(installation?.trackTag || '')
   const [mutation, { loading }] = useMutation(UPDATE_INSTALLATION, {

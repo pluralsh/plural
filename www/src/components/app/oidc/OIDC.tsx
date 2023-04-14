@@ -28,7 +28,7 @@ import { CREATE_PROVIDER, UPDATE_PROVIDER } from '../../oidc/queries'
 import { AuthMethod } from '../../oidc/types'
 import usePrevious from '../../../hooks/usePrevious'
 import { REPO_Q } from '../../repository/packages/queries'
-import { useRepositoryContext } from '../../../contexts/RepositoryContext'
+import { useAppContext } from '../../../contexts/AppContext'
 
 function UrlsInput({ uriFormat = '', urls, setUrls }: any) {
   const [baseScheme, basePath] = ['https://', '/oauth2/callback']
@@ -333,7 +333,8 @@ export function UpdateProvider({
 
 export function OIDC() {
   const navigate = useNavigate()
-  const { installation } = useRepositoryContext()
+  const app = useAppContext()
+  const installation = app?.installation
   const { appId: name } = useParams()
 
   useEffect(() => {

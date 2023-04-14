@@ -9,9 +9,9 @@ import {
 import { Tab, TabList } from '@pluralsh/design-system'
 import capitalize from 'lodash/capitalize'
 
-import { useRepositoryContext } from '../../contexts/RepositoryContext'
 import { LinkTabWrap } from '../utils/Tabs'
 import { SideNavOffset } from '../utils/layout/SideNavOffset'
+import { useAppContext } from '../../contexts/AppContext'
 
 const DIRECTORY = [
   { label: 'Upgrade channel', path: '/upgrade' },
@@ -26,7 +26,7 @@ export default function AppSidenav({
   tabStateRef: MutableRefObject<any>
 }) {
   const { clusterId, appId } = useParams()
-  const repository = useRepositoryContext()
+  const app = useAppContext()
 
   const { pathname } = useLocation()
   const tabStateRef = useRef<any>()
@@ -36,7 +36,7 @@ export default function AppSidenav({
   const filteredDirectory = DIRECTORY.filter(({ path }) => {
     switch (path) {
     case '/oidc':
-      return repository.oauthSettings
+      return app?.oauthSettings
     default:
       return true
     }
@@ -65,13 +65,13 @@ export default function AppSidenav({
           borderRadius="medium"
         >
           <Img
-            src={repository.darkIcon || repository.icon}
-            alt={repository.name}
+            src={app?.darkIcon || app?.icon}
+            alt={app?.name}
             width={48}
           />
         </Flex>
         <Div>
-          <P subtitle1>{capitalize(repository.name)}</P>
+          <P subtitle1>{capitalize(app?.name)}</P>
         </Div>
       </Flex>
       <SideNavOffset

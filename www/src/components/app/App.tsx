@@ -13,7 +13,8 @@ import LoadingIndicator from '../utils/LoadingIndicator'
 import { MARKETPLACE_CRUMB } from '../marketplace/Marketplace'
 import ClustersContext from '../../contexts/ClustersContext'
 import ImpersonateServiceAccount from '../utils/ImpersonateServiceAccount'
-import { RepositoryContextProvider } from '../../contexts/RepositoryContext'
+import { AppContextProvider } from '../../contexts/AppContext'
+import { Repository } from '../../generated/graphql'
 
 import { AppSidecar } from './AppSidecar'
 import AppSidenav from './AppSidenav'
@@ -37,7 +38,7 @@ export function App() {
 function AppInternal() {
   const { appId: name, ...restParams } = useParams()
   const subPath = restParams?.['*']?.split?.('/')[0]
-  const { data, loading } = useQuery(REPO_Q, { variables: { name } })
+  const { data, loading } = useQuery<{repository: Repository}>(REPO_Q, { variables: { name } })
   const tabStateRef = useRef<any>(null)
   const breadcrumbs = useMemo(() => [
     MARKETPLACE_CRUMB,
@@ -72,10 +73,8 @@ function AppInternal() {
     )
   }
 
-  const { repository } = data
-
   return (
-    <RepositoryContextProvider value={repository}> {/* TODO: Use different context. */}
+    <AppContextProvider value={data.repository}>
       <ResponsiveLayoutPage>
         <ResponsiveLayoutSidenavContainer>
           <AppSidenav tabStateRef={tabStateRef} />
@@ -92,6 +91,6 @@ function AppInternal() {
         </ResponsiveLayoutSidecarContainer>
         <ResponsiveLayoutSpacer />
       </ResponsiveLayoutPage>
-    </RepositoryContextProvider>
+    </AppContextProvider>
   )
 }

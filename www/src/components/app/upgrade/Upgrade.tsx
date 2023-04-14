@@ -15,8 +15,7 @@ import { UPDATE_INSTALLATION } from '../../repository/queries'
 import { useAppContext } from '../../../contexts/AppContext'
 
 export function Upgrade() {
-  const app = useAppContext()
-  const installation = app?.installation
+  const { installation } = useAppContext()
   const [autoUpgrade, setAutoUpgrade] = useState(installation?.autoUpgrade || false)
   const [trackTag, setTrackTag] = useState(installation?.trackTag || '')
   const [mutation, { loading }] = useMutation(UPDATE_INSTALLATION, {

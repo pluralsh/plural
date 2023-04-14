@@ -38,7 +38,7 @@ export function AppSidecar() {
         gap="xxsmall"
       >
         <SidecarItem heading="App status">
-          <ClusterAppHealth pingedAt={app?.installation?.pingedAt} />
+          <ClusterAppHealth pingedAt={app.installation?.pingedAt} />
         </SidecarItem>
         <SidecarItem heading="Cluster">
           <A

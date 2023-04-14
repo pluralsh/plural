@@ -36,7 +36,7 @@ export default function AppSidenav({
   const filteredDirectory = DIRECTORY.filter(({ path }) => {
     switch (path) {
     case '/oidc':
-      return app?.oauthSettings
+      return app.oauthSettings
     default:
       return true
     }
@@ -65,13 +65,13 @@ export default function AppSidenav({
           borderRadius="medium"
         >
           <Img
-            src={app?.darkIcon || app?.icon}
-            alt={app?.name}
+            src={app.darkIcon || app.icon}
+            alt={app.name}
             width={48}
           />
         </Flex>
         <Div>
-          <P subtitle1>{capitalize(app?.name)}</P>
+          <P subtitle1>{capitalize(app.name)}</P>
         </Div>
       </Flex>
       <SideNavOffset

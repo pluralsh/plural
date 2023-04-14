@@ -333,8 +333,7 @@ export function UpdateProvider({
 
 export function OIDC() {
   const navigate = useNavigate()
-  const app = useAppContext()
-  const installation = app?.installation
+  const { installation } = useAppContext()
   const { appId: name } = useParams()
 
   useEffect(() => {

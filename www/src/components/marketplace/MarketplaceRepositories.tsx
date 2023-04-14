@@ -10,6 +10,7 @@ import {
 } from 'honorable'
 import {
   ArrowTopRightIcon,
+  BrowseAppsIcon,
   Chip,
   EmptyState,
   Input,
@@ -70,8 +71,19 @@ function SearchBar({ search, setSearch }) {
       flex="1 1 210px"
     >
       <Input
-        startIcon={<MagnifyingGlassIcon size={14} />}
-        placeholder="Search for a repository"
+        titleContent={(
+          <>
+            <BrowseAppsIcon marginRight="small" />
+            Marketplace
+          </>
+        )}
+        startIcon={(
+          <MagnifyingGlassIcon
+            size={16}
+            color="icon-light"
+          />
+        )}
+        placeholder="Search the marketplace"
         value={search}
         onChange={event => setSearch(event.target.value)}
       />

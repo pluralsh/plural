@@ -541,20 +541,23 @@ defmodule Core.Services.Users do
   end
 
   @doc """
-  destroys all resources associated w/ a cluster
+  destroys all resources associated w/ a cluster.  Some of this is best effort and must be cleaned up in cron after if failed
   """
   @spec destroy_cluster(%{domain: binary, name: binary, provider: atom}, User.t) :: :ok | error
-  def destroy_cluster(%{domain: d, name: name, provider: p}, %User{id: user_id}) do
-    Dns.get_domain(d)
-    |> Dns.records()
-    |> Enum.filter(fn
-      %Core.Schema.DnsRecord{cluster: ^name, provider: ^p, creator_id: ^user_id} -> true
-      _ -> false
-    end)
-    |> Enum.each(fn r ->
-      %Conduit.Message{body: r}
-      |> Core.broker().publish(:cluster)
-    end)
+  def destroy_cluster(%{domain: d, name: name, provider: p}, %User{id: user_id} = user) do
+    with {:ok, _} <- Core.Services.Upgrades.delete_queue(name, user),
+         _ <- Core.Services.Clusters.delete_cluster(name, p, user) do
+      Dns.get_domain(d)
+      |> Dns.records()
+      |> Enum.filter(fn
+        %Core.Schema.DnsRecord{cluster: ^name, provider: ^p, creator_id: ^user_id} -> true
+        _ -> false
+      end)
+      |> Enum.each(fn r ->
+        %Conduit.Message{body: r}
+        |> Core.broker().publish(:cluster)
+      end)
+    end
   end
 
   @doc """

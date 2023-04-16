@@ -1,7 +1,7 @@
 defmodule Core.Services.ClustersTest do
   use Core.SchemaCase, async: true
   use Mimic
-  alias Core.Services.{Clusters, Repositories, Charts, Terraform}
+  alias Core.Services.{Clusters, Repositories, Charts}
 
   describe "#create_cluster/2" do
     test "a user can create a cluster" do

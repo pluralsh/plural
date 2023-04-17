@@ -5,9 +5,10 @@ import { useEffect, useState } from 'react'
 
 type QueueHealthProps = {
     pingedAt?: Date | null
+    size?: 'small' | 'medium' | 'large'
 }
 
-export default function ClusterHealth({ pingedAt }: QueueHealthProps) {
+export default function ClusterHealth({ pingedAt, size = 'medium' }: QueueHealthProps) {
   const [now, setNow] = useState(moment())
 
   useEffect(() => {
@@ -20,7 +21,10 @@ export default function ClusterHealth({ pingedAt }: QueueHealthProps) {
 
   return (
     <Flex gap="xsmall">
-      <Chip severity={healthy ? 'success' : 'error'}>
+      <Chip
+        severity={healthy ? 'success' : 'error'}
+        size={size}
+      >
         {healthy ? 'Healthy' : 'Unhealthy'}
       </Chip>
       {!healthy && (

@@ -15,6 +15,8 @@ import {
 import ClustersContext from '../../contexts/ClustersContext'
 import { Cluster } from '../../generated/graphql'
 
+import ClusterHealth from '../overview/clusters/ClusterHealth'
+
 import { ProviderIcon } from './ProviderIcon'
 
 type ClusterPickerProps = {
@@ -24,6 +26,7 @@ type ClusterPickerProps = {
     heading?: string
     title?: any
     placeholder?: string
+    health?: boolean
     size?: 'small' | 'medium' | 'large'
     disabled?: boolean
 }
@@ -35,6 +38,7 @@ export function ClusterPicker({
   heading,
   title,
   placeholder = 'Select cluster',
+  health = false,
   size = 'medium',
   disabled = false,
 }: ClusterPickerProps) {
@@ -67,8 +71,16 @@ export function ClusterPicker({
             />
           ) : <ClusterIcon />
         )}
+        rightContent={health && cluster && (
+          <ClusterHealth
+            pingedAt={cluster?.pingedAt}
+            size="small"
+          />
+        )}
       >
-        {clusters.map(({ id, name, provider }) => (
+        {clusters.map(({
+          id, name, provider, pingedAt,
+        }) => (
           <ListBoxItem
             key={id}
             label={name}
@@ -77,6 +89,12 @@ export function ClusterPicker({
               <ProviderIcon
                 provider={provider}
                 width={16}
+              />
+            )}
+            rightContent={health && (
+              <ClusterHealth
+                pingedAt={pingedAt}
+                size="small"
               />
             )}
           />

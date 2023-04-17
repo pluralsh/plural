@@ -396,7 +396,7 @@ export type Cluster = {
   /** The URL of the console running on the cluster. */
   consoleUrl?: Maybe<Scalars['String']>;
   /** the dependencies a cluster has */
-  dependency: ClusterDependency;
+  dependency?: Maybe<ClusterDependency>;
   /** The domain name used for applications deployed on the cluster. */
   domain?: Maybe<Scalars['String']>;
   /** The git repository URL for the cluster. */

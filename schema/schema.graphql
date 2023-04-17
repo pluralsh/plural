@@ -1548,7 +1548,7 @@ type Cluster {
   upgradeInfo: [UpgradeInfo]
 
   "the dependencies a cluster has"
-  dependency: ClusterDependency!
+  dependency: ClusterDependency
 
   "The user that owns the cluster."
   owner: User

@@ -24,8 +24,10 @@ const Error = styled.div(({ theme }) => ({
 
 export function ClustersContextProvider({ children }) {
   const { data, loading, error }
-  = useQuery<Pick<RootQueryType, 'clusters'>, RootQueryTypeClustersArgs>(CLUSTERS, { pollInterval: 30_000 })
-
+  = useQuery<Pick<RootQueryType, 'clusters'>, RootQueryTypeClustersArgs>(CLUSTERS, {
+    errorPolicy: 'all', // TODO: Remove.
+    pollInterval: 30_000,
+  })
   const clustersContextValue = useMemo<ClustersContextType>(() => {
     const clusters = data?.clusters?.edges?.map(edge => edge?.node)
       .filter((node): node is Cluster => !!node) || []
@@ -35,7 +37,7 @@ export function ClustersContextProvider({ children }) {
     }
   }, [data])
 
-  if (error) return <Error>{error.message}</Error>
+  if (error && !data) return <Error>{error.message}</Error> // TODO: Return on any error, even if there is data?
   if (!data && loading) return <LoadingIndicator />
 
   return (

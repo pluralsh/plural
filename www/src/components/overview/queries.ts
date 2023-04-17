@@ -41,12 +41,25 @@ query {
           installation { repository { id } }
           count
         }
+        dependency {
+          cluster { id  }
+          dependency { id }
+        }
       }
     }
   }
 }
 ${PageInfo}
 ${ImpersonationPolicy}
+`
+
+export const CREATE_CLUSTER_DEPENDENCY = gql`
+  mutation Create($source: ID!, $dest: ID!) {
+    createClusterDependency(sourceId: $source, destId: $dest) {
+      cluster { id }
+      dependency { id }
+    }
+  }
 `
 
 export const QUEUES = gql`

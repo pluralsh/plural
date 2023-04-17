@@ -1,12 +1,14 @@
 import { ArrowLeftIcon, Button, Modal } from '@pluralsh/design-system'
 import { Div, Flex } from 'honorable'
 import { useCallback, useState } from 'react'
+import { useMutation } from '@apollo/client'
 
 import { Cluster } from '../../generated/graphql'
-
 import { ClusterPicker } from '../utils/ClusterPicker'
+import { GqlError } from '../utils/Alert'
 
-// TODO: Implement logic. Use createClusterDependency before promote.
+import { CREATE_CLUSTER_DEPENDENCY } from './queries'
+
 export function PromoteClusterModal({ open, setOpen }) {
   const [fromCluster, setFromCluster] = useState<Cluster | undefined>()
   const [toCluster, setToCluster] = useState<Cluster | undefined>()
@@ -15,6 +17,27 @@ export function PromoteClusterModal({ open, setOpen }) {
     setToCluster(undefined)
     setFromCluster(undefined)
   }, [setOpen, setFromCluster, setToCluster])
+
+  const [createClusterDependency, { loading: creating, error }] = useMutation(CREATE_CLUSTER_DEPENDENCY, {
+    variables: { source: fromCluster?.id || '', dest: toCluster?.id || '' },
+  })
+
+  const save = useCallback(() => {
+    // TODO: Promote.
+    const dependency = toCluster?.dependency
+    const canPromote = dependency?.dependency?.id === fromCluster?.id
+      && dependency?.cluster?.id === toCluster?.id
+
+    if (canPromote) {
+      console.log('promote')
+
+      return
+    }
+
+    console.log(dependency)
+
+    createClusterDependency()
+  }, [fromCluster, toCluster, createClusterDependency])
 
   return (
     <Modal
@@ -31,8 +54,8 @@ export function PromoteClusterModal({ open, setOpen }) {
           </Button>
           <Button
             disabled={!fromCluster || !toCluster}
-            // onClick={() => mutation()}
-            // loading={loading}
+            onClick={() => save()}
+            loading={creating}
             marginLeft="medium"
           >
             Save
@@ -46,12 +69,12 @@ export function PromoteClusterModal({ open, setOpen }) {
         gap="xlarge"
       >
         <Div subtitle2>Setup cluster promotion</Div>
-        {/* {error && (
+        {error && (
           <GqlError
             header="Something went wrong"
             error={error}
           />
-        )} */}
+        )}
         <ClusterPicker
           cluster={fromCluster}
           setCluster={setFromCluster}

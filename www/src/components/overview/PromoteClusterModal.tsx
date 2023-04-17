@@ -81,7 +81,7 @@ export function PromoteClusterModal({ open, setOpen }) {
             Cancel
           </Button>
           <Button
-            disabled={!canPromote}
+            disabled={!fromCluster || !toCluster || !client}
             onClick={() => save()}
             loading={creating || promoting}
             marginLeft="medium"

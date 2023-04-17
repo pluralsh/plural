@@ -1,58 +1,78 @@
 import { ArrowLeftIcon, Button, Modal } from '@pluralsh/design-system'
 import { Div, Flex } from 'honorable'
-import { useCallback, useContext, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { useMutation } from '@apollo/client'
 
 import { Cluster } from '../../generated/graphql'
 import { ClusterPicker } from '../utils/ClusterPicker'
 import { GqlError } from '../utils/Alert'
+import useImpersonatedServiceAccount from '../../hooks/useImpersonatedServiceAccount'
+import { ensureURLValidity } from '../../utils/url'
 
-import ClustersContext from '../../contexts/ClustersContext'
-
-import { CREATE_CLUSTER_DEPENDENCY, PROMOTE } from './queries'
+import { CLUSTERS, CREATE_CLUSTER_DEPENDENCY, PROMOTE } from './queries'
 
 export function PromoteClusterModal({ open, setOpen }) {
-  const { refetch } = useContext(ClustersContext)
   const [fromCluster, setFromCluster] = useState<Cluster | undefined>()
   const [toCluster, setToCluster] = useState<Cluster | undefined>()
+  const [promoting, setPromoting] = useState(false)
+  const [promoteError, setPromoteError] = useState()
+  const [finished, setFinished] = useState(false)
+
   const close = useCallback(() => {
     setOpen(false)
+    setFinished(false)
+    setPromoteError(undefined)
     setToCluster(undefined)
     setFromCluster(undefined)
   }, [setOpen, setFromCluster, setToCluster])
 
-  const [createClusterDependency, { loading: creating, error: errorCreate }] = useMutation(CREATE_CLUSTER_DEPENDENCY, {
+  const { client } = useImpersonatedServiceAccount(fromCluster?.owner?.id, !fromCluster?.owner?.serviceAccount)
+
+  const [createClusterDependency, { loading: creating, error: createError }] = useMutation(CREATE_CLUSTER_DEPENDENCY, {
     variables: { source: fromCluster?.id || '', dest: toCluster?.id || '' },
-    onCompleted: () => {
-      refetch?.()
-      promote() // TODO: Test.
-    },
+    refetchQueries: [{ query: CLUSTERS }],
+    onCompleted: () => promote(),
   })
 
-  const [promote, { loading: promoting, error: errorPromote }] = useMutation(PROMOTE)
+  const canPromote = useMemo(() => {
+    if (!fromCluster || !toCluster || !client) return false
+    const { dependency } = toCluster
 
-  const save = useCallback(() => {
-    const dependency = toCluster?.dependency
-    const canPromote = dependency?.dependency?.id === fromCluster?.id
-      && dependency?.cluster?.id === toCluster?.id
+    return dependency?.dependency?.id === fromCluster?.id && dependency?.cluster?.id === toCluster?.id
+  }, [fromCluster, toCluster, client])
 
-    if (canPromote) {
-      promote() // TODO: Test. Impersonate?
+  const promote = useCallback(() => {
+    setPromoting(true)
+    client?.mutate({ mutation: PROMOTE })
+      .then(() => {
+        setPromoting(false)
+        setFinished(true)
+      })
+      .catch(error => {
+        setPromoting(false)
+        setPromoteError(error)
+      })
+  }, [client])
 
-      return
-    }
-
-    console.log(dependency) // TODO: Remove.
-
-    createClusterDependency()
-  }, [fromCluster, toCluster, createClusterDependency, promote])
+  const save = useCallback(() => (canPromote ? promote() : createClusterDependency()),
+    [canPromote, promote, createClusterDependency]) // TODO: Test all paths.
 
   return (
     <Modal
       portal
       open={open}
       onClose={close}
-      actions={(
+      actions={finished ? (toCluster?.consoleUrl && (
+        <Button
+          onClick={close}
+          as="a"
+          href={ensureURLValidity(toCluster?.consoleUrl)}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          View in console
+        </Button>
+      )) : (
         <>
           <Button
             secondary
@@ -61,7 +81,7 @@ export function PromoteClusterModal({ open, setOpen }) {
             Cancel
           </Button>
           <Button
-            disabled={!fromCluster || !toCluster}
+            disabled={!canPromote}
             onClick={() => save()}
             loading={creating || promoting}
             marginLeft="medium"
@@ -76,26 +96,30 @@ export function PromoteClusterModal({ open, setOpen }) {
         direction="column"
         gap="xlarge"
       >
-        <Div subtitle2>Setup cluster promotion</Div>
-        {errorCreate || errorPromote && (
+        <Div subtitle2>{finished ? 'Cluster promotion complete' : 'Setup cluster promotion'}</Div>
+        {createError || promoteError && (
           <GqlError
             header="Something went wrong"
-            error={errorCreate || errorPromote}
+            error={createError || promoteError}
           />
         )}
-        <ClusterPicker
-          cluster={fromCluster}
-          setCluster={setFromCluster}
-          heading="Promote app versions from"
-        />
-        <ArrowLeftIcon transform="rotate(270deg)" />
-        <ClusterPicker
-          cluster={toCluster}
-          setCluster={setToCluster}
-          filter={({ id, provider }: Cluster) => id !== fromCluster?.id && provider === fromCluster?.provider}
-          heading="Promote app versions to"
-          disabled={!fromCluster}
-        />
+        {!finished && (
+          <>
+            <ClusterPicker
+              cluster={fromCluster}
+              setCluster={setFromCluster}
+              heading="Promote app versions from"
+            />
+            <ArrowLeftIcon transform="rotate(270deg)" />
+            <ClusterPicker
+              cluster={toCluster}
+              setCluster={setToCluster}
+              filter={({ id, provider }: Cluster) => id !== fromCluster?.id && provider === fromCluster?.provider}
+              heading="Promote app versions to"
+              disabled={!fromCluster}
+            />
+          </>
+        )}
       </Flex>
     </Modal>
   )

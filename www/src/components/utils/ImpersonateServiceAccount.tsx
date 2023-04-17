@@ -18,16 +18,7 @@ export default function ImpersonateServiceAccount({
   skip = false,
   children,
 }: ImpersonateServiceAccountProps): ReactElement {
-  if (skip) return children
-
-  return <ImpersonateServiceAccountInternal id={id}>{children}</ImpersonateServiceAccountInternal>
-}
-
-function ImpersonateServiceAccountInternal({
-  id,
-  children,
-}: Omit<ImpersonateServiceAccountProps, 'skip'>): ReactElement {
-  const { token, client, error } = useImpersonatedServiceAccount(id)
+  const { token, client, error } = useImpersonatedServiceAccount(id, skip)
   const tokenCtxVal = useMemo(() => ({ token }), [token])
 
   if (error) return <EmptyListMessage>Error while impersonating service account: {error.message}</EmptyListMessage>

@@ -2,6 +2,7 @@ import { ArrowLeftIcon, Button, Modal } from '@pluralsh/design-system'
 import { Div, Flex } from 'honorable'
 import { useCallback, useMemo, useState } from 'react'
 import { useMutation } from '@apollo/client'
+import isNil from 'lodash/isNil'
 
 import { Cluster } from '../../generated/graphql'
 import { ClusterPicker } from '../utils/ClusterPicker'
@@ -57,6 +58,10 @@ export function PromoteClusterModal({ open, setOpen }) {
   const save = useCallback(() => (canPromote ? promote() : createClusterDependency()),
     [canPromote, promote, createClusterDependency]) // TODO: Test all paths.
 
+  const hint = useCallback((pending: number | undefined) => (!isNil(pending)
+    ? `${pending} application${pending !== 1 ? 's' : ''} pending`
+    : undefined), [])
+
   return (
     <Modal
       portal
@@ -109,6 +114,7 @@ export function PromoteClusterModal({ open, setOpen }) {
               cluster={fromCluster}
               setCluster={setFromCluster}
               heading="Promote app versions from"
+              hint={hint(fromCluster?.upgradeInfo?.length)}
               showUpgradeInfo
             />
             <ArrowLeftIcon transform="rotate(270deg)" />
@@ -118,8 +124,10 @@ export function PromoteClusterModal({ open, setOpen }) {
               filter={({ id, provider }: Cluster) => id !== fromCluster?.id && provider === fromCluster?.provider}
               heading="Promote app versions to"
               showUpgradeInfo
+              hint={hint(toCluster?.upgradeInfo?.length)}
               disabled={!fromCluster}
             />
+            {/* TODO: Show upgrade info. */}
           </>
         )}
       </Flex>

@@ -40,6 +40,7 @@ type ClusterPickerProps = {
     setCluster: Dispatch<Cluster | undefined>
     filter?: (Cluster) => boolean
     heading?: string
+    hint?: string
     title?: any
     placeholder?: string
     showUpgradeInfo?: boolean
@@ -52,6 +53,7 @@ export function ClusterPicker({
   setCluster,
   filter,
   heading,
+  hint,
   title,
   placeholder = 'Select cluster',
   showUpgradeInfo = false,
@@ -69,8 +71,13 @@ export function ClusterPicker({
 
   return (
     <WrapWithIf
-      condition={!!heading}
-      wrapper={<FormField label={heading} />}
+      condition={!!heading || !!hint}
+      wrapper={(
+        <FormField
+          label={heading}
+          hint={hint}
+        />
+      )}
     >
       <Select
         label={placeholder}

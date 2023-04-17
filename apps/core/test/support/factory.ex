@@ -633,5 +633,14 @@ defmodule Core.Factory do
     insert(:platform_subscription, account: account, plan: build(:platform_plan, features: features))
   end
 
+  def bound_service_account(user, args \\ []) do
+    sa = insert(:user, args ++ [service_account: true, account: user.account])
+    insert(:impersonation_policy_binding,
+      policy: build(:impersonation_policy, user: sa),
+      user: user
+    )
+    sa
+  end
+
   def admin_user(%Schema.Account{} = account), do: insert(:user, account: account, roles: %{admin: true})
 end

@@ -1,7 +1,8 @@
 defmodule Core.Services.Clusters do
   use Core.Services.Base
   import Core.Policies.Cluster
-  alias Core.Services.{Dns, Repositories}
+  alias Core.Policies.Account, as: AccountPolicy
+  alias Core.Services.{Dns, Repositories, Users, Clusters.Transfer}
   alias Core.Schema.{Cluster, User, DnsRecord, UpgradeQueue, ClusterDependency}
 
   @type error :: {:error, term}
@@ -42,6 +43,34 @@ defmodule Core.Services.Clusters do
     |> Cluster.changeset(Map.put_new_lazy(attrs, :source, fn -> Repositories.installation_source(user) end))
     |> Core.Repo.insert()
   end
+
+  @doc """
+  Transfers ownership of a cluster to a new user.  This has three main components:
+  * replicate the installations from one owner to another, this includes moving oidc providers
+  * transfer ownership of any associated dns records
+  * rewire the owner record of the cluster itself
+  """
+  @spec transfer_ownership(binary, User.t | binary, User.t) :: cluster_resp
+  def transfer_ownership(name, %User{service_account: true} = sa, %User{provider: p, id: id} = user) do
+    with {:ok, _} <- AccountPolicy.allow(sa, user, :impersonate) do
+      %Cluster{} = old = Core.Repo.get_by!(Cluster, owner_id: id, provider: p, name: name)
+      start_transaction()
+      |> add_operation(:insts, fn _ ->
+        Transfer.transfer_installations(user, sa)
+      end)
+      |> add_operation(:dns, fn _ ->
+        {:ok, Transfer.transfer_domains(user, sa, old)}
+      end)
+      |> add_operation(:cluster, fn _ ->
+        Cluster.changeset(old, %{owner_id: sa.id})
+        |> Core.Repo.update()
+      end)
+      |> execute(extract: :cluster)
+    end
+  end
+  def transfer_ownership(name, email, user) when is_binary(email),
+    do: transfer_ownership(name, Users.get_user_by_email!(email), user)
+  def transfer_ownership(_, _, _), do: {:error, "you can only transfer ownership to a service account"}
 
   @doc """
   creates a cluster record from an upgrade queue.  Also ties the cluster back onto that queue

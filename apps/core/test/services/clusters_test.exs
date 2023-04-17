@@ -1,7 +1,7 @@
 defmodule Core.Services.ClustersTest do
   use Core.SchemaCase, async: true
   use Mimic
-  alias Core.Services.Clusters
+  alias Core.Services.{Clusters, Repositories, Charts}
 
   describe "#create_cluster/2" do
     test "a user can create a cluster" do
@@ -152,6 +152,52 @@ defmodule Core.Services.ClustersTest do
       user = insert(:user)
 
       {:error, _} = Clusters.delete_cluster("bogus", :aws, user)
+    end
+  end
+
+  describe "#transfer_ownership/3" do
+    test "it can transfer cluster ownership to a service account" do
+      %{owner: user} = cluster = insert(:cluster, provider: :aws, owner: insert(:user, provider: :aws))
+      sa = bound_service_account(user, roles: %{admin: true})
+
+      inst = insert(:installation, user: user)
+      %{chart: chart} = vsn = insert(:version,
+        version: "1.0.0",
+        chart: build(:chart, repository: inst.repository)
+      )
+      c = insert(:chart_installation, installation: inst, chart: chart, version: vsn)
+      oidc = insert(:oidc_provider, installation: inst)
+
+      domain = insert(:dns_domain)
+      records = insert_list(4, :dns_record, domain: domain, creator: user, cluster: cluster.name, provider: cluster.provider)
+
+      {:ok, res} = Clusters.transfer_ownership(cluster.name, sa, user)
+
+      assert res.owner_id == sa.id
+
+      new_inst = Repositories.get_installation(sa.id, inst.repository_id)
+      assert new_inst.track_tag == inst.track_tag
+      assert new_inst.auto_upgrade == inst.auto_upgrade
+
+      assert refetch(oidc).installation_id == new_inst.id
+      assert Charts.get_chart_installation(c.chart_id, sa.id)
+
+      for r <- records,
+        do: assert refetch(r).creator_id == sa.id
+    end
+
+    test "you cannot transfer if the service account cannot be impersonated" do
+      %{owner: user} = cluster = insert(:cluster, provider: :aws, owner: insert(:user, provider: :aws))
+      sa = insert(:user, service_account: true)
+
+      {:error, _} = Clusters.transfer_ownership(cluster.name, sa, user)
+    end
+
+    test "you cannot transfer to non-service accounts" do
+      %{owner: user} = cluster = insert(:cluster, provider: :aws, owner: insert(:user, provider: :aws))
+      to = insert(:user)
+
+      {:error, _} = Clusters.transfer_ownership(cluster.name, to, user)
     end
   end
 end

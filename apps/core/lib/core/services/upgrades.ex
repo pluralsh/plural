@@ -76,7 +76,7 @@ defmodule Core.Services.Upgrades do
   end
 
   @doc """
-  Deletes this upgrade queue (done when the pinged time expires)
+  Deletes this upgrade queue (done when the pinged time expires).  Also properly decrements usage
   """
   @spec delete_queue(UpgradeQueue.t) :: queue_resp
   def delete_queue(%UpgradeQueue{} = queue) do
@@ -90,6 +90,14 @@ defmodule Core.Services.Upgrades do
       end
     end)
     |> execute(extract: :q)
+  end
+
+  @spec delete_queue(binary, User.t) :: queue_resp
+  def delete_queue(name, %User{id: user_id}) do
+    case get_queue(user_id, name) do
+      %UpgradeQueue{} = q -> delete_queue(q)
+      _ -> {:ok, nil}
+    end
   end
 
   @doc """

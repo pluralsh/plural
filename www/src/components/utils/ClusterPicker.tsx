@@ -1,4 +1,5 @@
 import {
+  Chip,
   ClusterIcon,
   FormField,
   ListBoxItem,
@@ -11,13 +12,28 @@ import {
   useEffect,
   useMemo,
 } from 'react'
+import { isEmpty } from 'lodash'
 
 import ClustersContext from '../../contexts/ClustersContext'
-import { Cluster } from '../../generated/graphql'
-
-import ClusterHealth from '../overview/clusters/ClusterHealth'
+import { Cluster, Maybe, UpgradeInfo } from '../../generated/graphql'
 
 import { ProviderIcon } from './ProviderIcon'
+
+type ClusterPickerReadyChipProps = {upgradeInfo?: Maybe<UpgradeInfo>[] | null}
+
+function ClusterPickerReadyChip({ upgradeInfo }: ClusterPickerReadyChipProps) {
+  const ready = useMemo(() => isEmpty(upgradeInfo), [upgradeInfo])
+
+  return (
+    <Chip
+      severity={ready ? 'success' : 'error'}
+      size="small"
+      hue="lightest"
+    >
+      {ready ? 'Ready' : 'Pending'}
+    </Chip>
+  )
+}
 
 type ClusterPickerProps = {
     cluster: Cluster | undefined
@@ -26,7 +42,7 @@ type ClusterPickerProps = {
     heading?: string
     title?: any
     placeholder?: string
-    health?: boolean
+    showUpgradeInfo?: boolean
     size?: 'small' | 'medium' | 'large'
     disabled?: boolean
 }
@@ -38,7 +54,7 @@ export function ClusterPicker({
   heading,
   title,
   placeholder = 'Select cluster',
-  health = false,
+  showUpgradeInfo = false,
   size = 'medium',
   disabled = false,
 }: ClusterPickerProps) {
@@ -71,15 +87,10 @@ export function ClusterPicker({
             />
           ) : <ClusterIcon />
         )}
-        rightContent={health && cluster && (
-          <ClusterHealth
-            pingedAt={cluster?.pingedAt}
-            size="small"
-          />
-        )}
+        rightContent={showUpgradeInfo && cluster && <ClusterPickerReadyChip upgradeInfo={cluster.upgradeInfo} />}
       >
         {clusters.map(({
-          id, name, provider, pingedAt,
+          id, name, provider, upgradeInfo,
         }) => (
           <ListBoxItem
             key={id}
@@ -91,12 +102,7 @@ export function ClusterPicker({
                 width={16}
               />
             )}
-            rightContent={health && (
-              <ClusterHealth
-                pingedAt={pingedAt}
-                size="small"
-              />
-            )}
+            rightContent={showUpgradeInfo && <ClusterPickerReadyChip upgradeInfo={upgradeInfo} />}
           />
         ))}
       </Select>

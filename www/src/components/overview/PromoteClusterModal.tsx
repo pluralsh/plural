@@ -109,7 +109,7 @@ export function PromoteClusterModal({ open, setOpen }) {
               cluster={fromCluster}
               setCluster={setFromCluster}
               heading="Promote app versions from"
-              health
+              showUpgradeInfo
             />
             <ArrowLeftIcon transform="rotate(270deg)" />
             <ClusterPicker
@@ -117,7 +117,7 @@ export function PromoteClusterModal({ open, setOpen }) {
               setCluster={setToCluster}
               filter={({ id, provider }: Cluster) => id !== fromCluster?.id && provider === fromCluster?.provider}
               heading="Promote app versions to"
-              health
+              showUpgradeInfo
               disabled={!fromCluster}
             />
           </>

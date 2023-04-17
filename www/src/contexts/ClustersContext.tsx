@@ -1,5 +1,5 @@
 import { createContext, useMemo } from 'react'
-import { useQuery } from '@apollo/client'
+import { ApolloQueryResult, useQuery } from '@apollo/client'
 import styled from 'styled-components'
 
 import { Cluster, RootQueryType, RootQueryTypeClustersArgs } from '../generated/graphql'
@@ -8,6 +8,7 @@ import { CLUSTERS } from '../components/overview/queries'
 
 type ClustersContextType = {
   clusters: Cluster[],
+  refetch?: () => Promise<ApolloQueryResult<Pick<RootQueryType, 'clusters'>>>
 }
 
 const ClustersContext = createContext<ClustersContextType>({
@@ -23,7 +24,9 @@ const Error = styled.div(({ theme }) => ({
 }))
 
 export function ClustersContextProvider({ children }) {
-  const { data, loading, error }
+  const {
+    data, loading, error, refetch,
+  }
   = useQuery<Pick<RootQueryType, 'clusters'>, RootQueryTypeClustersArgs>(CLUSTERS, {
     errorPolicy: 'all', // TODO: Remove.
     pollInterval: 30_000,
@@ -34,8 +37,9 @@ export function ClustersContextProvider({ children }) {
 
     return {
       clusters,
+      refetch,
     }
-  }, [data])
+  }, [data, refetch])
 
   if (error && !data) return <Error>{error.message}</Error> // TODO: Return on any error, even if there is data?
   if (!data && loading) return <LoadingIndicator />

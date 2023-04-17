@@ -62,6 +62,12 @@ export const CREATE_CLUSTER_DEPENDENCY = gql`
   }
 `
 
+export const PROMOTE = gql`
+  mutation {
+    promote { id }
+  }
+`
+
 export const QUEUES = gql`
   query Queues {
     upgradeQueues {

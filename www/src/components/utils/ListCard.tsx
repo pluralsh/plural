@@ -1,5 +1,5 @@
 import { Card } from '@pluralsh/design-system'
-import { Div, Flex } from 'honorable'
+import { Flex } from 'honorable'
 
 type ListCardProps = {
   header?: any
@@ -39,16 +39,15 @@ export default function ListCard({ header, input, children }: ListCardProps) {
           {input}
         </Flex>
       )}
-      <Div
+      <Flex
         backgroundColor="fill-one"
         borderBottomLeftRadius={6}
         borderBottomRightRadius={6}
-        flexGrow={1}
+        grow={1}
         direction="column"
-        overflowY="auto"
       >
         {children}
-      </Div>
+      </Flex>
     </Card>
   )
 }

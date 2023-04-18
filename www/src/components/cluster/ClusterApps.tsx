@@ -1,6 +1,5 @@
 import { ReactElement, useMemo, useState } from 'react'
 import { isEmpty } from 'lodash'
-import { Flex } from 'honorable'
 import Fuse from 'fuse.js'
 import { Input, MagnifyingGlassIcon } from '@pluralsh/design-system'
 
@@ -54,29 +53,23 @@ export function ClusterApps({
       )}
     >
       {!isEmpty(apps) ? (
-        <Flex
+        <InfiniteScroller
+          loading={loading}
+          hasMore={hasMore}
+          loadMore={loadMore}
+          // Allow for scrolling in a flexbox layout
           flexGrow={1}
-          direction="column"
-          height="100%"
+          height={0}
         >
-          <InfiniteScroller
-            loading={loading}
-            hasMore={hasMore}
-            loadMore={loadMore}
-            // Allow for scrolling in a flexbox layout
-            flexGrow={1}
-            height={0}
-          >
-            {filteredApps.map((app, i) => (
-              <ClusterApp
-                key={app.id}
-                app={app}
-                consoleUrl={ensureURLValidity(consoleUrl)}
-                last={i === apps.length - 1}
-              />
-            ))}
-          </InfiniteScroller>
-        </Flex>
+          {filteredApps.map((app, i) => (
+            <ClusterApp
+              key={app.id}
+              app={app}
+              consoleUrl={ensureURLValidity(consoleUrl)}
+              last={i === apps.length - 1}
+            />
+          ))}
+        </InfiniteScroller>
       ) : (
         <EmptyListMessage>
           Looks like you haven't installed your first app yet.

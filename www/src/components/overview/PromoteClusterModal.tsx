@@ -56,7 +56,7 @@ export function PromoteClusterModal({ open, setOpen }) {
   }, [client])
 
   const save = useCallback(() => (canPromote ? promote() : createClusterDependency()),
-    [canPromote, promote, createClusterDependency]) // TODO: Test all paths.
+    [canPromote, promote, createClusterDependency])
 
   const hint = useCallback((pending: number | undefined) => (!isNil(pending)
     ? `${pending} application${pending !== 1 ? 's' : ''} pending`
@@ -127,7 +127,6 @@ export function PromoteClusterModal({ open, setOpen }) {
               hint={hint(toCluster?.upgradeInfo?.length)}
               disabled={!fromCluster}
             />
-            {/* TODO: Show upgrade info. */}
           </>
         )}
       </Flex>

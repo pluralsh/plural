@@ -109,12 +109,12 @@ export default function ClustersHelpSection(): ReactElement {
               width="max-content"
             >
               Get started
-            </Button> {/* TODO: Link to cluster creation. */}
+            </Button>
           </div>
         </Card>
         <div className="video">
           <ReactPlayer
-            url="https://www.youtube.com/watch?v=LgwnBjYOCbg" // TODO: Update.
+            url="https://www.youtube.com/watch?v=LgwnBjYOCbg"
             width="100%"
           />
         </div>

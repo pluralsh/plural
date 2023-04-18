@@ -37,7 +37,7 @@ export default function ClusterListEmptyState() {
           gap="medium"
           marginTop="large"
         >
-          <Button>Start onboarding</Button> {/* TODO: Navigate. */}
+          <Button>Start onboarding</Button>
           <Button
             secondary
             startIcon={<BrowseAppsIcon />}

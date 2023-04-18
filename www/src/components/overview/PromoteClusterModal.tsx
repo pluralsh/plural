@@ -28,7 +28,7 @@ export function PromoteClusterModal({ open, setOpen }) {
     setFromCluster(undefined)
   }, [setOpen, setFromCluster, setToCluster])
 
-  const { client } = useImpersonatedServiceAccount(fromCluster?.owner?.id, !fromCluster?.owner?.serviceAccount)
+  const { client } = useImpersonatedServiceAccount(toCluster?.owner?.id, !toCluster?.owner?.serviceAccount)
 
   const [createClusterDependency, { loading: creating, error: createError }] = useMutation(CREATE_CLUSTER_DEPENDENCY, {
     variables: { source: fromCluster?.id || '', dest: toCluster?.id || '' },

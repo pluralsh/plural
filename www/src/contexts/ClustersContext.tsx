@@ -24,7 +24,6 @@ const Error = styled.div(({ theme }) => ({
 
 export function ClustersContextProvider({ children }) {
   const { data, loading, error } = useQuery<Pick<RootQueryType, 'clusters'>, RootQueryTypeClustersArgs>(CLUSTERS, {
-    errorPolicy: 'all', // TODO: Remove.
     pollInterval: 30_000,
   })
 
@@ -35,7 +34,7 @@ export function ClustersContextProvider({ children }) {
     return { clusters }
   }, [data])
 
-  if (error && !data) return <Error>{error.message}</Error> // TODO: Return on any error, even if there is data?
+  if (error) return <Error>{error.message}</Error>
   if (!data && loading) return <LoadingIndicator />
 
   return (

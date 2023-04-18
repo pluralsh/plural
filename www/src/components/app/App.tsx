@@ -36,7 +36,7 @@ export function App() {
 }
 
 function AppInternal() {
-  const { appId: name, ...restParams } = useParams()
+  const { appName: name, ...restParams } = useParams()
   const subPath = restParams?.['*']?.split?.('/')[0]
   const { data, loading } = useQuery<{repository: Repository}>(REPO_Q, { variables: { name } })
   const tabStateRef = useRef<any>(null)

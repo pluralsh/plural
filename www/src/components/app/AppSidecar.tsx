@@ -9,7 +9,7 @@ import ClusterAppHealth from '../cluster/ClusterAppHealth'
 import { useAppContext } from '../../contexts/AppContext'
 
 export function AppSidecar() {
-  const { clusterId, appId } = useParams()
+  const { clusterId, appName } = useParams()
   const { clusters } = useContext(ClustersContext)
   const cluster = clusters.find(({ id }) => id === clusterId)
   const app = useAppContext()
@@ -23,7 +23,7 @@ export function AppSidecar() {
       {cluster?.consoleUrl && (
         <Button
           as="a"
-          href={`${ensureURLValidity(cluster.consoleUrl)}/apps/${appId}`}
+          href={`${ensureURLValidity(cluster.consoleUrl)}/apps/${appName}`}
           target="_blank"
           rel="noopener noreferrer"
           height="max-content"

@@ -25,14 +25,14 @@ export default function AppSidenav({
 }: {
   tabStateRef: MutableRefObject<any>
 }) {
-  const { clusterId, appId } = useParams()
+  const { clusterId, appName } = useParams()
   const app = useAppContext()
 
   const { pathname } = useLocation()
   const tabStateRef = useRef<any>()
 
   useImperativeHandle(outerTabStateRef, () => ({ ...(tabStateRef.current || {}) }))
-  const pathPrefix = `/apps/${clusterId}/${appId}`
+  const pathPrefix = `/apps/${clusterId}/${appName}`
   const filteredDirectory = DIRECTORY.filter(({ path }) => {
     switch (path) {
     case '/oidc':

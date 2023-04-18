@@ -544,7 +544,7 @@ export function PluralInner() {
               />
               {/* CLUSTER APPS  */}
               <Route
-                path="/apps/:clusterId/:appId"
+                path="/apps/:clusterId/:appName"
                 element={<App />}
               >
                 <Route

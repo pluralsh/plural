@@ -14,6 +14,7 @@ import styled from 'styled-components'
 import { GqlError } from '../../utils/Alert'
 import { DELETE_INSTALLATION_MUTATION } from '../../repository/queries'
 import { useAppContext } from '../../../contexts/AppContext'
+import { AppHeaderActions } from '../AppHeaderActions'
 
 export const StyledInput = styled(Input)(({ theme }) => ({
   backgroundColor: theme.colors['fill-two'],
@@ -32,7 +33,9 @@ export function Uninstall() {
       <PageTitle
         heading="Uninstall"
         paddingTop="medium"
-      />
+      >
+        <AppHeaderActions />
+      </PageTitle>
       <Card
         display="flex"
         flexDirection="column"

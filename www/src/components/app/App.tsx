@@ -86,7 +86,10 @@ function AppInternal() {
         >
           <Outlet />
         </TabPanel>
-        <ResponsiveLayoutSidecarContainer>
+        <ResponsiveLayoutSidecarContainer
+          display-desktop-down={undefined}
+          display-desktopSmall-down="none"
+        >
           <AppSidecar />
         </ResponsiveLayoutSidecarContainer>
         <ResponsiveLayoutSpacer />

@@ -29,6 +29,7 @@ import { AuthMethod } from '../../oidc/types'
 import usePrevious from '../../../hooks/usePrevious'
 import { REPO_Q } from '../../repository/packages/queries'
 import { useAppContext } from '../../../contexts/AppContext'
+import { AppHeaderActions } from '../AppHeaderActions'
 
 function UrlsInput({ uriFormat = '', urls, setUrls }: any) {
   const [baseScheme, basePath] = ['https://', '/oauth2/callback']
@@ -265,7 +266,9 @@ export function CreateProvider({
       <PageTitle
         heading="OpenID Connect"
         paddingTop="medium"
-      />
+      >
+        <AppHeaderActions />
+      </PageTitle>
       {error && (
         <GqlError
           error={error}
@@ -311,7 +314,9 @@ export function UpdateProvider({
       <PageTitle
         heading="OpenID Connect"
         paddingTop="medium"
-      />
+      >
+        <AppHeaderActions />
+      </PageTitle>
       {error && (
         <GqlError
           error={error}

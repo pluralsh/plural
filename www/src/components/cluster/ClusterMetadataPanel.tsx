@@ -10,13 +10,17 @@ import ClusterOwner from '../overview/clusters/ClusterOwner'
 import { InfoPanel } from '../utils/InfoPanel'
 import Prop from '../utils/Prop'
 
-type ClusterSidecarProps = {
+type ClusterMetadataPanelProps = {
   cluster: Cluster,
   open: boolean,
   setOpen: Dispatch<boolean>
 }
 
-export default function ClusterMetadataPanel({ cluster, open, setOpen }: ClusterSidecarProps): ReactElement | null {
+export default function ClusterMetadataPanel({
+  cluster,
+  open,
+  setOpen,
+}: ClusterMetadataPanelProps): ReactElement | null {
   if (!open) return null
 
   return (

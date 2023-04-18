@@ -16,6 +16,7 @@ import { useMutation } from '@apollo/client'
 import { UPDATE_INSTALLATION } from '../../repository/queries'
 import { useAppContext } from '../../../contexts/AppContext'
 import { GqlError } from '../../utils/Alert'
+import { AppHeaderActions } from '../AppHeaderActions'
 
 export function Upgrade() {
   const { installation, upgradeChannels = [] } = useAppContext()
@@ -35,7 +36,9 @@ export function Upgrade() {
       <PageTitle
         heading="Upgrade channel"
         paddingTop="medium"
-      />
+      >
+        <AppHeaderActions />
+      </PageTitle>
       <Card
         display="flex"
         flexDirection="column"

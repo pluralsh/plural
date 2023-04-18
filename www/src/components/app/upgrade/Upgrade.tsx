@@ -10,7 +10,7 @@ import {
 } from '@pluralsh/design-system'
 import { P, Switch } from 'honorable'
 import { capitalize, isEmpty } from 'lodash'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useMutation } from '@apollo/client'
 
 import { UPDATE_INSTALLATION } from '../../repository/queries'
@@ -23,8 +23,8 @@ export function Upgrade() {
   const [trackTag, setTrackTag] = useState(installation?.trackTag)
   const [mutation, { loading, error }] = useMutation(UPDATE_INSTALLATION, {
     variables: { id: installation?.id, attributes: { trackTag, autoUpgrade } },
-    onCompleted: () => null,
   })
+  const hasUpgradeChannels = useMemo(() => !isEmpty(upgradeChannels), [upgradeChannels])
 
   return (
     <>
@@ -54,7 +54,7 @@ export function Upgrade() {
         </P>
         <WrapWithIf
           wrapper={<Tooltip label="No upgrade channels available." />}
-          condition={isEmpty(upgradeChannels)}
+          condition={!hasUpgradeChannels}
         >
           <Switch
             checked={!autoUpgrade}
@@ -62,13 +62,13 @@ export function Upgrade() {
               setAutoUpgrade(!checked)
               if (checked) setTrackTag(undefined)
             }}
-            disabled={isEmpty(upgradeChannels)}
+            disabled={!hasUpgradeChannels}
             marginBottom="xlarge"
           >
             None
           </Switch>
         </WrapWithIf>
-        {autoUpgrade && upgradeChannels && !isEmpty(upgradeChannels) && (
+        {autoUpgrade && upgradeChannels && hasUpgradeChannels && (
           <Select
             label="Select upgrade channel"
             selectedKey={trackTag}

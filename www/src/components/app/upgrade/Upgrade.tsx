@@ -10,7 +10,7 @@ import {
 } from '@pluralsh/design-system'
 import { P, Switch } from 'honorable'
 import { capitalize, isEmpty } from 'lodash'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useMutation } from '@apollo/client'
 
 import { UPDATE_INSTALLATION } from '../../repository/queries'
@@ -25,6 +25,10 @@ export function Upgrade() {
     variables: { id: installation?.id, attributes: { trackTag, autoUpgrade } },
   })
   const hasUpgradeChannels = useMemo(() => !isEmpty(upgradeChannels), [upgradeChannels])
+
+  useEffect(() => {
+    if (!autoUpgrade) setTrackTag(undefined)
+  }, [autoUpgrade, setTrackTag])
 
   return (
     <>
@@ -58,10 +62,7 @@ export function Upgrade() {
         >
           <Switch
             checked={!autoUpgrade}
-            onChange={({ target: { checked } }) => {
-              setAutoUpgrade(!checked)
-              if (checked) setTrackTag(undefined)
-            }}
+            onChange={({ target: { checked } }) => setAutoUpgrade(!checked)}
             disabled={!hasUpgradeChannels}
             marginBottom="xlarge"
           >

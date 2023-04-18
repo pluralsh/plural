@@ -51,7 +51,6 @@ export function Clusters(): ReactElement | null {
       direction="column"
       gap="medium"
       grow={1}
-      overflow="auto"
     >
       <ClusterList columns={columns} />
       <Upgrades />

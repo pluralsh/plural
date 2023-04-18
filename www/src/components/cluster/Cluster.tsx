@@ -21,6 +21,7 @@ import ImpersonateServiceAccount from '../utils/ImpersonateServiceAccount'
 import { CLUSTERS_ROOT_CRUMB } from '../overview/Overview'
 import { ensureURLValidity } from '../../utils/url'
 import { ClusterPicker } from '../utils/ClusterPicker'
+import { ResponsiveLayoutPage } from '../utils/layout/ResponsiveLayoutPage'
 
 import { ClusterSidecar } from './ClusterSidecar'
 import { ClusterApps } from './ClusterApps'
@@ -59,10 +60,9 @@ export function Cluster() {
   }
 
   return (
-    <Flex
-      grow={1}
+    <ResponsiveLayoutPage
       gap="large"
-      padding="large"
+      overflowY="auto"
     >
       <Flex
         direction="column"
@@ -157,6 +157,6 @@ export function Cluster() {
         </Flex>
       </Flex>
       <ClusterSidecar cluster={cluster} />
-    </Flex>
+    </ResponsiveLayoutPage>
   )
 }

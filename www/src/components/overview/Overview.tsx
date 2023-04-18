@@ -20,6 +20,7 @@ export function Overview(): ReactElement {
       direction="column"
       grow={1}
       padding="large"
+      overflowY="auto"
     >
       <OverviewHeader />
       <Outlet />

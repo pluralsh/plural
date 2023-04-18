@@ -11,6 +11,7 @@ import useImpersonatedServiceAccount from '../../hooks/useImpersonatedServiceAcc
 import { ensureURLValidity } from '../../utils/url'
 
 import { CLUSTERS, CREATE_CLUSTER_DEPENDENCY, PROMOTE } from './queries'
+import { ClusterUpgradeInfo } from './ClusterUpgradeInfo'
 
 export function PromoteClusterModal({ open, setOpen }) {
   const [fromCluster, setFromCluster] = useState<Cluster | undefined>()
@@ -117,6 +118,10 @@ export function PromoteClusterModal({ open, setOpen }) {
               hint={hint(fromCluster?.upgradeInfo?.length)}
               showUpgradeInfo
             />
+            <ClusterUpgradeInfo
+              clusterId={fromCluster?.id}
+              upgradeInfo={fromCluster?.upgradeInfo}
+            />
             <ArrowLeftIcon transform="rotate(270deg)" />
             <ClusterPicker
               cluster={toCluster}
@@ -126,6 +131,10 @@ export function PromoteClusterModal({ open, setOpen }) {
               showUpgradeInfo
               hint={hint(toCluster?.upgradeInfo?.length)}
               disabled={!fromCluster}
+            />
+            <ClusterUpgradeInfo
+              clusterId={toCluster?.id}
+              upgradeInfo={toCluster?.upgradeInfo}
             />
           </>
         )}

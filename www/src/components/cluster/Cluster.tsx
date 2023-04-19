@@ -114,6 +114,7 @@ export function Cluster() {
                 <ClusterPromoteModal
                   open={promoteOpen}
                   setOpen={setPromoteOpen}
+                  destination={cluster}
                 />
               </>
             )}

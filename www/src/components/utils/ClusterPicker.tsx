@@ -40,7 +40,7 @@ function ClusterPickerReadyChip({ upgradeInfo }: ClusterPickerReadyChipProps) {
 }
 
 type ClusterPickerProps = {
-    cluster: Cluster | undefined
+    cluster?: Cluster | null
     setCluster?: Dispatch<Cluster | undefined>
     onChange?: (Cluster) => void
     filter?: (Cluster) => boolean

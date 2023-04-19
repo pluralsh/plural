@@ -43,7 +43,7 @@ query {
         }
         dependency {
           cluster { id }
-          dependency { id name }
+          dependency { id name provider }
         }
       }
     }

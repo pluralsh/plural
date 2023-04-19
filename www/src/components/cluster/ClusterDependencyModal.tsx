@@ -53,6 +53,7 @@ export function ClusterDependencyModal({ open, setOpen, destination }: ClusterDe
         </>
       )}
       size="large"
+      overflow="hidden"
     >
       <Flex
         direction="column"

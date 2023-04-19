@@ -1,7 +1,6 @@
 import { ArrowLeftIcon, Button, Modal } from '@pluralsh/design-system'
 import { Div, Flex } from 'honorable'
-import { useCallback, useMemo, useState } from 'react'
-import { useMutation } from '@apollo/client'
+import { Dispatch, useCallback, useState } from 'react'
 import isNil from 'lodash/isNil'
 
 import { Cluster } from '../../generated/graphql'
@@ -10,54 +9,43 @@ import { GqlError } from '../utils/Alert'
 import useImpersonatedServiceAccount from '../../hooks/useImpersonatedServiceAccount'
 import { ensureURLValidity } from '../../utils/url'
 
-import { CLUSTERS, CREATE_CLUSTER_DEPENDENCY, PROMOTE } from '../overview/queries'
+import { PROMOTE } from '../overview/queries'
 import { ClusterUpgradeInfo } from '../overview/ClusterUpgradeInfo'
 
-export function ClusterPromoteModal({ open, setOpen }) {
-  const [fromCluster, setFromCluster] = useState<Cluster | undefined>()
-  const [toCluster, setToCluster] = useState<Cluster | undefined>()
-  const [promoting, setPromoting] = useState(false)
-  const [promoteError, setPromoteError] = useState()
+type ClusterPromoteModalProps = {
+  open: boolean
+  setOpen: Dispatch<boolean>
+  destination: Cluster
+}
+
+export function ClusterPromoteModal({ open, setOpen, destination }: ClusterPromoteModalProps) {
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState()
   const [finished, setFinished] = useState(false)
 
   const close = useCallback(() => {
     setOpen(false)
     setFinished(false)
-    setPromoteError(undefined)
-    setToCluster(undefined)
-    setFromCluster(undefined)
-  }, [setOpen, setFromCluster, setToCluster])
+    setError(undefined)
+  }, [setOpen, setFinished, setError])
 
-  const { client } = useImpersonatedServiceAccount(toCluster?.owner?.id, !toCluster?.owner?.serviceAccount)
-
-  const [createClusterDependency, { loading: creating, error: createError }] = useMutation(CREATE_CLUSTER_DEPENDENCY, {
-    variables: { source: fromCluster?.id || '', dest: toCluster?.id || '' },
-    refetchQueries: [{ query: CLUSTERS }],
-    onCompleted: () => promote(),
-  })
-
-  const canPromote = useMemo(() => {
-    if (!fromCluster || !toCluster || !client) return false
-    const { dependency } = toCluster
-
-    return dependency?.dependency?.id === fromCluster?.id && dependency?.cluster?.id === toCluster?.id
-  }, [fromCluster, toCluster, client])
+  const {
+    client,
+    error: impersonationError,
+  } = useImpersonatedServiceAccount(destination.owner?.id, !destination.owner?.serviceAccount)
 
   const promote = useCallback(() => {
-    setPromoting(true)
+    setLoading(true)
     client?.mutate({ mutation: PROMOTE })
       .then(() => {
-        setPromoting(false)
+        setLoading(false)
         setFinished(true)
       })
       .catch(error => {
-        setPromoting(false)
-        setPromoteError(error)
+        setLoading(false)
+        setError(error)
       })
   }, [client])
-
-  const save = useCallback(() => (canPromote ? promote() : createClusterDependency()),
-    [canPromote, promote, createClusterDependency])
 
   const hint = useCallback((pending: number | undefined) => (!isNil(pending)
     ? `${pending} application${pending !== 1 ? 's' : ''} pending`
@@ -68,11 +56,11 @@ export function ClusterPromoteModal({ open, setOpen }) {
       portal
       open={open}
       onClose={close}
-      actions={finished ? (toCluster?.consoleUrl && (
+      actions={finished ? (destination.consoleUrl && (
         <Button
           onClick={close}
           as="a"
-          href={ensureURLValidity(toCluster?.consoleUrl)}
+          href={ensureURLValidity(destination.consoleUrl)}
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -87,9 +75,9 @@ export function ClusterPromoteModal({ open, setOpen }) {
             Cancel
           </Button>
           <Button
-            disabled={!fromCluster || !toCluster || !client}
-            onClick={() => save()}
-            loading={creating || promoting}
+            disabled={!destination.dependency || !client}
+            onClick={() => promote()}
+            loading={loading}
             marginLeft="medium"
           >
             Save
@@ -97,44 +85,37 @@ export function ClusterPromoteModal({ open, setOpen }) {
         </>
       )}
       size="large"
+      overflow="hidden"
     >
       <Flex
         direction="column"
         gap="xlarge"
       >
-        <Div subtitle2>{finished ? 'Cluster promotion complete' : 'Setup cluster promotion'}</Div>
-        {createError || promoteError && (
+        <Div subtitle2>Cluster promotion</Div>
+        {(error || impersonationError) && (
           <GqlError
             header="Something went wrong"
-            error={createError || promoteError}
+            error={error || impersonationError}
           />
         )}
         {!finished && (
           <>
             <ClusterPicker
-              cluster={fromCluster}
-              setCluster={setFromCluster}
-              heading="Promote app versions from"
-              hint={hint(fromCluster?.upgradeInfo?.length)}
-              showUpgradeInfo
-            />
-            <ClusterUpgradeInfo
-              clusterId={fromCluster?.id}
-              upgradeInfo={fromCluster?.upgradeInfo}
+              cluster={destination.dependency.dependency}
+              heading="Promotion source"
+              disabled
             />
             <ArrowLeftIcon transform="rotate(270deg)" />
             <ClusterPicker
-              cluster={toCluster}
-              setCluster={setToCluster}
-              filter={({ id, provider }: Cluster) => id !== fromCluster?.id && provider === fromCluster?.provider}
-              heading="Promote app versions to"
+              cluster={destination}
+              heading="Promotion destination"
               showUpgradeInfo
-              hint={hint(toCluster?.upgradeInfo?.length)}
-              disabled={!fromCluster}
+              hint={hint(destination.upgradeInfo?.length)}
+              disabled
             />
             <ClusterUpgradeInfo
-              clusterId={toCluster?.id}
-              upgradeInfo={toCluster?.upgradeInfo}
+              clusterId={destination.id}
+              upgradeInfo={destination.upgradeInfo}
             />
           </>
         )}

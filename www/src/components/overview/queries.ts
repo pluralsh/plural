@@ -42,8 +42,8 @@ query {
           count
         }
         dependency {
-          cluster { id  }
-          dependency { id }
+          cluster { id }
+          dependency { id name }
         }
       }
     }

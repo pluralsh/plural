@@ -47,7 +47,7 @@ export function Cluster() {
   ],
   [cluster?.name, clusterId])
 
-  useEffect(() => navigate(`/clusters/${cluster?.id}`), [cluster?.id, navigate])
+  useEffect(() => setCluster(clusters.find(({ id }) => id === clusterId)), [clusters, clusterId, setCluster])
   useSetBreadcrumbs(breadcrumbs)
 
   if (!cluster) {
@@ -81,6 +81,7 @@ export function Cluster() {
             <ClusterPicker
               cluster={cluster}
               setCluster={setCluster}
+              onChange={c => navigate(`/clusters/${c?.id}`)}
               title={(
                 <Flex gap="xsmall">
                   <ClusterIcon />

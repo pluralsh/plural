@@ -38,6 +38,7 @@ function ClusterPickerReadyChip({ upgradeInfo }: ClusterPickerReadyChipProps) {
 type ClusterPickerProps = {
     cluster: Cluster | undefined
     setCluster: Dispatch<Cluster | undefined>
+    onChange: (Cluster) => void
     filter?: (Cluster) => boolean
     heading?: string
     hint?: string
@@ -51,6 +52,7 @@ type ClusterPickerProps = {
 export function ClusterPicker({
   cluster,
   setCluster,
+  onChange,
   filter,
   heading,
   hint,
@@ -82,7 +84,12 @@ export function ClusterPicker({
       <Select
         label={placeholder}
         selectedKey={cluster?.id}
-        onSelectionChange={id => setCluster(clusters.find(c => c.id === id))}
+        onSelectionChange={id => {
+          const selection = clusters.find(c => c.id === id)
+
+          setCluster(selection)
+          onChange(selection)
+        }}
         size={size}
         isDisabled={disabled}
         titleContent={title}

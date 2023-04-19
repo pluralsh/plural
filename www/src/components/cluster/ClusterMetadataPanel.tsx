@@ -2,6 +2,7 @@ import { A } from 'honorable'
 import moment from 'moment'
 import { Tooltip } from '@pluralsh/design-system'
 import { Dispatch, ReactElement } from 'react'
+import { Link } from 'react-router-dom'
 
 import { Cluster } from '../../generated/graphql'
 import CopyButton from '../utils/CopyButton'
@@ -64,6 +65,20 @@ export default function ClusterMetadataPanel({
           type="secondary"
         />
       </Prop>
+      {!!cluster.dependency && (
+        <Prop
+          title="Promotion source"
+          margin={0}
+        >
+          <A
+            inline
+            as={Link}
+            to={`/clusters/${cluster.dependency.dependency?.id}`}
+          >
+            {cluster.dependency.dependency?.name}
+          </A>
+        </Prop>
+      )}
       <Prop
         title="Acked"
         margin={0}

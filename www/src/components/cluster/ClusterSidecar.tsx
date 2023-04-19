@@ -7,6 +7,7 @@ import {
   Tooltip,
 } from '@pluralsh/design-system'
 import { ReactElement } from 'react'
+import { Link } from 'react-router-dom'
 
 import { Cluster } from '../../generated/graphql'
 import CopyButton from '../utils/CopyButton'
@@ -54,6 +55,17 @@ export function ClusterSidecar({ cluster }: ClusterSidecarProps): ReactElement {
             type="secondary"
           />
         </SidecarItem>
+        {!!cluster.dependency && (
+          <SidecarItem heading="Promotion source">
+            <A
+              inline
+              as={Link}
+              to={`/clusters/${cluster.dependency.dependency?.id}`}
+            >
+              {cluster.dependency.dependency?.name}
+            </A>
+          </SidecarItem>
+        )}
         <SidecarItem heading="Acked">
           {cluster.queue?.acked || '-'}
         </SidecarItem>

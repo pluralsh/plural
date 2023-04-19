@@ -42,7 +42,6 @@ query {
           count
         }
         dependency {
-          cluster { id }
           dependency { id name provider }
         }
       }

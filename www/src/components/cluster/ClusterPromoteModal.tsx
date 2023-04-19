@@ -37,15 +37,16 @@ export function ClusterPromoteModal({ open, setOpen, destination }: ClusterPromo
 function ClusterPromoteModalInternal({ open, setOpen, destination }: ClusterPromoteModalProps) {
   const [finished, setFinished] = useState(false)
 
-  const close = useCallback(() => {
-    setOpen(false)
-    setFinished(false)
-  }, [setOpen, setFinished])
-
-  const [mutation, { loading, error }] = useMutation(PROMOTE, {
+  const [mutation, { loading, error, reset }] = useMutation(PROMOTE, {
     refetchQueries: [{ query: CLUSTERS }],
     onCompleted: () => setFinished(true),
   })
+
+  const close = useCallback(() => {
+    setOpen(false)
+    setFinished(false)
+    reset()
+  }, [setOpen, setFinished, reset])
 
   const hint = useCallback((pending: number | undefined) => (!isNil(pending)
     ? `${pending === 0 ? 'no' : pending} application${pending !== 1 ? 's' : ''} pending`

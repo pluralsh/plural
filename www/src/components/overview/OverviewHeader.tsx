@@ -1,17 +1,9 @@
-import { Button, SubTab, TabList } from '@pluralsh/design-system'
-import {
-  ReactElement,
-  useContext,
-  useRef,
-  useState,
-} from 'react'
+import { SubTab, TabList } from '@pluralsh/design-system'
+import { ReactElement, useRef } from 'react'
 import { useLocation } from 'react-router-dom'
 import { Flex } from 'honorable'
 
 import { LinkTabWrap } from '../utils/Tabs'
-import ClustersContext from '../../contexts/ClustersContext'
-
-import { PromoteClusterModal } from './PromoteClusterModal'
 
 const DIRECTORY = [
   { path: '/overview/clusters', label: 'Cluster overview' },
@@ -19,8 +11,6 @@ const DIRECTORY = [
 ]
 
 export default function OverviewHeader(): ReactElement {
-  const [promoteClusterModalOpen, setPromoteClusterModalOpen] = useState(false)
-  const { clusters } = useContext(ClustersContext)
   const tabStateRef = useRef<any>(null)
   const { pathname } = useLocation()
   const currentTab = DIRECTORY.find(tab => pathname?.startsWith(tab.path))
@@ -44,25 +34,6 @@ export default function OverviewHeader(): ReactElement {
           </LinkTabWrap>
         ))}
       </TabList>
-      <Flex
-        grow={1}
-        justify="end"
-      >
-        {currentTab?.path?.endsWith('clusters') && clusters?.length > 1 && (
-          <>
-            <Button
-              secondary
-              onClick={() => setPromoteClusterModalOpen(true)}
-            >
-              Promote cluster
-            </Button>
-            <PromoteClusterModal
-              open={promoteClusterModalOpen}
-              setOpen={setPromoteClusterModalOpen}
-            />
-          </>
-        )}
-      </Flex>
     </Flex>
   )
 }

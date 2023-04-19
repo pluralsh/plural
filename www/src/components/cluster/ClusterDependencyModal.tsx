@@ -10,10 +10,10 @@ import { GqlError } from '../utils/Alert'
 import useImpersonatedServiceAccount from '../../hooks/useImpersonatedServiceAccount'
 import { ensureURLValidity } from '../../utils/url'
 
-import { CLUSTERS, CREATE_CLUSTER_DEPENDENCY, PROMOTE } from './queries'
-import { ClusterUpgradeInfo } from './ClusterUpgradeInfo'
+import { CLUSTERS, CREATE_CLUSTER_DEPENDENCY, PROMOTE } from '../overview/queries'
+import { ClusterUpgradeInfo } from '../overview/ClusterUpgradeInfo'
 
-export function PromoteClusterModal({ open, setOpen }) {
+export function ClusterDependencyModal({ open, setOpen }) {
   const [fromCluster, setFromCluster] = useState<Cluster | undefined>()
   const [toCluster, setToCluster] = useState<Cluster | undefined>()
   const [promoting, setPromoting] = useState(false)

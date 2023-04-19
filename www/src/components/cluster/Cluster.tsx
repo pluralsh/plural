@@ -9,8 +9,8 @@ import {
   Button,
   ClusterIcon,
   EmptyState,
-  IconFrame,
   PersonPlusIcon,
+  RocketIcon,
   WarningOutlineIcon,
   useSetBreadcrumbs,
 } from '@pluralsh/design-system'
@@ -23,13 +23,18 @@ import { ensureURLValidity } from '../../utils/url'
 import { ClusterPicker } from '../utils/ClusterPicker'
 import { ResponsiveLayoutPage } from '../utils/layout/ResponsiveLayoutPage'
 
+import { ClusterDependencyModal } from './ClusterDependencyModal'
 import { ClusterSidecar } from './ClusterSidecar'
 import { ClusterApps } from './ClusterApps'
 import { ClusterUpgrades } from './ClusterUpgrades'
 import { ClusterAdminsModal } from './ClusterAdminsModal'
 import ClusterMetadataPanel from './ClusterMetadataPanel'
+import { CollapsibleButton } from './misc'
+import { ClusterPromoteModal } from './ClusterPromoteModal'
 
 export function Cluster() {
+  const [dependencyOpen, setDependencyOpen] = useState(false)
+  const [promoteOpen, setPromoteOpen] = useState(false)
   const [adminsOpen, setAdminsOpen] = useState(false)
   const [metadataOpen, setMetadataOpen] = useState(false)
   const navigate = useNavigate()
@@ -85,26 +90,38 @@ export function Cluster() {
             />
           </Div>
           <Flex gap="medium">
+            {!cluster.dependency ? (
+              <>
+                <CollapsibleButton
+                  label="Setup promotions"
+                  icon={<RocketIcon />}
+                  onClick={() => setDependencyOpen(true)}
+                />
+                <ClusterDependencyModal
+                  open={dependencyOpen}
+                  setOpen={setDependencyOpen}
+                />
+              </>
+            ) : (
+              <>
+                <CollapsibleButton
+                  label="Promote"
+                  icon={<RocketIcon />}
+                  onClick={() => setPromoteOpen(true)}
+                />
+                <ClusterPromoteModal
+                  open={promoteOpen}
+                  setOpen={setPromoteOpen}
+                />
+              </>
+            )}
+
             {cluster.owner?.serviceAccount && (
               <>
-                <Button
-                  secondary
-                  startIcon={<PersonPlusIcon />}
+                <CollapsibleButton
+                  label="Administrators"
+                  icon={<PersonPlusIcon />}
                   onClick={() => setAdminsOpen(true)}
-                  display-desktopSmall-down="none"
-                >
-                  Administrators
-                </Button>
-                <IconFrame
-                  clickable
-                  icon={<PersonPlusIcon width={16} />}
-                  size="large"
-                  type="secondary"
-                  onClick={() => setAdminsOpen(true)}
-                  textValue="Administrators"
-                  tooltip
-                  minWidth={40}
-                  display-desktopSmall-up="none"
                 />
                 <ClusterAdminsModal
                   open={adminsOpen}
@@ -113,6 +130,7 @@ export function Cluster() {
                 />
               </>
             )}
+
             {cluster.consoleUrl && (
               <Button
                 as="a"
@@ -125,6 +143,7 @@ export function Cluster() {
                 Launch Console
               </Button>
             )}
+
             <Button
               secondary
               height="max-content"

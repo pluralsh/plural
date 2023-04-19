@@ -2,6 +2,7 @@ import {
   AppIcon,
   Button,
   CaretRightIcon,
+  CheckRoundedIcon,
   Chip,
   IconFrame,
   TerminalIcon,
@@ -116,16 +117,31 @@ export const ColOwner = columnHelper.accessor(row => row.owner?.name, {
   header: 'Owner',
 })
 
+export const ColPromotions = columnHelper.accessor(row => row.hasDependency, {
+  id: 'promotions',
+  enableGlobalFilter: true,
+  enableSorting: true,
+  cell: hasDependency => (hasDependency.getValue()
+    && (
+      <IconFrame
+        icon={(<CheckRoundedIcon color="icon-success" />)}
+        type="floating"
+      />
+    )
+  ),
+  header: 'Promotions',
+})
+
 export const ColUpgrades = columnHelper.accessor(row => row.delivered, {
   id: 'upgrades',
   enableGlobalFilter: true,
   enableSorting: true,
-  cell: ({ row: { original: { delivered } } }) => (
+  cell: delivered => (
     <Chip
-      severity={delivered ? 'success' : 'warning'}
+      severity={delivered.getValue() ? 'success' : 'warning'}
       hue="lighter"
     >
-      {delivered ? 'Delivered' : 'Pending'}
+      {delivered.getValue() ? 'Delivered' : 'Pending'}
     </Chip>
   ),
   header: 'Upgrades',

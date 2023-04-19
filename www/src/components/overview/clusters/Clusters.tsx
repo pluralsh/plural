@@ -14,6 +14,7 @@ import {
   ColGit,
   ColHealth,
   ColOwner,
+  ColPromotions,
   ColUpgrades,
 } from './columns'
 
@@ -27,6 +28,7 @@ export function Clusters(): ReactElement | null {
     ColCloudShell,
     ColOwner,
     ColUpgrades,
+    ColPromotions,
     ColActions,
   ],
   [])

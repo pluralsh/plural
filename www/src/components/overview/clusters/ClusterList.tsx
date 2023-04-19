@@ -42,6 +42,7 @@ export const ClusterList = memo(({ columns, ...props }: ClustersListProps) => {
         consoleUrl: ensureURLValidity(cluster.consoleUrl),
         pingedAt: cluster.pingedAt,
         delivered,
+        hasDependency: !!cluster.dependency,
         owner: {
           name: cluster.owner?.name,
           email: cluster.owner?.email,

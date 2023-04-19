@@ -9,6 +9,7 @@ export type ClusterListElement = {
   gitUrl?: string | null
   consoleUrl?: string | null
   delivered: boolean
+  hasDependency: boolean
   owner?: {
     name?: string
     email?: string

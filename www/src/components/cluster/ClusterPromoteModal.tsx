@@ -57,32 +57,35 @@ function ClusterPromoteModalInternal({ open, setOpen, destination }: ClusterProm
       portal
       open={open}
       onClose={close}
-      actions={finished ? (destination.consoleUrl && (
-        <Button
-          onClick={close}
-          as="a"
-          href={ensureURLValidity(destination.consoleUrl)}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          View in console
-        </Button>
-      )) : (
+      actions={(
         <>
           <Button
             secondary
             onClick={close}
+            marginRight="medium"
           >
             Cancel
           </Button>
-          <Button
-            disabled={!destination.dependency}
-            onClick={mutation}
-            loading={loading}
-            marginLeft="medium"
-          >
-            Promote
-          </Button>
+          {finished ? (destination.consoleUrl && (
+            <Button
+              onClick={close}
+              as="a"
+              href={ensureURLValidity(destination.consoleUrl)}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              View in console
+            </Button>
+          )) : (
+            <Button
+              disabled={!destination.dependency}
+              onClick={mutation}
+              loading={loading}
+
+            >
+              Promote
+            </Button>
+          )}
         </>
       )}
       size="large"
@@ -92,7 +95,7 @@ function ClusterPromoteModalInternal({ open, setOpen, destination }: ClusterProm
         direction="column"
         gap="xlarge"
       >
-        <Div subtitle2>Cluster promotion</Div>
+        <Div subtitle2>{finished ? 'Cluster promotion complete' : 'Cluster promotion'}</Div>
         {error && (
           <GqlError
             header="Something went wrong"

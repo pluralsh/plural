@@ -2,15 +2,16 @@ import { ArrowLeftIcon, Button, Modal } from '@pluralsh/design-system'
 import { Div, Flex } from 'honorable'
 import { Dispatch, useCallback, useState } from 'react'
 import isNil from 'lodash/isNil'
+import { useMutation } from '@apollo/client'
 
 import { Cluster } from '../../generated/graphql'
 import { ClusterPicker } from '../utils/ClusterPicker'
 import { GqlError } from '../utils/Alert'
-import useImpersonatedServiceAccount from '../../hooks/useImpersonatedServiceAccount'
 import { ensureURLValidity } from '../../utils/url'
 
-import { PROMOTE } from '../overview/queries'
+import { CLUSTERS, PROMOTE } from '../overview/queries'
 import { ClusterUpgradeInfo } from '../overview/ClusterUpgradeInfo'
+import ImpersonateServiceAccount from '../utils/ImpersonateServiceAccount'
 
 type ClusterPromoteModalProps = {
   open: boolean
@@ -19,36 +20,35 @@ type ClusterPromoteModalProps = {
 }
 
 export function ClusterPromoteModal({ open, setOpen, destination }: ClusterPromoteModalProps) {
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState()
+  return (
+    <ImpersonateServiceAccount
+      id={destination.owner?.id}
+      skip={!destination.owner?.serviceAccount}
+    >
+      <ClusterPromoteModalInternal
+        open={open}
+        setOpen={setOpen}
+        destination={destination}
+      />
+    </ImpersonateServiceAccount>
+  )
+}
+
+function ClusterPromoteModalInternal({ open, setOpen, destination }: ClusterPromoteModalProps) {
   const [finished, setFinished] = useState(false)
 
   const close = useCallback(() => {
     setOpen(false)
     setFinished(false)
-    setError(undefined)
-  }, [setOpen, setFinished, setError])
+  }, [setOpen, setFinished])
 
-  const {
-    client,
-    error: impersonationError,
-  } = useImpersonatedServiceAccount(destination.owner?.id, !destination.owner?.serviceAccount)
-
-  const promote = useCallback(() => {
-    setLoading(true)
-    client?.mutate({ mutation: PROMOTE })
-      .then(() => {
-        setLoading(false)
-        setFinished(true)
-      })
-      .catch(error => {
-        setLoading(false)
-        setError(error)
-      })
-  }, [client])
+  const [mutation, { loading, error }] = useMutation(PROMOTE, {
+    refetchQueries: [{ query: CLUSTERS }],
+    onCompleted: () => setFinished(true),
+  })
 
   const hint = useCallback((pending: number | undefined) => (!isNil(pending)
-    ? `${pending} application${pending !== 1 ? 's' : ''} pending`
+    ? `${pending === 0 ? 'no' : pending} application${pending !== 1 ? 's' : ''} pending`
     : undefined), [])
 
   return (
@@ -75,8 +75,8 @@ export function ClusterPromoteModal({ open, setOpen, destination }: ClusterPromo
             Cancel
           </Button>
           <Button
-            disabled={!destination.dependency || !client}
-            onClick={() => promote()}
+            disabled={!destination.dependency}
+            onClick={mutation}
             loading={loading}
             marginLeft="medium"
           >
@@ -92,10 +92,10 @@ export function ClusterPromoteModal({ open, setOpen, destination }: ClusterPromo
         gap="xlarge"
       >
         <Div subtitle2>Cluster promotion</Div>
-        {(error || impersonationError) && (
+        {error && (
           <GqlError
             header="Something went wrong"
-            error={error || impersonationError}
+            error={error}
           />
         )}
         {!finished && (

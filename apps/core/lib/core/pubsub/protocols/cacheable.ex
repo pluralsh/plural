@@ -22,6 +22,13 @@ defimpl Core.PubSub.Cacheable, for: [Core.PubSub.UserUpdated, Core.PubSub.EmailC
   end
 end
 
+defimpl Core.PubSub.Cacheable, for: Core.PubSub.ClusterDependencyCreated do
+  def cache(%{actor: user}) do
+    user = Core.Services.Rbac.preload(user)
+    {:set, {:login, user.id}, user}
+  end
+end
+
 defimpl Core.PubSub.Cacheable, for: Core.PubSub.UserDeleted do
   def cache(%{item: %{id: user_id}}), do: {:del, {:login, user_id}, nil}
 end

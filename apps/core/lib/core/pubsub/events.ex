@@ -80,3 +80,5 @@ defmodule Core.PubSub.PersistedTokenCreated, do: use Piazza.PubSub.Event
 
 defmodule Core.PubSub.DemoProjectCreated, do: use Piazza.PubSub.Event
 defmodule Core.PubSub.DemoProjectDeleted, do: use Piazza.PubSub.Event
+
+defmodule Core.PubSub.ClusterDependencyCreated, do: use Piazza.PubSub.Event

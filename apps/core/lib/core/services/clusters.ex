@@ -1,6 +1,7 @@
 defmodule Core.Services.Clusters do
   use Core.Services.Base
   import Core.Policies.Cluster
+  alias Core.PubSub
   alias Core.Policies.Account, as: AccountPolicy
   alias Core.Services.{Dns, Repositories, Users, Clusters.Transfer}
   alias Core.Schema.{Cluster, User, DnsRecord, UpgradeQueue, ClusterDependency}
@@ -128,6 +129,7 @@ defmodule Core.Services.Clusters do
       end)
       |> add_operation(:promote, fn _ -> do_promote(dest_owner) end)
       |> execute(extract: :dep)
+      |> notify(:create, user)
     end
   end
   def create_dependency(_, _, _), do: {:error, "cluster dependencies must be for the same provider"}
@@ -163,7 +165,7 @@ defmodule Core.Services.Clusters do
   @doc """
   deletes the cluster reference and flushes associated records
   """
-  @spec delete_cluster(binary, binary, User.t) :: cluster_resp
+  @spec delete_cluster(binary, binary | atom, User.t | binary) :: cluster_resp
   def delete_cluster(name, provider, %User{id: user_id} = user) do
     start_transaction()
     |> add_operation(:cluster, fn _ ->
@@ -187,4 +189,8 @@ defmodule Core.Services.Clusters do
     |> Enum.each(&Core.Conduit.Broker.publish(%Conduit.Message{body: &1}, :cluster))
   end
   defp flush_dns(_), do: :ok
+
+  defp notify({:ok, %ClusterDependency{} = dep}, :create, user),
+    do: handle_notify(PubSub.ClusterDependencyCreated, dep, actor: user)
+  defp notify(error, _, _), do: error
 end

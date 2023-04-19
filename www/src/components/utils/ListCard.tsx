@@ -45,6 +45,7 @@ export default function ListCard({ header, input, children }: ListCardProps) {
         borderBottomRightRadius={6}
         grow={1}
         direction="column"
+        minHeight={56}
       >
         {children}
       </Flex>

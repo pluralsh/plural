@@ -1,6 +1,7 @@
 defmodule Core.Services.ClustersTest do
   use Core.SchemaCase, async: true
   use Mimic
+  alias Core.PubSub
   alias Core.Services.{Clusters, Repositories, Charts}
 
   describe "#create_cluster/2" do
@@ -82,6 +83,8 @@ defmodule Core.Services.ClustersTest do
       assert dep.cluster_id == dest.id
       assert dep.dependency_id == source.id
       assert refetch(user).upgrade_to
+
+      assert_receive {:event, %PubSub.ClusterDependencyCreated{item: ^dep, actor: ^user}}
     end
 
     test "a user cannot create a dependency on inaccessible clusters" do

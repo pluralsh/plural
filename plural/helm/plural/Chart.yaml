@@ -1,8 +1,8 @@
 apiVersion: v2
 name: plural
 description: A helm chart for installing plural
-appVersion: 0.9.61
-version: 0.9.96
+appVersion: 0.9.62
+version: 0.9.97
 dependencies:
 - name: hydra
   repository: https://k8s.ory.sh/helm/charts

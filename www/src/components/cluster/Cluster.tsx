@@ -101,7 +101,7 @@ export function Cluster() {
                 <ClusterDependencyModal
                   open={dependencyOpen}
                   setOpen={setDependencyOpen}
-                  destinationCluster={cluster}
+                  destination={cluster}
                 />
               </>
             ) : (

@@ -12,19 +12,19 @@ import { CLUSTERS, CREATE_CLUSTER_DEPENDENCY } from '../overview/queries'
 type ClusterDependencyModalProps = {
   open: boolean
   setOpen: Dispatch<boolean>
-  destinationCluster: Cluster
+  destination: Cluster
 }
 
-export function ClusterDependencyModal({ open, setOpen, destinationCluster }: ClusterDependencyModalProps) {
-  const [sourceCluster, setSourceCluster] = useState<Cluster | undefined>()
+export function ClusterDependencyModal({ open, setOpen, destination }: ClusterDependencyModalProps) {
+  const [source, setSource] = useState<Cluster | undefined>()
 
   const close = useCallback(() => {
     setOpen(false)
-    setSourceCluster(undefined)
-  }, [setOpen, setSourceCluster])
+    setSource(undefined)
+  }, [setOpen, setSource])
 
   const [mutation, { loading, error }] = useMutation(CREATE_CLUSTER_DEPENDENCY, {
-    variables: { source: sourceCluster?.id || '', dest: destinationCluster.id || '' },
+    variables: { source: source?.id || '', dest: destination.id || '' },
     refetchQueries: [{ query: CLUSTERS }],
     onCompleted: () => close(),
   })
@@ -43,7 +43,7 @@ export function ClusterDependencyModal({ open, setOpen, destinationCluster }: Cl
             Cancel
           </Button>
           <Button
-            disabled={!sourceCluster}
+            disabled={!source}
             onClick={mutation}
             loading={loading}
             marginLeft="medium"
@@ -66,18 +66,17 @@ export function ClusterDependencyModal({ open, setOpen, destinationCluster }: Cl
           />
         )}
         <ClusterPicker
-          cluster={sourceCluster}
-          setCluster={setSourceCluster}
-          filter={({ id, provider }: Cluster) => id !== destinationCluster?.id && provider === destinationCluster?.provider}
+          cluster={source}
+          setCluster={setSource}
+          filter={({ id, provider }: Cluster) => id !== destination?.id && provider === destination?.provider}
           heading="Promotion source"
-          showUpgradeInfo
+          showHealthStatus
         />
         <ArrowLeftIcon transform="rotate(270deg)" />
         <ClusterPicker
-          cluster={destinationCluster}
-          setCluster={() => null}
+          cluster={destination}
           heading="Promotion destination"
-          showUpgradeInfo
+          showHealthStatus
           disabled
         />
       </Flex>

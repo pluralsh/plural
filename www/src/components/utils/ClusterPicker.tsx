@@ -14,8 +14,12 @@ import {
 } from 'react'
 import { isEmpty } from 'lodash'
 
+import { Flex } from 'honorable'
+
 import ClustersContext from '../../contexts/ClustersContext'
 import { Cluster, Maybe, UpgradeInfo } from '../../generated/graphql'
+
+import ClusterHealth from '../overview/clusters/ClusterHealth'
 
 import { ProviderIcon } from './ProviderIcon'
 
@@ -37,7 +41,7 @@ function ClusterPickerReadyChip({ upgradeInfo }: ClusterPickerReadyChipProps) {
 
 type ClusterPickerProps = {
     cluster: Cluster | undefined
-    setCluster: Dispatch<Cluster | undefined>
+    setCluster?: Dispatch<Cluster | undefined>
     onChange?: (Cluster) => void
     filter?: (Cluster) => boolean
     heading?: string
@@ -45,6 +49,7 @@ type ClusterPickerProps = {
     title?: any
     placeholder?: string
     showUpgradeInfo?: boolean
+    showHealthStatus?: boolean
     size?: 'small' | 'medium' | 'large'
     disabled?: boolean
 }
@@ -59,6 +64,7 @@ export function ClusterPicker({
   title,
   placeholder = 'Select cluster',
   showUpgradeInfo = false,
+  showHealthStatus = false,
   size = 'medium',
   disabled = false,
 }: ClusterPickerProps) {
@@ -68,7 +74,7 @@ export function ClusterPicker({
 
   // Update selected cluster object each time clusters will be updated.
   useEffect(() => {
-    setCluster(clusters.find(({ id }) => id === cluster?.id))
+    setCluster?.(clusters.find(({ id }) => id === cluster?.id))
   }, [clusters]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
@@ -87,7 +93,7 @@ export function ClusterPicker({
         onSelectionChange={id => {
           const selection = clusters.find(c => c.id === id)
 
-          setCluster(selection)
+          setCluster?.(selection)
           onChange?.(selection)
         }}
         size={size}
@@ -101,10 +107,21 @@ export function ClusterPicker({
             />
           ) : <ClusterIcon />
         )}
-        rightContent={showUpgradeInfo && cluster && <ClusterPickerReadyChip upgradeInfo={cluster.upgradeInfo} />}
+        rightContent={cluster && (
+          <Flex gap="xsmall">
+            {showUpgradeInfo && <ClusterPickerReadyChip upgradeInfo={cluster.upgradeInfo} />}
+            {showHealthStatus && (
+              <ClusterHealth
+                pingedAt={cluster.pingedAt}
+                size="small"
+                hue="lightest"
+              />
+            )}
+          </Flex>
+        )}
       >
         {clusters.map(({
-          id, name, provider, upgradeInfo,
+          id, name, provider, pingedAt, upgradeInfo,
         }) => (
           <ListBoxItem
             key={id}
@@ -116,7 +133,19 @@ export function ClusterPicker({
                 width={16}
               />
             )}
-            rightContent={showUpgradeInfo && <ClusterPickerReadyChip upgradeInfo={upgradeInfo} />}
+            rightContent={(
+              <Flex gap="xsmall">
+                {showUpgradeInfo && <ClusterPickerReadyChip upgradeInfo={upgradeInfo} />}
+                {showHealthStatus && (
+                  <ClusterHealth
+                    pingedAt={pingedAt}
+                    showTooltip={false}
+                    size="small"
+                    hue="lightest"
+                  />
+                )}
+              </Flex>
+            )}
           />
         ))}
       </Select>

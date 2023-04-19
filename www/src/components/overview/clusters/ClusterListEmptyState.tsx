@@ -36,6 +36,7 @@ export default function ClusterListEmptyState() {
         <Flex
           gap="medium"
           marginTop="large"
+          onClick={() => navigate('/shell')}
         >
           <Button>Start onboarding</Button>
           <Button

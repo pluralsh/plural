@@ -6,6 +6,7 @@ import {
 } from '@pluralsh/design-system'
 import { ReactElement } from 'react'
 import ReactPlayer from 'react-player'
+import { useNavigate } from 'react-router-dom'
 import { useIntercom } from 'react-use-intercom'
 import styled from 'styled-components'
 
@@ -84,6 +85,7 @@ const Wrap = styled.div(({ theme }) => {
 })
 
 export default function ClustersHelpSection(): ReactElement {
+  const navigate = useNavigate()
   const { show } = useIntercom()
 
   return (
@@ -107,6 +109,7 @@ export default function ClustersHelpSection(): ReactElement {
             <Button
               secondary
               width="max-content"
+              onClick={() => navigate('/marketplace')}
             >
               Get started
             </Button>

@@ -91,7 +91,7 @@ export function Cluster() {
             />
           </Div>
           <Flex gap="medium">
-            {!cluster.dependency ? (
+            {!!cluster && !cluster.dependency ? (
               <>
                 <CollapsibleButton
                   label="Setup promotions"
@@ -101,6 +101,7 @@ export function Cluster() {
                 <ClusterDependencyModal
                   open={dependencyOpen}
                   setOpen={setDependencyOpen}
+                  destinationCluster={cluster}
                 />
               </>
             ) : (

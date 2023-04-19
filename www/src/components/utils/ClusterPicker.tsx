@@ -38,7 +38,7 @@ function ClusterPickerReadyChip({ upgradeInfo }: ClusterPickerReadyChipProps) {
 type ClusterPickerProps = {
     cluster: Cluster | undefined
     setCluster: Dispatch<Cluster | undefined>
-    onChange: (Cluster) => void
+    onChange?: (Cluster) => void
     filter?: (Cluster) => boolean
     heading?: string
     hint?: string
@@ -88,7 +88,7 @@ export function ClusterPicker({
           const selection = clusters.find(c => c.id === id)
 
           setCluster(selection)
-          onChange(selection)
+          onChange?.(selection)
         }}
         size={size}
         isDisabled={disabled}

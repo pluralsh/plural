@@ -80,7 +80,7 @@ function ClusterPromoteModalInternal({ open, setOpen, destination }: ClusterProm
             loading={loading}
             marginLeft="medium"
           >
-            Save
+            Promote
           </Button>
         </>
       )}

@@ -43,13 +43,93 @@ defmodule Plural.MixProject do
         "coveralls.detail": :test,
         "coveralls.post": :test,
         "coveralls.html": :test
-      ]
+      ],
+      releases: releases()
     ]
+  end
+
+  defp releases() do
+    [
+      plural: [
+        include_executables_for: [:unix],
+        include_erts: true,
+        strip_beams: true,
+        quiet: false,
+        config_providers: [
+          {Config.Reader, {:system, "RELEASE_ROOT", "/apps/core/config/releases.exs"}},
+        ],
+        steps: [:assemble, &copy_configs/1],
+        applications: [
+          api: :permanent,
+          core: :permanent,
+          email: :permanent,
+          graphql: :permanent
+        ]
+      ],
+      rtc: [
+        include_executables_for: [:unix],
+        include_erts: true,
+        strip_beams: true,
+        quiet: false,
+        config_providers: [
+          {Config.Reader, {:system, "RELEASE_ROOT", "/apps/rtc/config/releases.exs"}},
+        ],
+        steps: [:assemble, &copy_configs/1],
+        applications: [
+          rtc: :permanent,
+          core: :permanent,
+          graphql: :permanent
+        ]
+      ],
+      worker: [
+        include_executables_for: [:unix],
+        include_erts: true,
+        strip_beams: true,
+        quiet: false,
+        config_providers: [
+          {Config.Reader, {:system, "RELEASE_ROOT", "/apps/worker/config/releases.exs"}},
+        ],
+        steps: [:assemble, &copy_configs/1],
+        applications: [
+          worker: :permanent,
+          core: :permanent
+        ]
+      ],
+      cron: [
+        include_executables_for: [:unix],
+        include_erts: true,
+        strip_beams: true,
+        quiet: false,
+        config_providers: [
+          {Config.Reader, {:system, "RELEASE_ROOT", "/apps/cron/config/releases.exs"}},
+        ],
+        steps: [:assemble, &copy_configs/1],
+        applications: [
+          cron: :permanent,
+          core: :permanent,
+          email: :permanent
+        ]
+      ],
+    ]
+  end
+
+  defp copy_configs(%{path: path, config_providers: config_providers} = release) do
+    for {_module, {_context, _root, file_path}} <- config_providers do
+      # Creating new path
+      new_path = path <> Path.dirname(file_path)
+      # Removing possible leftover files from previous builds
+      File.rm_rf!(new_path)
+      # Creating directory if it doesn't exist
+      File.mkdir_p!(new_path)
+      # Copying files to the directory with the same name
+      File.cp!(Path.expand(Path.relative(file_path)), new_path <> "/" <> Path.basename(file_path))
+    end
+
+    release
   end
 
   defp deps do
     [
-      {:distillery, "~> 2.1"},
       {:x509, "~> 0.8.5"},
       {:shards, "~> 1.0"},
       {:ecto, "~> 3.9.0", override: true},

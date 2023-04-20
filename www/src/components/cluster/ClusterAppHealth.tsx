@@ -16,7 +16,7 @@ export default function ClusterAppHealth({ pingedAt, ...props }: ClusterAppHealt
     return () => clearInterval(int)
   }, [])
 
-  const healthy = pingedAt && now.clone().subtract(1, 'hour').isBefore(pingedAt)
+  const healthy = pingedAt && now.clone().subtract(3, 'hour').isBefore(pingedAt)
 
   return (
     <Chip

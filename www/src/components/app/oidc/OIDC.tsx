@@ -145,6 +145,7 @@ export function ProviderForm({
       flexDirection="column"
       gap="large"
       padding="xlarge"
+      overflowY="auto"
     >
       <Flex
         gap="medium"

@@ -1,10 +1,8 @@
 import { BrowseAppsIcon, Button, Card } from '@pluralsh/design-system'
 import { Div, Flex } from 'honorable'
-import { useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 export default function ClusterListEmptyState() {
-  const navigate = useNavigate()
-
   return (
     <Div
       minHeight={180}
@@ -36,13 +34,19 @@ export default function ClusterListEmptyState() {
         <Flex
           gap="medium"
           marginTop="large"
-          onClick={() => navigate('/shell')}
         >
-          <Button>Start onboarding</Button>
+          <Button
+            as={Link}
+            to="/shell"
+          >
+            Start onboarding
+          </Button>
           <Button
             secondary
             startIcon={<BrowseAppsIcon />}
-            onClick={() => navigate('/marketplace')}
+            as={Link}
+            to="/marketplace"
+            textDecoration="none"
           >
             Browse the marketplace
           </Button>

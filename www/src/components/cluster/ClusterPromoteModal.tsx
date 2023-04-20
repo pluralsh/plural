@@ -105,7 +105,7 @@ function ClusterPromoteModalInternal({ open, setOpen, destination }: ClusterProm
         {!finished && (
           <>
             <ClusterPicker
-              cluster={destination.dependency.dependency}
+              cluster={destination.dependency?.dependency}
               heading="Promotion source"
               disabled
             />

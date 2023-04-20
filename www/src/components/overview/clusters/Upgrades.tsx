@@ -22,39 +22,41 @@ export default function Upgrades() {
   if (isEmpty(clusters)) return null
 
   return (
-    <ListCard header={(
-      <>
-        <Div width={500}>
-          <ClusterPicker
-            cluster={cluster}
-            setCluster={setCluster}
-            size="small"
-            title={(
-              <Flex
-                gap="xsmall"
-                whiteSpace="nowrap"
-              >
-                <ClusterIcon />
-                Cluster upgrades
-              </Flex>
-            )}
-          />
-        </Div>
-        <Flex grow={1} />
-        <Button
-          floating
-          small
-          startIcon={<ReloadIcon />}
-          loading={refreshing}
-          disabled={!cluster?.queue?.id}
-          onClick={() => {
-            if (refetch) refetch()
-          }}
-        >
-          Refresh
-        </Button>
-      </>
-    )}
+    <ListCard
+      minHeight="min(calc(100vh - 153px), 300px)"
+      header={(
+        <>
+          <Div width={500}>
+            <ClusterPicker
+              cluster={cluster}
+              setCluster={setCluster}
+              size="small"
+              title={(
+                <Flex
+                  gap="xsmall"
+                  whiteSpace="nowrap"
+                >
+                  <ClusterIcon />
+                  Cluster upgrades
+                </Flex>
+              )}
+            />
+          </Div>
+          <Flex grow={1} />
+          <Button
+            floating
+            small
+            startIcon={<ReloadIcon />}
+            loading={refreshing}
+            disabled={!cluster?.queue?.id}
+            onClick={() => {
+              if (refetch) refetch()
+            }}
+          >
+            Refresh
+          </Button>
+        </>
+      )}
     >
       {cluster?.queue?.id
         ? (

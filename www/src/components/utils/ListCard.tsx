@@ -1,13 +1,15 @@
-import { Card } from '@pluralsh/design-system'
+import { Card, type CardProps } from '@pluralsh/design-system'
 import { Flex } from 'honorable'
 
 type ListCardProps = {
   header?: any
   input?: any
   children: any
-}
+} & CardProps
 
-export default function ListCard({ header, input, children }: ListCardProps) {
+export default function ListCard({
+  header, input, children, ...props
+}: ListCardProps) {
   return (
     <Card
       borderRadius={6}
@@ -15,6 +17,7 @@ export default function ListCard({ header, input, children }: ListCardProps) {
       flexDirection="column"
       flexGrow={1}
       fillLevel={2}
+      {...props}
     >
       {header && (
         <Flex

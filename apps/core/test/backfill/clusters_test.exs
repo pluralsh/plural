@@ -9,7 +9,7 @@ defmodule Core.Backfill.ClustersTest do
       Clusters.from_queues()
 
       for q <- queues do
-        cluster = Core.Services.Clusters.get_cluster(q.user.account_id, q.provider, q.name)
+        cluster = Core.Services.Clusters.get_cluster(q.user.id, q.provider, q.name)
         assert refetch(q).cluster_id == cluster.id
       end
     end

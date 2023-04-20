@@ -11,8 +11,8 @@ defmodule Core.Services.Clusters do
   @type cluster_dep_resp :: {:ok, ClusterDependency.t} | error
 
   @spec get_cluster(binary, atom, binary) :: Cluster.t | nil
-  def get_cluster(account_id, provider, name) do
-    Core.Repo.get_by(Cluster, account_id: account_id, provider: provider, name: name)
+  def get_cluster(user_id, provider, name) do
+    Core.Repo.get_by(Cluster, owner_id: user_id, provider: provider, name: name)
   end
 
   @spec get_cluster!(binary) :: Cluster.t | nil
@@ -82,7 +82,7 @@ defmodule Core.Services.Clusters do
 
     start_transaction()
     |> add_operation(:cluster, fn _ ->
-      case get_cluster(user.account_id, p, n) do
+      case get_cluster(user.id, p, n) do
         %Cluster{} = c ->
           Cluster.changeset(c, %{console_url: d, provider: p, name: n, owner_id: uid})
           |> Core.Repo.update()
@@ -169,9 +169,8 @@ defmodule Core.Services.Clusters do
   def delete_cluster(name, provider, %User{id: user_id} = user) do
     start_transaction()
     |> add_operation(:cluster, fn _ ->
-      case get_cluster(user.account_id, provider, name) do
-        %Cluster{owner_id: ^user_id} = cluster -> Core.Repo.delete(cluster)
-        %Cluster{} -> {:error, "cannot delete a cluster you don't own"}
+      case get_cluster(user_id, provider, name) do
+        %Cluster{} = cluster -> Core.Repo.delete(cluster)
         nil -> {:error, "not found"}
       end
     end)

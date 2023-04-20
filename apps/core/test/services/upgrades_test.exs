@@ -12,7 +12,7 @@ defmodule Core.Services.UpgradesTest do
       assert queue.name == "cluster"
       assert queue.user_id == user.id
 
-      cluster = Core.Services.Clusters.get_cluster(user.account_id, :aws, "cluster")
+      cluster = Core.Services.Clusters.get_cluster(user.id, :aws, "cluster")
       assert queue.cluster_id == cluster.id
 
       assert_receive {:event, %PubSub.UpgradeQueueCreated{item: ^queue}}

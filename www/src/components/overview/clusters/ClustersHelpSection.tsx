@@ -117,7 +117,7 @@ export default function ClustersHelpSection(): ReactElement {
         </Card>
         <div className="video">
           <ReactPlayer
-            url="https://www.youtube.com/watch?v=LgwnBjYOCbg"
+            url="https://www.youtube.com/watch?v=mFDA-718RhI"
             width="100%"
           />
         </div>

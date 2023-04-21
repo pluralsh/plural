@@ -19,9 +19,8 @@ import { useQuery } from '@apollo/client'
 import { useSearchParams } from 'react-router-dom'
 import { Flex } from 'honorable'
 
-import { Cluster } from '../../../../generated/graphql'
 import ClustersContext from '../../../../contexts/ClustersContext'
-import { CloudShellClusterPicker } from '../../../utils/ClusterPicker'
+import { CloudShellClusterPicker, NEW_CLUSTER_ID } from '../../../utils/ClusterPicker'
 
 import { State, TerminalContext } from '../context/terminal'
 
@@ -130,20 +129,19 @@ function useSelectCluster() {
     return cluster
   }, [clusterId, clusters, setSearchParams, userId])
 
-  const setCluster = useCallback((cluster?: Cluster) => {
-    if (clusters.some(cl => cl.id === cluster?.id)) {
-      setSearchParams(sp => {
-        if (cluster?.id) {
-          sp.set('cluster', cluster?.id)
-        }
-        else {
-          sp.delete('cluster')
-        }
+  const setCluster = useCallback((clusterId?: string) => {
+    setSearchParams(sp => {
+      if (clusterId && clusters.some(cl => cl.id === clusterId)) {
+        sp.set('cluster', clusterId)
+      }
+      else {
+        sp.delete('cluster')
+      }
 
-        return sp
-      })
-    }
-  }, [clusters, setSearchParams])
+      return sp
+    })
+  },
+  [clusters, setSearchParams])
 
   return {
     cluster: currentCluster,
@@ -155,14 +153,14 @@ function useSelectCluster() {
 function ClusterSelect() {
   const { cluster, setCluster, clusters } = useSelectCluster()
 
-  if (!cluster || !clusters || clusters.length < 2) {
+  if (!clusters || clusters.length < 2) {
     return null
   }
 
   return (
     <CloudShellClusterPicker
-      cluster={cluster}
-      setCluster={p => setCluster(p)}
+      clusterId={cluster?.id || NEW_CLUSTER_ID}
+      onSelectionChange={id => (id === NEW_CLUSTER_ID ? setCluster(undefined) : setCluster(id))}
       size="small"
       title={(
         <Flex
@@ -175,8 +173,6 @@ function ClusterSelect() {
       )}
     />
   )
-
-  return null
 }
 
 function SidebarUnstyled({ refetch, ...props }) {

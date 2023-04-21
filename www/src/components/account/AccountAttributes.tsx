@@ -170,9 +170,9 @@ export function AccountAttributes() {
           mutation()
         }
       }}
-      maxHeight="100%"
       display="flex"
       flexDirection="column"
+      paddingBottom="large"
     >
       <PageTitle heading="Account attributes">
         <SaveButton
@@ -181,11 +181,7 @@ export function AccountAttributes() {
           error={!!error}
         />
       </PageTitle>
-
-      <ContentCard
-        maxHeight="100%"
-        overflowY="auto"
-      >
+      <ContentCard overflowY={undefined}>
         <Flex
           flexDirection="column"
           gap="large"

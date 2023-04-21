@@ -6,7 +6,12 @@ import {
 } from 'react'
 import { Box } from 'grommet'
 import { useMutation } from '@apollo/client'
-import { Button, Flex, P } from 'honorable'
+import {
+  Button,
+  Div,
+  Flex,
+  P,
+} from 'honorable'
 import {
   Card,
   CheckIcon,
@@ -262,7 +267,7 @@ export function CreateProvider({
   })
 
   return (
-    <Box fill>
+    <Div paddingBottom="large">
       <PageTitle
         heading="OpenID Connect"
         paddingTop="medium"
@@ -284,7 +289,7 @@ export function CreateProvider({
         onSave={() => mutation()}
         loading={loading}
       />
-    </Box>
+    </Div>
   )
 }
 
@@ -310,7 +315,7 @@ export function UpdateProvider({
   })
 
   return (
-    <Box fill>
+    <Div paddingBottom="large">
       <PageTitle
         heading="OpenID Connect"
         paddingTop="medium"
@@ -332,7 +337,7 @@ export function UpdateProvider({
         onSave={() => mutation()}
         loading={loading}
       />
-    </Box>
+    </Div>
   )
 }
 

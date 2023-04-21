@@ -8,7 +8,7 @@ import {
   Tooltip,
   WrapWithIf,
 } from '@pluralsh/design-system'
-import { P, Switch } from 'honorable'
+import { Div, P, Switch } from 'honorable'
 import { capitalize, isEmpty } from 'lodash'
 import { useEffect, useMemo, useState } from 'react'
 import { useMutation } from '@apollo/client'
@@ -32,7 +32,7 @@ export function Upgrade() {
   }, [autoUpgrade, setTrackTag])
 
   return (
-    <>
+    <Div paddingBottom="large">
       <PageTitle
         heading="Upgrade channel"
         paddingTop="medium"
@@ -106,6 +106,6 @@ export function Upgrade() {
           Save
         </Button>
       </Card>
-    </>
+    </Div>
   )
 }

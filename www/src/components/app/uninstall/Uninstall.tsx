@@ -5,7 +5,7 @@ import {
   Input,
   PageTitle,
 } from '@pluralsh/design-system'
-import { P } from 'honorable'
+import { Div, P } from 'honorable'
 import { useState } from 'react'
 import { Keyboard } from 'grommet'
 import { useMutation } from '@apollo/client'
@@ -29,7 +29,7 @@ export function Uninstall() {
   })
 
   return (
-    <>
+    <Div paddingBottom="large">
       <PageTitle
         heading="Uninstall"
         paddingTop="medium"
@@ -88,6 +88,6 @@ export function Uninstall() {
           Delete
         </Button>
       </Card>
-    </>
+    </Div>
   )
 }

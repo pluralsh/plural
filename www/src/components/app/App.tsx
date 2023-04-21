@@ -88,7 +88,7 @@ function AppInternal() {
         >
           <ResponsiveLayoutSpacer />
           <TabPanel
-            as={<ResponsiveLayoutContentContainer overflow="visible" />}
+            as={(<ResponsiveLayoutContentContainer overflow="visible" />)}
             stateRef={tabStateRef}
           >
             <Outlet />

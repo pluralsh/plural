@@ -13,6 +13,7 @@ import BillingPlatformPlansProvider from '../account/billing/BillingPlatformPlan
 import { useNotificationSubscription } from '../../hooks/useNotificationSubscription'
 import LoadingIndicator from '../utils/LoadingIndicator'
 import { PLATFORM_PLANS_QUERY } from '../account/billing/queries'
+import { ClustersContextProvider } from '../../contexts/ClustersContext'
 
 export function handlePreviousUserClick({ jwt }: any) {
   setToken(jwt)
@@ -91,7 +92,9 @@ export function PluralProvider({ children }: any) {
             error={subscriptionError}
             refetch={subscriptionRefetch}
           >
-            {children}
+            <ClustersContextProvider>
+              {children}
+            </ClustersContextProvider>
           </BillingSubscriptionProvider>
         </BillingPlatformPlansProvider>
       </CurrentUserContextProvider>

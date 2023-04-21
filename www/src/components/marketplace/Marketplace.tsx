@@ -1,19 +1,21 @@
-import { ResponsiveLayoutPage } from '../utils/layout/ResponsiveLayoutPage'
+import { useSetBreadcrumbs } from '@pluralsh/design-system'
 
-import { ResponsiveLayoutSpacer } from '../utils/layout/ResponsiveLayoutSpacer'
+import { useMemo } from 'react'
 
 import MarketplaceRepositories from './MarketplaceRepositories'
 
-function Marketplace({ installed = false, publisher = null }: any) {
+export const MARKETPLACE_CRUMB = { label: 'marketplace', url: '/marketplace' }
+
+function Marketplace({ publisher = null }: any) {
+  const breadcrumbs = useMemo(() => (publisher
+    ? [{ label: 'publisher' }, { label: publisher.name, url: `/publisher/${publisher.id}` }]
+    : [MARKETPLACE_CRUMB]),
+  [publisher])
+
+  useSetBreadcrumbs(breadcrumbs)
+
   return (
-    <ResponsiveLayoutPage padding={0}>
-      {!publisher && <ResponsiveLayoutSpacer />}
-      <MarketplaceRepositories
-        installed={installed}
-        publisher={publisher}
-      />
-      {!publisher && <ResponsiveLayoutSpacer />}
-    </ResponsiveLayoutPage>
+    <MarketplaceRepositories publisher={publisher} />
   )
 }
 

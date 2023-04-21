@@ -1,7 +1,7 @@
-import { useRef } from 'react'
-import { Outlet, useLocation } from 'react-router-dom'
+import { useMemo, useRef } from 'react'
+import { Outlet, useLocation, useParams } from 'react-router-dom'
 import { Div } from 'honorable'
-import { Tab, TabList } from '@pluralsh/design-system'
+import { Tab, TabList, useSetBreadcrumbs } from '@pluralsh/design-system'
 
 import { ResponsiveLayoutContentContainer } from '../utils/layout/ResponsiveLayoutContentContainer'
 import { ResponsiveLayoutSidecarContainer } from '../utils/layout/ResponsiveLayoutSidecarContainer'
@@ -42,6 +42,23 @@ const TABS = [
 function Roadmap() {
   const tabStateRef = useRef<any>()
   const { pathname } = useLocation()
+
+  const params = useParams()
+  const subPath = params?.['*']?.split?.('/')[0]
+  const breadcrumbs = useMemo(() => [
+    { label: 'roadmap', url: '/roadmap' },
+    ...(subPath
+      ? [
+        {
+          label: subPath,
+          url: `/roadmap/${subPath}`,
+        },
+      ]
+      : []),
+  ],
+  [subPath])
+
+  useSetBreadcrumbs(breadcrumbs)
 
   return (
     <ResponsiveLayoutPage>

@@ -1,5 +1,5 @@
 import { StackCollection } from '../../generated/graphql'
-import InstallDropdownButton from '../utils/InstallDropdownButton'
+import InstallAppButton from '../utils/InstallAppButton'
 import { RecipeSubset } from '../utils/recipeHelpers'
 
 import { StackContext } from './types'
@@ -15,7 +15,7 @@ export function StackActions({
     .filter((appName: string | undefined): appName is string => !!appName)
 
   return (
-    <InstallDropdownButton
+    <InstallAppButton
       loading={false}
       name={stack.name}
       recipes={recipes}

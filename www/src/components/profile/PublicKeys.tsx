@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from '@apollo/client'
 import { Box } from 'grommet'
-import { Span, Text } from 'honorable'
+import { Div, Span, Text } from 'honorable'
 import moment from 'moment'
 import { useState } from 'react'
 
@@ -95,7 +95,7 @@ export function PublicKeys() {
   const { edges, pageInfo } = data.publicKeys
 
   return (
-    <Box fill>
+    <Div marginBottom="large">
       <PageTitle
         heading="Public keys"
         justifyContent="flex-start"
@@ -139,6 +139,6 @@ export function PublicKeys() {
             />
           ) : (<Span>You do not have any public keys yet.</Span>)}
       </Box>
-    </Box>
+    </Div>
   )
 }

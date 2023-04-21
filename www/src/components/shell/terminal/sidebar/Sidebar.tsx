@@ -2,6 +2,7 @@ import styled from 'styled-components'
 import {
   AppsIcon,
   Button,
+  ClusterIcon,
   InstallIcon,
   Tooltip,
   WrapWithIf,
@@ -16,8 +17,15 @@ import {
 } from 'react'
 import { useQuery } from '@apollo/client'
 import { useSearchParams } from 'react-router-dom'
+import { Flex } from 'honorable'
+
+import { Cluster } from '../../../../generated/graphql'
+import ClustersContext from '../../../../contexts/ClustersContext'
+import { CloudShellClusterPicker } from '../../../utils/ClusterPicker'
 
 import { State, TerminalContext } from '../context/terminal'
+
+import { useCurrentUser } from '../../../../contexts/CurrentUserContext'
 
 import Installer from './installer/Installer'
 import { Installed } from './installed/Installed'
@@ -35,13 +43,17 @@ interface HeaderProps {
 }
 
 const Header = styled(HeaderUnstyled)(({ theme }) => ({
-  height: '48px',
-  minHeight: '48px',
-
   display: 'flex',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-
+  flexDirection: 'column',
+  rowGap: theme.spacing.medium,
+  minHeight: '48px',
+  flexShrink: 0,
+  paddingBottom: theme.spacing.small,
+  '.titleArea': {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
   '.title': {
     ...theme.partials.text.subtitle2,
   },
@@ -60,34 +72,112 @@ function HeaderUnstyled({
 
   return (
     <div {...props}>
-      <div className="title">{title}</div>
-      <WrapWithIf
-        condition={disabled}
-        wrapper={<Tooltip label="No apps installed yet." />}
-      >
-        <div>
-          <Button
-            height={32}
-            minHeight={32}
-            secondary
-            floating={!disabled}
-            startIcon={buttonIcon}
-            onClick={changeView}
-            disabled={disabled}
-          >{buttonText}
-          </Button>
-        </div>
-      </WrapWithIf>
+      <ClusterSelect />
+      <div className="titleArea">
+        <div className="title">{title}</div>
+        <WrapWithIf
+          condition={disabled}
+          wrapper={<Tooltip label="No apps installed yet." />}
+        >
+          <div>
+            <Button
+              height={32}
+              minHeight={32}
+              secondary
+              floating={!disabled}
+              startIcon={buttonIcon}
+              onClick={changeView}
+              disabled={disabled}
+            >{buttonText}
+            </Button>
+          </div>
+        </WrapWithIf>
+      </div>
     </div>
   )
 }
 
 const Sidebar = styled(SidebarUnstyled)(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
   height: '100%',
   overflow: 'hidden',
   padding: theme.spacing.medium,
   borderRight: theme.borders.default,
 }))
+
+function useSelectCluster() {
+  const [params, setSearchParams] = useSearchParams()
+  const { id: userId } = useCurrentUser()
+
+  const { clusters } = useContext(ClustersContext)
+  const clusterId = params.get('cluster')
+
+  const currentCluster = useMemo(() => {
+    let cluster = (clusterId ? clusters.find(cl => cl.id === clusterId) : undefined)
+
+    if (!cluster && clusterId) {
+      setSearchParams(sp => {
+        sp.delete('cluster')
+
+        return sp
+      })
+    }
+    if (!cluster) {
+      cluster = clusters.find(cl => cl?.owner?.id === userId)
+    }
+
+    return cluster
+  }, [clusterId, clusters, setSearchParams, userId])
+
+  const setCluster = useCallback((cluster?: Cluster) => {
+    if (clusters.some(cl => cl.id === cluster?.id)) {
+      setSearchParams(sp => {
+        if (cluster?.id) {
+          sp.set('cluster', cluster?.id)
+        }
+        else {
+          sp.delete('cluster')
+        }
+
+        return sp
+      })
+    }
+  }, [clusters, setSearchParams])
+
+  return {
+    cluster: currentCluster,
+    setCluster,
+    clusters,
+  }
+}
+
+function ClusterSelect() {
+  const { cluster, setCluster, clusters } = useSelectCluster()
+
+  if (!cluster || !clusters || clusters.length < 2) {
+    return null
+  }
+
+  return (
+    <CloudShellClusterPicker
+      cluster={cluster}
+      setCluster={p => setCluster(p)}
+      size="small"
+      title={(
+        <Flex
+          gap="xsmall"
+          whiteSpace="nowrap"
+        >
+          <ClusterIcon />
+          Cluster
+        </Flex>
+      )}
+    />
+  )
+
+  return null
+}
 
 function SidebarUnstyled({ refetch, ...props }) {
   const { shell: { provider }, state } = useContext(TerminalContext)
@@ -104,8 +194,12 @@ function SidebarUnstyled({ refetch, ...props }) {
   const hasInstalledApps = useMemo(() => nodes?.length > 0, [nodes?.length])
   const hasPreselectedApp = useMemo(() => !!searchParams.get('install'), [searchParams])
 
-  useEffect(() => (hasInstalledApps ? setView(SidebarView.Installed) : undefined), [hasInstalledApps])
-  useEffect(() => (hasPreselectedApp ? setView(SidebarView.Installer) : undefined), [hasPreselectedApp])
+  useEffect(() => (hasPreselectedApp
+    ? setView(SidebarView.Installer)
+    : hasInstalledApps
+      ? setView(SidebarView.Installed)
+      : undefined),
+  [hasInstalledApps, hasPreselectedApp])
   useEffect(() => (state === State.Installed ? setView(SidebarView.Installed) : undefined), [state])
 
   return (

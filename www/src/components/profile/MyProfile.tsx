@@ -3,10 +3,13 @@ import {
   Tab,
   TabList,
   TabPanel,
+  useSetBreadcrumbs,
 } from '@pluralsh/design-system'
 import { Outlet, useLocation } from 'react-router-dom'
 
 import { useContext, useRef } from 'react'
+
+import { Flex } from 'honorable'
 
 import { LinkTabWrap } from '../utils/Tabs'
 
@@ -26,17 +29,24 @@ const DIRECTORY = [
   { path: '/profile/eab', label: 'EAB credentials' },
 ]
 
+export const profileCrumbs = [{ label: 'profile', url: '/profile' }]
+
 export function MyProfile() {
   const me = useContext(CurrentUserContext)
   const { pathname } = useLocation()
+
+  useSetBreadcrumbs(profileCrumbs)
   const tabStateRef = useRef<any>(null)
   const currentTab = DIRECTORY.find(tab => pathname?.startsWith(tab.path))
 
   const url = me.avatar || undefined
 
   return (
-    <ResponsiveLayoutPage>
-      <ResponsiveLayoutSidenavContainer>
+    <ResponsiveLayoutPage padding={0}>
+      <ResponsiveLayoutSidenavContainer
+        marginLeft="large"
+        marginTop="large"
+      >
         <SideNavOffset>
           <PageCard
             heading={me.name}
@@ -66,14 +76,20 @@ export function MyProfile() {
           </TabList>
         </SideNavOffset>
       </ResponsiveLayoutSidenavContainer>
-      <ResponsiveLayoutSpacer />
-      <TabPanel
-        as={<ResponsiveLayoutContentContainer />}
-        stateRef={tabStateRef}
+      <Flex
+        grow={1}
+        overflowY="auto"
+        padding="large"
       >
-        <Outlet />
-      </TabPanel>
-      <ResponsiveLayoutSpacer />
+        <ResponsiveLayoutSpacer />
+        <TabPanel
+          as={<ResponsiveLayoutContentContainer overflow="visible" />}
+          stateRef={tabStateRef}
+        >
+          <Outlet />
+        </TabPanel>
+        <ResponsiveLayoutSpacer />
+      </Flex>
     </ResponsiveLayoutPage>
   )
 }

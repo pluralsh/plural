@@ -2,20 +2,17 @@ import { A, Flex, Text } from 'honorable'
 import {
   ArrowLeftIcon,
   ArrowRightIcon,
+  Breadcrumbs,
   IconFrame,
   InfoIcon,
 } from '@pluralsh/design-system'
-import { ThemeContext } from 'styled-components'
+import styled, { ThemeContext } from 'styled-components'
 import { useNavigate } from 'react-router-dom'
 import { useContext } from 'react'
 
 import { getPreviousUserData } from '../../helpers/authentication'
 import { handlePreviousUserClick } from '../login/CurrentUser'
 import CurrentUserContext from '../../contexts/CurrentUserContext'
-import { ResponsiveLayoutContentContainer } from '../utils/layout/ResponsiveLayoutContentContainer'
-import { ResponsiveLayoutSidecarContainer } from '../utils/layout/ResponsiveLayoutSidecarContainer'
-import { ResponsiveLayoutSpacer } from '../utils/layout/ResponsiveLayoutSpacer'
-import { ResponsiveLayoutSidenavContainer } from '../utils/layout/ResponsiveLayoutSidenavContainer'
 
 export function ServiceAccountBanner() {
   const previousUser = getPreviousUserData()
@@ -30,9 +27,9 @@ export function ServiceAccountBanner() {
   return (
     <Flex
       direction="row"
-      justifyContent="left"
+      justifyContent="end"
       alignItems="center"
-      gap={theme.spacing.xsmall}
+      columnGap={theme.spacing.xsmall}
       height="100%"
     >
       <InfoIcon
@@ -43,7 +40,7 @@ export function ServiceAccountBanner() {
         caption
         color={theme.colors['text-xlight']}
       >
-        You are currently logged into the service account {me.email}.{' '}
+        You are currently logged in as {me.email}.{' '}
         <A
           inline
           onClick={() => handlePreviousUserClick(previousUser)}
@@ -55,24 +52,38 @@ export function ServiceAccountBanner() {
   )
 }
 
+const SubheaderContent = styled.div(({ theme }) => ({
+  display: 'flex',
+  flexWrap: 'wrap',
+  rowGap: theme.spacing.small,
+  paddingTop: theme.spacing.small,
+  paddingBottom: theme.spacing.small,
+  alignItems: 'center',
+  backgroundColor: theme.colors['fill-one'],
+  maxHeight: '100%',
+  paddingLeft: theme.spacing.large,
+  paddingRight: theme.spacing.large,
+}))
+
+const NavButtons = styled.div(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  gap: theme.spacing.small,
+}))
+
+const SubheaderRight = styled.div(({ theme: _ }) => ({
+  display: 'flex',
+  justifyContent: 'flex-end',
+  flexShrink: 'none',
+}))
+
 export default function Subheader() {
   const navigate = useNavigate()
-  const theme = useContext(ThemeContext)
   const previousUser = getPreviousUserData()
 
   return (
-    <Flex
-      align="center"
-      backgroundColor={theme.colors['fill-one']}
-      borderBottom="1px solid border"
-      minHeight={48}
-      paddingHorizontal="large"
-    >
-      <ResponsiveLayoutSidenavContainer
-        gap="small"
-        display="flex"
-        width={240}
-      >
+    <SubheaderContent>
+      <NavButtons>
         <IconFrame
           data-phid="nav-arrow-back"
           clickable
@@ -91,13 +102,17 @@ export default function Subheader() {
           textValue="Forward"
           type="floating"
         />
-      </ResponsiveLayoutSidenavContainer>
-      <ResponsiveLayoutSpacer />
-      <ResponsiveLayoutContentContainer>
+      </NavButtons>
+      <Breadcrumbs
+        flexGrow="1"
+        marginLeft="large"
+        marginRight="large"
+        minWidth={16}
+        flexBasis={16}
+      />
+      <SubheaderRight>
         {!!previousUser && <ServiceAccountBanner />}
-      </ResponsiveLayoutContentContainer>
-      <ResponsiveLayoutSidecarContainer width={200} />
-      <ResponsiveLayoutSpacer />
-    </Flex>
+      </SubheaderRight>
+    </SubheaderContent>
   )
 }

@@ -50,7 +50,19 @@ const AuditChloropleth = lazy(() => import('./audits/AuditChloropleth').then(mod
 const AuditDirectory = lazy(() => import('./audits/AuditDirectory').then(module => ({ default: module.AuditDirectory })))
 const Audits = lazy(() => import('./audits/Audits').then(module => ({ default: module.Audits })))
 const ChecklistProvider = lazy(() => import('./shell/onboarding/checklist/Checklist').then(module => ({ default: module.ChecklistProvider })))
-const Clusters = lazy(() => import('./clusters/Clusters').then(module => ({ default: module.Clusters })))
+
+// Overview.
+const Overview = lazy(() => import('./overview/Overview').then(module => ({ default: module.Overview })))
+const Clusters = lazy(() => import('./overview/clusters/Clusters').then(module => ({ default: module.Clusters })))
+const Apps = lazy(() => import('./overview/apps/Apps').then(module => ({ default: module.Apps })))
+
+// Cluster and app.
+const Cluster = lazy(() => import('./cluster/Cluster').then(module => ({ default: module.Cluster })))
+const App = lazy(() => import('./app/App').then(module => ({ default: module.App })))
+const Upgrade = lazy(() => import('./app/upgrade/Upgrade').then(module => ({ default: module.Upgrade })))
+const OIDC = lazy(() => import('./app/oidc/OIDC').then(module => ({ default: module.OIDC })))
+const Uninstall = lazy(() => import('./app/uninstall/Uninstall').then(module => ({ default: module.Uninstall })))
+
 const PluralProvider = lazy(() => import('./login/CurrentUser').then(module => ({ default: module.PluralProvider })))
 const DeviceLoginNotif = lazy(() => import('./users/DeviceLoginNotif').then(module => ({ default: module.DeviceLoginNotif })))
 const Domains = lazy(() => import('./account/Domains').then(module => ({ default: module.Domains })))
@@ -96,9 +108,6 @@ const ImageVulnerabilities = lazy(() => import('./repository/packages/docker/Ima
 // Packages - Terraform - /terraform
 const Terraform = lazy(() => import('./repository/packages/Terraform'))
 
-// OIDC - /oidc
-const OIDCProvider = lazy(() => import('./repository/OIDCProvider').then(module => ({ default: module.OIDCProvider })))
-
 // TODO: Deprecated or unused features
 // const OauthCreator = lazy(() => import('../_deprecated/components/integrations/OauthCreator').then(module => ({ default: module.OauthCreator })))
 // const OnboardingChecklist = lazy(() => import('./shell/onboarding/checklist/Checklist').then(module => ({ default: module.OnboardingChecklist })))
@@ -121,7 +130,6 @@ const OIDCProvider = lazy(() => import('./repository/OIDCProvider').then(module 
 // If anyone knows a better way around this, I'm all ears.
 // - Klink
 function OAuthOrFallback() {
-  const me = useContext(CurrentUserContext)
   const history = useHistory()
   const shellOAuthMatch = useMatch('/oauth/callback/:provider/shell')
 
@@ -134,7 +142,7 @@ function OAuthOrFallback() {
       // @ts-expect-error
       shellOAuthMatch={shellOAuthMatch}
       replace
-      to={history.pop(me.hasInstallations ? '/installed' : '/marketplace')}
+      to={history.pop('/overview')}
     />
   )
 }
@@ -254,7 +262,7 @@ export function PluralInner() {
               </Route>
               {/* --- REPOSITORY --- */}
               <Route
-                path="/repository/:name"
+                path="/repository/:name/*"
                 element={<Repository />}
               >
                 <Route
@@ -287,10 +295,6 @@ export function PluralInner() {
                     element={<RepositoryPackagesDocker />}
                   />
                 </Route>
-                <Route
-                  path="oidc"
-                  element={<OIDCProvider />}
-                />
                 <Route
                   path="tests"
                   element={<RepositoryTests />}
@@ -395,7 +399,7 @@ export function PluralInner() {
               />
               {/* --- ACCOUNT --- */}
               <Route
-                path="/account"
+                path="/account/*"
                 element={<Account />}
               >
                 <Route
@@ -470,7 +474,7 @@ export function PluralInner() {
               {/*  element={<EditBilling />} */}
               {/* /> */}
               <Route
-                path="/audits"
+                path="/audits/*"
                 element={<AuditDirectory />}
               >
                 <Route
@@ -510,13 +514,64 @@ export function PluralInner() {
               {/*  path="/upgrades" */}
               {/*  element={<UpgradeQueues />} */}
               {/* /> */}
+              {/* --- Overview --- */}
               <Route
-                path="/clusters"
-                element={<Clusters />}
+                path="/overview"
+                element={<Overview />}
+              >
+                <Route
+                  index
+                  element={(
+                    <Navigate
+                      replace
+                      to="clusters"
+                    />
+                  )}
+                />
+                <Route
+                  path="clusters"
+                  element={<Clusters />}
+                />
+                <Route
+                  path="apps"
+                  element={<Apps />}
+                />
+              </Route>
+              {/* CLUSTERS  */}
+              <Route
+                path="/clusters/:clusterId/"
+                element={<Cluster />}
               />
+              {/* CLUSTER APPS  */}
+              <Route
+                path="/apps/:clusterId/:appName"
+                element={<App />}
+              >
+                <Route
+                  index
+                  element={(
+                    <Navigate
+                      replace
+                      to="upgrade"
+                    />
+                  )}
+                />
+                <Route
+                  path="upgrade"
+                  element={<Upgrade />}
+                />
+                <Route
+                  path="oidc"
+                  element={<OIDC />}
+                />
+                <Route
+                  path="uninstall"
+                  element={<Uninstall />}
+                />
+              </Route>
               {/* --- ROADMAP --- */}
               <Route
-                path="/roadmap"
+                path="/roadmap/*"
                 element={<Roadmap />}
               >
                 <Route

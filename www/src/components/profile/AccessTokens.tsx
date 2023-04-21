@@ -270,7 +270,7 @@ export function AccessTokens() {
   const { edges, pageInfo } = data.tokens
 
   return (
-    <Box fill>
+    <Div marginBottom="large">
       <PageTitle
         heading="Access tokens"
         justifyContent="flex-start"
@@ -359,6 +359,6 @@ export function AccessTokens() {
             </EmptyState>
           )}
       </Box>
-    </Box>
+    </Div>
   )
 }

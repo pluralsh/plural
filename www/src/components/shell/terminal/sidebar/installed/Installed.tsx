@@ -10,8 +10,9 @@ import { toAppProps } from './helpers'
 
 const Installed = styled(InstalledUnstyled)(({ theme }) => ({
   width: '600px',
-  paddingTop: theme.spacing.large,
-  height: 'calc(100% - 56px)',
+  paddingTop: theme.spacing.xxsmall,
+  flexGrow: 1,
+  overflow: 'hidden',
 
   '.app-launch-btn': {
     marginRight: theme.spacing.xsmall,
@@ -22,6 +23,11 @@ const Installed = styled(InstalledUnstyled)(({ theme }) => ({
     flexGrow: 0,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  // Hack to prevent 'Filter applications' input from shrinking
+  // TODO: Fix this in AppList design system component
+  '& > :first-child > :first-child': {
+    flexShrink: 0,
   },
 }))
 

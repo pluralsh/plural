@@ -18,7 +18,10 @@ function BillingManagePlan() {
       <Div marginTop="xxlarge">
         <BillingPricingCards />
       </Div>
-      <Div marginTop="xxlarge">
+      <Div
+        marginTop="xxlarge"
+        marginBottom="large"
+      >
         <BillingPricingTable />
       </Div>
     </>

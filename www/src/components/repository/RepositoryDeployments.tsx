@@ -11,13 +11,12 @@ import {
 import { useRepositoryContext } from '../../contexts/RepositoryContext'
 import usePaginatedQuery from '../../hooks/usePaginatedQuery'
 import InfiniteScroller from '../utils/InfiniteScroller'
-import { ROLLOUT_SUB } from '../clusters/queries'
 import { appendConnection } from '../../utils/graphql'
 import { Table, TableData, TableRow } from '../utils/Table'
 
 import LoadingIndicator from '../utils/LoadingIndicator'
 
-import { DEPLOYMENTS_QUERY } from './queries'
+import { DEPLOYMENTS_QUERY, ROLLOUT_SUB } from './queries'
 import { RepositoryActions } from './misc'
 
 // eslint-disable-next-line

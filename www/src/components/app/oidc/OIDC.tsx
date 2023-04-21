@@ -6,30 +6,35 @@ import {
 } from 'react'
 import { Box } from 'grommet'
 import { useMutation } from '@apollo/client'
-import { Button, Flex, P } from 'honorable'
 import {
+  Button,
+  Div,
+  Flex,
+  P,
+} from 'honorable'
+import {
+  Card,
   CheckIcon,
   Chip,
   Codeline,
-  ContentCard,
   FormField,
   Input,
   PageTitle,
   Toast,
 } from '@pluralsh/design-system'
-import { useNavigate, useParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
+import { useNavigate, useParams } from 'react-router-dom'
 
-import { BindingInput, fetchGroups, fetchUsers } from '../account/Typeaheads'
-import { GqlError } from '../utils/Alert'
-import { deepUpdate, updateCache } from '../../utils/graphql'
-import { sanitize } from '../account/utils'
-import { CREATE_PROVIDER, UPDATE_PROVIDER } from '../oidc/queries'
-import { AuthMethod } from '../oidc/types'
-import { useRepositoryContext } from '../../contexts/RepositoryContext'
-import usePrevious from '../../hooks/usePrevious'
-
-import { REPO_Q } from './packages/queries'
+import { BindingInput, fetchGroups, fetchUsers } from '../../account/Typeaheads'
+import { GqlError } from '../../utils/Alert'
+import { deepUpdate, updateCache } from '../../../utils/graphql'
+import { sanitize } from '../../account/utils'
+import { CREATE_PROVIDER, UPDATE_PROVIDER } from '../../oidc/queries'
+import { AuthMethod } from '../../oidc/types'
+import usePrevious from '../../../hooks/usePrevious'
+import { REPO_Q } from '../../repository/packages/queries'
+import { useAppContext } from '../../../contexts/AppContext'
+import { AppHeaderActions } from '../AppHeaderActions'
 
 function UrlsInput({ uriFormat = '', urls, setUrls }: any) {
   const [baseScheme, basePath] = ['https://', '/oauth2/callback']
@@ -140,7 +145,12 @@ export function ProviderForm({
   }, [loading, prevLoading])
 
   return (
-    <ContentCard innerProps={{ gap: 'large', display: 'flex', flexDirection: 'column' }}>
+    <Card
+      display="flex"
+      flexDirection="column"
+      gap="large"
+      padding="xlarge"
+    >
       <Flex
         gap="medium"
         width="100%"
@@ -231,7 +241,7 @@ export function ProviderForm({
         >{toast}
         </Toast>
       )}
-    </ContentCard>
+    </Card>
   )
 }
 
@@ -257,11 +267,13 @@ export function CreateProvider({
   })
 
   return (
-    <Box fill>
+    <Div paddingBottom="large">
       <PageTitle
         heading="OpenID Connect"
         paddingTop="medium"
-      />
+      >
+        <AppHeaderActions />
+      </PageTitle>
       {error && (
         <GqlError
           error={error}
@@ -277,7 +289,7 @@ export function CreateProvider({
         onSave={() => mutation()}
         loading={loading}
       />
-    </Box>
+    </Div>
   )
 }
 
@@ -303,11 +315,13 @@ export function UpdateProvider({
   })
 
   return (
-    <Box fill>
+    <Div paddingBottom="large">
       <PageTitle
         heading="OpenID Connect"
         paddingTop="medium"
-      />
+      >
+        <AppHeaderActions />
+      </PageTitle>
       {error && (
         <GqlError
           error={error}
@@ -323,14 +337,14 @@ export function UpdateProvider({
         onSave={() => mutation()}
         loading={loading}
       />
-    </Box>
+    </Div>
   )
 }
 
-export function OIDCProvider() {
+export function OIDC() {
   const navigate = useNavigate()
-  const { installation } = useRepositoryContext()
-  const { name } = useParams()
+  const { installation } = useAppContext()
+  const { appName: name } = useParams()
 
   useEffect(() => {
     if (!installation) navigate(-1)

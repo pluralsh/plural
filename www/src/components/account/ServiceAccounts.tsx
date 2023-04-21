@@ -142,7 +142,7 @@ export function ServiceAccounts() {
         <BillingFeatureBlockBanner
           feature="service acccounts"
           description="Create assumable identities that enable multiple people to manage Plural installations."
-          placeholderImageURL="/placeholder-service-accounts.png"
+          placeholderImageURL="/placeholders/service-accounts.png"
         />
       )}
     </Flex>

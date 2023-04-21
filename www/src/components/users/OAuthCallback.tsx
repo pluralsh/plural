@@ -6,7 +6,6 @@ import { Box } from 'grommet'
 
 import { setToken } from '../../helpers/authentication'
 import { host } from '../../helpers/hostname'
-import { OnboardingStatus } from '../profile/types'
 import { GqlError } from '../utils/Alert'
 import LoadingIndicator from '../utils/LoadingIndicator'
 
@@ -35,7 +34,7 @@ export function OAuthCallback() {
         handleOauthChallenge(client, challenge)
       }
       else {
-        window.location.href = (oauthCallback.onboarding === OnboardingStatus.NEW) ? '/shell' : '/'
+        window.location.href = '/'
       }
     },
   })

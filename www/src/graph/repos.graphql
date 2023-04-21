@@ -34,15 +34,31 @@ fragment Repo on Repository {
   }
 }
 
-fragment Repository on Repository {
+fragment MarketplaceRepository on Repository {
   id
   name
-  notes
+  description
+  releaseStatus
+  documentation
   icon
   darkIcon
-  description
-  publisher { name }
-  recipes { name }
+  private
+  trending
+  verified
+  category
+  oauthSettings {
+    uriFormat
+    authMethod
+  }
+  publisher {
+    ...Publisher
+  }
+  installation {
+    ...Installation
+  }
+  tags {
+    tag
+  }
 }
 
 fragment Dependencies on Dependencies {
@@ -140,9 +156,25 @@ mutation UnlockRepository($name: String!) {
   unlockRepository(name: $name)
 }
 
-query ListRepositories($q: String) {
-  repositories(q: $q, first: 100) {
-    edges { node { ...Repository } }
+query MarketplaceRepositories(
+  $publisherId: ID
+  $tag: String
+  $cursor: String
+) {
+  repositories(
+    publisherId: $publisherId
+    tag: $tag
+    after: $cursor
+    first: 200
+  ) {
+    pageInfo {
+      ...PageInfo
+    }
+    edges {
+      node {
+        ...MarketplaceRepository
+      }
+    }
   }
 }
 

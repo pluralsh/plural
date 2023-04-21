@@ -17,7 +17,6 @@ import { SideNavOffset } from '../utils/layout/SideNavOffset'
 const DIRECTORY = [
   { label: 'Readme', path: '' },
   { label: 'Packages', path: '/packages' },
-  { label: 'OpenID Connect', path: '/oidc' },
   { label: 'Tests', path: '/tests' },
   { label: 'Deployments', path: '/deployments' },
   { label: 'Artifacts', path: '/artifacts' },
@@ -39,9 +38,6 @@ function RepositorySideNav({
   const pathPrefix = `/repository/${repository.name}`
   const filteredDirectory = DIRECTORY.filter(({ path }) => {
     switch (path) {
-    case '/oidc':
-      return repository.installation && repository.oauthSettings
-      break
     case '/artifacts':
       return repository.artifacts && repository.artifacts.length > 0
       break
@@ -95,7 +91,7 @@ function RepositorySideNav({
           <A
             inline
             as={Link}
-            to={`/publisher/${repository.publisher.id}?backRepositoryName=${repository.name}`}
+            to={`/publisher/${repository.publisher.id}`}
           >
             {capitalize(repository.publisher.name)}
           </A>

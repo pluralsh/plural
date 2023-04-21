@@ -1,6 +1,8 @@
-import { TabPanel } from '@pluralsh/design-system'
-import { useRef } from 'react'
-import { Outlet } from 'react-router-dom'
+import { TabPanel, useSetBreadcrumbs } from '@pluralsh/design-system'
+import { useMemo, useRef } from 'react'
+import { Outlet, useParams } from 'react-router-dom'
+
+import { Flex } from 'honorable'
 
 import { ResponsiveLayoutContentContainer } from '../utils/layout/ResponsiveLayoutContentContainer'
 import { ResponsiveLayoutSidecarContainer } from '../utils/layout/ResponsiveLayoutSidecarContainer'
@@ -33,20 +35,46 @@ export type Account = {
 export function Account() {
   const tabStateRef = useRef<any>()
 
+  const params = useParams()
+  const subPath = params?.['*']?.split?.('/')[0]
+  const breadcrumbs = useMemo(() => [
+    { label: 'account', url: '/account' },
+    ...(subPath
+      ? [
+        {
+          label: subPath === 'edit' ? 'attributes' : subPath,
+          url: `/account/${subPath}`,
+        },
+      ]
+      : []),
+  ],
+  [subPath])
+
+  useSetBreadcrumbs(breadcrumbs)
+
   return (
-    <ResponsiveLayoutPage>
-      <ResponsiveLayoutSidenavContainer>
+    <ResponsiveLayoutPage padding={0}>
+      <ResponsiveLayoutSidenavContainer
+        marginLeft="large"
+        marginTop="large"
+      >
         <AccountSideNav tabStateRef={tabStateRef} />
       </ResponsiveLayoutSidenavContainer>
-      <ResponsiveLayoutSpacer />
-      <TabPanel
-        as={<ResponsiveLayoutContentContainer />}
-        stateRef={tabStateRef}
+      <Flex
+        grow={1}
+        overflowY="auto"
+        padding="large"
       >
-        <Outlet />
-      </TabPanel>
-      <ResponsiveLayoutSpacer />
-      <ResponsiveLayoutSidecarContainer width="200px" />
+        <ResponsiveLayoutSpacer />
+        <TabPanel
+          as={(<ResponsiveLayoutContentContainer overflow="visible" />)}
+          stateRef={tabStateRef}
+        >
+          <Outlet />
+        </TabPanel>
+        <ResponsiveLayoutSpacer />
+        <ResponsiveLayoutSidecarContainer />
+      </Flex>
     </ResponsiveLayoutPage>
   )
 }

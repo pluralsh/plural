@@ -64,6 +64,7 @@ export const InstallationFragment = gql`
     license
     autoUpgrade
     trackTag
+    pingedAt
     repository { ...RepoFragment }
     user { ...UserFragment }
   }

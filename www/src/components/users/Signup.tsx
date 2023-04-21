@@ -119,7 +119,7 @@ export function Signup() {
         finishedDeviceLogin()
       }
       setToken(signup?.jwt)
-      history.navigate('/shell')
+      history.navigate('/')
     },
   })
   const { data } = useOauthUrlsQuery({ variables: { host: host() } })

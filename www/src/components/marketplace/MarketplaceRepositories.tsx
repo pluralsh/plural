@@ -1,25 +1,20 @@
 import { useEffect, useRef, useState } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
+import { useSearchParams } from 'react-router-dom'
 import {
-  A,
-  Br,
   Button,
   Div,
   Flex,
+  FlexProps,
   H1,
   Hr,
-  Span,
 } from 'honorable'
 import {
   ArrowTopRightIcon,
+  BrowseAppsIcon,
   Chip,
   EmptyState,
-  FiltersIcon,
   Input,
   MagnifyingGlassIcon,
-  Tab,
-  TabList,
-  TabPanel,
 } from '@pluralsh/design-system'
 import Fuse from 'fuse.js'
 import styled from 'styled-components'
@@ -27,12 +22,9 @@ import isEmpty from 'lodash/isEmpty'
 import capitalize from 'lodash/capitalize'
 import orderBy from 'lodash/orderBy'
 
+import { upperFirst } from 'lodash'
+
 import { growthbook } from '../../helpers/growthbook'
-
-import usePaginatedQuery from '../../hooks/usePaginatedQuery'
-
-import { GoBack } from '../utils/GoBack'
-import { LinkTabWrap } from '../utils/Tabs'
 
 import { ResponsiveLayoutSidecarContainer } from '../utils/layout/ResponsiveLayoutSidecarContainer'
 import { ResponsiveLayoutSpacer } from '../utils/layout/ResponsiveLayoutSpacer'
@@ -42,7 +34,11 @@ import PublisherSideCar from '../publisher/PublisherSideCar'
 
 import LoadingIndicator from '../utils/LoadingIndicator'
 
-import { MARKETPLACE_QUERY } from './queries'
+import { useMarketplaceRepositoriesQuery } from '../../generated/graphql'
+
+import { usePaginatedQueryHook } from '../../hooks/usePaginatedQuery'
+
+import { ResponsiveLayoutPage } from '../utils/layout/ResponsiveLayoutPage'
 
 import MarketplaceSidebar from './MarketplaceSidebar'
 import MarketplaceStacks from './MarketplaceStacks'
@@ -58,34 +54,57 @@ const chipProps = {
   tabIndex: 0,
   closeButton: true,
   clickable: true,
-  height: '100%',
+  minHeight: 32,
 }
 
-const sidebarWidth = 256 - 32
-
 // @ts-expect-error
-const StyledTabPanel = styled(TabPanel)(() => ({
+const MainContentArea = styled(Div)(() => ({
   display: 'flex',
   flexDirection: 'column',
   flexGrow: 1,
 }))
 
-function MarketplaceRepositories({ installed, publisher }: any) {
+function SearchBar({ search, setSearch }) {
+  return (
+    <Div
+      minWidth="210px"
+      flex="1 1 210px"
+    >
+      <Input
+        titleContent={(
+          <>
+            <BrowseAppsIcon marginRight="small" />
+            Marketplace
+          </>
+        )}
+        startIcon={(
+          <MagnifyingGlassIcon
+            size={16}
+            color="icon-light"
+          />
+        )}
+        placeholder="Search the marketplace"
+        value={search}
+        onChange={event => setSearch(event.target.value)}
+      />
+    </Div>
+  )
+}
+
+function MarketplaceRepositories({ publisher }: {publisher?: any}) {
   const scrollRef = useRef<HTMLDivElement>(null)
   const [searchParams, setSearchParams] = useSearchParams()
   const categories = searchParams.getAll('category')
   const tags = searchParams.getAll('tag')
-  const backRepositoryName = searchParams.get('backRepositoryName')
   const [search, setSearch] = useState('')
-  const [areFiltersOpen, setAreFiltersOpen] = useState(true)
-  const tabStateRef = useRef<any>(null)
+  const [areFiltersOpen] = useState(true)
 
   const [
     repositories,
     loadingRepositories,
     hasMoreRepositories,
     fetchMoreRepositories,
-  ] = usePaginatedQuery(MARKETPLACE_QUERY,
+  ] = usePaginatedQueryHook(useMarketplaceRepositoriesQuery,
     {
       variables: {
         ...(publisher ? { publisherId: publisher.id } : {}),
@@ -93,12 +112,11 @@ function MarketplaceRepositories({ installed, publisher }: any) {
     },
     data => data.repositories)
 
+  const isFiltered = !isEmpty(categories) || !isEmpty(tags)
+  const isFilteredOrSearched = isFiltered || search
   const shouldRenderStacks
     = growthbook.isOn('stacks')
-    && !categories.length
-    && !tags.length
-    && !installed
-    && !search
+    && !isFilteredOrSearched
 
   useEffect(() => {
     const { current } = scrollRef
@@ -132,27 +150,28 @@ function MarketplaceRepositories({ installed, publisher }: any) {
     return <LoadingIndicator />
   }
 
-  const sortedRepositories = orderBy(repositories.slice(),
-    ['trending', r => r.name.toLowerCase()],
-    ['desc', 'asc'])
+  const sortedRepositories = (orderBy(repositories,
+    ['trending', r => (r as typeof repositories[number])?.name?.toLowerCase()],
+    ['desc', 'asc']) as typeof repositories)
     .filter(repository => (categories.length
-      ? categories.includes(repository.category.toLowerCase())
+      ? categories.some(category => category === repository?.category?.toLowerCase()
+        || (category === 'installed' && repository?.installation)
+        || category === 'trending' && repository.trending)
       : true))
     .filter(repository => {
       if (!tags.length) return true
 
-      const repositoryTags = repository.tags.map(({ tag }) => tag.toLowerCase())
+      const repositoryTags = repository?.tags?.map(t => t?.tag.toLowerCase())
 
-      return tags.some(tag => repositoryTags.includes(tag))
+      return tags.some(tag => repositoryTags?.includes(tag))
     })
-    .filter(repository => (installed ? repository.installation : true))
 
   const fuse = new Fuse(sortedRepositories, searchOptions)
 
   const resultRepositories = search
-    ? orderBy(fuse.search(search).map(({ item }) => item),
-      ['trending', r => r.name.toLowerCase()],
-      ['desc', 'asc'])
+    ? (orderBy(fuse.search(search).map(({ item }) => item),
+      ['trending', r => (r as typeof repositories[number])?.name.toLowerCase()],
+      ['desc', 'asc']) as typeof repositories)
     : sortedRepositories
 
   function handleClearToken(key, value) {
@@ -173,310 +192,237 @@ function MarketplaceRepositories({ installed, publisher }: any) {
     setSearchParams({})
   }
 
-  function renderTitle() {
-    let title = installed ? 'Installed Repositories' : 'All Repositories'
-
-    if (categories.length || tags.length) title += ', filtered'
-
-    return title
-  }
-
   return (
-    <Flex
-      direction="column"
-      overflow="hidden"
-      maxWidth-desktopLarge-up={publisher ? null : 1640}
-      width-desktopLarge-up={publisher ? null : 1640}
-      width-desktopLarge-down="100%"
-      flexGrow={publisher ? 1 : 0}
+    <ResponsiveLayoutPage
+      padding={0}
+      overflow="auto"
     >
+      {!publisher && <ResponsiveLayoutSpacer />}
       <Flex
-        marginHorizontal="large"
-        flexShrink={0}
-        height={57}
-        alignItems="flex-end"
-      >
-        {!publisher && (
-          <TabList
-            stateRef={tabStateRef}
-            stateProps={{
-              orientation: 'horizontal',
-              selectedKey: installed ? 'installed' : 'marketplace',
-            }}
-          >
-            <LinkTabWrap
-              key="marketplace"
-              textValue="Marketplace"
-              to="/marketplace"
-            >
-              <Tab>Marketplace</Tab>
-            </LinkTabWrap>
-            <LinkTabWrap
-              key="installed"
-              textValue="Installed"
-              to="/installed"
-            >
-              <Tab>Installed</Tab>
-            </LinkTabWrap>
-          </TabList>
-        )}
-        {publisher && !backRepositoryName && (
-          <GoBack
-            text="Back to marketplace"
-            link="/marketplace"
-          />
-        )}
-        {publisher && backRepositoryName && (
-          <GoBack
-            text={`Back to ${capitalize(backRepositoryName)}`}
-            link={`/repository/${backRepositoryName}`}
-          />
-        )}
-        {!publisher && (
-          <Flex
-            paddingBottom="xxsmall"
-            paddingTop="xxsmall"
-            justify="flex-end"
-            flexGrow={1}
-            borderBottom="1px solid border"
-          >
-            <Button
-              tertiary
-              small
-              startIcon={<FiltersIcon />}
-              onClick={() => setAreFiltersOpen(x => !x)}
-              backgroundColor={
-                areFiltersOpen ? 'fill-zero-selected' : 'fill-zero'
-              }
-            >
-              Filters
-            </Button>
-          </Flex>
-        )}
-      </Flex>
-      <Flex
-        flexGrow={1}
-        marginTop="medium"
+        direction="column"
         overflow="hidden"
+        maxWidth-desktopLarge-up={publisher ? null : 1640}
+        width-desktopLarge-up={publisher ? null : 1640}
+        width-desktopLarge-down="100%"
+        flexGrow={publisher ? 1 : 0}
       >
-        {publisher && (
-          <>
-            <PublisherSideNav publisher={publisher} />
-            <ResponsiveLayoutSpacer />
-          </>
-        )}
-        <StyledTabPanel
-          stateRef={tabStateRef}
-          width={publisher ? 928 : null} // 896 + 32 margin
-          maxWidth-desktopLarge-up={publisher ? 928 : null}
-          width-desktopLarge-up={publisher ? 928 : null}
+        <Flex
+          flexGrow={1}
+          marginTop="large"
+          overflow="hidden"
         >
           {publisher && (
-            <Div paddingLeft="large">
-              <H1 title1>{capitalize(publisher.name)}'s Apps</H1>
-              <Hr
-                marginTop="large"
-                marginBottom="medium"
-              />
-            </Div>
+            <>
+              <PublisherSideNav publisher={publisher} />
+              <ResponsiveLayoutSpacer />
+            </>
           )}
-          <Div
-            paddingBottom="xxxlarge"
-            paddingLeft="large"
-            paddingRight="small"
-            paddingHorizontal="large"
-            marginRight="large"
-            overflowY="auto"
-            overflowX="hidden"
-            position="relative"
-            ref={scrollRef}
+          <MainContentArea
+            width={publisher ? 928 : null} // 896 + 32 margin
+            maxWidth-desktopLarge-up={publisher ? 928 : null}
+            width-desktopLarge-up={publisher ? 928 : null}
           >
+            {publisher && (
+              <Div
+                paddingLeft="large"
+                paddingRight="large"
+              >
+                <H1 title1>{capitalize(publisher.name)}'s Apps</H1>
+                <Hr
+                  marginTop="large"
+                  marginBottom="medium"
+                />
+              </Div>
+            )}
             <Div
-              marginBottom="medium"
-              position="sticky"
-              top="0"
-              backgroundColor="fill-zero"
+              paddingBottom="xxxlarge"
+              paddingHorizontal="large"
+              paddingLeft="large"
+              paddingRight={areFiltersOpen ? 'small' : 'large'}
+              marginRight={areFiltersOpen ? 'large' : '0'}
+              overflowY="auto"
+              scrollbarGutter="stable"
+              overflowX="hidden"
+              position="relative"
+              ref={scrollRef}
             >
               <Flex
-                align="stretch"
-                wrap
+                flexDirection="column"
                 gap="small"
+                marginBottom="medium"
+                position="sticky"
+                top="0"
+                backgroundColor="fill-zero"
               >
-                <Div
-                  minWidth="210px"
-                  flex="1 1 210px"
-                >
-                  <Input
-                    startIcon={<MagnifyingGlassIcon size={14} />}
-                    placeholder="Search for a repository"
-                    value={search}
-                    onChange={event => setSearch(event.target.value)}
+                <Flex gap="small">
+                  <SearchBar
+                    search={search}
+                    setSearch={setSearch}
                   />
-                </Div>
-                {categories.map(category => (
-                  <Flex
-                    key={category}
-                    flexDirection="column"
-                  >
-                    <Chip
-                      {...chipProps}
-                      onClick={() => handleClearToken('category', category)}
-                      onKeyDown={event => (event.key === 'Enter' || event.key === ' ')
-                      && handleClearToken('category', category)}
-                    >
-                      {capitalize(category)}
-                    </Chip>
-                  </Flex>
-                ))}
-                {tags.map(tag => (
-                  <Flex
-                    key={tag}
-                    flexDirection="column"
-                  >
-                    <Chip
-                      {...chipProps}
-                      onClick={() => handleClearToken('tag', tag)}
-                      onKeyDown={event => (event.key === 'Enter' || event.key === ' ')
-                    && handleClearToken('tag', tag)}
-                    >
-                      {capitalize(tag)}
-                    </Chip>
-                  </Flex>
-                ))}
-                {!!(categories.length || tags.length) && (
-                  <Flex flexDirection="column">
-                    <Button
-                      height="100%"
-                      marginBottom="xsmall"
-                      flexShrink={0}
-                      tertiary
-                      small
-                      onClick={() => handleClearTokens()}
-                    >
-                      Clear all
-                    </Button>
-                  </Flex>
-                )}
-              </Flex>
-              <Div
-                flexShrink={0}
-                height={16}
-                width="100%"
-                background="linear-gradient(0deg, transparent 0%, fill-zero 90%);"
-                position="absolute"
-                top="100%"
-                zIndex={999}
-              />
-            </Div>
-            {shouldRenderStacks && <MarketplaceStacks />}
-            {resultRepositories?.length > 0 && !publisher && (
-              <H1
-                subtitle1
-                marginTop={shouldRenderStacks ? 'xlarge' : 0}
-              >
-                {renderTitle()}
-              </H1>
-            )}
-            <RepoCardList
-              repositories={resultRepositories}
-              marginTop={publisher ? 0 : 'medium'}
-            />
-            {loadingRepositories && <LoadingIndicator />}
-            {!resultRepositories?.length
-              && installed
-              && ![...searchParams]?.length
-              && isEmpty(search) && (
-              <EmptyState message="Looks like you haven't installed your first app yet.">
-                <Span>
-                  Head back to the marketplace to select your first
-                  application! If you need
-                  <Br />
-                  support installing your first app, read our&nbsp;
-                  <A
-                    inline
-                    href="https://docs.plural.sh/getting-started/getting-started"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    quickstart guide
-                  </A>
-                  .
-                </Span>
-                <Button
-                  as={Link}
-                  to="/marketplace"
-                  marginTop="medium"
-                >
-                  Go to marketplace
-                </Button>
-              </EmptyState>
-            )}
-            {!resultRepositories?.length && !installed && (
-              <EmptyState
-                message="Oops! We couldn't find any apps."
-                description="If you can't find what you're looking for, you can onboard the application."
-              >
-                <Flex
-                  direction="column"
-                  marginTop="large"
-                  gap="medium"
-                >
-                  <Button
-                    as="a"
-                    href="https://docs.plural.sh/applications/adding-new-application"
-                    target="_blank"
-                    primary
-                    endIcon={<ArrowTopRightIcon />}
-                  >
-                    Add an application
-                  </Button>
-                  {!publisher && (
-                    <Button
-                      secondary
-                      onClick={handleClearFilters}
-                    >
-                      Clear filters
-                    </Button>
-                  )}
+                  {/* <FiltersButton
+                    setAreFiltersOpen={setAreFiltersOpen}
+                    areFiltersOpen={areFiltersOpen}
+                  /> */}
                 </Flex>
-              </EmptyState>
-            )}
-          </Div>
-        </StyledTabPanel>
-        {!publisher && (
-          <Div
-            display="flex"
-            flexDirection="column"
-            width={sidebarWidth}
-            height="auto"
-            overflow="hidden"
-            marginRight={areFiltersOpen ? 'large' : `-${sidebarWidth}px`}
-            transform={areFiltersOpen ? 'translateX(0)' : 'translateX(100%)'}
-            opacity={areFiltersOpen ? 1 : 0}
-            flexShrink={0}
-            position="sticky"
-            top={0}
-            right={0}
-            marginBottom="medium"
-            border="1px solid border"
-            backgroundColor="fill-one"
-            borderRadius="large"
-            transition="all 250ms ease"
-          >
-            <MarketplaceSidebar width="100%" />
-          </Div>
-        )}
-        {publisher && (
-          <>
-            <ResponsiveLayoutSidecarContainer>
-              <PublisherSideCar publisher={publisher} />
-            </ResponsiveLayoutSidecarContainer>
-            <ResponsiveLayoutSpacer />
-          </>
-        )}
+                {(isFiltered) && (
+                  <FilterChips
+                    categories={categories}
+                    handleClearToken={handleClearToken}
+                    tags={tags}
+                    handleClearTokens={handleClearTokens}
+                  />
+                )}
+                <Div
+                  flexShrink={0}
+                  height={16}
+                  width="100%"
+                  background="linear-gradient(0deg, transparent 0%, fill-zero 90%);"
+                  position="absolute"
+                  top="100%"
+                  zIndex={999}
+                />
+              </Flex>
+              {shouldRenderStacks && <MarketplaceStacks />}
+              {resultRepositories?.length > 0 && !publisher && !isFilteredOrSearched && (
+                <H1
+                  subtitle1
+                  marginTop={shouldRenderStacks ? 'xlarge' : 0}
+                >
+                  All Apps
+                </H1>
+              )}
+              <RepoCardList
+                repositories={resultRepositories}
+                marginTop={publisher ? 0 : 'medium'}
+              />
+              {loadingRepositories && <LoadingIndicator />}
+              {!resultRepositories?.length && (
+                <EmptyState
+                  message="Oops! We couldn't find any apps."
+                  description="If you can't find what you're looking for, you can onboard the application."
+                >
+                  <Flex
+                    direction="column"
+                    marginTop="large"
+                    gap="medium"
+                  >
+                    <Button
+                      as="a"
+                      href="https://docs.plural.sh/applications/adding-new-application"
+                      target="_blank"
+                      primary
+                      endIcon={<ArrowTopRightIcon />}
+                    >
+                      Add an application
+                    </Button>
+                    {!publisher && (
+                      <Button
+                        secondary
+                        onClick={handleClearFilters}
+                      >
+                        Clear filters
+                      </Button>
+                    )}
+                  </Flex>
+                </EmptyState>
+              )}
+            </Div>
+          </MainContentArea>
+          {!publisher && (
+            <MarketplaceSidebar isOpen={areFiltersOpen} />
+          )}
+          {publisher && (
+            <>
+              <ResponsiveLayoutSidecarContainer
+                marginRight="large"
+                marginLeft={0}
+              >
+                <PublisherSideCar
+                  publisher={publisher}
+                />
+              </ResponsiveLayoutSidecarContainer>
+              <ResponsiveLayoutSpacer />
+            </>
+          )}
+        </Flex>
       </Flex>
-    </Flex>
+      {!publisher && <ResponsiveLayoutSpacer />}
+    </ResponsiveLayoutPage>
   )
 }
 
 export default MarketplaceRepositories
+
+// NOTE: Disabling Filters column expand/collapse functionality, but leaving
+// code here in case we want to revert that decision.
+
+// function FiltersButton({
+//   setAreFiltersOpen,
+//   areFiltersOpen,
+// }: {
+//   setAreFiltersOpen: Dispatch<SetStateAction<boolean>>
+//   areFiltersOpen: boolean
+// }) {
+//   return (
+//     <Button
+//       tertiary
+//       small
+//       startIcon={<FiltersIcon />}
+//       onClick={() => setAreFiltersOpen(x => !x)}
+//       backgroundColor={areFiltersOpen ? 'fill-zero-selected' : 'fill-zero'}
+//     >
+//       Filters
+//     </Button>
+//   )
+// }
+
+function FilterChips({
+  categories,
+  handleClearToken,
+  tags,
+  handleClearTokens,
+  ...props
+}: {
+    categories: string[],
+    handleClearToken: (key: any, value: any) => void,
+    tags: string[],
+    handleClearTokens: () => void
+} & FlexProps) {
+  return (
+    <Flex
+      gap="small"
+      wrap="wrap"
+      {...props}
+    >
+      {categories.map(category => (
+        <Chip
+          {...chipProps}
+          onClick={() => handleClearToken('category', category)}
+          onKeyDown={event => (event.key === 'Enter' || event.key === ' ')
+            && handleClearToken('category', category)}
+        >
+          {upperFirst(category)}
+        </Chip>
+      ))}
+      {tags.map(tag => (
+        <Chip
+          {...chipProps}
+          onClick={() => handleClearToken('tag', tag)}
+          onKeyDown={event => (event.key === 'Enter' || event.key === ' ')
+            && handleClearToken('tag', tag)}
+        >
+          {(tag)}
+        </Chip>
+      ))}
+      <Button
+        flexShrink={0}
+        tertiary
+        small
+        onClick={() => handleClearTokens()}
+      >
+        Clear all
+      </Button>
+    </Flex>
+  )
+}
+

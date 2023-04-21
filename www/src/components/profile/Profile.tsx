@@ -1,6 +1,6 @@
 import { useMutation } from '@apollo/client'
 import { Box, Stack, ThemeContext } from 'grommet'
-import { Flex, P } from 'honorable'
+import { Div, Flex, P } from 'honorable'
 import {
   AppIcon,
   Button,
@@ -70,9 +70,9 @@ export function Profile() {
   }, [files])
 
   return (
-    <Box fill>
+    <Div paddingBottom="large">
       <PageTitle heading="Profile" />
-      <ContentCard overflowY="auto">
+      <ContentCard overflowY={undefined}>
         <Box
           gap="large"
           margin={{ bottom: 'medium' }}
@@ -161,6 +161,6 @@ export function Profile() {
           </Button>
         </Flex>
       </ContentCard>
-    </Box>
+    </Div>
   )
 }

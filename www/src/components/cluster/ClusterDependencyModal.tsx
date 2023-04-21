@@ -59,7 +59,7 @@ export function ClusterDependencyModal({ open, setOpen, destination }: ClusterDe
         direction="column"
         gap="xlarge"
       >
-        <Div subtitle2>Set-up cluster promotion</Div>
+        <Div subtitle2>Set up promotions</Div>
         {error && (
           <GqlError
             header="Something went wrong"

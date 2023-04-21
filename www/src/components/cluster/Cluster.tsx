@@ -94,7 +94,7 @@ export function Cluster() {
             {!!cluster && !cluster.dependency ? (
               <>
                 <CollapsibleButton
-                  label="Setup promotions"
+                  label="Set up promotions"
                   icon={<RocketIcon />}
                   onClick={() => setDependencyOpen(true)}
                 />

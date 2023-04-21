@@ -44,7 +44,7 @@ defmodule Core.Schema.Cluster do
 
   def for_user(query \\ __MODULE__, user)
 
-  def for_user(query, %User{id: uid, account: %{root_user_id: uid}, account_id: aid} = user),
+  def for_user(query, %User{id: uid, account: %{root_user_id: uid}, account_id: aid}),
     do: for_account(query, aid)
 
   def for_user(query, %User{roles: %{admin: true}, account_id: aid}), do: for_account(query, aid)

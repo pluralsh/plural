@@ -166,7 +166,7 @@ defmodule Core.Services.Clusters do
   deletes the cluster reference and flushes associated records
   """
   @spec delete_cluster(binary, binary | atom, User.t | binary) :: cluster_resp
-  def delete_cluster(name, provider, %User{id: user_id} = user) do
+  def delete_cluster(name, provider, %User{id: user_id}) do
     start_transaction()
     |> add_operation(:cluster, fn _ ->
       case get_cluster(user_id, provider, name) do

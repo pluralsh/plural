@@ -27,6 +27,10 @@ defmodule Core.Policies.Account do
   end
 
   def can?(%User{id: id}, %User{id: id}, :impersonate), do: :pass
+  def can?(%User{account_id: aid, roles: %{admin: true}}, %User{account_id: aid, service_account: true}, :impersonate),
+    do: :pass
+  def can?(%User{account_id: aid, id: id, account: %Account{root_user_id: id}}, %User{account_id: aid, service_account: true}, :impersonate),
+    do: :pass
   def can?(%User{} = user, %User{service_account: true} = sa, :impersonate) do
     with %{impersonation_policy: %{bindings: _} = policy} <- Core.Repo.preload(sa, [impersonation_policy: [:bindings]]),
           :pass <- Core.Services.Rbac.evaluate_policy(user, policy) do

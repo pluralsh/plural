@@ -10,11 +10,11 @@ import { ResponsiveLayoutSpacer } from '../utils/layout/ResponsiveLayoutSpacer'
 import { ResponsiveLayoutSidenavContainer } from '../utils/layout/ResponsiveLayoutSidenavContainer'
 import { ResponsiveLayoutPage } from '../utils/layout/ResponsiveLayoutPage'
 import LoadingIndicator from '../utils/LoadingIndicator'
-import { MARKETPLACE_CRUMB } from '../marketplace/Marketplace'
 import ClustersContext from '../../contexts/ClustersContext'
 import ImpersonateServiceAccount from '../utils/ImpersonateServiceAccount'
 import { AppContextProvider } from '../../contexts/AppContext'
 import { Repository } from '../../generated/graphql'
+import { CLUSTERS_ROOT_CRUMB } from '../overview/Overview'
 
 import { AppSidecar } from './AppSidecar'
 import AppSidenav from './AppSidenav'
@@ -36,18 +36,17 @@ export function App() {
 }
 
 function AppInternal() {
-  const { appName: name, ...restParams } = useParams()
-  const subPath = restParams?.['*']?.split?.('/')[0]
+  const { appName: name, clusterId } = useParams()
+  const { clusters } = useContext(ClustersContext)
+  const cluster = clusters.find(({ id }) => id === clusterId)
   const { data, loading } = useQuery<{repository: Repository}>(REPO_Q, { variables: { name } })
   const tabStateRef = useRef<any>(null)
   const breadcrumbs = useMemo(() => [
-    MARKETPLACE_CRUMB,
-    {
-      label: `${name}-${subPath || 'readme'}` ?? '',
-      url: `/repository/${name}`,
-    },
+    CLUSTERS_ROOT_CRUMB,
+    { label: `${cluster?.name}`, url: `/clusters/${clusterId}` },
+    { label: `${name}`, url: `/apps/${clusterId}/${name}` },
   ],
-  [subPath, name])
+  [cluster?.name, clusterId, name])
 
   useSetBreadcrumbs(breadcrumbs)
 

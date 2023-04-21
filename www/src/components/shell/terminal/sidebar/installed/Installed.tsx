@@ -24,6 +24,11 @@ const Installed = styled(InstalledUnstyled)(({ theme }) => ({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  // Hack to prevent 'Filter applications' input from shrinking
+  // TODO: Fix this in AppList design system component
+  '& > :first-child > :first-child': {
+    flexShrink: 0,
+  },
 }))
 
 const POLL_INTERVAL = 5000

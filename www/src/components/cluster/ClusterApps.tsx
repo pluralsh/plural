@@ -4,7 +4,6 @@ import Fuse from 'fuse.js'
 import { Input, MagnifyingGlassIcon } from '@pluralsh/design-system'
 
 import ListCard from '../utils/ListCard'
-import { MARKETPLACE_QUERY } from '../marketplace/queries'
 import usePaginatedQuery from '../../hooks/usePaginatedQuery'
 import LoadingIndicator from '../utils/LoadingIndicator'
 import { EmptyListMessage } from '../overview/clusters/misc'
@@ -13,6 +12,7 @@ import { Cluster } from '../../generated/graphql'
 import { ensureURLValidity } from '../../utils/url'
 
 import { ClusterApp } from './ClusterApp'
+import { REPOSITORIES_Q } from './queries'
 
 const searchOptions = {
   keys: ['name'],
@@ -25,17 +25,15 @@ export function ClusterApps({
   cluster: { consoleUrl },
 }: ClusterAppsProps): ReactElement {
   const [search, setSearch] = useState('')
-  const [repos, loading, hasMore, loadMore] = usePaginatedQuery(MARKETPLACE_QUERY,
-    {},
+  const [apps, loading, hasMore, loadMore] = usePaginatedQuery(REPOSITORIES_Q,
+    { variables: { installed: true } },
     data => data.repositories)
 
-  const apps = useMemo(() => repos.filter(({ installation }) => !isEmpty(installation)),
-    [repos])
   const fuse = useMemo(() => new Fuse(apps, searchOptions), [apps])
   const filteredApps = useMemo(() => (search ? fuse.search(search).map(({ item }) => item) : apps),
     [apps, search, fuse])
 
-  if (isEmpty(repos) && loading) return <LoadingIndicator />
+  if (isEmpty(apps) && loading) return <LoadingIndicator />
 
   return (
     <ListCard

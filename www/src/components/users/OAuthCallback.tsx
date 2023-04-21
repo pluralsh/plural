@@ -6,7 +6,6 @@ import { Box } from 'grommet'
 
 import { setToken } from '../../helpers/authentication'
 import { host } from '../../helpers/hostname'
-import { OnboardingStatus } from '../profile/types'
 import { GqlError } from '../utils/Alert'
 import LoadingIndicator from '../utils/LoadingIndicator'
 

@@ -109,7 +109,7 @@ export default function ClustersHelpSection(): ReactElement {
             <Button
               secondary
               width="max-content"
-              onClick={() => navigate('/marketplace')}
+              onClick={() => navigate('/shell')}
             >
               Get started
             </Button>

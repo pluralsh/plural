@@ -35,7 +35,7 @@ export function OAuthCallback() {
         handleOauthChallenge(client, challenge)
       }
       else {
-        window.location.href = (oauthCallback.onboarding === OnboardingStatus.NEW) ? '/shell' : '/'
+        window.location.href = '/'
       }
     },
   })

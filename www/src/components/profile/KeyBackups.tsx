@@ -276,11 +276,7 @@ export function KeyBackups() {
   if (!keyBackups) return <LoadingIndicator />
 
   return (
-    <Flex
-      direction="column"
-      maxHeight="100%"
-      overflow="hidden"
-    >
+    <Div marginBottom="large">
       <PageTitle
         heading={(
           <>
@@ -325,6 +321,6 @@ export function KeyBackups() {
           <EmptyState message="You do not have any encryption key backups yet." />
         )}
       </Flex>
-    </Flex>
+    </Div>
   )
 }

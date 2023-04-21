@@ -7,7 +7,7 @@ import {
   PageTitle,
   Tooltip,
 } from '@pluralsh/design-system'
-import { Span } from 'honorable'
+import { Div, Span } from 'honorable'
 
 import { updateCache } from '../../utils/graphql'
 import { Confirm } from '../utils/Confirm'
@@ -63,7 +63,7 @@ export function EabCredentials() {
   if (!data) return <LoadingIndicator />
 
   return (
-    <Box fill>
+    <Div marginBottom="large">
       <PageTitle
         heading="EAB credentials"
         justifyContent="flex-start"
@@ -101,6 +101,6 @@ export function EabCredentials() {
             </Table>
           ) : (<Span>You do not have any EAB credentials keys yet.</Span>)}
       </Box>
-    </Box>
+    </Div>
   )
 }

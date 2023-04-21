@@ -164,9 +164,9 @@ export function Security() {
   const [pass, setPass] = useState(false)
 
   return (
-    <Box fill>
+    <Div paddingBottom="large">
       <PageTitle heading="Security" />
-      <ContentCard overflowY="auto">
+      <ContentCard overflowY={undefined}>
         <Box
           gap="medium"
           fill
@@ -191,6 +191,6 @@ export function Security() {
           </Section>
         </Box>
       </ContentCard>
-    </Box>
+    </Div>
   )
 }

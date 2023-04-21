@@ -9,6 +9,8 @@ import { Outlet, useLocation } from 'react-router-dom'
 
 import { useContext, useRef } from 'react'
 
+import { Flex } from 'honorable'
+
 import { LinkTabWrap } from '../utils/Tabs'
 
 import { ResponsiveLayoutContentContainer } from '../utils/layout/ResponsiveLayoutContentContainer'
@@ -40,8 +42,11 @@ export function MyProfile() {
   const url = me.avatar || undefined
 
   return (
-    <ResponsiveLayoutPage>
-      <ResponsiveLayoutSidenavContainer>
+    <ResponsiveLayoutPage padding={0}>
+      <ResponsiveLayoutSidenavContainer
+        marginLeft="large"
+        marginTop="large"
+      >
         <SideNavOffset>
           <PageCard
             heading={me.name}
@@ -71,14 +76,20 @@ export function MyProfile() {
           </TabList>
         </SideNavOffset>
       </ResponsiveLayoutSidenavContainer>
-      <ResponsiveLayoutSpacer />
-      <TabPanel
-        as={<ResponsiveLayoutContentContainer />}
-        stateRef={tabStateRef}
+      <Flex
+        grow={1}
+        overflowY="auto"
+        padding="large"
       >
-        <Outlet />
-      </TabPanel>
-      <ResponsiveLayoutSpacer />
+        <ResponsiveLayoutSpacer />
+        <TabPanel
+          as={<ResponsiveLayoutContentContainer overflow="visible" />}
+          stateRef={tabStateRef}
+        >
+          <Outlet />
+        </TabPanel>
+        <ResponsiveLayoutSpacer />
+      </Flex>
     </ResponsiveLayoutPage>
   )
 }

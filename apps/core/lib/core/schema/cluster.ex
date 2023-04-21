@@ -44,6 +44,11 @@ defmodule Core.Schema.Cluster do
 
   def for_user(query \\ __MODULE__, user)
 
+  def for_user(query, %User{id: uid, account: %{root_user_id: uid}, account_id: aid} = user),
+    do: for_account(query, aid)
+
+  def for_user(query, %User{roles: %{admin: true}, account_id: aid}), do: for_account(query, aid)
+
   def for_user(query, %User{id: user_id, account_id: account_id} = user) do
     accessible = User.accessible(user)
     from(c in query,
@@ -55,6 +60,10 @@ defmodule Core.Schema.Cluster do
 
   def for_user(query, user_id) when is_binary(user_id) do
     from(c in query, where: c.owner_id == ^user_id)
+  end
+
+  def for_account(query, account_id) do
+    from(c in query, where: c.account_id == ^account_id)
   end
 
   def ordered(query \\ __MODULE__, order \\ [asc: :name]) do
@@ -69,7 +78,7 @@ defmodule Core.Schema.Cluster do
     |> unique_constraint(:owner_id)
     |> foreign_key_constraint(:owner_id)
     |> foreign_key_constraint(:account_id)
-    |> unique_constraint(:name, name: index_name(:clusters, [:account_id, :provider, :name]))
+    |> unique_constraint(:name, name: index_name(:clusters, [:owner_id, :provider, :name]))
     |> validate_required([:name, :provider, :owner_id, :account_id])
   end
 end

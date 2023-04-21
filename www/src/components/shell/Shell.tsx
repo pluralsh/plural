@@ -134,7 +134,7 @@ function ImpersonatedShell() {
   const [params, setSearchParams] = useSearchParams()
   const clusterId = params.get('cluster')
   const [cluster, setCluster] = useState<Cluster | undefined>(!isEmpty(clusters)
-    ? getCluster(clusterId, clusters) || clusters[0]
+    ? getCluster(clusterId, clusters)
     : undefined)
 
   useEffect(() => {
@@ -153,7 +153,7 @@ function ImpersonatedShell() {
   return (
     <ImpersonateServiceAccount
       id={cluster?.owner?.id}
-      skip={!cluster?.owner?.serviceAccount}
+      skip={!clusterId || !cluster?.owner?.serviceAccount}
     >
       <Shell />
     </ImpersonateServiceAccount>

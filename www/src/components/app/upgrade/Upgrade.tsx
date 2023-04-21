@@ -43,7 +43,6 @@ export function Upgrade() {
         display="flex"
         flexDirection="column"
         padding="xlarge"
-        overflowY="auto"
       >
         <P
           body1

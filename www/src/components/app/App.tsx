@@ -74,24 +74,33 @@ function AppInternal() {
 
   return (
     <AppContextProvider value={data.repository}>
-      <ResponsiveLayoutPage>
-        <ResponsiveLayoutSidenavContainer>
+      <ResponsiveLayoutPage padding={0}>
+        <ResponsiveLayoutSidenavContainer
+          marginLeft="large"
+          marginTop="large"
+        >
           <AppSidenav tabStateRef={tabStateRef} />
         </ResponsiveLayoutSidenavContainer>
-        <ResponsiveLayoutSpacer />
-        <TabPanel
-          as={<ResponsiveLayoutContentContainer overflow="visible" />}
-          stateRef={tabStateRef}
+        <Flex
+          grow={1}
+          overflowY="auto"
+          padding="large"
         >
-          <Outlet />
-        </TabPanel>
-        <ResponsiveLayoutSidecarContainer
-          display-desktop-down={undefined}
-          display-desktopSmall-down="none"
-        >
-          <AppSidecar />
-        </ResponsiveLayoutSidecarContainer>
-        <ResponsiveLayoutSpacer />
+          <ResponsiveLayoutSpacer />
+          <TabPanel
+            as={<ResponsiveLayoutContentContainer overflow="visible" />}
+            stateRef={tabStateRef}
+          >
+            <Outlet />
+          </TabPanel>
+          <ResponsiveLayoutSidecarContainer
+            display-desktop-down={undefined}
+            display-desktopSmall-down="none"
+          >
+            <AppSidecar />
+          </ResponsiveLayoutSidecarContainer>
+          <ResponsiveLayoutSpacer />
+        </Flex>
       </ResponsiveLayoutPage>
     </AppContextProvider>
   )

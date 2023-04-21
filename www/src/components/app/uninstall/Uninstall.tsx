@@ -40,7 +40,6 @@ export function Uninstall() {
         display="flex"
         flexDirection="column"
         padding="xlarge"
-        overflowY="auto"
       >
         <P
           body1

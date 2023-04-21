@@ -154,14 +154,12 @@ export function ClusterPicker({
   )
 }
 
-export function CloudShellClusterPicker({
-  filter,
-  ...props
-}: ComponentProps<typeof ClusterPicker>) {
+const filterCloudShellClusters = cluster => !!cluster?.owner?.hasShell
+
+export function CloudShellClusterPicker({ ...props }: Omit<ComponentProps<typeof ClusterPicker>, 'filter'>) {
   return (
     <ClusterPicker
-      filter={cluster => !!cluster?.owner?.hasShell
-        && (typeof filter !== 'function' || filter(cluster))}
+      filter={filterCloudShellClusters}
       {...props}
     />
   )

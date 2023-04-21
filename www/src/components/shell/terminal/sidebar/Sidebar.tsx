@@ -21,9 +21,11 @@ import { Flex } from 'honorable'
 
 import { Cluster } from '../../../../generated/graphql'
 import ClustersContext from '../../../../contexts/ClustersContext'
-import { ClusterPicker } from '../../../utils/ClusterPicker'
+import { CloudShellClusterPicker } from '../../../utils/ClusterPicker'
 
 import { State, TerminalContext } from '../context/terminal'
+
+import { useCurrentUser } from '../../../../contexts/CurrentUserContext'
 
 import Installer from './installer/Installer'
 import { Installed } from './installed/Installed'
@@ -106,18 +108,28 @@ const Sidebar = styled(SidebarUnstyled)(({ theme }) => ({
 
 function useSelectCluster() {
   const [params, setSearchParams] = useSearchParams()
+  const { id: userId } = useCurrentUser()
+
   const { clusters } = useContext(ClustersContext)
   const clusterId = params.get('cluster')
 
-  const currentCluster = useMemo(() => (clusterId ? clusters.find(cl => cl.id === clusterId) : undefined), [clusterId, clusters])
+  const currentCluster = useMemo(() => {
+    let cluster = (clusterId ? clusters.find(cl => cl.id === clusterId) : undefined)
 
-  if (!currentCluster && clusterId) {
-    setSearchParams(sp => {
-      sp.delete('cluster')
+    if (!cluster && clusterId) {
+      setSearchParams(sp => {
+        sp.delete('cluster')
 
-      return sp
-    })
-  }
+        return sp
+      })
+    }
+    if (!cluster) {
+      cluster = clusters.find(cl => cl?.owner?.id === userId)
+    }
+
+    return cluster
+  }, [clusterId, clusters, setSearchParams, userId])
+
   const setCluster = useCallback((cluster?: Cluster) => {
     if (clusters.some(cl => cl.id === cluster?.id)) {
       setSearchParams(sp => {
@@ -143,12 +155,12 @@ function useSelectCluster() {
 function ClusterSelect() {
   const { cluster, setCluster, clusters } = useSelectCluster()
 
-  if (!clusters || clusters.length < 2) {
+  if (!cluster || !clusters || clusters.length < 2) {
     return null
   }
 
   return (
-    <ClusterPicker
+    <CloudShellClusterPicker
       cluster={cluster}
       setCluster={p => setCluster(p)}
       size="small"

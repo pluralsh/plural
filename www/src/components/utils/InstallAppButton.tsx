@@ -40,7 +40,7 @@ import {
   providerToLongName,
   providerToShortName,
 } from './recipeHelpers'
-import { ClusterPicker } from './ClusterPicker'
+import { CloudShellClusterPicker } from './ClusterPicker'
 
 function CliCommand({
   recipe,
@@ -311,8 +311,7 @@ function InstallModal({
             >
               Select a cluster for installation
             </H2>
-
-            <ClusterPicker
+            <CloudShellClusterPicker
               cluster={cluster}
               setCluster={setCluster}
               size="small"

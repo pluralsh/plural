@@ -7,6 +7,7 @@ import {
   WrapWithIf,
 } from '@pluralsh/design-system'
 import {
+  ComponentProps,
   Dispatch,
   useContext,
   useEffect,
@@ -150,5 +151,18 @@ export function ClusterPicker({
         ))}
       </Select>
     </WrapWithIf>
+  )
+}
+
+export function CloudShellClusterPicker({
+  filter,
+  ...props
+}: ComponentProps<typeof ClusterPicker>) {
+  return (
+    <ClusterPicker
+      filter={cluster => !!cluster?.owner?.hasShell
+        && (typeof filter !== 'function' || filter(cluster))}
+      {...props}
+    />
   )
 }

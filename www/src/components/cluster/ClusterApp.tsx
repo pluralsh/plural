@@ -33,7 +33,7 @@ export function ClusterApp({
     manageOnConsole: {
       icon: <ArrowTopRightIcon />,
       label: 'Manage on Console',
-      onSelect: () => navigate(`${consoleUrl}/apps/${name}`),
+      onSelect: () => window.open(`${consoleUrl}/apps/${name}`, '_blank'),
     },
     appSettings: {
       icon: <GearTrainIcon />,

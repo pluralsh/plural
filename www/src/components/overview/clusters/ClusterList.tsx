@@ -11,6 +11,8 @@ import { Cluster } from '../../../generated/graphql'
 import { ensureURLValidity } from '../../../utils/url'
 import ClustersContext from '../../../contexts/ClustersContext'
 
+import CurrentUserContext from '../../../contexts/CurrentUserContext'
+
 import { ClusterListElement } from './types'
 import ClusterListEmptyState from './ClusterListEmptyState'
 
@@ -20,6 +22,7 @@ type ClustersListProps = Omit<ComponentProps<typeof Table>, 'data'> & {
   }
 
 export const ClusterList = memo(({ columns, ...props }: ClustersListProps) => {
+  const me = useContext(CurrentUserContext)
   const { clusters } = useContext(ClustersContext)
 
   const tableData: ClusterListElement[] = useMemo(() => (clusters || [])
@@ -41,6 +44,7 @@ export const ClusterList = memo(({ columns, ...props }: ClustersListProps) => {
         gitUrl: cluster.gitUrl,
         consoleUrl: ensureURLValidity(cluster.consoleUrl),
         pingedAt: cluster.pingedAt,
+        accessible: cluster.owner?.id === me.id || cluster.owner?.serviceAccount,
         delivered,
         hasDependency: !!cluster.dependency,
         owner: {

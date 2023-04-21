@@ -153,7 +153,7 @@ export const ColActions = columnHelper.accessor(row => row.consoleUrl, {
   id: 'actions',
   enableGlobalFilter: false,
   enableSorting: false,
-  cell: ({ row: { original: { id, consoleUrl } } }) => (
+  cell: ({ row: { original: { id, consoleUrl, accessible } } }) => (
     <ActionsWrap>
       {consoleUrl && (
         <Button
@@ -167,17 +167,19 @@ export const ColActions = columnHelper.accessor(row => row.consoleUrl, {
           Launch Console
         </Button>
       )}
-      <IconFrame
-        clickable
-        size="medium"
-        icon={<CaretRightIcon />}
-        // @ts-expect-error
-        as={Link}
-        to={`/clusters/${id}`}
-        textValue="Go to cluster details"
-        tooltip
-        type="tertiary"
-      />
+      {accessible && (
+        <IconFrame
+          clickable
+          size="medium"
+          icon={<CaretRightIcon />}
+          // @ts-expect-error
+          as={Link}
+          to={`/clusters/${id}`}
+          textValue="Go to cluster details"
+          tooltip
+          type="tertiary"
+        />
+      )}
     </ActionsWrap>
   ),
   header: '',

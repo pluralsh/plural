@@ -8,6 +8,7 @@ export type ClusterListElement = {
   pingedAt?: Date | null
   gitUrl?: string | null
   consoleUrl?: string | null
+  accessible?: boolean | null
   delivered: boolean
   hasDependency: boolean
   owner?: {

@@ -48,6 +48,9 @@ export function ClusterApp({
       align="center"
       padding="small"
       borderBottom={last ? undefined : '1px solid border'}
+      cursor="pointer"
+      onClick={() => navigate(`/apps/${clusterId}/${name}`)}
+      _hover={{ backgroundColor: 'fill-one-hover' }}
     >
       <IconFrame
         icon={(

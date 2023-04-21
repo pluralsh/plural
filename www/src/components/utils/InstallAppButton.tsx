@@ -313,7 +313,7 @@ function InstallModal({
             </H2>
             <CloudShellClusterPicker
               clusterId={clusterId}
-              onSelectionChange={setClusterId}
+              onChange={setClusterId}
               size="small"
             />
           </Flex>

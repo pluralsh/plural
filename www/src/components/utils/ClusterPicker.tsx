@@ -27,6 +27,8 @@ import {
 } from '../../generated/graphql'
 import ClusterHealth from '../overview/clusters/ClusterHealth'
 
+import { useCurrentUser } from '../../contexts/CurrentUserContext'
+
 import { ProviderIcon } from './ProviderIcon'
 
 type ClusterPickerReadyChipProps = {upgradeInfo?: Maybe<UpgradeInfo>[] | null}
@@ -230,12 +232,26 @@ type CloudShellClusterPickerProps =
 
 export function CloudShellClusterPicker({ onChange, ...props }:CloudShellClusterPickerProps) {
   const { clusters: raw } = useContext(ClustersContext)
+  const { id: userId } = useCurrentUser()
 
   const clusters = useMemo(() => {
-    const clList = (raw ? raw.filter(clusterHasCloudShell) : [] as Cluster[])
+    const userHasCluster = raw.some(cl => cl?.owner?.id === userId)
 
-    return [...clList, { id: NEW_CLUSTER_ID, name: 'New cluster', icon: <PlusIcon size={16} /> }]
-  }, [raw])
+    const clList = raw ? raw.filter(clusterHasCloudShell) : ([] as Cluster[])
+
+    return [
+      ...clList,
+      ...(userHasCluster
+        ? []
+        : [
+          {
+            id: NEW_CLUSTER_ID,
+            name: 'New cluster',
+            icon: <PlusIcon size={16} />,
+          },
+        ]),
+    ]
+  }, [raw, userId])
 
   return (
     <ClusterPickerBase

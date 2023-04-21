@@ -160,7 +160,7 @@ function ClusterSelect() {
   return (
     <CloudShellClusterPicker
       clusterId={cluster?.id || NEW_CLUSTER_ID}
-      onSelectionChange={id => (id === NEW_CLUSTER_ID ? setCluster(undefined) : setCluster(id))}
+      onChange={id => (id === NEW_CLUSTER_ID ? setCluster(undefined) : setCluster(id))}
       size="small"
       title={(
         <Flex

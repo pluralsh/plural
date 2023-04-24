@@ -86,8 +86,8 @@ export const ColCloudShell = columnHelper.accessor(row => row.owner?.hasShell, {
   id: 'cloudshell',
   enableGlobalFilter: true,
   enableSorting: true,
-  cell: ({ row: { original: { owner, id } } }) => (owner?.hasShell
-    ? (
+  cell: ({ row: { original: { owner, id, accessible } } }) => (owner?.hasShell
+    ? (accessible ? (
       <IconFrame
         clickable
         icon={<TerminalIcon />}
@@ -98,8 +98,7 @@ export const ColCloudShell = columnHelper.accessor(row => row.owner?.hasShell, {
         tooltip
         type="floating"
       />
-    )
-    : (
+    ) : (
       <IconFrame
         size="medium"
         icon={<TerminalIcon color="icon-disabled" />}
@@ -107,7 +106,7 @@ export const ColCloudShell = columnHelper.accessor(row => row.owner?.hasShell, {
         tooltip
         type="floating"
       />
-    )),
+    )) : null),
   header: 'Cloudshell',
 })
 

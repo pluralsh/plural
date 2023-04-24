@@ -103,7 +103,7 @@ export const ColCloudShell = columnHelper.accessor(row => row.owner?.hasShell, {
       <IconFrame
         size="medium"
         icon={<TerminalIcon color="icon-disabled" />}
-        textValue="No permissions to view"
+        textValue="You aren't an administrator of this cluster"
         tooltip
         type="floating"
       />
@@ -191,7 +191,7 @@ export const ColActions = columnHelper.accessor(row => row.consoleUrl, {
         <IconFrame
           size="medium"
           icon={<CaretRightIcon color="icon-disabled" />}
-          textValue="No permissions to view"
+          textValue="You aren't an administrator of this cluster"
           tooltip
           type="tertiary"
         />

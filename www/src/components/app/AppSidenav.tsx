@@ -13,14 +13,11 @@ import {
   removeTrailingSlashes,
 } from '@pluralsh/design-system'
 import capitalize from 'lodash/capitalize'
-
 import isEmpty from 'lodash/isEmpty'
-
 import { useTheme } from 'styled-components'
 
 import { SideNavOffset } from '../utils/layout/SideNavOffset'
 import { useAppContext } from '../../contexts/AppContext'
-
 import { type Repository } from '../../generated/graphql'
 
 import { type getDocsData } from './App'
@@ -85,14 +82,9 @@ export default function AppSidenav({
   }) => {
     const currentPath
         = removeTrailingSlashes(getBarePathFromPath(pathname)) || ''
-
     const fullPath = `${pathPrefix}/${removeTrailingSlashes(path) || ''}`
     const hashlessPath = fullPath.split('#')[0]
-
-    console.log('fullPath', fullPath)
-
     const isInCurrentPath = currentPath.startsWith(hashlessPath)
-
     const docPageRootHash = props?.headings?.[0]?.id || ''
     const active
         = type === 'docPage'
@@ -102,8 +94,6 @@ export default function AppSidenav({
           : type === 'docPageHash'
             ? isInCurrentPath && docPageContext.selectedHash === props.id
             : isInCurrentPath
-
-    console.log('path', path)
 
     return (
       <TreeNavEntry
@@ -120,7 +110,6 @@ export default function AppSidenav({
           : type === 'docPage'
             ? {
               onClick: () => {
-                console.log('docPageRootHash', docPageRootHash)
                 docPageContext.scrollToHash(docPageRootHash)
               },
             }

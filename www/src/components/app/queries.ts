@@ -1,12 +1,15 @@
 import { gql } from '@apollo/client'
 
-import { InstallationFragment, RepoFragment } from '../../models/repo'
+import { FileContentFragment, InstallationFragment, RepoFragment } from '../../models/repo'
 import { OIDCProvider } from '../../models/oauth'
 
 export const REPO_Q = gql`
   query Repo($name: String!) {
     repository(name: $name) {
       ...RepoFragment
+      docs {
+        ...FileContentFragment
+      }
       upgradeChannels
       installation {
         ...InstallationFragment
@@ -14,8 +17,8 @@ export const REPO_Q = gql`
       }
     }
   }
-
   ${RepoFragment}
+  ${FileContentFragment}
   ${InstallationFragment}
   ${OIDCProvider}
 `

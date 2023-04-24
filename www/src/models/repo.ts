@@ -22,9 +22,6 @@ export const RepoFragment = gql`
     description
     releaseStatus
     documentation
-    docs {
-      ...FileContentFragment
-    }
     icon
     darkIcon
     private

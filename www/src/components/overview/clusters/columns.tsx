@@ -86,8 +86,8 @@ export const ColCloudShell = columnHelper.accessor(row => row.owner?.hasShell, {
   id: 'cloudshell',
   enableGlobalFilter: true,
   enableSorting: true,
-  cell: ({ row: { original: { owner, id } } }) => (owner?.hasShell
-    ? (
+  cell: ({ row: { original: { owner, id, accessible } } }) => (owner?.hasShell
+    ? (accessible ? (
       <IconFrame
         clickable
         icon={<TerminalIcon />}
@@ -98,8 +98,15 @@ export const ColCloudShell = columnHelper.accessor(row => row.owner?.hasShell, {
         tooltip
         type="floating"
       />
-    )
-    : null),
+    ) : (
+      <IconFrame
+        size="medium"
+        icon={<TerminalIcon color="icon-disabled" />}
+        textValue="You aren't an administrator of this cluster"
+        tooltip
+        type="floating"
+      />
+    )) : null),
   header: 'Cloudshell',
 })
 
@@ -167,7 +174,7 @@ export const ColActions = columnHelper.accessor(row => row.consoleUrl, {
           Launch Console
         </Button>
       )}
-      {accessible && (
+      {accessible ? (
         <IconFrame
           clickable
           size="medium"
@@ -176,6 +183,14 @@ export const ColActions = columnHelper.accessor(row => row.consoleUrl, {
           as={Link}
           to={`/clusters/${id}`}
           textValue="Go to cluster details"
+          tooltip
+          type="tertiary"
+        />
+      ) : (
+        <IconFrame
+          size="medium"
+          icon={<CaretRightIcon color="icon-disabled" />}
+          textValue="You aren't an administrator of this cluster"
           tooltip
           type="tertiary"
         />

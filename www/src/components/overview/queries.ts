@@ -38,7 +38,7 @@ query {
           } 
         }
         upgradeInfo {
-          installation { repository { id } }
+          installation { repository { id name icon darkIcon } }
           count
         }
         dependency {

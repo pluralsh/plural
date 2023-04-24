@@ -1,6 +1,6 @@
-import { useContext, useMemo, useRef } from 'react'
+import { useContext, useMemo } from 'react'
 import { Link, Outlet, useParams } from 'react-router-dom'
-import { Button, TabPanel, useSetBreadcrumbs } from '@pluralsh/design-system'
+import { Button, useSetBreadcrumbs } from '@pluralsh/design-system'
 import { Flex, P } from 'honorable'
 import { useQuery } from '@apollo/client'
 import { collectHeadings, getMdContent } from '@pluralsh/design-system/dist/markdoc'

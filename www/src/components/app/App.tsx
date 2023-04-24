@@ -157,7 +157,6 @@ function AppInternal() {
             role="main"
             overflow="visible"
           >
-
             <Outlet context={{ docs }} />
           </ResponsiveLayoutContentContainer>
           <ResponsiveLayoutSidecarContainer

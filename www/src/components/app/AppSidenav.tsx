@@ -9,6 +9,7 @@ import {
 import {
   TreeNav,
   TreeNavEntry,
+  WrapWithIf,
   getBarePathFromPath,
   removeTrailingSlashes,
 } from '@pluralsh/design-system'
@@ -68,7 +69,6 @@ export default function AppSidenav({
   const theme = useTheme()
   const { clusterId, appName } = useParams()
   const app = useAppContext()
-  const docPageContext = useDocPageContext()
 
   const { pathname } = useLocation()
 
@@ -76,49 +76,6 @@ export default function AppSidenav({
 
   const filteredDirectory = useMemo(() => getDirectory({ app, docs }),
     [app, docs])
-
-  const renderDirectory = directory => directory.map(({
-    label, path, subpaths, type, ...props
-  }) => {
-    const currentPath
-        = removeTrailingSlashes(getBarePathFromPath(pathname)) || ''
-    const fullPath = `${pathPrefix}/${removeTrailingSlashes(path) || ''}`
-    const hashlessPath = fullPath.split('#')[0]
-    const isInCurrentPath = currentPath.startsWith(hashlessPath)
-    const docPageRootHash = props?.headings?.[0]?.id || ''
-    const active
-        = type === 'docPage'
-          ? isInCurrentPath
-            && (docPageContext.selectedHash === docPageRootHash
-              || !docPageContext.selectedHash)
-          : type === 'docPageHash'
-            ? isInCurrentPath && docPageContext.selectedHash === props.id
-            : isInCurrentPath
-
-    return (
-      <TreeNavEntry
-        key={fullPath}
-        href={path === 'docs' ? undefined : fullPath}
-        label={label}
-        active={active}
-        {...(type === 'docPageHash' && props.id
-          ? {
-            onClick: () => {
-              docPageContext.scrollToHash(props.id)
-            },
-          }
-          : type === 'docPage'
-            ? {
-              onClick: () => {
-                docPageContext.scrollToHash(docPageRootHash)
-              },
-            }
-            : {})}
-      >
-        {subpaths ? renderDirectory(subpaths) : undefined}
-      </TreeNavEntry>
-    )
-  })
 
   return (
     <Flex
@@ -148,16 +105,90 @@ export default function AppSidenav({
           <P subtitle1>{capitalize(app.name)}</P>
         </Div>
       </Flex>
-      <SideNavOffset
+      <Div
+        height="100%"
+        overflowY="auto"
         marginTop="medium"
+        paddingBottom={theme.spacing.medium}
       >
-        <Div
-          overflowY="auto"
-          paddingBottom={theme.spacing.medium}
-        >
-          <TreeNav>{renderDirectory(filteredDirectory)}</TreeNav>
-        </Div>
-      </SideNavOffset>
+        <SideNavEntries
+          directory={filteredDirectory}
+          pathname={pathname}
+          pathPrefix={pathPrefix}
+        />
+      </Div>
     </Flex>
   )
 }
+
+function SideNavEntries({
+  directory,
+  pathname,
+  pathPrefix,
+  root = true,
+}: {
+  directory: any[]
+  pathname: string
+  pathPrefix: string
+  root?: boolean
+}) {
+  const docPageContext = useDocPageContext()
+
+  return (
+    <WrapWithIf
+      condition={root}
+      wrapper={<TreeNav />}
+    >
+      {directory.map(({
+        label, path, subpaths, type, ...props
+      }) => {
+        const currentPath
+          = removeTrailingSlashes(getBarePathFromPath(pathname)) || ''
+        const fullPath = `${pathPrefix}/${removeTrailingSlashes(path) || ''}`
+        const hashlessPath = fullPath.split('#')[0]
+        const isInCurrentPath = currentPath.startsWith(hashlessPath)
+        const docPageRootHash = props?.headings?.[0]?.id || ''
+        const active
+          = type === 'docPage'
+            ? isInCurrentPath
+              && (docPageContext.selectedHash === docPageRootHash
+                || !docPageContext.selectedHash)
+            : type === 'docPageHash'
+              ? isInCurrentPath && docPageContext.selectedHash === props.id
+              : isInCurrentPath
+
+        return (
+          <TreeNavEntry
+            key={fullPath}
+            href={path === 'docs' ? undefined : fullPath}
+            label={label}
+            active={active}
+            {...(type === 'docPageHash' && props.id
+              ? {
+                onClick: () => {
+                  docPageContext.scrollToHash(props.id)
+                },
+              }
+              : type === 'docPage'
+                ? {
+                  onClick: () => {
+                    docPageContext.scrollToHash(docPageRootHash)
+                  },
+                }
+                : {})}
+          >
+            {subpaths ? (
+              <SideNavEntries
+                directory={subpaths}
+                pathname={pathname}
+                pathPrefix={pathPrefix}
+                root={false}
+              />
+            ) : null}
+          </TreeNavEntry>
+        )
+      })}
+    </WrapWithIf>
+  )
+}
+

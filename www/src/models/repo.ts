@@ -8,6 +8,12 @@ export const CategoryFragment = gql`
     count
   }
 `
+export const FileContentFragment = gql`
+  fragment FileContentFragment on FileContent {
+    content
+    path
+  }
+`
 
 export const RepoFragment = gql`
   fragment RepoFragment on Repository {
@@ -16,6 +22,9 @@ export const RepoFragment = gql`
     description
     releaseStatus
     documentation
+    docs {
+      ...FileContentFragment
+    }
     icon
     darkIcon
     private
@@ -26,6 +35,7 @@ export const RepoFragment = gql`
     publisher { ...PublisherFragment }
   }
   ${PublisherFragment}
+  ${FileContentFragment}
 `
 
 export const StackFragment = gql`

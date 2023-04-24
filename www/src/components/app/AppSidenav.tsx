@@ -1,4 +1,9 @@
-import { MutableRefObject, useImperativeHandle, useRef } from 'react'
+import {
+  MutableRefObject,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+} from 'react'
 import { useLocation, useParams } from 'react-router-dom'
 import {
   Div,
@@ -6,45 +11,130 @@ import {
   Img,
   P,
 } from 'honorable'
-import { Tab, TabList } from '@pluralsh/design-system'
+import {
+  TreeNav,
+  TreeNavEntry,
+  getBarePathFromPath,
+  removeTrailingSlashes,
+} from '@pluralsh/design-system'
 import capitalize from 'lodash/capitalize'
 
-import { LinkTabWrap } from '../utils/Tabs'
+import isEmpty from 'lodash/isEmpty'
+
+import { useTheme } from 'styled-components'
+
 import { SideNavOffset } from '../utils/layout/SideNavOffset'
 import { useAppContext } from '../../contexts/AppContext'
 
-const DIRECTORY = [
-  { label: 'Upgrade channel', path: '/upgrade' },
-  { label: 'OpenID Connect', path: '/oidc' },
-  { label: 'Uninstall', path: '/uninstall' },
-]
+import { type Repository } from '../../generated/graphql'
+
+import { type getDocsData } from './App'
+import { useDocPageContext } from './docs/AppDocsContext'
+
+export const getDirectory = ({
+  app = null,
+  docs,
+}: {
+    app: Repository | Record<string, never> | null
+    docs: ReturnType<typeof getDocsData> | null
+}) => {
+  if (!app) {
+    return []
+  }
+
+  return [
+    {
+      label: 'Upgrade channel',
+      path: 'upgrade',
+      enabled: true,
+    },
+    {
+      label: 'OpenID Connect',
+      path: 'oidc',
+      enabled: app?.oauthSettings,
+    },
+    {
+      label: 'Uninstall',
+      path: 'uninstall',
+      enabled: true,
+    },
+    {
+      path: 'docs',
+      label: `${capitalize(app?.name)} docs`,
+      enabled: !isEmpty(docs),
+      ...(docs ? { subpaths: docs } : {}),
+    },
+  ].filter(dir => dir.enabled)
+}
 
 export default function AppSidenav({
-  tabStateRef: outerTabStateRef,
+  docs,
   ...props
 }: {
-  tabStateRef: MutableRefObject<any>
-}) {
+  docs?: ReturnType<typeof getDocsData>
+  }) {
+  const theme = useTheme()
   const { clusterId, appName } = useParams()
   const app = useAppContext()
+  const docPageContext = useDocPageContext()
 
   const { pathname } = useLocation()
-  const tabStateRef = useRef<any>()
 
-  useImperativeHandle(outerTabStateRef, () => ({ ...(tabStateRef.current || {}) }))
   const pathPrefix = `/apps/${clusterId}/${appName}`
-  const filteredDirectory = DIRECTORY.filter(({ path }) => {
-    switch (path) {
-    case '/oidc':
-      return app.oauthSettings
-    default:
-      return true
-    }
-  })
 
-  const currentTab = [...filteredDirectory]
-    .sort((a, b) => b.path.length - a.path.length)
-    .find(tab => pathname?.startsWith(`${pathPrefix}${tab.path}`))
+  const filteredDirectory = useMemo(() => getDirectory({ app, docs }),
+    [app, docs])
+
+  const renderDirectory = directory => directory.map(({
+    label, path, subpaths, type, ...props
+  }) => {
+    const currentPath
+        = removeTrailingSlashes(getBarePathFromPath(pathname)) || ''
+
+    const fullPath = `${pathPrefix}/${removeTrailingSlashes(path) || ''}`
+    const hashlessPath = fullPath.split('#')[0]
+
+    console.log('fullPath', fullPath)
+
+    const isInCurrentPath = currentPath.startsWith(hashlessPath)
+
+    const docPageRootHash = props?.headings?.[0]?.id || ''
+    const active
+        = type === 'docPage'
+          ? isInCurrentPath
+            && (docPageContext.selectedHash === docPageRootHash
+              || !docPageContext.selectedHash)
+          : type === 'docPageHash'
+            ? isInCurrentPath && docPageContext.selectedHash === props.id
+            : isInCurrentPath
+
+    console.log('path', path)
+
+    return (
+      <TreeNavEntry
+        key={fullPath}
+        href={path === 'docs' ? undefined : fullPath}
+        label={label}
+        active={active}
+        {...(type === 'docPageHash' && props.id
+          ? {
+            onClick: () => {
+              docPageContext.scrollToHash(props.id)
+            },
+          }
+          : type === 'docPage'
+            ? {
+              onClick: () => {
+                console.log('docPageRootHash', docPageRootHash)
+                docPageContext.scrollToHash(docPageRootHash)
+              },
+            }
+            : {})}
+      >
+        {subpaths ? renderDirectory(subpaths) : undefined}
+      </TreeNavEntry>
+    )
+  })
 
   return (
     <Flex
@@ -77,23 +167,12 @@ export default function AppSidenav({
       <SideNavOffset
         marginTop="medium"
       >
-        <TabList
-          stateRef={tabStateRef}
-          stateProps={{
-            orientation: 'vertical',
-            selectedKey: currentTab?.path,
-          }}
+        <Div
+          overflowY="auto"
+          paddingBottom={theme.spacing.medium}
         >
-          {filteredDirectory.map(({ label, path }) => (
-            <LinkTabWrap
-              key={path}
-              textValue={label}
-              to={`${pathPrefix}${path}`}
-            >
-              <Tab>{label}</Tab>
-            </LinkTabWrap>
-          ))}
-        </TabList>
+          <TreeNav>{renderDirectory(filteredDirectory)}</TreeNav>
+        </Div>
       </SideNavOffset>
     </Flex>
   )

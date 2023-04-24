@@ -99,7 +99,15 @@ export const ColCloudShell = columnHelper.accessor(row => row.owner?.hasShell, {
         type="floating"
       />
     )
-    : null),
+    : (
+      <IconFrame
+        size="medium"
+        icon={<TerminalIcon color="icon-disabled" />}
+        textValue="No permissions to view"
+        tooltip
+        type="floating"
+      />
+    )),
   header: 'Cloudshell',
 })
 

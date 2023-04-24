@@ -23,7 +23,26 @@ import AppSidenav from './AppSidenav'
 import { REPO_Q } from './queries'
 import { DocPageContextProvider } from './docs/AppDocsContext'
 
-export function getDocsData(docs: Repository['docs']) {
+type DocDataAtom = {
+  path: string
+  id: string
+  label: string
+}
+
+type DocDataPageHash = DocDataAtom & {
+  type: 'docPageHash'
+}
+
+type DocDataPage = DocDataAtom & {
+  type: 'docPage'
+  subpaths: (DocDataPageHash)[]
+  content: ReturnType<typeof getMdContent>,
+  headings: ReturnType<typeof collectHeadings>,
+}
+
+type DocData = DocDataPage[]
+
+export function getDocsData(docs: Repository['docs']):DocData | undefined {
   return docs?.map((doc, i) => {
     const content = getMdContent(doc?.content, config)
     const headings = collectHeadings(content)
@@ -32,7 +51,7 @@ export function getDocsData(docs: Repository['docs']) {
     const path = `docs/${id}`
 
     const subpaths = headings
-      .map(heading => {
+      .map((heading):DocDataPageHash | null => {
         if (heading.level === 3 && heading.id && heading.title) {
           return {
             path: `${path}#${heading.id}`,
@@ -44,7 +63,7 @@ export function getDocsData(docs: Repository['docs']) {
 
         return null
       })
-      .filter(heading => !!heading)
+      .filter((heading:DocDataPageHash | null):heading is DocDataPageHash => !!heading)
 
     return {
       path,

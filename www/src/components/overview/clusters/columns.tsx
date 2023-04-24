@@ -167,7 +167,7 @@ export const ColActions = columnHelper.accessor(row => row.consoleUrl, {
           Launch Console
         </Button>
       )}
-      {accessible && (
+      {accessible ? (
         <IconFrame
           clickable
           size="medium"
@@ -176,6 +176,14 @@ export const ColActions = columnHelper.accessor(row => row.consoleUrl, {
           as={Link}
           to={`/clusters/${id}`}
           textValue="Go to cluster details"
+          tooltip
+          type="tertiary"
+        />
+      ) : (
+        <IconFrame
+          size="medium"
+          icon={<CaretRightIcon color="icon-disabled" />}
+          textValue="No permissions to view"
           tooltip
           type="tertiary"
         />

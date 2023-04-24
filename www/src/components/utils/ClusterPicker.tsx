@@ -237,7 +237,9 @@ export function CloudShellClusterPicker({ onChange, ...props }:CloudShellCluster
   const clusters = useMemo(() => {
     const userHasCluster = raw.some(cl => cl?.owner?.id === userId)
 
-    const clList = raw ? raw.filter(clusterHasCloudShell) : ([] as Cluster[])
+    const clList = raw
+      ? raw.filter(clusterHasCloudShell).filter(cluster => cluster.owner?.id === userId || !!cluster.owner?.serviceAccount)
+      : ([] as Cluster[])
 
     return [
       ...clList,

@@ -3,24 +3,31 @@ import {
   ClusterIcon,
   FormField,
   ListBoxItem,
+  PlusIcon,
   Select,
   WrapWithIf,
 } from '@pluralsh/design-system'
 import {
   ComponentProps,
   Dispatch,
+  ReactNode,
   useContext,
   useEffect,
   useMemo,
 } from 'react'
 import { isEmpty } from 'lodash'
-
 import { Flex } from 'honorable'
 
 import ClustersContext from '../../contexts/ClustersContext'
-import { Cluster, Maybe, UpgradeInfo } from '../../generated/graphql'
-
+import {
+  Cluster,
+  Maybe,
+  Provider,
+  UpgradeInfo,
+} from '../../generated/graphql'
 import ClusterHealth from '../overview/clusters/ClusterHealth'
+
+import { useCurrentUser } from '../../contexts/CurrentUserContext'
 
 import { ProviderIcon } from './ProviderIcon'
 
@@ -55,11 +62,83 @@ type ClusterPickerProps = {
     disabled?: boolean
 }
 
+function findById<T extends {id: string}>(clusters: T[], id?:string | null) {
+  return clusters.find(cl => (cl?.id === id))
+}
+
 export function ClusterPicker({
-  cluster,
-  setCluster,
-  onChange,
   filter,
+  setCluster,
+  cluster,
+  onChange,
+  ...props
+}: ClusterPickerProps) {
+  const { clusters: raw } = useContext(ClustersContext)
+
+  const clusters = useMemo(() => (raw && filter ? raw.filter(filter) : raw),
+    [raw, filter])
+
+  // Update selected cluster object each time clusters will be updated.
+  useEffect(() => {
+    setCluster?.(findById(clusters, cluster?.id))
+  }, [clusters, cluster?.id]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  return (
+    <ClusterPickerBase
+      clusterId={cluster?.id}
+      onChange={id => {
+        const selection = findById(clusters, id)
+
+        setCluster?.(selection)
+        onChange?.(selection)
+      }}
+      clusters={clusters}
+      {...props}
+    />
+  )
+}
+
+type SelectBoxCluster = Pick<Cluster, 'id' | 'name'> &
+  Partial<Pick<Cluster, 'pingedAt' | 'provider' | 'upgradeInfo'>> & {icon?: ReactNode}
+
+type ClusterPickerInnerProps = {
+  clusterId?: string | null
+  clusters?: SelectBoxCluster[]
+  onChange?: (id:string) => void
+  heading?: string
+  hint?: string
+  title?: any
+  placeholder?: string
+  showUpgradeInfo?: boolean
+  showHealthStatus?: boolean
+  size?: 'small' | 'medium' | 'large'
+  disabled?: boolean
+}
+
+function ClusterProviderIcon({
+  provider,
+  icon,
+}: {
+  provider?: Provider
+  icon?: ReactNode
+  }) {
+  return icon ? (
+    // eslint-disable-next-line react/jsx-no-useless-fragment
+    <>{icon}</>
+  ) : provider ? (
+    <ProviderIcon
+      provider={provider}
+      width={16}
+    />
+  ) : (
+    <ClusterIcon />
+  )
+}
+
+function ClusterPickerBase({
+  clusterId,
+  clusters,
+  onChange,
   heading,
   hint,
   title,
@@ -68,15 +147,10 @@ export function ClusterPicker({
   showHealthStatus = false,
   size = 'medium',
   disabled = false,
-}: ClusterPickerProps) {
-  const { clusters: raw } = useContext(ClustersContext)
-
-  const clusters = useMemo(() => (raw && filter ? raw.filter(filter) : raw), [raw, filter])
-
-  // Update selected cluster object each time clusters will be updated.
-  useEffect(() => {
-    setCluster?.(clusters.find(({ id }) => id === cluster?.id))
-  }, [clusters]) // eslint-disable-line react-hooks/exhaustive-deps
+}: ClusterPickerInnerProps) {
+  clusters = clusters || []
+  const cluster = useMemo(() => clusters?.find(cl => clusterId === cl.id),
+    [clusterId, clusters])
 
   return (
     <WrapWithIf
@@ -90,28 +164,23 @@ export function ClusterPicker({
     >
       <Select
         label={placeholder}
-        selectedKey={cluster?.id}
+        selectedKey={clusterId}
         onSelectionChange={id => {
-          const selection = clusters.find(c => c.id === id)
-
-          setCluster?.(selection)
-          onChange?.(selection)
+          onChange?.(id as string)
         }}
         size={size}
         isDisabled={disabled}
         titleContent={title}
         leftContent={(
-          cluster ? (
-            <ProviderIcon
-              provider={cluster?.provider}
-              width={16}
-            />
-          ) : <ClusterIcon />
+          <ClusterProviderIcon
+            provider={cluster?.provider}
+            icon={cluster?.icon}
+          />
         )}
         rightContent={cluster && (
           <Flex gap="xsmall">
             {showUpgradeInfo && <ClusterPickerReadyChip upgradeInfo={cluster.upgradeInfo} />}
-            {showHealthStatus && (
+            {showHealthStatus && cluster.pingedAt && (
               <ClusterHealth
                 pingedAt={cluster.pingedAt}
                 size="small"
@@ -122,16 +191,16 @@ export function ClusterPicker({
         )}
       >
         {clusters.map(({
-          id, name, provider, pingedAt, upgradeInfo,
+          id, name, provider, pingedAt, upgradeInfo, icon,
         }) => (
           <ListBoxItem
             key={id}
             label={name}
             textValue={name}
             leftContent={(
-              <ProviderIcon
+              <ClusterProviderIcon
                 provider={provider}
-                width={16}
+                icon={icon}
               />
             )}
             rightContent={(
@@ -154,12 +223,40 @@ export function ClusterPicker({
   )
 }
 
-const filterCloudShellClusters = cluster => !!cluster?.owner?.hasShell
+const clusterHasCloudShell = cluster => !!cluster?.owner?.hasShell
 
-export function CloudShellClusterPicker({ ...props }: Omit<ComponentProps<typeof ClusterPicker>, 'filter'>) {
+export const NEW_CLUSTER_ID = 'newcluster'
+
+type CloudShellClusterPickerProps =
+  Omit<ComponentProps<typeof ClusterPickerBase>, 'clusters' >
+
+export function CloudShellClusterPicker({ onChange, ...props }:CloudShellClusterPickerProps) {
+  const { clusters: raw } = useContext(ClustersContext)
+  const { id: userId } = useCurrentUser()
+
+  const clusters = useMemo(() => {
+    const userHasCluster = raw.some(cl => cl?.owner?.id === userId)
+
+    const clList = raw ? raw.filter(clusterHasCloudShell) : ([] as Cluster[])
+
+    return [
+      ...clList,
+      ...(userHasCluster
+        ? []
+        : [
+          {
+            id: NEW_CLUSTER_ID,
+            name: 'New cluster',
+            icon: <PlusIcon size={16} />,
+          },
+        ]),
+    ]
+  }, [raw, userId])
+
   return (
-    <ClusterPicker
-      filter={filterCloudShellClusters}
+    <ClusterPickerBase
+      onChange={onChange}
+      clusters={clusters}
       {...props}
     />
   )

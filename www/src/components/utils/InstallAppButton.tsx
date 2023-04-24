@@ -40,7 +40,7 @@ import {
   providerToLongName,
   providerToShortName,
 } from './recipeHelpers'
-import { CloudShellClusterPicker } from './ClusterPicker'
+import { CloudShellClusterPicker, NEW_CLUSTER_ID } from './ClusterPicker'
 
 function CliCommand({
   recipe,
@@ -271,7 +271,7 @@ function InstallModal({
       ? recipes?.[0]
       : recipes?.find(recipe => recipe.provider === provider)
 
-  const [cluster, setCluster] = useState<Cluster | undefined>(!isEmpty(clusters) ? clusters[0] : undefined)
+  const [clusterId, setClusterId] = useState<string | undefined>(!isEmpty(clusters) ? clusters[0].id : undefined)
 
   const showClusters = !isEmpty(clusters)
   const header = showClusters
@@ -312,8 +312,8 @@ function InstallModal({
               Select a cluster for installation
             </H2>
             <CloudShellClusterPicker
-              cluster={cluster}
-              setCluster={setCluster}
+              clusterId={clusterId}
+              onChange={setClusterId}
               size="small"
             />
           </Flex>
@@ -321,7 +321,7 @@ function InstallModal({
             primary
             width="100%"
             as={Link}
-            to={`/shell?cluster=${cluster?.id}&install=${
+            to={`/shell?${clusterId !== NEW_CLUSTER_ID ? `cluster=${clusterId}` : ''} &install=${
               apps && !isEmpty(apps) ? `${apps.join(',')}` : name
             }`}
           >

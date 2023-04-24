@@ -172,8 +172,8 @@ export function Cluster() {
             skip={!cluster.owner?.serviceAccount}
           >
             <>
-              <ClusterUpgrades cluster={cluster} />
               <ClusterApps cluster={cluster} />
+              <ClusterUpgrades cluster={cluster} />
             </>
           </ImpersonateServiceAccount>
         </Flex>

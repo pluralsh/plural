@@ -22,6 +22,7 @@ import { CLUSTERS_ROOT_CRUMB } from '../overview/Overview'
 import { ensureURLValidity } from '../../utils/url'
 import { ClusterPicker } from '../utils/ClusterPicker'
 import { ResponsiveLayoutPage } from '../utils/layout/ResponsiveLayoutPage'
+import CurrentUserContext from '../../contexts/CurrentUserContext'
 
 import { ClusterDependencyModal } from './ClusterDependencyModal'
 import { ClusterSidecar } from './ClusterSidecar'
@@ -39,6 +40,7 @@ export function Cluster() {
   const [metadataOpen, setMetadataOpen] = useState(false)
   const navigate = useNavigate()
   const { clusterId } = useParams()
+  const me = useContext(CurrentUserContext)
   const { clusters } = useContext(ClustersContext)
   const [cluster, setCluster] = useState(clusters.find(({ id }) => id === clusterId))
   const breadcrumbs = useMemo(() => [
@@ -82,6 +84,7 @@ export function Cluster() {
               cluster={cluster}
               setCluster={setCluster}
               onChange={c => navigate(`/clusters/${c?.id}`)}
+              filter={c => c.owner?.id === me.id || !!c.owner?.serviceAccount}
               title={(
                 <Flex gap="xsmall">
                   <ClusterIcon />

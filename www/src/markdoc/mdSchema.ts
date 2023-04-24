@@ -6,17 +6,15 @@ import * as tags from '@pluralsh/design-system/dist/markdoc/tags'
 import merge from 'lodash/merge'
 
 // Extend default schema here
-const baseSchema = merge(
-  {
-    nodes,
-    functions,
-    tags,
-    ...config,
-  },
-  {
-    variables: { consoleGlobalTestVar: 'Console global test content' },
-  }
-)
+const baseSchema = merge({
+  nodes,
+  functions,
+  tags,
+  ...config,
+},
+{
+  variables: { consoleGlobalTestVar: 'Console global test content' },
+})
 
 const { components, ...schemaConfig } = getRuntimeSchema(baseSchema)
 

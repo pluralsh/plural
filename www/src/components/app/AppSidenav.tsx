@@ -17,7 +17,6 @@ import capitalize from 'lodash/capitalize'
 import isEmpty from 'lodash/isEmpty'
 import { useTheme } from 'styled-components'
 
-import { SideNavOffset } from '../utils/layout/SideNavOffset'
 import { useAppContext } from '../../contexts/AppContext'
 import { type Repository } from '../../generated/graphql'
 

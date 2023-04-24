@@ -115,7 +115,7 @@ function ProviderSelection({ data }) {
             secondary
             onClick={() => {
               mutation()
-              navigate('/marketplace')
+              navigate('/overview/clusters')
             }}
           >Skip onboarding
           </Button>

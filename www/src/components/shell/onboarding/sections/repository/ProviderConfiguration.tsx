@@ -204,7 +204,7 @@ export function ProviderConfiguration() {
             secondary
             onClick={() => {
               mutation()
-              navigate('/marketplace')
+              navigate('/overview/clusters')
             }}
           >Skip onboarding
           </Button>

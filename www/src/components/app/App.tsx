@@ -109,9 +109,6 @@ function AppInternal() {
   const docs = useMemo(() => getDocsData(data?.repository?.docs),
     [data?.repository?.docs])
 
-  console.log('docs', data?.repository?.docs)
-  console.log('docsData', docs)
-
   useSetBreadcrumbs(breadcrumbs)
 
   if (!data && loading) return <LoadingIndicator />

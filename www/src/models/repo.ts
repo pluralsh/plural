@@ -32,7 +32,6 @@ export const RepoFragment = gql`
     publisher { ...PublisherFragment }
   }
   ${PublisherFragment}
-  ${FileContentFragment}
 `
 
 export const StackFragment = gql`

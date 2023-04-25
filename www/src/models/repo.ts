@@ -8,6 +8,12 @@ export const CategoryFragment = gql`
     count
   }
 `
+export const FileContentFragment = gql`
+  fragment FileContentFragment on FileContent {
+    content
+    path
+  }
+`
 
 export const RepoFragment = gql`
   fragment RepoFragment on Repository {

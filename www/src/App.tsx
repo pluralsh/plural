@@ -10,6 +10,7 @@ import {
   styledTheme,
   theme,
 } from '@pluralsh/design-system'
+import { MarkdocContextProvider } from '@pluralsh/design-system/dist/markdoc'
 import { CssBaseline, ThemeProvider, mergeTheme } from 'honorable'
 import { ThemeProvider as StyledThemeProvider } from 'styled-components'
 import { mergeDeep } from '@apollo/client/utilities'
@@ -140,27 +141,29 @@ function App() {
           <ThemeProvider theme={honorableTheme}>
             <StyledThemeProvider theme={mergedStyledTheme}>
               <GrowthBookProvider growthbook={growthbook as any as GrowthBook}>
-                <NavContextProvider>
-                  <OverlayContextProvider>
-                    <BreadcrumbsProvider>
-                      <CssBaseline />
-                      <GlobalStyle />
-                      <Grommet
-                        full
-                        theme={mergedStyledTheme as any as ThemeType}
-                        themeMode="dark"
-                      >
-                        <Box
-                          width="100vw"
-                          height="100vh"
-                          background="#171A21"
+                <MarkdocContextProvider value={{ variant: 'console' }}>
+                  <NavContextProvider>
+                    <OverlayContextProvider>
+                      <BreadcrumbsProvider>
+                        <CssBaseline />
+                        <GlobalStyle />
+                        <Grommet
+                          full
+                          theme={mergedStyledTheme as any as ThemeType}
+                          themeMode="dark"
                         >
-                          {routes}
-                        </Box>
-                      </Grommet>
-                    </BreadcrumbsProvider>
-                  </OverlayContextProvider>
-                </NavContextProvider>
+                          <Box
+                            width="100vw"
+                            height="100vh"
+                            background="#171A21"
+                          >
+                            {routes}
+                          </Box>
+                        </Grommet>
+                      </BreadcrumbsProvider>
+                    </OverlayContextProvider>
+                  </NavContextProvider>
+                </MarkdocContextProvider>
               </GrowthBookProvider>
             </StyledThemeProvider>
           </ThemeProvider>

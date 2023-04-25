@@ -62,6 +62,7 @@ const App = lazy(() => import('./app/App').then(module => ({ default: module.App
 const Upgrade = lazy(() => import('./app/upgrade/Upgrade').then(module => ({ default: module.Upgrade })))
 const OIDC = lazy(() => import('./app/oidc/OIDC').then(module => ({ default: module.OIDC })))
 const Uninstall = lazy(() => import('./app/uninstall/Uninstall').then(module => ({ default: module.Uninstall })))
+const AppDocs = lazy(() => import('./app/docs/AppDocs').then(module => ({ default: module.AppDocs })))
 
 const PluralProvider = lazy(() => import('./login/CurrentUser').then(module => ({ default: module.PluralProvider })))
 const DeviceLoginNotif = lazy(() => import('./users/DeviceLoginNotif').then(module => ({ default: module.DeviceLoginNotif })))
@@ -568,6 +569,15 @@ export function PluralInner() {
                   path="uninstall"
                   element={<Uninstall />}
                 />
+                <Route
+                  path="docs"
+                  element={<AppDocs />}
+                >
+                  <Route
+                    path=":docName"
+                    element={<AppDocs />}
+                  />
+                </Route>
               </Route>
               {/* --- ROADMAP --- */}
               <Route

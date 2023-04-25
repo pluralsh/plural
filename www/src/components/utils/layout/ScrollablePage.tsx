@@ -1,6 +1,6 @@
 import { PageTitle } from '@pluralsh/design-system'
 import { Flex, FlexProps } from 'honorable'
-import { ReactNode } from 'react'
+import { MutableRefObject, ReactNode } from 'react'
 import styled from 'styled-components'
 
 const ScrollablePageContent = styled.div(({ theme }) => ({
@@ -16,11 +16,13 @@ export function ScrollablePage({
   heading,
   headingContent,
   children,
+  scrollRef,
   ...props
 }: {
   heading: ReactNode
   headingContent?: ReactNode | undefined
   children: ReactNode
+  scrollRef?: MutableRefObject<any> | null
 } & FlexProps) {
   return (
     <Flex
@@ -38,7 +40,7 @@ export function ScrollablePage({
           {headingContent}
         </PageTitle>
       )}
-      <ScrollablePageContent>{children}</ScrollablePageContent>
+      <ScrollablePageContent ref={scrollRef}>{children}</ScrollablePageContent>
     </Flex>
   )
 }

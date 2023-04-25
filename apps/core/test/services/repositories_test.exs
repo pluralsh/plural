@@ -202,6 +202,26 @@ defmodule Core.Services.RepositoriesTest do
       assert updated.context.some == "value"
     end
 
+    test "updates to track tags propagate to package installations" do
+      %{user: user, repository: repo} = inst = insert(:installation)
+
+      chart = insert(:chart, repository: repo)
+      ci = insert(:chart_installation, chart: chart, installation: inst)
+      vt = insert(:version_tag, chart: chart, tag: "new", version: build(:version, chart: chart))
+      ti = insert(:terraform_installation, terraform: build(:terraform, repository: repo))
+
+      {:ok, updated} = Repositories.update_installation(%{track_tag: "new"}, inst.id, user)
+
+      assert updated.id == inst.id
+      assert updated.tag_updated
+      assert updated.track_tag == "new"
+      assert_receive {:event, %PubSub.InstallationUpdated{item: ^updated}}
+
+
+      assert refetch(ci).version_id == vt.version_id
+      assert refetch(ti).version_id == ti.version_id
+    end
+
     test "Other users cannot update" do
       user = insert(:user)
       inst = insert(:installation)

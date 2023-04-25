@@ -21,7 +21,9 @@ defmodule Core.Services.Repositories do
     OIDCProvider,
     ApplyLock,
     VersionTag,
-    Contributor
+    Contributor,
+    ChartInstallation,
+    TerraformInstallation
   }
   alias Piazza.Crypto.RSA
 
@@ -415,11 +417,40 @@ defmodule Core.Services.Repositories do
   """
   @spec update_installation(map, binary, User.t) :: {:ok, Installation.t} | {:error, term}
   def update_installation(attrs, inst_id, %User{} = user) do
-    get_installation!(inst_id)
-    |> Installation.changeset(attrs)
-    |> allow(user, :edit)
-    |> when_ok(:update)
+    start_transaction()
+    |> add_operation(:inst, fn _ ->
+      get_installation!(inst_id)
+      |> Installation.changeset(attrs)
+      |> allow(user, :edit)
+      |> when_ok(:update)
+    end)
+    |> add_operation(:vsns, fn
+      %{inst: %Installation{tag_updated: true} = inst} -> propagate_tag(inst)
+      _ -> {:ok, %{}}
+    end)
+    |> execute(extract: :inst)
     |> notify(:update, user)
+  end
+
+  defp propagate_tag(%Installation{track_tag: tag, id: id}) do
+    Enum.map([ChartInstallation, TerraformInstallation], & &1.for_installation(id))
+    |> Enum.flat_map(&Core.Repo.all/1)
+    |> Enum.reduce(start_transaction(), fn inst, xact ->
+      add_operation(xact, inst.id, fn _ -> sync_tag(inst, tag) end)
+    end)
+    |> execute()
+  end
+
+  defp sync_tag(%TerraformInstallation{terraform_id: tid} = tis, tag), do: sync_tag(:terraform, tis, tid, tag)
+  defp sync_tag(%ChartInstallation{chart_id: cid} = cis, tag), do: sync_tag(:chart, cis, cid, tag)
+
+  defp sync_tag(type, record, id, tag) do
+    record_id = :"#{type}_id"
+    args = Map.to_list(%{record_id => id, tag: tag})
+    with {:ok, %VersionTag{version_id: id}} <- {:ok, Core.Repo.get_by(VersionTag, args)} do
+      Ecto.Changeset.change(record, %{version_id: id})
+      |> Core.Repo.update()
+    end
   end
 
   @doc """

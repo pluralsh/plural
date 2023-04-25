@@ -43,7 +43,7 @@ export function Application({ provider, ...props }: any): ReactElement {
     variables: { repositoryId: active.key },
   })
 
-  const { node: recipeBase } = recipeEdges?.find(({ node }) => node.provider === provider) || { node: undefined }
+  const { node: recipeBase } = recipeEdges?.find(({ node }: { node: Recipe }) => node.provider === provider && node.primary) || { node: undefined }
   const { data: recipe } = useQuery<{recipe: Recipe}>(RECIPE_Q, {
     variables: { id: recipeBase?.id },
     skip: !recipeBase,

@@ -58,7 +58,7 @@ function OverviewStep({ onNext }) {
             secondary
             onClick={() => {
               mutation()
-              navigate('/marketplace')
+              navigate('/overview/clusters')
             }}
           >Skip onboarding
           </Button>

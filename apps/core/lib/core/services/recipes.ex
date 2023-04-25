@@ -94,7 +94,7 @@ defmodule Core.Services.Recipes do
   def quick_stack(repositories, provider, %User{account_id: aid, id: user_id, name: name}) do
     bundles = Enum.map(repositories, fn repo_id ->
       rs = Recipe.for_repository(repo_id) |> Core.Repo.all()
-      Enum.find(rs, & &1.provider == provider)
+      Enum.find(rs, & &1.provider == provider && &1.primary)
     end)
     |> Enum.filter(& &1)
     |> Enum.with_index()

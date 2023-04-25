@@ -16,7 +16,12 @@ import {
 } from '@pluralsh/design-system'
 
 import { RECIPES_QUERY } from '../../../../repository/queries'
-import { Recipe } from '../../../../../generated/graphql'
+import {
+  Maybe,
+  Provider,
+  Recipe,
+  RecipeEdge,
+} from '../../../../../generated/graphql'
 import { TerminalContext } from '../../context/terminal'
 import { RECIPE_Q } from '../../../../repository/packages/queries'
 
@@ -33,6 +38,14 @@ const toConfig = config => (config ? Object.keys(config)
   .map(key => ({ [key]: { value: config[key], valid: true } }))
   .reduce((acc, entry) => ({ ...acc, ...entry }), {}) : undefined)
 
+const findRecipe = (recipes: Array<RecipeEdge>, primary: boolean, provider: Provider): Recipe | undefined => (
+  recipes === undefined ? undefined : recipes
+    .map(({ node }) => node)
+    .find(recipe => (primary
+      ? recipe!.provider === provider && recipe!.primary
+      : recipe!.provider === provider)) as Recipe
+)
+
 export function Application({ provider, ...props }: any): ReactElement {
   const { active, setData } = useActive<StepData>()
   const { configuration } = useContext(TerminalContext)
@@ -43,7 +56,13 @@ export function Application({ provider, ...props }: any): ReactElement {
     variables: { repositoryId: active.key },
   })
 
-  const { node: recipeBase } = recipeEdges?.find(({ node }: { node: Recipe }) => node.provider === provider && node.primary) || { node: undefined }
+  let recipeBase = findRecipe(recipeEdges, true, provider)
+
+  // A fallback in case there are no primary recipes for given application
+  if (!recipeBase) {
+    recipeBase = findRecipe(recipeEdges, false, provider)
+  }
+
   const { data: recipe } = useQuery<{recipe: Recipe}>(RECIPE_Q, {
     variables: { id: recipeBase?.id },
     skip: !recipeBase,

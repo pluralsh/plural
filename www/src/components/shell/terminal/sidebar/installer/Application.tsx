@@ -1,12 +1,3 @@
-import {
-  ReactElement,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
-import { Box } from 'grommet'
-import { Div, Span } from 'honorable'
 import { useQuery } from '@apollo/client'
 import {
   Chip,
@@ -14,16 +5,21 @@ import {
   WizardStep,
   useActive,
 } from '@pluralsh/design-system'
+import { Box } from 'grommet'
+import { Div, Span } from 'honorable'
+import {
+  ReactElement,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
+
+import { Provider, Recipe, RecipeEdge } from '../../../../../generated/graphql'
+import { RECIPE_Q } from '../../../../repository/packages/queries'
 
 import { RECIPES_QUERY } from '../../../../repository/queries'
-import {
-  Maybe,
-  Provider,
-  Recipe,
-  RecipeEdge,
-} from '../../../../../generated/graphql'
 import { TerminalContext } from '../../context/terminal'
-import { RECIPE_Q } from '../../../../repository/packages/queries'
 
 import { Configuration } from './Configuration'
 

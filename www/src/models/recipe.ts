@@ -11,6 +11,7 @@ export const RecipeFragment = gql`
     description
     provider
     oidcEnabled
+    primary
   }
 `
 

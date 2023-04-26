@@ -1,26 +1,22 @@
 import {
   AppIcon,
-  Button,
   CaretRightIcon,
   CheckRoundedIcon,
   Chip,
+  ConsoleIcon,
   IconFrame,
   TerminalIcon,
 } from '@pluralsh/design-system'
 import styled from 'styled-components'
 import { createColumnHelper } from '@tanstack/react-table'
-
 import { Link } from 'react-router-dom'
 
 import { ProviderIcon } from '../../utils/ProviderIcon'
 import { Source } from '../../../generated/graphql'
-
 import CopyButton from '../../utils/CopyButton'
 
 import ClusterHealth from './ClusterHealth'
-
 import ClusterOwner from './ClusterOwner'
-
 import { ClusterListElement } from './types'
 
 export const columnHelper = createColumnHelper<ClusterListElement>()
@@ -163,16 +159,15 @@ export const ColActions = columnHelper.accessor(row => row.consoleUrl, {
   cell: ({ row: { original: { id, consoleUrl, accessible } } }) => (
     <ActionsWrap>
       {consoleUrl && (
-        <Button
-          secondary
-          small
-          as="a"
-          href={consoleUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Launch Console
-        </Button>
+        <IconFrame
+          clickable
+          size="medium"
+          icon={<ConsoleIcon />}
+          textValue="Launch Console"
+          tooltip
+          type="secondary"
+          onClick={() => window.open(consoleUrl, '_blank')}
+        />
       )}
       {accessible ? (
         <IconFrame

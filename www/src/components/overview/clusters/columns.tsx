@@ -10,6 +10,7 @@ import {
 import styled from 'styled-components'
 import { createColumnHelper } from '@tanstack/react-table'
 import { Link } from 'react-router-dom'
+import { A } from 'honorable'
 
 import { ProviderIcon } from '../../utils/ProviderIcon'
 import { Source } from '../../../generated/graphql'
@@ -42,7 +43,13 @@ export const ColCluster = columnHelper.accessor(row => row.name, {
   id: 'cluster',
   enableGlobalFilter: true,
   enableSorting: true,
-  cell: ({ row: { original: { name, provider, source } } }) => (
+  cell: ({
+    row: {
+      original: {
+        id, name, provider, source, accessible,
+      },
+    },
+  }) => (
     <CellWrap>
       <AppIcon
         size="xxsmall"
@@ -54,7 +61,14 @@ export const ColCluster = columnHelper.accessor(row => row.name, {
         )}
       />
       <div>
-        <div>{name}</div>
+        {accessible ? (
+          <A
+            as={Link}
+            to={`/clusters/${id}`}
+          >
+            {name}
+          </A>
+        ) : <div>{name}</div>}
         <CellCaption>{sourceDisplayNames[source || '']}</CellCaption>
       </div>
     </CellWrap>

@@ -10,7 +10,7 @@ import {
 import styled from 'styled-components'
 import { createColumnHelper } from '@tanstack/react-table'
 import { Link } from 'react-router-dom'
-import { A } from 'honorable'
+import { A, Div } from 'honorable'
 
 import { ProviderIcon } from '../../utils/ProviderIcon'
 import { Source } from '../../../generated/graphql'
@@ -65,10 +65,11 @@ export const ColCluster = columnHelper.accessor(row => row.name, {
           <A
             as={Link}
             to={`/clusters/${id}`}
+            whiteSpace="nowrap"
           >
             {name}
           </A>
-        ) : <div>{name}</div>}
+        ) : <Div whiteSpace="nowrap">{name}</Div>}
         <CellCaption>{sourceDisplayNames[source || '']}</CellCaption>
       </div>
     </CellWrap>

@@ -12,21 +12,34 @@ export default function ClusterOwner({ name, email, avatar }: ClusterOwnerProps)
     <Flex
       gap="small"
       align="center"
+      width="100%"
     >
       <AppIcon
         name={name || ''}
         url={avatar || undefined}
         size="xxsmall"
       />
-      <div>
-        <Div body2>{name}</Div>
+      <Div width="100%">
         <Div
-          caption
-          color="text-xlight"
+          body2
+          whiteSpace="nowrap"
         >
-          {email}
+          {name}
         </Div>
-      </div>
+        <Flex>
+          <Div
+            caption
+            color="text-xlight"
+            whiteSpace="nowrap"
+            overflow="hidden"
+            textOverflow="ellipsis"
+            flexGrow={1}
+            width={0}
+          >
+            {email}
+          </Div>
+        </Flex>
+      </Div>
     </Flex>
   )
 }

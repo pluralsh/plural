@@ -80,7 +80,12 @@ export const ColHealth = columnHelper.accessor(row => row.pingedAt, {
   id: 'health',
   enableGlobalFilter: true,
   enableSorting: true,
-  cell: ({ row: { original: { pingedAt } } }) => <ClusterHealth pingedAt={pingedAt} />,
+  cell: ({ row: { original: { pingedAt } } }) => (
+    <ClusterHealth
+      pingedAt={pingedAt}
+      size="small"
+    />
+  ),
   header: 'Health',
 })
 
@@ -157,6 +162,7 @@ export const ColUpgrades = columnHelper.accessor(row => row.delivered, {
     <Chip
       severity={delivered.getValue() ? 'success' : 'warning'}
       hue="lighter"
+      size="small"
     >
       {delivered.getValue() ? 'Delivered' : 'Pending'}
     </Chip>

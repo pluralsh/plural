@@ -103,6 +103,18 @@ defimpl Core.PubSub.Fanout, for: Core.PubSub.InstallationDeleted do
   end
 end
 
+defimpl Core.PubSub.Fanout, for: Core.PubSub.InstallationUpdated do
+  def fanout(%{item: %{tag_updated: true} = inst}) do
+    Core.Rollable.Base.deliver_upgrades(inst.user_id, fn queue ->
+      Core.Services.Upgrades.create_upgrade(%{
+        repository_id: inst.repository_id,
+        message: "Set release channel to #{inst.track_tag}"
+      }, queue)
+    end)
+  end
+  def fanout(_), do: :ok
+end
+
 defimpl Core.PubSub.Fanout, for: Core.PubSub.InstallationCreated do
   alias Core.Schema.{Repository, User}
   alias Core.Services.{Users, Shell.Demo}

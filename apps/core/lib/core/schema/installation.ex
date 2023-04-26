@@ -26,6 +26,7 @@ defmodule Core.Schema.Installation do
     field :track_tag,    :string, default: "latest"
     field :license_key,  :string
     field :pinged_at,    :utc_datetime_usec
+    field :tag_updated,  :boolean, virtual: true, default: false
 
     embeds_one :policy,     Policy, on_replace: :update
     belongs_to :user,       User
@@ -52,6 +53,7 @@ defmodule Core.Schema.Installation do
     |> foreign_key_constraint(:user_id)
     |> foreign_key_constraint(:repository_id)
     |> put_new_change(:license_key, &gen_license_key/0)
+    |> change_markers(track_tag: :tag_updated)
   end
 
   defp gen_license_key() do

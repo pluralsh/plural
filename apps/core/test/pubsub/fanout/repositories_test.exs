@@ -15,6 +15,28 @@ defmodule Core.PubSub.Fanout.InstallationsTest do
     end
   end
 
+  describe "InstallationUpdated" do
+    test "it will create an upgrade if the tag has been updated" do
+      inst = insert(:installation, tag_updated: true, track_tag: "tag")
+      queue = insert(:upgrade_queue, user: inst.user)
+
+      event = %PubSub.InstallationUpdated{item: inst}
+      {:ok, [upgrade]} = PubSub.Fanout.fanout(event)
+
+      assert upgrade.queue_id == queue.id
+      assert upgrade.repository_id == inst.repository_id
+      assert upgrade.message == "Set release channel to tag"
+    end
+
+    test "it will ignore if there was no tag update" do
+      inst = insert(:installation)
+      insert(:upgrade_queue, user: inst.user)
+
+      event = %PubSub.InstallationUpdated{item: inst}
+      :ok = PubSub.Fanout.fanout(event)
+    end
+  end
+
   describe "InstallationCreated" do
     test "it will set console isntalled" do
       user = insert(:user, onboarding_checklist: %{status: :new})

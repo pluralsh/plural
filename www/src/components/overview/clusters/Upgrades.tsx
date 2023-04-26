@@ -1,6 +1,6 @@
 import { Button, ClusterIcon, ReloadIcon } from '@pluralsh/design-system'
 import { isEmpty } from 'lodash'
-import { useContext, useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
 import { Div, Flex } from 'honorable'
 
 import { Cluster } from '../../../generated/graphql'
@@ -16,7 +16,7 @@ import UpgradeList from './UpgradeList'
 export default function Upgrades() {
   const me = useContext(CurrentUserContext)
   const { clusters } = useContext(ClustersContext)
-  const isClusterAccessible = c => c.owner?.id === me.id || !!c.owner?.serviceAccount
+  const isClusterAccessible = useCallback(c => c.owner?.id === me.id || !!c.owner?.serviceAccount, [me.id])
   const accessibleClusters = clusters.filter(isClusterAccessible)
   const [cluster, setCluster] = useState<Cluster | undefined>(!isEmpty(accessibleClusters) ? accessibleClusters[0] : undefined)
   const [refreshing, setRefreshing] = useState(false)

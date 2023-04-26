@@ -16,7 +16,9 @@ import UpgradeList from './UpgradeList'
 export default function Upgrades() {
   const me = useContext(CurrentUserContext)
   const { clusters } = useContext(ClustersContext)
-  const [cluster, setCluster] = useState<Cluster | undefined>(!isEmpty(clusters) ? clusters[0] : undefined)
+  const isClusterAccessible = c => c.owner?.id === me.id || !!c.owner?.serviceAccount
+  const accessibleClusters = clusters.filter(isClusterAccessible)
+  const [cluster, setCluster] = useState<Cluster | undefined>(!isEmpty(accessibleClusters) ? accessibleClusters[0] : undefined)
   const [refreshing, setRefreshing] = useState(false)
   const [refetch, setRefetch] = useState<any>()
 
@@ -31,7 +33,7 @@ export default function Upgrades() {
             <ClusterPicker
               cluster={cluster}
               setCluster={setCluster}
-              filter={c => c.owner?.id === me.id || !!c.owner?.serviceAccount}
+              filter={isClusterAccessible}
               size="small"
               title={(
                 <Flex

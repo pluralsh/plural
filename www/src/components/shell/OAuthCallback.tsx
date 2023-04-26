@@ -47,7 +47,7 @@ function OAuthCallback({ provider }: any) {
     if (!token) navigate('shell')
 
     save(updatedContext)
-    navigate('/')
+    navigate('/shell')
   }, [data, error, navigate, save, token, updatedContext])
 
   return <LoadingIndicator />

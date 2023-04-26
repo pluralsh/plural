@@ -1,26 +1,23 @@
 import {
   AppIcon,
-  Button,
   CaretRightIcon,
   CheckRoundedIcon,
   Chip,
+  ConsoleIcon,
   IconFrame,
   TerminalIcon,
 } from '@pluralsh/design-system'
 import styled from 'styled-components'
 import { createColumnHelper } from '@tanstack/react-table'
-
 import { Link } from 'react-router-dom'
+import { A, Div } from 'honorable'
 
 import { ProviderIcon } from '../../utils/ProviderIcon'
 import { Source } from '../../../generated/graphql'
-
 import CopyButton from '../../utils/CopyButton'
 
 import ClusterHealth from './ClusterHealth'
-
 import ClusterOwner from './ClusterOwner'
-
 import { ClusterListElement } from './types'
 
 export const columnHelper = createColumnHelper<ClusterListElement>()
@@ -46,7 +43,13 @@ export const ColCluster = columnHelper.accessor(row => row.name, {
   id: 'cluster',
   enableGlobalFilter: true,
   enableSorting: true,
-  cell: ({ row: { original: { name, provider, source } } }) => (
+  cell: ({
+    row: {
+      original: {
+        id, name, provider, source, accessible,
+      },
+    },
+  }) => (
     <CellWrap>
       <AppIcon
         size="xxsmall"
@@ -58,7 +61,15 @@ export const ColCluster = columnHelper.accessor(row => row.name, {
         )}
       />
       <div>
-        <div>{name}</div>
+        {accessible ? (
+          <A
+            as={Link}
+            to={`/clusters/${id}`}
+            whiteSpace="nowrap"
+          >
+            {name}
+          </A>
+        ) : <Div whiteSpace="nowrap">{name}</Div>}
         <CellCaption>{sourceDisplayNames[source || '']}</CellCaption>
       </div>
     </CellWrap>
@@ -70,7 +81,12 @@ export const ColHealth = columnHelper.accessor(row => row.pingedAt, {
   id: 'health',
   enableGlobalFilter: true,
   enableSorting: true,
-  cell: ({ row: { original: { pingedAt } } }) => <ClusterHealth pingedAt={pingedAt} />,
+  cell: ({ row: { original: { pingedAt } } }) => (
+    <ClusterHealth
+      pingedAt={pingedAt}
+      size="small"
+    />
+  ),
   header: 'Health',
 })
 
@@ -147,6 +163,7 @@ export const ColUpgrades = columnHelper.accessor(row => row.delivered, {
     <Chip
       severity={delivered.getValue() ? 'success' : 'warning'}
       hue="lighter"
+      size="small"
     >
       {delivered.getValue() ? 'Delivered' : 'Pending'}
     </Chip>
@@ -163,16 +180,15 @@ export const ColActions = columnHelper.accessor(row => row.consoleUrl, {
   cell: ({ row: { original: { id, consoleUrl, accessible } } }) => (
     <ActionsWrap>
       {consoleUrl && (
-        <Button
-          secondary
-          small
-          as="a"
-          href={consoleUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Launch Console
-        </Button>
+        <IconFrame
+          clickable
+          size="medium"
+          icon={<ConsoleIcon />}
+          textValue="Launch Console"
+          tooltip
+          type="secondary"
+          onClick={() => window.open(consoleUrl, '_blank')}
+        />
       )}
       {accessible ? (
         <IconFrame

@@ -11,6 +11,8 @@ defmodule Core.Policies.Recipe do
 
   def can?(%User{account_id: aid}, %Stack{account_id: aid}, _), do: :pass
 
+  def can?(_, %Stack{featured: true}, :view), do: :pass
+
   def can?(user, %Ecto.Changeset{} = cs, action),
     do: can?(user, apply_changes(cs), action)
 

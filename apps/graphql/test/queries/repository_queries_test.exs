@@ -512,6 +512,22 @@ defmodule GraphQl.RepositoryQueriesTest do
       assert by_category["DEVOPS"]["count"] == 2
       assert by_category["DATABASE"]["count"] == 1
     end
+
+    test "it will render categories and repo counts anonymously" do
+      insert_list(2, :repository, category: :devops)
+      insert(:repository, category: :database)
+
+      {:ok, %{data: %{"categories" => cats}}} = run_query("""
+        query {
+          categories { category count }
+        }
+      """, %{})
+
+      by_category = Enum.into(cats, %{}, & {&1["category"], &1})
+
+      assert by_category["DEVOPS"]["count"] == 2
+      assert by_category["DATABASE"]["count"] == 1
+    end
   end
 
   describe "category" do

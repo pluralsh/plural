@@ -36,6 +36,12 @@ defmodule Core.Services.Recipes do
   end
 
   @doc """
+  Determine if an actor can view a stack
+  """
+  @spec accessible(Stack.t, term) :: stack_resp
+  def accessible(%Stack{} = s, user), do: allow(s, user, :view)
+
+  @doc """
   Will persist the given recipe for repository `repository_id`
 
   Fails if the user is not the publisher

@@ -18,10 +18,10 @@ defmodule GraphQl.Resolvers.Recipe do
     |> paginate(args)
   end
 
-  def list_stacks(args, %{context: %{current_user: user}}) do
+  def list_stacks(args, %{context: ctx}) do
     Stack.ordered()
     |> Stack.permanent()
-    |> stack_filters(args, user)
+    |> stack_filters(args, ctx[:current_user])
     |> paginate(args)
   end
 
@@ -31,10 +31,13 @@ defmodule GraphQl.Resolvers.Recipe do
 
   defp stack_filters(q, %{featured: true}, _), do: Stack.featured(q)
   defp stack_filters(q, _, %{account_id: aid}), do: Stack.for_account(q, aid)
+  defp stack_filters(q, _, _), do: Stack.featured(q)
 
-  def resolve_stack(%{name: name, provider: provider}, _) do
-    Recipes.get_stack!(name)
-    |> Recipes.hydrate(provider)
+  def resolve_stack(%{name: name, provider: provider}, %{context: ctx}) do
+    stack = Recipes.get_stack!(name)
+    with {:ok, stack} <- Recipes.accessible(stack, ctx[:current_user]) do
+      Recipes.hydrate(stack, provider)
+    end
   end
 
   def resolve_recipe(%{id: id}, %{context: %{current_user: user}}) when is_binary(id) do

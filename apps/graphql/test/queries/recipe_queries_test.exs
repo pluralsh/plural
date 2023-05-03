@@ -198,6 +198,46 @@ defmodule GraphQl.RecipeQueriesTest do
       assert ids_equal(found["bundles"], recipes)
       assert ids_equal(found["sections"], sections)
     end
+
+    test "it can fetch and hydrate a stack anonymously" do
+      stack = insert(:stack, featured: true)
+      collection = insert(:stack_collection, stack: stack, provider: :aws)
+      recipes = insert_list(3, :stack_recipe, collection: collection)
+                |> Enum.map(& &1.recipe)
+      sections = for r <- recipes, do: insert(:recipe_section, recipe: r)
+
+      {:ok, %{data: %{"stack" => found}}} = run_query("""
+        query Stack($name: String!) {
+          stack(name: $name, provider: AWS) {
+            id
+            bundles { id }
+            sections { id }
+          }
+        }
+      """, %{"name" => stack.name})
+
+      assert found["id"] == stack.id
+      assert ids_equal(found["bundles"], recipes)
+      assert ids_equal(found["sections"], sections)
+    end
+
+    test "it cannot fetch and hydrate nonfeatured stack anonymously" do
+      stack = insert(:stack)
+      collection = insert(:stack_collection, stack: stack, provider: :aws)
+      recipes = insert_list(3, :stack_recipe, collection: collection)
+                |> Enum.map(& &1.recipe)
+      for r <- recipes, do: insert(:recipe_section, recipe: r)
+
+      {:ok, %{errors: [_ | _]}} = run_query("""
+        query Stack($name: String!) {
+          stack(name: $name, provider: AWS) {
+            id
+            bundles { id }
+            sections { id }
+          }
+        }
+      """, %{"name" => stack.name})
+    end
   end
 
   describe "stacks" do
@@ -212,6 +252,22 @@ defmodule GraphQl.RecipeQueriesTest do
           }
         }
       """, %{}, %{current_user: insert(:user)})
+
+      assert from_connection(found)
+             |> ids_equal(stacks)
+    end
+
+    test "it can list stacks w/o auth" do
+      stacks = insert_list(3, :stack, featured: true)
+      insert_list(2, :stack, featured: false)
+
+      {:ok, %{data: %{"stacks" => found}}} = run_query("""
+        query {
+          stacks(featured: true, first: 10) {
+            edges { node { id } }
+          }
+        }
+      """, %{})
 
       assert from_connection(found)
              |> ids_equal(stacks)

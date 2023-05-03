@@ -250,7 +250,6 @@ defmodule GraphQl.Schema.Recipe do
     end
 
     field :stack, :stack do
-      middleware Authenticated
       arg :name,     non_null(:string)
       arg :provider, non_null(:provider)
 
@@ -267,7 +266,6 @@ defmodule GraphQl.Schema.Recipe do
     end
 
     connection field :stacks, node_type: :stack do
-      middleware Authenticated
       arg :featured, :boolean
 
       resolve &Recipe.list_stacks/2

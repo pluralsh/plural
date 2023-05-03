@@ -385,15 +385,11 @@ defmodule GraphQl.Schema.Repository do
     end
 
     field :categories, list_of(:category_info) do
-      middleware Authenticated
-
       resolve &Repository.list_categories/2
     end
 
     field :category, :category_info do
-      middleware Authenticated
       arg :name, non_null(:category)
-
       resolve &Repository.resolve_category/2
     end
 

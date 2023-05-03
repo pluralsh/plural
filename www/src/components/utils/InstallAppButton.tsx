@@ -2,6 +2,7 @@ import {
   Key,
   useContext,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from 'react'
@@ -19,18 +20,14 @@ import {
   Tab,
   TabList,
   TabPanel,
-  Tooltip,
 } from '@pluralsh/design-system'
 import { Link } from 'react-router-dom'
-
 import isEmpty from 'lodash/isEmpty'
+import upperFirst from 'lodash/upperFirst'
 
 import ClustersContext from '../../contexts/ClustersContext'
 import { Cluster, Provider } from '../../generated/graphql'
-
 import { useCurrentUser } from '../../contexts/CurrentUserContext'
-
-import { useShellType } from '../../hooks/useShellType'
 
 import {
   InstallAppButtonProps,
@@ -40,7 +37,12 @@ import {
   providerToLongName,
   providerToShortName,
 } from './recipeHelpers'
-import { CloudShellClusterPicker, NEW_CLUSTER_ID } from './ClusterPicker'
+import {
+  CloudShellClusterPicker,
+  NEW_CLUSTER_ID,
+  clusterFilter,
+  clusterHasCloudShell,
+} from './ClusterPicker'
 
 function CliCommand({
   recipe,
@@ -163,24 +165,11 @@ function InstallAppButton({
   ...props
 }: InstallAppButtonProps) {
   const [isOpen, setIsOpen] = useState(false)
-  const { provider } = useCurrentUser()
-  const isCliUser = useShellType() === 'cli'
+  const { id: userId } = useCurrentUser()
   const { clusters } = useContext(ClustersContext)
-
-  // DEBUG VALS
-
-  // const isCliUser = false
-  // const clusters = []
-
-  // END DEBUG VALS
-
-  const {
-    recipes, type, name, apps,
-  } = props
-  const recipe
-    = type === 'stack' && !provider
-      ? recipes?.[0]
-      : recipes?.find(recipe => recipe.provider === provider)
+  const filteredClusters = useMemo(() => clusters.filter(cluster => clusterFilter(cluster, userId, { showCliClusters: true })),
+    [clusters, userId])
+  const { name, apps } = props
 
   if (!name) {
     return null
@@ -199,43 +188,20 @@ function InstallAppButton({
     </Button>
   )
 
-  if (isEmpty(clusters)) {
-    if (!isCliUser) {
-      button = (
-        <Button
-          primary
-          width="100%"
-          loading={loading}
-          as={Link}
-          to={`/shell?install=${
-            apps && !isEmpty(apps) ? `${apps.join(',')}` : name
-          }`}
-        >
-          Install
-        </Button>
-      )
-    }
-    else if (!recipe && provider) {
-      button = (
-        <Tooltip
-          label={`This ${
-            props.type === 'bundle' ? 'app' : 'stack'
-          } is not available for your provider, ${
-            providerToLongName[provider]
-          }`}
-        >
-          <span>
-            <Button
-              primary
-              width="100%"
-              disabled
-            >
-              Install
-            </Button>
-          </span>
-        </Tooltip>
-      )
-    }
+  if (isEmpty(filteredClusters)) {
+    button = (
+      <Button
+        primary
+        width="100%"
+        loading={loading}
+        as={Link}
+        to={`/shell?install=${
+          apps && !isEmpty(apps) ? `${apps.join(',')}` : name
+        }`}
+      >
+        Install
+      </Button>
+    )
   }
 
   return (
@@ -244,8 +210,7 @@ function InstallAppButton({
       <InstallModal
         open={isOpen && !loading}
         onClose={() => setIsOpen(false)}
-        isCliUser={isCliUser}
-        clusters={clusters}
+        clusters={filteredClusters}
         {...props}
       />
     </>
@@ -257,92 +222,98 @@ function InstallModal({
   name,
   type = 'bundle',
   apps,
-  isCliUser,
   clusters,
+  onClose,
   ...props
 }: Omit<InstallAppButtonProps, 'loading'> & {
-  isCliUser: boolean
   clusters: Cluster[]
 } & ModalBaseProps) {
-  const { provider } = useCurrentUser()
-
-  const recipe
-    = type === 'stack' && !provider
-      ? recipes?.[0]
-      : recipes?.find(recipe => recipe.provider === provider)
-
   const [clusterId, setClusterId] = useState<string | undefined>(!isEmpty(clusters) ? clusters[0].id : undefined)
 
-  const showClusters = !isEmpty(clusters)
-  const header = showClusters
-    ? undefined
-    : isCliUser && recipe
-      ? `Install ${name}`
-      : undefined
-  const spacing
-    = isCliUser && !recipe
-      ? {
-        paddingTop: 0,
-        paddingBottom: 0,
-        paddingLeft: 0,
-        paddingRight: 0,
-      }
-      : {}
+  const currentCluster = useMemo(() => clusters.find(cl => cl.id === clusterId), [clusterId, clusters])
+  const clusterProvider = currentCluster?.provider
+
+  const isCloudShellCluster
+    = clusterId === NEW_CLUSTER_ID
+    || (currentCluster && clusterHasCloudShell(currentCluster))
+  const header = `Install ${name}`
+  const recipe
+    = type === 'stack' && !clusterProvider
+      ? recipes?.[0]
+      : recipes?.find(recipe => recipe.provider === clusterProvider)
 
   return (
     <Modal
-      size={showClusters ? 'medium' : 'large'}
+      size="large"
       header={header}
+      onClose={onClose}
       {...props}
-      {...spacing}
     >
-      {showClusters ? (
+      <Flex
+        direction="column"
+        gap="large"
+      >
         <Flex
           direction="column"
-          gap="large"
+          gap="xsmall"
         >
-          <Flex
-            direction="column"
-            gap="xsmall"
+          <H2
+            body2
+            bold
           >
-            <H2
-              body2
-              bold
-            >
-              Select a cluster for installation
-            </H2>
-            <CloudShellClusterPicker
-              clusterId={clusterId}
-              onChange={setClusterId}
-              size="small"
+            Select a cluster for installation
+          </H2>
+          <CloudShellClusterPicker
+            clusterId={clusterId}
+            showCliClusters
+            onChange={setClusterId}
+            size="small"
+          />
+        </Flex>
+        {!isCloudShellCluster
+          && (recipe ? (
+            <CliCommand
+              name={name}
+              type={type}
+              recipe={recipe}
             />
-          </Flex>
+          ) : (
+            <>
+              <P body2>
+                {upperFirst(name)} is not available for this cluster’s provider
+                {clusterProvider && (
+                  <>, {providerToLongName[clusterProvider]}</>
+                )}
+                . You may try creating a new cluster with one of the providers below.
+              </P>
+              <RecipeTabs
+                name={name}
+                type={type}
+                recipes={recipes}
+              />
+            </>
+          ))}
+        {isCloudShellCluster ? (
           <Button
             primary
             width="100%"
             as={Link}
-            to={`/shell?${clusterId !== NEW_CLUSTER_ID ? `cluster=${clusterId}` : ''} &install=${
-              apps && !isEmpty(apps) ? `${apps.join(',')}` : name
-            }`}
+            to={`/shell?${
+              clusterId !== NEW_CLUSTER_ID ? `cluster=${clusterId}` : ''
+            } &install=${apps && !isEmpty(apps) ? `${apps.join(',')}` : name}`}
           >
             Start install
           </Button>
-        </Flex>
-      ) : recipe ? (
-        /* CLI user: If there is a recipe for the user's provider, show it in a dropdown */
-        <CliCommand
-          name={name}
-          type={type}
-          recipe={recipe}
-        />
-      ) : (
-        /* Final fallback: Show recipes for all providers */
-        <RecipeTabs
-          name={name}
-          type={type}
-          recipes={recipes}
-        />
-      )}
+        ) : (
+          <Button
+            primary
+            width="100%"
+            onClick={onClose}
+          >
+            Done
+          </Button>
+        )}
+      </Flex>
     </Modal>
   )
 }

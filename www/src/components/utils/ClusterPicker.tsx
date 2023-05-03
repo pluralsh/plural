@@ -223,14 +223,38 @@ function ClusterPickerBase({
   )
 }
 
-const clusterHasCloudShell = cluster => !!cluster?.owner?.hasShell
-
 export const NEW_CLUSTER_ID = 'newcluster'
 
-type CloudShellClusterPickerProps =
-  Omit<ComponentProps<typeof ClusterPickerBase>, 'clusters' >
+type CloudShellClusterPickerProps = Omit<
+  ComponentProps<typeof ClusterPickerBase>,
+  'clusters'
+> & { showCliClusters?: boolean }
 
-export function CloudShellClusterPicker({ onChange, ...props }:CloudShellClusterPickerProps) {
+export function clusterHasCloudShell(cluster: Cluster) {
+  return !!cluster?.owner?.hasShell
+}
+
+export function userCanAdminCluster(cluster: Cluster, userId: string) {
+  return cluster.owner?.id === userId || !!cluster.owner?.serviceAccount
+}
+
+export function clusterFilter(cluster: Cluster,
+  currentUserId: string,
+  { showCliClusters = false }) {
+  // Filter out non-cloud-shell clusters if showCliClusters is off
+  if (!showCliClusters && !clusterHasCloudShell(cluster)) {
+    return false
+  }
+
+  // Filter clusters that user can't install to
+  return userCanAdminCluster(cluster, currentUserId)
+}
+
+export function CloudShellClusterPicker({
+  onChange,
+  showCliClusters = false,
+  ...props
+}: CloudShellClusterPickerProps) {
   const { clusters: raw } = useContext(ClustersContext)
   const { id: userId } = useCurrentUser()
 
@@ -238,7 +262,7 @@ export function CloudShellClusterPicker({ onChange, ...props }:CloudShellCluster
     const userHasCluster = raw.some(cl => cl?.owner?.id === userId)
 
     const clList = raw
-      ? raw.filter(clusterHasCloudShell).filter(cluster => cluster.owner?.id === userId || !!cluster.owner?.serviceAccount)
+      ? raw.filter(cl => clusterFilter(cl, userId, { showCliClusters }))
       : ([] as Cluster[])
 
     return [
@@ -253,7 +277,7 @@ export function CloudShellClusterPicker({ onChange, ...props }:CloudShellCluster
           },
         ]),
     ]
-  }, [raw, userId])
+  }, [raw, showCliClusters, userId])
 
   return (
     <ClusterPickerBase

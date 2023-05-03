@@ -285,6 +285,7 @@ function InstallModal({
                   <>, {providerToLongName[clusterProvider]}</>
                 )}
                 . You may try creating a new cluster with one of the providers below.
+                below.
               </P>
               <RecipeTabs
                 name={name}
@@ -300,7 +301,7 @@ function InstallModal({
             as={Link}
             to={`/shell?${
               clusterId !== NEW_CLUSTER_ID ? `cluster=${clusterId}` : ''
-            } &install=${apps && !isEmpty(apps) ? `${apps.join(',')}` : name}`}
+            }&install=${apps && !isEmpty(apps) ? `${apps.join(',')}` : name}`}
           >
             Start install
           </Button>

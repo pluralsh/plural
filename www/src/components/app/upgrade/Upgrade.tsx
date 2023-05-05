@@ -1,5 +1,6 @@
 import {
   Button,
+  Callout,
   Card,
   Divider,
   ListBoxItem,
@@ -8,7 +9,12 @@ import {
   Tooltip,
   WrapWithIf,
 } from '@pluralsh/design-system'
-import { Div, P, Switch } from 'honorable'
+import {
+  Div,
+  Flex,
+  P,
+  Switch,
+} from 'honorable'
 import { capitalize, isEmpty } from 'lodash'
 import { useEffect, useMemo, useState } from 'react'
 import { useMutation } from '@apollo/client'
@@ -80,7 +86,7 @@ export function Upgrade() {
             {upgradeChannels.flatMap(t => (t ? [(
               <ListBoxItem
                 key={t}
-                label={capitalize(t)}
+                label={t}
                 textValue={t}
               />
             )] : []))}
@@ -92,6 +98,15 @@ export function Upgrade() {
             header="Failed to uninstall"
           />
         )}
+        <Flex marginTop="xlarge">
+          <Callout
+            severity="warning"
+            title="Be careful downgrading applications"
+          >
+            Changing to an upgrade channel that can downgrade an application can cause unexpected behavior,
+            especially for apps that involve database migrations Plural cannot fully control.
+          </Callout>
+        </Flex>
         <Divider
           backgroundColor="border"
           marginVertical="xlarge"

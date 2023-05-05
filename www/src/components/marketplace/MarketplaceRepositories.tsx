@@ -50,8 +50,7 @@ const chipProps = {
   minHeight: 32,
 }
 
-// @ts-expect-error
-const MainContentArea = styled(Div)(() => ({
+const MainContentArea = styled(Div)((_) => ({
   display: 'flex',
   flexDirection: 'column',
   flexGrow: 1,

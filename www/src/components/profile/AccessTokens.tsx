@@ -151,8 +151,8 @@ function AccessToken({ token, first, last }: any) {
   const [graph, setGraph] = useState(false)
   const [mutation, { loading, error }] = useMutation(DELETE_TOKEN, {
     variables: { id: token.id },
-    // @ts-expect-error
     update: (cache, { data: { deleteToken } }) =>
+      // @ts-expect-error
       updateCache(cache, {
         query: TOKENS_Q,
         update: (prev) => removeConnection(prev, deleteToken, 'tokens'),
@@ -265,8 +265,8 @@ export function AccessTokens() {
   const [listRef, setListRef] = useState<any>(null)
   const { data, loading: loadingTokens, fetchMore } = useQuery(TOKENS_Q)
   const [mutation, { loading }] = useMutation(CREATE_TOKEN, {
-    // @ts-expect-error
     update: (cache, { data: { createToken } }) =>
+      // @ts-expect-error
       updateCache(cache, {
         query: TOKENS_Q,
         update: (prev) => appendConnection(prev, createToken, 'tokens'),

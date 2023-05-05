@@ -66,8 +66,8 @@ function PrivateControl({ dockerRepo }: any) {
   return (
     <Switch
       checked={!dockerRepo.public}
-      // @ts-expect-error
       onChange={() =>
+        // @ts-expect-error
         mutation({ variables: { attributes: { public: !dockerRepo.public } } })
       }
     >

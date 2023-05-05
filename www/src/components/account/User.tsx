@@ -69,8 +69,8 @@ function UserEdit({ user, update }: any) {
   const menuItems = {
     addAdmin: {
       label: isAdmin ? 'Remove admin role' : 'Add admin role',
-      // @ts-expect-error
       onSelect: () =>
+        // @ts-expect-error
         mutation({ variables: { attributes: { roles: { admin: !isAdmin } } } }),
       props: {},
     },

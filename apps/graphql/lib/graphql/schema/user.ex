@@ -112,13 +112,13 @@ defmodule GraphQl.Schema.User do
     field :impersonation_policy, :impersonation_policy, resolve: dataloader(User)
 
     field :jwt, :string, resolve: fn
+      %{jwt: jwt}, _, _ when is_binary(jwt) -> {:ok, jwt}
       %{jwt: jwt}, _, %{context: %{allow_jwt: true}} -> {:ok, jwt}
       _, _, _ -> {:error, "forbidden"}
     end
 
     field :has_installations, :boolean, resolve: fn
-      user, _, _ ->
-        {:ok, Core.Services.Users.has_installations?(user)}
+      user, _, _ -> {:ok, Core.Services.Users.has_installations?(user)}
     end
 
     field :demoing, :boolean, resolve: fn

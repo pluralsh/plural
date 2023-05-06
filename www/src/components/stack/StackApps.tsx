@@ -5,7 +5,7 @@ import { RepoCardList } from '../marketplace/RepoCardList'
 
 import { ScrollablePage } from '../utils/layout/ScrollablePage'
 
-import { StackActions } from './misc'
+// import { StackActions } from './misc'
 
 import { StackContext } from './types'
 
@@ -19,7 +19,7 @@ export default function StackApps() {
       heading="Stack applications"
       headingContent={(
         <Flex display-desktop-up="none">
-          <StackActions stack={stack} />
+          {/* <StackActions stack={stack} /> */}
         </Flex>
       )}
     >

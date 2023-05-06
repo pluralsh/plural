@@ -35,7 +35,6 @@ import { MARKETPLACE_CRUMB } from '../marketplace/Marketplace'
 
 import { STACK_QUERY } from './queries'
 import { StackContext } from './types'
-import { StackActions } from './misc'
 
 const DIRECTORY = [{ label: 'Stack applications', path: '' }]
 
@@ -132,10 +131,10 @@ function StackSidecar({ stack }: StackContext) {
       gap="large"
       position="relative"
     >
-      <StackActions
+      {/* <StackActions
         stack={stack}
         recipes={recipes}
-      />
+      /> */}
       <ProvidersSidecar
         recipes={recipes}
         type="stack"

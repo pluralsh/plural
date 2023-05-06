@@ -4,4 +4,3 @@ ATTRIBUTES <%= Core.Services.Scaffolds.quote_if_necessary(publisher) %> reposito
 TF terraform/*
 HELM helm/*
 RECIPE plural/recipes/*
-TAG plural/tags/**/*

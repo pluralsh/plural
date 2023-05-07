@@ -86,7 +86,7 @@ All Plural applications are fully customizable and able to be ejected at any tim
 <br /><br />
 
 
-https://user-images.githubusercontent.com/3838088/222533908-d9e13204-4535-4eb2-a011-d958d48d693b.mp4
+https://user-images.githubusercontent.com/3838088/236680929-1e533eda-9f4a-41ca-83a2-49e652b5ff3d.mp4
 
 
 ## 🏁 Getting Started

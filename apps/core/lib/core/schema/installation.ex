@@ -43,6 +43,10 @@ defmodule Core.Schema.Installation do
   def for_user(query \\ __MODULE__, user_id),
     do: from(i in query, where: i.user_id == ^user_id)
 
+  def tracking(query \\ __MODULE__, tag) do
+    from(i in query, where: i.track_tag == ^tag)
+  end
+
   @valid ~w(user_id repository_id context auto_upgrade track_tag source)a
 
   def changeset(model, attrs \\ %{}) do

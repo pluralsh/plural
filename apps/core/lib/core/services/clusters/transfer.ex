@@ -35,15 +35,20 @@ defmodule Core.Services.Clusters.Transfer do
         end
         |> when_ok(&Core.Repo.preload(&1, [:user]))
       end)
-      |> add_operation({:oidc, inst_id}, fn %{^inst_id => inst} ->
-        OIDCProvider.changeset(provider, %{installation_id: inst.id})
-        |> Core.Repo.update()
-      end)
-      |> add_operation({:helm, id}, fn %{^inst_id => inst} -> transfer(:helm, inst_id, inst) end)
-      |> add_operation({:tf, id}, fn %{^inst_id => inst} -> transfer(:terraform, inst_id, inst) end)
+      |> maybe_reparent_provider(provider)
+      |> add_operation({:helm, inst_id}, fn %{^inst_id => inst} -> transfer(:helm, inst_id, inst) end)
+      |> add_operation({:tf, inst_id}, fn %{^inst_id => inst} -> transfer(:terraform, inst_id, inst) end)
     end)
     |> execute()
   end
+
+  defp maybe_reparent_provider(xact, %OIDCProvider{installation_id: inst_id} = provider) do
+    add_operation(xact, {:oidc, inst_id}, fn %{^inst_id => inst} ->
+      OIDCProvider.changeset(provider, %{installation_id: inst.id})
+      |> Core.Repo.update()
+    end)
+  end
+  defp maybe_reparent_provider(xact, _), do: xact
 
   defp transfer(:helm, %ChartInstallation{} = c, %Installation{id: id, user: user}) do
     with {:ok, nil} <- {:ok, Core.Repo.get_by(ChartInstallation, installation_id: id, chart_id: c.id)} do

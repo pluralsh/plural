@@ -168,6 +168,7 @@ defmodule Core.Services.ClustersTest do
         version: "1.0.0",
         chart: build(:chart, repository: inst.repository)
       )
+      inst2 = insert(:installation, user: user)
       c = insert(:chart_installation, installation: inst, chart: chart, version: vsn)
       oidc = insert(:oidc_provider, installation: inst)
 
@@ -178,6 +179,7 @@ defmodule Core.Services.ClustersTest do
 
       assert res.owner_id == sa.id
 
+      assert Repositories.get_installation(sa.id, inst2.repository_id)
       new_inst = Repositories.get_installation(sa.id, inst.repository_id)
       assert new_inst.track_tag == inst.track_tag
       assert new_inst.auto_upgrade == inst.auto_upgrade

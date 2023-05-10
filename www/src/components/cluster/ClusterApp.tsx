@@ -11,8 +11,6 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { Repository } from '../../generated/graphql'
 import { MoreMenu } from '../account/MoreMenu'
 
-import ClusterAppHealth from './ClusterAppHealth'
-
 type ClusterAppProps = {
   app: Repository
   consoleUrl?: string | null
@@ -21,7 +19,7 @@ type ClusterAppProps = {
 
 export function ClusterApp({
   app: {
-    name, icon, darkIcon, installation,
+    name, icon, darkIcon,
   },
   consoleUrl,
   last,
@@ -71,10 +69,10 @@ export function ClusterApp({
         {name}
       </Span>
       <Flex grow={1} />
-      <ClusterAppHealth
+      {/* <ClusterAppHealth
         pingedAt={installation?.pingedAt}
         marginHorizontal="xsmall"
-      />
+      /> */}
       <MoreMenu
         onSelectionChange={selectedKey => menuItems[selectedKey]?.onSelect()}
         floating

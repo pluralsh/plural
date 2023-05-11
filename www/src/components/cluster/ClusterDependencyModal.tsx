@@ -29,6 +29,14 @@ export function ClusterDependencyModal({ open, setOpen, destination }: ClusterDe
     onCompleted: () => close(),
   })
 
+  const filterSources = useCallback((s: Cluster) => {
+    const d = destination
+
+    return s.dependency?.dependency?.id !== d.id // Avoid circular dependencies between clusters.
+    && s.id !== d?.id // Source cluster has to be different than destination cluster.
+    && s.provider === d?.provider // Clusters must use the same provider.
+  }, [destination])
+
   return (
     <Modal
       portal
@@ -69,7 +77,7 @@ export function ClusterDependencyModal({ open, setOpen, destination }: ClusterDe
         <ClusterPicker
           cluster={source}
           setCluster={setSource}
-          filter={({ id, provider }: Cluster) => id !== destination?.id && provider === destination?.provider}
+          filter={filterSources}
           heading="Promotion source"
           showHealthStatus
         />

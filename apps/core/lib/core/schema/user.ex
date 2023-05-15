@@ -237,6 +237,7 @@ defmodule Core.Schema.User do
     model
     |> cast(attrs, [:name, :email])
     |> cast_assoc(:impersonation_policy)
+    |> add_name(model)
     |> add_email(model)
     |> validate_length(:email,    max: 255)
     |> validate_length(:name,     max: 255)
@@ -246,6 +247,12 @@ defmodule Core.Schema.User do
     |> validate_required([:name, :email])
     |> hash_password()
   end
+
+  defp add_name(changeset, %__MODULE__{name: nil}) do
+    name = get_field(changeset, :name)
+    put_new_change(changeset, :name, fn -> Core.random_phrase(3) end)
+  end
+  defp add_name(changeset, _), do: changeset
 
   defp add_email(changeset, %__MODULE__{email: nil}) do
     name = get_field(changeset, :name)

@@ -55,7 +55,7 @@ export const ClusterList = memo(({ columns, ...props }: ClustersListProps) => {
         },
       }
     }),
-  [clusters])
+  [clusters, me.id])
 
   if (isEmpty(clusters)) return <ClusterListEmptyState />
 

@@ -15,7 +15,7 @@ import {
   P,
   Switch,
 } from 'honorable'
-import { capitalize, isEmpty } from 'lodash'
+import { isEmpty } from 'lodash'
 import { useEffect, useMemo, useState } from 'react'
 import { useMutation } from '@apollo/client'
 

@@ -122,6 +122,12 @@ defmodule Core.Services.Clusters do
     with {:ok, source} <- authorize(source, user),
          {:ok, %{owner: dest_owner} = dest} <- authorize(dest, user) do
       start_transaction()
+      |> add_operation(:check, fn _ ->
+        case Core.Repo.get_by(ClusterDependency, dependency_id: dest.id, cluster_id: source.id) do
+          nil -> {:ok, :pass}
+          _ -> {:error, "the destination cluster is already a dependency of the source cluster"}
+        end
+      end)
       |> add_operation(:dep, fn _ ->
         %ClusterDependency{}
         |> ClusterDependency.changeset(%{dependency_id: source.id, cluster_id: dest.id})

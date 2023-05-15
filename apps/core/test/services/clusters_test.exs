@@ -87,6 +87,20 @@ defmodule Core.Services.ClustersTest do
       assert_receive {:event, %PubSub.ClusterDependencyCreated{item: ^dep, actor: ^user}}
     end
 
+    test "a user cannot create a circular dependency" do
+      user = insert(:user)
+      sa = insert(:user, service_account: true, account: user.account)
+      insert(:impersonation_policy_binding,
+        policy: build(:impersonation_policy, user: sa),
+        user: user
+      )
+      dest   = insert(:cluster, owner: user)
+      source = insert(:cluster, owner: sa)
+      insert(:cluster_dependency, cluster: source, dependency: dest)
+
+      {:error, "the destination" <> _} = Clusters.create_dependency(source, dest, user)
+    end
+
     test "a user cannot create a dependency on inaccessible clusters" do
       user = insert(:user)
       sa = insert(:user, service_account: true, account: user.account)

@@ -1,10 +1,5 @@
 import { Flex, Span } from 'honorable'
-import {
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
+import { useContext, useEffect, useMemo, useState } from 'react'
 import {
   CloudIcon,
   InfoOutlineIcon,
@@ -26,7 +21,7 @@ function ProviderSelection() {
   const [path, setPath] = useState(cloud?.type)
   const isValid = useMemo(() => path !== undefined, [path])
 
-  useEffect(() => setCloud(c => ({ ...c, type: path })), [path, setCloud])
+  useEffect(() => setCloud((c) => ({ ...c, type: path })), [path, setCloud])
   useEffect(() => setValid(isValid), [setValid, isValid])
 
   return (
@@ -38,13 +33,15 @@ function ProviderSelection() {
         <CloudOption
           data-phid="select-cloud-shell"
           selected={path === CloudType.Cloud || path === CloudType.Local}
-          onClick={() => (!path || path === CloudType.Demo) && setPath(CloudType.Cloud)}
-          icon={(
+          onClick={() =>
+            (!path || path === CloudType.Demo) && setPath(CloudType.Cloud)
+          }
+          icon={
             <CloudIcon
               size={40}
               color="text-light"
             />
-          )}
+          }
           header="Use your own cloud"
           description="Connect your own cloud credentials and spin up your own cluster."
         />
@@ -53,13 +50,17 @@ function ProviderSelection() {
           selected={path === CloudType.Demo}
           onClick={() => setPath(CloudType.Demo)}
           disabled={me?.demoed}
-          tooltip={me?.demoed ? 'You have reached the maximum number of demo environment usage.' : undefined}
-          icon={(
+          tooltip={
+            me?.demoed
+              ? 'You have reached the maximum number of demo environment usage.'
+              : undefined
+          }
+          icon={
             <img
               src={GCPLogoIcon}
               width={40}
             />
-          )}
+          }
           header="Try free demo"
           description="A six-hour GCP sandbox to help get you testdrive Plural."
         />
@@ -73,7 +74,9 @@ function ProviderSelection() {
           <Radio
             value={CloudType.Cloud.toString()}
             checked={path === CloudType.Cloud}
-            onChange={({ target: { checked } }: any) => checked && setPath(CloudType.Cloud)}
+            onChange={({ target: { checked } }: any) =>
+              checked && setPath(CloudType.Cloud)
+            }
           >
             <Flex gap="small">
               <Span>Use our cloud shell (quick and easy)</Span>
@@ -85,7 +88,9 @@ function ProviderSelection() {
           <Radio
             value={CloudType.Local.toString()}
             checked={path === CloudType.Local}
-            onChange={({ target: { checked } }: any) => checked && setPath(CloudType.Local)}
+            onChange={({ target: { checked } }: any) =>
+              checked && setPath(CloudType.Local)
+            }
           >
             <Flex gap="small">
               <Span>Install the CLI on your local machine (most secure)</Span>

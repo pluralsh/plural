@@ -9,12 +9,7 @@ import {
   Tooltip,
   WrapWithIf,
 } from '@pluralsh/design-system'
-import {
-  Div,
-  Flex,
-  P,
-  Switch,
-} from 'honorable'
+import { Div, Flex, P, Switch } from 'honorable'
 import { isEmpty } from 'lodash'
 import { useEffect, useMemo, useState } from 'react'
 import { useMutation } from '@apollo/client'
@@ -26,12 +21,17 @@ import { AppHeaderActions } from '../AppHeaderActions'
 
 export function Upgrade() {
   const { installation, upgradeChannels = [] } = useAppContext()
-  const [autoUpgrade, setAutoUpgrade] = useState(installation?.autoUpgrade || false)
+  const [autoUpgrade, setAutoUpgrade] = useState(
+    installation?.autoUpgrade || false
+  )
   const [trackTag, setTrackTag] = useState(installation?.trackTag)
   const [mutation, { loading, error }] = useMutation(UPDATE_INSTALLATION, {
     variables: { id: installation?.id, attributes: { trackTag, autoUpgrade } },
   })
-  const hasUpgradeChannels = useMemo(() => !isEmpty(upgradeChannels), [upgradeChannels])
+  const hasUpgradeChannels = useMemo(
+    () => !isEmpty(upgradeChannels),
+    [upgradeChannels]
+  )
 
   useEffect(() => {
     if (!autoUpgrade) setTrackTag(undefined)
@@ -81,15 +81,19 @@ export function Upgrade() {
           <Select
             label="Select upgrade channel"
             selectedKey={trackTag}
-            onSelectionChange={t => setTrackTag(`${t}`)}
+            onSelectionChange={(t) => setTrackTag(`${t}`)}
           >
-            {upgradeChannels.flatMap(t => (t ? [(
-              <ListBoxItem
-                key={t}
-                label={t}
-                textValue={t}
-              />
-            )] : []))}
+            {upgradeChannels.flatMap((t) =>
+              t
+                ? [
+                    <ListBoxItem
+                      key={t}
+                      label={t}
+                      textValue={t}
+                    />,
+                  ]
+                : []
+            )}
           </Select>
         )}
         {error && (
@@ -103,8 +107,9 @@ export function Upgrade() {
             severity="warning"
             title="Be careful downgrading applications"
           >
-            Changing to an upgrade channel that can downgrade an application can cause unexpected behavior,
-            especially for apps that involve database migrations Plural cannot fully control.
+            Changing to an upgrade channel that can downgrade an application can
+            cause unexpected behavior, especially for apps that involve database
+            migrations Plural cannot fully control.
           </Callout>
         </Flex>
         <Divider

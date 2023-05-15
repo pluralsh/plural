@@ -39,7 +39,9 @@ const toSerializableSection = (section: Section): Partial<Section> => ({
   state: section.state,
 })
 
-const toSerializableContext = (context: ContextProps): SerializableContextProps => ({
+const toSerializableContext = (
+  context: ContextProps
+): SerializableContextProps => ({
   valid: context.valid,
   scm: context.scm,
   workspace: context.workspace,
@@ -48,7 +50,6 @@ const toSerializableContext = (context: ContextProps): SerializableContextProps 
     provider: context?.cloud?.provider,
   },
   section: toSerializableSection(context.section) as Section,
-
 })
 
 const OnboardingContext = createContext<ContextProps>({} as ContextProps)

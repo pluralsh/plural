@@ -12,20 +12,25 @@ const CLOUDS = Object.values(CloudProvider)
 const GROWTHBOOK_AZURE_CLOUD_KEY = 'azure-cloud-shell'
 
 interface ProviderItem {
-  key: string,
+  key: string
   label: string
 }
 
 function CloudCredentials() {
   const { cloud, setCloud } = useContext(OnboardingContext)
-  const [provider, setProvider] = useState<CloudProvider>(cloud?.provider || CloudProvider.AWS)
-  const providers = (growthbook.isOn(GROWTHBOOK_AZURE_CLOUD_KEY) ? CLOUDS : CLOUDS.filter(c => c !== CloudProvider.Azure))
-    .map<ProviderItem>(c => ({
-      key: c,
-      label: CloudProviderDisplayName[c],
-    }))
+  const [provider, setProvider] = useState<CloudProvider>(
+    cloud?.provider || CloudProvider.AWS
+  )
+  const providers = (
+    growthbook.isOn(GROWTHBOOK_AZURE_CLOUD_KEY)
+      ? CLOUDS
+      : CLOUDS.filter((c) => c !== CloudProvider.Azure)
+  ).map<ProviderItem>((c) => ({
+    key: c,
+    label: CloudProviderDisplayName[c],
+  }))
 
-  useEffect(() => setCloud(c => ({ ...c, provider })), [provider, setCloud])
+  useEffect(() => setCloud((c) => ({ ...c, provider })), [provider, setCloud])
 
   return (
     <>
@@ -33,9 +38,9 @@ function CloudCredentials() {
         <Select
           defaultOpen={false}
           selectedKey={provider}
-          onSelectionChange={key => setProvider(key as CloudProvider)}
+          onSelectionChange={(key) => setProvider(key as CloudProvider)}
         >
-          {providers.map(provider => (
+          {providers.map((provider) => (
             <ListBoxItem
               key={provider.key}
               label={provider.label}

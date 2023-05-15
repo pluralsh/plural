@@ -3,7 +3,11 @@ import { Button } from '@pluralsh/design-system'
 import { useContext, useMemo } from 'react'
 
 import { useSectionState } from '../../context/hooks'
-import { CloudType, ConfigureCloudSectionState, CreateCloudShellSectionState } from '../../context/types'
+import {
+  CloudType,
+  ConfigureCloudSectionState,
+  CreateCloudShellSectionState,
+} from '../../context/types'
 import { OnboardingContext } from '../../context/onboarding'
 
 import { WorkspaceConfiguration } from './WorkspaceConfiguration'
@@ -42,9 +46,11 @@ function WorkspaceStep({ onBack, onNext }) {
               secondary
               onClick={() => {
                 onBack()
-                if (cloud?.type === CloudType.Cloud) setSectionState(ConfigureCloudSectionState.CloudConfiguration)
+                if (cloud?.type === CloudType.Cloud)
+                  setSectionState(ConfigureCloudSectionState.CloudConfiguration)
               }}
-            >Back
+            >
+              Back
             </Button>
             <Button
               data-phid="cont-from-workspace"
@@ -53,7 +59,8 @@ function WorkspaceStep({ onBack, onNext }) {
                 setSectionState(CreateCloudShellSectionState.Summary)
               }}
               disabled={!valid}
-            >Continue
+            >
+              Continue
             </Button>
           </Flex>
         </Flex>

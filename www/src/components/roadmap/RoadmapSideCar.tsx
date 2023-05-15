@@ -1,9 +1,4 @@
-import {
-  Button,
-  Div,
-  Flex,
-  P,
-} from 'honorable'
+import { Button, Div, Flex, P } from 'honorable'
 import {
   ArrowTopRightIcon,
   DiscordIcon,
@@ -24,7 +19,7 @@ function RoadmapSideCar(props: any) {
         as="a"
         target="_blank"
         href="https://github.com/pluralsh/plural/issues/new/choose"
-        endIcon={(<ArrowTopRightIcon />)}
+        endIcon={<ArrowTopRightIcon />}
       >
         Roadmap request
       </Button>
@@ -56,9 +51,7 @@ function RoadmapSideCar(props: any) {
             href="https://docs.plural.sh"
             width="100%"
             justifyContent="flex-start"
-            startIcon={(
-              <ScrollIcon />
-            )}
+            startIcon={<ScrollIcon />}
           >
             Docs
           </Button>
@@ -71,9 +64,7 @@ function RoadmapSideCar(props: any) {
             href="https://discord.gg/pluralsh"
             width="100%"
             justifyContent="flex-start"
-            startIcon={(
-              <DiscordIcon />
-            )}
+            startIcon={<DiscordIcon />}
           >
             Discord
           </Button>
@@ -86,9 +77,7 @@ function RoadmapSideCar(props: any) {
             href="https://github.com/pluralsh"
             width="100%"
             justifyContent="flex-start"
-            startIcon={(
-              <GitHubLogoIcon />
-            )}
+            startIcon={<GitHubLogoIcon />}
           >
             GitHub
           </Button>

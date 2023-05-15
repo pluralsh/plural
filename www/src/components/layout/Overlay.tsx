@@ -23,13 +23,13 @@ const getTransitionProps = (isOpen: boolean) => ({
   leave: { opacity: 0 /* , backdropFilter: 'blur(0px)' */ },
   config: isOpen
     ? {
-      easing: easings.easeOutSine,
-      duration: 100,
-    }
+        easing: easings.easeOutSine,
+        duration: 100,
+      }
     : {
-      easing: easings.easeInSine,
-      duration: 50,
-    },
+        easing: easings.easeInSine,
+        duration: 50,
+      },
 })
 
 const OverlayBG = styled(animated.div)(({ theme }) => ({
@@ -44,12 +44,14 @@ const OverlayBG = styled(animated.div)(({ theme }) => ({
 
 export const ContentOverlay = () => {
   const showOverlay = !!useContext(OverlayContext)?.showOverlay
-  const transitionProps = useMemo(() => getTransitionProps(showOverlay),
-    [showOverlay])
+  const transitionProps = useMemo(
+    () => getTransitionProps(showOverlay),
+    [showOverlay]
+  )
 
   const transitions = useTransition(showOverlay ? [true] : [], transitionProps)
 
-  return transitions(styles => <OverlayBG style={{ ...styles }} />)
+  return transitions((styles) => <OverlayBG style={{ ...styles }} />)
 }
 
 type OverlayContextT = {
@@ -59,29 +61,38 @@ type OverlayContextT = {
 
 const OverlayContext = createContext<OverlayContextT | null>(null)
 
-const activeOverlaysReducer = produce((activeOverlays: Record<string, boolean>,
-  { id, show }: { id: string; show: boolean }) => {
-  if (show) {
-    activeOverlays[id] = true
-  }
-  else {
-    delete activeOverlays[id]
-  }
+const activeOverlaysReducer = produce(
+  (
+    activeOverlays: Record<string, boolean>,
+    { id, show }: { id: string; show: boolean }
+  ) => {
+    if (show) {
+      activeOverlays[id] = true
+    } else {
+      delete activeOverlays[id]
+    }
 
-  return activeOverlays
-})
+    return activeOverlays
+  }
+)
 
-export function OverlayContextProvider(props: Omit<ComponentProps<typeof OverlayContext.Provider>, 'value'>) {
+export function OverlayContextProvider(
+  props: Omit<ComponentProps<typeof OverlayContext.Provider>, 'value'>
+) {
   const [activeOverlays, dispatch] = useReducer(activeOverlaysReducer, {})
 
-  const setShowOverlay = useCallback((id: string, show: boolean) => dispatch({ id, show }),
-    [])
+  const setShowOverlay = useCallback(
+    (id: string, show: boolean) => dispatch({ id, show }),
+    []
+  )
 
-  const value = useMemo(() => ({
-    setShowOverlay,
-    showOverlay: Object.entries(activeOverlays).length !== 0,
-  }),
-  [activeOverlays, setShowOverlay])
+  const value = useMemo(
+    () => ({
+      setShowOverlay,
+      showOverlay: Object.entries(activeOverlays).length !== 0,
+    }),
+    [activeOverlays, setShowOverlay]
+  )
 
   return (
     <OverlayContext.Provider
@@ -96,7 +107,9 @@ export const useContentOverlay = (show: boolean) => {
   const overlayCtx = useContext(OverlayContext)
 
   if (!overlayCtx) {
-    throw Error('useContentOverlay() must be used inside an <OverlayContextProvider />')
+    throw Error(
+      'useContentOverlay() must be used inside an <OverlayContextProvider />'
+    )
   }
   useEffect(() => {
     overlayCtx.setShowOverlay(id, show)

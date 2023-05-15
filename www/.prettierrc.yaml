@@ -1,0 +1,10 @@
+trailingComma: 'es5'
+tabWidth: 2
+semi: false
+singleQuote: true
+singleAttributePerLine: true
+bracketSpacing: true
+overrides:
+  - files: '*.mdpart'
+    options:
+      parser: 'markdown'

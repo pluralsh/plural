@@ -19,7 +19,11 @@ function AWS({ props, setProps, setValid }) {
         label="Access Key ID"
         width="100%"
       >
-        <Input onChange={({ target: { value } }) => setProps(props => ({ aws: { ...props.aws, accessKey: value } }))} />
+        <Input
+          onChange={({ target: { value } }) =>
+            setProps((props) => ({ aws: { ...props.aws, accessKey: value } }))
+          }
+        />
       </FormField>
 
       <FormField
@@ -27,7 +31,9 @@ function AWS({ props, setProps, setValid }) {
         width="100%"
       >
         <Input
-          onChange={({ target: { value } }) => setProps(props => ({ aws: { ...props.aws, secretKey: value } }))}
+          onChange={({ target: { value } }) =>
+            setProps((props) => ({ aws: { ...props.aws, secretKey: value } }))
+          }
           type="password"
         />
       </FormField>

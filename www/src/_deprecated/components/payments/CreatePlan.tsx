@@ -1,13 +1,6 @@
 import { useCallback, useState } from 'react'
 import { useMutation } from '@apollo/client'
-import {
-  Box,
-  Layer,
-  RangeSelector,
-  Stack,
-  Text,
-  TextInput,
-} from 'grommet'
+import { Box, Layer, RangeSelector, Stack, Text, TextInput } from 'grommet'
 import {
   Button,
   HoveredBackground,
@@ -33,16 +26,21 @@ import { CREATE_PLAN } from './queries'
 import { hover } from './Plan'
 
 function LineItem({
-  item: { cost, name, dimension }, included, state, setState,
+  item: { cost, name, dimension },
+  included,
+  state,
+  setState,
 }: any) {
-  const { quantity } = included.find(inc => inc.dimension === dimension)
+  const { quantity } = included.find((inc) => inc.dimension === dimension)
 
   function removeItem() {
     return {
       ...state,
       lineItems: {
-        items: state.lineItems.items.filter(li => li.dimension !== dimension),
-        included: state.lineItems.included.filter(inc => inc.dimension !== dimension),
+        items: state.lineItems.items.filter((li) => li.dimension !== dimension),
+        included: state.lineItems.included.filter(
+          (inc) => inc.dimension !== dimension
+        ),
       },
     }
   }
@@ -86,9 +84,12 @@ function Feature({ name, description, removeFeature }: any) {
         <Text
           size="small"
           weight={500}
-        >{name}
+        >
+          {name}
         </Text>
-        <Text size="small"><i>{description}</i></Text>
+        <Text size="small">
+          <i>{description}</i>
+        </Text>
       </Box>
       <HoveredBackground>
         <Box
@@ -104,9 +105,7 @@ function Feature({ name, description, removeFeature }: any) {
   )
 }
 
-function NumericInput({
-  value, onChange, placeholder, ...props
-}: any) {
+function NumericInput({ value, onChange, placeholder, ...props }: any) {
   return (
     <TextInput
       {...props}
@@ -117,8 +116,7 @@ function NumericInput({
 
         if (parsed === parsed) {
           onChange(parsed)
-        }
-        else {
+        } else {
           onChange(null)
         }
       }}
@@ -131,24 +129,33 @@ function DollarInput({ value, onChange, ...props }: any) {
     <NumericInput
       {...props}
       icon={<FaDollarSign size="12px" />}
-      value={value && (value / 100)}
-      onChange={v => onChange(v * 100)}
+      value={value && value / 100}
+      onChange={(v) => onChange(v * 100)}
     />
   )
 }
 
-function FeatureCreator({
-  state, setState, setDisplay, loading,
-}: any) {
+function FeatureCreator({ state, setState, setDisplay, loading }: any) {
   const [feature, setFeature] = useState({ name: '', description: '' })
-  const { metadata: { features } } = state
+  const {
+    metadata: { features },
+  } = state
 
   function addFeature() {
-    return { ...state, metadata: { ...state.metadata, features: [...features, feature] } }
+    return {
+      ...state,
+      metadata: { ...state.metadata, features: [...features, feature] },
+    }
   }
 
   function removeFeature(name) {
-    return { ...state, metadata: { ...state.metadata, features: features.filter(f => f.name !== name) } }
+    return {
+      ...state,
+      metadata: {
+        ...state.metadata,
+        features: features.filter((f) => f.name !== name),
+      },
+    }
   }
 
   return (
@@ -167,23 +174,24 @@ function FeatureCreator({
           fill="vertical"
           pad="medium"
         >
-          {features.length > 0
-            ? features.map(feature => (
+          {features.length > 0 ? (
+            features.map((feature) => (
               <Feature
                 key={feature.name}
                 {...feature}
                 removeFeature={removeFeature}
               />
-            )) : (
-              <Box>
-                <Text
-                  size="small"
-                  weight={500}
-                >
-                  No features created yet
-                </Text>
-              </Box>
-            )}
+            ))
+          ) : (
+            <Box>
+              <Text
+                size="small"
+                weight={500}
+              >
+                No features created yet
+              </Text>
+            </Box>
+          )}
         </Box>
         <Box
           gap="small"
@@ -193,14 +201,18 @@ function FeatureCreator({
             <TextInput
               placeholder="a name"
               value={feature.name}
-              onChange={({ target: { value } }) => setFeature({ ...feature, name: value })}
+              onChange={({ target: { value } }) =>
+                setFeature({ ...feature, name: value })
+              }
             />
           </LabeledInput>
           <LabeledInput label="2. Add a small description of its purpose">
             <TextInput
               placeholder="description"
               value={feature.description}
-              onChange={({ target: { value } }) => setFeature({ ...feature, description: value })}
+              onChange={({ target: { value } }) =>
+                setFeature({ ...feature, description: value })
+              }
             />
           </LabeledInput>
         </Box>
@@ -227,9 +239,7 @@ function FeatureCreator({
   )
 }
 
-function ItemCreator({
-  state, setState, setDisplay, loading,
-}: any) {
+function ItemCreator({ state, setState, setDisplay, loading }: any) {
   const [lineItem, setLineItem] = useState({
     name: '',
     dimension: '',
@@ -237,19 +247,27 @@ function ItemCreator({
     cost: 500,
     type: PlanType.LICENSED,
   })
-  const { period, lineItems: { items, included } } = state
+  const {
+    period,
+    lineItems: { items, included },
+  } = state
 
   function addLineItem() {
-    const {
-      name, dimension, cost, type,
-    } = lineItem
+    const { name, dimension, cost, type } = lineItem
 
     return {
       ...state,
       lineItems: {
-        items: [...items, {
-          name, dimension, period, cost, type,
-        }],
+        items: [
+          ...items,
+          {
+            name,
+            dimension,
+            period,
+            cost,
+            type,
+          },
+        ],
         included: [...included, { dimension, quantity: lineItem.included }],
       },
     }
@@ -271,8 +289,8 @@ function ItemCreator({
           fill="vertical"
           pad="medium"
         >
-          {items.length > 0
-            ? items.map(item => (
+          {items.length > 0 ? (
+            items.map((item) => (
               <LineItem
                 key={item.dimension}
                 item={item}
@@ -280,16 +298,17 @@ function ItemCreator({
                 state={state}
                 setState={setState}
               />
-            )) : (
-              <Box>
-                <Text
-                  size="small"
-                  weight={500}
-                >
-                  No line items created yet
-                </Text>
-              </Box>
-            )}
+            ))
+          ) : (
+            <Box>
+              <Text
+                size="small"
+                weight={500}
+              >
+                No line items created yet
+              </Text>
+            </Box>
+          )}
         </Box>
         <Box
           gap="small"
@@ -299,35 +318,49 @@ function ItemCreator({
             <TextInput
               placeholder="a good name"
               value={lineItem.name}
-              onChange={({ target: { value } }) => setLineItem({ ...lineItem, name: value })}
+              onChange={({ target: { value } }) =>
+                setLineItem({ ...lineItem, name: value })
+              }
             />
           </LabeledInput>
           <LabeledInput label="2. Name of the type of usage it represents (eg users/storage)">
             <TextInput
               placeholder="user"
               value={lineItem.dimension}
-              onChange={({ target: { value } }) => setLineItem({ ...lineItem, dimension: value })}
+              onChange={({ target: { value } }) =>
+                setLineItem({ ...lineItem, dimension: value })
+              }
             />
           </LabeledInput>
           <LabeledInput label="3. Amount included in the base plan">
             <TextInput
               placeholder="user"
               value={`${lineItem.included}`}
-              onChange={({ target: { value } }) => setLineItem({ ...lineItem, included: parseInt(value) })}
+              onChange={({ target: { value } }) =>
+                setLineItem({ ...lineItem, included: parseInt(value) })
+              }
             />
           </LabeledInput>
           <LabeledInput label="4. Cost per unit">
             <DollarInput
               value={lineItem.cost}
-              onChange={cost => setLineItem({ ...lineItem, cost })}
+              onChange={(cost) => setLineItem({ ...lineItem, cost })}
             />
           </LabeledInput>
           <LabeledInput label="5. Billing type for the line item">
             <Select
               size="small"
-              value={{ value: lineItem.type, label: lineItem.type.toLocaleLowerCase() }}
-              options={Object.keys(PlanType).map(t => ({ value: t, label: t.toLowerCase() }))}
-              onChange={({ value }) => setLineItem({ ...lineItem, type: value })}
+              value={{
+                value: lineItem.type,
+                label: lineItem.type.toLocaleLowerCase(),
+              }}
+              options={Object.keys(PlanType).map((t) => ({
+                value: t,
+                label: t.toLowerCase(),
+              }))}
+              onChange={({ value }) =>
+                setLineItem({ ...lineItem, type: value })
+              }
             />
           </LabeledInput>
         </Box>
@@ -354,12 +387,11 @@ function ItemCreator({
   )
 }
 
-function PlanForm({
-  state, setState, setDisplay, loading,
-}: any) {
-  const updatePeriod = period => deepUpdate({ ...state, period },
-    'lineItems.items',
-    items => items.map(item => ({ ...item, period })))
+function PlanForm({ state, setState, setDisplay, loading }: any) {
+  const updatePeriod = (period) =>
+    deepUpdate({ ...state, period }, 'lineItems.items', (items) =>
+      items.map((item) => ({ ...item, period }))
+    )
 
   return (
     <Box
@@ -371,21 +403,23 @@ function PlanForm({
         <TextInput
           placeholder="a good name"
           value={state.name}
-          onChange={({ target: { value } }) => setState({ ...state, name: value })}
+          onChange={({ target: { value } }) =>
+            setState({ ...state, name: value })
+          }
         />
       </LabeledInput>
       <LabeledInput label="2. Give it a base cost">
         <DollarInput
           placeholder="Cost in dollars"
           value={state.cost}
-          onChange={cost => setState({ ...state, cost })}
+          onChange={(cost) => setState({ ...state, cost })}
         />
       </LabeledInput>
       <LabeledInput label="3. Give it a billing period (monthly/yearly)">
         <Select
           size="small"
           value={{ value: state.period, label: state.period }}
-          options={['monthly', 'yearly'].map(v => ({ value: v, label: v }))}
+          options={['monthly', 'yearly'].map((v) => ({ value: v, label: v }))}
           onChange={({ value }) => setState(updatePeriod(value))}
         />
       </LabeledInput>
@@ -405,7 +439,10 @@ function PlanForm({
   )
 }
 
-export function ServiceLevel({ level: { minSeverity, maxSeverity, responseTime }, deleteLevel }: any) {
+export function ServiceLevel({
+  level: { minSeverity, maxSeverity, responseTime },
+  deleteLevel,
+}: any) {
   return (
     <Box
       direction="row"
@@ -418,7 +455,8 @@ export function ServiceLevel({ level: { minSeverity, maxSeverity, responseTime }
       <Text
         size="small"
         weight={500}
-      >response time:
+      >
+        response time:
       </Text>
       <Text size="small">{responseTime}</Text>
       {deleteLevel && (
@@ -437,15 +475,21 @@ export function ServiceLevel({ level: { minSeverity, maxSeverity, responseTime }
 }
 
 export function SlaForm({
-  attributes, setAttributes, serviceLevel: { minSeverity, maxSeverity, responseTime }, setServiceLevel,
+  attributes,
+  setAttributes,
+  serviceLevel: { minSeverity, maxSeverity, responseTime },
+  setServiceLevel,
 }: any) {
-  const deleteSla = useCallback(({ minSeverity, maxSeverity }) => {
-    const serviceLevels = attributes.serviceLevels.filter(l => (
-      l.minSeverity !== minSeverity || l.maxSeverity !== maxSeverity
-    ))
+  const deleteSla = useCallback(
+    ({ minSeverity, maxSeverity }) => {
+      const serviceLevels = attributes.serviceLevels.filter(
+        (l) => l.minSeverity !== minSeverity || l.maxSeverity !== maxSeverity
+      )
 
-    setAttributes({ ...attributes, serviceLevels })
-  }, [attributes, setAttributes])
+      setAttributes({ ...attributes, serviceLevels })
+    },
+    [attributes, setAttributes]
+  )
 
   return (
     <Box
@@ -458,13 +502,15 @@ export function SlaForm({
         gap="xsmall"
         width="50%"
       >
-        {attributes.serviceLevels.map(({ minSeverity, maxSeverity, responseTime }) => (
-          <ServiceLevel
-            key={`${minSeverity}:${maxSeverity}`}
-            level={{ minSeverity, maxSeverity, responseTime }}
-            deleteLevel={deleteSla}
-          />
-        ))}
+        {attributes.serviceLevels.map(
+          ({ minSeverity, maxSeverity, responseTime }) => (
+            <ServiceLevel
+              key={`${minSeverity}:${maxSeverity}`}
+              level={{ minSeverity, maxSeverity, responseTime }}
+              deleteLevel={deleteSla}
+            />
+          )
+        )}
       </Box>
       <Box
         width="50%"
@@ -476,7 +522,7 @@ export function SlaForm({
               direction="row"
               justify="between"
             >
-              {[0, 1, 2, 3, 4, 5].map(value => (
+              {[0, 1, 2, 3, 4, 5].map((value) => (
                 <Box
                   key={value}
                   pad="small"
@@ -495,7 +541,9 @@ export function SlaForm({
               color="border"
               values={[minSeverity, maxSeverity]}
               // @ts-expect-error
-              onChange={([minSeverity, maxSeverity]) => setServiceLevel({ responseTime, minSeverity, maxSeverity })}
+              onChange={([minSeverity, maxSeverity]) =>
+                setServiceLevel({ responseTime, minSeverity, maxSeverity })
+              }
             />
           </Stack>
         </LabeledInput>
@@ -503,9 +551,13 @@ export function SlaForm({
           <NumericInput
             placeholder="60"
             value={responseTime}
-            onChange={responseTime => setServiceLevel({
-              responseTime, minSeverity, maxSeverity,
-            })}
+            onChange={(responseTime) =>
+              setServiceLevel({
+                responseTime,
+                minSeverity,
+                maxSeverity,
+              })
+            }
           />
         </LabeledInput>
       </Box>
@@ -513,10 +565,12 @@ export function SlaForm({
   )
 }
 
-function NavigableSlaForm({
-  state, setState, mutation, loading,
-}: any) {
-  const [serviceLevel, setServiceLevel] = useState({ minSeverity: 0, maxSeverity: 3, responseTime: 30 })
+function NavigableSlaForm({ state, setState, mutation, loading }: any) {
+  const [serviceLevel, setServiceLevel] = useState({
+    minSeverity: 0,
+    maxSeverity: 3,
+    responseTime: 30,
+  })
 
   return (
     <Box
@@ -539,7 +593,12 @@ function NavigableSlaForm({
         <SecondaryButton
           label="Add service level"
           round="xsmall"
-          onClick={() => setState({ ...state, serviceLevels: [...state.serviceLevels, serviceLevel] })}
+          onClick={() =>
+            setState({
+              ...state,
+              serviceLevels: [...state.serviceLevels, serviceLevel],
+            })
+          }
         />
         <Button
           loading={loading}
@@ -554,14 +613,14 @@ function NavigableSlaForm({
 
 function FormSwitch({ display, ...rest }: any) {
   switch (display) {
-  case 'items':
-    return <ItemCreator {...rest} />
-  case 'features':
-    return <FeatureCreator {...rest} />
-  case 'slas':
-    return <NavigableSlaForm {...rest} />
-  default:
-    return <PlanForm {...rest} />
+    case 'items':
+      return <ItemCreator {...rest} />
+    case 'features':
+      return <FeatureCreator {...rest} />
+    case 'slas':
+      return <NavigableSlaForm {...rest} />
+    default:
+      return <PlanForm {...rest} />
   }
 }
 
@@ -600,7 +659,11 @@ export default function CreatePlan({ repository, setOpen }: any) {
       updateCache(cache, {
         query: REPO_Q,
         variables: { repositoryId },
-        update: prev => deepUpdate(prev, 'repository.plans', plans => [...plans, createPlan]),
+        update: (prev) =>
+          deepUpdate(prev, 'repository.plans', (plans) => [
+            ...plans,
+            createPlan,
+          ]),
       })
     },
     onCompleted: () => setOpen(false),
@@ -622,7 +685,7 @@ export default function CreatePlan({ repository, setOpen }: any) {
           pad="small"
         >
           <Steps step={display}>
-            {['plan', 'items', 'features', 'slas'].map(name => (
+            {['plan', 'items', 'features', 'slas'].map((name) => (
               <Step
                 key={name}
                 name={name}

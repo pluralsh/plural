@@ -1,13 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import {
-  Button,
-  Div,
-  Flex,
-  FlexProps,
-  H1,
-  Hr,
-} from 'honorable'
+import { Button, Div, Flex, FlexProps, H1, Hr } from 'honorable'
 import {
   ArrowTopRightIcon,
   BrowseAppsIcon,
@@ -57,8 +50,7 @@ const chipProps = {
   minHeight: 32,
 }
 
-// @ts-expect-error
-const MainContentArea = styled(Div)(() => ({
+const MainContentArea = styled(Div)((_) => ({
   display: 'flex',
   flexDirection: 'column',
   flexGrow: 1,
@@ -71,27 +63,27 @@ function SearchBar({ search, setSearch }) {
       flex="1 1 210px"
     >
       <Input
-        titleContent={(
+        titleContent={
           <>
             <BrowseAppsIcon marginRight="small" />
             Marketplace
           </>
-        )}
-        startIcon={(
+        }
+        startIcon={
           <MagnifyingGlassIcon
             size={16}
             color="icon-light"
           />
-        )}
+        }
         placeholder="Search the marketplace"
         value={search}
-        onChange={event => setSearch(event.target.value)}
+        onChange={(event) => setSearch(event.target.value)}
       />
     </Div>
   )
 }
 
-function MarketplaceRepositories({ publisher }: {publisher?: any}) {
+function MarketplaceRepositories({ publisher }: { publisher?: any }) {
   const scrollRef = useRef<HTMLDivElement>(null)
   const [searchParams, setSearchParams] = useSearchParams()
   const categories = searchParams.getAll('category')
@@ -104,19 +96,19 @@ function MarketplaceRepositories({ publisher }: {publisher?: any}) {
     loadingRepositories,
     hasMoreRepositories,
     fetchMoreRepositories,
-  ] = usePaginatedQueryHook(useMarketplaceRepositoriesQuery,
+  ] = usePaginatedQueryHook(
+    useMarketplaceRepositoriesQuery,
     {
       variables: {
         ...(publisher ? { publisherId: publisher.id } : {}),
       },
     },
-    data => data.repositories)
+    (data) => data.repositories
+  )
 
   const isFiltered = !isEmpty(categories) || !isEmpty(tags)
   const isFilteredOrSearched = isFiltered || search
-  const shouldRenderStacks
-    = growthbook.isOn('stacks')
-    && !isFilteredOrSearched
+  const shouldRenderStacks = growthbook.isOn('stacks') && !isFilteredOrSearched
 
   useEffect(() => {
     const { current } = scrollRef
@@ -125,10 +117,12 @@ function MarketplaceRepositories({ publisher }: {publisher?: any}) {
 
     function handleScroll(event) {
       if (
-        !loadingRepositories
-        && hasMoreRepositories
-        && Math.abs(event.target.scrollTop
-            - (event.target.scrollHeight - event.target.offsetHeight)) < 32
+        !loadingRepositories &&
+        hasMoreRepositories &&
+        Math.abs(
+          event.target.scrollTop -
+            (event.target.scrollHeight - event.target.offsetHeight)
+        ) < 32
       ) {
         fetchMoreRepositories()
       }
@@ -150,28 +144,45 @@ function MarketplaceRepositories({ publisher }: {publisher?: any}) {
     return <LoadingIndicator />
   }
 
-  const sortedRepositories = (orderBy(repositories,
-    ['trending', r => (r as typeof repositories[number])?.name?.toLowerCase()],
-    ['desc', 'asc']) as typeof repositories)
-    .filter(repository => (categories.length
-      ? categories.some(category => category === repository?.category?.toLowerCase()
-        || (category === 'installed' && repository?.installation)
-        || category === 'trending' && repository.trending)
-      : true))
-    .filter(repository => {
+  const sortedRepositories = (
+    orderBy(
+      repositories,
+      [
+        'trending',
+        (r) => (r as (typeof repositories)[number])?.name?.toLowerCase(),
+      ],
+      ['desc', 'asc']
+    ) as typeof repositories
+  )
+    .filter((repository) =>
+      categories.length
+        ? categories.some(
+            (category) =>
+              category === repository?.category?.toLowerCase() ||
+              (category === 'installed' && repository?.installation) ||
+              (category === 'trending' && repository.trending)
+          )
+        : true
+    )
+    .filter((repository) => {
       if (!tags.length) return true
 
-      const repositoryTags = repository?.tags?.map(t => t?.tag.toLowerCase())
+      const repositoryTags = repository?.tags?.map((t) => t?.tag.toLowerCase())
 
-      return tags.some(tag => repositoryTags?.includes(tag))
+      return tags.some((tag) => repositoryTags?.includes(tag))
     })
 
   const fuse = new Fuse(sortedRepositories, searchOptions)
 
   const resultRepositories = search
-    ? (orderBy(fuse.search(search).map(({ item }) => item),
-      ['trending', r => (r as typeof repositories[number])?.name.toLowerCase()],
-      ['desc', 'asc']) as typeof repositories)
+    ? (orderBy(
+        fuse.search(search).map(({ item }) => item),
+        [
+          'trending',
+          (r) => (r as (typeof repositories)[number])?.name.toLowerCase(),
+        ],
+        ['desc', 'asc']
+      ) as typeof repositories)
     : sortedRepositories
 
   function handleClearToken(key, value) {
@@ -179,7 +190,7 @@ function MarketplaceRepositories({ publisher }: {publisher?: any}) {
 
     setSearchParams({
       ...searchParams,
-      [key]: existing.filter(v => v !== value),
+      [key]: existing.filter((v) => v !== value),
     })
   }
 
@@ -264,7 +275,7 @@ function MarketplaceRepositories({ publisher }: {publisher?: any}) {
                     areFiltersOpen={areFiltersOpen}
                   /> */}
                 </Flex>
-                {(isFiltered) && (
+                {isFiltered && (
                   <FilterChips
                     categories={categories}
                     handleClearToken={handleClearToken}
@@ -283,14 +294,16 @@ function MarketplaceRepositories({ publisher }: {publisher?: any}) {
                 />
               </Flex>
               {shouldRenderStacks && <MarketplaceStacks />}
-              {resultRepositories?.length > 0 && !publisher && !isFilteredOrSearched && (
-                <H1
-                  subtitle1
-                  marginTop={shouldRenderStacks ? 'xlarge' : 0}
-                >
-                  All Apps
-                </H1>
-              )}
+              {resultRepositories?.length > 0 &&
+                !publisher &&
+                !isFilteredOrSearched && (
+                  <H1
+                    subtitle1
+                    marginTop={shouldRenderStacks ? 'xlarge' : 0}
+                  >
+                    All Apps
+                  </H1>
+                )}
               <RepoCardList
                 repositories={resultRepositories}
                 marginTop={publisher ? 0 : 'medium'}
@@ -328,18 +341,14 @@ function MarketplaceRepositories({ publisher }: {publisher?: any}) {
               )}
             </Div>
           </MainContentArea>
-          {!publisher && (
-            <MarketplaceSidebar isOpen={areFiltersOpen} />
-          )}
+          {!publisher && <MarketplaceSidebar isOpen={areFiltersOpen} />}
           {publisher && (
             <>
               <ResponsiveLayoutSidecarContainer
                 marginRight="large"
                 marginLeft={0}
               >
-                <PublisherSideCar
-                  publisher={publisher}
-                />
+                <PublisherSideCar publisher={publisher} />
               </ResponsiveLayoutSidecarContainer>
               <ResponsiveLayoutSpacer />
             </>
@@ -383,10 +392,10 @@ function FilterChips({
   handleClearTokens,
   ...props
 }: {
-    categories: string[],
-    handleClearToken: (key: any, value: any) => void,
-    tags: string[],
-    handleClearTokens: () => void
+  categories: string[]
+  handleClearToken: (key: any, value: any) => void
+  tags: string[]
+  handleClearTokens: () => void
 } & FlexProps) {
   return (
     <Flex
@@ -394,24 +403,28 @@ function FilterChips({
       wrap="wrap"
       {...props}
     >
-      {categories.map(category => (
+      {categories.map((category) => (
         <Chip
           {...chipProps}
           onClick={() => handleClearToken('category', category)}
-          onKeyDown={event => (event.key === 'Enter' || event.key === ' ')
-            && handleClearToken('category', category)}
+          onKeyDown={(event) =>
+            (event.key === 'Enter' || event.key === ' ') &&
+            handleClearToken('category', category)
+          }
         >
           {upperFirst(category)}
         </Chip>
       ))}
-      {tags.map(tag => (
+      {tags.map((tag) => (
         <Chip
           {...chipProps}
           onClick={() => handleClearToken('tag', tag)}
-          onKeyDown={event => (event.key === 'Enter' || event.key === ' ')
-            && handleClearToken('tag', tag)}
+          onKeyDown={(event) =>
+            (event.key === 'Enter' || event.key === ' ') &&
+            handleClearToken('tag', tag)
+          }
         >
-          {(tag)}
+          {tag}
         </Chip>
       ))}
       <Button
@@ -425,4 +438,3 @@ function FilterChips({
     </Flex>
   )
 }
-

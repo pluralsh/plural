@@ -9,15 +9,24 @@ import { ProviderConfiguration } from './ProviderConfiguration'
 
 function RepositoryStep({ data }) {
   const { section } = useContext(OnboardingContext)
-  const state: ConfigureCloudSectionState = useMemo(() => section?.state as ConfigureCloudSectionState ?? ConfigureCloudSectionState.RepositorySelection, [section?.state])
+  const state: ConfigureCloudSectionState = useMemo(
+    () =>
+      (section?.state as ConfigureCloudSectionState) ??
+      ConfigureCloudSectionState.RepositorySelection,
+    [section?.state]
+  )
 
   return (
     <Flex
       direction="column"
       gap="xlarge"
     >
-      {state === ConfigureCloudSectionState.RepositorySelection && <ProviderSelection data={data} />}
-      {state === ConfigureCloudSectionState.RepositoryConfiguration && <ProviderConfiguration />}
+      {state === ConfigureCloudSectionState.RepositorySelection && (
+        <ProviderSelection data={data} />
+      )}
+      {state === ConfigureCloudSectionState.RepositoryConfiguration && (
+        <ProviderConfiguration />
+      )}
     </Flex>
   )
 }

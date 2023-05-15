@@ -8,7 +8,14 @@ import { Tooltip } from '../../../components/utils/Tooltip'
 import { IncidentStatus, IncidentView } from './types'
 
 export function ViewOption({
-  icon, selected, view, setView, text, side, size, width,
+  icon,
+  selected,
+  view,
+  setView,
+  text,
+  side,
+  size,
+  width,
 }: any) {
   const ref = useRef<HTMLDivElement>(null)
   const [hover, setHover] = useState(false)
@@ -30,7 +37,10 @@ export function ViewOption({
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}
       >
-        {createElement(icon, selected === view ? { ...props, color: 'brand' } : props)}
+        {createElement(
+          icon,
+          selected === view ? { ...props, color: 'brand' } : props
+        )}
       </Box>
       {hover && (
         <Tooltip
@@ -44,7 +54,8 @@ export function ViewOption({
           <Text
             size="small"
             weight={500}
-          >{text}
+          >
+            {text}
           </Text>
         </Tooltip>
       )}

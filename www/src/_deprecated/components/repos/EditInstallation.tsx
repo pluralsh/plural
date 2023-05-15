@@ -10,23 +10,32 @@ import { deepUpdate, updateCache } from '../../../utils/graphql'
 // import { SectionPortal } from '../../../_deprecated/Explore'
 import { Alert, AlertStatus, GqlError } from '../../../components/utils/Alert'
 
-import { REPO_Q, UPDATE_INSTALLATION } from '../../../components/repository/packages/queries'
+import {
+  REPO_Q,
+  UPDATE_INSTALLATION,
+} from '../../../components/repository/packages/queries'
 
 function update(cache, repositoryId, installation) {
   updateCache(cache, {
     query: REPO_Q,
     variables: { repositoryId },
-    update: prev => deepUpdate(prev, 'repository.installation', () => installation),
+    update: (prev) =>
+      deepUpdate(prev, 'repository.installation', () => installation),
   })
 }
 
 export function UpdateInstallation({ installation = {} }: any) {
-  const [autoUpgrade, setAutoUpgrade] = useState(installation.autoUpgrade || false)
+  const [autoUpgrade, setAutoUpgrade] = useState(
+    installation.autoUpgrade || false
+  )
   const [trackTag, setTrackTag] = useState(installation.trackTag || '')
 
-  const [mutation, { loading, data, error }] = useMutation(UPDATE_INSTALLATION, {
-    variables: { id: installation.id, attributes: { autoUpgrade, trackTag } },
-  })
+  const [mutation, { loading, data, error }] = useMutation(
+    UPDATE_INSTALLATION,
+    {
+      variables: { id: installation.id, attributes: { autoUpgrade, trackTag } },
+    }
+  )
 
   return (
     <Box
@@ -60,7 +69,7 @@ export function UpdateInstallation({ installation = {} }: any) {
           <Box fill="horizontal">
             <Select
               value={{ value: trackTag, label: trackTag }}
-              options={TAGS.map(tag => ({ value: tag, label: tag }))}
+              options={TAGS.map((tag) => ({ value: tag, label: tag }))}
               onChange={({ value }) => setTrackTag(value)}
             />
           </Box>
@@ -84,7 +93,7 @@ export function EditInstallation({ installation, repository, onUpdate }: any) {
   const [mutation, { loading }] = useMutation(UPDATE_INSTALLATION, {
     variables: { id: installation.id, attributes: { autoUpgrade, trackTag } },
     update: (cache, { data: { updateInstallation } }) => {
-      (onUpdate || update)(cache, repository.id, updateInstallation)
+      ;(onUpdate || update)(cache, repository.id, updateInstallation)
     },
     onCompleted: () => setNotif(true),
   })
@@ -126,13 +135,13 @@ export function EditInstallation({ installation, repository, onUpdate }: any) {
             toggle
             label="Auto upgrade"
             checked={autoUpgrade}
-            onChange={e => setAutoUpgrade(e.target.checked)}
+            onChange={(e) => setAutoUpgrade(e.target.checked)}
           />
           {autoUpgrade && (
             <Box fill="horizontal">
               <Select
                 value={{ value: trackTag, label: trackTag }}
-                options={TAGS.map(tag => ({ value: tag, label: tag }))}
+                options={TAGS.map((tag) => ({ value: tag, label: tag }))}
                 onChange={({ value }) => setTrackTag(value)}
               />
             </Box>

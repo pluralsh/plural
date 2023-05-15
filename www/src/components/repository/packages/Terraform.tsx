@@ -21,7 +21,8 @@ import { INSTALL_TF, TF_Q, UNINSTALL_TF } from './queries'
 
 function TerraformInstaller({ terraformModule, version }: any) {
   const installed = terraformModule?.installation?.version.id === version.id
-  const [mutation, { error }] = useMutation(installed ? UNINSTALL_TF : INSTALL_TF,
+  const [mutation, { error }] = useMutation(
+    installed ? UNINSTALL_TF : INSTALL_TF,
     {
       variables: {
         id: installed
@@ -35,10 +36,12 @@ function TerraformInstaller({ terraformModule, version }: any) {
         updateCache(cache, {
           query: TF_Q,
           variables: { tfId: terraformModule.id },
-          update: prev => deepUpdate(prev, 'terraformModule.installation', () => ti),
+          update: (prev) =>
+            deepUpdate(prev, 'terraformModule.installation', () => ti),
         })
       },
-    })
+    }
+  )
 
   return (
     <>
@@ -119,15 +122,15 @@ export default function Terraform() {
 
   const filteredDirectory = DIRECTORY.filter(({ path }) => {
     switch (path) {
-    case '/updatequeue':
-      return !!tfInst
-    default:
-      return true
+      case '/updatequeue':
+        return !!tfInst
+      default:
+        return true
     }
   })
   const currentTab = [...filteredDirectory]
     .sort((a, b) => b.path.length - a.path.length)
-    .find(tab => pathname?.startsWith(`${pathPrefix}${tab.path}`))
+    .find((tab) => pathname?.startsWith(`${pathPrefix}${tab.path}`))
 
   return (
     <ResponsiveLayoutPage>

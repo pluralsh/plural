@@ -14,7 +14,9 @@ function BillingLayout() {
         <Flex>
           <Button
             tertiary
-            backgroundColor={pathname.endsWith('billing') ? 'fill-two' : undefined}
+            backgroundColor={
+              pathname.endsWith('billing') ? 'fill-two' : undefined
+            }
             as={Link}
             to="/account/billing"
           >
@@ -22,7 +24,9 @@ function BillingLayout() {
           </Button>
           <Button
             tertiary
-            backgroundColor={pathname.endsWith('payments') ? 'fill-two' : undefined}
+            backgroundColor={
+              pathname.endsWith('payments') ? 'fill-two' : undefined
+            }
             as={Link}
             to="/account/billing/payments"
           >

@@ -33,7 +33,7 @@ export function AppDocs() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const currentDoc = docs?.find(doc => doc.id === docName)
+  const currentDoc = docs?.find((doc) => doc.id === docName)
   const location = useLocation()
 
   useEffect(() => {

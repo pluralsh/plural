@@ -10,7 +10,7 @@ import { download } from '../../../utils/file'
 
 import { FileTypes } from './types'
 
-const extension = file => file.split('.').pop()
+const extension = (file) => file.split('.').pop()
 
 function DownloadAffordance({ blob }: any) {
   return (
@@ -25,7 +25,7 @@ function DownloadAffordance({ blob }: any) {
           round="xsmall"
           pad="small"
           animation={{ type: 'fadeIn', duration: 200 }}
-          onClick={e => {
+          onClick={(e) => {
             e.preventDefault()
             download(blob)
           }}
@@ -52,12 +52,12 @@ function Image({ height, blob, filename }: any) {
           style={{
             height: !height || height === 0 ? 50 : height,
             maxHeight: 300,
-          // objectFit: 'contain'
+            // objectFit: 'contain'
           }}
           src={blob}
           alt={filename}
         />
-        {hover && (<DownloadAffordance blob={blob} />)}
+        {hover && <DownloadAffordance blob={blob} />}
       </Stack>
     </Box>
   )
@@ -98,9 +98,11 @@ function MediaFile({ file }: any) {
         direction="row"
         align="start"
       >
-        {mediaType === FileTypes.IMAGE
-          ? <Image {...file} />
-          : <Video {...file} />}
+        {mediaType === FileTypes.IMAGE ? (
+          <Image {...file} />
+        ) : (
+          <Video {...file} />
+        )}
       </Box>
     </Box>
   )
@@ -155,19 +157,18 @@ export function FileEntry({ file }: any) {
                 // @ts-expect-error
                 alt={file.filename}
               />
-            )
-              : file.mediaType === FileTypes.IMAGE ? (
-                <img
-                  src={file.blob}
-                  style={MEDIA_STYLES}
-                  alt={file.filename}
-                />
-              ) : (
-                <Icon
-                  name={file.filename}
-                  size={40}
-                />
-              )}
+            ) : file.mediaType === FileTypes.IMAGE ? (
+              <img
+                src={file.blob}
+                style={MEDIA_STYLES}
+                alt={file.filename}
+              />
+            ) : (
+              <Icon
+                name={file.filename}
+                size={40}
+              />
+            )}
           </Box>
           <Box width="100%">
             <Text size="small">{file.filename}</Text>
@@ -178,22 +179,21 @@ export function FileEntry({ file }: any) {
               <Text
                 size="xsmall"
                 color="dark-5"
-              >{filesize(file.filesize || 0)?.toString()}
+              >
+                {filesize(file.filesize || 0)?.toString()}
               </Text>
               <Text size="xsmall">{moment(file.insertedAt).fromNow()}</Text>
             </Box>
           </Box>
         </Box>
-        {hover && (<DownloadAffordance object={file.object} />)}
+        {hover && <DownloadAffordance object={file.object} />}
       </Stack>
     </Box>
   )
 }
 
 export function StandardFile({
-  file: {
-    filename, blob, insertedAt, ...file
-  },
+  file: { filename, blob, insertedAt, ...file },
 }: any) {
   const [hover, setHover] = useState(false)
 
@@ -227,7 +227,8 @@ export function StandardFile({
             <Text
               size="xsmall"
               color="dark-5"
-            >{filesize(file.filesize || 0)?.toString()}
+            >
+              {filesize(file.filesize || 0)?.toString()}
             </Text>
             <Text size="xsmall">{moment(insertedAt).fromNow()}</Text>
           </Box>
@@ -239,10 +240,10 @@ export function StandardFile({
 
 export default function File({ file }: any) {
   switch (file.mediaType) {
-  case FileTypes.IMAGE:
-  case FileTypes.VIDEO:
-    return <MediaFile file={file} />
-  default:
-    return <StandardFile file={file} />
+    case FileTypes.IMAGE:
+    case FileTypes.VIDEO:
+      return <MediaFile file={file} />
+    default:
+      return <StandardFile file={file} />
   }
 }

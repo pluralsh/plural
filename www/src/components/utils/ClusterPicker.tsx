@@ -19,19 +19,14 @@ import { isEmpty } from 'lodash'
 import { Flex } from 'honorable'
 
 import ClustersContext from '../../contexts/ClustersContext'
-import {
-  Cluster,
-  Maybe,
-  Provider,
-  UpgradeInfo,
-} from '../../generated/graphql'
+import { Cluster, Maybe, Provider, UpgradeInfo } from '../../generated/graphql'
 import ClusterHealth from '../overview/clusters/ClusterHealth'
 
 import { useCurrentUser } from '../../contexts/CurrentUserContext'
 
 import { ProviderIcon } from './ProviderIcon'
 
-type ClusterPickerReadyChipProps = {upgradeInfo?: Maybe<UpgradeInfo>[] | null}
+type ClusterPickerReadyChipProps = { upgradeInfo?: Maybe<UpgradeInfo>[] | null }
 
 function ClusterPickerReadyChip({ upgradeInfo }: ClusterPickerReadyChipProps) {
   const ready = useMemo(() => isEmpty(upgradeInfo), [upgradeInfo])
@@ -48,22 +43,22 @@ function ClusterPickerReadyChip({ upgradeInfo }: ClusterPickerReadyChipProps) {
 }
 
 type ClusterPickerProps = {
-    cluster?: Cluster | null
-    setCluster?: Dispatch<Cluster | undefined>
-    onChange?: (Cluster) => void
-    filter?: (Cluster) => boolean
-    heading?: string
-    hint?: string
-    title?: any
-    placeholder?: string
-    showUpgradeInfo?: boolean
-    showHealthStatus?: boolean
-    size?: 'small' | 'medium' | 'large'
-    disabled?: boolean
+  cluster?: Cluster | null
+  setCluster?: Dispatch<Cluster | undefined>
+  onChange?: (Cluster) => void
+  filter?: (Cluster) => boolean
+  heading?: string
+  hint?: string
+  title?: any
+  placeholder?: string
+  showUpgradeInfo?: boolean
+  showHealthStatus?: boolean
+  size?: 'small' | 'medium' | 'large'
+  disabled?: boolean
 }
 
-function findById<T extends {id: string}>(clusters: T[], id?:string | null) {
-  return clusters.find(cl => (cl?.id === id))
+function findById<T extends { id: string }>(clusters: T[], id?: string | null) {
+  return clusters.find((cl) => cl?.id === id)
 }
 
 export function ClusterPicker({
@@ -75,8 +70,10 @@ export function ClusterPicker({
 }: ClusterPickerProps) {
   const { clusters: raw } = useContext(ClustersContext)
 
-  const clusters = useMemo(() => (raw && filter ? raw.filter(filter) : raw),
-    [raw, filter])
+  const clusters = useMemo(
+    () => (raw && filter ? raw.filter(filter) : raw),
+    [raw, filter]
+  )
 
   // Update selected cluster object each time clusters will be updated.
   useEffect(() => {
@@ -86,7 +83,7 @@ export function ClusterPicker({
   return (
     <ClusterPickerBase
       clusterId={cluster?.id}
-      onChange={id => {
+      onChange={(id) => {
         const selection = findById(clusters, id)
 
         setCluster?.(selection)
@@ -99,12 +96,14 @@ export function ClusterPicker({
 }
 
 type SelectBoxCluster = Pick<Cluster, 'id' | 'name'> &
-  Partial<Pick<Cluster, 'pingedAt' | 'provider' | 'upgradeInfo'>> & {icon?: ReactNode}
+  Partial<Pick<Cluster, 'pingedAt' | 'provider' | 'upgradeInfo'>> & {
+    icon?: ReactNode
+  }
 
 type ClusterPickerInnerProps = {
   clusterId?: string | null
   clusters?: SelectBoxCluster[]
-  onChange?: (id:string) => void
+  onChange?: (id: string) => void
   heading?: string
   hint?: string
   title?: any
@@ -121,7 +120,7 @@ function ClusterProviderIcon({
 }: {
   provider?: Provider
   icon?: ReactNode
-  }) {
+}) {
   return icon ? (
     // eslint-disable-next-line react/jsx-no-useless-fragment
     <>{icon}</>
@@ -149,63 +148,69 @@ function ClusterPickerBase({
   disabled = false,
 }: ClusterPickerInnerProps) {
   clusters = clusters || []
-  const cluster = useMemo(() => clusters?.find(cl => clusterId === cl.id),
-    [clusterId, clusters])
+  const cluster = useMemo(
+    () => clusters?.find((cl) => clusterId === cl.id),
+    [clusterId, clusters]
+  )
 
   return (
     <WrapWithIf
       condition={!!heading || !!hint}
-      wrapper={(
+      wrapper={
         <FormField
           label={heading}
           hint={hint}
         />
-      )}
+      }
     >
       <Select
         label={placeholder}
         selectedKey={clusterId}
-        onSelectionChange={id => {
+        onSelectionChange={(id) => {
           onChange?.(id as string)
         }}
         size={size}
         isDisabled={disabled}
         titleContent={title}
-        leftContent={(
+        leftContent={
           <ClusterProviderIcon
             provider={cluster?.provider}
             icon={cluster?.icon}
           />
-        )}
-        rightContent={cluster && (
-          <Flex gap="xsmall">
-            {showUpgradeInfo && <ClusterPickerReadyChip upgradeInfo={cluster.upgradeInfo} />}
-            {showHealthStatus && cluster.pingedAt && (
-              <ClusterHealth
-                pingedAt={cluster.pingedAt}
-                size="small"
-                hue="lightest"
-              />
-            )}
-          </Flex>
-        )}
+        }
+        rightContent={
+          cluster && (
+            <Flex gap="xsmall">
+              {showUpgradeInfo && (
+                <ClusterPickerReadyChip upgradeInfo={cluster.upgradeInfo} />
+              )}
+              {showHealthStatus && cluster.pingedAt && (
+                <ClusterHealth
+                  pingedAt={cluster.pingedAt}
+                  size="small"
+                  hue="lightest"
+                />
+              )}
+            </Flex>
+          )
+        }
       >
-        {clusters.map(({
-          id, name, provider, pingedAt, upgradeInfo, icon,
-        }) => (
+        {clusters.map(({ id, name, provider, pingedAt, upgradeInfo, icon }) => (
           <ListBoxItem
             key={id}
             label={name}
             textValue={name}
-            leftContent={(
+            leftContent={
               <ClusterProviderIcon
                 provider={provider}
                 icon={icon}
               />
-            )}
-            rightContent={(
+            }
+            rightContent={
               <Flex gap="xsmall">
-                {showUpgradeInfo && <ClusterPickerReadyChip upgradeInfo={upgradeInfo} />}
+                {showUpgradeInfo && (
+                  <ClusterPickerReadyChip upgradeInfo={upgradeInfo} />
+                )}
                 {showHealthStatus && (
                   <ClusterHealth
                     pingedAt={pingedAt}
@@ -215,7 +220,7 @@ function ClusterPickerBase({
                   />
                 )}
               </Flex>
-            )}
+            }
           />
         ))}
       </Select>
@@ -238,9 +243,11 @@ export function userCanAdminCluster(cluster: Cluster, userId: string) {
   return cluster.owner?.id === userId || !!cluster.owner?.serviceAccount
 }
 
-export function clusterFilter(cluster: Cluster,
+export function clusterFilter(
+  cluster: Cluster,
   currentUserId: string,
-  { showCliClusters = false }) {
+  { showCliClusters = false }
+) {
   // Filter out non-cloud-shell clusters if showCliClusters is off
   if (!showCliClusters && !clusterHasCloudShell(cluster)) {
     return false
@@ -259,10 +266,10 @@ export function CloudShellClusterPicker({
   const { id: userId } = useCurrentUser()
 
   const clusters = useMemo(() => {
-    const userHasCluster = raw.some(cl => cl?.owner?.id === userId)
+    const userHasCluster = raw.some((cl) => cl?.owner?.id === userId)
 
     const clList = raw
-      ? raw.filter(cl => clusterFilter(cl, userId, { showCliClusters }))
+      ? raw.filter((cl) => clusterFilter(cl, userId, { showCliClusters }))
       : ([] as Cluster[])
 
     return [
@@ -270,12 +277,12 @@ export function CloudShellClusterPicker({
       ...(userHasCluster
         ? []
         : [
-          {
-            id: NEW_CLUSTER_ID,
-            name: 'New cluster',
-            icon: <PlusIcon size={16} />,
-          },
-        ]),
+            {
+              id: NEW_CLUSTER_ID,
+              name: 'New cluster',
+              icon: <PlusIcon size={16} />,
+            },
+          ]),
     ]
   }, [raw, showCliClusters, userId])
 

@@ -18,12 +18,15 @@ export function StripeElements({
     }
   }, [stripePublishableKey])
 
-  const elementsOptions = useMemo(() => ({
-    appearance,
-    mode: 'setup',
-    currency: 'usd',
-  } satisfies StripeElementsOptions),
-  [appearance])
+  const elementsOptions = useMemo(
+    () =>
+      ({
+        appearance,
+        mode: 'setup',
+        currency: 'usd',
+      } satisfies StripeElementsOptions),
+    [appearance]
+  )
 
   if (!stripePromise) {
     // eslint-disable-next-line react/jsx-no-useless-fragment

@@ -1,17 +1,6 @@
 import { useMutation, useQuery } from '@apollo/client'
-import {
-  A,
-  Div,
-  Flex,
-  Span,
-} from 'honorable'
-import {
-  Dispatch,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
+import { A, Div, Flex, Span } from 'honorable'
+import { Dispatch, useCallback, useEffect, useMemo, useState } from 'react'
 import { Button, ErrorIcon, Modal } from '@pluralsh/design-system'
 import IsEmpty from 'lodash/isEmpty'
 
@@ -43,7 +32,10 @@ function WelcomeModal() {
         gap="large"
       >
         <Span>Welcome to Plural!</Span>
-        <Span>Completing the install wizard will deploy your applications and give you access to your Plural Console.</Span>
+        <Span>
+          Completing the install wizard will deploy your applications and give
+          you access to your Plural Console.
+        </Span>
         <Button
           data-phid="start-install-cta"
           onClick={() => setOpen(false)}
@@ -69,33 +61,40 @@ function MissingPermissionsModal({ refetch, missing }): JSX.Element {
       open={open}
       style={{ padding: 0 }}
       onClose={() => setOpen(false)}
-      header={(
+      header={
         <Flex gap="small">
           <ErrorIcon color="icon-error" />
           <Span lineHeight="normal">cloud credentials error</Span>
         </Flex>
-      )}
-      actions={(
+      }
+      actions={
         <Flex gap="medium">
           <Button
             secondary
             onClick={() => setOpen(false)}
-          >Cancel
+          >
+            Cancel
           </Button>
           <Button
             onClick={() => rerun()}
             loading={loading}
-          >Rerun permission check
+          >
+            Rerun permission check
           </Button>
         </Flex>
-      )}
+      }
     >
       <Flex
         direction="column"
         gap="large"
       >
-        <Span>We’ve detected you’re missing the following required credentials for your cloud account: <b>{missing.join(', ')}</b>.</Span>
-        <Span>Please update your credentials in your cloud account and try again.&nbsp;
+        <Span>
+          We’ve detected you’re missing the following required credentials for
+          your cloud account: <b>{missing.join(', ')}</b>.
+        </Span>
+        <Span>
+          Please update your credentials in your cloud account and try
+          again.&nbsp;
           <A
             inline
             href="https://docs.plural.sh/getting-started/cloud-shell-quickstart#set-up-a-cloud-provider"
@@ -114,13 +113,31 @@ function Content() {
   const [state, setState] = useState(State.New)
   const [onAction, setOnAction] = useState<Dispatch<string>>()
 
-  const { data: { shell } = { shell: undefined } } = useQuery(CLOUD_SHELL_QUERY, { fetchPolicy: 'network-only' })
-  const { data: { shellConfiguration } = { shellConfiguration: undefined }, stopPolling, refetch } = useQuery(SHELL_CONFIGURATION_QUERY, { skip: !shell, pollInterval: 5000 })
-  const [setupShell, { data: { setupShell: setupShellData } = {} as RootMutationType }] = useMutation(SETUP_SHELL_MUTATION, { fetchPolicy: 'no-cache' })
+  const { data: { shell } = { shell: undefined } } = useQuery(
+    CLOUD_SHELL_QUERY,
+    { fetchPolicy: 'network-only' }
+  )
+  const {
+    data: { shellConfiguration } = { shellConfiguration: undefined },
+    stopPolling,
+    refetch,
+  } = useQuery(SHELL_CONFIGURATION_QUERY, { skip: !shell, pollInterval: 5000 })
+  const [
+    setupShell,
+    { data: { setupShell: setupShellData } = {} as RootMutationType },
+  ] = useMutation(SETUP_SHELL_MUTATION, { fetchPolicy: 'no-cache' })
 
-  const context: ContextProps = useMemo(() => ({
-    shell, configuration: shellConfiguration, state, setState, onAction, setOnAction,
-  }), [onAction, shell, shellConfiguration, state])
+  const context: ContextProps = useMemo(
+    () => ({
+      shell,
+      configuration: shellConfiguration,
+      state,
+      setState,
+      onAction,
+      setOnAction,
+    }),
+    [onAction, shell, shellConfiguration, state]
+  )
 
   useEffect(() => {
     if (shellConfiguration) stopPolling()

@@ -11,8 +11,12 @@ export const OIDCProvider = gql`
     redirectUris
     bindings {
       id
-      user { ...UserFragment }
-      group { ...GroupFragment }
+      user {
+        ...UserFragment
+      }
+      group {
+        ...GroupFragment
+      }
     }
   }
   ${UserFragment}

@@ -22,14 +22,14 @@ function RangePicker({ duration, setDuration, tabStateRef }: any) {
       stateProps={{
         orientation: 'horizontal',
         selectedKey,
-        onSelectionChange: key => {
-          const dur = DURATIONS.find(d => key === `${d.offset}+${d.step}`)
+        onSelectionChange: (key) => {
+          const dur = DURATIONS.find((d) => key === `${d.offset}+${d.step}`)
 
           if (dur) setDuration(dur)
         },
       }}
     >
-      {DURATIONS.map(d => (
+      {DURATIONS.map((d) => (
         <SubTab
           key={`${d.offset}+${d.step}`}
           textValue={d.label}
@@ -43,25 +43,38 @@ function RangePicker({ duration, setDuration, tabStateRef }: any) {
 
 export default function ImagePullMetrics() {
   const {
-    image: { dockerRepository }, imageName, filter, setFilter,
+    image: { dockerRepository },
+    imageName,
+    filter,
+    setFilter,
   } = useOutletContext() as any
-  const data = useMemo(() => dockerRepository.metrics.map(({ tags, values }, i) => {
-    const tag = tags.find(({ name }) => name === 'tag')
+  const data = useMemo(
+    () =>
+      dockerRepository.metrics.map(({ tags, values }, i) => {
+        const tag = tags.find(({ name }) => name === 'tag')
 
-    return {
-      id: tag ? tag.value : dockerRepository.name,
-      data: values.map(({ time, value }) => ({ x: moment(time).toDate(), y: value })),
-      color: generateColor(i),
-    }
-  }),
-  [dockerRepository.metrics, dockerRepository.name])
+        return {
+          id: tag ? tag.value : dockerRepository.name,
+          data: values.map(({ time, value }) => ({
+            x: moment(time).toDate(),
+            y: value,
+          })),
+          color: generateColor(i),
+        }
+      }),
+    [dockerRepository.metrics, dockerRepository.name]
+  )
   const tabStateRef = useRef<any>(null)
-  const setDuration = useCallback(({ offset, step, tick }) => setFilter({
-    ...filter,
-    offset,
-    precision: step,
-    tick,
-  }), [filter, setFilter])
+  const setDuration = useCallback(
+    ({ offset, step, tick }) =>
+      setFilter({
+        ...filter,
+        offset,
+        precision: step,
+        tick,
+      }),
+    [filter, setFilter]
+  )
 
   return (
     <Box
@@ -79,12 +92,12 @@ export default function ImagePullMetrics() {
       </PageTitle>
       <TabPanel
         stateRef={tabStateRef}
-        as={(
+        as={
           <Box
             overflow={{ vertical: 'hidden' }}
             height="350px"
           />
-        )}
+        }
       >
         <RangePicker
           tabStateRef={tabStateRef}

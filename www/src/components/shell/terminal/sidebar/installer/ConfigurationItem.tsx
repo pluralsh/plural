@@ -1,9 +1,4 @@
-import {
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
+import { useContext, useEffect, useMemo, useState } from 'react'
 import { Switch } from 'honorable'
 import StartCase from 'lodash/startCase'
 import { FormField, Input } from '@pluralsh/design-system'
@@ -15,25 +10,31 @@ import ConfigurationFileInput from './ConfigurationFileInput'
 
 type ModifierFunction = (value: string, trim?: boolean) => string
 
-const modifierFactory = (type: Datatype,
-  configuration: ShellConfiguration): ModifierFunction => {
+const modifierFactory = (
+  type: Datatype,
+  configuration: ShellConfiguration
+): ModifierFunction => {
   switch (type) {
-  case Datatype.String:
-  case Datatype.Int:
-  case Datatype.Password:
-    return stringModifier
-  case Datatype.Bucket:
-    return bucketModifier.bind({ configuration })
-  case Datatype.Domain:
-    return domainModifier.bind({ configuration })
+    case Datatype.String:
+    case Datatype.Int:
+    case Datatype.Password:
+      return stringModifier
+    case Datatype.Bucket:
+      return bucketModifier.bind({ configuration })
+    case Datatype.Domain:
+      return domainModifier.bind({ configuration })
   }
 
   return stringModifier
 }
 
-const stringModifier = value => value
+const stringModifier = (value) => value
 
-function bucketModifier(this: {configuration: ShellConfiguration}, value: string, trim = false) {
+function bucketModifier(
+  this: { configuration: ShellConfiguration },
+  value: string,
+  trim = false
+) {
   const { configuration } = this
   const bucketPrefix = configuration?.workspace?.bucketPrefix
   const cluster = configuration?.workspace?.cluster
@@ -43,7 +44,11 @@ function bucketModifier(this: {configuration: ShellConfiguration}, value: string
 
   return bucketPrefix && cluster ? `${prefix}${value}` : value
 }
-function domainModifier(this: {configuration: ShellConfiguration}, value: string, trim = false) {
+function domainModifier(
+  this: { configuration: ShellConfiguration },
+  value: string,
+  trim = false
+) {
   const { configuration } = this
   const subdomain = configuration?.workspace?.network?.subdomain || ''
   const suffix = subdomain ? `.${subdomain}` : ''
@@ -53,14 +58,14 @@ function domainModifier(this: {configuration: ShellConfiguration}, value: string
   return subdomain ? `${value}${suffix}` : value
 }
 
-const createValidator = (regex: RegExp, optional: boolean, error: string) => (value): {valid: boolean, message: string} => ({
-  valid: (value ? regex.test(value) : optional),
-  message: error,
-})
+const createValidator =
+  (regex: RegExp, optional: boolean, error: string) =>
+  (value): { valid: boolean; message: string } => ({
+    valid: value ? regex.test(value) : optional,
+    message: error,
+  })
 
-function ConfigurationField({
-  config, ctx, setValue,
-}) {
+function ConfigurationField({ config, ctx, setValue }) {
   const {
     name,
     default: defaultValue,
@@ -73,37 +78,41 @@ function ConfigurationField({
   const { configuration } = useContext(TerminalContext)
 
   const value = useMemo(() => ctx[name]?.value, [ctx, name])
-  const validator = useMemo(() => createValidator(new RegExp(validation?.regex ? `^${validation?.regex}$` : /.*/),
-    config.optional,
-    validation?.message),
-  [config.optional, validation?.message, validation?.regex])
+  const validator = useMemo(
+    () =>
+      createValidator(
+        new RegExp(validation?.regex ? `^${validation?.regex}$` : /.*/),
+        config.optional,
+        validation?.message
+      ),
+    [config.optional, validation?.message, validation?.regex]
+  )
   const { valid, message } = useMemo(() => validator(value), [validator, value])
-  const modifier = useMemo(() => modifierFactory(config.type, configuration),
-    [config.type, configuration])
+  const modifier = useMemo(
+    () => modifierFactory(config.type, configuration),
+    [config.type, configuration]
+  )
 
   const isFile = type === Datatype.File
 
-  const [local, setLocal] = useState(modifier(value, true) || (isFile ? null : defaultValue))
+  const [local, setLocal] = useState(
+    modifier(value, true) || (isFile ? null : defaultValue)
+  )
 
-  useEffect(() => (local
-    ? setValue(
-      name, modifier(local), valid, type
-    )
-    : setValue(
-      name, local, valid, type
-    )),
-  [local, modifier, name, setValue, type, valid])
+  useEffect(
+    () =>
+      local
+        ? setValue(name, modifier(local), valid, type)
+        : setValue(name, local, valid, type),
+    [local, modifier, name, setValue, type, valid]
+  )
 
   const isInt = type === Datatype.Int
-  const isPassword
-      = type === Datatype.Password
-      || ['private_key', 'public_key'].includes(config.name)
+  const isPassword =
+    type === Datatype.Password ||
+    ['private_key', 'public_key'].includes(config.name)
 
-  const inputFieldType = isInt
-    ? 'number'
-    : isPassword
-      ? 'password'
-      : 'text'
+  const inputFieldType = isInt ? 'number' : isPassword ? 'password' : 'text'
 
   return (
     <FormField
@@ -115,7 +124,7 @@ function ConfigurationField({
       {isFile ? (
         <ConfigurationFileInput
           value={local ?? ''}
-          onChange={val => {
+          onChange={(val) => {
             setLocal(val?.text ?? '')
           }}
         />
@@ -163,21 +172,21 @@ function BoolConfiguration({ config: { name, default: def }, ctx, setValue }) {
 
 export function ConfigurationItem({ config, ctx, setValue }) {
   switch (config.type) {
-  case Datatype.Bool:
-    return (
-      <BoolConfiguration
-        config={config}
-        ctx={ctx}
-        setValue={setValue}
-      />
-    )
-  default:
-    return (
-      <ConfigurationField
-        config={config}
-        ctx={ctx}
-        setValue={setValue}
-      />
-    )
+    case Datatype.Bool:
+      return (
+        <BoolConfiguration
+          config={config}
+          ctx={ctx}
+          setValue={setValue}
+        />
+      )
+    default:
+      return (
+        <ConfigurationField
+          config={config}
+          ctx={ctx}
+          setValue={setValue}
+        />
+      )
   }
 }

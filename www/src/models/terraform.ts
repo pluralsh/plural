@@ -10,7 +10,9 @@ export const TerraformFragment = gql`
     package
     description
     latestVersion
-    dependencies { ...DependenciesFragment }
+    dependencies {
+      ...DependenciesFragment
+    }
     valuesTemplate
     insertedAt
   }
@@ -20,8 +22,13 @@ export const TerraformFragment = gql`
 export const TerraformInstallationFragment = gql`
   fragment TerraformInstallationFragment on TerraformInstallation {
     id
-    terraform { ...TerraformFragment }
-    version { id version }
+    terraform {
+      ...TerraformFragment
+    }
+    version {
+      id
+      version
+    }
   }
   ${TerraformFragment}
 `

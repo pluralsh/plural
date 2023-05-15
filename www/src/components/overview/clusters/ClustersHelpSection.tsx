@@ -14,7 +14,6 @@ const Wrap = styled.div(({ theme }) => {
   const smallMediaQuery = `@media only screen and (min-width: ${theme.breakpoints.desktopSmall}px)`
 
   return {
-
     display: 'flex',
     flexDirection: 'column',
     gap: theme.spacing.medium,
@@ -102,8 +101,8 @@ export default function ClustersHelpSection(): ReactElement {
             <li>Build and deploy to your cluster.</li>
           </ol>
           <p>
-            After these 3 steps you will be able to manage cluster
-            and access your applications from the Plural console.
+            After these 3 steps you will be able to manage cluster and access
+            your applications from the Plural console.
           </p>
           <div className="cta">
             <Button

@@ -5,14 +5,17 @@ import moment from 'moment'
 import { useEffect, useState } from 'react'
 
 type QueueHealthProps = {
-    pingedAt?: Date | null
-    showTooltip?: boolean
-    size?: 'small' | 'medium' | 'large'
-    hue?: CardHue
+  pingedAt?: Date | null
+  showTooltip?: boolean
+  size?: 'small' | 'medium' | 'large'
+  hue?: CardHue
 }
 
 export default function ClusterHealth({
-  pingedAt, showTooltip = true, hue, size = 'medium',
+  pingedAt,
+  showTooltip = true,
+  hue,
+  size = 'medium',
 }: QueueHealthProps) {
   const [now, setNow] = useState(moment())
 
@@ -22,7 +25,8 @@ export default function ClusterHealth({
     return () => clearInterval(int)
   }, [])
 
-  const healthy = pingedAt && now.clone().subtract(2, 'minutes').isBefore(pingedAt)
+  const healthy =
+    pingedAt && now.clone().subtract(2, 'minutes').isBefore(pingedAt)
 
   return (
     <Flex gap="xsmall">

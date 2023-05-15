@@ -7,14 +7,12 @@ import {
   Modal,
   WarningIcon,
 } from '@pluralsh/design-system'
-import {
-  A,
-  Button,
-  Flex,
-  Span,
-} from 'honorable'
+import { A, Button, Flex, Span } from 'honorable'
 
-import { DELETE_DEMO_PROJECT_MUTATION, DELETE_SHELL_MUTATION } from '../../../queries'
+import {
+  DELETE_DEMO_PROJECT_MUTATION,
+  DELETE_SHELL_MUTATION,
+} from '../../../queries'
 import CurrentUserContext from '../../../../../contexts/CurrentUserContext'
 
 function DeleteDemoModal({ onClose }) {
@@ -45,7 +43,8 @@ function DeleteDemoModal({ onClose }) {
           <Span
             body2
             color="text-xlight"
-          >CONFIRM DEMO PROJECT DELETION
+          >
+            CONFIRM DEMO PROJECT DELETION
           </Span>
         </Flex>
 
@@ -54,7 +53,10 @@ function DeleteDemoModal({ onClose }) {
           gap="large"
         >
           <Span body1>This will delete your 6 hour demo environment.</Span>
-          <Span body1>You'll still be able to create clusters on your cloud environment in the future&nbsp;</Span>
+          <Span body1>
+            You'll still be able to create clusters on your cloud environment in
+            the future&nbsp;
+          </Span>
         </Flex>
         <Flex
           justify="flex-end"
@@ -64,14 +66,16 @@ function DeleteDemoModal({ onClose }) {
             data-phid="delete-shell-cancel"
             secondary
             onClick={close}
-          >Cancel
+          >
+            Cancel
           </Button>
           <Button
             data-phid="delete-shell-confirm"
             destructive
             onClick={mutation}
             loading={loading}
-          >Delete
+          >
+            Delete
           </Button>
         </Flex>
       </Flex>
@@ -83,8 +87,11 @@ function DeleteShellModal({ onClose }) {
   const { demoing } = useContext(CurrentUserContext)
   const [open, setOpen] = useState(true)
   const [canDelete, setCanDelete] = useState(false)
-  const [deleteShell, { loading: deleteShellLoading }] = useMutation(DELETE_SHELL_MUTATION)
-  const [deleteDemoProjectWithShell, { loading: deleteDemoProjectLoading }] = useMutation(DELETE_DEMO_PROJECT_MUTATION)
+  const [deleteShell, { loading: deleteShellLoading }] = useMutation(
+    DELETE_SHELL_MUTATION
+  )
+  const [deleteDemoProjectWithShell, { loading: deleteDemoProjectLoading }] =
+    useMutation(DELETE_DEMO_PROJECT_MUTATION)
 
   const close = useCallback(() => {
     setOpen(false)
@@ -118,7 +125,8 @@ function DeleteShellModal({ onClose }) {
           <Span
             body2
             color="text-xlight"
-          >CONFIRM DELETION
+          >
+            CONFIRM DELETION
           </Span>
         </Flex>
 
@@ -126,8 +134,11 @@ function DeleteShellModal({ onClose }) {
           direction="column"
           gap="large"
         >
-          <Span body1>This action deletes the cloud shell, not your entire cluster.</Span>
-          <Span body1>If you wish to destroy your entire cluster please run&nbsp;
+          <Span body1>
+            This action deletes the cloud shell, not your entire cluster.
+          </Span>
+          <Span body1>
+            If you wish to destroy your entire cluster please run&nbsp;
             <Chip
               size="small"
               background="fill-one"
@@ -140,8 +151,10 @@ function DeleteShellModal({ onClose }) {
               inline
               href="https://docs.plural.sh/operations/uninstall"
               target="_blank"
-            >here
-            </A>.
+            >
+              here
+            </A>
+            .
           </Span>
         </Flex>
 
@@ -153,7 +166,9 @@ function DeleteShellModal({ onClose }) {
             <Input
               placeholder="delete"
               required
-              onChange={({ target: { value } }) => (value === 'delete' ? setCanDelete(true) : setCanDelete(false))}
+              onChange={({ target: { value } }) =>
+                value === 'delete' ? setCanDelete(true) : setCanDelete(false)
+              }
             />
           </FormField>
         </Flex>
@@ -166,7 +181,8 @@ function DeleteShellModal({ onClose }) {
             data-phid="delete-shell-cancel"
             secondary
             onClick={close}
-          >Cancel
+          >
+            Cancel
           </Button>
           <Button
             data-phid="delete-shell-confirm"
@@ -174,7 +190,8 @@ function DeleteShellModal({ onClose }) {
             disabled={!canDelete}
             onClick={() => onDelete()}
             loading={deleteShellLoading || deleteDemoProjectLoading}
-          >Delete
+          >
+            Delete
           </Button>
         </Flex>
       </Flex>

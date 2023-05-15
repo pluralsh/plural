@@ -1,6 +1,10 @@
 import { gql } from '@apollo/client'
 
-import { InvoiceFragment, PlanFragment, SubscriptionFragment } from '../../../models/payments'
+import {
+  InvoiceFragment,
+  PlanFragment,
+  SubscriptionFragment,
+} from '../../../models/payments'
 import { InstallationFragment } from '../../../models/repo'
 
 export const CREATE_PLAN = gql`
@@ -13,8 +17,16 @@ export const CREATE_PLAN = gql`
 `
 
 export const CREATE_SUBSCRIPTION = gql`
-  mutation CreateSubscription($installationId: ID!, $planId: ID!, $attributes: SubscriptionAttributes!) {
-    createSubscription(attributes: $attributes, installationId: $installationId, planId: $planId) {
+  mutation CreateSubscription(
+    $installationId: ID!
+    $planId: ID!
+    $attributes: SubscriptionAttributes!
+  ) {
+    createSubscription(
+      attributes: $attributes
+      installationId: $installationId
+      planId: $planId
+    ) {
       ...SubscriptionFragment
     }
   }
@@ -37,7 +49,6 @@ export const UPDATE_PLAN = gql`
     }
   }
   ${SubscriptionFragment}
-
 `
 
 export const SUBSCRIPTIONS_Q = gql`
@@ -46,7 +57,9 @@ export const SUBSCRIPTIONS_Q = gql`
       edges {
         node {
           ...SubscriptionFragment
-          installation { ...InstallationFragment }
+          installation {
+            ...InstallationFragment
+          }
         }
       }
     }
@@ -59,10 +72,14 @@ export const SUBSCRIPTION_Q = gql`
   query Subscription($id: ID!) {
     repositorySubscription(id: $id) {
       id
-      installation { ...InstallationFragment }
+      installation {
+        ...InstallationFragment
+      }
       invoices(first: 15) {
         edges {
-          node { ...InvoiceFragment }
+          node {
+            ...InvoiceFragment
+          }
         }
       }
     }
@@ -73,7 +90,9 @@ export const SUBSCRIPTION_Q = gql`
 
 export const UPDATE_PLAN_ATTRS = gql`
   mutation Update($id: ID!, $attributes: UpdatablePlanAttributes!) {
-    updatePlanAttributes(id: $id, attributes: $attributes) { ...PlanFragment }
+    updatePlanAttributes(id: $id, attributes: $attributes) {
+      ...PlanFragment
+    }
   }
   ${PlanFragment}
 `

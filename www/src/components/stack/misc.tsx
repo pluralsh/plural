@@ -8,10 +8,12 @@ export function StackActions({
   stack,
   recipes,
 }: StackContext & { recipes?: RecipeSubset[] }) {
-  const filteredCollections = stack?.collections?.filter((sC: StackCollection | null | undefined): sC is StackCollection => !!sC)
+  const filteredCollections = stack?.collections?.filter(
+    (sC: StackCollection | null | undefined): sC is StackCollection => !!sC
+  )
 
   const apps = filteredCollections?.[0].bundles
-    ?.map(bundle => bundle?.recipe?.repository?.name)
+    ?.map((bundle) => bundle?.recipe?.repository?.name)
     .filter((appName: string | undefined): appName is string => !!appName)
 
   return (

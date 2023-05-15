@@ -3,7 +3,10 @@ import { useParams } from 'react-router-dom'
 import { Form } from 'grommet'
 import { Button, Flex, H1 } from 'honorable'
 
-import { useRealizeResetTokenMutation, useResetTokenQuery } from '../../generated/graphql'
+import {
+  useRealizeResetTokenMutation,
+  useResetTokenQuery,
+} from '../../generated/graphql'
 
 import { wipeToken } from '../../helpers/authentication'
 
@@ -20,8 +23,8 @@ export function ResetPassword() {
   const [password, setPassword] = useState('')
   const [confirm, setConfirm] = useState('')
   const { data } = useResetTokenQuery({ variables: { id: id ?? '' } })
-  const [mutation, { loading, data: realized, error }]
-    = useRealizeResetTokenMutation({
+  const [mutation, { loading, data: realized, error }] =
+    useRealizeResetTokenMutation({
       variables: { id: id ?? '', attributes: { password } },
       onCompleted: () => {
         wipeToken()
@@ -29,12 +32,9 @@ export function ResetPassword() {
       },
     })
 
-  const {
-    disabled,
-    error: passwordError,
-  } = validatePassword(password, confirm)
+  const { disabled, error: passwordError } = validatePassword(password, confirm)
 
-  const onSubmit = e => {
+  const onSubmit = (e) => {
     e.preventDefault()
     if (!disabled) {
       mutation()

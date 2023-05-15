@@ -6,7 +6,9 @@ import { PublisherFragment } from '../../models/user'
 export const PUBLISHERS_Q = gql`
   query Publishers($cursor: String) {
     publishers(first: 15, after: $cursor) {
-      pageInfo { ...PageInfo }
+      pageInfo {
+        ...PageInfo
+      }
       edges {
         node {
           ...PublisherFragment
@@ -28,8 +30,14 @@ export const PUBLISHERS_Q = gql`
 export const ACCOUNT_PUBLISHERS = gql`
   query AccountPubs($cursor: String) {
     publishers(first: 50, after: $cursor, publishable: true) {
-      pageInfo { ...PageInfo }
-      edges { node { ...PublisherFragment } }
+      pageInfo {
+        ...PageInfo
+      }
+      edges {
+        node {
+          ...PublisherFragment
+        }
+      }
     }
   }
   ${PageInfo}

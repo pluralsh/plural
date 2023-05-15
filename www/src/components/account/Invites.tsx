@@ -11,7 +11,11 @@ import ListInput from '../utils/ListInput'
 import { Placeholder } from '../utils/Placeholder'
 import CopyableButton from '../utils/CopyableButton'
 import { List, ListItem } from '../utils/List'
-import { extendConnection, removeConnection, updateCache } from '../../utils/graphql'
+import {
+  extendConnection,
+  removeConnection,
+  updateCache,
+} from '../../utils/graphql'
 import { DeleteIconButton } from '../utils/IconButtons'
 import { StandardScroller } from '../utils/SmoothScroller'
 
@@ -27,11 +31,12 @@ function DeleteInvite({ invite }: any) {
   const [mutation, { loading, error }] = useMutation(DELETE_INVITE, {
     variables: { id: invite.id },
     onCompleted: () => setConfirm(false),
-    update: (cache, { data: { deleteInvite } }) => updateCache(cache, {
-      query: INVITES_Q,
-      variables: {},
-      update: invites => removeConnection(invites, deleteInvite, 'invites'),
-    }),
+    update: (cache, { data: { deleteInvite } }) =>
+      updateCache(cache, {
+        query: INVITES_Q,
+        variables: {},
+        update: (invites) => removeConnection(invites, deleteInvite, 'invites'),
+      }),
   })
 
   return (
@@ -97,9 +102,7 @@ function Invite(invite: any) {
 export function Invites() {
   const [q, setQ] = useState('')
   const [listRef, setListRef] = useState<any>(null)
-  const {
-    data, loading, fetchMore, refetch,
-  } = useQuery(INVITES_Q, {
+  const { data, loading, fetchMore, refetch } = useQuery(INVITES_Q, {
     variables: { q },
     fetchPolicy: 'cache-and-network',
   })
@@ -153,11 +156,14 @@ export function Invites() {
             )}
             loading={loading}
             placeholder={Placeholder}
-            loadNextPage={() => pageInfo.hasNextPage
-              && fetchMore({
+            loadNextPage={() =>
+              pageInfo.hasNextPage &&
+              fetchMore({
                 variables: { cursor: pageInfo.endCursor },
-                updateQuery: (prev, { fetchMoreResult: { invites } }) => extendConnection(prev, invites, 'invites'),
-              })}
+                updateQuery: (prev, { fetchMoreResult: { invites } }) =>
+                  extendConnection(prev, invites, 'invites'),
+              })
+            }
           />
         )}
       </Div>

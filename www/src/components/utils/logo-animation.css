@@ -1048,7 +1048,7 @@
   /* FOURTH STATE */
   53% {
     width: 68.6619px;
-    height: 68.6619px ;
+    height: 68.6619px;
     left: 0px;
     bottom: 0px;
   }
@@ -1062,14 +1062,14 @@
   /* BACK TO REST */
   78% {
     width: 16.7235px;
-    height: 68.6619px ;
+    height: 68.6619px;
     left: 0;
     bottom: -16px;
     /* Note that we have to pull the top up to hide rounded corner */
   }
   100% {
     width: 16.7235px;
-    height: 68.6619px ;
+    height: 68.6619px;
     left: 0;
     bottom: -20px;
     /* Note that we have to pull the top up to hide rounded corner */
@@ -1113,7 +1113,7 @@
   /* FOURTH STATE */
   53% {
     width: 68.6619px;
-    height: 68.6619px ;
+    height: 68.6619px;
     left: 0px;
     bottom: 0px;
   }
@@ -1127,14 +1127,14 @@
   /* BACK TO REST */
   78% {
     width: 16.7235px;
-    height: 68.6619px ;
+    height: 68.6619px;
     left: 0;
     bottom: -16px;
     /* Note that we have to pull the top up to hide rounded corner */
   }
   100% {
     width: 16.7235px;
-    height: 68.6619px ;
+    height: 68.6619px;
     left: 0;
     bottom: -20px;
     /* Note that we have to pull the top up to hide rounded corner */
@@ -1178,7 +1178,7 @@
   /* FOURTH STATE */
   53% {
     width: 68.6619px;
-    height: 68.6619px ;
+    height: 68.6619px;
     left: 0px;
     bottom: 0px;
   }
@@ -1192,14 +1192,14 @@
   /* BACK TO REST */
   78% {
     width: 16.7235px;
-    height: 68.6619px ;
+    height: 68.6619px;
     left: 0;
     bottom: -16px;
     /* Note that we have to pull the top up to hide rounded corner */
   }
   100% {
     width: 16.7235px;
-    height: 68.6619px ;
+    height: 68.6619px;
     left: 0;
     bottom: -20px;
     /* Note that we have to pull the top up to hide rounded corner */
@@ -1243,7 +1243,7 @@
   /* FOURTH STATE */
   53% {
     width: 68.6619px;
-    height: 68.6619px ;
+    height: 68.6619px;
     left: 0px;
     bottom: 0px;
   }
@@ -1257,14 +1257,14 @@
   /* BACK TO REST */
   78% {
     width: 16.7235px;
-    height: 68.6619px ;
+    height: 68.6619px;
     left: 0;
     bottom: -16px;
     /* Note that we have to pull the top up to hide rounded corner */
   }
   100% {
     width: 16.7235px;
-    height: 68.6619px ;
+    height: 68.6619px;
     left: 0;
     bottom: -20px;
     /* Note that we have to pull the top up to hide rounded corner */
@@ -1276,14 +1276,16 @@
 .plrl-logomark-anim.anim01 {
   /* hover effects */
   /* looping version */
-  opacity: 1.0;
+  opacity: 1;
 }
 .plrl-logomark-anim.anim01 .plrl-logomark-outer-wrapper {
   position: relative;
   min-height: 100px;
   left: 50%;
 }
-.plrl-logomark-anim.anim01 .plrl-logomark-outer-wrapper .plrl-logomark-inner-wrapper {
+.plrl-logomark-anim.anim01
+  .plrl-logomark-outer-wrapper
+  .plrl-logomark-inner-wrapper {
   position: relative;
   height: auto;
   width: 100px;
@@ -1298,7 +1300,9 @@
 .plrl-logomark-anim.anim01.upres4x .plrl-logomark-outer-wrapper {
   min-height: 400px;
 }
-.plrl-logomark-anim.anim01.upres4x .plrl-logomark-outer-wrapper .plrl-logomark-inner-wrapper {
+.plrl-logomark-anim.anim01.upres4x
+  .plrl-logomark-outer-wrapper
+  .plrl-logomark-inner-wrapper {
   left: -200px;
   transform: scale(4);
   -webkit-transform: scale(4);
@@ -1315,7 +1319,10 @@
   width: 100px;
   height: 100px;
 }
-.plrl-logomark-anim.anim01 .plrl-logo-layer .plrl-logo-layer-mask .plrl-logo-layer-mask-inner {
+.plrl-logomark-anim.anim01
+  .plrl-logo-layer
+  .plrl-logo-layer-mask
+  .plrl-logo-layer-mask-inner {
   position: absolute;
   overflow: hidden;
   width: 100px;
@@ -1333,160 +1340,280 @@
 .plrl-logomark-anim.anim01 .plrl-logo-layer.top-left {
   z-index: 4;
 }
-.plrl-logomark-anim.anim01 .plrl-logo-layer.top-left .plrl-logo-layer-mask .plrl-logo-layer-mask-inner {
+.plrl-logomark-anim.anim01
+  .plrl-logo-layer.top-left
+  .plrl-logo-layer-mask
+  .plrl-logo-layer-mask-inner {
   width: 68.6619px;
   left: 0;
 }
-.plrl-logomark-anim.anim01 .plrl-logo-layer.top-left .plrl-logo-layer-mask .plrl-logo-layer-mask-inner img {
+.plrl-logomark-anim.anim01
+  .plrl-logo-layer.top-left
+  .plrl-logo-layer-mask
+  .plrl-logo-layer-mask-inner
+  img {
   left: 0;
 }
 .plrl-logomark-anim.anim01 .plrl-logo-layer.top-right {
   z-index: 4;
 }
-.plrl-logomark-anim.anim01 .plrl-logo-layer.top-right .plrl-logo-layer-mask .plrl-logo-layer-mask-inner {
+.plrl-logomark-anim.anim01
+  .plrl-logo-layer.top-right
+  .plrl-logo-layer-mask
+  .plrl-logo-layer-mask-inner {
   width: 16.7235px;
   top: -20px;
   /* Note that we have to pull the top up to hide rounded corner */
   right: 0;
 }
-.plrl-logomark-anim.anim01 .plrl-logo-layer.top-right .plrl-logo-layer-mask .plrl-logo-layer-mask-inner img {
+.plrl-logomark-anim.anim01
+  .plrl-logo-layer.top-right
+  .plrl-logo-layer-mask
+  .plrl-logo-layer-mask-inner
+  img {
   right: 0;
 }
 .plrl-logomark-anim.anim01 .plrl-logo-layer.bottom-left {
   z-index: 4;
 }
-.plrl-logomark-anim.anim01 .plrl-logo-layer.bottom-left .plrl-logo-layer-mask .plrl-logo-layer-mask-inner {
+.plrl-logomark-anim.anim01
+  .plrl-logo-layer.bottom-left
+  .plrl-logo-layer-mask
+  .plrl-logo-layer-mask-inner {
   width: 16.7235px;
   left: 0;
   bottom: -20px;
   /* Note that we have to pull the top up to hide rounded corner */
 }
-.plrl-logomark-anim.anim01 .plrl-logo-layer.bottom-left .plrl-logo-layer-mask .plrl-logo-layer-mask-inner img {
+.plrl-logomark-anim.anim01
+  .plrl-logo-layer.bottom-left
+  .plrl-logo-layer-mask
+  .plrl-logo-layer-mask-inner
+  img {
   left: 0;
   bottom: 0;
 }
 .plrl-logomark-anim.anim01 .plrl-logo-layer.bottom-right {
   z-index: 4;
 }
-.plrl-logomark-anim.anim01 .plrl-logo-layer.bottom-right .plrl-logo-layer-mask .plrl-logo-layer-mask-inner {
+.plrl-logomark-anim.anim01
+  .plrl-logo-layer.bottom-right
+  .plrl-logo-layer-mask
+  .plrl-logo-layer-mask-inner {
   width: 68.6619px;
   right: 0;
   bottom: 0;
 }
-.plrl-logomark-anim.anim01 .plrl-logo-layer.bottom-right .plrl-logo-layer-mask .plrl-logo-layer-mask-inner img {
+.plrl-logomark-anim.anim01
+  .plrl-logo-layer.bottom-right
+  .plrl-logo-layer-mask
+  .plrl-logo-layer-mask-inner
+  img {
   right: 0;
   bottom: 0;
 }
-.plrl-logomark-anim.anim01.state02 .plrl-logo-layer.top-left .plrl-logo-layer-mask .plrl-logo-layer-mask-inner {
+.plrl-logomark-anim.anim01.state02
+  .plrl-logo-layer.top-left
+  .plrl-logo-layer-mask
+  .plrl-logo-layer-mask-inner {
   width: 16px;
   height: 68.6619px;
   left: 0px;
   top: -20px;
 }
-.plrl-logomark-anim.anim01.state02 .plrl-logo-layer.top-right .plrl-logo-layer-mask .plrl-logo-layer-mask-inner {
+.plrl-logomark-anim.anim01.state02
+  .plrl-logo-layer.top-right
+  .plrl-logo-layer-mask
+  .plrl-logo-layer-mask-inner {
   width: 68.6619px;
   height: 68.6619px;
   top: 0;
 }
-.plrl-logomark-anim.anim01.state02 .plrl-logo-layer.bottom-left .plrl-logo-layer-mask .plrl-logo-layer-mask-inner {
+.plrl-logomark-anim.anim01.state02
+  .plrl-logo-layer.bottom-left
+  .plrl-logo-layer-mask
+  .plrl-logo-layer-mask-inner {
   left: 0;
   width: 68.7235px;
   height: 68.6619px;
   bottom: 0px;
 }
-.plrl-logomark-anim.anim01.state02 .plrl-logo-layer.bottom-right .plrl-logo-layer-mask .plrl-logo-layer-mask-inner {
+.plrl-logomark-anim.anim01.state02
+  .plrl-logo-layer.bottom-right
+  .plrl-logo-layer-mask
+  .plrl-logo-layer-mask-inner {
   width: 16px;
   height: 68.6619px;
   right: 0;
   bottom: -20px;
 }
-.plrl-logomark-anim.anim01.state03 .plrl-logo-layer.top-left .plrl-logo-layer-mask .plrl-logo-layer-mask-inner {
+.plrl-logomark-anim.anim01.state03
+  .plrl-logo-layer.top-left
+  .plrl-logo-layer-mask
+  .plrl-logo-layer-mask-inner {
   width: 68.6619px;
   height: 16.7235px;
   left: -20px;
 }
-.plrl-logomark-anim.anim01.state03 .plrl-logo-layer.top-right .plrl-logo-layer-mask .plrl-logo-layer-mask-inner {
+.plrl-logomark-anim.anim01.state03
+  .plrl-logo-layer.top-right
+  .plrl-logo-layer-mask
+  .plrl-logo-layer-mask-inner {
   width: 68.6619px;
   height: 68.6619px;
   top: 0;
 }
-.plrl-logomark-anim.anim01.state03 .plrl-logo-layer.bottom-left .plrl-logo-layer-mask .plrl-logo-layer-mask-inner {
+.plrl-logomark-anim.anim01.state03
+  .plrl-logo-layer.bottom-left
+  .plrl-logo-layer-mask
+  .plrl-logo-layer-mask-inner {
   left: 0;
   width: 70px;
   height: 68.6619px;
   bottom: 0px;
 }
-.plrl-logomark-anim.anim01.state03 .plrl-logo-layer.bottom-right .plrl-logo-layer-mask .plrl-logo-layer-mask-inner {
+.plrl-logomark-anim.anim01.state03
+  .plrl-logo-layer.bottom-right
+  .plrl-logo-layer-mask
+  .plrl-logo-layer-mask-inner {
   width: 68.6619px;
   height: 16.7px;
   right: -20px;
 }
-.plrl-logomark-anim.anim01.state04 .plrl-logo-layer.top-left .plrl-logo-layer-mask .plrl-logo-layer-mask-inner {
+.plrl-logomark-anim.anim01.state04
+  .plrl-logo-layer.top-left
+  .plrl-logo-layer-mask
+  .plrl-logo-layer-mask-inner {
   width: 51.9384px;
   height: 68.6619px;
   left: 0px;
 }
-.plrl-logomark-anim.anim01.state04 .plrl-logo-layer.top-right .plrl-logo-layer-mask .plrl-logo-layer-mask-inner {
+.plrl-logomark-anim.anim01.state04
+  .plrl-logo-layer.top-right
+  .plrl-logo-layer-mask
+  .plrl-logo-layer-mask-inner {
   width: 100.6619px;
   height: 16.7235px;
   top: 0px;
   right: -20px;
 }
-.plrl-logomark-anim.anim01.state04 .plrl-logo-layer.bottom-left .plrl-logo-layer-mask .plrl-logo-layer-mask-inner {
+.plrl-logomark-anim.anim01.state04
+  .plrl-logo-layer.bottom-left
+  .plrl-logo-layer-mask
+  .plrl-logo-layer-mask-inner {
   width: 102px;
-  height: 16.7235px ;
+  height: 16.7235px;
   left: -10px;
   bottom: 0px;
 }
-.plrl-logomark-anim.anim01.state04 .plrl-logo-layer.bottom-right .plrl-logo-layer-mask .plrl-logo-layer-mask-inner {
+.plrl-logomark-anim.anim01.state04
+  .plrl-logo-layer.bottom-right
+  .plrl-logo-layer-mask
+  .plrl-logo-layer-mask-inner {
   width: 32px;
   height: 68.6619px;
   right: 0px;
 }
 .plrl-logomark-anim.anim01.is-button .plrl-logomark-inner-wrapper:hover {
   cursor: pointer;
-  opacity: 1.0;
+  opacity: 1;
 }
-.plrl-logomark-anim.anim01.is-button .plrl-logomark-inner-wrapper:hover .plrl-logo-layer.dot {
-  -webkit-animation: plrl_logomark_anim_anim01_dot 3s cubic-bezier(0.4, 0.37, 0.19, 0.99) infinite;
-  animation: plrl_logomark_anim_anim01_dot 3s cubic-bezier(0.4, 0.37, 0.19, 0.99) infinite;
+.plrl-logomark-anim.anim01.is-button
+  .plrl-logomark-inner-wrapper:hover
+  .plrl-logo-layer.dot {
+  -webkit-animation: plrl_logomark_anim_anim01_dot 3s
+    cubic-bezier(0.4, 0.37, 0.19, 0.99) infinite;
+  animation: plrl_logomark_anim_anim01_dot 3s
+    cubic-bezier(0.4, 0.37, 0.19, 0.99) infinite;
 }
-.plrl-logomark-anim.anim01.is-button .plrl-logomark-inner-wrapper:hover .plrl-logo-layer.top-left .plrl-logo-layer-mask .plrl-logo-layer-mask-inner {
-  -webkit-animation: plrl_logomark_anim_anim01_top_left 3s cubic-bezier(0.4, 0.37, 0.19, 0.99) infinite;
-  animation: plrl_logomark_anim_anim01_top_left 3s cubic-bezier(0.4, 0.37, 0.19, 0.99) infinite;
+.plrl-logomark-anim.anim01.is-button
+  .plrl-logomark-inner-wrapper:hover
+  .plrl-logo-layer.top-left
+  .plrl-logo-layer-mask
+  .plrl-logo-layer-mask-inner {
+  -webkit-animation: plrl_logomark_anim_anim01_top_left 3s
+    cubic-bezier(0.4, 0.37, 0.19, 0.99) infinite;
+  animation: plrl_logomark_anim_anim01_top_left 3s
+    cubic-bezier(0.4, 0.37, 0.19, 0.99) infinite;
 }
-.plrl-logomark-anim.anim01.is-button .plrl-logomark-inner-wrapper:hover .plrl-logo-layer.top-right .plrl-logo-layer-mask .plrl-logo-layer-mask-inner {
-  -webkit-animation: plrl_logomark_anim_anim01_top_right 3s cubic-bezier(0.4, 0.37, 0.19, 0.99) infinite;
-  animation: plrl_logomark_anim_anim01_top_right 3s cubic-bezier(0.4, 0.37, 0.19, 0.99) infinite;
+.plrl-logomark-anim.anim01.is-button
+  .plrl-logomark-inner-wrapper:hover
+  .plrl-logo-layer.top-right
+  .plrl-logo-layer-mask
+  .plrl-logo-layer-mask-inner {
+  -webkit-animation: plrl_logomark_anim_anim01_top_right 3s
+    cubic-bezier(0.4, 0.37, 0.19, 0.99) infinite;
+  animation: plrl_logomark_anim_anim01_top_right 3s
+    cubic-bezier(0.4, 0.37, 0.19, 0.99) infinite;
 }
-.plrl-logomark-anim.anim01.is-button .plrl-logomark-inner-wrapper:hover .plrl-logo-layer.bottom-left .plrl-logo-layer-mask .plrl-logo-layer-mask-inner {
-  -webkit-animation: plrl_logomark_anim_anim01_bottom_left 3s cubic-bezier(0.4, 0.37, 0.19, 0.99) infinite;
-  animation: plrl_logomark_anim_anim01_bottom_left 3s cubic-bezier(0.4, 0.37, 0.19, 0.99) infinite;
+.plrl-logomark-anim.anim01.is-button
+  .plrl-logomark-inner-wrapper:hover
+  .plrl-logo-layer.bottom-left
+  .plrl-logo-layer-mask
+  .plrl-logo-layer-mask-inner {
+  -webkit-animation: plrl_logomark_anim_anim01_bottom_left 3s
+    cubic-bezier(0.4, 0.37, 0.19, 0.99) infinite;
+  animation: plrl_logomark_anim_anim01_bottom_left 3s
+    cubic-bezier(0.4, 0.37, 0.19, 0.99) infinite;
 }
-.plrl-logomark-anim.anim01.is-button .plrl-logomark-inner-wrapper:hover .plrl-logo-layer.bottom-right .plrl-logo-layer-mask .plrl-logo-layer-mask-inner {
-  -webkit-animation: plrl_logomark_anim_anim01_bottom_right 3s cubic-bezier(0.4, 0.37, 0.19, 0.99) infinite;
-  animation: plrl_logomark_anim_anim01_bottom_right 3s cubic-bezier(0.4, 0.37, 0.19, 0.99) infinite;
+.plrl-logomark-anim.anim01.is-button
+  .plrl-logomark-inner-wrapper:hover
+  .plrl-logo-layer.bottom-right
+  .plrl-logo-layer-mask
+  .plrl-logo-layer-mask-inner {
+  -webkit-animation: plrl_logomark_anim_anim01_bottom_right 3s
+    cubic-bezier(0.4, 0.37, 0.19, 0.99) infinite;
+  animation: plrl_logomark_anim_anim01_bottom_right 3s
+    cubic-bezier(0.4, 0.37, 0.19, 0.99) infinite;
 }
 .plrl-logomark-anim.anim01.looping .plrl-logomark-inner-wrapper {
-  opacity: 1.0;
+  opacity: 1;
 }
-.plrl-logomark-anim.anim01.looping .plrl-logomark-inner-wrapper .plrl-logo-layer.dot {
-  -webkit-animation: plrl_logomark_anim_anim01_dot 3s cubic-bezier(0.4, 0.37, 0.19, 0.99) infinite;
-  animation: plrl_logomark_anim_anim01_dot 3s cubic-bezier(0.4, 0.37, 0.19, 0.99) infinite;
+.plrl-logomark-anim.anim01.looping
+  .plrl-logomark-inner-wrapper
+  .plrl-logo-layer.dot {
+  -webkit-animation: plrl_logomark_anim_anim01_dot 3s
+    cubic-bezier(0.4, 0.37, 0.19, 0.99) infinite;
+  animation: plrl_logomark_anim_anim01_dot 3s
+    cubic-bezier(0.4, 0.37, 0.19, 0.99) infinite;
 }
-.plrl-logomark-anim.anim01.looping .plrl-logomark-inner-wrapper .plrl-logo-layer.top-left .plrl-logo-layer-mask .plrl-logo-layer-mask-inner {
-  -webkit-animation: plrl_logomark_anim_anim01_top_left 3s cubic-bezier(0.4, 0.37, 0.19, 0.99) infinite;
-  animation: plrl_logomark_anim_anim01_top_left 3s cubic-bezier(0.4, 0.37, 0.19, 0.99) infinite;
+.plrl-logomark-anim.anim01.looping
+  .plrl-logomark-inner-wrapper
+  .plrl-logo-layer.top-left
+  .plrl-logo-layer-mask
+  .plrl-logo-layer-mask-inner {
+  -webkit-animation: plrl_logomark_anim_anim01_top_left 3s
+    cubic-bezier(0.4, 0.37, 0.19, 0.99) infinite;
+  animation: plrl_logomark_anim_anim01_top_left 3s
+    cubic-bezier(0.4, 0.37, 0.19, 0.99) infinite;
 }
-.plrl-logomark-anim.anim01.looping .plrl-logomark-inner-wrapper .plrl-logo-layer.top-right .plrl-logo-layer-mask .plrl-logo-layer-mask-inner {
-  -webkit-animation: plrl_logomark_anim_anim01_top_right 3s cubic-bezier(0.4, 0.37, 0.19, 0.99) infinite;
-  animation: plrl_logomark_anim_anim01_top_right 3s cubic-bezier(0.4, 0.37, 0.19, 0.99) infinite;
+.plrl-logomark-anim.anim01.looping
+  .plrl-logomark-inner-wrapper
+  .plrl-logo-layer.top-right
+  .plrl-logo-layer-mask
+  .plrl-logo-layer-mask-inner {
+  -webkit-animation: plrl_logomark_anim_anim01_top_right 3s
+    cubic-bezier(0.4, 0.37, 0.19, 0.99) infinite;
+  animation: plrl_logomark_anim_anim01_top_right 3s
+    cubic-bezier(0.4, 0.37, 0.19, 0.99) infinite;
 }
-.plrl-logomark-anim.anim01.looping .plrl-logomark-inner-wrapper .plrl-logo-layer.bottom-left .plrl-logo-layer-mask .plrl-logo-layer-mask-inner {
-  -webkit-animation: plrl_logomark_anim_anim01_bottom_left 3s cubic-bezier(0.4, 0.37, 0.19, 0.99) infinite;
-  animation: plrl_logomark_anim_anim01_bottom_left 3s cubic-bezier(0.4, 0.37, 0.19, 0.99) infinite;
+.plrl-logomark-anim.anim01.looping
+  .plrl-logomark-inner-wrapper
+  .plrl-logo-layer.bottom-left
+  .plrl-logo-layer-mask
+  .plrl-logo-layer-mask-inner {
+  -webkit-animation: plrl_logomark_anim_anim01_bottom_left 3s
+    cubic-bezier(0.4, 0.37, 0.19, 0.99) infinite;
+  animation: plrl_logomark_anim_anim01_bottom_left 3s
+    cubic-bezier(0.4, 0.37, 0.19, 0.99) infinite;
 }
-.plrl-logomark-anim.anim01.looping .plrl-logomark-inner-wrapper .plrl-logo-layer.bottom-right .plrl-logo-layer-mask .plrl-logo-layer-mask-inner {
-  -webkit-animation: plrl_logomark_anim_anim01_bottom_right 3s cubic-bezier(0.4, 0.37, 0.19, 0.99) infinite;
-  animation: plrl_logomark_anim_anim01_bottom_right 3s cubic-bezier(0.4, 0.37, 0.19, 0.99) infinite;
+.plrl-logomark-anim.anim01.looping
+  .plrl-logomark-inner-wrapper
+  .plrl-logo-layer.bottom-right
+  .plrl-logo-layer-mask
+  .plrl-logo-layer-mask-inner {
+  -webkit-animation: plrl_logomark_anim_anim01_bottom_right 3s
+    cubic-bezier(0.4, 0.37, 0.19, 0.99) infinite;
+  animation: plrl_logomark_anim_anim01_bottom_right 3s
+    cubic-bezier(0.4, 0.37, 0.19, 0.99) infinite;
 }

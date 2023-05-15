@@ -11,11 +11,14 @@ import CurrentUserContext from '../../../contexts/CurrentUserContext'
 import { IncidentStatus, StatusColorMap } from './types'
 import { canEdit } from './Incident'
 
-const normalize = val => val.replace('_', ' ')
+const normalize = (val) => val.replace('_', ' ')
 
-const textColor = status => StatusColorMap[status]
+const textColor = (status) => StatusColorMap[status]
 
-const options = Object.keys(IncidentStatus).map(status => ({ value: status, label: normalize(status) }))
+const options = Object.keys(IncidentStatus).map((status) => ({
+  value: status,
+  label: normalize(status),
+}))
 
 export function StatusSelector({ status, setStatus }: any) {
   const theme = useContext(ThemeContext)
@@ -24,10 +27,17 @@ export function StatusSelector({ status, setStatus }: any) {
     <Select
       options={options}
       styles={{
-        option: (styles, { data, isFocused, isSelected }) => (
-          (isFocused || isSelected) ? styles : { ...styles, color: normalizeColor(textColor(data.value), theme) }
-        ),
-        singleValue: (styles, { data }) => ({ ...styles, color: normalizeColor(textColor(data.value), theme) }),
+        option: (styles, { data, isFocused, isSelected }) =>
+          isFocused || isSelected
+            ? styles
+            : {
+                ...styles,
+                color: normalizeColor(textColor(data.value), theme),
+              },
+        singleValue: (styles, { data }) => ({
+          ...styles,
+          color: normalizeColor(textColor(data.value), theme),
+        }),
       }}
       value={{ value: status, label: normalize(status) }}
       onChange={({ value }) => setStatus(value)}
@@ -58,7 +68,8 @@ export function Status({ incident: { status, ...incident }, setActive }: any) {
             size="small"
             weight={500}
             color={textColor(status)}
-          >{normalize(status)}
+          >
+            {normalize(status)}
           </Text>
         </Box>
       )}

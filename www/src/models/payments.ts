@@ -31,12 +31,23 @@ export const PlanFragment = gql`
     name
     cost
     period
-    serviceLevels { ...ServiceLevel }
-    lineItems {
-      included { ...LimitFragment }
-      items { ...LineItem }
+    serviceLevels {
+      ...ServiceLevel
     }
-    metadata { features { name description } }
+    lineItems {
+      included {
+        ...LimitFragment
+      }
+      items {
+        ...LineItem
+      }
+    }
+    metadata {
+      features {
+        name
+        description
+      }
+    }
   }
   ${LimitFragment}
   ${LineItem}
@@ -46,8 +57,14 @@ export const PlanFragment = gql`
 export const SubscriptionFragment = gql`
   fragment SubscriptionFragment on RepositorySubscription {
     id
-    plan { ...PlanFragment }
-    lineItems { items { ...LimitFragment } }
+    plan {
+      ...PlanFragment
+    }
+    lineItems {
+      items {
+        ...LimitFragment
+      }
+    }
   }
   ${PlanFragment}
   ${LimitFragment}
@@ -70,7 +87,9 @@ export const InvoiceFragment = gql`
     status
     createdAt
     hostedInvoiceUrl
-    lines { ...InvoiceItemFragment }
+    lines {
+      ...InvoiceItemFragment
+    }
   }
   ${InvoiceItemFragment}
 `

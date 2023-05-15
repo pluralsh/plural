@@ -2,9 +2,15 @@ import { ReactNode, useContext, useMemo } from 'react'
 import moment from 'moment'
 import { ApolloError } from '@apollo/client'
 
-import SubscriptionContext, { SubscriptionContextType } from '../../../contexts/SubscriptionContext'
+import SubscriptionContext, {
+  SubscriptionContextType,
+} from '../../../contexts/SubscriptionContext'
 
-import { PaymentMethodFragment, SubscriptionAccountFragment, SubscriptionQuery } from '../../../generated/graphql'
+import {
+  PaymentMethodFragment,
+  SubscriptionAccountFragment,
+  SubscriptionQuery,
+} from '../../../generated/graphql'
 
 import BillingError from './BillingError'
 
@@ -15,28 +21,32 @@ type BillingSubscriptionProviderPropsType = {
   children: ReactNode
 }
 
-function useExtractPaymentMethods(methodsConnection:
-  | SubscriptionAccountFragment['paymentMethods']
-  | null
-  | undefined) {
+function useExtractPaymentMethods(
+  methodsConnection:
+    | SubscriptionAccountFragment['paymentMethods']
+    | null
+    | undefined
+) {
   const { paymentMethods, defaultPaymentMethod } = useMemo(() => {
-    const result = (methodsConnection?.edges || [])?.reduce((prev, edge) => {
-      const curNode = edge?.node
+    const result = (methodsConnection?.edges || [])?.reduce(
+      (prev, edge) => {
+        const curNode = edge?.node
 
-      return {
-        defaultPaymentMethod: curNode?.isDefault
-          ? curNode
-          : prev.defaultPaymentMethod,
-        paymentMethods: [
-          ...prev.paymentMethods,
-          ...(curNode ? [curNode] : []),
-        ],
+        return {
+          defaultPaymentMethod: curNode?.isDefault
+            ? curNode
+            : prev.defaultPaymentMethod,
+          paymentMethods: [
+            ...prev.paymentMethods,
+            ...(curNode ? [curNode] : []),
+          ],
+        }
+      },
+      { paymentMethods: [], defaultPaymentMethod: undefined } as {
+        paymentMethods: PaymentMethodFragment[]
+        defaultPaymentMethod: PaymentMethodFragment | undefined
       }
-    },
-    { paymentMethods: [], defaultPaymentMethod: undefined } as {
-      paymentMethods: PaymentMethodFragment[]
-      defaultPaymentMethod: PaymentMethodFragment | undefined
-    })
+    )
 
     return {
       paymentMethods: result.paymentMethods,
@@ -51,9 +61,14 @@ function useExtractPaymentMethods(methodsConnection:
 }
 
 function BillingSubscriptionProvider({
-  data, error, refetch, children,
+  data,
+  error,
+  refetch,
+  children,
 }: BillingSubscriptionProviderPropsType) {
-  const { paymentMethods, defaultPaymentMethod } = useExtractPaymentMethods(data?.account?.paymentMethods)
+  const { paymentMethods, defaultPaymentMethod } = useExtractPaymentMethods(
+    data?.account?.paymentMethods
+  )
 
   const subscriptionContextValue = useMemo<SubscriptionContextType>(() => {
     const account = data?.account ?? null
@@ -67,13 +82,18 @@ function BillingSubscriptionProvider({
     const isPaidPlan = isProPlan || isEnterprisePlan
     const grandfatheredUntil = account?.grandfatheredUntil
     const isLegacyUser = !!grandfatheredUntil
-    const isGrandfathered = isLegacyUser && moment().isBefore(moment(grandfatheredUntil))
+    const isGrandfathered =
+      isLegacyUser && moment().isBefore(moment(grandfatheredUntil))
     const isDelinquent = moment().isSameOrAfter(moment(account?.delinquentAt))
 
     // Marking grandfathering as expired only for a month after expiry date.
     // Afterwards expiry banners will not be visible and UI will be the same as for open-source users.
-    const isGrandfatheringExpired = isLegacyUser
-      && moment().isBetween(moment(grandfatheredUntil), moment(grandfatheredUntil).add(1, 'M'))
+    const isGrandfatheringExpired =
+      isLegacyUser &&
+      moment().isBetween(
+        moment(grandfatheredUntil),
+        moment(grandfatheredUntil).add(1, 'M')
+      )
 
     return {
       subscription,
@@ -111,7 +131,9 @@ export function useBillingSubscription() {
   const ctx = useContext(SubscriptionContext)
 
   if (!ctx) {
-    throw Error('useBillingSubscription() must be used inside of a <BillingSubscriptionProvider>')
+    throw Error(
+      'useBillingSubscription() must be used inside of a <BillingSubscriptionProvider>'
+    )
   }
 
   return ctx

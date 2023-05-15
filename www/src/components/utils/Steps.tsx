@@ -18,7 +18,11 @@ function BetweenStep({ step, width }: any) {
 
   return (
     <Box
-      border={{ color: current > step ? 'brand' : 'light-3', size: '1px', side: 'bottom' }}
+      border={{
+        color: current > step ? 'brand' : 'light-3',
+        size: '1px',
+        side: 'bottom',
+      }}
       width={width}
     />
   )
@@ -27,21 +31,23 @@ function BetweenStep({ step, width }: any) {
 function StepProvider({ step, children }: any) {
   const steps = useRef<any>({})
   const [current, setCurrent] = useState(0)
-  const register = useCallback((name, ind) => {
-    steps.current = { ...steps.current, [name]: ind }
-  }, [steps])
+  const register = useCallback(
+    (name, ind) => {
+      steps.current = { ...steps.current, [name]: ind }
+    },
+    [steps]
+  )
 
   useEffect(() => {
     if (steps.current[step] !== undefined) setCurrent(steps.current[step])
   }, [step, steps])
 
-  const value = useMemo(() => ({ current, setCurrent, register }), [current, setCurrent, register])
-
-  return (
-    <StepContext.Provider value={value}>
-      {children}
-    </StepContext.Provider>
+  const value = useMemo(
+    () => ({ current, setCurrent, register }),
+    [current, setCurrent, register]
   )
+
+  return <StepContext.Provider value={value}>{children}</StepContext.Provider>
 }
 
 export function Step({ step, name, onStep }: any) {
@@ -77,13 +83,15 @@ export function Step({ step, name, onStep }: any) {
         <Text
           size="small"
           color={current >= step ? undefined : 'border'}
-        >{step + 1}
+        >
+          {step + 1}
         </Text>
       </Box>
       <Text
         size="small"
         color={current >= step ? undefined : 'border'}
-      >{name}
+      >
+        {name}
       </Text>
     </Box>
   )

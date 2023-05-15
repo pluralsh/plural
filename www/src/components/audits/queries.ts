@@ -6,8 +6,14 @@ import { PageInfo } from '../../models/misc'
 export const AUDITS_Q = gql`
   query Audits($cursor: String) {
     audits(first: 50, after: $cursor) {
-      pageInfo { ...PageInfo }
-      edges { node { ...AuditFragment } }
+      pageInfo {
+        ...PageInfo
+      }
+      edges {
+        node {
+          ...AuditFragment
+        }
+      }
     }
   }
   ${PageInfo}
@@ -17,8 +23,14 @@ export const AUDITS_Q = gql`
 export const LOGINS_Q = gql`
   query Logins($cursor: String) {
     oidcLogins(first: 50, after: $cursor) {
-      pageInfo { ...PageInfo }
-      edges { node { ...OidcLoginFragment } }
+      pageInfo {
+        ...PageInfo
+      }
+      edges {
+        node {
+          ...OidcLoginFragment
+        }
+      }
     }
   }
   ${PageInfo}
@@ -27,12 +39,18 @@ export const LOGINS_Q = gql`
 
 export const AUDIT_METRICS = gql`
   query {
-    auditMetrics { country count }
+    auditMetrics {
+      country
+      count
+    }
   }
 `
 
 export const LOGIN_METRICS = gql`
   query {
-    loginMetrics { country count }
+    loginMetrics {
+      country
+      count
+    }
   }
 `

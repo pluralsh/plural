@@ -20,7 +20,9 @@ fragment Rollout on Rollout {
 fragment Upgrade on Upgrade {
   id
   message
-  repository { ...Repo }
+  repository {
+    ...Repo
+  }
   insertedAt
 }
 
@@ -28,6 +30,8 @@ fragment DeferredUpdate on DeferredUpdate {
   id
   dequeueAt
   attempts
-  version { version }
+  version {
+    version
+  }
   insertedAt
 }

@@ -14,13 +14,31 @@ export const AuditFragment = gql`
     city
     latitude
     longitude
-    actor { ...UserFragment }
-    repository { ...RepoFragment }
-    group { ...GroupFragment }
-    integrationWebhook { ...IntegrationWebhookFragment }
-    role { ...RoleFragment }
-    version { ...VersionFragment }
-    image { id tag dockerRepository { name } }
+    actor {
+      ...UserFragment
+    }
+    repository {
+      ...RepoFragment
+    }
+    group {
+      ...GroupFragment
+    }
+    integrationWebhook {
+      ...IntegrationWebhookFragment
+    }
+    role {
+      ...RoleFragment
+    }
+    version {
+      ...VersionFragment
+    }
+    image {
+      id
+      tag
+      dockerRepository {
+        name
+      }
+    }
     insertedAt
   }
   ${UserFragment}
@@ -34,8 +52,15 @@ export const AuditFragment = gql`
 export const PolicyBindingFragment = gql`
   fragment PolicyBindingFragment on PolicyBinding {
     id
-    group { id name }
-    user { id name email }
+    group {
+      id
+      name
+    }
+    user {
+      id
+      name
+      email
+    }
   }
 `
 
@@ -43,10 +68,14 @@ export const DnsDomainFragment = gql`
   fragment DnsDomainFragment on DnsDomain {
     id
     name
-    creator { ...UserFragment }
+    creator {
+      ...UserFragment
+    }
     accessPolicy {
       id
-      bindings { ...PolicyBindingFragment }
+      bindings {
+        ...PolicyBindingFragment
+      }
     }
     insertedAt
   }
@@ -62,7 +91,9 @@ export const DnsRecordFragment = gql`
     records
     cluster
     provider
-    creator { ...UserFragment }
+    creator {
+      ...UserFragment
+    }
     insertedAt
   }
   ${UserFragment}
@@ -84,9 +115,15 @@ export const OidcLoginFragment = gql`
     city
     latitude
     longitude
-    user { ...UserFragment }
-    owner { ...UserFragment }
-    repository { ...RepoFragment }
+    user {
+      ...UserFragment
+    }
+    owner {
+      ...UserFragment
+    }
+    repository {
+      ...RepoFragment
+    }
     insertedAt
   }
   ${UserFragment}

@@ -20,7 +20,10 @@ import { useSearchParams } from 'react-router-dom'
 import { Flex } from 'honorable'
 
 import ClustersContext from '../../../../contexts/ClustersContext'
-import { CloudShellClusterPicker, NEW_CLUSTER_ID } from '../../../utils/ClusterPicker'
+import {
+  CloudShellClusterPicker,
+  NEW_CLUSTER_ID,
+} from '../../../utils/ClusterPicker'
 
 import { State, TerminalContext } from '../context/terminal'
 
@@ -59,15 +62,31 @@ const Header = styled(HeaderUnstyled)(({ theme }) => ({
 }))
 
 function HeaderUnstyled({
-  view, onViewChange, disabled = false, ...props
+  view,
+  onViewChange,
+  disabled = false,
+  ...props
 }: HeaderProps): JSX.Element {
-  const title = useMemo(() => (view === SidebarView.Installer ? 'Install apps' : 'Installed apps'), [view])
-  const buttonText = useMemo(() => (view === SidebarView.Installer ? 'View installed apps' : 'Install'), [view])
-  const buttonIcon = useMemo(() => (view === SidebarView.Installer ? <AppsIcon /> : <InstallIcon />), [view])
+  const title = useMemo(
+    () => (view === SidebarView.Installer ? 'Install apps' : 'Installed apps'),
+    [view]
+  )
+  const buttonText = useMemo(
+    () => (view === SidebarView.Installer ? 'View installed apps' : 'Install'),
+    [view]
+  )
+  const buttonIcon = useMemo(
+    () => (view === SidebarView.Installer ? <AppsIcon /> : <InstallIcon />),
+    [view]
+  )
 
-  const changeView = useCallback(() => (view === SidebarView.Installer
-    ? onViewChange(SidebarView.Installed)
-    : onViewChange(SidebarView.Installer)), [onViewChange, view])
+  const changeView = useCallback(
+    () =>
+      view === SidebarView.Installer
+        ? onViewChange(SidebarView.Installed)
+        : onViewChange(SidebarView.Installer),
+    [onViewChange, view]
+  )
 
   return (
     <div {...props}>
@@ -87,7 +106,8 @@ function HeaderUnstyled({
               startIcon={buttonIcon}
               onClick={changeView}
               disabled={disabled}
-            >{buttonText}
+            >
+              {buttonText}
             </Button>
           </div>
         </WrapWithIf>
@@ -113,35 +133,38 @@ function useSelectCluster() {
   const clusterId = params.get('cluster')
 
   const currentCluster = useMemo(() => {
-    let cluster = (clusterId ? clusters.find(cl => cl.id === clusterId) : undefined)
+    let cluster = clusterId
+      ? clusters.find((cl) => cl.id === clusterId)
+      : undefined
 
     if (!cluster && clusterId) {
-      setSearchParams(sp => {
+      setSearchParams((sp) => {
         sp.delete('cluster')
 
         return sp
       })
     }
     if (!cluster) {
-      cluster = clusters.find(cl => cl?.owner?.id === userId)
+      cluster = clusters.find((cl) => cl?.owner?.id === userId)
     }
 
     return cluster
   }, [clusterId, clusters, setSearchParams, userId])
 
-  const setCluster = useCallback((clusterId?: string) => {
-    setSearchParams(sp => {
-      if (clusterId && clusters.some(cl => cl.id === clusterId)) {
-        sp.set('cluster', clusterId)
-      }
-      else {
-        sp.delete('cluster')
-      }
+  const setCluster = useCallback(
+    (clusterId?: string) => {
+      setSearchParams((sp) => {
+        if (clusterId && clusters.some((cl) => cl.id === clusterId)) {
+          sp.set('cluster', clusterId)
+        } else {
+          sp.delete('cluster')
+        }
 
-      return sp
-    })
-  },
-  [clusters, setSearchParams])
+        return sp
+      })
+    },
+    [clusters, setSearchParams]
+  )
 
   return {
     cluster: currentCluster,
@@ -160,9 +183,11 @@ function ClusterSelect() {
   return (
     <CloudShellClusterPicker
       clusterId={cluster?.id || NEW_CLUSTER_ID}
-      onChange={id => (id === NEW_CLUSTER_ID ? setCluster(undefined) : setCluster(id))}
+      onChange={(id) =>
+        id === NEW_CLUSTER_ID ? setCluster(undefined) : setCluster(id)
+      }
       size="small"
-      title={(
+      title={
         <Flex
           gap="xsmall"
           whiteSpace="nowrap"
@@ -170,43 +195,58 @@ function ClusterSelect() {
           <ClusterIcon />
           Cluster
         </Flex>
-      )}
+      }
     />
   )
 }
 
 function SidebarUnstyled({ refetch, ...props }) {
-  const { shell: { provider }, state } = useContext(TerminalContext)
+  const {
+    shell: { provider },
+    state,
+  } = useContext(TerminalContext)
   const [view, setView] = useState(SidebarView.Installer)
   const [searchParams] = useSearchParams()
 
-  const { data: { repositories: { edges: nodes } = { edges: [] } } = {} } = useQuery(APPLICATIONS_QUERY,
-    {
+  const { data: { repositories: { edges: nodes } = { edges: [] } } = {} } =
+    useQuery(APPLICATIONS_QUERY, {
       variables: { provider, installed: true },
       skip: !provider,
       fetchPolicy: 'network-only',
     })
 
   const hasInstalledApps = useMemo(() => nodes?.length > 0, [nodes?.length])
-  const hasPreselectedApp = useMemo(() => !!searchParams.get('install'), [searchParams])
+  const hasPreselectedApp = useMemo(
+    () => !!searchParams.get('install'),
+    [searchParams]
+  )
 
-  useEffect(() => (hasPreselectedApp
-    ? setView(SidebarView.Installer)
-    : hasInstalledApps
-      ? setView(SidebarView.Installed)
-      : undefined),
-  [hasInstalledApps, hasPreselectedApp])
-  useEffect(() => (state === State.Installed ? setView(SidebarView.Installed) : undefined), [state])
+  useEffect(
+    () =>
+      hasPreselectedApp
+        ? setView(SidebarView.Installer)
+        : hasInstalledApps
+        ? setView(SidebarView.Installed)
+        : undefined,
+    [hasInstalledApps, hasPreselectedApp]
+  )
+  useEffect(
+    () =>
+      state === State.Installed ? setView(SidebarView.Installed) : undefined,
+    [state]
+  )
 
   return (
     <div {...props}>
       <Header
         view={view}
-        onViewChange={view => setView(view)}
+        onViewChange={(view) => setView(view)}
         disabled={view === SidebarView.Installer && !hasInstalledApps}
       />
       {view === SidebarView.Installed && <Installed />}
-      {view === SidebarView.Installer && <Installer onInstallSuccess={() => refetch()} />}
+      {view === SidebarView.Installer && (
+        <Installer onInstallSuccess={() => refetch()} />
+      )}
     </div>
   )
 }

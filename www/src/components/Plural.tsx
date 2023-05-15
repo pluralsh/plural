@@ -1,17 +1,5 @@
-import {
-  Suspense,
-  lazy,
-  useContext,
-  useEffect,
-  useState,
-} from 'react'
-import {
-  Navigate,
-  Outlet,
-  Route,
-  Routes,
-  useMatch,
-} from 'react-router-dom'
+import { Suspense, lazy, useContext, useEffect, useState } from 'react'
+import { Navigate, Outlet, Route, Routes, useMatch } from 'react-router-dom'
 import { Toast } from '@pluralsh/design-system'
 
 import { growthbook } from '../helpers/growthbook'
@@ -37,74 +25,210 @@ const StackApps = lazy(() => import('./stack/StackApps'))
 const Roadmap = lazy(() => import('./roadmap/Roadmap'))
 const RoadmapRoadmap = lazy(() => import('./roadmap/RoadmapRoadmap'))
 const RoadmapChangelog = lazy(() => import('./roadmap/RoadmapChangelog'))
-const RoadmapApplicationRequests = lazy(() => import('./roadmap/RoadmapApplicationRequests'))
-const RoadmapFeatureRequests = lazy(() => import('./roadmap/RoadmapFeatureRequests'))
+const RoadmapApplicationRequests = lazy(
+  () => import('./roadmap/RoadmapApplicationRequests')
+)
+const RoadmapFeatureRequests = lazy(
+  () => import('./roadmap/RoadmapFeatureRequests')
+)
 const RoadmapFeedback = lazy(() => import('./roadmap/RoadmapFeedback'))
 const BillingLayout = lazy(() => import('./account/billing/BillingLayout'))
-const BillingManagePlan = lazy(() => import('./account/billing/BillingManagePlan'))
+const BillingManagePlan = lazy(
+  () => import('./account/billing/BillingManagePlan')
+)
 const BillingPayments = lazy(() => import('./account/billing/BillingPayments'))
-const AccessTokens = lazy(() => import('./profile/AccessTokens').then(module => ({ default: module.AccessTokens })))
-const Account = lazy(() => import('./account/Account').then(module => ({ default: module.Account })))
-const AccountAttributes = lazy(() => import('./account/AccountAttributes').then(module => ({ default: module.AccountAttributes })))
-const AuditChloropleth = lazy(() => import('./audits/AuditChloropleth').then(module => ({ default: module.AuditChloropleth })))
-const AuditDirectory = lazy(() => import('./audits/AuditDirectory').then(module => ({ default: module.AuditDirectory })))
-const Audits = lazy(() => import('./audits/Audits').then(module => ({ default: module.Audits })))
-const ChecklistProvider = lazy(() => import('./shell/onboarding/checklist/Checklist').then(module => ({ default: module.ChecklistProvider })))
+const AccessTokens = lazy(() =>
+  import('./profile/AccessTokens').then((module) => ({
+    default: module.AccessTokens,
+  }))
+)
+const Account = lazy(() =>
+  import('./account/Account').then((module) => ({ default: module.Account }))
+)
+const AccountAttributes = lazy(() =>
+  import('./account/AccountAttributes').then((module) => ({
+    default: module.AccountAttributes,
+  }))
+)
+const AuditChloropleth = lazy(() =>
+  import('./audits/AuditChloropleth').then((module) => ({
+    default: module.AuditChloropleth,
+  }))
+)
+const AuditDirectory = lazy(() =>
+  import('./audits/AuditDirectory').then((module) => ({
+    default: module.AuditDirectory,
+  }))
+)
+const Audits = lazy(() =>
+  import('./audits/Audits').then((module) => ({ default: module.Audits }))
+)
+const ChecklistProvider = lazy(() =>
+  import('./shell/onboarding/checklist/Checklist').then((module) => ({
+    default: module.ChecklistProvider,
+  }))
+)
 
 // Overview.
-const Overview = lazy(() => import('./overview/Overview').then(module => ({ default: module.Overview })))
-const Clusters = lazy(() => import('./overview/clusters/Clusters').then(module => ({ default: module.Clusters })))
-const Apps = lazy(() => import('./overview/apps/Apps').then(module => ({ default: module.Apps })))
+const Overview = lazy(() =>
+  import('./overview/Overview').then((module) => ({ default: module.Overview }))
+)
+const Clusters = lazy(() =>
+  import('./overview/clusters/Clusters').then((module) => ({
+    default: module.Clusters,
+  }))
+)
+const Apps = lazy(() =>
+  import('./overview/apps/Apps').then((module) => ({ default: module.Apps }))
+)
 
 // Cluster and app.
-const Cluster = lazy(() => import('./cluster/Cluster').then(module => ({ default: module.Cluster })))
-const App = lazy(() => import('./app/App').then(module => ({ default: module.App })))
-const Upgrade = lazy(() => import('./app/upgrade/Upgrade').then(module => ({ default: module.Upgrade })))
-const OIDC = lazy(() => import('./app/oidc/OIDC').then(module => ({ default: module.OIDC })))
-const Uninstall = lazy(() => import('./app/uninstall/Uninstall').then(module => ({ default: module.Uninstall })))
-const AppDocs = lazy(() => import('./app/docs/AppDocs').then(module => ({ default: module.AppDocs })))
+const Cluster = lazy(() =>
+  import('./cluster/Cluster').then((module) => ({ default: module.Cluster }))
+)
+const App = lazy(() =>
+  import('./app/App').then((module) => ({ default: module.App }))
+)
+const Upgrade = lazy(() =>
+  import('./app/upgrade/Upgrade').then((module) => ({
+    default: module.Upgrade,
+  }))
+)
+const OIDC = lazy(() =>
+  import('./app/oidc/OIDC').then((module) => ({ default: module.OIDC }))
+)
+const Uninstall = lazy(() =>
+  import('./app/uninstall/Uninstall').then((module) => ({
+    default: module.Uninstall,
+  }))
+)
+const AppDocs = lazy(() =>
+  import('./app/docs/AppDocs').then((module) => ({ default: module.AppDocs }))
+)
 
-const PluralProvider = lazy(() => import('./login/CurrentUser').then(module => ({ default: module.PluralProvider })))
-const DeviceLoginNotif = lazy(() => import('./users/DeviceLoginNotif').then(module => ({ default: module.DeviceLoginNotif })))
-const Domains = lazy(() => import('./account/Domains').then(module => ({ default: module.Domains })))
-const EabCredentials = lazy(() => import('./profile/EabCredentials').then(module => ({ default: module.EabCredentials })))
-const Groups = lazy(() => import('./account/Groups').then(module => ({ default: module.Groups })))
-const LoginAudits = lazy(() => import('./audits/LoginAudits').then(module => ({ default: module.LoginAudits })))
-const MyProfile = lazy(() => import('./profile/MyProfile').then(module => ({ default: module.MyProfile })))
-const Profile = lazy(() => import('./profile/Profile').then(module => ({ default: module.Profile })))
-const PublicKeys = lazy(() => import('./profile/PublicKeys').then(module => ({ default: module.PublicKeys })))
-const KeyBackups = lazy(() => import('./profile/KeyBackups').then(module => ({ default: module.KeyBackups })))
-const Roles = lazy(() => import('./account/Roles').then(module => ({ default: module.Roles })))
-const Security = lazy(() => import('./profile/Security').then(module => ({ default: module.Security })))
-const ServiceAccounts = lazy(() => import('./account/ServiceAccounts').then(module => ({ default: module.ServiceAccounts })))
-const Users = lazy(() => import('./account/Users').then(module => ({ default: module.Users })))
-const VerifyEmailConfirmed = lazy(() => import('./users/EmailConfirmation').then(module => ({ default: module.VerifyEmailConfirmed })))
+const PluralProvider = lazy(() =>
+  import('./login/CurrentUser').then((module) => ({
+    default: module.PluralProvider,
+  }))
+)
+const DeviceLoginNotif = lazy(() =>
+  import('./users/DeviceLoginNotif').then((module) => ({
+    default: module.DeviceLoginNotif,
+  }))
+)
+const Domains = lazy(() =>
+  import('./account/Domains').then((module) => ({ default: module.Domains }))
+)
+const EabCredentials = lazy(() =>
+  import('./profile/EabCredentials').then((module) => ({
+    default: module.EabCredentials,
+  }))
+)
+const Groups = lazy(() =>
+  import('./account/Groups').then((module) => ({ default: module.Groups }))
+)
+const LoginAudits = lazy(() =>
+  import('./audits/LoginAudits').then((module) => ({
+    default: module.LoginAudits,
+  }))
+)
+const MyProfile = lazy(() =>
+  import('./profile/MyProfile').then((module) => ({
+    default: module.MyProfile,
+  }))
+)
+const Profile = lazy(() =>
+  import('./profile/Profile').then((module) => ({ default: module.Profile }))
+)
+const PublicKeys = lazy(() =>
+  import('./profile/PublicKeys').then((module) => ({
+    default: module.PublicKeys,
+  }))
+)
+const KeyBackups = lazy(() =>
+  import('./profile/KeyBackups').then((module) => ({
+    default: module.KeyBackups,
+  }))
+)
+const Roles = lazy(() =>
+  import('./account/Roles').then((module) => ({ default: module.Roles }))
+)
+const Security = lazy(() =>
+  import('./profile/Security').then((module) => ({ default: module.Security }))
+)
+const ServiceAccounts = lazy(() =>
+  import('./account/ServiceAccounts').then((module) => ({
+    default: module.ServiceAccounts,
+  }))
+)
+const Users = lazy(() =>
+  import('./account/Users').then((module) => ({ default: module.Users }))
+)
+const VerifyEmailConfirmed = lazy(() =>
+  import('./users/EmailConfirmation').then((module) => ({
+    default: module.VerifyEmailConfirmed,
+  }))
+)
 
 /** Repository - /repository/:name * */
 const Repository = lazy(() => import('./repository/Repository'))
-const RepositoryArtifacts = lazy(() => import('./repository/RepositoryArtifacts'))
-const RepositoryDeployments = lazy(() => import('./repository/RepositoryDeployments'))
-const RepositoryDescription = lazy(() => import('./repository/RepositoryDescription'))
+const RepositoryArtifacts = lazy(
+  () => import('./repository/RepositoryArtifacts')
+)
+const RepositoryDeployments = lazy(
+  () => import('./repository/RepositoryDeployments')
+)
+const RepositoryDescription = lazy(
+  () => import('./repository/RepositoryDescription')
+)
 const RepositoryEdit = lazy(() => import('./repository/RepositoryEdit'))
 const RepositoryPackages = lazy(() => import('./repository/RepositoryPackages'))
-const RepositoryPackagesDocker = lazy(() => import('./repository/RepositoryPackagesDocker'))
-const RepositoryPackagesHelm = lazy(() => import('./repository/RepositoryPackagesHelm'))
-const RepositoryPackagesTerraform = lazy(() => import('./repository/RepositoryPackagesTerraform'))
+const RepositoryPackagesDocker = lazy(
+  () => import('./repository/RepositoryPackagesDocker')
+)
+const RepositoryPackagesHelm = lazy(
+  () => import('./repository/RepositoryPackagesHelm')
+)
+const RepositoryPackagesTerraform = lazy(
+  () => import('./repository/RepositoryPackagesTerraform')
+)
 const RepositoryTests = lazy(() => import('./repository/RepositoryTests'))
 
 // Packages - Helm - /charts
 const Chart = lazy(() => import('./repository/packages/Chart'))
-const PackageReadme = lazy(() => import('./repository/packages/helm/PackageReadme'))
-const PackageConfiguration = lazy(() => import('./repository/packages/helm/PackageConfiguration'))
-const PackageDependencies = lazy(() => import('./repository/packages/helm/PackageDependencies'))
-const PackageSecurity = lazy(() => import('./repository/packages/helm/PackageSecurity'))
-const PackageUpdateQueue = lazy(() => import('./repository/packages/helm/PackageUpdateQueue'))
+const PackageReadme = lazy(
+  () => import('./repository/packages/helm/PackageReadme')
+)
+const PackageConfiguration = lazy(
+  () => import('./repository/packages/helm/PackageConfiguration')
+)
+const PackageDependencies = lazy(
+  () => import('./repository/packages/helm/PackageDependencies')
+)
+const PackageSecurity = lazy(
+  () => import('./repository/packages/helm/PackageSecurity')
+)
+const PackageUpdateQueue = lazy(
+  () => import('./repository/packages/helm/PackageUpdateQueue')
+)
 
 // Packages - Docker - /dkr/img
-const Docker = lazy(() => import('./repository/packages/Docker').then(module => ({ default: module.Docker })))
-const DockerRepository = lazy(() => import('./repository/packages/Docker').then(module => ({ default: module.DockerRepository })))
-const ImagePullMetrics = lazy(() => import('./repository/packages/docker/ImagePullMetrics'))
-const ImageVulnerabilities = lazy(() => import('./repository/packages/docker/ImageVulnerabilities'))
+const Docker = lazy(() =>
+  import('./repository/packages/Docker').then((module) => ({
+    default: module.Docker,
+  }))
+)
+const DockerRepository = lazy(() =>
+  import('./repository/packages/Docker').then((module) => ({
+    default: module.DockerRepository,
+  }))
+)
+const ImagePullMetrics = lazy(
+  () => import('./repository/packages/docker/ImagePullMetrics')
+)
+const ImageVulnerabilities = lazy(
+  () => import('./repository/packages/docker/ImageVulnerabilities')
+)
 
 // Packages - Terraform - /terraform
 const Terraform = lazy(() => import('./repository/packages/Terraform'))
@@ -163,7 +287,8 @@ function TestBanner() {
         severity="success"
         marginBottom="medium"
         marginRight="xxxxlarge"
-      >Growthbook Test!
+      >
+        Growthbook Test!
       </Toast>
     )
   }
@@ -229,12 +354,12 @@ export function PluralInner() {
               >
                 <Route
                   index
-                  element={(
+                  element={
                     <Navigate
                       replace
                       to="me"
                     />
-                  )}
+                  }
                 />
                 <Route
                   path="me"
@@ -276,12 +401,12 @@ export function PluralInner() {
                 >
                   <Route
                     index
-                    element={(
+                    element={
                       <Navigate
                         replace
                         to="helm"
                       />
-                    )}
+                    }
                   />
                   <Route
                     path="helm"
@@ -405,12 +530,12 @@ export function PluralInner() {
               >
                 <Route
                   index
-                  element={(
+                  element={
                     <Navigate
                       replace
                       to="edit"
                     />
-                  )}
+                  }
                 />
                 <Route
                   path="edit"
@@ -480,12 +605,12 @@ export function PluralInner() {
               >
                 <Route
                   index
-                  element={(
+                  element={
                     <Navigate
                       replace
                       to="logs"
                     />
-                  )}
+                  }
                 />
                 <Route
                   path="logs"
@@ -522,12 +647,12 @@ export function PluralInner() {
               >
                 <Route
                   index
-                  element={(
+                  element={
                     <Navigate
                       replace
                       to="clusters"
                     />
-                  )}
+                  }
                 />
                 <Route
                   path="clusters"
@@ -550,12 +675,12 @@ export function PluralInner() {
               >
                 <Route
                   index
-                  element={(
+                  element={
                     <Navigate
                       replace
                       to="upgrade"
                     />
-                  )}
+                  }
                 />
                 <Route
                   path="upgrade"
@@ -608,9 +733,7 @@ export function PluralInner() {
               {/* --- 404 --- */}
               <Route
                 path="/*"
-                element={(
-                  <OAuthOrFallback />
-                )}
+                element={<OAuthOrFallback />}
               />
             </Routes>
           </ApplicationLayout>

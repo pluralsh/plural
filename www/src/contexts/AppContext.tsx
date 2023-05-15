@@ -20,8 +20,6 @@ export function AppContextProvider({ children, value }: ContextProps) {
   const finalValue = useMemo(() => value ?? {}, [value])
 
   return (
-    <AppContext.Provider value={finalValue}>
-      {children}
-    </AppContext.Provider>
+    <AppContext.Provider value={finalValue}>{children}</AppContext.Provider>
   )
 }

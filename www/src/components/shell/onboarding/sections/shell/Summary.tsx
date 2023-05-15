@@ -44,9 +44,15 @@ const entryGridStyle = (theme): CSSObject => ({
   },
 })
 
-const RepositorySummary = styled(RepositorySummaryUnstyled)(({ theme }) => entryGridStyle(theme))
-const CloudSummary = styled(CloudSummaryUnstyled)(({ theme }) => entryGridStyle(theme))
-const WorkspaceSummary = styled(WorkspaceSummaryUnstyled)(({ theme }) => entryGridStyle(theme))
+const RepositorySummary = styled(RepositorySummaryUnstyled)(({ theme }) =>
+  entryGridStyle(theme)
+)
+const CloudSummary = styled(CloudSummaryUnstyled)(({ theme }) =>
+  entryGridStyle(theme)
+)
+const WorkspaceSummary = styled(WorkspaceSummaryUnstyled)(({ theme }) =>
+  entryGridStyle(theme)
+)
 const SCMProviderDisplayName = {
   [ScmProvider.Github]: 'GitHub',
   [ScmProvider.Gitlab]: 'GitLab',
@@ -71,7 +77,8 @@ function RepositorySummaryUnstyled({ ...props }) {
             <P
               caption
               color="text-xlight"
-            >Provider
+            >
+              Provider
             </P>
             <P body1>{SCMProviderDisplayName[scm.provider!]}</P>
           </div>
@@ -82,7 +89,8 @@ function RepositorySummaryUnstyled({ ...props }) {
             <P
               caption
               color="text-xlight"
-            >Repository Name
+            >
+              Repository Name
             </P>
             <P body1>{scm?.repositoryName ?? '-'}</P>
           </div>
@@ -93,9 +101,14 @@ function RepositorySummaryUnstyled({ ...props }) {
             <P
               caption
               color="text-xlight"
-            >Git Account
+            >
+              Git Account
             </P>
-            <P body1>{scm?.provider === ScmProvider.Demo ? 'Demo' : scm?.org?.name ?? 'User'}</P>
+            <P body1>
+              {scm?.provider === ScmProvider.Demo
+                ? 'Demo'
+                : scm?.org?.name ?? 'User'}
+            </P>
           </div>
         </div>
 
@@ -104,7 +117,8 @@ function RepositorySummaryUnstyled({ ...props }) {
             <P
               caption
               color="text-xlight"
-            >Account Type
+            >
+              Account Type
             </P>
             <P body1>{scm?.org?.orgType ?? '-'}</P>
           </div>
@@ -132,7 +146,8 @@ function CloudSummaryUnstyled({ ...props }) {
             <P
               caption
               color="text-xlight"
-            >Region
+            >
+              Region
             </P>
             <P body1>{workspace?.region || '-'}</P>
           </div>
@@ -143,7 +158,8 @@ function CloudSummaryUnstyled({ ...props }) {
             <P
               caption
               color="text-xlight"
-            >Credentials
+            >
+              Credentials
             </P>
             <P body1>••••••••</P>
           </div>
@@ -154,7 +170,8 @@ function CloudSummaryUnstyled({ ...props }) {
             <P
               caption
               color="text-xlight"
-            >Project
+            >
+              Project
             </P>
             <P body1>{workspace?.project || '-'}</P>
           </div>
@@ -182,7 +199,8 @@ function WorkspaceSummaryUnstyled({ ...props }) {
             <P
               caption
               color="text-xlight"
-            >Cluster
+            >
+              Cluster
             </P>
             <P body1>{workspace?.clusterName || '-'}</P>
           </div>
@@ -193,7 +211,8 @@ function WorkspaceSummaryUnstyled({ ...props }) {
             <P
               caption
               color="text-xlight"
-            >Bucket Prefix
+            >
+              Bucket Prefix
             </P>
             <P body1>{workspace?.bucketPrefix}</P>
           </div>
@@ -204,7 +223,8 @@ function WorkspaceSummaryUnstyled({ ...props }) {
             <P
               caption
               color="text-xlight"
-            >Subdomain
+            >
+              Subdomain
             </P>
             <P body1>{workspace?.subdomain}.onplural.sh</P>
           </div>
@@ -216,7 +236,10 @@ function WorkspaceSummaryUnstyled({ ...props }) {
 
 function Summary({ onBack }) {
   const setSectionState = useSectionState()
-  const onCreate = useCallback(() => setSectionState(CreateCloudShellSectionState.Creating), [setSectionState])
+  const onCreate = useCallback(
+    () => setSectionState(CreateCloudShellSectionState.Creating),
+    [setSectionState]
+  )
 
   return (
     <>
@@ -224,7 +247,8 @@ function Summary({ onBack }) {
         body2
         color="text-light"
       >
-        After ensuring you entered everything correctly, it's time to launch the cloud shell and install your first application!
+        After ensuring you entered everything correctly, it's time to launch the
+        cloud shell and install your first application!
       </P>
       <RepositorySummary />
       <CloudSummary />
@@ -241,12 +265,14 @@ function Summary({ onBack }) {
           data-phid="back-from-review"
           secondary
           onClick={onBack}
-        >Back
+        >
+          Back
         </Button>
         <Button
           data-phid="cont-from-review"
           onClick={onCreate}
-        >Create
+        >
+          Create
         </Button>
       </Flex>
     </>

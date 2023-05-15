@@ -16,14 +16,30 @@ import styled from 'styled-components'
 import { SEARCH_GROUPS, SEARCH_USERS } from './queries'
 
 export function fetchUsers(client, query, setSuggestions) {
-  client.query({ query: SEARCH_USERS, variables: { q: query, all: true } })
-    .then(({ data: { users: { edges } } }) => edges.map(({ node }) => ({ value: node, label: userSuggestion(node) })))
+  client
+    .query({ query: SEARCH_USERS, variables: { q: query, all: true } })
+    .then(
+      ({
+        data: {
+          users: { edges },
+        },
+      }) =>
+        edges.map(({ node }) => ({ value: node, label: userSuggestion(node) }))
+    )
     .then(setSuggestions)
 }
 
 export function fetchGroups(client, query, setSuggestions) {
-  client.query({ query: SEARCH_GROUPS, variables: { q: query } })
-    .then(({ data: { groups: { edges } } }) => edges.map(({ node }) => ({ value: node, label: groupSuggestion(node) })))
+  client
+    .query({ query: SEARCH_GROUPS, variables: { q: query } })
+    .then(
+      ({
+        data: {
+          groups: { edges },
+        },
+      }) =>
+        edges.map(({ node }) => ({ value: node, label: groupSuggestion(node) }))
+    )
     .then(setSuggestions)
 }
 
@@ -32,16 +48,14 @@ const ChipList = styled(ListBoxItemChipList)(({ theme }) => ({
   justifyContent: 'start',
 }))
 
-function userSuggestion({
-  name, email, avatar, id,
-}: any) {
+function userSuggestion({ name, email, avatar, id }: any) {
   return (
     <ListBoxItem
       key={id}
       label={name}
       textValue={`${name} - ${email}`}
       description={email}
-      leftContent={(
+      leftContent={
         <AppIcon
           spacing={avatar ? 'none' : undefined}
           hue="lightest"
@@ -49,7 +63,7 @@ function userSuggestion({
           name={name}
           url={avatar}
         />
-      )}
+      }
     />
   )
 }
@@ -94,12 +108,12 @@ function TagInput({
         <ComboBox
           aria-label={label}
           inputValue={inputValue}
-          onSelectionChange={key => {
-            const selection = suggestions.find(s => s?.value?.id === key)
+          onSelectionChange={(key) => {
+            const selection = suggestions.find((s) => s?.value?.id === key)
 
             if (selection) onAdd(selection)
           }}
-          onInputChange={value => {
+          onInputChange={(value) => {
             setInputValue(value)
             onChange({ target: { value } })
           }}
@@ -113,7 +127,7 @@ function TagInput({
         {items?.length > 0 && (
           <ChipList
             maxVisible={Infinity}
-            chips={items.map(key => (
+            chips={items.map((key) => (
               <Chip
                 size="small"
                 clickable

@@ -16,9 +16,15 @@ export const CARDS = gql`
   query {
     me {
       ...UserFragment
-      account { ...AccountFragment }
+      account {
+        ...AccountFragment
+      }
       cards(first: 5) {
-        edges { node { ...CardFragment } }
+        edges {
+          node {
+            ...CardFragment
+          }
+        }
       }
     }
   }
@@ -40,9 +46,13 @@ export const UPDATE_USER = gql`
 export const TOKENS_Q = gql`
   query Tokens($cursor: String) {
     tokens(after: $cursor, first: 10) {
-      pageInfo { ...PageInfo }
+      pageInfo {
+        ...PageInfo
+      }
       edges {
-        node { ...TokenFragment }
+        node {
+          ...TokenFragment
+        }
       }
     }
   }
@@ -73,8 +83,14 @@ export const TOKEN_AUDITS = gql`
     token(id: $id) {
       id
       audits(first: 100, after: $cursor) {
-        pageInfo { ...PageInfo }
-        edges { node { ...TokenAuditFragment } }
+        pageInfo {
+          ...PageInfo
+        }
+        edges {
+          node {
+            ...TokenAuditFragment
+          }
+        }
       }
     }
   }
@@ -85,7 +101,10 @@ export const TOKEN_AUDITS = gql`
 export const TOKEN_METRICS = gql`
   query Token($id: ID!) {
     token(id: $id) {
-      metrics { country count }
+      metrics {
+        country
+        count
+      }
     }
   }
 `
@@ -94,9 +113,13 @@ export const WEBHOOKS_Q = gql`
   query Webhooks($cursor: String) {
     webhooks(first: 10, after: $cursor) {
       edges {
-        node { ...WebhookFragment }
+        node {
+          ...WebhookFragment
+        }
       }
-      pageInfo { ...PageInfo }
+      pageInfo {
+        ...PageInfo
+      }
     }
   }
   ${WebhookFragment}
@@ -147,7 +170,9 @@ export const RESET_TOKEN = gql`
   query Token($id: ID!) {
     resetToken(id: $id) {
       type
-      user { ...UserFragment }
+      user {
+        ...UserFragment
+      }
     }
   }
   ${UserFragment}
@@ -156,8 +181,14 @@ export const RESET_TOKEN = gql`
 export const LIST_KEYS = gql`
   query Keys($cursor: String) {
     publicKeys(after: $cursor, first: 20) {
-      pageInfo { ...PageInfo }
-      edges { node { ...PublicKeyFragment } }
+      pageInfo {
+        ...PageInfo
+      }
+      edges {
+        node {
+          ...PublicKeyFragment
+        }
+      }
     }
   }
   ${PageInfo}
@@ -174,13 +205,25 @@ export const DELETE_KEY = gql`
 
 export const LOGIN_METHOD = gql`
   query LoginMethod($email: String!, $host: String) {
-    loginMethod(email: $email, host: $host) { loginMethod token authorizeUrl }
+    loginMethod(email: $email, host: $host) {
+      loginMethod
+      token
+      authorizeUrl
+    }
   }
 `
 
 export const SIGNUP_MUTATION = gql`
-  mutation Signup($attributes: UserAttributes!, $account: AccountAttributes, $deviceToken: String) {
-    signup(attributes: $attributes, account: $account, deviceToken: $deviceToken) { 
+  mutation Signup(
+    $attributes: UserAttributes!
+    $account: AccountAttributes
+    $deviceToken: String
+  ) {
+    signup(
+      attributes: $attributes
+      account: $account
+      deviceToken: $deviceToken
+    ) {
       jwt
       id
       onboarding
@@ -190,7 +233,7 @@ export const SIGNUP_MUTATION = gql`
 
 export const LOGIN_MUTATION = gql`
   mutation Login($email: String!, $password: String!, $deviceToken: String) {
-    login(email: $email, password: $password, deviceToken: $deviceToken) { 
+    login(email: $email, password: $password, deviceToken: $deviceToken) {
       jwt
       id
       email
@@ -200,18 +243,28 @@ export const LOGIN_MUTATION = gql`
 
 export const PASSWORDLESS_LOGIN = gql`
   mutation Passwordless($token: String!) {
-    passwordlessLogin(token: $token) { jwt id email }
+    passwordlessLogin(token: $token) {
+      jwt
+      id
+      email
+    }
   }
 `
 
 export const POLL_LOGIN_TOKEN = gql`
   mutation Poll($token: String!, $deviceToken: String) {
-    loginToken(token: $token, deviceToken: $deviceToken) { jwt id email }
+    loginToken(token: $token, deviceToken: $deviceToken) {
+      jwt
+      id
+      email
+    }
   }
 `
 export const EAB_CREDENTIALS = gql`
   query {
-    eabCredentials { ...EabCredentialFragment }
+    eabCredentials {
+      ...EabCredentialFragment
+    }
   }
   ${EabCredentialFragment}
 `
@@ -227,21 +280,36 @@ export const DELETE_EAB_CREDENTIALS = gql`
 
 export const DELETE_USER = gql`
   mutation DeleteUser($id: ID!) {
-    deleteUser(id: $id) { ...UserFragment }
+    deleteUser(id: $id) {
+      ...UserFragment
+    }
   }
   ${UserFragment}
 `
 
 export const OAUTH_URLS = gql`
   query Urls($host: String) {
-    oauthUrls(host: $host) { provider authorizeUrl }
+    oauthUrls(host: $host) {
+      provider
+      authorizeUrl
+    }
   }
 `
 
 export const OAUTH_CALLBACK = gql`
-  mutation OAuthCallback($host: String, $code: String!, $provider: OauthProvider!, $deviceToken: String) {
-    oauthCallback(code: $code, host: $host, provider: $provider, deviceToken: $deviceToken) { 
-      jwt 
+  mutation OAuthCallback(
+    $host: String
+    $code: String!
+    $provider: OauthProvider!
+    $deviceToken: String
+  ) {
+    oauthCallback(
+      code: $code
+      host: $host
+      provider: $provider
+      deviceToken: $deviceToken
+    ) {
+      jwt
       onboarding
       id
       email
@@ -250,7 +318,11 @@ export const OAUTH_CALLBACK = gql`
 `
 
 export const SSO_CALLBACK = gql`
-  mutation SSOCallback($code: String!, $deviceToken: String) { 
-    ssoCallback(code: $code, deviceToken: $deviceToken) { jwt id email }
+  mutation SSOCallback($code: String!, $deviceToken: String) {
+    ssoCallback(code: $code, deviceToken: $deviceToken) {
+      jwt
+      id
+      email
+    }
   }
 `

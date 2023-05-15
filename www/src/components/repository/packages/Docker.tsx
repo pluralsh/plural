@@ -1,17 +1,6 @@
-import {
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
+import { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { useMutation, useQuery } from '@apollo/client'
-import {
-  Outlet,
-  useLocation,
-  useNavigate,
-  useParams,
-} from 'react-router-dom'
+import { Outlet, useLocation, useNavigate, useParams } from 'react-router-dom'
 import moment from 'moment'
 import { Box } from 'grommet'
 import {
@@ -77,8 +66,10 @@ function PrivateControl({ dockerRepo }: any) {
   return (
     <Switch
       checked={!dockerRepo.public}
-      // @ts-expect-error
-      onChange={() => mutation({ variables: { attributes: { public: !dockerRepo.public } } })}
+      onChange={() =>
+        // @ts-expect-error
+        mutation({ variables: { attributes: { public: !dockerRepo.public } } })
+      }
     >
       {dockerRepo.public ? 'Public' : 'Private'}
     </Switch>
@@ -135,16 +126,18 @@ function ImageVersionPicker({ image }: any) {
     }
   }, [hasNextPage, data])
 
-  const handleSelectionChange = useCallback((selected: any) => {
-    if (selected === '$$footer$$') return
+  const handleSelectionChange = useCallback(
+    (selected: any) => {
+      if (selected === '$$footer$$') return
 
-    navigate(`/dkr/img/${selected}${url}`)
-  },
-  [navigate, url])
+      navigate(`/dkr/img/${selected}${url}`)
+    },
+    [navigate, url]
+  )
 
   useEffect(() => {
     if (data?.dockerImages) {
-      setAllImages(x => [
+      setAllImages((x) => [
         ...x,
         ...data.dockerImages.edges.map(({ node }) => node),
       ])
@@ -168,10 +161,12 @@ function ImageVersionPicker({ image }: any) {
         rightContent={
           image.scannedAt && (
             <ListBoxItemChipList
-              chips={[<PackageGrade
-                grade={image.grade}
-                size="small"
-              />]}
+              chips={[
+                <PackageGrade
+                  grade={image.grade}
+                  size="small"
+                />,
+              ]}
             />
           )
         }
@@ -183,20 +178,25 @@ function ImageVersionPicker({ image }: any) {
           )
         }
       >
-        {allImages.map(v => (
+        {allImages.map((v) => (
           <ListBoxItem
             key={v.id}
             label={v.tag}
             textValue={v.tag}
-            rightContent={(
+            rightContent={
               <ListBoxItemChipList
-                chips={[...(v.scannedAt ? [<PackageGrade
-                  grade={v.grade}
-                  size="small"
-                />] : []),
+                chips={[
+                  ...(v.scannedAt
+                    ? [
+                        <PackageGrade
+                          grade={v.grade}
+                          size="small"
+                        />,
+                      ]
+                    : []),
                 ]}
               />
-            )}
+            }
           />
         ))}
       </Select>
@@ -234,7 +234,7 @@ export function Docker() {
   const pathPrefix = `/dkr/img/${image.id}`
   const currentTab = [...DIRECTORY]
     .sort((a, b) => b.path.length - a.path.length)
-    .find(tab => pathname?.startsWith(`${pathPrefix}${tab.path}`))
+    .find((tab) => pathname?.startsWith(`${pathPrefix}${tab.path}`))
 
   return (
     <ResponsiveLayoutPage>

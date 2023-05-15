@@ -3,7 +3,9 @@ fragment Chart on Chart {
   name
   description
   latestVersion
-  dependencies { ...Dependencies }
+  dependencies {
+    ...Dependencies
+  }
   insertedAt
 }
 
@@ -17,9 +19,13 @@ fragment ChartInstallation on ChartInstallation {
   id
   chart {
     ...Chart
-    dependencies { ...Dependencies }
+    dependencies {
+      ...Dependencies
+    }
   }
-  version { ...Version }
+  version {
+    ...Version
+  }
 }
 
 fragment ScanViolation on ScanViolation {
@@ -35,21 +41,25 @@ fragment ScanViolation on ScanViolation {
 }
 
 fragment ScanError on ScanError {
-    message
+  message
 }
 
 fragment PackageScan on PackageScan {
   id
   grade
-  violations { ...ScanViolation }
-  errors { ...ScanError }
+  violations {
+    ...ScanViolation
+  }
+  errors {
+    ...ScanError
+  }
 }
 
 query GetCharts($id: ID!) {
   charts(repositoryId: $id, first: 100) {
     edges {
       node {
-          ...Chart
+        ...Chart
       }
     }
   }
@@ -59,7 +69,7 @@ query GetVersions($id: ID!) {
   versions(chartId: $id, first: 100) {
     edges {
       node {
-          ...Version
+        ...Version
       }
     }
   }
@@ -67,25 +77,43 @@ query GetVersions($id: ID!) {
 
 query GetChartInstallations($id: ID!) {
   chartInstallations(repositoryId: $id, first: 100) {
-    edges { node { ...ChartInstallation } }
+    edges {
+      node {
+        ...ChartInstallation
+      }
+    }
   }
 }
 
 query GetPackageInstallations($id: ID!) {
   chartInstallations(repositoryId: $id, first: 100) {
-    edges { node { ...ChartInstallation } }
+    edges {
+      node {
+        ...ChartInstallation
+      }
+    }
   }
   terraformInstallations(repositoryId: $id, first: 100) {
-    edges { node { ...TerraformInstallation } }
+    edges {
+      node {
+        ...TerraformInstallation
+      }
+    }
   }
 }
 
-mutation CreateCrd($chartName: ChartName!, $name: String!, $blob: UploadOrUrl!) {
-  createCrd(chartName: $chartName, attributes: {name:$name, blob:$blob}) {
+mutation CreateCrd(
+  $chartName: ChartName!
+  $name: String!
+  $blob: UploadOrUrl!
+) {
+  createCrd(chartName: $chartName, attributes: { name: $name, blob: $blob }) {
     id
   }
 }
 
 mutation UninstallChart($id: ID!) {
-  deleteChartInstallation(id: $id) { id }
+  deleteChartInstallation(id: $id) {
+    id
+  }
 }

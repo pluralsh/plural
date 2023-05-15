@@ -1,6 +1,10 @@
 import { ComponentType } from 'react'
 
-import { AuthorizationUrl, Provider, ScmProvider } from '../../../../generated/graphql'
+import {
+  AuthorizationUrl,
+  Provider,
+  ScmProvider,
+} from '../../../../generated/graphql'
 
 enum CloudProvider {
   Azure = 'azure',
@@ -32,7 +36,7 @@ enum SectionKey {
 }
 
 interface Section {
-  index: number,
+  index: number
   key: SectionKey
   title: string
   IconComponent: ComponentType
@@ -42,7 +46,7 @@ interface Section {
   hasError?: boolean
 }
 
-type Sections = {[key in keyof typeof SectionKey]?: Section}
+type Sections = { [key in keyof typeof SectionKey]?: Section }
 
 enum CreateCloudShellSectionState {
   Summary = 'Summary',
@@ -101,7 +105,10 @@ interface GCPCloudProvider {
   applicationCredentials?: string
 }
 
-type CloudProviderBase = AzureCloudProvider | AWSCloudProvider | GCPCloudProvider
+type CloudProviderBase =
+  | AzureCloudProvider
+  | AWSCloudProvider
+  | GCPCloudProvider
 
 interface CloudProps {
   type?: CloudType
@@ -113,16 +120,32 @@ interface CloudProps {
 }
 
 interface WorkspaceProps {
-  project?: string,
-  region?: string,
-  clusterName?: string,
-  bucketPrefix?: string,
-  subdomain?: string,
+  project?: string
+  region?: string
+  clusterName?: string
+  bucketPrefix?: string
+  subdomain?: string
 }
 
 export type {
-  Sections, Section, SCMProps, CloudProps, WorkspaceProps, GCPCloudProvider, AWSCloudProvider, AzureCloudProvider, CloudProviderBase, SCMOrg,
+  Sections,
+  Section,
+  SCMProps,
+  CloudProps,
+  WorkspaceProps,
+  GCPCloudProvider,
+  AWSCloudProvider,
+  AzureCloudProvider,
+  CloudProviderBase,
+  SCMOrg,
 }
 export {
-  SectionKey, OrgType, CloudType, CloudProviderDisplayName, CloudProvider, CloudProviderToProvider, CreateCloudShellSectionState, ConfigureCloudSectionState,
+  SectionKey,
+  OrgType,
+  CloudType,
+  CloudProviderDisplayName,
+  CloudProvider,
+  CloudProviderToProvider,
+  CreateCloudShellSectionState,
+  ConfigureCloudSectionState,
 }

@@ -19,13 +19,13 @@ export function MoreMenu({
       label="Pick something"
       placement="right"
       width="max-content"
-      onOpenChange={isOpen => setIsOpen(isOpen)}
-      onSelectionChange={selectedKey => {
+      onOpenChange={(isOpen) => setIsOpen(isOpen)}
+      onSelectionChange={(selectedKey) => {
         setIsOpen(false)
         onSelectionChange(selectedKey)
       }}
       selectedKey={null}
-      triggerButton={(
+      triggerButton={
         <Button
           disabled={disabled}
           primary={primary}
@@ -37,7 +37,7 @@ export function MoreMenu({
         >
           <MoreIcon color={disabled ? 'icon-disabled' : undefined} />
         </Button>
-      )}
+      }
       {...props}
     >
       {children}

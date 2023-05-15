@@ -23,10 +23,13 @@ export const StyledInput = styled(Input)(({ theme }) => ({
 export function Uninstall() {
   const app = useAppContext()
   const [confirm, setConfirm] = useState('')
-  const [mutation, { loading, error }] = useMutation(DELETE_INSTALLATION_MUTATION, {
-    variables: { id: app.installation?.id },
-    onCompleted: () => window.location.reload(),
-  })
+  const [mutation, { loading, error }] = useMutation(
+    DELETE_INSTALLATION_MUTATION,
+    {
+      variables: { id: app.installation?.id },
+      onCompleted: () => window.location.reload(),
+    }
+  )
 
   return (
     <Div paddingBottom="large">
@@ -53,13 +56,14 @@ export function Uninstall() {
           color="text-light"
           marginBottom="xlarge"
         >
-          Type the application name, "{app.name}", to confirm uninstall.
-          Note that this will uninstall this app from the API
-          but not destroy any of its infrastructure.
+          Type the application name, "{app.name}", to confirm uninstall. Note
+          that this will uninstall this app from the API but not destroy any of
+          its infrastructure.
         </P>
-        <Keyboard onEnter={() => {
-          if (confirm === app.name) mutation()
-        }}
+        <Keyboard
+          onEnter={() => {
+            if (confirm === app.name) mutation()
+          }}
         >
           <StyledInput
             value={confirm}

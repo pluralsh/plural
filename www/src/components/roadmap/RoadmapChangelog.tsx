@@ -13,32 +13,50 @@ import RoadmapIssue from './RoadmapIssue'
 
 function RoadmapFeatureRequests() {
   const {
-    pluralIssues, pluralArtifactsIssues, pluralConsoleIssues, pluralCliIssues,
+    pluralIssues,
+    pluralArtifactsIssues,
+    pluralConsoleIssues,
+    pluralCliIssues,
   } = useContext(RoadmapContext)
 
   const packs = useMemo(() => {
-    const issues = [...pluralIssues, ...pluralArtifactsIssues, ...pluralConsoleIssues, ...pluralCliIssues].filter(issue => issue.labels.includes(LABEL_ROADMAP) && issue.state === 'closed')
+    const issues = [
+      ...pluralIssues,
+      ...pluralArtifactsIssues,
+      ...pluralConsoleIssues,
+      ...pluralCliIssues,
+    ].filter(
+      (issue) =>
+        issue.labels.includes(LABEL_ROADMAP) && issue.state === 'closed'
+    )
 
-    return Object.entries(issues
-      .map(issue => ({
-        month: moment(issue.closedAt).startOf('month').toISOString(),
-        issue,
-      }))
-      .reduce<Record<string, IssueType[]>>((acc, { month, issue }) => {
-        if (!acc[month]) {
-          acc[month] = []
-        }
+    return Object.entries(
+      issues
+        .map((issue) => ({
+          month: moment(issue.closedAt).startOf('month').toISOString(),
+          issue,
+        }))
+        .reduce<Record<string, IssueType[]>>((acc, { month, issue }) => {
+          if (!acc[month]) {
+            acc[month] = []
+          }
 
-        acc[month].push(issue)
+          acc[month].push(issue)
 
-        return acc
-      }, {}))
+          return acc
+        }, {})
+    )
       .sort(([monthA], [monthB]) => moment(monthB).diff(monthA))
       .map(([month, issues]) => ({
         month,
         issues,
       }))
-  }, [pluralIssues, pluralArtifactsIssues, pluralConsoleIssues, pluralCliIssues])
+  }, [
+    pluralIssues,
+    pluralArtifactsIssues,
+    pluralConsoleIssues,
+    pluralCliIssues,
+  ])
 
   return (
     <ScrollablePage heading="Changelog">
@@ -52,7 +70,7 @@ function RoadmapFeatureRequests() {
             border="1px solid border"
             borderRadius="large"
           >
-            {issues.map(issue => (
+            {issues.map((issue) => (
               <RoadmapIssue
                 key={issue.id}
                 displayAuthor

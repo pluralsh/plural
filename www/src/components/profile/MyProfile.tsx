@@ -37,7 +37,7 @@ export function MyProfile() {
 
   useSetBreadcrumbs(profileCrumbs)
   const tabStateRef = useRef<any>(null)
-  const currentTab = DIRECTORY.find(tab => pathname?.startsWith(tab.path))
+  const currentTab = DIRECTORY.find((tab) => pathname?.startsWith(tab.path))
 
   const url = me.avatar || undefined
 
@@ -52,8 +52,8 @@ export function MyProfile() {
             heading={me.name}
             icon={{ name: me.name, url, spacing: 'none' }}
             subheading={
-              me?.roles?.admin
-              && `Admin${me?.account?.name && ` at ${me?.account?.name}`}`
+              me?.roles?.admin &&
+              `Admin${me?.account?.name && ` at ${me?.account?.name}`}`
             }
             marginBottom="xlarge"
           />

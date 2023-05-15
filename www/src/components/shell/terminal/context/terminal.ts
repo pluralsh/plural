@@ -4,7 +4,7 @@ import { CloudShell, ShellConfiguration } from '../../../../generated/graphql'
 
 enum State {
   New = 'New',
-  Installed = 'Installed'
+  Installed = 'Installed',
 }
 
 interface ContextProps {

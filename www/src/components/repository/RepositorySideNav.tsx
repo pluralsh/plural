@@ -1,12 +1,6 @@
 import { MutableRefObject, useImperativeHandle, useRef } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import {
-  A,
-  Div,
-  Flex,
-  Img,
-  P,
-} from 'honorable'
+import { A, Div, Flex, Img, P } from 'honorable'
 import { Tab, TabList } from '@pluralsh/design-system'
 import capitalize from 'lodash/capitalize'
 
@@ -34,24 +28,26 @@ function RepositorySideNav({
   const { pathname } = useLocation()
   const tabStateRef = useRef<any>()
 
-  useImperativeHandle(outerTabStateRef, () => ({ ...(tabStateRef.current || {}) }))
+  useImperativeHandle(outerTabStateRef, () => ({
+    ...(tabStateRef.current || {}),
+  }))
   const pathPrefix = `/repository/${repository.name}`
   const filteredDirectory = DIRECTORY.filter(({ path }) => {
     switch (path) {
-    case '/artifacts':
-      return repository.artifacts && repository.artifacts.length > 0
-      break
-    case '/edit':
-      return !!repository.editable
-      break
-    default:
-      return true
+      case '/artifacts':
+        return repository.artifacts && repository.artifacts.length > 0
+        break
+      case '/edit':
+        return !!repository.editable
+        break
+      default:
+        return true
     }
   })
 
   const currentTab = [...filteredDirectory]
     .sort((a, b) => b.path.length - a.path.length)
-    .find(tab => pathname?.startsWith(`${pathPrefix}${tab.path}`))
+    .find((tab) => pathname?.startsWith(`${pathPrefix}${tab.path}`))
 
   return (
     <Flex
@@ -97,9 +93,7 @@ function RepositorySideNav({
           </A>
         </P>
       )}
-      <SideNavOffset
-        marginTop="medium"
-      >
+      <SideNavOffset marginTop="medium">
         <TabList
           stateRef={tabStateRef}
           stateProps={{

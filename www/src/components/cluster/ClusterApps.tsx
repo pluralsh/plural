@@ -25,20 +25,24 @@ export function ClusterApps({
   cluster: { consoleUrl },
 }: ClusterAppsProps): ReactElement {
   const [search, setSearch] = useState('')
-  const [apps, loading, hasMore, loadMore] = usePaginatedQuery(REPOSITORIES_Q,
+  const [apps, loading, hasMore, loadMore] = usePaginatedQuery(
+    REPOSITORIES_Q,
     { variables: { installed: true } },
-    data => data.repositories)
+    (data) => data.repositories
+  )
 
   const fuse = useMemo(() => new Fuse(apps, searchOptions), [apps])
-  const filteredApps = useMemo(() => (search ? fuse.search(search).map(({ item }) => item) : apps),
-    [apps, search, fuse])
+  const filteredApps = useMemo(
+    () => (search ? fuse.search(search).map(({ item }) => item) : apps),
+    [apps, search, fuse]
+  )
 
   if (isEmpty(apps) && loading) return <LoadingIndicator />
 
   return (
     <ListCard
       header="Installed apps"
-      input={(
+      input={
         <Input
           startIcon={<MagnifyingGlassIcon />}
           placeholder="Search for a repository"
@@ -48,7 +52,7 @@ export function ClusterApps({
           width="100%"
           onChange={({ target: { value } }) => setSearch(value)}
         />
-      )}
+      }
     >
       {!isEmpty(apps) ? (
         <InfiniteScroller

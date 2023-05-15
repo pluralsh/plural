@@ -4,7 +4,9 @@ import { Anchor, Box, Text } from 'grommet'
 
 import { lookahead } from '../utils/array'
 
-import BreadcrumbsContext, { BreadcrumbsContextType } from '../contexts/BreadcrumbsContext'
+import BreadcrumbsContext, {
+  BreadcrumbsContextType,
+} from '../contexts/BreadcrumbsContext'
 
 function CrumbLink({ crumb: { url, text, disable } }: any) {
   const navigate = useNavigate()
@@ -36,30 +38,34 @@ export function Breadcrumbs() {
 
   if (breadcrumbs.length === 0) return null
 
-  const children = Array.from(lookahead(breadcrumbs, (crumb, next) => {
-    if (next.url) {
-      return [
-        <CrumbLink
-          key={crumb.url + crumb.text}
-          crumb={crumb}
-        />,
-        <Text
-          key={`${crumb.url + crumb.text}next`}
-          size="small"
-        >/
-        </Text>,
-      ]
-    }
+  const children = Array.from(
+    lookahead(breadcrumbs, (crumb, next) => {
+      if (next.url) {
+        return [
+          <CrumbLink
+            key={crumb.url + crumb.text}
+            crumb={crumb}
+          />,
+          <Text
+            key={`${crumb.url + crumb.text}next`}
+            size="small"
+          >
+            /
+          </Text>,
+        ]
+      }
 
-    return (
-      <Text
-        key={crumb.url + crumb.text}
-        size="small"
-        weight={700}
-      >{crumb.text}
-      </Text>
-    )
-  }) as any as any[]).flat()
+      return (
+        <Text
+          key={crumb.url + crumb.text}
+          size="small"
+          weight={700}
+        >
+          {crumb.text}
+        </Text>
+      )
+    }) as any as any[]
+  ).flat()
 
   return (
     <Box
@@ -76,7 +82,10 @@ export function Breadcrumbs() {
 
 export default function BreadcrumbProvider({ children }: any) {
   const [breadcrumbs, setBreadcrumbs] = useState<any[]>([])
-  const value = useMemo<BreadcrumbsContextType>(() => ({ breadcrumbs, setBreadcrumbs }), [breadcrumbs])
+  const value = useMemo<BreadcrumbsContextType>(
+    () => ({ breadcrumbs, setBreadcrumbs }),
+    [breadcrumbs]
+  )
 
   return (
     <BreadcrumbsContext.Provider value={value}>

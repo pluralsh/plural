@@ -1,12 +1,6 @@
 import { Box } from 'grommet'
 import { useOutletContext } from 'react-router-dom'
-import {
-  Div,
-  Flex,
-  H2,
-  Img,
-  Span,
-} from 'honorable'
+import { Div, Flex, H2, Img, Span } from 'honorable'
 import {
   Chip,
   ListBoxFooterPlus,
@@ -20,7 +14,10 @@ import { extendConnection } from '../../../utils/graphql'
 import { ChartActions } from './Chart'
 import { TerraformActions } from './Terraform'
 
-export function dockerPull(registry, { tag, dockerRepository: { name, repository } }: any) {
+export function dockerPull(
+  registry,
+  { tag, dockerRepository: { name, repository } }: any
+) {
   return `${registry}/${repository.name}/${name}:${tag}`
 }
 
@@ -88,7 +85,12 @@ export function PackageHeader({ name, icon }: any) {
 }
 
 export function PackageVersionPicker({
-  edges, installed, version, setVersion, pageInfo, fetchMore,
+  edges,
+  installed,
+  version,
+  setVersion,
+  pageInfo,
+  fetchMore,
 }: any) {
   const versions = edges.map(({ node }) => node)
 
@@ -102,44 +104,56 @@ export function PackageVersionPicker({
         label="version"
         width="240px"
         selectedKey={version.id}
-        onSelectionChange={selected => setVersion(versions.find(v => v.id === selected))}
-        dropdownFooter={pageInfo.hasNextPage && <ListBoxFooterPlus>View more</ListBoxFooterPlus>}
-        onFooterClick={() => fetchMore({
-          variables: { cursor: pageInfo.endCursor },
-          updateQuery: (prev, { fetchMoreResult: { versions } }) => extendConnection(prev, versions, 'versions'),
-        })}
+        onSelectionChange={(selected) =>
+          setVersion(versions.find((v) => v.id === selected))
+        }
+        dropdownFooter={
+          pageInfo.hasNextPage && (
+            <ListBoxFooterPlus>View more</ListBoxFooterPlus>
+          )
+        }
+        onFooterClick={() =>
+          fetchMore({
+            variables: { cursor: pageInfo.endCursor },
+            updateQuery: (prev, { fetchMoreResult: { versions } }) =>
+              extendConnection(prev, versions, 'versions'),
+          })
+        }
         rightContent={
           version.id === installed?.version?.id && (
-            <ListBoxItemChipList chips={[
-              <Chip
-                severity="success"
-                size="small"
-              >
-                Installed
-              </Chip>,
-            ]}
+            <ListBoxItemChipList
+              chips={[
+                <Chip
+                  severity="success"
+                  size="small"
+                >
+                  Installed
+                </Chip>,
+              ]}
             />
           )
         }
       >
-        {versions.map(v => (
+        {versions.map((v) => (
           <ListBoxItem
             key={v.id}
             label={v.version}
             textValue={v.version}
-            rightContent={(
+            rightContent={
               <ListBoxItemChipList
                 maxVisible={1}
                 showExtra
                 chips={[
-                  ...(v.id === installed?.version?.id ? ([
-                    <Chip
-                      severity="success"
-                      size="small"
-                    >
-                      Installed
-                    </Chip>,
-                  ]) : []),
+                  ...(v.id === installed?.version?.id
+                    ? [
+                        <Chip
+                          severity="success"
+                          size="small"
+                        >
+                          Installed
+                        </Chip>,
+                      ]
+                    : []),
                   ...v.tags.map(({ tag }, i) => (
                     <Chip
                       key={i}
@@ -150,7 +164,7 @@ export function PackageVersionPicker({
                   )),
                 ]}
               />
-            )}
+            }
           />
         ))}
       </Select>
@@ -187,9 +201,8 @@ export function PackageProperty({ children, header, ...props }: any) {
 }
 
 export function PackageActions() {
-  const {
-    helmChart, currentHelmChart, terraformChart, currentTerraformChart,
-  } = useOutletContext() as any
+  const { helmChart, currentHelmChart, terraformChart, currentTerraformChart } =
+    useOutletContext() as any
 
   if (helmChart && currentHelmChart) {
     return (
@@ -219,7 +232,7 @@ export function DetailContainer({ children, title, ...rest }: any) {
       round="xsmall"
       {...rest}
     >
-      {(!!title && (
+      {!!title && (
         <Div
           color="text-xlight"
           fontSize={12}
@@ -227,7 +240,7 @@ export function DetailContainer({ children, title, ...rest }: any) {
         >
           {title}
         </Div>
-      ))}
+      )}
       {children}
     </Box>
   )

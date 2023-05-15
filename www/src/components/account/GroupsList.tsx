@@ -43,20 +43,25 @@ export function GroupsList({ q }: any) {
               />
             </ListItem>
           )}
-          loadNextPage={() => pageInfo.hasNextPage
-            && fetchMore({
+          loadNextPage={() =>
+            pageInfo.hasNextPage &&
+            fetchMore({
               variables: { cursor: pageInfo.endCursor },
-              updateQuery: (prev, { fetchMoreResult: { groups } }) => extendConnection(prev, groups, 'groups'),
-            })}
+              updateQuery: (prev, { fetchMoreResult: { groups } }) =>
+                extendConnection(prev, groups, 'groups'),
+            })
+          }
           hasNextPage={pageInfo.hasNextPage}
           loading={loading}
           placeholder={Placeholder}
         />
       ) : (
         <EmptyState
-          message={isEmpty(q)
-            ? "Looks like you don't have any groups yet."
-            : `No groups found for ${q}`}
+          message={
+            isEmpty(q)
+              ? "Looks like you don't have any groups yet."
+              : `No groups found for ${q}`
+          }
         >
           <CreateGroup q={q} />
         </EmptyState>

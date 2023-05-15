@@ -1,20 +1,9 @@
-import {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { Button, Scroller } from 'forge-core'
 import { Editable, Slate } from 'slate-react'
 import { useMutation, useQuery, useSubscription } from '@apollo/client'
 import { useNavigate, useParams } from 'react-router-dom'
-import {
-  Box,
-  Layer,
-  Text,
-  TextInput,
-} from 'grommet'
+import { Box, Layer, Text, TextInput } from 'grommet'
 import moment from 'moment'
 import {
   CloseIcon,
@@ -62,7 +51,8 @@ import { LastMessage } from './LastMessage'
 import { PresenceProvider } from './Presence'
 import { SlaTimer } from './SlaTimer'
 
-export const canEdit = ({ creator, owner }, { id }) => (creator || {}).id === id || (owner || {}).id === id
+export const canEdit = ({ creator, owner }, { id }) =>
+  (creator || {}).id === id || (owner || {}).id === id
 
 function EditButton({ editing, setEditing }: any) {
   return (
@@ -105,7 +95,9 @@ function Empty() {
 }
 
 function DeleteIncident({ incident }: any) {
-  const [mutation, { loading }] = useMutation(DELETE_INCIDENT, { variables: { id: incident.id } })
+  const [mutation, { loading }] = useMutation(DELETE_INCIDENT, {
+    variables: { id: incident.id },
+  })
 
   return (
     <Button
@@ -118,14 +110,26 @@ function DeleteIncident({ incident }: any) {
 }
 
 function IncidentHeader({
-  incident, editable, editing, setEditing, mutation, attributes, setAttributes, updating,
+  incident,
+  editable,
+  editing,
+  setEditing,
+  mutation,
+  attributes,
+  setAttributes,
+  updating,
 }: any) {
-  const [editorState, setEditorState] = useState(plainDeserialize(incident.description || ''))
+  const [editorState, setEditorState] = useState(
+    plainDeserialize(incident.description || '')
+  )
   const editor = useEditor()
-  const setDescription = useCallback(editorState => {
-    setEditorState(editorState)
-    setAttributes({ ...attributes, description: plainSerialize(editorState) })
-  }, [setAttributes, attributes, setEditorState])
+  const setDescription = useCallback(
+    (editorState) => {
+      setEditorState(editorState)
+      setAttributes({ ...attributes, description: plainSerialize(editorState) })
+    },
+    [setAttributes, attributes, setEditorState]
+  )
 
   return (
     <Box
@@ -149,9 +153,12 @@ function IncidentHeader({
           <Text
             size="small"
             weight="bold"
-          >{incident.creator.name}
+          >
+            {incident.creator.name}
           </Text>
-          <Text size="small">created on {dateFormat(moment(incident.insertedAt))}</Text>
+          <Text size="small">
+            created on {dateFormat(moment(incident.insertedAt))}
+          </Text>
         </Box>
         {!editing && <IncidentControls incident={incident} />}
         {editing && (
@@ -160,10 +167,17 @@ function IncidentHeader({
               label="Update"
               loading={updating}
               pad={{ vertical: 'xsmall', horizontal: 'small' }}
-              onClick={() => mutation({
-                variables: { attributes: { ...attributes, tags: attributes.tags.map(tag => ({ tag })) } },
-                update: () => setEditing(false),
-              })}
+              onClick={() =>
+                mutation({
+                  variables: {
+                    attributes: {
+                      ...attributes,
+                      tags: attributes.tags.map((tag) => ({ tag })),
+                    },
+                  },
+                  update: () => setEditing(false),
+                })
+              }
             />
           </Box>
         )}
@@ -229,8 +243,18 @@ function IncidentHeader({
           >
             <TagInput
               tags={attributes.tags || []}
-              addTag={tag => setAttributes({ ...attributes, tags: [tag, ...(attributes.tags || [])] })}
-              removeTag={tag => setAttributes({ ...attributes, tags: attributes.tags.filter(t => t !== tag) })}
+              addTag={(tag) =>
+                setAttributes({
+                  ...attributes,
+                  tags: [tag, ...(attributes.tags || [])],
+                })
+              }
+              removeTag={(tag) =>
+                setAttributes({
+                  ...attributes,
+                  tags: attributes.tags.filter((t) => t !== tag),
+                })
+              }
             />
           </Box>
         </Box>
@@ -240,16 +264,29 @@ function IncidentHeader({
 }
 
 export function Messages({
-  incident, loading, fetchMore, subscribeToMore,
+  incident,
+  loading,
+  fetchMore,
+  subscribeToMore,
 }: any) {
   const { setListRef, listRef } = useContext(MessageScrollContext)
-  const { messages: { pageInfo: { hasNextPage, endCursor }, edges } } = incident
+  const {
+    messages: {
+      pageInfo: { hasNextPage, endCursor },
+      edges,
+    },
+  } = incident
 
-  useEffect(() => subscribeToMore({
-    document: MESSAGE_SUB,
-    variables: { id: incident.id },
-    updateQuery: (prev, { subscriptionData: { data } }) => applyMessages(prev, data),
-  }), [incident.id, subscribeToMore])
+  useEffect(
+    () =>
+      subscribeToMore({
+        document: MESSAGE_SUB,
+        variables: { id: incident.id },
+        updateQuery: (prev, { subscriptionData: { data } }) =>
+          applyMessages(prev, data),
+      }),
+    [incident.id, subscribeToMore]
+  )
 
   if (edges.length === 0) return <Empty />
 
@@ -258,8 +295,10 @@ export function Messages({
       listRef={listRef}
       setListRef={setListRef}
       items={[...edges, 'end']}
-      mapper={(e, { next, prev }, props) => (
-        e === 'end' ? <LastMessage date={prev.node.insertedAt} /> : (
+      mapper={(e, { next, prev }, props) =>
+        e === 'end' ? (
+          <LastMessage date={prev.node.insertedAt} />
+        ) : (
           <Message
             message={e.node}
             next={next.node}
@@ -267,14 +306,25 @@ export function Messages({
             {...props}
           />
         )
-      )}
+      }
       loading={loading}
-      loadNextPage={() => hasNextPage && fetchMore({
-        variables: { cursor: endCursor },
-        updateQuery: (prev, { fetchMoreResult: { incident: { messages } } }) => ({
-          ...prev, incident: extendConnection(prev.incident, messages, 'messages'),
-        }),
-      })}
+      loadNextPage={() =>
+        hasNextPage &&
+        fetchMore({
+          variables: { cursor: endCursor },
+          updateQuery: (
+            prev,
+            {
+              fetchMoreResult: {
+                incident: { messages },
+              },
+            }
+          ) => ({
+            ...prev,
+            incident: extendConnection(prev.incident, messages, 'messages'),
+          }),
+        })
+      }
       hasNextPage={hasNextPage}
     />
   )
@@ -297,7 +347,12 @@ function NoFiles() {
 }
 
 function Files({ incident, fetchMore }: any) {
-  const { files: { pageInfo: { hasNextPage, endCursor }, edges } } = incident
+  const {
+    files: {
+      pageInfo: { hasNextPage, endCursor },
+      edges,
+    },
+  } = incident
 
   return (
     <Box fill>
@@ -312,12 +367,23 @@ function Files({ incident, fetchMore }: any) {
             next={next}
           />
         )}
-        onLoadMore={() => hasNextPage && fetchMore({
-          variables: { fileCursor: endCursor },
-          updateQuery: (prev, { fetchMoreResult: { incident: { files } } }) => ({
-            ...prev, incident: extendConnection(prev.incident, files, 'files'),
-          }),
-        })}
+        onLoadMore={() =>
+          hasNextPage &&
+          fetchMore({
+            variables: { fileCursor: endCursor },
+            updateQuery: (
+              prev,
+              {
+                fetchMoreResult: {
+                  incident: { files },
+                },
+              }
+            ) => ({
+              ...prev,
+              incident: extendConnection(prev.incident, files, 'files'),
+            }),
+          })
+        }
       />
     </Box>
   )
@@ -339,18 +405,24 @@ function IncidentOwner({ incident: { owner } }: any) {
       <Text
         size="small"
         color="dark-3"
-      >{owner.email}
+      >
+        {owner.email}
       </Text>
     </Box>
   )
 }
 
-const canDelete = (incident, me) => (
-  me.id === incident.creator.id || (incident.owner && incident.owner.id === me.id)
-)
+const canDelete = (incident, me) =>
+  me.id === incident.creator.id ||
+  (incident.owner && incident.owner.id === me.id)
 
 function IncidentInner({
-  incident, fetchMore, subscribeToMore, loading, editing, setEditing,
+  incident,
+  fetchMore,
+  subscribeToMore,
+  loading,
+  editing,
+  setEditing,
 }: any) {
   const [view, setView] = useState(IncidentView.MSGS)
   const [listRef, setListRef] = useState<any>(null)
@@ -362,7 +434,13 @@ function IncidentInner({
     tags: incident.tags.map(({ tag }) => tag),
   })
   const [mutation, { loading: updating }] = useMutation(UPDATE_INCIDENT, {
-    variables: { id: incident.id, attributes: { ...attributes, tags: attributes.tags.map(tag => ({ tag })) } },
+    variables: {
+      id: incident.id,
+      attributes: {
+        ...attributes,
+        tags: attributes.tags.map((tag) => ({ tag })),
+      },
+    },
     onCompleted: () => setEditing(false),
   })
 
@@ -374,9 +452,15 @@ function IncidentInner({
     listRef.scrollToItem(0)
   }, [listRef])
 
-  const value = useMemo(() => ({
-    listRef, setListRef, refreshList, returnToBeginning,
-  }), [listRef, setListRef, refreshList, returnToBeginning])
+  const value = useMemo(
+    () => ({
+      listRef,
+      setListRef,
+      refreshList,
+      returnToBeginning,
+    }),
+    [listRef, setListRef, refreshList, returnToBeginning]
+  )
 
   return (
     <MessageScrollContext.Provider value={value}>
@@ -393,7 +477,9 @@ function IncidentInner({
             <Severity
               incident={incident}
               // @ts-expect-error
-              setSeverity={severity => mutation({ variables: { attributes: { severity } } })}
+              setSeverity={(severity) =>
+                mutation({ variables: { attributes: { severity } } })
+              }
             />
             {!editing && (
               <Box
@@ -414,18 +500,24 @@ function IncidentInner({
               >
                 <TextInput
                   value={attributes.title}
-                  onChange={({ target: { value } }) => setAttributes({ ...attributes, title: value })}
+                  onChange={({ target: { value } }) =>
+                    setAttributes({ ...attributes, title: value })
+                  }
                 />
               </Box>
             )}
-            {incident.owner && (<IncidentOwner incident={incident} />)}
+            {incident.owner && <IncidentOwner incident={incident} />}
             {incident.nextResponseAt && <SlaTimer incident={incident} />}
             <Status
               incident={incident}
               // @ts-expect-error
-              setActive={status => mutation({ variables: { attributes: { status } } })}
+              setActive={(status) =>
+                mutation({ variables: { attributes: { status } } })
+              }
             />
-            {canDelete(incident, currentUser) && <DeleteIncident incident={incident} />}
+            {canDelete(incident, currentUser) && (
+              <DeleteIncident incident={incident} />
+            )}
           </Box>
           <Box
             fill
@@ -458,7 +550,9 @@ function IncidentInner({
                   setView={setView}
                 />
                 <Box fill>
-                  {view === IncidentView.POST && <Postmortem incident={incident} />}
+                  {view === IncidentView.POST && (
+                    <Postmortem incident={incident} />
+                  )}
                   {view === IncidentView.FILES && (
                     <Files
                       incident={incident}
@@ -498,24 +592,29 @@ export function Incident({ editing }: any) {
   const [deleted, setDeleted] = useState(false)
   const { incidentId } = useParams()
   const [edit, setEdit] = useState(editing)
-  const {
-    data, loading, fetchMore, subscribeToMore,
-  } = useQuery(INCIDENT_Q, {
+  const { data, loading, fetchMore, subscribeToMore } = useQuery(INCIDENT_Q, {
     variables: { id: incidentId },
     fetchPolicy: 'cache-and-network',
   })
 
   useSubscription(INCIDENT_SUB, {
     variables: { id: incidentId },
-    onSubscriptionData: ({ subscriptionData: { data: { incidentDelta: { delta } } } }) => (
-      delta === 'DELETE' && setDeleted(true)
-    ),
+    onSubscriptionData: ({
+      subscriptionData: {
+        data: {
+          incidentDelta: { delta },
+        },
+      },
+    }) => delta === 'DELETE' && setDeleted(true),
   })
 
   const { setBreadcrumbs } = useContext(BreadcrumbsContext)
 
   useEffect(() => {
-    setBreadcrumbs([{ url: '/incidents', text: 'incidents' }, { url: `/incidents/${incidentId}`, text: incidentId }])
+    setBreadcrumbs([
+      { url: '/incidents', text: 'incidents' },
+      { url: `/incidents/${incidentId}`, text: incidentId },
+    ])
   }, [setBreadcrumbs, incidentId])
 
   if (!data) return null

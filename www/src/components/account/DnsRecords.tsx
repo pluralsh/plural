@@ -1,12 +1,6 @@
 import { useMutation, useQuery } from '@apollo/client'
 import { Box } from 'grommet'
-import {
-  Avatar,
-  Button,
-  Div,
-  Flex,
-  Span,
-} from 'honorable'
+import { Avatar, Button, Div, Flex, Span } from 'honorable'
 import moment from 'moment'
 import { useState } from 'react'
 import { ArrowLeftIcon } from '@pluralsh/design-system'
@@ -31,11 +25,15 @@ function DeleteRecord({ record, domain }: any) {
   const [confirm, setConfirm] = useState(false)
   const [mutation, { loading, error }] = useMutation(DELETE_DNS_RECORD, {
     variables: { name: record.name, type: record.type },
-    update: (cache, { data: { deleteDnsRecord } }) => updateCache(cache, {
-      query: DNS_RECORDS,
-      variables: { id: domain.id },
-      update: prev => deepUpdate(prev, 'dnsDomain', domain => removeConnection(domain, deleteDnsRecord, 'dnsRecords')),
-    }),
+    update: (cache, { data: { deleteDnsRecord } }) =>
+      updateCache(cache, {
+        query: DNS_RECORDS,
+        variables: { id: domain.id },
+        update: (prev) =>
+          deepUpdate(prev, 'dnsDomain', (domain) =>
+            removeConnection(domain, deleteDnsRecord, 'dnsRecords')
+          ),
+      }),
     onCompleted: () => setConfirm(false),
   })
 
@@ -80,7 +78,7 @@ export function DnsRecords({ domain, setDomain }: any) {
         <Button
           tertiary
           textDecoration="none"
-          onClick={e => {
+          onClick={(e) => {
             e.preventDefault()
             setDomain(null)
           }}
@@ -110,12 +108,12 @@ export function DnsRecords({ domain, setDomain }: any) {
               <TableRow
                 key={node.id}
                 last={!next.node}
-                suffix={(
+                suffix={
                   <DeleteRecord
                     record={node}
                     domain={domain}
                   />
-                )}
+                }
               >
                 <TableData>{node.name}</TableData>
                 <TableData>{node.type}</TableData>
@@ -165,11 +163,16 @@ export function DnsRecords({ domain, setDomain }: any) {
                 </TableData>
               </TableRow>
             )}
-            loadNextPage={() => pageInfo.hasNextPage
-              && fetchMore({
+            loadNextPage={() =>
+              pageInfo.hasNextPage &&
+              fetchMore({
                 variables: { cursor: pageInfo.endCursor },
-                updateQuery: (prev, { fetchMoreResult: { dnsDomain } }) => deepUpdate(prev, 'dnsDomain', prev => extendConnection(prev, dnsDomain.dnsRecords, 'dnsRecords')),
-              })}
+                updateQuery: (prev, { fetchMoreResult: { dnsDomain } }) =>
+                  deepUpdate(prev, 'dnsDomain', (prev) =>
+                    extendConnection(prev, dnsDomain.dnsRecords, 'dnsRecords')
+                  ),
+              })
+            }
           />
         </Box>
       </Table>

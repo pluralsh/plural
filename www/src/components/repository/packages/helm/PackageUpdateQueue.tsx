@@ -70,12 +70,17 @@ export default function PackageUpdateQueue() {
                   <TableData>{node?.attempts}</TableData>
                 </TableRow>
               )}
-              loadNextPage={() => pageInfo.hasNextPage
-                && fetchMore({
+              loadNextPage={() =>
+                pageInfo.hasNextPage &&
+                fetchMore({
                   variables: { cursor: pageInfo.endCursor },
-                  updateQuery: (prev,
-                    { fetchMoreResult: { deferredUpdates } }) => extendConnection(prev, deferredUpdates, 'deferredUpdates'),
-                })}
+                  updateQuery: (
+                    prev,
+                    { fetchMoreResult: { deferredUpdates } }
+                  ) =>
+                    extendConnection(prev, deferredUpdates, 'deferredUpdates'),
+                })
+              }
             />
           </Box>
         </Table>

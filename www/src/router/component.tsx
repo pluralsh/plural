@@ -10,19 +10,32 @@ import { Router } from 'react-router-dom'
 
 import { HistoryContext, PluralHistory } from './context'
 
-function HistoryRouter({ history, children, ...props }: {history: BrowserHistory, children: ReactNode}) {
+function HistoryRouter({
+  history,
+  children,
+  ...props
+}: {
+  history: BrowserHistory
+  children: ReactNode
+}) {
   const [state, setState] = useState({
     action: history.action,
     location: history.location,
   })
   const pluralHistory = useMemo(() => new PluralHistory(), [])
-  const pathBuilder = useCallback((location: Location) => `${location?.pathname}${location?.search}`, [])
-  const setStateWrapper = useCallback(state => {
-    pluralHistory.push(pathBuilder(state?.location))
-    setState(state)
-  }, [pluralHistory, pathBuilder])
+  const pathBuilder = useCallback(
+    (location: Location) => `${location?.pathname}${location?.search}`,
+    []
+  )
+  const setStateWrapper = useCallback(
+    (state) => {
+      pluralHistory.push(pathBuilder(state?.location))
+      setState(state)
+    },
+    [pluralHistory, pathBuilder]
+  )
 
-  useLayoutEffect(() => history.listen(state => setStateWrapper(state)))
+  useLayoutEffect(() => history.listen((state) => setStateWrapper(state)))
 
   // The initial state
   pluralHistory.push(pathBuilder(state?.location))
@@ -34,9 +47,10 @@ function HistoryRouter({ history, children, ...props }: {history: BrowserHistory
       navigationType={state.action}
       navigator={history}
     >
-      <HistoryContext.Provider value={pluralHistory}>{children}</HistoryContext.Provider>
+      <HistoryContext.Provider value={pluralHistory}>
+        {children}
+      </HistoryContext.Provider>
     </Router>
-
   )
 }
 

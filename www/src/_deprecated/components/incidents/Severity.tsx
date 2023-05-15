@@ -11,7 +11,7 @@ import CurrentUserContext from '../../../contexts/CurrentUserContext'
 import { canEdit } from './Incident'
 import { SeverityColorMap } from './types'
 
-const sevOptions = sev => ({ value: sev, label: `SEV ${sev}` })
+const sevOptions = (sev) => ({ value: sev, label: `SEV ${sev}` })
 const severityOptions = [0, 1, 2, 3, 4, 5].map(sevOptions)
 
 export function SeverityNub({ severity }: any) {
@@ -65,8 +65,14 @@ export function SeveritySelect({ severity, setSeverity }: any) {
     >
       <Select
         styles={{
-          option: (styles, { data }) => ({ ...styles, ...dot(severityColor(data.value), theme) }),
-          singleValue: (styles, { data }) => ({ ...styles, ...dot(severityColor(data.value), theme) }),
+          option: (styles, { data }) => ({
+            ...styles,
+            ...dot(severityColor(data.value), theme),
+          }),
+          singleValue: (styles, { data }) => ({
+            ...styles,
+            ...dot(severityColor(data.value), theme),
+          }),
         }}
         options={severityOptions}
         value={sevOptions(severity)}
@@ -76,9 +82,12 @@ export function SeveritySelect({ severity, setSeverity }: any) {
   )
 }
 
-export const severityColor = severity => SeverityColorMap[severity]
+export const severityColor = (severity) => SeverityColorMap[severity]
 
-export function Severity({ incident: { severity, ...incident }, setSeverity }: any) {
+export function Severity({
+  incident: { severity, ...incident },
+  setSeverity,
+}: any) {
   const user = useContext(CurrentUserContext)
   const editable = canEdit(incident, user) && setSeverity
 

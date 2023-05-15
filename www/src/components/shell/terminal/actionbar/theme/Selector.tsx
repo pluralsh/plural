@@ -27,20 +27,20 @@ function Selector() {
       placement="right"
       width="460px"
       selectedKey={theme}
-      onSelectionChange={t => setTheme(t?.toString())}
+      onSelectionChange={(t) => setTheme(t?.toString())}
       triggerButton={<ThemeSelectButton />}
     >
-      {themeNames.map(t => (
+      {themeNames.map((t) => (
         <ListBoxItem
           key={t}
           label={t}
           textValue={t}
-          leftContent={(
+          leftContent={
             <TerminalThemePreview
               theme={normalizedThemes[t]}
               marginRight="small"
             />
-          )}
+          }
         />
       ))}
     </Select>

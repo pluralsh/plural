@@ -1,9 +1,4 @@
-import {
-  useCallback,
-  useContext,
-  useMemo,
-  useState,
-} from 'react'
+import { useCallback, useContext, useMemo, useState } from 'react'
 import { useMutation } from '@apollo/client'
 import { Button } from 'honorable'
 import { Modal } from '@pluralsh/design-system'
@@ -36,8 +31,10 @@ export function CreateRole({ q }: any) {
   const [attributes, setAttributes] = useState(defaultAttributes)
   const [roleBindings, setRoleBindings] = useState([])
 
-  const uniqueRoleBindings = useMemo(() => uniqWith(roleBindings, isEqual),
-    [roleBindings])
+  const uniqueRoleBindings = useMemo(
+    () => uniqWith(roleBindings, isEqual),
+    [roleBindings]
+  )
 
   const resetAndClose = useCallback(() => {
     setAttributes(defaultAttributes)
@@ -49,11 +46,12 @@ export function CreateRole({ q }: any) {
     variables: {
       attributes: { ...attributes, roleBindings: roleBindings.map(sanitize) },
     },
-    update: (cache, { data: { createRole } }) => updateCache(cache, {
-      query: ROLES_Q,
-      variables: { q },
-      update: prev => appendConnection(prev, createRole, 'roles'),
-    }),
+    update: (cache, { data: { createRole } }) =>
+      updateCache(cache, {
+        query: ROLES_Q,
+        variables: { q },
+        update: (prev) => appendConnection(prev, createRole, 'roles'),
+      }),
     onCompleted: () => resetAndClose(),
   })
 
@@ -61,7 +59,9 @@ export function CreateRole({ q }: any) {
     <>
       <Button
         secondary
-        onClick={() => (isAvailable ? setCreateModalVisible(true) : setBlockModalVisible(true))}
+        onClick={() =>
+          isAvailable ? setCreateModalVisible(true) : setBlockModalVisible(true)
+        }
       >
         Create role
       </Button>
@@ -73,13 +73,13 @@ export function CreateRole({ q }: any) {
         onClose={() => resetAndClose()}
         marginVertical={16}
         size="large"
-        actions={(
+        actions={
           <Actions
             cancel={() => resetAndClose()}
             submit={() => mutation()}
             loading={loading}
           />
-        )}
+        }
       >
         <RoleForm
           attributes={attributes}

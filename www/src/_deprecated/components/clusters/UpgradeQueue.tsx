@@ -20,7 +20,11 @@ import { LoopingLogo } from '../../../components/utils/AnimatedLogo'
 
 import { QueueHealth } from './QueueHealth'
 
-import { QUEUE, UPGRADE_QUEUE_SUB, UPGRADE_SUB } from '../../../components/clusters/queries'
+import {
+  QUEUE,
+  UPGRADE_QUEUE_SUB,
+  UPGRADE_SUB,
+} from '../../../components/clusters/queries'
 
 function DeliveryProgress({ delivered }: any) {
   return (
@@ -67,15 +71,19 @@ function Upgrade({ upgrade, acked }: any) {
           <Text
             size="small"
             weight={500}
-          >{upgrade.repository.name}
+          >
+            {upgrade.repository.name}
           </Text>
           <Text
             size="xsmall"
             color="dark-3"
-          >{moment(upgrade.insertedAt).format('lll')}
+          >
+            {moment(upgrade.insertedAt).format('lll')}
           </Text>
         </Box>
-        <Text size="small"><i>{upgrade.message}</i></Text>
+        <Text size="small">
+          <i>{upgrade.message}</i>
+        </Text>
       </Box>
       <DeliveryProgress delivered={acked && upgrade.id <= acked} />
     </Box>
@@ -85,20 +93,35 @@ function Upgrade({ upgrade, acked }: any) {
 export function UpgradeQueue() {
   const [listRef, setListRef] = useState<any>(null)
   const { id } = useParams()
-  const {
-    data, loading, fetchMore, subscribeToMore, refetch,
-  } = useQuery(QUEUE, {
-    variables: { id },
-    fetchPolicy: 'cache-and-network',
-  })
+  const { data, loading, fetchMore, subscribeToMore, refetch } = useQuery(
+    QUEUE,
+    {
+      variables: { id },
+      fetchPolicy: 'cache-and-network',
+    }
+  )
 
   useSubscription(UPGRADE_QUEUE_SUB)
 
-  useEffect(() => subscribeToMore({
-    document: UPGRADE_SUB,
-    variables: { id },
-    updateQuery: ({ upgradeQueue, ...rest }, { subscriptionData: { data: { upgrade } } }) => ({ ...rest, upgradeQueue: appendConnection(upgradeQueue, upgrade, 'upgrades') }),
-  }), [id, subscribeToMore])
+  useEffect(
+    () =>
+      subscribeToMore({
+        document: UPGRADE_SUB,
+        variables: { id },
+        updateQuery: (
+          { upgradeQueue, ...rest },
+          {
+            subscriptionData: {
+              data: { upgrade },
+            },
+          }
+        ) => ({
+          ...rest,
+          upgradeQueue: appendConnection(upgradeQueue, upgrade, 'upgrades'),
+        }),
+      }),
+    [id, subscribeToMore]
+  )
 
   const { setBreadcrumbs } = useContext(BreadcrumbsContext)
 
@@ -110,13 +133,14 @@ export function UpgradeQueue() {
   }, [setBreadcrumbs, id])
 
   if (!data) {
-    return (
-      <LoopingLogo />
-    )
+    return <LoopingLogo />
   }
 
   const queue = data.upgradeQueue
-  const { upgrades: { edges, pageInfo }, acked } = queue
+  const {
+    upgrades: { edges, pageInfo },
+    acked,
+  } = queue
 
   return (
     <Box
@@ -157,7 +181,8 @@ export function UpgradeQueue() {
                   <Text
                     size="small"
                     color="dark-3"
-                  >{queue.git}
+                  >
+                    {queue.git}
                   </Text>
                 </Box>
               </Attribute>
@@ -170,7 +195,9 @@ export function UpgradeQueue() {
                   gap="small"
                   align="center"
                 >
-                  <Text size="small">{moment(queue.pingedAt).format('lll')}</Text>
+                  <Text size="small">
+                    {moment(queue.pingedAt).format('lll')}
+                  </Text>
                   <QueueHealth
                     queue={queue}
                     size="15px"
@@ -184,7 +211,7 @@ export function UpgradeQueue() {
       <Container
         fill
         title="upgrades"
-        modifier={(
+        modifier={
           <Box
             flex={false}
             pad="xsmall"
@@ -195,7 +222,7 @@ export function UpgradeQueue() {
           >
             <ReloadIcon size={12} />
           </Box>
-        )}
+        }
       >
         <StandardScroller
           listRef={listRef}
@@ -210,12 +237,27 @@ export function UpgradeQueue() {
               acked={acked}
             />
           )}
-          loadNextPage={() => pageInfo.hasNextPage && fetchMore({
-            variables: { cursor: pageInfo.endCursor },
-            updateQuery: (prev, { fetchMoreResult: { upgradeQueue: { upgrades } } }) => ({
-              ...prev, upgradeQueue: extendConnection(prev.upgradeQueue, upgrades, 'upgrades'),
-            }),
-          })}
+          loadNextPage={() =>
+            pageInfo.hasNextPage &&
+            fetchMore({
+              variables: { cursor: pageInfo.endCursor },
+              updateQuery: (
+                prev,
+                {
+                  fetchMoreResult: {
+                    upgradeQueue: { upgrades },
+                  },
+                }
+              ) => ({
+                ...prev,
+                upgradeQueue: extendConnection(
+                  prev.upgradeQueue,
+                  upgrades,
+                  'upgrades'
+                ),
+              }),
+            })
+          }
         />
       </Container>
     </Box>

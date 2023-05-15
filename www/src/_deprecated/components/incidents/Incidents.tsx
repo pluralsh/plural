@@ -7,12 +7,7 @@ import {
   useRef,
   useState,
 } from 'react'
-import {
-  Box,
-  Drop,
-  Text,
-  TextInput,
-} from 'grommet'
+import { Box, Drop, Text, TextInput } from 'grommet'
 import { Button } from 'forge-core'
 import {
   CaretRightIcon,
@@ -42,12 +37,7 @@ import { FixedScroller } from '../../../components/utils/SmoothScroller'
 import { CreateIncident } from './CreateIncident'
 import { Status } from './IncidentStatus'
 import { Severity } from './Severity'
-import {
-  IncidentFilter,
-  IncidentSort,
-  IncidentSortNames,
-  Order,
-} from './types'
+import { IncidentFilter, IncidentSort, IncidentSortNames, Order } from './types'
 import { SlaTimer } from './SlaTimer'
 import { INCIDENTS_Q } from './queries'
 
@@ -117,9 +107,8 @@ function SubscriptionBadge({ incident: { subscription } }: any) {
 }
 
 export function IncidentRow({
-  incident: {
-    id, repository, title, insertedAt, owner, ...incident
-  }, selected,
+  incident: { id, repository, title, insertedAt, owner, ...incident },
+  selected,
 }: any) {
   const navigate = useNavigate()
 
@@ -152,7 +141,8 @@ export function IncidentRow({
             <Text
               size="small"
               weight={500}
-            >{title}
+            >
+              {title}
             </Text>
             <Status incident={incident} />
             <Tags tags={incident.tags} />
@@ -166,7 +156,9 @@ export function IncidentRow({
           <Text
             size="small"
             color="border"
-          >created: {moment(insertedAt).fromNow()}, {owner ? `responder: ${owner.email}` : 'unassigned'}
+          >
+            created: {moment(insertedAt).fromNow()},{' '}
+            {owner ? `responder: ${owner.email}` : 'unassigned'}
           </Text>
         </Box>
       </Box>
@@ -183,9 +175,7 @@ export function IncidentRow({
   )
 }
 
-function FilterOption({
-  icon, filter, onClick, next,
-}: any) {
+function FilterOption({ icon, filter, onClick, next }: any) {
   return (
     <Box
       direction="row"
@@ -230,7 +220,8 @@ function TagInput({ setAlternate }: any) {
       <Text
         size="small"
         weight={500}
-      >tag
+      >
+        tag
       </Text>
       <Box
         fill="horizontal"
@@ -299,27 +290,41 @@ export function FilterSelect() {
             width={FILTER_DROP_WIDTH}
           >
             <AlternatingBox>
-              {setAlternate => (
+              {(setAlternate) => (
                 <Box pad={{ vertical: 'xsmall' }}>
                   <FilterOption
                     icon={<LightningIcon size={12} />}
                     filter={IncidentFilter.NOTIFICATIONS}
-                    onClick={() => setFilters([...filters, { type: IncidentFilter.NOTIFICATIONS }])}
+                    onClick={() =>
+                      setFilters([
+                        ...filters,
+                        { type: IncidentFilter.NOTIFICATIONS },
+                      ])
+                    }
                   />
                   <FilterOption
                     icon={<PersonIcon size={12} />}
                     filter={IncidentFilter.FOLLOWING}
-                    onClick={() => setFilters([...filters, { type: IncidentFilter.FOLLOWING }])}
+                    onClick={() =>
+                      setFilters([
+                        ...filters,
+                        { type: IncidentFilter.FOLLOWING },
+                      ])
+                    }
                   />
                   <FilterOption
                     next
                     icon={<TagIcon size={12} />}
                     filter={IncidentFilter.TAG}
-                    onClick={() => setAlternate(<TagInput
-                      setFilters={setFilters}
-                      filters={filters}
-                      setAlternate={setAlternate}
-                    />)}
+                    onClick={() =>
+                      setAlternate(
+                        <TagInput
+                          setFilters={setFilters}
+                          filters={filters}
+                          setAlternate={setAlternate}
+                        />
+                      )
+                    }
                   />
                 </Box>
               )}
@@ -333,9 +338,12 @@ export function FilterSelect() {
 
 function Filters() {
   const { filters, setFilters } = useContext(IncidentViewContext)
-  const removeFilter = useCallback(({ type, value }) => {
-    setFilters(filters.filter(f => f.type !== type || f.value !== value))
-  }, [filters, setFilters])
+  const removeFilter = useCallback(
+    ({ type, value }) => {
+      setFilters(filters.filter((f) => f.type !== type || f.value !== value))
+    },
+    [filters, setFilters]
+  )
 
   return (
     <Box
@@ -344,7 +352,7 @@ function Filters() {
       align="center"
       fill="horizontal"
     >
-      {filters.map(filter => (
+      {filters.map((filter) => (
         <Box
           key={`${filter.type}:${filter.value}`}
           direction="row"
@@ -359,7 +367,8 @@ function Filters() {
           <Text
             size="xsmall"
             weight={500}
-          >{filter.type.toLowerCase()}
+          >
+            {filter.type.toLowerCase()}
           </Text>
           {filter.value && <Text size="xsmall">{filter.value}</Text>}
         </Box>
@@ -398,9 +407,7 @@ function DropdownItem({ icon, text, onClick }: any) {
 function SortOptions() {
   const ref = useRef<HTMLDivElement>(null)
   const [open, setOpen] = useState(false)
-  const {
-    sort, order, setSort, setOrder,
-  } = useContext(IncidentViewContext)
+  const { sort, order, setSort, setOrder } = useContext(IncidentViewContext)
   const selectedSort = sort || IncidentSort.INSERTED_AT
   const selectedOrder = order || Order.DESC
 
@@ -414,7 +421,11 @@ function SortOptions() {
         gap="xsmall"
         onClick={() => setOpen(true)}
       >
-        {selectedOrder === Order.DESC ? <SortDescIcon size={15} /> : <SortAscIcon size={15} />}
+        {selectedOrder === Order.DESC ? (
+          <SortDescIcon size={15} />
+        ) : (
+          <SortAscIcon size={15} />
+        )}
         <Text size="small">{IncidentSortNames[selectedSort]}</Text>
       </Box>
       {open && (
@@ -433,7 +444,7 @@ function SortOptions() {
               pad={{ horizontal: 'xsmall', vertical: 'small' }}
               border="bottom"
             >
-              {Object.values(Order).map(order => (
+              {Object.values(Order).map((order) => (
                 <DropdownItem
                   key={order}
                   icon={order === selectedOrder ? <Checked /> : null}
@@ -446,7 +457,7 @@ function SortOptions() {
               flex={false}
               pad={{ horizontal: 'xsmall', vertical: 'small' }}
             >
-              {Object.keys(IncidentSort).map(sort => (
+              {Object.keys(IncidentSort).map((sort) => (
                 <DropdownItem
                   key={sort}
                   icon={sort === selectedSort ? <Checked /> : null}
@@ -518,7 +529,10 @@ export function Incidents() {
   const [order, setOrder] = useState(Order.DESC)
   const { data, loading, fetchMore } = useQuery(INCIDENTS_Q, {
     variables: {
-      q, order, sort, filters,
+      q,
+      order,
+      sort,
+      filters,
     },
     fetchPolicy: 'cache-and-network',
   })
@@ -529,13 +543,23 @@ export function Incidents() {
     setBreadcrumbs([{ url: '/incidents', text: 'incidents' }])
   }, [setBreadcrumbs])
 
-  const value = useMemo(() => ({
-    filters, setFilters, order, setOrder, sort, setSort,
-  }), [filters, order, sort])
+  const value = useMemo(
+    () => ({
+      filters,
+      setFilters,
+      order,
+      setOrder,
+      sort,
+      setSort,
+    }),
+    [filters, order, sort]
+  )
 
   if (!data) return <LoopingLogo />
 
-  const { incidents: { edges, pageInfo } } = data
+  const {
+    incidents: { edges, pageInfo },
+  } = data
 
   return (
     <IncidentViewContext.Provider value={value}>
@@ -581,10 +605,14 @@ export function Incidents() {
                 selected={incidentId}
               />
             )}
-            loadNextPage={() => pageInfo.hasNextPage && fetchMore({
-              variables: { cursor: pageInfo.endCursor },
-              updateQuery: (prev, { fetchMoreResult: { incidents } }) => extendConnection(prev, incidents, 'incidents'),
-            })}
+            loadNextPage={() =>
+              pageInfo.hasNextPage &&
+              fetchMore({
+                variables: { cursor: pageInfo.endCursor },
+                updateQuery: (prev, { fetchMoreResult: { incidents } }) =>
+                  extendConnection(prev, incidents, 'incidents'),
+              })
+            }
           />
         </Box>
       </Box>

@@ -1,10 +1,5 @@
 import { Link, useOutletContext } from 'react-router-dom'
-import {
-  Div,
-  Flex,
-  Img,
-  P,
-} from 'honorable'
+import { Div, Flex, Img, P } from 'honorable'
 import moment from 'moment'
 import Fuse from 'fuse.js'
 
@@ -64,7 +59,7 @@ function Terraform({ terraform, first, last }: any) {
               marginLeft="medium"
               gap="xsmall"
             >
-              {terraform.dependencies.providers.map(provider => (
+              {terraform.dependencies.providers.map((provider) => (
                 <Img
                   key={provider}
                   alt={provider}
@@ -76,7 +71,8 @@ function Terraform({ terraform, first, last }: any) {
           )}
         </Flex>
         <P mt={0.5}>
-          {terraform.latestVersion} {terraform.description ? `- ${terraform.description}` : null}
+          {terraform.latestVersion}{' '}
+          {terraform.description ? `- ${terraform.description}` : null}
         </P>
       </Div>
       <Flex
@@ -94,16 +90,25 @@ function Terraform({ terraform, first, last }: any) {
 function RepositoryPackagesTerraform() {
   const { id } = useRepositoryContext()
   const [q] = useOutletContext() as any
-  const [terraforms, loadingTerraforms, hasMoreTerraforms, fetchMoreTerraforms] = usePaginatedQuery(TERRAFORM_QUERY,
+  const [
+    terraforms,
+    loadingTerraforms,
+    hasMoreTerraforms,
+    fetchMoreTerraforms,
+  ] = usePaginatedQuery(
+    TERRAFORM_QUERY,
     {
       variables: {
         repositoryId: id,
       },
     },
-    data => data.terraform)
+    (data) => data.terraform
+  )
 
   const fuse = new Fuse(terraforms, searchOptions)
-  const filteredTerraforms = q ? fuse.search(q).map(({ item }) => item) : terraforms
+  const filteredTerraforms = q
+    ? fuse.search(q).map(({ item }) => item)
+    : terraforms
 
   if (terraforms.length === 0 && loadingTerraforms) return <LoadingIndicator />
 
@@ -116,14 +121,16 @@ function RepositoryPackagesTerraform() {
       flexGrow={1}
       height={0}
     >
-      {filteredTerraforms.sort((a, b) => a.name.localeCompare(b.name)).map((terraform, i) => (
-        <Terraform
-          key={terraform.id}
-          terraform={terraform}
-          first={i === 0}
-          last={i === filteredTerraforms.length - 1}
-        />
-      ))}
+      {filteredTerraforms
+        .sort((a, b) => a.name.localeCompare(b.name))
+        .map((terraform, i) => (
+          <Terraform
+            key={terraform.id}
+            terraform={terraform}
+            first={i === 0}
+            last={i === filteredTerraforms.length - 1}
+          />
+        ))}
       {!filteredTerraforms?.length && (
         <Flex
           width="100%"

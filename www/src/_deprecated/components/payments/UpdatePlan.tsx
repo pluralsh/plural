@@ -8,7 +8,14 @@ import { REPO_Q } from '../../_deprecated/components/repos/queries'
 
 import { UPDATE_PLAN } from './queries'
 
-export default function UpdatePlan({ plan, repository: { id, installation: { subscription } }, setOpen }: any) {
+export default function UpdatePlan({
+  plan,
+  repository: {
+    id,
+    installation: { subscription },
+  },
+  setOpen,
+}: any) {
   const [mutation, { loading }] = useMutation(UPDATE_PLAN, {
     variables: { subscriptionId: subscription.id, planId: plan.id },
     refetchQueries: [{ query: REPO_Q, variables: { repositoryId: id } }],
@@ -29,7 +36,12 @@ export default function UpdatePlan({ plan, repository: { id, installation: { sub
           pad="medium"
           gap="small"
         >
-          <Text size="small"><i>We will migrate all existing line items to match the new plan for you</i></Text>
+          <Text size="small">
+            <i>
+              We will migrate all existing line items to match the new plan for
+              you
+            </i>
+          </Text>
           <Box
             direction="row"
             align="center"

@@ -40,25 +40,28 @@ function CurrentPlanButton() {
 
 function BillingPricingCards() {
   const [searchParams, setSearchParams] = useSearchParams()
-  const { clusterMonthlyPricing, userMonthlyPricing }
-    = useContext(PlatformPlansContext)
+  const { clusterMonthlyPricing, userMonthlyPricing } =
+    useContext(PlatformPlansContext)
   const { isProPlan, isEnterprisePlan } = useContext(SubscriptionContext)
 
   const [downgradeModalOpen, setDowngradeModalOpen] = useState(false)
 
-  const upgradeToProfessionalModalOpen = typeof searchParams.get('upgrade') === 'string'
-  const setUpgradeToProfessionalModalOpen = useCallback(isOpen => {
-    setSearchParams(sp => {
-      if (isOpen) {
-        sp.set('upgrade', '1')
-      }
-      else {
-        sp.delete('upgrade')
-      }
+  const upgradeToProfessionalModalOpen =
+    typeof searchParams.get('upgrade') === 'string'
+  const setUpgradeToProfessionalModalOpen = useCallback(
+    (isOpen) => {
+      setSearchParams((sp) => {
+        if (isOpen) {
+          sp.set('upgrade', '1')
+        } else {
+          sp.delete('upgrade')
+        }
 
-      return sp
-    })
-  }, [setSearchParams])
+        return sp
+      })
+    },
+    [setSearchParams]
+  )
 
   return (
     <>
@@ -66,13 +69,13 @@ function BillingPricingCards() {
         <BillingPricingCard
           selected
           title="Open-source"
-          subtitle={(
+          subtitle={
             <>
               Free
               <br />
               <br />
             </>
-          )}
+          }
           items={[
             {
               label: 'Free forever',
@@ -115,12 +118,12 @@ function BillingPricingCards() {
         />
         <BillingPricingCard
           title="Professional"
-          subtitle={(
+          subtitle={
             <>
               ${clusterMonthlyPricing}/cluster/month
               <br />${userMonthlyPricing}/user/month
             </>
-          )}
+          }
           items={[
             {
               label: 'Everything in Open-source plan',
@@ -169,13 +172,13 @@ function BillingPricingCards() {
         />
         <BillingPricingCard
           title="Custom"
-          subtitle={(
+          subtitle={
             <>
               Tailored
               <br />
               <br />
             </>
-          )}
+          }
           items={[
             {
               label: 'Everything in Pro plan',

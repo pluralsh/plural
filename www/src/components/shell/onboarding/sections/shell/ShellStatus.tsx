@@ -1,9 +1,4 @@
-import {
-  ButtonProps,
-  Flex,
-  P,
-  Span,
-} from 'honorable'
+import { ButtonProps, Flex, P, Span } from 'honorable'
 import { ApolloError } from '@apollo/client/errors'
 import {
   Button,
@@ -13,19 +8,14 @@ import {
   ErrorIcon,
   ProgressBar,
 } from '@pluralsh/design-system'
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 
 import { CloudShell } from '../../../../../generated/graphql'
 import { CopyButtonBase } from '../../../terminal/actionbar/cheatsheet/CheatsheetCommand'
 
 interface StatusChipProps {
-  loading: boolean,
+  loading: boolean
   error: ApolloError | undefined
 }
 
@@ -35,7 +25,7 @@ function StatusChip({ loading, error }: StatusChipProps) {
       loading={loading && !error}
       backgroundColor="fill-two"
       borderColor="border-fill-two"
-      severity={error ? 'error' : (loading ? 'info' : 'success')}
+      severity={error ? 'error' : loading ? 'info' : 'success'}
     >
       {error ? 'Error' : loading ? 'Running' : 'Success'}
     </Chip>
@@ -43,15 +33,19 @@ function StatusChip({ loading, error }: StatusChipProps) {
 }
 
 interface StatusHeaderProps {
-  header: string,
-  description: string,
-  errorHeader?: string,
-  errorDescription?: string,
+  header: string
+  description: string
+  errorHeader?: string
+  errorDescription?: string
   error: ApolloError | undefined
 }
 
 function StatusHeader({
-  header, description, errorHeader = 'Cloud shell failed to start', errorDescription = 'Check the logs then try the options below to troubleshoot.', error,
+  header,
+  description,
+  errorHeader = 'Cloud shell failed to start',
+  errorDescription = 'Check the logs then try the options below to troubleshoot.',
+  error,
 }: StatusHeaderProps) {
   return (
     <Flex
@@ -91,7 +85,10 @@ interface ProgressEntryProps {
 }
 
 function ProgressEntry({
-  text, loading, error, last = false,
+  text,
+  loading,
+  error,
+  last = false,
 }: ProgressEntryProps) {
   return (
     <Flex
@@ -127,19 +124,26 @@ interface ErrorWrapperProps {
   error: ApolloError
 }
 
-function ErrorWrapper({ error, copyButtonProps = {} }: {copyButtonProps?:ButtonProps} & ErrorWrapperProps) {
+function ErrorWrapper({
+  error,
+  copyButtonProps = {},
+}: { copyButtonProps?: ButtonProps } & ErrorWrapperProps) {
   const [hovered, setHovered] = useState(false)
   const [copied, setCopied] = useState(false)
   const message = useMemo(() => {
-    if (error.graphQLErrors) return error.graphQLErrors.map(err => err.message.replace(/\\n/g, '\n')).join('\n')
+    if (error.graphQLErrors)
+      return error.graphQLErrors
+        .map((err) => err.message.replace(/\\n/g, '\n'))
+        .join('\n')
 
     return error.message.replace(/\\n/g, '\n')
   }, [error])
 
-  const handleCopy = useCallback(() => window.navigator.clipboard
-    .writeText(message)
-    .then(() => setCopied(true)),
-  [message])
+  const handleCopy = useCallback(
+    () =>
+      window.navigator.clipboard.writeText(message).then(() => setCopied(true)),
+    [message]
+  )
 
   useEffect(() => {
     if (copied) {
@@ -209,7 +213,8 @@ function Community() {
           secondary
           startIcon={<DocumentIcon />}
           small
-        >Docs
+        >
+          Docs
         </Button>
       </Flex>
       <Flex
@@ -238,7 +243,8 @@ function Community() {
           secondary
           startIcon={<DiscordIcon />}
           small
-        >Discord
+        >
+          Discord
         </Button>
       </Flex>
     </Flex>
@@ -327,6 +333,4 @@ function ShellStatus({ shell, error, loading }: ShellStatusProps) {
   )
 }
 
-export {
-  StatusHeader, ShellStatus, ProgressEntry, ErrorWrapper,
-}
+export { StatusHeader, ShellStatus, ProgressEntry, ErrorWrapper }

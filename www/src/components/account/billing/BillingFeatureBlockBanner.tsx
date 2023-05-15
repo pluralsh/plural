@@ -8,24 +8,26 @@ type BillingFeatureBlockBannerPropsType = {
   placeholderImageURL?: string
 }
 
-const Wrapper = styled.div<{backgroundImage?: string}>(({ theme, backgroundImage }) => ({
-  display: 'flex',
-  flexDirection: 'column',
-  flexGrow: 1,
-  alignItems: 'center',
-  justifyItems: 'flex-start',
-  padding: theme.spacing.large,
-  borderRadius: theme.borderRadiuses.medium,
-  backgroundColor: theme.colors['fill-zero'],
-  zIndex: 10,
+const Wrapper = styled.div<{ backgroundImage?: string }>(
+  ({ theme, backgroundImage }) => ({
+    display: 'flex',
+    flexDirection: 'column',
+    flexGrow: 1,
+    alignItems: 'center',
+    justifyItems: 'flex-start',
+    padding: theme.spacing.large,
+    borderRadius: theme.borderRadiuses.medium,
+    backgroundColor: theme.colors['fill-zero'],
+    zIndex: 10,
 
-  ...(backgroundImage && {
-    backgroundImage: `url(${backgroundImage})`,
-    backgroundRepeat: 'no-repeat',
-    backgroundPosition: 'top center',
-    backgroundSize: '100% auto',
-  }),
-}))
+    ...(backgroundImage && {
+      backgroundImage: `url(${backgroundImage})`,
+      backgroundRepeat: 'no-repeat',
+      backgroundPosition: 'top center',
+      backgroundSize: '100% auto',
+    }),
+  })
+)
 
 const Header = styled.div(({ theme }) => ({
   ...theme.partials.text.body1,
@@ -39,7 +41,9 @@ const Description = styled.div(({ theme }) => ({
 }))
 
 export default function BillingFeatureBlockBanner({
-  feature, description, placeholderImageURL,
+  feature,
+  description,
+  placeholderImageURL,
 }: BillingFeatureBlockBannerPropsType) {
   return (
     <Wrapper backgroundImage={placeholderImageURL}>

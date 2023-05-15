@@ -2,12 +2,7 @@ import { useCallback, useMemo, useState } from 'react'
 import { useQuery } from '@apollo/client'
 import { useSearchParams } from 'react-router-dom'
 import { A, Accordion, Div } from 'honorable'
-import {
-  Card,
-  Checkbox,
-  CloseIcon,
-  Input,
-} from '@pluralsh/design-system'
+import { Card, Checkbox, CloseIcon, Input } from '@pluralsh/design-system'
 import Fuse from 'fuse.js'
 import capitalize from 'lodash/capitalize'
 
@@ -22,32 +17,37 @@ const SIDEBAR_WIDTH = 256 - 32
 function useParamToggle(key: string) {
   const [searchParams, setSearchParams] = useSearchParams()
 
-  const isToggled = useCallback((value: string) => searchParams.getAll(key).includes(value.toLowerCase()),
-    [key, searchParams])
-  const handleToggle = useCallback(value => {
-    const existing = searchParams.getAll(key)
-    const formatedValue = value.toLowerCase()
+  const isToggled = useCallback(
+    (value: string) => searchParams.getAll(key).includes(value.toLowerCase()),
+    [key, searchParams]
+  )
+  const handleToggle = useCallback(
+    (value) => {
+      const existing = searchParams.getAll(key)
+      const formatedValue = value.toLowerCase()
 
-    if (existing.includes(formatedValue)) {
-      setSearchParams({
-        ...Object.fromEntries(searchParams.entries()),
-        [key]: existing.filter(v => v !== formatedValue),
-      })
-    }
-    else {
-      setSearchParams({
-        ...Object.fromEntries(searchParams.entries()),
-        [key]: [...existing, formatedValue],
-      })
-    }
-  },
-  [key, searchParams, setSearchParams])
+      if (existing.includes(formatedValue)) {
+        setSearchParams({
+          ...Object.fromEntries(searchParams.entries()),
+          [key]: existing.filter((v) => v !== formatedValue),
+        })
+      } else {
+        setSearchParams({
+          ...Object.fromEntries(searchParams.entries()),
+          [key]: [...existing, formatedValue],
+        })
+      }
+    },
+    [key, searchParams, setSearchParams]
+  )
 
-  return useMemo(() => ({
-    isToggled,
-    handleToggle,
-  }),
-  [handleToggle, isToggled])
+  return useMemo(
+    () => ({
+      isToggled,
+      handleToggle,
+    }),
+    [handleToggle, isToggled]
+  )
 }
 
 function AccordionWithExpanded({ children, ...props }: any) {
@@ -70,11 +70,13 @@ const CheckboxList = styled.div(({ theme }) => ({
   rowGap: theme.spacing.xxsmall,
 }))
 
-const CheckboxLabel = styled.p<{ $toggled?: boolean }>(({ $toggled, theme }) => ({
-  ...theme.partials.text.body2,
-  color: $toggled ? theme.colors.text : theme.colors['text-light'],
-  margin: 0,
-}))
+const CheckboxLabel = styled.p<{ $toggled?: boolean }>(
+  ({ $toggled, theme }) => ({
+    ...theme.partials.text.body2,
+    color: $toggled ? theme.colors.text : theme.colors['text-light'],
+    margin: 0,
+  })
+)
 
 function MarketplaceSidebarCheckbox({
   toggled,
@@ -104,14 +106,16 @@ const searchOptions = {
 
 function Categories({ categories }) {
   const { isToggled, handleToggle } = useParamToggle('category')
-  const sortedCategories = useMemo(() => [
-    { category: 'Installed' },
-    { category: 'Trending' },
-    ...categories
-      .slice()
-      .sort((a, b) => a.category.localeCompare(b.category)),
-  ],
-  [categories])
+  const sortedCategories = useMemo(
+    () => [
+      { category: 'Installed' },
+      { category: 'Trending' },
+      ...categories
+        .slice()
+        .sort((a, b) => a.category.localeCompare(b.category)),
+    ],
+    [categories]
+  )
 
   return (
     <AccordionWithExpanded
@@ -120,7 +124,7 @@ function Categories({ categories }) {
       title={`Categories (${sortedCategories.length})`}
       borderBottom="1px solid border !important"
     >
-      {expanded => (
+      {(expanded) => (
         <CheckboxList>
           {sortedCategories.map(({ category }) => (
             <MarketplaceSidebarCheckbox
@@ -137,9 +141,7 @@ function Categories({ categories }) {
   )
 }
 
-function Tags({
-  tags, hasMore, fetchMore, search, setSearch,
-}) {
+function Tags({ tags, hasMore, fetchMore, search, setSearch }) {
   const [nDisplayedTags, setNDisplayedTags] = useState(12)
   const { handleToggle, isToggled } = useParamToggle('tag')
   const sortedTags = tags.slice().sort((a, b) => a.tag.localeCompare(b.tag))
@@ -149,7 +151,7 @@ function Tags({
     : sortedTags.filter((x, i) => i < nDisplayedTags)
 
   function handleMoreTagsClick() {
-    if (tags.length > nDisplayedTags) setNDisplayedTags(x => x + 12)
+    if (tags.length > nDisplayedTags) setNDisplayedTags((x) => x + 12)
     else fetchMore()
   }
 
@@ -165,14 +167,14 @@ function Tags({
         nDisplayedTags < tags.length || hasMore ? '+' : ''
       })`}
     >
-      {expanded => (
+      {(expanded) => (
         <>
           <Input
             medium
             width="100%"
             placeholder="Filter"
             value={search}
-            onChange={event => setSearch(event.target.value)}
+            onChange={(event) => setSearch(event.target.value)}
             inputProps={{
               tabIndex: expanded ? 0 : -1,
             }}
@@ -216,33 +218,39 @@ function Tags({
   )
 }
 
-const SidebarWrapper = styled(Card)<{$isOpen:boolean}>(({ $isOpen, theme }) => ({
-  display: 'flex',
-  flexDirection: 'column',
-  width: SIDEBAR_WIDTH,
-  height: 'auto',
-  overflowY: 'scroll',
-  overflowX: 'auto',
-  marginRight: $isOpen ? theme.spacing.large : `-${SIDEBAR_WIDTH}px`,
-  transform: $isOpen ? 'translateX(0)' : 'translateX(100%)',
-  opacity: $isOpen ? 1 : 0,
-  flexShrink: 0,
-  position: 'sticky',
-  top: 0,
-  right: 0,
-  transition: 'all 250ms ease',
-  marginBottom: theme.spacing.medium,
-}))
+const SidebarWrapper = styled(Card)<{ $isOpen: boolean }>(
+  ({ $isOpen, theme }) => ({
+    display: 'flex',
+    flexDirection: 'column',
+    width: SIDEBAR_WIDTH,
+    height: 'auto',
+    overflowY: 'scroll',
+    overflowX: 'auto',
+    marginRight: $isOpen ? theme.spacing.large : `-${SIDEBAR_WIDTH}px`,
+    transform: $isOpen ? 'translateX(0)' : 'translateX(100%)',
+    opacity: $isOpen ? 1 : 0,
+    flexShrink: 0,
+    position: 'sticky',
+    top: 0,
+    right: 0,
+    transition: 'all 250ms ease',
+    marginBottom: theme.spacing.medium,
+  })
+)
 
-function MarketplaceSidebar({ isOpen }:{isOpen: boolean}) {
+function MarketplaceSidebar({ isOpen }: { isOpen: boolean }) {
   const { data: categoriesData } = useQuery(CATEGORIES_QUERY)
-  const [tags, , hasMoreTags, fetchMoreTags] = usePaginatedQuery(TAGS_QUERY,
+  const [tags, , hasMoreTags, fetchMoreTags] = usePaginatedQuery(
+    TAGS_QUERY,
     {},
-    data => data.tags)
+    (data) => data.tags
+  )
   const [search, setSearch] = useState('')
 
   if (!categoriesData) return null
-  const filteredCategories = categoriesData.categories?.filter(c => !!c.category)
+  const filteredCategories = categoriesData.categories?.filter(
+    (c) => !!c.category
+  )
 
   return (
     <SidebarWrapper $isOpen={isOpen}>

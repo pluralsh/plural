@@ -45,18 +45,20 @@ function Roadmap() {
 
   const params = useParams()
   const subPath = params?.['*']?.split?.('/')[0]
-  const breadcrumbs = useMemo(() => [
-    { label: 'roadmap', url: '/roadmap' },
-    ...(subPath
-      ? [
-        {
-          label: subPath,
-          url: `/roadmap/${subPath}`,
-        },
-      ]
-      : []),
-  ],
-  [subPath])
+  const breadcrumbs = useMemo(
+    () => [
+      { label: 'roadmap', url: '/roadmap' },
+      ...(subPath
+        ? [
+            {
+              label: subPath,
+              url: `/roadmap/${subPath}`,
+            },
+          ]
+        : []),
+    ],
+    [subPath]
+  )
 
   useSetBreadcrumbs(breadcrumbs)
 

@@ -22,9 +22,7 @@ function Publisher() {
 
   const { publisher } = data
 
-  return (
-    <Marketplace publisher={publisher} />
-  )
+  return <Marketplace publisher={publisher} />
 }
 
 export default Publisher

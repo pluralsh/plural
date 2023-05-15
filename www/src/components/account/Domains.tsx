@@ -13,7 +13,11 @@ import isEqual from 'lodash/isEqual'
 import uniqWith from 'lodash/uniqWith'
 
 import { Placeholder } from '../utils/Placeholder'
-import { extendConnection, removeConnection, updateCache } from '../../utils/graphql'
+import {
+  extendConnection,
+  removeConnection,
+  updateCache,
+} from '../../utils/graphql'
 import { GqlError } from '../utils/Alert'
 import { StandardScroller } from '../utils/SmoothScroller'
 import { Table, TableData, TableRow } from '../utils/Table'
@@ -50,7 +54,7 @@ function DomainOptions({ domain, setDomain }: any) {
     update: (cache, { data: { deleteDomain } }) => {
       updateCache(cache, {
         query: DNS_DOMAINS,
-        update: prev => removeConnection(prev, deleteDomain, 'dnsDomains'),
+        update: (prev) => removeConnection(prev, deleteDomain, 'dnsDomains'),
         variables: {},
       })
     },
@@ -80,7 +84,7 @@ function DomainOptions({ domain, setDomain }: any) {
   return (
     <>
       <MoreMenu
-        onSelectionChange={selectedKey => {
+        onSelectionChange={(selectedKey) => {
           menuItems[selectedKey]?.onSelect()
         }}
       >
@@ -113,7 +117,9 @@ function DomainOptions({ domain, setDomain }: any) {
 }
 
 function AccessPolicy({ domain: { id, accessPolicy }, edit, setEdit }: any) {
-  const [bindings, setBindings] = useState(accessPolicy ? accessPolicy.bindings : [])
+  const [bindings, setBindings] = useState(
+    accessPolicy ? accessPolicy.bindings : []
+  )
   const uniqueBindings = useMemo(() => uniqWith(bindings, isEqual), [bindings])
   const [mutation, { loading, error }] = useMutation(UPDATE_DOMAIN, {
     variables: {
@@ -138,14 +144,14 @@ function AccessPolicy({ domain: { id, accessPolicy }, edit, setEdit }: any) {
       open={edit}
       onClose={() => setEdit(false)}
       width="100%"
-      actions={(
+      actions={
         <Actions
           cancel={() => setEdit(false)}
           submit={() => mutation()}
           loading={loading}
           action="Update"
         />
-      )}
+      }
     >
       <Flex
         direction="column"
@@ -163,8 +169,12 @@ function AccessPolicy({ domain: { id, accessPolicy }, edit, setEdit }: any) {
           bindings={uniqueBindings
             .filter(({ user }) => !!user)
             .map(({ user: { email } }) => email)}
-          add={user => setBindings([...uniqueBindings, { user }])}
-          remove={email => setBindings(uniqueBindings.filter(({ user }) => !user || user.email !== email))}
+          add={(user) => setBindings([...uniqueBindings, { user }])}
+          remove={(email) =>
+            setBindings(
+              uniqueBindings.filter(({ user }) => !user || user.email !== email)
+            )
+          }
         />
         <BindingInput
           type="group"
@@ -172,8 +182,14 @@ function AccessPolicy({ domain: { id, accessPolicy }, edit, setEdit }: any) {
           bindings={uniqueBindings
             .filter(({ group }) => !!group)
             .map(({ group: { name } }) => name)}
-          add={group => setBindings([...uniqueBindings, { group }])}
-          remove={name => setBindings(uniqueBindings.filter(({ group }) => !group || group.name !== name))}
+          add={(group) => setBindings([...uniqueBindings, { group }])}
+          remove={(name) =>
+            setBindings(
+              uniqueBindings.filter(
+                ({ group }) => !group || group.name !== name
+              )
+            )
+          }
         />
       </Flex>
     </Modal>
@@ -184,12 +200,12 @@ function Domain({ node, last, setDomain }: any) {
   return (
     <TableRow
       last={last}
-      suffix={(
+      suffix={
         <DomainOptions
           domain={node}
           setDomain={setDomain}
         />
-      )}
+      }
     >
       <TableData>{node.name}</TableData>
       <TableData>
@@ -218,10 +234,13 @@ function DomainsInner({ q, setDomainSelected }: any) {
     fetchPolicy: 'cache-and-network',
   })
 
-  const setDomainWrapper = useCallback(domain => {
-    setDomainSelected(!!domain)
-    setDomain(domain)
-  }, [setDomainSelected, setDomain])
+  const setDomainWrapper = useCallback(
+    (domain) => {
+      setDomainSelected(!!domain)
+      setDomain(domain)
+    },
+    [setDomainSelected, setDomain]
+  )
 
   if (!data) return null
 
@@ -258,7 +277,7 @@ function DomainsInner({ q, setDomainSelected }: any) {
               listRef={listRef}
               setListRef={setListRef}
               hasNextPage={pageInfo?.hasNextPage || false}
-              items={edges.filter(e => e.node?.name?.includes(q))}
+              items={edges.filter((e) => e.node?.name?.includes(q))}
               loading={loading}
               placeholder={Placeholder}
               mapper={({ node }, { next }) => (
@@ -269,11 +288,14 @@ function DomainsInner({ q, setDomainSelected }: any) {
                   setDomain={setDomainWrapper}
                 />
               )}
-              loadNextPage={() => pageInfo.hasNextPage
-                && fetchMore({
+              loadNextPage={() =>
+                pageInfo.hasNextPage &&
+                fetchMore({
                   variables: { cursor: pageInfo.endCursor },
-                  updateQuery: (prev, { fetchMoreResult: { dnsDomains } }) => extendConnection(prev, dnsDomains, 'dnsDomains'),
-                })}
+                  updateQuery: (prev, { fetchMoreResult: { dnsDomains } }) =>
+                    extendConnection(prev, dnsDomains, 'dnsDomains'),
+                })
+              }
             />
           </Box>
         </Table>

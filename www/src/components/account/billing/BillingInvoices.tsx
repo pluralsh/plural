@@ -17,33 +17,33 @@ import { InvoiceFragment } from '../../../generated/graphql'
 const columnHelper = createColumnHelper<InvoiceFragment & { id: string }>()
 
 const columns = [
-  columnHelper.accessor(row => row.createdAt, {
+  columnHelper.accessor((row) => row.createdAt, {
     id: 'date',
     enableSorting: true,
-    cell: info => moment(info.getValue()).format('MM/DD/YY'),
+    cell: (info) => moment(info.getValue()).format('MM/DD/YY'),
     header: () => <>Date</>,
   }),
-  columnHelper.accessor(row => row.amountDue, {
+  columnHelper.accessor((row) => row.amountDue, {
     id: 'amountDue',
     enableSorting: true,
-    cell: info => `$${(info.getValue() / 100).toFixed(2)}`,
+    cell: (info) => `$${(info.getValue() / 100).toFixed(2)}`,
     header: () => <>Amount due</>,
   }),
-  columnHelper.accessor(row => row.amountPaid, {
+  columnHelper.accessor((row) => row.amountPaid, {
     id: 'amountPaid',
     enableSorting: true,
-    cell: info => `$${(info.getValue() / 100).toFixed(2)}`,
+    cell: (info) => `$${(info.getValue() / 100).toFixed(2)}`,
     header: () => <>Amount paid</>,
   }),
-  columnHelper.accessor(row => row.status, {
+  columnHelper.accessor((row) => row.status, {
     id: 'status',
     enableSorting: true,
-    cell: info => capitalize(info.getValue() || ''),
+    cell: (info) => capitalize(info.getValue() || ''),
     header: () => <>Status</>,
   }),
-  columnHelper.accessor(row => row.hostedInvoiceUrl, {
+  columnHelper.accessor((row) => row.hostedInvoiceUrl, {
     id: 'viewInvoice',
-    cell: info => (
+    cell: (info) => (
       <Flex
         width="100%"
         justifyContent="flex-end"

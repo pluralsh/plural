@@ -1,13 +1,16 @@
 import { Flex, H2 } from 'honorable'
 
 interface OnboardingCardProps {
-  title?: string,
+  title?: string
   mode: 'Compact' | 'Default'
   children: JSX.Element | Array<JSX.Element> | unknown
 }
 
 function OnboardingCard({
-  title = '', mode = 'Default', children, ...props
+  title = '',
+  mode = 'Default',
+  children,
+  ...props
 }: OnboardingCardProps) {
   return (
     <Flex

@@ -7,7 +7,9 @@ import { PackageActions } from '../misc'
 
 export default function PackageReadme() {
   const { currentHelmChart, currentTerraformChart } = useOutletContext() as any
-  const readme = (currentHelmChart || currentTerraformChart)?.readme || 'This package does not have a Readme yet.'
+  const readme =
+    (currentHelmChart || currentTerraformChart)?.readme ||
+    'This package does not have a Readme yet.'
 
   return (
     <Box
@@ -16,7 +18,9 @@ export default function PackageReadme() {
       gap="small"
     >
       <PageTitle heading="Readme">
-        <Flex display-desktop-up="none"><PackageActions /></Flex>
+        <Flex display-desktop-up="none">
+          <PackageActions />
+        </Flex>
       </PageTitle>
       <Box
         pad={{ right: 'xsmall' }}

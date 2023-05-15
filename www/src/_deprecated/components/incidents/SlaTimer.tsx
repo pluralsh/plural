@@ -15,11 +15,9 @@ function SlaBreached() {
   )
 }
 
-const pad = v => (v < 10 ? `0${v}` : v)
+const pad = (v) => (v < 10 ? `0${v}` : v)
 
-function RenderCountdown({
-  hours, minutes, seconds, completed,
-}: any) {
+function RenderCountdown({ hours, minutes, seconds, completed }: any) {
   if (completed) return <SlaBreached />
 
   return (
@@ -32,7 +30,12 @@ function RenderCountdown({
       gap="small"
       align="center"
     >
-      <Text size="small"><b>{hours}:{pad(minutes)}:{pad(seconds)}</b> to respond</Text>
+      <Text size="small">
+        <b>
+          {hours}:{pad(minutes)}:{pad(seconds)}
+        </b>{' '}
+        to respond
+      </Text>
       <BeatLoader
         size={5}
         margin={2}

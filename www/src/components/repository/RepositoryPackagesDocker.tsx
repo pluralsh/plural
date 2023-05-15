@@ -1,11 +1,6 @@
 import { useContext } from 'react'
 import { Link, useOutletContext } from 'react-router-dom'
-import {
-  Div,
-  Flex,
-  Img,
-  P,
-} from 'honorable'
+import { Div, Flex, Img, P } from 'honorable'
 import moment from 'moment'
 import Fuse from 'fuse.js'
 
@@ -68,18 +63,24 @@ function DockerRepository({ dockerRepository, first, last }: any) {
 function RepositoryPackagesDocker() {
   const { id } = useRepositoryContext()
   const [q] = useOutletContext() as any
-  const [dockerRepositories, loadingCharts, hasMoreCharts, fetchMoreCharts] = usePaginatedQuery(DOCKER_QUERY,
-    {
-      variables: {
-        repositoryId: id,
+  const [dockerRepositories, loadingCharts, hasMoreCharts, fetchMoreCharts] =
+    usePaginatedQuery(
+      DOCKER_QUERY,
+      {
+        variables: {
+          repositoryId: id,
+        },
       },
-    },
-    data => data.dockerRepositories)
+      (data) => data.dockerRepositories
+    )
 
   const fuse = new Fuse(dockerRepositories, searchOptions)
-  const filteredDockerRepositories = q ? fuse.search(q).map(({ item }) => item) : dockerRepositories
+  const filteredDockerRepositories = q
+    ? fuse.search(q).map(({ item }) => item)
+    : dockerRepositories
 
-  if (dockerRepositories.length === 0 && loadingCharts) return <LoadingIndicator />
+  if (dockerRepositories.length === 0 && loadingCharts)
+    return <LoadingIndicator />
 
   return (
     <InfiniteScroller
@@ -90,14 +91,16 @@ function RepositoryPackagesDocker() {
       flexGrow={1}
       height={0}
     >
-      {filteredDockerRepositories.sort((a, b) => a.name.localeCompare(b.name)).map((dockerRepository, i) => (
-        <DockerRepository
-          key={dockerRepository.id}
-          dockerRepository={dockerRepository}
-          first={i === 0}
-          last={i === filteredDockerRepositories.length - 1}
-        />
-      ))}
+      {filteredDockerRepositories
+        .sort((a, b) => a.name.localeCompare(b.name))
+        .map((dockerRepository, i) => (
+          <DockerRepository
+            key={dockerRepository.id}
+            dockerRepository={dockerRepository}
+            first={i === 0}
+            last={i === filteredDockerRepositories.length - 1}
+          />
+        ))}
       {!filteredDockerRepositories?.length && (
         <Flex
           width="100%"

@@ -21,7 +21,12 @@ export default function ImpersonateServiceAccount({
   const { token, client, error } = useImpersonatedServiceAccount(id, skip)
   const tokenCtxVal = useMemo(() => ({ token }), [token])
 
-  if (error) return <EmptyListMessage>Error while impersonating service account: {error.message}</EmptyListMessage>
+  if (error)
+    return (
+      <EmptyListMessage>
+        Error while impersonating service account: {error.message}
+      </EmptyListMessage>
+    )
   if (!client) return <LoadingIndicator />
 
   return (

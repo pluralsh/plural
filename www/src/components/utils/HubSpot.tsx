@@ -14,13 +14,13 @@ export function HubSpot() {
 
   useEffect(() => {
     const stop = () => {
-      const _hsq = window._hsq = window._hsq || []
+      const _hsq = (window._hsq = window._hsq || [])
 
       _hsq.push(['doNotTrack'])
     }
     const start = () => {
       setLoadScript(true)
-      const _hsq = window._hsq = window._hsq || []
+      const _hsq = (window._hsq = window._hsq || [])
 
       _hsq.push(['doNotTrack', { track: true }])
     }

@@ -19,18 +19,21 @@ function ReloadModal({ open, setOpen }) {
         <Span
           body2
           color="text-xlight"
-        >Terminal theme
+        >
+          Terminal theme
         </Span>
         <Span body2>
-          The new terminal theme has been saved, but it requires a full page reload to apply.
-          All unsaved changes and installer progress will be lost.
+          The new terminal theme has been saved, but it requires a full page
+          reload to apply. All unsaved changes and installer progress will be
+          lost.
         </Span>
         <Span body2>Do you want to reload the page now?</Span>
         <Flex justify="space-between">
           <Button
             secondary
             onClick={() => setOpen(false)}
-          >Cancel
+          >
+            Cancel
           </Button>
           <Button onClick={() => window.location.reload()}>Reload</Button>
         </Flex>
@@ -40,9 +43,14 @@ function ReloadModal({ open, setOpen }) {
 }
 
 function TerminalThemeProvider({ children }: any) {
-  const [terminalTheme, setTerminalTheme] = useState(getTheme() || DEFAULT_THEME_NAME)
+  const [terminalTheme, setTerminalTheme] = useState(
+    getTheme() || DEFAULT_THEME_NAME
+  )
   const [open, setOpen] = useState(false)
-  const context = useMemo(() => ({ theme: terminalTheme, setTheme: setTerminalTheme }), [terminalTheme])
+  const context = useMemo(
+    () => ({ theme: terminalTheme, setTheme: setTerminalTheme }),
+    [terminalTheme]
+  )
 
   // If the theme change, persist in localstorage
   useEffect(() => {

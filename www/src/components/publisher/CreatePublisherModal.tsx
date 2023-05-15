@@ -20,12 +20,15 @@ type CreatePublisherModalProps = {
 }
 
 type IconUploadType = {
-  file: File | null;
-  previewUrl: string | null;
+  file: File | null
+  previewUrl: string | null
 }
 
 function CreatePublisherModal({ open, onClose }: CreatePublisherModalProps) {
-  const [iconUpload, setIconUpload] = useState<IconUploadType>({ file: null, previewUrl: null })
+  const [iconUpload, setIconUpload] = useState<IconUploadType>({
+    file: null,
+    previewUrl: null,
+  })
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
   const [website, setWebsite] = useState('')
@@ -64,13 +67,13 @@ function CreatePublisherModal({ open, onClose }: CreatePublisherModalProps) {
         ...(iconUpload.file ? { avatar: iconUpload.file } : {}),
       },
     },
-    onCompleted: data => {
+    onCompleted: (data) => {
       if (!data) return
 
       navigate(`/publisher/${data.createPublisher.id}`)
       onClose()
     },
-    onError: error => {
+    onError: (error) => {
       setPreMutationError(error.message)
     },
   })
@@ -104,10 +107,9 @@ function CreatePublisherModal({ open, onClose }: CreatePublisherModalProps) {
       return
     }
 
-    mutation()
-      .catch(error => {
-        setPreMutationError(error.message)
-      })
+    mutation().catch((error) => {
+      setPreMutationError(error.message)
+    })
   }
 
   function renderUrlField(
@@ -116,7 +118,7 @@ function CreatePublisherModal({ open, onClose }: CreatePublisherModalProps) {
     getter: string,
     setter: (value: string) => void,
     error: boolean,
-    setError: (value: boolean) => void,
+    setError: (value: boolean) => void
   ) {
     return (
       <FormField
@@ -129,7 +131,7 @@ function CreatePublisherModal({ open, onClose }: CreatePublisherModalProps) {
         <Input
           value={getter}
           error={error}
-          onChange={event => {
+          onChange={(event) => {
             setter(event.target.value)
             setError(isValidUrl(event.target.value))
           }}
@@ -145,7 +147,7 @@ function CreatePublisherModal({ open, onClose }: CreatePublisherModalProps) {
       onClose={onClose}
       size="large"
       header="Create a publisher"
-      actions={(
+      actions={
         <>
           <Button
             secondary
@@ -162,7 +164,7 @@ function CreatePublisherModal({ open, onClose }: CreatePublisherModalProps) {
             Save
           </Button>
         </>
-      )}
+      }
     >
       {iconPicker.HiddenFileInput(iconPickerInputOpts)}
       <FormField
@@ -214,7 +216,7 @@ function CreatePublisherModal({ open, onClose }: CreatePublisherModalProps) {
       >
         <Input
           value={name}
-          onChange={event => setName(event.target.value)}
+          onChange={(event) => setName(event.target.value)}
           placeholder="Enter a name"
         />
       </FormField>
@@ -228,32 +230,64 @@ function CreatePublisherModal({ open, onClose }: CreatePublisherModalProps) {
           multiline
           minRows={3}
           value={description}
-          onChange={event => setDescription(event.target.value.substring(0, 200))}
+          onChange={(event) =>
+            setDescription(event.target.value.substring(0, 200))
+          }
           placeholder="Enter a description"
         />
       </FormField>
       <Flex gap="medium">
         {renderUrlField(
-          'Website link', 'Website URL', website, setWebsite, errors.website, value => setErrors({ ...errors, website: value }),
+          'Website link',
+          'Website URL',
+          website,
+          setWebsite,
+          errors.website,
+          (value) => setErrors({ ...errors, website: value })
         )}
         {renderUrlField(
-          'Docs link', 'Docs URL', documentation, setDocumentation, errors.documentation, value => setErrors({ ...errors, documentation: value }),
+          'Docs link',
+          'Docs URL',
+          documentation,
+          setDocumentation,
+          errors.documentation,
+          (value) => setErrors({ ...errors, documentation: value })
         )}
       </Flex>
       <Flex gap="medium">
         {renderUrlField(
-          'GitHub link', 'GitHub URL', github, setGithub, errors.github, value => setErrors({ ...errors, github: value }),
+          'GitHub link',
+          'GitHub URL',
+          github,
+          setGithub,
+          errors.github,
+          (value) => setErrors({ ...errors, github: value })
         )}
         {renderUrlField(
-          'Docs link', 'Discord invite URL', discord, setDiscord, errors.discord, value => setErrors({ ...errors, discord: value }),
+          'Docs link',
+          'Discord invite URL',
+          discord,
+          setDiscord,
+          errors.discord,
+          (value) => setErrors({ ...errors, discord: value })
         )}
       </Flex>
       <Flex gap="medium">
         {renderUrlField(
-          'Slack link', 'Slack invite URL', slack, setSlack, errors.slack, value => setErrors({ ...errors, slack: value }),
+          'Slack link',
+          'Slack invite URL',
+          slack,
+          setSlack,
+          errors.slack,
+          (value) => setErrors({ ...errors, slack: value })
         )}
         {renderUrlField(
-          'Twitter link', 'Twitter URL', twitter, setTwitter, errors.twitter, value => setErrors({ ...errors, twitter: value }),
+          'Twitter link',
+          'Twitter URL',
+          twitter,
+          setTwitter,
+          errors.twitter,
+          (value) => setErrors({ ...errors, twitter: value })
         )}
       </Flex>
       {!!preMutationError && (

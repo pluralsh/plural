@@ -5,65 +5,86 @@ import { UpgradeFragment, UpgradeQueueFragment } from '../../models/upgrades'
 import { ImpersonationPolicy } from '../../models/user'
 
 export const CLUSTERS = gql`
-query {
-  clusters(first: 100) {
-    pageInfo { ...PageInfo }
-    edges {
-      node {
-        id 
-        name
-        provider
-        source
-        pingedAt
-        gitUrl
-        consoleUrl
-        owner {
+  query {
+    clusters(first: 100) {
+      pageInfo {
+        ...PageInfo
+      }
+      edges {
+        node {
           id
           name
-          email
-          avatar
-          hasShell
-          serviceAccount
-          impersonationPolicy { ...ImpersonationPolicy }
-        }
-        queue { 
-          id
-          acked
-          upgrades(first: 3) { 
-            edges { 
-              node { 
+          provider
+          source
+          pingedAt
+          gitUrl
+          consoleUrl
+          owner {
+            id
+            name
+            email
+            avatar
+            hasShell
+            serviceAccount
+            impersonationPolicy {
+              ...ImpersonationPolicy
+            }
+          }
+          queue {
+            id
+            acked
+            upgrades(first: 3) {
+              edges {
+                node {
+                  id
+                }
+              }
+            }
+          }
+          upgradeInfo {
+            installation {
+              repository {
                 id
-              } 
-            } 
-          } 
-        }
-        upgradeInfo {
-          installation { repository { id name icon darkIcon } }
-          count
-        }
-        dependency {
-          dependency { id name provider }
+                name
+                icon
+                darkIcon
+              }
+            }
+            count
+          }
+          dependency {
+            dependency {
+              id
+              name
+              provider
+            }
+          }
         }
       }
     }
   }
-}
-${PageInfo}
-${ImpersonationPolicy}
+  ${PageInfo}
+  ${ImpersonationPolicy}
 `
 
 export const CREATE_CLUSTER_DEPENDENCY = gql`
   mutation Create($source: ID!, $dest: ID!) {
     createClusterDependency(sourceId: $source, destId: $dest) {
-      cluster { id }
-      dependency { id }
+      cluster {
+        id
+      }
+      dependency {
+        id
+      }
     }
   }
 `
 
 export const PROMOTE = gql`
   mutation {
-    promote { id }
+    promote {
+      id
+    }
   }
 `
 
@@ -81,8 +102,14 @@ export const QUEUE = gql`
     upgradeQueue(id: $id) {
       ...UpgradeQueueFragment
       upgrades(after: $cursor, first: 50) {
-        pageInfo { ...PageInfo }
-        edges { node { ...UpgradeFragment } }
+        pageInfo {
+          ...PageInfo
+        }
+        edges {
+          node {
+            ...UpgradeFragment
+          }
+        }
       }
     }
   }
@@ -93,7 +120,9 @@ export const QUEUE = gql`
 
 export const UPGRADE_SUB = gql`
   subscription Upgrades($id: ID!) {
-    upgrade(id: $id) { ...UpgradeFragment }
+    upgrade(id: $id) {
+      ...UpgradeFragment
+    }
   }
   ${UpgradeFragment}
 `
@@ -102,7 +131,9 @@ export const UPGRADE_QUEUE_SUB = gql`
   subscription {
     upgradeQueueDelta {
       delta
-      payload { ...UpgradeQueueFragment }
+      payload {
+        ...UpgradeQueueFragment
+      }
     }
   }
   ${UpgradeQueueFragment}

@@ -1,9 +1,4 @@
-import {
-  createContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
+import { createContext, useEffect, useMemo, useState } from 'react'
 import { Presence } from 'phoenix'
 import { Box } from 'grommet'
 
@@ -39,16 +34,18 @@ export function PresenceProvider({ incidentId, children }: any) {
 
     setChannel(channel)
     channel.join()
-    channel.on('typing', msg => cache.add(msg.name))
+    channel.on('typing', (msg) => cache.add(msg.name))
 
     const presence = new Presence(channel)
 
     presence.onSync(() => {
-      const ids = presence.list(id => id).reduce((prev, id) => ({ ...prev, [id]: true }), {})
+      const ids = presence
+        .list((id) => id)
+        .reduce((prev, id) => ({ ...prev, [id]: true }), {})
 
       setPresent({ ...present, ...ids })
     })
-    presence.onJoin(id => setPresent({ ...present, [id]: true }))
+    presence.onJoin((id) => setPresent({ ...present, [id]: true }))
     presence.onLeave((id, current) => {
       if (current.metas.length === 0) {
         setPresent({ ...present, [id]: false })
@@ -59,10 +56,13 @@ export function PresenceProvider({ incidentId, children }: any) {
       channel.leave()
       setPresent({})
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [incidentId])
 
-  const value = useMemo(() => ({ present, channel, typists }), [present, channel, typists])
+  const value = useMemo(
+    () => ({ present, channel, typists }),
+    [present, channel, typists]
+  )
 
   return (
     <PresenceContext.Provider value={value}>

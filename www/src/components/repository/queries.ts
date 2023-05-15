@@ -16,7 +16,10 @@ import { RolloutFragment } from '../../models/upgrades'
 import { OIDCProvider } from '../../models/oauth'
 
 export const CREATE_REPOSITORY_MUTATION = gql`
-  mutation CreateRepository($repositoryId: ID!, $attributes: RepositoryAttributes!) {
+  mutation CreateRepository(
+    $repositoryId: ID!
+    $attributes: RepositoryAttributes!
+  ) {
     createRepository(id: $repositoryId, attributes: $attributes) {
       ...RepoFragment
     }
@@ -25,7 +28,10 @@ export const CREATE_REPOSITORY_MUTATION = gql`
 `
 
 export const UPDATE_REPOSITORY_MUTATION = gql`
-  mutation UpdateRepository($repositoryId: ID!, $attributes: RepositoryAttributes!) {
+  mutation UpdateRepository(
+    $repositoryId: ID!
+    $attributes: RepositoryAttributes!
+  ) {
     updateRepository(repositoryId: $repositoryId, attributes: $attributes) {
       ...RepoFragment
       tags {
@@ -56,8 +62,9 @@ export const REPOSITORY_QUERY = gql`
       }
       installation {
         ...InstallationFragment
-        oidcProvider { ...OIDCProvider }
-
+        oidcProvider {
+          ...OIDCProvider
+        }
       }
       tags {
         tag
@@ -121,7 +128,7 @@ export const CHARTS_QUERY = gql`
 `
 
 export const TERRAFORM_QUERY = gql`
-  query RepositoryTerraform($repositoryId: ID! $cursor: String) {
+  query RepositoryTerraform($repositoryId: ID!, $cursor: String) {
     terraform(repositoryId: $repositoryId, first: 12, after: $cursor) {
       pageInfo {
         ...PageInfo
@@ -200,7 +207,9 @@ export const DEPLOYMENTS_QUERY = gql`
 
 export const DELETE_INSTALLATION_MUTATION = gql`
   mutation DeleteInstallation($id: ID!) {
-    deleteInstallation(id: $id) { ...InstallationFragment }
+    deleteInstallation(id: $id) {
+      ...InstallationFragment
+    }
   }
   ${InstallationFragment}
 `
@@ -217,8 +226,15 @@ export const UPDATE_INSTALLATION = gql`
 export const TAGS_SEARCH_QUERY = gql`
   query Tags($q: String, $cursor: String, $first: Int) {
     tags(type: REPOSITORIES, first: $first, after: $cursor, q: $q) {
-      pageInfo { ...PageInfo }
-      edges { node { tag count } }
+      pageInfo {
+        ...PageInfo
+      }
+      edges {
+        node {
+          tag
+          count
+        }
+      }
     }
   }
   ${PageInfo}
@@ -227,8 +243,14 @@ export const TAGS_SEARCH_QUERY = gql`
 export const ROLLOUTS = gql`
   query Rollouts($repositoryId: ID!, $cursor: String) {
     rollouts(repositoryId: $repositoryId, after: $cursor, first: 50) {
-      pageInfo { ...PageInfo }
-      edges { node { ...RolloutFragment } }
+      pageInfo {
+        ...PageInfo
+      }
+      edges {
+        node {
+          ...RolloutFragment
+        }
+      }
     }
   }
   ${PageInfo}
@@ -239,7 +261,9 @@ export const ROLLOUT_SUB = gql`
   subscription Rollout($repositoryId: ID!) {
     rolloutDelta(repositoryId: $repositoryId) {
       delta
-      payload { ...RolloutFragment }
+      payload {
+        ...RolloutFragment
+      }
     }
   }
   ${RolloutFragment}

@@ -25,7 +25,7 @@ import { TerminalThemeContext } from './actionbar/theme/context'
 import { State, TerminalContext } from './context/terminal'
 import { ActionBar } from './actionbar/ActionBar'
 
-const decodeBase64 = str => Buffer.from(str, 'base64').toString('utf-8')
+const decodeBase64 = (str) => Buffer.from(str, 'base64').toString('utf-8')
 const SHELL_CHANNEL_NAME = 'shells:me'
 
 enum ChannelEvent {
@@ -41,7 +41,8 @@ const resize = (fitAddon: FitAddon, channel: any, terminal: XTerm) => {
   rows = Number.isNaN(rows) ? 0 : rows
 
   terminal.resize(cols, rows)
-  if (channel) channel.push(ChannelEvent.OnResize, { width: cols, height: rows })
+  if (channel)
+    channel.push(ChannelEvent.OnResize, { width: cols, height: rows })
 }
 
 function Terminal({ provider }) {
@@ -55,7 +56,9 @@ function Terminal({ provider }) {
     let skipCallback = false
     const callback = () => {
       if (!skipCallback) {
-        socket.connect(authToken ? { Authorization: `Bearer ${authToken}` } : {})
+        socket.connect(
+          authToken ? { Authorization: `Bearer ${authToken}` } : {}
+        )
       }
     }
 
@@ -69,14 +72,33 @@ function Terminal({ provider }) {
   const [channel, setChannel] = useState<any>()
   const [loaded, setLoaded] = useState(false)
 
-  const terminal = useMemo(() => new XTerm({ cursorBlink: true, theme: normalizedThemes[theme] }), [theme])
+  const terminal = useMemo(
+    () => new XTerm({ cursorBlink: true, theme: normalizedThemes[theme] }),
+    [theme]
+  )
   const fitAddon = useMemo(() => new FitAddon(), [])
 
-  const onConnectionError = useCallback(err => console.error(`Unknown error during booting into your shell: ${JSON.stringify(err)}`), [])
-  const onResize = useCallback(() => resize(fitAddon, channel, terminal), [fitAddon, channel, terminal])
-  const onAction = useCallback(() => cmd => channel?.push(ChannelEvent.OnData, { cmd: `${cmd}\r` }), [channel])
+  const onConnectionError = useCallback(
+    (err) =>
+      console.error(
+        `Unknown error during booting into your shell: ${JSON.stringify(err)}`
+      ),
+    []
+  )
+  const onResize = useCallback(
+    () => resize(fitAddon, channel, terminal),
+    [fitAddon, channel, terminal]
+  )
+  const onAction = useCallback(
+    () => (cmd) => channel?.push(ChannelEvent.OnData, { cmd: `${cmd}\r` }),
+    [channel]
+  )
 
-  const { ref: terminalContainerRef } = useResizeDetector({ onResize, refreshMode: 'debounce', refreshRate: 250 })
+  const { ref: terminalContainerRef } = useResizeDetector({
+    onResize,
+    refreshMode: 'debounce',
+    refreshRate: 250,
+  })
 
   // Mount the terminal
   useEffect(() => {
@@ -89,7 +111,9 @@ function Terminal({ provider }) {
     terminal.open(terminalRef.current!)
 
     // Welcome message
-    terminal.write(`Booting into your ${provider} shell...\r\n\r\nIt can take a few minutes to load. Try refreshing the page if it gets stuck for too long.\r\n`)
+    terminal.write(
+      `Booting into your ${provider} shell...\r\n\r\nIt can take a few minutes to load. Try refreshing the page if it gets stuck for too long.\r\n`
+    )
 
     // Fit the size of terminal element
     fitAddon.fit()
@@ -98,7 +122,7 @@ function Terminal({ provider }) {
     const channel = socket.channel(SHELL_CHANNEL_NAME)
 
     // Handle input
-    terminal.onData(text => channel.push(ChannelEvent.OnData, { cmd: text }))
+    terminal.onData((text) => channel.push(ChannelEvent.OnData, { cmd: text }))
 
     channel.onError(onConnectionError)
     channel.on(ChannelEvent.OnResponse, ({ message }) => {
@@ -126,7 +150,8 @@ function Terminal({ provider }) {
 
   useEffect(() => {
     if (state === State.Installed && channel) {
-      const cmd = 'plural build && plural deploy --commit "deploying a few apps with plural"\r'
+      const cmd =
+        'plural build && plural deploy --commit "deploying a few apps with plural"\r'
 
       channel.push(ChannelEvent.OnData, { cmd })
       setState(State.New)

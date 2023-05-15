@@ -1,12 +1,7 @@
 import { useContext } from 'react'
 import { Link } from 'react-router-dom'
 import { Button, Modal } from '@pluralsh/design-system'
-import {
-  A,
-  Flex,
-  Img,
-  P,
-} from 'honorable'
+import { A, Flex, Img, P } from 'honorable'
 
 import usePersistedState from '../../../hooks/usePersistedState'
 import SubscriptionContext from '../../../contexts/SubscriptionContext'
@@ -14,7 +9,10 @@ import { LocalStorageKeys } from '../../../constants'
 
 function BillingMigrationModal() {
   const { isGrandfathered, isPaidPlan } = useContext(SubscriptionContext)
-  const [open, setOpen] = usePersistedState(LocalStorageKeys.BillingMigrationModalOpen, isGrandfathered && !isPaidPlan)
+  const [open, setOpen] = usePersistedState(
+    LocalStorageKeys.BillingMigrationModalOpen,
+    isGrandfathered && !isPaidPlan
+  )
 
   return (
     <Modal
@@ -31,21 +29,25 @@ function BillingMigrationModal() {
         body2
         marginTop="medium"
       >
-        We're excited to launch our new Pro tier pricing!  Our Pro tier is designed around enabling teams to collaborate in Plural without the need to become an Enterprise customer.
+        We're excited to launch our new Pro tier pricing! Our Pro tier is
+        designed around enabling teams to collaborate in Plural without the need
+        to become an Enterprise customer.
         <br />
         <br />
-        If you want to take advantage of roles, groups and other awesome features like VPN and expert support SLA, you can upgrade to Pro. We think you’ll love it!
+        If you want to take advantage of roles, groups and other awesome
+        features like VPN and expert support SLA, you can upgrade to Pro. We
+        think you’ll love it!
         <br />
         <br />
-        Read more about our new pricing plan on
-        {' '}
+        Read more about our new pricing plan on{' '}
         <A
           inline
           href="https://www.plural.sh/blog/changes-to-plurals-pricing/"
           target="_blank"
         >
           our blog
-        </A>.
+        </A>
+        .
       </P>
       <Flex
         justify="flex-end"

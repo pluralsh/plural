@@ -1,11 +1,6 @@
 import { useMutation, useQuery } from '@apollo/client'
 import { Box } from 'grommet'
-import {
-  Button,
-  Div,
-  Flex,
-  Span,
-} from 'honorable'
+import { Button, Div, Flex, Span } from 'honorable'
 import moment from 'moment'
 import { useState } from 'react'
 import lookup from 'country-code-lookup'
@@ -50,22 +45,24 @@ import LoadingIndicator from '../utils/LoadingIndicator'
 
 import { ListItem } from './ListItem'
 
-const TOOLTIP = 'Access tokens allow you to access the Plural API for automation and active Plural clusters.'
+const TOOLTIP =
+  'Access tokens allow you to access the Plural API for automation and active Plural clusters.'
 
 function TokenAudits({ token }: any) {
   const [listRef, setListRef] = useState<any>(null)
-  const { data, loading, fetchMore } = useQuery(TOKEN_AUDITS, { variables: { id: token.id }, fetchPolicy: 'cache-and-network' })
+  const { data, loading, fetchMore } = useQuery(TOKEN_AUDITS, {
+    variables: { id: token.id },
+    fetchPolicy: 'cache-and-network',
+  })
 
   if (!data) return null
 
-  const { audits: { pageInfo, edges } } = data.token
+  const {
+    audits: { pageInfo, edges },
+  } = data.token
 
   if (edges.length === 0) {
-    return (
-      <>
-        Token has yet to be used
-      </>
-    )
+    return <>Token has yet to be used</>
   }
 
   return (
@@ -98,12 +95,16 @@ function TokenAudits({ token }: any) {
                 <TableData>{node.count}</TableData>
               </TableRow>
             )}
-            loadNextPage={() => pageInfo.hasNextPage && fetchMore({
-              variables: { cursor: pageInfo.endCursor },
-              updateQuery: (prev, { fetchMoreResult: { token } }) => deepUpdate(prev, 'token', prevToken => (
-                extendConnection(prevToken, token.audits, 'audits')
-              )),
-            })}
+            loadNextPage={() =>
+              pageInfo.hasNextPage &&
+              fetchMore({
+                variables: { cursor: pageInfo.endCursor },
+                updateQuery: (prev, { fetchMoreResult: { token } }) =>
+                  deepUpdate(prev, 'token', (prevToken) =>
+                    extendConnection(prevToken, token.audits, 'audits')
+                  ),
+              })
+            }
           />
         </Box>
       </Table>
@@ -121,7 +122,8 @@ function TokenMetrics({ token }: any) {
 
   const metrics = data.token.metrics.map(({ country, count }) => ({
     // @ts-expect-error
-    id: lookup.byIso(country).iso3, value: count,
+    id: lookup.byIso(country).iso3,
+    value: count,
   }))
 
   return (
@@ -132,7 +134,8 @@ function TokenMetrics({ token }: any) {
       <Span
         body2
         color="text-xlight"
-      >USAGE METRICS
+      >
+        USAGE METRICS
       </Span>
       <Div height="400px">
         <Chloropleth data={metrics} />
@@ -148,11 +151,12 @@ function AccessToken({ token, first, last }: any) {
   const [graph, setGraph] = useState(false)
   const [mutation, { loading, error }] = useMutation(DELETE_TOKEN, {
     variables: { id: token.id },
-    // @ts-expect-error
-    update: (cache, { data: { deleteToken } }) => updateCache(cache, {
-      query: TOKENS_Q,
-      update: prev => removeConnection(prev, deleteToken, 'tokens'),
-    }),
+    update: (cache, { data: { deleteToken } }) =>
+      // @ts-expect-error
+      updateCache(cache, {
+        query: TOKENS_Q,
+        update: (prev) => removeConnection(prev, deleteToken, 'tokens'),
+      }),
     onCompleted: () => setConfirm(false),
   })
 
@@ -167,7 +171,9 @@ function AccessToken({ token, first, last }: any) {
           gap="xsmall"
         >
           <Span fontWeight="bold">{obscure(token.token)}</Span>
-          <Span color="text-light">Created {moment(token.insertedAt).fromNow()}</Span>
+          <Span color="text-light">
+            Created {moment(token.insertedAt).fromNow()}
+          </Span>
         </Box>
         <Box
           flex={false}
@@ -182,7 +188,8 @@ function AccessToken({ token, first, last }: any) {
               severity="success"
               marginBottom="medium"
               marginRight="xxxxlarge"
-            >Access token copied successfully.
+            >
+              Access token copied successfully.
             </Toast>
           )}
           <CopyToClipboard
@@ -258,11 +265,12 @@ export function AccessTokens() {
   const [listRef, setListRef] = useState<any>(null)
   const { data, loading: loadingTokens, fetchMore } = useQuery(TOKENS_Q)
   const [mutation, { loading }] = useMutation(CREATE_TOKEN, {
-    // @ts-expect-error
-    update: (cache, { data: { createToken } }) => updateCache(cache, {
-      query: TOKENS_Q,
-      update: prev => appendConnection(prev, createToken, 'tokens'),
-    }),
+    update: (cache, { data: { createToken } }) =>
+      // @ts-expect-error
+      updateCache(cache, {
+        query: TOKENS_Q,
+        update: (prev) => appendConnection(prev, createToken, 'tokens'),
+      }),
   })
 
   if (!data) return <LoadingIndicator />
@@ -302,7 +310,8 @@ export function AccessTokens() {
                 severity="success"
                 marginBottom="medium"
                 marginRight="xxxxlarge"
-              >New access token created.
+              >
+                New access token created.
               </Toast>
             )}
             <Button
@@ -319,45 +328,46 @@ export function AccessTokens() {
           </Box>
         </Box>
       </PageTitle>
-      <Box
-        fill
-      >
-        {edges?.length
-          ? (
-            <StandardScroller
-              listRef={listRef}
-              setListRef={setListRef}
-              items={edges}
-              mapper={({ node }, { next, prev }) => (
-                <AccessToken
-                  key={node.id}
-                  token={node}
-                  first={!prev.node}
-                  last={!next.node}
-                />
-              )}
-              loading={loadingTokens}
-              placeholder={Placeholder}
-              hasNextPage={pageInfo.hasNextPage}
-              loadNextPage={pageInfo.hasNextPage && fetchMore({
+      <Box fill>
+        {edges?.length ? (
+          <StandardScroller
+            listRef={listRef}
+            setListRef={setListRef}
+            items={edges}
+            mapper={({ node }, { next, prev }) => (
+              <AccessToken
+                key={node.id}
+                token={node}
+                first={!prev.node}
+                last={!next.node}
+              />
+            )}
+            loading={loadingTokens}
+            placeholder={Placeholder}
+            hasNextPage={pageInfo.hasNextPage}
+            loadNextPage={
+              pageInfo.hasNextPage &&
+              fetchMore({
                 variables: { cursor: pageInfo.endCursor },
-                updateQuery: (prev, { fetchMoreResult: { tokens } }) => extendConnection(prev, tokens, 'tokens'),
-              })}
-            />
-          ) : (
-            <EmptyState message="Looks like you don't have any access tokens yet.">
-              <Button
-                onClick={() => {
-                  setDisplayNewBanner(true)
-                  setTimeout(() => setDisplayNewBanner(false), 1000)
-                  mutation()
-                }}
-                loading={loading}
-              >
-                Create access token
-              </Button>
-            </EmptyState>
-          )}
+                updateQuery: (prev, { fetchMoreResult: { tokens } }) =>
+                  extendConnection(prev, tokens, 'tokens'),
+              })
+            }
+          />
+        ) : (
+          <EmptyState message="Looks like you don't have any access tokens yet.">
+            <Button
+              onClick={() => {
+                setDisplayNewBanner(true)
+                setTimeout(() => setDisplayNewBanner(false), 1000)
+                mutation()
+              }}
+              loading={loading}
+            >
+              Create access token
+            </Button>
+          </EmptyState>
+        )}
       </Box>
     </Div>
   )

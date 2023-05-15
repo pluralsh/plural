@@ -35,29 +35,29 @@ const SMALL_ICON_SIZE = 13
 
 function ArtifactPlatform({ platform }: any) {
   switch (platform) {
-  case 'MAC':
-    return (
-      <AppleLogoIcon
-        size={SMALL_ICON_SIZE}
-        fullColor
-      />
-    )
-  case 'WINDOWS':
-    return (
-      <WindowsLogoIcon
-        size={SMALL_ICON_SIZE}
-        fullColor
-      />
-    )
-  case 'LINUX':
-    return (
-      <UbuntuLogoIcon
-        size={SMALL_ICON_SIZE}
-        fullColor
-      />
-    )
-  default:
-    return null
+    case 'MAC':
+      return (
+        <AppleLogoIcon
+          size={SMALL_ICON_SIZE}
+          fullColor
+        />
+      )
+    case 'WINDOWS':
+      return (
+        <WindowsLogoIcon
+          size={SMALL_ICON_SIZE}
+          fullColor
+        />
+      )
+    case 'LINUX':
+      return (
+        <UbuntuLogoIcon
+          size={SMALL_ICON_SIZE}
+          fullColor
+        />
+      )
+    default:
+      return null
   }
 }
 
@@ -67,9 +67,7 @@ function Readme({ readme }: any) {
       pad={{ horizontal: 'small', bottom: 'small' }}
       style={{ overflow: 'auto' }}
     >
-      <Markdown>
-        {readme}
-      </Markdown>
+      <Markdown>{readme}</Markdown>
     </Box>
   )
 }
@@ -77,7 +75,7 @@ function Readme({ readme }: any) {
 const hovered = styled.div`
   cursor: pointer;
   &:hover {
-    background-color: ${props => normalizeColor('light-3', props.theme)};
+    background-color: ${(props) => normalizeColor('light-3', props.theme)};
   }
 `
 
@@ -87,13 +85,11 @@ const optionHover = styled.div`
     background-color: #000000;
   }
   &:hover span {
-    text-color: ${props => normalizeColor('light-3', props.theme)};
+    text-color: ${(props) => normalizeColor('light-3', props.theme)};
   }
 `
 
-function ArtifactOption({
-  onClick, text, border, round,
-}: any) {
+function ArtifactOption({ onClick, text, border, round }: any) {
   return (
     <Box
       as={optionHover}
@@ -110,9 +106,7 @@ function ArtifactOption({
 function WithBack({ children, setAlternate }: any) {
   return (
     <Box animation="fadeIn">
-      <Box pad="small">
-        {children}
-      </Box>
+      <Box pad="small">{children}</Box>
       <Box
         as={hovered}
         flex={false}
@@ -130,14 +124,14 @@ function WithBack({ children, setAlternate }: any) {
   )
 }
 
-function ArtifactDetails({
-  sha, filesize, arch, platform,
-}: any) {
+function ArtifactDetails({ sha, filesize, arch, platform }: any) {
   return (
     <Table>
       <TableBody>
         <TableRow>
-          <TableCell border="right"><b>sha256</b></TableCell>
+          <TableCell border="right">
+            <b>sha256</b>
+          </TableCell>
           <TableCell>
             <Copyable
               text={sha}
@@ -146,15 +140,21 @@ function ArtifactDetails({
           </TableCell>
         </TableRow>
         <TableRow>
-          <TableCell border="right"><b>filesize</b></TableCell>
+          <TableCell border="right">
+            <b>filesize</b>
+          </TableCell>
           <TableCell>{fs(filesize)?.toString()}</TableCell>
         </TableRow>
         <TableRow>
-          <TableCell border="right"><b>arch</b></TableCell>
+          <TableCell border="right">
+            <b>arch</b>
+          </TableCell>
           <TableCell>{arch}</TableCell>
         </TableRow>
         <TableRow>
-          <TableCell border="right"><b>platform</b></TableCell>
+          <TableCell border="right">
+            <b>platform</b>
+          </TableCell>
           <TableCell>{platform.toLowerCase()}</TableCell>
         </TableRow>
       </TableBody>
@@ -163,7 +163,12 @@ function ArtifactDetails({
 }
 
 function ArtifactDetail({
-  dropRef, setOpen, blob, readme, sha, filesize,
+  dropRef,
+  setOpen,
+  blob,
+  readme,
+  sha,
+  filesize,
 }: any) {
   const [alternate, setAlternate] = useState<any>(null)
 
@@ -174,7 +179,9 @@ function ArtifactDetail({
       onEsc={() => setOpen(false)}
       onClickOutside={() => setOpen(false)}
     >
-      {alternate ? <WithBack setAlternate={setAlternate}>{alternate}</WithBack> : (
+      {alternate ? (
+        <WithBack setAlternate={setAlternate}>{alternate}</WithBack>
+      ) : (
         <Box
           background="#222222"
           direction="row"
@@ -195,10 +202,14 @@ function ArtifactDetail({
             text="details"
             border="right"
             round={{ corner: 'right', size: 'xsmall' }}
-            onClick={() => setAlternate(<ArtifactDetails
-              sha={sha}
-              filesize={filesize}
-            />)}
+            onClick={() =>
+              setAlternate(
+                <ArtifactDetails
+                  sha={sha}
+                  filesize={filesize}
+                />
+              )
+            }
           />
         </Box>
       )}
@@ -207,8 +218,12 @@ function ArtifactDetail({
 }
 
 export function Artifact({
-                             // eslint-disable-next-line
-                             name, type, platform, filesize, ...artifact
+  // eslint-disable-next-line
+  name,
+  type,
+  platform,
+  filesize,
+  ...artifact
 }: any) {
   const [open, setOpen] = useState(false)
   const dropRef = useRef<HTMLDivElement>(null)
@@ -236,13 +251,15 @@ export function Artifact({
             <Text
               size="small"
               weight={500}
-            >{name}
+            >
+              {name}
             </Text>
             <ArtifactPlatform platform={platform} />
             <Text
               size="small"
               color="dark-3"
-            >-- {fs(filesize)?.toString()}
+            >
+              -- {fs(filesize)?.toString()}
             </Text>
           </Box>
         </Box>
@@ -272,7 +289,8 @@ export function DetailHeader({ text, modifier }: any) {
         <Text
           weight={500}
           size="small"
-        >{text}
+        >
+          {text}
         </Text>
       </Box>
       {modifier}
@@ -284,7 +302,10 @@ const ROW_HEIGHT = '50px'
 
 function ArtifactRow({ artifact }: any) {
   const [open, setOpen] = useState<any>(null)
-  const doSetOpen = useCallback(tab => (open === tab ? setOpen(null) : setOpen(tab)), [setOpen, open])
+  const doSetOpen = useCallback(
+    (tab) => (open === tab ? setOpen(null) : setOpen(tab)),
+    [setOpen, open]
+  )
 
   return (
     <>
@@ -320,7 +341,8 @@ function ArtifactRow({ artifact }: any) {
           <Text
             size="small"
             color="dark-3"
-          >({artifact.arch})
+          >
+            ({artifact.arch})
           </Text>
         </Box>
         <HeaderItem
@@ -412,7 +434,7 @@ export function ArtifactTable({ artifacts }: any) {
     >
       <ArtifactHeader />
       <Box flex={false}>
-        {artifacts.map(art => (
+        {artifacts.map((art) => (
           <ArtifactRow
             key={art.id}
             artifact={art}
@@ -433,7 +455,7 @@ export default function Artifacts({ artifacts }: any) {
         gap="none"
         border={{ side: 'between', color: 'border' }}
       >
-        {artifacts.map(artifact => (
+        {artifacts.map((artifact) => (
           <Artifact
             key={artifact.id}
             {...artifact}

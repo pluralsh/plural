@@ -1,11 +1,6 @@
 import { useQuery } from '@apollo/client'
 import { Outlet, useLocation, useParams } from 'react-router-dom'
-import {
-  Div,
-  Flex,
-  P,
-  Span,
-} from 'honorable'
+import { Div, Flex, P, Span } from 'honorable'
 import {
   StackIcon,
   Tab,
@@ -41,7 +36,9 @@ const DIRECTORY = [{ label: 'Stack applications', path: '' }]
 function Sidenav({ stack }: StackContext) {
   const { pathname } = useLocation()
   const pathPrefix = `/stack/${stack.name}`
-  const currentTab = DIRECTORY.sort((a, b) => b.path.length - a.path.length).find(tab => pathname?.startsWith(`${pathPrefix}${tab.path}`))
+  const currentTab = DIRECTORY.sort(
+    (a, b) => b.path.length - a.path.length
+  ).find((tab) => pathname?.startsWith(`${pathPrefix}${tab.path}`))
   const tabStateRef = useRef<any>(null)
 
   return (
@@ -119,7 +116,9 @@ function Sidenav({ stack }: StackContext) {
 }
 
 function StackSidecar({ stack }: StackContext) {
-  const filteredCollections = stack?.collections?.filter((sC: StackCollection | null | undefined): sC is StackCollection => !!sC)
+  const filteredCollections = stack?.collections?.filter(
+    (sC: StackCollection | null | undefined): sC is StackCollection => !!sC
+  )
   const recipes = filteredCollections?.map(({ provider }) => ({
     description: `Installs ${stack.displayName || stack.name} on ${provider}`,
     provider,
@@ -150,10 +149,10 @@ export default function Stack() {
     variables: { name, provider: 'AWS' },
   })
   const tabStateRef = useRef<any>(null)
-  const breadcrumbs = useMemo(() => [
-    MARKETPLACE_CRUMB,
-    { label: `${name} stack` }],
-  [name])
+  const breadcrumbs = useMemo(
+    () => [MARKETPLACE_CRUMB, { label: `${name} stack` }],
+    [name]
+  )
 
   useSetBreadcrumbs(breadcrumbs)
 

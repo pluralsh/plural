@@ -1,9 +1,4 @@
-import {
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import { Box, Text, TextInput } from 'grommet'
 import { Button, SecondaryButton } from 'forge-core'
 import { Editable, Slate } from 'slate-react'
@@ -30,14 +25,22 @@ import { IncidentContext } from './context'
 import { IncidentViewContext } from './Incidents'
 
 export function IncidentForm({
-  attributes, setAttributes, statusEdit, children,
+  attributes,
+  setAttributes,
+  statusEdit,
+  children,
 }: any) {
-  const [editorState, setEditorState] = useState(plainDeserialize(attributes.description || ''))
+  const [editorState, setEditorState] = useState(
+    plainDeserialize(attributes.description || '')
+  )
   const editor = useEditor()
-  const setDescription = useCallback(editorState => {
-    setEditorState(editorState)
-    setAttributes({ ...attributes, description: plainSerialize(editorState) })
-  }, [setAttributes, attributes, setEditorState])
+  const setDescription = useCallback(
+    (editorState) => {
+      setEditorState(editorState)
+      setAttributes({ ...attributes, description: plainSerialize(editorState) })
+    },
+    [setAttributes, attributes, setEditorState]
+  )
 
   return (
     <Box gap="small">
@@ -54,25 +57,28 @@ export function IncidentForm({
           <Text
             size="small"
             weight="bold"
-          >Title
+          >
+            Title
           </Text>
           <TextInput
             // @ts-expect-error
             label="title"
             value={attributes.title}
             placeholder="Short Incident Title"
-            onChange={({ target: { value } }) => setAttributes({ ...attributes, title: value })}
+            onChange={({ target: { value } }) =>
+              setAttributes({ ...attributes, title: value })
+            }
           />
           {statusEdit && (
             <StatusSelector
               status={attributes.status}
-              setStatus={status => setAttributes({ ...attributes, status })}
+              setStatus={(status) => setAttributes({ ...attributes, status })}
             />
           )}
         </Box>
         <SeveritySelect
           severity={attributes.severity}
-          setSeverity={severity => setAttributes({ ...attributes, severity })}
+          setSeverity={(severity) => setAttributes({ ...attributes, severity })}
         />
       </Box>
       <Box
@@ -99,8 +105,18 @@ export function IncidentForm({
       >
         <TagInput
           tags={attributes.tags || []}
-          addTag={tag => setAttributes({ ...attributes, tags: [tag, ...(attributes.tags || [])] })}
-          removeTag={tag => setAttributes({ ...attributes, tags: attributes.tags.filter(t => t !== tag) })}
+          addTag={(tag) =>
+            setAttributes({
+              ...attributes,
+              tags: [tag, ...(attributes.tags || [])],
+            })
+          }
+          removeTag={(tag) =>
+            setAttributes({
+              ...attributes,
+              tags: attributes.tags.filter((t) => t !== tag),
+            })
+          }
         />
         {children}
       </Box>
@@ -125,9 +141,12 @@ export function RepoOption({ repo, selected, setRepository }: any) {
         <Text
           size="small"
           weight={500}
-        >{repo.name}
+        >
+          {repo.name}
         </Text>
-        <Text size="small"><i>{repo.description}</i></Text>
+        <Text size="small">
+          <i>{repo.description}</i>
+        </Text>
       </Box>
       {selected && selected.id === repo.id && (
         <CheckIcon
@@ -140,7 +159,9 @@ export function RepoOption({ repo, selected, setRepository }: any) {
 }
 
 export function RepositorySelect({ repository, setRepository }: any) {
-  const { data } = useQuery(INSTALLATIONS_Q, { fetchPolicy: 'cache-and-network' })
+  const { data } = useQuery(INSTALLATIONS_Q, {
+    fetchPolicy: 'cache-and-network',
+  })
 
   useEffect(() => {
     if (data && data.installations && !repository) {
@@ -173,20 +194,31 @@ export function CreateIncident({ onCompleted }: any) {
   const { sort, order, filters } = useContext(IncidentViewContext)
   const [repository, setRepository] = useState<any>(null)
   const [attributes, setAttributes] = useState({
-    title: '', description: '', severity: 4, tags: [],
+    title: '',
+    description: '',
+    severity: 4,
+    tags: [],
   })
   const [mutation, { loading }] = useMutation(CREATE_INCIDENT, {
     variables: {
       repositoryId: repository && repository.id,
-      attributes: { ...attributes, tags: attributes.tags.map(t => ({ tag: t })), clusterInformation },
-    },
-    update: (cache, { data: { createIncident } }) => updateCache(cache, {
-      query: INCIDENTS_Q,
-      variables: {
-        q: null, filters, order, sort,
+      attributes: {
+        ...attributes,
+        tags: attributes.tags.map((t) => ({ tag: t })),
+        clusterInformation,
       },
-      update: prev => appendConnection(prev, createIncident, 'incidents'),
-    }),
+    },
+    update: (cache, { data: { createIncident } }) =>
+      updateCache(cache, {
+        query: INCIDENTS_Q,
+        variables: {
+          q: null,
+          filters,
+          order,
+          sort,
+        },
+        update: (prev) => appendConnection(prev, createIncident, 'incidents'),
+      }),
     onCompleted,
   })
 

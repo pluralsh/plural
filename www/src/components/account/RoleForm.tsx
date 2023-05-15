@@ -18,21 +18,24 @@ function PermissionToggle({
   first,
   last,
 }: any) {
-  const toggle = useCallback(enable => {
-    if (enable) {
-      setAttributes({
-        ...attributes,
-        permissions: [permission, ...attributes.permissions],
-      })
-    }
-    else {
-      setAttributes({
-        ...attributes,
-        permissions: attributes.permissions.filter(perm => perm !== permission),
-      })
-    }
-  },
-  [permission, attributes, setAttributes])
+  const toggle = useCallback(
+    (enable) => {
+      if (enable) {
+        setAttributes({
+          ...attributes,
+          permissions: [permission, ...attributes.permissions],
+        })
+      } else {
+        setAttributes({
+          ...attributes,
+          permissions: attributes.permissions.filter(
+            (perm) => perm !== permission
+          ),
+        })
+      }
+    },
+    [permission, attributes, setAttributes]
+  )
 
   return (
     <ListItem
@@ -45,7 +48,7 @@ function PermissionToggle({
         <Span color="text-light">{description}</Span>
       </Box>
       <Switch
-        checked={!!attributes.permissions.find(perm => perm === permission)}
+        checked={!!attributes.permissions.find((perm) => perm === permission)}
         onChange={({ target: { checked } }) => toggle(checked)}
       />
     </ListItem>
@@ -88,7 +91,7 @@ export function RoleForm({
         stateProps={{
           orientation: 'horizontal',
           selectedKey: view,
-          onSelectionChange: key => setView(key as string),
+          onSelectionChange: (key) => setView(key as string),
         }}
       >
         {Object.entries(TABS).map(([key, { label }]) => (

@@ -8,7 +8,9 @@ export const ChartFragment = gql`
     name
     description
     latestVersion
-    dependencies { ...DependenciesFragment }
+    dependencies {
+      ...DependenciesFragment
+    }
     insertedAt
   }
   ${DependenciesFragment}
@@ -18,7 +20,9 @@ export const VersionTagFragment = gql`
   fragment VersionTagFragment on VersionTag {
     id
     tag
-    version { id }
+    version {
+      id
+    }
   }
 `
 
@@ -30,9 +34,16 @@ export const VersionFragment = gql`
     valuesTemplate
     version
     insertedAt
-    chart { ...ChartFragment }
-    terraform { id name }
-    dependencies { ...DependenciesFragment }
+    chart {
+      ...ChartFragment
+    }
+    terraform {
+      id
+      name
+    }
+    dependencies {
+      ...DependenciesFragment
+    }
   }
   ${ChartFragment}
   ${DependenciesFragment}
@@ -41,7 +52,10 @@ export const VersionFragment = gql`
 export const ChartInstallationFragment = gql`
   fragment ChartInstallationFragment on ChartInstallation {
     id
-    version { id version }
+    version {
+      id
+      version
+    }
   }
 `
 
@@ -69,8 +83,12 @@ export const PackageScan = gql`
   fragment PackageScan on PackageScan {
     id
     grade
-    violations { ...ScanViolation }
-    errors { ...ScanError }
+    violations {
+      ...ScanViolation
+    }
+    errors {
+      ...ScanError
+    }
   }
   ${ScanViolation}
   ${ScanError}

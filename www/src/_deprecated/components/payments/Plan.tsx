@@ -9,14 +9,7 @@ import {
   HoveredBackground,
   Reload as Refresh,
 } from 'forge-core'
-import {
-  Anchor,
-  Box,
-  Collapsible,
-  Layer,
-  Stack,
-  Text,
-} from 'grommet'
+import { Anchor, Box, Collapsible, Layer, Stack, Text } from 'grommet'
 import { CreditCardIcon } from '@pluralsh/design-system'
 import { normalizeColor } from 'grommet/utils'
 
@@ -30,27 +23,26 @@ import { UpdatePlanForm } from './UpdatePlanForm'
 
 export function LineItemIcon({ dimension, size }: any) {
   switch (dimension) {
-  case 'user':
-    return (
-      <Group
-        size={size || 15}
-        color="focus"
-      />
-    )
-  default:
-    return (
-      <CreditCardIcon
-        size={size || 15}
-        color="focus"
-      />
-    )
+    case 'user':
+      return (
+        <Group
+          size={size || 15}
+          color="focus"
+        />
+      )
+    default:
+      return (
+        <CreditCardIcon
+          size={size || 15}
+          color="focus"
+        />
+      )
   }
 }
 
 export function LineItem({
-  item: {
-    cost, name, dimension, type,
-  }, included: { quantity },
+  item: { cost, name, dimension, type },
+  included: { quantity },
 }: any) {
   const metered = type === PlanType.METERED
 
@@ -64,14 +56,18 @@ export function LineItem({
       <Text
         size="small"
         weight="bold"
-      >{name}
+      >
+        {name}
       </Text>
-      <Text size="small">${cost / 100} / {dimension}</Text>
+      <Text size="small">
+        ${cost / 100} / {dimension}
+      </Text>
       {!metered && (
         <Text
           size="small"
           color="dark-3"
-        >({quantity} included)
+        >
+          ({quantity} included)
         </Text>
       )}
       {metered && (
@@ -84,7 +80,8 @@ export function LineItem({
         <Text
           size="small"
           color="dark-3"
-        >metered
+        >
+          metered
         </Text>
       )}
     </Box>
@@ -106,9 +103,12 @@ function Feature({ name, description }: any) {
         <Text
           size="small"
           weight={500}
-        >{name}
+        >
+          {name}
         </Text>
-        <Text size="small"><i>{description}</i></Text>
+        <Text size="small">
+          <i>{description}</i>
+        </Text>
       </Box>
     </Box>
   )
@@ -135,7 +135,8 @@ function FeatureSection({ title, children }: any) {
       <Text
         size="small"
         weight={500}
-      >{title}
+      >
+        {title}
       </Text>
       {children}
     </Box>
@@ -151,12 +152,14 @@ function Features({ features, serviceLevels, open }: any) {
       <Box gap="small">
         {hasServiceLevels && (
           <FeatureSection title="SLAs:">
-            {(serviceLevels || []).map(level => <ServiceLevel level={level} />)}
+            {(serviceLevels || []).map((level) => (
+              <ServiceLevel level={level} />
+            ))}
           </FeatureSection>
         )}
         {hasFeatures && (
           <FeatureSection title="Features Included:">
-            {features.map(feature => (
+            {features.map((feature) => (
               <Feature
                 key={feature.name}
                 {...feature}
@@ -171,15 +174,19 @@ function Features({ features, serviceLevels, open }: any) {
 
 export const hover = styled.div`
   &:hover {
-    border-color: ${({ theme }) => normalizeColor('brand', theme)}
+    border-color: ${({ theme }) => normalizeColor('brand', theme)};
   }
 `
 
 function EditPlan({ plan }: any) {
   const [open, setOpen] = useState(false)
-  const doSetOpen = useCallback((val, e) => {
-    ignoreEvent(e); setOpen(val)
-  }, [setOpen])
+  const doSetOpen = useCallback(
+    (val, e) => {
+      ignoreEvent(e)
+      setOpen(val)
+    },
+    [setOpen]
+  )
 
   return (
     <>
@@ -189,7 +196,7 @@ function EditPlan({ plan }: any) {
           accentable
           className="edit"
           round="xsmall"
-          onClick={e => doSetOpen(true, e)}
+          onClick={(e) => doSetOpen(true, e)}
         >
           <Edit size="small" />
         </Box>
@@ -197,7 +204,7 @@ function EditPlan({ plan }: any) {
       {open && (
         <Layer
           modal
-          onClickOutside={e => doSetOpen(false, e)}
+          onClickOutside={(e) => doSetOpen(false, e)}
         >
           <Box width="50vw">
             <ModalHeader
@@ -215,14 +222,22 @@ function EditPlan({ plan }: any) {
 }
 
 export default function Plan({
-  approvePlan, subscription, repository, plan,
+  approvePlan,
+  subscription,
+  repository,
+  plan,
 }: any) {
   const me = useContext(CurrentUserContext)
   const {
-    name, cost, period, lineItems: { items, included }, metadata,
+    name,
+    cost,
+    period,
+    lineItems: { items, included },
+    metadata,
   } = plan
   const [open, setOpen] = useState(false)
-  const hasFeatures = metadata && metadata.features && metadata.features.length > 0
+  const hasFeatures =
+    metadata && metadata.features && metadata.features.length > 0
   const hasLevels = plan.serviceLevels && plan.serviceLevels.length > 0
   const hasMore = hasFeatures || hasLevels
 
@@ -261,16 +276,19 @@ export default function Plan({
             <Text
               size="small"
               weight="bold"
-            >{name}
+            >
+              {name}
             </Text>
-            <Text size="small">${cost / 100} {period}</Text>
+            <Text size="small">
+              ${cost / 100} {period}
+            </Text>
             {me.id === repository.publisher.owner.id && (
               <EditPlan plan={plan} />
             )}
           </Box>
         </Box>
         <Box gap="xsmall">
-          {items.map(item => (
+          {items.map((item) => (
             <LineItem
               key={item.dimension}
               item={item}
@@ -295,8 +313,10 @@ export default function Plan({
             <Anchor
               size="small"
               color="brand"
-              onClick={e => {
-                e.preventDefault(); e.stopPropagation(); setOpen(!open)
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                setOpen(!open)
               }}
             >
               {open ? 'Hide' : 'Show'} details

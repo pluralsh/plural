@@ -9,8 +9,8 @@ import { LocalStorageKeys } from '../../constants'
 import { EXPIRATION_NOTICE_STATE } from '../../helpers/localStorage'
 
 export function LegacyExpirationNotice() {
-  const { isProPlan, isEnterprisePlan, account }
-    = useContext(SubscriptionContext)
+  const { isProPlan, isEnterprisePlan, account } =
+    useContext(SubscriptionContext)
   const grandfatheredUntil = account?.grandfatheredUntil
   const isLegacy = !(isProPlan || isEnterprisePlan) && !!grandfatheredUntil
 
@@ -32,14 +32,16 @@ export function LegacyExpirationNotice() {
 }
 
 function ExpiredModal() {
-  const initialOpen
-    = localStorage.getItem(LocalStorageKeys.LegacyExpirationNotice)
-    !== EXPIRATION_NOTICE_STATE.DISMISSED_0
+  const initialOpen =
+    localStorage.getItem(LocalStorageKeys.LegacyExpirationNotice) !==
+    EXPIRATION_NOTICE_STATE.DISMISSED_0
   const [isOpen, setIsOpen] = useState(initialOpen)
   const onClose = () => {
     setIsOpen(false)
-    localStorage.setItem(LocalStorageKeys.LegacyExpirationNotice,
-      EXPIRATION_NOTICE_STATE.DISMISSED_0)
+    localStorage.setItem(
+      LocalStorageKeys.LegacyExpirationNotice,
+      EXPIRATION_NOTICE_STATE.DISMISSED_0
+    )
   }
 
   return (
@@ -48,7 +50,7 @@ function ExpiredModal() {
       portal
       open={isOpen}
       onClose={onClose}
-      actions={(
+      actions={
         <Flex gap="medium">
           <Button
             as={Link}
@@ -58,7 +60,7 @@ function ExpiredModal() {
             Review plans
           </Button>
         </Flex>
-      )}
+      }
       size="large"
     >
       <Flex
@@ -100,8 +102,8 @@ function ExpirationToast({
   // Defaults for remaining days > 20
   let messageOpening = <>Extended feature access ending soon.</>
   let severity: ComponentProps<typeof Toast>['severity'] = 'info'
-  let dismissState: EXPIRATION_NOTICE_STATE
-    = EXPIRATION_NOTICE_STATE.DISMISSED_3
+  let dismissState: EXPIRATION_NOTICE_STATE =
+    EXPIRATION_NOTICE_STATE.DISMISSED_3
 
   if (remainingDays <= 10) {
     messageOpening = (
@@ -109,8 +111,7 @@ function ExpirationToast({
     )
     severity = 'error'
     dismissState = EXPIRATION_NOTICE_STATE.DISMISSED_2
-  }
-  else if (remainingDays <= 20) {
+  } else if (remainingDays <= 20) {
     messageOpening = <>Extended feature access ending {endDate}.</>
     severity = 'info'
     dismissState = EXPIRATION_NOTICE_STATE.DISMISSED_1
@@ -135,8 +136,10 @@ function ExpirationToast({
     </A>
   )
 
-  const [showToast] = useState(localStorage.getItem(LocalStorageKeys.LegacyExpirationNotice)
-      !== dismissState)
+  const [showToast] = useState(
+    localStorage.getItem(LocalStorageKeys.LegacyExpirationNotice) !==
+      dismissState
+  )
   const [closeTimeout, setCloseTimeout] = useState(30000)
 
   if (!showToast) {

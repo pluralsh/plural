@@ -5,7 +5,7 @@ import { styledTheme } from '@pluralsh/design-system'
 import { DEFAULT_THEME } from '../theme'
 
 type StyledTheme = typeof styledTheme & {
-  global: typeof DEFAULT_THEME['global']
+  global: (typeof DEFAULT_THEME)['global']
 }
 
 // and extend them!

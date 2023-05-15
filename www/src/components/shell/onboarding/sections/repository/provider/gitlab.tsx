@@ -13,19 +13,21 @@ function useGitlabState({ token }): Array<SCMOrg> {
       const me = await client.Users.current()
       const orgs = [
         { type: OrgType.User, data: me, id: me.id },
-        ...groups.map(g => ({
+        ...groups.map((g) => ({
           type: OrgType.Organization,
           data: g,
           id: g.id,
         })),
       ]
 
-      setOrgs(orgs.map<SCMOrg>(o => ({
-        name: (o.data.path || o.data.username) as string,
-        orgType: o.type,
-        id: `${o.id}`,
-        avatarUrl: o.data.avatar_url,
-      })))
+      setOrgs(
+        orgs.map<SCMOrg>((o) => ({
+          name: (o.data.path || o.data.username) as string,
+          orgType: o.type,
+          id: `${o.id}`,
+          avatarUrl: o.data.avatar_url,
+        }))
+      )
     }
 
     if (!orgs) fetch()

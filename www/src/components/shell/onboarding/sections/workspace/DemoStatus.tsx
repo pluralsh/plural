@@ -34,7 +34,8 @@ function Community() {
           secondary
           startIcon={<DiscordIcon />}
           small
-        >Discord
+        >
+          Discord
         </Button>
       </Flex>
     </Flex>
@@ -59,8 +60,14 @@ function DemoStatus({ loading, error, project }: DemoStatusProps): JSX.Element {
         gap="medium"
       >
         <StatusHeader
-          header={loading ? 'Creating your demo project' : 'Demo project created'}
-          description={loading ? 'This may take a few minutes.' : 'You can continue now to create the cloud shell environment.'}
+          header={
+            loading ? 'Creating your demo project' : 'Demo project created'
+          }
+          description={
+            loading
+              ? 'This may take a few minutes.'
+              : 'You can continue now to create the cloud shell environment.'
+          }
           errorHeader="Failed to create demo project"
           errorDescription="Try again in a few minutes. If issue does not resolve itself check the logs and try options below to troubleshoot."
           error={error}
@@ -97,13 +104,17 @@ function DemoStatus({ loading, error, project }: DemoStatusProps): JSX.Element {
 
           <ProgressEntry
             text="Enabling GCP services"
-            loading={project?.state ? project.state === DemoProjectState.Created : true}
+            loading={
+              project?.state ? project.state === DemoProjectState.Created : true
+            }
             error={error}
           />
 
           <ProgressEntry
             text="Finishing up"
-            loading={project?.state !== DemoProjectState.Enabled || !project?.ready}
+            loading={
+              project?.state !== DemoProjectState.Enabled || !project?.ready
+            }
             error={error}
             last
           />

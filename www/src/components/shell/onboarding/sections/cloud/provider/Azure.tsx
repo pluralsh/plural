@@ -1,22 +1,15 @@
-import {
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
+import { useContext, useEffect, useMemo, useState } from 'react'
 import { Flex } from 'honorable'
 import IsEmpty from 'lodash/isEmpty'
-import {
-  FormField,
-  Input,
-  ListBoxItem,
-  Select,
-} from '@pluralsh/design-system'
+import { FormField, Input, ListBoxItem, Select } from '@pluralsh/design-system'
 
 import { OnboardingContext } from '../../../context/onboarding'
 import { IsObjectPartiallyEmpty } from '../../../../../../utils/object'
 import { AzureCloudProvider, CloudProvider } from '../../../context/types'
-import { useSetCloudProviderKeys, useSetWorkspaceKeys } from '../../../context/hooks'
+import {
+  useSetCloudProviderKeys,
+  useSetWorkspaceKeys,
+} from '../../../context/hooks'
 
 const REGIONS = [
   'eastus',
@@ -44,63 +37,92 @@ const REGIONS = [
 ]
 
 type ValidationFieldKey = keyof AzureCloudProvider | 'resourceGroup'
-type Validation = {regex: RegExp, message: string}
-type ValidationField = {[key in ValidationFieldKey]?: Validation}
+type Validation = { regex: RegExp; message: string }
+type ValidationField = { [key in ValidationFieldKey]?: Validation }
 
 const VALIDATOR: ValidationField = {
   storageAccount: {
     regex: /^[a-z0-9]{3,24}$/,
-    message: 'must be between 3 and 24 characters and may contain numbers and lowercase letters only',
+    message:
+      'must be between 3 and 24 characters and may contain numbers and lowercase letters only',
   },
   resourceGroup: {
     regex: /^[\w\-().]{0,63}[\w\-()]$/,
-    message: 'must be between 1 and 64 characters and may contain alphanumerics, underscores, parentheses, hyphens, and periods (except at end)',
+    message:
+      'must be between 1 and 64 characters and may contain alphanumerics, underscores, parentheses, hyphens, and periods (except at end)',
   },
 }
 
 function Azure() {
   const { cloud, setValid, workspace } = useContext(OnboardingContext)
-  const setCloudProviderKeys = useSetCloudProviderKeys<AzureCloudProvider>(CloudProvider.Azure)
+  const setCloudProviderKeys = useSetCloudProviderKeys<AzureCloudProvider>(
+    CloudProvider.Azure
+  )
   const setWorkspaceKeys = useSetWorkspaceKeys()
-  const [error, setError] = useState<{[key in ValidationFieldKey]?: string | null}>({})
-  const isValid = useMemo(() => !IsObjectPartiallyEmpty(cloud?.azure) && !!workspace?.region && !!workspace?.project && IsObjectPartiallyEmpty(error), [cloud?.azure, error, workspace?.project, workspace?.region])
+  const [error, setError] = useState<{
+    [key in ValidationFieldKey]?: string | null
+  }>({})
+  const isValid = useMemo(
+    () =>
+      !IsObjectPartiallyEmpty(cloud?.azure) &&
+      !!workspace?.region &&
+      !!workspace?.project &&
+      IsObjectPartiallyEmpty(error),
+    [cloud?.azure, error, workspace?.project, workspace?.region]
+  )
 
   useEffect(() => setValid(isValid), [isValid, setValid])
-  useEffect(() => (IsEmpty(workspace?.region) ? setWorkspaceKeys({ region: 'eastus' }) : undefined), [setWorkspaceKeys, workspace])
-  useEffect(() => (IsEmpty(cloud?.azure) ? setCloudProviderKeys({
-    tenantID: '', subscriptionID: '', storageAccount: '', clientSecret: '', clientID: '',
-  }) : undefined), [setCloudProviderKeys, cloud?.azure])
+  useEffect(
+    () =>
+      IsEmpty(workspace?.region)
+        ? setWorkspaceKeys({ region: 'eastus' })
+        : undefined,
+    [setWorkspaceKeys, workspace]
+  )
+  useEffect(
+    () =>
+      IsEmpty(cloud?.azure)
+        ? setCloudProviderKeys({
+            tenantID: '',
+            subscriptionID: '',
+            storageAccount: '',
+            clientSecret: '',
+            clientID: '',
+          })
+        : undefined,
+    [setCloudProviderKeys, cloud?.azure]
+  )
 
   useEffect(() => {
     const merged = { ...cloud?.azure, resourceGroup: workspace?.project }
 
-    Object.keys(merged).forEach(key => {
-      const { regex, message } = VALIDATOR[key as keyof AzureCloudProvider] || {}
+    Object.keys(merged).forEach((key) => {
+      const { regex, message } =
+        VALIDATOR[key as keyof AzureCloudProvider] || {}
       const error = regex?.test(merged?.[key]) ? null : message
 
       if (!regex || !message) return
 
-      setError(err => ({ ...err, [key]: error }))
+      setError((err) => ({ ...err, [key]: error }))
     })
   }, [cloud?.azure, workspace?.project])
 
   return (
     <>
-      <FormField
-        label="Region"
-      >
+      <FormField label="Region">
         <Select
           selectedKey={workspace?.region}
-          onSelectionChange={value => setWorkspaceKeys({ region: `${value}` })}
+          onSelectionChange={(value) =>
+            setWorkspaceKeys({ region: `${value}` })
+          }
         >
-          {REGIONS.map(r => (
+          {REGIONS.map((r) => (
             <ListBoxItem
               key={r}
               label={r}
               textValue={r}
             />
           ))}
-
         </Select>
       </FormField>
       <Flex gap="large">
@@ -111,7 +133,9 @@ function Azure() {
         >
           <Input
             value={cloud?.azure?.clientID}
-            onChange={({ target: { value } }) => setCloudProviderKeys({ clientID: value })}
+            onChange={({ target: { value } }) =>
+              setCloudProviderKeys({ clientID: value })
+            }
           />
         </FormField>
         <FormField
@@ -121,7 +145,9 @@ function Azure() {
         >
           <Input
             value={cloud?.azure?.clientSecret}
-            onChange={({ target: { value } }) => setCloudProviderKeys({ clientSecret: value })}
+            onChange={({ target: { value } }) =>
+              setCloudProviderKeys({ clientSecret: value })
+            }
             type="password"
           />
         </FormField>
@@ -135,7 +161,9 @@ function Azure() {
         >
           <Input
             value={cloud?.azure?.subscriptionID}
-            onChange={({ target: { value } }) => setCloudProviderKeys({ subscriptionID: value })}
+            onChange={({ target: { value } }) =>
+              setCloudProviderKeys({ subscriptionID: value })
+            }
           />
         </FormField>
         <FormField
@@ -145,7 +173,9 @@ function Azure() {
         >
           <Input
             value={cloud?.azure?.tenantID}
-            onChange={({ target: { value } }) => setCloudProviderKeys({ tenantID: value })}
+            onChange={({ target: { value } }) =>
+              setCloudProviderKeys({ tenantID: value })
+            }
           />
         </FormField>
       </Flex>
@@ -159,7 +189,9 @@ function Azure() {
         <Input
           value={workspace?.project}
           error={!!error.resourceGroup}
-          onChange={({ target: { value } }) => setWorkspaceKeys({ project: value })}
+          onChange={({ target: { value } }) =>
+            setWorkspaceKeys({ project: value })
+          }
         />
       </FormField>
 
@@ -171,7 +203,9 @@ function Azure() {
       >
         <Input
           value={cloud?.azure?.storageAccount}
-          onChange={({ target: { value } }) => setCloudProviderKeys({ storageAccount: value })}
+          onChange={({ target: { value } }) =>
+            setCloudProviderKeys({ storageAccount: value })
+          }
           error={!!error.storageAccount}
         />
       </FormField>

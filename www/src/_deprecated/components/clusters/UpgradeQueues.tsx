@@ -44,12 +44,14 @@ function Queue({ q }: any) {
           <Text
             size="small"
             weight={500}
-          >{q.name || 'default'}
+          >
+            {q.name || 'default'}
           </Text>
           <Text
             size="small"
             color="dark-3"
-          >{q.domain}
+          >
+            {q.domain}
           </Text>
         </Box>
         {q.git && (
@@ -62,7 +64,8 @@ function Queue({ q }: any) {
             <Text
               size="small"
               color="dark-3"
-            >{q.git}
+            >
+              {q.git}
             </Text>
           </Box>
         )}
@@ -73,12 +76,30 @@ function Queue({ q }: any) {
 }
 
 export function UpgradeQueues() {
-  const { data, subscribeToMore } = useQuery(QUEUES, { fetchPolicy: 'cache-and-network' })
+  const { data, subscribeToMore } = useQuery(QUEUES, {
+    fetchPolicy: 'cache-and-network',
+  })
 
-  useEffect(() => subscribeToMore({
-    document: UPGRADE_QUEUE_SUB,
-    updateQuery: ({ upgradeQueues, ...prev }, { subscriptionData: { data: { upgradeQueueDelta: { delta, payload } } } }) => (delta === 'CREATE' ? { ...prev, upgradeQueues: [payload, ...upgradeQueues] } : prev),
-  }), [subscribeToMore])
+  useEffect(
+    () =>
+      subscribeToMore({
+        document: UPGRADE_QUEUE_SUB,
+        updateQuery: (
+          { upgradeQueues, ...prev },
+          {
+            subscriptionData: {
+              data: {
+                upgradeQueueDelta: { delta, payload },
+              },
+            },
+          }
+        ) =>
+          delta === 'CREATE'
+            ? { ...prev, upgradeQueues: [payload, ...upgradeQueues] }
+            : prev,
+      }),
+    [subscribeToMore]
+  )
 
   const { setBreadcrumbs } = useContext(BreadcrumbsContext)
 
@@ -87,9 +108,7 @@ export function UpgradeQueues() {
   }, [setBreadcrumbs])
 
   if (!data) {
-    return (
-      <LoopingLogo />
-    )
+    return <LoopingLogo />
   }
 
   return (
@@ -109,11 +128,12 @@ export function UpgradeQueues() {
         <Text
           size="small"
           weight={500}
-        >Upgrade Queues
+        >
+          Upgrade Queues
         </Text>
       </Box>
       <Box fill>
-        {data.upgradeQueues.map(q => (
+        {data.upgradeQueues.map((q) => (
           <Queue
             key={q.id}
             q={q}

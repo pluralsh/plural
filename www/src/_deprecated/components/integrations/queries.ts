@@ -1,13 +1,23 @@
 import { gql } from '@apollo/client'
 
-import { IntegrationWebhookFragment, OauthIntegration, WebhookLogFragment } from '../../../models/integrations'
+import {
+  IntegrationWebhookFragment,
+  OauthIntegration,
+  WebhookLogFragment,
+} from '../../../models/integrations'
 import { PageInfo } from '../../../models/misc'
 
 export const WEBHOOKS_Q = gql`
   query Webhooks($cursor: String) {
     integrationWebhooks(first: 50, after: $cursor) {
-      pageInfo { ...PageInfo }
-      edges { node { ...IntegrationWebhookFragment } }
+      pageInfo {
+        ...PageInfo
+      }
+      edges {
+        node {
+          ...IntegrationWebhookFragment
+        }
+      }
     }
   }
   ${PageInfo}
@@ -19,8 +29,14 @@ export const WEBHOOK_Q = gql`
     integrationWebhook(id: $id) {
       ...IntegrationWebhookFragment
       logs(first: 50, after: $cursor) {
-        pageInfo { ...PageInfo }
-        edges { node { ...WebhookLogFragment } }
+        pageInfo {
+          ...PageInfo
+        }
+        edges {
+          node {
+            ...WebhookLogFragment
+          }
+        }
       }
     }
   }
@@ -57,7 +73,11 @@ export const DELETE_WEBHOOK = gql`
 `
 
 export const OAUTH_Q = gql`
-  query { oauthIntegrations { ...OauthIntegration } }
+  query {
+    oauthIntegrations {
+      ...OauthIntegration
+    }
+  }
   ${OauthIntegration}
 `
 

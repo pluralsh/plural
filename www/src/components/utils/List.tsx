@@ -13,13 +13,15 @@ type Hue = Required<CardProps>['hue']
 
 const ListContext = createContext<{ hue: Hue }>({ hue: 'default' })
 
-const LiBare = styled.li(({ $extendStyle }: { $extendStyle?: Record<string, any> }) => ({
-  margin: 0,
-  textIndent: 0,
-  padding: 0,
-  listStyle: 'none',
-  ...$extendStyle,
-}))
+const LiBare = styled.li(
+  ({ $extendStyle }: { $extendStyle?: Record<string, any> }) => ({
+    margin: 0,
+    textIndent: 0,
+    padding: 0,
+    listStyle: 'none',
+    ...$extendStyle,
+  })
+)
 
 const hueToBorderColor: Record<Hue | 'none', string> = {
   none: 'border',
@@ -45,54 +47,58 @@ type ListItemProps = any & {
   children: ReactNode
 }
 
-const ListItem = forwardRef<HTMLLIElement, ListItemProps>(({ first, last, ...props }, ref) => {
-  const { hue } = useContext(ListContext)
+const ListItem = forwardRef<HTMLLIElement, ListItemProps>(
+  ({ first, last, ...props }, ref) => {
+    const { hue } = useContext(ListContext)
 
-  return (
-    <ListItemInner
-      ref={ref}
-      $first={first}
-      $last={last}
-      $hue={hue}
-      {...props}
-    />
-  )
-})
+    return (
+      <ListItemInner
+        ref={ref}
+        $first={first}
+        $last={last}
+        $hue={hue}
+        {...props}
+      />
+    )
+  }
+)
 
 type ListProps = any & {
   hue?: Hue
   children: ReactNode
 }
 
-const List = forwardRef<HTMLDivElement, ListProps>(({ hue = 'default', children, ...props }, ref) => {
-  const listContext = useMemo(() => ({
-    hue,
-  }),
-  [hue])
+const List = forwardRef<HTMLDivElement, ListProps>(
+  ({ hue = 'default', children, ...props }, ref) => {
+    const listContext = useMemo(
+      () => ({
+        hue,
+      }),
+      [hue]
+    )
 
-  return (
-    <ListContext.Provider value={listContext}>
-      <Card
-        ref={ref}
-        hue={hue}
-        display="flex"
-        alignItems="top"
-        flexDirection="column"
-        cornerSize="large"
-        padding={0}
-        margin={0}
-        flexGrow={1}
-        maxHeight="min-content"
-        {...props}
-        overflow="hidden"
-        as={Ul}
-      >
-        {children}
-      </Card>
-    </ListContext.Provider>
-  )
-})
+    return (
+      <ListContext.Provider value={listContext}>
+        <Card
+          ref={ref}
+          hue={hue}
+          display="flex"
+          alignItems="top"
+          flexDirection="column"
+          cornerSize="large"
+          padding={0}
+          margin={0}
+          flexGrow={1}
+          maxHeight="min-content"
+          {...props}
+          overflow="hidden"
+          as={Ul}
+        >
+          {children}
+        </Card>
+      </ListContext.Provider>
+    )
+  }
+)
 
-export {
-  List, ListItem, ListContext, hueToBorderColor,
-}
+export { List, ListItem, ListContext, hueToBorderColor }

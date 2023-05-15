@@ -1,16 +1,5 @@
-import {
-  cloneElement,
-  memo,
-  useRef,
-  useState,
-} from 'react'
-import {
-  Anchor,
-  Box,
-  Drop,
-  Markdown,
-  Text,
-} from 'grommet'
+import { cloneElement, memo, useRef, useState } from 'react'
+import { Anchor, Box, Drop, Markdown, Text } from 'grommet'
 import { TooltipContent } from 'forge-core'
 import sortBy from 'lodash/sortBy'
 import { Emoji as Emojii } from 'emoji-mart'
@@ -62,7 +51,8 @@ function Mention({ text, user }: any) {
         <Text
           size="small"
           weight={500}
-        >@{text}
+        >
+          @{text}
         </Text>
       </Box>
       {open && (
@@ -85,12 +75,14 @@ function Mention({ text, user }: any) {
             <Text
               size="small"
               weight={500}
-            >{user.name}
+            >
+              {user.name}
             </Text>
             <Text
               size="small"
               color="dark-5"
-            >-- {user.email}
+            >
+              -- {user.email}
             </Text>
           </Box>
         </Drop>
@@ -139,17 +131,17 @@ function Emoji({ name }: any) {
 
 function MessageEntity({ entity }: any) {
   switch (entity.type) {
-  case EntityType.MENTION:
-    return (
-      <Mention
-        text={entity.text}
-        user={entity.user}
-      />
-    )
-  case EntityType.EMOJI:
-    return <Emoji name={entity.text} />
-  default:
-    return null
+    case EntityType.MENTION:
+      return (
+        <Mention
+          text={entity.text}
+          user={entity.user}
+        />
+      )
+    case EntityType.EMOJI:
+      return <Emoji name={entity.text} />
+    default:
+      return null
   }
 }
 
@@ -174,7 +166,10 @@ function* splitText(text, entities) {
 
 export default memo(({ text, entities }: any) => {
   const parsed = [...splitText(text, entities || [])].join('')
-  const entityMap = (entities || []).reduce((map, entity) => ({ ...map, [entity.id]: entity }), {})
+  const entityMap = (entities || []).reduce(
+    (map, entity) => ({ ...map, [entity.id]: entity }),
+    {}
+  )
 
   function Entity({ id }: any) {
     return <MessageEntity entity={entityMap[id]} />
@@ -184,7 +179,13 @@ export default memo(({ text, entities }: any) => {
     <Markdown
       components={{
         blockquote: { component: Blockquote },
-        p: { props: { size: 'small', margin: { top: 'xsmall', bottom: 'xsmall' }, style: { maxWidth: '100%' } } },
+        p: {
+          props: {
+            size: 'small',
+            margin: { top: 'xsmall', bottom: 'xsmall' },
+            style: { maxWidth: '100%' },
+          },
+        },
         a: { props: { size: 'small', target: '_blank' }, component: Anchor },
         span: { props: { style: { verticalAlign: 'bottom' } } },
         code: { component: Code },

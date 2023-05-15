@@ -10,13 +10,7 @@ import {
   TerminalIcon,
   Toast,
 } from '@pluralsh/design-system'
-import {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { OnboardingChecklistContext } from '../../../../contexts/OnboardingChecklistContext'
@@ -37,20 +31,28 @@ import { ChecklistFooter } from './Footer'
 import { ChecklistComplete } from './Complete'
 
 const CHECKLIST_ORDER = [
-  OnboardingChecklistState.New, OnboardingChecklistState.Configured, OnboardingChecklistState.ConsoleInstalled, OnboardingChecklistState.Finished,
+  OnboardingChecklistState.New,
+  OnboardingChecklistState.Configured,
+  OnboardingChecklistState.ConsoleInstalled,
+  OnboardingChecklistState.Finished,
 ]
 
-function statusToIndex(status: OnboardingChecklistState) : number {
+function statusToIndex(status: OnboardingChecklistState): number {
   return CHECKLIST_ORDER.indexOf(status)
 }
 
 export function OnboardingChecklist() {
   const navigate = useNavigate()
-  const { dismissed: dismissedFromContext, setDismissed: setDismissedFromContext } = useContext(OnboardingChecklistContext)
+  const {
+    dismissed: dismissedFromContext,
+    setDismissed: setDismissedFromContext,
+  } = useContext(OnboardingChecklistContext)
   const user = useContext(CurrentUserContext)
 
   // State
-  const [status, setStatus] = useState<OnboardingChecklistState>(OnboardingChecklistState.New)
+  const [status, setStatus] = useState<OnboardingChecklistState>(
+    OnboardingChecklistState.New
+  )
   const [completed, setCompleted] = useState<number>(-1)
   const [selected, setSelected] = useState<number>(0)
   const [focused, setFocused] = useState<number>(-1)
@@ -59,12 +61,27 @@ export function OnboardingChecklist() {
   const [visible, setVisible] = useState(false)
 
   // Callbacks
-  const nextStatus = useCallback((status: OnboardingChecklistState) => (status === OnboardingChecklistState.Finished ? status : CHECKLIST_ORDER[CHECKLIST_ORDER.indexOf(status) + 1]), [])
-  const isCompleted = useCallback(() => completed >= selected, [completed, selected])
-  const canComplete = useCallback(() => Math.abs(selected - completed) === 1, [selected, completed])
+  const nextStatus = useCallback(
+    (status: OnboardingChecklistState) =>
+      status === OnboardingChecklistState.Finished
+        ? status
+        : CHECKLIST_ORDER[CHECKLIST_ORDER.indexOf(status) + 1],
+    []
+  )
+  const isCompleted = useCallback(
+    () => completed >= selected,
+    [completed, selected]
+  )
+  const canComplete = useCallback(
+    () => Math.abs(selected - completed) === 1,
+    [selected, completed]
+  )
 
   // GraphQL
-  const [updateChecklist, { loading: checklistUpdating, error }] = useMutation<RootMutationType, RootMutationTypeUpdateUserArgs>(UPDATE_USER, {
+  const [updateChecklist, { loading: checklistUpdating, error }] = useMutation<
+    RootMutationType,
+    RootMutationTypeUpdateUserArgs
+  >(UPDATE_USER, {
     variables: {
       attributes: {
         onboardingChecklist: {
@@ -86,26 +103,41 @@ export function OnboardingChecklist() {
   }
 
   useEffect(() => {
-    const status = user?.onboardingChecklist?.status || OnboardingChecklistState.New
+    const status =
+      user?.onboardingChecklist?.status || OnboardingChecklistState.New
     const completed = statusToIndex(status) - 1
     const selected = completed > -1 ? completed + 1 : 0
-    const dismiss = isOnboardingChecklistHidden() || user?.onboardingChecklist?.dismissed || (user?.onboarding === OnboardingState.New) || false
+    const dismiss =
+      isOnboardingChecklistHidden() ||
+      user?.onboardingChecklist?.dismissed ||
+      user?.onboarding === OnboardingState.New ||
+      false
 
     setCompleted(completed)
     setSelected(selected)
     setStatus(status)
     setDismiss(dismiss)
     setDismissedFromContext(dismiss)
-  }, [setCompleted, setSelected, setStatus, setDismiss, setDismissedFromContext, dismissedFromContext, user])
+  }, [
+    setCompleted,
+    setSelected,
+    setStatus,
+    setDismiss,
+    setDismissedFromContext,
+    dismissedFromContext,
+    user,
+  ])
 
   // This is a small workaround to not show the checklist closing animation
   // on every page refresh to the users that already finished/dismissed it and still be able to
   // see dismiss animation.
   useEffect(() => {
-    if (!user?.onboardingChecklist?.dismissed
-      && !isOnboardingChecklistHidden()
-      && !dismissedFromContext
-      && user?.onboarding !== OnboardingState.New) {
+    if (
+      !user?.onboardingChecklist?.dismissed &&
+      !isOnboardingChecklistHidden() &&
+      !dismissedFromContext &&
+      user?.onboarding !== OnboardingState.New
+    ) {
       setTimeout(() => setVisible(true), 1000)
     }
   }, [user, dismissedFromContext])
@@ -116,7 +148,8 @@ export function OnboardingChecklist() {
       loading={checklistUpdating}
       onClick={() => updateChecklist()}
       disabled={isCompleted() || !canComplete()}
-    >Mark as done
+    >
+      Mark as done
     </Button>
   )
 
@@ -146,12 +179,8 @@ export function OnboardingChecklist() {
       <Checklist
         label="Getting Started"
         stateProps={checklistStateProps}
-        footerChildren={(
-          <ChecklistFooter setDismiss={setDismiss} />
-        )}
-        completeChildren={(
-          <ChecklistComplete />
-        )}
+        footerChildren={<ChecklistFooter setDismiss={setDismiss} />}
+        completeChildren={<ChecklistComplete />}
       >
         <ChecklistItem title="Setup on your own cloud">
           <Flex
@@ -159,14 +188,17 @@ export function OnboardingChecklist() {
             gap="medium"
           >
             <Span>
-              If you'd prefer to use Plural on your local machine, get started with the&nbsp;
+              If you'd prefer to use Plural on your local machine, get started
+              with the&nbsp;
               <A
                 inline
                 href="https://docs.plural.sh/getting-started/getting-started"
                 target="_blank"
                 rel="noopener noreferrer"
-              >Plural CLI
-              </A>.
+              >
+                Plural CLI
+              </A>
+              .
             </Span>
             <Flex gap="small">
               <Button
@@ -177,7 +209,8 @@ export function OnboardingChecklist() {
                   setOpen(false)
                   navigate('/shell?ref=checklist')
                 }}
-              >Launch Cloud Shell
+              >
+                Launch Cloud Shell
               </Button>
               {completeButton}
             </Flex>
@@ -189,7 +222,8 @@ export function OnboardingChecklist() {
             direction="column"
             gap="medium"
           >
-            This will enable out-of-the-box monitoring, scaling, and security for all your applications.
+            This will enable out-of-the-box monitoring, scaling, and security
+            for all your applications.
             <Flex gap="small">
               <Button
                 small
@@ -199,7 +233,8 @@ export function OnboardingChecklist() {
                   setOpen(false)
                   navigate('repository/a051a0bf-61b5-4ab5-813d-2c541c83a979')
                 }}
-              >Install
+              >
+                Install
               </Button>
               {completeButton}
             </Flex>
@@ -207,9 +242,7 @@ export function OnboardingChecklist() {
         </ChecklistItem>
 
         <ChecklistItem title="Install another app">
-          <Flex
-            gap="small"
-          >
+          <Flex gap="small">
             <Button
               small
               secondary
@@ -218,7 +251,8 @@ export function OnboardingChecklist() {
                 setOpen(false)
                 navigate('/marketplace')
               }}
-            >View marketplace
+            >
+              View marketplace
             </Button>
             {completeButton}
           </Flex>
@@ -230,7 +264,10 @@ export function OnboardingChecklist() {
 
 export function ChecklistProvider({ children }: any) {
   const [dismissed, setDismissed] = useState<boolean>(false)
-  const value = useMemo(() => ({ dismissed, setDismissed }), [dismissed, setDismissed])
+  const value = useMemo(
+    () => ({ dismissed, setDismissed }),
+    [dismissed, setDismissed]
+  )
 
   return (
     <OnboardingChecklistContext.Provider value={value}>

@@ -1,10 +1,5 @@
 import { Flex } from 'honorable'
-import {
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import {
   ApolloClient,
   useApolloClient,
@@ -24,7 +19,11 @@ import {
   RootQueryType,
   ShellCredentialsAttributes,
 } from '../../../../../generated/graphql'
-import { CLOUD_SHELL_QUERY, CREATE_SHELL_MUTATION, SETUP_SHELL_MUTATION } from '../../../queries'
+import {
+  CLOUD_SHELL_QUERY,
+  CREATE_SHELL_MUTATION,
+  SETUP_SHELL_MUTATION,
+} from '../../../queries'
 import {
   CloudProps,
   CloudProviderToProvider,
@@ -43,10 +42,13 @@ import { useSectionError, useSectionState } from '../../context/hooks'
 
 import { ShellStatus } from './ShellStatus'
 
-const EMPTY_SHELL = ({ alive: false, status: {} }) as CloudShell
+const EMPTY_SHELL = { alive: false, status: {} } as CloudShell
 
 function toCloudShellAttributes(
-  workspace: WorkspaceProps, scm: SCMProps, provider: Provider, cloud: CloudProps
+  workspace: WorkspaceProps,
+  scm: SCMProps,
+  provider: Provider,
+  cloud: CloudProps
 ): CloudShellAttributes {
   return {
     workspace: {
@@ -64,21 +66,29 @@ function toCloudShellAttributes(
     },
     provider,
     demoId: cloud.demoID ?? null,
-    credentials: { [cloud.provider!]: toCloudProviderAttributes(cloud) } as ShellCredentialsAttributes,
+    credentials: {
+      [cloud.provider!]: toCloudProviderAttributes(cloud),
+    } as ShellCredentialsAttributes,
   } as CloudShellAttributes
 }
 
 async function createShell(
-  client: ApolloClient<unknown>, workspace: WorkspaceProps, scm: SCMProps, cloud: CloudProps
+  client: ApolloClient<unknown>,
+  workspace: WorkspaceProps,
+  scm: SCMProps,
+  cloud: CloudProps
 ): Promise<ApolloError | undefined> {
-  const provider: Provider = (CloudProviderToProvider[cloud.provider!] as unknown) as Provider
+  const provider: Provider = CloudProviderToProvider[
+    cloud.provider!
+  ] as unknown as Provider
 
-  const { errors } = await client.mutate<CloudShell, RootMutationTypeCreateShellArgs>({
+  const { errors } = await client.mutate<
+    CloudShell,
+    RootMutationTypeCreateShellArgs
+  >({
     mutation: CREATE_SHELL_MUTATION,
     variables: {
-      attributes: toCloudShellAttributes(
-        workspace, scm, provider, cloud
-      ),
+      attributes: toCloudShellAttributes(workspace, scm, provider, cloud),
     } as RootMutationTypeCreateShellArgs,
   })
 
@@ -93,9 +103,8 @@ async function createShell(
 
 function CreateShell() {
   const client = useApolloClient()
-  const {
-    scm, cloud, workspace, setSection, sections,
-  } = useContext(OnboardingContext)
+  const { scm, cloud, workspace, setSection, sections } =
+    useContext(OnboardingContext)
   const setSectionState = useSectionState()
   const setSectionError = useSectionError()
 
@@ -104,10 +113,17 @@ function CreateShell() {
   const [created, setCreated] = useState(false)
   const [setupShellCompleted, setSetupShellCompleted] = useState(false)
 
-  const onBack = useCallback(() => setSection({
-    ...sections[SectionKey.CONFIGURE_CLOUD]!,
-    state: cloud?.type === CloudType.Demo ? ConfigureCloudSectionState.CloudSelection : ConfigureCloudSectionState.RepositoryConfiguration,
-  }), [cloud?.type, sections, setSection])
+  const onBack = useCallback(
+    () =>
+      setSection({
+        ...sections[SectionKey.CONFIGURE_CLOUD]!,
+        state:
+          cloud?.type === CloudType.Demo
+            ? ConfigureCloudSectionState.CloudSelection
+            : ConfigureCloudSectionState.RepositoryConfiguration,
+      }),
+    [cloud?.type, sections, setSection]
+  )
   const onRestart = useCallback(() => {
     setShell(undefined)
     setError(undefined)
@@ -116,7 +132,11 @@ function CreateShell() {
     onBack()
   }, [onBack])
 
-  const { data, error: shellQueryError, stopPolling } = useQuery<RootQueryType>(CLOUD_SHELL_QUERY, {
+  const {
+    data,
+    error: shellQueryError,
+    stopPolling,
+  } = useQuery<RootQueryType>(CLOUD_SHELL_QUERY, {
     fetchPolicy: 'network-only',
     nextFetchPolicy: 'network-only',
     initialFetchPolicy: 'network-only',
@@ -125,7 +145,7 @@ function CreateShell() {
 
   const [deleteShell] = useMutation(DeleteShellDocument)
   const [setupShell] = useMutation(SETUP_SHELL_MUTATION, {
-    onError: error => {
+    onError: (error) => {
       setError(error)
       deleteShell()
       stopPolling()
@@ -137,20 +157,16 @@ function CreateShell() {
   useEffect(() => {
     const create = async () => {
       try {
-        const error = await createShell(
-          client, workspace, scm, cloud
-        )
+        const error = await createShell(client, workspace, scm, cloud)
 
         if (error) {
           stopPolling()
           setError(error)
         }
-      }
-      catch (error) {
+      } catch (error) {
         setError(error as ApolloError)
         stopPolling()
-      }
-      finally {
+      } finally {
         setCreated(true)
       }
     }
@@ -172,15 +188,22 @@ function CreateShell() {
 
   // Mark create shell step as finished
   useEffect(() => {
-    if (shell?.alive && !error && setupShellCompleted) setSectionState(CreateCloudShellSectionState.Finished)
+    if (shell?.alive && !error && setupShellCompleted)
+      setSectionState(CreateCloudShellSectionState.Finished)
   }, [shell, setupShellCompleted, error, setSectionState])
 
   // Capture errors and send to posthog
-  useEffect(() => error
-    && posthogCapture(PosthogEvent.Onboarding, {
-      type: cloud.type, provider: cloud.provider, clusterName: workspace.clusterName, error,
-    }),
-  [cloud.provider, cloud.type, error, workspace.clusterName])
+  useEffect(
+    () =>
+      error &&
+      posthogCapture(PosthogEvent.Onboarding, {
+        type: cloud.type,
+        provider: cloud.provider,
+        clusterName: workspace.clusterName,
+        error,
+      }),
+    [cloud.provider, cloud.type, error, workspace.clusterName]
+  )
 
   useEffect(() => setSectionError(!!error), [error, setSectionError])
 
@@ -204,7 +227,9 @@ function CreateShell() {
           <Callout
             severity="warning"
             size="compact"
-          >You must create a new, globally unique repo name after the cloud shell fails to build.
+          >
+            You must create a new, globally unique repo name after the cloud
+            shell fails to build.
           </Callout>
           <Button
             data-phid="review-configuration"

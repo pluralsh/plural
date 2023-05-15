@@ -20,8 +20,10 @@ export function EditRole({ role }: any) {
     permissions: role.permissions,
   })
   const [roleBindings, setRoleBindings] = useState(role.roleBindings || [])
-  const uniqueRoleBindings = useMemo(() => uniqWith(roleBindings, isEqual),
-    [roleBindings])
+  const uniqueRoleBindings = useMemo(
+    () => uniqWith(roleBindings, isEqual),
+    [roleBindings]
+  )
 
   const [mutation, { loading, error }] = useMutation(UPDATE_ROLE, {
     variables: {
@@ -46,14 +48,14 @@ export function EditRole({ role }: any) {
         open={open}
         size="large"
         onClose={() => setOpen(false)}
-        actions={(
+        actions={
           <Actions
             cancel={() => setOpen(false)}
             submit={() => mutation()}
             loading={loading}
             action="Update"
           />
-        )}
+        }
       >
         <RoleForm
           attributes={attributes}

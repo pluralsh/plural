@@ -4,7 +4,10 @@ import { ApolloError } from '@apollo/client'
 
 import { Provider } from '../generated/graphql'
 
-import { CloudProvider, CloudType } from '../components/shell/onboarding/context/types'
+import {
+  CloudProvider,
+  CloudType,
+} from '../components/shell/onboarding/context/types'
 
 import { CurrentUser } from '../contexts/CurrentUserContext'
 
@@ -33,7 +36,7 @@ export default function PosthogIdentify(me: CurrentUser) {
 export enum PosthogEvent {
   Onboarding = 'Onboarding',
   Installer = 'Installer',
-  OIDCLogin = 'OIDC Login'
+  OIDCLogin = 'OIDC Login',
 }
 
 interface PosthogOnboardingEvent {
@@ -56,11 +59,14 @@ interface PosthogOIDCLoginEvent {
 }
 
 type PosthogEventData = {
-  [PosthogEvent.Onboarding]: PosthogOnboardingEvent,
-  [PosthogEvent.Installer]: PosthogInstallerEvent,
+  [PosthogEvent.Onboarding]: PosthogOnboardingEvent
+  [PosthogEvent.Installer]: PosthogInstallerEvent
   [PosthogEvent.OIDCLogin]: PosthogOIDCLoginEvent
 }
 
-export function posthogCapture<T extends PosthogEvent>(event: T, data: PosthogEventData[T]): void {
+export function posthogCapture<T extends PosthogEvent>(
+  event: T,
+  data: PosthogEventData[T]
+): void {
   posthog.capture(event, data)
 }

@@ -13,16 +13,19 @@ clientsClaim()
 // Filter out the "index.html" so that it is not cached as it breaks
 // the application when the code changes and SW caches it
 // @ts-expect-error
-const precache = self.__WB_MANIFEST.filter(file => !file.url.includes('index.html'))
+const precache = self.__WB_MANIFEST.filter(
+  (file) => !file.url.includes('index.html')
+)
 precacheAndRoute(precache)
 
-const isSameOrigin = (url) => url.origin === self.location.origin;
-const shouldCache = (pathname) => Boolean(
-  pathname.endsWith('.png') ||
-  pathname.endsWith('.svg') ||
-  pathname.endsWith('.jpg') ||
-  pathname.endsWith('.woff2')
-)
+const isSameOrigin = (url) => url.origin === self.location.origin
+const shouldCache = (pathname) =>
+  Boolean(
+    pathname.endsWith('.png') ||
+      pathname.endsWith('.svg') ||
+      pathname.endsWith('.jpg') ||
+      pathname.endsWith('.woff2')
+  )
 
 // An example runtime caching route for requests that aren't handled by the
 // precache, in this case same-origin .png requests like those from in public/
@@ -37,4 +40,4 @@ registerRoute(
       new ExpirationPlugin({ maxEntries: 500 }),
     ],
   })
-);
+)

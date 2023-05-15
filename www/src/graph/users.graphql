@@ -21,26 +21,40 @@ fragment User on User {
   provider
   demoed
   onboarding
-  onboardingChecklist { dismissed status }
+  onboardingChecklist {
+    dismissed
+    status
+  }
   emailConfirmed
   emailConfirmBy
   backgroundColor
   serviceAccount
-  roles { admin }
+  roles {
+    admin
+  }
 }
 
 fragment ImpersonationPolicy on ImpersonationPolicy {
   id
   bindings {
     id
-    group { id name }
-    user { id name email }
+    group {
+      id
+      name
+    }
+    user {
+      id
+      name
+      email
+    }
   }
 }
 
 fragment GroupMember on GroupMember {
   id
-  user { ...User }
+  user {
+    ...User
+  }
 }
 
 fragment Token on PersistedToken {
@@ -75,8 +89,12 @@ fragment Publisher on Publisher {
   avatar
   description
   backgroundColor
-  owner { ...User }
-  address { ...Address }
+  owner {
+    ...User
+  }
+  address {
+    ...Address
+  }
 }
 
 fragment Webhook on Webhook {
@@ -88,8 +106,12 @@ fragment Webhook on Webhook {
 
 fragment RoleBinding on RoleBinding {
   id
-  user { ...User }
-  group { ...Group }
+  user {
+    ...User
+  }
+  group {
+    ...Group
+  }
 }
 
 fragment Role on Role {
@@ -98,7 +120,9 @@ fragment Role on Role {
   description
   repositories
   permissions
-  roleBindings { ...RoleBinding }
+  roleBindings {
+    ...RoleBinding
+  }
 }
 
 fragment PublicKey on PublicKey {
@@ -107,7 +131,9 @@ fragment PublicKey on PublicKey {
   digest
   insertedAt
   content
-  user { ...User }
+  user {
+    ...User
+  }
 }
 
 fragment EabCredential on EabCredential {
@@ -119,8 +145,8 @@ fragment EabCredential on EabCredential {
   insertedAt
 }
 
-query Me{
-  me { 
+query Me {
+  me {
     ...User
     demoing
     loginMethod
@@ -128,14 +154,24 @@ query Me{
     hasShell
     account {
       ...Account
-      rootUser { id, name, email }
-      domainMappings { id domain enableSso }
+      rootUser {
+        id
+        name
+        email
+      }
+      domainMappings {
+        id
+        domain
+        enableSso
+      }
     }
     publisher {
       ...Publisher
       billingAccountId
     }
-    boundRoles { ...Role }
+    boundRoles {
+      ...Role
+    }
   }
   configuration {
     stripeConnectId
@@ -146,18 +182,29 @@ query Me{
 }
 
 query GetLoginMethod($email: String!) {
-  loginMethod(email: $email) { loginMethod token }
+  loginMethod(email: $email) {
+    loginMethod
+    token
+  }
 }
 
-query ListTokens{
+query ListTokens {
   tokens(first: 3) {
-    edges { node { token } }
+    edges {
+      node {
+        token
+      }
+    }
   }
 }
 
 query ListKeys($emails: [String]) {
   publicKeys(emails: $emails, first: 1000) {
-    edges { node { ...PublicKey } }
+    edges {
+      node {
+        ...PublicKey
+      }
+    }
   }
 }
 
@@ -168,7 +215,10 @@ query GetEabCredential($cluster: String!, $provider: Provider!) {
 }
 
 mutation DevLogin {
-  deviceLogin { loginUrl deviceToken }
+  deviceLogin {
+    loginUrl
+    deviceToken
+  }
 }
 
 mutation Login($email: String!, $password: String!, $deviceToken: String) {
@@ -178,15 +228,22 @@ mutation Login($email: String!, $password: String!, $deviceToken: String) {
 }
 
 mutation ImpersonateServiceAccount($email: String) {
-  impersonateServiceAccount(email: $email) { jwt email }
+  impersonateServiceAccount(email: $email) {
+    jwt
+    email
+  }
 }
 
-mutation CreateAccessToken{
-  createToken { token }
+mutation CreateAccessToken {
+  createToken {
+    token
+  }
 }
 
 mutation CreateKey($key: String!, $name: String!) {
-  createPublicKey(attributes: {content: $key, name: $name}) { id }
+  createPublicKey(attributes: { content: $key, name: $name }) {
+    id
+  }
 }
 
 mutation DeleteEabCredential($cluster: String!, $provider: Provider!) {

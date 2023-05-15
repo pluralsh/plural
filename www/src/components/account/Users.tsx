@@ -1,11 +1,6 @@
 import { Flex } from 'honorable'
 import { Box } from 'grommet'
-import {
-  PageTitle,
-  SubTab,
-  TabList,
-  TabPanel,
-} from '@pluralsh/design-system'
+import { PageTitle, SubTab, TabList, TabPanel } from '@pluralsh/design-system'
 import { useMemo, useRef } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
 
@@ -28,13 +23,15 @@ export function Users() {
   const { pathname } = useLocation()
   const currentTab = [...DIRECTORY]
     .reverse()
-    .find(tab => pathname?.startsWith(tab.path))
+    .find((tab) => pathname?.startsWith(tab.path))
   const tabStateRef = useRef<any>(null)
   const refetchInvites = useRef<() => void | null>(null)
-  const outletContext = useMemo(() => ({
-    refetchInvites,
-  }),
-  [])
+  const outletContext = useMemo(
+    () => ({
+      refetchInvites,
+    }),
+    []
+  )
 
   return (
     <Flex
@@ -68,12 +65,12 @@ export function Users() {
         </Flex>
       </PageTitle>
       <TabPanel
-        as={(
+        as={
           <Box
             fill
             gap="medium"
           />
-        )}
+        }
         stateRef={tabStateRef}
       >
         <Outlet context={outletContext} />

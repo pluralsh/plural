@@ -60,11 +60,12 @@ export function Group({ group, q }: { group: GroupT; q: any }) {
   const [mutation, { loading, error }] = useDeleteGroupMutation({
     variables: { id: group.id },
     onCompleted: () => dialogKey === 'confirmDelete' && setDialogKey(''),
-    update: (cache, { data }) => updateCache(cache, {
-      query: GroupsDocument,
-      variables: { q },
-      update: prev => removeConnection(prev, data?.deleteGroup, 'groups'),
-    }),
+    update: (cache, { data }) =>
+      updateCache(cache, {
+        query: GroupsDocument,
+        variables: { q },
+        update: (prev) => removeConnection(prev, data?.deleteGroup, 'groups'),
+      }),
   })
 
   return (
@@ -106,7 +107,9 @@ export function Group({ group, q }: { group: GroupT; q: any }) {
                 <IconFrame
                   clickable
                   size="medium"
-                  onClick={() => dialogKey === '' && setDialogKey('editMembers')}
+                  onClick={() =>
+                    dialogKey === '' && setDialogKey('editMembers')
+                  }
                   tooltip="Edit members"
                   icon={<PeopleIcon />}
                 />
@@ -114,7 +117,9 @@ export function Group({ group, q }: { group: GroupT; q: any }) {
             )}
             {editable && (
               <DeleteIconButton
-                onClick={() => dialogKey === '' && setDialogKey('confirmDelete')}
+                onClick={() =>
+                  dialogKey === '' && setDialogKey('confirmDelete')
+                }
               />
             )}
           </Flex>

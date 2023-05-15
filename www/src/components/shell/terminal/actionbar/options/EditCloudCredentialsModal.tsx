@@ -6,7 +6,11 @@ import { ServerError, useMutation, useQuery } from '@apollo/client'
 import { CloudProps, CloudProvider } from '../../../onboarding/context/types'
 import { CLOUD_SHELL_QUERY } from '../../../queries'
 import { UPDATE_SHELL_MUTATION } from '../../queries'
-import { CloudShellAttributes, ShellCredentialsAttributes, WorkspaceAttributes } from '../../../../../generated/graphql'
+import {
+  CloudShellAttributes,
+  ShellCredentialsAttributes,
+  WorkspaceAttributes,
+} from '../../../../../generated/graphql'
 import { toCloudProviderAttributes } from '../../../utils/provider'
 
 import LoadingIndicator from '../../../../utils/LoadingIndicator'
@@ -19,27 +23,40 @@ function EditCloudCredentialsModal({ onClose }) {
   const [providerProps, setProviderProps] = useState<CloudProps>({})
   const [valid, setValid] = useState(false)
 
-  const { data: { shell } } = useQuery(CLOUD_SHELL_QUERY)
-  const [updateShell, { error: updateShellError }] = useMutation(UPDATE_SHELL_MUTATION, {
-    variables: {
-      attributes: {
-        // Workspace is ignored by the update query, so just fill with empty data.
-        workspace: {
-          subdomain: '',
-          region: '',
-          cluster: '',
-          bucketPrefix: '',
-        } as WorkspaceAttributes,
-        credentials: { [provider!]: toCloudProviderAttributes({ provider, ...providerProps }) } as ShellCredentialsAttributes,
-      } as CloudShellAttributes,
-    },
-  })
+  const {
+    data: { shell },
+  } = useQuery(CLOUD_SHELL_QUERY)
+  const [updateShell, { error: updateShellError }] = useMutation(
+    UPDATE_SHELL_MUTATION,
+    {
+      variables: {
+        attributes: {
+          // Workspace is ignored by the update query, so just fill with empty data.
+          workspace: {
+            subdomain: '',
+            region: '',
+            cluster: '',
+            bucketPrefix: '',
+          } as WorkspaceAttributes,
+          credentials: {
+            [provider!]: toCloudProviderAttributes({
+              provider,
+              ...providerProps,
+            }),
+          } as ShellCredentialsAttributes,
+        } as CloudShellAttributes,
+      },
+    }
+  )
 
   const close = useCallback(() => {
     setOpen(false)
     onClose()
   }, [onClose])
-  const onUpdate = useCallback(() => updateShell().then(() => window.location.reload()), [updateShell])
+  const onUpdate = useCallback(
+    () => updateShell().then(() => window.location.reload()),
+    [updateShell]
+  )
 
   useEffect(() => {
     if (!shell) return
@@ -54,7 +71,10 @@ function EditCloudCredentialsModal({ onClose }) {
       {updateShellError && (
         <GraphQLToast
           error={{ graphQLErrors: [...updateShellError.graphQLErrors] }}
-          header={`${(updateShellError.networkError as ServerError)?.statusCode}` || 'Error'}
+          header={
+            `${(updateShellError.networkError as ServerError)?.statusCode}` ||
+            'Error'
+          }
           margin="medium"
           marginHorizontal="xxxxlarge"
         />
@@ -75,7 +95,8 @@ function EditCloudCredentialsModal({ onClose }) {
           <Span
             body2
             color="text-xlight"
-          >UPDATE CLOUD CREDENTIALS
+          >
+            UPDATE CLOUD CREDENTIALS
           </Span>
           {(!shell || !provider) && <LoadingIndicator />}
           {shell && provider && (
@@ -95,13 +116,15 @@ function EditCloudCredentialsModal({ onClose }) {
                   data-phid="update-creds-cancel"
                   secondary
                   onClick={close}
-                >Cancel
+                >
+                  Cancel
                 </Button>
                 <Button
                   data-phid="update-creds-confirm"
                   onClick={onUpdate}
                   disabled={!valid}
-                >Update
+                >
+                  Update
                 </Button>
               </Flex>
             </>

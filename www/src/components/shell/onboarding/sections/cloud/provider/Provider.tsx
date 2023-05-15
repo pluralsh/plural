@@ -20,7 +20,7 @@ function Provider({ provider }: ProviderProps) {
     if (lastProvider === provider) return
     setLastProvider(provider)
 
-    setCloud(c => {
+    setCloud((c) => {
       delete c[lastProvider]
 
       return c
@@ -29,12 +29,12 @@ function Provider({ provider }: ProviderProps) {
   }, [lastProvider, provider, setCloud, setWorkspace])
 
   switch (provider) {
-  case CloudProvider.AWS:
-    return <AWS />
-  case CloudProvider.Azure:
-    return <Azure />
-  case CloudProvider.GCP:
-    return <GCP />
+    case CloudProvider.AWS:
+      return <AWS />
+    case CloudProvider.Azure:
+      return <Azure />
+    case CloudProvider.GCP:
+      return <GCP />
   }
 }
 

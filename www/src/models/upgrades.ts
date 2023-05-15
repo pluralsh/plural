@@ -29,7 +29,9 @@ export const UpgradeFragment = gql`
   fragment UpgradeFragment on Upgrade {
     id
     message
-    repository { ...RepoFragment }
+    repository {
+      ...RepoFragment
+    }
     insertedAt
   }
   ${RepoFragment}
@@ -40,7 +42,9 @@ export const DeferredUpdateFragment = gql`
     id
     dequeueAt
     attempts
-    version { version }
+    version {
+      version
+    }
     insertedAt
   }
 `

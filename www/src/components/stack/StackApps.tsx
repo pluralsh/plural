@@ -11,17 +11,18 @@ import { StackContext } from './types'
 
 export default function StackApps() {
   const { stack }: StackContext = useOutletContext()
-  const repositories
-    = stack.collections?.[0]?.bundles?.map(b => b?.recipe.repository ?? null) ?? []
+  const repositories =
+    stack.collections?.[0]?.bundles?.map((b) => b?.recipe.repository ?? null) ??
+    []
 
   return (
     <ScrollablePage
       heading="Stack applications"
-      headingContent={(
+      headingContent={
         <Flex display-desktop-up="none">
           {/* <StackActions stack={stack} /> */}
         </Flex>
-      )}
+      }
     >
       <P
         body1

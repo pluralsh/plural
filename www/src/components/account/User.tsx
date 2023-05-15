@@ -9,7 +9,11 @@ import {
 } from '@pluralsh/design-system'
 import { useContext, useState } from 'react'
 
-import { fetchToken, setPreviousUserData, setToken } from '../../helpers/authentication'
+import {
+  fetchToken,
+  setPreviousUserData,
+  setToken,
+} from '../../helpers/authentication'
 import CurrentUserContext from '../../contexts/CurrentUserContext'
 import { DELETE_USER } from '../users/queries'
 import { Permission } from '../../generated/graphql'
@@ -23,7 +27,11 @@ import { EditServiceAccount } from './CreateServiceAccount'
 import { MoreMenu } from './MoreMenu'
 import { hasRbac } from './utils'
 
-export function UserInfo({ user: { email, name, avatar }, hue = 'lighter', ...box }: any) {
+export function UserInfo({
+  user: { email, name, avatar },
+  hue = 'lighter',
+  ...box
+}: any) {
   return (
     <Box
       {...box}
@@ -61,8 +69,9 @@ function UserEdit({ user, update }: any) {
   const menuItems = {
     addAdmin: {
       label: isAdmin ? 'Remove admin role' : 'Add admin role',
-      // @ts-expect-error
-      onSelect: () => mutation({ variables: { attributes: { roles: { admin: !isAdmin } } } }),
+      onSelect: () =>
+        // @ts-expect-error
+        mutation({ variables: { attributes: { roles: { admin: !isAdmin } } } }),
       props: {},
     },
     deleteUser: {
@@ -77,7 +86,7 @@ function UserEdit({ user, update }: any) {
   return (
     <>
       <MoreMenu
-        onSelectionChange={selectedKey => {
+        onSelectionChange={(selectedKey) => {
           menuItems[selectedKey]?.onSelect()
         }}
       >
@@ -158,12 +167,14 @@ export function ServiceAccount({ user, update }: any) {
   const editable = canEdit(me, me.account) || hasRbac(me, Permission.Users)
   const [mutation, { error }] = useMutation(IMPERSONATE_SERVICE_ACCOUNT, {
     variables: { id: user.id },
-    update: (_cache,
+    update: (
+      _cache,
       {
         data: {
           impersonateServiceAccount: { jwt },
         },
-      }) => {
+      }
+    ) => {
       setPreviousUserData({
         me,
         jwt: fetchToken(),

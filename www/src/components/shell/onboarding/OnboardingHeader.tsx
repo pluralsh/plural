@@ -37,9 +37,13 @@ function RestartModal({ onRestart, open, onClose }) {
         <Span
           body2
           color="text-xlight"
-        >CONFIRM RESTART
+        >
+          CONFIRM RESTART
         </Span>
-        <Span body1>Are you sure you want to restart onboarding? You will lose all progress.</Span>
+        <Span body1>
+          Are you sure you want to restart onboarding? You will lose all
+          progress.
+        </Span>
       </Flex>
       <Flex
         justify="flex-end"
@@ -50,20 +54,25 @@ function RestartModal({ onRestart, open, onClose }) {
           data-phid="restart-onboarding-cancel"
           secondary
           onClick={onClose}
-        >Cancel
+        >
+          Cancel
         </Button>
         <Button
           data-phid="restart-onboarding-confirm"
           destructive
           onClick={onRestart}
-        >Confirm
+        >
+          Confirm
         </Button>
       </Flex>
     </Modal>
   )
 }
 
-function OnboardingHeader({ onRestart, mode = 'wizard' }: OnboardingHeaderProps) {
+function OnboardingHeader({
+  onRestart,
+  mode = 'wizard',
+}: OnboardingHeaderProps) {
   const theme = useContext(ThemeContext)
   const [open, setOpen] = useState(false)
   const { section } = useSection()
@@ -125,8 +134,12 @@ function OnboardingHeader({ onRestart, mode = 'wizard' }: OnboardingHeaderProps)
             small
             secondary
             onClick={() => setOpen(true)}
-            disabled={section?.key === SectionKey.ONBOARDING_OVERVIEW || mode === 'shell'}
-          >Restart onboarding
+            disabled={
+              section?.key === SectionKey.ONBOARDING_OVERVIEW ||
+              mode === 'shell'
+            }
+          >
+            Restart onboarding
           </Button>
         </SidebarItem>
         <RestartModal

@@ -9,7 +9,11 @@ import { Placeholder } from '../utils/Placeholder'
 import CurrentUserContext from '../../contexts/CurrentUserContext'
 import { List, ListItem } from '../utils/List'
 import ListInput from '../utils/ListInput'
-import { extendConnection, removeConnection, updateCache } from '../../utils/graphql'
+import {
+  extendConnection,
+  removeConnection,
+  updateCache,
+} from '../../utils/graphql'
 import { DeleteIconButton } from '../utils/IconButtons'
 import { StandardScroller } from '../utils/SmoothScroller'
 import { Permission } from '../../generated/graphql'
@@ -47,11 +51,12 @@ function Role({ role, q }: any) {
   const editable = canEdit(me, me.account) || hasRbac(me, Permission.Users)
   const [mutation, { loading, error }] = useMutation(DELETE_ROLE, {
     variables: { id: role.id },
-    update: (cache, { data }) => updateCache(cache, {
-      query: ROLES_Q,
-      variables: { q },
-      update: prev => removeConnection(prev, data.deleteRole, 'roles'),
-    }),
+    update: (cache, { data }) =>
+      updateCache(cache, {
+        query: ROLES_Q,
+        variables: { q },
+        update: (prev) => removeConnection(prev, data.deleteRole, 'roles'),
+      }),
     onCompleted: () => setConfirm(false),
   })
 
@@ -127,11 +132,14 @@ function RolesInner({ q }: any) {
               />
             </ListItem>
           )}
-          loadNextPage={() => pageInfo.hasNextPage
-            && fetchMore({
+          loadNextPage={() =>
+            pageInfo.hasNextPage &&
+            fetchMore({
               variables: { cursor: pageInfo.endCursor },
-              updateQuery: (prev, { fetchMoreResult: { roles } }) => extendConnection(prev, roles, 'roles'),
-            })}
+              updateQuery: (prev, { fetchMoreResult: { roles } }) =>
+                extendConnection(prev, roles, 'roles'),
+            })
+          }
           hasNextPage={pageInfo.hasNextPage}
           loading={loading}
           placeholder={Placeholder}

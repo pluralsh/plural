@@ -1,9 +1,4 @@
-import {
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
+import { useContext, useEffect, useMemo, useState } from 'react'
 import { Button, ReloadIcon } from '@pluralsh/design-system'
 import { Flex } from 'honorable'
 import { useMutation, useQuery } from '@apollo/client'
@@ -18,7 +13,10 @@ import {
   SCMProps,
   WorkspaceProps,
 } from '../../context/types'
-import { CREATE_DEMO_PROJECT_MUTATION, POLL_DEMO_PROJECT_QUERY } from '../../../queries'
+import {
+  CREATE_DEMO_PROJECT_MUTATION,
+  POLL_DEMO_PROJECT_QUERY,
+} from '../../../queries'
 import {
   DemoProjectState,
   RootMutationType,
@@ -35,24 +33,34 @@ import { DemoStatus } from './DemoStatus'
 function CreateDemo({ onBack, onNext }): JSX.Element {
   const setSectionState = useSectionState()
   const setSectionError = useSectionError()
-  const {
-    cloud, workspace, setSCM, setCloud, setWorkspace,
-  } = useContext(OnboardingContext)
+  const { cloud, workspace, setSCM, setCloud, setWorkspace } =
+    useContext(OnboardingContext)
   const [demoCreated, setDemoCreated] = useState(false)
   const [shouldCreate, setShouldCreate] = useState(true)
 
-  const [createDemoProject, { data: createDemoProjectResponse, error: createDemoProjectError }] = useMutation<RootMutationType>(CREATE_DEMO_PROJECT_MUTATION)
-  const { data: { demoProject } = {}, error: demoProjectError } = useQuery<Pick<RootQueryType, 'demoProject'>, RootQueryTypeDemoProjectArgs>(POLL_DEMO_PROJECT_QUERY,
-    {
-      variables: {
-        id: createDemoProjectResponse?.createDemoProject?.id,
-      },
-      pollInterval: 2000,
-      skip: !!createDemoProjectError || !createDemoProjectResponse,
-    })
+  const [
+    createDemoProject,
+    { data: createDemoProjectResponse, error: createDemoProjectError },
+  ] = useMutation<RootMutationType>(CREATE_DEMO_PROJECT_MUTATION)
+  const { data: { demoProject } = {}, error: demoProjectError } = useQuery<
+    Pick<RootQueryType, 'demoProject'>,
+    RootQueryTypeDemoProjectArgs
+  >(POLL_DEMO_PROJECT_QUERY, {
+    variables: {
+      id: createDemoProjectResponse?.createDemoProject?.id,
+    },
+    pollInterval: 2000,
+    skip: !!createDemoProjectError || !createDemoProjectResponse,
+  })
 
   const error = createDemoProjectError ?? demoProjectError
-  const isProjectReady = useMemo(() => !IsEmpty(demoProject) && demoProject.state === DemoProjectState.Enabled && demoProject.ready, [demoProject])
+  const isProjectReady = useMemo(
+    () =>
+      !IsEmpty(demoProject) &&
+      demoProject.state === DemoProjectState.Enabled &&
+      demoProject.ready,
+    [demoProject]
+  )
 
   // On init set mode to creation and start creating demo
   useEffect(() => {
@@ -88,11 +96,17 @@ function CreateDemo({ onBack, onNext }): JSX.Element {
   }, [demoCreated, demoProject, isProjectReady, setCloud, setSCM, setWorkspace])
 
   // Capture errors and send to posthog
-  useEffect(() => error
-      && posthogCapture(PosthogEvent.Onboarding, {
-        type: cloud.type, provider: cloud.provider, clusterName: workspace.clusterName, error,
+  useEffect(
+    () =>
+      error &&
+      posthogCapture(PosthogEvent.Onboarding, {
+        type: cloud.type,
+        provider: cloud.provider,
+        clusterName: workspace.clusterName,
+        error,
       }),
-  [cloud.provider, cloud.type, error, workspace.clusterName])
+    [cloud.provider, cloud.type, error, workspace.clusterName]
+  )
 
   useEffect(() => setSectionError(!!error), [error, setSectionError])
 
@@ -128,7 +142,8 @@ function CreateDemo({ onBack, onNext }): JSX.Element {
             <Button
               secondary
               onClick={onBack}
-            >Back
+            >
+              Back
             </Button>
             <Button
               data-phid="review-configuration"

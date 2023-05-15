@@ -8,9 +8,16 @@ fragment Recipe on Recipe {
     type
     name
     message
-    args { name repo key }
+    args {
+      name
+      repo
+      key
+    }
   }
-  repository { id name }
+  repository {
+    id
+    name
+  }
   oidcSettings {
     uriFormat
     uriFormats
@@ -18,24 +25,38 @@ fragment Recipe on Recipe {
     domainKey
     subdomain
   }
-  recipeSections { ...RecipeSection }
+  recipeSections {
+    ...RecipeSection
+  }
 }
 
 fragment RecipeItem on RecipeItem {
   id
-  chart { ...Chart }
-  terraform { ...Terraform }
-  configuration { ...RecipeConfiguration }
+  chart {
+    ...Chart
+  }
+  terraform {
+    ...Terraform
+  }
+  configuration {
+    ...RecipeConfiguration
+  }
 }
 
 fragment RecipeSection on RecipeSection {
   index
   repository {
     ...Repo
-    installation { ...Installation }
+    installation {
+      ...Installation
+    }
   }
-  recipeItems { ...RecipeItem }
-  configuration { ...RecipeConfiguration }
+  recipeItems {
+    ...RecipeItem
+  }
+  configuration {
+    ...RecipeConfiguration
+  }
 }
 
 fragment RecipeConfiguration on RecipeConfiguration {
@@ -46,8 +67,16 @@ fragment RecipeConfiguration on RecipeConfiguration {
   optional
   placeholder
   functionName
-  condition { field operation value }
-  validation { type regex message }
+  condition {
+    field
+    operation
+    value
+  }
+  validation {
+    type
+    regex
+    message
+  }
 }
 
 fragment Stack on Stack {
@@ -56,7 +85,7 @@ fragment Stack on Stack {
   displayName
   description
   featured
-  creator { 
+  creator {
     id
     name
   }
@@ -79,13 +108,19 @@ fragment Stack on Stack {
 query GetRecipe($repo: String, $name: String) {
   recipe(repo: $repo, name: $name) {
     ...Recipe
-    recipeDependencies { ...Recipe }
+    recipeDependencies {
+      ...Recipe
+    }
   }
 }
 
 query ListRecipes($repositoryName: String, $provider: Provider) {
   recipes(repositoryName: $repositoryName, provider: $provider, first: 500) {
-    edges { node { ...Recipe } }
+    edges {
+      node {
+        ...Recipe
+      }
+    }
   }
 }
 
@@ -115,6 +150,10 @@ query GetStack($name: String!, $provider: Provider!) {
 
 query ListStacks($featured: Boolean, $cursor: String) {
   stacks(first: 100, after: $cursor, featured: $featured) {
-    edges { node { ...Stack } }
+    edges {
+      node {
+        ...Stack
+      }
+    }
   }
 }

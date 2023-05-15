@@ -14,7 +14,11 @@ import { CREATE_SUBSCRIPTION } from './queries'
 import { pivotByDimension, subscriptionCost } from './utils'
 import { PlanType } from './types'
 
-function LineItemInput({ item: { dimension, name, cost }, included, updateItem }: any) {
+function LineItemInput({
+  item: { dimension, name, cost },
+  included,
+  updateItem,
+}: any) {
   return (
     <Box
       direction="row"
@@ -25,18 +29,22 @@ function LineItemInput({ item: { dimension, name, cost }, included, updateItem }
       <NumericInput
         margin={{ horizontal: 'xsmall' }}
         value={0}
-        onChange={value => updateItem(dimension, value)}
+        onChange={(value) => updateItem(dimension, value)}
       />
       <Text
         size="small"
         weight="bold"
-      >{name}
+      >
+        {name}
       </Text>
-      <Text size="small">at ${cost / 100} / {dimension}</Text>
+      <Text size="small">
+        at ${cost / 100} / {dimension}
+      </Text>
       <Text
         size="small"
         color="dark-3"
-      >({included.quantity} included in base plan)
+      >
+        ({included.quantity} included in base plan)
       </Text>
     </Box>
   )
@@ -44,15 +52,24 @@ function LineItemInput({ item: { dimension, name, cost }, included, updateItem }
 
 function PlanForm({
   plan: {
-    name, cost, period, lineItems: { items, included },
-  }, attributes, setAttributes,
+    name,
+    cost,
+    period,
+    lineItems: { items, included },
+  },
+  attributes,
+  setAttributes,
 }: any) {
   const includedByDimension = pivotByDimension(included)
 
   function updateItem(dimension, quantity) {
-    setAttributes(deepUpdate(attributes,
-      'lineItems.items',
-      items => items.map(item => (item.dimension === dimension ? { dimension, quantity } : item))))
+    setAttributes(
+      deepUpdate(attributes, 'lineItems.items', (items) =>
+        items.map((item) =>
+          item.dimension === dimension ? { dimension, quantity } : item
+        )
+      )
+    )
   }
 
   return (
@@ -69,12 +86,16 @@ function PlanForm({
           <Text
             size="small"
             weight="bold"
-          >{name}
+          >
+            {name}
           </Text>
-          <Text size="small">${cost / 100} {period}</Text>
+          <Text size="small">
+            ${cost / 100} {period}
+          </Text>
         </Box>
-        {items.filter(({ type }) => type === PlanType.LICENSED)
-          .map(item => (
+        {items
+          .filter(({ type }) => type === PlanType.LICENSED)
+          .map((item) => (
             <LineItemInput
               key={item.dimension}
               item={item}
@@ -88,10 +109,18 @@ function PlanForm({
 }
 
 export function Subscriber({
-  plan, installationId, repositoryId, setOpen,
+  plan,
+  installationId,
+  repositoryId,
+  setOpen,
 }: any) {
   const [attributes, setAttributes] = useState({
-    lineItems: { items: plan.lineItems.items.map(({ dimension }) => ({ dimension, quantity: 0 })) },
+    lineItems: {
+      items: plan.lineItems.items.map(({ dimension }) => ({
+        dimension,
+        quantity: 0,
+      })),
+    },
   })
 
   const [mutation, { loading }] = useMutation(CREATE_SUBSCRIPTION, {
@@ -131,7 +160,10 @@ export function Subscriber({
 }
 
 export default function SubscribeModal({
-  plan, installationId, repositoryId, setOpen,
+  plan,
+  installationId,
+  repositoryId,
+  setOpen,
 }: any) {
   return (
     <Layer

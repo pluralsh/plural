@@ -55,7 +55,7 @@ export function InfoPanel({
             <IconFrame
               clickable
               icon={<CloseIcon />}
-              onClick={_ => onClose()}
+              onClick={(_) => onClose()}
             />
           </Flex>
         </Div>

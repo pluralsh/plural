@@ -13,7 +13,7 @@ const DIRECTORY = [
 export default function OverviewHeader(): ReactElement {
   const tabStateRef = useRef<any>(null)
   const { pathname } = useLocation()
-  const currentTab = DIRECTORY.find(tab => pathname?.startsWith(tab.path))
+  const currentTab = DIRECTORY.find((tab) => pathname?.startsWith(tab.path))
 
   return (
     <Flex marginBottom="medium">

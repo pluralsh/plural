@@ -5,10 +5,12 @@ function useUnmount(effect: () => void) {
 
   effectRef.current = effect
 
-  useEffect(() => () => {
-    effectRef.current()
-  },
-  [])
+  useEffect(
+    () => () => {
+      effectRef.current()
+    },
+    []
+  )
 }
 
 export default useUnmount

@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "rootDir": ".",
+    "types": ["@types/node"],
+    "noEmit": true,
+    "allowJs": true
+  },
+  "include": ["src/**/*",  "vite.config.ts", ".eslintrc.cjs"]
+}

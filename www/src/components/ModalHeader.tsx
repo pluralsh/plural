@@ -9,9 +9,7 @@ export function ModalHeader({ text, setOpen }: any) {
       px={1}
       pad={{ horizontal: 'medium', top: 'medium' }}
     >
-      <P body0>
-        {text}
-      </P>
+      <P body0>{text}</P>
       <Div flexGrow={1} />
       {typeof setOpen === 'function' && (
         <Flex

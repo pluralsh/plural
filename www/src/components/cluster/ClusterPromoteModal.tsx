@@ -19,7 +19,11 @@ type ClusterPromoteModalProps = {
   destination: Cluster
 }
 
-export function ClusterPromoteModal({ open, setOpen, destination }: ClusterPromoteModalProps) {
+export function ClusterPromoteModal({
+  open,
+  setOpen,
+  destination,
+}: ClusterPromoteModalProps) {
   return (
     <ImpersonateServiceAccount
       id={destination.owner?.id}
@@ -34,7 +38,11 @@ export function ClusterPromoteModal({ open, setOpen, destination }: ClusterPromo
   )
 }
 
-function ClusterPromoteModalInternal({ open, setOpen, destination }: ClusterPromoteModalProps) {
+function ClusterPromoteModalInternal({
+  open,
+  setOpen,
+  destination,
+}: ClusterPromoteModalProps) {
   const [finished, setFinished] = useState(false)
 
   const [mutation, { loading, error, reset }] = useMutation(PROMOTE, {
@@ -48,16 +56,22 @@ function ClusterPromoteModalInternal({ open, setOpen, destination }: ClusterProm
     reset()
   }, [setOpen, setFinished, reset])
 
-  const hint = useCallback((pending: number | undefined) => (!isNil(pending)
-    ? `${pending === 0 ? 'no' : pending} application${pending !== 1 ? 's' : ''} pending`
-    : undefined), [])
+  const hint = useCallback(
+    (pending: number | undefined) =>
+      !isNil(pending)
+        ? `${pending === 0 ? 'no' : pending} application${
+            pending !== 1 ? 's' : ''
+          } pending`
+        : undefined,
+    []
+  )
 
   return (
     <Modal
       portal
       open={open}
       onClose={close}
-      actions={(
+      actions={
         <>
           <Button
             secondary
@@ -66,28 +80,29 @@ function ClusterPromoteModalInternal({ open, setOpen, destination }: ClusterProm
           >
             Cancel
           </Button>
-          {finished ? (destination.consoleUrl && (
-            <Button
-              onClick={close}
-              as="a"
-              href={ensureURLValidity(destination.consoleUrl)}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              View in console
-            </Button>
-          )) : (
+          {finished ? (
+            destination.consoleUrl && (
+              <Button
+                onClick={close}
+                as="a"
+                href={ensureURLValidity(destination.consoleUrl)}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                View in console
+              </Button>
+            )
+          ) : (
             <Button
               disabled={!destination.dependency}
               onClick={mutation}
               loading={loading}
-
             >
               Promote
             </Button>
           )}
         </>
-      )}
+      }
       size="large"
       overflow="hidden"
     >
@@ -95,7 +110,9 @@ function ClusterPromoteModalInternal({ open, setOpen, destination }: ClusterProm
         direction="column"
         gap="xlarge"
       >
-        <Div subtitle2>{finished ? 'Cluster promotion complete' : 'Cluster promotion'}</Div>
+        <Div subtitle2>
+          {finished ? 'Cluster promotion complete' : 'Cluster promotion'}
+        </Div>
         {error && (
           <GqlError
             header="Something went wrong"

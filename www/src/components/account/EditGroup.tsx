@@ -7,18 +7,17 @@ import {
   Switch,
   ValidatedInput,
 } from '@pluralsh/design-system'
-import {
-  ReactNode,
-  useCallback,
-  useEffect,
-  useState,
-} from 'react'
+import { ReactNode, useCallback, useEffect, useState } from 'react'
 import { Flex, usePrevious } from 'honorable'
 
 import { appendConnection, updateCache } from '../../utils/graphql'
 import { GqlError } from '../utils/Alert'
 import { useUpdateState } from '../../hooks/useUpdateState'
-import { GroupMembersDocument, useCreateGroupMemberMutation, useUpdateGroupMutation } from '../../generated/graphql'
+import {
+  GroupMembersDocument,
+  useCreateGroupMemberMutation,
+  useUpdateGroupMutation,
+} from '../../generated/graphql'
 
 import { Actions } from './Actions'
 import { fetchUsers } from './Typeaheads'
@@ -33,11 +32,13 @@ export function EditGroupMembers({ group, open, onClose }: any) {
 
   const [addMut, { loading, error }] = useCreateGroupMemberMutation({
     variables: { groupId: group.id } as any,
-    update: (cache, { data }) => updateCache(cache, {
-      query: GroupMembersDocument,
-      variables: { id: group.id },
-      update: prev => appendConnection(prev, data?.createGroupMember, 'groupMembers'),
-    }),
+    update: (cache, { data }) =>
+      updateCache(cache, {
+        query: GroupMembersDocument,
+        variables: { id: group.id },
+        update: (prev) =>
+          appendConnection(prev, data?.createGroupMember, 'groupMembers'),
+      }),
   })
 
   useEffect(() => {
@@ -60,12 +61,14 @@ export function EditGroupMembers({ group, open, onClose }: any) {
 
       return
     }
-    setErrorMsg(error && (
-      <GqlError
-        header="Problem editing group members"
-        error={error}
-      />
-    ))
+    setErrorMsg(
+      error && (
+        <GqlError
+          header="Problem editing group members"
+          error={error}
+        />
+      )
+    )
   }, [error])
 
   return (
@@ -75,14 +78,14 @@ export function EditGroupMembers({ group, open, onClose }: any) {
       open={open}
       size="large"
       onClose={onClose}
-      actions={(
+      actions={
         <Button
           onClick={onClose}
           loading={loading}
         >
           Done
         </Button>
-      )}
+      }
     >
       <Flex
         flexDirection="column"
@@ -102,14 +105,14 @@ export function EditGroupMembers({ group, open, onClose }: any) {
             inputValue={userFilter}
             // @ts-expect-error
             placeholder="Search a user"
-            onSelectionChange={key => {
+            onSelectionChange={(key) => {
               setUserFilter('')
               if (key && typeof key === 'string') {
                 // @ts-expect-error
                 addMut({ variables: { userId: key } })
               }
             }}
-            onInputChange={value => {
+            onInputChange={(value) => {
               setUserFilter(value)
             }}
           >
@@ -158,12 +161,14 @@ export function EditGroupAttributes({ group, open, onClose }: any) {
     }
   })
   useEffect(() => {
-    setErrorMsg(error && (
-      <GqlError
-        header="Problem editing group attributes"
-        error={error}
-      />
-    ))
+    setErrorMsg(
+      error && (
+        <GqlError
+          header="Problem editing group attributes"
+          error={error}
+        />
+      )
+    )
   }, [error])
 
   return (
@@ -173,14 +178,14 @@ export function EditGroupAttributes({ group, open, onClose }: any) {
       open={open}
       size="large"
       onClose={onClose}
-      actions={(
+      actions={
         <Actions
           cancel={onClose}
           submit={hasUpdates ? () => mutation() : undefined}
           loading={loading}
           action="Update"
         />
-      )}
+      }
     >
       <Flex
         flexDirection="column"

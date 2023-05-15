@@ -1,11 +1,5 @@
 import { Link, useOutletContext } from 'react-router-dom'
-import {
-  Div,
-  Flex,
-  Img,
-  P,
-  Span,
-} from 'honorable'
+import { Div, Flex, Img, P, Span } from 'honorable'
 import moment from 'moment'
 import Fuse from 'fuse.js'
 import { Chip } from '@pluralsh/design-system'
@@ -47,11 +41,14 @@ function Chart({ chart, first, last }: any) {
             {chart.name}
           </P>
           {chart.dependencies && chart.dependencies.application && (
-            <Chip ml={1}><Span fontWeight="400">APP</Span></Chip>
+            <Chip ml={1}>
+              <Span fontWeight="400">APP</Span>
+            </Chip>
           )}
         </Flex>
         <P mt={0.5}>
-          {chart.latestVersion} {chart.description ? `- ${chart.description}` : null}
+          {chart.latestVersion}{' '}
+          {chart.description ? `- ${chart.description}` : null}
         </P>
       </Div>
       <Flex
@@ -69,13 +66,16 @@ function Chart({ chart, first, last }: any) {
 function RepositoryPackagesHelm() {
   const { id } = useRepositoryContext()
   const [q] = useOutletContext() as any
-  const [charts, loadingCharts, hasMoreCharts, fetchMoreCharts] = usePaginatedQuery(CHARTS_QUERY,
-    {
-      variables: {
-        repositoryId: id,
+  const [charts, loadingCharts, hasMoreCharts, fetchMoreCharts] =
+    usePaginatedQuery(
+      CHARTS_QUERY,
+      {
+        variables: {
+          repositoryId: id,
+        },
       },
-    },
-    data => data.charts)
+      (data) => data.charts
+    )
 
   const fuse = new Fuse(charts, searchOptions)
   const filteredCharts = q ? fuse.search(q).map(({ item }) => item) : charts
@@ -93,14 +93,16 @@ function RepositoryPackagesHelm() {
       flexGrow={1}
       height={0}
     >
-      {filteredCharts.sort((a, b) => a.name.localeCompare(b.name)).map((chart, i) => (
-        <Chart
-          key={chart.id}
-          chart={chart}
-          first={i === 0}
-          last={i === filteredCharts.length - 1}
-        />
-      ))}
+      {filteredCharts
+        .sort((a, b) => a.name.localeCompare(b.name))
+        .map((chart, i) => (
+          <Chart
+            key={chart.id}
+            chart={chart}
+            first={i === 0}
+            last={i === filteredCharts.length - 1}
+          />
+        ))}
       {!filteredCharts?.length && (
         <Flex
           width="100%"

@@ -1,9 +1,4 @@
-import {
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import { useMutation } from '@apollo/client'
 import { Box, Layer, Text } from 'grommet'
 import {
@@ -30,7 +25,7 @@ export function EmailConfirmed() {
     variables: { id, attributes: {} },
     onCompleted: () => {
       setTimeout(() => {
-        (window as Window).location = '/'
+        ;(window as Window).location = '/'
       }, 2000)
     },
   })
@@ -75,7 +70,8 @@ export function VerifyEmailConfirmed() {
 
   const close = useCallback(() => setOpen(false), [setOpen])
 
-  if (me.emailConfirmed || me.serviceAccount || !open || isCurrentlyOnboarding) return null
+  if (me.emailConfirmed || me.serviceAccount || !open || isCurrentlyOnboarding)
+    return null
 
   return (
     <Layer
@@ -111,9 +107,15 @@ export function VerifyEmailConfirmed() {
           <Text
             size="small"
             weight={500}
-          >Your email is not confirmed
+          >
+            Your email is not confirmed
           </Text>
-          {me.emailConfirmBy && <Text size="small">you have {moment(me.emailConfirmBy).fromNow(true)} to confirm your email</Text>}
+          {me.emailConfirmBy && (
+            <Text size="small">
+              you have {moment(me.emailConfirmBy).fromNow(true)} to confirm your
+              email
+            </Text>
+          )}
         </Box>
         <Box
           flex={false}

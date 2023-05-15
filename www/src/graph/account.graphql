@@ -6,29 +6,58 @@ fragment Audit on Audit {
   city
   latitude
   longitude
-  actor { ...User }
-  repository { ...Repo }
-  group { ...Group }
-  integrationWebhook { ...IntegrationWebhook }
-  role { ...Role }
-  version { ...Version }
-  image { id tag dockerRepository { name } }
+  actor {
+    ...User
+  }
+  repository {
+    ...Repo
+  }
+  group {
+    ...Group
+  }
+  integrationWebhook {
+    ...IntegrationWebhook
+  }
+  role {
+    ...Role
+  }
+  version {
+    ...Version
+  }
+  image {
+    id
+    tag
+    dockerRepository {
+      name
+    }
+  }
   insertedAt
 }
 
 fragment PolicyBinding on PolicyBinding {
   id
-  group { id name }
-  user { id name email }
+  group {
+    id
+    name
+  }
+  user {
+    id
+    name
+    email
+  }
 }
 
 fragment DnsDomain on DnsDomain {
   id
   name
-  creator { ...User }
+  creator {
+    ...User
+  }
   accessPolicy {
     id
-    bindings { ...PolicyBinding }
+    bindings {
+      ...PolicyBinding
+    }
   }
   insertedAt
 }
@@ -46,9 +75,15 @@ fragment OidcLogin on OidcLogin {
   city
   latitude
   longitude
-  user { ...User }
-  owner { ...User }
-  repository { ...Repo }
+  user {
+    ...User
+  }
+  owner {
+    ...User
+  }
+  repository {
+    ...Repo
+  }
   insertedAt
 }
 

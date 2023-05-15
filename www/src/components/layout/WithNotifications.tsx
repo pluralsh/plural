@@ -1,12 +1,7 @@
 import { useMutation, useQuery } from '@apollo/client'
 import { Div, Flex, P } from 'honorable'
 import moment from 'moment'
-import {
-  AppIcon,
-  Button,
-  Card,
-  Markdown,
-} from '@pluralsh/design-system'
+import { AppIcon, Button, Card, Markdown } from '@pluralsh/design-system'
 import { useCallback, useContext } from 'react'
 import { Link } from 'react-router-dom'
 import { ThemeContext } from 'styled-components'
@@ -25,16 +20,21 @@ import { UPDATE_USER } from '../users/queries'
 import InfiniteScroller from '../utils/InfiniteScroller'
 import CurrentUserContext from '../../contexts/CurrentUserContext'
 import { updateUserFragment } from '../../utils/graphql'
-import { clearOnboardingChecklistState, isOnboardingChecklistHidden } from '../../helpers/localStorage'
+import {
+  clearOnboardingChecklistState,
+  isOnboardingChecklistHidden,
+} from '../../helpers/localStorage'
 
 import { NOTIFICATIONS_QUERY } from './queries'
 
 export function useNotificationsCount() {
-  const { data } = useQuery<{ notifications: RootQueryType['notifications'] }>(NOTIFICATIONS_QUERY,
+  const { data } = useQuery<{ notifications: RootQueryType['notifications'] }>(
+    NOTIFICATIONS_QUERY,
     {
       variables: { first: 100 },
       pollInterval: 10000,
-    })
+    }
+  )
 
   return data?.notifications?.edges?.length ?? undefined
 }
@@ -45,15 +45,19 @@ export function NotificationsPanel({ closePanel }: any) {
     loadingNotifications,
     hasMoreNotifications,
     fetchMoreNotifications,
-  ] = usePaginatedQuery(NOTIFICATIONS_QUERY,
+  ] = usePaginatedQuery(
+    NOTIFICATIONS_QUERY,
     { variables: {} },
-    data => data.notifications)
+    (data) => data.notifications
+  )
 
   const me = useContext(CurrentUserContext)
-  const showOnboardingNotification = useCallback(() => (
-    me.onboardingChecklist?.dismissed || isOnboardingChecklistHidden())
-    && me.onboardingChecklist?.status !== OnboardingChecklistState.Finished,
-  [me])
+  const showOnboardingNotification = useCallback(
+    () =>
+      (me.onboardingChecklist?.dismissed || isOnboardingChecklistHidden()) &&
+      me.onboardingChecklist?.status !== OnboardingChecklistState.Finished,
+    [me]
+  )
 
   if (showOnboardingNotification() && !notifications.length) {
     return <OnboardingChecklistNotification closePanel={closePanel} />
@@ -79,7 +83,7 @@ export function NotificationsPanel({ closePanel }: any) {
         flexGrow={1}
         height={0}
       >
-        {notifications.map(notification => (
+        {notifications.map((notification) => (
           <Notification
             key={notification.id}
             notification={notification}
@@ -93,7 +97,10 @@ export function NotificationsPanel({ closePanel }: any) {
 
 function OnboardingChecklistNotification({ closePanel }: any) {
   const { setDismissed } = useContext(OnboardingChecklistContext)
-  const [updateChecklist, { loading }] = useMutation<RootMutationType, RootMutationTypeUpdateUserArgs>(UPDATE_USER, {
+  const [updateChecklist, { loading }] = useMutation<
+    RootMutationType,
+    RootMutationTypeUpdateUserArgs
+  >(UPDATE_USER, {
     variables: {
       attributes: {
         onboardingChecklist: {
@@ -124,12 +131,14 @@ function OnboardingChecklistNotification({ closePanel }: any) {
         <P
           body2
           bold
-        >Get started
+        >
+          Get started
         </P>
         <P
           caption
           color="text-light"
-        >Get started with our quick start guide.
+        >
+          Get started with our quick start guide.
         </P>
       </Flex>
       <Flex alignItems="center">
@@ -138,16 +147,18 @@ function OnboardingChecklistNotification({ closePanel }: any) {
           small
           loading={loading}
           onClick={() => updateChecklist()}
-        >Open Guide
+        >
+          Open Guide
         </Button>
       </Flex>
     </Flex>
   )
 }
 
-const hasMessage = notification => (notification?.type === NotificationType.Message
-    && notification?.message?.text)
-  || notification.msg
+const hasMessage = (notification) =>
+  (notification?.type === NotificationType.Message &&
+    notification?.message?.text) ||
+  notification.msg
 
 const getUrl = (notification: NotificationT) => {
   if (notification.type === 'LOCKED' && notification?.repository?.id) {
@@ -164,19 +175,19 @@ function HeaderNotificationType({ type }: { type: NotificationType }) {
   let text
 
   switch (type) {
-  case NotificationType.Message:
-    return null
-  case 'INCIDENT_UPDATE':
-    text = 'Updated the incident'
-    break
-  case 'MENTION':
-    text = 'Mentioned you'
-    break
-  case 'LOCKED':
-    text = 'Locked your installation'
-    break
-  default:
-    return null
+    case NotificationType.Message:
+      return null
+    case 'INCIDENT_UPDATE':
+      text = 'Updated the incident'
+      break
+    case 'MENTION':
+      text = 'Mentioned you'
+      break
+    case 'LOCKED':
+      text = 'Locked your installation'
+      break
+    default:
+      return null
   }
 
   return (
@@ -248,12 +259,12 @@ function Notification({ notification, closePanel }: any) {
             borderBottom={hasMessage(notification) && theme.borders['fill-two']}
             {...(url
               ? {
-                as: Link,
-                to: url,
-                onClick: closePanel,
-                color: 'inherit',
-                textDecoration: 'none',
-              }
+                  as: Link,
+                  to: url,
+                  onClick: closePanel,
+                  color: 'inherit',
+                  textDecoration: 'none',
+                }
               : {})}
           >
             <Div>

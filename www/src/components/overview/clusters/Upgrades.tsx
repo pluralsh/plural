@@ -16,9 +16,14 @@ import UpgradeList from './UpgradeList'
 export default function Upgrades() {
   const me = useContext(CurrentUserContext)
   const { clusters } = useContext(ClustersContext)
-  const isClusterAccessible = useCallback(c => c.owner?.id === me.id || !!c.owner?.serviceAccount, [me.id])
+  const isClusterAccessible = useCallback(
+    (c) => c.owner?.id === me.id || !!c.owner?.serviceAccount,
+    [me.id]
+  )
   const accessibleClusters = clusters.filter(isClusterAccessible)
-  const [cluster, setCluster] = useState<Cluster | undefined>(!isEmpty(accessibleClusters) ? accessibleClusters[0] : undefined)
+  const [cluster, setCluster] = useState<Cluster | undefined>(
+    !isEmpty(accessibleClusters) ? accessibleClusters[0] : undefined
+  )
   const [refreshing, setRefreshing] = useState(false)
   const [refetch, setRefetch] = useState<any>()
 
@@ -27,7 +32,7 @@ export default function Upgrades() {
   return (
     <ListCard
       minHeight="min(calc(100vh - 153px), 300px)"
-      header={(
+      header={
         <>
           <Div width={500}>
             <ClusterPicker
@@ -35,7 +40,7 @@ export default function Upgrades() {
               setCluster={setCluster}
               filter={isClusterAccessible}
               size="small"
-              title={(
+              title={
                 <Flex
                   gap="xsmall"
                   whiteSpace="nowrap"
@@ -43,7 +48,7 @@ export default function Upgrades() {
                   <ClusterIcon />
                   Cluster upgrades
                 </Flex>
-              )}
+              }
             />
           </Div>
           <Flex grow={1} />
@@ -60,23 +65,22 @@ export default function Upgrades() {
             Refresh
           </Button>
         </>
-      )}
+      }
     >
-      {cluster?.queue?.id
-        ? (
-          <ImpersonateServiceAccount
-            id={cluster?.owner?.id}
-            skip={!cluster?.owner?.serviceAccount}
-          >
-            <UpgradeList
-              cluster={cluster}
-              setRefreshing={setRefreshing}
-              setRefetch={setRefetch}
-            />
-          </ImpersonateServiceAccount>
-        )
-        : <EmptyListMessage>Cannot access upgrade queue.</EmptyListMessage>}
+      {cluster?.queue?.id ? (
+        <ImpersonateServiceAccount
+          id={cluster?.owner?.id}
+          skip={!cluster?.owner?.serviceAccount}
+        >
+          <UpgradeList
+            cluster={cluster}
+            setRefreshing={setRefreshing}
+            setRefetch={setRefetch}
+          />
+        </ImpersonateServiceAccount>
+      ) : (
+        <EmptyListMessage>Cannot access upgrade queue.</EmptyListMessage>
+      )}
     </ListCard>
   )
 }
-

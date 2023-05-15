@@ -29,9 +29,7 @@ function BillingPricingCard({
       borderRadius="large"
       border={`1px solid ${selected ? 'border-fill-two' : 'border'}`}
     >
-      <Div subtitle1>
-        {title}
-      </Div>
+      <Div subtitle1>{title}</Div>
       <Div
         overline
         color="text-xlight"
@@ -45,7 +43,7 @@ function BillingPricingCard({
         marginTop="large"
         color="text-xlight"
       >
-        {items.map(item => (
+        {items.map((item) => (
           <Flex
             key={item.label}
             align="center"

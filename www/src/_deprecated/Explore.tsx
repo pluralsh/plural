@@ -25,7 +25,11 @@ import CurrentUserContext from '../contexts/CurrentUserContext'
 import { SafeLink } from '../components/utils/Link'
 import { RepoIcon, RepoName } from '../components/repos/Repositories'
 import { Tag } from '../components/repos/Tags'
-import { CATEGORIES, CATEGORY, EXPLORE_REPOS } from '../components/repos/queries'
+import {
+  CATEGORIES,
+  CATEGORY,
+  EXPLORE_REPOS,
+} from '../components/repos/queries'
 import { StandardScroller } from '../components/utils/SmoothScroller'
 import { LoopingLogo } from '../components/utils/AnimatedLogo'
 
@@ -38,8 +42,8 @@ function EmptyState() {
         weight={500}
         size="small"
       >
-        It looks like you haven't installed any repos yet, use the search bar or browse by tag
-        to find what you're looking for
+        It looks like you haven't installed any repos yet, use the search bar or
+        browse by tag to find what you're looking for
       </Text>
     </Box>
   )
@@ -53,7 +57,7 @@ function RepoTag({ tag, setTag }: any) {
       pad={{ horizontal: 'xsmall', vertical: '1px' }}
       hoverIndicator="hover"
       focusIndicator={false}
-      onClick={e => {
+      onClick={(e) => {
         ignoreEvent(e)
         setTag(tag)
       }}
@@ -82,9 +86,7 @@ function Repo({ repo, setTag }: any) {
       focusIndicator={false}
       onClick={() => navigate(`/repositories/${repo.id}`)}
     >
-      <RepoIcon
-        repo={repo}
-      />
+      <RepoIcon repo={repo} />
       <Box
         fill="horizontal"
         gap="2px"
@@ -111,14 +113,18 @@ function Repo({ repo, setTag }: any) {
           <Text
             size="small"
             color="text-light"
-          >publisher:
+          >
+            publisher:
           </Text>
-          <SafeLink to={`/publishers/${repo.publisher.id}`}>{repo.publisher.name}</SafeLink>
+          <SafeLink to={`/publishers/${repo.publisher.id}`}>
+            {repo.publisher.name}
+          </SafeLink>
         </Box>
         <Text
           size="small"
           color="dark-3"
-        ><i>{repo.description}</i>
+        >
+          <i>{repo.description}</i>
         </Text>
       </Box>
     </Box>
@@ -156,13 +162,7 @@ function Placeholder() {
   )
 }
 
-function Repositories({
-  edges,
-  pageInfo,
-  loading,
-  fetchMore,
-  setTag,
-}: any) {
+function Repositories({ edges, pageInfo, loading, fetchMore, setTag }: any) {
   const [listRef, setListRef] = useState<any>(null)
 
   return (
@@ -181,23 +181,34 @@ function Repositories({
             setTag={setTag}
           />
         )}
-        loadNextPage={() => pageInfo.hasNextPage && fetchMore({
-          variables: { cursor: pageInfo.endCursor },
-          updateQuery: (prev, { fetchMoreResult: { repositories } }) => extendConnection(prev, repositories, 'repositories'),
-        })}
+        loadNextPage={() =>
+          pageInfo.hasNextPage &&
+          fetchMore({
+            variables: { cursor: pageInfo.endCursor },
+            updateQuery: (prev, { fetchMoreResult: { repositories } }) =>
+              extendConnection(prev, repositories, 'repositories'),
+          })
+        }
       />
     </Box>
   )
 }
 
 function CategoryTags({ category, tag, setTag }: any) {
-  const { data, fetchMore } = useQuery(CATEGORY, { variables: { category: category.category } })
-  const loadMore = useCallback(() => fetchMore({
-    variables: { cursor: data.category.tags.pageInfo.endCursor },
-    updateQuery: (prev, { fetchMoreResult: { category } }) => ({
-      ...prev, category: extendConnection(prev.category, category.tags, 'tags'),
-    }),
-  }), [data, fetchMore])
+  const { data, fetchMore } = useQuery(CATEGORY, {
+    variables: { category: category.category },
+  })
+  const loadMore = useCallback(
+    () =>
+      fetchMore({
+        variables: { cursor: data.category.tags.pageInfo.endCursor },
+        updateQuery: (prev, { fetchMoreResult: { category } }) => ({
+          ...prev,
+          category: extendConnection(prev.category, category.tags, 'tags'),
+        }),
+      }),
+    [data, fetchMore]
+  )
 
   if (!data) return null
 
@@ -234,9 +245,7 @@ function CategoryTags({ category, tag, setTag }: any) {
   )
 }
 
-function Category({
-  category, tag, setTag, unfurl,
-}: any) {
+function Category({ category, tag, setTag, unfurl }: any) {
   const [open, setOpen] = useState(unfurl)
 
   return (
@@ -306,7 +315,7 @@ function TagSidebar({ tag, setTag }: any) {
       style={{ overflow: 'auto' }}
     >
       <Box flex={false}>
-        {categories.map(category => (
+        {categories.map((category) => (
           <Category
             key={category.category}
             unfurl={false}
@@ -332,14 +341,14 @@ export const SectionContext = createContext<any>({})
 export function SectionPortal({ children }: any) {
   const { ref } = useContext(SectionContext)
 
-  return (
-    <Portal node={ref}>
-      {children}
-    </Portal>
-  )
+  return <Portal node={ref}>{children}</Portal>
 }
 
-export function SectionContentContainer({ header: h, children, borderLeft }: any) {
+export function SectionContentContainer({
+  header: h,
+  children,
+  borderLeft,
+}: any) {
   const [header, setHeader] = useState(h)
   const [ref, setRef] = useState<HTMLDivElement | null>(null)
   const id = useMemo(() => uuidv4(), [])
@@ -353,7 +362,11 @@ export function SectionContentContainer({ header: h, children, borderLeft }: any
           direction="row"
           pad="small"
           height="45px"
-          border={borderLeft ? [{ side: 'bottom' }, { side: 'left' }] : [{ side: 'bottom' }]}
+          border={
+            borderLeft
+              ? [{ side: 'bottom' }, { side: 'left' }]
+              : [{ side: 'bottom' }]
+          }
           align="center"
           background="fill-one"
         >
@@ -366,21 +379,23 @@ export function SectionContentContainer({ header: h, children, borderLeft }: any
             </Text>
           </Box>
           <Box
-            ref={ref => setRef(ref)}
+            ref={(ref) => setRef(ref)}
             id={id}
             flex={false}
           />
         </Box>
-        <Box fill>
-          {children}
-        </Box>
+        <Box fill>{children}</Box>
       </Box>
     </SectionContext.Provider>
   )
 }
 
 export function SectionItemContainer({
-  label, icon, selected, location, ...props
+  label,
+  icon,
+  selected,
+  location,
+  ...props
 }: any) {
   const navigate = useNavigate()
 
@@ -398,12 +413,8 @@ export function SectionItemContainer({
       onClick={selected ? undefined : () => navigate(location)}
       {...props}
     >
-      <Box flex={false}>
-        {icon}
-      </Box>
-      <Box fill="horizontal">
-        {label}
-      </Box>
+      <Box flex={false}>{icon}</Box>
+      <Box fill="horizontal">{label}</Box>
     </Box>
   )
 }
@@ -453,20 +464,23 @@ export default function Explore() {
     if (tag) crumbs.push({ url: `/explore/${group}/${tag}`, text: tag })
     setBreadcrumbs(crumbs)
   }, [group, tag, setBreadcrumbs])
-  const doSetTag = useCallback(t => (
-    t === tag ? navigate('/explore/public')
-      : navigate(`/explore/public/${t}`)
-  ), [tag, navigate])
+  const doSetTag = useCallback(
+    (t) =>
+      t === tag
+        ? navigate('/explore/public')
+        : navigate(`/explore/public/${t}`),
+    [tag, navigate]
+  )
 
   const refreshBy = `${group}:${tag}`
 
   if (!data) {
-    return (
-      <LoopingLogo />
-    )
+    return <LoopingLogo />
   }
 
-  const { repositories: { edges, pageInfo } } = data
+  const {
+    repositories: { edges, pageInfo },
+  } = data
 
   return (
     <Box
@@ -510,8 +524,9 @@ export default function Explore() {
               fetchMore={fetchMore}
               setTag={doSetTag}
             />
-          )
-            : <EmptyState />}
+          ) : (
+            <EmptyState />
+          )}
         </SectionContent>
         <SectionContent
           name="published"
@@ -524,7 +539,8 @@ export default function Explore() {
             pageInfo={pageInfo}
             fetchMore={fetchMore}
             setTag={doSetTag}
-          /> :
+          />{' '}
+          :
         </SectionContent>
       </Box>
     </Box>

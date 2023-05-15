@@ -1,11 +1,13 @@
 import { CloseIcon } from '@pluralsh/design-system'
 
 export const fileInputTheme = ({
-  selected = false, error = false, theme,
+  selected = false,
+  error = false,
+  theme,
 }: {
-  selected?: boolean;
-  error?: boolean;
-  theme: any;
+  selected?: boolean
+  error?: boolean
+  theme: any
 }) => ({
   fileInput: {
     message: {
@@ -16,8 +18,8 @@ export const fileInputTheme = ({
         color: error
           ? theme.colors['border-error']
           : selected
-            ? theme.colors['border-success']
-            : theme.colors['border-input'],
+          ? theme.colors['border-success']
+          : theme.colors['border-input'],
       },
       background: {
         color: theme.colors['fill-one-hover'],
@@ -46,8 +48,8 @@ export const fileInputTheme = ({
       color: error
         ? theme.colors['border-error']
         : selected
-          ? theme.colors['border-success']
-          : theme.colors['border-input'],
+        ? theme.colors['border-success']
+        : theme.colors['border-input'],
     },
     icons: {
       remove: CloseIcon,

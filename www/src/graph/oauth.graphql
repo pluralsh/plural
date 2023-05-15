@@ -6,8 +6,12 @@ fragment OIDCProvider on OidcProvider {
   redirectUris
   bindings {
     id
-    user { ...User }
-    group { ...Group }
+    user {
+      ...User
+    }
+    group {
+      ...Group
+    }
   }
   configuration {
     issuer

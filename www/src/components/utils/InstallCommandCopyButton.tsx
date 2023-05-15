@@ -64,7 +64,7 @@ export function InstallCommandCopyButton({
               justifyContent: 'start',
             },
           }}
-          startIcon={(
+          startIcon={
             <Flex
               width={16}
               height={16}
@@ -76,7 +76,7 @@ export function InstallCommandCopyButton({
                 width={providerToIconWidth[provider]}
               />
             </Flex>
-          )}
+          }
           endIcon={copiedAt ? <CheckIcon /> : <CopyIcon />}
         >
           <Div textAlign="left">{providerToShortName[provider]}</Div>

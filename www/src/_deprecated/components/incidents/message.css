@@ -2,10 +2,10 @@
   background: rgba(255, 229, 119, 0.5);
 }
 .message.pin {
-  background: rgba(var(--sk_secondary_highlight,242,199,68),.1);
+  background: rgba(var(--sk_secondary_highlight, 242, 199, 68), 0.1);
 }
 .message.nohover {
-  background: #FFFFFF !important;
+  background: #ffffff !important;
 }
 .message.nohover.override .message-controls {
   display: none !important;
@@ -26,13 +26,13 @@
   background: rgba(255, 229, 119, 0.5);
 }
 .message.pin:hover {
-  background: rgba(var(--sk_secondary_highlight,242,199,68),.1);
+  background: rgba(var(--sk_secondary_highlight, 242, 199, 68), 0.1);
 }
 .message:hover {
-  background: #F2F2F2;
+  background: #f2f2f2;
 }
 .message.hovered {
-  background: #F2F2F2;
+  background: #f2f2f2;
 }
 
 .message:hover .message-controls {

@@ -1,8 +1,18 @@
-import { Link as ReactRouterLink, useLocation, useNavigate } from 'react-router-dom'
-import { type NavigationContextLinkProps, NavigationContextProvider } from '@pluralsh/design-system'
+import {
+  Link as ReactRouterLink,
+  useLocation,
+  useNavigate,
+} from 'react-router-dom'
+import {
+  type NavigationContextLinkProps,
+  NavigationContextProvider,
+} from '@pluralsh/design-system'
 import { ReactNode, Ref, forwardRef } from 'react'
 
-function LinkRef({ href, ...props }: NavigationContextLinkProps, ref:Ref<any>) {
+function LinkRef(
+  { href, ...props }: NavigationContextLinkProps,
+  ref: Ref<any>
+) {
   return (
     <ReactRouterLink
       ref={ref}
@@ -32,7 +42,7 @@ export default function AppNavContextProvider({
         useNavigate: () => {
           const navigate = useNavigate()
 
-          return loc => {
+          return (loc) => {
             navigate(loc ?? '')
           }
         },

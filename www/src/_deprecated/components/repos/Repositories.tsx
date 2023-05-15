@@ -1,11 +1,6 @@
 import { useContext } from 'react'
 import { Box, Text, ThemeContext } from 'grommet'
-import {
-  HoveredBackground,
-  Password,
-  Scroller,
-  Trash,
-} from 'forge-core'
+import { HoveredBackground, Password, Scroller, Trash } from 'forge-core'
 import { useMutation, useQuery } from '@apollo/client'
 import { useNavigate } from 'react-router-dom'
 
@@ -20,7 +15,10 @@ function DeleteRepository({ repo, publisherId }: any) {
   const [mutation] = useMutation(DELETE_REPO, {
     variables: { id: repo.id },
     update: (cache, { data: { deleteRepository } }) => {
-      const { repositories, ...prev } = cache.readQuery({ query: REPOS_Q, variables: { publisherId } }) as any
+      const { repositories, ...prev } = cache.readQuery({
+        query: REPOS_Q,
+        variables: { publisherId },
+      }) as any
 
       cache.writeQuery({
         query: REPOS_Q,
@@ -28,7 +26,10 @@ function DeleteRepository({ repo, publisherId }: any) {
         data: {
           ...prev,
           repositories: {
-            ...repositories, edges: repositories.edges.filter(({ node }) => node.id !== deleteRepository.id),
+            ...repositories,
+            edges: repositories.edges.filter(
+              ({ node }) => node.id !== deleteRepository.id
+            ),
           },
         },
       })
@@ -107,29 +108,27 @@ export function RepositoryInner({ repo }: any) {
         width="100%"
       >
         <RepoName repo={repo} />
-        <Text size="small">
-          {repo.description}
-        </Text>
+        <Text size="small">{repo.description}</Text>
       </Box>
     </Box>
   )
 }
 
-function RepositoryCell({
-  repo, deletable, publisherId, width,
-}: any) {
+function RepositoryCell({ repo, deletable, publisherId, width }: any) {
   const navigate = useNavigate()
 
   return (
     <Container
       pad="medium"
       width={width}
-      modifier={deletable && (
-        <DeleteRepository
-          repo={repo}
-          publisherId={publisherId}
-        />
-      )}
+      modifier={
+        deletable && (
+          <DeleteRepository
+            repo={repo}
+            publisherId={publisherId}
+          />
+        )
+      }
       onClick={() => navigate(`/repositories/${repo.id}`)}
     >
       <RepositoryInner repo={repo} />
@@ -137,9 +136,7 @@ function RepositoryCell({
   )
 }
 
-export function Repository({
-  repo, hasNext, deletable, publisherId,
-}: any) {
+export function Repository({ repo, hasNext, deletable, publisherId }: any) {
   return (
     <Box
       pad="small"
@@ -171,13 +168,12 @@ export function Repository({
           <Text
             size="small"
             weight="bold"
-          >{repo.name}
+          >
+            {repo.name}
           </Text>
           {repo.private && <Password size="small" />}
         </Box>
-        <Text size="small">
-          {repo.description}
-        </Text>
+        <Text size="small">{repo.description}</Text>
       </Box>
       {deletable && (
         <DeleteRepository
@@ -205,7 +201,7 @@ export function RepositoryList({
       edges={Array.from(chunk(edges, columns))}
       style={{ overflow: 'auto', height: '100%', width: '100%' }}
       emptyState={emptyState}
-      mapper={chunk => (
+      mapper={(chunk) => (
         <Box
           key={chunk[0].node.id}
           direction="row"
@@ -224,16 +220,22 @@ export function RepositoryList({
           ))}
         </Box>
       )}
-      onLoadMore={() => pageInfo.hasNextPage && fetchMore({
-        variables: { cursor: pageInfo.endCursor },
-        updateQuery: (prev, { fetchMoreResult: { repositories } }) => extendConnection(prev, repositories, 'repositories'),
-      })}
+      onLoadMore={() =>
+        pageInfo.hasNextPage &&
+        fetchMore({
+          variables: { cursor: pageInfo.endCursor },
+          updateQuery: (prev, { fetchMoreResult: { repositories } }) =>
+            extendConnection(prev, repositories, 'repositories'),
+        })
+      }
     />
   )
 }
 
 export default function Repositories({ publisher, deletable, columns }: any) {
-  const { loading, data, fetchMore } = useQuery(REPOS_Q, { variables: { publisherId: publisher.id } })
+  const { loading, data, fetchMore } = useQuery(REPOS_Q, {
+    variables: { publisherId: publisher.id },
+  })
 
   if (loading || !data) return null
 

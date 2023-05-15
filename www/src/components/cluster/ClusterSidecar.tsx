@@ -1,11 +1,6 @@
 import { A, Flex } from 'honorable'
 import moment from 'moment'
-import {
-  Button,
-  Sidecar,
-  SidecarItem,
-  Tooltip,
-} from '@pluralsh/design-system'
+import { Button, Sidecar, SidecarItem, Tooltip } from '@pluralsh/design-system'
 import { ReactElement } from 'react'
 import { Link } from 'react-router-dom'
 
@@ -15,7 +10,7 @@ import ClusterHealth from '../overview/clusters/ClusterHealth'
 import { ensureURLValidity } from '../../utils/url'
 import ClusterOwner from '../overview/clusters/ClusterOwner'
 
-type ClusterSidecarProps = {cluster: Cluster}
+type ClusterSidecarProps = { cluster: Cluster }
 
 export function ClusterSidecar({ cluster }: ClusterSidecarProps): ReactElement {
   return (
@@ -36,9 +31,7 @@ export function ClusterSidecar({ cluster }: ClusterSidecarProps): ReactElement {
         </Button>
       )}
       <Sidecar heading="Metadata">
-        <SidecarItem heading="Cluster name">
-          {cluster.name}
-        </SidecarItem>
+        <SidecarItem heading="Cluster name">{cluster.name}</SidecarItem>
         <SidecarItem heading="Status">
           <ClusterHealth pingedAt={cluster.pingedAt} />
         </SidecarItem>
@@ -66,9 +59,7 @@ export function ClusterSidecar({ cluster }: ClusterSidecarProps): ReactElement {
             </A>
           </SidecarItem>
         )}
-        <SidecarItem heading="Acked">
-          {cluster.queue?.acked || '-'}
-        </SidecarItem>
+        <SidecarItem heading="Acked">{cluster.queue?.acked || '-'}</SidecarItem>
         <SidecarItem heading="Last pinged">
           {cluster.pingedAt ? (
             <Tooltip
@@ -77,7 +68,9 @@ export function ClusterSidecar({ cluster }: ClusterSidecarProps): ReactElement {
             >
               <span>{moment(cluster.pingedAt).fromNow()}</span>
             </Tooltip>
-          ) : '-'}
+          ) : (
+            '-'
+          )}
         </SidecarItem>
         <SidecarItem heading="Docs">
           <A

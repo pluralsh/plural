@@ -1,10 +1,4 @@
-import {
-  Dispatch,
-  ReactElement,
-  forwardRef,
-  useContext,
-  useState,
-} from 'react'
+import { Dispatch, ReactElement, forwardRef, useContext, useState } from 'react'
 import { Button, ButtonProps, Flex } from 'honorable'
 import { CliIcon, ToolIcon, Tooltip } from '@pluralsh/design-system'
 
@@ -17,15 +11,16 @@ import { MoreOptions } from './options/MoreOptions'
 import { DeleteDemoModal } from './options/DeleteShellModal'
 
 type ActionBarItemProps = {
-  tooltip?: string,
-  icon?: ReactElement,
+  tooltip?: string
+  icon?: ReactElement
   children?: ReactElement
   onClick?: Dispatch<any>
 } & ButtonProps
 
-function ActionBarItemRef({
-  tooltip, icon, children, onClick, ...props
-}: ActionBarItemProps, ref) {
+function ActionBarItemRef(
+  { tooltip, icon, children, onClick, ...props }: ActionBarItemProps,
+  ref
+) {
   const content = icon ? (
     <Button
       width={32}
@@ -35,9 +30,12 @@ function ActionBarItemRef({
       secondary
       ref={ref}
       {...props}
-    >{icon}
+    >
+      {icon}
     </Button>
-  ) : children
+  ) : (
+    children
+  )
 
   return (
     <>
@@ -72,9 +70,10 @@ function ActionBar({ onRepairViewport }) {
         <Button
           small
           onClick={() => setDemoDelete(true)}
-        >Delete Demo
+        >
+          Delete Demo
         </Button>
-      ) }
+      )}
       <ActionBarItem
         data-phid="repair-viewport"
         tooltip="Repair Viewport"
@@ -93,12 +92,12 @@ function ActionBar({ onRepairViewport }) {
         onClick={() => setShowCheatsheet(true)}
         icon={<CliIcon />}
       />
-      <ActionBarItem><MoreOptions /></ActionBarItem>
+      <ActionBarItem>
+        <MoreOptions />
+      </ActionBarItem>
 
       {showCheatsheet && (
-        <Cheatsheet
-          onClose={() => setShowCheatsheet(false)}
-        />
+        <Cheatsheet onClose={() => setShowCheatsheet(false)} />
       )}
     </Flex>
   )

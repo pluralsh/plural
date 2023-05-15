@@ -29,11 +29,15 @@ const ResponsiveWidth = styled.div(({ theme }) => {
 
 function OnboardingSidenav({ section }) {
   const { sections } = useContext(OnboardingContext)
-  const toSteps = useCallback(() => Object.values(sections).map(section => ({
-    key: section.key,
-    stepTitle: section.title,
-    IconComponent: section.IconComponent,
-  })), [sections])
+  const toSteps = useCallback(
+    () =>
+      Object.values(sections).map((section) => ({
+        key: section.key,
+        stepTitle: section.title,
+        IconComponent: section.IconComponent,
+      })),
+    [sections]
+  )
 
   return (
     <ResponsiveWidth>

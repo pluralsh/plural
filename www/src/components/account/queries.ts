@@ -16,12 +16,28 @@ import {
 } from '../../models/user'
 
 export const USERS_Q = gql`
-  query Users($q: String, $serviceAccount: Boolean, $all: Boolean, $cursor: String) {
-    users(q: $q, first: 20, after: $cursor, serviceAccount: $serviceAccount, all: $all) {
-      pageInfo { ...PageInfo }
+  query Users(
+    $q: String
+    $serviceAccount: Boolean
+    $all: Boolean
+    $cursor: String
+  ) {
+    users(
+      q: $q
+      first: 20
+      after: $cursor
+      serviceAccount: $serviceAccount
+      all: $all
+    ) {
+      pageInfo {
+        ...PageInfo
+      }
       edges {
-        node { ...UserFragment
-          impersonationPolicy { ...ImpersonationPolicy }
+        node {
+          ...UserFragment
+          impersonationPolicy {
+            ...ImpersonationPolicy
+          }
         }
       }
     }
@@ -34,9 +50,13 @@ export const USERS_Q = gql`
 export const SEARCH_USERS = gql`
   query SearchUsers($q: String, $cursor: String) {
     users(q: $q, after: $cursor, first: 5, all: true) {
-      pageInfo { ...PageInfo }
+      pageInfo {
+        ...PageInfo
+      }
       edges {
-        node { ...UserFragment }
+        node {
+          ...UserFragment
+        }
       }
     }
   }
@@ -47,9 +67,13 @@ export const SEARCH_USERS = gql`
 export const SEARCH_GROUPS = gql`
   query SearchGroups($q: String, $cursor: String) {
     groups(q: $q, after: $cursor, first: 5) {
-      pageInfo { ...PageInfo }
+      pageInfo {
+        ...PageInfo
+      }
       edges {
-        node { ...GroupFragment }
+        node {
+          ...GroupFragment
+        }
       }
     }
   }
@@ -106,7 +130,9 @@ export const CREATE_SERVICE_ACCOUNT = gql`
   mutation Create($attributes: ServiceAccountAttributes!) {
     createServiceAccount(attributes: $attributes) {
       ...UserFragment
-      impersonationPolicy { ...ImpersonationPolicy }
+      impersonationPolicy {
+        ...ImpersonationPolicy
+      }
     }
   }
   ${ImpersonationPolicy}
@@ -117,7 +143,9 @@ export const UPDATE_SERVICE_ACCOUNT = gql`
   mutation Create($id: ID!, $attributes: ServiceAccountAttributes!) {
     updateServiceAccount(id: $id, attributes: $attributes) {
       ...UserFragment
-      impersonationPolicy { ...ImpersonationPolicy }
+      impersonationPolicy {
+        ...ImpersonationPolicy
+      }
     }
   }
   ${ImpersonationPolicy}
@@ -127,8 +155,14 @@ export const UPDATE_SERVICE_ACCOUNT = gql`
 export const ROLES_Q = gql`
   query Roles($cursor: String, $q: String) {
     roles(first: 20, after: $cursor, q: $q) {
-      pageInfo { ...PageInfo }
-      edges { node { ...RoleFragment } }
+      pageInfo {
+        ...PageInfo
+      }
+      edges {
+        node {
+          ...RoleFragment
+        }
+      }
     }
   }
   ${PageInfo}
@@ -138,8 +172,14 @@ export const ROLES_Q = gql`
 export const AUDITS_Q = gql`
   query Audits($cursor: String) {
     audits(first: 50, after: $cursor) {
-      pageInfo { ...PageInfo }
-      edges { node { ...AuditFragment } }
+      pageInfo {
+        ...PageInfo
+      }
+      edges {
+        node {
+          ...AuditFragment
+        }
+      }
     }
   }
   ${PageInfo}
@@ -149,8 +189,14 @@ export const AUDITS_Q = gql`
 export const LOGINS_Q = gql`
   query Logins($cursor: String) {
     oidcLogins(first: 50, after: $cursor) {
-      pageInfo { ...PageInfo }
-      edges { node { ...OidcLoginFragment } }
+      pageInfo {
+        ...PageInfo
+      }
+      edges {
+        node {
+          ...OidcLoginFragment
+        }
+      }
     }
   }
   ${PageInfo}
@@ -159,27 +205,41 @@ export const LOGINS_Q = gql`
 
 export const AUDIT_METRICS = gql`
   query {
-    auditMetrics { country count }
+    auditMetrics {
+      country
+      count
+    }
   }
 `
 
 export const LOGIN_METRICS = gql`
   query {
-    loginMetrics { country count }
+    loginMetrics {
+      country
+      count
+    }
   }
 `
 
 export const IMPERSONATE_SERVICE_ACCOUNT = gql`
   mutation Impersonate($id: ID) {
-    impersonateServiceAccount(id: $id) { jwt }
+    impersonateServiceAccount(id: $id) {
+      jwt
+    }
   }
 `
 
 export const DNS_DOMAINS = gql`
   query Domains($cursor: String) {
     dnsDomains(after: $cursor, first: 50) {
-      pageInfo { ...PageInfo }
-      edges { node { ...DnsDomainFragment } }
+      pageInfo {
+        ...PageInfo
+      }
+      edges {
+        node {
+          ...DnsDomainFragment
+        }
+      }
     }
   }
   ${PageInfo}
@@ -192,8 +252,14 @@ export const DNS_RECORDS = gql`
       id
       name
       dnsRecords(after: $cursor, first: 50) {
-        pageInfo { ...PageInfo }
-        edges { node { ...DnsRecordFragment } }
+        pageInfo {
+          ...PageInfo
+        }
+        edges {
+          node {
+            ...DnsRecordFragment
+          }
+        }
       }
     }
   }
@@ -221,7 +287,9 @@ export const UPDATE_DOMAIN = gql`
 
 export const DELETE_DOMAIN = gql`
   mutation Delete($id: ID!) {
-    deleteDomain(id: $id) { ...DnsDomainFragment }
+    deleteDomain(id: $id) {
+      ...DnsDomainFragment
+    }
   }
   ${DnsDomainFragment}
 `
@@ -238,8 +306,14 @@ export const DELETE_DNS_RECORD = gql`
 export const INVITES_Q = gql`
   query Invites($cursor: String) {
     invites(first: 50, after: $cursor) {
-      pageInfo { ...PageInfo }
-      edges { node { ...InviteFragment } }
+      pageInfo {
+        ...PageInfo
+      }
+      edges {
+        node {
+          ...InviteFragment
+        }
+      }
     }
   }
   ${PageInfo}
@@ -248,7 +322,9 @@ export const INVITES_Q = gql`
 
 export const DELETE_INVITE = gql`
   mutation Delete($id: ID!) {
-    deleteInvite(id: $id) { ...InviteFragment }
+    deleteInvite(id: $id) {
+      ...InviteFragment
+    }
   }
   ${InviteFragment}
 `

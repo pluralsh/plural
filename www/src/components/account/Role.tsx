@@ -10,7 +10,9 @@ export function GeneralAttributes({
   bindings,
   setBindings,
 }: any) {
-  const [repositories, setRepositories] = useState(attributes.repositories.join(', '))
+  const [repositories, setRepositories] = useState(
+    attributes.repositories.join(', ')
+  )
 
   return (
     <Box
@@ -20,12 +22,16 @@ export function GeneralAttributes({
       <ValidatedInput
         label="Name"
         value={attributes.name}
-        onChange={({ target: { value } }) => setAttributes({ ...attributes, name: value })}
+        onChange={({ target: { value } }) =>
+          setAttributes({ ...attributes, name: value })
+        }
       />
       <ValidatedInput
         label="Description"
         value={attributes.description}
-        onChange={({ target: { value } }) => setAttributes({ ...attributes, description: value })}
+        onChange={({ target: { value } }) =>
+          setAttributes({ ...attributes, description: value })
+        }
       />
       <ValidatedInput
         label="Repositories"
@@ -42,8 +48,12 @@ export function GeneralAttributes({
         bindings={bindings
           .filter(({ user }) => !!user)
           .map(({ user: { email } }) => email)}
-        add={user => setBindings([...bindings, { user }])}
-        remove={email => setBindings(bindings.filter(({ user }) => !user || user.email !== email))}
+        add={(user) => setBindings([...bindings, { user }])}
+        remove={(email) =>
+          setBindings(
+            bindings.filter(({ user }) => !user || user.email !== email)
+          )
+        }
       />
       <BindingInput
         type="group"
@@ -51,8 +61,12 @@ export function GeneralAttributes({
         bindings={bindings
           .filter(({ group }) => !!group)
           .map(({ group: { name } }) => name)}
-        add={group => setBindings([...bindings, { group }])}
-        remove={name => setBindings(bindings.filter(({ group }) => !group || group.name !== name))}
+        add={(group) => setBindings([...bindings, { group }])}
+        remove={(name) =>
+          setBindings(
+            bindings.filter(({ group }) => !group || group.name !== name)
+          )
+        }
       />
     </Box>
   )

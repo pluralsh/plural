@@ -1,12 +1,7 @@
 import { useState } from 'react'
 import { Box, Collapsible } from 'grommet'
 import { useOutletContext } from 'react-router-dom'
-import {
-  A,
-  Flex,
-  P,
-  Span,
-} from 'honorable'
+import { A, Flex, P, Span } from 'honorable'
 import {
   ArrowTopRightIcon,
   Chip,
@@ -22,9 +17,7 @@ import { Table, TableData, TableRow } from '../../../utils/Table'
 import { AttackVector } from '../../../constants'
 import { PackageGrade, chipSeverity } from '../misc'
 
-function CVSSRow({
-  text, value, options, colorMap,
-}: any) {
+function CVSSRow({ text, value, options, colorMap }: any) {
   return (
     <Box
       direction="column"
@@ -143,7 +136,10 @@ function VulnerabilityDetail({ v, last }: any) {
                     { name: 'Network', value: AttackVector.NETWORK },
                   ]}
                   colorMap={{
-                    PHYSICAL: 'success', LOCAL: 'warning', ADJACENT: 'error', NETWORK: 'critical',
+                    PHYSICAL: 'success',
+                    LOCAL: 'warning',
+                    ADJACENT: 'error',
+                    NETWORK: 'critical',
                   }}
                 />
                 <CVSSRow
@@ -236,15 +232,19 @@ function Vulnerability({ v, last }: any) {
           <CollapseIcon
             marginLeft="8px"
             size={8}
-            style={open ? {
-              transform: 'rotate(270deg)',
-              transitionDuration: '.2s',
-              transitionProperty: 'transform',
-            } : {
-              transform: 'rotate(180deg)',
-              transitionDuration: '.2s',
-              transitionProperty: 'transform',
-            }}
+            style={
+              open
+                ? {
+                    transform: 'rotate(270deg)',
+                    transitionDuration: '.2s',
+                    transitionProperty: 'transform',
+                  }
+                : {
+                    transform: 'rotate(180deg)',
+                    transitionDuration: '.2s',
+                    transitionProperty: 'transform',
+                  }
+            }
           />
         </TableData>
         <TableData>
@@ -253,7 +253,7 @@ function Vulnerability({ v, last }: any) {
               <A
                 inline
                 href={v.url}
-                onClick={e => e.stopPropagation()}
+                onClick={(e) => e.stopPropagation()}
                 target="_blank"
                 rel="noopener noreferrer"
                 display="flex"
@@ -266,7 +266,9 @@ function Vulnerability({ v, last }: any) {
                 />
               </A>
             </Box>
-          ) : <Span>{v.vulnerabilityId}</Span>}
+          ) : (
+            <Span>{v.vulnerabilityId}</Span>
+          )}
         </TableData>
         <TableData>{v.package}</TableData>
         <TableData>{v.installedVersion}</TableData>
@@ -329,7 +331,14 @@ export default function ImageVulnerabilities() {
       >
         {vulnerabilities?.length ? (
           <Table
-            headers={['', 'ID', 'Package', 'Version', 'Fixed version', 'Severity']}
+            headers={[
+              '',
+              'ID',
+              'Package',
+              'Version',
+              'Fixed version',
+              'Severity',
+            ]}
             sizes={['5%', '20%', '20%', '20%', '20%', '15%']}
             background="fill-one"
             width="100%"
@@ -348,12 +357,12 @@ export default function ImageVulnerabilities() {
           <EmptyState
             message="This package has no vulnerabilities."
             description="...and feels pretty damn good about it."
-            icon={(
+            icon={
               <DockerTagIcon
                 size={64}
                 color="text-primary-accent"
               />
-            )}
+            }
           />
         )}
       </Flex>

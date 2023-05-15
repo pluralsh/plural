@@ -2,7 +2,10 @@ fragment DockerRepo on DockerRepository {
   id
   name
   public
-  repository { id name }
+  repository {
+    id
+    name
+  }
   insertedAt
   updatedAt
 }
@@ -11,7 +14,11 @@ fragment DockerRepository on DockerRepository {
   id
   name
   public
-  repository { id name editable }
+  repository {
+    id
+    name
+    editable
+  }
   insertedAt
   updatedAt
 }
@@ -26,7 +33,6 @@ fragment DockerImage on DockerImage {
   updatedAt
 }
 
-
 fragment Vulnerability on Vulnerability {
   id
   title
@@ -39,6 +45,17 @@ fragment Vulnerability on Vulnerability {
   url
   severity
   score
-  cvss { attackVector attackComplexity privilegesRequired userInteraction confidentiality integrity availability }
-  layer { digest diffId }
+  cvss {
+    attackVector
+    attackComplexity
+    privilegesRequired
+    userInteraction
+    confidentiality
+    integrity
+    availability
+  }
+  layer {
+    digest
+    diffId
+  }
 }

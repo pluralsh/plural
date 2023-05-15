@@ -9,25 +9,14 @@ import {
   ThumbsUpIcon,
 } from '@pluralsh/design-system'
 import { Flex, P, Span } from 'honorable'
-import {
-  cloneElement,
-  useContext,
-  useEffect,
-  useState,
-} from 'react'
+import { cloneElement, useContext, useEffect, useState } from 'react'
 import Fireworks from '@fireworks-js/react'
 
 import useOnboarded from '../hooks/useOnboarded'
 
 import { State, TerminalContext } from './context/terminal'
 
-function HoveredIcon({
-  icon,
-  color,
-  hoveredColor,
-  textValue,
-  ...props
-}: any) {
+function HoveredIcon({ icon, color, hoveredColor, textValue, ...props }: any) {
   const [isHovered, setIsHovered] = useState(false)
 
   return (
@@ -51,7 +40,11 @@ function NextStepsModal() {
   const { state } = useContext(TerminalContext)
   const { fresh: isOnboarding } = useOnboarded()
 
-  useEffect(() => (state === State.Installed && isOnboarding ? setOpen(true) : undefined), [state, isOnboarding])
+  useEffect(
+    () =>
+      state === State.Installed && isOnboarding ? setOpen(true) : undefined,
+    [state, isOnboarding]
+  )
 
   return (
     <>
@@ -87,7 +80,8 @@ function NextStepsModal() {
             <Span
               color="text-xlight"
               body2
-            >NEXT STEPS
+            >
+              NEXT STEPS
             </Span>
             <IconFrame
               clickable
@@ -99,8 +93,13 @@ function NextStepsModal() {
             gap="medium"
             direction="column"
           >
-            <Span body1>Congratulations! You’ve started your first deployment.</Span>
-            <Span body1>It may take up to thirty minutes for your Plural Console and applications to be fully up and running.</Span>
+            <Span body1>
+              Congratulations! You’ve started your first deployment.
+            </Span>
+            <Span body1>
+              It may take up to thirty minutes for your Plural Console and
+              applications to be fully up and running.
+            </Span>
           </Flex>
           <Flex
             justify="space-between"
@@ -109,13 +108,20 @@ function NextStepsModal() {
             <Span
               body2
               fontWeight={600}
-            >How was your experience?
+            >
+              How was your experience?
             </Span>
             <Flex>
               <HoveredIcon
                 data-phid="feedback-negative"
                 size="small"
-                icon={feedback === 'bad' ? <ThumbsUpFilledIcon transform="scale(1, -1)" /> : <ThumbsUpIcon transform="scale(1, -1)" />}
+                icon={
+                  feedback === 'bad' ? (
+                    <ThumbsUpFilledIcon transform="scale(1, -1)" />
+                  ) : (
+                    <ThumbsUpIcon transform="scale(1, -1)" />
+                  )
+                }
                 color={feedback === 'bad' ? 'icon-danger' : 'icon-light'}
                 hoveredColor="icon-danger"
                 textValue="Bad"
@@ -124,7 +130,13 @@ function NextStepsModal() {
               <HoveredIcon
                 data-phid="feedback-positive"
                 size="small"
-                icon={feedback === 'good' ? <ThumbsUpFilledIcon /> : <ThumbsUpIcon />}
+                icon={
+                  feedback === 'good' ? (
+                    <ThumbsUpFilledIcon />
+                  ) : (
+                    <ThumbsUpIcon />
+                  )
+                }
                 color={feedback === 'good' ? 'icon-success' : 'icon-light'}
                 hoveredColor="icon-success"
                 textValue="Good"

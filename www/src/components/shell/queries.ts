@@ -48,7 +48,9 @@ export const CREATE_SHELL_MUTATION = gql`
 
 export const DELETE_SHELL_MUTATION = gql`
   mutation {
-    deleteShell { ...CloudShellFragment }
+    deleteShell {
+      ...CloudShellFragment
+    }
   }
   ${CloudShellFragment}
 `
@@ -82,7 +84,9 @@ export const POLL_DEMO_PROJECT_QUERY = gql`
 
 export const DELETE_DEMO_PROJECT_MUTATION = gql`
   mutation {
-    deleteDemoProject { ...DemoProjectFragment }
+    deleteDemoProject {
+      ...DemoProjectFragment
+    }
   }
   ${DemoProjectFragment}
 `
@@ -145,7 +149,11 @@ export const CREATE_QUICK_STACK_MUTATION = gql`
 `
 
 export const INSTALL_STACK_SHELL_MUTATION = gql`
-  mutation InstallStackShell($name: String!, $context: ContextAttributes!, $oidc: Boolean!) {
+  mutation InstallStackShell(
+    $name: String!
+    $context: ContextAttributes!
+    $oidc: Boolean!
+  ) {
     installStackShell(name: $name, context: $context, oidc: $oidc) {
       id
       name

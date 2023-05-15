@@ -3,7 +3,7 @@ import { Span } from 'honorable'
 
 import Avatar from '../users/Avatar'
 
-export function AuditUser({ user }: {user?: any}) {
+export function AuditUser({ user }: { user?: any }) {
   if (!user) return null
 
   return (

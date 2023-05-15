@@ -1,24 +1,16 @@
-import {
-  ReactNode,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from 'react'
+import { ReactNode, useCallback, useContext, useEffect, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import {
-  Flex,
-  P,
-  PProps,
-  Spinner,
-} from 'honorable'
+import { Flex, P, PProps, Spinner } from 'honorable'
 import { Button, Modal } from '@pluralsh/design-system'
 import { PaymentIntent, SetupIntent, StripeError } from '@stripe/stripe-js'
 
 import PlatformPlansContext from '../../../contexts/PlatformPlansContext'
 
 import { type PlanType } from './PaymentForm'
-import { useRetrievePaymentIntent, useRetrieveSetupIntent } from './useRetrieveIntent'
+import {
+  useRetrievePaymentIntent,
+  useRetrieveSetupIntent,
+} from './useRetrieveIntent'
 import { useBillingSubscription } from './BillingSubscriptionProvider'
 import { useUpgradeSubscription } from './hooks'
 
@@ -63,59 +55,61 @@ enum UpgradeResult {
   StripeCancelled = 'StripeCancelled',
 }
 
-function upgradeResultToMessaging(result: UpgradeResult,
-  error?: Error | StripeError) {
+function upgradeResultToMessaging(
+  result: UpgradeResult,
+  error?: Error | StripeError
+) {
   let header: string | undefined
   let message: ReactNode
 
   switch (result) {
-  case UpgradeResult.Success:
-    header = 'Upgrade success'
-    message = (
-      <ResultMessage>
-        Welcome to the Plural Professional plan! You now have access to
-        groups, roles, service accounts, and more.
-      </ResultMessage>
-    )
-    break
-  case UpgradeResult.Error:
-    header = 'Error processing payment'
-    message = (
-      <ResultMessage>
-        Error processing payment${error ? `: ${error.message}` : '.'}`
-      </ResultMessage>
-    )
-    break
-  case UpgradeResult.ConfirmPaymentError:
-    header = 'Error completing payment'
-    message = (
-      <ResultMessage>
-        There was an error completing your payment. Check invoice on Payments
-        page to complete payment.
-      </ResultMessage>
-    )
-    break
-  case UpgradeResult.StripeRequiresAction:
-    header = 'Requires action'
-    message = <ResultMessage>Payment requires an action.</ResultMessage>
-    break
-  case UpgradeResult.StripePaymentProcessing:
-    header = 'Payment processing'
-    message = <ResultMessage>Payment processing.</ResultMessage>
-    break
-  case UpgradeResult.StripeRequiresPaymentMethod:
-    header = 'Payment failed'
-    message = (
-      <ResultMessage>
-        Payment failed. Please try another payment method.
-      </ResultMessage>
-    )
-    break
-  case UpgradeResult.Loading:
-  default:
-    header = 'Payment processing'
-    message = <ModalLoading />
-    break
+    case UpgradeResult.Success:
+      header = 'Upgrade success'
+      message = (
+        <ResultMessage>
+          Welcome to the Plural Professional plan! You now have access to
+          groups, roles, service accounts, and more.
+        </ResultMessage>
+      )
+      break
+    case UpgradeResult.Error:
+      header = 'Error processing payment'
+      message = (
+        <ResultMessage>
+          Error processing payment${error ? `: ${error.message}` : '.'}`
+        </ResultMessage>
+      )
+      break
+    case UpgradeResult.ConfirmPaymentError:
+      header = 'Error completing payment'
+      message = (
+        <ResultMessage>
+          There was an error completing your payment. Check invoice on Payments
+          page to complete payment.
+        </ResultMessage>
+      )
+      break
+    case UpgradeResult.StripeRequiresAction:
+      header = 'Requires action'
+      message = <ResultMessage>Payment requires an action.</ResultMessage>
+      break
+    case UpgradeResult.StripePaymentProcessing:
+      header = 'Payment processing'
+      message = <ResultMessage>Payment processing.</ResultMessage>
+      break
+    case UpgradeResult.StripeRequiresPaymentMethod:
+      header = 'Payment failed'
+      message = (
+        <ResultMessage>
+          Payment failed. Please try another payment method.
+        </ResultMessage>
+      )
+      break
+    case UpgradeResult.Loading:
+    default:
+      header = 'Payment processing'
+      message = <ModalLoading />
+      break
   }
 
   return { header, message }
@@ -128,42 +122,42 @@ function ModalActions({
   upgradeResult: UpgradeResult
   onClose: () => void
 }) {
-  return upgradeResult === UpgradeResult.Loading ? null : upgradeResult
-    === UpgradeResult.Success ? (
+  return upgradeResult === UpgradeResult.Loading ? null : upgradeResult ===
+    UpgradeResult.Success ? (
+    <Button
+      as={Link}
+      to="/marketplace"
+      onClick={() => onClose()}
+    >
+      Explore the app
+    </Button>
+  ) : (
+    <Flex gap="medium">
       <Button
-        as={Link}
-        to="/marketplace"
-        onClick={() => onClose()}
+        secondary
+        onClick={onClose}
       >
-        Explore the app
+        Close
       </Button>
-    ) : (
-      <Flex gap="medium">
+      {upgradeResult === UpgradeResult.ConfirmPaymentError ? (
         <Button
-          secondary
+          as={Link}
+          to="/account/billing/payments"
           onClick={onClose}
         >
-          Close
+          Go to Payments
         </Button>
-        {upgradeResult === UpgradeResult.ConfirmPaymentError ? (
-          <Button
-            as={Link}
-            to="/account/billing/payments"
-            onClick={onClose}
-          >
-            Go to Payments
-          </Button>
-        ) : (
-          <Button
-            as={Link}
-            to="/account/billing?upgrade=1"
-            onClick={onClose}
-          >
-            Retry
-          </Button>
-        )}
-      </Flex>
-    )
+      ) : (
+        <Button
+          as={Link}
+          to="/account/billing?upgrade=1"
+          onClick={onClose}
+        >
+          Retry
+        </Button>
+      )}
+    </Flex>
+  )
 }
 
 function UpgradeResultModal({
@@ -180,12 +174,12 @@ function UpgradeResultModal({
     <Modal
       open={open}
       header={header}
-      actions={(
+      actions={
         <ModalActions
           upgradeResult={result}
           onClose={onClose}
         />
-      )}
+      }
       onClose={onClose}
     >
       <Flex
@@ -216,17 +210,17 @@ export default function ConfirmPayment() {
   const forceSuccess = isProPlan
   const paymentIntentSecret = searchParams.get('payment_intent_client_secret')
   const setupIntentSecret = searchParams.get('setup_intent_client_secret')
-  const plan: PlanType
-    = searchParams.get('plan') === 'yearly' ? 'yearly' : 'monthly'
+  const plan: PlanType =
+    searchParams.get('plan') === 'yearly' ? 'yearly' : 'monthly'
 
   const [paymentIntent, setPaymentIntent] = useState<
     PaymentIntent | undefined
   >()
 
-  const { proPlatformPlan, proYearlyPlatformPlan }
-    = useContext(PlatformPlansContext)
-  const planId
-    = plan === 'yearly' ? proYearlyPlatformPlan.id : proPlatformPlan.id
+  const { proPlatformPlan, proYearlyPlatformPlan } =
+    useContext(PlatformPlansContext)
+  const planId =
+    plan === 'yearly' ? proYearlyPlatformPlan.id : proPlatformPlan.id
 
   const [upgradeSuccess, setUpgradeSuccess] = useState(false)
 
@@ -235,14 +229,14 @@ export default function ConfirmPayment() {
   }, [setSearchParams])
 
   // Confirm payment
-  const { error: retrieveSetupIntentError, intent: setupIntent }
-    = useRetrieveSetupIntent({
+  const { error: retrieveSetupIntentError, intent: setupIntent } =
+    useRetrieveSetupIntent({
       clientSecret: setupIntentSecret,
     })
 
   useRetrievePaymentIntent({
     clientSecret: paymentIntentSecret,
-    onComplete: paymentIntent => {
+    onComplete: (paymentIntent) => {
       setPaymentIntent(paymentIntent)
     },
   })
@@ -250,17 +244,17 @@ export default function ConfirmPayment() {
     StripeError | undefined
   >(undefined)
 
-  const paymentMethodId
-    = typeof setupIntent?.payment_method === 'string'
+  const paymentMethodId =
+    typeof setupIntent?.payment_method === 'string'
       ? setupIntent?.payment_method
       : setupIntent?.payment_method?.id
 
   const [upgradeMutation, { error: upgradeError }] = useUpgradeSubscription({
     variables: { planId, paymentMethod: paymentMethodId },
-    onSuccess: result => {
+    onSuccess: (result) => {
       setPaymentIntent(result.paymentIntent)
     },
-    onFailure: result => {
+    onFailure: (result) => {
       setConfirmPaymentError(result.error)
     },
     fallback: () => {
@@ -288,32 +282,26 @@ export default function ConfirmPayment() {
 
   if (upgradeSuccess) {
     upgradeResult = UpgradeResult.Success
-  }
-  else if (confirmPaymentError) {
+  } else if (confirmPaymentError) {
     upgradeResult = UpgradeResult.ConfirmPaymentError
-  }
-  else if (forceSuccess) {
+  } else if (forceSuccess) {
     upgradeResult = UpgradeResult.Success
-  }
-  else if (error) {
+  } else if (error) {
     upgradeResult = UpgradeResult.Error
-  }
-  else if (paymentIntent) {
+  } else if (paymentIntent) {
     if (paymentIntent.status === 'succeeded') {
       upgradeResult = UpgradeResult.Success
-    }
-    else {
+    } else {
       upgradeResult = UpgradeResult.ConfirmPaymentError
     }
-  }
-  else if (setupIntent) {
-    upgradeResult
-      = setupIntentToResult[setupIntent.status] ?? UpgradeResult.Error
+  } else if (setupIntent) {
+    upgradeResult =
+      setupIntentToResult[setupIntent.status] ?? UpgradeResult.Error
   }
 
   if (
-    shouldConfirm
-    && !(setupIntentSecret || paymentIntentSecret || forceSuccess)
+    shouldConfirm &&
+    !(setupIntentSecret || paymentIntentSecret || forceSuccess)
   ) {
     return null
   }

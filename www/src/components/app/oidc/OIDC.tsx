@@ -1,17 +1,7 @@
-import {
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Box } from 'grommet'
 import { useMutation } from '@apollo/client'
-import {
-  Button,
-  Div,
-  Flex,
-  P,
-} from 'honorable'
+import { Button, Div, Flex, P } from 'honorable'
 import {
   Card,
   CheckIcon,
@@ -39,7 +29,9 @@ import { AppHeaderActions } from '../AppHeaderActions'
 function UrlsInput({ uriFormat = '', urls, setUrls }: any) {
   const [baseScheme, basePath] = ['https://', '/oauth2/callback']
   const [value, setValue] = useState('')
-  const [scheme = baseScheme, path = basePath] = uriFormat.split('{domain}').filter(v => !!v)
+  const [scheme = baseScheme, path = basePath] = uriFormat
+    .split('{domain}')
+    .filter((v) => !!v)
 
   const addUrl = useCallback(() => {
     const url = uriFormat ? uriFormat.replace('{domain}', value) : value
@@ -56,7 +48,10 @@ function UrlsInput({ uriFormat = '', urls, setUrls }: any) {
     setValue('')
   }, [urls, value, setValue, setUrls, uriFormat, basePath, baseScheme])
 
-  const removeUrl = useCallback(url => setUrls(urls.filter(item => item !== url)), [setUrls, urls])
+  const removeUrl = useCallback(
+    (url) => setUrls(urls.filter((item) => item !== url)),
+    [setUrls, urls]
+  )
 
   return (
     <Box
@@ -133,7 +128,10 @@ export function ProviderForm({
       return
     }
 
-    if (!isEqual(attributes, prevAttributes) || !isEqual(bindings, prevBindings)) {
+    if (
+      !isEqual(attributes, prevAttributes) ||
+      !isEqual(bindings, prevBindings)
+    ) {
       setDirty(true)
     }
   }, [attributes, prevAttributes, bindings, prevBindings, isMountRef])
@@ -159,9 +157,7 @@ export function ProviderForm({
           label="Client ID"
           width="calc(66.666% - 16px)"
         >
-          <Codeline>
-            {attributes.clientId}
-          </Codeline>
+          <Codeline>{attributes.clientId}</Codeline>
         </FormField>
         <FormField
           label="Client secret"
@@ -175,26 +171,38 @@ export function ProviderForm({
       <BindingInput
         label="User bindings"
         placeholder="Search for user"
-        bindings={bindings.filter(({ user }) => !!user).map(({ user: { email } }) => email)}
+        bindings={bindings
+          .filter(({ user }) => !!user)
+          .map(({ user: { email } }) => email)}
         fetcher={fetchUsers}
-        add={user => setBindings([...bindings, { user }])}
-        remove={email => setBindings(bindings.filter(({ user }) => !user || user.email !== email))}
+        add={(user) => setBindings([...bindings, { user }])}
+        remove={(email) =>
+          setBindings(
+            bindings.filter(({ user }) => !user || user.email !== email)
+          )
+        }
       />
       <BindingInput
         label="Group bindings"
         placeholder="Search for group"
-        bindings={bindings.filter(({ group }) => !!group).map(({ group: { name } }) => name)}
+        bindings={bindings
+          .filter(({ group }) => !!group)
+          .map(({ group: { name } }) => name)}
         fetcher={fetchGroups}
-        add={group => setBindings([...bindings, { group }])}
-        remove={name => setBindings(bindings.filter(({ group }) => !group || group.name !== name))}
+        add={(group) => setBindings([...bindings, { group }])}
+        remove={(name) =>
+          setBindings(
+            bindings.filter(({ group }) => !group || group.name !== name)
+          )
+        }
       />
-      <FormField
-        label="Redirect urls"
-      >
+      <FormField label="Redirect urls">
         <UrlsInput
           uriFormat={settings.uriFormat}
           urls={attributes.redirectUris}
-          setUrls={redirectUris => setAttributes({ ...attributes, redirectUris })}
+          setUrls={(redirectUris) =>
+            setAttributes({ ...attributes, redirectUris })
+          }
         />
       </FormField>
       <Flex
@@ -238,16 +246,15 @@ export function ProviderForm({
           marginBottom="medium"
           marginRight="xxxxlarge"
           onClose={() => setToast(null)}
-        >{toast}
+        >
+          {toast}
         </Toast>
       )}
     </Card>
   )
 }
 
-export function CreateProvider({
-  installation,
-}: any) {
+export function CreateProvider({ installation }: any) {
   const settings = installation.repository.oauthSettings || {}
   const [attributes, setAttributes] = useState({
     redirectUris: [],
@@ -259,11 +266,17 @@ export function CreateProvider({
       id: installation.id,
       attributes: { ...attributes, bindings: bindings.map(sanitize) },
     },
-    update: (cache, { data: { createOidcProvider } }) => updateCache(cache, {
-      query: REPO_Q,
-      variables: { repositoryId: installation.repository.id },
-      update: prev => deepUpdate(prev, 'repository.installation.oidcProvider', () => createOidcProvider),
-    }),
+    update: (cache, { data: { createOidcProvider } }) =>
+      updateCache(cache, {
+        query: REPO_Q,
+        variables: { repositoryId: installation.repository.id },
+        update: (prev) =>
+          deepUpdate(
+            prev,
+            'repository.installation.oidcProvider',
+            () => createOidcProvider
+          ),
+      }),
   })
 
   return (
@@ -293,9 +306,7 @@ export function CreateProvider({
   )
 }
 
-export function UpdateProvider({
-  installation,
-}: any) {
+export function UpdateProvider({ installation }: any) {
   const provider = installation.oidcProvider
   const [attributes, setAttributes] = useState({
     redirectUris: provider.redirectUris,
@@ -308,7 +319,10 @@ export function UpdateProvider({
     variables: {
       id: installation.id,
       attributes: {
-        ...{ redirectUris: attributes.redirectUris, authMethod: attributes.authMethod },
+        ...{
+          redirectUris: attributes.redirectUris,
+          authMethod: attributes.authMethod,
+        },
         bindings: bindings.map(sanitize),
       },
     },
@@ -351,7 +365,8 @@ export function OIDC() {
   }, [name, installation, navigate])
 
   if (!installation) return null
-  if (installation.oidcProvider) return <UpdateProvider installation={installation} />
+  if (installation.oidcProvider)
+    return <UpdateProvider installation={installation} />
 
   return <CreateProvider installation={installation} />
 }

@@ -1,9 +1,4 @@
-import {
-  Button,
-  Callout,
-  CalloutProps,
-  Toast,
-} from '@pluralsh/design-system'
+import { Button, Callout, CalloutProps, Toast } from '@pluralsh/design-system'
 import { A, Flex, P } from 'honorable'
 import { useCallback } from 'react'
 import { Link } from 'react-router-dom'
@@ -31,7 +26,9 @@ export function DelinquencyCallout({
   if (!isDelinquent) {
     return null
   }
-  const openInvoice = invoices?.find(invoice => invoice?.status?.toLowerCase() === 'open')
+  const openInvoice = invoices?.find(
+    (invoice) => invoice?.status?.toLowerCase() === 'open'
+  )
   const invoiceLink = openInvoice?.hostedInvoiceUrl
 
   return (
@@ -63,8 +60,8 @@ export function DelinquencyCallout({
 export function DelinquencyToast() {
   const theme = useTheme()
   const { account, isDelinquent } = useBillingSubscription()
-  const [notificationState, setNotificationState]
-    = usePersistedState<NotificationState>(LocalStorageKeys.DelinquencyNotice, {
+  const [notificationState, setNotificationState] =
+    usePersistedState<NotificationState>(LocalStorageKeys.DelinquencyNotice, {
       lastDismissedDelinquentAt: '',
     })
   const onClose = useCallback(() => {
@@ -77,9 +74,9 @@ export function DelinquencyToast() {
     return null
   }
   const delinquentAt = account?.delinquentAt?.toString() || ''
-  const showToast
-    = isDelinquent
-    && notificationState?.lastDismissedDelinquentAt !== delinquentAt
+  const showToast =
+    isDelinquent &&
+    notificationState?.lastDismissedDelinquentAt !== delinquentAt
 
   return (
     <Toast

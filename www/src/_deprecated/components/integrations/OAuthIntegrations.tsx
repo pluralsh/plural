@@ -7,16 +7,24 @@ import { OAUTH_Q } from './queries'
 import { OAuthService } from './types'
 
 function redirectUrl(format, service) {
-  const location = `${window.location.origin}/oauth/accept/${service.toLowerCase()}`
+  const location = `${
+    window.location.origin
+  }/oauth/accept/${service.toLowerCase()}`
 
   return format.replace('{redirect_uri}', encodeURIComponent(location))
 }
 
 function Integration({
-  icon, installUrl, integrations, service, children,
+  icon,
+  installUrl,
+  integrations,
+  service,
+  children,
 }: any) {
   const connected = !!integrations[service]
-  const onClick = connected ? undefined : () => window.location = redirectUrl(installUrl, service)
+  const onClick = connected
+    ? undefined
+    : () => (window.location = redirectUrl(installUrl, service))
 
   return (
     <Box
@@ -38,9 +46,7 @@ function Integration({
           width="50px"
         />
       </Box>
-      <Box fill="horizontal">
-        {children}
-      </Box>
+      <Box fill="horizontal">{children}</Box>
       {connected && (
         <Box
           flex={false}
@@ -64,7 +70,10 @@ export function OAuthIntegrations() {
 
   if (!data) return null
 
-  const integrations = data.oauthIntegrations.reduce((acc, int) => ({ ...acc, [int.service]: int }), {})
+  const integrations = data.oauthIntegrations.reduce(
+    (acc, int) => ({ ...acc, [int.service]: int }),
+    {}
+  )
 
   return (
     <Box
@@ -78,7 +87,12 @@ export function OAuthIntegrations() {
         integrations={integrations}
         service={OAuthService.ZOOM}
       >
-        <Text size="small"><i>Create meetings in your zoom account for resolving incidents and more</i></Text>
+        <Text size="small">
+          <i>
+            Create meetings in your zoom account for resolving incidents and
+            more
+          </i>
+        </Text>
       </Integration>
     </Box>
   )

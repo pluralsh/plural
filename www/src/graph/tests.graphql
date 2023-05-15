@@ -8,7 +8,6 @@ fragment Step on TestStep {
   updatedAt
 }
 
-
 fragment Test on Test {
   id
   name
@@ -16,7 +15,9 @@ fragment Test on Test {
   status
   insertedAt
   updatedAt
-  steps { ...Step }
+  steps {
+    ...Step
+  }
 }
 
 mutation CreateTest($name: String!, $attrs: TestAttributes!) {
@@ -32,9 +33,13 @@ mutation UpdateTest($id: ID!, $attrs: TestAttributes!) {
 }
 
 mutation UpdateStep($id: ID!, $logs: UploadOrUrl!) {
-  updateStep(id: $id, attributes: {logs: $logs}) { id }
+  updateStep(id: $id, attributes: { logs: $logs }) {
+    id
+  }
 }
 
 mutation PublishLogs($id: ID!, $logs: String!) {
-  publishLogs(id: $id, logs: $logs) { id }
+  publishLogs(id: $id, logs: $logs) {
+    id
+  }
 }

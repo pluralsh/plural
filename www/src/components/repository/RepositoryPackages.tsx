@@ -32,7 +32,7 @@ export function packageCardStyle(first, last) {
   }
 }
 
-const StyledTabPanel = styled(TabPanel)(_ => ({
+const StyledTabPanel = styled(TabPanel)((_) => ({
   display: 'flex',
   flexDirection: 'column',
   flexGrow: 1,
@@ -52,7 +52,9 @@ export default function RepositoryPackages() {
   const tabStateRef = useRef<any>(null)
   const pathPrefix = `/repository/${repository.name}/packages`
 
-  const currentTab = DIRECTORY.find(tab => pathname?.startsWith(`${pathPrefix}${tab.path}`))
+  const currentTab = DIRECTORY.find((tab) =>
+    pathname?.startsWith(`${pathPrefix}${tab.path}`)
+  )
 
   return (
     <Flex
@@ -86,7 +88,7 @@ export default function RepositoryPackages() {
         </TabList>
         <Input
           value={q}
-          onChange={event => setQ(event.target.value)}
+          onChange={(event) => setQ(event.target.value)}
           placeholder={`Filter ${currentTab?.label || ''}`}
           startIcon={<SearchIcon />}
           width="100%"

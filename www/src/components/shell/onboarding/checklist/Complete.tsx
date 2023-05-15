@@ -1,19 +1,19 @@
 import { useMutation } from '@apollo/client'
-import {
-  A,
-  Button,
-  Div,
-  Flex,
-  Span,
-} from 'honorable'
+import { A, Button, Div, Flex, Span } from 'honorable'
 import { GitHubLogoIcon, SourcererIcon } from '@pluralsh/design-system'
 
 import { UPDATE_USER } from '../../../users/queries'
 import { updateUserFragment } from '../../../../utils/graphql'
-import { RootMutationType, RootMutationTypeUpdateUserArgs } from '../../../../generated/graphql'
+import {
+  RootMutationType,
+  RootMutationTypeUpdateUserArgs,
+} from '../../../../generated/graphql'
 
 export function ChecklistComplete() {
-  const [updateChecklist, { loading }] = useMutation<RootMutationType, RootMutationTypeUpdateUserArgs>(UPDATE_USER, {
+  const [updateChecklist, { loading }] = useMutation<
+    RootMutationType,
+    RootMutationTypeUpdateUserArgs
+  >(UPDATE_USER, {
     variables: {
       attributes: {
         onboardingChecklist: {
@@ -39,7 +39,9 @@ export function ChecklistComplete() {
           direction="column"
         >
           <Span subtitle1>Congratulations!</Span>
-          <Span body2>With these first steps completed, you're well on your way to becoming an&nbsp;
+          <Span body2>
+            With these first steps completed, you're well on your way to
+            becoming an&nbsp;
             <A
               inline
               href="https://www.plural.sh/community"
@@ -47,7 +49,8 @@ export function ChecklistComplete() {
               rel="noopener noreferrer"
             >
               open-sourcerer
-            </A>.
+            </A>
+            .
           </Span>
         </Flex>
       </Flex>
@@ -67,14 +70,16 @@ export function ChecklistComplete() {
           small
           secondary
           startIcon={<GitHubLogoIcon />}
-        >Star us on GitHub
+        >
+          Star us on GitHub
         </Button>
         <Flex grow={1} />
         <Button
           small
           loading={loading}
           onClick={() => updateChecklist()}
-        >Complete
+        >
+          Complete
         </Button>
       </Flex>
     </Flex>

@@ -1,12 +1,7 @@
 import { useState } from 'react'
 import { useMutation } from '@apollo/client'
 import { Button, SecondaryButton } from 'forge-core'
-import {
-  Box,
-  FormField,
-  Text,
-  TextInput,
-} from 'grommet'
+import { Box, FormField, Text, TextInput } from 'grommet'
 
 import { appendConnection, updateCache } from '../../../utils/graphql'
 
@@ -33,7 +28,8 @@ export function ActionTab({ action, onClick, colors }: any) {
       <Text
         size="small"
         weight={500}
-      >{action}
+      >
+        {action}
       </Text>
     </Box>
   )
@@ -58,8 +54,10 @@ export function ActionInput({ actions, setActions, colors }: any) {
           plain
           value={value}
           placeholder="add an action for this webhook"
-          onSelect={({ suggestion: action }) => setActions([...actions, action])}
-          suggestions={ACTIONS.filter(action => action.includes(value))}
+          onSelect={({ suggestion: action }) =>
+            setActions([...actions, action])
+          }
+          suggestions={ACTIONS.filter((action) => action.includes(value))}
           onChange={({ target: { value } }) => setValue(value)}
         />
       </Box>
@@ -70,12 +68,12 @@ export function ActionInput({ actions, setActions, colors }: any) {
         align="center"
         wrap
       >
-        {actions.map(action => (
+        {actions.map((action) => (
           <ActionTab
             key={action}
             action={action}
             colors={colors}
-            onClick={() => setActions(actions.filter(a => a !== action))}
+            onClick={() => setActions(actions.filter((a) => a !== action))}
           />
         ))}
       </Box>
@@ -84,14 +82,24 @@ export function ActionInput({ actions, setActions, colors }: any) {
 }
 
 export function CreateWebhook({ cancel }: any) {
-  const [attributes, setAttributes] = useState({ name: '', url: '', actions: ['incident.create'] })
+  const [attributes, setAttributes] = useState({
+    name: '',
+    url: '',
+    actions: ['incident.create'],
+  })
   const [mutation, { loading }] = useMutation(CREATE_WEBHOOK, {
     variables: { attributes },
     // @ts-expect-error
-    update: (cache, { data: { createIntegrationWebhook } }) => updateCache(cache, {
-      query: WEBHOOKS_Q,
-      update: prev => appendConnection(prev, createIntegrationWebhook, 'integrationWebhooks'),
-    }),
+    update: (cache, { data: { createIntegrationWebhook } }) =>
+      updateCache(cache, {
+        query: WEBHOOKS_Q,
+        update: (prev) =>
+          appendConnection(
+            prev,
+            createIntegrationWebhook,
+            'integrationWebhooks'
+          ),
+      }),
     onCompleted: cancel,
   })
 
@@ -101,19 +109,23 @@ export function CreateWebhook({ cancel }: any) {
         <TextInput
           placeholder="name for the webhook"
           value={attributes.name}
-          onChange={({ target: { value } }) => setAttributes({ ...attributes, name: value })}
+          onChange={({ target: { value } }) =>
+            setAttributes({ ...attributes, name: value })
+          }
         />
       </FormField>
       <FormField label="url">
         <TextInput
           placeholder="url to deliver to"
           value={attributes.url}
-          onChange={({ target: { value } }) => setAttributes({ ...attributes, url: value })}
+          onChange={({ target: { value } }) =>
+            setAttributes({ ...attributes, url: value })
+          }
         />
       </FormField>
       <ActionInput
         actions={attributes.actions}
-        setActions={actions => setAttributes({ ...attributes, actions })}
+        setActions={(actions) => setAttributes({ ...attributes, actions })}
       />
       <Box
         direction="row"

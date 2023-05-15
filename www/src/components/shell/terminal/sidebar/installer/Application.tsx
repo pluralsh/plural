@@ -7,13 +7,7 @@ import {
 } from '@pluralsh/design-system'
 import { Box } from 'grommet'
 import { Div, Span } from 'honorable'
-import {
-  ReactElement,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
+import { ReactElement, useContext, useEffect, useMemo, useState } from 'react'
 
 import { Provider, Recipe, RecipeEdge } from '../../../../../generated/graphql'
 import { RECIPE_Q } from '../../../../repository/packages/queries'
@@ -24,31 +18,45 @@ import { TerminalContext } from '../../context/terminal'
 import { Configuration } from './Configuration'
 
 interface StepData {
-  id: string | undefined,
+  id: string | undefined
   context: Record<string, unknown>
   oidc: boolean
-  skipped?: boolean,
+  skipped?: boolean
 }
 
-const toConfig = config => (config ? Object.keys(config)
-  .map(key => ({ [key]: { value: config[key], valid: true } }))
-  .reduce((acc, entry) => ({ ...acc, ...entry }), {}) : undefined)
+const toConfig = (config) =>
+  config
+    ? Object.keys(config)
+        .map((key) => ({ [key]: { value: config[key], valid: true } }))
+        .reduce((acc, entry) => ({ ...acc, ...entry }), {})
+    : undefined
 
-const findRecipe = (recipes: Array<RecipeEdge>, primary: boolean, provider: Provider): Recipe | undefined => (
-  recipes === undefined ? undefined : recipes
-    .map(({ node }) => node)
-    .find(recipe => (primary
-      ? recipe!.provider === provider && recipe!.primary
-      : recipe!.provider === provider)) as Recipe
-)
+const findRecipe = (
+  recipes: Array<RecipeEdge>,
+  primary: boolean,
+  provider: Provider
+): Recipe | undefined =>
+  recipes === undefined
+    ? undefined
+    : (recipes
+        .map(({ node }) => node)
+        .find((recipe) =>
+          primary
+            ? recipe!.provider === provider && recipe!.primary
+            : recipe!.provider === provider
+        ) as Recipe)
 
 export function Application({ provider, ...props }: any): ReactElement {
   const { active, setData } = useActive<StepData>()
   const { configuration } = useContext(TerminalContext)
-  const [context, setContext] = useState<Record<string, unknown>>(active.data?.context || {})
+  const [context, setContext] = useState<Record<string, unknown>>(
+    active.data?.context || {}
+  )
   const [valid, setValid] = useState(true)
   const [oidc, setOIDC] = useState(active.data?.oidc ?? true)
-  const { data: { recipes: { edges: recipeEdges } = { edges: undefined } } = {} } = useQuery(RECIPES_QUERY, {
+  const {
+    data: { recipes: { edges: recipeEdges } = { edges: undefined } } = {},
+  } = useQuery(RECIPES_QUERY, {
     variables: { repositoryId: active.key },
   })
 
@@ -59,16 +67,28 @@ export function Application({ provider, ...props }: any): ReactElement {
     recipeBase = findRecipe(recipeEdges, false, provider)
   }
 
-  const { data: recipe } = useQuery<{recipe: Recipe}>(RECIPE_Q, {
+  const { data: recipe } = useQuery<{ recipe: Recipe }>(RECIPE_Q, {
     variables: { id: recipeBase?.id },
     skip: !recipeBase,
   })
 
-  const recipeContext = useMemo(() => toConfig(configuration?.contextConfiguration![active.label!]), [active.label, configuration?.contextConfiguration])
-  const mergedContext = useMemo<Record<string, unknown>>(() => ({ ...recipeContext, ...context }), [recipeContext, context])
-  const stepData = useMemo(() => ({
-    ...active.data, ...{ id: recipe?.recipe.id }, ...{ context: mergedContext }, ...{ oidc },
-  }), [active.data, recipe?.recipe.id, mergedContext, oidc])
+  const recipeContext = useMemo(
+    () => toConfig(configuration?.contextConfiguration![active.label!]),
+    [active.label, configuration?.contextConfiguration]
+  )
+  const mergedContext = useMemo<Record<string, unknown>>(
+    () => ({ ...recipeContext, ...context }),
+    [recipeContext, context]
+  )
+  const stepData = useMemo(
+    () => ({
+      ...active.data,
+      ...{ id: recipe?.recipe.id },
+      ...{ context: mergedContext },
+      ...{ oidc },
+    }),
+    [active.data, recipe?.recipe.id, mergedContext, oidc]
+  )
 
   useEffect(() => {
     const valid = Object.values<any>(context).every(({ valid }) => valid)
@@ -110,12 +130,16 @@ export function Application({ provider, ...props }: any): ReactElement {
           <Span
             color="text-xlight"
             overline
-          >Cannot install app
+          >
+            Cannot install app
           </Span>
           <Span
             color="text-light"
             body2
-          >This application has been marked restricted because it requires configuration, like ssh keys, that are only able to be securely configured locally.
+          >
+            This application has been marked restricted because it requires
+            configuration, like ssh keys, that are only able to be securely
+            configured locally.
           </Span>
         </Div>
       </WizardStep>
@@ -146,7 +170,8 @@ export function Application({ provider, ...props }: any): ReactElement {
             size="small"
             hue="lighter"
             marginLeft="xsmall"
-          >Dependency
+          >
+            Dependency
           </Chip>
         )}
       </Div>

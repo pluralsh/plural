@@ -1,27 +1,16 @@
-import {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-} from 'react'
+import { useCallback, useContext, useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
-import {
-  Flex,
-  Img,
-  Input,
-  Spinner,
-} from 'honorable'
-import {
-  Button,
-  FormField,
-  ListBoxItem,
-  Select,
-} from '@pluralsh/design-system'
+import { Flex, Img, Input, Spinner } from 'honorable'
+import { Button, FormField, ListBoxItem, Select } from '@pluralsh/design-system'
 
 import { OnboardingContext } from '../../context/onboarding'
 import { ScmProvider } from '../../../../../generated/graphql'
 import { isAlphanumeric } from '../../../helpers'
-import { ConfigureCloudSectionState, OrgType, SCMOrg } from '../../context/types'
+import {
+  ConfigureCloudSectionState,
+  OrgType,
+  SCMOrg,
+} from '../../context/types'
 import { useSectionState } from '../../context/hooks'
 import useOnboarded from '../../../hooks/useOnboarded'
 
@@ -35,28 +24,37 @@ interface OrgInputProps {
 
 function providerToOrgLabel(provider?: ScmProvider): string {
   switch (provider) {
-  case ScmProvider.Gitlab:
-    return 'GitLab group'
-  case ScmProvider.Github:
-    return 'GitHub organization'
+    case ScmProvider.Gitlab:
+      return 'GitLab group'
+    case ScmProvider.Github:
+      return 'GitHub organization'
   }
 
   return 'Organization or group'
 }
 
 function OrgInput({ orgs }: OrgInputProps) {
-  const { scm: { provider, org }, setSCM } = useContext(OnboardingContext)
-  const setOrg = useCallback(org => setSCM(scm => ({ ...scm, org })), [setSCM])
-  const setOrgByKey = useCallback(id => {
-    const org = orgs.find(o => o.id === id)
+  const {
+    scm: { provider, org },
+    setSCM,
+  } = useContext(OnboardingContext)
+  const setOrg = useCallback(
+    (org) => setSCM((scm) => ({ ...scm, org })),
+    [setSCM]
+  )
+  const setOrgByKey = useCallback(
+    (id) => {
+      const org = orgs.find((o) => o.id === id)
 
-    setSCM(scm => ({ ...scm, org }))
-  }, [orgs, setSCM])
+      setSCM((scm) => ({ ...scm, org }))
+    },
+    [orgs, setSCM]
+  )
 
   useEffect(() => {
     if (org) return
 
-    const userOrg = orgs.find(o => o.orgType === OrgType.User)
+    const userOrg = orgs.find((o) => o.orgType === OrgType.User)
 
     if (!userOrg) return
 
@@ -69,23 +67,25 @@ function OrgInput({ orgs }: OrgInputProps) {
       label={providerToOrgLabel(provider)}
     >
       <Select
-        onSelectionChange={key => setOrgByKey(key)}
+        onSelectionChange={(key) => setOrgByKey(key)}
         selectedKey={org?.id}
-        leftContent={org?.avatarUrl && (
-          <Img
-            borderRadius="medium"
-            src={org?.avatarUrl}
-            width={24}
-            height={24}
-          />
-        )}
+        leftContent={
+          org?.avatarUrl && (
+            <Img
+              borderRadius="medium"
+              src={org?.avatarUrl}
+              width={24}
+              height={24}
+            />
+          )
+        }
       >
-        {orgs?.map(o => (
+        {orgs?.map((o) => (
           <ListBoxItem
             key={o.id}
             label={o.name}
             textValue={o.name}
-            leftContent={(
+            leftContent={
               <Img
                 borderRadius="medium"
                 marginRight="xsmall"
@@ -94,7 +94,7 @@ function OrgInput({ orgs }: OrgInputProps) {
                 width={24}
                 height={24}
               />
-            )}
+            }
           />
         ))}
       </Select>
@@ -105,11 +105,24 @@ function OrgInput({ orgs }: OrgInputProps) {
 function RepositoryInput({ orgs, provider }: any) {
   const { scm, setSCM, setValid } = useContext(OnboardingContext)
   const maxLen = 100
-  const setName = useCallback((name: string) => setSCM({ ...scm, repositoryName: name }), [setSCM, scm])
-  const { loading, exists, validated } = useRepoExists(
-    scm.token, scm.org, scm.repositoryName, provider
+  const setName = useCallback(
+    (name: string) => setSCM({ ...scm, repositoryName: name }),
+    [setSCM, scm]
   )
-  const isValid = useMemo(() => !!scm?.repositoryName?.length && isAlphanumeric(scm?.repositoryName) && !exists && validated, [scm?.repositoryName, exists, validated])
+  const { loading, exists, validated } = useRepoExists(
+    scm.token,
+    scm.org,
+    scm.repositoryName,
+    provider
+  )
+  const isValid = useMemo(
+    () =>
+      !!scm?.repositoryName?.length &&
+      isAlphanumeric(scm?.repositoryName) &&
+      !exists &&
+      validated,
+    [scm?.repositoryName, exists, validated]
+  )
 
   useEffect(() => setValid(isValid), [isValid, setValid])
 
@@ -120,7 +133,11 @@ function RepositoryInput({ orgs, provider }: any) {
         width="100%"
         marginTop="medium"
         label="Repository name"
-        hint={exists ? 'This repository already exists. Please use a different name.' : "Your repository's name must be globally unique."}
+        hint={
+          exists
+            ? 'This repository already exists. Please use a different name.'
+            : "Your repository's name must be globally unique."
+        }
         length={scm?.repositoryName?.length || 0}
         maxLength={maxLen}
         error={!isValid}
@@ -128,7 +145,9 @@ function RepositoryInput({ orgs, provider }: any) {
         <Input
           error={!isValid}
           width="100%"
-          onChange={({ target: { value } }) => setName(value.substring(0, maxLen))}
+          onChange={({ target: { value } }) =>
+            setName(value.substring(0, maxLen))
+          }
           value={scm?.repositoryName}
           placeholder="Choose a repository name"
           endIcon={loading ? <Spinner /> : null}
@@ -163,17 +182,15 @@ function GitlabRepositoryInput() {
 }
 
 export function ProviderInput() {
-  const { scm: { provider: scmProvider } } = useContext(OnboardingContext)
+  const {
+    scm: { provider: scmProvider },
+  } = useContext(OnboardingContext)
 
   if (scmProvider === ScmProvider.Github) {
-    return (
-      <GithubRepositoryInput />
-    )
+    return <GithubRepositoryInput />
   }
   if (scmProvider === ScmProvider.Gitlab) {
-    return (
-      <GitlabRepositoryInput />
-    )
+    return <GitlabRepositoryInput />
   }
 
   return null
@@ -181,12 +198,18 @@ export function ProviderInput() {
 
 export function ProviderConfiguration() {
   const context = useContext(OnboardingContext)
-  const { scm: { provider: scmProvider }, valid } = context
+  const {
+    scm: { provider: scmProvider },
+    valid,
+  } = context
   const setSectionState = useSectionState()
   const navigate = useNavigate()
   const { fresh: isOnboarding, mutation } = useOnboarded()
 
-  const onBack = useCallback(() => setSectionState(ConfigureCloudSectionState.RepositorySelection), [setSectionState])
+  const onBack = useCallback(
+    () => setSectionState(ConfigureCloudSectionState.RepositorySelection),
+    [setSectionState]
+  )
 
   return (
     <div>
@@ -206,7 +229,8 @@ export function ProviderConfiguration() {
               mutation()
               navigate('/overview/clusters')
             }}
-          >Skip onboarding
+          >
+            Skip onboarding
           </Button>
         )}
         <Flex
@@ -215,16 +239,22 @@ export function ProviderConfiguration() {
           justify="space-between"
         >
           <Button
-            data-phid={`back-from-repo-config${scmProvider ? `-${scmProvider.toLowerCase()}` : ''}`}
+            data-phid={`back-from-repo-config${
+              scmProvider ? `-${scmProvider.toLowerCase()}` : ''
+            }`}
             secondary
             onClick={() => onBack()}
           >
             Back
           </Button>
           <Button
-            data-phid={`cont-from-repo-config${scmProvider ? `-${scmProvider.toLowerCase()}` : ''}`}
+            data-phid={`cont-from-repo-config${
+              scmProvider ? `-${scmProvider.toLowerCase()}` : ''
+            }`}
             disabled={!valid}
-            onClick={() => setSectionState(ConfigureCloudSectionState.CloudConfiguration)}
+            onClick={() =>
+              setSectionState(ConfigureCloudSectionState.CloudConfiguration)
+            }
           >
             Continue
           </Button>

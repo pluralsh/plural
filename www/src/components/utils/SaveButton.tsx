@@ -1,11 +1,6 @@
 import { ButtonProps, Flex } from 'honorable'
 import { Button, CheckIcon } from '@pluralsh/design-system'
-import {
-  ReactNode,
-  useContext,
-  useEffect,
-  useState,
-} from 'react'
+import { ReactNode, useContext, useEffect, useState } from 'react'
 import { ThemeContext } from 'styled-components'
 
 import usePrevious from '../../hooks/usePrevious'

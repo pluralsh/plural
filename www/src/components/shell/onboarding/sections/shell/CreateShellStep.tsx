@@ -15,8 +15,12 @@ function CreateShellStep({ onBack }) {
       direction="column"
       gap="medium"
     >
-      {section.state === CreateCloudShellSectionState.Summary && <Summary onBack={onBack} />}
-      {section.state !== CreateCloudShellSectionState.Summary && <CreateShell />}
+      {section.state === CreateCloudShellSectionState.Summary && (
+        <Summary onBack={onBack} />
+      )}
+      {section.state !== CreateCloudShellSectionState.Summary && (
+        <CreateShell />
+      )}
     </Flex>
   )
 }

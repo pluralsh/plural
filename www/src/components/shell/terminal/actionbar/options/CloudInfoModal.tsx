@@ -1,20 +1,17 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useQuery } from '@apollo/client'
 import { FormField, Input, Modal } from '@pluralsh/design-system'
-import {
-  A,
-  Button,
-  Flex,
-  Span,
-} from 'honorable'
+import { A, Button, Flex, Span } from 'honorable'
 import GitUrlParse from 'git-url-parse'
 
 import { SHELL_CONFIGURATION_QUERY } from '../../queries'
 
 function CloudInfoModal({ onClose }) {
   const [open, setOpen] = useState(true)
-  const { data: { shellConfiguration } } = useQuery(SHELL_CONFIGURATION_QUERY)
-  const [gitUrl, setGitUrl] = useState<{name: string, organization: string}>()
+  const {
+    data: { shellConfiguration },
+  } = useQuery(SHELL_CONFIGURATION_QUERY)
+  const [gitUrl, setGitUrl] = useState<{ name: string; organization: string }>()
 
   const close = useCallback(() => {
     setOpen(false)
@@ -41,16 +38,20 @@ function CloudInfoModal({ onClose }) {
         <Span
           body2
           color="text-xlight"
-        >CLOUD SHELL INFO
+        >
+          CLOUD SHELL INFO
         </Span>
-        <Span body1>The Plural-hosted cloud shell allows you to access your cluster’s git repository without syncing locally. </Span>
+        <Span body1>
+          The Plural-hosted cloud shell allows you to access your cluster’s git
+          repository without syncing locally.{' '}
+        </Span>
         <Flex
           direction="column"
           gap="medium"
         >
           <FormField
             label="GitHub organization"
-            hint={(
+            hint={
               <Span
                 caption
                 color="text-xlight"
@@ -59,11 +60,12 @@ function CloudInfoModal({ onClose }) {
                   inline
                   href="https://www.plural.sh/contact"
                   target="_blank"
-                >Contact us
+                >
+                  Contact us
                 </A>
                 &nbsp;for support if you need to change the Git repo owner.
               </Span>
-            )}
+            }
           >
             <Input
               placeholder="organization"

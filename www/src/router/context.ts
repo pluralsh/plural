@@ -8,7 +8,16 @@ class PluralHistory {
   private _stack: Array<string> = []
 
   // We do not want to store those paths in the history
-  private readonly _filteredPaths: Array<string> = ['/login', '/oauth', '/signup', '/sso', '/invite', '/confirm-email', '/reset-password', '/password-reset']
+  private readonly _filteredPaths: Array<string> = [
+    '/login',
+    '/oauth',
+    '/signup',
+    '/sso',
+    '/invite',
+    '/confirm-email',
+    '/reset-password',
+    '/password-reset',
+  ]
 
   // Keep only this number of entries in the history
   private readonly _maxHistoryLength = 20
@@ -39,7 +48,10 @@ class PluralHistory {
   }
 
   private _isFiltered(path: string): boolean {
-    return this._filteredPaths.some(p => path.endsWith(p) || path.startsWith(p)) || path === '/' // Filter out the root path also
+    return (
+      this._filteredPaths.some((p) => path.endsWith(p) || path.startsWith(p)) ||
+      path === '/'
+    ) // Filter out the root path also
   }
 
   private _push(path: string): void {

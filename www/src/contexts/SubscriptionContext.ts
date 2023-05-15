@@ -1,6 +1,10 @@
 import { createContext } from 'react'
 
-import { Address, PaymentMethodFragment, SubscriptionAccountFragment } from '../generated/graphql'
+import {
+  Address,
+  PaymentMethodFragment,
+  SubscriptionAccountFragment,
+} from '../generated/graphql'
 
 export type SubscriptionContextType = {
   billingCustomerId: string | null
@@ -35,9 +39,10 @@ const SubscriptionContext = createContext<SubscriptionContextType>({
   availableFeatures: {},
   paymentMethods: [],
   defaultPaymentMethod: null,
-  refetch: () => new Promise(resolve => {
-    resolve({})
-  }),
+  refetch: () =>
+    new Promise((resolve) => {
+      resolve({})
+    }),
 })
 
 export default SubscriptionContext

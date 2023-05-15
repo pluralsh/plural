@@ -7,10 +7,16 @@ fragment Installation on Installation {
   acmeSecret
   autoUpgrade
   trackTag
-  repository { ...Repo }
+  repository {
+    ...Repo
+  }
   # repository { ...Repository }
-  user { ...User }
-  oidcProvider { ...OIDCProvider }
+  user {
+    ...User
+  }
+  oidcProvider {
+    ...OIDCProvider
+  }
 }
 
 query GetInstallation($name: String) {
@@ -27,7 +33,11 @@ query GetInstallationById($id: ID) {
 
 query GetInstallations($first: Int) {
   installations(first: $first) {
-    edges { node { ...Installation } }
+    edges {
+      node {
+        ...Installation
+      }
+    }
   }
 }
 

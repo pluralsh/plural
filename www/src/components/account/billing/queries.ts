@@ -30,13 +30,19 @@ export const SUBSCRIPTION_QUERY = gql`
       delinquentAt
       userCount
       clusterCount
-      availableFeatures { userManagement audit }
+      availableFeatures {
+        userManagement
+        audit
+      }
       subscription {
         id
         plan {
           id
           period
-          lineItems { dimension cost }
+          lineItems {
+            dimension
+            cost
+          }
           name
         }
       }

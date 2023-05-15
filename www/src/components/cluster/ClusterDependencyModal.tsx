@@ -15,7 +15,11 @@ type ClusterDependencyModalProps = {
   destination: Cluster
 }
 
-export function ClusterDependencyModal({ open, setOpen, destination }: ClusterDependencyModalProps) {
+export function ClusterDependencyModal({
+  open,
+  setOpen,
+  destination,
+}: ClusterDependencyModalProps) {
   const [source, setSource] = useState<Cluster | undefined>()
 
   const close = useCallback(() => {
@@ -23,26 +27,34 @@ export function ClusterDependencyModal({ open, setOpen, destination }: ClusterDe
     setSource(undefined)
   }, [setOpen, setSource])
 
-  const [mutation, { loading, error }] = useMutation(CREATE_CLUSTER_DEPENDENCY, {
-    variables: { source: source?.id || '', dest: destination.id || '' },
-    refetchQueries: [{ query: CLUSTERS }],
-    onCompleted: () => close(),
-  })
+  const [mutation, { loading, error }] = useMutation(
+    CREATE_CLUSTER_DEPENDENCY,
+    {
+      variables: { source: source?.id || '', dest: destination.id || '' },
+      refetchQueries: [{ query: CLUSTERS }],
+      onCompleted: () => close(),
+    }
+  )
 
-  const filterSources = useCallback((s: Cluster) => {
-    const d = destination
+  const filterSources = useCallback(
+    (s: Cluster) => {
+      const d = destination
 
-    return s.dependency?.dependency?.id !== d.id // Avoid circular dependencies between clusters.
-    && s.id !== d?.id // Source cluster has to be different than destination cluster.
-    && s.provider === d?.provider // Clusters must use the same provider.
-  }, [destination])
+      return (
+        s.dependency?.dependency?.id !== d.id && // Avoid circular dependencies between clusters.
+        s.id !== d?.id && // Source cluster has to be different than destination cluster.
+        s.provider === d?.provider
+      ) // Clusters must use the same provider.
+    },
+    [destination]
+  )
 
   return (
     <Modal
       portal
       open={open}
       onClose={close}
-      actions={(
+      actions={
         <>
           <Button
             secondary
@@ -59,7 +71,7 @@ export function ClusterDependencyModal({ open, setOpen, destination }: ClusterDe
             Save
           </Button>
         </>
-      )}
+      }
       size="large"
       overflow="hidden"
     >

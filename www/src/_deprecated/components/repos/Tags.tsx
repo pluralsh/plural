@@ -1,24 +1,18 @@
 import { useState } from 'react'
-import {
-  Box,
-  Keyboard,
-  Text,
-  TextInput,
-} from 'grommet'
+import { Box, Keyboard, Text, TextInput } from 'grommet'
 import { Scroller, Tag as TagInner } from 'forge-core'
 
 import { extendConnection } from '../../../utils/graphql'
 
-export function TagInput({
-  addTag, removeTag, tags, round, ...rest
-}: any) {
+export function TagInput({ addTag, removeTag, tags, round, ...rest }: any) {
   const [current, setCurrent] = useState('')
 
   return (
-    <Keyboard onEnter={() => {
-      addTag(current)
-      setCurrent('')
-    }}
+    <Keyboard
+      onEnter={() => {
+        addTag(current)
+        setCurrent('')
+      }}
     >
       <Box
         fill="horizontal"
@@ -31,15 +25,16 @@ export function TagInput({
           wrap
           align="center"
         >
-          {tags.length > 0 && tags.map((tag, index) => (
-            <TagInner
-              margin="xxsmall"
-              key={`${tag}${index}`}
-              onRemove={() => removeTag(tag)}
-            >
-              {tag}
-            </TagInner>
-          ))}
+          {tags.length > 0 &&
+            tags.map((tag, index) => (
+              <TagInner
+                margin="xxsmall"
+                key={`${tag}${index}`}
+                onRemove={() => removeTag(tag)}
+              >
+                {tag}
+              </TagInner>
+            ))}
         </Box>
         <Box
           flex
@@ -59,9 +54,7 @@ export function TagInput({
   )
 }
 
-export function TagContainer({
-  enabled, children, gap, pad, onClick,
-}: any) {
+export function TagContainer({ enabled, children, gap, pad, onClick }: any) {
   const border = enabled ? { side: 'right', color: 'focus', size: '2px' } : null
 
   return (
@@ -100,7 +93,11 @@ export function Tag({ tag: { tag, count }, setTag, enabled }: any) {
 }
 
 export default function Tags({
-  tags: { pageInfo, edges }, fetchMore, tag, setTag, pad,
+  tags: { pageInfo, edges },
+  fetchMore,
+  tag,
+  setTag,
+  pad,
 }: any) {
   return (
     <Box
@@ -119,10 +116,14 @@ export default function Tags({
             enabled={node.tag === tag}
           />
         )}
-        onLoadMore={() => pageInfo.hasNextPage && fetchMore({
-          variables: { cursor: pageInfo.endCursor },
-          updateQuery: (prev, { fetchMoreResult: { tags } }) => extendConnection(prev, tags, 'tags'),
-        })}
+        onLoadMore={() =>
+          pageInfo.hasNextPage &&
+          fetchMore({
+            variables: { cursor: pageInfo.endCursor },
+            updateQuery: (prev, { fetchMoreResult: { tags } }) =>
+              extendConnection(prev, tags, 'tags'),
+          })
+        }
       />
     </Box>
   )

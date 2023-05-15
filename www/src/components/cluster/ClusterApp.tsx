@@ -18,9 +18,7 @@ type ClusterAppProps = {
 }
 
 export function ClusterApp({
-  app: {
-    name, icon, darkIcon,
-  },
+  app: { name, icon, darkIcon },
   consoleUrl,
   last,
 }: ClusterAppProps): ReactElement {
@@ -51,13 +49,13 @@ export function ClusterApp({
       _hover={{ backgroundColor: 'fill-one-hover' }}
     >
       <IconFrame
-        icon={(
+        icon={
           <img
             src={darkIcon || icon || ''}
             width={16}
             height={16}
           />
-        )}
+        }
         marginRight="xxsmall"
         size="medium"
         type="floating"
@@ -74,7 +72,7 @@ export function ClusterApp({
         marginHorizontal="xsmall"
       /> */}
       <MoreMenu
-        onSelectionChange={selectedKey => menuItems[selectedKey]?.onSelect()}
+        onSelectionChange={(selectedKey) => menuItems[selectedKey]?.onSelect()}
         floating
       >
         {Object.entries(menuItems).map(([key, { icon, label }]) => (

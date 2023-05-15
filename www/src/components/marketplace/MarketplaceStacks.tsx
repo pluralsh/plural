@@ -18,21 +18,21 @@ export default function MarketplaceStacks() {
   const {
     stacks: { edges },
   } = data
-  const apps = ({ collections: c }) => (c?.length > 0
-    ? c[0].bundles?.map(({
-      recipe: {
-        repository: { name, darkIcon, icon },
-      },
-    }) => ({ name, imageUrl: darkIcon || icon }))
-    : [])
-  const hue = i => hues[i % hues.length]
+  const apps = ({ collections: c }) =>
+    c?.length > 0
+      ? c[0].bundles?.map(
+          ({
+            recipe: {
+              repository: { name, darkIcon, icon },
+            },
+          }) => ({ name, imageUrl: darkIcon || icon })
+        )
+      : []
+  const hue = (i) => hues[i % hues.length]
 
   return (
     <>
-      <H1
-        subtitle1
-      >Plural Stacks
-      </H1>
+      <H1 subtitle1>Plural Stacks</H1>
       <CardGrid
         marginBottom="xlarge"
         marginTop="medium"

@@ -6,22 +6,23 @@ import { ScmProvider } from '../../../../../../generated/graphql'
 
 enum ResponseCode {
   NotFound = 404,
-  Ok = 200
+  Ok = 200,
 }
 
 interface ErrorResponse {
   name: string
-  status: ResponseCode,
+  status: ResponseCode
   message: string
 }
 
 async function isRepoNameUsed(client, owner, name) {
   try {
-    const response = await client.request(`GET /repos/${owner}/${name}`, { request: { cache: 'reload' } })
+    const response = await client.request(`GET /repos/${owner}/${name}`, {
+      request: { cache: 'reload' },
+    })
 
     return response.status === ResponseCode.Ok
-  }
-  catch (err) {
+  } catch (err) {
     const error = err as ErrorResponse
 
     if (error.status === ResponseCode.NotFound) return false
@@ -31,7 +32,10 @@ async function isRepoNameUsed(client, owner, name) {
 }
 
 function useRepoExists(
-  token, org: SCMOrg | undefined, name: string | undefined, provider: ScmProvider
+  token,
+  org: SCMOrg | undefined,
+  name: string | undefined,
+  provider: ScmProvider
 ) {
   const delay = 750
   const client = useMemo(() => new Octokit({ auth: token }), [token])
@@ -47,16 +51,20 @@ function useRepoExists(
 
     const handler = setTimeout(() => {
       setLoading(true)
-      isRepoNameUsed(client, org?.name, name).then(exists => setExists(exists)).finally(() => {
-        setLoading(false)
-        setValidated(true)
-      })
+      isRepoNameUsed(client, org?.name, name)
+        .then((exists) => setExists(exists))
+        .finally(() => {
+          setLoading(false)
+          setValidated(true)
+        })
     }, delay)
 
     return () => clearTimeout(handler)
   }, [client, name, org?.name, provider])
 
-  return provider === ScmProvider.Github ? { loading, exists, validated } : { loading: false, exists: false, validated: true }
+  return provider === ScmProvider.Github
+    ? { loading, exists, validated }
+    : { loading: false, exists: false, validated: true }
 }
 
 export { useRepoExists }

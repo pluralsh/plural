@@ -6,7 +6,9 @@ import { Div, useTheme } from 'honorable'
 import { Codeline } from '@pluralsh/design-system'
 
 import Plan from '../../../components/payments/Plan'
-import CreatePlan, { CreateAnchor } from '../../../components/payments/CreatePlan'
+import CreatePlan, {
+  CreateAnchor,
+} from '../../../components/payments/CreatePlan'
 import SubscribeModal from '../../../components/payments/CreateSubscription'
 import { SubscriptionBadge } from '../../../components/payments/Subscription'
 import UpdatePlan from '../../../components/payments/UpdatePlan'
@@ -20,24 +22,31 @@ export function Plans({ repository, nocreate }: any) {
   const { plans, editable, installation } = repository
   const { subscription, id } = installation || {}
 
-  const approvePlan = useCallback(plan => {
-    if (!subscription) {
-      setModal(<SubscribeModal
-        plan={plan}
-        installationId={id}
-        repositoryId={repository.id}
-        setOpen={setModal}
-      />)
+  const approvePlan = useCallback(
+    (plan) => {
+      if (!subscription) {
+        setModal(
+          <SubscribeModal
+            plan={plan}
+            installationId={id}
+            repositoryId={repository.id}
+            setOpen={setModal}
+          />
+        )
 
-      return
-    }
+        return
+      }
 
-    setModal(<UpdatePlan
-      plan={plan}
-      repository={repository}
-      setOpen={setModal}
-    />)
-  }, [setModal, id, repository, subscription])
+      setModal(
+        <UpdatePlan
+          plan={plan}
+          repository={repository}
+          setOpen={setModal}
+        />
+      )
+    },
+    [setModal, id, repository, subscription]
+  )
 
   return (
     <>
@@ -46,8 +55,8 @@ export function Plans({ repository, nocreate }: any) {
         pad="small"
         gap="small"
       >
-        {plans.length > 0
-          ? plans.map(plan => (
+        {plans.length > 0 ? (
+          plans.map((plan) => (
             <Plan
               key={plan.id}
               subscription={subscription}
@@ -56,8 +65,10 @@ export function Plans({ repository, nocreate }: any) {
               plan={plan}
             />
           ))
-          : <Text size="small">This repo is currently free to use</Text>}
-        {editable && (<CreateAnchor onClick={() => setOpen(true)} />)}
+        ) : (
+          <Text size="small">This repo is currently free to use</Text>
+        )}
+        {editable && <CreateAnchor onClick={() => setOpen(true)} />}
       </Box>
       {open && !nocreate && (
         <CreatePlan
@@ -86,9 +97,14 @@ export function InstallationInner({ installation, repository }: any) {
         )}
         <Codeline
           language="bash"
-          style={{ backgroundColor: theme.utils?.resolveColorString('fill-two') }}
+          style={{
+            backgroundColor: theme.utils?.resolveColorString('fill-two'),
+          }}
         >
-          {[`plural build --only ${repository.name}`, `plural deploy ${repository.name}`].join('\n')}
+          {[
+            `plural build --only ${repository.name}`,
+            `plural deploy ${repository.name}`,
+          ].join('\n')}
         </Codeline>
       </Box>
     )
@@ -98,11 +114,16 @@ export function InstallationInner({ installation, repository }: any) {
 }
 
 export default function Installation({
-  repository, onUpdate, noHelm, open,
+  repository,
+  onUpdate,
+  noHelm,
+  open,
 }: any) {
   const { installation } = repository
   const hasPlans = repository.plans && repository.plans.length > 0
-  const [tab, setTab] = useState((noHelm && !installation) ? 'Configuration' : 'Installation')
+  const [tab, setTab] = useState(
+    noHelm && !installation ? 'Configuration' : 'Installation'
+  )
 
   return (
     <Box>

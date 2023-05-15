@@ -22,24 +22,29 @@ export function VersionTag({ tag: { tag }, onClick }: any) {
   )
 }
 
-export const TAGS = [
-  'latest',
-  'stable',
-  'warm',
-]
+export const TAGS = ['latest', 'stable', 'warm']
 
 export function EditTags({ version, setOpen, refetch }: any) {
   const [value, setValue] = useState('stable')
-  const [current, setCurrent] = useState((version.tags || []).map(({ tag }) => ({ tag })))
-  const addTag = useCallback(tag => {
-    setCurrent([...current, { tag }])
-    setValue('')
-  }, [current, setCurrent, setValue])
-  const removeTag = useCallback(tag => setCurrent(current.filter(c => c.tag !== tag)), [current, setCurrent])
+  const [current, setCurrent] = useState(
+    (version.tags || []).map(({ tag }) => ({ tag }))
+  )
+  const addTag = useCallback(
+    (tag) => {
+      setCurrent([...current, { tag }])
+      setValue('')
+    },
+    [current, setCurrent, setValue]
+  )
+  const removeTag = useCallback(
+    (tag) => setCurrent(current.filter((c) => c.tag !== tag)),
+    [current, setCurrent]
+  )
   const [mutation, { loading }] = useMutation(UPDATE_VERSION, {
     variables: { id: version.id, attributes: { tags: current } },
     onCompleted: () => {
-      setOpen(false); refetch()
+      setOpen(false)
+      refetch()
     },
   })
 
@@ -63,18 +68,22 @@ export function EditTags({ version, setOpen, refetch }: any) {
             gap="xsmall"
             align="center"
           >
-            {current.length > 0
-              ? (current.map(tag => (
+            {current.length > 0 ? (
+              current.map((tag) => (
                 <VersionTag
                   key={tag}
                   tag={tag}
                   onClick={() => removeTag(tag.tag)}
                 />
-              )))
-              : <Text size="small">Add a tag...</Text>}
+              ))
+            ) : (
+              <Text size="small">Add a tag...</Text>
+            )}
           </Box>
           <Select
-            options={TAGS.filter(name => !current.find(({ tag }) => tag === name))}
+            options={TAGS.filter(
+              (name) => !current.find(({ tag }) => tag === name)
+            )}
             value={value}
             onChange={({ option }) => setValue(option)}
           />

@@ -11,10 +11,22 @@ import { LABEL_ROADMAP } from './constants'
 
 function RoadmapRoadmap() {
   const {
-    pluralIssues, pluralArtifactsIssues, pluralConsoleIssues, pluralCliIssues,
+    pluralIssues,
+    pluralArtifactsIssues,
+    pluralConsoleIssues,
+    pluralCliIssues,
   } = useContext(RoadmapContext)
 
-  const issues = useMemo(() => [...pluralIssues, ...pluralArtifactsIssues, ...pluralConsoleIssues, ...pluralCliIssues].filter(issue => issue.labels.includes(LABEL_ROADMAP)), [pluralIssues, pluralArtifactsIssues, pluralConsoleIssues, pluralCliIssues])
+  const issues = useMemo(
+    () =>
+      [
+        ...pluralIssues,
+        ...pluralArtifactsIssues,
+        ...pluralConsoleIssues,
+        ...pluralCliIssues,
+      ].filter((issue) => issue.labels.includes(LABEL_ROADMAP)),
+    [pluralIssues, pluralArtifactsIssues, pluralConsoleIssues, pluralCliIssues]
+  )
 
   return (
     <Flex

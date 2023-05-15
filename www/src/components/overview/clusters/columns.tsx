@@ -39,26 +39,24 @@ const sourceDisplayNames = {
   [Source.Demo]: 'Demo',
 }
 
-export const ColCluster = columnHelper.accessor(row => row.name, {
+export const ColCluster = columnHelper.accessor((row) => row.name, {
   id: 'cluster',
   enableGlobalFilter: true,
   enableSorting: true,
   cell: ({
     row: {
-      original: {
-        id, name, provider, source, accessible,
-      },
+      original: { id, name, provider, source, accessible },
     },
   }) => (
     <CellWrap>
       <AppIcon
         size="xxsmall"
-        icon={(
+        icon={
           <ProviderIcon
             provider={provider}
             width={16}
           />
-        )}
+        }
       />
       <div>
         {accessible ? (
@@ -69,7 +67,9 @@ export const ColCluster = columnHelper.accessor(row => row.name, {
           >
             {name}
           </A>
-        ) : <Div whiteSpace="nowrap">{name}</Div>}
+        ) : (
+          <Div whiteSpace="nowrap">{name}</Div>
+        )}
         <CellCaption>{sourceDisplayNames[source || '']}</CellCaption>
       </div>
     </CellWrap>
@@ -77,11 +77,15 @@ export const ColCluster = columnHelper.accessor(row => row.name, {
   header: 'Cluster',
 })
 
-export const ColHealth = columnHelper.accessor(row => row.pingedAt, {
+export const ColHealth = columnHelper.accessor((row) => row.pingedAt, {
   id: 'health',
   enableGlobalFilter: true,
   enableSorting: true,
-  cell: ({ row: { original: { pingedAt } } }) => (
+  cell: ({
+    row: {
+      original: { pingedAt },
+    },
+  }) => (
     <ClusterHealth
       pingedAt={pingedAt}
       size="small"
@@ -90,47 +94,64 @@ export const ColHealth = columnHelper.accessor(row => row.pingedAt, {
   header: 'Health',
 })
 
-export const ColGit = columnHelper.accessor(row => row.gitUrl, {
+export const ColGit = columnHelper.accessor((row) => row.gitUrl, {
   id: 'git',
   enableGlobalFilter: true,
   enableSorting: true,
-  cell: ({ row: { original: { gitUrl } } }) => <CopyButton text={gitUrl || ''} />,
+  cell: ({
+    row: {
+      original: { gitUrl },
+    },
+  }) => <CopyButton text={gitUrl || ''} />,
   header: 'Git',
 })
 
-export const ColCloudShell = columnHelper.accessor(row => row.owner?.hasShell, {
-  id: 'cloudshell',
-  enableGlobalFilter: true,
-  enableSorting: true,
-  cell: ({ row: { original: { owner, id, accessible } } }) => (owner?.hasShell
-    ? (accessible ? (
-      <IconFrame
-        clickable
-        icon={<TerminalIcon />}
-        // @ts-expect-error
-        as={Link}
-        to={`/shell?cluster=${id}`}
-        textValue="Go to cloudshell"
-        tooltip
-        type="floating"
-      />
-    ) : (
-      <IconFrame
-        size="medium"
-        icon={<TerminalIcon color="icon-disabled" />}
-        textValue="You aren't an administrator of this cluster"
-        tooltip
-        type="floating"
-      />
-    )) : null),
-  header: 'Cloudshell',
-})
+export const ColCloudShell = columnHelper.accessor(
+  (row) => row.owner?.hasShell,
+  {
+    id: 'cloudshell',
+    enableGlobalFilter: true,
+    enableSorting: true,
+    cell: ({
+      row: {
+        original: { owner, id, accessible },
+      },
+    }) =>
+      owner?.hasShell ? (
+        accessible ? (
+          <IconFrame
+            clickable
+            icon={<TerminalIcon />}
+            // @ts-expect-error
+            as={Link}
+            to={`/shell?cluster=${id}`}
+            textValue="Go to cloudshell"
+            tooltip
+            type="floating"
+          />
+        ) : (
+          <IconFrame
+            size="medium"
+            icon={<TerminalIcon color="icon-disabled" />}
+            textValue="You aren't an administrator of this cluster"
+            tooltip
+            type="floating"
+          />
+        )
+      ) : null,
+    header: 'Cloudshell',
+  }
+)
 
-export const ColOwner = columnHelper.accessor(row => row.owner?.name, {
+export const ColOwner = columnHelper.accessor((row) => row.owner?.name, {
   id: 'owner',
   enableGlobalFilter: true,
   enableSorting: true,
-  cell: ({ row: { original: { owner } } }) => (
+  cell: ({
+    row: {
+      original: { owner },
+    },
+  }) => (
     <ClusterOwner
       name={owner?.name}
       email={owner?.email}
@@ -140,26 +161,25 @@ export const ColOwner = columnHelper.accessor(row => row.owner?.name, {
   header: 'Owner',
 })
 
-export const ColPromotions = columnHelper.accessor(row => row.hasDependency, {
+export const ColPromotions = columnHelper.accessor((row) => row.hasDependency, {
   id: 'promotions',
   enableGlobalFilter: true,
   enableSorting: true,
-  cell: hasDependency => (hasDependency.getValue()
-    && (
+  cell: (hasDependency) =>
+    hasDependency.getValue() && (
       <IconFrame
-        icon={(<CheckRoundedIcon color="icon-success" />)}
+        icon={<CheckRoundedIcon color="icon-success" />}
         type="floating"
       />
-    )
-  ),
+    ),
   header: 'Promotions',
 })
 
-export const ColUpgrades = columnHelper.accessor(row => row.delivered, {
+export const ColUpgrades = columnHelper.accessor((row) => row.delivered, {
   id: 'upgrades',
   enableGlobalFilter: true,
   enableSorting: true,
-  cell: delivered => (
+  cell: (delivered) => (
     <Chip
       severity={delivered.getValue() ? 'success' : 'warning'}
       hue="lighter"
@@ -173,11 +193,15 @@ export const ColUpgrades = columnHelper.accessor(row => row.delivered, {
 
 const ActionsWrap = styled(CellWrap)({ alignSelf: 'end' })
 
-export const ColActions = columnHelper.accessor(row => row.consoleUrl, {
+export const ColActions = columnHelper.accessor((row) => row.consoleUrl, {
   id: 'actions',
   enableGlobalFilter: false,
   enableSorting: false,
-  cell: ({ row: { original: { id, consoleUrl, accessible } } }) => (
+  cell: ({
+    row: {
+      original: { id, consoleUrl, accessible },
+    },
+  }) => (
     <ActionsWrap>
       {consoleUrl && (
         <IconFrame

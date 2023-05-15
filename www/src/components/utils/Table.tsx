@@ -4,9 +4,7 @@ import toUpper from 'lodash/toUpper'
 
 const TableContext = createContext<any>({})
 
-function HeaderItem({
-  label, index,
-}: any) {
+function HeaderItem({ label, index }: any) {
   const { sizes } = useContext(TableContext)
 
   return (
@@ -19,9 +17,7 @@ function HeaderItem({
   )
 }
 
-export function TableRow({
-  children, suffix, last, ...flex
-}: any) {
+export function TableRow({ children, suffix, last, ...flex }: any) {
   const { sizes } = useContext(TableContext)
 
   const len = children.length
@@ -43,9 +39,7 @@ export function TableRow({
           align="center"
           direction="row"
         >
-          <Flex flexGrow={1}>
-            {child}
-          </Flex>
+          <Flex flexGrow={1}>{child}</Flex>
           {i === len - 1 ? suffix : null}
         </Flex>
       ))}
@@ -54,19 +48,24 @@ export function TableRow({
 }
 
 export function TableData({ children }: any) {
-  return (
-    <Span color="text-light">
-      {children}
-    </Span>
-  )
+  return <Span color="text-light">{children}</Span>
 }
 
 export function Table({
-  sizes, headers, children, background, heading, ...flex
+  sizes,
+  headers,
+  children,
+  background,
+  heading,
+  ...flex
 }: any) {
-  const value = useMemo(() => ({
-    sizes, background,
-  }), [sizes, background])
+  const value = useMemo(
+    () => ({
+      sizes,
+      background,
+    }),
+    [sizes, background]
+  )
 
   return (
     <Flex
@@ -82,7 +81,8 @@ export function Table({
             overline
             color="text-xlight"
             padding={16}
-          >{toUpper(heading)}
+          >
+            {toUpper(heading)}
           </P>
         )}
         <Flex

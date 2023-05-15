@@ -1,9 +1,4 @@
-import {
-  Ref,
-  forwardRef,
-  useEffect,
-  useState,
-} from 'react'
+import { Ref, forwardRef, useEffect, useState } from 'react'
 import { Button, ButtonProps } from 'honorable'
 
 import { Tooltip } from '@pluralsh/design-system'
@@ -12,7 +7,10 @@ type CopyableButtonProps = ButtonProps & {
   copyText?: string
 }
 
-function CopyableButtonRef({ copyText, onClick, ...props }: CopyableButtonProps, ref: Ref<any>) {
+function CopyableButtonRef(
+  { copyText, onClick, ...props }: CopyableButtonProps,
+  ref: Ref<any>
+) {
   const [copied, setCopied] = useState(false)
 
   useEffect(() => {
@@ -23,7 +21,10 @@ function CopyableButtonRef({ copyText, onClick, ...props }: CopyableButtonProps,
     }
   }, [copied])
 
-  const handleCopy = () => window.navigator.clipboard.writeText(copyText ?? '').then(() => setCopied(true))
+  const handleCopy = () =>
+    window.navigator.clipboard
+      .writeText(copyText ?? '')
+      .then(() => setCopied(true))
 
   return (
     <Tooltip
@@ -32,7 +33,7 @@ function CopyableButtonRef({ copyText, onClick, ...props }: CopyableButtonProps,
       placement="top"
       displayOn="manual"
       dismissable
-      onOpenChange={open => {
+      onOpenChange={(open) => {
         if (!open && copied) setCopied(false)
       }}
       zIndex={1000}

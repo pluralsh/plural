@@ -20,7 +20,8 @@ function OauthError({ error, service }: any) {
       <Text
         size="small"
         weight="bold"
-      >Error creating oauth integration with {service}
+      >
+        Error creating oauth integration with {service}
       </Text>
       <Errors errors={error} />
     </Box>
@@ -34,10 +35,15 @@ export function OauthCreator() {
   const { redirectUri, code } = useMemo(() => {
     const params = new URLSearchParams(location.search)
 
-    return { code: params.get('code'), redirectUri: `${window.location.origin}${window.location.pathname}` }
+    return {
+      code: params.get('code'),
+      redirectUri: `${window.location.origin}${window.location.pathname}`,
+    }
   }, [location])
   const [mutation, { loading, data, error }] = useMutation(CREATE_OAUTH, {
-    variables: { attributes: { code, redirectUri, service: ParamToService[service] } },
+    variables: {
+      attributes: { code, redirectUri, service: ParamToService[service] },
+    },
   })
 
   useEffect(() => {
@@ -70,7 +76,8 @@ export function OauthCreator() {
       <Text
         size="small"
         weight="bold"
-      >Created {service} oauth integration
+      >
+        Created {service} oauth integration
       </Text>
     </Box>
   )

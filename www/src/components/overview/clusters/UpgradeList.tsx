@@ -12,41 +12,65 @@ import { EmptyListMessage } from './misc'
 import UpgradeListItem from './UpgradeListItem'
 
 type ClusterUpgradesListContentProps = {
-  cluster: Cluster,
+  cluster: Cluster
   setRefreshing: Dispatch<boolean>
   setRefetch: any
 }
 
-export default function UpgradeList({ cluster, setRefreshing, setRefetch }: ClusterUpgradesListContentProps) {
+export default function UpgradeList({
+  cluster,
+  setRefreshing,
+  setRefetch,
+}: ClusterUpgradesListContentProps) {
   const [listRef, setListRef] = useState<any>(null)
 
-  const {
-    data, loading, error, fetchMore, subscribeToMore, refetch,
-  } = useQuery(QUEUE, {
-    variables: { id: cluster?.queue?.id },
-    fetchPolicy: 'cache-and-network',
-  })
+  const { data, loading, error, fetchMore, subscribeToMore, refetch } =
+    useQuery(QUEUE, {
+      variables: { id: cluster?.queue?.id },
+      fetchPolicy: 'cache-and-network',
+    })
 
   useEffect(() => setRefreshing(loading), [setRefreshing, loading])
 
   useEffect(() => setRefetch(() => refetch), [setRefetch, refetch])
 
-  useEffect(() => subscribeToMore({
-    document: UPGRADE_SUB,
-    variables: { id: cluster?.queue?.id },
-    updateQuery: ({ upgradeQueue, ...rest }, { subscriptionData: { data: { upgrade } } }) => ({
-      ...rest,
-      upgradeQueue: appendConnection(upgradeQueue, upgrade, 'upgrades'),
-    }),
-  }), [cluster?.queue?.id, subscribeToMore])
+  useEffect(
+    () =>
+      subscribeToMore({
+        document: UPGRADE_SUB,
+        variables: { id: cluster?.queue?.id },
+        updateQuery: (
+          { upgradeQueue, ...rest },
+          {
+            subscriptionData: {
+              data: { upgrade },
+            },
+          }
+        ) => ({
+          ...rest,
+          upgradeQueue: appendConnection(upgradeQueue, upgrade, 'upgrades'),
+        }),
+      }),
+    [cluster?.queue?.id, subscribeToMore]
+  )
 
-  if (error) return <EmptyListMessage>Error loading {cluster?.name} queue: {error.message}</EmptyListMessage>
+  if (error)
+    return (
+      <EmptyListMessage>
+        Error loading {cluster?.name} queue: {error.message}
+      </EmptyListMessage>
+    )
   if (!data && loading) return <LoadingIndicator />
 
   const edges = data.upgradeQueue?.upgrades?.edges
   const pageInfo = data.upgradeQueue?.upgrades?.pageInfo
 
-  if (isEmpty(edges)) return <EmptyListMessage>Looks like you don’t have any upgrades.</EmptyListMessage>
+  if (isEmpty(edges))
+    return (
+      <EmptyListMessage>
+        Looks like you don’t have any upgrades.
+      </EmptyListMessage>
+    )
 
   return (
     <StandardScroller
@@ -63,12 +87,27 @@ export default function UpgradeList({ cluster, setRefreshing, setRefetch }: Clus
           last={!next.node}
         />
       )}
-      loadNextPage={() => pageInfo.hasNextPage && fetchMore({
-        variables: { cursor: pageInfo.endCursor },
-        updateQuery: (prev, { fetchMoreResult: { upgradeQueue: { upgrades } } }) => ({
-          ...prev, upgradeQueue: extendConnection(prev.upgradeQueue, upgrades, 'upgrades'),
-        }),
-      })}
+      loadNextPage={() =>
+        pageInfo.hasNextPage &&
+        fetchMore({
+          variables: { cursor: pageInfo.endCursor },
+          updateQuery: (
+            prev,
+            {
+              fetchMoreResult: {
+                upgradeQueue: { upgrades },
+              },
+            }
+          ) => ({
+            ...prev,
+            upgradeQueue: extendConnection(
+              prev.upgradeQueue,
+              upgrades,
+              'upgrades'
+            ),
+          }),
+        })
+      }
       placeholder={undefined}
       handleScroll={undefined}
       refreshKey={undefined}
@@ -76,4 +115,3 @@ export default function UpgradeList({ cluster, setRefreshing, setRefetch }: Clus
     />
   )
 }
-

@@ -27,16 +27,15 @@ export function LabeledInput({ label, children }: any) {
       <Text
         size="small"
         weight="bold"
-      >{label}
+      >
+        {label}
       </Text>
       {children}
     </Box>
   )
 }
 
-function ImagePicker({
-  image, setImage, background, label,
-}: any) {
+function ImagePicker({ image, setImage, background, label }: any) {
   return (
     <Box
       direction="row"
@@ -59,17 +58,21 @@ function ImagePicker({
             height="50px"
             src={image.previewUrl}
           />
-        )
-          : <PlusIcon size={20} />}
+        ) : (
+          <PlusIcon size={20} />
+        )}
       </Box>
       <Box gap="xsmall">
         <Text size="small">{image ? image.file.name : 'Select an image'}</Text>
         <FilePicker
           extensions={['jpg', 'jpeg', 'png']}
           dims={{
-            minWidth: 100, maxWidth: 500, minHeight: 100, maxHeight: 500,
+            minWidth: 100,
+            maxWidth: 500,
+            minHeight: 100,
+            maxHeight: 500,
           }}
-          onChange={file => generatePreview(file, setImage)}
+          onChange={(file) => generatePreview(file, setImage)}
         >
           <SecondaryButton
             round="xsmall"
@@ -82,11 +85,25 @@ function ImagePicker({
 }
 
 export function RepoForm({
-  image, setImage, darkImage, setDarkImage, state, setState, mutation, loading, update, error,
+  image,
+  setImage,
+  darkImage,
+  setDarkImage,
+  state,
+  setState,
+  mutation,
+  loading,
+  update,
+  error,
 }: any) {
-  const setOauthSettings = useCallback((key, value) => (
-    setState({ ...state, oauthSettings: { ...state.oauthSettings, [key]: value } })
-  ), [setState, state])
+  const setOauthSettings = useCallback(
+    (key, value) =>
+      setState({
+        ...state,
+        oauthSettings: { ...state.oauthSettings, [key]: value },
+      }),
+    [setState, state]
+  )
 
   return (
     <Box
@@ -127,7 +144,7 @@ export function RepoForm({
             labelWidth={LABEL_WIDTH}
             placeholder="a good name"
             value={state.name}
-            onChange={e => setState({ ...state, name: e.target.value })}
+            onChange={(e) => setState({ ...state, name: e.target.value })}
           />
         </LabeledInput>
         <LabeledInput label="3. Give it a quick description">
@@ -137,14 +154,22 @@ export function RepoForm({
             labelWidth={LABEL_WIDTH}
             placeholder="a helpful description"
             value={state.description}
-            onChange={e => setState({ ...state, description: e.target.value })}
+            onChange={(e) =>
+              setState({ ...state, description: e.target.value })
+            }
           />
         </LabeledInput>
         <LabeledInput label="4. Select a category for the repo">
           <Select
             size="small"
-            value={{ value: state.category, label: state.category.toLowerCase() }}
-            options={Object.keys(Categories).map(t => ({ value: t, label: t.toLowerCase() }))}
+            value={{
+              value: state.category,
+              label: state.category.toLowerCase(),
+            }}
+            options={Object.keys(Categories).map((t) => ({
+              value: t,
+              label: t.toLowerCase(),
+            }))}
             onChange={({ value }) => setState({ ...state, category: value })}
           />
         </LabeledInput>
@@ -160,12 +185,20 @@ export function RepoForm({
               labelWidth={LABEL_WIDTH}
               placeholder="https://{domain}/oauth/callback"
               value={state.oauthSettings.uriFormat || ''}
-              onChange={({ target: { value } }) => setOauthSettings('uriFormat', value)}
+              onChange={({ target: { value } }) =>
+                setOauthSettings('uriFormat', value)
+              }
             />
             <Select
               size="small"
-              value={{ value: state.oauthSettings.authMethod, label: state.oauthSettings.authMethod.toLowerCase() }}
-              options={Object.keys(AuthMethod).map(t => ({ value: t, label: t.toLowerCase() }))}
+              value={{
+                value: state.oauthSettings.authMethod,
+                label: state.oauthSettings.authMethod.toLowerCase(),
+              }}
+              options={Object.keys(AuthMethod).map((t) => ({
+                value: t,
+                label: t.toLowerCase(),
+              }))}
               onChange={({ value }) => setOauthSettings('authMethod', value)}
             />
           </Box>
@@ -173,8 +206,12 @@ export function RepoForm({
         <LabeledInput label="6. Add tags as needed">
           <TagInput
             tags={state.tags || []}
-            addTag={tag => setState({ ...state, tags: [tag, ...(state.tags || [])] })}
-            removeTag={tag => setState({ ...state, tags: state.tags.filter(t => t !== tag) })}
+            addTag={(tag) =>
+              setState({ ...state, tags: [tag, ...(state.tags || [])] })
+            }
+            removeTag={(tag) =>
+              setState({ ...state, tags: state.tags.filter((t) => t !== tag) })
+            }
           />
         </LabeledInput>
         <SectionPortal>
@@ -186,7 +223,9 @@ export function RepoForm({
           >
             <Toggle
               checked={!state.private}
-              onChange={({ target: { checked } }) => setState({ ...state, private: !checked })}
+              onChange={({ target: { checked } }) =>
+                setState({ ...state, private: !checked })
+              }
             />
             <Text size="small">{state.private ? 'private' : 'public'}</Text>
             <Button
@@ -215,19 +254,27 @@ export default function CreateRepository({ publisher }: any) {
   const [image, setImage] = useState<any>(null)
   const [darkImage, setDarkImage] = useState<any>(null)
   const { oauthSettings, ...base } = state
-  const attributes = { ...base, tags: state.tags.map(t => ({ tag: t })), oauthSettings: oauthSettings.uriFormat ? oauthSettings : null }
+  const attributes = {
+    ...base,
+    tags: state.tags.map((t) => ({ tag: t })),
+    oauthSettings: oauthSettings.uriFormat ? oauthSettings : null,
+  }
   const [mutation, { loading, error }] = useMutation(CREATE_REPO, {
     variables: {
       id: publisher.id,
       attributes: {
-        ...attributes, icon: image && image.file, darkIcon: darkImage && darkImage.file,
+        ...attributes,
+        icon: image && image.file,
+        darkIcon: darkImage && darkImage.file,
       },
     },
-    update: (cache, { data: { createRepository } }) => updateCache(cache, {
-      query: REPOS_Q,
-      variables: { publisherId: publisher.id },
-      update: prev => appendConnection(prev, createRepository, 'repositories'),
-    }),
+    update: (cache, { data: { createRepository } }) =>
+      updateCache(cache, {
+        query: REPOS_Q,
+        variables: { publisherId: publisher.id },
+        update: (prev) =>
+          appendConnection(prev, createRepository, 'repositories'),
+      }),
     onCompleted: () => navigate(`/publishers/${publisher.id}/repos`),
   })
 

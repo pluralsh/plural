@@ -8,13 +8,7 @@ import {
 } from 'react'
 import { Form } from 'grommet'
 import { Link, useLocation } from 'react-router-dom'
-import {
-  A,
-  Button,
-  Div,
-  Flex,
-  P,
-} from 'honorable'
+import { A, Button, Div, Flex, P } from 'honorable'
 
 import { ThemeContext } from 'styled-components'
 
@@ -137,10 +131,13 @@ export function Signup() {
       history.navigate('/')
     }
   }, [history])
-  const onSubmit = useCallback(e => {
-    e.preventDefault()
-    mutation()
-  }, [mutation])
+  const onSubmit = useCallback(
+    (e) => {
+      e.preventDefault()
+      mutation()
+    },
+    [mutation]
+  )
 
   const accountError = error?.message.startsWith('name has already been taken')
     ? 'Name already taken'

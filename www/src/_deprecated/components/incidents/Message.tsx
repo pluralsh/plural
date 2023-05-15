@@ -1,9 +1,4 @@
-import {
-  memo,
-  useContext,
-  useEffect,
-  useState,
-} from 'react'
+import { memo, useContext, useEffect, useState } from 'react'
 import { Box, Stack, Text } from 'grommet'
 import moment from 'moment'
 
@@ -18,7 +13,7 @@ import { DateDivider } from './MessageDivider'
 import { PresenceContext, PresenceIndicator } from './Presence'
 
 const DATE_PATTERN = 'h:mm a'
-const dateFormat = date => moment(date).format(DATE_PATTERN)
+const dateFormat = (date) => moment(date).format(DATE_PATTERN)
 
 function isConsecutive(message, next) {
   if (!next || !next.creator) return false
@@ -26,12 +21,10 @@ function isConsecutive(message, next) {
   const firstTime = moment(message.insertedAt)
   const secondTime = moment(next.insertedAt)
 
-  return (firstTime.add(-10, 'minutes').isBefore(secondTime))
+  return firstTime.add(-10, 'minutes').isBefore(secondTime)
 }
 
-function MessageBody({
-  message, next, setHover, setSize,
-}: any) {
+function MessageBody({ message, next, setHover, setSize }: any) {
   const [painted, setPainted] = useState(false)
   const { present } = useContext(PresenceContext)
   const consecutive = isConsecutive(message, next)
@@ -70,7 +63,8 @@ function MessageBody({
               color="dark-2"
               size="10px"
               className="message-reactions"
-            >{formatted}
+            >
+              {formatted}
             </Text>
           </Box>
         )}
@@ -85,13 +79,15 @@ function MessageBody({
             <Text
               size="small"
               weight="bold"
-            >{message.creator.name}
+            >
+              {message.creator.name}
             </Text>
             {present[message.creator.id] && <PresenceIndicator />}
             <Text
               size="12px"
               color="dark-5"
-            >{formatted}
+            >
+              {formatted}
             </Text>
           </Box>
         )}

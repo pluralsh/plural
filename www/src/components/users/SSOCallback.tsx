@@ -21,15 +21,14 @@ export function SSOCallback() {
 
   const [mutation, { error, loading }] = useMutation(SSO_CALLBACK, {
     variables: { code, deviceToken },
-    onCompleted: result => {
+    onCompleted: (result) => {
       setToken(result.ssoCallback.jwt)
       if (deviceToken) finishedDeviceLogin()
       const challenge = getChallenge()
 
       if (challenge) {
         handleOauthChallenge(client, challenge)
-      }
-      else {
+      } else {
         window.location.href = '/'
       }
     },

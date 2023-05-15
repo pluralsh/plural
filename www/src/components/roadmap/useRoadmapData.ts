@@ -1,10 +1,5 @@
 import { Octokit } from '@octokit/core'
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { IssueType } from './types'
 import { LABEL_REQUEST, LABEL_ROADMAP } from './constants'
@@ -13,7 +8,7 @@ const perPage = 100 // Max is 100
 
 function castIssues(rawIssues: any[]): IssueType[] {
   return rawIssues
-    .map(issue => ({
+    .map((issue) => ({
       id: issue.id ?? '',
       title: issue.title ?? '',
       url: issue.html_url ?? '',
@@ -46,59 +41,95 @@ function useRoadmapData() {
   const ockokit = useMemo(() => new Octokit(), [])
 
   const getPluralIssues = useCallback(async () => {
-    const response1 = await ockokit.request(`GET /repos/{owner}/{repo}/issues?labels=${LABEL_ROADMAP}&state=all&page=${pagePlural}&per_page=${perPage}`, {
-      owner: 'pluralsh',
-      repo: 'plural',
-    })
-    const response2 = await ockokit.request(`GET /repos/{owner}/{repo}/issues?labels=${LABEL_REQUEST}&state=all&page=${pagePlural}&per_page=${perPage}`, {
-      owner: 'pluralsh',
-      repo: 'plural',
-    })
+    const response1 = await ockokit.request(
+      `GET /repos/{owner}/{repo}/issues?labels=${LABEL_ROADMAP}&state=all&page=${pagePlural}&per_page=${perPage}`,
+      {
+        owner: 'pluralsh',
+        repo: 'plural',
+      }
+    )
+    const response2 = await ockokit.request(
+      `GET /repos/{owner}/{repo}/issues?labels=${LABEL_REQUEST}&state=all&page=${pagePlural}&per_page=${perPage}`,
+      {
+        owner: 'pluralsh',
+        repo: 'plural',
+      }
+    )
 
-    setPluralIssues(x => [...x, ...response1.data, ...response2.data])
-    setHasMorePlural(response1.data.length >= perPage || response2.data.length >= perPage)
+    setPluralIssues((x) => [...x, ...response1.data, ...response2.data])
+    setHasMorePlural(
+      response1.data.length >= perPage || response2.data.length >= perPage
+    )
   }, [ockokit, pagePlural])
 
   const getPluralArtifactsIssues = useCallback(async () => {
-    const response1 = await ockokit.request(`GET /repos/{owner}/{repo}/issues?labels=${LABEL_ROADMAP}&state=all&page=${pagePluralArtifacts}&per_page=${perPage}`, {
-      owner: 'pluralsh',
-      repo: 'plural-artifacts',
-    })
-    const response2 = await ockokit.request(`GET /repos/{owner}/{repo}/issues?labels=${LABEL_REQUEST}&state=all&page=${pagePluralArtifacts}&per_page=${perPage}`, {
-      owner: 'pluralsh',
-      repo: 'plural-artifacts',
-    })
+    const response1 = await ockokit.request(
+      `GET /repos/{owner}/{repo}/issues?labels=${LABEL_ROADMAP}&state=all&page=${pagePluralArtifacts}&per_page=${perPage}`,
+      {
+        owner: 'pluralsh',
+        repo: 'plural-artifacts',
+      }
+    )
+    const response2 = await ockokit.request(
+      `GET /repos/{owner}/{repo}/issues?labels=${LABEL_REQUEST}&state=all&page=${pagePluralArtifacts}&per_page=${perPage}`,
+      {
+        owner: 'pluralsh',
+        repo: 'plural-artifacts',
+      }
+    )
 
-    setPluralArtifactsIssues(x => [...x, ...response1.data, ...response2.data])
-    setHasMorePluraArtifacts(response1.data.length >= perPage || response2.data.length >= perPage)
+    setPluralArtifactsIssues((x) => [
+      ...x,
+      ...response1.data,
+      ...response2.data,
+    ])
+    setHasMorePluraArtifacts(
+      response1.data.length >= perPage || response2.data.length >= perPage
+    )
   }, [ockokit, pagePluralArtifacts])
 
   const getPluralConsoleIssues = useCallback(async () => {
-    const response1 = await ockokit.request(`GET /repos/{owner}/{repo}/issues?labels=${LABEL_ROADMAP}&state=all&page=${pagePluralConsole}&per_page=${perPage}`, {
-      owner: 'pluralsh',
-      repo: 'console',
-    })
-    const response2 = await ockokit.request(`GET /repos/{owner}/{repo}/issues?labels=${LABEL_REQUEST}&state=all&page=${pagePluralConsole}&per_page=${perPage}`, {
-      owner: 'pluralsh',
-      repo: 'console',
-    })
+    const response1 = await ockokit.request(
+      `GET /repos/{owner}/{repo}/issues?labels=${LABEL_ROADMAP}&state=all&page=${pagePluralConsole}&per_page=${perPage}`,
+      {
+        owner: 'pluralsh',
+        repo: 'console',
+      }
+    )
+    const response2 = await ockokit.request(
+      `GET /repos/{owner}/{repo}/issues?labels=${LABEL_REQUEST}&state=all&page=${pagePluralConsole}&per_page=${perPage}`,
+      {
+        owner: 'pluralsh',
+        repo: 'console',
+      }
+    )
 
-    setPluralConsoleIssues(x => [...x, ...response1.data, ...response2.data])
-    setHasMorePluralConsoles(response1.data.length >= perPage || response2.data.length >= perPage)
+    setPluralConsoleIssues((x) => [...x, ...response1.data, ...response2.data])
+    setHasMorePluralConsoles(
+      response1.data.length >= perPage || response2.data.length >= perPage
+    )
   }, [ockokit, pagePluralConsole])
 
   const getPluralCliIssues = useCallback(async () => {
-    const response1 = await ockokit.request(`GET /repos/{owner}/{repo}/issues?labels=${LABEL_ROADMAP}&state=all&page=${pagePluralCli}&per_page=${perPage}`, {
-      owner: 'pluralsh',
-      repo: 'plural-cli',
-    })
-    const response2 = await ockokit.request(`GET /repos/{owner}/{repo}/issues?labels=${LABEL_REQUEST}&state=all&page=${pagePluralCli}&per_page=${perPage}`, {
-      owner: 'pluralsh',
-      repo: 'plural-cli',
-    })
+    const response1 = await ockokit.request(
+      `GET /repos/{owner}/{repo}/issues?labels=${LABEL_ROADMAP}&state=all&page=${pagePluralCli}&per_page=${perPage}`,
+      {
+        owner: 'pluralsh',
+        repo: 'plural-cli',
+      }
+    )
+    const response2 = await ockokit.request(
+      `GET /repos/{owner}/{repo}/issues?labels=${LABEL_REQUEST}&state=all&page=${pagePluralCli}&per_page=${perPage}`,
+      {
+        owner: 'pluralsh',
+        repo: 'plural-cli',
+      }
+    )
 
-    setPluralCliIssues(x => [...x, ...response1.data, ...response2.data])
-    setHasMorePluralClis(response1.data.length >= perPage || response2.data.length >= perPage)
+    setPluralCliIssues((x) => [...x, ...response1.data, ...response2.data])
+    setHasMorePluralClis(
+      response1.data.length >= perPage || response2.data.length >= perPage
+    )
   }, [ockokit, pagePluralCli])
 
   useEffect(() => {
@@ -106,22 +137,27 @@ function useRoadmapData() {
     getPluralArtifactsIssues()
     getPluralConsoleIssues()
     getPluralCliIssues()
-  }, [getPluralIssues, getPluralArtifactsIssues, getPluralConsoleIssues, getPluralCliIssues])
+  }, [
+    getPluralIssues,
+    getPluralArtifactsIssues,
+    getPluralConsoleIssues,
+    getPluralCliIssues,
+  ])
 
   useEffect(() => {
-    if (hasMorePlural) setPagePlural(x => x + 1)
+    if (hasMorePlural) setPagePlural((x) => x + 1)
   }, [hasMorePlural])
 
   useEffect(() => {
-    if (hasMorePluralArtifacts) setPagePluralArtifacts(x => x + 1)
+    if (hasMorePluralArtifacts) setPagePluralArtifacts((x) => x + 1)
   }, [hasMorePluralArtifacts])
 
   useEffect(() => {
-    if (hasMorePluralConsoles) setPagePluralConsole(x => x + 1)
+    if (hasMorePluralConsoles) setPagePluralConsole((x) => x + 1)
   }, [hasMorePluralConsoles])
 
   useEffect(() => {
-    if (hasMorePluralClis) setPagePluralCli(x => x + 1)
+    if (hasMorePluralClis) setPagePluralCli((x) => x + 1)
   }, [hasMorePluralClis])
 
   return {

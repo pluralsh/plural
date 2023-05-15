@@ -4,10 +4,13 @@ import moment from 'moment'
 import { useEffect, useState } from 'react'
 
 type ClusterAppHealthProps = {
-    pingedAt?: Date | null
+  pingedAt?: Date | null
 } & ChipProps
 
-export default function ClusterAppHealth({ pingedAt, ...props }: ClusterAppHealthProps) {
+export default function ClusterAppHealth({
+  pingedAt,
+  ...props
+}: ClusterAppHealthProps) {
   const [now, setNow] = useState(moment())
 
   useEffect(() => {

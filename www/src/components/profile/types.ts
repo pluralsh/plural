@@ -24,4 +24,3 @@ export const NotificationType = {
   MENTION: 'MENTION',
   INCIDENT_UPDATE: 'INCIDENT_UPDATE',
 }
-

@@ -27,14 +27,20 @@ function Follower({ follower: { user } }: any) {
       <Text
         size="small"
         weight={500}
-      >{user.name}
+      >
+        {user.name}
       </Text>
       {isPresent && <PresenceIndicator />}
     </Box>
   )
 }
 
-export function Followers({ incident: { followers: { edges, pageInfo } }, fetchMore }: any) {
+export function Followers({
+  incident: {
+    followers: { edges, pageInfo },
+  },
+  fetchMore,
+}: any) {
   return (
     <Box fill>
       <Scroller
@@ -47,12 +53,23 @@ export function Followers({ incident: { followers: { edges, pageInfo } }, fetchM
             follower={node}
           />
         )}
-        onLoadMore={() => pageInfo.hasNextPage && fetchMore({
-          variables: { followerCursor: pageInfo.endCursor },
-          updateQuery: (prev, { fetchMoreResult: { incident: { followers } } }) => ({
-            ...prev, incident: extendConnection(prev.incident, followers, 'followers'),
-          }),
-        })}
+        onLoadMore={() =>
+          pageInfo.hasNextPage &&
+          fetchMore({
+            variables: { followerCursor: pageInfo.endCursor },
+            updateQuery: (
+              prev,
+              {
+                fetchMoreResult: {
+                  incident: { followers },
+                },
+              }
+            ) => ({
+              ...prev,
+              incident: extendConnection(prev.incident, followers, 'followers'),
+            }),
+          })
+        }
       />
     </Box>
   )

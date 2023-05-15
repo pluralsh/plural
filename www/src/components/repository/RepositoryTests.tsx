@@ -1,19 +1,9 @@
 import 'xterm/css/xterm.css'
 
-import {
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useApolloClient, useSubscription } from '@apollo/client'
 import moment from 'moment'
-import {
-  Div,
-  Flex,
-  P,
-  Span,
-} from 'honorable'
+import { Div, Flex, P, Span } from 'honorable'
 import { FitAddon } from 'xterm-addon-fit'
 import {
   ArrowLeftIcon,
@@ -59,9 +49,7 @@ function Status({ status }: any) {
   )
 }
 
-async function fetchLogs(
-  client, id, step, term
-) {
+async function fetchLogs(client, id, step, term) {
   const { data } = await client.query({
     query: TEST_LOGS,
     variables: { id, step },
@@ -80,12 +68,15 @@ function TestLogs({ step: { id, hasLogs }, testId }: any) {
   const client = useApolloClient()
   const terminalRef = useRef<HTMLDivElement>()
   const fitAddon = useMemo(() => new FitAddon(), [])
-  const terminal = useMemo(() => new Terminal({
-    theme: XTermTheme,
-    disableStdin: false,
-    rightClickSelectsWord: true,
-  }),
-  [])
+  const terminal = useMemo(
+    () =>
+      new Terminal({
+        theme: XTermTheme,
+        disableStdin: false,
+        rightClickSelectsWord: true,
+      }),
+    []
+  )
   const { data } = useSubscription(LOGS_SUB, {
     variables: { testId },
   })
@@ -100,8 +91,7 @@ function TestLogs({ step: { id, hasLogs }, testId }: any) {
 
     try {
       fitAddon.fit()
-    }
-    catch (error) {
+    } catch (error) {
       console.error(error)
     }
   }, [terminalRef, fitAddon, terminal])
@@ -118,9 +108,7 @@ function TestLogs({ step: { id, hasLogs }, testId }: any) {
     if (!hasLogs) return
 
     terminal.clear()
-    fetchLogs(
-      client, testId, id, terminal
-    )
+    fetchLogs(client, testId, id, terminal)
   }, [hasLogs, client, testId, id, terminal])
 
   return (
@@ -198,15 +186,15 @@ function TestStep({ step, test, last }: any) {
             style={
               open
                 ? {
-                  transform: 'rotate(270deg)',
-                  transitionDuration: '.2s',
-                  transitionProperty: 'transform',
-                }
+                    transform: 'rotate(270deg)',
+                    transitionDuration: '.2s',
+                    transitionProperty: 'transform',
+                  }
                 : {
-                  transform: 'rotate(180deg)',
-                  transitionDuration: '.2s',
-                  transitionProperty: 'transform',
-                }
+                    transform: 'rotate(180deg)',
+                    transitionDuration: '.2s',
+                    transitionProperty: 'transform',
+                  }
             }
           />
         </TableData>
@@ -279,13 +267,15 @@ function TestDetail({ test, setTest }: any) {
 function RepositoryTests() {
   const { id } = useRepositoryContext()
   const [test, setTest] = useState<any>(null)
-  const [tests, loadingTests, hasMoreTests, fetchMoreTests] = usePaginatedQuery(TESTS_QUERY,
+  const [tests, loadingTests, hasMoreTests, fetchMoreTests] = usePaginatedQuery(
+    TESTS_QUERY,
     {
       variables: {
         repositoryId: id,
       },
     },
-    data => data.tests)
+    (data) => data.tests
+  )
 
   if (tests.length === 0 && loadingTests) {
     return <LoadingIndicator />

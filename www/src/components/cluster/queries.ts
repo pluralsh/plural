@@ -3,9 +3,11 @@ import { gql } from '@apollo/client'
 import { PageInfo } from '../../models/misc'
 
 export const REPOSITORIES_Q = gql`
-query Repositories($cursor: String, $installed: Boolean) {
+  query Repositories($cursor: String, $installed: Boolean) {
     repositories(after: $cursor, first: 20, installed: $installed) {
-      pageInfo { ...PageInfo }
+      pageInfo {
+        ...PageInfo
+      }
       edges {
         node {
           id
@@ -19,6 +21,5 @@ query Repositories($cursor: String, $installed: Boolean) {
       }
     }
   }
-${PageInfo}
+  ${PageInfo}
 `
-

@@ -1,9 +1,4 @@
-import {
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
+import { useContext, useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import {
   Button,
@@ -42,14 +37,21 @@ export function Cluster() {
   const { clusterId } = useParams()
   const me = useContext(CurrentUserContext)
   const { clusters } = useContext(ClustersContext)
-  const [cluster, setCluster] = useState(clusters.find(({ id }) => id === clusterId))
-  const breadcrumbs = useMemo(() => [
-    CLUSTERS_ROOT_CRUMB,
-    { label: `${cluster?.name}`, url: `/clusters/${clusterId}` },
-  ],
-  [cluster?.name, clusterId])
+  const [cluster, setCluster] = useState(
+    clusters.find(({ id }) => id === clusterId)
+  )
+  const breadcrumbs = useMemo(
+    () => [
+      CLUSTERS_ROOT_CRUMB,
+      { label: `${cluster?.name}`, url: `/clusters/${clusterId}` },
+    ],
+    [cluster?.name, clusterId]
+  )
 
-  useEffect(() => setCluster(clusters.find(({ id }) => id === clusterId)), [clusters, clusterId, setCluster])
+  useEffect(
+    () => setCluster(clusters.find(({ id }) => id === clusterId)),
+    [clusters, clusterId, setCluster]
+  )
   useSetBreadcrumbs(breadcrumbs)
 
   if (!cluster) {
@@ -83,14 +85,14 @@ export function Cluster() {
             <ClusterPicker
               cluster={cluster}
               setCluster={setCluster}
-              onChange={c => navigate(`/clusters/${c?.id}`)}
-              filter={c => c.owner?.id === me.id || !!c.owner?.serviceAccount}
-              title={(
+              onChange={(c) => navigate(`/clusters/${c?.id}`)}
+              filter={(c) => c.owner?.id === me.id || !!c.owner?.serviceAccount}
+              title={
                 <Flex gap="xsmall">
                   <ClusterIcon />
                   Cluster
                 </Flex>
-              )}
+              }
             />
           </Div>
           <Flex gap="medium">

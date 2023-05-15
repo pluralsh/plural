@@ -1,7 +1,10 @@
 import { Callout } from '@pluralsh/design-system'
 import { GraphQLErrors } from '@apollo/client/errors'
 import { ReactNode } from 'react'
-import { CalloutProps, CalloutSeverity } from '@pluralsh/design-system/dist/components/Callout'
+import {
+  CalloutProps,
+  CalloutSeverity,
+} from '@pluralsh/design-system/dist/components/Callout'
 
 type Status = 'er' | 'su' | 'in'
 
@@ -55,9 +58,7 @@ type AlertProps = {
   description: ReactNode
 } & Omit<CalloutProps, 'title' | 'children'>
 
-export function Alert({
-  status, header, description, ...props
-}: AlertProps) {
+export function Alert({ status, header, description, ...props }: AlertProps) {
   return (
     <Callout
       {...(header ? { title: header } : {})}

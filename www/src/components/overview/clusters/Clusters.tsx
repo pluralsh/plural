@@ -21,17 +21,19 @@ import {
 export function Clusters(): ReactElement | null {
   const { clusters } = useContext(ClustersContext)
 
-  const columns = useMemo(() => [
-    ColCluster,
-    ColHealth,
-    ColGit,
-    ColCloudShell,
-    ColOwner,
-    ColUpgrades,
-    ColPromotions,
-    ColActions,
-  ],
-  [])
+  const columns = useMemo(
+    () => [
+      ColCluster,
+      ColHealth,
+      ColGit,
+      ColCloudShell,
+      ColOwner,
+      ColUpgrades,
+      ColPromotions,
+      ColActions,
+    ],
+    []
+  )
 
   // useEffect(() => subscribeToMore<QueueSubscription>({
   //   document: UPGRADE_QUEUE_SUB,

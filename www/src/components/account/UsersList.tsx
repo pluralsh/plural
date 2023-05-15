@@ -6,7 +6,11 @@ import { useCallback, useEffect, useState } from 'react'
 import { List, ListItem } from '../utils/List'
 import ListInput from '../utils/ListInput'
 import { Placeholder } from '../utils/Placeholder'
-import { extendConnection, removeConnection, updateCache } from '../../utils/graphql'
+import {
+  extendConnection,
+  removeConnection,
+  updateCache,
+} from '../../utils/graphql'
 import { StandardScroller } from '../utils/SmoothScroller'
 
 import LoadingIndicator from '../utils/LoadingIndicator'
@@ -29,12 +33,15 @@ export function UsersList() {
     }
   }, [data])
 
-  const update = useCallback((cache, { data: { deleteUser } }) => updateCache(cache, {
-    query: USERS_Q,
-    variables: { q },
-    update: prev => removeConnection(prev, deleteUser, 'users'),
-  }),
-  [q])
+  const update = useCallback(
+    (cache, { data: { deleteUser } }) =>
+      updateCache(cache, {
+        query: USERS_Q,
+        variables: { q },
+        update: (prev) => removeConnection(prev, deleteUser, 'users'),
+      }),
+    [q]
+  )
 
   const { edges, pageInfo } = data?.users || dataCache?.users || {}
 
@@ -71,11 +78,14 @@ export function UsersList() {
                 />
               </ListItem>
             )}
-            loadNextPage={() => pageInfo.hasNextPage
-              && fetchMore({
+            loadNextPage={() =>
+              pageInfo.hasNextPage &&
+              fetchMore({
                 variables: { cursor: pageInfo.endCursor },
-                updateQuery: (prev, { fetchMoreResult: { users } }) => extendConnection(prev, users, 'users'),
-              })}
+                updateQuery: (prev, { fetchMoreResult: { users } }) =>
+                  extendConnection(prev, users, 'users'),
+              })
+            }
             hasNextPage={pageInfo.hasNextPage}
             loading={loading}
             placeholder={Placeholder}

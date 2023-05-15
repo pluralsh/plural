@@ -25,7 +25,10 @@ const TOOLBAR_SIZE = 55
 const ICON_SIZE = '30px'
 
 function Subscription({ current, subscription, setCurrent }: any) {
-  const { installation: { repository }, plan } = subscription
+  const {
+    installation: { repository },
+    plan,
+  } = subscription
   const totalCost = subscriptionCost(subscription, plan)
 
   return (
@@ -58,7 +61,8 @@ function Subscription({ current, subscription, setCurrent }: any) {
         <Text
           color="green"
           size="small"
-        >${totalCost / 100}
+        >
+          ${totalCost / 100}
         </Text>
       </Box>
     </TagContainer>
@@ -66,9 +70,7 @@ function Subscription({ current, subscription, setCurrent }: any) {
 }
 
 function Invoice({
-  invoice: {
-    number, hostedInvoiceUrl, amountPaid, createdAt, currency,
-  },
+  invoice: { number, hostedInvoiceUrl, amountPaid, createdAt, currency },
 }: any) {
   return (
     <TableRow>
@@ -82,7 +84,9 @@ function Invoice({
           {amountPaid / 100} {currency}
         </Text>
       </TableCell>
-      <TableCell><Anchor href={hostedInvoiceUrl}>invoice</Anchor></TableCell>
+      <TableCell>
+        <Anchor href={hostedInvoiceUrl}>invoice</Anchor>
+      </TableCell>
     </TableRow>
   )
 }
@@ -105,7 +109,10 @@ function InvoicesInner({ current: { id } }: any) {
   if (!data) return null
   if (loading) return <LoopingLogo />
 
-  const { invoices: { edges }, installation: { repository } } = data.repositorySubscription
+  const {
+    invoices: { edges },
+    installation: { repository },
+  } = data.repositorySubscription
 
   return (
     <Box gap="small">
@@ -116,13 +123,15 @@ function InvoicesInner({ current: { id } }: any) {
         <Text
           size="small"
           weight={500}
-        >Invoices for
+        >
+          Invoices for
         </Text>
         <Anchor onClick={() => navigate(`/repositories/${repository.id}`)}>
           <Text
             size="small"
             weight={500}
-          >{repository.name}
+          >
+            {repository.name}
           </Text>
         </Anchor>
       </Box>
@@ -132,22 +141,26 @@ function InvoicesInner({ current: { id } }: any) {
             <TableCell
               scope="col"
               border="bottom"
-            >date
+            >
+              date
             </TableCell>
             <TableCell
               scope="col"
               border="bottom"
-            >number
+            >
+              number
             </TableCell>
             <TableCell
               scope="col"
               border="bottom"
-            >amount
+            >
+              amount
             </TableCell>
             <TableCell
               scope="col"
               border="bottom"
-            >link
+            >
+              link
             </TableCell>
           </TableRow>
         </TableHeader>

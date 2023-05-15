@@ -5,7 +5,10 @@ export const DockerRepoFragment = gql`
     id
     name
     public
-    repository { id name }
+    repository {
+      id
+      name
+    }
     insertedAt
     updatedAt
   }
@@ -16,7 +19,11 @@ export const DockerRepository = gql`
     id
     name
     public
-    repository { id name editable }
+    repository {
+      id
+      name
+      editable
+    }
     insertedAt
     updatedAt
   }
@@ -47,7 +54,18 @@ export const VulnerabilityFragment = gql`
     url
     severity
     score
-    cvss { attackVector attackComplexity privilegesRequired userInteraction confidentiality integrity availability }
-    layer { digest diffId }
+    cvss {
+      attackVector
+      attackComplexity
+      privilegesRequired
+      userInteraction
+      confidentiality
+      integrity
+      availability
+    }
+    layer {
+      digest
+      diffId
+    }
   }
 `

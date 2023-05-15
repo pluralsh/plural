@@ -11,7 +11,10 @@ function Azure({ props, setProps, setValid }) {
   useEffect(() => {
     setProps({
       azure: {
-        clientID: '', clientSecret: '', subscriptionID: '', tenantID: '',
+        clientID: '',
+        clientSecret: '',
+        subscriptionID: '',
+        tenantID: '',
       },
     })
   }, [setProps])
@@ -26,7 +29,11 @@ function Azure({ props, setProps, setValid }) {
           width="100%"
         >
           <Input
-            onChange={({ target: { value } }) => setProps(props => ({ azure: { ...props.azure, clientID: value } }))}
+            onChange={({ target: { value } }) =>
+              setProps((props) => ({
+                azure: { ...props.azure, clientID: value },
+              }))
+            }
           />
         </FormField>
         <FormField
@@ -34,7 +41,11 @@ function Azure({ props, setProps, setValid }) {
           width="100%"
         >
           <Input
-            onChange={({ target: { value } }) => setProps(props => ({ azure: { ...props.azure, clientSecret: value } }))}
+            onChange={({ target: { value } }) =>
+              setProps((props) => ({
+                azure: { ...props.azure, clientSecret: value },
+              }))
+            }
             type="password"
           />
         </FormField>
@@ -46,7 +57,11 @@ function Azure({ props, setProps, setValid }) {
           width="100%"
         >
           <Input
-            onChange={({ target: { value } }) => setProps(props => ({ azure: { ...props.azure, subscriptionID: value } }))}
+            onChange={({ target: { value } }) =>
+              setProps((props) => ({
+                azure: { ...props.azure, subscriptionID: value },
+              }))
+            }
           />
         </FormField>
         <FormField
@@ -54,7 +69,11 @@ function Azure({ props, setProps, setValid }) {
           width="100%"
         >
           <Input
-            onChange={({ target: { value } }) => setProps(props => ({ azure: { ...props.azure, tenantID: value } }))}
+            onChange={({ target: { value } }) =>
+              setProps((props) => ({
+                azure: { ...props.azure, tenantID: value },
+              }))
+            }
           />
         </FormField>
       </Flex>

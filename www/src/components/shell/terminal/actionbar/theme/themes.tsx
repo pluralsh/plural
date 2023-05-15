@@ -40,7 +40,10 @@ const DEFAULT_THEME = {
   brightWhite: '#EBEFF0',
 }
 
-export const normalizedThemes = Object.entries({ ...themes, [DEFAULT_THEME_NAME]: DEFAULT_THEME })
+export const normalizedThemes = Object.entries({
+  ...themes,
+  [DEFAULT_THEME_NAME]: DEFAULT_THEME,
+})
   .filter(([key]) => key !== 'default')
   .filter(([key]) => THEMES.includes(key))
   .sort(([a], [b]) => a.localeCompare(b))
@@ -58,4 +61,4 @@ export const getTheme = () => {
   return DEFAULT_THEME_NAME
 }
 
-export const setTheme = name => localStorage.setItem(THEME_KEY, name)
+export const setTheme = (name) => localStorage.setItem(THEME_KEY, name)

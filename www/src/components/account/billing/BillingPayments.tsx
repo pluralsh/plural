@@ -13,11 +13,18 @@ function BillingPayments() {
   const { billingCustomerId, paymentMethods } = useBillingSubscription()
   const { data: invoicesData, loading: invoicesLoading } = useInvoicesQuery()
 
-  const invoicesWithIds = useMemo(() => invoicesData?.invoices?.edges?.map((e, i) => (e?.node ? {
-    id: `${e?.node?.hostedInvoiceUrl || i}`,
-    ...e?.node,
-  } : undefined)),
-  [invoicesData])
+  const invoicesWithIds = useMemo(
+    () =>
+      invoicesData?.invoices?.edges?.map((e, i) =>
+        e?.node
+          ? {
+              id: `${e?.node?.hostedInvoiceUrl || i}`,
+              ...e?.node,
+            }
+          : undefined
+      ),
+    [invoicesData]
+  )
 
   if (!paymentMethods || (billingCustomerId && invoicesLoading)) {
     return <LoadingIndicator />

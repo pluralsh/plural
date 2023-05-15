@@ -7,36 +7,44 @@ import { fileInputTheme } from '../../../../utils/fileInputTheme'
 
 export default function ConfigurationFileInput({
   value,
-  onChange, ...props
-}: { onChange: (f:{file: File | null, text: string}) => void; value: string } & Omit<
-  ComponentProps<typeof FileInput>, 'onChange'
->) {
+  onChange,
+  ...props
+}: {
+  onChange: (f: { file: File | null; text: string }) => void
+  value: string
+} & Omit<ComponentProps<typeof FileInput>, 'onChange'>) {
   const [fileSelected, setFileSelected] = useState<boolean>(!!value)
   const theme = useTheme()
 
-  const readFile = useCallback(async (files: FileList | undefined | null) => {
-    setFileSelected(false)
+  const readFile = useCallback(
+    async (files: FileList | undefined | null) => {
+      setFileSelected(false)
 
-    const file = files?.item(0) ?? null
-    const text = await file?.text() ?? ''
+      const file = files?.item(0) ?? null
+      const text = (await file?.text()) ?? ''
 
-    setFileSelected(!!file)
-    onChange({ text, file })
-  },
-  [onChange])
+      setFileSelected(!!file)
+      onChange({ text, file })
+    },
+    [onChange]
+  )
 
-  const messages = value ? { dropPrompt: '********', browse: 'Choose a different file' } : {
-    dropPrompt: 'Drop your file here',
-    browse: 'Select file',
-  }
+  const messages = value
+    ? { dropPrompt: '********', browse: 'Choose a different file' }
+    : {
+        dropPrompt: 'Drop your file here',
+        browse: 'Select file',
+      }
 
   return (
-    <ThemeContext.Extend value={fileInputTheme({ selected: fileSelected, theme })}>
+    <ThemeContext.Extend
+      value={fileInputTheme({ selected: fileSelected, theme })}
+    >
       <FileInput
         messages={messages}
         multiple={false}
-        onChange={event => readFile(event?.target?.files)}
-        renderFile={file => (
+        onChange={(event) => readFile(event?.target?.files)}
+        renderFile={(file) => (
           <Span
             margin="small"
             color="text-light"

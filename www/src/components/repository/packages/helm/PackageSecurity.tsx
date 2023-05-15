@@ -6,13 +6,7 @@ import {
   ErrorIcon,
   PageTitle,
 } from '@pluralsh/design-system'
-import {
-  Button,
-  Div,
-  Flex,
-  H2,
-  Span,
-} from 'honorable'
+import { Button, Div, Flex, H2, Span } from 'honorable'
 import Clamp from 'react-multiline-clamp'
 
 import { useOutletContext } from 'react-router-dom'
@@ -41,18 +35,24 @@ function ScanViolation({ violation, last }: any) {
           <CollapseIcon
             marginLeft="8px"
             size={8}
-            style={open ? {
-              transform: 'rotate(270deg)',
-              transitionDuration: '.2s',
-              transitionProperty: 'transform',
-            } : {
-              transform: 'rotate(180deg)',
-              transitionDuration: '.2s',
-              transitionProperty: 'transform',
-            }}
+            style={
+              open
+                ? {
+                    transform: 'rotate(270deg)',
+                    transitionDuration: '.2s',
+                    transitionProperty: 'transform',
+                  }
+                : {
+                    transform: 'rotate(180deg)',
+                    transitionDuration: '.2s',
+                    transitionProperty: 'transform',
+                  }
+            }
           />
         </TableData>
-        <TableData>{violation.ruleId} {violation.ruleName}</TableData>
+        <TableData>
+          {violation.ruleId} {violation.ruleName}
+        </TableData>
         <TableData>
           <Chip
             severity={chipSeverity[violation.severity?.toLowerCase()]}
@@ -76,7 +76,11 @@ function ScanViolation({ violation, last }: any) {
           background="fill-two"
           round={{ corner: 'bottom', size: '4px' }}
         >
-          <Box basis="1/2"><PackageProperty header="Error message">{violation.description}</PackageProperty></Box>
+          <Box basis="1/2">
+            <PackageProperty header="Error message">
+              {violation.description}
+            </PackageProperty>
+          </Box>
           <Box
             basis="1/2"
             gap="small"
@@ -111,7 +115,9 @@ export default function PackageSecurity() {
               large
             />
           )}
-          <Flex display-desktop-up="none"><PackageActions /></Flex>
+          <Flex display-desktop-up="none">
+            <PackageActions />
+          </Flex>
         </Flex>
       </PageTitle>
       <Box

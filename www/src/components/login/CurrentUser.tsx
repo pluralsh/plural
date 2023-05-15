@@ -7,7 +7,11 @@ import PluralConfigurationContext from '../../contexts/PluralConfigurationContex
 import { useMeQuery, useSubscriptionQuery } from '../../generated/graphql'
 import { CurrentUserContextProvider } from '../../contexts/CurrentUserContext'
 import { growthbook } from '../../helpers/growthbook'
-import { setPreviousUserData, setToken, wipeToken } from '../../helpers/authentication'
+import {
+  setPreviousUserData,
+  setToken,
+  wipeToken,
+} from '../../helpers/authentication'
 import BillingSubscriptionProvider from '../account/billing/BillingSubscriptionProvider'
 import BillingPlatformPlansProvider from '../account/billing/BillingPlatformPlansProvider'
 import { useNotificationSubscription } from '../../hooks/useNotificationSubscription'
@@ -24,9 +28,10 @@ export function handlePreviousUserClick({ jwt }: any) {
 export function PluralProvider({ children }: any) {
   const location = useLocation()
 
-  const {
-    loading, error, data,
-  } = useMeQuery({ fetchPolicy: 'network-only', pollInterval: 60_000 })
+  const { loading, error, data } = useMeQuery({
+    fetchPolicy: 'network-only',
+    pollInterval: 60_000,
+  })
 
   // Below queries were extracted from providers to use less loading animations.
   // This should be handled by parent Suspense element once Apollo Client will support it.
@@ -61,21 +66,28 @@ export function PluralProvider({ children }: any) {
     const { me } = data
 
     boot({ name: me.name, email: me.email, userId: me.id })
-    growthbook.setAttributes({ company: me.account.name, id: me.id, email: me.email })
+    growthbook.setAttributes({
+      company: me.account.name,
+      id: me.id,
+      email: me.email,
+    })
   }, [data, boot])
 
   useEffect(() => {
     if (data && data.me) update()
   }, [location, data, update])
 
-  if ((!data && loading)
-    || (!platformPlansData && platformPlansLoading)
-    || (!subscriptionData && subscriptionLoading)) return <LoadingIndicator />
+  if (
+    (!data && loading) ||
+    (!platformPlansData && platformPlansLoading) ||
+    (!subscriptionData && subscriptionLoading)
+  )
+    return <LoadingIndicator />
 
   if (error || !data?.me?.id) {
     wipeToken()
 
-    return (<Navigate to="/login" />)
+    return <Navigate to="/login" />
   }
 
   const { configuration } = data
@@ -92,9 +104,7 @@ export function PluralProvider({ children }: any) {
             error={subscriptionError}
             refetch={subscriptionRefetch}
           >
-            <ClustersContextProvider>
-              {children}
-            </ClustersContextProvider>
+            <ClustersContextProvider>{children}</ClustersContextProvider>
           </BillingSubscriptionProvider>
         </BillingPlatformPlansProvider>
       </CurrentUserContextProvider>

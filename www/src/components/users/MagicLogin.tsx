@@ -6,28 +6,12 @@ import {
   useRef,
   useState,
 } from 'react'
-import {
-  Box,
-  Collapsible,
-  Form,
-  Text,
-} from 'grommet'
+import { Box, Collapsible, Form, Text } from 'grommet'
 import { Divider, LoadingSpinner } from '@pluralsh/design-system'
 import { useApolloClient } from '@apollo/client'
-import {
-  Link,
-  useLocation,
-  useNavigate,
-  useParams,
-} from 'react-router-dom'
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import queryString from 'query-string'
-import {
-  A,
-  Button,
-  Div,
-  Flex,
-  Icon,
-} from 'honorable'
+import { A, Button, Div, Flex, Icon } from 'honorable'
 
 import styled from 'styled-components'
 
@@ -117,14 +101,16 @@ export function handleOauthChallenge(client, challenge) {
       mutation: AcceptLoginDocument,
       variables: { challenge },
     })
-    .then(({
-      data: {
-        acceptLogin: { redirectTo },
-      },
-    }) => {
-      window.location = redirectTo
-    })
-    .catch(err => {
+    .then(
+      ({
+        data: {
+          acceptLogin: { redirectTo },
+        },
+      }) => {
+        window.location = redirectTo
+      }
+    )
+    .catch((err) => {
       console.error(err)
       wipeChallenge()
     })
@@ -142,23 +128,24 @@ function LoginPoller({ challenge, token, deviceToken }: any) {
           mutation: PollLoginTokenDocument,
           variables: { token, deviceToken },
         })
-        .then(({
-          data: {
-            loginToken: { jwt },
-          },
-        }) => {
-          setToken(jwt)
-          setSuccess(true)
+        .then(
+          ({
+            data: {
+              loginToken: { jwt },
+            },
+          }) => {
+            setToken(jwt)
+            setSuccess(true)
 
-          if (deviceToken) finishedDeviceLogin()
+            if (deviceToken) finishedDeviceLogin()
 
-          if (challenge) {
-            handleOauthChallenge(client, challenge)
+            if (challenge) {
+              handleOauthChallenge(client, challenge)
+            } else {
+              history.navigate('/')
+            }
           }
-          else {
-            history.navigate('/')
-          }
-        })
+        )
     }, 2000)
 
     return () => clearInterval(interval)
@@ -208,7 +195,7 @@ export function OAuthOptions({ oauthUrls }: any) {
             wrap="wrap"
             flexWrap="wrap"
           >
-            {[...oauthUrls].sort(sortOauthUrls).map(url => (
+            {[...oauthUrls].sort(sortOauthUrls).map((url) => (
               <OAuthOption
                 key={url.provider}
                 url={url}
@@ -257,7 +244,9 @@ export function Login() {
   const location = useLocation()
   const jwt = fetchToken()
   const [ran, setRan] = useState(false)
-  const { login_challenge: challenge, deviceToken } = queryString.parse(location.search)
+  const { login_challenge: challenge, deviceToken } = queryString.parse(
+    location.search
+  )
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const navigate = useNavigate()
@@ -282,8 +271,8 @@ export function Login() {
     })
   }, [email, loginMethodQuery])
 
-  const [loginMutation, { loading: loginMLoading, error: loginMError }]
-    = useLoginMutation({
+  const [loginMutation, { loading: loginMLoading, error: loginMError }] =
+    useLoginMutation({
       variables: {
         email,
         password,
@@ -294,8 +283,7 @@ export function Login() {
         if (deviceToken) finishedDeviceLogin()
         if (challenge) {
           handleOauthChallenge(client, challenge)
-        }
-        else {
+        } else {
           history.navigate('/')
         }
       },
@@ -304,22 +292,22 @@ export function Login() {
   useEffect(() => {
     if (state !== prevState.current) {
       switch (state) {
-      case State.Initial:
-        setInputFocus(emailRef)
-        break
-      case State.CheckEmail:
-        getLoginMethod()
-        setState(State.CheckingEmail)
-        break
-      case State.PwdLogin_CheckPwd:
-        loginMutation()
-        setState(State.PwdLogin_CheckingPwd)
-        break
-      case State.PwdLogin:
-        setInputFocus(passwordRef)
-        break
-      default:
-        break
+        case State.Initial:
+          setInputFocus(emailRef)
+          break
+        case State.CheckEmail:
+          getLoginMethod()
+          setState(State.CheckingEmail)
+          break
+        case State.PwdLogin_CheckPwd:
+          loginMutation()
+          setState(State.PwdLogin_CheckingPwd)
+          break
+        case State.PwdLogin:
+          setInputFocus(passwordRef)
+          break
+        default:
+          break
       }
     }
     prevState.current = state
@@ -337,25 +325,23 @@ export function Login() {
       setPassword('')
     }
   }, [loginMError, state])
-  const passwordErrorMsg
-    = loginMError?.message === 'invalid password' ? 'Invalid password' : undefined
+  const passwordErrorMsg =
+    loginMError?.message === 'invalid password' ? 'Invalid password' : undefined
   const loginError = !passwordErrorMsg && loginMError
 
   useEffect(() => {
     if (
-      !loginMethodLoading
-      && loginMethodData
-      && state === State.CheckingEmail
+      !loginMethodLoading &&
+      loginMethodData &&
+      state === State.CheckingEmail
     ) {
       const loginMethod = loginMethodData?.loginMethod?.loginMethod
 
       if (!loginMethod) {
         setState(State.Signup)
-      }
-      else if (loginMethod === LoginMethod.Password) {
+      } else if (loginMethod === LoginMethod.Password) {
         setState(State.PwdLogin)
-      }
-      else if (loginMethod === LoginMethod.Passwordless) {
+      } else if (loginMethod === LoginMethod.Passwordless) {
         setState(State.PasswordlessLogin)
       }
     }
@@ -377,8 +363,7 @@ export function Login() {
     if (jwt && challenge && !ran) {
       setRan(true)
       handleOauthChallenge(client, challenge)
-    }
-    else if (!deviceToken && !challenge && jwt) {
+    } else if (!deviceToken && !challenge && jwt) {
       history.navigate('/')
     }
   }, [challenge, deviceToken, history, client, jwt, ran, setRan])
@@ -396,30 +381,33 @@ export function Login() {
     variables: { host: host() },
   })
 
-  const isPasswordLogin
-    = state === State.PwdLogin
-    || state === State.PwdLogin_CheckingPwd
-    || state === State.PwdLogin_CheckPwd
+  const isPasswordLogin =
+    state === State.PwdLogin ||
+    state === State.PwdLogin_CheckingPwd ||
+    state === State.PwdLogin_CheckPwd
   const disableSubmit = isPasswordLogin
     ? password.length === 0
     : !isValidEmail(email)
 
-  const onSubmit = useCallback(e => {
-    e.preventDefault()
-    if (disableSubmit) {
-      return
-    }
-    switch (state) {
-    case State.PwdLogin:
-      setState(State.PwdLogin_CheckPwd)
-      break
-    case State.Initial:
-      setState(State.CheckEmail)
-      break
-    default:
-      break
-    }
-  }, [disableSubmit, state])
+  const onSubmit = useCallback(
+    (e) => {
+      e.preventDefault()
+      if (disableSubmit) {
+        return
+      }
+      switch (state) {
+        case State.PwdLogin:
+          setState(State.PwdLogin_CheckPwd)
+          break
+        case State.Initial:
+          setState(State.CheckEmail)
+          break
+        default:
+          break
+      }
+    },
+    [disableSubmit, state]
+  )
 
   const loading = loginMethodLoading || loginMLoading
 
@@ -491,19 +479,19 @@ export function Login() {
                   ref={passwordRef}
                   label="Password"
                   type="password"
-                  caption={(
+                  caption={
                     <A
                       inline
                       as={Link}
                       to="/password-reset"
-                      onClick={e => {
+                      onClick={(e) => {
                         e.preventDefault()
                         navigate('/password-reset', { state: { email } })
                       }}
                     >
                       forgot your password?
                     </A>
-                  )}
+                  }
                   hint={passwordErrorMsg}
                   error={!!passwordErrorMsg}
                   value={password}
@@ -534,7 +522,7 @@ const providerToName = {
   gitlab: 'GitLab',
 }
 
-export const FlexAtBreak = styled.div(_ => ({
+export const FlexAtBreak = styled.div((_) => ({
   width: '100%',
   [LOGIN_BREAKPOINT]: {
     flex: '1 0',
@@ -557,11 +545,11 @@ function OAuthOption({ url: { authorizeUrl, provider }, ...props }: any) {
         as={A}
         _hover={{ textDecoration: 'none' }}
         href={authorizeUrl}
-        startIcon={(
+        startIcon={
           <Icon filter="grayscale(1)">
             {createElement(icon, { size: 20, fullColor: true })}
           </Icon>
-        )}
+        }
         {...props}
       >
         {providerToName[provider]}

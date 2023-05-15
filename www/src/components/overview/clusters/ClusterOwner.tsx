@@ -2,12 +2,16 @@ import { AppIcon } from '@pluralsh/design-system'
 import { Div, Flex } from 'honorable'
 
 type ClusterOwnerProps = {
-    name?: string | null
-    email?: string | null
-    avatar?: string | null
+  name?: string | null
+  email?: string | null
+  avatar?: string | null
 }
 
-export default function ClusterOwner({ name, email, avatar }: ClusterOwnerProps) {
+export default function ClusterOwner({
+  name,
+  email,
+  avatar,
+}: ClusterOwnerProps) {
   return (
     <Flex
       gap="small"

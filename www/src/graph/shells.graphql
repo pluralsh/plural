@@ -23,9 +23,13 @@ fragment DemoProject on DemoProject {
 }
 
 query GetShell {
-  shell { ...CloudShell }
+  shell {
+    ...CloudShell
+  }
 }
 
 mutation DeleteShell {
-  deleteShell { ...CloudShell }
+  deleteShell {
+    ...CloudShell
+  }
 }

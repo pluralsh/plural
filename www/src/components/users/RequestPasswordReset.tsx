@@ -1,18 +1,13 @@
 import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { Form } from 'grommet'
-import {
-  A,
-  Button,
-  Div,
-  Flex,
-  H1,
-  P,
-  Span,
-} from 'honorable'
+import { A, Button, Div, Flex, H1, P, Span } from 'honorable'
 import { SuccessIcon } from '@pluralsh/design-system'
 
-import { ResetTokenType, useCreateResetTokenMutation } from '../../generated/graphql'
+import {
+  ResetTokenType,
+  useCreateResetTokenMutation,
+} from '../../generated/graphql'
 import { isValidEmail } from '../../utils/email'
 import { GqlError } from '../utils/Alert'
 
@@ -33,7 +28,7 @@ export function RequestPasswordReset() {
   const invalidEmail = error?.message === 'not_found'
   const gqlError = !invalidEmail ? error : undefined
   const disabled = !isValidEmail(attributes.email)
-  const onSubmit = e => {
+  const onSubmit = (e) => {
     e.preventDefault()
     if (!disabled) {
       mutation()
@@ -68,7 +63,7 @@ export function RequestPasswordReset() {
               label="Email"
               name="email"
               placeholder="your email"
-              onChange={email => setAttributes({ ...attributes, email })}
+              onChange={(email) => setAttributes({ ...attributes, email })}
               hint={
                 invalidEmail ? (
                   <Span color="text-danger-light">Invalid email address</Span>

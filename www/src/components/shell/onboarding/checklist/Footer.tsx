@@ -5,7 +5,10 @@ import { useContext } from 'react'
 import { OnboardingChecklistContext } from '../../../../contexts/OnboardingChecklistContext'
 import { UPDATE_USER } from '../../../users/queries'
 import { updateUserFragment } from '../../../../utils/graphql'
-import { RootMutationType, RootMutationTypeUpdateUserArgs } from '../../../../generated/graphql'
+import {
+  RootMutationType,
+  RootMutationTypeUpdateUserArgs,
+} from '../../../../generated/graphql'
 import {
   ONBOARDING_CHECKLIST_STATE,
   clearOnboardingChecklistState,
@@ -15,8 +18,13 @@ import {
 } from '../../../../helpers/localStorage'
 
 export function ChecklistFooter({ setDismiss }: any) {
-  const { setDismissed: setDismissedFromContext } = useContext(OnboardingChecklistContext)
-  const [updateChecklist, { loading }] = useMutation<RootMutationType, RootMutationTypeUpdateUserArgs>(UPDATE_USER, {
+  const { setDismissed: setDismissedFromContext } = useContext(
+    OnboardingChecklistContext
+  )
+  const [updateChecklist, { loading }] = useMutation<
+    RootMutationType,
+    RootMutationTypeUpdateUserArgs
+  >(UPDATE_USER, {
     variables: {
       attributes: {
         onboardingChecklist: {
@@ -29,9 +37,7 @@ export function ChecklistFooter({ setDismiss }: any) {
   })
 
   return (
-    <Flex
-      gap="small"
-    >
+    <Flex gap="small">
       <Button
         as="a"
         href="https://discord.gg/pluralsh"
@@ -39,7 +45,8 @@ export function ChecklistFooter({ setDismiss }: any) {
         rel="noopener noreferrer"
         secondary
         small
-      >Support
+      >
+        Support
       </Button>
 
       <Button
@@ -49,7 +56,8 @@ export function ChecklistFooter({ setDismiss }: any) {
         rel="noopener noreferrer"
         secondary
         small
-      >Docs
+      >
+        Docs
       </Button>
 
       <Button
@@ -59,7 +67,8 @@ export function ChecklistFooter({ setDismiss }: any) {
         rel="noopener noreferrer"
         secondary
         small
-      >GitHub
+      >
+        GitHub
       </Button>
 
       <Flex flex="1" />
@@ -72,7 +81,10 @@ export function ChecklistFooter({ setDismiss }: any) {
         onClick={() => {
           setDismissedFromContext(true)
 
-          if (!shouldOnboardingChecklistReappear() && !isOnboardingChecklistHidden()) {
+          if (
+            !shouldOnboardingChecklistReappear() &&
+            !isOnboardingChecklistHidden()
+          ) {
             setOnboardingChecklistState(ONBOARDING_CHECKLIST_STATE.HIDDEN)
             setDismiss(true)
 
@@ -85,7 +97,8 @@ export function ChecklistFooter({ setDismiss }: any) {
 
           updateChecklist()
         }}
-      >Dismiss
+      >
+        Dismiss
       </Button>
     </Flex>
   )

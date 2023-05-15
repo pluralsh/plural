@@ -1,9 +1,4 @@
-import {
-  Div,
-  Flex,
-  Form,
-  Span,
-} from 'honorable'
+import { Div, Flex, Form, Span } from 'honorable'
 import {
   Button,
   Chip,
@@ -23,7 +18,11 @@ import SaveButton from '../utils/SaveButton'
 import { GqlError } from '../utils/Alert'
 import { DeleteIconButton } from '../utils/IconButtons'
 import { List, ListItem } from '../utils/List'
-import { Account, DomainMapping, useUpdateAccountMutation } from '../../generated/graphql'
+import {
+  Account,
+  DomainMapping,
+  useUpdateAccountMutation,
+} from '../../generated/graphql'
 import { removeTypename } from '../../utils/removeTypename'
 
 import { Confirm } from '../utils/Confirm'
@@ -120,12 +119,17 @@ export function AccountAttributes() {
 
   const [domain, setDomain] = useState('')
 
-  const sortedDomainMappings = useMemo(() => (formState.domainMappings || [])
-    .filter(notNil)
-    .sort((m1, m2) => `${m1?.domain} || ''`
-      .toLowerCase()
-      .localeCompare(`${m2?.domain} || ''`.toLowerCase())),
-  [formState.domainMappings])
+  const sortedDomainMappings = useMemo(
+    () =>
+      (formState.domainMappings || [])
+        .filter(notNil)
+        .sort((m1, m2) =>
+          `${m1?.domain} || ''`
+            .toLowerCase()
+            .localeCompare(`${m2?.domain} || ''`.toLowerCase())
+        ),
+    [formState.domainMappings]
+  )
 
   const [mutation, { loading, error }] = useUpdateAccountMutation({
     variables: {
@@ -150,7 +154,7 @@ export function AccountAttributes() {
 
   const rmDomain = (d?: string) => {
     const newDomains = (account?.domainMappings || [])
-      .filter(notNilAnd(mapping => mapping?.domain !== d))
+      .filter(notNilAnd((mapping) => mapping?.domain !== d))
       .map(removeTypename)
 
     mutation({ variables: { attributes: { domainMappings: newDomains } } })
@@ -164,7 +168,7 @@ export function AccountAttributes() {
 
   return (
     <Form
-      onSubmit={event => {
+      onSubmit={(event) => {
         event.preventDefault()
         if (hasUpdates) {
           mutation()
@@ -195,7 +199,9 @@ export function AccountAttributes() {
           <ValidatedInput
             label="Account name"
             value={formState.name}
-            onChange={({ target: { value } }) => updateFormState({ name: value })}
+            onChange={({ target: { value } }) =>
+              updateFormState({ name: value })
+            }
           />
           <FormField
             label="Domain mappings"
@@ -208,7 +214,7 @@ export function AccountAttributes() {
                   value={domain}
                   width="100%"
                   placeholder="enter an email domain"
-                  onKeyDown={event => {
+                  onKeyDown={(event) => {
                     if (event.key === 'Enter') {
                       event.preventDefault()
                       handleAddDomain()

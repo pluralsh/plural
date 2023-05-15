@@ -29,14 +29,16 @@ function Repository() {
     variables: uuidValidate(name ?? '') ? { id: name } : { name },
   })
   const tabStateRef = useRef<any>(null)
-  const breadcrumbs = useMemo(() => [
-    MARKETPLACE_CRUMB,
-    {
-      label: `${name}-${subPath || 'readme'}` ?? '',
-      url: `/repository/${name}`,
-    },
-  ],
-  [subPath, name])
+  const breadcrumbs = useMemo(
+    () => [
+      MARKETPLACE_CRUMB,
+      {
+        label: `${name}-${subPath || 'readme'}` ?? '',
+        url: `/repository/${name}`,
+      },
+    ],
+    [subPath, name]
+  )
 
   useSetBreadcrumbs(breadcrumbs)
 

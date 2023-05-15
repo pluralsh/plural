@@ -1,9 +1,4 @@
-import {
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import ReactDOM from 'react-dom'
 import { Editor, Range, Transforms } from 'slate'
 import {
@@ -22,51 +17,59 @@ function Portal({ children }: any) {
 }
 
 export default function TypeaheadEditor({
-  editor, value, setValue, style, onOpen, searchQuery, handlers,
+  editor,
+  value,
+  setValue,
+  style,
+  onOpen,
+  searchQuery,
+  handlers,
 }: any) {
   const ref = useRef<HTMLDivElement>(null)
   const [target, setTarget] = useState<any>(null)
   const [index, setIndex] = useState(0)
   const [suggestions, setSuggestions] = useState<any[]>([])
-  const renderElement = useCallback(props => <Element {...props} />, [])
+  const renderElement = useCallback((props) => <Element {...props} />, [])
 
-  const onKeyDown = useCallback(event => {
-    if (target) {
-      switch (event.key) {
-      case 'ArrowDown': {
-        event.preventDefault()
-        const prevIndex = index >= suggestions.length - 1 ? 0 : index + 1
+  const onKeyDown = useCallback(
+    (event) => {
+      if (target) {
+        switch (event.key) {
+          case 'ArrowDown': {
+            event.preventDefault()
+            const prevIndex = index >= suggestions.length - 1 ? 0 : index + 1
 
-        setIndex(prevIndex)
-        break
-      }
-      case 'ArrowUp': {
-        event.preventDefault()
-        const nextIndex = index <= 0 ? suggestions.length - 1 : index - 1
+            setIndex(prevIndex)
+            break
+          }
+          case 'ArrowUp': {
+            event.preventDefault()
+            const nextIndex = index <= 0 ? suggestions.length - 1 : index - 1
 
-        setIndex(nextIndex)
-        break
+            setIndex(nextIndex)
+            break
+          }
+          case 'Tab':
+          case 'Enter': {
+            if (target === null || suggestions.length === 0) break
+            event.preventDefault()
+            Transforms.select(editor, target)
+            insertMention(editor, suggestions[index].value)
+            setTarget(null)
+            break
+          }
+          case 'Escape': {
+            event.preventDefault()
+            setTarget(null)
+            break
+          }
+          default:
+          // ignore
+        }
       }
-      case 'Tab':
-      case 'Enter': {
-        if (target === null || suggestions.length === 0) break
-        event.preventDefault()
-        Transforms.select(editor, target)
-        insertMention(editor, suggestions[index].value)
-        setTarget(null)
-        break
-      }
-      case 'Escape': {
-        event.preventDefault()
-        setTarget(null)
-        break
-      }
-      default:
-            // ignore
-      }
-    }
-  },
-  [index, suggestions, target, editor])
+    },
+    [index, suggestions, target, editor]
+  )
 
   useEffect(() => {
     if (target && suggestions.length > 0) {
@@ -89,7 +92,7 @@ export default function TypeaheadEditor({
     <Slate
       editor={editor}
       value={value}
-      onChange={value => {
+      onChange={(value) => {
         setValue(value)
         const { selection } = editor
 
@@ -166,12 +169,14 @@ export default function TypeaheadEditor({
 
 const SPECIAL_ELEMENTS = Object.values(EntityType)
 
-export const withMentions = editor => {
+export const withMentions = (editor) => {
   const { isInline, isVoid } = editor
 
-  editor.isInline = element => (SPECIAL_ELEMENTS.includes(element.type) ? true : isInline(element))
+  editor.isInline = (element) =>
+    SPECIAL_ELEMENTS.includes(element.type) ? true : isInline(element)
 
-  editor.isVoid = element => (SPECIAL_ELEMENTS.includes(element.type) ? true : isVoid(element))
+  editor.isVoid = (element) =>
+    SPECIAL_ELEMENTS.includes(element.type) ? true : isVoid(element)
 
   return editor
 }
@@ -187,12 +192,12 @@ function Element(props) {
   const { attributes, children, element } = props
 
   switch (element.type) {
-  case EntityType.MENTION:
-    return <MentionElement {...props} />
-  case EntityType.EMOJI:
-    return <EmojiElement {...props} />
-  default:
-    return <div {...attributes}>{children}</div>
+    case EntityType.MENTION:
+      return <MentionElement {...props} />
+    case EntityType.EMOJI:
+      return <EmojiElement {...props} />
+    default:
+      return <div {...attributes}>{children}</div>
   }
 }
 

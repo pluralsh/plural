@@ -15,12 +15,12 @@ function CloudOption({
   return (
     <WrapWithIf
       condition={!!tooltip}
-      wrapper={(
+      wrapper={
         <Tooltip
           label={tooltip}
           placement="top"
         />
-      )}
+      }
     >
       <div>
         <OnboardingCardButton

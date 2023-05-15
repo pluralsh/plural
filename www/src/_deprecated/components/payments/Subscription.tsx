@@ -1,10 +1,5 @@
 import { useState } from 'react'
-import {
-  Anchor,
-  Box,
-  Layer,
-  Text,
-} from 'grommet'
+import { Anchor, Box, Layer, Text } from 'grommet'
 import { Button, Reload as Refresh } from 'forge-core'
 import { useMutation } from '@apollo/client'
 
@@ -19,16 +14,30 @@ import { pivotByDimension, subscriptionCost } from './utils'
 import { LineItemIcon } from './Plan'
 
 function LineItemUpdate({
-  lineItem: { cost }, dimension, quantity, subscription, repository, setOpen,
+  lineItem: { cost },
+  dimension,
+  quantity,
+  subscription,
+  repository,
+  setOpen,
 }: any) {
   const [value, setValue] = useState(quantity)
   const [mutation, { loading }] = useMutation(UPDATE_LINE_ITEM, {
-    variables: { subscriptionId: subscription.id, attributes: { dimension, quantity: value } },
-    update: (cache, { data: { updateLineItem } }) => updateCache(cache, {
-      query: REPO_Q,
-      variables: { repositoryId: repository.id },
-      update: prev => deepUpdate(prev, 'repository.installation.subscription', () => updateLineItem),
-    }),
+    variables: {
+      subscriptionId: subscription.id,
+      attributes: { dimension, quantity: value },
+    },
+    update: (cache, { data: { updateLineItem } }) =>
+      updateCache(cache, {
+        query: REPO_Q,
+        variables: { repositoryId: repository.id },
+        update: (prev) =>
+          deepUpdate(
+            prev,
+            'repository.installation.subscription',
+            () => updateLineItem
+          ),
+      }),
   })
 
   return (
@@ -57,7 +66,9 @@ function LineItemUpdate({
               value={value}
               onChange={setValue}
             />
-            <Text size="small">(${cost / 100} / {dimension})</Text>
+            <Text size="small">
+              (${cost / 100} / {dimension})
+            </Text>
           </Box>
           <Box
             direction="row"
@@ -78,7 +89,11 @@ function LineItemUpdate({
 }
 
 export function LineItemNub({
-  dimension, quantity, subscription, repository, lineItem,
+  dimension,
+  quantity,
+  subscription,
+  repository,
+  lineItem,
 }: any) {
   const [open, setOpen] = useState(false)
   const [hover, setHover] = useState(false)
@@ -93,14 +108,19 @@ export function LineItemNub({
       align="center"
     >
       <LineItemIcon dimension={dimension} />
-      {!metered && <Text size="small">{quantity} - {dimension}</Text>}
+      {!metered && (
+        <Text size="small">
+          {quantity} - {dimension}
+        </Text>
+      )}
       {metered && <Text size="small">{dimension}</Text>}
       {metered && <Refresh size="small" />}
       {hover && !metered && (
         <Anchor
           size="small"
           onClick={() => setOpen(true)}
-        >edit
+        >
+          edit
         </Anchor>
       )}
       {open && (
@@ -118,7 +138,10 @@ export function LineItemNub({
 }
 
 export function SubscriptionBadge({ repository, subscription }: any) {
-  const { plan: { name, period, lineItems }, lineItems: { items } } = subscription
+  const {
+    plan: { name, period, lineItems },
+    lineItems: { items },
+  } = subscription
   const totalCost = subscriptionCost(subscription, subscription.plan)
   const itemsByDim = pivotByDimension(lineItems.items)
 
@@ -136,7 +159,8 @@ export function SubscriptionBadge({ repository, subscription }: any) {
         <Text
           weight={500}
           size="small"
-        >Subscribed to {name}
+        >
+          Subscribed to {name}
         </Text>
         {items.map(({ dimension, quantity }) => (
           <LineItemNub
@@ -157,7 +181,8 @@ export function SubscriptionBadge({ repository, subscription }: any) {
         <Text
           color="green"
           size="small"
-        >${totalCost / 100} {period}
+        >
+          ${totalCost / 100} {period}
         </Text>
       </Box>
     </Box>

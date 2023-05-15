@@ -12,7 +12,9 @@ import { LABEL_REQUEST } from './constants'
 function RoadmapFeatureRequests() {
   const { pluralIssues, pluralConsoleIssues } = useContext(RoadmapContext)
 
-  const issues = [...pluralIssues, ...pluralConsoleIssues].filter(issue => issue.labels.includes(LABEL_REQUEST))
+  const issues = [...pluralIssues, ...pluralConsoleIssues].filter((issue) =>
+    issue.labels.includes(LABEL_REQUEST)
+  )
 
   return (
     <Flex

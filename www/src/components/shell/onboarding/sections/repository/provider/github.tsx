@@ -12,12 +12,17 @@ function useGithubState({ token }): Array<SCMOrg> {
       const { data } = await client.request('GET /user/orgs')
       const { data: me } = await client.request('GET /user')
 
-      setOrgs([me, ...data].map<SCMOrg>(o => ({
-        name: o.login,
-        orgType: (o as any).type === OrgType.User ? OrgType.User : OrgType.Organization,
-        id: `${o.id}`,
-        avatarUrl: o.avatar_url,
-      })))
+      setOrgs(
+        [me, ...data].map<SCMOrg>((o) => ({
+          name: o.login,
+          orgType:
+            (o as any).type === OrgType.User
+              ? OrgType.User
+              : OrgType.Organization,
+          id: `${o.id}`,
+          avatarUrl: o.avatar_url,
+        }))
+      )
     }
 
     if (!orgs) fetch()

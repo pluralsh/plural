@@ -1,15 +1,5 @@
-import {
-  ComponentProps,
-  useCallback,
-  useContext,
-  useState,
-} from 'react'
-import {
-  Button,
-  Card,
-  Chip,
-  Modal,
-} from '@pluralsh/design-system'
+import { ComponentProps, useCallback, useContext, useState } from 'react'
+import { Button, Card, Chip, Modal } from '@pluralsh/design-system'
 import { Div, Flex, H3 } from 'honorable'
 import isEmpty from 'lodash/isEmpty'
 
@@ -69,13 +59,13 @@ export function PaymentMethod({
   method: PaymentMethodFragment | null | undefined
   variant?: PaymentFormVariant
 }) {
-  const [makeDefaultMutation, { loading: defaultLoading }]
-    = useDefaultPaymentMethodMutation({
+  const [makeDefaultMutation, { loading: defaultLoading }] =
+    useDefaultPaymentMethodMutation({
       variables: { id: method?.id || '' },
       refetchQueries: [namedOperations.Query.Subscription],
     })
-  const [deleteCardMutation, { loading: _deleteLoading }]
-    = useDeletePaymentMethodMutation({
+  const [deleteCardMutation, { loading: _deleteLoading }] =
+    useDeletePaymentMethodMutation({
       variables: { id: method?.id || '' },
       refetchQueries: [namedOperations.Query.Subscription],
     })
@@ -239,7 +229,7 @@ function BillingBankCards({
             gap="medium"
             width="100%"
           >
-            {paymentMethods.map(paymentMethod => (
+            {paymentMethods.map((paymentMethod) => (
               <PaymentMethod
                 key={paymentMethod?.id}
                 method={paymentMethod}

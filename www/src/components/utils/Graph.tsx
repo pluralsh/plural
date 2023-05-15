@@ -20,7 +20,8 @@ export function GraphHeader({ text }: any) {
       <Text
         size="small"
         weight="bold"
-      >{text}
+      >
+        {text}
       </Text>
     </Box>
   )
@@ -44,23 +45,37 @@ function SliceTooltip({ point: { serieColor, serieId, data } }: any) {
         borderRadius="50%"
         backgroundColor={serieColor}
       />
-      <P body2>{serieId} [x: {data.xFormatted}, y: {data.yFormatted}]</P>
+      <P body2>
+        {serieId} [x: {data.xFormatted}, y: {data.yFormatted}]
+      </P>
     </Flex>
   )
 }
 
 export const DURATIONS = [
   {
-    offset: '7d', step: '2h', label: '7d', tick: 'every 12 hours',
+    offset: '7d',
+    step: '2h',
+    label: '7d',
+    tick: 'every 12 hours',
   },
   {
-    offset: '30d', step: '1d', label: '30d', tick: 'every 2 days',
+    offset: '30d',
+    step: '1d',
+    label: '30d',
+    tick: 'every 2 days',
   },
   {
-    offset: '60d', step: '1d', label: '60d', tick: 'every 5 days',
+    offset: '60d',
+    step: '1d',
+    label: '60d',
+    tick: 'every 5 days',
   },
   {
-    offset: '120d', step: '1d', label: '120d', tick: 'every 10 day',
+    offset: '120d',
+    step: '1d',
+    label: '120d',
+    tick: 'every 10 day',
   },
 ]
 
@@ -82,7 +97,10 @@ export function Graph({ data, yFormat, tick }: any) {
     <ResponsiveLine
       data={graph}
       margin={{
-        top: 50, right: 110, bottom: 75, left: 70,
+        top: 50,
+        right: 110,
+        bottom: 75,
+        left: 70,
       }}
       areaOpacity={0.5}
       useMesh
@@ -92,29 +110,41 @@ export function Graph({ data, yFormat, tick }: any) {
       animate={false}
       xScale={{ type: 'time', format: 'native' }}
       yScale={{
-        type: 'linear', min: 'auto', max: 'auto', stacked: false, reverse: false,
+        type: 'linear',
+        min: 'auto',
+        max: 'auto',
+        stacked: false,
+        reverse: false,
       }}
-      colors={data => data.color}
+      colors={(data) => data.color}
       yFormat={yFormat}
       xFormat={dateFormat}
       tooltip={SliceTooltip}
-      axisLeft={{
-        orient: 'left',
-        tickSize: 5,
-        format: yFormat,
-        tickPadding: 5,
-        tickRotation: 0,
-        legendOffset: -50,
-        legendPosition: 'start',
-      } as any}
-      axisBottom={{
-        format: '%H:%M',
-        tickValues: tick || 'every 5 minutes',
-        orient: 'bottom',
-        legendPosition: 'middle',
-        legend: hasData ? `${dateFormat(data[0].data[0].x)} to ${dateFormat((last(data[0].data) as any).x)}` : null,
-        legendOffset: 46,
-      } as any}
+      axisLeft={
+        {
+          orient: 'left',
+          tickSize: 5,
+          format: yFormat,
+          tickPadding: 5,
+          tickRotation: 0,
+          legendOffset: -50,
+          legendPosition: 'start',
+        } as any
+      }
+      axisBottom={
+        {
+          format: '%H:%M',
+          tickValues: tick || 'every 5 minutes',
+          orient: 'bottom',
+          legendPosition: 'middle',
+          legend: hasData
+            ? `${dateFormat(data[0].data[0].x)} to ${dateFormat(
+                (last(data[0].data) as any).x
+              )}`
+            : null,
+          legendOffset: 46,
+        } as any
+      }
       pointLabel="y"
       pointLabelYOffset={-15}
       legends={[

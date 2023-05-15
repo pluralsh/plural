@@ -13,17 +13,20 @@ export function setToken(token) {
 }
 
 export function setPreviousUserData(userData) {
-  localStorage.setItem(LocalStorageKeys.AuthPreviousUserData,
-    JSON.stringify(userData))
+  localStorage.setItem(
+    LocalStorageKeys.AuthPreviousUserData,
+    JSON.stringify(userData)
+  )
 }
 
 export function getPreviousUserData() {
   try {
     return (
-      JSON.parse(localStorage.getItem(LocalStorageKeys.AuthPreviousUserData) as string) || null
+      JSON.parse(
+        localStorage.getItem(LocalStorageKeys.AuthPreviousUserData) as string
+      ) || null
     )
-  }
-  catch (error) {
+  } catch (error) {
     return null
   }
 }

@@ -3,7 +3,10 @@ import { Link, Outlet, useParams } from 'react-router-dom'
 import { Button, useSetBreadcrumbs } from '@pluralsh/design-system'
 import { Flex, P } from 'honorable'
 import { useQuery } from '@apollo/client'
-import { collectHeadings, getMdContent } from '@pluralsh/design-system/dist/markdoc'
+import {
+  collectHeadings,
+  getMdContent,
+} from '@pluralsh/design-system/dist/markdoc'
 
 import { config } from '../../markdoc/mdSchema'
 import { ResponsiveLayoutContentContainer } from '../utils/layout/ResponsiveLayoutContentContainer'
@@ -35,14 +38,14 @@ type DocDataPageHash = DocDataAtom & {
 
 type DocDataPage = DocDataAtom & {
   type: 'docPage'
-  subpaths: (DocDataPageHash)[]
-  content: ReturnType<typeof getMdContent>,
-  headings: ReturnType<typeof collectHeadings>,
+  subpaths: DocDataPageHash[]
+  content: ReturnType<typeof getMdContent>
+  headings: ReturnType<typeof collectHeadings>
 }
 
 type DocData = DocDataPage[]
 
-export function getDocsData(docs: Repository['docs']):DocData | undefined {
+export function getDocsData(docs: Repository['docs']): DocData | undefined {
   return docs?.map((doc, i) => {
     const content = getMdContent(doc?.content, config)
     const headings = collectHeadings(content)
@@ -51,7 +54,7 @@ export function getDocsData(docs: Repository['docs']):DocData | undefined {
     const path = `docs/${id}`
 
     const subpaths = headings
-      .map((heading):DocDataPageHash | null => {
+      .map((heading): DocDataPageHash | null => {
         if (heading.level === 3 && heading.id && heading.title) {
           return {
             path: `${path}#${heading.id}`,
@@ -63,7 +66,10 @@ export function getDocsData(docs: Repository['docs']):DocData | undefined {
 
         return null
       })
-      .filter((heading:DocDataPageHash | null):heading is DocDataPageHash => !!heading)
+      .filter(
+        (heading: DocDataPageHash | null): heading is DocDataPageHash =>
+          !!heading
+      )
 
     return {
       path,
@@ -98,16 +104,22 @@ function AppInternal() {
   const { appName: name, clusterId } = useParams()
   const { clusters } = useContext(ClustersContext)
   const cluster = clusters.find(({ id }) => id === clusterId)
-  const { data, loading } = useQuery<{repository: Repository}>(REPO_Q, { variables: { name } })
-  const breadcrumbs = useMemo(() => [
-    CLUSTERS_ROOT_CRUMB,
-    { label: `${cluster?.name}`, url: `/clusters/${clusterId}` },
-    { label: `${name}`, url: `/apps/${clusterId}/${name}` },
-  ],
-  [cluster?.name, clusterId, name])
+  const { data, loading } = useQuery<{ repository: Repository }>(REPO_Q, {
+    variables: { name },
+  })
+  const breadcrumbs = useMemo(
+    () => [
+      CLUSTERS_ROOT_CRUMB,
+      { label: `${cluster?.name}`, url: `/clusters/${clusterId}` },
+      { label: `${name}`, url: `/apps/${clusterId}/${name}` },
+    ],
+    [cluster?.name, clusterId, name]
+  )
 
-  const docs = useMemo(() => getDocsData(data?.repository?.docs),
-    [data?.repository?.docs])
+  const docs = useMemo(
+    () => getDocsData(data?.repository?.docs),
+    [data?.repository?.docs]
+  )
 
   useSetBreadcrumbs(breadcrumbs)
 
@@ -140,9 +152,7 @@ function AppInternal() {
           marginLeft="large"
           marginTop="large"
         >
-          <AppSidenav
-            docs={docs}
-          />
+          <AppSidenav docs={docs} />
         </ResponsiveLayoutSidenavContainer>
         <Flex
           grow={1}

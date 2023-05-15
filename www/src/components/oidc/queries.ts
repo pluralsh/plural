@@ -47,12 +47,16 @@ export const GET_OIDC_CONSENT = gql`
 
 export const ACCEPT_LOGIN = gql`
   mutation AcceptLogin($challenge: String!) {
-    acceptLogin(challenge: $challenge) { redirectTo }
+    acceptLogin(challenge: $challenge) {
+      redirectTo
+    }
   }
 `
 
 export const OAUTH_CONSENT = gql`
   mutation Consent($challenge: String!, $scopes: [String]) {
-    oauthConsent(challenge: $challenge, scopes: $scopes) { redirectTo }
+    oauthConsent(challenge: $challenge, scopes: $scopes) {
+      redirectTo
+    }
   }
 `

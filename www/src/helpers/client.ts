@@ -27,7 +27,7 @@ export function buildClient(fetchToken) {
     delay: { initial: 200 },
     attempts: {
       max: Infinity,
-      retryIf: error => !!error && !!fetchToken(),
+      retryIf: (error) => !!error && !!fetchToken(),
     },
   })
 
@@ -35,7 +35,9 @@ export function buildClient(fetchToken) {
     const token = fetchToken()
 
     return {
-      headers: token ? { ...headers, authorization: `Bearer ${token}` } : headers,
+      headers: token
+        ? { ...headers, authorization: `Bearer ${token}` }
+        : headers,
     }
   })
 
@@ -59,16 +61,18 @@ export function buildClient(fetchToken) {
 
   const socketLink = createAbsintheSocketLink(absintheSocket)
 
-  const splitLink = split(({ query }) => {
-    const definition = getMainDefinition(query)
+  const splitLink = split(
+    ({ query }) => {
+      const definition = getMainDefinition(query)
 
-    return (
-      definition.kind === 'OperationDefinition'
-        && definition.operation === 'subscription'
-    )
-  },
-  socketLink,
-  retryLink.concat(resetToken).concat(httpLink),)
+      return (
+        definition.kind === 'OperationDefinition' &&
+        definition.operation === 'subscription'
+      )
+    },
+    socketLink,
+    retryLink.concat(resetToken).concat(httpLink)
+  )
 
   const client = new ApolloClient({
     link: authLink.concat(splitLink),
@@ -91,4 +95,3 @@ export function buildClient(fetchToken) {
 }
 
 export const { socket, client } = buildClient(fetchToken)
-

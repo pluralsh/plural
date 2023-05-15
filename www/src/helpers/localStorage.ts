@@ -4,7 +4,8 @@ import { LocalStorageKeys } from '../constants'
 
 import { wipeToken } from './authentication'
 
-export const ONBOARDING_CHECKLIST_LOCAL_STORAGE_KEY = LocalStorageKeys.OnboardingChecklist
+export const ONBOARDING_CHECKLIST_LOCAL_STORAGE_KEY =
+  LocalStorageKeys.OnboardingChecklist
 export enum ONBOARDING_CHECKLIST_STATE {
   HIDDEN = 'HIDDEN',
   REAPPEAR = 'REAPPEAR',
@@ -32,14 +33,22 @@ function clearLocalStorage(): void {
 }
 
 export function isOnboardingChecklistHidden(): boolean {
-  return localStorage.getItem(LocalStorageKeys.OnboardingChecklist) === ONBOARDING_CHECKLIST_STATE.HIDDEN
+  return (
+    localStorage.getItem(LocalStorageKeys.OnboardingChecklist) ===
+    ONBOARDING_CHECKLIST_STATE.HIDDEN
+  )
 }
 
 export function shouldOnboardingChecklistReappear(): boolean {
-  return localStorage.getItem(LocalStorageKeys.OnboardingChecklist) === ONBOARDING_CHECKLIST_STATE.REAPPEAR
+  return (
+    localStorage.getItem(LocalStorageKeys.OnboardingChecklist) ===
+    ONBOARDING_CHECKLIST_STATE.REAPPEAR
+  )
 }
 
-export function setOnboardingChecklistState(state: ONBOARDING_CHECKLIST_STATE): void {
+export function setOnboardingChecklistState(
+  state: ONBOARDING_CHECKLIST_STATE
+): void {
   localStorage.setItem(LocalStorageKeys.OnboardingChecklist, state)
 }
 

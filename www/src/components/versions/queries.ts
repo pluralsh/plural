@@ -6,7 +6,9 @@ export const UPDATE_VERSION = gql`
   mutation UpdateVersion($id: ID!, $attributes: VersionAttributes!) {
     updateVersion(id: $id, attributes: $attributes) {
       ...VersionFragment
-      tags { ...VersionTagFragment }
+      tags {
+        ...VersionTagFragment
+      }
     }
   }
   ${VersionFragment}

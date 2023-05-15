@@ -10,9 +10,17 @@ import { SlaForm } from './CreatePlan'
 import { UPDATE_PLAN_ATTRS } from './queries'
 
 export function UpdatePlanForm({ plan: { id, serviceLevels } }: any) {
-  const [attributes, setAttributes] = useState({ serviceLevels: serviceLevels.map(prune) })
-  const [mutation, { loading }] = useMutation(UPDATE_PLAN_ATTRS, { variables: { id, attributes } })
-  const [serviceLevel, setServiceLevel] = useState({ minSeverity: 0, maxSeverity: 3, responseTime: 30 })
+  const [attributes, setAttributes] = useState({
+    serviceLevels: serviceLevels.map(prune),
+  })
+  const [mutation, { loading }] = useMutation(UPDATE_PLAN_ATTRS, {
+    variables: { id, attributes },
+  })
+  const [serviceLevel, setServiceLevel] = useState({
+    minSeverity: 0,
+    maxSeverity: 3,
+    responseTime: 30,
+  })
 
   return (
     <Box fill>
@@ -31,7 +39,12 @@ export function UpdatePlanForm({ plan: { id, serviceLevels } }: any) {
         <SecondaryButton
           label="Add service level"
           round="xsmall"
-          onClick={() => setAttributes({ ...attributes, serviceLevels: [...attributes.serviceLevels, serviceLevel] })}
+          onClick={() =>
+            setAttributes({
+              ...attributes,
+              serviceLevels: [...attributes.serviceLevels, serviceLevel],
+            })
+          }
         />
         <Button
           loading={loading}

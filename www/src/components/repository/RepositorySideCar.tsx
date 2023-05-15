@@ -14,7 +14,7 @@ import { ProvidersSidecar, RecipeSubset } from '../utils/recipeHelpers'
 
 import { RepositoryActions } from './misc'
 
-export const SidecarButton = forwardRef(({ ...props }:ButtonProps, ref) => (
+export const SidecarButton = forwardRef(({ ...props }: ButtonProps, ref) => (
   <Button
     small
     tertiary
@@ -72,7 +72,9 @@ function ResourcesSidecar() {
 
 export function RepositorySideCar(props: any) {
   const repository = useRepositoryContext()
-  const recipes = repository?.recipes?.filter(recipe => !!recipe) as RecipeSubset[]
+  const recipes = repository?.recipes?.filter(
+    (recipe) => !!recipe
+  ) as RecipeSubset[]
 
   return (
     <Flex

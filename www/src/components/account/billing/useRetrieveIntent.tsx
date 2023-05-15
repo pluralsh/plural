@@ -3,7 +3,10 @@ import { useStripe } from '@stripe/react-stripe-js'
 import { PaymentIntent, SetupIntent, StripeError } from '@stripe/stripe-js'
 import { useEffect, useState } from 'react'
 
-import { namedOperations, useDefaultPaymentMethodMutation } from '../../../generated/graphql'
+import {
+  namedOperations,
+  useDefaultPaymentMethodMutation,
+} from '../../../generated/graphql'
 
 type CombinedError = StripeError | Error
 
@@ -38,9 +41,7 @@ function useRetrieveIntent(props: BaseProps): {
   intent?: SetupIntent | PaymentIntent
   error?: CombinedError | undefined
 } {
-  const {
-    version, clientSecret, onComplete, onError,
-  } = props
+  const { version, clientSecret, onComplete, onError } = props
   const [error, setError] = useState<CombinedError | undefined>()
   const [intent, setIntent] = useState<SetupIntent | PaymentIntent>()
   const [makeDefaultMutation] = useDefaultPaymentMethodMutation({
@@ -82,8 +83,7 @@ function useRetrieveIntent(props: BaseProps): {
 
             resIntent = result.setupIntent
             resError = result.error
-          }
-          else {
+          } else {
             const result = await stripe.retrievePaymentIntent(clientSecret)
 
             resIntent = result.paymentIntent
@@ -97,8 +97,7 @@ function useRetrieveIntent(props: BaseProps): {
           if (version === 'setup') {
             setIntent(resIntent)
           }
-        }
-        catch (e) {
+        } catch (e) {
           setError(e as Error)
         }
 
@@ -106,7 +105,7 @@ function useRetrieveIntent(props: BaseProps): {
           cancelled = true
         }
       }
-    }())
+    })()
   }, [clientSecret, makeDefaultMutation, stripe, version])
 
   return { error, intent }

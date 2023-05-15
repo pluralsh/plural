@@ -24,13 +24,13 @@ function Icon({ icon, darkIcon }: any) {
 
   return (
     <IconFrame
-      icon={(
+      icon={
         <img
           src={dark ? darkIcon || icon : icon}
           width="48px"
           height="48px"
         />
-      )}
+      }
       width="64px"
       height="64px"
       type="floating"
@@ -47,7 +47,10 @@ export function OAuthConsent() {
   const repository = data?.oidcConsent?.repository
   const consent = data?.oidcConsent?.consent
   const [mutation, { loading, error }] = useMutation(OAUTH_CONSENT, {
-    variables: { challenge, scopes: consent?.requestedScope || ['profile', 'openid'] },
+    variables: {
+      challenge,
+      scopes: consent?.requestedScope || ['profile', 'openid'],
+    },
     onCompleted: ({ oauthConsent: { redirectTo } }) => {
       window.location = redirectTo
     },
@@ -106,15 +109,16 @@ export function OAuthConsent() {
             title1
             size="medium"
             textAlign="center"
-          >{StartCase(repository.name)} requires access
+          >
+            {StartCase(repository.name)} requires access
           </Span>
           <Span
             body1
             color="text-light"
             textAlign="center"
-          >Click "Allow" below to allow access to your profile.
+          >
+            Click "Allow" below to allow access to your profile.
           </Span>
-
         </Flex>
         <Flex
           gap="small"
@@ -140,11 +144,13 @@ export function OAuthConsent() {
             caption
             color="text-xlight"
             textAlign="center"
-          >You are currently signed in as {userData?.me?.email}.&nbsp;
+          >
+            You are currently signed in as {userData?.me?.email}.&nbsp;
             <A
               inline
               onClick={logout}
-            >Wrong account?
+            >
+              Wrong account?
             </A>
           </Span>
         </Flex>

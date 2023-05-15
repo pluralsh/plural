@@ -22,7 +22,8 @@ import LoadingIndicator from '../utils/LoadingIndicator'
 
 import { ListItem } from './ListItem'
 
-const TOOLTIP = 'Public keys are used to share access to an encrypted repository.'
+const TOOLTIP =
+  'Public keys are used to share access to an encrypted repository.'
 
 function PublicKey({ pubkey: key, first, last }: any) {
   const [confirm, setConfirm] = useState(false)
@@ -115,29 +116,34 @@ export function PublicKeys() {
         </Tooltip>
       </PageTitle>
       <Box fill>
-        {edges?.length
-          ? (
-            <StandardScroller
-              listRef={listRef}
-              setListRef={setListRef}
-              items={edges}
-              placeholder={Placeholder}
-              mapper={({ node }, { prev, next }) => (
-                <PublicKey
-                  key={node.id}
-                  pubkey={node}
-                  first={isEmpty(prev.node)}
-                  last={isEmpty(next.node)}
-                />
-              )}
-              loading={loading}
-              hasNextPage={pageInfo.hasNextPage}
-              loadNextPage={pageInfo.hasNextPage && fetchMore({
+        {edges?.length ? (
+          <StandardScroller
+            listRef={listRef}
+            setListRef={setListRef}
+            items={edges}
+            placeholder={Placeholder}
+            mapper={({ node }, { prev, next }) => (
+              <PublicKey
+                key={node.id}
+                pubkey={node}
+                first={isEmpty(prev.node)}
+                last={isEmpty(next.node)}
+              />
+            )}
+            loading={loading}
+            hasNextPage={pageInfo.hasNextPage}
+            loadNextPage={
+              pageInfo.hasNextPage &&
+              fetchMore({
                 variables: { cursor: pageInfo.endCursor },
-                updateQuery: (prev, { fetchMoreResult: { publicKeys } }) => extendConnection(prev, publicKeys, 'publicKeys'),
-              })}
-            />
-          ) : (<Span>You do not have any public keys yet.</Span>)}
+                updateQuery: (prev, { fetchMoreResult: { publicKeys } }) =>
+                  extendConnection(prev, publicKeys, 'publicKeys'),
+              })
+            }
+          />
+        ) : (
+          <Span>You do not have any public keys yet.</Span>
+        )}
       </Box>
     </Div>
   )

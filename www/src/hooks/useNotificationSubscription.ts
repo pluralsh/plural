@@ -8,17 +8,23 @@ export function useNotificationSubscription() {
   const client = useApolloClient()
 
   useSubscription(NOTIF_SUB, {
-    onSubscriptionData: ({ subscriptionData: { data: { notification } } }) => {
-      const { incident: { id } } = notification
+    onSubscriptionData: ({
+      subscriptionData: {
+        data: { notification },
+      },
+    }) => {
+      const {
+        incident: { id },
+      } = notification
 
       try {
         updateCache(client, {
           query: NOTIFICATIONS_Q,
           variables: { incidentId: id },
-          update: prev => appendConnection(prev, notification, 'notifications'),
+          update: (prev) =>
+            appendConnection(prev, notification, 'notifications'),
         })
-      }
-      catch (error) {
+      } catch (error) {
         //
       }
 
@@ -26,10 +32,10 @@ export function useNotificationSubscription() {
         updateCache(client, {
           query: NOTIFICATIONS_Q,
           variables: {},
-          update: prev => appendConnection(prev, notification, 'notifications'),
+          update: (prev) =>
+            appendConnection(prev, notification, 'notifications'),
         })
-      }
-      catch (error) {
+      } catch (error) {
         //
       }
 
@@ -37,7 +43,10 @@ export function useNotificationSubscription() {
         id: `Incident:${id}`,
         fragment: IncidentFragment,
         fragmentName: 'IncidentFragment',
-        update: ({ notificationCount, ...rest }) => ({ ...rest, notificationCount: notificationCount + 1 }),
+        update: ({ notificationCount, ...rest }) => ({
+          ...rest,
+          notificationCount: notificationCount + 1,
+        }),
       })
     },
   })

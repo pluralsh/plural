@@ -5,24 +5,35 @@ import styled from 'styled-components'
 
 import { UnstyledLink } from './Link'
 
-export const LinkTabWrap = styled(forwardRef(({
-  className, active, vertical, children, textValue: _textValue, subTab: _, ...props
-}, ref) => (
-  <UnstyledLink
-    ref={ref as any}
-    className={className}
-    // @ts-expect-error
-    $extendStyle={{ display: 'block' }}
-    {...props}
-  >
-    {cloneElement(Children.only(children), {
-      active,
-      vertical,
-    })}
-  </UnstyledLink>
-)))(({
-  theme, vertical, subTab, $extendStyle,
-}) => ({
+export const LinkTabWrap = styled(
+  forwardRef(
+    (
+      {
+        className,
+        active,
+        vertical,
+        children,
+        textValue: _textValue,
+        subTab: _,
+        ...props
+      },
+      ref
+    ) => (
+      <UnstyledLink
+        ref={ref as any}
+        className={className}
+        // @ts-expect-error
+        $extendStyle={{ display: 'block' }}
+        {...props}
+      >
+        {cloneElement(Children.only(children), {
+          active,
+          vertical,
+        })}
+      </UnstyledLink>
+    )
+  )
+)(({ theme, vertical, subTab, $extendStyle }) => ({
   ...(!vertical ? { marginRight: theme.spacing.xsmall } : {}),
   ...(vertical ? { width: '100%' } : {}),
   ...(subTab ? { borderRadius: theme.borderRadiuses.medium } : {}),
@@ -42,14 +53,15 @@ export function Tab({ name, setTab, selected }: any) {
       className={`installation-tab${active ? ' selected' : ' unselected'}`}
       pad="small"
       focusIndicator={false}
-      border={active ? { ...BORDER_ATTRS, color: 'brand' } as any : undefined}
+      border={active ? ({ ...BORDER_ATTRS, color: 'brand' } as any) : undefined}
       hoverIndicator="light-2"
       onClick={active ? undefined : () => setTab(name)}
     >
       <Text
         size="small"
         weight={500}
-      >{name}
+      >
+        {name}
       </Text>
     </Box>
   )
@@ -78,9 +90,5 @@ export function Tabs({ children }: any) {
 }
 
 export function TabContent({ children }: any) {
-  return (
-    <Box className="installation-container">
-      {children}
-    </Box>
-  )
+  return <Box className="installation-container">{children}</Box>
 }

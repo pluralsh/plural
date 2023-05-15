@@ -2,17 +2,16 @@ import { useQuery } from '@apollo/client'
 import { Div, Flex } from 'honorable'
 import isEmpty from 'lodash/isEmpty'
 import { EmptyState, PageTitle, SearchIcon } from '@pluralsh/design-system'
-import {
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 
 import { Placeholder } from '../utils/Placeholder'
 import ListInput from '../utils/ListInput'
 import { List, ListItem } from '../utils/List'
-import { extendConnection, removeConnection, updateCache } from '../../utils/graphql'
+import {
+  extendConnection,
+  removeConnection,
+  updateCache,
+} from '../../utils/graphql'
 import { StandardScroller } from '../utils/SmoothScroller'
 import LoadingIndicator from '../utils/LoadingIndicator'
 
@@ -37,16 +36,17 @@ function Header({ q, setQ }: any) {
   )
 }
 
-function ServiceAccountsInner({
-  q, data, loading, fetchMore,
-}: any) {
+function ServiceAccountsInner({ q, data, loading, fetchMore }: any) {
   const [listRef, setListRef] = useState<any>(null)
-  const update = useCallback((cache, { data: { deleteUser } }) => updateCache(cache, {
-    query: USERS_Q,
-    variables: { q, serviceAccount: true },
-    update: prev => removeConnection(prev, deleteUser, 'users'),
-  }),
-  [q])
+  const update = useCallback(
+    (cache, { data: { deleteUser } }) =>
+      updateCache(cache, {
+        query: USERS_Q,
+        variables: { q, serviceAccount: true },
+        update: (prev) => removeConnection(prev, deleteUser, 'users'),
+      }),
+    [q]
+  )
 
   const [dataCache, setDataCache] = useState(data)
 
@@ -82,11 +82,14 @@ function ServiceAccountsInner({
               />
             </ListItem>
           )}
-          loadNextPage={() => pageInfo.hasNextPage
-            && fetchMore({
+          loadNextPage={() =>
+            pageInfo.hasNextPage &&
+            fetchMore({
               variables: { cursor: pageInfo.endCursor },
-              updateQuery: (prev, { fetchMoreResult: { users } }) => extendConnection(prev, users, 'users'),
-            })}
+              updateQuery: (prev, { fetchMoreResult: { users } }) =>
+                extendConnection(prev, users, 'users'),
+            })
+          }
           hasNextPage={pageInfo.hasNextPage}
           loading={loading}
           placeholder={Placeholder}
@@ -113,7 +116,8 @@ export function ServiceAccounts() {
     fetchPolicy: 'cache-and-network',
   })
   const { availableFeatures } = useContext(SubscriptionContext)
-  const isAvailable = !!availableFeatures?.userManagement || !isEmpty(data?.users?.edges)
+  const isAvailable =
+    !!availableFeatures?.userManagement || !isEmpty(data?.users?.edges)
 
   return (
     <Flex

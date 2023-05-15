@@ -1,10 +1,5 @@
 import { Div, Flex, Text } from 'honorable'
-import {
-  useCallback,
-  useContext,
-  useMemo,
-  useState,
-} from 'react'
+import { useCallback, useContext, useMemo, useState } from 'react'
 import {
   Button,
   Callout,
@@ -22,10 +17,12 @@ import { OnboardingContext } from '../../context/onboarding'
 
 const providerToLogo = {
   github: <GitHubLogoIcon size={40} />,
-  gitlab: <GitLabLogoIcon
-    size={40}
-    fullColor
-  />,
+  gitlab: (
+    <GitLabLogoIcon
+      size={40}
+      fullColor
+    />
+  ),
 }
 
 const providerToDisplayName = {
@@ -42,10 +39,19 @@ function ProviderSelection({ data }) {
   const { save } = useContextStorage()
   const [expanded, setExpanded] = useState(false)
 
-  const isSelected = useMemo(() => !!context?.scm?.provider, [context?.scm?.provider])
+  const isSelected = useMemo(
+    () => !!context?.scm?.provider,
+    [context?.scm?.provider]
+  )
 
-  const onBack = useCallback(() => setSectionState(ConfigureCloudSectionState.CloudSelection), [setSectionState])
-  const onNext = useCallback(() => setSectionState(ConfigureCloudSectionState.RepositoryConfiguration), [setSectionState])
+  const onBack = useCallback(
+    () => setSectionState(ConfigureCloudSectionState.CloudSelection),
+    [setSectionState]
+  )
+  const onNext = useCallback(
+    () => setSectionState(ConfigureCloudSectionState.RepositoryConfiguration),
+    [setSectionState]
+  )
 
   return (
     <Flex
@@ -59,11 +65,19 @@ function ProviderSelection({ data }) {
             key={provider}
             selected={context?.scm?.provider === provider}
             onClick={() => {
-              save({ ...context, section: { ...context?.section, state: ConfigureCloudSectionState.RepositoryConfiguration } })
+              save({
+                ...context,
+                section: {
+                  ...context?.section,
+                  state: ConfigureCloudSectionState.RepositoryConfiguration,
+                },
+              })
 
               // HACK to navigate the onboarding on staging environments
               if (import.meta.env.MODE !== 'production' && devToken) {
-                (window as Window).location = `/oauth/callback/${provider.toLowerCase()}/shell?code=abcd`
+                ;(
+                  window as Window
+                ).location = `/oauth/callback/${provider.toLowerCase()}/shell?code=abcd`
 
                 return
               }
@@ -84,7 +98,8 @@ function ProviderSelection({ data }) {
                 bold
                 marginTop="medium"
               >
-                Create a {providerToDisplayName[provider.toLowerCase()] || null} repository
+                Create a {providerToDisplayName[provider.toLowerCase()] || null}{' '}
+                repository
               </Text>
             </Flex>
           </OnboardingCardButton>
@@ -99,7 +114,10 @@ function ProviderSelection({ data }) {
           expanded={expanded}
           onExpand={setExpanded}
         >
-          Plural manages all cluster configurations via Git, and will provision a GitHub repository on your behalf. This repository is set up using scoped deploy keys to store the state of your workspace, and no oauth credentials are persisted.
+          Plural manages all cluster configurations via Git, and will provision
+          a GitHub repository on your behalf. This repository is set up using
+          scoped deploy keys to store the state of your workspace, and no oauth
+          credentials are persisted.
         </Callout>
       </div>
 
@@ -117,7 +135,8 @@ function ProviderSelection({ data }) {
               mutation()
               navigate('/overview/clusters')
             }}
-          >Skip onboarding
+          >
+            Skip onboarding
           </Button>
         )}
         <Flex
@@ -129,13 +148,15 @@ function ProviderSelection({ data }) {
             data-ph-id="back-from-repo-select"
             secondary
             onClick={() => onBack()}
-          >Back
+          >
+            Back
           </Button>
           <Button
             data-ph-id="cont-from-repo-select"
             disabled={!isSelected}
             onClick={() => onNext()}
-          >Continue
+          >
+            Continue
           </Button>
         </Flex>
       </Flex>

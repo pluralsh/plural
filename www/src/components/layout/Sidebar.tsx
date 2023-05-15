@@ -7,14 +7,7 @@ import {
   useState,
 } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import {
-  Avatar,
-  Flex,
-  Menu,
-  MenuItem,
-  Span,
-  useOutsideClick,
-} from 'honorable'
+import { Avatar, Flex, Menu, MenuItem, Span, useOutsideClick } from 'honorable'
 import {
   ArrowTopRightIcon,
   BellIcon,
@@ -96,11 +89,13 @@ const MENU_ITEMS: MenuItem[] = [
   },
 ]
 
-function isActiveMenuItem({ path, pathRegexp }: Pick<MenuItem, 'path' | 'pathRegexp'>,
-  currentPath) {
+function isActiveMenuItem(
+  { path, pathRegexp }: Pick<MenuItem, 'path' | 'pathRegexp'>,
+  currentPath
+) {
   return (
-    (path === '/' ? currentPath === path : currentPath.startsWith(path))
-    || (pathRegexp && (currentPath.match(pathRegexp)?.length ?? 0 > 0))
+    (path === '/' ? currentPath === path : currentPath.startsWith(path)) ||
+    (pathRegexp && (currentPath.match(pathRegexp)?.length ?? 0 > 0))
   )
 }
 
@@ -147,21 +142,24 @@ function Sidebar(props: ComponentProps<typeof DSSidebar>) {
   const menuRef = useRef<HTMLDivElement>(null)
   const [isMenuOpen, setIsMenuOpened] = useState(false)
   const [collapsed, _setCollapsed] = useState(true)
-  const [isNotificationsPanelOpen, setIsNotificationsPanelOpen]
-    = useState(false)
-  const [isCreatePublisherModalOpen, setIsCreatePublisherModalOpen]
-    = useState(false)
+  const [isNotificationsPanelOpen, setIsNotificationsPanelOpen] =
+    useState(false)
+  const [isCreatePublisherModalOpen, setIsCreatePublisherModalOpen] =
+    useState(false)
   const sidebarWidth = collapsed ? 65 : 256 - 32 // 64 + 1px border
   const previousUserData = getPreviousUserData()
   const theme = useContext(ThemeContext)
   const me = useContext(CurrentUserContext)
   const menuItems = MENU_ITEMS
   const { pathname } = useLocation()
-  const active = useCallback((menuItem: Parameters<typeof isActiveMenuItem>[0]) => isActiveMenuItem(menuItem, pathname),
-    [pathname])
+  const active = useCallback(
+    (menuItem: Parameters<typeof isActiveMenuItem>[0]) =>
+      isActiveMenuItem(menuItem, pathname),
+    [pathname]
+  )
   const notificationsCount = useNotificationsCount()
 
-  useOutsideClick(menuRef, event => {
+  useOutsideClick(menuRef, (event) => {
     if (!menuItemRef.current?.contains(event.target as any)) {
       setIsMenuOpened(false)
     }
@@ -249,9 +247,9 @@ function Sidebar(props: ComponentProps<typeof DSSidebar>) {
             label="Notifications"
             tooltip="Notifications"
             className="sidebar-notifications"
-            onClick={event => {
+            onClick={(event) => {
               event.stopPropagation()
-              setIsNotificationsPanelOpen(isOpen => !isOpen)
+              setIsNotificationsPanelOpen((isOpen) => !isOpen)
             }}
             backgroundColor={
               isNotificationsPanelOpen
@@ -262,26 +260,26 @@ function Sidebar(props: ComponentProps<typeof DSSidebar>) {
             height={32}
           >
             <BellIcon />
-            {typeof notificationsCount === 'number'
-              && notificationsCount > 0 && (
-              <Flex
-                color="white"
-                backgroundColor="error"
-                borderRadius="100%"
-                fontSize={11}
-                align="start"
-                justify="center"
-                height={15}
-                width={15}
-                position="absolute"
-                left={16}
-                top={2}
-              >
-                <Span marginTop={-2}>
-                  {notificationsCount > 99 ? '!' : notificationsCount}
-                </Span>
-              </Flex>
-            )}
+            {typeof notificationsCount === 'number' &&
+              notificationsCount > 0 && (
+                <Flex
+                  color="white"
+                  backgroundColor="error"
+                  borderRadius="100%"
+                  fontSize={11}
+                  align="start"
+                  justify="center"
+                  height={15}
+                  width={15}
+                  position="absolute"
+                  left={16}
+                  top={2}
+                >
+                  <Span marginTop={-2}>
+                    {notificationsCount > 99 ? '!' : notificationsCount}
+                  </Span>
+                </Flex>
+              )}
           </SidebarItem>
           {/* ---
           USER
@@ -293,7 +291,7 @@ function Sidebar(props: ComponentProps<typeof DSSidebar>) {
             active={isMenuOpen}
             clickable
             collapsed
-            onClick={() => setIsMenuOpened(x => !x)}
+            onClick={() => setIsMenuOpened((x) => !x)}
             userSelect="none"
           >
             <Avatar

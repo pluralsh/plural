@@ -1,10 +1,4 @@
-import {
-  ReactNode,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from 'react'
+import { ReactNode, useCallback, useContext, useEffect, useState } from 'react'
 import { Box } from 'grommet'
 import { Button, Modal, ValidatedInput } from '@pluralsh/design-system'
 
@@ -37,27 +31,32 @@ export function CreateGroup({ q }: any) {
   const [mutation, { loading, error }] = useCreateGroupMutation({
     variables: { attributes: { name, description } },
     onCompleted: () => resetAndClose(),
-    update: (cache, { data }) => updateCache(cache, {
-      query: GroupsDocument,
-      variables: { q },
-      update: prev => appendConnection(prev, data?.createGroup, 'groups'),
-    }),
+    update: (cache, { data }) =>
+      updateCache(cache, {
+        query: GroupsDocument,
+        variables: { q },
+        update: (prev) => appendConnection(prev, data?.createGroup, 'groups'),
+      }),
   })
 
   useEffect(() => {
-    setErrorMsg(error && (
-      <GqlError
-        header="Problem creating group"
-        error={error}
-      />
-    ))
+    setErrorMsg(
+      error && (
+        <GqlError
+          header="Problem creating group"
+          error={error}
+        />
+      )
+    )
   }, [error])
 
   return (
     <>
       <Button
         secondary
-        onClick={() => (isAvailable ? setCreateModalVisible(true) : setBlockModalVisible(true))}
+        onClick={() =>
+          isAvailable ? setCreateModalVisible(true) : setBlockModalVisible(true)
+        }
       >
         Create group
       </Button>
@@ -67,7 +66,7 @@ export function CreateGroup({ q }: any) {
         header="Create group"
         open={createModalVisible}
         onClose={() => resetAndClose()}
-        actions={(
+        actions={
           <>
             <Button
               secondary
@@ -84,7 +83,7 @@ export function CreateGroup({ q }: any) {
               Create
             </Button>
           </>
-        )}
+        }
       >
         <Box
           width="50vw"

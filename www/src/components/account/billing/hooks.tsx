@@ -1,7 +1,10 @@
 import { useStripe } from '@stripe/react-stripe-js'
 import { PaymentIntentResult } from '@stripe/stripe-js'
 
-import { namedOperations, useCreatePlatformSubscriptionMutation } from '../../../generated/graphql'
+import {
+  namedOperations,
+  useCreatePlatformSubscriptionMutation,
+} from '../../../generated/graphql'
 import { host } from '../../../helpers/hostname'
 
 export const CONFIRM_RETURN_PATH = '/account/billing?confirmUpgrade=1'
@@ -22,9 +25,9 @@ export function useUpgradeSubscription({
   return useCreatePlatformSubscriptionMutation({
     variables,
     refetchQueries: [namedOperations.Query.Subscription],
-    onCompleted: result => {
-      const clientSecret
-        = result.createPlatformSubscription?.latestInvoice?.paymentIntent
+    onCompleted: (result) => {
+      const clientSecret =
+        result.createPlatformSubscription?.latestInvoice?.paymentIntent
           ?.clientSecret
 
       if (clientSecret) {
@@ -38,16 +41,14 @@ export function useUpgradeSubscription({
               return_url: `${host()}${nextPath}`,
             },
           } as any)
-          .then(result => {
+          .then((result) => {
             if (result.error) {
               onFailure(result)
-            }
-            else {
+            } else {
               onSuccess(result, nextPath)
             }
           })
-      }
-      else {
+      } else {
         fallback()
       }
     },

@@ -1,6 +1,10 @@
 import { gql } from '@apollo/client'
 
-import { FileContentFragment, InstallationFragment, RepoFragment } from '../../models/repo'
+import {
+  FileContentFragment,
+  InstallationFragment,
+  RepoFragment,
+} from '../../models/repo'
 import { OIDCProvider } from '../../models/oauth'
 
 export const REPO_Q = gql`
@@ -13,7 +17,9 @@ export const REPO_Q = gql`
       upgradeChannels
       installation {
         ...InstallationFragment
-        oidcProvider { ...OIDCProvider }
+        oidcProvider {
+          ...OIDCProvider
+        }
       }
     }
   }

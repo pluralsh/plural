@@ -12,8 +12,8 @@ import { InfoPanel } from '../utils/InfoPanel'
 import Prop from '../utils/Prop'
 
 type ClusterMetadataPanelProps = {
-  cluster: Cluster,
-  open: boolean,
+  cluster: Cluster
+  open: boolean
   setOpen: Dispatch<boolean>
 }
 
@@ -96,7 +96,9 @@ export default function ClusterMetadataPanel({
           >
             <span>{moment(cluster.pingedAt).fromNow()}</span>
           </Tooltip>
-        ) : '-'}
+        ) : (
+          '-'
+        )}
       </Prop>
       <Prop
         title="Docs"

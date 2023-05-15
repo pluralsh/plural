@@ -20,25 +20,27 @@ const DIRECTORY = [
 export function AuditDirectory() {
   const { pathname } = useLocation()
   const tabStateRef = useRef<any>(null)
-  const currentTab = DIRECTORY.find(tab => pathname?.startsWith(tab.path))
+  const currentTab = DIRECTORY.find((tab) => pathname?.startsWith(tab.path))
 
   const params = useParams()
   const subPath = params?.['*']?.split?.('/')[0]
-  const breadcrumbs = useMemo(() => [
-    {
-      label: 'audits',
-      url: '/audits',
-    },
-    ...(subPath
-      ? [
-        {
-          label: subPath,
-          url: `/audits/${subPath}`,
-        },
-      ]
-      : []),
-  ],
-  [subPath])
+  const breadcrumbs = useMemo(
+    () => [
+      {
+        label: 'audits',
+        url: '/audits',
+      },
+      ...(subPath
+        ? [
+            {
+              label: subPath,
+              url: `/audits/${subPath}`,
+            },
+          ]
+        : []),
+    ],
+    [subPath]
+  )
 
   useSetBreadcrumbs(breadcrumbs)
 

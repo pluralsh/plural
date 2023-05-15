@@ -33,7 +33,11 @@ import {
   WorkspaceProps,
 } from './context/types'
 
-function Onboarding({ active, children, onOnboardingFinish }: Partial<OnboardingProps>) {
+function Onboarding({
+  active,
+  children,
+  onOnboardingFinish,
+}: Partial<OnboardingProps>) {
   useDevTokenInputSecretCode()
 
   const theme = useContext(ThemeContext)
@@ -43,7 +47,11 @@ function Onboarding({ active, children, onOnboardingFinish }: Partial<Onboarding
   const { reset } = useContextStorage()
 
   useEffect(() => {
-    if (onOnboardingFinish && section?.state === CreateCloudShellSectionState.Finished) onOnboardingFinish()
+    if (
+      onOnboardingFinish &&
+      section?.state === CreateCloudShellSectionState.Finished
+    )
+      onOnboardingFinish()
   }, [onOnboardingFinish, section?.state])
 
   return (
@@ -55,10 +63,11 @@ function Onboarding({ active, children, onOnboardingFinish }: Partial<Onboarding
       overflowY="auto"
     >
       {isOnboarding && (
-        <OnboardingHeader onRestart={() => {
-          reset()
-          navigate(0)
-        }}
+        <OnboardingHeader
+          onRestart={() => {
+            reset()
+            navigate(0)
+          }}
         />
       )}
       <Flex
@@ -113,27 +122,34 @@ function OnboardingWithContext({ ...props }: OnboardingProps): ReactElement {
   const [valid, setValid] = useState<boolean>(restoredContext?.valid ?? true)
   const [cloud, setCloud] = useState<CloudProps>(restoredContext?.cloud ?? {})
   const [sections, setSections] = useState<Sections>(defaultSections())
-  const [section, setSection] = useState<Section>(sections[SectionKey.ONBOARDING_OVERVIEW]!)
-  const [workspace, setWorkspace] = useState<WorkspaceProps>(restoredContext?.workspace ?? {})
+  const [section, setSection] = useState<Section>(
+    sections[SectionKey.ONBOARDING_OVERVIEW]!
+  )
+  const [workspace, setWorkspace] = useState<WorkspaceProps>(
+    restoredContext?.workspace ?? {}
+  )
 
   // This is to make sure there is only a one-time state restore after oauth callback.
   // We should not store any sensitive data in the local storage longer than required.
   if (!IsEmpty(restoredContext)) reset()
 
-  const context = useMemo<ContextProps>(() => ({
-    scm,
-    setSCM,
-    cloud,
-    setCloud,
-    valid,
-    setValid,
-    sections,
-    setSections,
-    section,
-    setSection,
-    workspace,
-    setWorkspace,
-  }), [scm, cloud, valid, sections, section, workspace])
+  const context = useMemo<ContextProps>(
+    () => ({
+      scm,
+      setSCM,
+      cloud,
+      setCloud,
+      valid,
+      setValid,
+      sections,
+      setSections,
+      section,
+      setSection,
+      workspace,
+      setWorkspace,
+    }),
+    [scm, cloud, valid, sections, section, workspace]
+  )
 
   return (
     <OnboardingContext.Provider value={context}>

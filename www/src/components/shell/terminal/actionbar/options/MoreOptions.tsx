@@ -30,7 +30,8 @@ const MoreMenuButton = forwardRef<any, any>((props, ref) => (
     height={32}
     small
     {...props}
-  ><MoreIcon />
+  >
+    <MoreIcon />
   </Button>
 ))
 
@@ -38,14 +39,16 @@ function MoreOptions() {
   const [selected, setSelected] = useState<DialogSelection | undefined>()
   const dialog = useMemo(() => {
     switch (selected) {
-    case DialogSelection.CloudInfo:
-      return <CloudInfoModal onClose={() => setSelected(undefined)} />
-    case DialogSelection.CloudCredentials:
-      return <EditCloudCredentialsModal onClose={() => setSelected(undefined)} />
-    case DialogSelection.SyncShell:
-      return <SyncShellModal onClose={() => setSelected(undefined)} />
-    case DialogSelection.DeleteShell:
-      return <DeleteShellModal onClose={() => setSelected(undefined)} />
+      case DialogSelection.CloudInfo:
+        return <CloudInfoModal onClose={() => setSelected(undefined)} />
+      case DialogSelection.CloudCredentials:
+        return (
+          <EditCloudCredentialsModal onClose={() => setSelected(undefined)} />
+        )
+      case DialogSelection.SyncShell:
+        return <SyncShellModal onClose={() => setSelected(undefined)} />
+      case DialogSelection.DeleteShell:
+        return <DeleteShellModal onClose={() => setSelected(undefined)} />
     }
   }, [selected])
 
@@ -56,7 +59,11 @@ function MoreOptions() {
       props: {
         'data-phid': 'view-cloud-info',
         textAlign: 'start',
-        leftContent: <Flex><InfoOutlineIcon /></Flex>,
+        leftContent: (
+          <Flex>
+            <InfoOutlineIcon />
+          </Flex>
+        ),
       },
     },
     cloudCredentials: {
@@ -64,7 +71,11 @@ function MoreOptions() {
       onSelect: () => setSelected(DialogSelection.CloudCredentials),
       props: {
         'data-phid': 'view-cloud-credentials',
-        leftContent: <Flex><CloudIcon /></Flex>,
+        leftContent: (
+          <Flex>
+            <CloudIcon />
+          </Flex>
+        ),
       },
     },
     syncShell: {
@@ -72,7 +83,11 @@ function MoreOptions() {
       onSelect: () => setSelected(DialogSelection.SyncShell),
       props: {
         'data-phid': 'view-sync-locally',
-        leftContent: <Flex><DownloadIcon /></Flex>,
+        leftContent: (
+          <Flex>
+            <DownloadIcon />
+          </Flex>
+        ),
       },
     },
     deleteShell: {
@@ -80,7 +95,11 @@ function MoreOptions() {
       onSelect: () => setSelected(DialogSelection.DeleteShell),
       props: {
         'data-phid': 'view-delete-shell',
-        leftContent: <Flex><TrashCanIcon color="text-danger" /></Flex>,
+        leftContent: (
+          <Flex>
+            <TrashCanIcon color="text-danger" />
+          </Flex>
+        ),
         destructive: true,
       },
     },
@@ -89,7 +108,7 @@ function MoreOptions() {
   return (
     <>
       <Select
-        onSelectionChange={selectedKey => menuItems[selectedKey]?.onSelect()}
+        onSelectionChange={(selectedKey) => menuItems[selectedKey]?.onSelect()}
         selectedKey={null}
         width="max-content"
         placement="right"

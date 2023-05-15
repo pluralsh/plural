@@ -2,10 +2,14 @@ import { useEffect, useRef } from 'react'
 import { Div } from 'honorable'
 
 function InfiniteScroller({
-  loading = false, hasMore = false, loadMore, children, ...props
+  loading = false,
+  hasMore = false,
+  loadMore,
+  children,
+  ...props
 }: any) {
   const scrollRef = useRef<HTMLDivElement>(null)
-  const isScrollbarVisible = el => el.scrollHeight > el.clientHeight
+  const isScrollbarVisible = (el) => el.scrollHeight > el.clientHeight
 
   useEffect(() => {
     const { current } = scrollRef
@@ -18,10 +22,13 @@ function InfiniteScroller({
 
     function handleScroll(event) {
       if (
-        typeof loadMore === 'function'
-        && !loading
-        && hasMore
-        && Math.abs(event.target.scrollTop - (event.target.scrollHeight - event.target.offsetHeight)) < 32
+        typeof loadMore === 'function' &&
+        !loading &&
+        hasMore &&
+        Math.abs(
+          event.target.scrollTop -
+            (event.target.scrollHeight - event.target.offsetHeight)
+        ) < 32
       ) {
         loadMore()
       }

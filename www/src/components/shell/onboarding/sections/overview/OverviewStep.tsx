@@ -22,12 +22,15 @@ function OverviewStep({ onNext }) {
         direction="column"
         gap="large"
       >
-        <Span body2>Deploy your cluster and applications with Plural in about 30 minutes, then access it via Plural Console.&nbsp;
+        <Span body2>
+          Deploy your cluster and applications with Plural in about 30 minutes,
+          then access it via Plural Console.&nbsp;
           <A
             inline
             href="https://www.plural.sh/demo-login"
             target="_blank"
-          >View a demo environment of our Console.
+          >
+            View a demo environment of our Console.
           </A>
         </Span>
 
@@ -38,12 +41,16 @@ function OverviewStep({ onNext }) {
           <Span
             fontWeight="bold"
             body2
-          >What to expect:
+          >
+            What to expect:
           </Span>
 
           <Span>1. Configure your cloud and git credentials.</Span>
           <Span>2. Configure your cluster’s workspace.</Span>
-          <Span>3. Create your cloud shell where you can install applications. (25 minutes deploy wait time)</Span>
+          <Span>
+            3. Create your cloud shell where you can install applications. (25
+            minutes deploy wait time)
+          </Span>
         </Flex>
       </Flex>
       <Flex
@@ -60,7 +67,8 @@ function OverviewStep({ onNext }) {
               mutation()
               navigate('/overview/clusters')
             }}
-          >Skip onboarding
+          >
+            Skip onboarding
           </Button>
         )}
         <Flex
@@ -74,7 +82,8 @@ function OverviewStep({ onNext }) {
             backgroundColor="fill-two"
             startIcon={<img src={CalendarIcon} />}
             onClick={() => setCalendlyOpen(true)}
-          >Schedule personalized onboarding
+          >
+            Schedule personalized onboarding
           </Button>
           <PopupModal
             url="https://calendly.com/m_plural/30min"
@@ -85,7 +94,8 @@ function OverviewStep({ onNext }) {
           <Button
             data-phid="cont-from-onboarding-overview"
             onClick={onNext}
-          >Get started
+          >
+            Get started
           </Button>
         </Flex>
       </Flex>

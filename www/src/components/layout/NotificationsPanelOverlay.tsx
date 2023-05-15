@@ -1,9 +1,4 @@
-import {
-  Dispatch,
-  SetStateAction,
-  useMemo,
-  useRef,
-} from 'react'
+import { Dispatch, SetStateAction, useMemo, useRef } from 'react'
 import { Flex, P, useOutsideClick } from 'honorable'
 import { CloseIcon } from '@pluralsh/design-system'
 import { animated, useTransition } from 'react-spring'
@@ -22,29 +17,31 @@ const getTransitionProps = (isOpen: boolean) => ({
   leave: { opacity: 0, translateX: `${-PANEL_WIDTH}px` },
   config: isOpen
     ? {
-      mass: 0.6,
-      tension: 280,
-      velocity: 0.02,
-    }
+        mass: 0.6,
+        tension: 280,
+        velocity: 0.02,
+      }
     : {
-      mass: 0.6,
-      tension: 400,
-      velocity: 0.02,
-      restVelocity: 0.1,
-    },
+        mass: 0.6,
+        tension: 400,
+        velocity: 0.02,
+        restVelocity: 0.1,
+      },
 })
 
-const Wrapper = styled(animated.div)<{$leftOffset:number}>(({ $leftOffset, theme }) => ({
-  position: 'fixed',
-  display: 'flex',
-  alignItems: 'flex-end',
-  top: 0,
-  bottom: 0,
-  left: $leftOffset,
-  right: 0,
-  zIndex: theme.zIndexes.selectPopover - 1,
-  overflow: 'hidden',
-}))
+const Wrapper = styled(animated.div)<{ $leftOffset: number }>(
+  ({ $leftOffset, theme }) => ({
+    position: 'fixed',
+    display: 'flex',
+    alignItems: 'flex-end',
+    top: 0,
+    bottom: 0,
+    left: $leftOffset,
+    right: 0,
+    zIndex: theme.zIndexes.selectPopover - 1,
+    overflow: 'hidden',
+  })
+)
 
 const Animated = styled(animated.div)(({ theme }) => ({
   display: 'flex',
@@ -74,12 +71,10 @@ export function NotificationsPanelOverlay({
     setIsOpen(false)
   })
 
-  const transitionProps = useMemo(() => getTransitionProps(isOpen),
-    [isOpen])
+  const transitionProps = useMemo(() => getTransitionProps(isOpen), [isOpen])
   const transitions = useTransition(isOpen ? [true] : [], transitionProps)
 
-  return transitions(styles => (
-
+  return transitions((styles) => (
     <Wrapper $leftOffset={leftOffset}>
       <Animated
         style={styles}

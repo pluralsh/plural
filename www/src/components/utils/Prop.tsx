@@ -1,7 +1,10 @@
 import { Div } from 'honorable'
 
 export default function Prop({
-  children, title, margin = 'medium', ...props
+  children,
+  title,
+  margin = 'medium',
+  ...props
 }: any) {
   return (
     <Div margin={margin}>

@@ -2,12 +2,16 @@ import { createContext, useMemo } from 'react'
 import { useQuery } from '@apollo/client'
 import styled from 'styled-components'
 
-import { Cluster, RootQueryType, RootQueryTypeClustersArgs } from '../generated/graphql'
+import {
+  Cluster,
+  RootQueryType,
+  RootQueryTypeClustersArgs,
+} from '../generated/graphql'
 import LoadingIndicator from '../components/utils/LoadingIndicator'
 import { CLUSTERS } from '../components/overview/queries'
 
 type ClustersContextType = {
-  clusters: Cluster[],
+  clusters: Cluster[]
 }
 
 const ClustersContext = createContext<ClustersContextType>({
@@ -23,13 +27,18 @@ const Error = styled.div(({ theme }) => ({
 }))
 
 export function ClustersContextProvider({ children }) {
-  const { data, loading, error } = useQuery<Pick<RootQueryType, 'clusters'>, RootQueryTypeClustersArgs>(CLUSTERS, {
+  const { data, loading, error } = useQuery<
+    Pick<RootQueryType, 'clusters'>,
+    RootQueryTypeClustersArgs
+  >(CLUSTERS, {
     pollInterval: 30_000,
   })
 
   const clustersContextValue = useMemo<ClustersContextType>(() => {
-    const clusters = data?.clusters?.edges?.map(edge => edge?.node)
-      .filter((node): node is Cluster => !!node) || []
+    const clusters =
+      data?.clusters?.edges
+        ?.map((edge) => edge?.node)
+        .filter((node): node is Cluster => !!node) || []
 
     return { clusters }
   }, [data])

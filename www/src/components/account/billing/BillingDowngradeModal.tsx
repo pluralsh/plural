@@ -38,9 +38,12 @@ function BillingDowngradeModal({
   open,
   onClose,
 }: BillingDowngradeModalPropsType) {
-  const { refetch: refetchSubscription, isProPlan } = useContext(SubscriptionContext)
+  const { refetch: refetchSubscription, isProPlan } =
+    useContext(SubscriptionContext)
 
-  const [downgradeMutation, { loading }] = useMutation(DOWNGRADE_TO_FREE_PLAN_MUTATION)
+  const [downgradeMutation, { loading }] = useMutation(
+    DOWNGRADE_TO_FREE_PLAN_MUTATION
+  )
 
   const [error, setError] = useState<Error | undefined>(undefined)
 
@@ -49,7 +52,7 @@ function BillingDowngradeModal({
       .then(() => {
         refetchSubscription()
       })
-      .catch(e => {
+      .catch((e) => {
         setError(e)
       })
   }, [downgradeMutation, refetchSubscription])

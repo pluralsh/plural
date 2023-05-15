@@ -1,10 +1,4 @@
-import {
-  A,
-  Button,
-  Div,
-  Flex,
-  P,
-} from 'honorable'
+import { A, Button, Div, Flex, P } from 'honorable'
 import moment from 'moment'
 import { ReactNode, useCallback, useState } from 'react'
 import { createColumnHelper } from '@tanstack/react-table'
@@ -34,19 +28,23 @@ import {
   useKeyBackupsQuery,
 } from '../../generated/graphql'
 import { GqlError } from '../utils/Alert'
-import { mapExistingNodes, removeConnection, updateCache } from '../../utils/graphql'
+import {
+  mapExistingNodes,
+  removeConnection,
+  updateCache,
+} from '../../utils/graphql'
 import useOnOff from '../../hooks/useOnOff'
 import { ShellType, useShellType } from '../../hooks/useShellType'
 
 const columnHelper = createColumnHelper<KeyBackupFragment>()
 
-const BareUl = styled.ul(_ => ({
+const BareUl = styled.ul((_) => ({
   margin: 0,
   padding: 0,
   maxWidth: '400px',
 }))
 
-const BareLi = styled.li(_ => ({
+const BareLi = styled.li((_) => ({
   margin: 0,
   padding: 0,
   listStyle: 'none',
@@ -54,16 +52,16 @@ const BareLi = styled.li(_ => ({
 }))
 
 const columns = [
-  columnHelper.accessor(key => key.name, {
+  columnHelper.accessor((key) => key.name, {
     id: 'name',
-    cell: info => <>{info.getValue()}</>,
+    cell: (info) => <>{info.getValue()}</>,
     header: 'Name',
   }),
-  columnHelper.accessor(key => key.repositories, {
+  columnHelper.accessor((key) => key.repositories, {
     id: 'repositories',
-    cell: info => (
+    cell: (info) => (
       <BareUl>
-        {info.getValue()?.map(repo => (
+        {info.getValue()?.map((repo) => (
           <Tooltip
             placement="top-start"
             label={repo}
@@ -76,9 +74,9 @@ const columns = [
     header: 'Respositories',
     meta: { truncate: true },
   }),
-  columnHelper.accessor(key => key.digest, {
+  columnHelper.accessor((key) => key.digest, {
     id: 'digest',
-    cell: info => (
+    cell: (info) => (
       <Tooltip
         placement="top-start"
         label={info.getValue()}
@@ -89,9 +87,9 @@ const columns = [
     header: 'Digest',
     meta: { truncate: true },
   }),
-  columnHelper.accessor(key => key.insertedAt, {
+  columnHelper.accessor((key) => key.insertedAt, {
     id: 'createdOn',
-    cell: info => {
+    cell: (info) => {
       const date = moment(info.getValue())
       const formattedDate = date.format('MM/DD/YY')
       const formattedTime = date.format('h:mma')
@@ -133,11 +131,13 @@ export function DeleteKeyBackup({ name }) {
     onCompleted: () => {
       setConfirm(false)
     },
-    update: (cache, { data }) => updateCache(cache, {
-      query: KeyBackupsDocument,
-      variables: {},
-      update: prev => removeConnection(prev, data?.deleteKeyBackup, 'keyBackups'),
-    }),
+    update: (cache, { data }) =>
+      updateCache(cache, {
+        query: KeyBackupsDocument,
+        variables: {},
+        update: (prev) =>
+          removeConnection(prev, data?.deleteKeyBackup, 'keyBackups'),
+      }),
   })
   const open = useCallback(() => {
     setConfirm(true)
@@ -148,7 +148,7 @@ export function DeleteKeyBackup({ name }) {
   }, [reset])
 
   return (
-    <Div onClick={e => e.stopPropagation()}>
+    <Div onClick={(e) => e.stopPropagation()}>
       <DeleteIconButton
         onClick={open}
         textValue="Delete key backup"
@@ -163,7 +163,7 @@ export function DeleteKeyBackup({ name }) {
           open={confirm}
           submit={() => mutation()}
           title="Delete encryption key backup"
-          text={(
+          text={
             <Flex
               direction="column"
               gap="medium"
@@ -174,17 +174,14 @@ export function DeleteKeyBackup({ name }) {
               </P>
               {error && <GqlError error={error} />}
             </Flex>
-          )}
+          }
         />
       </div>
     </Div>
   )
 }
 
-const shellToHelpSuffix: Record<
-  ShellType,
-  ReactNode
-> = {
+const shellToHelpSuffix: Record<ShellType, ReactNode> = {
   cli: <>run this command in the Plural CLI on your local machine:</>,
   cloud: <>run this command inside of the cloud shell:</>,
   unknown: (
@@ -269,7 +266,9 @@ export function KeyBackups() {
     pollInterval: 10000,
   })
 
-  const keyBackups = mapExistingNodes(data?.keyBackups)?.sort((a, b) => (a.name === b.name ? 0 : a.name < b.name ? -1 : 1))
+  const keyBackups = mapExistingNodes(data?.keyBackups)?.sort((a, b) =>
+    a.name === b.name ? 0 : a.name < b.name ? -1 : 1
+  )
 
   if (error) return <GqlError error={error} />
 
@@ -278,7 +277,7 @@ export function KeyBackups() {
   return (
     <Div marginBottom="large">
       <PageTitle
-        heading={(
+        heading={
           <>
             <div>Encryption keys</div>
             <P
@@ -297,7 +296,7 @@ export function KeyBackups() {
               </A>
             </P>
           </>
-        )}
+        }
         justifyContent="flex-start"
       >
         <Flex

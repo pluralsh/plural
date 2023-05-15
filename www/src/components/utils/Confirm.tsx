@@ -35,7 +35,7 @@ export function Confirm({
       onClose={close}
       width="512px"
       portal
-      actions={(
+      actions={
         <>
           <Button
             secondary
@@ -52,7 +52,7 @@ export function Confirm({
             {label || 'Confirm'}
           </Button>
         </>
-      )}
+      }
     >
       {error ? (
         <GqlError
@@ -63,7 +63,8 @@ export function Confirm({
         <Div
           body1
           color="text"
-        >{text}
+        >
+          {text}
         </Div>
       )}
     </Modal>

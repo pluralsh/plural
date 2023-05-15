@@ -9,11 +9,14 @@ import { useAppContext } from '../../contexts/AppContext'
 import ClustersContext from '../../contexts/ClustersContext'
 
 type AppMetadataPanelProps = {
-  open: boolean,
+  open: boolean
   setOpen: Dispatch<boolean>
 }
 
-export default function AppMetadataPanel({ open, setOpen }: AppMetadataPanelProps): ReactElement | null {
+export default function AppMetadataPanel({
+  open,
+  setOpen,
+}: AppMetadataPanelProps): ReactElement | null {
   const { clusterId } = useParams()
   const { clusters } = useContext(ClustersContext)
   const cluster = clusters.find(({ id }) => id === clusterId)

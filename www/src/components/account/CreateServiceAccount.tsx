@@ -1,9 +1,4 @@
-import {
-  Dispatch,
-  useCallback,
-  useContext,
-  useState,
-} from 'react'
+import { Dispatch, useCallback, useContext, useState } from 'react'
 import { useMutation } from '@apollo/client'
 import { Box } from 'grommet'
 import { Button, Div } from 'honorable'
@@ -25,7 +20,11 @@ import SubscriptionContext from '../../contexts/SubscriptionContext'
 
 import { Confirm } from '../utils/Confirm'
 
-import { CREATE_SERVICE_ACCOUNT, UPDATE_SERVICE_ACCOUNT, USERS_Q } from './queries'
+import {
+  CREATE_SERVICE_ACCOUNT,
+  UPDATE_SERVICE_ACCOUNT,
+  USERS_Q,
+} from './queries'
 
 import { MoreMenu } from './MoreMenu'
 
@@ -56,12 +55,16 @@ function ServiceAccountForm({
       <ValidatedInput
         label="Name"
         value={attributes.name}
-        onChange={({ target: { value } }) => setAttributes({ ...attributes, name: value })}
+        onChange={({ target: { value } }) =>
+          setAttributes({ ...attributes, name: value })
+        }
       />
       <ValidatedInput
         label="Email"
         value={attributes.email}
-        onChange={({ target: { value } }) => setAttributes({ ...attributes, email: value })}
+        onChange={({ target: { value } }) =>
+          setAttributes({ ...attributes, email: value })
+        }
       />
       <BindingInput
         type="user"
@@ -69,8 +72,12 @@ function ServiceAccountForm({
         bindings={bindings
           .filter(({ user }) => !!user)
           .map(({ user: { email } }) => email)}
-        add={user => setBindings([...bindings, { user }])}
-        remove={email => setBindings(bindings.filter(({ user }) => !user || user.email !== email))}
+        add={(user) => setBindings([...bindings, { user }])}
+        remove={(email) =>
+          setBindings(
+            bindings.filter(({ user }) => !user || user.email !== email)
+          )
+        }
       />
       <BindingInput
         type="group"
@@ -78,8 +85,12 @@ function ServiceAccountForm({
         bindings={bindings
           .filter(({ group }) => !!group)
           .map(({ group: { name } }) => name)}
-        add={group => setBindings([...bindings, { group }])}
-        remove={name => setBindings(bindings.filter(({ group }) => !group || group.name !== name))}
+        add={(group) => setBindings([...bindings, { group }])}
+        remove={(name) =>
+          setBindings(
+            bindings.filter(({ group }) => !group || group.name !== name)
+          )
+        }
       />
     </Box>
   )
@@ -97,7 +108,7 @@ enum MenuItemSelection {
   Delete = 'delete',
 }
 
-type MenuItems = {[key in MenuItemSelection]: MenuItem}
+type MenuItems = { [key in MenuItemSelection]: MenuItem }
 
 const DisabledItem = styled.div(() => ({
   '&:focus, &:focus-visible': {
@@ -115,8 +126,11 @@ export function EditServiceAccount({ user, update }: any) {
     name: user.name,
     email: user.email,
   })
-  const [bindings, setBindings] = useState(user.impersonationPolicy?.bindings || [])
-  const [mutation, { loading: eloading, error: eerror }] = useMutation(UPDATE_SERVICE_ACCOUNT,
+  const [bindings, setBindings] = useState(
+    user.impersonationPolicy?.bindings || []
+  )
+  const [mutation, { loading: eloading, error: eerror }] = useMutation(
+    UPDATE_SERVICE_ACCOUNT,
     {
       variables: {
         id: user.id,
@@ -126,7 +140,8 @@ export function EditServiceAccount({ user, update }: any) {
         },
       },
       onCompleted: () => setEdit(false),
-    })
+    }
+  )
   const [deleteMut, { loading, error }] = useMutation(DELETE_USER, {
     variables: { id: user.id },
     update,
@@ -139,7 +154,9 @@ export function EditServiceAccount({ user, update }: any) {
       onSelect: () => {
         if (isAvailable) setEdit(true)
       },
-      disabledTooltip: !isAvailable ? 'Upgrade to Plural Professional to manage service accounts.' : undefined,
+      disabledTooltip: !isAvailable
+        ? 'Upgrade to Plural Professional to manage service accounts.'
+        : undefined,
       props: {
         disabled: !isAvailable,
       },
@@ -149,7 +166,9 @@ export function EditServiceAccount({ user, update }: any) {
       onSelect: () => {
         if (isAvailable) setConfirm(true)
       },
-      disabledTooltip: !isAvailable ? 'Upgrade to Plural Professional to manage service accounts.' : undefined,
+      disabledTooltip: !isAvailable
+        ? 'Upgrade to Plural Professional to manage service accounts.'
+        : undefined,
       props: {
         destructive: true,
         disabled: !isAvailable,
@@ -160,27 +179,31 @@ export function EditServiceAccount({ user, update }: any) {
   return (
     <>
       <MoreMenu
-        onSelectionChange={selectedKey => {
+        onSelectionChange={(selectedKey) => {
           menuItems[selectedKey]?.onSelect()
         }}
       >
-        {Object.entries(menuItems).map(([key, { label, props = {}, disabledTooltip }]) => {
-          const item = (
-            <ListBoxItem
-              key={key}
-              textValue={label}
-              label={label}
-              {...props}
-              color="blue"
-            />
-          )
+        {Object.entries(menuItems).map(
+          ([key, { label, props = {}, disabledTooltip }]) => {
+            const item = (
+              <ListBoxItem
+                key={key}
+                textValue={label}
+                label={label}
+                {...props}
+                color="blue"
+              />
+            )
 
-          return disabledTooltip ? (
-            <DisabledItem>
-              <Tooltip label={disabledTooltip}>{item}</Tooltip>
-            </DisabledItem>
-          ) : item
-        })}
+            return disabledTooltip ? (
+              <DisabledItem>
+                <Tooltip label={disabledTooltip}>{item}</Tooltip>
+              </DisabledItem>
+            ) : (
+              item
+            )
+          }
+        )}
       </MoreMenu>
       <Confirm
         open={confirm}
@@ -200,7 +223,7 @@ export function EditServiceAccount({ user, update }: any) {
         onClose={() => {
           setEdit(false)
         }}
-        actions={(
+        actions={
           <>
             <Button
               secondary
@@ -216,7 +239,7 @@ export function EditServiceAccount({ user, update }: any) {
               Update
             </Button>
           </>
-        )}
+        }
         size="large"
       >
         <Box
@@ -259,11 +282,12 @@ export function CreateServiceAccount({ q }: any) {
         impersonationPolicy: { bindings: bindings.map(sanitize) },
       },
     },
-    update: (cache, { data: { createServiceAccount } }) => updateCache(cache, {
-      query: USERS_Q,
-      variables: { q, serviceAccount: true },
-      update: prev => appendConnection(prev, createServiceAccount, 'users'),
-    }),
+    update: (cache, { data: { createServiceAccount } }) =>
+      updateCache(cache, {
+        query: USERS_Q,
+        variables: { q, serviceAccount: true },
+        update: (prev) => appendConnection(prev, createServiceAccount, 'users'),
+      }),
     onCompleted: () => {
       resetAndClose()
     },
@@ -274,7 +298,11 @@ export function CreateServiceAccount({ q }: any) {
       <Div>
         <Button
           secondary
-          onClick={() => (isAvailable ? setCreateModalVisible(true) : setBlockModalVisible(true))}
+          onClick={() =>
+            isAvailable
+              ? setCreateModalVisible(true)
+              : setBlockModalVisible(true)
+          }
         >
           Create service account
         </Button>
@@ -289,7 +317,7 @@ export function CreateServiceAccount({ q }: any) {
           setCreateModalVisible(false)
         }}
         size="large"
-        actions={(
+        actions={
           <>
             <Button
               secondary
@@ -307,7 +335,7 @@ export function CreateServiceAccount({ q }: any) {
               Create
             </Button>
           </>
-        )}
+        }
       >
         <Box
           flex={false}
@@ -320,7 +348,6 @@ export function CreateServiceAccount({ q }: any) {
             bindings={bindings}
             setBindings={setBindings}
           />
-
         </Box>
       </Modal>
       <BillingFeatureBlockModal

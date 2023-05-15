@@ -20,7 +20,10 @@ import OnboardingTips from './OnboardingTips'
 function OnboardingFlow({ onNext, onBack }) {
   const token = useToken() || ''
   const { section } = useSection()
-  const isCreating = useMemo(() => section.state === CreateCloudShellSectionState.Creating, [section])
+  const isCreating = useMemo(
+    () => section.state === CreateCloudShellSectionState.Creating,
+    [section]
+  )
   const { data, loading } = useQuery(AUTHENTICATION_URLS_QUERY)
 
   useDevTokenOutputSecretCode(token)
@@ -30,7 +33,8 @@ function OnboardingFlow({ onNext, onBack }) {
       <Flex
         align="center"
         justify="center"
-      ><LoopingLogo />
+      >
+        <LoopingLogo />
       </Flex>
     )
   }

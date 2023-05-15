@@ -1,20 +1,6 @@
-import React, {
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useMutation, useQuery } from '@apollo/client'
-import {
-  Div,
-  Flex,
-  Form,
-  H2,
-  MenuItem,
-  Select,
-  Span,
-  Switch,
-} from 'honorable'
+import { Div, Flex, Form, H2, MenuItem, Select, Span, Switch } from 'honorable'
 import { TextInput } from 'grommet'
 import {
   Button,
@@ -106,32 +92,36 @@ function RepositoryEdit() {
     errors: formStateErrors,
     updateErrors: updateFormStateErrors,
     // reset: resetFormState,
-  } = useUpdateState<FormState>(useMemo(() => ({
-    name: name || '',
-    description: description || '',
-    category: category || '',
-    oauthUrl: oauthSettings?.uriFormat || '',
-    oauthMethod: `${oauthSettings?.authMethod || authMethods.BASIC}`,
-    tags: isArray(tags) ? tags.map(tag => ({ tag: tag?.tag || '' })) : [],
-    private: !!privateRepo,
-    websiteUrl: (communityUrls as any)?.homepage || '',
-    docsUrl: documentation || '',
-    githubUrl: (communityUrls as any)?.gitUrl || '',
-    discordUrl: communityUrls?.discord || '',
-    slackUrl: communityUrls?.slack || '',
-    twitterUrl: communityUrls?.twitter || '',
-  }),
-  [
-    name,
-    description,
-    oauthSettings?.authMethod,
-    oauthSettings?.uriFormat,
-    tags,
-    privateRepo,
-    category,
-    communityUrls,
-    documentation,
-  ]))
+  } = useUpdateState<FormState>(
+    useMemo(
+      () => ({
+        name: name || '',
+        description: description || '',
+        category: category || '',
+        oauthUrl: oauthSettings?.uriFormat || '',
+        oauthMethod: `${oauthSettings?.authMethod || authMethods.BASIC}`,
+        tags: isArray(tags) ? tags.map((tag) => ({ tag: tag?.tag || '' })) : [],
+        private: !!privateRepo,
+        websiteUrl: (communityUrls as any)?.homepage || '',
+        docsUrl: documentation || '',
+        githubUrl: (communityUrls as any)?.gitUrl || '',
+        discordUrl: communityUrls?.discord || '',
+        slackUrl: communityUrls?.slack || '',
+        twitterUrl: communityUrls?.twitter || '',
+      }),
+      [
+        name,
+        description,
+        oauthSettings?.authMethod,
+        oauthSettings?.uriFormat,
+        tags,
+        privateRepo,
+        category,
+        communityUrls,
+        documentation,
+      ]
+    )
+  )
 
   const [tagSearchString, setTagSearchString] = useState('')
   const newTag = tagSearchString
@@ -141,8 +131,8 @@ function RepositoryEdit() {
   const tagSearch = useQuery(TAGS_SEARCH_QUERY, {
     variables: { q: tagSearchString, first: 200 },
   })
-  const tagSearchResults: { tag: string; count: number }[]
-    = tagSearch?.data?.tags?.edges?.map((edge: any) => edge?.node) || []
+  const tagSearchResults: { tag: string; count: number }[] =
+    tagSearch?.data?.tags?.edges?.map((edge: any) => edge?.node) || []
 
   const [iconUpdate, setIconUpdate] = useState<{
     file: File | null
@@ -151,7 +141,8 @@ function RepositoryEdit() {
 
   const tagSearchRef = useRef<any>(null)
 
-  const [mutation, { loading, error }] = useMutation(UPDATE_REPOSITORY_MUTATION,
+  const [mutation, { loading, error }] = useMutation(
+    UPDATE_REPOSITORY_MUTATION,
     {
       variables: {
         repositoryId: id,
@@ -162,9 +153,9 @@ function RepositoryEdit() {
           oauthSettings:
             formState.oauthUrl && formState.oauthMethod
               ? {
-                uriFormat: formState.oauthUrl,
-                authMethod: formState.oauthMethod,
-              }
+                  uriFormat: formState.oauthUrl,
+                  authMethod: formState.oauthMethod,
+                }
               : null,
           ...(iconUpdate.file ? { icon: iconUpdate.file } : {}),
           tags: formState.tags,
@@ -185,7 +176,8 @@ function RepositoryEdit() {
           file: null,
         })
       },
-    })
+    }
+  )
 
   const iconPicker = useFilePicker({
     minImageWidth: 64,
@@ -203,12 +195,14 @@ function RepositoryEdit() {
     const file = isArray(iconPicker?.files) && iconPicker?.files[0]
 
     if (file) {
-      const reader = generatePreview(file,
+      const reader = generatePreview(
+        file,
         (file: { file: File; previewUrl: string }) => {
           if (!preventUpdate) {
             setIconUpdate(file)
           }
-        })
+        }
+      )
 
       return () => {
         reader.abort()
@@ -231,7 +225,7 @@ function RepositoryEdit() {
 
   function handleDeleteTag(delTag: FormState['tags'][number]) {
     updateFormState({
-      tags: filter(formState.tags, tag0 => delTag.tag !== tag0.tag),
+      tags: filter(formState.tags, (tag0) => delTag.tag !== tag0.tag),
     })
   }
 
@@ -257,7 +251,7 @@ function RepositoryEdit() {
         <Input
           value={formState[key]}
           error={formStateErrors[key]}
-          onChange={event => {
+          onChange={(event) => {
             updateFormState({ [key]: event.target.value })
             updateFormStateErrors({
               [key]: !!event.target.value && isValidUrl(event.target.value),
@@ -342,8 +336,8 @@ function RepositoryEdit() {
             dirty={formHasUpdates}
             enabled={submitEnabled}
             disabled={
-              !submitEnabled
-              || Object.keys(formStateErrors).some(key => formStateErrors[key])
+              !submitEnabled ||
+              Object.keys(formStateErrors).some((key) => formStateErrors[key])
             }
             loading={loading}
           />
@@ -421,7 +415,9 @@ function RepositoryEdit() {
               <Input
                 placeholder={formInitialState.name}
                 value={formState.name}
-                onChange={event => updateFormState({ name: event.target.value })}
+                onChange={(event) =>
+                  updateFormState({ name: event.target.value })
+                }
               />
             </FormField>
             <FormField
@@ -431,12 +427,14 @@ function RepositoryEdit() {
             >
               <Select
                 value={formState.category}
-                onChange={event => updateFormState({ category: event.target.value })}
+                onChange={(event) =>
+                  updateFormState({ category: event.target.value })
+                }
                 width="100%"
                 minHeight={40}
                 minWidth="auto"
               >
-                {categories.map(category => (
+                {categories.map((category) => (
                   <MenuItem
                     key={category}
                     value={category}
@@ -459,9 +457,11 @@ function RepositoryEdit() {
               minRows={3}
               placeholder={formInitialState.description}
               value={formState.description}
-              onChange={event => updateFormState({
-                description: event.target.value.substring(0, 200),
-              })}
+              onChange={(event) =>
+                updateFormState({
+                  description: event.target.value.substring(0, 200),
+                })
+              }
             />
           </FormField>
           <Flex gap="medium">
@@ -488,11 +488,11 @@ function RepositoryEdit() {
               value={tagSearchString}
               suggestions={suggestions}
               dropHeight="200px"
-              onSelect={event => {
+              onSelect={(event) => {
                 tagSearchRef?.current?.blur()
                 handleCreateTag(event?.suggestion?.value)
               }}
-              onChange={event => setTagSearchString(event?.target?.value)}
+              onChange={(event) => setTagSearchString(event?.target?.value)}
             />
             <Flex
               wrap="wrap"
@@ -500,7 +500,7 @@ function RepositoryEdit() {
               gap="xsmall"
               marginTop="small"
             >
-              {formState.tags.map(tag => (
+              {formState.tags.map((tag) => (
                 <Chip
                   key={tag.tag}
                   onClick={() => handleDeleteTag(tag)}
@@ -543,7 +543,9 @@ function RepositoryEdit() {
             >
               <Input
                 value={formState.oauthUrl}
-                onChange={event => updateFormState({ oauthUrl: event.target.value })}
+                onChange={(event) =>
+                  updateFormState({ oauthUrl: event.target.value })
+                }
                 placeholder={
                   formInitialState.oauthUrl || 'https://{domain}/oauth/callback'
                 }
@@ -561,9 +563,11 @@ function RepositoryEdit() {
                 minWidth="auto"
                 minHeight={40}
                 value={formState.oauthMethod}
-                onChange={event => updateFormState({ oauthMethod: event.target.value })}
+                onChange={(event) =>
+                  updateFormState({ oauthMethod: event.target.value })
+                }
               >
-                {Object.keys(authMethods).map(method => (
+                {Object.keys(authMethods).map((method) => (
                   <MenuItem
                     key={method}
                     value={method}

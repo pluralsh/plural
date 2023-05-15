@@ -28,12 +28,17 @@ export const UserFragment = gql`
     avatar
     provider
     onboarding
-    onboardingChecklist { dismissed status }
+    onboardingChecklist {
+      dismissed
+      status
+    }
     emailConfirmed
     emailConfirmBy
     backgroundColor
     serviceAccount
-    roles { admin }
+    roles {
+      admin
+    }
   }
 `
 
@@ -42,8 +47,15 @@ export const ImpersonationPolicy = gql`
     id
     bindings {
       id
-      group { id name }
-      user { id name email }
+      group {
+        id
+        name
+      }
+      user {
+        id
+        name
+        email
+      }
     }
   }
 `
@@ -95,8 +107,12 @@ export const PublisherFragment = gql`
     avatar
     description
     backgroundColor
-    owner { ...UserFragment }
-    address { ...AddressFragment }
+    owner {
+      ...UserFragment
+    }
+    address {
+      ...AddressFragment
+    }
   }
   ${UserFragment}
   ${AddressFragment}
@@ -114,8 +130,12 @@ export const WebhookFragment = gql`
 export const RoleBindingFragment = gql`
   fragment RoleBindingFragment on RoleBinding {
     id
-    user { ...UserFragment }
-    group { ...GroupFragment }
+    user {
+      ...UserFragment
+    }
+    group {
+      ...GroupFragment
+    }
   }
   ${UserFragment}
   ${GroupFragment}
@@ -128,7 +148,9 @@ export const RoleFragment = gql`
     description
     repositories
     permissions
-    roleBindings { ...RoleBindingFragment }
+    roleBindings {
+      ...RoleBindingFragment
+    }
   }
   ${RoleBindingFragment}
 `

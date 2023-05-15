@@ -5,18 +5,32 @@ fragment DnsRecord on DnsRecord {
   records
   cluster
   provider
-  creator { ...User }
+  creator {
+    ...User
+  }
   insertedAt
 }
 
 query GetDnsRecords($cluster: String!, $provider: Provider!) {
   dnsRecords(cluster: $cluster, provider: $provider, first: 500) {
-    edges { node { ...DnsRecord } }
+    edges {
+      node {
+        ...DnsRecord
+      }
+    }
   }
 }
 
-mutation CreateDnsRecord($cluster: String!, $provider: Provider!, $attributes: DnsRecordAttributes!) {
-  createDnsRecord(cluster: $cluster, provider: $provider, attributes: $attributes) {
+mutation CreateDnsRecord(
+  $cluster: String!
+  $provider: Provider!
+  $attributes: DnsRecordAttributes!
+) {
+  createDnsRecord(
+    cluster: $cluster
+    provider: $provider
+    attributes: $attributes
+  ) {
     ...DnsRecord
   }
 }

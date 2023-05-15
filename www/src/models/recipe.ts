@@ -18,8 +18,12 @@ export const RecipeFragment = gql`
 export const RecipeItemFragment = gql`
   fragment RecipeItemFragment on RecipeItem {
     id
-    chart { ...ChartFragment }
-    terraform { ...TerraformFragment }
+    chart {
+      ...ChartFragment
+    }
+    terraform {
+      ...TerraformFragment
+    }
     configuration {
       name
       type
@@ -37,9 +41,13 @@ export const RecipeSectionFragment = gql`
     index
     repository {
       ...RepoFragment
-      installation { ...InstallationFragment }
+      installation {
+        ...InstallationFragment
+      }
     }
-    recipeItems { ...RecipeItemFragment }
+    recipeItems {
+      ...RecipeItemFragment
+    }
     configuration {
       name
       default
@@ -47,8 +55,16 @@ export const RecipeSectionFragment = gql`
       type
       placeholder
       optional
-      condition { operation field value }
-      validation { type regex message }
+      condition {
+        operation
+        field
+        value
+      }
+      validation {
+        type
+        regex
+        message
+      }
     }
   }
   ${RepoFragment}

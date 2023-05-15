@@ -1,11 +1,6 @@
 import { useMemo } from 'react'
 import { useLocation, useParams } from 'react-router-dom'
-import {
-  Div,
-  Flex,
-  Img,
-  P,
-} from 'honorable'
+import { Div, Flex, Img, P } from 'honorable'
 import {
   TreeNav,
   TreeNavEntry,
@@ -27,8 +22,8 @@ export const getDirectory = ({
   app = null,
   docs,
 }: {
-    app: Repository | Record<string, never> | null
-    docs: ReturnType<typeof getDocsData> | null
+  app: Repository | Record<string, never> | null
+  docs: ReturnType<typeof getDocsData> | null
 }) => {
   if (!app) {
     return []
@@ -56,7 +51,7 @@ export const getDirectory = ({
       enabled: !isEmpty(docs),
       ...(docs ? { subpaths: docs } : {}),
     },
-  ].filter(dir => dir.enabled)
+  ].filter((dir) => dir.enabled)
 }
 
 export default function AppSidenav({
@@ -64,7 +59,7 @@ export default function AppSidenav({
   ...props
 }: {
   docs?: ReturnType<typeof getDocsData>
-  }) {
+}) {
   const theme = useTheme()
   const { clusterId, appName } = useParams()
   const app = useAppContext()
@@ -73,8 +68,10 @@ export default function AppSidenav({
 
   const pathPrefix = `/apps/${clusterId}/${appName}`
 
-  const filteredDirectory = useMemo(() => getDirectory({ app, docs }),
-    [app, docs])
+  const filteredDirectory = useMemo(
+    () => getDirectory({ app, docs }),
+    [app, docs]
+  )
 
   return (
     <Flex
@@ -138,23 +135,21 @@ function SideNavEntries({
       condition={root}
       wrapper={<TreeNav />}
     >
-      {directory.map(({
-        label, path, subpaths, type, ...props
-      }) => {
-        const currentPath
-          = removeTrailingSlashes(getBarePathFromPath(pathname)) || ''
+      {directory.map(({ label, path, subpaths, type, ...props }) => {
+        const currentPath =
+          removeTrailingSlashes(getBarePathFromPath(pathname)) || ''
         const fullPath = `${pathPrefix}/${removeTrailingSlashes(path) || ''}`
         const hashlessPath = fullPath.split('#')[0]
         const isInCurrentPath = currentPath.startsWith(hashlessPath)
         const docPageRootHash = props?.headings?.[0]?.id || ''
-        const active
-          = type === 'docPage'
-            ? isInCurrentPath
-              && (docPageContext.selectedHash === docPageRootHash
-                || !docPageContext.selectedHash)
+        const active =
+          type === 'docPage'
+            ? isInCurrentPath &&
+              (docPageContext.selectedHash === docPageRootHash ||
+                !docPageContext.selectedHash)
             : type === 'docPageHash'
-              ? isInCurrentPath && docPageContext.selectedHash === props.id
-              : isInCurrentPath
+            ? isInCurrentPath && docPageContext.selectedHash === props.id
+            : isInCurrentPath
 
         return (
           <TreeNavEntry
@@ -164,17 +159,17 @@ function SideNavEntries({
             active={active}
             {...(type === 'docPageHash' && props.id
               ? {
-                onClick: () => {
-                  docPageContext.scrollToHash(props.id)
-                },
-              }
+                  onClick: () => {
+                    docPageContext.scrollToHash(props.id)
+                  },
+                }
               : type === 'docPage'
-                ? {
+              ? {
                   onClick: () => {
                     docPageContext.scrollToHash(docPageRootHash)
                   },
                 }
-                : {})}
+              : {})}
           >
             {subpaths ? (
               <SideNavEntries

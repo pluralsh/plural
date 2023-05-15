@@ -26,15 +26,20 @@ function Feature({ feature: { name, description } }: any) {
         <Text
           size="small"
           weight={500}
-        >{name}
+        >
+          {name}
         </Text>
-        <Text size="small"><i>{description}</i></Text>
+        <Text size="small">
+          <i>{description}</i>
+        </Text>
       </Box>
     </Box>
   )
 }
 
-export function ServiceLevel({ level: { minSeverity, maxSeverity, responseTime } }: any) {
+export function ServiceLevel({
+  level: { minSeverity, maxSeverity, responseTime },
+}: any) {
   return (
     <Box
       direction="row"
@@ -46,7 +51,8 @@ export function ServiceLevel({ level: { minSeverity, maxSeverity, responseTime }
       <Text
         size="small"
         weight={500}
-      >response time:
+      >
+        response time:
       </Text>
       <Text size="small">{responseTime}</Text>
     </Box>
@@ -55,24 +61,28 @@ export function ServiceLevel({ level: { minSeverity, maxSeverity, responseTime }
 
 function LineItemIcon({ dimension, size }: any) {
   switch (dimension) {
-  case 'user':
-    return (
-      <PeopleIcon
-        size={size || 15}
-        color="focus"
-      />
-    )
-  default:
-    return (
-      <FileIcon
-        size={size || 15}
-        color="focus"
-      />
-    )
+    case 'user':
+      return (
+        <PeopleIcon
+          size={size || 15}
+          color="focus"
+        />
+      )
+    default:
+      return (
+        <FileIcon
+          size={size || 15}
+          color="focus"
+        />
+      )
   }
 }
 
-function LineItem({ item: { name, dimension }, included: { quantity }, consumed }: any) {
+function LineItem({
+  item: { name, dimension },
+  included: { quantity },
+  consumed,
+}: any) {
   return (
     <Box
       direction="row"
@@ -83,13 +93,15 @@ function LineItem({ item: { name, dimension }, included: { quantity }, consumed 
       <Text
         size="small"
         weight="bold"
-      >{name}
+      >
+        {name}
       </Text>
       <Text size="small">{consumed}</Text>
       <Text
         size="small"
         color="dark-3"
-      >({quantity} included)
+      >
+        ({quantity} included)
       </Text>
     </Box>
   )
@@ -101,7 +113,8 @@ function FeatureSection({ title, children }: any) {
       <Text
         size="small"
         weight={500}
-      >{title}
+      >
+        {title}
       </Text>
       {children}
     </Box>
@@ -111,14 +124,25 @@ function FeatureSection({ title, children }: any) {
 export function Subscription({ incident: { repository, subscription } }: any) {
   if (!subscription) return <NoPlan />
 
-  const { lineItems: { items } } = subscription
+  const {
+    lineItems: { items },
+  } = subscription
   const {
     plan: {
-      name, lineItems: { included, ...lineItems }, metadata, serviceLevels,
+      name,
+      lineItems: { included, ...lineItems },
+      metadata,
+      serviceLevels,
     },
   } = subscription
-  const includedByDimension = included.reduce((byDim, val) => ({ ...byDim, [val.dimension]: val }), {})
-  const consumedByDimension = items.reduce((byDim, { quantity, dimension }) => ({ ...byDim, [dimension]: quantity }), {})
+  const includedByDimension = included.reduce(
+    (byDim, val) => ({ ...byDim, [val.dimension]: val }),
+    {}
+  )
+  const consumedByDimension = items.reduce(
+    (byDim, { quantity, dimension }) => ({ ...byDim, [dimension]: quantity }),
+    {}
+  )
   const features = (metadata && metadata && metadata.features) || []
   const hasFeatures = features.length > 0
   const hasLevels = serviceLevels && serviceLevels.length > 0
@@ -144,10 +168,11 @@ export function Subscription({ incident: { repository, subscription } }: any) {
           <Text
             size="small"
             weight={500}
-          >Subscribed to {name}
+          >
+            Subscribed to {name}
           </Text>
           <Box gap="xsmall">
-            {(lineItems.items || []).map(item => (
+            {(lineItems.items || []).map((item) => (
               <LineItem
                 key={item.dimension}
                 item={item}
@@ -164,7 +189,7 @@ export function Subscription({ incident: { repository, subscription } }: any) {
       >
         {hasFeatures && (
           <FeatureSection title="Features:">
-            {features.map(feature => (
+            {features.map((feature) => (
               <Feature
                 key={feature.name}
                 feature={feature}

@@ -20,7 +20,9 @@ export function host() {
 }
 
 export function apiHost() {
-  const { location: { hostname } } = window
+  const {
+    location: { hostname },
+  } = window
 
   if (hostname === 'localhost' || hostname.endsWith('web.app')) {
     return import.meta.env.VITE_API_HOST || 'app.plural.sh'

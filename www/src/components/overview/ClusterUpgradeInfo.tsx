@@ -10,7 +10,10 @@ type ClusterUpgradeInfoProps = {
   upgradeInfo?: Maybe<Maybe<UpgradeInfo>[]>
 }
 
-export function ClusterUpgradeInfo({ clusterId, upgradeInfo }: ClusterUpgradeInfoProps) {
+export function ClusterUpgradeInfo({
+  clusterId,
+  upgradeInfo,
+}: ClusterUpgradeInfoProps) {
   if (isEmpty(upgradeInfo)) return null
 
   return (
@@ -26,20 +29,22 @@ export function ClusterUpgradeInfo({ clusterId, upgradeInfo }: ClusterUpgradeInf
           <Flex
             key={upgrade?.installation?.id}
             align="center"
-            borderBottom={i + 1 === upgradeInfo?.length ? '' : '1px solid border-fill-two'}
+            borderBottom={
+              i + 1 === upgradeInfo?.length ? '' : '1px solid border-fill-two'
+            }
             gap="medium"
             grow={1}
             paddingHorizontal="medium"
             paddingVertical="small"
           >
             <IconFrame
-              icon={(
+              icon={
                 <img
                   src={repository?.darkIcon || repository?.icon || ''}
                   width={16}
                   height={16}
                 />
-              )}
+              }
               marginRight="xxsmall"
               size="medium"
               type="floating"

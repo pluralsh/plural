@@ -3,12 +3,7 @@ import { useParams } from 'react-router-dom'
 import { GqlError } from 'forge-core'
 import { Button } from '@pluralsh/design-system'
 
-import {
-  Div,
-  Flex,
-  Form,
-  P,
-} from 'honorable'
+import { Div, Flex, Form, P } from 'honorable'
 
 import { setToken } from '../helpers/authentication'
 
@@ -114,8 +109,10 @@ export default function Invite() {
   if (inviteError) return <InvalidInvite />
   if (!data) return null
 
-  const { disabled: passwordDisabled, error: passwordError } = validatePassword(password,
-    confirm)
+  const { disabled: passwordDisabled, error: passwordError } = validatePassword(
+    password,
+    confirm
+  )
 
   const isNameValid = name.length > 0
   const submitEnabled = isNameValid && !passwordDisabled
@@ -130,7 +127,7 @@ export default function Invite() {
     )
   }
 
-  const onSubmit = e => {
+  const onSubmit = (e) => {
     e.preventDefault()
     if (!submitEnabled) {
       return

@@ -7,10 +7,13 @@ function CheatsheetCommand({ command, description, last }: any) {
   const [hovered, setHovered] = useState(false)
   const [copied, setCopied] = useState(false)
 
-  const handleCopy = useCallback(() => window.navigator.clipboard
-    .writeText(`plural ${command}`)
-    .then(() => setCopied(true)),
-  [command])
+  const handleCopy = useCallback(
+    () =>
+      window.navigator.clipboard
+        .writeText(`plural ${command}`)
+        .then(() => setCopied(true)),
+    [command]
+  )
 
   useEffect(() => {
     if (copied) {
@@ -29,7 +32,6 @@ function CheatsheetCommand({ command, description, last }: any) {
       gap="xsmall"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-
     >
       <P
         flex="50%"

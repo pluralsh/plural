@@ -42,18 +42,34 @@ function buildAppInfo(shellApplications) {
 }
 
 function InstalledUnstyled({ ...props }): JSX.Element {
-  const { shell: { provider }, onAction } = useContext(TerminalContext)
+  const {
+    shell: { provider },
+    onAction,
+  } = useContext(TerminalContext)
 
-  const { data: { repositories: { edges: nodes } = { edges: [] }, shellApplications } = {}, loading } = useQuery(FULL_APPLICATIONS_QUERY,
-    {
-      variables: { provider, installed: true },
-      skip: !provider,
-      fetchPolicy: 'network-only',
-      errorPolicy: 'all',
-      pollInterval: POLL_INTERVAL,
-    })
+  const {
+    data: {
+      repositories: { edges: nodes } = { edges: [] },
+      shellApplications,
+    } = {},
+    loading,
+  } = useQuery(FULL_APPLICATIONS_QUERY, {
+    variables: { provider, installed: true },
+    skip: !provider,
+    fetchPolicy: 'network-only',
+    errorPolicy: 'all',
+    pollInterval: POLL_INTERVAL,
+  })
 
-  const apps: Array<AppProps> = useMemo(() => (onAction ? nodes.map(node => toAppProps(node, buildAppInfo(shellApplications), onAction)) : []), [nodes, shellApplications, onAction])
+  const apps: Array<AppProps> = useMemo(
+    () =>
+      onAction
+        ? nodes.map((node) =>
+            toAppProps(node, buildAppInfo(shellApplications), onAction)
+          )
+        : [],
+    [nodes, shellApplications, onAction]
+  )
 
   if (loading) {
     return (

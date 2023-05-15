@@ -6,7 +6,11 @@ import { CardElement, Elements, injectStripe } from 'react-stripe-elements'
 import { Box, Layer, Text } from 'grommet'
 import { useMutation, useQuery } from '@apollo/client'
 import { Button, PaymentMethods, Trash } from 'forge-core'
-import { CreditCardIcon as Amex, CreditCardIcon as Mastercard, CreditCardIcon as Visa } from '@pluralsh/design-system'
+import {
+  CreditCardIcon as Amex,
+  CreditCardIcon as Mastercard,
+  CreditCardIcon as Visa,
+} from '@pluralsh/design-system'
 
 import { HeaderItem } from '../../../components/utils/Header'
 
@@ -18,7 +22,11 @@ import { Alert, AlertStatus, GqlError } from '../../../components/utils/Alert'
 import { SectionPortal } from '../../Explore'
 import CurrentUserContext from '../../../contexts/CurrentUserContext'
 
-import { CARDS, DELETE_CARD, REGISTER_CARD } from '../../../components/users/queries'
+import {
+  CARDS,
+  DELETE_CARD,
+  REGISTER_CARD,
+} from '../../../components/users/queries'
 
 function _CardForm({ stripe, onCompleted }: any) {
   const [stripeError, setStripeError] = useState<any>(null)
@@ -87,37 +95,38 @@ function CardInputForm({ me, onCompleted }: any) {
   )
 }
 
-const cardNumber = last4 => `**** **** **** ${last4}`
-const expiry = (expMonth, expYear) => `${expMonth > 10 ? expMonth : `0${expMonth}`}/${expYear}`
+const cardNumber = (last4) => `**** **** **** ${last4}`
+const expiry = (expMonth, expYear) =>
+  `${expMonth > 10 ? expMonth : `0${expMonth}`}/${expYear}`
 
 export function CardIcon({ brand }: any) {
   switch (brand.toLowerCase()) {
-  case 'visa':
-    return (
-      <Visa
-        color="plain"
-        // @ts-expect-error
-        size="medium"
-      />
-    )
-  case 'mastercard':
-    return (
-      <Mastercard
-        color="plain"
-        // @ts-expect-error
-        size="medium"
-      />
-    )
-  case 'amex':
-    return (
-      <Amex
-        color="plain"
-        // @ts-expect-error
-        size="medium"
-      />
-    )
-  default:
-    return <PaymentMethods size="medium" />
+    case 'visa':
+      return (
+        <Visa
+          color="plain"
+          // @ts-expect-error
+          size="medium"
+        />
+      )
+    case 'mastercard':
+      return (
+        <Mastercard
+          color="plain"
+          // @ts-expect-error
+          size="medium"
+        />
+      )
+    case 'amex':
+      return (
+        <Amex
+          color="plain"
+          // @ts-expect-error
+          size="medium"
+        />
+      )
+    default:
+      return <PaymentMethods size="medium" />
   }
 }
 

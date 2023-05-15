@@ -1,9 +1,4 @@
-import {
-  Button,
-  Div,
-  P,
-  Span,
-} from 'honorable'
+import { Button, Div, P, Span } from 'honorable'
 import {
   Codeline,
   MailIcon,
@@ -35,7 +30,7 @@ export function InviteUser({ refetch }: { refetch?: (() => void) | null }) {
   const { isGrandfathered, isPaidPlan } = useContext(SubscriptionContext)
   const [mutation, { loading, error, reset }] = useMutation(CREATE_INVITE, {
     variables: { attributes: { email } },
-    onCompleted: data => {
+    onCompleted: (data) => {
       setInvite(data && data.createInvite)
       refetch?.()
     },
@@ -54,13 +49,12 @@ export function InviteUser({ refetch }: { refetch?: (() => void) | null }) {
       userCount: account?.userCount,
     })
     if (
-      !isGrandfathered
-      && !isPaidPlan
-      && (account?.userCount ?? 0) >= MAX_OPEN_SOURCE_USERS
+      !isGrandfathered &&
+      !isPaidPlan &&
+      (account?.userCount ?? 0) >= MAX_OPEN_SOURCE_USERS
     ) {
       setShowLimitModal(true)
-    }
-    else {
+    } else {
       setShowInviteModal(true)
     }
   }, [account.userCount, isGrandfathered, isPaidPlan])
@@ -81,14 +75,14 @@ export function InviteUser({ refetch }: { refetch?: (() => void) | null }) {
         size="medium"
         header="User limit"
         severity="danger"
-        actions={(
+        actions={
           <Button
             as={Link}
             to="/account/billing"
           >
             Review plans
           </Button>
-        )}
+        }
       >
         <P body1>
           You have reached your user limit for the Open-source plan. Upgrade to

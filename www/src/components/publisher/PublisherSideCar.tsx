@@ -2,9 +2,7 @@ import { Div, P } from 'honorable'
 
 function PublisherSideCar({ publisher }: any) {
   return (
-    <Div
-      flexShrink={0}
-    >
+    <Div flexShrink={0}>
       <Div
         marginTop="xxxlarge"
         border="1px solid border"

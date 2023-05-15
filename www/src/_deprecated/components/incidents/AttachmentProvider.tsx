@@ -1,9 +1,4 @@
-import {
-  createContext,
-  useContext,
-  useMemo,
-  useState,
-} from 'react'
+import { createContext, useContext, useMemo, useState } from 'react'
 import { DndProvider, useDrop } from 'react-dnd'
 import { HTML5Backend, NativeTypes } from 'react-dnd-html5-backend'
 import { Div } from 'honorable'
@@ -21,7 +16,7 @@ export function Dropzone({ children, loaded }: any) {
   const [{ canDrop, isOver }, drop] = useDrop<any, any, any>({
     accept: [NativeTypes.FILE],
     drop: ({ files }) => setAttachment(files[0]),
-    collect: monitor => ({
+    collect: (monitor) => ({
       isOver: monitor.isOver(),
       canDrop: monitor.canDrop(),
     }),
@@ -45,13 +40,14 @@ export function Dropzone({ children, loaded }: any) {
 
 export function AttachmentProvider({ children }: any) {
   const [attachment, setAttachment] = useState<any>(null)
-  const value = useMemo(() => ({ attachment, setAttachment }), [attachment, setAttachment])
+  const value = useMemo(
+    () => ({ attachment, setAttachment }),
+    [attachment, setAttachment]
+  )
 
   return (
     <AttachmentContext.Provider value={value}>
-      <DndProvider backend={HTML5Backend}>
-        {children}
-      </DndProvider>
+      <DndProvider backend={HTML5Backend}>{children}</DndProvider>
     </AttachmentContext.Provider>
   )
 }

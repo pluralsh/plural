@@ -3,18 +3,8 @@ import './chart.css'
 import { useContext, useRef, useState } from 'react'
 import { Box } from 'grommet'
 import { useMutation, useQuery } from '@apollo/client'
-import {
-  Link,
-  Outlet,
-  useLocation,
-  useParams,
-} from 'react-router-dom'
-import {
-  Button,
-  Tab,
-  TabList,
-  TabPanel,
-} from '@pluralsh/design-system'
+import { Link, Outlet, useLocation, useParams } from 'react-router-dom'
+import { Button, Tab, TabList, TabPanel } from '@pluralsh/design-system'
 import moment from 'moment'
 import { A, Flex } from 'honorable'
 
@@ -53,7 +43,7 @@ function ChartInfo({ version: { helm, insertedAt } }: any) {
       </PackageProperty>
       {!!helm?.sources?.length && (
         <PackageProperty header="Sources">
-          {helm.sources.map(l => (
+          {helm.sources.map((l) => (
             <Box>
               <A
                 inline
@@ -71,7 +61,7 @@ function ChartInfo({ version: { helm, insertedAt } }: any) {
       )}
       {!!helm?.maintainers?.length && (
         <PackageProperty header="Maintainers">
-          {helm.maintainers.map(m => (
+          {helm.maintainers.map((m) => (
             <Box key={m.email}>{m.email}</Box>
           ))}
         </PackageProperty>
@@ -81,7 +71,8 @@ function ChartInfo({ version: { helm, insertedAt } }: any) {
 }
 
 function ChartInstaller({ chart, version }: any) {
-  const [mutation, { error }] = useMutation(chart.installation ? UPDATE_CHART_INST : INSTALL_CHART,
+  const [mutation, { error }] = useMutation(
+    chart.installation ? UPDATE_CHART_INST : INSTALL_CHART,
     {
       variables: {
         id: chart.installation
@@ -95,13 +86,14 @@ function ChartInstaller({ chart, version }: any) {
         updateCache(cache, {
           query: CHART_Q,
           variables: { chartId: chart.id },
-          update: prev => ({
+          update: (prev) => ({
             ...prev,
             chart: { ...prev.chart, installation: ci },
           }),
         })
       },
-    })
+    }
+  )
 
   return (
     <Button
@@ -116,8 +108,8 @@ function ChartInstaller({ chart, version }: any) {
 
 export function ChartActions({ chart, currentVersion, ...props }: any) {
   if (
-    chart.installation?.version?.id === currentVersion.id
-    || !chart.repository.installation
+    chart.installation?.version?.id === currentVersion.id ||
+    !chart.repository.installation
   ) {
     return null
   }
@@ -176,8 +168,9 @@ export default function Chart() {
   const { edges, pageInfo } = versions
   const currentVersion = version || edges[0].node
   const chartInst = data.chart.installation
-  const hasActions = () => chart.installation?.version?.id !== currentVersion.id
-    && chart.repository.installation
+  const hasActions = () =>
+    chart.installation?.version?.id !== currentVersion.id &&
+    chart.repository.installation
 
   const DIRECTORY = [
     { label: 'Readme', path: '' },
@@ -204,15 +197,15 @@ export default function Chart() {
 
   const filteredDirectory = DIRECTORY.filter(({ path }) => {
     switch (path) {
-    case '/updatequeue':
-      return !!chartInst
-    default:
-      return true
+      case '/updatequeue':
+        return !!chartInst
+      default:
+        return true
     }
   })
   const currentTab = [...filteredDirectory]
     .sort((a, b) => b.path.length - a.path.length)
-    .find(tab => pathname?.startsWith(`${pathPrefix}${tab.path}`))
+    .find((tab) => pathname?.startsWith(`${pathPrefix}${tab.path}`))
 
   return (
     <ResponsiveLayoutPage>

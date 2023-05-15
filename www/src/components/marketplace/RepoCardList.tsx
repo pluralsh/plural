@@ -12,7 +12,7 @@ export function RepoCardList({
 }: any) {
   return (
     <CardGrid {...props}>
-      {repositories?.map(repository => (
+      {repositories?.map((repository) => (
         <RepositoryCard
           key={repository.id}
           as={Link}

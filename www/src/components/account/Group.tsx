@@ -4,7 +4,11 @@ import { Div, Flex } from 'honorable'
 
 import { Placeholder } from '../utils/Placeholder'
 
-import { extendConnection, removeConnection, updateCache } from '../../utils/graphql'
+import {
+  extendConnection,
+  removeConnection,
+  updateCache,
+} from '../../utils/graphql'
 
 import { DeleteIconButton } from '../utils/IconButtons'
 
@@ -21,16 +25,16 @@ import {
 
 import { UserInfo } from './User'
 
-function GroupMember({
-  user, group, first, last, edit,
-}: any) {
+function GroupMember({ user, group, first, last, edit }: any) {
   const [mutation] = useDeleteGroupMemberMutation({
     variables: { groupId: group.id, userId: user.id },
-    update: (cache, { data }) => updateCache(cache, {
-      query: GroupMembersDocument,
-      variables: { id: group.id },
-      update: prev => removeConnection(prev, data?.deleteGroupMember, 'groupMembers'),
-    }),
+    update: (cache, { data }) =>
+      updateCache(cache, {
+        query: GroupMembersDocument,
+        variables: { id: group.id },
+        update: (prev) =>
+          removeConnection(prev, data?.deleteGroupMember, 'groupMembers'),
+      }),
   })
 
   return (
@@ -96,11 +100,14 @@ export function GroupMembers({
               edit={edit}
             />
           )}
-          loadNextPage={() => pageInfo.hasNextPage
-            && fetchMore({
+          loadNextPage={() =>
+            pageInfo.hasNextPage &&
+            fetchMore({
               variables: { cursor: pageInfo.endCursor },
-              updateQuery: (prev, { fetchMoreResult: { groupMembers } }) => extendConnection(prev, groupMembers, 'groupMembers'),
-            })}
+              updateQuery: (prev, { fetchMoreResult: { groupMembers } }) =>
+                extendConnection(prev, groupMembers, 'groupMembers'),
+            })
+          }
         />
       </Div>
     </List>

@@ -12,8 +12,13 @@ import { LABEL_REQUEST } from './constants'
 function RoadmapApplicationRequests() {
   const { pluralArtifactsIssues } = useContext(RoadmapContext)
 
-  const issues = useMemo(() => pluralArtifactsIssues.filter(issue => issue.labels.includes(LABEL_REQUEST)),
-    [pluralArtifactsIssues])
+  const issues = useMemo(
+    () =>
+      pluralArtifactsIssues.filter((issue) =>
+        issue.labels.includes(LABEL_REQUEST)
+      ),
+    [pluralArtifactsIssues]
+  )
 
   return (
     <Flex

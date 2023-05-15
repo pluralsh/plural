@@ -14,31 +14,35 @@ import { Action } from './types'
 
 function historyModifier(action) {
   switch (action) {
-  case Action.CREATE:
-    return 'created'
-  case Action.EDIT:
-    return 'updated'
-  case Action.ACCEPT:
-    return 'accepted'
-  case Action.COMPLETE:
-    return 'closed'
-  case Action.SEVERITY:
-    return 'updated severity'
-  case Action.STATUS:
-    return 'updated status'
-  default:
-    return ''
+    case Action.CREATE:
+      return 'created'
+    case Action.EDIT:
+      return 'updated'
+    case Action.ACCEPT:
+      return 'accepted'
+    case Action.COMPLETE:
+      return 'closed'
+    case Action.SEVERITY:
+      return 'updated severity'
+    case Action.STATUS:
+      return 'updated status'
+    default:
+      return ''
   }
 }
 
 // @ts-expect-error
-const yamlDump = val => yaml.safeDump(val || {}, null, 2)
+const yamlDump = (val) => yaml.safeDump(val || {}, null, 2)
 
 function HistoryChanges({ changes }: any) {
   const { previous, next } = useMemo(() => {
     const sorted = sortBy(changes, ['key'])
-    const prev = yamlDump(sorted.reduce((acc, { key, prev }) => ({ ...acc, [key]: prev }), {}))
-    const next = yamlDump(sorted.reduce((acc, { key, next }) => ({ ...acc, [key]: next }), {}))
+    const prev = yamlDump(
+      sorted.reduce((acc, { key, prev }) => ({ ...acc, [key]: prev }), {})
+    )
+    const next = yamlDump(
+      sorted.reduce((acc, { key, next }) => ({ ...acc, [key]: next }), {})
+    )
 
     return {
       previous: `...\n${prev}\n...`,
@@ -63,11 +67,7 @@ function HistoryChanges({ changes }: any) {
   )
 }
 
-function HistoryItem({
-  history: {
-    action, actor, insertedAt, changes,
-  },
-}: any) {
+function HistoryItem({ history: { action, actor, insertedAt, changes } }: any) {
   const [open, setOpen] = useState(false)
   const openable = action !== Action.CREATE
 
@@ -88,7 +88,8 @@ function HistoryItem({
           <Text
             size="small"
             style={{ whiteSpace: 'nowrap' }}
-          >{dateFormat(moment(insertedAt))}
+          >
+            {dateFormat(moment(insertedAt))}
           </Text>
           <Box
             direction="row"
@@ -103,7 +104,8 @@ function HistoryItem({
               size="small"
               weight={500}
               style={{ whiteSpace: 'nowrap' }}
-            >{historyModifier(action)}
+            >
+              {historyModifier(action)}
             </Text>
           </Box>
         </Box>
@@ -125,7 +127,12 @@ function HistoryItem({
   )
 }
 
-export function IncidentHistory({ incident: { history: { edges, pageInfo } }, fetchMore }: any) {
+export function IncidentHistory({
+  incident: {
+    history: { edges, pageInfo },
+  },
+  fetchMore,
+}: any) {
   return (
     <Box
       flex={false}
@@ -145,12 +152,29 @@ export function IncidentHistory({ incident: { history: { edges, pageInfo } }, fe
           round="xsmall"
           pad="xsmall"
           hoverIndicator="light-2"
-          onClick={() => fetchMore({
-            variables: { historyCursor: pageInfo.endCursor },
-            updateQuery: (prev, { fetchMoreResult: { incident: { history } } }) => ({
-              ...prev, incident: { ...prev.incident, history: extendConnection(prev.incident.history, history, 'history') },
-            }),
-          })}
+          onClick={() =>
+            fetchMore({
+              variables: { historyCursor: pageInfo.endCursor },
+              updateQuery: (
+                prev,
+                {
+                  fetchMoreResult: {
+                    incident: { history },
+                  },
+                }
+              ) => ({
+                ...prev,
+                incident: {
+                  ...prev.incident,
+                  history: extendConnection(
+                    prev.incident.history,
+                    history,
+                    'history'
+                  ),
+                },
+              }),
+            })
+          }
         >
           <Text size="small">load more...</Text>
         </Box>

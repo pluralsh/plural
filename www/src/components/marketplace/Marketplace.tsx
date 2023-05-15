@@ -7,16 +7,20 @@ import MarketplaceRepositories from './MarketplaceRepositories'
 export const MARKETPLACE_CRUMB = { label: 'marketplace', url: '/marketplace' }
 
 function Marketplace({ publisher = null }: any) {
-  const breadcrumbs = useMemo(() => (publisher
-    ? [{ label: 'publisher' }, { label: publisher.name, url: `/publisher/${publisher.id}` }]
-    : [MARKETPLACE_CRUMB]),
-  [publisher])
+  const breadcrumbs = useMemo(
+    () =>
+      publisher
+        ? [
+            { label: 'publisher' },
+            { label: publisher.name, url: `/publisher/${publisher.id}` },
+          ]
+        : [MARKETPLACE_CRUMB],
+    [publisher]
+  )
 
   useSetBreadcrumbs(breadcrumbs)
 
-  return (
-    <MarketplaceRepositories publisher={publisher} />
-  )
+  return <MarketplaceRepositories publisher={publisher} />
 }
 
 export default Marketplace

@@ -9,11 +9,17 @@ export function pivotByDimension(items) {
   }, {})
 }
 
-export function subscriptionCost({ lineItems: { items } }, { cost, lineItems }: any) {
+export function subscriptionCost(
+  { lineItems: { items } },
+  { cost, lineItems }: any
+) {
   const planLineItems = pivotByDimension(lineItems.items)
 
-  return items.reduce((total, { dimension, quantity }) => total + planLineItems[dimension].cost * quantity,
-    cost)
+  return items.reduce(
+    (total, { dimension, quantity }) =>
+      total + planLineItems[dimension].cost * quantity,
+    cost
+  )
 }
 
 export function updateSubscription(cache, repositoryId, subscription) {
@@ -22,6 +28,10 @@ export function updateSubscription(cache, repositoryId, subscription) {
   cache.writeQuery({
     query: REPO_Q,
     variables: { repositoryId },
-    data: deepUpdate(prev, 'repository.installation.subscription', () => subscription),
+    data: deepUpdate(
+      prev,
+      'repository.installation.subscription',
+      () => subscription
+    ),
   })
 }

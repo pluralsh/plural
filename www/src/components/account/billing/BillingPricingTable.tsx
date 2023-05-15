@@ -43,7 +43,8 @@ const lastColumnCellProps = {
 }
 
 function BillingPricingTable() {
-  const { clusterMonthlyPricing, userMonthlyPricing } = useContext(PlatformPlansContext)
+  const { clusterMonthlyPricing, userMonthlyPricing } =
+    useContext(PlatformPlansContext)
 
   return (
     <Div
@@ -61,75 +62,31 @@ function BillingPricingTable() {
         >
           Apps
         </Div>
-        <Div {...firstColumnCellProps}>
-          Clusters
-        </Div>
-        <Div {...firstColumnCellProps}>
-          Users
-        </Div>
-        <Div {...firstColumnCellProps}>
-          Roles
-        </Div>
-        <Div {...firstColumnCellProps}>
-          Groups
-        </Div>
-        <Div {...firstColumnCellProps}>
-          Service accounts
-        </Div>
-        <Div {...firstColumnCellProps}>
-          Discord Forum
-        </Div>
-        <Div {...firstColumnCellProps}>
-          Community support
-        </Div>
+        <Div {...firstColumnCellProps}>Clusters</Div>
+        <Div {...firstColumnCellProps}>Users</Div>
+        <Div {...firstColumnCellProps}>Roles</Div>
+        <Div {...firstColumnCellProps}>Groups</Div>
+        <Div {...firstColumnCellProps}>Service accounts</Div>
+        <Div {...firstColumnCellProps}>Discord Forum</Div>
+        <Div {...firstColumnCellProps}>Community support</Div>
         <Div {...firstColumnCellProps}>
           Private Slack Connect to Plural engineers
         </Div>
-        <Div {...firstColumnCellProps}>
-          Dedicated support engineer
-        </Div>
-        <Div {...firstColumnCellProps}>
-          Onboarding
-        </Div>
-        <Div {...firstColumnCellProps}>
-          Emergency Hotfixes
-        </Div>
-        <Div {...firstColumnCellProps}>
-          SLAs
-        </Div>
-        <Div {...firstColumnCellProps}>
-          Coverage
-        </Div>
-        <Div {...firstColumnCellProps}>
-          Authentication
-        </Div>
-        <Div {...firstColumnCellProps}>
-          VPN
-        </Div>
-        <Div {...firstColumnCellProps}>
-          Audit logs
-        </Div>
-        <Div {...firstColumnCellProps}>
-          SOC 2
-        </Div>
-        <Div {...firstColumnCellProps}>
-          GDPR
-        </Div>
-        <Div {...firstColumnCellProps}>
-          Compliance reports
-        </Div>
-        <Div {...firstColumnCellProps}>
-          Training
-        </Div>
-        <Div {...firstColumnCellProps}>
-          Developer support
-        </Div>
-        <Div {...firstColumnCellProps}>
-          Commercial license
-        </Div>
-        <Div {...firstColumnCellProps}>
-          Cost optimization
-        </Div>
+        <Div {...firstColumnCellProps}>Dedicated support engineer</Div>
+        <Div {...firstColumnCellProps}>Onboarding</Div>
+        <Div {...firstColumnCellProps}>Emergency Hotfixes</Div>
+        <Div {...firstColumnCellProps}>SLAs</Div>
+        <Div {...firstColumnCellProps}>Coverage</Div>
+        <Div {...firstColumnCellProps}>Authentication</Div>
+        <Div {...firstColumnCellProps}>VPN</Div>
+        <Div {...firstColumnCellProps}>Audit logs</Div>
+        <Div {...firstColumnCellProps}>SOC 2</Div>
+        <Div {...firstColumnCellProps}>GDPR</Div>
+        <Div {...firstColumnCellProps}>Compliance reports</Div>
+        <Div {...firstColumnCellProps}>Training</Div>
+        <Div {...firstColumnCellProps}>Developer support</Div>
+        <Div {...firstColumnCellProps}>Commercial license</Div>
+        <Div {...firstColumnCellProps}>Cost optimization</Div>
         <Div
           {...firstColumnCellProps}
           borderBottomLeftRadius={6}
@@ -146,15 +103,9 @@ function BillingPricingTable() {
         >
           Open-source
         </Div>
-        <Div body2>
-          Unlimited
-        </Div>
-        <Div body2>
-          Free
-        </Div>
-        <Div body2>
-          Up to 5
-        </Div>
+        <Div body2>Unlimited</Div>
+        <Div body2>Free</Div>
+        <Div body2>Up to 5</Div>
         <Div>
           <CloseIcon color="icon-default" />
         </Div>
@@ -185,12 +136,8 @@ function BillingPricingTable() {
         <Div>
           <CloseIcon color="icon-default" />
         </Div>
-        <Div body2>
-          Best effort
-        </Div>
-        <Div body2>
-          Google OAuth + OIDC
-        </Div>
+        <Div body2>Best effort</Div>
+        <Div body2>Google OAuth + OIDC</Div>
         <Div>
           <CloseIcon color="icon-default" />
         </Div>
@@ -223,18 +170,10 @@ function BillingPricingTable() {
         </Div>
       </Div>
       <Div {...columnStyles}>
-        <Div subtitle2>
-          Professional
-        </Div>
-        <Div body2>
-          Unlimited
-        </Div>
-        <Div body2>
-          ${clusterMonthlyPricing}/cluster/month
-        </Div>
-        <Div body2>
-          ${userMonthlyPricing}/user/month
-        </Div>
+        <Div subtitle2>Professional</Div>
+        <Div body2>Unlimited</Div>
+        <Div body2>${clusterMonthlyPricing}/cluster/month</Div>
+        <Div body2>${userMonthlyPricing}/user/month</Div>
         <Div>
           <CheckIcon color="icon-success" />
         </Div>
@@ -262,15 +201,9 @@ function BillingPricingTable() {
         <Div>
           <CheckIcon color="icon-success" />
         </Div>
-        <Div>
-          24 hours
-        </Div>
-        <Div body2>
-          Best effort
-        </Div>
-        <Div body2>
-          Google OAuth + OIDC
-        </Div>
+        <Div>24 hours</Div>
+        <Div body2>Best effort</Div>
+        <Div body2>Google OAuth + OIDC</Div>
         <Div>
           <CheckIcon color="icon-success" />
         </Div>
@@ -286,9 +219,7 @@ function BillingPricingTable() {
         <Div>
           <CloseIcon color="icon-default" />
         </Div>
-        <Div>
-          Available
-        </Div>
+        <Div>Available</Div>
         <Div>
           <CloseIcon color="icon-default" />
         </Div>
@@ -355,9 +286,7 @@ function BillingPricingTable() {
         <Div {...lastColumnCellProps}>
           <CheckIcon color="icon-success" />
         </Div>
-        <Div {...lastColumnCellProps}>
-          4 hours
-        </Div>
+        <Div {...lastColumnCellProps}>4 hours</Div>
         <Div
           {...lastColumnCellProps}
           body2
@@ -385,9 +314,7 @@ function BillingPricingTable() {
         <Div {...lastColumnCellProps}>
           <CheckIcon color="icon-success" />
         </Div>
-        <Div {...lastColumnCellProps}>
-          Available
-        </Div>
+        <Div {...lastColumnCellProps}>Available</Div>
         <Div {...lastColumnCellProps}>
           <CheckIcon color="icon-success" />
         </Div>

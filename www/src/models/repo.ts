@@ -28,8 +28,13 @@ export const RepoFragment = gql`
     trending
     verified
     category
-    oauthSettings { uriFormat authMethod }
-    publisher { ...PublisherFragment }
+    oauthSettings {
+      uriFormat
+      authMethod
+    }
+    publisher {
+      ...PublisherFragment
+    }
   }
   ${PublisherFragment}
 `
@@ -41,7 +46,7 @@ export const StackFragment = gql`
     displayName
     description
     featured
-    creator { 
+    creator {
       id
       name
     }
@@ -71,8 +76,12 @@ export const InstallationFragment = gql`
     autoUpgrade
     trackTag
     pingedAt
-    repository { ...RepoFragment }
-    user { ...UserFragment }
+    repository {
+      ...RepoFragment
+    }
+    user {
+      ...UserFragment
+    }
   }
   ${RepoFragment}
   ${UserFragment}
@@ -89,7 +98,10 @@ export const DependenciesFragment = gql`
     }
     providers
     application
-    wirings { terraform helm }
+    wirings {
+      terraform
+      helm
+    }
   }
 `
 
@@ -100,8 +112,12 @@ export const IntegrationFragment = gql`
     icon
     sourceUrl
     description
-    tags { tag }
-    publisher { ...PublisherFragment }
+    tags {
+      tag
+    }
+    publisher {
+      ...PublisherFragment
+    }
   }
   ${PublisherFragment}
 `
@@ -142,7 +158,9 @@ export const TestFragment = gql`
     status
     insertedAt
     updatedAt
-    steps { ...StepFragment }
+    steps {
+      ...StepFragment
+    }
   }
   ${StepFragment}
 `

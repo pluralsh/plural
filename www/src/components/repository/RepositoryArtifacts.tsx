@@ -1,13 +1,6 @@
 import { useState } from 'react'
 import moment from 'moment'
-import {
-  Flex,
-  H2,
-  Modal,
-  P,
-  Span,
-  Tooltip,
-} from 'honorable'
+import { Flex, H2, Modal, P, Span, Tooltip } from 'honorable'
 import {
   AppleLogoIcon,
   Code,
@@ -88,9 +81,7 @@ function Artifacts({ artifact }: any) {
           width="calc(100% / 5)"
         >
           {platformToIcon[artifact.platform]}
-          <Span ml={0.5}>
-            {artifact.arch}
-          </Span>
+          <Span ml={0.5}>{artifact.arch}</Span>
         </Flex>
         <P
           py={1}
@@ -135,9 +126,7 @@ function Artifacts({ artifact }: any) {
         open={readmeOpen}
         onClose={() => setReadmeOpen(false)}
       >
-        <H2>
-          Readme
-        </H2>
+        <H2>Readme</H2>
         <Code
           language="markdown"
           marginTop="xlarge"
@@ -150,9 +139,7 @@ function Artifacts({ artifact }: any) {
         open={detailsOpen}
         onClose={() => setDetailsOpen(false)}
       >
-        <H2>
-          Details
-        </H2>
+        <H2>Details</H2>
         <Code
           language="json"
           marginTop="xlarge"
@@ -176,11 +163,7 @@ function RepositoryDeployments() {
 
   function renderContent() {
     if (!artifacts || artifacts.length === 0) {
-      return (
-        <P mt={1.5}>
-          No artifacts found.
-        </P>
-      )
+      return <P mt={1.5}>No artifacts found.</P>
     }
 
     return (
@@ -233,14 +216,15 @@ function RepositoryDeployments() {
           flexGrow={1}
           height={0}
         >
-          {artifacts.map(artifact => (
-            artifact && (
-              <Artifacts
-                key={artifact.id}
-                artifact={artifact}
-              />
-            )
-          ))}
+          {artifacts.map(
+            (artifact) =>
+              artifact && (
+                <Artifacts
+                  key={artifact.id}
+                  artifact={artifact}
+                />
+              )
+          )}
         </InfiniteScroller>
       </Flex>
     )
@@ -252,9 +236,7 @@ function RepositoryDeployments() {
       maxHeight="100%"
       direction="column"
     >
-      <H2 flexShrink={0}>
-        Artifacts
-      </H2>
+      <H2 flexShrink={0}>Artifacts</H2>
       {renderContent()}
     </Flex>
   )

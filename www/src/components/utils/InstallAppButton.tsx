@@ -1,19 +1,5 @@
-import {
-  Key,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react'
-import {
-  Button,
-  Div,
-  Flex,
-  H2,
-  ModalBaseProps,
-  P,
-} from 'honorable'
+import { Key, useContext, useEffect, useMemo, useRef, useState } from 'react'
+import { Button, Div, Flex, H2, ModalBaseProps, P } from 'honorable'
 import {
   Codeline,
   Modal,
@@ -115,7 +101,7 @@ function RecipeTabs({
   }
 
   const tabs = recipes
-    .filter(recipe => recipe.provider)
+    .filter((recipe) => recipe.provider)
     .map((recipe, i) => (
       <Tab
         key={i}
@@ -125,7 +111,7 @@ function RecipeTabs({
         {providerToShortName[recipe.provider as Provider]}
       </Tab>
     ))
-    .filter(tab => !!tab)
+    .filter((tab) => !!tab)
 
   return (
     <Div>
@@ -134,7 +120,7 @@ function RecipeTabs({
           width="100%"
           stateRef={tabStateRef}
           stateProps={{
-            onSelectionChange: key => {
+            onSelectionChange: (key) => {
               setTabKey(key)
             },
           }}
@@ -167,8 +153,13 @@ function InstallAppButton({
   const [isOpen, setIsOpen] = useState(false)
   const { id: userId } = useCurrentUser()
   const { clusters } = useContext(ClustersContext)
-  const filteredClusters = useMemo(() => clusters.filter(cluster => clusterFilter(cluster, userId, { showCliClusters: true })),
-    [clusters, userId])
+  const filteredClusters = useMemo(
+    () =>
+      clusters.filter((cluster) =>
+        clusterFilter(cluster, userId, { showCliClusters: true })
+      ),
+    [clusters, userId]
+  )
   const { name, apps } = props
 
   if (!name) {
@@ -228,19 +219,24 @@ function InstallModal({
 }: Omit<InstallAppButtonProps, 'loading'> & {
   clusters: Cluster[]
 } & ModalBaseProps) {
-  const [clusterId, setClusterId] = useState<string | undefined>(!isEmpty(clusters) ? clusters[0].id : undefined)
+  const [clusterId, setClusterId] = useState<string | undefined>(
+    !isEmpty(clusters) ? clusters[0].id : undefined
+  )
 
-  const currentCluster = useMemo(() => clusters.find(cl => cl.id === clusterId), [clusterId, clusters])
+  const currentCluster = useMemo(
+    () => clusters.find((cl) => cl.id === clusterId),
+    [clusterId, clusters]
+  )
   const clusterProvider = currentCluster?.provider
 
-  const isCloudShellCluster
-    = clusterId === NEW_CLUSTER_ID
-    || (currentCluster && clusterHasCloudShell(currentCluster))
+  const isCloudShellCluster =
+    clusterId === NEW_CLUSTER_ID ||
+    (currentCluster && clusterHasCloudShell(currentCluster))
   const header = `Install ${name}`
-  const recipe
-    = type === 'stack' && !clusterProvider
+  const recipe =
+    type === 'stack' && !clusterProvider
       ? recipes?.[0]
-      : recipes?.find(recipe => recipe.provider === clusterProvider)
+      : recipes?.find((recipe) => recipe.provider === clusterProvider)
 
   return (
     <Modal
@@ -270,8 +266,8 @@ function InstallModal({
             size="small"
           />
         </Flex>
-        {!isCloudShellCluster
-          && (recipe ? (
+        {!isCloudShellCluster &&
+          (recipe ? (
             <CliCommand
               name={name}
               type={type}
@@ -284,8 +280,8 @@ function InstallModal({
                 {clusterProvider && (
                   <>, {providerToLongName[clusterProvider]}</>
                 )}
-                . You may try creating a new cluster with one of the providers below.
-                below.
+                . You may try creating a new cluster with one of the providers
+                below. below.
               </P>
               <RecipeTabs
                 name={name}

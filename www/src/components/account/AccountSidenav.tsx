@@ -19,7 +19,7 @@ const DIRECTORY = [
 
 function AccountTabList({ tabStateRef }: any) {
   const { pathname } = useLocation()
-  const currentTab = DIRECTORY.find(tab => pathname?.startsWith(tab.path))
+  const currentTab = DIRECTORY.find((tab) => pathname?.startsWith(tab.path))
 
   return (
     <TabList
@@ -29,16 +29,15 @@ function AccountTabList({ tabStateRef }: any) {
         selectedKey: currentTab?.path,
       }}
     >
-      {DIRECTORY
-        .map(({ label, path }) => (
-          <LinkTabWrap
-            key={path}
-            textValue={label}
-            to={path}
-          >
-            <Tab>{label}</Tab>
-          </LinkTabWrap>
-        ))}
+      {DIRECTORY.map(({ label, path }) => (
+        <LinkTabWrap
+          key={path}
+          textValue={label}
+          to={path}
+        >
+          <Tab>{label}</Tab>
+        </LinkTabWrap>
+      ))}
     </TabList>
   )
 }
@@ -50,11 +49,7 @@ export default function AccountSideNav({ tabStateRef = {} }: any) {
     <SideNavOffset>
       <PageCard
         marginBottom="large"
-        heading={(
-          <Div wordBreak="break-word">
-            {me?.account?.name || ''}
-          </Div>
-        )}
+        heading={<Div wordBreak="break-word">{me?.account?.name || ''}</Div>}
         subheading={me?.publisher ? 'Publisher' : undefined}
         icon={{ name: me?.account?.name || '?' }}
       />

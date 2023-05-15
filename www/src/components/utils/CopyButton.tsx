@@ -1,10 +1,4 @@
-import {
-  Ref,
-  forwardRef,
-  useCallback,
-  useEffect,
-  useState,
-} from 'react'
+import { Ref, forwardRef, useCallback, useEffect, useState } from 'react'
 import { CheckIcon, CopyIcon, IconFrame } from '@pluralsh/design-system'
 
 type CopyButtonProps = {
@@ -12,7 +6,10 @@ type CopyButtonProps = {
   type?: 'secondary' | 'tertiary' | 'floating'
 }
 
-function CopyButtonRef({ text, type = 'floating' }: CopyButtonProps, ref: Ref<any>) {
+function CopyButtonRef(
+  { text, type = 'floating' }: CopyButtonProps,
+  ref: Ref<any>
+) {
   const [copied, setCopied] = useState(false)
 
   useEffect(() => {
@@ -23,7 +20,13 @@ function CopyButtonRef({ text, type = 'floating' }: CopyButtonProps, ref: Ref<an
     }
   }, [copied])
 
-  const handleCopy = useCallback(() => window.navigator.clipboard.writeText(text ?? '').then(() => setCopied(true)), [text])
+  const handleCopy = useCallback(
+    () =>
+      window.navigator.clipboard
+        .writeText(text ?? '')
+        .then(() => setCopied(true)),
+    [text]
+  )
 
   return (
     <IconFrame

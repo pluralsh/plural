@@ -6,7 +6,8 @@ import { PackageActions } from '../misc'
 
 export default function PackageConfiguration() {
   const { currentHelmChart, currentTerraformChart } = useOutletContext() as any
-  const valuesTemplate = (currentHelmChart || currentTerraformChart)?.valuesTemplate
+  const valuesTemplate = (currentHelmChart || currentTerraformChart)
+    ?.valuesTemplate
 
   return (
     <Flex
@@ -17,7 +18,9 @@ export default function PackageConfiguration() {
     >
       <Div>
         <PageTitle heading="Configuration">
-          <Flex display-desktop-up="none"><PackageActions /></Flex>
+          <Flex display-desktop-up="none">
+            <PackageActions />
+          </Flex>
         </PageTitle>
       </Div>
       <Flex
@@ -30,9 +33,12 @@ export default function PackageConfiguration() {
             maxHeight="100%"
             language="yaml"
             onSelectedTabChange={() => {}}
-          >{valuesTemplate}
+          >
+            {valuesTemplate}
           </Code>
-        ) : <Div body2>No configuration found.</Div>}
+        ) : (
+          <Div body2>No configuration found.</Div>
+        )}
       </Flex>
     </Flex>
   )

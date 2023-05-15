@@ -1,12 +1,7 @@
 import { useMutation, useQuery } from '@apollo/client'
 import { Box } from 'grommet'
 import { useState } from 'react'
-import {
-  Date,
-  InfoIcon,
-  PageTitle,
-  Tooltip,
-} from '@pluralsh/design-system'
+import { Date, InfoIcon, PageTitle, Tooltip } from '@pluralsh/design-system'
 import { Div, Span } from 'honorable'
 
 import { updateCache } from '../../utils/graphql'
@@ -17,18 +12,25 @@ import { Table, TableData, TableRow } from '../utils/Table'
 import { DeleteIconButton } from '../utils/IconButtons'
 import LoadingIndicator from '../utils/LoadingIndicator'
 
-const TOOLTIP = 'EAB credentials are used to generate an ACME account for certificate issuance in your clusters. '
-  + 'These should be recycled on `plural destroy`.'
+const TOOLTIP =
+  'EAB credentials are used to generate an ACME account for certificate issuance in your clusters. ' +
+  'These should be recycled on `plural destroy`.'
 
 function EabCredential({ credential, last }: any) {
   const [confirm, setConfirm] = useState(false)
   const [mutation, { loading, error }] = useMutation(DELETE_EAB_CREDENTIALS, {
     variables: { id: credential.id },
     // @ts-expect-error
-    update: (cache, { data: { deleteEabKey } }) => updateCache(cache, {
-      query: EAB_CREDENTIALS,
-      update: prev => ({ ...prev, eabCredentials: prev.eabCredentials.filter(({ id }) => id !== deleteEabKey.id) }),
-    }),
+    update: (cache, { data: { deleteEabKey } }) =>
+      updateCache(cache, {
+        query: EAB_CREDENTIALS,
+        update: (prev) => ({
+          ...prev,
+          eabCredentials: prev.eabCredentials.filter(
+            ({ id }) => id !== deleteEabKey.id
+          ),
+        }),
+      }),
     onCompleted: () => setConfirm(false),
   })
 
@@ -40,8 +42,12 @@ function EabCredential({ credential, last }: any) {
       >
         <TableData>{credential.keyId}</TableData>
         <TableData>{obscure(credential.hmacKey)}</TableData>
-        <TableData>{credential.provider}/{credential.cluster}</TableData>
-        <TableData><Date date={credential.insertedAt} /></TableData>
+        <TableData>
+          {credential.provider}/{credential.cluster}
+        </TableData>
+        <TableData>
+          <Date date={credential.insertedAt} />
+        </TableData>
       </TableRow>
       <Confirm
         open={confirm}
@@ -58,7 +64,9 @@ function EabCredential({ credential, last }: any) {
 }
 
 export function EabCredentials() {
-  const { data } = useQuery(EAB_CREDENTIALS, { fetchPolicy: 'cache-and-network' })
+  const { data } = useQuery(EAB_CREDENTIALS, {
+    fetchPolicy: 'cache-and-network',
+  })
 
   if (!data) return <LoadingIndicator />
 
@@ -83,23 +91,24 @@ export function EabCredentials() {
         </Tooltip>
       </PageTitle>
       <Box fill>
-        {data.eabCredentials?.length
-          ? (
-            <Table
-              headers={['Key ID', 'HMAC key', 'Cluster', 'Created']}
-              sizes={['27%', '27%', '26%', '20%']}
-              background="fill-one"
-              border="1px solid border"
-            >
-              {data.eabCredentials.map((c, i, a) => (
-                <EabCredential
-                  key={c.id}
-                  credential={c}
-                  last={i === a.length - 1}
-                />
-              ))}
-            </Table>
-          ) : (<Span>You do not have any EAB credentials keys yet.</Span>)}
+        {data.eabCredentials?.length ? (
+          <Table
+            headers={['Key ID', 'HMAC key', 'Cluster', 'Created']}
+            sizes={['27%', '27%', '26%', '20%']}
+            background="fill-one"
+            border="1px solid border"
+          >
+            {data.eabCredentials.map((c, i, a) => (
+              <EabCredential
+                key={c.id}
+                credential={c}
+                last={i === a.length - 1}
+              />
+            ))}
+          </Table>
+        ) : (
+          <Span>You do not have any EAB credentials keys yet.</Span>
+        )}
       </Box>
     </Div>
   )

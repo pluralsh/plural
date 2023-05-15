@@ -13,12 +13,7 @@ import {
 } from '@pluralsh/design-system'
 import { Div, Flex } from 'honorable'
 import { Drop } from 'grommet'
-import {
-  Dispatch,
-  useMemo,
-  useRef,
-  useState,
-} from 'react'
+import { Dispatch, useMemo, useRef, useState } from 'react'
 
 import { Repository, RepositoryEdge } from '../../../../../generated/graphql'
 
@@ -47,22 +42,26 @@ const ORDER = {
   job: 7,
 }
 
-const kindInd = kind => ORDER[kind.toLowerCase()] || 7
+const kindInd = (kind) => ORDER[kind.toLowerCase()] || 7
 
-function orderBy({ kind: k1, name: n1, status: s1 }, { kind: k2, name: n2, status: s2 }) {
+function orderBy(
+  { kind: k1, name: n1, status: s1 },
+  { kind: k2, name: n2, status: s2 }
+) {
   if (s1 !== s2) return s1 > s2 ? 1 : -1 // Ready > Pending, and all ready comps should follow pending ones
-  if (k1 === k2) return (n1 > n2) ? 1 : ((n1 === n2) ? 0 : -1)
+  if (k1 === k2) return n1 > n2 ? 1 : n1 === n2 ? 0 : -1
 
   return kindInd(k1) - kindInd(k2)
 }
 
 function ComponentStatuses({ components }) {
-  const name = ({ group, kind, name }) => `${group || 'v1'}/${kind.toLowerCase()} ${name}`
+  const name = ({ group, kind, name }) =>
+    `${group || 'v1'}/${kind.toLowerCase()} ${name}`
   const sorted = useMemo(() => components.sort(orderBy), [components])
 
   return (
     <Flex direction="column">
-      {sorted.map(comp => (
+      {sorted.map((comp) => (
         <ListBoxItem
           key={name(comp)}
           textValue={name(comp)}
@@ -93,7 +92,8 @@ function Status({ app }) {
         whiteSpace="nowrap"
         onClick={() => setOpen(true)}
         severity={ready ? 'success' : 'warning'}
-      >{text}
+      >
+        {text}
       </Chip>
       {open && (
         <Drop
@@ -108,7 +108,11 @@ function Status({ app }) {
   )
 }
 
-const toAppProps = ({ node: repository }: RepositoryEdge, appInfo: any, onAction: Dispatch<string>): AppProps => {
+const toAppProps = (
+  { node: repository }: RepositoryEdge,
+  appInfo: any,
+  onAction: Dispatch<string>
+): AppProps => {
   const app = appInfo[repository!.name]
   const domain = app?.spec?.links?.length > 0 ? app.spec?.links[0].url : null
   const isAlive = !!repository!.installation?.pingedAt
@@ -133,22 +137,40 @@ const toAppProps = ({ node: repository }: RepositoryEdge, appInfo: any, onAction
   }
 }
 
-const toActions = (repository: Repository, onAction: Dispatch<string>): Array<AppMenuAction> => {
+const toActions = (
+  repository: Repository,
+  onAction: Dispatch<string>
+): Array<AppMenuAction> => {
   const rebuildCommand = `plural build --only ${repository.name} && plural deploy --from ${repository.name} --commit "rebuilding ${repository.name}"`
   const deleteCommand = `plural destroy ${repository.name}`
   const watchCommand = `plural watch ${repository.name}`
 
   return [
-    { label: 'Rebuild', onSelect: () => onAction(rebuildCommand), leftContent: <ReloadIcon /> },
-    { label: 'Check Health', onSelect: () => onAction(watchCommand), leftContent: <LifePreserverIcon /> },
     {
-      label: 'Delete', onSelect: () => onAction(deleteCommand), destructive: true, leftContent: <TrashCanIcon color="text-danger" />,
+      label: 'Rebuild',
+      onSelect: () => onAction(rebuildCommand),
+      leftContent: <ReloadIcon />,
+    },
+    {
+      label: 'Check Health',
+      onSelect: () => onAction(watchCommand),
+      leftContent: <LifePreserverIcon />,
+    },
+    {
+      label: 'Delete',
+      onSelect: () => onAction(deleteCommand),
+      destructive: true,
+      leftContent: <TrashCanIcon color="text-danger" />,
     },
   ]
 }
 
 function PrimaryActionButton({
-  name, domain, promoted, isAlive, app,
+  name,
+  domain,
+  promoted,
+  isAlive,
+  app,
 }): JSX.Element {
   const [visible, setVisible] = useState(false)
   const { shown } = useLaunchAppModal()
@@ -177,12 +199,13 @@ function PrimaryActionButton({
             secondary={!promoted}
             disabled={!isAlive}
             onClick={() => !shown && setVisible(true)}
-            {...(isAlive && shown && {
-              as: 'a',
-              href: `https://${domain}`,
-              target: '_blank',
-              rel: 'noopener noreferer',
-            })}
+            {...(isAlive &&
+              shown && {
+                as: 'a',
+                href: `https://${domain}`,
+                target: '_blank',
+                rel: 'noopener noreferer',
+              })}
           >
             <div className="app-launch-btn">Launch</div>
             <ArrowTopRightIcon />

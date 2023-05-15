@@ -8,7 +8,10 @@ type ListCardProps = {
 } & CardProps
 
 export default function ListCard({
-  header, input, children, ...props
+  header,
+  input,
+  children,
+  ...props
 }: ListCardProps) {
   return (
     <Card
@@ -55,4 +58,3 @@ export default function ListCard({
     </Card>
   )
 }
-

@@ -31,79 +31,123 @@ import { APPLICATIONS_QUERY } from './queries'
 
 const FILTERED_APPS = ['bootstrap', 'ingress-nginx', 'postgres', 'monitoring']
 const FORCED_APPS = {
-  console: 'The Plural Console will allow you to monitor, upgrade, and deploy applications easily from one centralized place.',
+  console:
+    'The Plural Console will allow you to monitor, upgrade, and deploy applications easily from one centralized place.',
 }
 
 function Installer({ onInstallSuccess }) {
   const client = useApolloClient()
   const { mutation } = useOnboarded()
-  const { shell: { provider }, configuration, setState } = useContext(TerminalContext)
+  const {
+    shell: { provider },
+    configuration,
+    setState,
+  } = useContext(TerminalContext)
   const me = useContext(CurrentUserContext)
-  const onResetRef = useRef<{onReset: Dispatch<void>}>({ onReset: () => {} })
+  const onResetRef = useRef<{ onReset: Dispatch<void> }>({ onReset: () => {} })
   const [searchParams] = useSearchParams()
 
   const [stepsLoading, setStepsLoading] = useState(false)
   const [steps, setSteps] = useState<Array<WizardStepConfig>>([])
   const [error, setError] = useState<ApolloError | undefined>()
   const [defaultSteps, setDefaultSteps] = useState<Array<WizardStepConfig>>([])
-  const [selectedApplications, setSelectedApplications] = useState<Array<string>>([])
+  const [selectedApplications, setSelectedApplications] = useState<
+    Array<string>
+  >([])
 
-  const { data: { repositories: { edges: applicationNodes } = { edges: undefined } } = {}, refetch } = useQuery(APPLICATIONS_QUERY, {
+  const {
+    data: {
+      repositories: { edges: applicationNodes } = { edges: undefined },
+    } = {},
+    refetch,
+  } = useQuery(APPLICATIONS_QUERY, {
     variables: { provider },
     skip: !provider,
     fetchPolicy: 'network-only',
   })
 
-  const applications = useMemo(() => applicationNodes?.map(({ node }) => node).filter(app => !FILTERED_APPS.includes(app?.name)), [applicationNodes])
+  const applications = useMemo(
+    () =>
+      applicationNodes
+        ?.map(({ node }) => node)
+        .filter((app) => !FILTERED_APPS.includes(app?.name)),
+    [applicationNodes]
+  )
   const limit = useMemo(() => (me?.demoing ? 3 : 5), [me?.demoing])
   const preselectedApps = useMemo(() => {
     const names = searchParams.get('install')
 
     if (!names) return undefined
 
-    return Object.fromEntries(names.split(',').map(name => [name, 'Application preselected based on user action.']))
+    return Object.fromEntries(
+      names
+        .split(',')
+        .map((name) => [name, 'Application preselected based on user action.'])
+    )
   }, [searchParams])
 
-  const onInstall = useCallback((payload: Array<WizardStepConfig>) => {
-    setStepsLoading(true)
+  const onInstall = useCallback(
+    (payload: Array<WizardStepConfig>) => {
+      setStepsLoading(true)
 
-    install(client, payload, provider)
-      .then(() => {
-        onResetRef?.current?.onReset()
-        setState(State.Installed)
-        mutation()
-        refetch()
-        posthogCapture(PosthogEvent.Installer, {
-          provider,
-          applications: selectedApplications,
+      install(client, payload, provider)
+        .then(() => {
+          onResetRef?.current?.onReset()
+          setState(State.Installed)
+          mutation()
+          refetch()
+          posthogCapture(PosthogEvent.Installer, {
+            provider,
+            applications: selectedApplications,
+          })
+          onInstallSuccess()
         })
-        onInstallSuccess()
-      })
-      .catch(err => setError(err))
-      .finally(() => setStepsLoading(false))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [client, mutation, provider, refetch, setState])
+        .catch((err) => setError(err))
+        .finally(() => setStepsLoading(false))
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    },
+    [client, mutation, provider, refetch, setState]
+  )
 
-  const onSelect = useCallback((selectedApplications: Array<WizardStepConfig>) => {
-    const build = async () => {
-      const steps = await buildSteps(client, provider, selectedApplications)
+  const onSelect = useCallback(
+    (selectedApplications: Array<WizardStepConfig>) => {
+      const build = async () => {
+        const steps = await buildSteps(client, provider, selectedApplications)
 
-      setSteps(steps)
-    }
+        setSteps(steps)
+      }
 
-    setSelectedApplications(selectedApplications.map(app => app.label ?? 'unknown'))
-    setStepsLoading(true)
-    build().finally(() => setStepsLoading(false))
-  }, [client, provider])
+      setSelectedApplications(
+        selectedApplications.map((app) => app.label ?? 'unknown')
+      )
+      setStepsLoading(true)
+      build().finally(() => setStepsLoading(false))
+    },
+    [client, provider]
+  )
 
-  useEffect(() => setDefaultSteps(toDefaultSteps(applications, provider, {
-    ...preselectedApps,
-    ...FORCED_APPS,
-  })),
-  [applications, preselectedApps, provider])
+  useEffect(
+    () =>
+      setDefaultSteps(
+        toDefaultSteps(applications, provider, {
+          ...preselectedApps,
+          ...FORCED_APPS,
+        })
+      ),
+    [applications, preselectedApps, provider]
+  )
 
   // Capture errors and send to posthog
-  useEffect(() => error && posthogCapture(PosthogEvent.Installer, { error, applications: selectedApplications, provider }), [error, selectedApplications, provider])
+  useEffect(
+    () =>
+      error &&
+      posthogCapture(PosthogEvent.Installer, {
+        error,
+        applications: selectedApplications,
+        provider,
+      }),
+    [error, selectedApplications, provider]
+  )
 
   if (!applications || defaultSteps.length === 0) {
     return (
@@ -141,10 +185,14 @@ function Installer({ onInstallSuccess }) {
         >
           {{
             stepper: <WizardStepper />,
-            navigation: <WizardNavigation
-              onInstall={onInstall}
-              tooltip={me?.demoing ? 'Max 3 applications on GCP demo' : undefined}
-            />,
+            navigation: (
+              <WizardNavigation
+                onInstall={onInstall}
+                tooltip={
+                  me?.demoing ? 'Max 3 applications on GCP demo' : undefined
+                }
+              />
+            ),
           }}
         </Wizard>
       </Div>

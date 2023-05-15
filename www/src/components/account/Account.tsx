@@ -37,18 +37,20 @@ export function Account() {
 
   const params = useParams()
   const subPath = params?.['*']?.split?.('/')[0]
-  const breadcrumbs = useMemo(() => [
-    { label: 'account', url: '/account' },
-    ...(subPath
-      ? [
-        {
-          label: subPath === 'edit' ? 'attributes' : subPath,
-          url: `/account/${subPath}`,
-        },
-      ]
-      : []),
-  ],
-  [subPath])
+  const breadcrumbs = useMemo(
+    () => [
+      { label: 'account', url: '/account' },
+      ...(subPath
+        ? [
+            {
+              label: subPath === 'edit' ? 'attributes' : subPath,
+              url: `/account/${subPath}`,
+            },
+          ]
+        : []),
+    ],
+    [subPath]
+  )
 
   useSetBreadcrumbs(breadcrumbs)
 
@@ -67,7 +69,7 @@ export function Account() {
       >
         <ResponsiveLayoutSpacer />
         <TabPanel
-          as={(<ResponsiveLayoutContentContainer overflow="visible" />)}
+          as={<ResponsiveLayoutContentContainer overflow="visible" />}
           stateRef={tabStateRef}
         >
           <Outlet />

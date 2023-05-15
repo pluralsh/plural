@@ -1,30 +1,12 @@
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useRef,
-  useState,
-} from 'react'
+import { createContext, useCallback, useContext, useRef, useState } from 'react'
 import { FilePicker } from 'react-file-picker'
 import { useMutation } from '@apollo/client'
-import {
-  Box,
-  Drop,
-  Keyboard,
-  Layer,
-  Stack,
-  Text,
-} from 'grommet'
+import { Box, Drop, Keyboard, Layer, Stack, Text } from 'grommet'
 import { MoonLoader, SyncLoader } from 'react-spinners'
 import { Progress } from 'react-sweet-progress'
 import { Editor as SlateEditor, Transforms } from 'slate'
 import { useParams } from 'react-router-dom'
-import {
-  Attachment,
-  Close,
-  Emoji,
-  SendMessage,
-} from 'forge-core'
+import { Attachment, Close, Emoji, SendMessage } from 'forge-core'
 import { filesize as fs } from 'filesize'
 import { NimbleEmoji, emojiIndex } from 'emoji-mart'
 import { ThemeContext } from 'styled-components'
@@ -53,37 +35,50 @@ export const MessageScrollContext = createContext<any>({})
 export function fetchUsers(client, query, incidentId) {
   if (!query) return
 
-  return client.query({
-    query: SEARCH_USERS,
-    variables: { q: query, incidentId },
-  })
-    .then(({ data }) => data.searchUsers.edges.map(edge => ({
-      key: edge.node.id,
-      value: userNode(edge.node),
-      suggestion: userSuggestion(edge.node),
-    })))
+  return client
+    .query({
+      query: SEARCH_USERS,
+      variables: { q: query, incidentId },
+    })
+    .then(({ data }) =>
+      data.searchUsers.edges.map((edge) => ({
+        key: edge.node.id,
+        value: userNode(edge.node),
+        suggestion: userSuggestion(edge.node),
+      }))
+    )
 }
 
 function fetchEmojis(client, query) {
   if (!query) return
 
-  return Promise.resolve(emojiIndex
-    .search(query)
-    .slice(0, 5)
-    .map(emoji => ({
-      key: emoji.colons,
-      value: emojiNode(emoji),
-      suggestion: emojiSuggestion(emoji),
-    })))
+  return Promise.resolve(
+    emojiIndex
+      .search(query)
+      .slice(0, 5)
+      .map((emoji) => ({
+        key: emoji.colons,
+        value: emojiNode(emoji),
+        suggestion: emojiSuggestion(emoji),
+      }))
+  )
 }
 
-export const emojiNode = emoji => {
+export const emojiNode = (emoji) => {
   const name = emoji.short_names ? emoji.short_names[0] : emoji.name
 
-  return { type: EntityType.EMOJI, children: [{ text: name }], emoji: { ...emoji, name } }
+  return {
+    type: EntityType.EMOJI,
+    children: [{ text: name }],
+    emoji: { ...emoji, name },
+  }
 }
 
-export const userNode = user => ({ type: EntityType.MENTION, children: [{ text: user.name }], user })
+export const userNode = (user) => ({
+  type: EntityType.MENTION,
+  children: [{ text: user.name }],
+  user,
+})
 
 export function userSuggestion(user) {
   return (
@@ -108,7 +103,8 @@ export function userSuggestion(user) {
         <Text
           size="small"
           weight={500}
-        >{user.name}
+        >
+          {user.name}
         </Text>
       </Box>
       <Box
@@ -144,9 +140,7 @@ function* extractEntities(editorState) {
   let startIndex = 0
 
   for (const { children } of editorState) {
-    for (const {
-      type, text, user, ...child
-    } of children) {
+    for (const { type, text, user, ...child } of children) {
       let content = text
 
       if (EntityType[type]) {
@@ -171,11 +165,9 @@ const insertEmoji = (editor, emoji) => {
 
   if (editor.selection) {
     at = editor.selection
-  }
-  else if (editor.children.length > 0) {
+  } else if (editor.children.length > 0) {
     at = SlateEditor.end(editor, [])
-  }
-  else {
+  } else {
     at = [0]
   }
   Transforms.insertNodes(editor, emojiNode(emoji), { at })
@@ -194,15 +186,16 @@ function SendMsg({ loading, empty, onClick }: any) {
       align="center"
       justify="center"
       onClick={empty ? null : onClick}
-      background={loading ? undefined : (empty ? undefined : 'success')}
+      background={loading ? undefined : empty ? undefined : 'success'}
     >
-      {loading
-        ? <MoonLoader size={20} /> : (
-          <SendMessage
-            size="23px"
-            color={empty ? 'light-3' : 'white'}
-          />
-        )}
+      {loading ? (
+        <MoonLoader size={20} />
+      ) : (
+        <SendMessage
+          size="23px"
+          color={empty ? 'light-3' : 'white'}
+        />
+      )}
     </Box>
   )
 }
@@ -212,7 +205,7 @@ function FileInput() {
 
   return (
     <FilePicker
-      onChange={file => setAttachment(file)}
+      onChange={(file) => setAttachment(file)}
       maxSize={2000}
       onError={console.log}
     >
@@ -261,7 +254,7 @@ function EmojiInput({ editor }: any) {
           align={{ bottom: 'top' }}
           onClickOutside={() => setOpen(false)}
         >
-          <EmojiPicker onSelect={emoji => insertEmoji(editor, emoji)} />
+          <EmojiPicker onSelect={(emoji) => insertEmoji(editor, emoji)} />
         </Drop>
       )}
     </>
@@ -269,7 +262,10 @@ function EmojiInput({ editor }: any) {
 }
 
 function UploadProgress({
-  attachment, uploadProgress, setAttachment, empty,
+  attachment,
+  uploadProgress,
+  setAttachment,
+  empty,
 }: any) {
   return (
     <Layer
@@ -295,22 +291,27 @@ function UploadProgress({
               <Text
                 size="small"
                 weight={500}
-              >{attachment.name}
+              >
+                {attachment.name}
               </Text>
               <Text
                 size="small"
                 color="dark-3"
-              >{fs(attachment.size)?.toString()}
+              >
+                {fs(attachment.size)?.toString()}
               </Text>
             </Box>
           )}
-          {!uploadProgress
-            ? <Text size="small">{empty ? 'add a message and upload' : 'press enter to upload'}</Text> : (
-              <Progress
-                percent={uploadProgress}
-                status={uploadProgress === 100 ? 'success' : 'active'}
-              />
-            )}
+          {!uploadProgress ? (
+            <Text size="small">
+              {empty ? 'add a message and upload' : 'press enter to upload'}
+            </Text>
+          ) : (
+            <Progress
+              percent={uploadProgress}
+              status={uploadProgress === 100 ? 'success' : 'active'}
+            />
+          )}
         </Box>
         <Box
           flex={false}
@@ -340,7 +341,7 @@ function Typing() {
   const { name: ignore } = useContext(CurrentUserContext)
   const { typists } = useContext(PresenceContext)
   const theme = useContext(ThemeContext)
-  const typing = typists.filter(name => name !== ignore)
+  const typing = typists.filter((name) => name !== ignore)
   const len = typing.length
 
   if (len === 0) {
@@ -350,8 +351,7 @@ function Typing() {
 
   if (len === 1) {
     text = { users: typing[0], suffix: 'is typing' }
-  }
-  else if (len <= 3) {
+  } else if (len <= 3) {
     text = { users: typing.join(', '), suffix: 'are typing' }
   }
 
@@ -365,12 +365,14 @@ function Typing() {
         color="dark-4"
         size="xsmall"
         weight={500}
-      >{text.users}
+      >
+        {text.users}
       </Text>
       <Text
         color="dark-4"
         size="xsmall"
-      >{text.suffix}
+      >
+        {text.suffix}
       </Text>
       <Box pad={{ vertical: '2px' }}>
         <SyncLoader
@@ -395,18 +397,20 @@ export function MessageInput() {
     context: {
       fetchOptions: {
         useUpload: !!attachment,
-        onProgress: ev => setUploadProgress(Math.round((ev.loaded / ev.total) * 100)),
+        onProgress: (ev) =>
+          setUploadProgress(Math.round((ev.loaded / ev.total) * 100)),
         onAbortPossible: () => null,
       },
     },
-    update: (cache, { data: { createMessage } }) => updateCache(cache, {
-      query: INCIDENT_Q,
-      variables: { id: incidentId },
-      update: ({ incident, ...prev }) => ({
-        ...prev,
-        incident: appendConnection(incident, createMessage, 'messages'),
+    update: (cache, { data: { createMessage } }) =>
+      updateCache(cache, {
+        query: INCIDENT_Q,
+        variables: { id: incidentId },
+        update: ({ incident, ...prev }) => ({
+          ...prev,
+          incident: appendConnection(incident, createMessage, 'messages'),
+        }),
       }),
-    }),
     onCompleted: () => {
       returnToBeginning()
       setUploadProgress(0)
@@ -421,7 +425,11 @@ export function MessageInput() {
     const file = attachment ? { blob: attachment } : null
 
     // @ts-expect-error
-    mutation({ variables: { attributes: { text: plainSerialize(editorState), file, entities } } })
+    mutation({
+      variables: {
+        attributes: { text: plainSerialize(editorState), file, entities },
+      },
+    })
     Transforms.select(editor, SlateEditor.start(editor, []))
     setEditorState(plainDeserialize(''))
   }, [mutation, setEditorState, editorState, editor, disable, attachment])
@@ -449,12 +457,13 @@ export function MessageInput() {
         round="xsmall"
         margin={{ horizontal: 'small', bottom: 'small' }}
       >
-        <Keyboard onKeyDown={e => {
-          if (e.key === 'Enter' && !e.shiftKey && !empty) {
-            submit()
-            e.preventDefault()
-          }
-        }}
+        <Keyboard
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' && !e.shiftKey && !empty) {
+              submit()
+              e.preventDefault()
+            }
+          }}
         >
           <Box
             fill="horizontal"

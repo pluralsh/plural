@@ -9,12 +9,7 @@ import {
   SecondaryButton,
   Trash,
 } from 'forge-core'
-import {
-  Box,
-  Layer,
-  Text,
-  TextInput,
-} from 'grommet'
+import { Box, Layer, Text, TextInput } from 'grommet'
 
 import { useMutation, useQuery } from '@apollo/client'
 
@@ -28,9 +23,7 @@ import { WebhookLog } from './WebhookLog'
 import { DELETE_WEBHOOK, UPDATE_WEBHOOK, WEBHOOK_Q } from './queries'
 import { ActionInput, ActionTab } from './CreateWebhook'
 
-export function Container({
-  title, children, modifier, ...props
-}: any) {
+export function Container({ title, children, modifier, ...props }: any) {
   return (
     <Box
       {...props}
@@ -49,32 +42,36 @@ export function Container({
           <Text
             size="small"
             weight={500}
-          >{title}
+          >
+            {title}
           </Text>
         </Box>
         {modifier}
       </Box>
-      <Box fill>
-        {children}
-      </Box>
+      <Box fill>{children}</Box>
     </Box>
   )
 }
 
 function WebhookLogs({
-  webhook: { logs: { pageInfo, edges } }, loading, fetchMore, refetch,
+  webhook: {
+    logs: { pageInfo, edges },
+  },
+  loading,
+  fetchMore,
+  refetch,
 }: any) {
   const [listRef, setListRef] = useState<any>(null)
 
   return (
     <Container
       title="webhook logs"
-      modifier={(
+      modifier={
         <Control
           icon={<Reload size="small" />}
           onClick={() => refetch()}
         />
-      )}
+      }
     >
       <StandardScroller
         listRef={listRef}
@@ -89,12 +86,27 @@ function WebhookLogs({
             next={next.node}
           />
         )}
-        loadNextPage={() => pageInfo.hasNextPage && fetchMore({
-          variables: { cursor: pageInfo.endCursor },
-          updateQuery: (prev, { fetchMoreResult: { integrationWebhook: { logs } } }) => ({
-            ...prev, integrationWebhook: extendConnection(prev.integrationWebhook, logs, 'logs'),
-          }),
-        })}
+        loadNextPage={() =>
+          pageInfo.hasNextPage &&
+          fetchMore({
+            variables: { cursor: pageInfo.endCursor },
+            updateQuery: (
+              prev,
+              {
+                fetchMoreResult: {
+                  integrationWebhook: { logs },
+                },
+              }
+            ) => ({
+              ...prev,
+              integrationWebhook: extendConnection(
+                prev.integrationWebhook,
+                logs,
+                'logs'
+              ),
+            }),
+          })
+        }
       />
     </Container>
   )
@@ -112,12 +124,11 @@ export function Attribute({ name, width, children }: any) {
         <Text
           size="small"
           weight="bold"
-        >{name}
+        >
+          {name}
         </Text>
       </Box>
-      <Box fill="horizontal">
-        {children}
-      </Box>
+      <Box fill="horizontal">{children}</Box>
     </Box>
   )
 }
@@ -144,12 +155,12 @@ function WebhookHeader({ webhook, setEdit }: any) {
     <Container
       flex={false}
       title={webhook.name}
-      modifier={(
+      modifier={
         <WebhookControls
           webhook={webhook}
           setEdit={setEdit}
         />
-      )}
+      }
     >
       <Box
         flex={false}
@@ -165,13 +176,14 @@ function WebhookHeader({ webhook, setEdit }: any) {
               noBorder
               pillText="Copied webhook secret"
               text={webhook.secret}
-              displayText={(
+              displayText={
                 <Text
                   size="small"
                   color="dark-3"
-                >({webhook.secret.substring(0, 9) + 'x'.repeat(15)})
+                >
+                  ({webhook.secret.substring(0, 9) + 'x'.repeat(15)})
                 </Text>
-              )}
+              }
             />
           </Attribute>
           <Box
@@ -182,7 +194,7 @@ function WebhookHeader({ webhook, setEdit }: any) {
             align="center"
             wrap
           >
-            {webhook.actions.map(action => (
+            {webhook.actions.map((action) => (
               <ActionTab
                 key={action}
                 action={action}
@@ -254,7 +266,9 @@ function WebhookControls({ webhook, setEdit }: any) {
               pad="small"
               gap="small"
             >
-              <Text size="small"><i>Are you sure you want to delete {webhook.name}</i></Text>
+              <Text size="small">
+                <i>Are you sure you want to delete {webhook.name}</i>
+              </Text>
               <Box
                 direction="row"
                 align="center"
@@ -281,7 +295,11 @@ function WebhookControls({ webhook, setEdit }: any) {
 }
 
 function EditWebhook({ webhook, setEdit }: any) {
-  const [attributes, setAttributes] = useState({ name: webhook.name, url: webhook.url, actions: webhook.actions })
+  const [attributes, setAttributes] = useState({
+    name: webhook.name,
+    url: webhook.url,
+    actions: webhook.actions,
+  })
   const [mutation, { loading }] = useMutation(UPDATE_WEBHOOK, {
     variables: { id: webhook.id, attributes },
     onCompleted: () => setEdit(false),
@@ -309,7 +327,9 @@ function EditWebhook({ webhook, setEdit }: any) {
           >
             <TextInput
               value={attributes.name}
-              onChange={({ target: { value } }) => setAttributes({ ...attributes, name: value })}
+              onChange={({ target: { value } }) =>
+                setAttributes({ ...attributes, name: value })
+              }
             />
           </Box>
         </Box>
@@ -338,12 +358,14 @@ function EditWebhook({ webhook, setEdit }: any) {
         <TextInput
           placeholder="url to deliver to"
           value={attributes.url}
-          onChange={({ target: { value } }) => setAttributes({ ...attributes, url: value })}
+          onChange={({ target: { value } }) =>
+            setAttributes({ ...attributes, url: value })
+          }
         />
         <ActionInput
           actions={attributes.actions}
           colors={{ bg: 'card', hover: 'cardHover' }}
-          setActions={actions => setAttributes({ ...attributes, actions })}
+          setActions={(actions) => setAttributes({ ...attributes, actions })}
         />
       </Box>
     </Box>
@@ -353,13 +375,17 @@ function EditWebhook({ webhook, setEdit }: any) {
 export function Webhook() {
   const [edit, setEdit] = useState(false)
   const { id } = useParams()
-  const {
-    data, fetchMore, loading, refetch,
-  } = useQuery(WEBHOOK_Q, { variables: { id }, fetchPolicy: 'cache-and-network' })
+  const { data, fetchMore, loading, refetch } = useQuery(WEBHOOK_Q, {
+    variables: { id },
+    fetchPolicy: 'cache-and-network',
+  })
   const { setBreadcrumbs } = useContext(BreadcrumbsContext)
 
   useEffect(() => {
-    setBreadcrumbs([{ url: '/webhooks', text: 'webhooks' }, { url: `/webhooks/${id}`, text: id }])
+    setBreadcrumbs([
+      { url: '/webhooks', text: 'webhooks' },
+      { url: `/webhooks/${id}`, text: id },
+    ])
   }, [setBreadcrumbs, id])
 
   if (!data) return null

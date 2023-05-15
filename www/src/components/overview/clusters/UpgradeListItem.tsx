@@ -6,10 +6,14 @@ import { Flex } from 'honorable'
 import { Upgrade } from '../../../generated/graphql'
 
 export default function UpgradeListItem({
-  upgrade: {
-    id, insertedAt, repository, message,
-  }, acked, last,
-}: { upgrade: Upgrade, acked: string, last: boolean }): ReactElement | null {
+  upgrade: { id, insertedAt, repository, message },
+  acked,
+  last,
+}: {
+  upgrade: Upgrade
+  acked: string
+  last: boolean
+}): ReactElement | null {
   const delivered = acked && id <= acked
 
   return (
@@ -20,13 +24,13 @@ export default function UpgradeListItem({
       borderBottom={last ? undefined : '1px solid border'}
     >
       <IconFrame
-        icon={(
+        icon={
           <img
             src={repository?.darkIcon || repository?.icon || ''}
             width="16"
             height="16"
           />
-        )}
+        }
         marginRight="xxsmall"
         size="medium"
         type="floating"

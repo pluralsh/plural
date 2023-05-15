@@ -52,7 +52,9 @@ function RoadmapIssue({
               flexShrink={0}
               color="text-xlight"
             >
-              {moment(issue.closedAt ? issue.closedAt : issue.createdAt).fromNow(true)}
+              {moment(
+                issue.closedAt ? issue.closedAt : issue.createdAt
+              ).fromNow(true)}
             </P>
           </Flex>
           <P
@@ -110,11 +112,7 @@ function RoadmapIssue({
   )
 }
 
-const toReplaces = [
-  /<img .*>/g,
-  /^<!--.*-->/g,
-  /^#.*/g,
-]
+const toReplaces = [/<img .*>/g, /^<!--.*-->/g, /^#.*/g]
 
 function prepareIssueBody(body: string) {
   const texts = body.split('\n')
@@ -122,7 +120,7 @@ function prepareIssueBody(body: string) {
   texts.forEach((text, i) => {
     let nextText = text
 
-    toReplaces.forEach(toReplace => {
+    toReplaces.forEach((toReplace) => {
       nextText = nextText.replaceAll(toReplace, '')
     })
 

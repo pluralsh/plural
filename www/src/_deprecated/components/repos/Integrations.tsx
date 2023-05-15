@@ -8,12 +8,7 @@ import {
   ScrollableContainer,
   Scroller,
 } from 'forge-core'
-import {
-  Anchor,
-  Box,
-  Stack,
-  Text,
-} from 'grommet'
+import { Anchor, Box, Stack, Text } from 'grommet'
 import { ArrowRightIcon, CaretLeftIcon } from '@pluralsh/design-system'
 
 import { chunk } from '../../../utils/array'
@@ -28,7 +23,13 @@ import { INTEGRATIONS_Q } from './queries'
 const ICON_SIZE = 50
 
 function Integration({
-  name, description, icon, tags, sourceUrl, publisher, width,
+  name,
+  description,
+  icon,
+  tags,
+  sourceUrl,
+  publisher,
+  width,
 }: any) {
   const navigate = useNavigate()
   const [hover, setHover] = useState(false)
@@ -63,7 +64,8 @@ function Integration({
             <Text
               weight={500}
               size="small"
-            >{name}
+            >
+              {name}
             </Text>
             {publisher && (
               <Box
@@ -83,7 +85,8 @@ function Integration({
           <Text
             color="dark-3"
             size="small"
-          >{description}
+          >
+            {description}
           </Text>
           {tags && tags.length > 0 && (
             <Box
@@ -95,7 +98,8 @@ function Integration({
                   key={tag}
                   size="xsmall"
                   color="dark-3"
-                >#{tag}
+                >
+                  #{tag}
                 </Text>
               ))}
             </Box>
@@ -111,21 +115,29 @@ const containerStyling = styled.div`
   border-color: ${(props: any) => props.borderColor};
   border-width: 1px;
   border-style: solid;
-  border-radius: ${(props: any) => props.theme.global.edgeSize[props.round || 'medium']} !important;
+  border-radius: ${(props: any) =>
+    props.theme.global.edgeSize[props.round || 'medium']} !important;
   ${(props: any) => props.width && `width: ${props.width} !important;`}
 
-  ${(props: any) => !props.noHover && `&:hover {
+  ${(props: any) =>
+    !props.noHover &&
+    `&:hover {
       border-color: ${props.brandColor};
       box-shadow: ${props.elevation};
-    }`
-}
+    }`}
   &:hover .modifier {
     display: flex !important;
   }
 `
 
 export function Container({
-  pad, width, setHover, children, modifier, noHover, ...rest
+  pad,
+  width,
+  setHover,
+  children,
+  modifier,
+  noHover,
+  ...rest
 }: any) {
   const theme = useContext(ThemeContext)
 
@@ -185,7 +197,8 @@ function SourceLink({ sourceUrl }: any) {
           <Text
             size="small"
             color="focus"
-          >Source code
+          >
+            Source code
           </Text>
           <ArrowRightIcon size={12} />
         </Box>
@@ -194,12 +207,15 @@ function SourceLink({ sourceUrl }: any) {
   )
 }
 
-function IntegrationGrid({ integrations: { edges, pageInfo }, fetchMore }: any) {
+function IntegrationGrid({
+  integrations: { edges, pageInfo },
+  fetchMore,
+}: any) {
   return (
     <Scroller
       style={{ overflow: 'auto', height: '100%', width: '100%' }}
       edges={Array.from(chunk(edges, 3))}
-      mapper={chunk => (
+      mapper={(chunk) => (
         <Box
           key={chunk[0].id}
           direction="row"
@@ -216,10 +232,14 @@ function IntegrationGrid({ integrations: { edges, pageInfo }, fetchMore }: any) 
           ))}
         </Box>
       )}
-      onLoadMore={() => pageInfo.hasNextPage && fetchMore({
-        variables: { intCursor: pageInfo.endCursor },
-        updateQuery: (prev, { fetchMoreResult: { integrations } }) => extendConnection(prev, integrations, 'integrations'),
-      })}
+      onLoadMore={() =>
+        pageInfo.hasNextPage &&
+        fetchMore({
+          variables: { intCursor: pageInfo.endCursor },
+          updateQuery: (prev, { fetchMoreResult: { integrations } }) =>
+            extendConnection(prev, integrations, 'integrations'),
+        })
+      }
     />
   )
 }
@@ -258,9 +278,15 @@ export function IntegrationPage() {
     const { repository } = data
 
     setBreadcrumbs([
-      { url: `/publishers/${repository.publisher.id}`, text: repository.publisher.name },
+      {
+        url: `/publishers/${repository.publisher.id}`,
+        text: repository.publisher.name,
+      },
       { url: `/repositories/${repository.id}`, text: repository.name },
-      { url: `/repositories/${repository.id}/integrations`, text: 'integrations' },
+      {
+        url: `/repositories/${repository.id}/integrations`,
+        text: 'integrations',
+      },
     ])
   }, [setBreadcrumbs, data])
 
@@ -297,8 +323,9 @@ export function IntegrationPage() {
                 tag={tag}
                 setTag={setTag}
               />
-            )
-              : <Text weight={500}>{repository.name}</Text>}
+            ) : (
+              <Text weight={500}>{repository.name}</Text>
+            )}
           </Box>
           <IntegrationGrid
             integrations={integrations}
@@ -340,7 +367,11 @@ function ViewAll({ repositoryId }: any) {
   )
 }
 
-export default function Integrations({ integrations: { edges, pageInfo }, fetchMore, repository }: any) {
+export default function Integrations({
+  integrations: { edges, pageInfo },
+  fetchMore,
+  repository,
+}: any) {
   return (
     <DetailContainer>
       <Box>
@@ -368,14 +399,16 @@ export default function Integrations({ integrations: { edges, pageInfo }, fetchM
                 updateQuery: (prev, { fetchMoreResult }) => {
                   const { edges, pageInfo } = fetchMoreResult.integrations
 
-                  return edges.length ? {
-                    ...prev,
-                    integrations: {
-                      ...prev.integrations,
-                      pageInfo,
-                      edges: [...prev.integrations.edges, ...edges],
-                    },
-                  } : prev
+                  return edges.length
+                    ? {
+                        ...prev,
+                        integrations: {
+                          ...prev.integrations,
+                          pageInfo,
+                          edges: [...prev.integrations.edges, ...edges],
+                        },
+                      }
+                    : prev
                 },
               })
             }}

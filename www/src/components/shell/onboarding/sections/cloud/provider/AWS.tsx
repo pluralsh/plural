@@ -2,17 +2,15 @@ import { useContext, useEffect, useMemo } from 'react'
 import { Flex } from 'honorable'
 import IsEmpty from 'lodash/isEmpty'
 
-import {
-  FormField,
-  Input,
-  ListBoxItem,
-  Select,
-} from '@pluralsh/design-system'
+import { FormField, Input, ListBoxItem, Select } from '@pluralsh/design-system'
 
 import { OnboardingContext } from '../../../context/onboarding'
 import { IsObjectPartiallyEmpty } from '../../../../../../utils/object'
 import { AWSCloudProvider, CloudProvider } from '../../../context/types'
-import { useSetCloudProviderKeys, useSetWorkspaceKeys } from '../../../context/hooks'
+import {
+  useSetCloudProviderKeys,
+  useSetWorkspaceKeys,
+} from '../../../context/hooks'
 
 const REGIONS = [
   'af-south-1',
@@ -41,29 +39,47 @@ const REGIONS = [
 
 function AWS() {
   const { cloud, setValid, workspace } = useContext(OnboardingContext)
-  const setCloudProviderKeys = useSetCloudProviderKeys<AWSCloudProvider>(CloudProvider.AWS)
+  const setCloudProviderKeys = useSetCloudProviderKeys<AWSCloudProvider>(
+    CloudProvider.AWS
+  )
   const setWorkspaceKeys = useSetWorkspaceKeys()
-  const isValid = useMemo(() => !IsObjectPartiallyEmpty(cloud?.aws) && !!workspace?.region, [cloud, workspace.region])
+  const isValid = useMemo(
+    () => !IsObjectPartiallyEmpty(cloud?.aws) && !!workspace?.region,
+    [cloud, workspace.region]
+  )
 
   useEffect(() => setValid(isValid), [isValid, setValid])
-  useEffect(() => (IsEmpty(workspace?.region) ? setWorkspaceKeys({ region: 'us-east-2' }) : undefined), [setWorkspaceKeys, workspace])
-  useEffect(() => (IsEmpty(cloud?.aws) ? setCloudProviderKeys({ secretKey: '', accessKey: '' }) : undefined), [setCloudProviderKeys, cloud?.aws])
+  useEffect(
+    () =>
+      IsEmpty(workspace?.region)
+        ? setWorkspaceKeys({ region: 'us-east-2' })
+        : undefined,
+    [setWorkspaceKeys, workspace]
+  )
+  useEffect(
+    () =>
+      IsEmpty(cloud?.aws)
+        ? setCloudProviderKeys({ secretKey: '', accessKey: '' })
+        : undefined,
+    [setCloudProviderKeys, cloud?.aws]
+  )
 
   return (
     <>
       <FormField label="Region">
         <Select
           selectedKey={workspace?.region}
-          onSelectionChange={value => setWorkspaceKeys({ region: `${value}` })}
+          onSelectionChange={(value) =>
+            setWorkspaceKeys({ region: `${value}` })
+          }
         >
-          {REGIONS.map(r => (
+          {REGIONS.map((r) => (
             <ListBoxItem
               key={r}
               label={r}
               textValue={r}
             />
           ))}
-
         </Select>
       </FormField>
 
@@ -75,7 +91,9 @@ function AWS() {
         >
           <Input
             value={cloud?.aws?.accessKey}
-            onChange={({ target: { value } }) => setCloudProviderKeys({ accessKey: value })}
+            onChange={({ target: { value } }) =>
+              setCloudProviderKeys({ accessKey: value })
+            }
           />
         </FormField>
         <FormField
@@ -85,7 +103,9 @@ function AWS() {
         >
           <Input
             value={cloud?.aws?.secretKey}
-            onChange={({ target: { value } }) => setCloudProviderKeys({ secretKey: value })}
+            onChange={({ target: { value } }) =>
+              setCloudProviderKeys({ secretKey: value })
+            }
             type="password"
           />
         </FormField>

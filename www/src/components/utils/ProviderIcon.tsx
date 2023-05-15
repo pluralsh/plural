@@ -1,4 +1,8 @@
-import { DEFAULT_CHART_ICON, DarkProviderIcons, ProviderIcons } from '../constants'
+import {
+  DEFAULT_CHART_ICON,
+  DarkProviderIcons,
+  ProviderIcons,
+} from '../constants'
 
 export function ProviderIcon({ provider, width }: any) {
   const url = providerToURL(provider, true)

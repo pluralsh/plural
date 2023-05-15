@@ -29,11 +29,7 @@ type RoadmapSearchBoxPropsType = {
 
 const fuseOptions = {
   threshold: 0.333,
-  keys: [
-    'title',
-    'body',
-    'author',
-  ],
+  keys: ['title', 'body', 'author'],
 }
 
 const sortStrategies = {
@@ -45,7 +41,8 @@ const sortStrategies = {
 
     return 0
   },
-  recent: (a: IssueType, b: IssueType) => new Date(b.createdAt).valueOf() - new Date(a.createdAt).valueOf(),
+  recent: (a: IssueType, b: IssueType) =>
+    new Date(b.createdAt).valueOf() - new Date(a.createdAt).valueOf(),
   alphabetical: (a: IssueType, b: IssueType) => a.title.localeCompare(b.title),
 }
 
@@ -59,14 +56,22 @@ function RoadmapSearchBox({
   removeStateSorting = false,
 }: RoadmapSearchBoxPropsType) {
   const [isSortMenuOpen, setIsSortMenuOpen] = useState(false)
-  const [sort, setSort] = useState<SortType>(removeVoteSorting ? removeStateSorting ? 'recent' : 'state' : 'votes')
+  const [sort, setSort] = useState<SortType>(
+    removeVoteSorting ? (removeStateSorting ? 'recent' : 'state') : 'votes'
+  )
   const [search, setSearch] = useState('')
 
   const fuse = useMemo(() => new Fuse(issues, fuseOptions), [issues])
-  const displayedIssues = useMemo(() => (search ? fuse.search(search).map(x => x.item) : issues).sort(sortStrategies[sort]), [search, issues, fuse, sort])
+  const displayedIssues = useMemo(
+    () =>
+      (search ? fuse.search(search).map((x) => x.item) : issues).sort(
+        sortStrategies[sort]
+      ),
+    [search, issues, fuse, sort]
+  )
 
   const handleSortClick = useCallback(() => {
-    setIsSortMenuOpen(x => !x)
+    setIsSortMenuOpen((x) => !x)
   }, [])
 
   const handleSortMenuOutsideClick = useCallback(() => {
@@ -106,7 +111,7 @@ function RoadmapSearchBox({
           <Button
             secondary
             onClick={handleSortClick}
-            startIcon={(<SortDescIcon />)}
+            startIcon={<SortDescIcon />}
           >
             Sort
           </Button>
@@ -123,13 +128,21 @@ function RoadmapSearchBox({
                 zIndex={9999}
               >
                 {!removeVoteSorting && (
-                  <MenuItem onClick={() => handleSortSelect('votes')}>Most votes</MenuItem>
+                  <MenuItem onClick={() => handleSortSelect('votes')}>
+                    Most votes
+                  </MenuItem>
                 )}
                 {!removeStateSorting && (
-                  <MenuItem onClick={() => handleSortSelect('state')}>State</MenuItem>
+                  <MenuItem onClick={() => handleSortSelect('state')}>
+                    State
+                  </MenuItem>
                 )}
-                <MenuItem onClick={() => handleSortSelect('recent')}>Recently added</MenuItem>
-                <MenuItem onClick={() => handleSortSelect('alphabetical')}>A-Z</MenuItem>
+                <MenuItem onClick={() => handleSortSelect('recent')}>
+                  Recently added
+                </MenuItem>
+                <MenuItem onClick={() => handleSortSelect('alphabetical')}>
+                  A-Z
+                </MenuItem>
               </Menu>
             </WithOutsideClick>
           )}
@@ -147,7 +160,7 @@ function RoadmapSearchBox({
           startIcon={<MagnifyingGlassIcon />}
           placeholder="Search"
           value={search}
-          onChange={e => setSearch(e.target.value)}
+          onChange={(e) => setSearch(e.target.value)}
           borderBottomLeftRadius={0}
           borderBottomRightRadius={0}
         />
@@ -156,7 +169,7 @@ function RoadmapSearchBox({
           maxHeight="100%"
           overflowY="auto"
         >
-          {displayedIssues.map(issue => (
+          {displayedIssues.map((issue) => (
             <RoadmapIssue
               key={issue.id}
               issue={issue}

@@ -1,11 +1,6 @@
 import { useState } from 'react'
 import { Box, Collapsible, Text } from 'grommet'
-import {
-  TabContent,
-  TabHeader,
-  TabHeaderItem,
-  Tabs,
-} from 'forge-core'
+import { TabContent, TabHeader, TabHeaderItem, Tabs } from 'forge-core'
 
 import ReactJson from 'react-json-view'
 import moment from 'moment'
@@ -38,14 +33,16 @@ function WebhookResponse({ log: { response, payload } }: any) {
             <Text
               weight={500}
               size="small"
-            >Request
+            >
+              Request
             </Text>
           </TabHeaderItem>
           <TabHeaderItem name="response">
             <Text
               weight={500}
               size="small"
-            >Response
+            >
+              Response
             </Text>
           </TabHeaderItem>
         </TabHeader>
@@ -101,7 +98,8 @@ export function WebhookLog({ log, next }: any) {
           <Text
             size="small"
             color="dark-3"
-          >{dateFormat(moment(log.insertedAt))}
+          >
+            {dateFormat(moment(log.insertedAt))}
           </Text>
         </Box>
         <WebhookLogStatus state={log.state} />

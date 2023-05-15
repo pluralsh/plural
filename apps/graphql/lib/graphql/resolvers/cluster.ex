@@ -21,6 +21,12 @@ defmodule GraphQl.Resolvers.Cluster do
     Clusters.create_dependency(source, dest, user)
   end
 
+  def delete_dependency(%{source_id: sid, dest_id: did}, %{context: %{current_user: user}}) do
+    source = Clusters.get_cluster!(sid)
+    dest   = Clusters.get_cluster!(did)
+    Clusters.delete_dependency(source, dest, user)
+  end
+
   def upgrade_info(%Cluster{owner_id: uid}) do
     DeferredUpdate.for_user(uid)
     |> DeferredUpdate.pending()

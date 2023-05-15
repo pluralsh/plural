@@ -1,4 +1,5 @@
 /* eslint-disable */
+/* prettier-ignore */
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 export type Maybe<T> = T | null;
@@ -2665,6 +2666,8 @@ export type RootMutationType = {
   deleteChartInstallation?: Maybe<ChartInstallation>;
   /** Delete a cluster. */
   deleteCluster?: Maybe<Cluster>;
+  /** deletes a dependency for this cluster and potentially disables promotions entirely */
+  deleteClusterDependency?: Maybe<ClusterDependency>;
   deleteDemoProject?: Maybe<DemoProject>;
   deleteDnsRecord?: Maybe<DnsRecord>;
   deleteDomain?: Maybe<DnsDomain>;
@@ -3020,6 +3023,12 @@ export type RootMutationTypeDeleteChartInstallationArgs = {
 export type RootMutationTypeDeleteClusterArgs = {
   name: Scalars['String'];
   provider: Provider;
+};
+
+
+export type RootMutationTypeDeleteClusterDependencyArgs = {
+  destId: Scalars['ID'];
+  sourceId: Scalars['ID'];
 };
 
 

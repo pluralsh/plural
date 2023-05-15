@@ -63,6 +63,32 @@ defmodule GraphQl.ClusterMutationsTest do
     end
   end
 
+  describe "deleteClusterDependency" do
+    test "it will delete a dependency reference" do
+      user = insert(:user)
+      sa = insert(:user, service_account: true, account: user.account)
+      insert(:impersonation_policy_binding,
+        policy: build(:impersonation_policy, user: sa),
+        user: user
+      )
+      dest   = insert(:cluster, owner: user)
+      source = insert(:cluster, owner: sa)
+      insert(:cluster_dependency, cluster: dest, dependency: source)
+
+      {:ok, %{data: %{"deleteClusterDependency" => dep}}} = run_query("""
+        mutation Delete($source: ID!, $dest: ID!) {
+          deleteClusterDependency(sourceId: $source, destId: $dest) {
+            cluster { id }
+            dependency { id }
+          }
+        }
+      """, %{"source" => source.id, "dest" => dest.id}, %{current_user: user})
+
+      assert dep["cluster"]["id"] == dest.id
+      assert dep["dependency"]["id"] == source.id
+    end
+  end
+
   describe "promote" do
     test "it can do a promotion" do
       user = insert(:user, upgrade_to: uuid(0))

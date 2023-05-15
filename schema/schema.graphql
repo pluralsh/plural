@@ -1935,6 +1935,9 @@ type RootMutationType {
   "adds a dependency for this cluster to gate future upgrades"
   createClusterDependency(sourceId: ID!, destId: ID!): ClusterDependency
 
+  "deletes a dependency for this cluster and potentially disables promotions entirely"
+  deleteClusterDependency(sourceId: ID!, destId: ID!): ClusterDependency
+
   "moves up the upgrade waterline for a user"
   promote: User
 

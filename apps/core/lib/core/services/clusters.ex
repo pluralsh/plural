@@ -141,6 +141,29 @@ defmodule Core.Services.Clusters do
   def create_dependency(_, _, _), do: {:error, "cluster dependencies must be for the same provider"}
 
   @doc """
+  Deletes a cluster dependency.  It will recompute the promotion waterline for a user as a result, and if
+  that was the last dependency, entirely disable promotions in the process
+  """
+  @spec delete_dependency(Cluster.t, Cluster.t, User.t) :: cluster_dep_resp
+  def delete_dependency(%Cluster{provider: p} = source, %Cluster{provider: p} = dest, %User{} = user) do
+    with {:ok, source} <- authorize(source, user),
+         {:ok, %{owner: dest_owner} = dest} <- authorize(dest, user) do
+      start_transaction()
+      |> add_operation(:delete, fn _ ->
+        Core.Repo.get_by!(ClusterDependency, dependency_id: source.id, cluster_id: dest.id)
+        |> Core.Repo.delete()
+      end)
+      |> add_operation(:waterline, fn _ ->
+        line = waterline(dest_owner)
+        Ecto.Changeset.change(dest_owner, %{upgrade_to: line})
+        |> Core.Repo.update()
+      end)
+      |> add_operation(:kick, fn _ -> Core.Services.Upgrades.kick(user) end)
+      |> execute(extract: :delete)
+    end
+  end
+
+  @doc """
   Grabs the new promote waterline from a user's cluster deps and writes all pending deferred updates to
   be dequeueable.
   """

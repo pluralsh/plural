@@ -1,6 +1,6 @@
 defmodule Core.Schema.Invite do
   use Piazza.Ecto.Schema
-  alias Core.Schema.{Account, User}
+  alias Core.Schema.{Account, User, InviteGroup}
 
   @email_re ~r/^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9-\.]+\.[a-zA-Z]{2,}$/
 
@@ -10,6 +10,9 @@ defmodule Core.Schema.Invite do
 
     belongs_to :user,    User
     belongs_to :account, Account
+
+    has_many :invite_groups, InviteGroup, on_replace: :delete
+    has_many :groups, through: [:invite_groups, :group]
 
     timestamps()
   end
@@ -28,6 +31,7 @@ defmodule Core.Schema.Invite do
   def changeset(model, attrs \\ %{}) do
     model
     |> cast(attrs, @valid)
+    |> cast_assoc(:invite_groups)
     |> put_new_change(:secure_id, &gen_external_id/0)
     |> foreign_key_constraint(:account_id)
     |> unique_constraint(:secure_id)

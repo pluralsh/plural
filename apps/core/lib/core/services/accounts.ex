@@ -322,7 +322,7 @@ defmodule Core.Services.Accounts do
   """
   @spec realize_invite(map, binary) :: user_resp
   def realize_invite(attributes, invite_id) do
-    invite = get_invite!(invite_id) |> Core.Repo.preload([user: :account])
+    invite = get_invite!(invite_id) |> Core.Repo.preload([:groups, user: :account])
 
     start_transaction()
     |> add_operation(:user, fn _ ->
@@ -343,6 +343,7 @@ defmodule Core.Services.Accounts do
         _ -> {:ok, user}
       end
     end)
+    |> add_to_groups(invite)
     |> add_operation(:invite, fn _ -> Core.Repo.delete(invite) end)
     |> add_operation(:account, fn
       %{user: %{id: uid, account: %{root_user_id: uid} = account}} ->
@@ -353,6 +354,17 @@ defmodule Core.Services.Accounts do
     |> execute(extract: :upsert)
     |> Users.notify(:create)
   end
+
+  defp add_to_groups(xact, %Invite{groups: [_ | _] = groups}) do
+    Enum.reduce(groups, xact, fn %Group{id: id}, xact ->
+      add_operation(xact, {:group, id}, fn %{upsert: user} ->
+        %GroupMember{group_id: id}
+        |> GroupMember.changeset(%{user_id: user.id})
+        |> Core.Repo.insert()
+      end)
+    end)
+  end
+  defp add_to_groups(xact, _), do: xact
 
   @doc """
   Creates a group in the user's account

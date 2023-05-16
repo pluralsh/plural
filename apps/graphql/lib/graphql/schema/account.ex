@@ -22,6 +22,7 @@ defmodule GraphQl.Schema.Account do
 
   input_object :invite_attributes do
     field :email, :string
+    field :invite_groups, list_of(:binding_attributes)
   end
 
   input_object :group_attributes do
@@ -139,6 +140,7 @@ defmodule GraphQl.Schema.Account do
 
     field :account, :account, resolve: dataloader(Account)
     field :user,    :user, resolve: dataloader(User)
+    field :groups,  list_of(:group), resolve: dataloader(Account)
 
     timestamps()
   end

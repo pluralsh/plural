@@ -1,12 +1,13 @@
-import { useContext, useEffect, useMemo, useState } from 'react'
+import { FormField, Input } from '@pluralsh/design-system'
 import { Switch } from 'honorable'
 import StartCase from 'lodash/startCase'
-import { FormField, Input } from '@pluralsh/design-system'
+import { useContext, useEffect, useMemo, useState } from 'react'
 
-import { TerminalContext } from '../../context/terminal'
 import { Datatype, ShellConfiguration } from '../../../../../generated/graphql'
+import { TerminalContext } from '../../context/terminal'
 
 import ConfigurationFileInput from './ConfigurationFileInput'
+import { InstallerContext } from './context'
 
 type ModifierFunction = (value: string, trim?: boolean) => string
 
@@ -44,6 +45,7 @@ function bucketModifier(
 
   return bucketPrefix && cluster ? `${prefix}${value}` : value
 }
+
 function domainModifier(
   this: { configuration: ShellConfiguration },
   value: string,
@@ -65,7 +67,39 @@ const createValidator =
     message: error,
   })
 
-function ConfigurationField({ config, ctx, setValue }) {
+const createUniqueDomainValidator =
+  (
+    ctx: Record<string, any>,
+    fieldName: string,
+    appName: string,
+    registeredDomains: Set<string>,
+    usedDomains: Record<string, string>
+  ) =>
+  (value): { valid: boolean; message: string } => {
+    let exists = Object.entries(ctx)
+      .filter(
+        ([name, field]) =>
+          field.type === Datatype.Domain &&
+          name !== fieldName &&
+          field.value?.length > 0
+      )
+      .some(([_, field]) => field.value === value)
+
+    if (!exists) exists = registeredDomains.has(ctx[fieldName]?.value)
+    if (!exists)
+      exists = Object.entries(usedDomains)
+        .filter(([key]) => key !== domainFieldKey(appName, fieldName))
+        .some(([_, domain]) => ctx[fieldName]?.value === domain)
+
+    return {
+      valid: !exists,
+      message: `Domain ${value} already used.`,
+    }
+  }
+
+const domainFieldKey = (appName, fieldName) => `${appName}-${fieldName}`
+
+function ConfigurationField({ config, ctx, setValue, app }) {
   const {
     name,
     default: defaultValue,
@@ -76,18 +110,49 @@ function ConfigurationField({ config, ctx, setValue }) {
     type,
   } = config
   const { configuration } = useContext(TerminalContext)
+  const { domains, setDomains } = useContext(InstallerContext)
 
   const value = useMemo(() => ctx[name]?.value, [ctx, name])
-  const validator = useMemo(
-    () =>
+  const validators = useMemo(
+    () => [
       createValidator(
         new RegExp(validation?.regex ? `^${validation?.regex}$` : /.*/),
         config.optional,
         validation?.message
       ),
-    [config.optional, validation?.message, validation?.regex]
+      ...(type === Datatype.Domain
+        ? [
+            createUniqueDomainValidator(
+              ctx,
+              name,
+              app,
+              new Set<string>(configuration.domains as Array<string>),
+              domains
+            ),
+          ]
+        : []),
+    ],
+    [
+      app,
+      config.optional,
+      configuration.domains,
+      ctx,
+      domains,
+      name,
+      type,
+      validation?.message,
+      validation?.regex,
+    ]
   )
-  const { valid, message } = useMemo(() => validator(value), [validator, value])
+  const { valid, message } = useMemo(() => {
+    for (const validator of validators) {
+      const result = validator(value)
+
+      if (!result.valid) return result
+    }
+
+    return { valid: true, message: '' }
+  }, [validators, value])
   const modifier = useMemo(
     () => modifierFactory(config.type, configuration),
     [config.type, configuration]
@@ -106,6 +171,15 @@ function ConfigurationField({ config, ctx, setValue }) {
         : setValue(name, local, valid, type),
     [local, modifier, name, setValue, type, valid]
   )
+
+  useEffect(() => {
+    if (type !== Datatype.Domain || !value) return
+
+    setDomains((domains) => ({
+      ...domains,
+      ...{ [domainFieldKey(app, name)]: value },
+    }))
+  }, [app, name, setDomains, type, value])
 
   const isInt = type === Datatype.Int
   const isPassword =
@@ -170,7 +244,7 @@ function BoolConfiguration({ config: { name, default: def }, ctx, setValue }) {
   )
 }
 
-export function ConfigurationItem({ config, ctx, setValue }) {
+export function ConfigurationItem({ config, ctx, setValue, app }) {
   switch (config.type) {
     case Datatype.Bool:
       return (
@@ -186,6 +260,7 @@ export function ConfigurationItem({ config, ctx, setValue }) {
           config={config}
           ctx={ctx}
           setValue={setValue}
+          app={app}
         />
       )
   }

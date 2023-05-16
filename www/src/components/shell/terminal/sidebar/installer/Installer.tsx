@@ -26,6 +26,8 @@ import { PosthogEvent, posthogCapture } from '../../../../../utils/posthog'
 
 import LoadingIndicator from '../../../../utils/LoadingIndicator'
 
+import { InstallerContext } from './context'
+
 import { buildSteps, install, toDefaultSteps } from './helpers'
 import { APPLICATIONS_QUERY } from './queries'
 
@@ -54,6 +56,7 @@ function Installer({ onInstallSuccess }) {
   const [selectedApplications, setSelectedApplications] = useState<
     Array<string>
   >([])
+  const [domains, setDomains] = useState<Record<string, string>>({})
 
   const {
     data: {
@@ -65,6 +68,8 @@ function Installer({ onInstallSuccess }) {
     skip: !provider,
     fetchPolicy: 'network-only',
   })
+
+  const context = useMemo(() => ({ domains, setDomains }), [domains])
 
   const applications = useMemo(
     () =>
@@ -104,8 +109,8 @@ function Installer({ onInstallSuccess }) {
         })
         .catch((err) => setError(err))
         .finally(() => setStepsLoading(false))
-      // eslint-disable-next-line react-hooks/exhaustive-deps
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [client, mutation, provider, refetch, setState]
   )
 
@@ -161,53 +166,55 @@ function Installer({ onInstallSuccess }) {
   }
 
   return (
-    <Div
-      overflowY="auto"
-      overflowX="hidden"
-      flexGrow={1}
-    >
+    <InstallerContext.Provider value={context}>
       <Div
-        height="100%"
-        style={{ position: 'absolute' }}
-      />
-      <Div
-        width={600}
-        height="100%"
-        transition="width 300ms linear, opacity 150ms linear"
+        overflowY="auto"
+        overflowX="hidden"
+        flexGrow={1}
       >
-        <Wizard
-          onSelect={onSelect}
-          defaultSteps={defaultSteps}
-          dependencySteps={steps}
-          limit={limit}
-          loading={stepsLoading || !configuration}
-          onResetRef={onResetRef}
-        >
-          {{
-            stepper: <WizardStepper />,
-            navigation: (
-              <WizardNavigation
-                onInstall={onInstall}
-                tooltip={
-                  me?.demoing ? 'Max 3 applications on GCP demo' : undefined
-                }
-              />
-            ),
-          }}
-        </Wizard>
-      </Div>
-
-      {error && (
-        <GraphQLToast
-          error={{ graphQLErrors: [...error.graphQLErrors] }}
-          header="Error"
-          onClose={() => setError(undefined)}
-          margin="medium"
-          marginHorizontal="xxxxlarge"
-          closeTimeout={20000}
+        <Div
+          height="100%"
+          style={{ position: 'absolute' }}
         />
-      )}
-    </Div>
+        <Div
+          width={600}
+          height="100%"
+          transition="width 300ms linear, opacity 150ms linear"
+        >
+          <Wizard
+            onSelect={onSelect}
+            defaultSteps={defaultSteps}
+            dependencySteps={steps}
+            limit={limit}
+            loading={stepsLoading || !configuration}
+            onResetRef={onResetRef}
+          >
+            {{
+              stepper: <WizardStepper />,
+              navigation: (
+                <WizardNavigation
+                  onInstall={onInstall}
+                  tooltip={
+                    me?.demoing ? 'Max 3 applications on GCP demo' : undefined
+                  }
+                />
+              ),
+            }}
+          </Wizard>
+        </Div>
+
+        {error && (
+          <GraphQLToast
+            error={{ graphQLErrors: [...error.graphQLErrors] }}
+            header="Error"
+            onClose={() => setError(undefined)}
+            margin="medium"
+            marginHorizontal="xxxxlarge"
+            closeTimeout={20000}
+          />
+        )}
+      </Div>
+    </InstallerContext.Provider>
   )
 }
 

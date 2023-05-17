@@ -124,6 +124,36 @@ defmodule Core.Services.ClustersTest do
     end
   end
 
+  describe "#delete_dependency/3" do
+    test "a user can delete a dependency between accessible clusters" do
+      user = insert(:user, upgrade_to: Piazza.Ecto.UUID.generate_monotonic())
+      sa = insert(:user, service_account: true, account: user.account)
+      insert(:impersonation_policy_binding,
+        policy: build(:impersonation_policy, user: sa),
+        user: user
+      )
+      dest   = insert(:cluster, owner: user)
+      source = insert(:cluster, owner: sa)
+      dep = insert(:cluster_dependency, dependency: source, cluster: dest)
+
+      {:ok, del} = Clusters.delete_dependency(source, dest, user)
+
+      assert del.id == dep.id
+      refute refetch(dep)
+      refute refetch(user).upgrade_to
+    end
+
+    test "a user cannot delete a dependency on inaccessible clusters" do
+      user = insert(:user)
+      sa = insert(:user, service_account: true, account: user.account)
+      dest   = insert(:cluster, owner: user)
+      source = insert(:cluster, owner: sa)
+      insert(:cluster_dependency, dependency: source, cluster: dest)
+
+      {:error, _} = Clusters.delete_dependency(source, dest, user)
+    end
+  end
+
   describe "promote/1" do
     test "a user can promote from their dependency clusters" do
       user = insert(:user, upgrade_to: uuid(0))

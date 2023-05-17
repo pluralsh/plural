@@ -91,6 +91,15 @@ defmodule GraphQl.Schema.Cluster do
       safe_resolve &Cluster.create_dependency/2
     end
 
+    @desc "deletes a dependency for this cluster and potentially disables promotions entirely"
+    field :delete_cluster_dependency, :cluster_dependency do
+      # middleware Differentiate, feature: :multi_cluster
+      arg :source_id, non_null(:id)
+      arg :dest_id,   non_null(:id)
+
+      safe_resolve &Cluster.delete_dependency/2
+    end
+
     @desc "moves up the upgrade waterline for a user"
     field :promote, :user do
       safe_resolve &Cluster.promote/2

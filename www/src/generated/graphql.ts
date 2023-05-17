@@ -1,4 +1,5 @@
 /* eslint-disable */
+/* prettier-ignore */
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 export type Maybe<T> = T | null;
@@ -1357,6 +1358,7 @@ export type Invite = {
   email?: Maybe<Scalars['String']>;
   existing: Scalars['Boolean'];
   expiresAt?: Maybe<Scalars['DateTime']>;
+  groups?: Maybe<Array<Maybe<Group>>>;
   id: Scalars['ID'];
   insertedAt?: Maybe<Scalars['DateTime']>;
   secureId?: Maybe<Scalars['String']>;
@@ -1366,6 +1368,7 @@ export type Invite = {
 
 export type InviteAttributes = {
   email?: InputMaybe<Scalars['String']>;
+  inviteGroups?: InputMaybe<Array<InputMaybe<BindingAttributes>>>;
 };
 
 export type InviteConnection = {

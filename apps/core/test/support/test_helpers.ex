@@ -1,4 +1,6 @@
 defmodule Core.TestHelpers do
+  alias Core.Schema.{User, Group, GroupMember}
+
   def ids_equal(found, expected) do
     found = MapSet.new(ids(found))
     expected = MapSet.new(ids(expected))
@@ -26,6 +28,9 @@ defmodule Core.TestHelpers do
   def id(id) when is_binary(id), do: id
 
   def refetch(%{__struct__: schema, id: id}), do: Core.Repo.get(schema, id)
+
+  def member?(%User{id: uid}, %Group{id: gid}),
+    do: Core.Repo.get_by(GroupMember, user_id: uid, group_id: gid)
 
   def update_record(struct, attrs) do
     Ecto.Changeset.change(struct, attrs)

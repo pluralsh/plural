@@ -630,6 +630,7 @@ input FileAttributes {
 
 input InviteAttributes {
   email: String
+  inviteGroups: [BindingAttributes]
 }
 
 input ServiceAccountAttributes {
@@ -1170,6 +1171,7 @@ type Invite {
   expiresAt: DateTime
   account: Account
   user: User
+  groups: [Group]
   insertedAt: DateTime
   updatedAt: DateTime
 }

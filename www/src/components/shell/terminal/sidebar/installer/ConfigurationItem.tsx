@@ -1,4 +1,4 @@
-import { FormField, Input } from '@pluralsh/design-system'
+import { FormField, Input, useActive } from '@pluralsh/design-system'
 import { Switch } from 'honorable'
 import StartCase from 'lodash/startCase'
 import { useContext, useEffect, useMemo, useState } from 'react'
@@ -99,7 +99,7 @@ const createUniqueDomainValidator =
 
 const domainFieldKey = (appName, fieldName) => `${appName}-${fieldName}`
 
-function ConfigurationField({ config, ctx, setValue, app }) {
+function ConfigurationField({ config, ctx, setValue }) {
   const {
     name,
     default: defaultValue,
@@ -111,6 +111,7 @@ function ConfigurationField({ config, ctx, setValue, app }) {
   } = config
   const { configuration } = useContext(TerminalContext)
   const { domains, setDomains } = useContext(InstallerContext)
+  const { active } = useActive()
 
   const value = useMemo(() => ctx[name]?.value, [ctx, name])
   const validators = useMemo(
@@ -125,7 +126,7 @@ function ConfigurationField({ config, ctx, setValue, app }) {
             createUniqueDomainValidator(
               ctx,
               name,
-              app,
+              active.label!,
               new Set<string>(configuration.domains as Array<string>),
               domains
             ),
@@ -133,7 +134,7 @@ function ConfigurationField({ config, ctx, setValue, app }) {
         : []),
     ],
     [
-      app,
+      active.label,
       config.optional,
       configuration.domains,
       ctx,
@@ -177,9 +178,9 @@ function ConfigurationField({ config, ctx, setValue, app }) {
 
     setDomains((domains) => ({
       ...domains,
-      ...{ [domainFieldKey(app, name)]: value },
+      ...{ [domainFieldKey(active.label, name)]: value },
     }))
-  }, [app, name, setDomains, type, value])
+  }, [active.label, name, setDomains, type, value])
 
   const isInt = type === Datatype.Int
   const isPassword =
@@ -244,7 +245,7 @@ function BoolConfiguration({ config: { name, default: def }, ctx, setValue }) {
   )
 }
 
-export function ConfigurationItem({ config, ctx, setValue, app }) {
+export function ConfigurationItem({ config, ctx, setValue }) {
   switch (config.type) {
     case Datatype.Bool:
       return (
@@ -260,7 +261,6 @@ export function ConfigurationItem({ config, ctx, setValue, app }) {
           config={config}
           ctx={ctx}
           setValue={setValue}
-          app={app}
         />
       )
   }

@@ -70,7 +70,6 @@ function Installer({ onInstallSuccess }) {
   })
 
   const context = useMemo(() => ({ domains, setDomains }), [domains])
-
   const applications = useMemo(
     () =>
       applicationNodes

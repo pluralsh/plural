@@ -117,7 +117,6 @@ export function Configuration({
             config={conf}
             ctx={context}
             setValue={setValue}
-            app={recipe?.name}
           />
         ))}
       {configurations?.length === 0 && (

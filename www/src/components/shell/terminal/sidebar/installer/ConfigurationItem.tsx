@@ -67,6 +67,16 @@ const createValidator =
     message: error,
   })
 
+/**
+ * Creates validator for domain uniqueness check.
+ *
+ * @param ctx - object that maps field name to an object field with value, validity, etc.
+ * @param fieldName - field name being checked
+ * @param appName - active application name
+ * @param registeredDomains - a set of domains used by already installed applications
+ * @param usedDomains - object that maps key (appName-fieldName) to the domain name.
+ *                      It is basically a list of unique domains used by the installer locally.
+ */
 const createUniqueDomainValidator =
   (
     ctx: Record<string, any>,

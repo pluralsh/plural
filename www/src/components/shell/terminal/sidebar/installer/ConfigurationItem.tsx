@@ -76,23 +76,23 @@ const createUniqueDomainValidator =
     usedDomains: Record<string, string>
   ) =>
   (value): { valid: boolean; message: string } => {
-    let exists = Object.entries(ctx)
+    const domains = new Set<string>(registeredDomains)
+
+    Object.entries(ctx)
       .filter(
         ([name, field]) =>
           field.type === Datatype.Domain &&
           name !== fieldName &&
           field.value?.length > 0
       )
-      .some(([_, field]) => field.value === value)
+      .forEach(([_, field]) => domains.add(field.value))
 
-    if (!exists) exists = registeredDomains.has(ctx[fieldName]?.value)
-    if (!exists)
-      exists = Object.entries(usedDomains)
-        .filter(([key]) => key !== domainFieldKey(appName, fieldName))
-        .some(([_, domain]) => ctx[fieldName]?.value === domain)
+    Object.entries(usedDomains)
+      .filter(([key]) => key !== domainFieldKey(appName, fieldName))
+      .forEach(([_, domain]) => domains.add(domain))
 
     return {
-      valid: !exists,
+      valid: !domains.has(value),
       message: `Domain ${value} already used.`,
     }
   }
@@ -127,7 +127,7 @@ function ConfigurationField({ config, ctx, setValue }) {
               ctx,
               name,
               active.label!,
-              new Set<string>(configuration.domains as Array<string>),
+              new Set<string>((configuration.domains as Array<string>) || []),
               domains
             ),
           ]

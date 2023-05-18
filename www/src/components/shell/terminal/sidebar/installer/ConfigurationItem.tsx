@@ -1,12 +1,13 @@
-import { useContext, useEffect, useMemo, useState } from 'react'
+import { FormField, Input, useActive } from '@pluralsh/design-system'
 import { Switch } from 'honorable'
 import StartCase from 'lodash/startCase'
-import { FormField, Input } from '@pluralsh/design-system'
+import { useContext, useEffect, useMemo, useState } from 'react'
 
-import { TerminalContext } from '../../context/terminal'
 import { Datatype, ShellConfiguration } from '../../../../../generated/graphql'
+import { TerminalContext } from '../../context/terminal'
 
 import ConfigurationFileInput from './ConfigurationFileInput'
+import { InstallerContext } from './context'
 
 type ModifierFunction = (value: string, trim?: boolean) => string
 
@@ -44,6 +45,7 @@ function bucketModifier(
 
   return bucketPrefix && cluster ? `${prefix}${value}` : value
 }
+
 function domainModifier(
   this: { configuration: ShellConfiguration },
   value: string,
@@ -65,6 +67,48 @@ const createValidator =
     message: error,
   })
 
+/**
+ * Creates validator for domain uniqueness check.
+ *
+ * @param ctx - object that maps field name to an object field with value, validity, etc.
+ * @param fieldName - field name being checked
+ * @param appName - active application name
+ * @param registeredDomains - a set of domains used by already installed applications
+ * @param usedDomains - object that maps key (appName-fieldName) to the domain name.
+ *                      It is basically a list of unique domains used by the installer locally.
+ */
+const createUniqueDomainValidator =
+  (
+    ctx: Record<string, any>,
+    fieldName: string,
+    appName: string,
+    registeredDomains: Set<string>,
+    usedDomains: Record<string, string>
+  ) =>
+  (value): { valid: boolean; message: string } => {
+    const domains = new Set<string>(registeredDomains)
+
+    Object.entries(ctx)
+      .filter(
+        ([name, field]) =>
+          field.type === Datatype.Domain &&
+          name !== fieldName &&
+          field.value?.length > 0
+      )
+      .forEach(([_, field]) => domains.add(field.value))
+
+    Object.entries(usedDomains)
+      .filter(([key]) => key !== domainFieldKey(appName, fieldName))
+      .forEach(([_, domain]) => domains.add(domain))
+
+    return {
+      valid: !domains.has(value),
+      message: `Domain ${value} already used.`,
+    }
+  }
+
+const domainFieldKey = (appName, fieldName) => `${appName}-${fieldName}`
+
 function ConfigurationField({ config, ctx, setValue }) {
   const {
     name,
@@ -76,18 +120,50 @@ function ConfigurationField({ config, ctx, setValue }) {
     type,
   } = config
   const { configuration } = useContext(TerminalContext)
+  const { domains, setDomains } = useContext(InstallerContext)
+  const { active } = useActive()
 
   const value = useMemo(() => ctx[name]?.value, [ctx, name])
-  const validator = useMemo(
-    () =>
+  const validators = useMemo(
+    () => [
       createValidator(
         new RegExp(validation?.regex ? `^${validation?.regex}$` : /.*/),
         config.optional,
         validation?.message
       ),
-    [config.optional, validation?.message, validation?.regex]
+      ...(type === Datatype.Domain
+        ? [
+            createUniqueDomainValidator(
+              ctx,
+              name,
+              active.label!,
+              new Set<string>((configuration.domains as Array<string>) || []),
+              domains
+            ),
+          ]
+        : []),
+    ],
+    [
+      active.label,
+      config.optional,
+      configuration.domains,
+      ctx,
+      domains,
+      name,
+      type,
+      validation?.message,
+      validation?.regex,
+    ]
   )
-  const { valid, message } = useMemo(() => validator(value), [validator, value])
+  const { valid, message } = useMemo(() => {
+    for (const validator of validators) {
+      const result = validator(value)
+
+      if (!result.valid) return result
+    }
+
+    return { valid: true, message: '' }
+  }, [validators, value])
   const modifier = useMemo(
     () => modifierFactory(config.type, configuration),
     [config.type, configuration]
@@ -106,6 +182,15 @@ function ConfigurationField({ config, ctx, setValue }) {
         : setValue(name, local, valid, type),
     [local, modifier, name, setValue, type, valid]
   )
+
+  useEffect(() => {
+    if (type !== Datatype.Domain || !value) return
+
+    setDomains((domains) => ({
+      ...domains,
+      ...{ [domainFieldKey(active.label, name)]: value },
+    }))
+  }, [active.label, name, setDomains, type, value])
 
   const isInt = type === Datatype.Int
   const isPassword =

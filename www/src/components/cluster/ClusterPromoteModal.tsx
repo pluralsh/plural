@@ -138,6 +138,16 @@ function ClusterPromoteModalInternal({
               clusterId={destination.id}
               upgradeInfo={destination.upgradeInfo}
             />
+            <Div
+              caption
+              color="text-danger-light"
+              cursor="pointer"
+              marginTop="minus-large"
+              textDecoration="underline"
+              _hover={{ color: 'red.100' }}
+            >
+              Disable promotions
+            </Div>
           </>
         )}
       </Flex>

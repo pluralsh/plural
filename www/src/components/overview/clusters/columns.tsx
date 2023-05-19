@@ -165,7 +165,9 @@ export const ColOwner = columnHelper.accessor((row) => row.owner?.name, {
   header: 'Owner',
 })
 
-function Promotions({ cluster }: { cluster: Cluster }): ReactElement {
+type PromotionsProps = { cluster: Cluster }
+
+function Promotions({ cluster }: PromotionsProps): ReactElement {
   const [promoteOpen, setPromoteOpen] = useState(false)
 
   return (

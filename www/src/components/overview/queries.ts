@@ -80,6 +80,19 @@ export const CREATE_CLUSTER_DEPENDENCY = gql`
   }
 `
 
+export const DELETE_CLUSTER_DEPENDENCY = gql`
+  mutation Delete($source: ID!, $dest: ID!) {
+    deleteClusterDependency(sourceId: $source, destId: $dest) {
+      cluster {
+        id
+      }
+      dependency {
+        id
+      }
+    }
+  }
+`
+
 export const PROMOTE = gql`
   mutation {
     promote {

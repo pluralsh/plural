@@ -1,4 +1,4 @@
-import { Provider, Source } from '../../../generated/graphql'
+import { Cluster, Provider, Source } from '../../../generated/graphql'
 
 export type ClusterListElement = {
   id: string
@@ -17,4 +17,5 @@ export type ClusterListElement = {
     avatar?: string | null
     hasShell?: boolean | null
   }
+  raw: Cluster
 }

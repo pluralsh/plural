@@ -19,6 +19,8 @@ import CopyButton from '../../utils/CopyButton'
 import ClusterHealth from './ClusterHealth'
 import ClusterOwner from './ClusterOwner'
 import { ClusterListElement } from './types'
+import { ClusterPromoteModal } from '../../cluster/ClusterPromoteModal'
+import { useState } from 'react'
 
 export const columnHelper = createColumnHelper<ClusterListElement>()
 
@@ -161,17 +163,29 @@ export const ColOwner = columnHelper.accessor((row) => row.owner?.name, {
   header: 'Owner',
 })
 
-export const ColPromotions = columnHelper.accessor((row) => row.hasDependency, {
+export const ColPromotions = columnHelper.accessor(row => row, {
   id: 'promotions',
   enableGlobalFilter: true,
   enableSorting: true,
-  cell: (hasDependency) =>
-    hasDependency.getValue() && (
-      <IconFrame
-        icon={<CheckRoundedIcon color="icon-success" />}
-        type="floating"
-      />
-    ),
+  cell: ({ row: { original: { hasDependency, raw } } }) => {
+    const [promoteOpen, setPromoteOpen] = useState(false)
+
+    return hasDependency && (
+      <>
+          <IconFrame
+              clickable
+              onClick={() => setPromoteOpen(true)}
+              icon={<CheckRoundedIcon color="icon-success" />}
+              type="floating"
+            />
+            <ClusterPromoteModal 
+                        open={promoteOpen}
+                        setOpen={setPromoteOpen}
+                        destination={raw}
+                      />
+                      </>
+          )
+  },
   header: 'Promotions',
 })
 

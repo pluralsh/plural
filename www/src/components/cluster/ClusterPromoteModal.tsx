@@ -58,7 +58,11 @@ function ClusterPromoteModalInternal({
 
   const [
     deactivateMutation,
-    { loading: deactivateLoading, error: deactivateError },
+    {
+      loading: deactivateLoading,
+      error: deactivateError,
+      reset: deactivateReset,
+    },
   ] = useMutation(DELETE_CLUSTER_DEPENDENCY, {
     variables: {
       source: destination.dependency?.dependency?.id || '',
@@ -176,7 +180,10 @@ function ClusterPromoteModalInternal({
       </Modal>
       <Confirm
         open={deactivating}
-        close={() => setDeactivating(false)}
+        close={() => {
+          deactivateReset()
+          setDeactivating(false)
+        }}
         error={deactivateError}
         title="Confirm disabling promotions"
         text="Are you sure you want to complete this action?"

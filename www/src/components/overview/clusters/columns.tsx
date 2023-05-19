@@ -15,7 +15,7 @@ import { A, Div } from 'honorable'
 import { useState } from 'react'
 
 import { ProviderIcon } from '../../utils/ProviderIcon'
-import { Source } from '../../../generated/graphql'
+import { Cluster, Source } from '../../../generated/graphql'
 import CopyButton from '../../utils/CopyButton'
 
 import { ClusterPromoteModal } from '../../cluster/ClusterPromoteModal'
@@ -165,31 +165,23 @@ export const ColOwner = columnHelper.accessor((row) => row.owner?.name, {
   header: 'Owner',
 })
 
-function Promotions({
-  hasDependency,
-  cluster,
-}: {
-  hasDependency: boolean
-  cluster: Cluster
-}) {
+function Promotions({ cluster }: { cluster: Cluster }): ReactElement {
   const [promoteOpen, setPromoteOpen] = useState(false)
 
   return (
-    hasDependency && (
-      <>
-        <IconFrame
-          clickable
-          onClick={() => setPromoteOpen(true)}
-          icon={<CheckRoundedIcon color="icon-success" />}
-          type="floating"
-        />
-        <ClusterPromoteModal
-          open={promoteOpen}
-          setOpen={setPromoteOpen}
-          destination={cluster}
-        />
-      </>
-    )
+    <>
+      <IconFrame
+        clickable
+        onClick={() => setPromoteOpen(true)}
+        icon={<CheckRoundedIcon color="icon-success" />}
+        type="floating"
+      />
+      <ClusterPromoteModal
+        open={promoteOpen}
+        setOpen={setPromoteOpen}
+        destination={cluster}
+      />
+    </>
   )
 }
 
@@ -201,12 +193,7 @@ export const ColPromotions = columnHelper.accessor((row) => row, {
     row: {
       original: { hasDependency, raw },
     },
-  }) => (
-    <Promotions
-      hasDependency={hasDependency}
-      cluster={raw}
-    />
-  ),
+  }) => hasDependency && <Promotions cluster={raw} />,
   header: 'Promotions',
 })
 

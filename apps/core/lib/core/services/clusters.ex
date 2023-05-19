@@ -158,7 +158,7 @@ defmodule Core.Services.Clusters do
         Ecto.Changeset.change(dest_owner, %{upgrade_to: line})
         |> Core.Repo.update()
       end)
-      |> add_operation(:kick, fn _ -> Core.Services.Upgrades.kick(user) end)
+      |> add_operation(:kick, fn _ -> Core.Services.Upgrades.kick(dest_owner) end)
       |> execute(extract: :delete)
     end
   end

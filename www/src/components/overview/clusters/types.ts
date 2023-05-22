@@ -1,4 +1,4 @@
-import { Cluster, Provider, Source } from '../../../generated/graphql'
+import { Provider, Source } from '../../../generated/graphql'
 
 export type ClusterListElement = {
   id: string
@@ -17,5 +17,7 @@ export type ClusterListElement = {
     avatar?: string | null
     hasShell?: boolean | null
   }
-  raw: Cluster
+  // Using "any" instead of "Cluster" type as latter causes
+  // "Type instantiation is excessively deep and possibly infinite" error
+  raw: any
 }

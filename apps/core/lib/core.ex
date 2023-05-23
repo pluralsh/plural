@@ -65,7 +65,7 @@ defmodule Core do
   end
 
   def retry(fun, attempts \\ 0)
-  def retry(fun, 3), do: fun.()
+  def retry(fun, 4), do: fun.()
   def retry(fun, attempts) do
     case fun.() do
       :ok -> :ok

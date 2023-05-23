@@ -164,7 +164,13 @@ defmodule Core.Services.Dns do
     end)
     |> add_operation(:external, fn %{record: r} ->
       Record.delete(r.external_id, params: [zone_id: zone_id()])
-      |> extract_id()
+      |> case do
+        {:ok, %{body: %{"result" => %{"id" => id}}}} -> {:ok, id}
+        {:ok, %Tesla.Env{status: 404}} -> {:ok, nil}
+        error ->
+          Logger.error "Cloudflare failed with #{inspect(error)}"
+          {:error, "cloudflare error"}
+      end
     end)
     |> execute(extract: :record)
   end

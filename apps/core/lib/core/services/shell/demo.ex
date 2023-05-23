@@ -253,7 +253,10 @@ defmodule Core.Services.Shell.Demo do
     iams  = iam_conn()
 
     start_transaction()
-    |> add_operation(:billing, fn _ -> enable_billing(proj_id) end)
+    |> add_operation(:billing, fn _ ->
+      enable_billing(proj_id)
+      |> handle_error()
+    end)
     |> add_operation(:svcs, fn _  -> enable_services(proj_id) end)
     |> add_operation(:service_account, fn _ ->
       email = "plural@#{proj_id}.iam.gserviceaccount.com"
@@ -313,6 +316,7 @@ defmodule Core.Services.Shell.Demo do
         ]
       }
     )
+    |> handle_error()
   end
 
   defp add_binding(bindings, email, role, type) do

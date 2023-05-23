@@ -79,7 +79,13 @@ release-vsn: # tags and pushes a new release
 	git checkout master; \
 	git pull --rebase; \
 	git tag -a $$tag -m "new release"; \
-	git push origin $$tag
+	git push origin $$tag; \
+	vsn=$${tag#"v"}; \ 
+	yq -i '.appVersion = "$$vsn" | .version = "$$vsn"' plural/helm/plural/Chart.yaml; \
+	git checkout -b release-$$vsn; \
+	git add .; \
+	git commit; \
+	git push --set-upstream origin release-$$vsn
 
 update-schema: ## updates gql schema
 	MIX_ENV=test mix absinthe.schema.sdl --schema GraphQl  schema/schema.graphql

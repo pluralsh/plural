@@ -146,8 +146,7 @@ defmodule Core.Services.Clusters do
   """
   @spec delete_dependency(Cluster.t, Cluster.t, User.t) :: cluster_dep_resp
   def delete_dependency(%Cluster{provider: p} = source, %Cluster{provider: p} = dest, %User{} = user) do
-    with {:ok, source} <- authorize(source, user),
-         {:ok, %{owner: dest_owner} = dest} <- authorize(dest, user) do
+    with {:ok, %{owner: dest_owner} = dest} <- authorize(dest, user) do
       start_transaction()
       |> add_operation(:delete, fn _ ->
         Core.Repo.get_by!(ClusterDependency, dependency_id: source.id, cluster_id: dest.id)

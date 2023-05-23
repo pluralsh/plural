@@ -146,8 +146,8 @@ defmodule Core.Services.ClustersTest do
     test "a user cannot delete a dependency on inaccessible clusters" do
       user = insert(:user)
       sa = insert(:user, service_account: true, account: user.account)
-      dest   = insert(:cluster, owner: user)
-      source = insert(:cluster, owner: sa)
+      dest   = insert(:cluster, owner: sa)
+      source = insert(:cluster, owner: user)
       insert(:cluster_dependency, dependency: source, cluster: dest)
 
       {:error, _} = Clusters.delete_dependency(source, dest, user)

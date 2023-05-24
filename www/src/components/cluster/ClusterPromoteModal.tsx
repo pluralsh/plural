@@ -69,6 +69,7 @@ function ClusterPromoteModalInternal({
       dest: destination.id || '',
     },
     refetchQueries: [{ query: CLUSTERS }],
+    onCompleted: () => setDeactivating(false),
   })
 
   const close = useCallback(() => {

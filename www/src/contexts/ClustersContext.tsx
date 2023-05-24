@@ -12,6 +12,7 @@ import { CLUSTERS } from '../components/overview/queries'
 
 type ClustersContextType = {
   clusters: Cluster[]
+  refetchClusters?: () => Promise<any>
 }
 
 const ClustersContext = createContext<ClustersContextType>({
@@ -27,7 +28,7 @@ const Error = styled.div(({ theme }) => ({
 }))
 
 export function ClustersContextProvider({ children }) {
-  const { data, loading, error } = useQuery<
+  const { data, loading, error, refetch } = useQuery<
     Pick<RootQueryType, 'clusters'>,
     RootQueryTypeClustersArgs
   >(CLUSTERS, {
@@ -40,8 +41,8 @@ export function ClustersContextProvider({ children }) {
         ?.map((edge) => edge?.node)
         .filter((node): node is Cluster => !!node) || []
 
-    return { clusters }
-  }, [data])
+    return { clusters, refetchClusters: refetch }
+  }, [data, refetch])
 
   if (error) return <Error>{error.message}</Error>
   if (!data && loading) return <LoadingIndicator />

@@ -17,4 +17,7 @@ export type ClusterListElement = {
     avatar?: string | null
     hasShell?: boolean | null
   }
+  // Using "any" instead of "Cluster" type as latter causes
+  // "Type instantiation is excessively deep and possibly infinite" error
+  raw: any
 }

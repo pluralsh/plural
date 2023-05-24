@@ -54,6 +54,7 @@ export const ClusterList = memo(({ columns, ...props }: ClustersListProps) => {
               avatar: cluster.owner?.avatar,
               hasShell: cluster.owner?.hasShell,
             },
+            raw: cluster,
           }
         }),
     [clusters, me.id]

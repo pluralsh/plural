@@ -12,9 +12,13 @@ import { createColumnHelper } from '@tanstack/react-table'
 import { Link } from 'react-router-dom'
 import { A, Div } from 'honorable'
 
+import { ReactElement, useState } from 'react'
+
 import { ProviderIcon } from '../../utils/ProviderIcon'
-import { Source } from '../../../generated/graphql'
+import { Cluster, Source } from '../../../generated/graphql'
 import CopyButton from '../../utils/CopyButton'
+
+import { ClusterPromoteModal } from '../../cluster/ClusterPromoteModal'
 
 import ClusterHealth from './ClusterHealth'
 import ClusterOwner from './ClusterOwner'
@@ -161,17 +165,37 @@ export const ColOwner = columnHelper.accessor((row) => row.owner?.name, {
   header: 'Owner',
 })
 
-export const ColPromotions = columnHelper.accessor((row) => row.hasDependency, {
-  id: 'promotions',
-  enableGlobalFilter: true,
-  enableSorting: true,
-  cell: (hasDependency) =>
-    hasDependency.getValue() && (
+type PromotionsProps = { cluster: Cluster }
+
+function Promotions({ cluster }: PromotionsProps): ReactElement {
+  const [promoteOpen, setPromoteOpen] = useState(false)
+
+  return (
+    <>
       <IconFrame
+        clickable
+        onClick={() => setPromoteOpen(true)}
         icon={<CheckRoundedIcon color="icon-success" />}
         type="floating"
       />
-    ),
+      <ClusterPromoteModal
+        open={promoteOpen}
+        setOpen={setPromoteOpen}
+        destination={cluster}
+      />
+    </>
+  )
+}
+
+export const ColPromotions = columnHelper.accessor((row) => row, {
+  id: 'promotions',
+  enableGlobalFilter: true,
+  enableSorting: true,
+  cell: ({
+    row: {
+      original: { hasDependency, raw },
+    },
+  }) => hasDependency && <Promotions cluster={raw} />,
   header: 'Promotions',
 })
 

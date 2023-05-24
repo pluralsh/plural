@@ -3,13 +3,41 @@ defmodule Core.Clients.OpenAI do
 
   @options [recv_timeout: :infinity, timeout: :infinity]
 
-  defmodule Choice, do: defstruct [:text, :index, :logprobs]
+  defmodule Message do
+    @type t :: %__MODULE__{}
+
+    defstruct [:role, :content, :name]
+  end
+
+  defmodule Choice do
+    alias Core.Clients.OpenAI
+
+    @type t :: %__MODULE__{message: OpenAI.Message.t}
+
+    defstruct [:text, :index, :logprobs, :message]
+
+    def spec(), do: %__MODULE__{message: %OpenAI.Message{}}
+  end
 
   defmodule CompletionResponse do
     alias Core.Clients.OpenAI
+
+    @type t :: %__MODULE__{choices: [OpenAI.Choice.t]}
+
     defstruct [:id, :object, :model, :choices]
 
-    def spec(), do: %__MODULE__{choices: [%OpenAI.Choice{}]}
+    def spec(), do: %__MODULE__{choices: [OpenAI.Choice.spec()]}
+  end
+
+  def chat(model \\ "gpt-3.5-turbo", history) do
+    body = Jason.encode!(%{
+      model: model,
+      messages: history,
+    })
+
+    url("/chat/completions")
+    |> HTTPoison.post(body, json_headers(), @options)
+    |> handle_response(CompletionResponse.spec())
   end
 
   def completion(model, prompt) do

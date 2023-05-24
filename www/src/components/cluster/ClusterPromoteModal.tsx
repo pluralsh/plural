@@ -1,6 +1,6 @@
 import { ArrowLeftIcon, Button, Modal } from '@pluralsh/design-system'
 import { Div, Flex } from 'honorable'
-import { Dispatch, useCallback, useState } from 'react'
+import { Dispatch, useCallback, useContext, useState } from 'react'
 import isNil from 'lodash/isNil'
 import { useMutation } from '@apollo/client'
 
@@ -9,14 +9,11 @@ import { ClusterPicker } from '../utils/ClusterPicker'
 import { GqlError } from '../utils/Alert'
 import { ensureURLValidity } from '../../utils/url'
 
-import {
-  CLUSTERS,
-  DELETE_CLUSTER_DEPENDENCY,
-  PROMOTE,
-} from '../overview/queries'
+import { DELETE_CLUSTER_DEPENDENCY, PROMOTE } from '../overview/queries'
 import { ClusterUpgradeInfo } from '../overview/ClusterUpgradeInfo'
 import ImpersonateServiceAccount from '../utils/ImpersonateServiceAccount'
 import { Confirm } from '../utils/Confirm'
+import ClustersContext from '../../contexts/ClustersContext'
 
 type ClusterPromoteModalProps = {
   open: boolean
@@ -50,10 +47,13 @@ function ClusterPromoteModalInternal({
 }: ClusterPromoteModalProps) {
   const [finished, setFinished] = useState(false)
   const [deactivating, setDeactivating] = useState(false)
+  const { refetchClusters } = useContext(ClustersContext)
 
   const [mutation, { loading, error, reset }] = useMutation(PROMOTE, {
-    refetchQueries: [{ query: CLUSTERS }],
-    onCompleted: () => setFinished(true),
+    onCompleted: () => {
+      setFinished(true)
+      refetchClusters?.()
+    },
   })
 
   const [
@@ -68,8 +68,10 @@ function ClusterPromoteModalInternal({
       source: destination.dependency?.dependency?.id || '',
       dest: destination.id || '',
     },
-    refetchQueries: [{ query: CLUSTERS }],
-    onCompleted: () => setDeactivating(false),
+    onCompleted: () => {
+      setDeactivating(false)
+      refetchClusters?.()
+    },
   })
 
   const close = useCallback(() => {

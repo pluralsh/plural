@@ -1,7 +1,9 @@
-import styled from 'styled-components'
-import { AppList, AppProps, LoopingLogo } from '@pluralsh/design-system/dist'
-import { useContext, useMemo } from 'react'
 import { useQuery } from '@apollo/client'
+import { AppList, AppProps } from '@pluralsh/design-system/dist'
+import { useContext, useMemo } from 'react'
+import styled from 'styled-components'
+
+import LoadingIndicator from '../../../../utils/LoadingIndicator'
 
 import { TerminalContext } from '../../context/terminal'
 import { FULL_APPLICATIONS_QUERY } from '../installer/queries'
@@ -20,7 +22,6 @@ const Installed = styled(InstalledUnstyled)(({ theme }) => ({
 
   '&#loader': {
     display: 'flex',
-    flexGrow: 0,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -77,7 +78,7 @@ function InstalledUnstyled({ ...props }): JSX.Element {
         id="loader"
         {...props}
       >
-        <LoopingLogo />
+        <LoadingIndicator />
       </div>
     )
   }

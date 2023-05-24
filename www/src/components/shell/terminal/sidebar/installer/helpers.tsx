@@ -92,7 +92,8 @@ const toDependencySteps = (
 const buildSteps = async (
   client: ApolloClient<unknown>,
   provider: Provider,
-  selectedApplications: Array<WizardStepConfig>
+  selectedApplications: Array<WizardStepConfig>,
+  installedApplications: Set<string>
 ) => {
   const dependencyMap = new Map<
     string,
@@ -117,9 +118,13 @@ const buildSteps = async (
       variables: { id: recipeBase?.id },
     })
 
-    const sections = recipe.recipe.recipeSections!.filter(
-      (section) => section!.repository!.name !== app.label
-    )
+    const sections = recipe.recipe
+      .recipeSections!.filter(
+        (section) => section!.repository!.name !== app.label
+      )
+      .filter(
+        (section) => !installedApplications.has(section!.repository!.name)
+      )
 
     sections.forEach((section) => {
       if (

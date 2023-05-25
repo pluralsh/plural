@@ -241,6 +241,12 @@ type Tag {
   tag: String!
 }
 
+type ChatMessage {
+  role: String!
+  content: String!
+  name: String
+}
+
 enum SpecDatatype {
   STRING
   INT
@@ -1468,6 +1474,12 @@ input PublisherAttributes {
   community: CommunityAttributes
 }
 
+input ChatMessageAttributes {
+  role: String!
+  content: String!
+  name: String
+}
+
 type GeoMetric {
   country: String
   count: Int
@@ -2306,6 +2318,8 @@ type RootQueryType {
 
   testLogs(id: ID!, step: ID!): String
 
+  chat(history: [ChatMessageAttributes]): ChatMessage
+
   helpQuestion(prompt: String!): String
 
   "Get a cluster by its ID."
@@ -2673,6 +2687,32 @@ type PaymentMethod {
   isDefault: Boolean
 }
 
+"Input for creating or updating a cluster."
+input ClusterAttributes {
+  "The name of the cluster."
+  name: String!
+
+  "The cluster's cloud provider."
+  provider: Provider!
+
+  "The source of the cluster."
+  source: Source
+
+  "The git repository URL for the cluster."
+  gitUrl: String
+
+  "The URL of the console running on the cluster."
+  consoleUrl: String
+
+  "The domain name used for applications deployed on the cluster."
+  domain: String
+}
+
+input CrdAttributes {
+  name: String!
+  blob: UploadOrUrl
+}
+
 input PlanMetadataAttributes {
   freeform: Yaml
   features: [PlanFeatureAttributes]
@@ -2710,36 +2750,10 @@ input OnboardingChecklistAttributes {
   dismissed: Boolean
 }
 
-"Input for creating or updating a cluster."
-input ClusterAttributes {
-  "The name of the cluster."
-  name: String!
-
-  "The cluster's cloud provider."
-  provider: Provider!
-
-  "The source of the cluster."
-  source: Source
-
-  "The git repository URL for the cluster."
-  gitUrl: String
-
-  "The URL of the console running on the cluster."
-  consoleUrl: String
-
-  "The domain name used for applications deployed on the cluster."
-  domain: String
-}
-
 enum RolloutStatus {
   QUEUED
   RUNNING
   FINISHED
-}
-
-input CrdAttributes {
-  name: String!
-  blob: UploadOrUrl
 }
 
 "Input for creating or updating an application's attributes."

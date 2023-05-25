@@ -358,6 +358,19 @@ export type ChartName = {
   repo?: InputMaybe<Scalars['String']>;
 };
 
+export type ChatMessage = {
+  __typename?: 'ChatMessage';
+  content: Scalars['String'];
+  name?: Maybe<Scalars['String']>;
+  role: Scalars['String'];
+};
+
+export type ChatMessageAttributes = {
+  content: Scalars['String'];
+  name?: InputMaybe<Scalars['String']>;
+  role: Scalars['String'];
+};
+
 export type ClosureItem = {
   __typename?: 'ClosureItem';
   dep?: Maybe<Dependency>;
@@ -3513,6 +3526,7 @@ export type RootQueryType = {
   chart?: Maybe<Chart>;
   chartInstallations?: Maybe<ChartInstallationConnection>;
   charts?: Maybe<ChartConnection>;
+  chat?: Maybe<ChatMessage>;
   closure?: Maybe<Array<Maybe<ClosureItem>>>;
   /** Get a cluster by its ID. */
   cluster?: Maybe<Cluster>;
@@ -3634,6 +3648,11 @@ export type RootQueryTypeChartsArgs = {
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   repositoryId: Scalars['ID'];
+};
+
+
+export type RootQueryTypeChatArgs = {
+  history?: InputMaybe<Array<InputMaybe<ChatMessageAttributes>>>;
 };
 
 

@@ -80,7 +80,7 @@ release-vsn: # tags and pushes a new release
 	git pull --rebase; \
 	git tag -a $$tag -m "new release"; \
 	git push origin $$tag; \
-	vsn=$${tag#"v"}; \ 
+	export vsn=$${tag#"v"}; \ 
 	yq -i '.appVersion = "$$vsn" | .version = "$$vsn"' plural/helm/plural/Chart.yaml; \
 	git checkout -b release-$$vsn; \
 	git add .; \

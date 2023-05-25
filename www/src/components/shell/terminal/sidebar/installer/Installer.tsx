@@ -23,11 +23,10 @@ import useOnboarded from '../../../hooks/useOnboarded'
 import { State, TerminalContext } from '../../context/terminal'
 import CurrentUserContext from '../../../../../contexts/CurrentUserContext'
 import { PosthogEvent, posthogCapture } from '../../../../../utils/posthog'
-
 import LoadingIndicator from '../../../../utils/LoadingIndicator'
+import { useSelectCluster } from '../Sidebar'
 
 import { InstallerContext } from './context'
-
 import { buildSteps, install, toDefaultSteps } from './helpers'
 import { APPLICATIONS_QUERY } from './queries'
 
@@ -48,6 +47,7 @@ function Installer({ onInstallSuccess }) {
   const me = useContext(CurrentUserContext)
   const onResetRef = useRef<{ onReset: Dispatch<void> }>({ onReset: () => {} })
   const [searchParams] = useSearchParams()
+  const { clusters } = useSelectCluster()
 
   const [stepsLoading, setStepsLoading] = useState(false)
   const [steps, setSteps] = useState<Array<WizardStepConfig>>([])
@@ -64,7 +64,18 @@ function Installer({ onInstallSuccess }) {
     } = {},
     refetch,
   } = useQuery(APPLICATIONS_QUERY, {
-    variables: { provider },
+    variables: { provider, installed: false },
+    skip: !provider,
+    fetchPolicy: 'network-only',
+  })
+
+  const {
+    data: {
+      repositories: { edges: installedApplications } = { edges: undefined },
+    } = {},
+    refetch: refetchInstalledApps,
+  } = useQuery(APPLICATIONS_QUERY, {
+    variables: { provider, installed: true },
     skip: !provider,
     fetchPolicy: 'network-only',
   })
@@ -100,6 +111,7 @@ function Installer({ onInstallSuccess }) {
           setState(State.Installed)
           mutation()
           refetch()
+          refetchInstalledApps()
           posthogCapture(PosthogEvent.Installer, {
             provider,
             applications: selectedApplications,
@@ -110,13 +122,20 @@ function Installer({ onInstallSuccess }) {
         .finally(() => setStepsLoading(false))
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [client, mutation, provider, refetch, setState]
+    [client, mutation, provider, refetch, refetchInstalledApps, setState]
   )
 
   const onSelect = useCallback(
     (selectedApplications: Array<WizardStepConfig>) => {
       const build = async () => {
-        const steps = await buildSteps(client, provider, selectedApplications)
+        const steps = await buildSteps(
+          client,
+          provider,
+          selectedApplications,
+          new Set<string>(
+            installedApplications?.map((repository) => repository.node.name)
+          )
+        )
 
         setSteps(steps)
       }
@@ -127,7 +146,7 @@ function Installer({ onInstallSuccess }) {
       setStepsLoading(true)
       build().finally(() => setStepsLoading(false))
     },
-    [client, provider]
+    [client, installedApplications, provider]
   )
 
   useEffect(
@@ -167,9 +186,10 @@ function Installer({ onInstallSuccess }) {
   return (
     <InstallerContext.Provider value={context}>
       <Div
-        overflowY="auto"
-        overflowX="hidden"
-        flexGrow={1}
+        height={
+          clusters?.length > 1 ? 'calc(100% - 96px)' : 'calc(100% - 56px)'
+        }
+        paddingTop="large"
       >
         <Div
           height="100%"

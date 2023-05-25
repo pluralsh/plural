@@ -251,4 +251,4 @@ function SidebarUnstyled({ refetch, ...props }) {
   )
 }
 
-export { Sidebar }
+export { Sidebar, useSelectCluster }

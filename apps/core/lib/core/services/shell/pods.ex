@@ -98,6 +98,11 @@ defmodule Core.Services.Shell.Pods do
           name: "http"
         }
       ],
+      lifecycle: %CoreV1.Lifecycle{
+        pre_stop: %CoreV1.Handler{
+          http_get: %CoreV1.HTTPGetAction{path: "/v1/shutdown", port: "http"}
+        },
+      },
       resources: %CoreV1.ResourceRequirements{
         limits: %{cpu: "500m", memory: "1Gi"},
         requests: %{cpu: "50m", memory: "150Mi"}
@@ -121,5 +126,5 @@ defmodule Core.Services.Shell.Pods do
     }
   end
 
-  defp image(), do: Application.get_env(:core, :cloud_shell_img) || "gcr.io/pluralsh/plural-cli-cloud:0.5.13"
+  defp image(), do: Application.get_env(:core, :cloud_shell_img) || "gcr.io/pluralsh/plural-cli-cloud:0.6.23"
 end

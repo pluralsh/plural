@@ -150,6 +150,7 @@ function RoadmapSearchBox({
           onChange={e => setSearch(e.target.value)}
           borderBottomLeftRadius={0}
           borderBottomRightRadius={0}
+          flexShrink={0}
         />
         <Flex
           direction="column"

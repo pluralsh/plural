@@ -112,9 +112,9 @@ defmodule Core.Services.Upgrades do
     |> notify(:create)
   end
 
-  def create_upgrade(params, name, %User{id: user_id}), do: create_upgrade(params, get_queue(user_id, name))
+  def create_upgrade(_, nil), do: {:error, "could not find upgrade queue for that name"}
 
-  def create_upgrade(_, name, nil), do: {:error, "could not find queue for #{name}"}
+  def create_upgrade(params, name, %User{id: user_id}), do: create_upgrade(params, get_queue(user_id, name))
 
   @doc """
   Fetch the next unacked upgrade in this queue

@@ -160,9 +160,9 @@ function InstallAppButton({
       ),
     [clusters, userId]
   )
-  const { name, apps } = props
+  const { name, apps, recipes } = props
 
-  if (!name) {
+  if (!name || isEmpty(recipes)) {
     return null
   }
 

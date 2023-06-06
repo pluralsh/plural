@@ -1,6 +1,7 @@
 import { Sidecar } from '@pluralsh/design-system'
 import { A } from 'honorable'
 import { ReactNode, useState } from 'react'
+import isEmpty from 'lodash/isEmpty'
 
 import { Provider, Recipe } from '../../generated/graphql'
 
@@ -81,17 +82,21 @@ export function ProvidersSidecar({
 }: {
   type: RecipeType
   name: string
-  recipes?: RecipeSubset[]
+  recipes?: (RecipeSubset | null | undefined)[]
 }) {
   const [expanded, setExpanded] = useState(false)
 
-  if (!recipes) {
+  let filteredRecipes = recipes?.filter(
+    (r: RecipeSubset | null | undefined): r is RecipeSubset => !!r
+  )
+
+  if (!filteredRecipes || isEmpty(filteredRecipes)) {
     return null
   }
-  const showViewMore = recipes.length > MAX_RECIPES && !expanded
+  const showViewMore = filteredRecipes.length > MAX_RECIPES && !expanded
 
   if (showViewMore) {
-    recipes = recipes.slice(0, MAX_RECIPES - 1)
+    filteredRecipes = filteredRecipes.slice(0, MAX_RECIPES - 1)
   }
 
   return (
@@ -101,20 +106,14 @@ export function ProvidersSidecar({
       flexDirection="column"
       gap="xxsmall"
     >
-      {recipes?.map((recipe, i) => {
-        if (!recipe) {
-          return null
-        }
-
-        return (
-          <InstallCommandCopyButton
-            name={name}
-            type={type}
-            key={recipe?.name ?? i}
-            recipe={recipe}
-          />
-        )
-      })}
+      {filteredRecipes?.map((recipe, i) => (
+        <InstallCommandCopyButton
+          name={name}
+          type={type}
+          key={recipe?.name ?? i}
+          recipe={recipe}
+        />
+      ))}
       {showViewMore && (
         <A
           inline

@@ -1,16 +1,9 @@
-import {
-  ComponentProps,
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
+import { ComponentProps, useCallback, useEffect, useRef, useState } from 'react'
 import { Form } from 'grommet'
 import { Link, useLocation } from 'react-router-dom'
 import { A, Button, Div, Flex, P } from 'honorable'
 
-import { ThemeContext } from 'styled-components'
+import { useTheme } from 'styled-components'
 
 import { useOauthUrlsQuery, useSignupMutation } from '../../generated/graphql'
 import { WelcomeHeader } from '../utils/WelcomeHeader'
@@ -90,7 +83,7 @@ export function ConfirmPasswordField({
 }
 
 export function Signup() {
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
   const history = useHistory()
   const location = useLocation()
   const [email, setEmail] = useState(location?.state?.email || '')

@@ -1,8 +1,8 @@
 import { useMutation, useQuery } from '@apollo/client'
 import moment from 'moment'
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Div, Flex, Text } from 'honorable'
-import { ThemeContext } from 'styled-components'
+import { useTheme } from 'styled-components'
 import { SearchIcon } from '@pluralsh/design-system'
 
 import { useOutletContext } from 'react-router-dom'
@@ -71,7 +71,7 @@ function InviteLink({ invite }: any) {
 }
 
 function Invite(invite: any) {
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
   const { email, insertedAt } = invite
 
   return (

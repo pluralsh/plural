@@ -1,8 +1,7 @@
-import { useContext } from 'react'
 import { Box, Text } from 'grommet'
 import { ResponsiveChoropleth } from '@nivo/geo'
 import max from 'lodash/max'
-import { ThemeContext } from 'styled-components'
+import { useTheme } from 'styled-components'
 
 import { StyledTheme } from '../../types/styled'
 
@@ -50,7 +49,7 @@ function Tooltip({ feature }: any) {
 
 export function Chloropleth({ data }: any) {
   const maximum = max(data.map(({ value }) => value)) as number
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
 
   return (
     <ResponsiveChoropleth

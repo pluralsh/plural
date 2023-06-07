@@ -1,7 +1,7 @@
 import { ButtonProps, Flex } from 'honorable'
 import { Button, CheckIcon } from '@pluralsh/design-system'
-import { ReactNode, useContext, useEffect, useState } from 'react'
-import { ThemeContext } from 'styled-components'
+import { ReactNode, useEffect, useState } from 'react'
+import { useTheme } from 'styled-components'
 
 import usePrevious from '../../hooks/usePrevious'
 
@@ -22,7 +22,7 @@ export default function SaveButton({
   ...props
 }: SaveButtonProps) {
   const [showSaved, setShowSaved] = useState(false)
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
   const previousLoading = usePrevious(loading)
 
   useEffect(() => {

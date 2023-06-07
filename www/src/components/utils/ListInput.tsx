@@ -1,12 +1,12 @@
 import { ExtendTheme, Input, InputProps } from 'honorable'
 import { forwardRef, useContext } from 'react'
-import { ThemeContext } from 'styled-components'
+import { useTheme } from 'styled-components'
 
 import { ListContext, hueToBorderColor } from './List'
 
 const ListInput = forwardRef<HTMLDivElement, InputProps>(
   ({ ...props }, ref) => {
-    const theme = useContext(ThemeContext)
+    const theme = useTheme()
     const { hue } = useContext(ListContext)
     const bRad = theme.borderRadiuses.large - 2
 

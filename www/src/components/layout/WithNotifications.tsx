@@ -4,7 +4,7 @@ import moment from 'moment'
 import { AppIcon, Button, Card, Markdown } from '@pluralsh/design-system'
 import { useCallback, useContext } from 'react'
 import { Link } from 'react-router-dom'
-import { ThemeContext } from 'styled-components'
+import { useTheme } from 'styled-components'
 
 import {
   Notification as NotificationT,
@@ -227,7 +227,7 @@ function NotificationContent({
 
 function Notification({ notification, closePanel }: any) {
   const { actor, incident, insertedAt } = notification
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
 
   const url = getUrl(notification)
 

@@ -278,15 +278,20 @@ export function AccessTokens() {
   const { edges, pageInfo } = data.tokens
 
   return (
-    <Div marginBottom="large">
+    <Flex
+      flexDirection="column"
+      flexShrink="0"
+      height="100%"
+      overflow="hidden"
+    >
       <PageTitle
         heading="Access tokens"
         justifyContent="flex-start"
       >
-        <Box
-          flex
+        <Flex
           direction="row"
           align="center"
+          overflow="auto"
         >
           <Tooltip
             width="315px"
@@ -326,9 +331,9 @@ export function AccessTokens() {
               Create access token
             </Button>
           </Box>
-        </Box>
+        </Flex>
       </PageTitle>
-      <Box fill>
+      <Flex height="100%">
         {edges?.length ? (
           <StandardScroller
             listRef={listRef}
@@ -368,7 +373,7 @@ export function AccessTokens() {
             </Button>
           </EmptyState>
         )}
-      </Box>
-    </Div>
+      </Flex>
+    </Flex>
   )
 }

@@ -5278,13 +5278,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sentry/types@npm:7.22.0":
-  version: 7.22.0
-  resolution: "@sentry/types@npm:7.22.0"
-  checksum: eec788104d3a8ed8b8bf57d95e6c1ec8ec48212a94914e4e1d8bc110fe6b88825ce2a299439d10bd2f0c69778afedabcc6cbf38c4850345e6954d8bc3be0060b
-  languageName: node
-  linkType: hard
-
 "@sideway/address@npm:^4.1.3":
   version: 4.1.4
   resolution: "@sideway/address@npm:4.1.4"
@@ -13718,14 +13711,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"posthog-js@npm:1.43.1":
-  version: 1.43.1
-  resolution: "posthog-js@npm:1.43.1"
+"posthog-js@npm:1.57.2":
+  version: 1.57.2
+  resolution: "posthog-js@npm:1.57.2"
   dependencies:
-    "@sentry/types": 7.22.0
     fflate: ^0.4.1
     rrweb-snapshot: ^1.1.14
-  checksum: 76806052495d16c06374c7f4516b61ec09f99fd89e816603f636bde931b653e2c0a2df2f70a68905408f888a9157cd7e7394e6503dca4ede08d258c58d4a49ef
+  checksum: f1c6d90729faa36bcf29e7e47384421fa717a7a4778084f207eaac13f82cb393a4235a6dbe2a51d227e12261f7240e644d988960fd22df00d5648fd7f77fbfd9
   languageName: node
   linkType: hard
 
@@ -18145,7 +18137,7 @@ __metadata:
     npm-run-all: 4.1.5
     phoenix: 1.6.15
     pluralsh-absinthe-socket-apollo-link: 0.2.0
-    posthog-js: 1.43.1
+    posthog-js: 1.57.2
     prettier: 2.8.4
     process: 0.11.10
     prop-types: 15.8.1

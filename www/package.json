@@ -28,9 +28,9 @@
     "graphql:codegen": "graphql-codegen --config codegen.yml"
   },
   "engines": {
-    "node": "18.12.1"
+    "node": "18.16.0"
   },
-  "packageManager": "yarn@3.3.0",
+  "packageManager": "yarn@3.6.0",
   "dependencies": {
     "@absinthe/socket": "0.2.1",
     "@apollo/client": "3.7.15",
@@ -44,7 +44,7 @@
     "@nivo/geo": "0.83.0",
     "@nivo/line": "0.83.0",
     "@octokit/core": "4.2.1",
-    "@pluralsh/design-system": "1.342.0",
+    "@pluralsh/design-system": "1.343.0",
     "@react-spring/web": "9.7.2",
     "@stripe/react-stripe-js": "2.1.0",
     "@stripe/stripe-js": "1.54.0",
@@ -112,7 +112,7 @@
     "slate-history": "0.93.0",
     "slate-react": "0.95.0",
     "stream-browserify": "3.0.0",
-    "styled-components": "6.0.0-rc.3",
+    "styled-components": "5.3.11",
     "util": "0.12.5",
     "uuid": "9.0.0",
     "workbox-core": "7.0.0",
@@ -143,6 +143,7 @@
     "@types/react-credit-cards": "0.8.1",
     "@types/react-dom": "18.2.4",
     "@types/react-stripe-elements": "6.0.6",
+    "@types/styled-components": "5.1.26",
     "@types/uuid": "9.0.1",
     "@typescript-eslint/eslint-plugin": "5.59.9",
     "@typescript-eslint/parser": "5.59.9",

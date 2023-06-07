@@ -9464,13 +9464,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"emoji-mart@npm:5.5.2":
-  version: 5.5.2
-  resolution: "emoji-mart@npm:5.5.2"
-  checksum: a9d8db731443581baebafbcb8494086e9d02b1475ddee9901fc657a7e8f08c14594a810605a3abe8d52627b75f5d78ea19adf3166fb0f38cea174694f86635f9
-  languageName: node
-  linkType: hard
-
 "emoji-regex@npm:^8.0.0":
   version: 8.0.0
   resolution: "emoji-regex@npm:8.0.0"
@@ -11599,7 +11592,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"immer@npm:9.0.21, immer@npm:^9.0.6":
+"immer@npm:9.0.21":
   version: 9.0.21
   resolution: "immer@npm:9.0.21"
   checksum: 70e3c274165995352f6936695f0ef4723c52c92c92dd0e9afdfe008175af39fa28e76aafb3a2ca9d57d1fb8f796efc4dd1e1cc36f18d33fa5b74f3dfb0375432
@@ -16523,17 +16516,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"slate@npm:0.94.1":
-  version: 0.94.1
-  resolution: "slate@npm:0.94.1"
-  dependencies:
-    immer: ^9.0.6
-    is-plain-object: ^5.0.0
-    tiny-warning: ^1.0.3
-  checksum: 07666fe3373e59aaa19261366fd3cf1df546edfc0162fb88d675d71f158ebd1bf0630fd00ecc9152ab6547080f3e90c9f6d1504e09c25b3bf980cceb9b15c3c1
-  languageName: node
-  linkType: hard
-
 "slice-ansi@npm:^3.0.0":
   version: 3.0.0
   resolution: "slice-ansi@npm:3.0.0"
@@ -17544,13 +17526,6 @@ __metadata:
   version: 1.0.6
   resolution: "tiny-invariant@npm:1.0.6"
   checksum: c90b34beea3cb10c49531e754afb0999033a2d7edffef6602922de27678d8a96dcbc0e8f0a959bc272859281b0cd1305b711e25d5edfb1da5fc7135e2a992961
-  languageName: node
-  linkType: hard
-
-"tiny-warning@npm:^1.0.3":
-  version: 1.0.3
-  resolution: "tiny-warning@npm:1.0.3"
-  checksum: da62c4acac565902f0624b123eed6dd3509bc9a8d30c06e017104bedcf5d35810da8ff72864400ad19c5c7806fc0a8323c68baf3e326af7cb7d969f846100d71
   languageName: node
   linkType: hard
 
@@ -19055,7 +19030,6 @@ __metadata:
     country-code-lookup: 0.0.23
     d3-hierarchy: 3.1.2
     d3-selection: 3.0.0
-    emoji-mart: 5.5.2
     eslint: 8.42.0
     eslint-config-pluralsh: 3.1.0
     eslint-config-prettier: 8.8.0
@@ -19125,7 +19099,6 @@ __metadata:
     rehype-raw: 6.1.1
     rollup-plugin-polyfill-node: 0.12.0
     serve: 14.2.0
-    slate: 0.94.1
     slate-history: 0.93.0
     slate-react: 0.95.0
     source-map-explorer: 2.5.3

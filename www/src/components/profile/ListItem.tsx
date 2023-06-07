@@ -1,9 +1,8 @@
-import { ThemeContext } from 'styled-components'
+import { useTheme } from 'styled-components'
 import { Box } from 'grommet'
-import { useContext } from 'react'
 
 export function ListItem({ first, last, children, background }: any) {
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
 
   const BORDER_RADIUS = `${theme.borderRadiuses.large}px`
   const r = (corner) => ({ corner, size: BORDER_RADIUS })

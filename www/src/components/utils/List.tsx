@@ -13,8 +13,8 @@ type Hue = Required<CardProps>['hue']
 
 const ListContext = createContext<{ hue: Hue }>({ hue: 'default' })
 
-const LiBare = styled.li(
-  ({ $extendStyle }: { $extendStyle?: Record<string, any> }) => ({
+const LiBare = styled.li<{ $extendStyle?: Record<string, any> }>(
+  ({ $extendStyle }) => ({
     margin: 0,
     textIndent: 0,
     padding: 0,

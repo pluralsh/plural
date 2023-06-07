@@ -7,7 +7,7 @@ import isEmpty from 'lodash/isEmpty'
 import { STACKS_QUERY } from './queries'
 import { CardGrid } from './CardGrid'
 
-const hues = ['blue', 'green', 'yellow', 'red']
+const hues = ['blue', 'green', 'yellow', 'red'] as const
 
 export default function MarketplaceStacks() {
   const navigate = useNavigate()

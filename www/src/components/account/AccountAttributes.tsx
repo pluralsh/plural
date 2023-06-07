@@ -9,7 +9,7 @@ import {
   ValidatedInput,
 } from '@pluralsh/design-system'
 import { useContext, useMemo, useState } from 'react'
-import { ThemeContext } from 'styled-components'
+import { useTheme } from 'styled-components'
 
 import { useUpdateState } from '../../hooks/useUpdateState'
 import CurrentUserContext from '../../contexts/CurrentUserContext'
@@ -40,7 +40,7 @@ function DomainMappingFunc({
   first,
   last,
 }: DomainMappingFuncProps) {
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
   const [confirm, setConfirm] = useState(false)
 
   return (

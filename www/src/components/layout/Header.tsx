@@ -1,6 +1,5 @@
 import { Div, Flex, Img } from 'honorable'
-import { ThemeContext } from 'styled-components'
-import { useContext } from 'react'
+import { useTheme } from 'styled-components'
 
 import { useIsCurrentlyOnboarding } from '../shell/hooks/useOnboarded'
 import BillingLegacyUserMessage from '../account/billing/BillingLegacyUserMessage'
@@ -9,7 +8,7 @@ import BillingSubscriptionChip from '../account/billing/BillingSubscriptionChip'
 const APP_ICON = '/app-logo-white.png'
 
 export default function Header() {
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
   const isCurrentlyOnboarding = useIsCurrentlyOnboarding()
 
   return (

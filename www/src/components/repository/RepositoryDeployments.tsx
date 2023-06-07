@@ -31,17 +31,25 @@ function progress(cursor) {
 function statusAttributes({ status, cursor }: any) {
   switch (status) {
     case 'QUEUED':
-      return { icon: <StatusIpIcon />, text: 'queued', severity: 'neutral' }
+      return {
+        icon: <StatusIpIcon />,
+        text: 'queued',
+        severity: 'neutral',
+      } as const
     case 'FINISHED':
-      return { icon: <StatusOkIcon />, text: 'finished', severity: 'success' }
+      return {
+        icon: <StatusOkIcon />,
+        text: 'finished',
+        severity: 'success',
+      } as const
     case 'RUNNING':
       return {
         loading: true,
         text: `${progress(cursor)}% completed`,
         severity: 'info',
-      }
+      } as const
     default:
-      return {}
+      return {} as const
   }
 }
 

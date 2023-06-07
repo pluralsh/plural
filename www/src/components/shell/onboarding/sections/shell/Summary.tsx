@@ -1,7 +1,7 @@
 import { Flex, P } from 'honorable'
 
 import { useCallback, useContext } from 'react'
-import styled, { CSSObject } from 'styled-components'
+import styled from 'styled-components'
 
 import {
   Button,
@@ -15,7 +15,7 @@ import { ScmProvider } from '../../../../../generated/graphql'
 import { CreateCloudShellSectionState } from '../../context/types'
 import { useSectionState } from '../../context/hooks'
 
-const entryGridStyle = (theme): CSSObject => ({
+const entryGridStyle = (theme): Record<string, any> => ({
   borderTop: theme.borders.default,
   display: 'flex',
 

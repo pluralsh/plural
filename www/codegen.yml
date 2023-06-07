@@ -9,7 +9,9 @@ generates:
       - "typescript-react-apollo"
       - "named-operations-object"
       - add:
-          content: '/* eslint-disable */\n/* prettier-ignore */'
+          content: 
+            - "/* eslint-disable */"
+            - "/* prettier-ignore */"
 config:
   scalars:
     Map: Map<string, unknown>

@@ -19,6 +19,16 @@ defmodule Core.Services.Shell do
   end
 
   @doc """
+  Gets a cloud shell for a user id and locks for update
+  """
+  @spec get_locked_shell(binary) :: CloudShell.t | nil
+  def get_locked_shell(user_id) do
+    CloudShell.with_lock()
+    |> Core.Repo.get_by(user_id: user_id)
+    |> Core.Repo.preload([:user])
+  end
+
+  @doc """
   Whether the `user_id` has an extant cloud shell
   """
   @spec has_shell?(binary) :: boolean
@@ -43,7 +53,7 @@ defmodule Core.Services.Shell do
   @spec create_shell(map, User.t) :: shell_resp
   def create_shell(attrs, %User{id: user_id} = user) do
     start_transaction()
-    |> add_operation(:fetch, fn _ -> {:ok, get_shell(user_id)} end)
+    |> add_operation(:fetch, fn _ -> {:ok, get_locked_shell(user_id)} end)
     |> add_operation(:create, fn
       %{fetch: nil} ->
         %CloudShell{user_id: user_id}

@@ -141,6 +141,10 @@ defmodule Core.Schema.CloudShell do
     timestamps()
   end
 
+  def with_lock(query \\ __MODULE__) do
+    from(s in query, lock: "FOR UPDATE")
+  end
+
   def for_user(query \\ __MODULE__, user_id) do
     from(cs in query, where: cs.user_id == ^user_id)
   end

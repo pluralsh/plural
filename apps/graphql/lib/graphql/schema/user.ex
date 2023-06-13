@@ -7,7 +7,7 @@ defmodule GraphQl.Schema.User do
     Payments,
     Account
   }
-  alias GraphQl.Middleware.{Authenticated, AllowJwt, RateLimit, Differentiate}
+  alias GraphQl.Middleware.{Authenticated, AllowJwt, RateLimit, Differentiate, CheckOrigin}
 
   ecto_enum :notification_type, Schema.Notification.Type
   ecto_enum :reset_token_type, Schema.ResetToken.Type
@@ -428,6 +428,8 @@ defmodule GraphQl.Schema.User do
     field :login, :user do
       middleware AllowJwt
       middleware RateLimit, limit: 10, time: 60_000
+      middleware CheckOrigin
+
       arg :email,        non_null(:string)
       arg :password,     non_null(:string)
       arg :device_token, :string
@@ -498,6 +500,8 @@ defmodule GraphQl.Schema.User do
     field :signup, :user do
       middleware GraphQl.Middleware.AllowJwt
       middleware RateLimit, limit: 5, time: 60_000
+      middleware CheckOrigin
+
       arg :invite_id,    :string
       arg :attributes,   non_null(:user_attributes)
       arg :account,      :account_attributes

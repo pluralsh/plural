@@ -3,7 +3,8 @@ import Config
 config :core,
   ecto_repos: [Core.Repo],
   broker: Core.Conduit.Broker,
-  env: config_env()
+  env: config_env(),
+  hostname: "app.plural.sh"
 
 config :piazza_core,
   repos: [Core.Repo]

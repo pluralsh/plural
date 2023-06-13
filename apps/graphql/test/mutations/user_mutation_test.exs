@@ -8,7 +8,7 @@ defmodule GraphQl.UserMutationTest do
     test "A user can log in with a password" do
       {:ok, user} = Users.create_user(%{
         name: "Michael Guarino",
-        email: "mguarino46@gmail.com",
+        email: "mjg@plural.sh",
         password: "super strong password"
       })
 
@@ -19,16 +19,33 @@ defmodule GraphQl.UserMutationTest do
             jwt
           }
         }
-      """, %{"email" => "mguarino46@gmail.com", "password" => "super strong password"})
+      """, %{"email" => "mjg@plural.sh", "password" => "super strong password"}, %{origin: "https://app.plural.sh"})
 
       assert found["id"] == user.id
       assert found["jwt"]
     end
 
+    test "invalid origins fail" do
+      {:ok, _} = Users.create_user(%{
+        name: "Michael Guarino",
+        email: "mjg@plural.sh",
+        password: "super strong password"
+      })
+
+      {:ok, %{errors: [_ | _]}} = run_query("""
+        mutation Login($email: String!, $password: String!) {
+          login(email: $email, password: $password) {
+            id
+            jwt
+          }
+        }
+      """, %{"email" => "mjg@plural.sh", "password" => "super strong password"}, %{origin: "https://notapp.plural.sh"})
+    end
+
     test "Incorrect passwords fail" do
       {:ok, _} = Users.create_user(%{
         name: "Michael Guarino",
-        email: "mguarino46@gmail.com",
+        email: "mjg@plural.sh",
         password: "super strong password"
       })
 
@@ -38,13 +55,13 @@ defmodule GraphQl.UserMutationTest do
             id
           }
         }
-      """, %{"email" => "mguarino46@gmail.com", "password" => "incorrect password"})
+      """, %{"email" => "mjg@plural.sh", "password" => "incorrect password"})
     end
 
     test "it can activate login tokens" do
       {:ok, user} = Users.create_user(%{
         name: "Michael Guarino",
-        email: "mguarino46@gmail.com",
+        email: "mjg@plural.sh",
         password: "super strong password"
       })
       token = insert(:login_token)
@@ -57,7 +74,7 @@ defmodule GraphQl.UserMutationTest do
           }
         }
       """, %{
-        "email" => "mguarino46@gmail.com",
+        "email" => "mjg@plural.sh",
         "password" => "super strong password",
         "deviceToken" => token.token
       })
@@ -125,19 +142,37 @@ defmodule GraphQl.UserMutationTest do
         }
       """, %{
         "attributes" => %{
-          "email" => "mguarino46@gmail.com",
+          "email" => "mjg@plural.sh",
           "password" => "super strong password",
           "name" => "Michael Guarino"
         },
         "deviceToken" => token.token
-      })
+      }, %{origin: "https://app.plural.sh"})
 
       assert signup["id"]
       assert signup["name"] == "Michael Guarino"
-      assert signup["email"] == "mguarino46@gmail.com"
+      assert signup["email"] == "mjg@plural.sh"
       assert signup["jwt"]
 
       assert refetch(token).active
+    end
+
+    test "incorrect origins fail" do
+      token = insert(:login_token)
+      {:ok, %{errors: [_ | _]}} = run_query("""
+        mutation Signup($attributes: UserAttributes!, $deviceToken: String) {
+          signup(attributes: $attributes, deviceToken: $deviceToken) {
+            id name email jwt
+          }
+        }
+      """, %{
+        "attributes" => %{
+          "email" => "mjg@plural.sh",
+          "password" => "super strong password",
+          "name" => "Michael Guarino"
+        },
+        "deviceToken" => token.token
+      }, %{origin: "https://notapp.plural.sh"})
     end
 
     test "it can set account name" do
@@ -152,20 +187,20 @@ defmodule GraphQl.UserMutationTest do
           }
         }
       """, %{"attributes" => %{
-        "email" => "mguarino46@gmail.com",
+        "email" => "mjg@plural.sh",
         "password" => "super strong password",
         "name" => "Michael Guarino"
       }, "account" => %{"name" => "account"}})
 
       assert signup["id"]
       assert signup["name"] == "Michael Guarino"
-      assert signup["email"] == "mguarino46@gmail.com"
+      assert signup["email"] == "mjg@plural.sh"
       assert signup["jwt"]
       assert signup["account"]["name"] == "account"
     end
 
     test "it can create a user by invite" do
-      invite = insert(:invite, email: "mguarino46@gmail.com")
+      invite = insert(:invite, email: "mjg@plural.sh")
       {:ok, %{data: %{"signup" => signup}}} = run_query("""
         mutation Signup($attributes: UserAttributes!, $id: String) {
           signup(attributes: $attributes, inviteId: $id) {
@@ -173,14 +208,14 @@ defmodule GraphQl.UserMutationTest do
           }
         }
       """, %{"attributes" => %{
-        "email" => "mguarino46@gmail.com",
+        "email" => "mjg@plural.sh",
         "password" => "super strong password",
         "name" => "Michael Guarino"
       }, "id" => invite.secure_id})
 
       assert signup["id"]
       assert signup["name"] == "Michael Guarino"
-      assert signup["email"] == "mguarino46@gmail.com"
+      assert signup["email"] == "mjg@plural.sh"
       assert signup["jwt"]
     end
   end
@@ -189,7 +224,7 @@ defmodule GraphQl.UserMutationTest do
     test "Users can update themselves" do
       {:ok, user} = Users.create_user(%{
         name: "Michael Guarino",
-        email: "mguarino46@gmail.com",
+        email: "mjg@plural.sh",
         password: "super strong password"
       })
 
@@ -211,7 +246,7 @@ defmodule GraphQl.UserMutationTest do
     test "it will block invalid avatar urls" do
       {:ok, user} = Users.create_user(%{
         name: "Michael Guarino",
-        email: "mguarino46@gmail.com",
+        email: "mjg@plural.sh",
         password: "super strong password"
       })
 

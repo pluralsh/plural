@@ -223,7 +223,7 @@ defmodule Core.Services.Charts do
       |> Enum.filter(&String.starts_with?(&1, dkr_dns))
       |> Enum.map(&String.trim_leading(&1, dkr_dns <> "/"))
       |> Enum.map(fn registry ->
-        with [repo, repository] <- String.split(registry, "/"),
+        with [repo | repository] <- String.split(registry, "/"),
              [repository, tag] <- Enum.join(repository, "/") |> String.split(":") do
           Repositories.get_dkr_image(repo, repository, tag)
         else

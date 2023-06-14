@@ -41,11 +41,6 @@ export const getDirectory = ({
       enabled: app?.oauthSettings,
     },
     {
-      label: 'Uninstall',
-      path: 'uninstall',
-      enabled: true,
-    },
-    {
       path: 'docs',
       label: `${capitalize(app?.name)} docs`,
       enabled: !isEmpty(docs),

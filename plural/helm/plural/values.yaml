@@ -756,6 +756,6 @@ affinity:
 
 test-base:
   enabled: false
-  repository: plural
+  application: plural
   testName: plural-integration
-  promoteTag: warm
+  promoteTag: stable

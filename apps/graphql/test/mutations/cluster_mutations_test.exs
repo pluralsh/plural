@@ -41,6 +41,7 @@ defmodule GraphQl.ClusterMutationsTest do
   describe "createClusterDependency" do
     test "it will create a dependency reference" do
       user = insert(:user)
+      enable_features(user.account, [:multi_cluster])
       sa = insert(:user, service_account: true, account: user.account)
       insert(:impersonation_policy_binding,
         policy: build(:impersonation_policy, user: sa),
@@ -60,6 +61,26 @@ defmodule GraphQl.ClusterMutationsTest do
 
       assert dep["cluster"]["id"] == dest.id
       assert dep["dependency"]["id"] == source.id
+    end
+
+    test "if the feature isn't enabled, it cannot create" do
+      user = insert(:user)
+      sa = insert(:user, service_account: true, account: user.account)
+      insert(:impersonation_policy_binding,
+        policy: build(:impersonation_policy, user: sa),
+        user: user
+      )
+      dest   = insert(:cluster, owner: user)
+      source = insert(:cluster, owner: sa)
+
+      {:ok, %{errors: [_ | _]}} = run_query("""
+        mutation Create($source: ID!, $dest: ID!) {
+          createClusterDependency(sourceId: $source, destId: $dest) {
+            cluster { id }
+            dependency { id }
+          }
+        }
+      """, %{"source" => source.id, "dest" => dest.id}, %{current_user: user})
     end
   end
 

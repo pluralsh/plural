@@ -65,13 +65,13 @@ defimpl Core.PubSub.Fanout, for: Core.PubSub.ZoomMeetingCreated do
   end
 end
 
-defimpl Core.PubSub.Fanout, for: Core.PubSub.DockerImageCreated do
-  require Logger
+# defimpl Core.PubSub.Fanout, for: Core.PubSub.DockerImageCreated do
+#   require Logger
 
-  def fanout(%{item: img}) do
-    Core.Buffer.Orchestrator.submit(Core.Buffers.Docker, img.docker_repository.repository_id, img)
-  end
-end
+#   def fanout(%{item: img}) do
+#     Core.Buffer.Orchestrator.submit(Core.Buffers.Docker, img.docker_repository.repository_id, img)
+#   end
+# end
 
 defimpl Core.PubSub.Fanout, for: Core.PubSub.UpgradeCreated do
   require Logger

@@ -84,7 +84,7 @@ defmodule GraphQl.Schema.Cluster do
 
     @desc "adds a dependency for this cluster to gate future upgrades"
     field :create_cluster_dependency, :cluster_dependency do
-      # middleware Differentiate, feature: :multi_cluster
+      middleware Differentiate, feature: :multi_cluster
       arg :source_id, non_null(:id)
       arg :dest_id,   non_null(:id)
 

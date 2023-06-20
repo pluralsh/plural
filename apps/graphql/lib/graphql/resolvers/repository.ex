@@ -55,16 +55,16 @@ defmodule GraphQl.Resolvers.Repository do
 
   def upgrade_channels(repo), do: {:ok, Repositories.upgrade_channels(repo)}
 
-  def resolve_repository(%{id: repo_id}, %{context: %{current_user: user}}) do
+  def resolve_repository(%{id: repo_id}, %{context: ctx}) do
     Repositories.get_repository!(repo_id)
     |> preload()
-    |> accessible(user)
+    |> accessible(ctx[:current_user])
   end
 
-  def resolve_repository(%{name: repo_name}, %{context: %{current_user: user}}) do
+  def resolve_repository(%{name: repo_name}, %{context: ctx}) do
     Repositories.get_repository_by_name!(repo_name)
     |> preload()
-    |> accessible(user)
+    |> accessible(ctx[:current_user])
   end
 
   defp preload(repo), do: Core.Repo.preload(repo, [:publisher])

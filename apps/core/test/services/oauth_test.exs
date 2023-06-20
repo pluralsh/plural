@@ -66,7 +66,7 @@ defmodule Core.Services.OAuthTest do
   describe "#consent/3" do
     test "it will accept an oauth consent request" do
       me = self()
-      user = insert(:user)
+      user = insert(:user, roles: %{admin: true})
       provider = insert(:oidc_provider)
       expect(HTTPoison, :put, fn _, body, _ ->
         send(me, {:body, Jason.decode!(body)})
@@ -80,7 +80,7 @@ defmodule Core.Services.OAuthTest do
       {:ok, %{redirect_to: _}} = OAuth.consent("challenge", "profile", user)
 
       assert_receive {:body, %{
-        "session" => %{"id_token" => %{"groups" => _, "name" => _, "profile" => _}}
+        "session" => %{"id_token" => %{"groups" => _, "name" => _, "profile" => _, "admin" => true}}
       }}
 
       [login] = Core.Repo.all(OIDCLogin)

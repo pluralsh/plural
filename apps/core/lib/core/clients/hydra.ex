@@ -134,11 +134,15 @@ defmodule Core.Clients.Hydra do
   defp user_details(user) do
     %{
       groups: user_groups(user),
+      admin: admin?(user),
       profile: Core.Storage.url({user.avatar, user}, :original),
       name: user.name,
       email: user.email
     }
   end
+
+  defp admin?(%User{roles: %{admin: true}}), do: true
+  defp admin?(_), do: false
 
   defp user_groups(%User{groups: groups}) when is_list(groups),
     do: Enum.map(groups, & &1.name)

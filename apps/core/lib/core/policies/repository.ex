@@ -22,6 +22,8 @@ defmodule Core.Policies.Repository do
     end
   end
 
+  def can?(_, %Repository{private: false}, :access), do: :continue
+
   def can?(%User{account_id: aid} = user, %Repository{private: true} = repo, :access) do
     case Core.Repo.preload(repo, [:publisher]) do
       %{publisher: %{account_id: ^aid}} -> :continue

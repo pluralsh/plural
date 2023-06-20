@@ -322,11 +322,10 @@ defmodule GraphQl.Schema.Repository do
   object :repository_queries do
     @desc "Get an application by its ID or name."
     field :repository, :repository do
-      middleware Authenticated
       arg :id,   :id, description: "The ID of the application."
       arg :name, :string, description: "The name of the application."
 
-      resolve &Repository.resolve_repository/2
+      safe_resolve &Repository.resolve_repository/2
     end
 
     field :installation, :installation do

@@ -267,6 +267,20 @@ defmodule GraphQl.RepositoryQueriesTest do
       assert found["editable"]
     end
 
+    test "It can fetch a when unauthenticated" do
+      repo = insert(:repository)
+
+      {:ok, %{data: %{"repository" => found}}} = run_query("""
+        query Repo($id: ID!) {
+          repository(id: $id) {
+            id
+          }
+        }
+      """, %{"id" => repo.id})
+
+      assert found["id"] == repo.id
+    end
+
     test "It can fetch repository documentation" do
       user = insert(:user)
       repo = insert(:repository, publisher: build(:publisher, owner: user), docs: %{file_name: "f", updated_at: nil})

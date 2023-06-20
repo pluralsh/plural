@@ -513,6 +513,23 @@ defmodule Core.Services.Payments do
     end
   end
 
+  def create_trial_plan() do
+    %PlatformPlan{}
+    |> PlatformPlan.changeset(%{
+      cost: 0,
+      name: "Pro Trial",
+      period: :monthly,
+      visible: false,
+      trial: true,
+      features: %{vpn: true, user_management: true, audit: true, multi_cluster: true},
+      line_items: [
+        %{name: "User", dimension: :user, period: :monthly, cost: 4900},
+        %{name: "Cluster", dimension: :cluster, period: :monthly, cost: 39900}
+      ]
+    })
+    |> Core.Repo.insert()
+  end
+
   def create_default_plan(period) do
     with {:ok, nil} <- {:ok, Core.Repo.get_by(PlatformPlan, name: "Pro", visible: true, period: period)} do
       create_platform_plan(%{

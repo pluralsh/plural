@@ -2,6 +2,8 @@ defmodule Core.Schema.PlatformSubscription do
   use Piazza.Ecto.Schema
   alias Core.Schema.{Account, PlatformPlan}
 
+  @expiry [months: -1]
+
   defenum Status, open: 0, current: 1, delinquent: 2
 
   defmodule LineItem do
@@ -35,6 +37,14 @@ defmodule Core.Schema.PlatformSubscription do
   end
 
   @valid ~w(account_id plan_id)a
+
+  def expired_trial(query \\ __MODULE__) do
+    expiry = Timex.now() |> Timex.shift(@expiry)
+    from(s in query,
+      join: p in assoc(s, :plan),
+      where: p.trial and s.inserted_at <= ^expiry
+    )
+  end
 
   def dimension(%__MODULE__{line_items: items}, dim) do
     case Enum.find(items, & &1.dimension == dim) do

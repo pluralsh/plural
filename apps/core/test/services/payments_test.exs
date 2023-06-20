@@ -545,6 +545,17 @@ defmodule Core.Services.PaymentsTest do
     end
   end
 
+  describe "#create_trial_plan/0" do
+    test "it can create a trial pro-type plan" do
+      {:ok, plan} = Payments.create_trial_plan()
+
+      assert plan.trial
+      refute plan.enterprise
+      for f <- ~w(audit multi_cluster user_management vpn)a,
+        do: assert Map.get(plan.features, f)
+    end
+  end
+
   describe "#sync_usage/1" do
     setup [:setup_root_user]
     test "if the account is on no plan, it'll just de-mark" do

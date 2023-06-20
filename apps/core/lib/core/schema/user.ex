@@ -249,7 +249,6 @@ defmodule Core.Schema.User do
   end
 
   defp add_name(changeset, %__MODULE__{name: nil}) do
-    name = get_field(changeset, :name)
     put_new_change(changeset, :name, fn -> Core.random_phrase(3) end)
   end
   defp add_name(changeset, _), do: changeset

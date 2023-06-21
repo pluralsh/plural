@@ -106,6 +106,25 @@ defmodule Core.Services.Accounts do
   end
 
   @doc """
+  purges a user from our db for gdpr compliance
+  """
+  @spec delete_user(binary) :: {:ok, map} | error
+  def delete_user(email) do
+    user = Users.get_user_by_email!(email) |> Core.Repo.preload([:account])
+    start_transaction()
+    |> add_operation(:account, fn _ ->
+      case user do
+        %{account: %{root_user_id: id} = account, id: id} ->
+          Ecto.Changeset.change(account, %{root_user_id: nil})
+          |> Core.Repo.update()
+        _ -> {:ok, nil}
+      end
+    end)
+    |> add_operation(:delete_user, fn _ -> Core.Repo.delete(user) end)
+    |> execute()
+  end
+
+  @doc """
   self-explanatory
   """
   @spec recompute_usage(Account.t) :: account_resp

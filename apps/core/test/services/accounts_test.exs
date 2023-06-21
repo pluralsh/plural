@@ -698,6 +698,19 @@ defmodule Core.Services.AccountsTest do
     end
   end
 
+  describe "#delete_user/1" do
+    setup [:setup_root_user]
+
+    test "it will delete a root user properly", %{user: user} do
+      other = insert(:user)
+
+      {:ok, _} = Accounts.delete_user(user.email)
+
+      refute refetch(user)
+      assert refetch(other)
+    end
+  end
+
   describe "#recompute_usage/1" do
     test "it correctly recomputes an accounts usage" do
       ac1 = insert(:account)

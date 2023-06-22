@@ -62,7 +62,7 @@ function ProviderSelection() {
             />
           }
           header="Try free demo"
-          description="A six-hour GCP sandbox to help get you testdrive Plural."
+          description="A six-hour GCP sandbox for you to test-drive Plural."
         />
       </Flex>
       <PricingCalculator />

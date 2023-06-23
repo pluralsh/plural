@@ -486,6 +486,10 @@ crons:
   cronModule: Task.Usage
   crontab: "0 0 * * *"
   envVars: []
+- cronName: plrl-prune-trials
+  cronModule: Prune.Trials
+  cronTab: "40 0 * * *"
+  envVars: []
 
 hydraSecrets:
   dsn: memory

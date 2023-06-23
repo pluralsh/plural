@@ -28,6 +28,7 @@ defmodule Core.Schema.PlatformPlan do
   schema "platform_plans" do
     field :name,        :string
     field :visible,     :boolean, default: true
+    field :trial,       :boolean, default: false
     field :enterprise,  :boolean
     field :cost,        :integer
     field :period,      Period
@@ -49,7 +50,7 @@ defmodule Core.Schema.PlatformPlan do
 
   def features(), do: __MODULE__.Features.__schema__(:fields) -- [:id]
 
-  @valid ~w(name visible cost period external_id)a
+  @valid ~w(name visible cost period external_id trial)a
 
   def changeset(schema, attrs \\ %{}) do
     schema

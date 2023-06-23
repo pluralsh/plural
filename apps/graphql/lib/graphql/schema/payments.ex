@@ -96,6 +96,7 @@ defmodule GraphQl.Schema.Payments do
     field :cost,           non_null(:integer)
     field :period,         non_null(:payment_period)
     field :enterprise,     :boolean
+    field :trial,          :boolean
     field :features,       :plan_features
     field :line_items,     list_of(:platform_plan_item)
 

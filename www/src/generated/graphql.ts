@@ -2033,6 +2033,7 @@ export type PlatformPlan = {
   lineItems?: Maybe<Array<Maybe<PlatformPlanItem>>>;
   name: Scalars['String']['output'];
   period: PaymentPeriod;
+  trial?: Maybe<Scalars['Boolean']['output']>;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
   visible: Scalars['Boolean']['output'];
 };

@@ -1656,6 +1656,7 @@ type PlatformPlan {
   cost: Int!
   period: PaymentPeriod!
   enterprise: Boolean
+  trial: Boolean
   features: PlanFeatures
   lineItems: [PlatformPlanItem]
   insertedAt: DateTime

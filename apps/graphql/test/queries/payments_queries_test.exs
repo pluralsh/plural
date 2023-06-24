@@ -113,11 +113,7 @@ defmodule GraphQl.PaymentsQueriesTest do
           me {
             cards(first: 5) {
               edges {
-                node {
-                  id
-                  brand
-                  last4
-                }
+                node { id brand last4 }
               }
             }
           }
@@ -142,6 +138,19 @@ defmodule GraphQl.PaymentsQueriesTest do
           platformPlans { id }
         }
       """, %{}, %{current_user: insert(:user)})
+
+      assert ids_equal(found, plans)
+    end
+
+    test "it will list visible platform plans when unauthenticated" do
+      plans = insert_list(3, :platform_plan)
+      insert(:platform_plan, visible: false)
+
+      {:ok, %{data: %{"platformPlans" => found}}} = run_query("""
+        query {
+          platformPlans { id }
+        }
+      """, %{})
 
       assert ids_equal(found, plans)
     end

@@ -276,8 +276,6 @@ defmodule GraphQl.Schema.Payments do
     end
 
     field :platform_plans, list_of(:platform_plan) do
-      middleware Authenticated, :external
-
       resolve &Payments.list_platform_plans/2
     end
 

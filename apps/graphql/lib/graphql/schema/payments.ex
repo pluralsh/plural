@@ -384,6 +384,12 @@ defmodule GraphQl.Schema.Payments do
       safe_resolve &Payments.create_platform_subscription/2
     end
 
+    field :begin_trial, :platform_subscription do
+      middleware Authenticated
+
+      safe_resolve &Payments.begin_trial/2
+    end
+
     field :delete_platform_subscription, :account do
       middleware Authenticated
 

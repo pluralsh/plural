@@ -13,6 +13,14 @@ defmodule Core.Schema.ClusterDependency do
     from(d in query, where: d.cluster_id == ^id)
   end
 
+  def for_account(query \\ __MODULE__, aid) do
+    from(d in query,
+      join: c in assoc(d, :cluster),
+      join: u in assoc(c, :owner),
+      where: u.account_id == ^aid
+    )
+  end
+
   def waterline(query \\ __MODULE__, user_id) do
     from(cd in query,
       join: c in assoc(cd, :cluster),

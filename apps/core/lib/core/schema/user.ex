@@ -163,6 +163,10 @@ defmodule Core.Schema.User do
     from(u in query, where: is_nil(u.account_id))
   end
 
+  def with_waterline(query \\ __MODULE__) do
+    from(u in query, where: not is_nil(u.upgrade_to))
+  end
+
   def for_incident(query \\ __MODULE__, %Incident{creator: %{account_id: id1}, owner: %{account_id: id2}}) do
     from(u in query, where: u.account_id in ^[id1, id2])
   end

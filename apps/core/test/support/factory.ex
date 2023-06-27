@@ -642,5 +642,7 @@ defmodule Core.Factory do
     sa
   end
 
+  def trial_plan(), do: insert(:platform_plan, name: "Pro Trial")
+
   def admin_user(%Schema.Account{} = account), do: insert(:user, account: account, roles: %{admin: true})
 end

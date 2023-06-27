@@ -813,6 +813,48 @@ defmodule Core.Services.PaymentsTest do
     end
   end
 
+  describe "#begin_trail/1" do
+    test "it will start a trial plan for a fresh account" do
+      account = insert(:account)
+      trial = trial_plan()
+
+      {:ok, sub} = Payments.begin_trial(account)
+
+      assert sub.account_id == account.id
+      assert sub.plan_id == trial.id
+
+      assert refetch(account).trialed
+    end
+
+    test "trialed accounts will not be able to trial again" do
+      account = insert(:account, trialed: true)
+      trial_plan()
+
+      {:error, _} = Payments.begin_trial(account)
+    end
+  end
+
+  describe "#expire_trial/1" do
+    test "it will remove a trial and clean up cluster dependencies" do
+      sub = insert(:platform_subscription)
+      user = insert(:user, account: sub.account, upgrade_to: Ecto.UUID.generate())
+      deps = for _ <- 1..3, do: insert(:cluster_dependency, cluster: insert(:cluster, owner: user))
+      ignore = insert(:user, upgrade_to: Ecto.UUID.generate())
+      ignore_deps = for _ <- 1..3, do: insert(:cluster_dependency, cluster: insert(:cluster, owner: ignore))
+
+      {:ok, _} = Payments.expire_trial(sub)
+
+      refute refetch(sub)
+      refute refetch(user).upgrade_to
+      for dep <- deps,
+        do: refute refetch(dep)
+
+      assert refetch(ignore).upgrade_to
+      for dep <- ignore_deps,
+        do: assert refetch(dep)
+    end
+  end
+
   describe "#update_plan/3" do
     test "Users can change plans" do
       expect(Stripe.Subscription, :update, fn

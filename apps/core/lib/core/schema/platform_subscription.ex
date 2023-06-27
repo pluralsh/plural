@@ -46,6 +46,10 @@ defmodule Core.Schema.PlatformSubscription do
     )
   end
 
+  def ordered(query \\ __MODULE__, order \\ [asc: :id]) do
+    from(s in query, order_by: ^order)
+  end
+
   def dimension(%__MODULE__{line_items: items}, dim) do
     case Enum.find(items, & &1.dimension == dim) do
       %{quantity: quantity} -> quantity

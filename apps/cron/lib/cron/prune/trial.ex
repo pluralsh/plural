@@ -3,10 +3,14 @@ defmodule Cron.Prune.Trials do
   it will wipe all expired trial subscriptions
   """
   use Cron
+  alias Core.Services.Payments
   alias Core.Schema.PlatformSubscription
 
   def run() do
     PlatformSubscription.expired_trial()
-    |> Core.Repo.delete_all()
+    |> PlatformSubscription.ordered(asc: :id)
+    |> Core.Repo.stream(method: :keyset)
+    |> Core.throttle()
+    |> Enum.each(&Payments.expire_trial/1)
   end
 end

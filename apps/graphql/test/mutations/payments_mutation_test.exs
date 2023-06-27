@@ -397,6 +397,24 @@ defmodule GraphQl.PaymentsMutationsTest do
     end
   end
 
+  describe "beginTrial" do
+    setup [:setup_root_user]
+    test "it can set up a new trial", %{user: user} do
+      trial = trial_plan()
+
+      {:ok, %{data: %{"beginTrial" => sub}}} = run_query("""
+        mutation {
+          beginTrial {
+            id
+            plan { id }
+          }
+        }
+      """, %{}, %{current_user: user})
+
+      assert sub["plan"]["id"] == trial.id
+    end
+  end
+
   describe "defaultPaymentMethod" do
     test "it will set the default payment method for an account" do
       account = insert(:account, billing_customer_id: "cus_id", user_count: 2, cluster_count: 0)

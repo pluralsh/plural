@@ -2635,6 +2635,7 @@ export type RootMutationType = {
   acceptIncident?: Maybe<Incident>;
   acceptLogin?: Maybe<OauthResponse>;
   acquireLock?: Maybe<ApplyLock>;
+  beginTrial?: Maybe<PlatformSubscription>;
   cancelPlatformSubscription?: Maybe<PlatformSubscription>;
   completeIncident?: Maybe<Incident>;
   createArtifact?: Maybe<Artifact>;

@@ -108,15 +108,19 @@ function Status({ app }) {
   )
 }
 
+const appLink = (app) =>
+  app?.spec?.links?.length > 0 ? app.spec?.links[0].url : null
+
 const toAppProps = (
   { node: repository }: RepositoryEdge,
   appInfo: any,
   onAction: Dispatch<string>
 ): AppProps => {
   const app = appInfo[repository!.name]
-  const domain = app?.spec?.links?.length > 0 ? app.spec?.links[0].url : null
+  const domain = appLink(app)
   const isAlive = !!repository!.installation?.pingedAt
   const promoted = PROMOTED_APPS.includes(repository!.name)
+  const consoleUrl = appLink(appInfo.console)
 
   return {
     isAlive,
@@ -133,12 +137,13 @@ const toAppProps = (
         name={repository!.name}
       />
     ) : undefined,
-    actions: toActions(repository!, onAction),
+    actions: toActions(repository!, consoleUrl, onAction),
   }
 }
 
 const toActions = (
   repository: Repository,
+  consoleUrl: string | null,
   onAction: Dispatch<string>
 ): Array<AppMenuAction> => {
   const rebuildCommand = `plural build --only ${repository.name} && plural deploy --from ${repository.name} --commit "rebuilding ${repository.name}"`
@@ -146,6 +151,12 @@ const toActions = (
   const watchCommand = `plural watch ${repository.name}`
 
   return [
+    {
+      label: 'Manage in Console',
+      leftContent: <ArrowTopRightIcon />,
+      onSelect: () =>
+        window.open(`https://${consoleUrl}/apps/${repository.name}`, '_blank'),
+    },
     {
       label: 'Rebuild',
       onSelect: () => onAction(rebuildCommand),

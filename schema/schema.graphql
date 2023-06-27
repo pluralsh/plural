@@ -1734,6 +1734,8 @@ type RootMutationType {
 
   createPlatformSubscription(planId: ID!, billingAddress: AddressAttributes, paymentMethod: String): PlatformSubscription
 
+  beginTrial: PlatformSubscription
+
   deletePlatformSubscription: Account
 
   cancelPlatformSubscription: PlatformSubscription

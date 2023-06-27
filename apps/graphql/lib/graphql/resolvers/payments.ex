@@ -116,6 +116,9 @@ defmodule GraphQl.Resolvers.Payments do
   def cancel_platform_subscription(_, %{context: %{current_user: user}}),
     do: Payments.cancel_platform_subscription(user)
 
+  def begin_trial(_, %{context: %{current_user: user}}),
+    do: Payments.begin_trial(user)
+
   def default_payment_method(%{id: id}, %{context: %{current_user: user}}) do
     with {:ok, _} <- Payments.default_payment_method(user, id),
       do: {:ok, true}

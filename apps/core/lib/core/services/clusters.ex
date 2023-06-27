@@ -113,6 +113,26 @@ defmodule Core.Services.Clusters do
   defp infer_domain(_), do: nil
 
   @doc """
+  Tear down all promotions for an account (for use after a trial)
+  """
+  @spec disable_promotions(binary) :: {:ok, term} | error
+  def disable_promotions(account_id) do
+    start_transaction()
+    |> add_operation(:delete, fn _ ->
+      ClusterDependency.for_account(account_id)
+      |> Core.Repo.delete_all()
+      |> ok()
+    end)
+    |> add_operation(:waterline, fn _ ->
+      User.for_account(account_id)
+      |> User.with_waterline()
+      |> Core.Repo.update_all(set: [upgrade_to: nil])
+      |> ok()
+    end)
+    |> execute(extract: :waterline)
+  end
+
+  @doc """
   Creates a cluster dependency, which will be used for guiding promotion flows
   """
   @spec create_dependency(Cluster.t, Cluster.t, User.t) :: cluster_dep_resp

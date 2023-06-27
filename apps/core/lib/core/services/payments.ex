@@ -3,7 +3,7 @@ defmodule Core.Services.Payments do
   import Core.Policies.Payments
 
   alias Core.PubSub
-  alias Core.Services.{Repositories}
+  alias Core.Services.{Repositories, Accounts}
   alias Core.Schema.{
     Publisher,
     Account,
@@ -56,9 +56,50 @@ defmodule Core.Services.Payments do
   end
 
   @doc """
+  Adds the trial plan to a user's account
+  """
+  @spec begin_trial(User.t | Account.t) :: platform_sub_resp
+  def begin_trial(%Account{trialed: true}), do: {:error, "you can only sign up for a free trial once"}
+  def begin_trial(%Account{id: aid} = account) do
+    start_transaction()
+    |> add_operation(:plan, fn _ ->
+      Core.conf(:trial_plan)
+      |> get_platform_plan_by_name!()
+      |> ok()
+    end)
+    |> add_operation(:setup, fn %{plan: %{id: id}} ->
+      %PlatformSubscription{account_id: aid}
+      |> PlatformSubscription.changeset(%{plan_id: id})
+      |> Core.Repo.insert()
+    end)
+    |> add_operation(:trialed, fn _ ->
+      Account.changeset(account, %{trialed: true})
+      |> Core.Repo.update()
+    end)
+    |> execute(extract: :setup)
+  end
+  def begin_trial(%User{account_id: aid}) do
+    Accounts.get_account!(aid)
+    |> begin_trial()
+  end
+
+  @doc """
+  cleanup related to expiring an active trial
+  """
+  @spec expire_trial(PlatformSubscription.t) :: platform_sub_resp
+  def expire_trial(%PlatformSubscription{account_id: aid} = sub) do
+    start_transaction()
+    |> add_operation(:promos, fn _ ->
+      Core.Services.Clusters.disable_promotions(aid)
+    end)
+    |> add_operation(:sub, fn _ -> Core.Repo.delete(sub) end)
+    |> execute(extract: :sub)
+  end
+
+  @doc """
   Determine if a user has access permissions against a subscription
   """
-  @spec allow(Subscription.t, User.t) :: {:ok, Subscription.t} | {:error, term}
+  @spec allow(Subscription.t, User.t) :: {:ok, Subscription.t} | error
   def allow(%Subscription{} = subscription, %User{} = user),
     do: allow(subscription, user, :access)
 

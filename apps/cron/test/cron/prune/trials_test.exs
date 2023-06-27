@@ -8,7 +8,7 @@ defmodule Cron.Prune.TrialsTest do
       old = insert_list(3, :platform_subscription, plan: trial_plan, inserted_at: Timex.now() |> Timex.shift(months: -5))
       insert(:platform_subscription)
 
-      {3, _} = Trials.run()
+      :ok = Trials.run()
 
       for s <- old,
         do: refute refetch(s)

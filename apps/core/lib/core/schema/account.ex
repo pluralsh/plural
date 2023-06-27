@@ -16,6 +16,7 @@ defmodule Core.Schema.Account do
     field :usage_updated,        :boolean
     field :sa_provisioned,       :boolean
     field :address_updated,      :boolean, virtual: true
+    field :trialed,              :boolean
 
     embeds_one :billing_address, Address, on_replace: :update
 
@@ -50,7 +51,7 @@ defmodule Core.Schema.Account do
     )
   end
 
-  @valid ~w(name workos_connection_id sa_provisioned)a
+  @valid ~w(name workos_connection_id sa_provisioned trialed)a
   @payment ~w(billing_customer_id delinquent_at)a
 
   def changeset(model, attrs \\ %{}) do

@@ -23,6 +23,13 @@ defmodule GraphQl.Resolvers.Version do
 
   def list_versions(_, _), do: {:error, "requires at least a terraformId or chartId"}
 
+  def release(%{tags: tags}, %{context: %{repo: repo, current_user: user}}) do
+    case Versions.release(repo, tags, user) do
+      {:ok, _} -> {:ok, true}
+      error -> error
+    end
+  end
+
   def update_version(%{attributes: attrs, spec: %{} = spec}, %{context: %{current_user: user}}) do
     with {:ok, %{id: id}} <- find_version(spec),
       do: Versions.update_version(attrs, id, user)

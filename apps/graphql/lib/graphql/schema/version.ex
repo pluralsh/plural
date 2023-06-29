@@ -1,5 +1,6 @@
 defmodule GraphQl.Schema.Version do
   use GraphQl.Schema.Base
+  alias GraphQl.Middleware.Accessible
   alias GraphQl.Resolvers.{
     Chart,
     Version,
@@ -134,13 +135,23 @@ defmodule GraphQl.Schema.Version do
   end
 
   object :version_mutations do
+    field :release, :boolean do
+      middleware Authenticated
+      middleware Accessible
+      arg :repository_id,   :id
+      arg :repository_name, :string
+      arg :tags, list_of(non_null(:string))
+
+      safe_resolve &Version.release/2
+    end
+
     field :update_version, :version do
       middleware Authenticated
       arg :id,         :id
       arg :spec,       :version_spec
       arg :attributes, non_null(:version_attributes)
 
-      resolve safe_resolver(&Version.update_version/2)
+      safe_resolve &Version.update_version/2
     end
   end
 end

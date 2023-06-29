@@ -183,6 +183,19 @@ defmodule Core.Services.Repositories do
     end
   end
 
+
+  @doc """
+  Utility function to transfer publisher of a repo
+  """
+  @spec transfer_publisher(binary, binary) :: repository_resp
+  def transfer_publisher(repo_name, pub_name) do
+    repo = get_repository_by_name!(repo_name)
+    publisher = Core.Services.Users.get_publisher_by_name!(pub_name)
+
+    Ecto.Changeset.change(repo, %{publisher_id: publisher.id})
+    |> Core.Repo.update()
+  end
+
   @doc """
   Returns the list of docker accesses available for `user` against the
   given repository

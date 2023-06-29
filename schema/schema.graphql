@@ -1813,6 +1813,8 @@ type RootMutationType {
 
   uninstallTerraform(id: ID!): TerraformInstallation
 
+  release(repositoryId: ID, repositoryName: String, tags: [String!]): Boolean
+
   updateVersion(id: ID, spec: VersionSpec, attributes: VersionAttributes!): Version
 
   createServiceAccount(attributes: ServiceAccountAttributes!): User

@@ -80,8 +80,14 @@ defmodule Core.Services.Tests do
     %Test{bindings: bindings, creator: user} = Core.Repo.preload(test, [:creator, bindings: :version])
 
     bindings
-    |> Enum.reduce(start_transaction(), fn %{version: version}, tx ->
-      Enum.reduce([tag | (test.tags || [])], tx, fn tag, tx ->
+    |> Enum.map(& &1.version)
+    |> promote([tag | (test.tags || [])], user)
+  end
+
+  @spec promote([Version.t], [binary], User.t) :: {:ok, map} | error
+  def promote(versions, tags, %User{} = user) when is_list(versions) do
+    Enum.reduce(versions, start_transaction(), fn version, tx ->
+      Enum.reduce(tags, tx, fn tag, tx ->
         add_operation(tx, {tag, version.id}, fn _ ->
           case compare_vsn(version, tag) do
             :gt -> Versions.create_tag(version, tag)

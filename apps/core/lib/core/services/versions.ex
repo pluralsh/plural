@@ -3,11 +3,13 @@ defmodule Core.Services.Versions do
   import Core.Policies.Version
 
   alias Core.PubSub
-  alias Core.Services.{Charts, Terraform}
-  alias Core.Schema.{Version, User, VersionTag, PackageScan, ChartInstallation, TerraformInstallation}
+  alias Core.Policies.Repository, as: RepoPolicies
+  alias Core.Services.{Charts, Terraform, Tests, Repositories}
+  alias Core.Schema.{Version, Repository, User, VersionTag, PackageScan, ChartInstallation, TerraformInstallation}
 
   @type tool_type :: :helm | :terraform
-  @type version_resp :: {:ok, Version.t} | {:error, term}
+  @type error :: {:error, term}
+  @type version_resp :: {:ok, Version.t} | error
 
   def get_version(:helm, id, version),
     do: Core.Repo.get_by(Version, chart_id: id, version: version)
@@ -86,6 +88,17 @@ defmodule Core.Services.Versions do
     end)
     |> execute(extract: :update)
     |> notify(:update, user)
+  end
+
+  @doc """
+  manually tag all installed versions with the list specified
+  """
+  @spec release(Repository.t, [binary], User.t) :: {:ok, map} | error
+  def release(%Repository{id: repo_id} = repo, tags, %User{} = user) do
+    with {:ok, _} <- RepoPolicies.allow(repo, user, :edit) do
+      installed_versions(repo_id, user)
+      |> Tests.promote(tags, user)
+    end
   end
 
   @spec installed_versions(binary, User.t) :: [binary]

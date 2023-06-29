@@ -141,6 +141,8 @@ const toAppProps = (
   }
 }
 
+const PROTECTED_APPS = ['console', 'postgres', 'bootstrap', 'ingress-nginx']
+
 const toActions = (
   repository: Repository,
   consoleUrl: string | null,
@@ -154,6 +156,7 @@ const toActions = (
     {
       label: 'Manage in Console',
       leftContent: <ArrowTopRightIcon />,
+      ignore: !consoleUrl,
       onSelect: () =>
         window.open(`https://${consoleUrl}/apps/${repository.name}`, '_blank'),
     },
@@ -171,9 +174,10 @@ const toActions = (
       label: 'Delete',
       onSelect: () => onAction(deleteCommand),
       destructive: true,
+      ignore: PROTECTED_APPS.includes(repository.name),
       leftContent: <TrashCanIcon color="text-danger" />,
     },
-  ]
+  ].filter(({ ignore }) => !ignore)
 }
 
 function PrimaryActionButton({

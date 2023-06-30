@@ -4,7 +4,7 @@ import { PageInfo } from '../../models/misc'
 
 export const REPOSITORIES_Q = gql`
   query Repositories($cursor: String, $installed: Boolean) {
-    repositories(after: $cursor, first: 20, installed: $installed) {
+    repositories(after: $cursor, first: 200, installed: $installed) {
       pageInfo {
         ...PageInfo
       }

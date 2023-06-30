@@ -5559,6 +5559,14 @@ export type DeleteRepositoryMutationVariables = Exact<{
 
 export type DeleteRepositoryMutation = { __typename?: 'RootMutationType', deleteRepository?: { __typename?: 'Repository', id: string } | null };
 
+export type ReleaseMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+  tags?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
+}>;
+
+
+export type ReleaseMutation = { __typename?: 'RootMutationType', release?: boolean | null };
+
 export type GetTfProvidersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -9288,6 +9296,38 @@ export function useDeleteRepositoryMutation(baseOptions?: Apollo.MutationHookOpt
 export type DeleteRepositoryMutationHookResult = ReturnType<typeof useDeleteRepositoryMutation>;
 export type DeleteRepositoryMutationResult = Apollo.MutationResult<DeleteRepositoryMutation>;
 export type DeleteRepositoryMutationOptions = Apollo.BaseMutationOptions<DeleteRepositoryMutation, DeleteRepositoryMutationVariables>;
+export const ReleaseDocument = gql`
+    mutation Release($id: ID!, $tags: [String!]) {
+  release(repositoryId: $id, tags: $tags)
+}
+    `;
+export type ReleaseMutationFn = Apollo.MutationFunction<ReleaseMutation, ReleaseMutationVariables>;
+
+/**
+ * __useReleaseMutation__
+ *
+ * To run a mutation, you first call `useReleaseMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useReleaseMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [releaseMutation, { data, loading, error }] = useReleaseMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      tags: // value for 'tags'
+ *   },
+ * });
+ */
+export function useReleaseMutation(baseOptions?: Apollo.MutationHookOptions<ReleaseMutation, ReleaseMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ReleaseMutation, ReleaseMutationVariables>(ReleaseDocument, options);
+      }
+export type ReleaseMutationHookResult = ReturnType<typeof useReleaseMutation>;
+export type ReleaseMutationResult = Apollo.MutationResult<ReleaseMutation>;
+export type ReleaseMutationOptions = Apollo.BaseMutationOptions<ReleaseMutation, ReleaseMutationVariables>;
 export const GetTfProvidersDocument = gql`
     query GetTfProviders {
   terraformProviders
@@ -10578,6 +10618,7 @@ export const namedOperations = {
     ReleaseLock: 'ReleaseLock',
     UnlockRepository: 'UnlockRepository',
     DeleteRepository: 'DeleteRepository',
+    Release: 'Release',
     DeleteShell: 'DeleteShell',
     UploadTerraform: 'UploadTerraform',
     UninstallTerraform: 'UninstallTerraform',

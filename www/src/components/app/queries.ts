@@ -14,6 +14,7 @@ export const REPO_Q = gql`
       docs {
         ...FileContentFragment
       }
+      editable
       upgradeChannels
       installation {
         ...InstallationFragment

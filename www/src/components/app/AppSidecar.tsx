@@ -1,12 +1,73 @@
 import { A, Flex } from 'honorable'
-import { Button, Sidecar, SidecarItem } from '@pluralsh/design-system'
+import {
+  Button,
+  Input,
+  Modal,
+  Sidecar,
+  SidecarItem,
+} from '@pluralsh/design-system'
 import { Link, useParams } from 'react-router-dom'
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 
 import ClustersContext from '../../contexts/ClustersContext'
 import { ensureURLValidity } from '../../utils/url'
 import ClusterAppHealth from '../cluster/ClusterAppHealth'
 import { useAppContext } from '../../contexts/AppContext'
+import { useReleaseMutation } from '../../generated/graphql'
+import { GqlError } from '../utils/Alert'
+
+function ReleaseApp({ app }) {
+  const [open, setOpen] = useState(false)
+  const [tag, setTag] = useState('')
+  const [mutation, { error }] = useReleaseMutation({
+    variables: { id: app.id, tags: [tag] },
+    onCompleted: () => setOpen(false),
+  })
+
+  return (
+    <>
+      <Modal
+        open={open}
+        size="large"
+        header={`Release ${app.name}`}
+        onClose={() => setOpen(false)}
+      >
+        <Flex
+          flexDirection="row"
+          gap="small"
+          alignContent="center"
+        >
+          {error && (
+            <GqlError
+              error={error}
+              header="Failed to promote"
+            />
+          )}
+          <Input
+            value={tag}
+            width="100%"
+            placeholder="release channel name, eg stable, warm, dev, prod"
+            onChange={({ target: { value } }) => setTag(value)}
+          />
+          <Button onClick={() => mutation()}>Release</Button>
+        </Flex>
+      </Modal>
+      <Sidecar
+        heading="Release Controls"
+        display="flex"
+        flexDirection="column"
+        gap="xxsmall"
+      >
+        <Button
+          secondary
+          onClick={() => setOpen(true)}
+        >
+          Release
+        </Button>
+      </Sidecar>
+    </>
+  )
+}
 
 export function AppSidecar() {
   const { clusterId, appName } = useParams()
@@ -31,6 +92,7 @@ export function AppSidecar() {
           Manage in console
         </Button>
       )}
+      {app.editable && <ReleaseApp app={app} />}
       <Sidecar
         heading="metadata"
         display="flex"

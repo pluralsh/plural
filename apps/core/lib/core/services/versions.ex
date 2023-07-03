@@ -4,7 +4,7 @@ defmodule Core.Services.Versions do
 
   alias Core.PubSub
   alias Core.Policies.Repository, as: RepoPolicies
-  alias Core.Services.{Charts, Terraform, Tests, Repositories}
+  alias Core.Services.{Charts, Terraform, Tests}
   alias Core.Schema.{Version, Repository, User, VersionTag, PackageScan, ChartInstallation, TerraformInstallation}
 
   @type tool_type :: :helm | :terraform

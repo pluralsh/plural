@@ -106,6 +106,72 @@ defmodule Core.Services.Accounts do
   end
 
   @doc """
+  Setup stub groups/roles for trialed accounts
+  """
+  @spec account_setup(User.t) :: {:ok, map} | error
+  def account_setup(%User{} = user) do
+    start_transaction()
+    |> add_operation(:manager, fn _ ->
+      create_group(%{
+        name: "managers",
+        description: "account managers responsible for billing and user management"
+      }, user)
+    end)
+    |> add_operation(:dev, fn _ ->
+      create_group(%{
+        name: "developers",
+        description: "developers able to install/operate applications"
+      }, user)
+    end)
+    |> add_operation(:admin, fn _ ->
+      create_group(%{
+        name: "admins",
+        description: "users with global permissions (can also just toggle the admin switch for this)"
+      }, user)
+    end)
+    |> add_operation(:billing_admin_role, fn tx ->
+      create_role(%{
+        name: "billing-admins",
+        description: "access to billing management",
+        bindings: [%{group_id: fetch_group_id(tx, :manager)}],
+        permissions: %{billing: true, users: true}
+      }, user)
+    end)
+    |> add_operation(:user_management, fn tx ->
+      create_role(%{
+        name: "user-management",
+        description: "access to billing management",
+        bindings: [%{group_id: fetch_group_id(tx, :manager)}],
+        permissions: %{users: true}
+      }, user)
+    end)
+    |> add_operation(:admin_role, fn tx ->
+      create_role(%{
+        name: "admin",
+        description: "access to billing management",
+        bindings: [%{group_id: fetch_group_id(tx, :admin)}],
+        permissions: Role.permissions() |> Enum.into(%{}, & {&1, true})
+      }, user)
+    end)
+    |> add_operation(:developer_role, fn tx ->
+      create_role(%{
+        name: "developer",
+        description: "ability to install and publish applications",
+        bindings: [%{group_id: fetch_group_id(tx, :dev)}],
+        permissions: %{install: true, support: true, publish: true}
+      }, user)
+    end)
+    |> execute()
+  end
+
+  defp fetch_group_id(tx, name) do
+    case tx do
+      %{^name => %{id: id}} -> id
+      _ -> nil
+    end
+  end
+
+  @doc """
   purges a user from our db for gdpr compliance
   """
   @spec delete_user(binary) :: {:ok, map} | error

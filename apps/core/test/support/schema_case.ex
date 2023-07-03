@@ -51,6 +51,10 @@ defmodule Core.SchemaCase do
     [user: %{user | account: account}, account: account]
   end
 
+  def setup_trial(_) do
+    [plan: trial_plan()]
+  end
+
   def dns_resp(external_id) do
     {:ok, %Tesla.Env{body: %{"result" => %{"id" => external_id}}}}
   end

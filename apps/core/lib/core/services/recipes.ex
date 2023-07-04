@@ -226,7 +226,7 @@ defmodule Core.Services.Recipes do
     end)
     |> add_operation(:recipe, fn %{get: get} ->
       case get do
-        %Recipe{} = r -> r
+        %Recipe{} = r -> Core.Repo.preload(r, [:dependencies])
         nil -> %Recipe{repository_id: repo_id}
       end
       |> Recipe.changeset(build_dependencies(attrs))

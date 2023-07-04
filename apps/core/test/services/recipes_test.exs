@@ -127,6 +127,11 @@ defmodule Core.Services.RecipesTest do
       other_repo_section = Enum.find(recipe.recipe_sections, & &1.repository_id == other_repo.id)
       assert length(other_repo_section.configuration) == 1
 
+      # verify stack membership has no effect
+      stack = insert(:stack)
+      collection = insert(:stack_collection, provider: :aws, stack: stack)
+      insert(:stack_recipe, collection: collection, recipe: recipe)
+
       {:ok, new} = Recipes.upsert(%{
         name: "recipe",
         sections: [

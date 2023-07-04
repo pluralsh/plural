@@ -61,6 +61,7 @@ defmodule Core.Services.Payments do
   @spec begin_trial(User.t | Account.t) :: platform_sub_resp
   def begin_trial(%Account{trialed: true}), do: {:error, "you can only sign up for a free trial once"}
   def begin_trial(%Account{id: aid} = account) do
+    %{root_user: root_user} = Core.Repo.preload(account, [:root_user])
     start_transaction()
     |> add_operation(:plan, fn _ ->
       Core.conf(:trial_plan)
@@ -76,6 +77,7 @@ defmodule Core.Services.Payments do
       Account.changeset(account, %{trialed: true})
       |> Core.Repo.update()
     end)
+    |> add_operation(:scaffold, fn _ -> Accounts.account_setup(root_user) end)
     |> execute(extract: :setup)
   end
   def begin_trial(%User{account_id: aid}) do

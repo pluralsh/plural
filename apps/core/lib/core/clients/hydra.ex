@@ -141,6 +141,7 @@ defmodule Core.Clients.Hydra do
     }
   end
 
+  defp admin?(%User{id: id, account: %{root_user_id: id}}), do: true
   defp admin?(%User{roles: %{admin: true}}), do: true
   defp admin?(_), do: false
 

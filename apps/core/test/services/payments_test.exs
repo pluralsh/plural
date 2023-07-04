@@ -3,6 +3,7 @@ defmodule Core.Services.PaymentsTest do
   use Mimic
   alias Core.PubSub
   alias Core.Services.Payments
+  alias Core.Schema.{Group, Role}
 
   describe "#create_publisher_account" do
     test "It will fetch an account id and persist it" do
@@ -814,21 +815,23 @@ defmodule Core.Services.PaymentsTest do
   end
 
   describe "#begin_trail/1" do
-    test "it will start a trial plan for a fresh account" do
-      account = insert(:account)
-      trial = trial_plan()
-
+    setup [:setup_root_user, :setup_trial]
+    test "it will start a trial plan for a fresh account", %{account: account, plan: trial} do
       {:ok, sub} = Payments.begin_trial(account)
 
       assert sub.account_id == account.id
       assert sub.plan_id == trial.id
 
       assert refetch(account).trialed
+
+      assert Group.for_account(account.id)
+             |> Core.Repo.aggregate(:count) == 3
+      assert Role.for_account(account.id)
+             |> Core.Repo.aggregate(:count) == 4
     end
 
     test "trialed accounts will not be able to trial again" do
       account = insert(:account, trialed: true)
-      trial_plan()
 
       {:error, _} = Payments.begin_trial(account)
     end

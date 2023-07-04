@@ -14,6 +14,10 @@ defmodule Core.Schema.RecipeSection do
     timestamps()
   end
 
+  def for_recipe(query \\ __MODULE__, recipe_id) do
+    from(r in query, where: r.recipe_id == ^recipe_id)
+  end
+
   @valid ~w(index repository_id recipe_id)a
 
   def changeset(model, attrs \\ %{}) do

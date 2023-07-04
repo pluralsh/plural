@@ -214,19 +214,28 @@ defmodule Core.Services.Recipes do
   recreates it.
   """
   @spec upsert(map, binary, User.t) :: recipe_resp
-  def upsert(%{name: name} = attrs, repo_id, user) do
+  def upsert(%{name: name, sections: sections} = attrs, repo_id, user) do
     start_transaction()
-    |> add_operation(:wipe, fn _ ->
-      case get_by_name(name, repo_id) do
-        %Recipe{} = recipe -> Core.Repo.delete(recipe)
-        _ -> {:ok, %{id: nil}}
+    |> add_operation(:get, fn _ -> {:ok, get_by_name(name, repo_id)} end)
+    |> add_operation(:wipe, fn
+      %{get: %{id: id}} ->
+        RecipeSection.for_recipe(id)
+        |> Core.Repo.delete_all()
+        |> ok()
+      _ -> {:ok, nil}
+    end)
+    |> add_operation(:recipe, fn %{get: get} ->
+      case get do
+        %Recipe{} = r -> r
+        nil -> %Recipe{repository_id: repo_id}
       end
+      |> Recipe.changeset(build_dependencies(attrs))
+      |> allow(user, :edit)
+      |> when_ok(&Core.Repo.insert_or_update/1)
     end)
-    |> add_operation(:create, fn %{wipe: %{id: id}} ->
-      Map.put(attrs, :id, id)
-      |> create(repo_id, user)
-    end)
-    |> execute(extract: :create)
+    |> build_sections(sections)
+    |> execute(extract: :recipe)
+    |> when_ok(&hydrate/1)
   end
 
   @doc """

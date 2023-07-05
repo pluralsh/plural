@@ -427,6 +427,7 @@ type Account {
   delinquentAt: DateTime
   grandfatheredUntil: DateTime
   billingAddress: Address
+  trialed: Boolean
   icon: String
   paymentMethods(after: String, first: Int, before: String, last: Int): PaymentMethodConnection
   rootUser: User
@@ -837,7 +838,10 @@ type PlatformSubscription {
   externalId: String
   lineItems: [PlatformSubscriptionLineItems]
   plan: PlatformPlan
+  trialUntil: DateTime
   latestInvoice: Invoice
+  insertedAt: DateTime
+  updatedAt: DateTime
 }
 
 type PaymentMethodConnection {

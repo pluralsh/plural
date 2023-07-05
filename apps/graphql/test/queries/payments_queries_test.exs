@@ -163,7 +163,10 @@ defmodule GraphQl.PaymentsQueriesTest do
 
       {:ok, %{data: %{"platformSubscription" => found}}} = run_query("""
         query {
-          platformSubscription { id }
+          platformSubscription {
+            id
+            trialUntil
+          }
         }
       """, %{}, %{current_user: user})
 

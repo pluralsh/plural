@@ -198,9 +198,16 @@ defmodule GraphQl.Schema.Payments do
     field :external_id,    :string
     field :line_items,     list_of(:platform_subscription_line_items)
     field :plan,           :platform_plan, resolve: dataloader(Payments)
+
+    field :trial_until,    :datetime, resolve: fn
+      %{inserted_at: dt}, _, _ -> {:ok, Timex.shift(dt, months: 1)}
+    end
+
     field :latest_invoice, :invoice, resolve: fn
       sub, _, _ -> Payments.latest_invoice(sub)
     end
+
+    timestamps()
   end
 
   object :platform_subscription_line_items do

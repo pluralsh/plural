@@ -89,6 +89,7 @@ defmodule GraphQl.Schema.Account do
     field :delinquent_at,        :datetime
     field :grandfathered_until,  :datetime
     field :billing_address,      :address
+    field :trialed,              :boolean
 
     field :icon, :string, resolve: fn
       account, _, _ -> {:ok, Core.Storage.url({account.icon, account}, :original)}

@@ -246,7 +246,7 @@ function MarketplaceRepositories({ publisher }: { publisher?: any }) {
               </Div>
             )}
             <Div
-              paddingBottom="xxxlarge"
+              marginBottom="medium"
               paddingHorizontal="large"
               paddingLeft="large"
               paddingRight={areFiltersOpen ? 'small' : 'large'}

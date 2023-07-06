@@ -9,6 +9,7 @@ export const PLATFORM_PLANS_QUERY = gql`
       period
       visible
       enterprise
+      trial
       features {
         vpn
       }

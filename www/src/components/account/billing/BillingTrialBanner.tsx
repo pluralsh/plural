@@ -1,5 +1,4 @@
 import { Callout } from '@pluralsh/design-system'
-import moment from 'moment'
 import { useContext, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'

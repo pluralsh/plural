@@ -300,7 +300,7 @@ function DomainsInner({ q, setDomainSelected }: any) {
           </Box>
         </Table>
       ) : (
-        <Span>You do not have any domains set yet.</Span>
+        <Span padding="medium">You do not have any domains set yet.</Span>
       )}
     </Flex>
   )

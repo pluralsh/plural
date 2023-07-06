@@ -24,6 +24,8 @@ import SubscriptionContext from '../../contexts/SubscriptionContext'
 
 import { Confirm } from '../utils/Confirm'
 
+import BillingTrialBanner from './billing/BillingTrialBanner'
+
 import { DELETE_ROLE, ROLES_Q } from './queries'
 import { hasRbac } from './utils'
 import { Info } from './Info'
@@ -175,6 +177,7 @@ export function Roles() {
         <CreateRole q={q} />
       </PageTitle>
       <BillingLegacyUserBanner feature="roles" />
+      <BillingTrialBanner />
       {isAvailable ? (
         <List>
           <Header

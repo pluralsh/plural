@@ -29,6 +29,8 @@ import SubscriptionContext from '../../contexts/SubscriptionContext'
 
 import { Confirm } from '../utils/Confirm'
 
+import BillingTrialBanner from './billing/BillingTrialBanner'
+
 import { ViewGroup } from './Group'
 import { CreateGroup } from './CreateGroup'
 import { EditGroupAttributes, EditGroupMembers } from './EditGroup'
@@ -171,6 +173,7 @@ export function Groups() {
         <CreateGroup q={q} />
       </PageTitle>
       <BillingLegacyUserBanner feature="groups" />
+      <BillingTrialBanner />
       {isAvailable ? (
         <List>
           <Header

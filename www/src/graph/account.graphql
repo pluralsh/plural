@@ -97,3 +97,13 @@ mutation UpdateAccount($attributes: AccountAttributes!) {
     }
   }
 }
+
+mutation BeginTrial {
+  beginTrial {
+    id
+    trialUntil
+    plan {
+      ...PlatformPlan
+    }
+  }
+}

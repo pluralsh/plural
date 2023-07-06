@@ -85,6 +85,13 @@ function BillingSubscriptionProvider({
     const isGrandfathered =
       isLegacyUser && moment().isBefore(moment(grandfatheredUntil))
     const isDelinquent = moment().isSameOrAfter(moment(account?.delinquentAt))
+    const isTrialPlan = plan?.name === 'Pro Trial'
+    const trialUntil = subscription?.trialUntil
+    // Trial is only available if it hasn't been used, it's not the current plan, and user is on a free plan
+    const isTrialAvailable =
+      account?.trialed !== true && !isTrialPlan && !isPaidPlan
+    // When number of days for trial to expire is lower, it will be marked as expiring soon
+    const trialExpiringSoonDays = 7 // one week
 
     // Marking grandfathering as expired only for a month after expiry date.
     // Afterwards expiry banners will not be visible and UI will be the same as for open-source users.
@@ -94,6 +101,15 @@ function BillingSubscriptionProvider({
         moment(grandfatheredUntil),
         moment(grandfatheredUntil).add(1, 'M')
       )
+
+    const isTrialExpired = moment().isBetween(
+      moment(trialUntil),
+      moment(trialUntil).add(1, 'M')
+    )
+
+    const daysUntilTrialExpires = moment(trialUntil).diff(moment(), 'days')
+    const isTrialExpiringSoon = daysUntilTrialExpires <= trialExpiringSoonDays
+    const isTrialed = account?.trialed === true && isTrialExpired
 
     return {
       subscription,
@@ -106,6 +122,12 @@ function BillingSubscriptionProvider({
       isGrandfathered,
       isGrandfatheringExpired,
       isDelinquent,
+      isTrialPlan,
+      isTrialExpired,
+      isTrialAvailable,
+      isTrialExpiringSoon,
+      isTrialed,
+      daysUntilTrialExpires,
       account,
       availableFeatures,
       paymentMethods,

@@ -31,12 +31,14 @@ export const SUBSCRIPTION_QUERY = gql`
       delinquentAt
       userCount
       clusterCount
+      trialed
       availableFeatures {
         userManagement
         audit
       }
       subscription {
         id
+        trialUntil
         plan {
           id
           period

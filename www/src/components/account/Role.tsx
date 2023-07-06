@@ -11,7 +11,7 @@ export function GeneralAttributes({
   setBindings,
 }: any) {
   const [repositories, setRepositories] = useState(
-    attributes.repositories.join(', ')
+    attributes.repositories?.join(', ')
   )
 
   return (

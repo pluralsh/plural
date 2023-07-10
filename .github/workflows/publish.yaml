@@ -223,6 +223,7 @@ jobs:
     permissions:
       contents: write
       discussions: write
+      pull-requests: write
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -234,6 +235,10 @@ jobs:
       with:
         path: ./plural/helm/plural
         release: ${{github.ref_name}}
-        branch: master
-        github-token: ${{secrets.GITHUB_TOKEN}}
-
+    - name: Create Pull Request
+      uses: peter-evans/create-pull-request@v5
+      with:
+        title: Release ${{github.ref_name}}
+        body: Automated Pull Request to release ${{github.ref_name}}
+        commit-message: Updated chart to release ${{github.ref_name}}
+        labels: release

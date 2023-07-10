@@ -227,6 +227,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
       with: 
+        persist-credentials: false
         fetch-depth: 0 # otherwise, you will failed to push refs to dest repo
     - name: push chart
       uses: pluralsh/chart-releaser@v0.1.3

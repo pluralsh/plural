@@ -1,18 +1,18 @@
 apiVersion: v2
 name: plural
 description: A helm chart for installing plural
-appVersion: 0.10.20
-version: 0.10.20
+appVersion: 0.10.21
+version: 0.10.21
 dependencies:
   - name: hydra
-    repository: https://k8s.ory.sh/helm/charts
     version: 0.26.5
+    repository: https://k8s.ory.sh/helm/charts
   - name: test-base
-    repository: https://pluralsh.github.io/module-library
     version: 0.1.10
+    repository: https://pluralsh.github.io/module-library
     condition: test-base.enabled
 maintainers:
-  - email: mjg@plural.sh
-    name: michaeljguarino
+  - name: michaeljguarino
+    email: mjg@plural.sh
 sources:
   - https://github.com/pluralsh/plural

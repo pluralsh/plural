@@ -5019,7 +5019,12 @@ export type UpdateAccountMutationVariables = Exact<{
 }>;
 
 
-export type UpdateAccountMutation = { __typename?: 'RootMutationType', updateAccount?: { __typename?: 'Account', id: string, name?: string | null, billingCustomerId?: string | null, backgroundColor?: string | null, userCount?: string | null, domainMappings?: Array<{ __typename?: 'DomainMapping', id: string, domain: string, enableSso?: boolean | null } | null> | null } | null };
+export type UpdateAccountMutation = { __typename?: 'RootMutationType', updateAccount?: { __typename?: 'Account', id: string, name?: string | null, billingCustomerId?: string | null, backgroundColor?: string | null, userCount?: string | null, trialed?: boolean | null, domainMappings?: Array<{ __typename?: 'DomainMapping', id: string, domain: string, enableSso?: boolean | null } | null> | null } | null };
+
+export type BeginTrialMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type BeginTrialMutation = { __typename?: 'RootMutationType', beginTrial?: { __typename?: 'PlatformSubscription', id: string, trialUntil?: Date | null, plan?: { __typename?: 'PlatformPlan', id: string, name: string, cost: number, period: PaymentPeriod, enterprise?: boolean | null, trial?: boolean | null, features?: { __typename?: 'PlanFeatures', vpn?: boolean | null, userManagement?: boolean | null, audit?: boolean | null } | null, lineItems?: Array<{ __typename?: 'PlatformPlanItem', name: string, dimension: LineItemDimension, cost: number, period: PaymentPeriod } | null> | null } | null } | null };
 
 export type ArtifactFragment = { __typename?: 'Artifact', id?: string | null, name?: string | null, blob?: string | null, type?: ArtifactType | null, platform?: ArtifactPlatform | null, arch?: string | null, filesize?: number | null, sha?: string | null, readme?: string | null, insertedAt?: Date | null, updatedAt?: Date | null };
 
@@ -5272,7 +5277,7 @@ export type InviteQueryVariables = Exact<{
 }>;
 
 
-export type InviteQuery = { __typename?: 'RootQueryType', invite?: { __typename?: 'Invite', id: string, email?: string | null, existing: boolean, account?: { __typename?: 'Account', id: string, name?: string | null, billingCustomerId?: string | null, backgroundColor?: string | null, userCount?: string | null } | null, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, account: { __typename?: 'Account', id: string, name?: string | null, billingCustomerId?: string | null, backgroundColor?: string | null, userCount?: string | null }, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null } | null };
+export type InviteQuery = { __typename?: 'RootQueryType', invite?: { __typename?: 'Invite', id: string, email?: string | null, existing: boolean, account?: { __typename?: 'Account', id: string, name?: string | null, billingCustomerId?: string | null, backgroundColor?: string | null, userCount?: string | null, trialed?: boolean | null } | null, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, account: { __typename?: 'Account', id: string, name?: string | null, billingCustomerId?: string | null, backgroundColor?: string | null, userCount?: string | null, trialed?: boolean | null }, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null } | null };
 
 export type KeyBackupUserFragment = { __typename?: 'User', email: string };
 
@@ -5332,14 +5337,14 @@ export type InvoiceFragment = { __typename?: 'Invoice', number: string, amountDu
 
 export type CardFragment = { __typename?: 'Card', last4: string, expMonth: number, expYear: number, name?: string | null, brand: string };
 
-export type PlatformPlanFragment = { __typename?: 'PlatformPlan', id: string, name: string, cost: number, period: PaymentPeriod, enterprise?: boolean | null, features?: { __typename?: 'PlanFeatures', vpn?: boolean | null, userManagement?: boolean | null, audit?: boolean | null } | null, lineItems?: Array<{ __typename?: 'PlatformPlanItem', name: string, dimension: LineItemDimension, cost: number, period: PaymentPeriod } | null> | null };
+export type PlatformPlanFragment = { __typename?: 'PlatformPlan', id: string, name: string, cost: number, period: PaymentPeriod, enterprise?: boolean | null, trial?: boolean | null, features?: { __typename?: 'PlanFeatures', vpn?: boolean | null, userManagement?: boolean | null, audit?: boolean | null } | null, lineItems?: Array<{ __typename?: 'PlatformPlanItem', name: string, dimension: LineItemDimension, cost: number, period: PaymentPeriod } | null> | null };
 
-export type SubscriptionAccountFragment = { __typename?: 'Account', id: string, billingCustomerId?: string | null, grandfatheredUntil?: Date | null, delinquentAt?: Date | null, userCount?: string | null, clusterCount?: string | null, availableFeatures?: { __typename?: 'PlanFeatures', userManagement?: boolean | null, audit?: boolean | null } | null, subscription?: { __typename?: 'PlatformSubscription', id: string, plan?: { __typename?: 'PlatformPlan', id: string, name: string, cost: number, period: PaymentPeriod, enterprise?: boolean | null, features?: { __typename?: 'PlanFeatures', vpn?: boolean | null, userManagement?: boolean | null, audit?: boolean | null } | null, lineItems?: Array<{ __typename?: 'PlatformPlanItem', name: string, dimension: LineItemDimension, cost: number, period: PaymentPeriod } | null> | null } | null } | null, billingAddress?: { __typename?: 'Address', name?: string | null, line1?: string | null, line2?: string | null, zip?: string | null, state?: string | null, city?: string | null, country?: string | null } | null, paymentMethods?: { __typename?: 'PaymentMethodConnection', edges?: Array<{ __typename?: 'PaymentMethodEdge', node?: { __typename?: 'PaymentMethod', id?: string | null, type?: string | null, isDefault?: boolean | null, card?: { __typename?: 'Card', last4: string, expMonth: number, expYear: number, name?: string | null, brand: string } | null } | null } | null> | null } | null };
+export type SubscriptionAccountFragment = { __typename?: 'Account', id: string, billingCustomerId?: string | null, grandfatheredUntil?: Date | null, delinquentAt?: Date | null, userCount?: string | null, clusterCount?: string | null, trialed?: boolean | null, availableFeatures?: { __typename?: 'PlanFeatures', userManagement?: boolean | null, audit?: boolean | null } | null, subscription?: { __typename?: 'PlatformSubscription', id: string, trialUntil?: Date | null, plan?: { __typename?: 'PlatformPlan', id: string, name: string, cost: number, period: PaymentPeriod, enterprise?: boolean | null, trial?: boolean | null, features?: { __typename?: 'PlanFeatures', vpn?: boolean | null, userManagement?: boolean | null, audit?: boolean | null } | null, lineItems?: Array<{ __typename?: 'PlatformPlanItem', name: string, dimension: LineItemDimension, cost: number, period: PaymentPeriod } | null> | null } | null } | null, billingAddress?: { __typename?: 'Address', name?: string | null, line1?: string | null, line2?: string | null, zip?: string | null, state?: string | null, city?: string | null, country?: string | null } | null, paymentMethods?: { __typename?: 'PaymentMethodConnection', edges?: Array<{ __typename?: 'PaymentMethodEdge', node?: { __typename?: 'PaymentMethod', id?: string | null, type?: string | null, isDefault?: boolean | null, card?: { __typename?: 'Card', last4: string, expMonth: number, expYear: number, name?: string | null, brand: string } | null } | null } | null> | null } | null };
 
 export type SubscriptionQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type SubscriptionQuery = { __typename?: 'RootQueryType', account?: { __typename?: 'Account', id: string, billingCustomerId?: string | null, grandfatheredUntil?: Date | null, delinquentAt?: Date | null, userCount?: string | null, clusterCount?: string | null, availableFeatures?: { __typename?: 'PlanFeatures', userManagement?: boolean | null, audit?: boolean | null } | null, subscription?: { __typename?: 'PlatformSubscription', id: string, plan?: { __typename?: 'PlatformPlan', id: string, name: string, cost: number, period: PaymentPeriod, enterprise?: boolean | null, features?: { __typename?: 'PlanFeatures', vpn?: boolean | null, userManagement?: boolean | null, audit?: boolean | null } | null, lineItems?: Array<{ __typename?: 'PlatformPlanItem', name: string, dimension: LineItemDimension, cost: number, period: PaymentPeriod } | null> | null } | null } | null, billingAddress?: { __typename?: 'Address', name?: string | null, line1?: string | null, line2?: string | null, zip?: string | null, state?: string | null, city?: string | null, country?: string | null } | null, paymentMethods?: { __typename?: 'PaymentMethodConnection', edges?: Array<{ __typename?: 'PaymentMethodEdge', node?: { __typename?: 'PaymentMethod', id?: string | null, type?: string | null, isDefault?: boolean | null, card?: { __typename?: 'Card', last4: string, expMonth: number, expYear: number, name?: string | null, brand: string } | null } | null } | null> | null } | null } | null };
+export type SubscriptionQuery = { __typename?: 'RootQueryType', account?: { __typename?: 'Account', id: string, billingCustomerId?: string | null, grandfatheredUntil?: Date | null, delinquentAt?: Date | null, userCount?: string | null, clusterCount?: string | null, trialed?: boolean | null, availableFeatures?: { __typename?: 'PlanFeatures', userManagement?: boolean | null, audit?: boolean | null } | null, subscription?: { __typename?: 'PlatformSubscription', id: string, trialUntil?: Date | null, plan?: { __typename?: 'PlatformPlan', id: string, name: string, cost: number, period: PaymentPeriod, enterprise?: boolean | null, trial?: boolean | null, features?: { __typename?: 'PlanFeatures', vpn?: boolean | null, userManagement?: boolean | null, audit?: boolean | null } | null, lineItems?: Array<{ __typename?: 'PlatformPlanItem', name: string, dimension: LineItemDimension, cost: number, period: PaymentPeriod } | null> | null } | null } | null, billingAddress?: { __typename?: 'Address', name?: string | null, line1?: string | null, line2?: string | null, zip?: string | null, state?: string | null, city?: string | null, country?: string | null } | null, paymentMethods?: { __typename?: 'PaymentMethodConnection', edges?: Array<{ __typename?: 'PaymentMethodEdge', node?: { __typename?: 'PaymentMethod', id?: string | null, type?: string | null, isDefault?: boolean | null, card?: { __typename?: 'Card', last4: string, expMonth: number, expYear: number, name?: string | null, brand: string } | null } | null } | null> | null } | null } | null };
 
 export type UpdateAccountBillingMutationVariables = Exact<{
   attributes: AccountAttributes;
@@ -5676,7 +5681,7 @@ export type UpgradeFragment = { __typename?: 'Upgrade', id: string, message?: st
 
 export type DeferredUpdateFragment = { __typename?: 'DeferredUpdate', id: string, dequeueAt?: Date | null, attempts?: number | null, insertedAt?: Date | null, version?: { __typename?: 'Version', version: string } | null };
 
-export type AccountFragment = { __typename?: 'Account', id: string, name?: string | null, billingCustomerId?: string | null, backgroundColor?: string | null, userCount?: string | null };
+export type AccountFragment = { __typename?: 'Account', id: string, name?: string | null, billingCustomerId?: string | null, backgroundColor?: string | null, userCount?: string | null, trialed?: boolean | null };
 
 export type GroupFragment = { __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null };
 
@@ -5707,7 +5712,7 @@ export type EabCredentialFragment = { __typename?: 'EabCredential', id: string, 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MeQuery = { __typename?: 'RootQueryType', me?: { __typename?: 'User', demoing?: boolean | null, loginMethod?: LoginMethod | null, hasInstallations?: boolean | null, hasShell?: boolean | null, id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, account: { __typename?: 'Account', id: string, name?: string | null, billingCustomerId?: string | null, backgroundColor?: string | null, userCount?: string | null, rootUser?: { __typename?: 'User', id: string, name: string, email: string } | null, domainMappings?: Array<{ __typename?: 'DomainMapping', id: string, domain: string, enableSso?: boolean | null } | null> | null }, publisher?: { __typename?: 'Publisher', billingAccountId?: string | null, id?: string | null, name: string, phone?: string | null, avatar?: string | null, description?: string | null, backgroundColor?: string | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, address?: { __typename?: 'Address', line1?: string | null, line2?: string | null, city?: string | null, country?: string | null, state?: string | null, zip?: string | null } | null } | null, boundRoles?: Array<{ __typename?: 'Role', id: string, name: string, description?: string | null, repositories?: Array<string | null> | null, permissions?: Array<Permission | null> | null, roleBindings?: Array<{ __typename?: 'RoleBinding', id: string, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, group?: { __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null } | null> | null } | null> | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, configuration?: { __typename?: 'PluralConfiguration', stripeConnectId?: string | null, stripePublishableKey?: string | null, registry?: string | null, gitCommit?: string | null } | null };
+export type MeQuery = { __typename?: 'RootQueryType', me?: { __typename?: 'User', demoing?: boolean | null, loginMethod?: LoginMethod | null, hasInstallations?: boolean | null, hasShell?: boolean | null, id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, account: { __typename?: 'Account', id: string, name?: string | null, billingCustomerId?: string | null, backgroundColor?: string | null, userCount?: string | null, trialed?: boolean | null, rootUser?: { __typename?: 'User', id: string, name: string, email: string } | null, domainMappings?: Array<{ __typename?: 'DomainMapping', id: string, domain: string, enableSso?: boolean | null } | null> | null }, publisher?: { __typename?: 'Publisher', billingAccountId?: string | null, id?: string | null, name: string, phone?: string | null, avatar?: string | null, description?: string | null, backgroundColor?: string | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, address?: { __typename?: 'Address', line1?: string | null, line2?: string | null, city?: string | null, country?: string | null, state?: string | null, zip?: string | null } | null } | null, boundRoles?: Array<{ __typename?: 'Role', id: string, name: string, description?: string | null, repositories?: Array<string | null> | null, permissions?: Array<Permission | null> | null, roleBindings?: Array<{ __typename?: 'RoleBinding', id: string, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, group?: { __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null } | null> | null } | null> | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } | null, configuration?: { __typename?: 'PluralConfiguration', stripeConnectId?: string | null, stripePublishableKey?: string | null, registry?: string | null, gitCommit?: string | null } | null };
 
 export type GetLoginMethodQueryVariables = Exact<{
   email: Scalars['String']['input'];
@@ -6637,6 +6642,7 @@ export const PlatformPlanFragmentDoc = gql`
   cost
   period
   enterprise
+  trial
   features {
     vpn
     userManagement
@@ -6677,12 +6683,14 @@ export const SubscriptionAccountFragmentDoc = gql`
   delinquentAt
   userCount
   clusterCount
+  trialed
   availableFeatures {
     userManagement
     audit
   }
   subscription {
     id
+    trialUntil
     plan {
       ...PlatformPlan
     }
@@ -7065,6 +7073,7 @@ export const AccountFragmentDoc = gql`
   billingCustomerId
   backgroundColor
   userCount
+  trialed
 }
     `;
 export const ImpersonationPolicyFragmentDoc = gql`
@@ -7187,6 +7196,42 @@ export function useUpdateAccountMutation(baseOptions?: Apollo.MutationHookOption
 export type UpdateAccountMutationHookResult = ReturnType<typeof useUpdateAccountMutation>;
 export type UpdateAccountMutationResult = Apollo.MutationResult<UpdateAccountMutation>;
 export type UpdateAccountMutationOptions = Apollo.BaseMutationOptions<UpdateAccountMutation, UpdateAccountMutationVariables>;
+export const BeginTrialDocument = gql`
+    mutation BeginTrial {
+  beginTrial {
+    id
+    trialUntil
+    plan {
+      ...PlatformPlan
+    }
+  }
+}
+    ${PlatformPlanFragmentDoc}`;
+export type BeginTrialMutationFn = Apollo.MutationFunction<BeginTrialMutation, BeginTrialMutationVariables>;
+
+/**
+ * __useBeginTrialMutation__
+ *
+ * To run a mutation, you first call `useBeginTrialMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useBeginTrialMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [beginTrialMutation, { data, loading, error }] = useBeginTrialMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useBeginTrialMutation(baseOptions?: Apollo.MutationHookOptions<BeginTrialMutation, BeginTrialMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<BeginTrialMutation, BeginTrialMutationVariables>(BeginTrialDocument, options);
+      }
+export type BeginTrialMutationHookResult = ReturnType<typeof useBeginTrialMutation>;
+export type BeginTrialMutationResult = Apollo.MutationResult<BeginTrialMutation>;
+export type BeginTrialMutationOptions = Apollo.BaseMutationOptions<BeginTrialMutation, BeginTrialMutationVariables>;
 export const ListArtifactsDocument = gql`
     query ListArtifacts($id: ID!) {
   repository(id: $id) {
@@ -10589,6 +10634,7 @@ export const namedOperations = {
   },
   Mutation: {
     UpdateAccount: 'UpdateAccount',
+    BeginTrial: 'BeginTrial',
     CreateArtifact: 'CreateArtifact',
     CreateCrd: 'CreateCrd',
     UninstallChart: 'UninstallChart',

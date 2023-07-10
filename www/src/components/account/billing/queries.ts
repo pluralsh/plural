@@ -9,6 +9,7 @@ export const PLATFORM_PLANS_QUERY = gql`
       period
       visible
       enterprise
+      trial
       features {
         vpn
       }
@@ -30,12 +31,14 @@ export const SUBSCRIPTION_QUERY = gql`
       delinquentAt
       userCount
       clusterCount
+      trialed
       availableFeatures {
         userManagement
         audit
       }
       subscription {
         id
+        trialUntil
         plan {
           id
           period

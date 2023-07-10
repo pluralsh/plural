@@ -1,23 +1,23 @@
-import { useEffect } from 'react'
 import { useQuery } from '@apollo/client'
+import { useEffect } from 'react'
 import { Navigate, useLocation } from 'react-router-dom'
 import { useIntercom } from 'react-use-intercom'
 
+import { ClustersContextProvider } from '../../contexts/ClustersContext'
+import { CurrentUserContextProvider } from '../../contexts/CurrentUserContext'
 import PluralConfigurationContext from '../../contexts/PluralConfigurationContext'
 import { useMeQuery, useSubscriptionQuery } from '../../generated/graphql'
-import { CurrentUserContextProvider } from '../../contexts/CurrentUserContext'
-import { growthbook } from '../../helpers/growthbook'
 import {
   setPreviousUserData,
   setToken,
   wipeToken,
 } from '../../helpers/authentication'
-import BillingSubscriptionProvider from '../account/billing/BillingSubscriptionProvider'
-import BillingPlatformPlansProvider from '../account/billing/BillingPlatformPlansProvider'
+import { growthbook } from '../../helpers/growthbook'
 import { useNotificationSubscription } from '../../hooks/useNotificationSubscription'
-import LoadingIndicator from '../utils/LoadingIndicator'
+import BillingPlatformPlansProvider from '../account/billing/BillingPlatformPlansProvider'
+import BillingSubscriptionProvider from '../account/billing/BillingSubscriptionProvider'
 import { PLATFORM_PLANS_QUERY } from '../account/billing/queries'
-import { ClustersContextProvider } from '../../contexts/ClustersContext'
+import LoadingIndicator from '../utils/LoadingIndicator'
 
 export function handlePreviousUserClick({ jwt }: any) {
   setToken(jwt)

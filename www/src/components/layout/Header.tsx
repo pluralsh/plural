@@ -1,9 +1,10 @@
 import { Div, Flex, Img } from 'honorable'
 import { useTheme } from 'styled-components'
 
-import { useIsCurrentlyOnboarding } from '../shell/hooks/useOnboarded'
 import BillingLegacyUserMessage from '../account/billing/BillingLegacyUserMessage'
 import BillingSubscriptionChip from '../account/billing/BillingSubscriptionChip'
+import BillingTrialMessage from '../account/billing/BillingTrialMessage'
+import { useIsCurrentlyOnboarding } from '../shell/hooks/useOnboarded'
 
 const APP_ICON = '/app-logo-white.png'
 
@@ -32,6 +33,7 @@ export default function Header() {
         />
         <Flex grow={1} />
         <BillingLegacyUserMessage />
+        <BillingTrialMessage />
         <BillingSubscriptionChip />
       </Flex>
     </Div>

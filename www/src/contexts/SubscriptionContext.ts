@@ -18,6 +18,12 @@ export type SubscriptionContextType = {
   isGrandfathered: boolean
   isGrandfatheringExpired: boolean
   isDelinquent: boolean
+  isTrialPlan: boolean
+  isTrialExpired: boolean
+  isTrialAvailable: boolean
+  isTrialExpiringSoon: boolean
+  isTrialed: boolean
+  daysUntilTrialExpires: number
   availableFeatures: SubscriptionAccountFragment['availableFeatures'] | null
   paymentMethods: PaymentMethodFragment[]
   defaultPaymentMethod: PaymentMethodFragment | null | undefined
@@ -36,6 +42,12 @@ const SubscriptionContext = createContext<SubscriptionContextType>({
   isGrandfathered: false,
   isGrandfatheringExpired: false,
   isDelinquent: false,
+  isTrialPlan: false,
+  isTrialExpired: false,
+  isTrialAvailable: false,
+  isTrialExpiringSoon: false,
+  isTrialed: false,
+  daysUntilTrialExpires: 0,
   availableFeatures: {},
   paymentMethods: [],
   defaultPaymentMethod: null,

@@ -17,6 +17,8 @@ import LoadingIndicator from '../utils/LoadingIndicator'
 
 import SubscriptionContext from '../../contexts/SubscriptionContext'
 
+import BillingTrialBanner from './billing/BillingTrialBanner'
+
 import { USERS_Q } from './queries'
 import { CreateServiceAccount } from './CreateServiceAccount'
 import { ServiceAccount } from './User'
@@ -129,6 +131,7 @@ export function ServiceAccounts() {
         <CreateServiceAccount q={q} />
       </PageTitle>
       <BillingLegacyUserBanner feature="service accounts" />
+      <BillingTrialBanner />
       {isAvailable ? (
         <List>
           <Header

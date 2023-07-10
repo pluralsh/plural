@@ -1,13 +1,15 @@
+import { Button } from '@pluralsh/design-system'
+import { Flex } from 'honorable'
 import { useCallback, useContext, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { Flex } from 'honorable'
-import { Button } from '@pluralsh/design-system'
 
 import PlatformPlansContext from '../../../contexts/PlatformPlansContext'
 import SubscriptionContext from '../../../contexts/SubscriptionContext'
 
-import BillingPricingCard from './BillingPricingCard'
 import BillingDowngradeModal from './BillingDowngradeModal'
+
+import BillingPricingCard from './BillingPricingCard'
+import BillingStartTrialModal from './BillingStartTrialModal'
 import BillingUpgradeToProfessionalModal from './BillingUpgradeToProfessionalModal'
 
 function ContactUs({ primary }: { primary?: boolean }) {
@@ -42,7 +44,8 @@ function BillingPricingCards() {
   const [searchParams, setSearchParams] = useSearchParams()
   const { clusterMonthlyPricing, userMonthlyPricing } =
     useContext(PlatformPlansContext)
-  const { isProPlan, isEnterprisePlan } = useContext(SubscriptionContext)
+  const { isProPlan, isEnterprisePlan, isTrialAvailable } =
+    useContext(SubscriptionContext)
 
   const [downgradeModalOpen, setDowngradeModalOpen] = useState(false)
 
@@ -58,6 +61,22 @@ function BillingPricingCards() {
         }
 
         return sp
+      })
+    },
+    [setSearchParams]
+  )
+
+  const trialModalOpen = typeof searchParams.get('trial') === 'string'
+  const setOpenTrialModal = useCallback(
+    (isOpen) => {
+      setSearchParams((params) => {
+        if (isOpen) {
+          params.set('trial', '1')
+        } else {
+          params.delete('trial')
+        }
+
+        return params
       })
     },
     [setSearchParams]
@@ -159,6 +178,14 @@ function BillingPricingCards() {
               <CurrentPlanButton />
             ) : isEnterprisePlan ? (
               <ContactUs />
+            ) : isTrialAvailable ? (
+              <Button
+                primary
+                width="100%"
+                onClick={() => setOpenTrialModal(true)}
+              >
+                Start free trial
+              </Button>
             ) : (
               <Button
                 primary
@@ -223,6 +250,10 @@ function BillingPricingCards() {
       <BillingDowngradeModal
         open={downgradeModalOpen}
         onClose={() => setDowngradeModalOpen(false)}
+      />
+      <BillingStartTrialModal
+        open={trialModalOpen}
+        onClose={() => setOpenTrialModal(false)}
       />
     </>
   )

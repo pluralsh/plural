@@ -107,6 +107,7 @@ fragment PlatformPlan on PlatformPlan {
   cost
   period
   enterprise
+  trial
   features {
     vpn
     userManagement
@@ -127,12 +128,14 @@ fragment SubscriptionAccount on Account {
   delinquentAt
   userCount
   clusterCount
+  trialed
   availableFeatures {
     userManagement
     audit
   }
   subscription {
     id
+    trialUntil
     plan {
       ...PlatformPlan
     }

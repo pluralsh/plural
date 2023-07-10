@@ -7,7 +7,8 @@ import { Link } from 'react-router-dom'
 import SubscriptionContext from '../../../contexts/SubscriptionContext'
 
 function BillingSubscriptionChip() {
-  const { isProPlan, isEnterprisePlan } = useContext(SubscriptionContext)
+  const { isProPlan, isEnterprisePlan, isTrialPlan } =
+    useContext(SubscriptionContext)
 
   return (
     <Link
@@ -15,11 +16,15 @@ function BillingSubscriptionChip() {
       style={{ textDecoration: 'none' }}
     >
       <Chip
-        severity={isEnterprisePlan || isProPlan ? 'info' : 'neutral'}
+        severity={
+          isTrialPlan || isEnterprisePlan || isProPlan ? 'info' : 'neutral'
+        }
         fillLevel={2}
         height={32}
       >
-        {isEnterprisePlan
+        {isTrialPlan
+          ? 'Free trial'
+          : isEnterprisePlan
           ? 'Custom'
           : isProPlan
           ? 'Professional'

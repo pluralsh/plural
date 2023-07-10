@@ -4,6 +4,7 @@ fragment Account on Account {
   billingCustomerId
   backgroundColor
   userCount
+  trialed
 }
 
 fragment Group on Group {

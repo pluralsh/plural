@@ -66,6 +66,8 @@ defmodule Core.Services.ShellTest do
       [backup] = Encryption.get_backups(user)
       assert String.starts_with?(backup.name, "shell:#{shell.workspace.cluster}:")
       assert backup.repositories == ["git@github.com:pluralsh/installations.git"]
+
+      assert Core.Services.Clusters.get_cluster(user.id, shell.provider, shell.workspace.cluster)
     end
 
     test "a user can create a demo cloud shell against the pluralsh-demos org" do

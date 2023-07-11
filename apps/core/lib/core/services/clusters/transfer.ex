@@ -85,14 +85,14 @@ defmodule Core.Services.Clusters.Transfer do
   defp maybe_reparent_provider(xact, _), do: xact
 
   defp transfer(:helm, %ChartInstallation{} = c, %Installation{id: id, user: user}) do
-    case Core.Repo.get_by(ChartInstallation, installation_id: id, chart_id: c.id) do
+    case Core.Repo.get_by(ChartInstallation, installation_id: id, chart_id: c.chart_id) do
       nil -> Charts.create_chart_installation(%{chart_id: c.chart_id, version_id: c.version_id}, id, user)
       %{id: id, version_id: vid} -> Charts.update_chart_installation(%{version_id: vid}, id, user)
     end
   end
 
   defp transfer(:terraform, %TerraformInstallation{} = tf, %Installation{id: id, user: user}) do
-    case Core.Repo.get_by(TerraformInstallation, installation_id: id, terraform_id: tf.id) do
+    case Core.Repo.get_by(TerraformInstallation, installation_id: id, terraform_id: tf.terraform_id) do
       nil -> Terraform.create_terraform_installation(%{terraform_id: tf.terraform_id, version_id: tf.version_id}, id, user)
       %{id: id, version_id: vid} -> Terraform.update_terraform_installation(%{version_id: vid}, id, user)
     end

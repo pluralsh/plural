@@ -74,28 +74,33 @@ defmodule Core.Services.Clusters do
   def transfer_ownership(_, _, _), do: {:error, "you can only transfer ownership to a service account"}
 
   @doc """
+  Upserts a cluster by provider, name
+  """
+  @spec upsert_cluster(map, atom, binary, User.t) :: cluster_resp
+  def upsert_cluster(attrs, provider, name, %User{id: uid} = user) do
+    case get_cluster(uid, provider, name) do
+      %Cluster{} = c ->
+        Cluster.changeset(c, Map.merge(attrs, %{provider: provider, name: name, owner_id: uid}))
+        |> Core.Repo.update()
+      _ -> create_cluster(Map.merge(attrs, %{name: name, provider: provider}), user)
+    end
+  end
+
+  @doc """
   creates a cluster record from an upgrade queue.  Also ties the cluster back onto that queue
   """
   @spec create_from_queue(UpgradeQueue.t) :: cluster_resp
-  def create_from_queue(%UpgradeQueue{name: n, provider: p, git: g, domain: d, user_id: uid, pinged_at: pinged} = q) do
+  def create_from_queue(%UpgradeQueue{name: n, provider: p, git: g, domain: d, pinged_at: pinged} = q) do
     %{user: user} = Core.Repo.preload(q, [:user])
 
     start_transaction()
     |> add_operation(:cluster, fn _ ->
-      case get_cluster(user.id, p, n) do
-        %Cluster{} = c ->
-          Cluster.changeset(c, %{console_url: d, provider: p, name: n, owner_id: uid})
-          |> Core.Repo.update()
-        _ ->
-          create_cluster(%{
-            name: n,
-            provider: p,
-            git_url: g,
-            console_url: d,
-            domain: infer_domain(d),
-            pinged_at: pinged
-          }, user)
-      end
+      upsert_cluster(%{
+        console_url: d,
+        domain: infer_domain(d),
+        git_url: g,
+        pinged_at: pinged,
+      }, p, n, user)
     end)
     |> add_operation(:queue, fn %{cluster: %Cluster{id: id}} ->
       UpgradeQueue.changeset(q, %{cluster_id: id})

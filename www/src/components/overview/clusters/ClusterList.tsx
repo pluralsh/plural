@@ -1,5 +1,4 @@
 import { Table } from '@pluralsh/design-system'
-import { Div } from 'honorable'
 import isEmpty from 'lodash/isEmpty'
 import { ComponentProps, memo, useContext, useMemo } from 'react'
 
@@ -7,7 +6,7 @@ import ClustersContext from '../../../contexts/ClustersContext'
 import CurrentUserContext, {
   CurrentUser,
 } from '../../../contexts/CurrentUserContext'
-import { Cluster, Source, User } from '../../../generated/graphql'
+import { Cluster } from '../../../generated/graphql'
 import { ensureURLValidity } from '../../../utils/url'
 
 import ClusterListEmptyState from './ClusterListEmptyState'

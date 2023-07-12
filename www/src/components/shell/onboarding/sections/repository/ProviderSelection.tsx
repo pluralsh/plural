@@ -1,21 +1,20 @@
-import { Div, Flex, Text } from 'honorable'
-import { useCallback, useContext, useMemo, useState } from 'react'
 import {
   Button,
   Callout,
   GitHubLogoIcon,
   GitLabLogoIcon,
 } from '@pluralsh/design-system'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { Div, Flex, Text } from 'honorable'
+import { useCallback, useContext, useMemo, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 import { ImpersonationContext } from '../../../context/impersonation'
-
 import { useDevToken } from '../../../hooks/useDevToken'
-import OnboardingCardButton from '../../OnboardingCardButton'
 import useOnboarded from '../../../hooks/useOnboarded'
 import { useContextStorage, useSectionState } from '../../context/hooks'
-import { ConfigureCloudSectionState } from '../../context/types'
 import { OnboardingContext } from '../../context/onboarding'
+import { ConfigureCloudSectionState } from '../../context/types'
+import OnboardingCardButton from '../../OnboardingCardButton'
 
 const providerToLogo = {
   github: <GitHubLogoIcon size={40} />,

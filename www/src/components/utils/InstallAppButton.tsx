@@ -1,5 +1,3 @@
-import { Key, useContext, useEffect, useMemo, useRef, useState } from 'react'
-import { Button, Div, Flex, H2, ModalBaseProps, P } from 'honorable'
 import {
   Codeline,
   Modal,
@@ -7,13 +5,21 @@ import {
   TabList,
   TabPanel,
 } from '@pluralsh/design-system'
-import { Link } from 'react-router-dom'
+import { Button, Div, Flex, H2, ModalBaseProps, P } from 'honorable'
 import isEmpty from 'lodash/isEmpty'
 import upperFirst from 'lodash/upperFirst'
+import { Key, useContext, useEffect, useMemo, useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
 
 import ClustersContext from '../../contexts/ClustersContext'
-import { Cluster, Provider } from '../../generated/graphql'
 import { useCurrentUser } from '../../contexts/CurrentUserContext'
+import { Cluster, Provider } from '../../generated/graphql'
+
+import {
+  CloudShellClusterPicker,
+  clusterFilter,
+  clusterHasCloudShell,
+} from './ClusterPicker'
 
 import {
   InstallAppButtonProps,
@@ -23,12 +29,6 @@ import {
   providerToLongName,
   providerToShortName,
 } from './recipeHelpers'
-import {
-  CloudShellClusterPicker,
-  NEW_CLUSTER_ID,
-  clusterFilter,
-  clusterHasCloudShell,
-} from './ClusterPicker'
 
 function CliCommand({
   recipe,

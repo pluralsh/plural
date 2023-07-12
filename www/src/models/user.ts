@@ -37,6 +37,7 @@ export const UserFragment = gql`
     backgroundColor
     serviceAccount
     hasShell
+    hasInstallations
     roles {
       admin
     }

@@ -48,6 +48,7 @@ function useGetUsersWithoutCluster(clusters: Array<Cluster>) {
     fetchMore,
     refetch: refetchUsers,
   } = useQuery<Pick<RootQueryType, 'users'>, RootQueryTypeUsersArgs>(USERS_Q, {
+    fetchPolicy: 'network-only',
     variables: { serviceAccount: true },
   })
   const [users, setUsers] = useState<Array<User>>([])
@@ -59,12 +60,23 @@ function useGetUsersWithoutCluster(clusters: Array<Cluster>) {
     [clusters]
   )
 
-  const refetch = useCallback(() => {
+  const refetch = useCallback(
+    (onComplete: () => void) => {
+      refetchUsers().then(() => {
+        setUsers([])
+        setLoading(false)
+        setLoaded(false)
+        onComplete()
+      })
+    },
+    [refetchUsers]
+  )
+
+  const reset = useCallback(() => {
     setUsers([])
     setLoading(false)
     setLoaded(false)
-    refetchUsers()
-  }, [refetchUsers])
+  }, [])
 
   useEffect(() => {
     if (!data || loaded || loading) return
@@ -73,9 +85,9 @@ function useGetUsersWithoutCluster(clusters: Array<Cluster>) {
     const fetch = async () => {
       let hasNextPage = data?.users?.pageInfo.hasNextPage ?? false
       let cursor = data?.users?.pageInfo.endCursor
-      let limit = 0
 
-      while (hasNextPage && limit < 3) {
+      setUsers(toUserList(data))
+      while (hasNextPage) {
         const { data: connection } = await fetchMore({
           variables: { serviceAccount: true, cursor },
         })
@@ -83,7 +95,6 @@ function useGetUsersWithoutCluster(clusters: Array<Cluster>) {
         hasNextPage = connection?.users?.pageInfo.hasNextPage ?? false
         cursor = connection?.users?.pageInfo.endCursor
         setUsers((users) => [...users, ...toUserList(connection)])
-        limit++
       }
 
       setUsers((users) =>
@@ -96,7 +107,7 @@ function useGetUsersWithoutCluster(clusters: Array<Cluster>) {
     fetch()
   }, [data, fetchMore, loaded, loading, ownerSet])
 
-  return { users, loaded, refetch }
+  return { users, loaded, refetch, reset }
 }
 
 const Wrap = styled.div((_) => ({
@@ -270,11 +281,11 @@ function ClusterOwnerInput({
         impersonationPolicy: { bindings: [{ userId: me.id }] },
       },
     },
-    onCompleted: (result) => {
-      refetch()
-      setMode(UserSelectionMode.Select)
-      setSelectedKey(result.createServiceAccount?.id)
-    },
+    onCompleted: (result) =>
+      refetch(() => {
+        setMode(UserSelectionMode.Select)
+        setSelectedKey(result.createServiceAccount?.id)
+      }),
   })
 
   return (
@@ -336,7 +347,7 @@ function CreateClusterModal({ open, onClose }): ReactElement {
   const [mode, setMode] = useState<UserSelectionMode>(UserSelectionMode.Select)
   const me = useCurrentUser()
   const { clusters } = useContext(ClustersContext)
-  const { users, loaded, refetch } = useGetUsersWithoutCluster(clusters)
+  const { users, loaded, refetch, reset } = useGetUsersWithoutCluster(clusters)
 
   const hasCluster = useMemo(
     () => clusters.some((c) => c.owner?.id === me.id),
@@ -373,7 +384,10 @@ function CreateClusterModal({ open, onClose }): ReactElement {
       BackdropProps={{ zIndex: 20 }}
       header={<Header>Create cluster</Header>}
       open={open}
-      onClose={onClose}
+      onClose={() => {
+        reset()
+        onClose()
+      }}
       style={{ padding: 0 }}
     >
       {!loaded ? (

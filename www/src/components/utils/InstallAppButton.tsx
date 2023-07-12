@@ -230,8 +230,7 @@ function InstallModal({
   const clusterProvider = currentCluster?.provider
 
   const isCloudShellCluster =
-    clusterId === NEW_CLUSTER_ID ||
-    (currentCluster && clusterHasCloudShell(currentCluster))
+    currentCluster && clusterHasCloudShell(currentCluster)
   const header = `Install ${name}`
   const recipe =
     type === 'stack' && !clusterProvider
@@ -295,9 +294,9 @@ function InstallModal({
             primary
             width="100%"
             as={Link}
-            to={`/shell?${
-              clusterId !== NEW_CLUSTER_ID ? `cluster=${clusterId}` : ''
-            }&install=${apps && !isEmpty(apps) ? `${apps.join(',')}` : name}`}
+            to={`/shell?${`user=${currentCluster.owner?.id}`}&install=${
+              apps && !isEmpty(apps) ? `${apps.join(',')}` : name
+            }`}
           >
             Start install
           </Button>

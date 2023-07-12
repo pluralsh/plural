@@ -36,6 +36,7 @@ export const UserFragment = gql`
     emailConfirmBy
     backgroundColor
     serviceAccount
+    hasShell
     roles {
       admin
     }

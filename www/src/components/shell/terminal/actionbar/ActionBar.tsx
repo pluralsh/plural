@@ -1,14 +1,13 @@
-import { Dispatch, ReactElement, forwardRef, useContext, useState } from 'react'
-import { Button, ButtonProps, Flex } from 'honorable'
 import { CliIcon, ToolIcon, Tooltip } from '@pluralsh/design-system'
+import { Button, ButtonProps, Flex } from 'honorable'
+import { Dispatch, ReactElement, forwardRef, useContext, useState } from 'react'
 
-import CurrentUserContext from '../../../../contexts/CurrentUserContext'
-
-import { TerminalThemeSelector } from './theme/Selector'
+import { ImpersonationContext } from '../../context/impersonation'
 
 import { Cheatsheet } from './cheatsheet/Cheatsheet'
-import { MoreOptions } from './options/MoreOptions'
 import { DeleteDemoModal } from './options/DeleteShellModal'
+import { MoreOptions } from './options/MoreOptions'
+import { TerminalThemeSelector } from './theme/Selector'
 
 type ActionBarItemProps = {
   tooltip?: string
@@ -53,7 +52,9 @@ const ActionBarItem = forwardRef(ActionBarItemRef)
 
 function ActionBar({ onRepairViewport }) {
   const [demoDelete, setDemoDelete] = useState(false)
-  const { demoing } = useContext(CurrentUserContext)
+  const {
+    user: { demoing },
+  } = useContext(ImpersonationContext)
   const [showCheatsheet, setShowCheatsheet] = useState(false)
 
   return (

@@ -1,12 +1,11 @@
 import { Flex } from 'honorable'
-import { ReactElement, useContext, useMemo } from 'react'
 import { isEmpty } from 'lodash'
+import { ReactElement, useContext, useMemo } from 'react'
 
 import ClustersContext from '../../../contexts/ClustersContext'
 
-import Upgrades from './Upgrades'
-import ClustersHelpSection from './ClustersHelpSection'
 import { ClusterList } from './ClusterList'
+import ClustersHelpSection from './ClustersHelpSection'
 import {
   ColActions,
   ColCloudShell,
@@ -17,6 +16,8 @@ import {
   ColPromotions,
   ColUpgrades,
 } from './columns'
+
+import Upgrades from './Upgrades'
 
 export function Clusters(): ReactElement | null {
   const { clusters } = useContext(ClustersContext)
@@ -56,7 +57,10 @@ export function Clusters(): ReactElement | null {
       gap="medium"
       grow={1}
     >
-      <ClusterList columns={columns} />
+      <ClusterList
+        columns={columns}
+        maxHeight="600px"
+      />
       <Upgrades />
       {isEmpty(clusters) && <ClustersHelpSection />}
     </Flex>

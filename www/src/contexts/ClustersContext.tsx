@@ -1,14 +1,14 @@
-import { createContext, useMemo } from 'react'
 import { useQuery } from '@apollo/client'
+import { createContext, useMemo } from 'react'
 import styled from 'styled-components'
 
+import { CLUSTERS } from '../components/overview/queries'
+import LoadingIndicator from '../components/utils/LoadingIndicator'
 import {
   Cluster,
   RootQueryType,
   RootQueryTypeClustersArgs,
 } from '../generated/graphql'
-import LoadingIndicator from '../components/utils/LoadingIndicator'
-import { CLUSTERS } from '../components/overview/queries'
 
 type ClustersContextType = {
   clusters: Cluster[]

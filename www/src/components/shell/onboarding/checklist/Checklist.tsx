@@ -1,5 +1,4 @@
 import { useMutation } from '@apollo/client'
-import { A, Flex, Span } from 'honorable'
 import {
   BrowseAppsIcon,
   Button,
@@ -10,6 +9,7 @@ import {
   TerminalIcon,
   Toast,
 } from '@pluralsh/design-system'
+import { A, Flex, Span } from 'honorable'
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
@@ -20,15 +20,13 @@ import {
   RootMutationType,
   RootMutationTypeUpdateUserArgs,
 } from '../../../../generated/graphql'
-import { UPDATE_USER } from '../../../users/queries'
-import CurrentUserContext from '../../../../contexts/CurrentUserContext'
-
-import { updateUserFragment } from '../../../../utils/graphql'
-
 import { isOnboardingChecklistHidden } from '../../../../helpers/localStorage'
+import { updateUserFragment } from '../../../../utils/graphql'
+import { UPDATE_USER } from '../../../users/queries'
+import { ImpersonationContext } from '../../context/impersonation'
 
-import { ChecklistFooter } from './Footer'
 import { ChecklistComplete } from './Complete'
+import { ChecklistFooter } from './Footer'
 
 const CHECKLIST_ORDER = [
   OnboardingChecklistState.New,
@@ -47,7 +45,7 @@ export function OnboardingChecklist() {
     dismissed: dismissedFromContext,
     setDismissed: setDismissedFromContext,
   } = useContext(OnboardingChecklistContext)
-  const user = useContext(CurrentUserContext)
+  const { user } = useContext(ImpersonationContext)
 
   // State
   const [status, setStatus] = useState<OnboardingChecklistState>(

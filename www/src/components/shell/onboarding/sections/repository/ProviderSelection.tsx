@@ -6,7 +6,9 @@ import {
   GitHubLogoIcon,
   GitLabLogoIcon,
 } from '@pluralsh/design-system'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
+
+import { ImpersonationContext } from '../../../context/impersonation'
 
 import { useDevToken } from '../../../hooks/useDevToken'
 import OnboardingCardButton from '../../OnboardingCardButton'
@@ -36,6 +38,10 @@ function ProviderSelection({ data }) {
   const { fresh: isOnboarding, mutation } = useOnboarded()
   const setSectionState = useSectionState()
   const context = useContext(OnboardingContext)
+  const {
+    user: { id: userId },
+    skip,
+  } = useContext(ImpersonationContext)
   const { save } = useContextStorage()
   const [expanded, setExpanded] = useState(false)
 
@@ -71,6 +77,7 @@ function ProviderSelection({ data }) {
                   ...context?.section,
                   state: ConfigureCloudSectionState.RepositoryConfiguration,
                 },
+                ...(!skip ? { impersonation: { userId } } : {}),
               })
 
               // HACK to navigate the onboarding on staging environments

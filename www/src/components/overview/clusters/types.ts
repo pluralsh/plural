@@ -12,6 +12,7 @@ export type ClusterListElement = {
   delivered: boolean
   hasDependency: boolean
   owner?: {
+    id?: string
     name?: string
     email?: string
     avatar?: string | null

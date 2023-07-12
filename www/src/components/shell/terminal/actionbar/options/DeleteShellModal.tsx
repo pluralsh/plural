@@ -1,4 +1,3 @@
-import { useCallback, useContext, useState } from 'react'
 import { useMutation } from '@apollo/client'
 import {
   Chip,
@@ -8,12 +7,14 @@ import {
   WarningIcon,
 } from '@pluralsh/design-system'
 import { A, Button, Flex, Span } from 'honorable'
+import { useCallback, useContext, useState } from 'react'
+
+import { ImpersonationContext } from '../../../context/impersonation'
 
 import {
   DELETE_DEMO_PROJECT_MUTATION,
   DELETE_SHELL_MUTATION,
 } from '../../../queries'
-import CurrentUserContext from '../../../../../contexts/CurrentUserContext'
 
 function DeleteDemoModal({ onClose }) {
   const [open, setOpen] = useState(true)
@@ -84,7 +85,9 @@ function DeleteDemoModal({ onClose }) {
 }
 
 function DeleteShellModal({ onClose }) {
-  const { demoing } = useContext(CurrentUserContext)
+  const {
+    user: { demoing },
+  } = useContext(ImpersonationContext)
   const [open, setOpen] = useState(true)
   const [canDelete, setCanDelete] = useState(false)
   const [deleteShell, { loading: deleteShellLoading }] = useMutation(

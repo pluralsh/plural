@@ -1,13 +1,13 @@
-import { A, Flex, P } from 'honorable'
-
-import { useState } from 'react'
-
 import { Button, Checkbox, Codeline } from '@pluralsh/design-system'
+import { A, Flex, P } from 'honorable'
+import { useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
+import { ImpersonationContext } from '../../../context/impersonation'
 import useOnboarded from '../../../hooks/useOnboarded'
 
 function CliCompletion({ onBack }) {
+  const { user, skip } = useContext(ImpersonationContext)
   const [completed, setCompleted] = useState(false)
   const navigate = useNavigate()
   const { mutation } = useOnboarded()
@@ -20,7 +20,9 @@ function CliCompletion({ onBack }) {
         gap="medium"
         marginVertical="large"
       >
-        <Codeline>plural init</Codeline>
+        <Codeline>
+          plural init {!skip && `--service-account=${user.email}`}
+        </Codeline>
         <Codeline>
           plural bundle install &lt;app-name&gt; &lt;bundle-name&gt;
         </Codeline>

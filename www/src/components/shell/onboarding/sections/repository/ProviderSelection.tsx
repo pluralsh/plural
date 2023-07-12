@@ -70,14 +70,16 @@ function ProviderSelection({ data }) {
             key={provider}
             selected={context?.scm?.provider === provider}
             onClick={() => {
-              save({
-                ...context,
-                section: {
-                  ...context?.section,
-                  state: ConfigureCloudSectionState.RepositoryConfiguration,
+              save(
+                {
+                  ...context,
+                  section: {
+                    ...context?.section,
+                    state: ConfigureCloudSectionState.RepositoryConfiguration,
+                  },
                 },
-                ...(!skip ? { impersonation: { userId } } : {}),
-              })
+                !skip ? { userId } : undefined
+              )
 
               // HACK to navigate the onboarding on staging environments
               if (import.meta.env.MODE !== 'production' && devToken) {

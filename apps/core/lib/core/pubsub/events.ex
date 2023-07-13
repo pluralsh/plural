@@ -12,6 +12,9 @@ defmodule Core.PubSub.InstallationDeleted, do: use Piazza.PubSub.Event
 defmodule Core.PubSub.SubscriptionUpdated, do: use Piazza.PubSub.Event
 defmodule Core.PubSub.SubscriptionCreated, do: use Piazza.PubSub.Event
 
+defmodule Core.PubSub.PlatformSubscriptionUpdated, do: use Piazza.PubSub.Event
+defmodule Core.PubSub.PlatformSubscriptionCreated, do: use Piazza.PubSub.Event
+
 defmodule Core.PubSub.IncidentCreated, do: use Piazza.PubSub.Event
 defmodule Core.PubSub.IncidentUpdated, do: use Piazza.PubSub.Event
 defmodule Core.PubSub.IncidentDeleted, do: use Piazza.PubSub.Event

@@ -412,6 +412,8 @@ defmodule GraphQl.PaymentsMutationsTest do
       """, %{}, %{current_user: user})
 
       assert sub["plan"]["id"] == trial.id
+
+      assert_receive {:event, %Core.PubSub.PlatformSubscriptionCreated{}}
     end
   end
 

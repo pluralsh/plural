@@ -79,6 +79,7 @@ defmodule Core.Services.Payments do
     end)
     |> add_operation(:scaffold, fn _ -> Accounts.account_setup(root_user) end)
     |> execute(extract: :setup)
+    |> notify(:create)
   end
   def begin_trial(%User{account_id: aid}) do
     Accounts.get_account!(aid)
@@ -1162,6 +1163,8 @@ defmodule Core.Services.Payments do
 
   defp notify({:ok, %Subscription{} = sub}, :create),
     do: handle_notify(PubSub.SubscriptionCreated, sub)
+  defp notify({:ok, %PlatformSubscription{} = sub}, :create),
+    do: handle_notify(PubSub.PlatformSubscriptionCreated, sub)
   defp notify({:ok, %Subscription{} = sub}, :update),
     do: handle_notify(PubSub.SubscriptionUpdated, sub)
   defp notify(error, _), do: error

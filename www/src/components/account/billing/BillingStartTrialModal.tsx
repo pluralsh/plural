@@ -40,7 +40,10 @@ function BillingStartTrialModal({
   onClose,
 }: BillingStartTrialModalProps) {
   const [beginTrial, { loading, error }] = useBeginTrialMutation({
-    onCompleted: window.location.reload,
+    onCompleted: () => {
+      onClose()
+      window.location.reload()
+    },
   })
 
   return (

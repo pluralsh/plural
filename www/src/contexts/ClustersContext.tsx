@@ -41,7 +41,12 @@ export function ClustersContextProvider({ children }) {
       data?.clusters?.edges
         ?.map((edge) => edge?.node)
         .filter((node): node is Cluster => !!node)
-        .filter((c) => c.source === Source.Default || c.owner?.hasShell) ?? []
+        .filter(
+          (c) =>
+            c.source === Source.Default ||
+            c.owner?.hasShell ||
+            c.owner?.hasInstallations
+        ) ?? []
 
     return { clusters, refetchClusters: refetch }
   }, [data, refetch])

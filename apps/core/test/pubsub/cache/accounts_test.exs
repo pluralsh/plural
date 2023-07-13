@@ -3,6 +3,22 @@ defmodule Core.PubSub.Consumers.Cache.AccountsTest do
   alias Core.PubSub
   alias Core.PubSub.Consumers.Cache
 
+  describe "PlatformSubscriptionCreated" do
+    test "it will wipe login caches" do
+      account = insert(:account)
+      users = insert_list(3, :user, account: account)
+      sub = insert(:platform_subscription, account: account)
+      Enum.each(users, &cache/1)
+
+      event = %PubSub.PlatformSubscriptionCreated{item: sub}
+      Cache.handle_event(event)
+
+      for u <- users do
+        refute Core.Cache.get({:login, u.id})
+      end
+    end
+  end
+
   describe "GroupMemberCreated" do
     test "it will overwrite the login cache" do
       gm = insert(:group_member)

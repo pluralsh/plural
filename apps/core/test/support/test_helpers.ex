@@ -1,6 +1,8 @@
 defmodule Core.TestHelpers do
   alias Core.Schema.{User, Group, GroupMember}
 
+  def cache(%User{} = user), do: Core.Cache.put({:login, user.id}, user)
+
   def ids_equal(found, expected) do
     found = MapSet.new(ids(found))
     expected = MapSet.new(ids(expected))

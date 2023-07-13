@@ -15,6 +15,15 @@ defimpl Core.PubSub.Cacheable, for: [Core.PubSub.GroupMemberCreated, Core.PubSub
   end
 end
 
+defimpl Core.PubSub.Cacheable, for: [Core.PubSub.PlatformSubscriptionCreated] do
+  alias Core.Schema.{PlatformSubscription, User}
+
+  def cache(%{item: %PlatformSubscription{account_id: aid}}) do
+    users = User.for_account(aid) |> Core.Repo.all()
+    {:del, Enum.map(users, & {:login, &1.id}), users}
+  end
+end
+
 defimpl Core.PubSub.Cacheable, for: [Core.PubSub.UserUpdated, Core.PubSub.EmailConfirmed, Core.PubSub.CacheUser] do
   def cache(%{item: user}) do
     user = Core.Services.Rbac.preload(user)

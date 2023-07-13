@@ -268,6 +268,8 @@ defmodule Core.Services.PaymentsTest do
       assert cluster.dimension == :cluster
       assert cluster.quantity == 0
       assert cluster.external_id == "cluster_id"
+
+      assert_receive {:event, %PubSub.PlatformSubscriptionCreated{item: ^subscription}}
     end
 
     test "It can autoprovision stripe customers" do

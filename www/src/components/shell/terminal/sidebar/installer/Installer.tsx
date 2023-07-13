@@ -1,3 +1,12 @@
+import { useApolloClient, useQuery } from '@apollo/client'
+import { ApolloError } from '@apollo/client/errors'
+import {
+  GraphQLToast,
+  Wizard,
+  WizardNavigation,
+  WizardStepConfig,
+  WizardStepper,
+} from '@pluralsh/design-system'
 import { Div, Flex } from 'honorable'
 import {
   Dispatch,
@@ -8,22 +17,13 @@ import {
   useRef,
   useState,
 } from 'react'
-import { useApolloClient, useQuery } from '@apollo/client'
-import {
-  GraphQLToast,
-  Wizard,
-  WizardNavigation,
-  WizardStepConfig,
-  WizardStepper,
-} from '@pluralsh/design-system'
-import { ApolloError } from '@apollo/client/errors'
 import { useSearchParams } from 'react-router-dom'
 
-import useOnboarded from '../../../hooks/useOnboarded'
-import { State, TerminalContext } from '../../context/terminal'
-import CurrentUserContext from '../../../../../contexts/CurrentUserContext'
 import { PosthogEvent, posthogCapture } from '../../../../../utils/posthog'
 import LoadingIndicator from '../../../../utils/LoadingIndicator'
+import { ImpersonationContext } from '../../../context/impersonation'
+import useOnboarded from '../../../hooks/useOnboarded'
+import { State, TerminalContext } from '../../context/terminal'
 import { useSelectCluster } from '../Sidebar'
 
 import { InstallerContext } from './context'
@@ -44,7 +44,9 @@ function Installer({ onInstallSuccess }) {
     configuration,
     setState,
   } = useContext(TerminalContext)
-  const me = useContext(CurrentUserContext)
+  const {
+    user: { demoing },
+  } = useContext(ImpersonationContext)
   const onResetRef = useRef<{ onReset: Dispatch<void> }>({ onReset: () => {} })
   const [searchParams] = useSearchParams()
   const { clusters } = useSelectCluster()
@@ -88,7 +90,7 @@ function Installer({ onInstallSuccess }) {
         .filter((app) => !FILTERED_APPS.includes(app?.name)),
     [applicationNodes]
   )
-  const limit = useMemo(() => (me?.demoing ? 3 : 5), [me?.demoing])
+  const limit = useMemo(() => (demoing ? 3 : 5), [demoing])
   const preselectedApps = useMemo(() => {
     const names = searchParams.get('install')
 
@@ -214,7 +216,7 @@ function Installer({ onInstallSuccess }) {
                 <WizardNavigation
                   onInstall={onInstall}
                   tooltip={
-                    me?.demoing ? 'Max 3 applications on GCP demo' : undefined
+                    demoing ? 'Max 3 applications on GCP demo' : undefined
                   }
                 />
               ),

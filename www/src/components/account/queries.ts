@@ -21,10 +21,11 @@ export const USERS_Q = gql`
     $serviceAccount: Boolean
     $all: Boolean
     $cursor: String
+    $first: Int = 20
   ) {
     users(
       q: $q
-      first: 20
+      first: $first
       after: $cursor
       serviceAccount: $serviceAccount
       all: $all

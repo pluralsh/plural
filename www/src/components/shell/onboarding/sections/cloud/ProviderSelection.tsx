@@ -1,5 +1,3 @@
-import { Flex, Span } from 'honorable'
-import { useContext, useEffect, useMemo, useState } from 'react'
 import {
   CloudIcon,
   InfoOutlineIcon,
@@ -7,17 +5,23 @@ import {
   Radio,
   Tooltip,
 } from '@pluralsh/design-system'
+import { Flex, Span } from 'honorable'
+import { useContext, useEffect, useMemo, useState } from 'react'
+
+import { ImpersonationContext } from '../../../context/impersonation'
+
+import GCPLogoIcon from '../../assets/GCPLogoIcon.svg'
 
 import { OnboardingContext } from '../../context/onboarding'
 import { CloudType } from '../../context/types'
-import GCPLogoIcon from '../../assets/GCPLogoIcon.svg'
-import CurrentUserContext from '../../../../../contexts/CurrentUserContext'
 
 import { CloudOption } from './CloudOption'
 
 function ProviderSelection() {
-  const me = useContext(CurrentUserContext)
   const { cloud, setCloud, setValid } = useContext(OnboardingContext)
+  const {
+    user: { demoed },
+  } = useContext(ImpersonationContext)
   const [path, setPath] = useState(cloud?.type)
   const isValid = useMemo(() => path !== undefined, [path])
 
@@ -49,9 +53,9 @@ function ProviderSelection() {
           data-phid="select-cloud-demo"
           selected={path === CloudType.Demo}
           onClick={() => setPath(CloudType.Demo)}
-          disabled={me?.demoed}
+          disabled={demoed}
           tooltip={
-            me?.demoed
+            demoed
               ? 'You have reached the maximum number of demo environment usage.'
               : undefined
           }

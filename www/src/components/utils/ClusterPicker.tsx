@@ -3,10 +3,11 @@ import {
   ClusterIcon,
   FormField,
   ListBoxItem,
-  PlusIcon,
   Select,
   WrapWithIf,
 } from '@pluralsh/design-system'
+import { Flex } from 'honorable'
+import { isEmpty } from 'lodash'
 import {
   ComponentProps,
   Dispatch,
@@ -15,14 +16,12 @@ import {
   useEffect,
   useMemo,
 } from 'react'
-import { isEmpty } from 'lodash'
-import { Flex } from 'honorable'
 
 import ClustersContext from '../../contexts/ClustersContext'
-import { Cluster, Maybe, Provider, UpgradeInfo } from '../../generated/graphql'
-import ClusterHealth from '../overview/clusters/ClusterHealth'
 
 import { useCurrentUser } from '../../contexts/CurrentUserContext'
+import { Cluster, Maybe, Provider, UpgradeInfo } from '../../generated/graphql'
+import ClusterHealth from '../overview/clusters/ClusterHealth'
 
 import { ProviderIcon } from './ProviderIcon'
 
@@ -96,7 +95,7 @@ export function ClusterPicker({
 }
 
 type SelectBoxCluster = Pick<Cluster, 'id' | 'name'> &
-  Partial<Pick<Cluster, 'pingedAt' | 'provider' | 'upgradeInfo'>> & {
+  Partial<Pick<Cluster, 'pingedAt' | 'provider' | 'upgradeInfo' | 'owner'>> & {
     icon?: ReactNode
   }
 
@@ -195,40 +194,41 @@ function ClusterPickerBase({
           )
         }
       >
-        {clusters.map(({ id, name, provider, pingedAt, upgradeInfo, icon }) => (
-          <ListBoxItem
-            key={id}
-            label={name}
-            textValue={name}
-            leftContent={
-              <ClusterProviderIcon
-                provider={provider}
-                icon={icon}
-              />
-            }
-            rightContent={
-              <Flex gap="xsmall">
-                {showUpgradeInfo && (
-                  <ClusterPickerReadyChip upgradeInfo={upgradeInfo} />
-                )}
-                {showHealthStatus && (
-                  <ClusterHealth
-                    pingedAt={pingedAt}
-                    showTooltip={false}
-                    size="small"
-                    hue="lightest"
-                  />
-                )}
-              </Flex>
-            }
-          />
-        ))}
+        {clusters.map(
+          ({ id, name, owner, provider, pingedAt, upgradeInfo, icon }) => (
+            <ListBoxItem
+              key={id}
+              label={name}
+              description={owner?.email}
+              textValue={name}
+              leftContent={
+                <ClusterProviderIcon
+                  provider={provider}
+                  icon={icon}
+                />
+              }
+              rightContent={
+                <Flex gap="xsmall">
+                  {showUpgradeInfo && (
+                    <ClusterPickerReadyChip upgradeInfo={upgradeInfo} />
+                  )}
+                  {showHealthStatus && (
+                    <ClusterHealth
+                      pingedAt={pingedAt}
+                      showTooltip={false}
+                      size="small"
+                      hue="lightest"
+                    />
+                  )}
+                </Flex>
+              }
+            />
+          )
+        )}
       </Select>
     </WrapWithIf>
   )
 }
-
-export const NEW_CLUSTER_ID = 'newcluster'
 
 type CloudShellClusterPickerProps = Omit<
   ComponentProps<typeof ClusterPickerBase>,
@@ -265,26 +265,13 @@ export function CloudShellClusterPicker({
   const { clusters: raw } = useContext(ClustersContext)
   const { id: userId } = useCurrentUser()
 
-  const clusters = useMemo(() => {
-    const userHasCluster = raw.some((cl) => cl?.owner?.id === userId)
-
-    const clList = raw
-      ? raw.filter((cl) => clusterFilter(cl, userId, { showCliClusters }))
-      : ([] as Cluster[])
-
-    return [
-      ...clList,
-      ...(userHasCluster
-        ? []
-        : [
-            {
-              id: NEW_CLUSTER_ID,
-              name: 'New cluster',
-              icon: <PlusIcon size={16} />,
-            },
-          ]),
-    ]
-  }, [raw, showCliClusters, userId])
+  const clusters = useMemo(
+    () =>
+      raw
+        ? raw.filter((cl) => clusterFilter(cl, userId, { showCliClusters }))
+        : ([] as Cluster[]),
+    [raw, showCliClusters, userId]
+  )
 
   return (
     <ClusterPickerBase

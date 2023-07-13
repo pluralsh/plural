@@ -25,19 +25,20 @@ export default function ClusterHealth({
     return () => clearInterval(int)
   }, [])
 
+  const pinged = pingedAt !== null
   const healthy =
     pingedAt && now.clone().subtract(2, 'minutes').isBefore(pingedAt)
 
   return (
     <Flex gap="xsmall">
       <Chip
-        severity={healthy ? 'success' : 'error'}
+        severity={pinged ? (healthy ? 'success' : 'error') : 'warning'}
         size={size}
         hue={hue}
       >
-        {healthy ? 'Healthy' : 'Unhealthy'}
+        {pinged ? (healthy ? 'Healthy' : 'Unhealthy') : 'Pending'}
       </Chip>
-      {!healthy && showTooltip && (
+      {pinged && !healthy && showTooltip && (
         <Tooltip
           label="Clusters that have recently been destroyed will show as Unhealthy while resources are cleaned up. All references should be removed within 24 hours."
           width={350}

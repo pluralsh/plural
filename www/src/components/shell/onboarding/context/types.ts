@@ -4,6 +4,7 @@ import {
   AuthorizationUrl,
   Provider,
   ScmProvider,
+  User,
 } from '../../../../generated/graphql'
 
 enum CloudProvider {
@@ -127,6 +128,11 @@ interface WorkspaceProps {
   subdomain?: string
 }
 
+interface Impersonation {
+  userId?: string
+  user?: User
+}
+
 export type {
   Sections,
   Section,
@@ -138,6 +144,7 @@ export type {
   AzureCloudProvider,
   CloudProviderBase,
   SCMOrg,
+  Impersonation,
 }
 export {
   SectionKey,

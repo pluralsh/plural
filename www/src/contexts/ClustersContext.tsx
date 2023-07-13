@@ -1,14 +1,15 @@
-import { createContext, useMemo } from 'react'
 import { useQuery } from '@apollo/client'
+import { createContext, useMemo } from 'react'
 import styled from 'styled-components'
 
+import { CLUSTERS } from '../components/overview/queries'
+import LoadingIndicator from '../components/utils/LoadingIndicator'
 import {
   Cluster,
   RootQueryType,
   RootQueryTypeClustersArgs,
+  Source,
 } from '../generated/graphql'
-import LoadingIndicator from '../components/utils/LoadingIndicator'
-import { CLUSTERS } from '../components/overview/queries'
 
 type ClustersContextType = {
   clusters: Cluster[]
@@ -39,7 +40,13 @@ export function ClustersContextProvider({ children }) {
     const clusters =
       data?.clusters?.edges
         ?.map((edge) => edge?.node)
-        .filter((node): node is Cluster => !!node) || []
+        .filter((node): node is Cluster => !!node)
+        .filter(
+          (c) =>
+            c.source === Source.Default ||
+            c.owner?.hasShell ||
+            c.owner?.hasInstallations
+        ) ?? []
 
     return { clusters, refetchClusters: refetch }
   }, [data, refetch])

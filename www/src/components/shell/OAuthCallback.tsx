@@ -61,12 +61,24 @@ function OAuthCallback({ provider }: any) {
   )
 
   useEffect(() => {
+    const url = restoredContext?.impersonation?.userId
+      ? `/shell?user=${restoredContext?.impersonation?.userId}`
+      : `/shell`
+
     if (!data && !error) return
-    if (!token) navigate('shell')
+    if (!token) navigate(url)
 
     save(updatedContext)
-    navigate('/shell')
-  }, [data, error, navigate, save, token, updatedContext])
+    navigate(url)
+  }, [
+    data,
+    error,
+    navigate,
+    restoredContext?.impersonation?.userId,
+    save,
+    token,
+    updatedContext,
+  ])
 
   return <LoadingIndicator />
 }

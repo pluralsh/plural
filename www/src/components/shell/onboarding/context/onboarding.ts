@@ -2,6 +2,7 @@ import { Dispatch, SetStateAction, createContext } from 'react'
 
 import {
   CloudProps,
+  Impersonation,
   SCMProps,
   Section,
   Sections,
@@ -30,6 +31,7 @@ interface SerializableContextProps {
   valid: boolean
   section: Section
   sections?: Sections
+  impersonation?: Impersonation
 }
 
 const toSerializableSection = (section: Section): Partial<Section> => ({
@@ -40,7 +42,8 @@ const toSerializableSection = (section: Section): Partial<Section> => ({
 })
 
 const toSerializableContext = (
-  context: ContextProps
+  context: ContextProps,
+  impersonation?: Impersonation
 ): SerializableContextProps => ({
   valid: context.valid,
   scm: context.scm,
@@ -50,6 +53,7 @@ const toSerializableContext = (
     provider: context?.cloud?.provider,
   },
   section: toSerializableSection(context.section) as Section,
+  impersonation,
 })
 
 const OnboardingContext = createContext<ContextProps>({} as ContextProps)

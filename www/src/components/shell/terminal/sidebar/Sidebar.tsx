@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { useQuery } from '@apollo/client'
 import {
   AppsIcon,
   Button,
@@ -7,6 +7,7 @@ import {
   Tooltip,
   WrapWithIf,
 } from '@pluralsh/design-system'
+import { Flex } from 'honorable'
 import {
   Dispatch,
   useCallback,
@@ -15,22 +16,17 @@ import {
   useMemo,
   useState,
 } from 'react'
-import { useQuery } from '@apollo/client'
 import { useSearchParams } from 'react-router-dom'
-import { Flex } from 'honorable'
+import styled from 'styled-components'
 
 import ClustersContext from '../../../../contexts/ClustersContext'
-import {
-  CloudShellClusterPicker,
-  NEW_CLUSTER_ID,
-} from '../../../utils/ClusterPicker'
+import { CloudShellClusterPicker } from '../../../utils/ClusterPicker'
+import { ImpersonationContext } from '../../context/impersonation'
 
 import { State, TerminalContext } from '../context/terminal'
 
-import { useCurrentUser } from '../../../../contexts/CurrentUserContext'
-
-import Installer from './installer/Installer'
 import { Installed } from './installed/Installed'
+import Installer from './installer/Installer'
 import { APPLICATIONS_QUERY } from './installer/queries'
 
 enum SidebarView {
@@ -126,38 +122,27 @@ const Sidebar = styled(SidebarUnstyled)(({ theme }) => ({
 }))
 
 function useSelectCluster() {
-  const [params, setSearchParams] = useSearchParams()
-  const { id: userId } = useCurrentUser()
+  const [_, setSearchParams] = useSearchParams()
+  const {
+    user: { id: userId },
+  } = useContext(ImpersonationContext)
 
   const { clusters } = useContext(ClustersContext)
-  const clusterId = params.get('cluster')
 
-  const currentCluster = useMemo(() => {
-    let cluster = clusterId
-      ? clusters.find((cl) => cl.id === clusterId)
-      : undefined
-
-    if (!cluster && clusterId) {
-      setSearchParams((sp) => {
-        sp.delete('cluster')
-
-        return sp
-      })
-    }
-    if (!cluster) {
-      cluster = clusters.find((cl) => cl?.owner?.id === userId)
-    }
-
-    return cluster
-  }, [clusterId, clusters, setSearchParams, userId])
+  const currentCluster = useMemo(
+    () => clusters.find((cl) => cl?.owner?.id === userId),
+    [clusters, userId]
+  )
 
   const setCluster = useCallback(
     (clusterId?: string) => {
       setSearchParams((sp) => {
-        if (clusterId && clusters.some((cl) => cl.id === clusterId)) {
-          sp.set('cluster', clusterId)
+        const cluster = clusters.find((cl) => cl.id === clusterId)
+
+        if (cluster) {
+          sp.set('user', cluster.owner!.id)
         } else {
-          sp.delete('cluster')
+          sp.delete('user')
         }
 
         return sp
@@ -182,10 +167,8 @@ function ClusterSelect() {
 
   return (
     <CloudShellClusterPicker
-      clusterId={cluster?.id || NEW_CLUSTER_ID}
-      onChange={(id) =>
-        id === NEW_CLUSTER_ID ? setCluster(undefined) : setCluster(id)
-      }
+      clusterId={cluster?.id}
+      onChange={(id) => setCluster(id)}
       size="small"
       title={
         <Flex

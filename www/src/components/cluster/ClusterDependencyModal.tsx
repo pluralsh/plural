@@ -1,13 +1,17 @@
 import { ArrowLeftIcon, Button, Modal } from '@pluralsh/design-system'
 import { Div, Flex } from 'honorable'
-import { Dispatch, useCallback, useState } from 'react'
+import { Dispatch, useCallback, useContext, useState } from 'react'
 import { useMutation } from '@apollo/client'
+
+import subscriptionContext from '../../contexts/SubscriptionContext'
 
 import { Cluster } from '../../generated/graphql'
 import { ClusterPicker } from '../utils/ClusterPicker'
 import { GqlError } from '../utils/Alert'
 
 import { CLUSTERS, CREATE_CLUSTER_DEPENDENCY } from '../overview/queries'
+
+import UpgradeNeededModal from './UpgradeNeededModal'
 
 type ClusterDependencyModalProps = {
   open: boolean
@@ -20,6 +24,7 @@ export function ClusterDependencyModal({
   setOpen,
   destination,
 }: ClusterDependencyModalProps) {
+  const { isPaidPlan, isTrialPlan } = useContext(subscriptionContext)
   const [source, setSource] = useState<Cluster | undefined>()
 
   const close = useCallback(() => {
@@ -48,6 +53,14 @@ export function ClusterDependencyModal({
     },
     [destination]
   )
+
+  if (!(isPaidPlan || isTrialPlan))
+    return (
+      <UpgradeNeededModal
+        open={open}
+        onClose={close}
+      />
+    )
 
   return (
     <Modal

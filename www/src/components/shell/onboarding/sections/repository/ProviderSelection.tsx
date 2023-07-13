@@ -1,19 +1,20 @@
-import { Div, Flex, Text } from 'honorable'
-import { useCallback, useContext, useMemo, useState } from 'react'
 import {
   Button,
   Callout,
   GitHubLogoIcon,
   GitLabLogoIcon,
 } from '@pluralsh/design-system'
+import { Div, Flex, Text } from 'honorable'
+import { useCallback, useContext, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
+import { ImpersonationContext } from '../../../context/impersonation'
 import { useDevToken } from '../../../hooks/useDevToken'
-import OnboardingCardButton from '../../OnboardingCardButton'
 import useOnboarded from '../../../hooks/useOnboarded'
 import { useContextStorage, useSectionState } from '../../context/hooks'
-import { ConfigureCloudSectionState } from '../../context/types'
 import { OnboardingContext } from '../../context/onboarding'
+import { ConfigureCloudSectionState } from '../../context/types'
+import OnboardingCardButton from '../../OnboardingCardButton'
 
 const providerToLogo = {
   github: <GitHubLogoIcon size={40} />,
@@ -36,6 +37,10 @@ function ProviderSelection({ data }) {
   const { fresh: isOnboarding, mutation } = useOnboarded()
   const setSectionState = useSectionState()
   const context = useContext(OnboardingContext)
+  const {
+    user: { id: userId },
+    skip,
+  } = useContext(ImpersonationContext)
   const { save } = useContextStorage()
   const [expanded, setExpanded] = useState(false)
 
@@ -65,13 +70,16 @@ function ProviderSelection({ data }) {
             key={provider}
             selected={context?.scm?.provider === provider}
             onClick={() => {
-              save({
-                ...context,
-                section: {
-                  ...context?.section,
-                  state: ConfigureCloudSectionState.RepositoryConfiguration,
+              save(
+                {
+                  ...context,
+                  section: {
+                    ...context?.section,
+                    state: ConfigureCloudSectionState.RepositoryConfiguration,
+                  },
                 },
-              })
+                !skip ? { userId } : undefined
+              )
 
               // HACK to navigate the onboarding on staging environments
               if (import.meta.env.MODE !== 'production' && devToken) {

@@ -17,6 +17,7 @@ import {
   CloudProvider,
   CloudProviderBase,
   CloudType,
+  Impersonation,
   Section,
   SectionKey,
   Sections,
@@ -214,12 +215,15 @@ const useSetCloudProviderKeys = <T extends CloudProviderBase>(
 const useContextStorage = () => {
   const LOCAL_STORAGE_KEY = 'plural-onboarding-context'
 
-  const save = useCallback((context: ContextProps) => {
-    localStorage.setItem(
-      LOCAL_STORAGE_KEY,
-      JSON.stringify(toSerializableContext(context))
-    )
-  }, [])
+  const save = useCallback(
+    (context: ContextProps, impersonation?: Impersonation) => {
+      localStorage.setItem(
+        LOCAL_STORAGE_KEY,
+        JSON.stringify(toSerializableContext(context, impersonation))
+      )
+    },
+    []
+  )
 
   const restoredContext = useMemo(
     (): SerializableContextProps =>

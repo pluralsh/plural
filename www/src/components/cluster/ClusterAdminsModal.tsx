@@ -1,14 +1,19 @@
 import { Button, Modal } from '@pluralsh/design-system'
 import { Flex } from 'honorable'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import { useMutation } from '@apollo/client'
+
+import subscriptionContext from '../../contexts/SubscriptionContext'
 
 import { BindingInput } from '../account/Typeaheads'
 import { GqlError } from '../utils/Alert'
 import { UPDATE_SERVICE_ACCOUNT } from '../account/queries'
 import { sanitize } from '../account/utils'
 
+import UpgradeNeededModal from './UpgradeNeededModal'
+
 export function ClusterAdminsModal({ open, setOpen, serviceAccount }) {
+  const { isPaidPlan, isTrialPlan } = useContext(subscriptionContext)
   const [bindings, setBindings] = useState(
     serviceAccount.impersonationPolicy?.bindings || []
   )
@@ -20,6 +25,14 @@ export function ClusterAdminsModal({ open, setOpen, serviceAccount }) {
     },
     onCompleted: () => setOpen(false),
   })
+
+  if (!(isPaidPlan || isTrialPlan))
+    return (
+      <UpgradeNeededModal
+        open={open}
+        onClose={() => setOpen(false)}
+      />
+    )
 
   return (
     <Modal

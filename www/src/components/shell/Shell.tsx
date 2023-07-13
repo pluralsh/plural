@@ -1,31 +1,25 @@
-import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { useMutation, useQuery } from '@apollo/client'
-import { Flex } from 'honorable'
 import { Button, useSetBreadcrumbs } from '@pluralsh/design-system'
-
+import { Flex } from 'honorable'
+import { useCallback, useEffect, useMemo } from 'react'
 import { useSearchParams } from 'react-router-dom'
 
-import isEmpty from 'lodash/isEmpty'
-
-import { CloudShell, Cluster, RootQueryType } from '../../generated/graphql'
-import { ResponsiveLayoutSpacer } from '../utils/layout/ResponsiveLayoutSpacer'
+import { CloudShell, RootQueryType } from '../../generated/graphql'
+import ImpersonateServiceAccount from '../utils/ImpersonateServiceAccount'
 import { ResponsiveLayoutContentContainer } from '../utils/layout/ResponsiveLayoutContentContainer'
-
+import { ResponsiveLayoutSpacer } from '../utils/layout/ResponsiveLayoutSpacer'
 import LoadingIndicator from '../utils/LoadingIndicator'
 
-import ImpersonateServiceAccount from '../utils/ImpersonateServiceAccount'
-
-import ClustersContext from '../../contexts/ClustersContext'
-
+import { WithImpersonation } from './context/impersonation'
 import { Onboarding } from './onboarding/Onboarding'
+import OnboardingCard from './onboarding/OnboardingCard'
+import { ShellStatus } from './onboarding/sections/shell/ShellStatus'
 import {
   CLOUD_SHELL_QUERY,
   DELETE_SHELL_MUTATION,
   REBOOT_SHELL_MUTATION,
   SETUP_SHELL_MUTATION,
 } from './queries'
-import OnboardingCard from './onboarding/OnboardingCard'
-import { ShellStatus } from './onboarding/sections/shell/ShellStatus'
 import Content from './terminal/Content'
 
 const SHELL_POLL_INTERVAL = 5000
@@ -135,41 +129,20 @@ function Shell() {
   return <TerminalBootStatus />
 }
 
-function getCluster(id: string | null | undefined, clusters: Cluster[]) {
-  if (!id) {
-    return undefined
-  }
-
-  return clusters.find((cl) => cl.id === id)
-}
-
 function ImpersonatedShell() {
-  const { clusters } = useContext(ClustersContext)
-  const [params, setSearchParams] = useSearchParams()
-  const clusterId = params.get('cluster')
-  const [cluster, setCluster] = useState<Cluster | undefined>(
-    !isEmpty(clusters) ? getCluster(clusterId, clusters) : undefined
-  )
-
-  useEffect(() => {
-    const newCluster = getCluster(clusterId, clusters)
-
-    if (!newCluster) {
-      setSearchParams((sp) => {
-        sp.delete('cluster')
-
-        return sp
-      })
-    }
-    setCluster(newCluster)
-  }, [clusterId, clusters, setSearchParams])
+  const [params] = useSearchParams()
+  const userId = params.get('user')
+  const id = useMemo(() => userId, [userId])
+  const skip = useMemo(() => !userId, [userId])
 
   return (
     <ImpersonateServiceAccount
-      id={cluster?.owner?.id}
-      skip={!clusterId || !cluster?.owner?.serviceAccount}
+      id={id}
+      skip={skip}
     >
-      <Shell />
+      <WithImpersonation skip={skip}>
+        <Shell />
+      </WithImpersonation>
     </ImpersonateServiceAccount>
   )
 }

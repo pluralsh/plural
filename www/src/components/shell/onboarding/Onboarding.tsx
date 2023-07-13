@@ -1,21 +1,19 @@
 import { Flex } from 'honorable'
-import { useTheme } from 'styled-components'
-import { Dispatch, ReactElement, useEffect, useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 
 import IsEmpty from 'lodash/isEmpty'
+import { Dispatch, ReactElement, useEffect, useMemo, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useTheme } from 'styled-components'
+
+import { ResponsiveLayoutContentContainer } from '../../utils/layout/ResponsiveLayoutContentContainer'
+import { ResponsiveLayoutSidenavContainer } from '../../utils/layout/ResponsiveLayoutSidenavContainer'
+import { ResponsiveLayoutSpacer } from '../../utils/layout/ResponsiveLayoutSpacer'
 
 import { useDevTokenInputSecretCode } from '../hooks/useDevToken'
 import useOnboarded from '../hooks/useOnboarded'
-import { ResponsiveLayoutSpacer } from '../../utils/layout/ResponsiveLayoutSpacer'
-import { ResponsiveLayoutContentContainer } from '../../utils/layout/ResponsiveLayoutContentContainer'
-import { ResponsiveLayoutSidenavContainer } from '../../utils/layout/ResponsiveLayoutSidenavContainer'
 
-import OnboardingHeader from './OnboardingHeader'
-import OnboardingSidenav from './OnboardingSidenav'
-import { OnboardingFlow } from './OnboardingFlow'
-import { ContextProps, OnboardingContext } from './context/onboarding'
 import { defaultSections, useContextStorage, useSection } from './context/hooks'
+import { ContextProps, OnboardingContext } from './context/onboarding'
 import {
   CloudProps,
   CreateCloudShellSectionState,
@@ -25,6 +23,10 @@ import {
   Sections,
   WorkspaceProps,
 } from './context/types'
+import { OnboardingFlow } from './OnboardingFlow'
+
+import OnboardingHeader from './OnboardingHeader'
+import OnboardingSidenav from './OnboardingSidenav'
 
 function Onboarding({
   active,
@@ -121,6 +123,10 @@ function OnboardingWithContext({ ...props }: OnboardingProps): ReactElement {
   const [workspace, setWorkspace] = useState<WorkspaceProps>(
     restoredContext?.workspace ?? {}
   )
+  const impersonation = useMemo(
+    () => restoredContext?.impersonation,
+    [restoredContext?.impersonation]
+  )
 
   // This is to make sure there is only a one-time state restore after oauth callback.
   // We should not store any sensitive data in the local storage longer than required.
@@ -140,8 +146,9 @@ function OnboardingWithContext({ ...props }: OnboardingProps): ReactElement {
       setSection,
       workspace,
       setWorkspace,
+      impersonation,
     }),
-    [scm, cloud, valid, sections, section, workspace]
+    [scm, cloud, valid, sections, section, workspace, impersonation]
   )
 
   return (

@@ -11,18 +11,19 @@ import styled from 'styled-components'
 import { createColumnHelper } from '@tanstack/react-table'
 import { Link } from 'react-router-dom'
 import { A, Div } from 'honorable'
-
 import { ReactElement, useState } from 'react'
 
 import { ProviderIcon } from '../../utils/ProviderIcon'
 import { Cluster, Source } from '../../../generated/graphql'
 import CopyButton from '../../utils/CopyButton'
-
 import { ClusterPromoteModal } from '../../cluster/ClusterPromoteModal'
 
 import ClusterHealth from './ClusterHealth'
 import ClusterOwner from './ClusterOwner'
 import { ClusterListElement } from './types'
+
+const clusterExists = (row: ClusterListElement): boolean =>
+  row.pingedAt !== null
 
 export const columnHelper = createColumnHelper<ClusterListElement>()
 
@@ -49,7 +50,7 @@ export const ColCluster = columnHelper.accessor((row) => row.name, {
   enableSorting: true,
   cell: ({
     row: {
-      original: { id, name, provider, source, accessible },
+      original: { id, name, provider, source, accessible, pingedAt },
     },
   }) => (
     <CellWrap>
@@ -63,7 +64,7 @@ export const ColCluster = columnHelper.accessor((row) => row.name, {
         }
       />
       <div>
-        {accessible ? (
+        {accessible && clusterExists({ pingedAt } as ClusterListElement) ? (
           <A
             as={Link}
             to={`/clusters/${id}`}
@@ -106,7 +107,7 @@ export const ColGit = columnHelper.accessor((row) => row.gitUrl, {
     row: {
       original: { gitUrl },
     },
-  }) => <CopyButton text={gitUrl || ''} />,
+  }) => (gitUrl ? <CopyButton text={gitUrl} /> : undefined),
   header: 'Git',
 })
 
@@ -118,7 +119,7 @@ export const ColCloudShell = columnHelper.accessor(
     enableSorting: true,
     cell: ({
       row: {
-        original: { owner, id, accessible },
+        original: { owner, accessible },
       },
     }) =>
       owner?.hasShell ? (
@@ -128,7 +129,7 @@ export const ColCloudShell = columnHelper.accessor(
             icon={<TerminalIcon />}
             // @ts-expect-error
             as={Link}
-            to={`/shell?cluster=${id}`}
+            to={`/shell?user=${owner?.id}`}
             textValue="Go to cloudshell"
             tooltip
             type="floating"
@@ -199,19 +200,20 @@ export const ColPromotions = columnHelper.accessor((row) => row, {
   header: 'Promotions',
 })
 
-export const ColUpgrades = columnHelper.accessor((row) => row.delivered, {
+export const ColUpgrades = columnHelper.accessor((row) => row, {
   id: 'upgrades',
   enableGlobalFilter: true,
   enableSorting: true,
-  cell: (delivered) => (
-    <Chip
-      severity={delivered.getValue() ? 'success' : 'warning'}
-      hue="lighter"
-      size="small"
-    >
-      {delivered.getValue() ? 'Delivered' : 'Pending'}
-    </Chip>
-  ),
+  cell: ({ row: { original: row } }) =>
+    clusterExists(row) && (
+      <Chip
+        severity={row.delivered ? 'success' : 'warning'}
+        hue="lighter"
+        size="small"
+      >
+        {row.delivered ? 'Delivered' : 'Pending'}
+      </Chip>
+    ),
   header: 'Upgrades',
 })
 
@@ -221,13 +223,9 @@ export const ColActions = columnHelper.accessor((row) => row.consoleUrl, {
   id: 'actions',
   enableGlobalFilter: false,
   enableSorting: false,
-  cell: ({
-    row: {
-      original: { id, consoleUrl, accessible },
-    },
-  }) => (
+  cell: ({ row: { original: row } }) => (
     <ActionsWrap>
-      {consoleUrl && (
+      {row.consoleUrl && (
         <IconFrame
           clickable
           size="medium"
@@ -235,17 +233,17 @@ export const ColActions = columnHelper.accessor((row) => row.consoleUrl, {
           textValue="Launch Console"
           tooltip
           type="secondary"
-          onClick={() => window.open(consoleUrl, '_blank')}
+          onClick={() => window.open(row.consoleUrl!, '_blank')}
         />
       )}
-      {accessible ? (
+      {row.accessible && clusterExists(row) ? (
         <IconFrame
           clickable
           size="medium"
           icon={<CaretRightIcon />}
           // @ts-expect-error
           as={Link}
-          to={`/clusters/${id}`}
+          to={`/clusters/${row.id}`}
           textValue="Go to cluster details"
           tooltip
           type="tertiary"
@@ -254,7 +252,11 @@ export const ColActions = columnHelper.accessor((row) => row.consoleUrl, {
         <IconFrame
           size="medium"
           icon={<CaretRightIcon color="icon-disabled" />}
-          textValue="You aren't an administrator of this cluster"
+          textValue={
+            !clusterExists(row)
+              ? ''
+              : "You aren't an administrator of this cluster"
+          }
           tooltip
           type="tertiary"
         />

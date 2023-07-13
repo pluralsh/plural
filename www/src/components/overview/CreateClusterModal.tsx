@@ -168,6 +168,7 @@ function ClusterOwnerSelect({
   items,
   selectedKey,
   setSelectedKey,
+  onClose,
 }): ReactElement {
   const navigate = useNavigate()
   const me = useCurrentUser()
@@ -214,17 +215,25 @@ function ClusterOwnerSelect({
           ))}
         </Select>
       </FormField>
-      <Button
-        alignSelf="flex-end"
-        disabled={!selectedKey}
-        onClick={() =>
-          navigate(
-            `/shell${me.id !== selectedKey ? `?user=${selectedKey}` : ''}`
-          )
-        }
-      >
-        Create cluster
-      </Button>
+      <ActionContainer>
+        <Button
+          secondary
+          onClick={onClose}
+        >
+          Cancel
+        </Button>
+        <Button
+          alignSelf="flex-end"
+          disabled={!selectedKey}
+          onClick={() =>
+            navigate(
+              `/shell${me.id !== selectedKey ? `?user=${selectedKey}` : ''}`
+            )
+          }
+        >
+          Create cluster
+        </Button>
+      </ActionContainer>
     </>
   )
 }
@@ -234,6 +243,7 @@ function ClusterOwnerInput({
   showBackButton,
   refetch,
   setSelectedKey,
+  onClose,
 }): ReactElement {
   const me = useCurrentUser()
   const [name, setName] = useState<string>()
@@ -295,14 +305,23 @@ function ClusterOwnerInput({
           </Button>
         </ActionContainer>
       ) : (
-        <Button
-          alignSelf="flex-end"
-          onClick={mutation}
-          loading={loading}
-          disabled={loading}
-        >
-          Create
-        </Button>
+        <ActionContainer>
+          <Button
+            secondary
+            onClick={onClose}
+            disabled={loading}
+          >
+            Cancel
+          </Button>
+          <Button
+            alignSelf="flex-end"
+            onClick={mutation}
+            loading={loading}
+            disabled={loading}
+          >
+            Create
+          </Button>
+        </ActionContainer>
       )}
     </>
   )
@@ -366,6 +385,7 @@ function CreateClusterModal({ open, onClose }): ReactElement {
               items={items}
               selectedKey={selectedKey}
               setSelectedKey={setSelectedKey}
+              onClose={onClose}
             />
           ) : (
             <ClusterOwnerInput
@@ -373,6 +393,7 @@ function CreateClusterModal({ open, onClose }): ReactElement {
               showBackButton={items.length > 0}
               refetch={refetch}
               setSelectedKey={setSelectedKey}
+              onClose={onClose}
             />
           )}
         </Wrap>

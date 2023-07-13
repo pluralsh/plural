@@ -56,6 +56,16 @@ defmodule Core.Services.Payments do
   end
 
   @doc """
+  Returns whether the trial plan has been created
+  """
+  @spec trial_exists?() :: boolean
+  def trial_exists?() do
+    Core.conf(:trial_plan)
+    |> PlatformPlan.for_name()
+    |> Core.Repo.exists?()
+  end
+
+  @doc """
   Adds the trial plan to a user's account
   """
   @spec begin_trial(User.t | Account.t) :: platform_sub_resp

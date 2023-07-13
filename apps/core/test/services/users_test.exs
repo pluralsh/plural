@@ -6,6 +6,8 @@ defmodule Core.Services.UsersTest do
 
   describe "#create_user" do
     test "Users can be created" do
+      trial = trial_plan()
+
       {:ok, user} = Users.create_user(%{
         name: "some user",
         password: "superstrongpassword",
@@ -18,9 +20,11 @@ defmodule Core.Services.UsersTest do
       assert user.onboarding_checklist.status == :new
       assert Timex.after?(user.email_confirm_by, Timex.now())
 
-      %{account: account} = Core.Repo.preload(user, [:account])
+      %{account: account} = Core.Repo.preload(user, [account: [subscription: :plan]])
       assert account.name == user.email
       assert account.root_user_id == user.id
+
+      assert account.subscription.plan.id == trial.id
 
       assert_receive {:event, %PubSub.UserCreated{item: ^user}}
     end

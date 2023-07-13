@@ -8,6 +8,7 @@ import {
   Cluster,
   RootQueryType,
   RootQueryTypeClustersArgs,
+  Source,
 } from '../generated/graphql'
 
 type ClustersContextType = {
@@ -39,7 +40,8 @@ export function ClustersContextProvider({ children }) {
     const clusters =
       data?.clusters?.edges
         ?.map((edge) => edge?.node)
-        .filter((node): node is Cluster => !!node) || []
+        .filter((node): node is Cluster => !!node)
+        .filter((c) => c.source === Source.Default || c.owner?.hasShell) ?? []
 
     return { clusters, refetchClusters: refetch }
   }, [data, refetch])

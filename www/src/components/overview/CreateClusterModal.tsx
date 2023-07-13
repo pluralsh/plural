@@ -10,7 +10,6 @@ import {
   Modal,
   PlusIcon,
   Select,
-  WarningIcon,
 } from '@pluralsh/design-system'
 import {
   Key,
@@ -36,6 +35,7 @@ import {
   User,
 } from '../../generated/graphql'
 import { CREATE_SERVICE_ACCOUNT, USERS_Q } from '../account/queries'
+import UpgradeNeededModal from '../cluster/UpgradeNeededModal'
 import { GqlError } from '../utils/Alert'
 import LoadingIndicator from '../utils/LoadingIndicator'
 
@@ -133,40 +133,6 @@ const ActionContainer = styled.div((_) => ({
 const Spacer = styled.div(({ theme }) => ({
   marginTop: theme.spacing.large,
 }))
-
-function UpgradeNeededModal({ open, onClose }): ReactElement {
-  const navigate = useNavigate()
-
-  return (
-    <Modal
-      BackdropProps={{ zIndex: 20 }}
-      header={
-        <Header>
-          <WarningIcon
-            color="icon-warning"
-            marginRight="xsmall"
-          />
-          Upgrade needed
-        </Header>
-      }
-      open={open}
-      onClose={() => onClose()}
-      style={{ padding: 0 }}
-    >
-      <Wrap>
-        <Message>
-          Upgrade to Plural Professional to access multi-cluster-management.
-        </Message>
-        <Button
-          alignSelf="flex-end"
-          onClick={() => navigate('/account/billing')}
-        >
-          Review plans
-        </Button>
-      </Wrap>
-    </Modal>
-  )
-}
 
 const CreateNewServiceAccountButton = styled(
   CreateNewServiceAccountButtonUnstyled

@@ -43,6 +43,8 @@ defmodule Core.Schema.PlatformPlan do
     timestamps()
   end
 
+  def for_name(query \\ __MODULE__, name), do: from(p in query, where: p.name == ^name)
+
   def visible(query \\ __MODULE__), do: from(p in query, where: p.visible)
 
   def ordered(query \\ __MODULE__, order \\ [asc: :name]),

@@ -79,6 +79,12 @@ defmodule Core.Services.Accounts do
       |> Ecto.Changeset.change(%{account_id: id})
       |> Core.Repo.update()
     end)
+    |> add_operation(:trial, fn %{account: account} ->
+      case Payments.trial_exists?() do
+        true -> Payments.begin_trial(account)
+        _ -> {:ok, nil}
+      end
+    end)
     |> execute()
   end
 

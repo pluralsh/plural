@@ -106,6 +106,23 @@ defmodule Core.Services.Accounts do
   end
 
   @doc """
+  Utility for manually updating account payment information
+  """
+  @spec update_payments(map, Account.t | User.t | binary) :: account_resp
+  def update_payments(attrs, %Account{} = account) do
+    Account.changeset(account, attrs)
+    |> Core.Repo.update()
+  end
+
+  def update_payments(attrs, %User{} = user) do
+    %{account: account} = Core.Repo.preload(user, [:account])
+    update_payments(attrs, account)
+  end
+
+  def update_payments(attrs, email) when is_binary(email),
+    do: update_payments(attrs, Users.get_user_by_email!(email))
+
+  @doc """
   Setup stub groups/roles for trialed accounts
   """
   @spec account_setup(User.t) :: {:ok, map} | error

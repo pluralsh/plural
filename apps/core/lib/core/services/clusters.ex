@@ -197,6 +197,7 @@ defmodule Core.Services.Clusters do
     |> add_operation(:user, fn _ -> do_promote(user) end)
     |> add_operation(:kick, fn _ -> Core.Services.Upgrades.kick(user) end)
     |> execute(extract: :user)
+    |> notify(:promote)
   end
   def promote(_), do: {:error, "this user doesn't have promotions enabled"}
 
@@ -242,6 +243,7 @@ defmodule Core.Services.Clusters do
   end
   defp flush_dns(_), do: :ok
 
+  defp notify({:ok, %User{} = user}, :promote), do: handle_notify(PubSub.UpgradesPromoted, user)
   defp notify({:ok, %ClusterDependency{} = dep}, :create, user),
     do: handle_notify(PubSub.ClusterDependencyCreated, dep, actor: user)
   defp notify(error, _, _), do: error

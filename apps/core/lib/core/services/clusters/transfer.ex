@@ -29,7 +29,7 @@ defmodule Core.Services.Clusters.Transfer do
     Installation.for_user(id)
     |> Core.Repo.all()
     |> Core.Repo.preload([:repository])
-    |> Enum.reduce(start_transaction(), fn %{id: inst_id, repository: repo, oidc_provider: provider} = inst, xact ->
+    |> Enum.reduce(start_transaction(), fn %{id: inst_id, repository: repo} = inst, xact ->
       add_operation(xact, inst_id, fn _ ->
         case Repositories.get_installation(to_id, inst.repository_id) do
           nil ->

@@ -370,6 +370,7 @@ enum NotificationType {
   INCIDENT_UPDATE
   MENTION
   LOCKED
+  PENDING
 }
 
 enum OnboardingState {

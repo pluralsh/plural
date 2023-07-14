@@ -1,0 +1,20 @@
+<%= row do %>
+  <%= text do %>
+    You have <%= length(@repos) %> applications pending promotion, here's a breakdown:
+  <% end %>
+<% end %>
+<%= space() %>
+<%= row do %>
+  <%= for {repo, count} <- @repos do %>
+    <%= render "repo_panel.html", repo: repo, count: count, modifier: "pending upgrades to promote" %>
+  <% end %>
+<% end %>
+<%= space() %>
+<%= row do %>
+  <%= text do %>
+    Click the button below to go to our multicluster management view and approve the promotion
+  <% end %>
+  <a class="button margin-top-large" href="<%= url("/overview/clusters") %>">
+    Promote
+  </a>
+<% end %>

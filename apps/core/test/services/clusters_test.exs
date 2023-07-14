@@ -163,6 +163,8 @@ defmodule Core.Services.ClustersTest do
 
       assert update.upgrade_to > user.upgrade_to
 
+      assert_receive {:event, %PubSub.UpgradesPromoted{item: ^update}}
+
       for def <- def_ups,
         do: assert refetch(def).dequeue_at
     end

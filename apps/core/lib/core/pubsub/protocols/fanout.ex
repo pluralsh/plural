@@ -202,6 +202,27 @@ defimpl Core.PubSub.Fanout, for: [Core.PubSub.RepositoryCreated, Core.PubSub.Rep
   def fanout(%{item: repo}), do: Core.Services.Repositories.hydrate(repo)
 end
 
+defimpl Core.PubSub.Fanout, for: Core.PubSub.InstallationUnlocked do
+  alias Core.Schema.{Notification, Installation}
+
+  def fanout(%{item: %Installation{repository_id: id, user_id: uid}}) do
+    Notification.for_type(:locked)
+    |> Notification.for_repository(id)
+    |> Notification.for_user(uid)
+    |> Core.Repo.delete_all()
+  end
+end
+
+defimpl Core.PubSub.Fanout, for: Core.PubSub.UpgradesPromoted do
+  alias Core.Schema.{Notification}
+
+  def fanout(%{item: user}) do
+    Notification.for_type(:pending)
+    |> Notification.for_user(user.id)
+    |> Core.Repo.delete_all()
+  end
+end
+
 defimpl Core.PubSub.Fanout, for: [Core.PubSub.RoleCreated, Core.PubSub.RoleUpdated] do
   alias Core.Schema.User
   alias Core.PubSub.CacheUser

@@ -1,0 +1,23 @@
+<%= row do %>
+  <%= text do %>
+    You have <%= length(@repos) %> applications requiring manual upgrades, here's a breakdown of them:
+  <% end %>
+<% end %>
+<%= space() %>
+<%= row do %>
+  <%= for {repo, count} <- @repos do %>
+    <%= render "repo_panel.html", repo: repo, count: count, modifier: "manual upgrades to apply" %>
+  <% end %>
+<% end %>
+<%= space() %>
+<%= row do %>
+  <% text do %>
+    To apply manual upgrades, you'll need to run these commands in your git repo for each application,
+    replace APP with the name of each app:
+  <% end %>
+  <pre>
+  plural build --only APP
+  plural deploy --commit "applying breaking changes to APP"
+  plural repos unlock APP
+  </div>
+<% end %>

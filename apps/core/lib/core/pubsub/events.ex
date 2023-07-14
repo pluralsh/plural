@@ -70,6 +70,7 @@ defmodule Core.PubSub.DockerRepositoryUpdated, do: use Piazza.PubSub.Event
 defmodule Core.PubSub.LicensePing, do: use Piazza.PubSub.Event
 
 defmodule Core.PubSub.InstallationLocked, do: use Piazza.PubSub.Event
+defmodule Core.PubSub.InstallationUnlocked, do: use Piazza.PubSub.Event
 
 defmodule Core.PubSub.TestCreated, do: use Piazza.PubSub.Event
 defmodule Core.PubSub.TestUpdated, do: use Piazza.PubSub.Event
@@ -85,3 +86,7 @@ defmodule Core.PubSub.DemoProjectCreated, do: use Piazza.PubSub.Event
 defmodule Core.PubSub.DemoProjectDeleted, do: use Piazza.PubSub.Event
 
 defmodule Core.PubSub.ClusterDependencyCreated, do: use Piazza.PubSub.Event
+
+defmodule Core.PubSub.DeferredUpdateCreated, do: use Piazza.PubSub.Event
+
+defmodule Core.PubSub.UpgradesPromoted, do: use Piazza.PubSub.Event

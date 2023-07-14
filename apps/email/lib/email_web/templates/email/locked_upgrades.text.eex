@@ -1,0 +1,12 @@
+You have upgrades that must be applied manually, go to your git repository and apply the changes. We 
+
+<%= for {repo, _count} <- @repos do %>
+```
+plural build --only <%= repo.name %>
+plural deploy
+plural repos unlock <%= repo.name %>
+```
+
+<% end %>
+
+then once all have been applied, be sure to commit and push your changes

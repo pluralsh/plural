@@ -4,6 +4,8 @@ defmodule Core.Schema.Notification do
 
   defenum Type, message: 0, incident_update: 1, mention: 2, locked: 3, pending: 4
 
+  @expiry [months: -1]
+
   schema "notifications" do
     field :type, Type
     field :msg,  :binary
@@ -16,6 +18,11 @@ defmodule Core.Schema.Notification do
     belongs_to :repository, Repository
 
     timestamps()
+  end
+
+  def expired(query \\ __MODULE__) do
+    expires_at = Timex.now() |> Timex.shift(@expiry)
+    from(n in query, where: n.inserted_at <= ^expires_at)
   end
 
   def for_type(query \\ __MODULE__, type) do

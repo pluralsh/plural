@@ -5859,6 +5859,13 @@ export type ResetTokenQueryVariables = Exact<{
 
 export type ResetTokenQuery = { __typename?: 'RootQueryType', resetToken?: { __typename?: 'ResetToken', type: ResetTokenType, user: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } } | null };
 
+export type ReadNotificationsMutationVariables = Exact<{
+  incidentId?: InputMaybe<Scalars['ID']['input']>;
+}>;
+
+
+export type ReadNotificationsMutation = { __typename?: 'RootMutationType', readNotifications?: number | null };
+
 export type VersionTagFragment = { __typename?: 'VersionTag', id: string, tag: string, version?: { __typename?: 'Version', id: string } | null };
 
 export type VersionFragment = { __typename?: 'Version', id: string, helm?: Map<string, unknown> | null, readme?: string | null, valuesTemplate?: string | null, version: string, insertedAt?: Date | null, package?: string | null, crds?: Array<{ __typename?: 'Crd', id: string, name: string, blob?: string | null } | null> | null, chart?: { __typename?: 'Chart', id?: string | null, name: string, description?: string | null, latestVersion?: string | null, insertedAt?: Date | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', name?: string | null, repo?: string | null, type?: DependencyType | null, version?: string | null, optional?: boolean | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null } | null, terraform?: { __typename?: 'Terraform', id?: string | null, name?: string | null } | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', name?: string | null, repo?: string | null, type?: DependencyType | null, version?: string | null, optional?: boolean | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null };
@@ -10559,6 +10566,37 @@ export function useResetTokenLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions
 export type ResetTokenQueryHookResult = ReturnType<typeof useResetTokenQuery>;
 export type ResetTokenLazyQueryHookResult = ReturnType<typeof useResetTokenLazyQuery>;
 export type ResetTokenQueryResult = Apollo.QueryResult<ResetTokenQuery, ResetTokenQueryVariables>;
+export const ReadNotificationsDocument = gql`
+    mutation ReadNotifications($incidentId: ID) {
+  readNotifications(incidentId: $incidentId)
+}
+    `;
+export type ReadNotificationsMutationFn = Apollo.MutationFunction<ReadNotificationsMutation, ReadNotificationsMutationVariables>;
+
+/**
+ * __useReadNotificationsMutation__
+ *
+ * To run a mutation, you first call `useReadNotificationsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useReadNotificationsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [readNotificationsMutation, { data, loading, error }] = useReadNotificationsMutation({
+ *   variables: {
+ *      incidentId: // value for 'incidentId'
+ *   },
+ * });
+ */
+export function useReadNotificationsMutation(baseOptions?: Apollo.MutationHookOptions<ReadNotificationsMutation, ReadNotificationsMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ReadNotificationsMutation, ReadNotificationsMutationVariables>(ReadNotificationsDocument, options);
+      }
+export type ReadNotificationsMutationHookResult = ReturnType<typeof useReadNotificationsMutation>;
+export type ReadNotificationsMutationResult = Apollo.MutationResult<ReadNotificationsMutation>;
+export type ReadNotificationsMutationOptions = Apollo.BaseMutationOptions<ReadNotificationsMutation, ReadNotificationsMutationVariables>;
 export const UpdateVersionDocument = gql`
     mutation UpdateVersion($spec: VersionSpec, $attributes: VersionAttributes!) {
   updateVersion(spec: $spec, attributes: $attributes) {
@@ -10690,6 +10728,7 @@ export const namedOperations = {
     AcceptLogin: 'AcceptLogin',
     CreateResetToken: 'CreateResetToken',
     RealizeResetToken: 'RealizeResetToken',
+    ReadNotifications: 'ReadNotifications',
     UpdateVersion: 'UpdateVersion'
   },
   Fragment: {

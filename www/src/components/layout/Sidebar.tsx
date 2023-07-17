@@ -39,6 +39,8 @@ import { clearLocalStorage } from '../../helpers/localStorage'
 
 import Cookiebot from '../../utils/cookiebot'
 
+import { useReadNotificationsMutation } from '../../generated/graphql'
+
 import { useNotificationsCount } from './WithNotifications'
 import { NotificationsPanelOverlay } from './NotificationsPanelOverlay'
 
@@ -157,7 +159,17 @@ function Sidebar(props: ComponentProps<typeof DSSidebar>) {
       isActiveMenuItem(menuItem, pathname),
     [pathname]
   )
+  const [readNotifications] = useReadNotificationsMutation()
   const notificationsCount = useNotificationsCount()
+  const toggleNotifPanel = useCallback(
+    (open) => {
+      setIsNotificationsPanelOpen(open)
+      if (!open) {
+        readNotifications()
+      }
+    },
+    [setIsNotificationsPanelOpen, readNotifications]
+  )
 
   useOutsideClick(menuRef, (event) => {
     if (!menuItemRef.current?.contains(event.target as any)) {
@@ -249,7 +261,7 @@ function Sidebar(props: ComponentProps<typeof DSSidebar>) {
             className="sidebar-notifications"
             onClick={(event) => {
               event.stopPropagation()
-              setIsNotificationsPanelOpen((isOpen) => !isOpen)
+              toggleNotifPanel((isOpen) => !isOpen)
             }}
             backgroundColor={
               isNotificationsPanelOpen
@@ -379,7 +391,7 @@ function Sidebar(props: ComponentProps<typeof DSSidebar>) {
       <NotificationsPanelOverlay
         leftOffset={sidebarWidth}
         isOpen={isNotificationsPanelOpen}
-        setIsOpen={setIsNotificationsPanelOpen}
+        setIsOpen={toggleNotifPanel}
       />
       {/* ---
         CREATE PUBLISHER MODAL

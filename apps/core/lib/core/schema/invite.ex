@@ -7,6 +7,7 @@ defmodule Core.Schema.Invite do
   schema "invites" do
     field :email,     :string
     field :secure_id, :string
+    field :admin,     :boolean
 
     belongs_to :user,    User
     belongs_to :account, Account
@@ -26,7 +27,7 @@ defmodule Core.Schema.Invite do
     from(i in query, where: i.account_id == ^aid)
   end
 
-  @valid ~w(email account_id user_id)a
+  @valid ~w(email account_id user_id admin)a
 
   def changeset(model, attrs \\ %{}) do
     model

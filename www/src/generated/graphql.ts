@@ -1371,6 +1371,7 @@ export type IntegrationWebhookEdge = {
 export type Invite = {
   __typename?: 'Invite';
   account?: Maybe<Account>;
+  admin?: Maybe<Scalars['Boolean']['output']>;
   email?: Maybe<Scalars['String']['output']>;
   existing: Scalars['Boolean']['output'];
   expiresAt?: Maybe<Scalars['DateTime']['output']>;
@@ -1383,6 +1384,7 @@ export type Invite = {
 };
 
 export type InviteAttributes = {
+  admin?: InputMaybe<Scalars['Boolean']['input']>;
   email?: InputMaybe<Scalars['String']['input']>;
   inviteGroups?: InputMaybe<Array<InputMaybe<BindingAttributes>>>;
 };

@@ -185,7 +185,10 @@ defmodule Core.Schema.User do
     |> cast_embed(:onboarding_checklist, with: &onboarding_checklist_changeset/2)
   end
 
-  def invite_changeset(model, attrs \\ %{}), do: base_changeset(model, attrs, :primary)
+  def invite_changeset(model, attrs \\ %{}) do
+    base_changeset(model, attrs, :primary)
+    |> cast_embed(:roles, with: &roles_changeset/2)
+  end
 
   def base_changeset(model, attrs, mode) do
     model

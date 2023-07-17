@@ -86,6 +86,42 @@ defmodule Core.PubSub.Fanout.InstallationsTest do
     end
   end
 
+  describe "InstallationUnlocked" do
+    test "it will wipe locked notifications" do
+      repository = insert(:repository)
+      inst = insert(:installation, repository: repository)
+      others = insert_list(3, :installation, repository: repository)
+
+      notifs = insert_list(3, :notification, repository: repository, user: inst.user, type: :locked)
+      ignore = for inst <- others, do: insert(:notification, repository: repository, user: inst.user, type: :locked)
+
+      event = %PubSub.InstallationUnlocked{item: inst}
+      {3, _} = PubSub.Fanout.fanout(event)
+
+      for n <- notifs,
+        do: refute refetch(n)
+      for n <- ignore,
+        do: assert refetch(n)
+    end
+  end
+
+  describe "UpgradesPromoted" do
+    test "it will wipe all pending upgrade notifications for the user" do
+      user = insert(:user)
+      notifs = insert_list(3, :notification, user: user, type: :pending)
+      ignore = insert_list(2, :notification, user: user, type: :locked) ++
+               insert_list(2, :notification, type: :pending)
+
+      event = %PubSub.UpgradesPromoted{item: user}
+      {3, _} = PubSub.Fanout.fanout(event)
+
+      for n <- notifs,
+        do: refute refetch(n)
+      for n <- ignore,
+        do: assert refetch(n)
+    end
+  end
+
   describe "RepositoryCreated" do
     test "it will fetch and persist a repositories readme" do
       repo = insert(:repository, git_url: "https://github.com/pluralsh/plural")

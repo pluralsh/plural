@@ -1,6 +1,6 @@
 defmodule Core.Services.Rollouts do
   use Core.Services.Base
-  alias Core.Services.Locks
+  alias Core.Services.{Locks, Repositories}
   alias Core.Schema.{Rollout, Version, Dependencies, ChartInstallation, TerraformInstallation}
   alias Core.Rollouts.Rollable
   alias Core.PubSub
@@ -9,6 +9,10 @@ defmodule Core.Services.Rollouts do
 
   def unlock(name, user) do
     start_transaction()
+    |> add_operation(:inst, fn _ ->
+      repo = Repositories.get_repository_by_name!(name)
+      {:ok, Repositories.get_installation(user.id, repo.id)}
+    end)
     |> add_operation(:charts, fn _ ->
       unlock_module(ChartInstallation, name, user)
     end)
@@ -17,7 +21,9 @@ defmodule Core.Services.Rollouts do
     end)
     |> Core.Repo.transaction()
     |> case do
-      {:ok, %{charts: c, tfs: t}} -> {:ok, c + t}
+      {:ok, %{charts: c, tfs: t, inst: inst}} ->
+        handle_notify(PubSub.InstallationUnlocked, inst)
+        {:ok, c + t}
       err -> err
     end
   end

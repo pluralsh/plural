@@ -61,7 +61,7 @@ release :worker do
   set applications: [
     :runtime_tools,
     worker: :permanent,
-    core: :permanent
+    core: :permanent,
   ]
 end
 

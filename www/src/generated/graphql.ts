@@ -1629,7 +1629,8 @@ export enum NotificationType {
   IncidentUpdate = 'INCIDENT_UPDATE',
   Locked = 'LOCKED',
   Mention = 'MENTION',
-  Message = 'MESSAGE'
+  Message = 'MESSAGE',
+  Pending = 'PENDING'
 }
 
 export type OauthAttributes = {

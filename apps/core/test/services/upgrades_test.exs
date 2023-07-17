@@ -115,6 +115,8 @@ defmodule Core.Services.UpgradesTest do
       assert deferred.version_id == version.id
       assert deferred.chart_installation_id == chart_inst.id
       assert deferred.dequeue_at
+
+      assert_receive {:event, %PubSub.DeferredUpdateCreated{item: ^deferred}}
     end
 
     test "it can create a deferred update for a terraform installation" do

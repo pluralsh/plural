@@ -1,0 +1,6 @@
+You have upgrades pending promotion, go to <%= url("/overview/clusters") %> to manually promote them into your cluster
+
+A breakdown of changes pending:
+<%= for {repo, count} <- @repos do %>
+* <%= repo.name %> - <%= count %> upgrades
+<% end %>

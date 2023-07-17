@@ -11,7 +11,7 @@
 <% end %>
 <%= space() %>
 <%= row do %>
-  <% text do %>
+  <%= text do %>
     To apply manual upgrades, you'll need to run these commands in your git repo for each application,
     replace APP with the name of each app:
   <% end %>

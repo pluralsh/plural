@@ -21,7 +21,8 @@ defmodule GraphQl.Schema.Account do
   end
 
   input_object :invite_attributes do
-    field :email, :string
+    field :email,         :string
+    field :admin,         :boolean
     field :invite_groups, list_of(:binding_attributes)
   end
 
@@ -125,6 +126,7 @@ defmodule GraphQl.Schema.Account do
 
   object :invite do
     field :id,        non_null(:id)
+    field :admin,     :boolean
     field :secure_id, :string, resolve: fn
       %{user_id: id}, _, _ when is_binary(id) -> {:ok, nil} # obfuscate for existing users
       %{secure_id: id}, _, _ -> {:ok, id}

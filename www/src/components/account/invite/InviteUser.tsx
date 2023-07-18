@@ -31,10 +31,9 @@ import { extendConnection } from '../../../utils/graphql'
 import { GqlError } from '../../utils/Alert'
 import { inviteLink } from '../utils'
 
-interface EmailInputProps {
-  onValidityChange?: (valid: boolean) => void
-  onChange?: (value: string) => void
-}
+import { toGroups } from './helpers'
+
+import { EmailInputProps, GroupBase, GroupBindingsSelectorProps } from './types'
 
 function EmailInput({
   onValidityChange,
@@ -86,20 +85,6 @@ const GroupBindingsSelector = styled(GroupBindingsSelectorUnstyled)(
   })
 )
 
-interface GroupBindingsSelectorProps {
-  onGroupCreate?: () => void
-  onQueryChange?: (query: string) => void
-  onGroupAdd?: (group: GroupBase) => void
-  onGroupRemove?: (group: GroupBase) => void
-  groups?: GroupConnection
-  selected?: Array<GroupBase>
-  loading?: boolean
-  fetchMore?: any
-}
-
-const toGroups = (connection?: GroupConnection): Array<Group> =>
-  connection?.edges?.map((e) => e!.node!) ?? []
-
 const ChipList = styled(ListBoxItemChipList)(({ theme }) => ({
   marginTop: theme.spacing.small,
   justifyContent: 'start',
@@ -134,7 +119,7 @@ function GroupBindingsSelectorUnstyled({
       <ComboBox
         inputValue={query}
         startIcon={<PeopleIcon />}
-        inputProps={{ placeholder }}
+        inputProps={{ placeholder, showClearButton: true }}
         dropdownFooterFixed={
           <ListBoxFooter
             onClick={() => onGroupCreate?.()}
@@ -257,10 +242,7 @@ function InvitationMessageUnstyled({
     <div {...props}>
       {invite?.secureId && (
         <div className="message">
-          <span>
-            Invite sent successfully. Use this secure link to finish the
-            invitation process.
-          </span>
+          <span>Use this secure link to finish the invitation process.</span>
           <Codeline>{inviteLink(invite)}</Codeline>
         </div>
       )}
@@ -271,11 +253,6 @@ function InvitationMessageUnstyled({
       )}
     </div>
   )
-}
-
-interface GroupBase {
-  id: string
-  name: string
 }
 
 const InviteUser = styled(InviteUserUnstyled)(({ theme }) => ({
@@ -302,7 +279,9 @@ const InviteUser = styled(InviteUserUnstyled)(({ theme }) => ({
 
 function InviteUserUnstyled({
   onGroupCreate,
+  onInvite,
   onClose,
+  refetch,
   ...props
 }): ReactElement {
   const [valid, setValid] = useState(false)
@@ -312,7 +291,11 @@ function InviteUserUnstyled({
   const [invite, setInvite] = useState<Invite>()
   const [isAdmin, setAdmin] = useState(false)
 
-  const { data: groupsQuery, fetchMore } = useGroupsQuery({
+  const {
+    data: groupsQuery,
+    fetchMore,
+    refetch: refetchGroups,
+  } = useGroupsQuery({
     variables: { q: query },
   })
 
@@ -326,7 +309,10 @@ function InviteUserUnstyled({
         admin: isAdmin,
       },
     },
-    onCompleted: (result) => setInvite(result?.createInvite as Invite),
+    onCompleted: (result) => {
+      setInvite(result?.createInvite as Invite)
+      onInvite?.()
+    },
   })
 
   const onAdd = useCallback(
@@ -343,6 +329,8 @@ function InviteUserUnstyled({
       ]),
     []
   )
+
+  useEffect(() => refetch(() => refetchGroups), [refetch, refetchGroups])
 
   return (
     <div {...props}>

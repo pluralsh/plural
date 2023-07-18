@@ -15,7 +15,7 @@ enum Action {
   UserLimit,
 }
 
-function InviteUserButton(): ReactElement {
+function InviteUserButton({ onInvite }): ReactElement {
   const { account } = useCurrentUser()
   const { isPaidPlan, isTrialPlan } = useContext(SubscriptionContext)
   const [action, setAction] = useState(Action.None)
@@ -39,7 +39,10 @@ function InviteUserButton(): ReactElement {
         Invite user
       </Button>
       {action === Action.InviteUser && (
-        <InviteUserModal onClose={() => setAction(Action.None)} />
+        <InviteUserModal
+          onClose={() => setAction(Action.None)}
+          onInvite={onInvite}
+        />
       )}
       {action === Action.UserLimit && (
         <UserLimitModal onClose={() => setAction(Action.None)} />

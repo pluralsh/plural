@@ -1,5 +1,5 @@
 import { Modal } from '@pluralsh/design-system'
-import { ReactElement, useMemo, useState } from 'react'
+import { Dispatch, ReactElement, useMemo, useState } from 'react'
 import styled from 'styled-components'
 
 import CreateGroup from './CreateGroup'
@@ -12,8 +12,13 @@ enum Action {
 
 const InviteUserModal = styled(InviteUserModalUnstyled)(({ theme }) => ({}))
 
-function InviteUserModalUnstyled({ onClose, ...props }): ReactElement {
+function InviteUserModalUnstyled({
+  onInvite,
+  onClose,
+  ...props
+}): ReactElement {
   const [action, setAction] = useState(Action.InviteUser)
+  const [refetch, setRefetch] = useState<Dispatch<void>>()
   const header = useMemo(() => {
     switch (action) {
       case Action.CreateGroup:
@@ -36,11 +41,16 @@ function InviteUserModalUnstyled({ onClose, ...props }): ReactElement {
         {action === Action.InviteUser && (
           <InviteUser
             onGroupCreate={() => setAction(Action.CreateGroup)}
+            onInvite={onInvite}
             onClose={onClose}
+            refetch={setRefetch}
           />
         )}
         {action === Action.CreateGroup && (
-          <CreateGroup onBack={() => setAction(Action.InviteUser)} />
+          <CreateGroup
+            onBack={() => setAction(Action.InviteUser)}
+            onCreate={refetch}
+          />
         )}
       </div>
     </Modal>

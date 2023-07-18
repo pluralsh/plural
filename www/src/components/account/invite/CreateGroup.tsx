@@ -4,31 +4,78 @@ import {
   FormField,
   Input,
 } from '@pluralsh/design-system'
+import { Switch } from 'honorable'
 import { ReactElement, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 
-function CreateGroupInputs({ onValidityChange }): ReactElement {
-  const [value, setValue] = useState('')
-  const valid = useMemo(() => !!value, [value])
+import {
+  GroupAttributes,
+  useCreateGroupMutation,
+} from '../../../generated/graphql'
+
+import { CreateGroupInputsProps } from './types'
+
+const CreateGroupInputs = styled(CreateGroupInputsUnstyled)(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: theme.spacing.medium,
+
+  '.message': {
+    ...theme.partials.text.body2,
+    display: 'flex',
+    flexDirection: 'column',
+    gap: theme.spacing.xsmall,
+  },
+
+  '.switch': {
+    display: 'flex',
+  },
+}))
+
+function CreateGroupInputsUnstyled({
+  onValidityChange,
+  onChange,
+  ...props
+}: CreateGroupInputsProps): ReactElement {
+  const [name, setName] = useState('')
+  const [description, setDescription] = useState('')
+  const [global, setGlobal] = useState(false)
+  const valid = useMemo(() => !!name, [name])
 
   useEffect(() => onValidityChange?.(valid), [onValidityChange, valid])
+  useEffect(
+    () => onChange?.({ name, global, description } as GroupAttributes),
+    [name, global, description, onChange]
+  )
 
   return (
-    <>
+    <div {...props}>
       <FormField
         label="Name"
         required
       >
         <Input
           placeholder="New group"
-          value={value}
-          onChange={({ target: { value } }) => setValue(value)}
+          value={name}
+          onChange={({ target: { value } }) => setName(value)}
         />
       </FormField>
       <FormField label="Description">
-        <Input placeholder="New group description" />
+        <Input
+          placeholder="New group description"
+          value={description}
+          onChange={({ target: { value } }) => setDescription(value)}
+        />
       </FormField>
-    </>
+      <div className="switch">
+        <Switch
+          checked={global}
+          onChange={({ target: { checked } }) => setGlobal(checked)}
+        >
+          <span className="message">Global</span>
+        </Switch>
+      </div>
+    </div>
   )
 }
 
@@ -44,6 +91,7 @@ function CreateGroupActionsUnstyled({
   disabled,
   loading,
   onBack,
+  onCreate,
   ...props
 }): ReactElement {
   return (
@@ -58,6 +106,7 @@ function CreateGroupActionsUnstyled({
       <Button
         disabled={disabled || loading}
         loading={loading}
+        onClick={onCreate}
       >
         Create
       </Button>
@@ -72,15 +121,32 @@ const CreateGroup = styled(CreateGroupUnstyled)(({ theme }) => ({
   gap: theme.spacing.medium,
 }))
 
-function CreateGroupUnstyled({ onBack, ...props }): ReactElement {
+function CreateGroupUnstyled({ onCreate, onBack, ...props }): ReactElement {
   const [valid, setValid] = useState(false)
+  const [attributes, setAttributes] = useState<GroupAttributes>(
+    {} as GroupAttributes
+  )
+  const [createGroup, { loading }] = useCreateGroupMutation({
+    variables: {
+      attributes,
+    },
+    onCompleted: () => {
+      onCreate?.()
+      onBack()
+    },
+  })
 
   return (
     <div {...props}>
-      <CreateGroupInputs onValidityChange={setValid} />
+      <CreateGroupInputs
+        onValidityChange={setValid}
+        onChange={setAttributes}
+      />
       <CreateGroupActions
+        disabled={!valid || loading}
+        loading={loading}
+        onCreate={createGroup}
         onBack={onBack}
-        disabled={!valid}
       />
     </div>
   )

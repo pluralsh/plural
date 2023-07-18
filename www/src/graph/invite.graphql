@@ -26,3 +26,9 @@ query Invite($id: String!) {
     }
   }
 }
+
+mutation CreateInvite($attributes: InviteAttributes!) {
+  createInvite(attributes: $attributes) {
+    ...Invite
+  }
+}

@@ -6,6 +6,8 @@ import { Outlet, useLocation } from 'react-router-dom'
 
 import { LinkTabWrap } from '../utils/Tabs'
 
+import InviteUserButton from './invite/InviteUserButton'
+
 import { InviteUser } from './InviteUser'
 
 const DIRECTORY = [
@@ -62,6 +64,7 @@ export function Users() {
             ))}
           </TabList>
           <InviteUser refetch={refetchInvites.current} />
+          <InviteUserButton />
         </Flex>
       </PageTitle>
       <TabPanel

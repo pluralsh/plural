@@ -1,20 +1,17 @@
-import { Button, Div, P, Span } from 'honorable'
+import { useMutation } from '@apollo/client'
 import {
   Codeline,
   MailIcon,
   Modal,
   ValidatedInput,
 } from '@pluralsh/design-system'
+import { Button, Div, P, Span } from 'honorable'
 import { useCallback, useContext, useState } from 'react'
-import { useMutation } from '@apollo/client'
-
 import { Link } from 'react-router-dom'
 
-import { GqlError } from '../utils/Alert'
-
 import { useCurrentUser } from '../../contexts/CurrentUserContext'
-
 import SubscriptionContext from '../../contexts/SubscriptionContext'
+import { GqlError } from '../utils/Alert'
 
 import { CREATE_INVITE } from './queries'
 import { inviteLink } from './utils'

@@ -37,7 +37,7 @@ const CreateGroupActions = styled(CreateGroupActionsUnstyled)(({ theme }) => ({
   flexDirection: 'row',
   justifyContent: 'space-between',
   gap: theme.spacing.medium,
-  padding: `${theme.spacing.xsmall}px 0`,
+  padding: `${theme.spacing.small}px 0 ${theme.spacing.xsmall}px 0`,
 }))
 
 function CreateGroupActionsUnstyled({
@@ -65,17 +65,24 @@ function CreateGroupActionsUnstyled({
   )
 }
 
-function CreateGroup({ onBack }): ReactElement {
+const CreateGroup = styled(CreateGroupUnstyled)(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'space-between',
+  gap: theme.spacing.medium,
+}))
+
+function CreateGroupUnstyled({ onBack, ...props }): ReactElement {
   const [valid, setValid] = useState(false)
 
   return (
-    <>
+    <div {...props}>
       <CreateGroupInputs onValidityChange={setValid} />
       <CreateGroupActions
         onBack={onBack}
         disabled={!valid}
       />
-    </>
+    </div>
   )
 }
 

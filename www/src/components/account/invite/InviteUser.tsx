@@ -13,6 +13,7 @@ import {
   PeopleIcon,
   PeoplePlusIcon,
 } from '@pluralsh/design-system'
+import { Switch } from 'honorable'
 import { debounce } from 'lodash'
 import { ReactElement, useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
@@ -289,6 +290,14 @@ const InviteUser = styled(InviteUserUnstyled)(({ theme }) => ({
     flexDirection: 'column',
     gap: theme.spacing.xsmall,
   },
+
+  '.divider': {
+    borderBottom: theme.borders.default,
+  },
+
+  '.switch': {
+    display: 'flex',
+  },
 }))
 
 function InviteUserUnstyled({
@@ -301,6 +310,7 @@ function InviteUserUnstyled({
   const [groupBindings, setGroupBindings] = useState<Array<GroupBase>>([])
   const [email, setEmail] = useState('')
   const [invite, setInvite] = useState<Invite>()
+  const [isAdmin, setAdmin] = useState(false)
 
   const { data: groupsQuery, fetchMore } = useGroupsQuery({
     variables: { q: query },
@@ -313,6 +323,7 @@ function InviteUserUnstyled({
         inviteGroups: groupBindings.map(
           (g) => ({ groupId: g.id } as BindingAttributes)
         ),
+        admin: isAdmin,
       },
     },
     onCompleted: (result) => setInvite(result?.createInvite as Invite),
@@ -345,6 +356,15 @@ function InviteUserUnstyled({
         onValidityChange={setValid}
         onChange={setEmail}
       />
+      <div className="divider" />
+      <div className="switch">
+        <Switch
+          checked={isAdmin}
+          onChange={({ target: { checked } }) => setAdmin(checked)}
+        >
+          <span className="message">Admin</span>
+        </Switch>
+      </div>
       <GroupBindingsSelector
         onGroupCreate={onGroupCreate}
         onQueryChange={setQuery}

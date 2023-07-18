@@ -7,7 +7,7 @@ defmodule Core.Services.RolloutsTest do
     test "it will unlock locked module installations" do
       user = insert(:user)
       repo = insert(:repository)
-      inst = insert(:installation, repository: repo, user: user)
+      %{id: id} = inst = insert(:installation, repository: repo, user: user)
       cl = insert(:chart_installation, installation: inst, locked: true, chart: insert(:chart, repository: repo))
       tl = insert(:terraform_installation, installation: inst, locked: true, terraform: insert(:terraform, repository: repo))
 
@@ -17,8 +17,9 @@ defmodule Core.Services.RolloutsTest do
 
       refute refetch(cl).locked
       refute refetch(tl).locked
-
       assert refetch(ignore).locked
+
+      assert_receive {:event, %PubSub.InstallationUnlocked{item: %{id: ^id}}}
     end
   end
 

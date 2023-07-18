@@ -2,7 +2,9 @@ defmodule Core.Schema.Notification do
   use Piazza.Ecto.Schema
   alias Core.Schema.{User, Incident, IncidentMessage, Repository}
 
-  defenum Type, message: 0, incident_update: 1, mention: 2, locked: 3
+  defenum Type, message: 0, incident_update: 1, mention: 2, locked: 3, pending: 4
+
+  @expiry [months: -1]
 
   schema "notifications" do
     field :type, Type
@@ -18,6 +20,19 @@ defmodule Core.Schema.Notification do
     timestamps()
   end
 
+  def expired(query \\ __MODULE__) do
+    expires_at = Timex.now() |> Timex.shift(@expiry)
+    from(n in query, where: n.inserted_at <= ^expires_at)
+  end
+
+  def for_type(query \\ __MODULE__, type) do
+    from(n in query, where: n.type == ^type)
+  end
+
+  def for_repository(query \\ __MODULE__, repo_id) do
+    from(n in query, where: n.repository_id == ^repo_id)
+  end
+
   def for_user(query \\ __MODULE__, user_id) do
     from(n in query, where: n.user_id == ^user_id)
   end
@@ -28,6 +43,10 @@ defmodule Core.Schema.Notification do
 
   def cli(query \\ __MODULE__) do
     from(n in query, where: n.cli)
+  end
+
+  def preloaded(query \\ __MODULE__, preloads) do
+    from(n in query, preload: ^preloads)
   end
 
   def ordered(query \\ __MODULE__, order \\ [desc: :inserted_at]) do

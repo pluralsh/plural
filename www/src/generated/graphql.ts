@@ -1371,6 +1371,7 @@ export type IntegrationWebhookEdge = {
 export type Invite = {
   __typename?: 'Invite';
   account?: Maybe<Account>;
+  admin?: Maybe<Scalars['Boolean']['output']>;
   email?: Maybe<Scalars['String']['output']>;
   existing: Scalars['Boolean']['output'];
   expiresAt?: Maybe<Scalars['DateTime']['output']>;
@@ -1383,6 +1384,7 @@ export type Invite = {
 };
 
 export type InviteAttributes = {
+  admin?: InputMaybe<Scalars['Boolean']['input']>;
   email?: InputMaybe<Scalars['String']['input']>;
   inviteGroups?: InputMaybe<Array<InputMaybe<BindingAttributes>>>;
 };
@@ -1629,7 +1631,8 @@ export enum NotificationType {
   IncidentUpdate = 'INCIDENT_UPDATE',
   Locked = 'LOCKED',
   Mention = 'MENTION',
-  Message = 'MESSAGE'
+  Message = 'MESSAGE',
+  Pending = 'PENDING'
 }
 
 export type OauthAttributes = {
@@ -5864,6 +5867,13 @@ export type ResetTokenQueryVariables = Exact<{
 
 
 export type ResetTokenQuery = { __typename?: 'RootQueryType', resetToken?: { __typename?: 'ResetToken', type: ResetTokenType, user: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null } } | null };
+
+export type ReadNotificationsMutationVariables = Exact<{
+  incidentId?: InputMaybe<Scalars['ID']['input']>;
+}>;
+
+
+export type ReadNotificationsMutation = { __typename?: 'RootMutationType', readNotifications?: number | null };
 
 export type VersionTagFragment = { __typename?: 'VersionTag', id: string, tag: string, version?: { __typename?: 'Version', id: string } | null };
 
@@ -10598,6 +10608,37 @@ export function useResetTokenLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions
 export type ResetTokenQueryHookResult = ReturnType<typeof useResetTokenQuery>;
 export type ResetTokenLazyQueryHookResult = ReturnType<typeof useResetTokenLazyQuery>;
 export type ResetTokenQueryResult = Apollo.QueryResult<ResetTokenQuery, ResetTokenQueryVariables>;
+export const ReadNotificationsDocument = gql`
+    mutation ReadNotifications($incidentId: ID) {
+  readNotifications(incidentId: $incidentId)
+}
+    `;
+export type ReadNotificationsMutationFn = Apollo.MutationFunction<ReadNotificationsMutation, ReadNotificationsMutationVariables>;
+
+/**
+ * __useReadNotificationsMutation__
+ *
+ * To run a mutation, you first call `useReadNotificationsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useReadNotificationsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [readNotificationsMutation, { data, loading, error }] = useReadNotificationsMutation({
+ *   variables: {
+ *      incidentId: // value for 'incidentId'
+ *   },
+ * });
+ */
+export function useReadNotificationsMutation(baseOptions?: Apollo.MutationHookOptions<ReadNotificationsMutation, ReadNotificationsMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ReadNotificationsMutation, ReadNotificationsMutationVariables>(ReadNotificationsDocument, options);
+      }
+export type ReadNotificationsMutationHookResult = ReturnType<typeof useReadNotificationsMutation>;
+export type ReadNotificationsMutationResult = Apollo.MutationResult<ReadNotificationsMutation>;
+export type ReadNotificationsMutationOptions = Apollo.BaseMutationOptions<ReadNotificationsMutation, ReadNotificationsMutationVariables>;
 export const UpdateVersionDocument = gql`
     mutation UpdateVersion($spec: VersionSpec, $attributes: VersionAttributes!) {
   updateVersion(spec: $spec, attributes: $attributes) {
@@ -10730,6 +10771,7 @@ export const namedOperations = {
     AcceptLogin: 'AcceptLogin',
     CreateResetToken: 'CreateResetToken',
     RealizeResetToken: 'RealizeResetToken',
+    ReadNotifications: 'ReadNotifications',
     UpdateVersion: 'UpdateVersion'
   },
   Fragment: {

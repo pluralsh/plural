@@ -1,0 +1,1 @@
+<img src="<%= @url %>" alt="<%= @alt %>" height="<%= @height %>" width="<%= @width %>" />

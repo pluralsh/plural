@@ -430,7 +430,8 @@ defmodule Core.Services.Accounts do
   """
   @spec realize_invite(map, binary) :: user_resp
   def realize_invite(attributes, invite_id) do
-    invite = get_invite!(invite_id) |> Core.Repo.preload([:groups, user: :account])
+    invite = get_invite!(invite_id)
+             |> Core.Repo.preload([:groups, user: :account])
 
     start_transaction()
     |> add_operation(:user, fn _ ->
@@ -441,7 +442,7 @@ defmodule Core.Services.Accounts do
     end)
     |> add_operation(:upsert, fn %{user: user} ->
       user
-      |> User.invite_changeset(Map.put(attributes, :email, invite.email))
+      |> User.invite_changeset(Map.merge(attributes, %{email: invite.email, roles: %{admin: invite.admin}}))
       |> Ecto.Changeset.change(%{account_id: invite.account_id})
       |> Core.Repo.insert_or_update()
     end)

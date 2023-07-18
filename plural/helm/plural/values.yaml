@@ -490,6 +490,10 @@ crons:
   cronModule: Prune.Trials
   cronTab: "40 0 * * *"
   envVars: []
+- cronName: plrl-prune-notifs
+  cronModule: Prune.Notifications
+  cronTab: "15 1 * * *"
+  envVars: []
 
 hydraSecrets:
   dsn: memory

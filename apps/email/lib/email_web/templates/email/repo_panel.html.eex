@@ -1,0 +1,19 @@
+<%= row do %>
+  <table>
+    <tr>
+      <td>
+        <%= repo_img repo: @repo %>
+      </td>
+      <td>
+        <%= text do %>
+          <%= @repo.name %>:
+        <% end %>
+      </td>
+      <td>
+        <%= text do %>
+          <%= @count %> <%= @modifier %>
+        <% end %>
+      </td>
+    </tr>
+  </table>
+<% end %>

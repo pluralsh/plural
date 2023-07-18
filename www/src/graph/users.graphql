@@ -336,3 +336,7 @@ query ResetToken($id: ID!) {
     }
   }
 }
+
+mutation ReadNotifications($incidentId: ID) {
+  readNotifications(incidentId: $incidentId)
+}

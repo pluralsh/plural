@@ -94,6 +94,37 @@ defimpl Core.PubSub.Notifiable, for: Core.PubSub.IncidentMessageCreated do
   defp mentions(_, _), do: []
 end
 
+defimpl Core.PubSub.Notifiable, for: Core.PubSub.DeferredUpdateCreated do
+  alias Core.Schema.DeferredUpdate
+  import Core.Services.Base, only: [timestamped: 1]
+
+  def notify(%{item: %DeferredUpdate{pending: true} = deferred}) do
+    deferred = Core.Repo.preload(deferred, [
+      chart_installation: [:installation, :chart],
+      terraform_installation: [:installation, :terraform]
+    ])
+    inst = installation(deferred)
+    {type, pkg} = package(deferred)
+
+    [
+      timestamped(%{
+        type: :pending,
+        repository_id: inst.repository_id,
+        user_id: inst.user_id,
+        actor_id: inst.user_id,
+        msg: "#{type} package #{pkg.name} has pending updates"
+      })
+    ]
+  end
+  def notify(_), do: :ok
+
+  defp package(%{chart_installation: %{chart: chart}}), do: {:helm, chart}
+  defp package(%{terraform_installation: %{terraform: tf}}), do: {:terraform, tf}
+
+  defp installation(%{chart_installation: %{installation: inst}}), do: inst
+  defp installation(%{terraform_installation: %{installation: inst}}), do: inst
+end
+
 defimpl Core.PubSub.Notifiable, for: Core.PubSub.InstallationLocked do
   import Core.Services.Base, only: [timestamped: 1]
   import Core.PubSub.Notification.Utils, only: [eval: 2]

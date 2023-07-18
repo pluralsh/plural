@@ -59,6 +59,8 @@ config :joken,
     key_pem: pem
   ]
 
+config :piazza_core, aes_key: "1HdFP1DuK7xkkcEBne41yAwUY8NSfJnYfGVylYYCS2U="
+
 config :email, EmailWeb.Endpoint,
   http: [port: 4002],
   debug_errors: true,

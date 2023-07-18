@@ -370,6 +370,7 @@ enum NotificationType {
   INCIDENT_UPDATE
   MENTION
   LOCKED
+  PENDING
 }
 
 enum OnboardingState {
@@ -637,6 +638,7 @@ input FileAttributes {
 
 input InviteAttributes {
   email: String
+  admin: Boolean
   inviteGroups: [BindingAttributes]
 }
 
@@ -1175,6 +1177,7 @@ type DnsRecordEdge {
 
 type Invite {
   id: ID!
+  admin: Boolean
   secureId: String
   existing: Boolean!
   email: String

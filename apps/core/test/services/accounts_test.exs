@@ -369,6 +369,22 @@ defmodule Core.Services.AccountsTest do
       assert_receive {:event, %PubSub.UserCreated{item: ^user}}
     end
 
+    test "it can mark admins if selected", %{user: user, account: account} do
+      {:ok, invite} = Accounts.create_invite(%{email: "some@example.com", admin: true}, user)
+
+      {:ok, user} = Accounts.realize_invite(%{
+        password: "some long password",
+        name: "Some User"
+      }, invite.secure_id)
+
+      assert user.email == invite.email
+      assert user.account_id == account.id
+      assert user.name == "Some User"
+      assert user.roles.admin
+
+      assert_receive {:event, %PubSub.UserCreated{item: ^user}}
+    end
+
     test "it can bind users to groups when realizing an invite", %{user: user, account: account} do
       groups = insert_list(2, :group, account: account)
       {:ok, invite} = Accounts.create_invite(%{
@@ -418,7 +434,7 @@ defmodule Core.Services.AccountsTest do
       assert user.email == invite.email
       assert user.account_id == account.id
       assert user.name == "Some User"
-      refute user.roles
+      refute user.roles.admin
 
       assert_receive {:event, %PubSub.UserCreated{item: ^user}}
     end

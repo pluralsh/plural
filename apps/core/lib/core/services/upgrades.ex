@@ -206,6 +206,7 @@ defmodule Core.Services.Upgrades do
       dequeue_at: Timex.now()
     }))
     |> Core.Repo.insert()
+    |> notify(:create)
   end
 
   defp update_info(%ChartInstallation{id: id}), do: {:chart, id}
@@ -307,6 +308,8 @@ defmodule Core.Services.Upgrades do
     do: handle_notify(PubSub.UpgradeCreated, upgrade)
   defp notify({:ok, %UpgradeQueue{} = q}, :update),
     do: handle_notify(PubSub.UpgradeQueueUpdated, q)
+  defp notify({:ok, %DeferredUpdate{} = d}, :create),
+    do: handle_notify(PubSub.DeferredUpdateCreated, d)
 
   defp notify(pass, _), do: pass
 

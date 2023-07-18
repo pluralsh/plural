@@ -21,7 +21,11 @@ defmodule GraphQl.AIQueriesTest do
   describe "chat" do
     test "it will query the gpt-3.5 chat api" do
       resp = Jason.encode!(%{choices: [%{message: %{role: "assistant", content: "a long answer to a short question"}}]})
-      expect(HTTPoison, :post, fn _, _, _, _ -> {:ok, %HTTPoison.Response{status_code: 200, body: resp}} end)
+      expect(HTTPoison, :post, 2, fn
+        "http://plural-ai:8000" <> _, _, _, _ ->
+          {:ok, %HTTPoison.Response{status_code: 200, body: Jason.encode!(%{answer: "some context"})}}
+        _, _, _, _ -> {:ok, %HTTPoison.Response{status_code: 200, body: resp}}
+      end)
 
       {:ok, %{data: %{"chat" => result}}} = run_query("""
         query Q($history: [ChatMessageAttributes]) {

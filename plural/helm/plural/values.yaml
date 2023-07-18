@@ -430,6 +430,18 @@ worker:
             values:
             - plural-worker-medium
 
+ai:
+  repository: plural-ai
+  tag: ~
+  port: 8000
+  replicaCount: 2
+  resources: {}
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 50
+    cpuUtilization: 80
+
 www:
   repository: plural-www
   # if empty the chart version is used

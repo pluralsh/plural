@@ -100,7 +100,7 @@ def scrape_plural_docs():
 def scrape_discord():
     discord_token = os.getenv("DISCORD_TOKEN")
     channel_ids = [880837182389108766]  # Replace with your channel_id
-    documents = DiscordReader(discord_token=discord_token).load_data(
+    return DiscordReader(discord_token=discord_token).load_data(
         channel_ids=channel_ids,
         limit=5000,
         oldest_first=False

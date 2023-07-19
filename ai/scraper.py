@@ -1,89 +1,127 @@
+import os
 import requests
+import itertools
 from bs4 import BeautifulSoup
 import json
 import xml.etree.ElementTree as ET
-
-# Fetch the sitemap XML content
-sitemap_url = "https://docs.plural.sh/sitemap.xml"
-response = requests.get(sitemap_url)
-sitemap_content = response.text
-
-# Parse the XML content
-root = ET.fromstring(sitemap_content)
-
-# Find all <loc> elements and extract the link URLs
-urls = []
-for loc_elem in root.iter("{http://www.sitemaps.org/schemas/sitemap/0.9}loc"):
-    link = loc_elem.text
-    urls.append(link)
+import yaml
+from yaml.loader import SafeLoader
+from python_graphql_client import GraphqlClient
 
 
-docs_text = []
+def get_token():
+    if os.environ.get('PLURAL_ACCESS_TOKEN'):
+        return os.environ['PLURAL_ACCESS_TOKEN']
 
-# Iterate over each page URL
-for i, url in enumerate(urls):
-    try:
-        # Fetch the HTML content
-        response = requests.get(url)
-        html_content = response.content
+    with open(os.path.expanduser("~/.plural/config.yml")) as f:
+        data = yaml.load(f, Loader=SafeLoader)
+        return data["spec"]["token"]
 
-        # Parse the HTML using BeautifulSoup
-        soup = BeautifulSoup(html_content, "html.parser")
+def gql_client():
+    token = get_token()
+    return GraphqlClient(endpoint="https://app.plural.sh/gql", headers={"Authorization": f"Bearer {token}"})
 
-        # Extract the page title
-        title = soup.title.string.strip().replace("Docs | Plural |", "") if soup.title else "No Title"
+fetch_repos = """
+query Repos($cursor: String) {
+    repositories(first: 100, after: $cursor) {
+        pageInfo { hasNextPage endCursor }
+        edges { node { id name } }
+    }
+}
+"""
 
-        # Find the target div element
-        div = soup.find("div", class_="sc-520f8824-0 jyoUZy")
+fetch_docs = """
+query Repo($id: ID!) {
+    repository(id: $id) {
+        docs { path content }
+    }
+}
+"""
 
-        if div:
-            # Extract the desired content
-            subtitle = div.find("p").text.strip()
-            content_elements = div.find_all(["h1", "h2", "h3", "h4", "h5", "h6", "p", "ul", "pre", "img", "a"])
+def scrape_app_docs():
+    api = gql_client()
 
-            # Convert content elements to markdown format
-            markdown_content = []
-            for element in content_elements:
-                if element.name.startswith("h"):
-                    heading_level = int(element.name[1])
-                    heading_text = element.text.strip()
-                    markdown_content.append("#" * heading_level + " " + heading_text)
-                elif element.name == "pre":
-                    code_block = element.text.strip()
-                    markdown_content.append(f"```\n{code_block}\n```")
-                elif element.name == "img":
-                    image_src = element["src"]
-                    markdown_content.append(f"![Image]({image_src})")
-                elif element.name == "a":
-                    link_href = element["href"]
-                    link_text = element.text.strip()
-                    markdown_content.append(f"[{link_text}]({link_href})")
-                else:
-                    paragraph_text = element.text.strip()
-                    markdown_content.append(paragraph_text)
+    def list_repos(cursor):
+        result = api.execute(query=fetch_repos, variables={"cursor": cursor})
+        return result["data"]["repositories"]["edges"], result["data"]["repositories"]["pageInfo"]
+    
+    has_next, cursor = True, None
+    while has_next:
+        edges, page_info = list_repos(cursor)
+        has_next, cursor = page_info["hasNextPage"], page_info["endCursor"]
+        for node in edges:
+            repo_name = node["node"]["name"]
+            print(f"fetching docs for {repo_name}")
+            try:
+                result = api.execute(query=fetch_docs, variables={"id": node["node"]["id"]})
+                for doc in result["data"]["repository"]["docs"]:
+                    yield {
+                        "page_link": doc["path"],
+                        "title": os.path.basename(doc["path"]).rstrip(".md"),
+                        "text": doc["content"],
+                        "source_links": [],
+                    }
+            except Exception as e:
+                print(f"Failed to scrape repository: {repo_name}")
+                print(f"Error: {str(e)}\n")
 
-            # Convert markdown content to a single string
-            markdown_text = "\n\n".join(markdown_content)
+def scrape_plural_docs():
+    sitemap_url = "https://docs.plural.sh/sitemap.xml"
+    response = requests.get(sitemap_url)
+    sitemap_content = response.text
 
-            # Create a dictionary for the scraped data
-            doc_data = {
-                "id": i + 1,
-                "page_link": url,
-                "title": title,
-                "text": markdown_text,
-                "source_links": [],
-            }
+    root = ET.fromstring(sitemap_content)
+    for loc_elem in root.iter("{http://www.sitemaps.org/schemas/sitemap/0.9}loc"):
+        url = loc_elem.text
+        try:
+            print(f"visiting {url}")
+            response = requests.get(url)
+            soup = BeautifulSoup(response.content, "html.parser")
 
-            # Append the dictionary to the list
-            docs_text.append(doc_data)
+            title = soup.title.string.strip().replace("Docs | Plural |", "") if soup.title else "No Title"
+            div = soup.find("div", class_="sc-520f8824-0 jyoUZy")
+            if div:
+                subtitle = div.find("p").text.strip()
+                content_elements = div.find_all(["h1", "h2", "h3", "h4", "h5", "h6", "p", "ul", "pre", "img", "a"])
+                markdown_content = []
+                for element in content_elements:
+                    if element.name.startswith("h"):
+                        heading_level = int(element.name[1])
+                        heading_text = element.text.strip()
+                        markdown_content.append("#" * heading_level + " " + heading_text)
+                    elif element.name == "pre":
+                        code_block = element.text.strip()
+                        markdown_content.append(f"```\n{code_block}\n```")
+                    elif element.name == "img":
+                        image_src = element["src"]
+                        markdown_content.append(f"![Image]({image_src})")
+                    elif element.name == "a":
+                        link_href = element["href"]
+                        link_text = element.text.strip()
+                        markdown_content.append(f"[{link_text}]({link_href})")
+                    else:
+                        paragraph_text = element.text.strip()
+                        markdown_content.append(paragraph_text)
 
-    except Exception as e:
-        print(f"Failed to scrape page: {url}")
-        print(f"Error: {str(e)}")
-        print()
+                markdown_text = "\n\n".join(markdown_content)
 
-# Write the scraped data to a JSON file
+                yield {
+                    "page_link": url,
+                    "title": title,
+                    "text": markdown_text,
+                    "source_links": [],
+                }
+
+        except Exception as e:
+            print(f"Failed to scrape page: {url}")
+            print(f"Error: {str(e)}\n")
+
+def indexed(doc, i):
+    doc["id"] = i
+    return doc
+
 with open("scraped_data.json", "w") as file:
-    json.dump(docs_text, file, indent=4)
+    docs = [indexed(d, i) for i, d in enumerate(itertools.chain(scrape_app_docs(), scrape_plural_docs()))]
+    json.dump(docs, file, indent=2)
 
 print("Scraped data saved to 'scraped_data.json'")

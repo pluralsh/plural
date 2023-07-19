@@ -28,7 +28,7 @@ defmodule Core.Services.AI do
   defp add_context([_ | _] = history) do
     with %{content: content} <- List.last(history),
          {:ok, %ContextResponse{answer: answer}} <- OpenAI.context(content) do
-       history ++ [%{content: "Also here's some helpful context I found: #{answer}", role: "user"}]
+      history ++ [%{content: "Also here's some helpful context I found: #{answer}", role: "user"}]
     else
       _ -> history
     end

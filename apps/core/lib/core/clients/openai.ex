@@ -19,6 +19,12 @@ defmodule Core.Clients.OpenAI do
     def spec(), do: %__MODULE__{message: %OpenAI.Message{}}
   end
 
+  defmodule ContextResponse do
+    @type t :: %__MODULE__{answer: binary}
+
+    defstruct [:answer]
+  end
+
   defmodule CompletionResponse do
     alias Core.Clients.OpenAI
 
@@ -29,6 +35,28 @@ defmodule Core.Clients.OpenAI do
     def spec(), do: %__MODULE__{choices: [OpenAI.Choice.spec()]}
   end
 
+  @type error :: {:error, term}
+  @type completion_resp :: {:ok, CompletionResponse.t} | error
+
+  @doc """
+  It will fetch a openai context blob from our internal docs index
+  """
+  @spec context(binary) :: {:ok, ContextResponse.t} | error
+  def context(prompt) do
+    body = Jason.encode!(%{question: prompt})
+
+    context_url("/chat")
+    |> HTTPoison.post(body, [{"Content-Type", "application/json"}], @options)
+    |> case do
+      {:ok, %HTTPoison.Response{status_code: 200, body: body}} -> Poison.decode(body, as: %ContextResponse{})
+      _error -> {:error, :no_context}
+    end
+  end
+
+  @doc """
+  it will generate a chat from
+  """
+  @spec chat(binary, [Message.t]) :: completion_resp
   def chat(model \\ "gpt-3.5-turbo", history) do
     body = Jason.encode!(%{
       model: model,
@@ -40,6 +68,7 @@ defmodule Core.Clients.OpenAI do
     |> handle_response(CompletionResponse.spec())
   end
 
+  @spec completion(binary, binary) :: completion_resp
   def completion(model, prompt) do
     body = Jason.encode!(%{
       model: model,
@@ -63,9 +92,11 @@ defmodule Core.Clients.OpenAI do
 
   defp url(path), do: "https://api.openai.com/v1#{path}"
 
+  defp context_url(path), do: "http://plural-ai:8000#{path}"
+
   defp json_headers(), do: headers([{"Content-Type", "application/json"}])
 
-  defp headers(headers \\ []), do: [{"Authorization", "Bearer #{token()}"} | headers]
+  defp headers(headers), do: [{"Authorization", "Bearer #{token()}"} | headers]
 
   defp token(), do: Core.conf(:openai_token)
 end

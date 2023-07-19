@@ -15,7 +15,8 @@ defmodule Core.Services.AI do
   """
   @spec chat([Message.t]) :: message_resp
   def chat(history) do
-    add_context(history)
+    Enum.reverse(history)
+    |> add_context()
     |> OpenAI.chat()
     |> case do
       {:ok, %CompletionResponse{choices: [%Choice{message: %Message{} = message} | _]}} ->
@@ -26,13 +27,15 @@ defmodule Core.Services.AI do
   end
 
   defp add_context([%{content: content} | _] = history) do
-    case OpenAI.context(content) do
+    OpenAI.context(content)
+    |> case do
       {:ok, %ContextResponse{answer: answer}} ->
-        [%{content: "here's some helpful context: #{answer}", role: "assistant"} | history]
+       [%{content: "here's some helpful context: #{answer}", role: "user"} | history]
       _ -> history
     end
+    |> Enum.reverse()
   end
-  defp add_context(hist), do: hist
+  defp add_context(hist), do: Enum.reverse(hist)
 
   @doc """
   Generates an answer to a given prompt/question using gpt-3

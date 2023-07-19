@@ -12,6 +12,13 @@ class QueryRequest(BaseModel):
 class QueryResponse(BaseModel):
     answer: str
 
+storage_context = StorageContext.from_defaults(persist_dir="./storage")
+index = load_index_from_storage(storage_context)
+query_engine = index.as_query_engine(
+    node_postprocessors=[SentenceEmbeddingOptimizer(percentile_cutoff=0.5)],    
+    response_mode="compact",
+    similarity_cutoff=0.7
+)
 
 @app.get("/")
 def read_root():
@@ -19,15 +26,7 @@ def read_root():
 
 @app.post("/chat")
 def query_data(request: QueryRequest):
-    storage_context = StorageContext.from_defaults(persist_dir="./storage")
-    index = load_index_from_storage(storage_context)
-    query_engine = index.as_query_engine(
-        node_postprocessors=[SentenceEmbeddingOptimizer(percentile_cutoff=0.5)],    
-        response_mode="compact",
-        similarity_cutoff=0.7
-    )
     response = query_engine.query(request.question)
-
     if not response:
         raise HTTPException(status_code=404, detail="No results found")
 

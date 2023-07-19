@@ -1,3 +1,4 @@
+#!python3
 import os
 import requests
 import itertools
@@ -33,6 +34,8 @@ query Repos($cursor: String) {
 fetch_docs = """
 query Repo($id: ID!) {
     repository(id: $id) {
+        readme
+        gitUrl
         docs { path content }
     }
 }
@@ -54,7 +57,16 @@ def scrape_app_docs():
             print(f"fetching docs for {repo_name}")
             try:
                 result = api.execute(query=fetch_docs, variables={"id": node["node"]["id"]})
-                for doc in result["data"]["repository"]["docs"]:
+                repo = result["data"]["repository"]
+                if "readme" in repo and "gitUrl" in repo:
+                    yield {
+                        "page_link": repo["gitUrl"],
+                        "title": f"{repo_name} readme",
+                        "text": repo["readme"],
+                        "source_links": []
+                    }
+
+                for doc in repo["docs"]:
                     yield {
                         "page_link": doc["path"],
                         "title": os.path.basename(doc["path"]).rstrip(".md"),

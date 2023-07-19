@@ -9,7 +9,7 @@ import xml.etree.ElementTree as ET
 import yaml
 from yaml.loader import SafeLoader
 from python_graphql_client import GraphqlClient
-from llama_index import Document, VectorStoreIndex, BeautifulSoupWebReader, ServiceContext, set_global_service_context
+from llama_index import Document, VectorStoreIndex, BeautifulSoupWebReader, DiscordReader, ServiceContext, set_global_service_context
 from llama_index.embeddings import OpenAIEmbedding
 
 openai.api_key = os.environ["OPENAI_API_KEY"]
@@ -97,13 +97,24 @@ def scrape_plural_docs():
     reader = BeautifulSoupWebReader(website_extractor={"docs.plural.sh": _docs_reader})
     return reader.load_data([loc.text for loc in root.iter("{http://www.sitemaps.org/schemas/sitemap/0.9}loc")])
 
+def scrape_discord():
+    discord_token = os.getenv("DISCORD_TOKEN")
+    channel_ids = [880837182389108766]  # Replace with your channel_id
+    documents = DiscordReader(discord_token=discord_token).load_data(
+        channel_ids=channel_ids,
+        limit=5000,
+        oldest_first=False
+    )
+
 embed_model = OpenAIEmbedding(embed_batch_size=10)
 service_context = ServiceContext.from_defaults(embed_model=embed_model)
 set_global_service_context(service_context)
 
+chain = itertools.chain(scrape_app_docs(), scrape_plural_docs())
+if os.getenv("DISCORD_TOKEN"):
+    chain = itertools.chain(chain, scrape_discord())
 
-docs = [d for d in itertools.chain(scrape_app_docs(), scrape_plural_docs())]
-index = VectorStoreIndex.from_documents(docs)
+index = VectorStoreIndex.from_documents(list(chain))
 index.storage_context.persist()
 
 print("persisted new vector index")

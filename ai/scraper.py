@@ -1,14 +1,18 @@
 #!python3
 import os
+import html2text
 import requests
 import itertools
-from bs4 import BeautifulSoup
+import openai
 import json
 import xml.etree.ElementTree as ET
 import yaml
 from yaml.loader import SafeLoader
 from python_graphql_client import GraphqlClient
+from llama_index import Document, VectorStoreIndex, BeautifulSoupWebReader, ServiceContext, set_global_service_context
+from llama_index.embeddings import OpenAIEmbedding
 
+openai.api_key = os.environ["OPENAI_API_KEY"]
 
 def get_token():
     if os.environ.get('PLURAL_ACCESS_TOKEN'):
@@ -41,6 +45,9 @@ query Repo($id: ID!) {
 }
 """
 
+def document(text, **kwargs):
+    return Document(text=text, metadata=kwargs)
+
 def scrape_app_docs():
     api = gql_client()
 
@@ -58,24 +65,28 @@ def scrape_app_docs():
             try:
                 result = api.execute(query=fetch_docs, variables={"id": node["node"]["id"]})
                 repo = result["data"]["repository"]
-                if "readme" in repo and "gitUrl" in repo:
-                    yield {
-                        "page_link": repo["gitUrl"],
-                        "title": f"{repo_name} readme",
-                        "text": repo["readme"],
-                        "source_links": []
-                    }
+                if repo.get("readme") and repo.get("gitUrl"):
+                    yield document(repo["readme"], page_link=repo["gitUrl"], title=f"{repo_name} readme")
 
                 for doc in repo["docs"]:
-                    yield {
-                        "page_link": doc["path"],
-                        "title": os.path.basename(doc["path"]).rstrip(".md"),
-                        "text": doc["content"],
-                        "source_links": [],
-                    }
+                    yield document(doc["content"], page_link=doc["path"], title=os.path.basename(doc["path"].rstrip(".md")))
             except Exception as e:
                 print(f"Failed to scrape repository: {repo_name}")
                 print(f"Error: {str(e)}\n")
+
+def _docs_reader(soup):
+    """Extract text from Substack blog post."""
+    metadata = {
+        "title": soup.title.string.strip().replace("Docs | Plural |", "") if soup.title else "No Title",
+    }
+
+    def to_markdown(soup):
+        return html2text.html2text(str(soup))
+
+    div = soup.find("div", class_="sc-520f8824-0 jyoUZy")
+    if div:
+        return to_markdown(div), metadata
+    return to_markdown(soup), metadata
 
 def scrape_plural_docs():
     sitemap_url = "https://docs.plural.sh/sitemap.xml"
@@ -83,57 +94,16 @@ def scrape_plural_docs():
     sitemap_content = response.text
 
     root = ET.fromstring(sitemap_content)
-    for loc_elem in root.iter("{http://www.sitemaps.org/schemas/sitemap/0.9}loc"):
-        url = loc_elem.text
-        try:
-            print(f"visiting {url}")
-            response = requests.get(url)
-            soup = BeautifulSoup(response.content, "html.parser")
+    reader = BeautifulSoupWebReader(website_extractor={"docs.plural.sh": _docs_reader})
+    return reader.load_data([loc.text for loc in root.iter("{http://www.sitemaps.org/schemas/sitemap/0.9}loc")])
 
-            title = soup.title.string.strip().replace("Docs | Plural |", "") if soup.title else "No Title"
-            div = soup.find("div", class_="sc-520f8824-0 jyoUZy")
-            if div:
-                subtitle = div.find("p").text.strip()
-                content_elements = div.find_all(["h1", "h2", "h3", "h4", "h5", "h6", "p", "ul", "pre", "img", "a"])
-                markdown_content = []
-                for element in content_elements:
-                    if element.name.startswith("h"):
-                        heading_level = int(element.name[1])
-                        heading_text = element.text.strip()
-                        markdown_content.append("#" * heading_level + " " + heading_text)
-                    elif element.name == "pre":
-                        code_block = element.text.strip()
-                        markdown_content.append(f"```\n{code_block}\n```")
-                    elif element.name == "img":
-                        image_src = element["src"]
-                        markdown_content.append(f"![Image]({image_src})")
-                    elif element.name == "a":
-                        link_href = element["href"]
-                        link_text = element.text.strip()
-                        markdown_content.append(f"[{link_text}]({link_href})")
-                    else:
-                        paragraph_text = element.text.strip()
-                        markdown_content.append(paragraph_text)
+embed_model = OpenAIEmbedding(embed_batch_size=10)
+service_context = ServiceContext.from_defaults(embed_model=embed_model)
+set_global_service_context(service_context)
 
-                markdown_text = "\n\n".join(markdown_content)
 
-                yield {
-                    "page_link": url,
-                    "title": title,
-                    "text": markdown_text,
-                    "source_links": [],
-                }
+docs = [d for d in itertools.chain(scrape_app_docs(), scrape_plural_docs())]
+index = VectorStoreIndex.from_documents(docs)
+index.storage_context.persist()
 
-        except Exception as e:
-            print(f"Failed to scrape page: {url}")
-            print(f"Error: {str(e)}\n")
-
-def indexed(doc, i):
-    doc["id"] = i
-    return doc
-
-with open("scraped_data.json", "w") as file:
-    docs = [indexed(d, i) for i, d in enumerate(itertools.chain(scrape_app_docs(), scrape_plural_docs()))]
-    json.dump(docs, file, indent=2)
-
-print("Scraped data saved to 'scraped_data.json'")
+print("persisted new vector index")

@@ -1,8 +1,13 @@
+import os
+import openai
 from fastapi import FastAPI, HTTPException
-from llama_index import StorageContext, load_index_from_storage
+from llama_index import StorageContext, load_index_from_storage, ServiceContext, set_global_service_context
 from llama_index.indices.postprocessor import SentenceEmbeddingOptimizer
+from llama_index.embeddings import OpenAIEmbedding
 
 from pydantic import BaseModel
+
+openai.api_key = os.environ["OPENAI_API_KEY"]
 
 app = FastAPI()
 
@@ -11,6 +16,11 @@ class QueryRequest(BaseModel):
 
 class QueryResponse(BaseModel):
     answer: str
+
+
+embed_model = OpenAIEmbedding(embed_batch_size=10)
+service_context = ServiceContext.from_defaults(embed_model=embed_model)
+set_global_service_context(service_context)
 
 storage_context = StorageContext.from_defaults(persist_dir="./storage")
 index = load_index_from_storage(storage_context)

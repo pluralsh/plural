@@ -261,7 +261,7 @@ jobs:
   release:
     name: Create GitHub release
     runs-on: ubuntu-20.04
-    needs: [publish, publish-frontend]
+    needs: [publish, publish-frontend, publish-ai]
     permissions:
       contents: write
       discussions: write

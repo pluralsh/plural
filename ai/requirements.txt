@@ -53,3 +53,7 @@ uvloop==0.17.0
 watchfiles==0.19.0
 websockets==11.0.3
 yarl==1.9.2
+python-graphql-client
+nltk
+config
+html2text

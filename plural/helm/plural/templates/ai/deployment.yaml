@@ -28,6 +28,12 @@ spec:
         - name: http
           containerPort: {{ .Values.ai.port }}
           protocol: TCP
+        env:
+        - name: OPENAI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: plural-env
+              key: OPENAI_BEARER_TOKEN
         livenessProbe:
           httpGet:
             path: /

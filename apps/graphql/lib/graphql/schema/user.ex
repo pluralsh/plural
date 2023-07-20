@@ -102,9 +102,12 @@ defmodule GraphQl.Schema.User do
     field :provider,             :provider
     field :roles,                :roles
 
+    @desc "the groups attached to this user, only fetch this when querying an individual user"
+    field :groups,           list_of(:group), resolve: dataloader(User)
+
+    @desc "the roles attached to this user, only fetch this when querying an individual user"
     field :bound_roles,      list_of(:role), resolve: fn
-      %{id: id}, _, %{context: %{current_user: %{id: id} = current_user}} -> {:ok, Core.Schema.User.roles(current_user)}
-      _, _, _ -> {:error, "can only query roles on yourself"}
+      user, _, _ -> {:ok, Core.Schema.User.roles(user)}
     end
 
     field :publisher,            :publisher, resolve: dataloader(User)
@@ -326,6 +329,13 @@ defmodule GraphQl.Schema.User do
     field :me, :user do
       middleware Authenticated, :external
       resolve fn _, %{context: %{current_user: user}} -> {:ok, user} end
+    end
+
+    field :user, :user do
+      middleware Authenticated
+      arg :id, non_null(:id)
+
+      safe_resolve &User.resolve_user/2
     end
 
     field :login_method, :login_method_response do

@@ -12,6 +12,7 @@ defmodule Core.Services.Accounts do
     Role,
     IntegrationWebhook,
     OAuthIntegration,
+    OIDCProvider,
     DomainMapping,
     RoleBinding,
     ImpersonationPolicyBinding,
@@ -431,7 +432,7 @@ defmodule Core.Services.Accounts do
   @spec realize_invite(map, binary) :: user_resp
   def realize_invite(attributes, invite_id) do
     invite = get_invite!(invite_id)
-             |> Core.Repo.preload([:groups, user: :account])
+             |> Core.Repo.preload([:groups, :oidc_provider, :service_account, user: :account])
 
     start_transaction()
     |> add_operation(:user, fn _ ->
@@ -453,6 +454,8 @@ defmodule Core.Services.Accounts do
       end
     end)
     |> add_to_groups(invite)
+    |> add_bindings(:oidc, invite)
+    |> add_bindings(:sa, invite)
     |> add_operation(:invite, fn _ -> Core.Repo.delete(invite) end)
     |> add_operation(:account, fn
       %{user: %{id: uid, account: %{root_user_id: uid} = account}} ->
@@ -474,6 +477,35 @@ defmodule Core.Services.Accounts do
     end)
   end
   defp add_to_groups(xact, _), do: xact
+
+  defp add_bindings(xact, :oidc, %Invite{oidc_provider: %OIDCProvider{} = provider}) do
+    add_operation(xact, :oidc, fn %{upsert: %{id: id}} ->
+      provider = Core.Repo.preload(provider, [:bindings])
+      bindings = add_binding(provider.bindings, id)
+
+      OIDCProvider.changeset(provider, %{bindings: bindings})
+      |> Core.Repo.update()
+    end)
+  end
+  defp add_bindings(xact, :sa, %Invite{service_account: %User{} = sa}) do
+    add_operation(xact, :sa, fn %{upsert: %{id: id}} ->
+      sa = Core.Repo.preload(sa, [impersonation_policy: [:bindings]])
+      bindings = add_binding(sa.impersonation_policy.bindings, id)
+
+      User.service_account_changeset(sa, %{impersonation_policy: %{bindings: bindings}})
+      |> Core.Repo.update()
+    end)
+  end
+  defp add_bindings(xact, _, _), do: xact
+
+  defp add_binding(bindings, user_id) do
+    Enum.map([%{user_id: user_id} | bindings], fn
+      %{user_id: uid} when is_binary(uid) -> %{user_id: uid}
+      %{group_id: gid} when is_binary(gid) -> %{group_id: gid}
+    end)
+    |> MapSet.new()
+    |> MapSet.to_list()
+  end
 
   @doc """
   Creates a group in the user's account

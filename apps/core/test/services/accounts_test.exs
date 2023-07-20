@@ -385,6 +385,34 @@ defmodule Core.Services.AccountsTest do
       assert_receive {:event, %PubSub.UserCreated{item: ^user}}
     end
 
+    test "it can bind users to service accounts/oidc providers", %{user: user, account: account} do
+      oidc = insert(:oidc_provider)
+      sa = insert(:user, service_account: true, account: account)
+      group = insert(:group, account: account)
+      insert(:oidc_provider_binding, provider: oidc, group: group)
+      policy = insert(:impersonation_policy, user: sa)
+      insert(:impersonation_policy_binding, policy: policy, group: group)
+
+      {:ok, invite} = Accounts.create_invite(%{
+        email: "someone@example.com",
+        oidc_provider_id: oidc.id,
+        service_account_id: sa.id
+      }, user)
+
+      {:ok, new_user} = Accounts.realize_invite(%{
+        password: "some long password",
+        name: "Some User"
+      }, invite.secure_id)
+
+      %{bindings: bindings} = Core.Repo.preload(oidc, [:bindings])
+      assert Enum.find_value(bindings, & &1.group_id) == group.id
+      assert Enum.find_value(bindings, & &1.user_id) == new_user.id
+
+      %{impersonation_policy: %{bindings: bindings}} = Core.Repo.preload(sa, [impersonation_policy: :bindings])
+      assert Enum.find_value(bindings, & &1.group_id) == group.id
+      assert Enum.find_value(bindings, & &1.user_id) == new_user.id
+    end
+
     test "it can bind users to groups when realizing an invite", %{user: user, account: account} do
       groups = insert_list(2, :group, account: account)
       {:ok, invite} = Accounts.create_invite(%{

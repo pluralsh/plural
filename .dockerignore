@@ -13,4 +13,5 @@ test/
 priv/static/
 creds/
 www/
+ai/
 .github/

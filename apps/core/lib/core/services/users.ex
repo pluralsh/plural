@@ -35,6 +35,9 @@ defmodule Core.Services.Users do
   @spec get_user(binary) :: User.t | nil
   def get_user(user_id), do: Core.Repo.get(User, user_id)
 
+  @spec get_user!(binary) :: User.t
+  def get_user!(user_id), do: Core.Repo.get!(User, user_id)
+
   @spec  get_user_by_email!(binary) :: User.t
   def get_user_by_email!(email),
     do: Core.Repo.get_by!(User, email: email)
@@ -76,6 +79,17 @@ defmodule Core.Services.Users do
 
   @spec get_login_token(binary) :: LoginToken.t | nil
   def get_login_token(token), do: Core.Repo.get_by(LoginToken, token: token)
+
+  @doc """
+  Determines if a user can view details of another user
+  """
+  @spec accessible(User.t | binary, User.t) :: user_resp
+  def accessible(%User{} = user, %User{} = actor), do: allow(user, actor, :access)
+  def accessible(user_id, %User{} = user) when is_binary(user_id) do
+    get_user!(user_id)
+    |> Core.Services.Rbac.preload()
+    |> accessible(user)
+  end
 
   @doc """
   Validates the given password using Argon2

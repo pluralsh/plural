@@ -43,6 +43,42 @@ defmodule GraphQl.UserQueriesTest do
     end
   end
 
+  describe "user" do
+    test "a user can query details of another user on their account" do
+      %{account: account} = user = insert(:user)
+      other = insert(:user, account: account)
+      group = insert(:group, account: account)
+      insert(:group_member, user: other, group: group)
+      role = insert(:role, account: account)
+      insert(:role_binding, role: role, user: other)
+
+      {:ok, %{data: %{"user" => found}}} = run_query("""
+        query User($id: ID!) {
+          user(id: $id) {
+            id
+            groups { id }
+            boundRoles { id }
+          }
+        }
+      """, %{"id" => other.id}, %{current_user: user})
+
+      assert found["id"] == other.id
+      assert ids_equal(found["groups"], [group])
+      assert ids_equal(found["boundRoles"], [role])
+    end
+
+    test "users cannot query users across accounts" do
+      user = insert(:user)
+      other = insert(:user)
+
+      {:ok, %{errors: [_ | _]}} = run_query("""
+        query User($id: ID!) {
+          user(id: $id) { id }
+        }
+      """, %{"id" => other.id}, %{current_user: user})
+    end
+  end
+
   describe "publisher" do
     test "It will fetch your publisher" do
       %{owner: user} = publisher = insert(:publisher)

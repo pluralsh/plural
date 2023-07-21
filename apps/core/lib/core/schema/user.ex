@@ -12,7 +12,8 @@ defmodule Core.Schema.User do
     ImpersonationPolicy,
     GroupMember,
     Role,
-    DemoProject
+    DemoProject,
+    Invite
   }
 
   @email_re ~r/^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9-\.]+\.[a-zA-Z]{2,}$/
@@ -78,6 +79,7 @@ defmodule Core.Schema.User do
     has_one :impersonation_policy, ImpersonationPolicy, on_replace: :delete
     has_one :demo_project, DemoProject
 
+    has_many :invites, Invite, foreign_key: :service_account_id
     has_many :webhooks,  Webhook
     has_many :role_bindings, RoleBinding
     many_to_many :groups, Group, join_through: "group_members"

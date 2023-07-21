@@ -113,6 +113,7 @@ defmodule GraphQl.Schema.User do
     field :publisher,            :publisher, resolve: dataloader(User)
     field :account,              non_null(:account), resolve: dataloader(Account)
     field :impersonation_policy, :impersonation_policy, resolve: dataloader(User)
+    field :invites, list_of(:invite), resolve: dataloader(Account)
 
     field :jwt, :string, resolve: fn
       %{jwt: jwt}, _, _ when is_binary(jwt) -> {:ok, jwt}

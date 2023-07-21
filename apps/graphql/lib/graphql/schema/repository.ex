@@ -282,6 +282,7 @@ defmodule GraphQl.Schema.Repository do
 
     field :consent,  :consent_request
 
+    field :invites,  list_of(:invite), resolve: dataloader(Account)
     field :bindings, list_of(:oidc_provider_binding), resolve: dataloader(Repository)
 
     timestamps()

@@ -8,6 +8,7 @@ defmodule GraphQl.Resolvers.Account do
   def query(Role, _), do: Role
   def query(RoleBinding, _), do: RoleBinding
   def query(GroupMember, _), do: GroupMember
+  def query(Invite, _), do: Invite
   def query(IntegrationWebhook, _), do: IntegrationWebhook
   def query(WebhookLog, _), do: WebhookLog
   def query(DomainMapping, _), do: DomainMapping

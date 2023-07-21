@@ -21,9 +21,11 @@ defmodule GraphQl.Schema.Account do
   end
 
   input_object :invite_attributes do
-    field :email,         :string
-    field :admin,         :boolean
-    field :invite_groups, list_of(:binding_attributes)
+    field :email,              :string
+    field :admin,              :boolean
+    field :oidc_provider_id,   :id
+    field :service_account_id, :id
+    field :invite_groups,      list_of(:binding_attributes)
   end
 
   input_object :group_attributes do

@@ -1387,6 +1387,8 @@ export type InviteAttributes = {
   admin?: InputMaybe<Scalars['Boolean']['input']>;
   email?: InputMaybe<Scalars['String']['input']>;
   inviteGroups?: InputMaybe<Array<InputMaybe<BindingAttributes>>>;
+  oidcProviderId?: InputMaybe<Scalars['ID']['input']>;
+  serviceAccountId?: InputMaybe<Scalars['ID']['input']>;
 };
 
 export type InviteConnection = {

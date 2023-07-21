@@ -639,6 +639,8 @@ input FileAttributes {
 input InviteAttributes {
   email: String
   admin: Boolean
+  oidcProviderId: ID
+  serviceAccountId: ID
   inviteGroups: [BindingAttributes]
 }
 

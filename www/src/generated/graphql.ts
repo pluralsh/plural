@@ -1740,6 +1740,7 @@ export type OidcProvider = {
   consent?: Maybe<ConsentRequest>;
   id: Scalars['ID']['output'];
   insertedAt?: Maybe<Scalars['DateTime']['output']>;
+  invites?: Maybe<Array<Maybe<Invite>>>;
   redirectUris?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
 };
@@ -4770,6 +4771,7 @@ export type User = {
   id: Scalars['ID']['output'];
   impersonationPolicy?: Maybe<ImpersonationPolicy>;
   insertedAt?: Maybe<Scalars['DateTime']['output']>;
+  invites?: Maybe<Array<Maybe<Invite>>>;
   jwt?: Maybe<Scalars['String']['output']>;
   loginMethod?: Maybe<LoginMethod>;
   name: Scalars['String']['output'];
@@ -4795,6 +4797,7 @@ export type UserAttributes = {
   avatar?: InputMaybe<Scalars['UploadOrUrl']['input']>;
   confirm?: InputMaybe<Scalars['String']['input']>;
   email?: InputMaybe<Scalars['String']['input']>;
+  groupIds?: InputMaybe<Array<Scalars['ID']['input']>>;
   loginMethod?: InputMaybe<LoginMethod>;
   name?: InputMaybe<Scalars['String']['input']>;
   onboarding?: InputMaybe<OnboardingState>;

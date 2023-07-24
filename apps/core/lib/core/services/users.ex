@@ -321,12 +321,26 @@ defmodule Core.Services.Users do
   @spec update_user(map, binary, User.t) :: user_resp
   def update_user(attrs, id, %User{} = user) do
     prev = get_user(id)
-    prev
-    |> User.changeset(attrs, :secondary)
-    |> allow(user, :edit)
-    |> when_ok(:update)
+    start_transaction()
+    |> add_operation(:user, fn _ ->
+      prev
+      |> User.changeset(attrs, :secondary)
+      |> allow(user, :edit)
+      |> when_ok(:update)
+    end)
+    |> add_groups(attrs)
+    |> execute(extract: :user)
     |> notify(:update, user)
   end
+
+  defp add_groups(xact, %{group_ids: [_ | _] = group_ids}) do
+    Enum.reduce(group_ids, xact, fn group_id, xact ->
+      add_operation(xact, {:group, group_id}, fn %{user: user} ->
+        Accounts.upsert_group_member(group_id, user.id)
+      end)
+    end)
+  end
+  defp add_groups(xact, _), do: xact
 
   defp validate_pwd(%Ecto.Changeset{} = changes, attrs, prev) do
     with {:ok, _} <- Ecto.Changeset.apply_changes(changes)

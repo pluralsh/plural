@@ -26,6 +26,7 @@ defmodule GraphQl.Schema.User do
     field :login_method,         :login_method
     field :roles,                :roles_attributes
     field :confirm,              :string
+    field :group_ids,            list_of(non_null(:id))
   end
 
   input_object :roles_attributes do

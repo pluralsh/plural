@@ -1,15 +1,8 @@
-import { useQuery } from '@apollo/client'
 import { createContext, useMemo } from 'react'
 import styled from 'styled-components'
 
-import { CLUSTERS } from '../components/overview/queries'
 import LoadingIndicator from '../components/utils/LoadingIndicator'
-import {
-  Cluster,
-  RootQueryType,
-  RootQueryTypeClustersArgs,
-  Source,
-} from '../generated/graphql'
+import { Cluster, Source, useClustersQuery } from '../generated/graphql'
 
 type ClustersContextType = {
   clusters: Cluster[]
@@ -29,10 +22,7 @@ const Error = styled.div(({ theme }) => ({
 }))
 
 export function ClustersContextProvider({ children }) {
-  const { data, loading, error, refetch } = useQuery<
-    Pick<RootQueryType, 'clusters'>,
-    RootQueryTypeClustersArgs
-  >(CLUSTERS, {
+  const { data, loading, error, refetch } = useClustersQuery({
     pollInterval: 30_000,
   })
 

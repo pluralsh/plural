@@ -5,7 +5,12 @@ import {
 } from '@apollo/client/core/types'
 import { DispatchWithoutAction } from 'react'
 
-import { DeleteUserMutation, Exact, User } from '../../../generated/graphql'
+import {
+  DeleteUserMutation,
+  Exact,
+  Group,
+  User,
+} from '../../../generated/graphql'
 
 interface UserSettingsModalProps {
   user: User
@@ -19,12 +24,15 @@ interface UserSettingsModalProps {
 }
 interface UserSettingsProps {
   user: User
+  bindings: Array<Group>
+  onCreateGroup: DispatchWithoutAction
   onCancel: DispatchWithoutAction
   onDelete: DispatchWithoutAction
   onUpdate: DispatchWithoutAction
 }
 
-interface UserSettingsActionsProps extends Omit<UserSettingsProps, 'user'> {
+interface UserSettingsActionsProps
+  extends Omit<UserSettingsProps, 'user' | 'onCreateGroup' | 'bindings'> {
   changed: boolean
   loading?: boolean
 }

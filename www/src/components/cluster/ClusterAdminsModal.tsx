@@ -1,9 +1,13 @@
 import { useMutation } from '@apollo/client'
 import {
   Button,
+  Chip,
+  InfoOutlineIcon,
   ListBoxFooter,
   Modal,
+  PeoplePlusIcon,
   PersonPlusIcon,
+  Tooltip,
 } from '@pluralsh/design-system'
 import { Div, Flex, Span } from 'honorable'
 import {
@@ -14,15 +18,15 @@ import {
   useState,
 } from 'react'
 
+import ClustersContext from '../../contexts/ClustersContext'
 import subscriptionContext from '../../contexts/SubscriptionContext'
-import { Group, Invite } from '../../generated/graphql'
-import CreateGroup from '../account/invite/CreateGroup'
+import { Group } from '../../generated/graphql'
 import InviteUser from '../account/invite/InviteUser'
 import { UPDATE_SERVICE_ACCOUNT } from '../account/queries'
-
 import { BindingInput } from '../account/Typeaheads'
 import { sanitize } from '../account/utils'
 import { GqlError } from '../utils/Alert'
+import CreateGroup from '../utils/group/CreateGroup'
 
 import UpgradeNeededModal from './UpgradeNeededModal'
 
@@ -36,11 +40,12 @@ function ClusterAdmins({
   serviceAccount,
   onClose,
   onInvite,
-  invites,
+  onGroupCreate,
+  selected,
 }): ReactElement {
   const [bindings, setBindings] = useState([
-    ...invites,
     ...(serviceAccount?.impersonationPolicy?.bindings ?? []),
+    ...(selected ?? []),
   ])
 
   const [mutation, { loading, error }] = useMutation(UPDATE_SERVICE_ACCOUNT, {
@@ -50,8 +55,6 @@ function ClusterAdmins({
     },
     onCompleted: onClose,
   })
-
-  console.log(bindings)
 
   return (
     <>
@@ -74,6 +77,17 @@ function ClusterAdmins({
         bindings={bindings
           .filter(({ user }) => !!user)
           .map(({ user: { email } }) => email)}
+        customBindings={serviceAccount.invites?.map((invite) => (
+          <Tooltip label="Pending invitation">
+            <Chip
+              fillLevel={2}
+              size="small"
+              icon={<InfoOutlineIcon color="icon-xlight" />}
+            >
+              <Span color="text-primary-disabled">{invite.email}</Span>
+            </Chip>
+          </Tooltip>
+        ))}
         add={(user) => setBindings([...bindings, { user }])}
         remove={(email) =>
           setBindings(
@@ -101,6 +115,14 @@ function ClusterAdmins({
             bindings.filter(({ group }) => !group || group.name !== name)
           )
         }
+        dropdownFooterFixed={
+          <ListBoxFooter
+            onClick={onGroupCreate}
+            leftContent={<PeoplePlusIcon color="icon-info" />}
+          >
+            <Span color="action-link-inline">Create new group</Span>
+          </ListBoxFooter>
+        }
       />
       <Flex justifyContent="space-between">
         <Button
@@ -122,12 +144,14 @@ function ClusterAdmins({
 }
 
 export function ClusterAdminsModal({ onClose, serviceAccount }) {
+  const { refetchClusters } = useContext(ClustersContext)
   const { isPaidPlan, isTrialPlan } = useContext(subscriptionContext)
 
   const [view, setView] = useState(View.Managers)
-  const [bindings, setBindings] = useState<Array<object>>([])
+  const [lastView, setLastView] = useState(View.Managers)
   const [groups, setGroups] = useState<Array<Group>>([])
   const [onCreateGroup, setOnCreateGroup] = useState<DispatchWithoutAction>()
+  const [bindings, setBindings] = useState<Array<object>>([])
 
   const header = useMemo(() => {
     switch (view) {
@@ -166,32 +190,43 @@ export function ClusterAdminsModal({ onClose, serviceAccount }) {
             serviceAccount={serviceAccount}
             onClose={onClose}
             onInvite={() => setView(View.InviteUser)}
-            invites={bindings}
+            onGroupCreate={() => {
+              setView(View.CreateGroup)
+              setLastView(View.Managers)
+            }}
+            selected={bindings}
           />
         )}
         {view === View.InviteUser && (
           <InviteUser
-            onGroupCreate={() => setView(View.CreateGroup)}
-            onInvite={(invite: Invite) => {
-              setBindings((bindings) => [
-                ...(invite.user
-                  ? [...bindings, { id: invite.user?.id, user: invite.user }]
-                  : [...bindings]),
-              ])
+            onGroupCreate={() => {
+              setView(View.CreateGroup)
+              setLastView(View.InviteUser)
+            }}
+            onInvite={() => {
+              refetchClusters?.()
               setView(View.Managers)
               setGroups([])
             }}
             onBack={() => setView(View.Managers)}
             bindings={groups}
             refetch={setOnCreateGroup}
+            serviceAccountId={serviceAccount.id}
           />
         )}
         {view === View.CreateGroup && (
           <CreateGroup
-            onBack={() => setView(View.InviteUser)}
+            onBack={() => setView(lastView)}
             onCreate={(group: Group) => {
-              setGroups((groups) => [...groups, group])
-              setView(View.InviteUser)
+              switch (lastView) {
+                case View.Managers:
+                  setBindings((bindings) => [...bindings, { group }])
+                  break
+                case View.InviteUser:
+                  setGroups((groups) => [...groups, group])
+              }
+
+              setView(lastView)
               onCreateGroup?.()
             }}
           />

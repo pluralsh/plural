@@ -7,10 +7,8 @@ import {
   MailIcon,
 } from '@pluralsh/design-system'
 import { Switch } from 'honorable'
-import { ReactElement, useContext, useEffect, useMemo, useState } from 'react'
+import { ReactElement, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
-
-import SubscriptionContext from '../../../contexts/SubscriptionContext'
 
 import {
   BindingAttributes,
@@ -50,6 +48,7 @@ function EmailInput({
       error={!valid}
     >
       <Input
+        autoFocus
         placeholder="User email address"
         value={value}
         onChange={({ target: { value } }) => {
@@ -180,6 +179,8 @@ function InviteUserUnstyled({
   onBack,
   bindings,
   refetch,
+  serviceAccountId,
+  oidcProviderId,
   ...props
 }): ReactElement {
   const [valid, setValid] = useState(false)
@@ -207,6 +208,8 @@ function InviteUserUnstyled({
           (g) => ({ groupId: g.id } as BindingAttributes)
         ),
         admin: isAdmin,
+        serviceAccountId,
+        oidcProviderId,
       },
     },
     onCompleted: (result) => {

@@ -1,29 +1,44 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
-import { Box } from 'grommet'
 import { useMutation } from '@apollo/client'
-import { Button, Div, Flex, P } from 'honorable'
 import {
   Card,
   CheckIcon,
   Chip,
   Codeline,
   FormField,
+  InfoOutlineIcon,
   Input,
+  ListBoxFooter,
   PageTitle,
+  PeoplePlusIcon,
+  PersonPlusIcon,
   Toast,
+  Tooltip,
 } from '@pluralsh/design-system'
+import { Box } from 'grommet'
+import { Button, Div, Flex, P, Span } from 'honorable'
 import isEqual from 'lodash/isEqual'
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { BindingInput, fetchGroups, fetchUsers } from '../../account/Typeaheads'
-import { GqlError } from '../../utils/Alert'
+import { AppContext, useAppContext } from '../../../contexts/AppContext'
+import usePrevious from '../../../hooks/usePrevious'
 import { deepUpdate, updateCache } from '../../../utils/graphql'
+import InviteUserModal from '../../account/invite/InviteUserModal'
+import { BindingInput, fetchGroups, fetchUsers } from '../../account/Typeaheads'
 import { sanitize } from '../../account/utils'
 import { CREATE_PROVIDER, UPDATE_PROVIDER } from '../../oidc/queries'
 import { AuthMethod } from '../../oidc/types'
-import usePrevious from '../../../hooks/usePrevious'
 import { REPO_Q } from '../../repository/packages/queries'
-import { useAppContext } from '../../../contexts/AppContext'
+import { GqlError } from '../../utils/Alert'
+import CreateGroupModal from '../../utils/group/CreateGroupModal'
+import ImpersonateServiceAccount from '../../utils/ImpersonateServiceAccount'
 import { AppHeaderActions } from '../AppHeaderActions'
 
 function UrlsInput({ uriFormat = '', urls, setUrls }: any) {
@@ -104,12 +119,15 @@ function UrlsInput({ uriFormat = '', urls, setUrls }: any) {
 }
 
 export function ProviderForm({
+  provider,
   attributes,
   setAttributes,
   bindings,
   setBindings,
   repository,
   onSave,
+  onInvite,
+  onCreateGroup,
   loading,
 }: any) {
   const settings = repository.oauthSettings || {}
@@ -174,11 +192,32 @@ export function ProviderForm({
         bindings={bindings
           .filter(({ user }) => !!user)
           .map(({ user: { email } }) => email)}
+        customBindings={provider?.invites?.map((invite) => (
+          <Tooltip label="Pending invitation">
+            <Chip
+              fillLevel={2}
+              size="small"
+              icon={<InfoOutlineIcon color="icon-xlight" />}
+            >
+              <Span color="text-primary-disabled">{invite.email}</Span>
+            </Chip>
+          </Tooltip>
+        ))}
         fetcher={fetchUsers}
         add={(user) => setBindings([...bindings, { user }])}
         remove={(email) =>
           setBindings(
             bindings.filter(({ user }) => !user || user.email !== email)
+          )
+        }
+        dropdownFooterFixed={
+          provider?.id && (
+            <ListBoxFooter
+              onClick={onInvite}
+              leftContent={<PersonPlusIcon color="icon-info" />}
+            >
+              <Span color="action-link-inline">Invite new user</Span>
+            </ListBoxFooter>
           )
         }
       />
@@ -193,6 +232,16 @@ export function ProviderForm({
         remove={(name) =>
           setBindings(
             bindings.filter(({ group }) => !group || group.name !== name)
+          )
+        }
+        dropdownFooterFixed={
+          provider?.id && (
+            <ListBoxFooter
+              onClick={onCreateGroup}
+              leftContent={<PeoplePlusIcon color="icon-info" />}
+            >
+              <Span color="action-link-inline">Create new group</Span>
+            </ListBoxFooter>
           )
         }
       />
@@ -282,7 +331,7 @@ export function CreateProvider({ installation }: any) {
   return (
     <Div paddingBottom="large">
       <PageTitle
-        heading="OpenID Connect"
+        heading="OpenID connect users"
         paddingTop="medium"
       >
         <AppHeaderActions />
@@ -306,8 +355,20 @@ export function CreateProvider({ installation }: any) {
   )
 }
 
+enum ModalSelection {
+  None,
+  InviteUser,
+  CreateGroup,
+}
+
 export function UpdateProvider({ installation }: any) {
-  const provider = installation.oidcProvider
+  const { refetch } = useContext(AppContext)
+
+  const provider = useMemo(
+    () => installation.oidcProvider,
+    [installation.oidcProvider]
+  )
+
   const [attributes, setAttributes] = useState({
     redirectUris: provider.redirectUris,
     authMethod: provider.authMethod,
@@ -315,6 +376,10 @@ export function UpdateProvider({ installation }: any) {
     clientSecret: provider.clientSecret,
   })
   const [bindings, setBindings] = useState(provider.bindings)
+  const [selectedModal, setSelectedModal] = useState<ModalSelection>(
+    ModalSelection.None
+  )
+
   const [mutation, { loading, error }] = useMutation(UPDATE_PROVIDER, {
     variables: {
       id: installation.id,
@@ -331,7 +396,7 @@ export function UpdateProvider({ installation }: any) {
   return (
     <Div paddingBottom="large">
       <PageTitle
-        heading="OpenID Connect"
+        heading="OpenID connect users"
         paddingTop="medium"
       >
         <AppHeaderActions />
@@ -343,6 +408,7 @@ export function UpdateProvider({ installation }: any) {
         />
       )}
       <ProviderForm
+        provider={provider}
         repository={installation.repository}
         attributes={attributes}
         setAttributes={setAttributes}
@@ -350,7 +416,32 @@ export function UpdateProvider({ installation }: any) {
         setBindings={setBindings}
         onSave={() => mutation()}
         loading={loading}
+        onInvite={() => setSelectedModal(ModalSelection.InviteUser)}
+        onCreateGroup={() => setSelectedModal(ModalSelection.CreateGroup)}
       />
+      <ImpersonateServiceAccount skip>
+        <>
+          {selectedModal === ModalSelection.InviteUser && (
+            <InviteUserModal
+              onClose={() => setSelectedModal(ModalSelection.None)}
+              onInvite={() => {
+                refetch?.()
+                setSelectedModal(ModalSelection.None)
+              }}
+              oidcProviderId={provider?.id}
+            />
+          )}
+          {selectedModal === ModalSelection.CreateGroup && (
+            <CreateGroupModal
+              onClose={() => setSelectedModal(ModalSelection.None)}
+              onCreate={(group) => {
+                setBindings((bindings) => [...bindings, { group }])
+                setSelectedModal(ModalSelection.None)
+              }}
+            />
+          )}
+        </>
+      </ImpersonateServiceAccount>
     </Div>
   )
 }

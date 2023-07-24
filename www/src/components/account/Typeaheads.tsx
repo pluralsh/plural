@@ -86,6 +86,7 @@ function TagInput({
   hint,
   suggestions,
   items,
+  customItems,
   icon,
   onRemove,
   onAdd,
@@ -128,19 +129,23 @@ function TagInput({
         </ComboBox>
         {items?.length > 0 && (
           <ChipList
-            maxVisible={Infinity}
-            chips={items.map((key) => (
-              <Chip
-                size="small"
-                clickable
-                onClick={() => {
-                  onRemove(key)
-                }}
-                closeButton
-              >
-                {key}
-              </Chip>
-            ))}
+            maxVisible={10}
+            chips={[
+              ...items.map((key) => (
+                <Chip
+                  fillLevel={2}
+                  size="small"
+                  clickable
+                  onClick={() => {
+                    onRemove(key)
+                  }}
+                  closeButton
+                >
+                  {key}
+                </Chip>
+              )),
+              ...(customItems ?? []),
+            ]}
           />
         )}
       </FormField>
@@ -169,6 +174,7 @@ export function BindingInput({
   type,
   fetcher,
   bindings,
+  customBindings,
   remove,
   add,
   hint,
@@ -191,6 +197,7 @@ export function BindingInput({
       width="100%"
       suggestions={suggestions}
       items={bindings}
+      customItems={customBindings}
       onRemove={remove}
       onAdd={({ value }) => add(value)}
       onChange={({ target: { value } }) => fetch(client, value, setSuggestions)}

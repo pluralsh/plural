@@ -18,7 +18,16 @@ const Header = styled.div(({ theme }) => ({
   display: 'flex',
 }))
 
-function UpgradeNeededModal({ open, onClose }): ReactElement {
+enum Feature {
+  MultiClusterManagement = 'multi-cluster-management',
+  Groups = 'groups feature',
+}
+
+function UpgradeNeededModal({
+  feature = Feature.MultiClusterManagement,
+  open,
+  onClose,
+}): ReactElement {
   const navigate = useNavigate()
 
   return (
@@ -38,9 +47,7 @@ function UpgradeNeededModal({ open, onClose }): ReactElement {
       style={{ padding: 0 }}
     >
       <Wrap>
-        <Message>
-          Upgrade to Plural Professional to access multi-cluster-management.
-        </Message>
+        <Message>Upgrade to Plural Professional to access {feature}.</Message>
         <Button
           alignSelf="flex-end"
           onClick={() => navigate('/account/billing')}
@@ -53,3 +60,4 @@ function UpgradeNeededModal({ open, onClose }): ReactElement {
 }
 
 export default UpgradeNeededModal
+export { Feature }

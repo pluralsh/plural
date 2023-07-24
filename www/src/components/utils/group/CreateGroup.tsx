@@ -12,7 +12,7 @@ import {
   GroupAttributes,
   useCreateGroupMutation,
 } from '../../../generated/graphql'
-import { GqlError } from '../../utils/Alert'
+import { GqlError } from '../Alert'
 
 import { CreateGroupInputsProps } from './types'
 
@@ -56,6 +56,7 @@ function CreateGroupInputsUnstyled({
         required
       >
         <Input
+          autoFocus
           placeholder="New group"
           value={name}
           onChange={({ target: { value } }) => setName(value)}
@@ -97,13 +98,16 @@ function CreateGroupActionsUnstyled({
 }): ReactElement {
   return (
     <div {...props}>
-      <Button
-        secondary
-        onClick={onBack}
-        startIcon={<CaretLeftIcon />}
-      >
-        Back
-      </Button>
+      {onBack && (
+        <Button
+          secondary
+          onClick={onBack}
+          startIcon={<CaretLeftIcon />}
+        >
+          Back
+        </Button>
+      )}
+      <div />
       <Button
         disabled={disabled || loading}
         loading={loading}
@@ -133,7 +137,7 @@ function CreateGroupUnstyled({ onCreate, onBack, ...props }): ReactElement {
     },
     onCompleted: (result) => {
       onCreate?.(result.createGroup)
-      onBack()
+      onBack?.()
     },
   })
 

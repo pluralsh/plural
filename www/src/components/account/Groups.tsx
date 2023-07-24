@@ -1,5 +1,3 @@
-import { useContext, useState } from 'react'
-import { Flex } from 'honorable'
 import {
   Button,
   GearTrainIcon,
@@ -10,35 +8,33 @@ import {
   PeopleIcon,
   SearchIcon,
 } from '@pluralsh/design-system'
+import { Flex } from 'honorable'
+import { useContext, useState } from 'react'
 
 import CurrentUserContext from '../../contexts/CurrentUserContext'
+import SubscriptionContext from '../../contexts/SubscriptionContext'
 import {
   Group as GroupT,
   GroupsDocument,
   Permission,
   useDeleteGroupMutation,
 } from '../../generated/graphql'
-import { removeConnection, updateCache } from '../../utils/graphql'
-import ListInput from '../utils/ListInput'
-import { List } from '../utils/List'
-import { DeleteIconButton } from '../utils/IconButtons'
-
 import { canEdit } from '../../utils/account'
-
-import SubscriptionContext from '../../contexts/SubscriptionContext'
-
+import { removeConnection, updateCache } from '../../utils/graphql'
 import { Confirm } from '../utils/Confirm'
+import { DeleteIconButton } from '../utils/IconButtons'
+import { List } from '../utils/List'
+import ListInput from '../utils/ListInput'
 
+import BillingFeatureBlockBanner from './billing/BillingFeatureBlockBanner'
+import BillingLegacyUserBanner from './billing/BillingLegacyUserBanner'
 import BillingTrialBanner from './billing/BillingTrialBanner'
-
-import { ViewGroup } from './Group'
 import { CreateGroup } from './CreateGroup'
 import { EditGroupAttributes, EditGroupMembers } from './EditGroup'
+import { ViewGroup } from './Group'
+import { GroupsList } from './GroupsList'
 import { Info } from './Info'
 import { hasRbac } from './utils'
-import { GroupsList } from './GroupsList'
-import BillingLegacyUserBanner from './billing/BillingLegacyUserBanner'
-import BillingFeatureBlockBanner from './billing/BillingFeatureBlockBanner'
 
 function Header({ q, setQ }: any) {
   return (

@@ -136,6 +136,7 @@ function GroupBindingsComboBoxUnstyled({
           maxVisible={Infinity}
           chips={[...(selected ?? [])].map((group) => (
             <Chip
+              fillLevel={2}
               size="small"
               clickable
               onClick={() => {

@@ -1,6 +1,6 @@
 import {
-  ComponentProps,
-  PropsWithChildren,
+  DispatchWithoutAction,
+  ReactElement,
   createContext,
   useContext,
   useMemo,
@@ -8,16 +8,25 @@ import {
 
 import { Repository } from '../generated/graphql'
 
-const AppContext = createContext<Repository | Record<string, never>>({})
+export const AppContext = createContext<ContextProps>({} as ContextProps)
 
-export const useAppContext = () => useContext(AppContext) ?? {}
+export const useAppContext = () => useContext(AppContext)?.repository ?? {}
 
-type ContextProps = PropsWithChildren<{
-  value: ComponentProps<typeof AppContext.Provider>['value'] | undefined | null
-}>
+interface ContextProps {
+  repository: Repository
+  refetch: DispatchWithoutAction
+  children: ReactElement
+}
 
-export function AppContextProvider({ children, value }: ContextProps) {
-  const finalValue = useMemo(() => value ?? {}, [value])
+export function AppContextProvider({
+  children,
+  repository,
+  refetch,
+}: ContextProps) {
+  const finalValue = useMemo(
+    () => ({ repository, refetch } as ContextProps),
+    [refetch, repository]
+  )
 
   return (
     <AppContext.Provider value={finalValue}>{children}</AppContext.Provider>

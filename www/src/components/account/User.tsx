@@ -49,7 +49,12 @@ export function UserInfo({
       />
       <Box>
         <Span fontWeight="bold">{name}</Span>
-        <Span color="text-light">{email}</Span>
+        <Span
+          color="text-light"
+          body2
+        >
+          {email}
+        </Span>
       </Box>
     </Box>
   )

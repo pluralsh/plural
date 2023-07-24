@@ -1,8 +1,11 @@
 import { Modal } from '@pluralsh/design-system'
-import { Dispatch, ReactElement, useMemo, useState } from 'react'
+import { DispatchWithoutAction, ReactElement, useMemo, useState } from 'react'
 import styled from 'styled-components'
 
-import CreateGroup from './CreateGroup'
+import { Group } from '../../../generated/graphql'
+import { GroupBase } from '../../utils/combobox/types'
+import CreateGroup from '../../utils/group/CreateGroup'
+
 import InviteUser from './InviteUser'
 
 enum View {
@@ -15,10 +18,14 @@ const InviteUserModal = styled(InviteUserModalUnstyled)((_) => ({}))
 function InviteUserModalUnstyled({
   onInvite,
   onClose,
+  serviceAccountId,
+  oidcProviderId,
   ...props
 }): ReactElement {
   const [view, setView] = useState(View.InviteUser)
-  const [refetch, setRefetch] = useState<Dispatch<void>>()
+  const [refetch, setRefetch] = useState<DispatchWithoutAction>()
+  const [bindings, setBindings] = useState<Array<GroupBase>>([])
+
   const header = useMemo(() => {
     switch (view) {
       case View.CreateGroup:
@@ -44,12 +51,18 @@ function InviteUserModalUnstyled({
             onInvite={onInvite}
             onCancel={onClose}
             refetch={setRefetch}
+            bindings={bindings}
+            serviceAccountId={serviceAccountId}
+            oidcProviderId={oidcProviderId}
           />
         )}
         {view === View.CreateGroup && (
           <CreateGroup
             onBack={() => setView(View.InviteUser)}
-            onCreate={refetch}
+            onCreate={(group: Group) => {
+              setBindings((bindings) => [...bindings, group])
+              refetch?.()
+            }}
           />
         )}
       </div>

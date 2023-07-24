@@ -3643,6 +3643,8 @@ type User {
 
   impersonationPolicy: ImpersonationPolicy
 
+  invites: [Invite]
+
   jwt: String
 
   hasInstallations: Boolean
@@ -3678,6 +3680,7 @@ type OidcProvider {
   authMethod: OidcAuthMethod!
   configuration: OuathConfiguration
   consent: ConsentRequest
+  invites: [Invite]
   bindings: [OidcProviderBinding]
   insertedAt: DateTime
   updatedAt: DateTime

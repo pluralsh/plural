@@ -340,3 +340,15 @@ query ResetToken($id: ID!) {
 mutation ReadNotifications($incidentId: ID) {
   readNotifications(incidentId: $incidentId)
 }
+
+mutation DeleteUser($id: ID!) {
+  deleteUser(id: $id) {
+    ...User
+  }
+}
+
+mutation UpdateUser($id: ID, $attributes: UserAttributes!) {
+  updateUser(id: $id, attributes: $attributes) {
+    ...User
+  }
+}

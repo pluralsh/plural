@@ -91,6 +91,7 @@ function TagInput({
   onAdd,
   width,
   onChange,
+  dropdownFooterFixed,
 }: any) {
   const [inputValue, setInputValue] = useState('')
 
@@ -108,6 +109,7 @@ function TagInput({
         <ComboBox
           aria-label={label}
           inputValue={inputValue}
+          dropdownFooterFixed={dropdownFooterFixed}
           onSelectionChange={(key) => {
             const selection = suggestions.find((s) => s?.value?.id === key)
 
@@ -172,6 +174,7 @@ export function BindingInput({
   hint,
   placeholder = TEXT[type]?.placeholder,
   label = TEXT[type]?.label,
+  dropdownFooterFixed,
 }: any) {
   const client = useApolloClient()
   const [suggestions, setSuggestions] = useState([])
@@ -191,6 +194,7 @@ export function BindingInput({
       onRemove={remove}
       onAdd={({ value }) => add(value)}
       onChange={({ target: { value } }) => fetch(client, value, setSuggestions)}
+      dropdownFooterFixed={dropdownFooterFixed}
     />
   )
 }

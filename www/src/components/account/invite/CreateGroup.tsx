@@ -12,6 +12,7 @@ import {
   GroupAttributes,
   useCreateGroupMutation,
 } from '../../../generated/graphql'
+import { GqlError } from '../../utils/Alert'
 
 import { CreateGroupInputsProps } from './types'
 
@@ -126,18 +127,24 @@ function CreateGroupUnstyled({ onCreate, onBack, ...props }): ReactElement {
   const [attributes, setAttributes] = useState<GroupAttributes>(
     {} as GroupAttributes
   )
-  const [createGroup, { loading }] = useCreateGroupMutation({
+  const [createGroup, { loading, error }] = useCreateGroupMutation({
     variables: {
       attributes,
     },
-    onCompleted: () => {
-      onCreate?.()
+    onCompleted: (result) => {
+      onCreate?.(result.createGroup)
       onBack()
     },
   })
 
   return (
     <div {...props}>
+      {error && (
+        <GqlError
+          error={error}
+          header="Failed to create group"
+        />
+      )}
       <CreateGroupInputs
         onValidityChange={setValid}
         onChange={setAttributes}

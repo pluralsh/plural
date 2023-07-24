@@ -127,15 +127,16 @@ export function Cluster() {
             {cluster.owner?.serviceAccount && (
               <>
                 <CollapsibleButton
-                  label="Administrators"
+                  label="Managers"
                   icon={<PersonPlusIcon />}
                   onClick={() => setAdminsOpen(true)}
                 />
-                <ClusterAdminsModal
-                  open={adminsOpen}
-                  setOpen={setAdminsOpen}
-                  serviceAccount={cluster.owner}
-                />
+                {adminsOpen && (
+                  <ClusterAdminsModal
+                    serviceAccount={cluster.owner}
+                    onClose={() => setAdminsOpen(false)}
+                  />
+                )}
               </>
             )}
 

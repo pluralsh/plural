@@ -67,6 +67,9 @@ fragment Invite on Invite {
   secureId
   email
   insertedAt
+  user {
+    ...User
+  }
 }
 
 fragment OidcLogin on OidcLogin {

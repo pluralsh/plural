@@ -1,26 +1,19 @@
 import {
   Button,
-  Chip,
+  CaretLeftIcon,
   Codeline,
-  ComboBox,
   FormField,
   Input,
-  ListBoxFooter,
-  ListBoxFooterPlus,
-  ListBoxItem,
-  ListBoxItemChipList,
   MailIcon,
-  PeopleIcon,
-  PeoplePlusIcon,
 } from '@pluralsh/design-system'
 import { Switch } from 'honorable'
-import { debounce } from 'lodash'
-import { ReactElement, useCallback, useEffect, useMemo, useState } from 'react'
+import { ReactElement, useContext, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
+
+import SubscriptionContext from '../../../contexts/SubscriptionContext'
 
 import {
   BindingAttributes,
-  Group,
   GroupConnection,
   Invite,
   useCreateInviteMutation,
@@ -29,11 +22,12 @@ import {
 import { isValidEmail } from '../../../utils/email'
 import { extendConnection } from '../../../utils/graphql'
 import { GqlError } from '../../utils/Alert'
+import GroupBindingsComboBox from '../../utils/combobox/GroupBindingsComboBox'
+import { toGroups } from '../../utils/combobox/helpers'
+import { GroupBase } from '../../utils/combobox/types'
 import { inviteLink } from '../utils'
 
-import { toGroups } from './helpers'
-
-import { EmailInputProps, GroupBase, GroupBindingsSelectorProps } from './types'
+import { EmailInputProps } from './types'
 
 function EmailInput({
   onValidityChange,
@@ -68,116 +62,6 @@ function EmailInput({
   )
 }
 
-const GroupBindingsSelector = styled(GroupBindingsSelectorUnstyled)(
-  ({ theme }) => ({
-    '.content': {
-      color: theme.colors['text-xlight'],
-
-      '.leftContent': {
-        color: theme.colors['icon-light'],
-      },
-    },
-
-    '.create-group-footer': {
-      ...theme.partials.text.body2,
-      color: theme.colors['action-link-inline'],
-    },
-  })
-)
-
-const ChipList = styled(ListBoxItemChipList)(({ theme }) => ({
-  marginTop: theme.spacing.small,
-  justifyContent: 'start',
-}))
-
-function GroupBindingsSelectorUnstyled({
-  onQueryChange,
-  onGroupCreate,
-  onGroupAdd,
-  onGroupRemove,
-  groups,
-  selected,
-  fetchMore,
-  ...props
-}: GroupBindingsSelectorProps): ReactElement {
-  const placeholder = 'Search for a group'
-  const [query, setQuery] = useState('')
-  const [displayGroups, setDisplayGroups] = useState<Array<Group>>([])
-
-  const throttledOnQueryChange = useMemo(
-    () => debounce((value) => onQueryChange?.(value), 750),
-    [onQueryChange]
-  )
-
-  useEffect(() => setDisplayGroups(toGroups(groups)), [groups])
-
-  return (
-    <FormField
-      label="Group bindings"
-      {...props}
-    >
-      <ComboBox
-        inputValue={query}
-        startIcon={<PeopleIcon />}
-        inputProps={{ placeholder, showClearButton: true }}
-        dropdownFooterFixed={
-          <ListBoxFooter
-            onClick={() => onGroupCreate?.()}
-            leftContent={<PeoplePlusIcon color="icon-info" />}
-            {...props}
-          >
-            <span className="create-group-footer">Create new group</span>
-          </ListBoxFooter>
-        }
-        dropdownFooter={
-          groups?.pageInfo?.hasNextPage ? (
-            <ListBoxFooterPlus>View more</ListBoxFooterPlus>
-          ) : undefined
-        }
-        onFooterClick={() =>
-          fetchMore({
-            variables: { cursor: groups?.pageInfo?.endCursor },
-            updateQuery: (prev, { fetchMoreResult: { groups } }) =>
-              extendConnection(prev, groups, 'groups'),
-          })
-        }
-        onSelectionChange={(key) =>
-          onGroupAdd?.(displayGroups?.find((g) => g.id === key) as GroupBase)
-        }
-        onInputChange={(value) => {
-          setQuery(value)
-          throttledOnQueryChange(value)
-        }}
-      >
-        {displayGroups
-          .filter((g) => !selected?.find((s) => g.id === s.id))
-          .map((g) => (
-            <ListBoxItem
-              leftContent={<PeopleIcon />}
-              key={g.id}
-              label={g.name}
-              description={g.description}
-              textValue={g.name}
-            />
-          ))}
-      </ComboBox>
-      <ChipList
-        maxVisible={Infinity}
-        chips={[...(selected ?? [])].map((group) => (
-          <Chip
-            size="small"
-            clickable
-            onClick={() => onGroupRemove?.(group)}
-            closeButton
-          >
-            {group.name}
-          </Chip>
-        ))}
-      />
-    </FormField>
-  )
-}
-
 const InviteUserActions = styled(InviteUserActionsUnstyled)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'row',
@@ -189,21 +73,33 @@ const InviteUserActions = styled(InviteUserActionsUnstyled)(({ theme }) => ({
 function InviteUserActionsUnstyled({
   disabled,
   loading,
-  onClose,
+  onCancel,
+  onBack,
   onCreate,
   invited,
   ...props
 }): ReactElement {
   return (
     <div {...props}>
+      {onBack && (
+        <Button
+          secondary
+          onClick={onBack}
+          startIcon={<CaretLeftIcon />}
+        >
+          Back
+        </Button>
+      )}
       {!invited && (
         <>
-          <Button
-            secondary
-            onClick={onClose}
-          >
-            Cancel
-          </Button>
+          {onCancel && (
+            <Button
+              secondary
+              onClick={onCancel}
+            >
+              Cancel
+            </Button>
+          )}
           <Button
             disabled={disabled || loading}
             loading={loading}
@@ -216,7 +112,7 @@ function InviteUserActionsUnstyled({
       {invited && (
         <>
           <div />
-          <Button onClick={onClose}>Done</Button>
+          <Button onClick={onCancel ?? onBack}>Done</Button>
         </>
       )}
     </div>
@@ -280,16 +176,20 @@ const InviteUser = styled(InviteUserUnstyled)(({ theme }) => ({
 function InviteUserUnstyled({
   onGroupCreate,
   onInvite,
-  onClose,
+  onCancel,
+  onBack,
+  bindings,
   refetch,
   ...props
 }): ReactElement {
   const [valid, setValid] = useState(false)
   const [query, setQuery] = useState('')
-  const [groupBindings, setGroupBindings] = useState<Array<GroupBase>>([])
+  const [groupBindings, setGroupBindings] = useState<Array<GroupBase>>(
+    bindings ?? []
+  )
   const [email, setEmail] = useState('')
-  const [invite, setInvite] = useState<Invite>()
   const [isAdmin, setAdmin] = useState(false)
+  const [invite, setInvite] = useState<Invite>()
 
   const {
     data: groupsQuery,
@@ -311,26 +211,11 @@ function InviteUserUnstyled({
     },
     onCompleted: (result) => {
       setInvite(result?.createInvite as Invite)
-      onInvite?.()
+      onInvite?.(result?.createInvite as Invite)
     },
   })
 
-  const onAdd = useCallback(
-    (group: GroupBase) =>
-      group && setGroupBindings((selected) => [...selected, group]),
-    []
-  )
-
-  const onRemove = useCallback(
-    (group: GroupBase) =>
-      group &&
-      setGroupBindings((selected) => [
-        ...selected.filter((s) => s.id !== group.id),
-      ]),
-    []
-  )
-
-  useEffect(() => refetch(() => refetchGroups), [refetch, refetchGroups])
+  useEffect(() => refetch?.(() => refetchGroups), [refetch, refetchGroups])
 
   return (
     <div {...props}>
@@ -353,18 +238,28 @@ function InviteUserUnstyled({
           <span className="message">Admin</span>
         </Switch>
       </div>
-      <GroupBindingsSelector
-        onGroupCreate={onGroupCreate}
-        onQueryChange={setQuery}
-        onGroupAdd={onAdd}
-        onGroupRemove={onRemove}
-        groups={groupsQuery?.groups as GroupConnection}
-        selected={groupBindings}
-        fetchMore={fetchMore}
+      <GroupBindingsComboBox
+        onViewMore={() =>
+          fetchMore({
+            variables: { cursor: groupsQuery?.groups?.pageInfo?.endCursor },
+            updateQuery: (prev, { fetchMoreResult: { groups } }) =>
+              extendConnection(prev, groups, 'groups'),
+          })
+        }
+        onInputChange={setQuery}
+        onCreate={onGroupCreate}
+        onSelect={(group) => setGroupBindings((groups) => [...groups, group])}
+        onRemove={(group) =>
+          setGroupBindings((groups) => groups.filter((g) => g.id !== group.id))
+        }
+        groups={toGroups(groupsQuery?.groups as GroupConnection)}
+        preselected={bindings}
+        hasMore={groupsQuery?.groups?.pageInfo.hasNextPage}
       />
       {invite && <InvitationMessage invite={invite} />}
       <InviteUserActions
-        onClose={onClose}
+        onCancel={onCancel}
+        onBack={onBack}
         onCreate={createInvite}
         disabled={!valid || loading}
         loading={loading}

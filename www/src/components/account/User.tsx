@@ -17,6 +17,7 @@ import {
 import CurrentUserContext from '../../contexts/CurrentUserContext'
 import { DELETE_USER } from '../users/queries'
 import { Permission } from '../../generated/graphql'
+import UserSettingsModal from '../users/settings/UserSettingsModal'
 import { ProviderIcon } from '../utils/ProviderIcon'
 import { canEdit } from '../../utils/account'
 
@@ -56,6 +57,7 @@ export function UserInfo({
 
 function UserEdit({ user, update }: any) {
   const [confirm, setConfirm] = useState(false)
+  const [settingsOpen, setSettingsOpen] = useState(false)
   const [mutation] = useMutation(EDIT_USER, {
     variables: { id: user.id },
   })
@@ -72,6 +74,11 @@ function UserEdit({ user, update }: any) {
       onSelect: () =>
         // @ts-expect-error
         mutation({ variables: { attributes: { roles: { admin: !isAdmin } } } }),
+      props: {},
+    },
+    settings: {
+      label: 'User settings',
+      onSelect: () => setSettingsOpen(true),
       props: {},
     },
     deleteUser: {
@@ -100,6 +107,13 @@ function UserEdit({ user, update }: any) {
           />
         ))}
       </MoreMenu>
+      {settingsOpen && (
+        <UserSettingsModal
+          user={user}
+          update={update}
+          onClose={() => setSettingsOpen(false)}
+        />
+      )}
       <Confirm
         open={confirm}
         close={() => setConfirm(false)}

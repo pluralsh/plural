@@ -5,29 +5,29 @@ import styled from 'styled-components'
 import CreateGroup from './CreateGroup'
 import InviteUser from './InviteUser'
 
-enum Action {
+enum View {
   InviteUser,
   CreateGroup,
 }
 
-const InviteUserModal = styled(InviteUserModalUnstyled)(({ theme }) => ({}))
+const InviteUserModal = styled(InviteUserModalUnstyled)((_) => ({}))
 
 function InviteUserModalUnstyled({
   onInvite,
   onClose,
   ...props
 }): ReactElement {
-  const [action, setAction] = useState(Action.InviteUser)
+  const [view, setView] = useState(View.InviteUser)
   const [refetch, setRefetch] = useState<Dispatch<void>>()
   const header = useMemo(() => {
-    switch (action) {
-      case Action.CreateGroup:
+    switch (view) {
+      case View.CreateGroup:
         return 'create group'
-      case Action.InviteUser:
+      case View.InviteUser:
       default:
         return 'invite user'
     }
-  }, [action])
+  }, [view])
 
   return (
     <Modal
@@ -38,17 +38,17 @@ function InviteUserModalUnstyled({
       header={header}
     >
       <div {...props}>
-        {action === Action.InviteUser && (
+        {view === View.InviteUser && (
           <InviteUser
-            onGroupCreate={() => setAction(Action.CreateGroup)}
+            onGroupCreate={() => setView(View.CreateGroup)}
             onInvite={onInvite}
-            onClose={onClose}
+            onCancel={onClose}
             refetch={setRefetch}
           />
         )}
-        {action === Action.CreateGroup && (
+        {view === View.CreateGroup && (
           <CreateGroup
-            onBack={() => setAction(Action.InviteUser)}
+            onBack={() => setView(View.InviteUser)}
             onCreate={refetch}
           />
         )}

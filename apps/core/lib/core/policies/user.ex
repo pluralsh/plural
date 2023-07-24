@@ -8,6 +8,8 @@ defmodule Core.Policies.User do
     check_rbac(user, :publish, account: account)
   end
 
+  def can?(%User{account_id: aid}, %User{account_id: aid}, :access), do: :pass
+
   def can?(%User{id: id}, %EabCredential{user_id: id}, _), do: :pass
 
   def can?(%User{id: id}, %PublicKey{user_id: id}, _), do: :pass

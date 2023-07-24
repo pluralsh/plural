@@ -5,6 +5,7 @@ defmodule GraphQl.Resolvers.User do
     Publisher,
     PersistedToken,
     Webhook,
+    Group,
     Notification,
     ImpersonationPolicy,
     ImpersonationPolicyBinding,
@@ -24,6 +25,7 @@ defmodule GraphQl.Resolvers.User do
 
   def query(Publisher, _), do: Publisher
   def query(Webhook, _), do: Webhook
+  def query(Group, _), do: Group
   def query(PublicKey, _), do: PublicKey
   def query(ImpersonationPolicy, _), do: ImpersonationPolicy
   def query(ImpersonationPolicyBinding, _), do: ImpersonationPolicyBinding
@@ -43,6 +45,9 @@ defmodule GraphQl.Resolvers.User do
   def run_batch(queryable, query, col, inputs, repo_opts) do
     Dataloader.Ecto.run_batch(Core.Repo, queryable, query, col, inputs, repo_opts)
   end
+
+  def resolve_user(%{id: id}, %{context: %{current_user: user}}),
+    do: Users.accessible(id, user)
 
   def resolve_publisher(%{id: id}, _),
     do: {:ok, Users.get_publisher!(id)}

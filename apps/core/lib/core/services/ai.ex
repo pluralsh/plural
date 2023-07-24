@@ -3,7 +3,8 @@ defmodule Core.Services.AI do
   alias Core.Clients.OpenAI.{
     Choice,
     CompletionResponse,
-    Message
+    Message,
+    ContextResponse
   }
 
   @type error :: {:error, term}
@@ -14,13 +15,25 @@ defmodule Core.Services.AI do
   """
   @spec chat([Message.t]) :: message_resp
   def chat(history) do
-    case OpenAI.chat(history) do
+    add_context(history)
+    |> OpenAI.chat()
+    |> case do
       {:ok, %CompletionResponse{choices: [%Choice{message: %Message{} = message} | _]}} ->
         {:ok, message}
       {:ok, _} -> {:error, "no response found"}
       error -> error
     end
   end
+
+  defp add_context([_ | _] = history) do
+    with %{content: content} <- List.last(history),
+         {:ok, %ContextResponse{answer: answer}} <- OpenAI.context(content) do
+      history ++ [%{content: "Also here's some helpful context I found: #{answer}", role: "user"}]
+    else
+      _ -> history
+    end
+  end
+  defp add_context(hist), do: hist
 
   @doc """
   Generates an answer to a given prompt/question using gpt-3

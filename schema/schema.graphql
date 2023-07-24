@@ -639,6 +639,8 @@ input FileAttributes {
 input InviteAttributes {
   email: String
   admin: Boolean
+  oidcProviderId: ID
+  serviceAccountId: ID
   inviteGroups: [BindingAttributes]
 }
 
@@ -2145,6 +2147,8 @@ type Community {
 type RootQueryType {
   me: User
 
+  user(id: ID!): User
+
   loginMethod(email: String!, host: String): LoginMethodResponse
 
   resetToken(id: ID!): ResetToken
@@ -3627,6 +3631,10 @@ type User {
 
   roles: Roles
 
+  "the groups attached to this user, only fetch this when querying an individual user"
+  groups: [Group]
+
+  "the roles attached to this user, only fetch this when querying an individual user"
   boundRoles: [Role]
 
   publisher: Publisher

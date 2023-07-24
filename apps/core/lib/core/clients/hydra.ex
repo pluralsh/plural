@@ -1,6 +1,6 @@
 defmodule Core.Clients.Hydra do
   require Logger
-  alias Core.Schema.User
+  alias Core.Schema.{User, Account}
 
   defmodule Response, do: defstruct [:redirect_to]
   defmodule Client do
@@ -105,6 +105,7 @@ defmodule Core.Clients.Hydra do
   end
 
   def accept_consent(user, challenge, scopes) do
+    user = Core.Repo.preload(user, [:account])
     body = Jason.encode!(%{
       grant_scope: scopes,
       remember: false,
@@ -141,7 +142,7 @@ defmodule Core.Clients.Hydra do
     }
   end
 
-  defp admin?(%User{id: id, account: %{root_user_id: id}}), do: true
+  defp admin?(%User{id: id, account: %Account{root_user_id: id}}), do: true
   defp admin?(%User{roles: %{admin: true}}), do: true
   defp admin?(_), do: false
 

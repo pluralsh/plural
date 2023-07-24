@@ -1,6 +1,6 @@
 defmodule Core.Schema.OIDCProvider do
   use Piazza.Ecto.Schema
-  alias Core.Schema.{Installation, OIDCProviderBinding}
+  alias Core.Schema.{Installation, OIDCProviderBinding, Invite}
 
   defenum AuthMethod, post: 0, basic: 1
 
@@ -15,6 +15,7 @@ defmodule Core.Schema.OIDCProvider do
 
     belongs_to :installation, Installation
 
+    has_many :invites, Invite, foreign_key: :oidc_provider_id
     has_many :bindings, OIDCProviderBinding,
       on_replace: :delete,
       foreign_key: :provider_id

@@ -36,7 +36,7 @@ export const getDirectory = ({
       enabled: true,
     },
     {
-      label: 'OpenID Connect',
+      label: 'OpenID connect users',
       path: 'oidc',
       enabled: app?.oauthSettings,
     },

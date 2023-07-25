@@ -86,11 +86,13 @@ function TagInput({
   hint,
   suggestions,
   items,
+  customItems,
   icon,
   onRemove,
   onAdd,
   width,
   onChange,
+  dropdownFooterFixed,
 }: any) {
   const [inputValue, setInputValue] = useState('')
 
@@ -108,6 +110,7 @@ function TagInput({
         <ComboBox
           aria-label={label}
           inputValue={inputValue}
+          dropdownFooterFixed={dropdownFooterFixed}
           onSelectionChange={(key) => {
             const selection = suggestions.find((s) => s?.value?.id === key)
 
@@ -126,19 +129,23 @@ function TagInput({
         </ComboBox>
         {items?.length > 0 && (
           <ChipList
-            maxVisible={Infinity}
-            chips={items.map((key) => (
-              <Chip
-                size="small"
-                clickable
-                onClick={() => {
-                  onRemove(key)
-                }}
-                closeButton
-              >
-                {key}
-              </Chip>
-            ))}
+            maxVisible={10}
+            chips={[
+              ...items.map((key) => (
+                <Chip
+                  fillLevel={2}
+                  size="small"
+                  clickable
+                  onClick={() => {
+                    onRemove(key)
+                  }}
+                  closeButton
+                >
+                  {key}
+                </Chip>
+              )),
+              ...(customItems ?? []),
+            ]}
           />
         )}
       </FormField>
@@ -167,11 +174,13 @@ export function BindingInput({
   type,
   fetcher,
   bindings,
+  customBindings,
   remove,
   add,
   hint,
   placeholder = TEXT[type]?.placeholder,
   label = TEXT[type]?.label,
+  dropdownFooterFixed,
 }: any) {
   const client = useApolloClient()
   const [suggestions, setSuggestions] = useState([])
@@ -188,9 +197,11 @@ export function BindingInput({
       width="100%"
       suggestions={suggestions}
       items={bindings}
+      customItems={customBindings}
       onRemove={remove}
       onAdd={({ value }) => add(value)}
       onChange={({ target: { value } }) => fetch(client, value, setSuggestions)}
+      dropdownFooterFixed={dropdownFooterFixed}
     />
   )
 }

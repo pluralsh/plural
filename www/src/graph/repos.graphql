@@ -8,6 +8,11 @@ fragment Category on CategoryInfo {
   count
 }
 
+fragment FileContent on FileContent {
+  content
+  path
+}
+
 fragment Repo on Repository {
   id
   name
@@ -20,6 +25,9 @@ fragment Repo on Repository {
   trending
   verified
   category
+  docs {
+    ...FileContent
+  }
   oauthSettings {
     uriFormat
     authMethod

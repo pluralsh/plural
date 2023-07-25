@@ -1,12 +1,12 @@
-import { Flex } from 'honorable'
-import { Box } from 'grommet'
 import { PageTitle, SubTab, TabList, TabPanel } from '@pluralsh/design-system'
+import { Box } from 'grommet'
+import { Flex } from 'honorable'
 import { useMemo, useRef } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
 
 import { LinkTabWrap } from '../utils/Tabs'
 
-import { InviteUser } from './InviteUser'
+import InviteUserButton from './invite/InviteUserButton'
 
 const DIRECTORY = [
   {
@@ -61,7 +61,7 @@ export function Users() {
               </LinkTabWrap>
             ))}
           </TabList>
-          <InviteUser refetch={refetchInvites.current} />
+          <InviteUserButton onInvite={refetchInvites.current} />
         </Flex>
       </PageTitle>
       <TabPanel

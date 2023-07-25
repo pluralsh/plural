@@ -3,11 +3,8 @@ import { Box } from 'grommet'
 import { Button, Modal, ValidatedInput } from '@pluralsh/design-system'
 
 import { appendConnection, updateCache } from '../../utils/graphql'
-
 import { GqlError } from '../utils/Alert'
-
 import { GroupsDocument, useCreateGroupMutation } from '../../generated/graphql'
-
 import SubscriptionContext from '../../contexts/SubscriptionContext'
 
 import BillingFeatureBlockModal from './billing/BillingFeatureBlockModal'

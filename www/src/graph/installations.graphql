@@ -7,10 +7,10 @@ fragment Installation on Installation {
   acmeSecret
   autoUpgrade
   trackTag
+  pingedAt
   repository {
     ...Repo
   }
-  # repository { ...Repository }
   user {
     ...User
   }

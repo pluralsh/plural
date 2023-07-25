@@ -30,8 +30,17 @@ fragment User on User {
   emailConfirmBy
   backgroundColor
   serviceAccount
+  hasInstallations
+  hasShell
+  invites {
+    id
+    email
+  }
   roles {
     admin
+  }
+  groups {
+    ...Group
   }
 }
 
@@ -337,6 +346,46 @@ query ResetToken($id: ID!) {
   }
 }
 
+query Users(
+  $q: String
+  $serviceAccount: Boolean
+  $all: Boolean
+  $cursor: String
+  $first: Int = 20
+) {
+  users(
+    q: $q
+    first: $first
+    after: $cursor
+    serviceAccount: $serviceAccount
+    all: $all
+  ) {
+    pageInfo {
+      ...PageInfo
+    }
+    edges {
+      node {
+        ...User
+        impersonationPolicy {
+          ...ImpersonationPolicy
+        }
+      }
+    }
+  }
+}
+
 mutation ReadNotifications($incidentId: ID) {
   readNotifications(incidentId: $incidentId)
+}
+
+mutation DeleteUser($id: ID!) {
+  deleteUser(id: $id) {
+    ...User
+  }
+}
+
+mutation UpdateUser($id: ID, $attributes: UserAttributes!) {
+  updateUser(id: $id, attributes: $attributes) {
+    ...User
+  }
 }

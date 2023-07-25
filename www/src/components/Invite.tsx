@@ -1,25 +1,24 @@
-import { useState } from 'react'
-import { useParams } from 'react-router-dom'
-import { GqlError } from 'forge-core'
 import { Button } from '@pluralsh/design-system'
+import { GqlError } from 'forge-core'
 
 import { Div, Flex, Form, P } from 'honorable'
-
-import { setToken } from '../helpers/authentication'
+import { useState } from 'react'
+import { useParams } from 'react-router-dom'
 
 import {
-  Invite as InviteT,
+  Invite,
   User,
   useInviteQuery,
   useRealizeInviteMutation,
   useSignupInviteMutation,
 } from '../generated/graphql'
+import { setToken } from '../helpers/authentication'
 
-import { LoginPortal } from './users/LoginPortal'
 import { LabelledInput } from './users/LabelledInput'
-import { WelcomeHeader } from './utils/WelcomeHeader'
-import { ConfirmPasswordField, SetPasswordField } from './users/Signup'
+import { LoginPortal } from './users/LoginPortal'
 import { validatePassword } from './users/PasswordValidation'
+import { ConfirmPasswordField, SetPasswordField } from './users/Signup'
+import { WelcomeHeader } from './utils/WelcomeHeader'
 
 function InvalidInvite() {
   return (
@@ -39,7 +38,7 @@ function ExistingInvite({
   id,
   user,
 }: {
-  invite: InviteT
+  invite: Invite
   id: any
   user: User
 }) {
@@ -120,9 +119,9 @@ export default function Invite() {
   if (data?.invite?.user) {
     return (
       <ExistingInvite
-        invite={data.invite}
+        invite={data?.invite as Invite}
         id={inviteId}
-        user={data.invite.user}
+        user={data?.invite?.user as User}
       />
     )
   }

@@ -20,6 +20,10 @@ fragment OIDCProvider on OidcProvider {
     jwksUri
     userinfoEndpoint
   }
+  invites {
+    id
+    email
+  }
 }
 
 fragment OAuthInfo on OauthInfo {

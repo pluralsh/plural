@@ -37,21 +37,8 @@ interface UserSettingsActionsProps
   loading?: boolean
 }
 
-interface DeleteUserProps {
-  user: User
-  update?: MutationUpdaterFunction<
-    DeleteUserMutation,
-    Exact<{ id: string | number }>,
-    DefaultContext,
-    ApolloCache<any>
-  >
-  onBack: DispatchWithoutAction
-  onDelete: DispatchWithoutAction
-}
-
 export type {
   UserSettingsModalProps,
   UserSettingsProps,
   UserSettingsActionsProps,
-  DeleteUserProps,
 }

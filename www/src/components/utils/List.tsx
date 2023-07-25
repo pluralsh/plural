@@ -39,6 +39,10 @@ const ListItemInner = styled(LiBare)<{
   borderBottomStyle: $last ? 'none' : 'solid',
   borderColor: theme.colors[hueToBorderColor[$hue]] || 'transparent',
   borderWidth: '1px',
+
+  ':hover': {
+    backgroundColor: theme.colors['fill-one-hover'],
+  },
 }))
 
 type ListItemProps = any & {

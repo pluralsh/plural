@@ -4,8 +4,8 @@ import { ReactElement, useMemo, useState } from 'react'
 import { Group } from '../../../generated/graphql'
 import { GroupBase } from '../../utils/combobox/types'
 import CreateGroup from '../../utils/group/CreateGroup'
+import DeleteUser from '../../utils/user/DeleteUser'
 
-import DeleteUser from './DeleteUser'
 import { UserSettingsModalProps } from './types'
 import UserSettings from './UserSettings'
 

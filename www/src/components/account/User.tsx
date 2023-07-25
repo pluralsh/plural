@@ -7,7 +7,7 @@ import {
 } from '@pluralsh/design-system'
 import { Box } from 'grommet'
 import { Button, Span } from 'honorable'
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useMemo, useState } from 'react'
 
 import CurrentUserContext from '../../contexts/CurrentUserContext'
 import { Permission, useUpdateUserMutation } from '../../generated/graphql'
@@ -17,10 +17,9 @@ import {
   setToken,
 } from '../../helpers/authentication'
 import { canEdit } from '../../utils/account'
-import { DELETE_USER } from '../users/queries'
 import UserSettingsModal from '../users/settings/UserSettingsModal'
-import { Confirm } from '../utils/Confirm'
 import { ProviderIcon } from '../utils/ProviderIcon'
+import DeleteUserModal from '../utils/user/DeleteUserModal'
 
 import { EditServiceAccount } from './CreateServiceAccount'
 import { MoreMenu } from './MoreMenu'
@@ -59,15 +58,9 @@ export function UserInfo({
   )
 }
 
-function UserEdit({ user, update }: any) {
+function UserEdit({ user, update, onSettingsClick }: any) {
   const [confirm, setConfirm] = useState(false)
-  const [settingsOpen, setSettingsOpen] = useState(false)
   const [mutation] = useUpdateUserMutation()
-  const [deleteMut, { loading, error }] = useMutation(DELETE_USER, {
-    variables: { id: user.id },
-    update,
-    onCompleted: () => setConfirm(false),
-  })
   const isAdmin = !!user.roles?.admin
 
   const menuItems = {
@@ -84,7 +77,7 @@ function UserEdit({ user, update }: any) {
     },
     settings: {
       label: 'User settings',
-      onSelect: () => setSettingsOpen(true),
+      onSelect: onSettingsClick,
       props: {},
     },
     deleteUser: {
@@ -113,6 +106,71 @@ function UserEdit({ user, update }: any) {
           />
         ))}
       </MoreMenu>
+      {confirm && (
+        <DeleteUserModal
+          user={user}
+          update={update}
+          onClose={() => setConfirm(false)}
+        />
+      )}
+    </>
+  )
+}
+
+export function User({ user, update }: any) {
+  const me = useContext(CurrentUserContext)
+  const [settingsOpen, setSettingsOpen] = useState(false)
+
+  const editable = useMemo(
+    () => canEdit(me, me.account) || hasRbac(me, Permission.Users),
+    [me]
+  )
+
+  return (
+    <>
+      <Box
+        fill="horizontal"
+        direction="row"
+        align="center"
+        onClick={() => setSettingsOpen(true)}
+      >
+        <UserInfo
+          fill="horizontal"
+          user={user}
+        />
+        <Box
+          flex={false}
+          direction="row"
+          gap="24px"
+          align="center"
+          onClick={(event) => event.stopPropagation()}
+        >
+          {user.provider && (
+            <ProviderIcon
+              provider={user.provider}
+              width={25}
+            />
+          )}
+          {user.roles?.admin && (
+            <Chip
+              size="medium"
+              hue="lighter"
+            >
+              Admin
+            </Chip>
+          )}
+          {me.account.rootUser?.id === user.id && (
+            <Chip size="medium">Root</Chip>
+          )}
+          {editable && (
+            <UserEdit
+              user={user}
+              update={update}
+              onSettingsClick={() => setSettingsOpen(true)}
+            />
+          )}
+        </Box>
+      </Box>
       {settingsOpen && (
         <UserSettingsModal
           user={user}
@@ -120,65 +178,7 @@ function UserEdit({ user, update }: any) {
           onClose={() => setSettingsOpen(false)}
         />
       )}
-      <Confirm
-        open={confirm}
-        close={() => setConfirm(false)}
-        error={error}
-        title="Confirm deletion"
-        text="Be sure this user has no active installations before deleting"
-        label="Delete"
-        destructive
-        submit={deleteMut}
-        loading={loading}
-      />
     </>
-  )
-}
-
-export function User({ user, update }: any) {
-  const me = useContext(CurrentUserContext)
-
-  const editable = canEdit(me, me.account) || hasRbac(me, Permission.Users)
-
-  return (
-    <Box
-      fill="horizontal"
-      direction="row"
-      align="center"
-    >
-      <UserInfo
-        fill="horizontal"
-        user={user}
-      />
-      <Box
-        flex={false}
-        direction="row"
-        gap="24px"
-        align="center"
-      >
-        {user.provider && (
-          <ProviderIcon
-            provider={user.provider}
-            width={25}
-          />
-        )}
-        {user.roles?.admin && (
-          <Chip
-            size="medium"
-            hue="lighter"
-          >
-            Admin
-          </Chip>
-        )}
-        {me.account.rootUser?.id === user.id && <Chip size="medium">Root</Chip>}
-        {editable && (
-          <UserEdit
-            user={user}
-            update={update}
-          />
-        )}
-      </Box>
-    </Box>
   )
 }
 

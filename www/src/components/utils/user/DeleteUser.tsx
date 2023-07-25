@@ -4,7 +4,7 @@ import styled from 'styled-components'
 
 import { useDeleteUserMutation } from '../../../generated/graphql'
 import { UserInfo } from '../../account/User'
-import { GqlError } from '../../utils/Alert'
+import { GqlError } from '../Alert'
 
 import { DeleteUserProps } from './types'
 
@@ -78,14 +78,17 @@ function DeleteUserUnstyled({
         />
       </div>
       <div className="actions">
-        <Button
-          secondary
-          startIcon={<CaretLeftIcon />}
-          disabled={loading}
-          onClick={onBack}
-        >
-          Back
-        </Button>
+        {onBack && (
+          <Button
+            secondary
+            startIcon={<CaretLeftIcon />}
+            disabled={loading}
+            onClick={onBack}
+          >
+            Back
+          </Button>
+        )}
+        <div />
         <Button
           destructive
           disabled={!confirmed || loading}

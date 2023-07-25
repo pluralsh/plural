@@ -7,7 +7,7 @@ import {
 } from '@pluralsh/design-system'
 import { Box } from 'grommet'
 import { Button, Span } from 'honorable'
-import { useContext, useEffect, useMemo, useState } from 'react'
+import { useContext, useMemo, useState } from 'react'
 
 import CurrentUserContext from '../../contexts/CurrentUserContext'
 import { Permission, useUpdateUserMutation } from '../../generated/graphql'

@@ -62,6 +62,9 @@ setup: ## sets up your environment for testing
 	mix do local.hex, local.rebar, deps.get
 	cd www && yarn
 
+web-install: ## install the web dependencies
+	cd www && yarn install
+
 web: ## starts a local webserver
 	cd www && yarn start
 
@@ -89,3 +92,9 @@ delete-tag:  ## deletes a tag from git locally and upstream
 	@read -p "Version: " tag; \
 	git tag -d $$tag; \
 	git push origin :$$tag
+
+core-setup: ## setup the backend database
+	cd apps/core && mix ecto.setup
+
+core-migrate: ## run the backend database migrations
+	cd apps/core && mix ecto.create && mix ecto.migrate

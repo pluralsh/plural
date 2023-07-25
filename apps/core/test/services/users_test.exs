@@ -140,6 +140,7 @@ defmodule Core.Services.UsersTest do
       %{account: account} = Core.Repo.preload(user, [:account])
       groups = insert_list(3, :group, account: account)
       %{group: group} = insert(:group_member, user: user, group: build(:group, account: account))
+      rm = insert(:group_member, user: user, group: build(:group, account: account))
       admin = insert(:user, account: account, roles: %{admin: true})
 
       {:ok, updated} = Users.update_user(%{
@@ -157,6 +158,8 @@ defmodule Core.Services.UsersTest do
 
       for g <- [group | groups],
         do: assert member?(user, g)
+
+      refute member?(user, rm.group)
     end
 
     test "nonadmins cannot update users" do

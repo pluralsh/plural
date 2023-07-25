@@ -334,13 +334,22 @@ defmodule Core.Services.Users do
   end
 
   defp add_groups(xact, %{group_ids: [_ | _] = group_ids}) do
-    Enum.reduce(group_ids, xact, fn group_id, xact ->
+    Enum.reduce(group_ids, remove_groups(xact), fn group_id, xact ->
       add_operation(xact, {:group, group_id}, fn %{user: user} ->
         Accounts.upsert_group_member(group_id, user.id)
       end)
     end)
   end
   defp add_groups(xact, _), do: xact
+
+  defp remove_groups(xact) do
+    add_operation(xact, :rm_groups, fn %{user: user} ->
+      Core.Schema.GroupMember.for_user(user.id)
+      |> Core.Repo.delete_all()
+      |> elem(0)
+      |> ok()
+    end)
+  end
 
   defp validate_pwd(%Ecto.Changeset{} = changes, attrs, prev) do
     with {:ok, _} <- Ecto.Changeset.apply_changes(changes)

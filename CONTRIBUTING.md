@@ -11,7 +11,7 @@ Plural's server side is written in elixir, and exposes a graphql api. The fronte
 To begin developing the web app, install [node](https://nodejs.org/en/download/) & [yarn](https://classic.yarnpkg.com/en/docs/getting-started/), then run:
 
 ```sh
-cd www && yarn install && cd ..
+make web-install
 make web
 ```
 
@@ -49,7 +49,7 @@ docker compose up
 Initializing the db can be done with:
 
 ```sh
-mix ecto.setup
+make core-setup
 ```
 
 Tests can be run via `mix`, like so:
@@ -91,7 +91,7 @@ These apps will all depend on core, where most Plural business logic should live
 We use elixir's bamboo framework for templating and delivering emails, one benefit of which is it creates a local server to view in-progress emails.  You can get this set up by doing:
 
 ```bash
-mix ecto.create && mix ecto.migrate # ensure your dev db is set up
+make core-migrate # ensure your dev db is set up
 cd apps/email && iex -S mix phx.server
 ```
 

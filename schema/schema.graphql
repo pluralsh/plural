@@ -1472,6 +1472,7 @@ input UserAttributes {
   loginMethod: LoginMethod
   roles: RolesAttributes
   confirm: String
+  groupIds: [ID!]
 }
 
 input PublisherAttributes {

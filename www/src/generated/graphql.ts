@@ -4797,6 +4797,7 @@ export type UserAttributes = {
   avatar?: InputMaybe<Scalars['UploadOrUrl']['input']>;
   confirm?: InputMaybe<Scalars['String']['input']>;
   email?: InputMaybe<Scalars['String']['input']>;
+  groupIds?: InputMaybe<Array<Scalars['ID']['input']>>;
   loginMethod?: InputMaybe<LoginMethod>;
   name?: InputMaybe<Scalars['String']['input']>;
   onboarding?: InputMaybe<OnboardingState>;

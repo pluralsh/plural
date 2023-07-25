@@ -130,6 +130,35 @@ defmodule Core.Services.UsersTest do
       assert actor.id == admin.id
     end
 
+    test "it can auto-add users to groups" do
+      {:ok, user} = Users.create_user(%{
+        name: "some user",
+        password: "superstrongpassword",
+        email: "something@example.com"
+      })
+
+      %{account: account} = Core.Repo.preload(user, [:account])
+      groups = insert_list(3, :group, account: account)
+      %{group: group} = insert(:group_member, user: user, group: build(:group, account: account))
+      admin = insert(:user, account: account, roles: %{admin: true})
+
+      {:ok, updated} = Users.update_user(%{
+        name: "real user",
+        group_ids: [group.id | Enum.map(groups, & &1.id)],
+        roles: %{admin: true}
+      }, user.id, admin)
+
+      assert updated.name == "real user"
+      refute updated.email_changed
+      assert updated.roles.admin
+
+      assert_receive {:event, %PubSub.UserUpdated{item: ^updated, actor: actor}}
+      assert actor.id == admin.id
+
+      for g <- [group | groups],
+        do: assert member?(user, g)
+    end
+
     test "nonadmins cannot update users" do
       {:ok, user} = Users.create_user(%{
         name: "some user",

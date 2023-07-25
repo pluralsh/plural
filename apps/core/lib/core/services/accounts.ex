@@ -563,6 +563,14 @@ defmodule Core.Services.Accounts do
     |> notify(:create, user)
   end
 
+  @spec upsert_group_member(binary, binary) :: group_member_resp
+  def upsert_group_member(group_id, user_id) do
+    case Core.Repo.get_by(GroupMember, user_id: user_id, group_id: group_id) do
+      nil -> Core.Repo.insert(%GroupMember{group_id: group_id, user_id: user_id})
+      %GroupMember{} = gm -> {:ok, gm}
+    end
+  end
+
   @doc """
   low-level group member creation
   """

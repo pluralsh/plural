@@ -1,31 +1,30 @@
 import { useMutation } from '@apollo/client'
-import { Box } from 'grommet'
-import { Button, Span } from 'honorable'
 import {
   AppIcon,
   Chip,
   GraphQLToast,
   ListBoxItem,
 } from '@pluralsh/design-system'
+import { Box } from 'grommet'
+import { Button, Span } from 'honorable'
 import { useContext, useState } from 'react'
 
+import CurrentUserContext from '../../contexts/CurrentUserContext'
+import { Permission, useUpdateUserMutation } from '../../generated/graphql'
 import {
   fetchToken,
   setPreviousUserData,
   setToken,
 } from '../../helpers/authentication'
-import CurrentUserContext from '../../contexts/CurrentUserContext'
-import { DELETE_USER } from '../users/queries'
-import { Permission } from '../../generated/graphql'
-import UserSettingsModal from '../users/settings/UserSettingsModal'
-import { ProviderIcon } from '../utils/ProviderIcon'
 import { canEdit } from '../../utils/account'
-
+import { DELETE_USER } from '../users/queries'
+import UserSettingsModal from '../users/settings/UserSettingsModal'
 import { Confirm } from '../utils/Confirm'
+import { ProviderIcon } from '../utils/ProviderIcon'
 
-import { EDIT_USER, IMPERSONATE_SERVICE_ACCOUNT } from './queries'
 import { EditServiceAccount } from './CreateServiceAccount'
 import { MoreMenu } from './MoreMenu'
+import { IMPERSONATE_SERVICE_ACCOUNT } from './queries'
 import { hasRbac } from './utils'
 
 export function UserInfo({
@@ -63,9 +62,7 @@ export function UserInfo({
 function UserEdit({ user, update }: any) {
   const [confirm, setConfirm] = useState(false)
   const [settingsOpen, setSettingsOpen] = useState(false)
-  const [mutation] = useMutation(EDIT_USER, {
-    variables: { id: user.id },
-  })
+  const [mutation] = useUpdateUserMutation()
   const [deleteMut, { loading, error }] = useMutation(DELETE_USER, {
     variables: { id: user.id },
     update,
@@ -77,8 +74,12 @@ function UserEdit({ user, update }: any) {
     addAdmin: {
       label: isAdmin ? 'Remove admin role' : 'Add admin role',
       onSelect: () =>
-        // @ts-expect-error
-        mutation({ variables: { attributes: { roles: { admin: !isAdmin } } } }),
+        mutation({
+          variables: {
+            id: user.id,
+            attributes: { roles: { admin: !isAdmin } },
+          },
+        }),
       props: {},
     },
     settings: {

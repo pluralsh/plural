@@ -65,7 +65,13 @@ function UserSettingsUnstyled({
   })
 
   const [updateUser, { loading, error }] = useUpdateUserMutation({
-    variables: { id: user.id, attributes: { roles: { admin: isAdmin } } },
+    variables: {
+      id: user.id,
+      attributes: {
+        roles: { admin: isAdmin },
+        groupIds: groupBindings.map((gb) => gb.id),
+      },
+    },
     onCompleted: onUpdate,
   })
 
@@ -107,7 +113,6 @@ function UserSettingsUnstyled({
           Admin
         </Switch>
       </div>
-      {/* TODO: Use when updateUser mutation will support group binding update */}
       <GroupBindingsComboBox
         onViewMore={() =>
           fetchMore({

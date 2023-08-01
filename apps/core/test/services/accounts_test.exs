@@ -436,6 +436,7 @@ defmodule Core.Services.AccountsTest do
 
     test "Existing root users will have account de-rooted", %{user: user, account: account} do
       %{user: root, account: a2} = setup_root_user([]) |> Map.new()
+      gm = insert(:group_member, user: root, group: build(:group, account: a2))
       {:ok, invite} = Accounts.create_invite(%{email: root.email}, user)
 
       {:ok, user} = Accounts.realize_invite(%{
@@ -448,6 +449,7 @@ defmodule Core.Services.AccountsTest do
       assert user.name == "Some User"
 
       refute refetch(a2).root_user_id
+      refute member?(root, gm.group)
     end
 
     test "it will ignore privileged fields", %{user: user, account: account} do

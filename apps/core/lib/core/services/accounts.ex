@@ -453,6 +453,11 @@ defmodule Core.Services.Accounts do
         _ -> {:ok, user}
       end
     end)
+    |> add_operation(:rm_groups, fn %{upsert: upsert} ->
+      GroupMember.for_user(upsert.id)
+      |> Core.Repo.delete_all()
+      |> ok()
+    end)
     |> add_to_groups(invite)
     |> add_bindings(:oidc, invite)
     |> add_bindings(:sa, invite)

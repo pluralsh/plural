@@ -839,6 +839,23 @@ defmodule Core.Services.PaymentsTest do
     end
   end
 
+  describe "#migrate_plans/0" do
+    test "it can reset the features on nonenterprise plans" do
+      enterprise = insert(:platform_plan, enterprise: true)
+      self_serve = insert_list(3, :platform_plan)
+
+      {:ok, result} = Payments.migrate_plans()
+
+      refute result[enterprise.id]
+
+      for plan <- self_serve do
+        plan = refetch(plan)
+        assert Core.Schema.PlatformPlan.features()
+              |> Enum.all?(&Map.get(plan.features, &1))
+      end
+    end
+  end
+
   describe "#expire_trial/1" do
     test "it will remove a trial and clean up cluster dependencies" do
       sub = insert(:platform_subscription)

@@ -35,7 +35,7 @@ defmodule Core.Schema.PlatformPlan do
     field :external_id, :string
 
     embeds_one :features, Features, on_replace: :update do
-      boolean_fields [:vpn, :user_management, :audit, :multi_cluster]
+      boolean_fields [:vpn, :user_management, :audit, :multi_cluster, :database_management]
     end
 
     embeds_many :line_items, LineItem, on_replace: :delete
@@ -49,6 +49,14 @@ defmodule Core.Schema.PlatformPlan do
 
   def ordered(query \\ __MODULE__, order \\ [asc: :name]),
     do: from(p in query, order_by: ^order)
+
+  def enterprise(query \\ __MODULE__) do
+    from(p in query, where: p.enterprise)
+  end
+
+  def self_serve(query \\ __MODULE__) do
+    from(p in query, where: not p.enterprise or is_nil(p.enterprise))
+  end
 
   def features(), do: __MODULE__.Features.__schema__(:fields) -- [:id]
 

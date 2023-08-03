@@ -600,6 +600,24 @@ defmodule Core.Services.Payments do
     end
   end
 
+  @doc """
+  Set all self serve (non-enterprise) plans to the expected feature set
+  """
+  @spec migrate_plans() :: {:ok, %{binary => PlatformPlan.t}} | error
+  def migrate_plans() do
+    features = PlatformPlan.features()
+               |> Map.new(& {&1, true})
+    PlatformPlan.self_serve()
+    |> Core.Repo.all()
+    |> Enum.reduce(start_transaction(), fn %{id: id} = plan, xact ->
+      add_operation(xact, id, fn _ ->
+        PlatformPlan.changeset(plan, %{features: features})
+        |> Core.Repo.update()
+      end)
+    end)
+    |> execute()
+  end
+
   defp discount(amount, :yearly), do: round(9 * amount / 10) * 12
   defp discount(amount, _), do: amount
 

@@ -1,6 +1,6 @@
 defmodule GraphQl.Resolvers.Version do
   use GraphQl.Resolvers.Base, model: Core.Schema.Version
-  alias Core.Services.{Versions}
+  alias Core.Services.{Versions, Terraform, Charts}
   alias Core.Schema.{VersionTag, PackageScan, ScanViolation, ScanError}
 
   def query(VersionTag, _), do: VersionTag
@@ -37,6 +37,18 @@ defmodule GraphQl.Resolvers.Version do
 
   def update_version(%{attributes: attrs, id: id}, %{context: %{current_user: user}}),
     do: Versions.update_version(attrs, id, user)
+
+  def install_version(%{repository: repo, vsn: vsn, package: package, type: type}, %{context: %{current_user: user}}) do
+    case do_install(type, vsn, package, repo, user) do
+      {:ok, _} -> {:ok, true}
+      error -> error
+    end
+  end
+
+  defp do_install(:helm, vsn, package, repo, user),
+    do: Charts.install_chart_version(vsn, package, repo, user)
+  defp do_install(:terraform, vsn, package, repo, user),
+    do: Terraform.install_terraform_version(vsn, package, repo, user)
 
   def find_version(%{version: v} = args) do
     with {tool, %{id: id}} <- get_resource(args),

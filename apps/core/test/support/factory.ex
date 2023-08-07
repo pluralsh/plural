@@ -605,7 +605,8 @@ defmodule Core.Factory do
       name: sequence(:cluster, &"cluster-#{&1}"),
       provider: :aws,
       owner: build(:user),
-      account: build(:account)
+      account: build(:account),
+      pinged_at: Timex.now()
     }
   end
 

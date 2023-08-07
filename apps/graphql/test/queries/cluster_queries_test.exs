@@ -89,7 +89,7 @@ defmodule GraphQl.ClusterQueriesTest do
   end
 
   describe "clusters" do
-    test "a user can list clusters they own or can access" do
+    test "a user can list active clusters they own or can access" do
       user = insert(:user)
       sa = insert(:user, service_account: true, account: user.account)
       %{group: group} = insert(:impersonation_policy_binding,
@@ -100,6 +100,7 @@ defmodule GraphQl.ClusterQueriesTest do
 
       c1 = insert(:cluster, account: user.account, owner: user, queue: build(:upgrade_queue))
       c2 = insert(:cluster, account: sa.account, owner: sa)
+      insert(:cluster, owner: user, pinged_at: Timex.now() |> Timex.shift(days: -3))
 
       insert(:cloud_shell, user: user)
 

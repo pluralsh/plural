@@ -11,6 +11,7 @@ defmodule GraphQl.Resolvers.Cluster do
 
   def list_clusters(args, %{context: %{current_user: user}}) do
     Cluster.for_user(user)
+    |> Cluster.active()
     |> Cluster.ordered()
     |> paginate(args)
   end

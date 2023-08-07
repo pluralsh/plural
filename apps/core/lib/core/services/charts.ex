@@ -239,6 +239,24 @@ defmodule Core.Services.Charts do
   defp chartmuseum(), do: Application.get_env(:core, :chartmuseum)
 
   @doc """
+  Updates your chart version using string vsn, chart name, and repo
+  """
+  @spec install_chart_version(binary, binary, binary, User.t) :: chart_inst_resp
+  def install_chart_version(vsn, chart, repo, %User{id: user_id} = user) do
+    with {:repo, %Repository{} = repo}      <- {:repo, Repositories.get_repository_by_name(repo)},
+         {:chart, %Chart{} = chart}         <- {:chart, get_chart_by_name(repo.id, chart)},
+         {:inst, %ChartInstallation{} = ci} <- {:inst, get_chart_installation(chart.id, user_id)},
+         {:vsn, %Version{} = v}             <- {:vsn, get_chart_version(chart.id, vsn)} do
+      update_chart_installation(%{version_id: v.id}, ci.id, user)
+    else
+      {:repo, _} -> {:error, "no repository named #{repo}"}
+      {:chart, _} -> {:error, "no chart for repository #{repo} named #{chart}"}
+      {:inst, _} -> {:error, "you have not installed #{repo}/#{chart}"}
+      {:vsn, _} -> {:error, "no chart version #{vsn}"}
+    end
+  end
+
+  @doc """
   Creates a new chart installation for a repository installation.
 
   Fails if the user is not the installer

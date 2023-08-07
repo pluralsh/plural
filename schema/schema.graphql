@@ -1827,6 +1827,8 @@ type RootMutationType {
 
   updateVersion(id: ID, spec: VersionSpec, attributes: VersionAttributes!): Version
 
+  installVersion(type: DependencyType!, vsn: String!, package: String!, repository: String!): Boolean
+
   createServiceAccount(attributes: ServiceAccountAttributes!): User
 
   updateServiceAccount(id: ID!, attributes: ServiceAccountAttributes!): User

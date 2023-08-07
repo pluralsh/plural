@@ -153,5 +153,15 @@ defmodule GraphQl.Schema.Version do
 
       safe_resolve &Version.update_version/2
     end
+
+    field :install_version, :boolean do
+      middleware Authenticated
+      arg :type,       non_null(:dependency_type)
+      arg :vsn,        non_null(:string)
+      arg :package,    non_null(:string)
+      arg :repository, non_null(:string)
+
+      safe_resolve &Version.install_version/2
+    end
   end
 end

@@ -2,7 +2,7 @@ defmodule Core.Services.Terraform do
   use Core.Services.Base
   import Core.Policies.Terraform
   alias Core.Services.{Repositories, Dependencies, Versions}
-  alias Core.Schema.{Terraform, TerraformInstallation, User, Version}
+  alias Core.Schema.{Terraform, TerraformInstallation, User, Version, Repository}
 
   @type terraform_installation_resp :: {:ok, TerraformInstallation.t} | {:error, term}
 
@@ -25,6 +25,9 @@ defmodule Core.Services.Terraform do
   @spec get_terraform_by_name!(binary, binary) :: Terraform.t
   def get_terraform_by_name!(repo_id, name),
     do: Core.Repo.get_by!(Terraform, repository_id: repo_id, name: name)
+
+  @spec get_terraform_version(binary, binary) :: Version.t | nil
+  def get_terraform_version(tf_id, version), do: Versions.get_version(:terraform, tf_id, version)
 
   @spec get_terraform_installation(binary, binary) :: TerraformInstallation.t | nil
   def get_terraform_installation(terraform_id, user_id) do
@@ -114,6 +117,24 @@ defmodule Core.Services.Terraform do
     get_tf!(id)
     |> allow(user, :edit)
     |> when_ok(:delete)
+  end
+
+  @doc """
+  Updates your chart version using string vsn, chart name, and repo
+  """
+  @spec install_terraform_version(binary, binary, binary, User.t) :: terraform_installation_resp
+  def install_terraform_version(vsn, terraform, repo, %User{id: user_id} = user) do
+    with {:repo, %Repository{} = repo}          <- {:repo, Repositories.get_repository_by_name(repo)},
+         {:terraform, %Terraform{} = terraform} <- {:terraform, get_terraform_by_name(repo.id, terraform)},
+         {:inst, %TerraformInstallation{} = ci} <- {:inst, get_terraform_installation(terraform.id, user_id)},
+         {:vsn, %Version{} = v}                 <- {:vsn, get_terraform_version(terraform.id, vsn)} do
+      update_terraform_installation(%{version_id: v.id}, ci.id, user)
+    else
+      {:repo, _} -> {:error, "no repository named #{repo}"}
+      {:terraform, _} -> {:error, "no terraform module for repository #{repo} named #{terraform}"}
+      {:inst, _} -> {:error, "you have not installed #{repo}/#{terraform}"}
+      {:vsn, _} -> {:error, "no terraform module version #{vsn}"}
+    end
   end
 
   @doc "self explanatory"

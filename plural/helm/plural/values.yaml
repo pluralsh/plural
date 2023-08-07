@@ -480,7 +480,7 @@ crons:
   envVars: []
 - cronName: plrl-prune-queues
   cronModule: Prune.Queues
-  crontab: "15 0 * * *"
+  crontab: "15 */3 * * *"
   envVars: []
 - cronName: plrl-stale-tests
   cronModule: Task.StaleTests

@@ -39,17 +39,14 @@ const FORCED_APPS = {
 function Installer({ onInstallSuccess }) {
   const client = useApolloClient()
   const { mutation } = useOnboarded()
-  const {
-    shell: { provider },
-    configuration,
-    setState,
-  } = useContext(TerminalContext)
+  const { shell, configuration, setState } = useContext(TerminalContext)
   const {
     user: { demoing },
   } = useContext(ImpersonationContext)
+  const { provider } = shell
   const onResetRef = useRef<{ onReset: Dispatch<void> }>({ onReset: () => {} })
   const [searchParams] = useSearchParams()
-  const { clusters } = useSelectCluster()
+  const { clusters } = useSelectCluster(shell)
 
   const [stepsLoading, setStepsLoading] = useState(false)
   const [steps, setSteps] = useState<Array<WizardStepConfig>>([])

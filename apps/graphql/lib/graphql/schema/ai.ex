@@ -16,7 +16,7 @@ defmodule GraphQl.Schema.AI do
 
   object :ai_queries do
     field :chat, :chat_message do
-      middleware Authenticated
+      middleware Authenticated, :external
       arg :history, list_of(:chat_message_attributes)
 
       safe_resolve &AI.chat/2

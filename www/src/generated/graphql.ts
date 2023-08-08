@@ -2732,6 +2732,7 @@ export type RootMutationType = {
   installStack?: Maybe<Array<Maybe<Recipe>>>;
   installStackShell?: Maybe<Array<Maybe<Recipe>>>;
   installTerraform?: Maybe<TerraformInstallation>;
+  installVersion?: Maybe<Scalars['Boolean']['output']>;
   linkPublisher?: Maybe<Publisher>;
   login?: Maybe<User>;
   loginToken?: Maybe<User>;
@@ -3228,6 +3229,14 @@ export type RootMutationTypeInstallStackShellArgs = {
 export type RootMutationTypeInstallTerraformArgs = {
   attributes: TerraformInstallationAttributes;
   installationId: Scalars['ID']['input'];
+};
+
+
+export type RootMutationTypeInstallVersionArgs = {
+  package: Scalars['String']['input'];
+  repository: Scalars['String']['input'];
+  type: DependencyType;
+  vsn: Scalars['String']['input'];
 };
 
 

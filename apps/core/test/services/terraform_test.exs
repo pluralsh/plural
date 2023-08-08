@@ -196,7 +196,7 @@ defmodule Core.Services.TerraformTest do
     end
   end
 
-  describe "#delete_chart_installation" do
+  describe "#delete_terraform_installation" do
     test "A user can delete his terraform installation" do
       terraform = insert(:terraform)
       user = insert(:user)

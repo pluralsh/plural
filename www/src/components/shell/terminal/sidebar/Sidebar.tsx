@@ -25,6 +25,8 @@ import { ImpersonationContext } from '../../context/impersonation'
 
 import { State, TerminalContext } from '../context/terminal'
 
+import { CloudShell } from '../../../../generated/graphql'
+
 import { Installed } from './installed/Installed'
 import Installer from './installer/Installer'
 import { APPLICATIONS_QUERY } from './installer/queries'
@@ -36,6 +38,7 @@ enum SidebarView {
 
 interface HeaderProps {
   view: SidebarView
+  shell: CloudShell
   onViewChange: Dispatch<SidebarView>
   disabled: boolean
 }
@@ -59,6 +62,7 @@ const Header = styled(HeaderUnstyled)(({ theme }) => ({
 
 function HeaderUnstyled({
   view,
+  shell,
   onViewChange,
   disabled = false,
   ...props
@@ -86,7 +90,7 @@ function HeaderUnstyled({
 
   return (
     <div {...props}>
-      <ClusterSelect />
+      <ClusterSelect shell={shell} />
       <div className="titleArea">
         <div className="title">{title}</div>
         <WrapWithIf
@@ -121,13 +125,23 @@ const Sidebar = styled(SidebarUnstyled)(({ theme }) => ({
   borderRight: theme.borders.default,
 }))
 
-function useSelectCluster() {
+function useSelectCluster(shell?: CloudShell) {
   const [_, setSearchParams] = useSearchParams()
   const {
     user: { id: userId },
   } = useContext(ImpersonationContext)
 
-  const { clusters } = useContext(ClustersContext)
+  const { clusters: allClusters } = useContext(ClustersContext)
+  const clusters = useMemo(
+    () =>
+      allClusters.filter(
+        (c) =>
+          c?.owner?.id !== userId ||
+          !shell ||
+          (c.name === shell.cluster && c.provider === shell.provider)
+      ),
+    [allClusters]
+  )
 
   const currentCluster = useMemo(
     () => clusters.find((cl) => cl?.owner?.id === userId),
@@ -158,8 +172,8 @@ function useSelectCluster() {
   }
 }
 
-function ClusterSelect() {
-  const { cluster, setCluster, clusters } = useSelectCluster()
+function ClusterSelect({ shell }) {
+  const { cluster, setCluster, clusters } = useSelectCluster(shell)
 
   if (!clusters || clusters.length < 2) {
     return null
@@ -184,13 +198,10 @@ function ClusterSelect() {
 }
 
 function SidebarUnstyled({ refetch, ...props }) {
-  const {
-    shell: { provider },
-    state,
-  } = useContext(TerminalContext)
+  const { shell, state } = useContext(TerminalContext)
   const [view, setView] = useState(SidebarView.Installer)
   const [searchParams] = useSearchParams()
-
+  const { provider } = shell
   const { data: { repositories: { edges: nodes } = { edges: [] } } = {} } =
     useQuery(APPLICATIONS_QUERY, {
       variables: { provider, installed: true },
@@ -222,6 +233,7 @@ function SidebarUnstyled({ refetch, ...props }) {
   return (
     <div {...props}>
       <Header
+        shell={shell}
         view={view}
         onViewChange={(view) => setView(view)}
         disabled={view === SidebarView.Installer && !hasInstalledApps}

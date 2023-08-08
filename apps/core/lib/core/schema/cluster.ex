@@ -29,9 +29,19 @@ defmodule Core.Schema.Cluster do
     timestamps()
   end
 
+  def active(query \\ __MODULE__) do
+    expired = expiry()
+    from(q in query, where: q.pinged_at >= ^expired)
+  end
+
   def expired(query \\ __MODULE__) do
-    expiry = Timex.now() |> Timex.shift(days: -@expiry)
-    from(q in query, where: q.pinged_at < ^expiry)
+    expired = expiry()
+    from(q in query, where: q.pinged_at < ^expired)
+  end
+
+  defp expiry() do
+    Timex.now()
+    |> Timex.shift(days: -@expiry)
   end
 
   def for_expired_queue(query \\ __MODULE__) do

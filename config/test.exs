@@ -28,8 +28,8 @@ path = __ENV__.file |> Path.dirname()
 config :core, :jwt,
   pk: Path.join(path, "testkey.pem") |> File.read!(),
   cert: Path.join(path, "testcert.crt") |> File.read!(),
-  iss: "forge.piazza.app",
-  aud: "forge.piazza.app"
+  iss: "app.plural.sh",
+  aud: "app.plural.sh"
 
 config :goth,
   # json: System.get_env("GOOGLE_APPLICATION_CREDENTIALS") |> File.read!(),

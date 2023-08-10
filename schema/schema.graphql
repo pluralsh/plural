@@ -699,6 +699,10 @@ type Publisher {
   updatedAt: DateTime
 }
 
+enum ExternalOidcProvider {
+  GITHUB_ACTIONS
+}
+
 type IncidentDelta {
   delta: Delta
   payload: Incident
@@ -1495,6 +1499,12 @@ type GeoMetric {
   count: Int
 }
 
+input TrustRelationshipAttributes {
+  issuer: String!
+  trust: String!
+  scopes: [String!]
+}
+
 input ShellCredentialsAttributes {
   aws: AwsShellCredentialsAttributes
   gcp: GcpShellCredentialsAttributes
@@ -1719,6 +1729,10 @@ type RootMutationType {
   createKeyBackup(attributes: KeyBackupAttributes!): KeyBackup
 
   deleteKeyBackup(name: String!): KeyBackup
+
+  createTrustRelationship(attributes: TrustRelationshipAttributes!): OidcTrustRelationship
+
+  deleteTrustRelationship(id: ID!): OidcTrustRelationship
 
   createCard(source: String!, address: AddressAttributes): Account
 
@@ -2180,6 +2194,8 @@ type RootQueryType {
 
   keyBackup(name: String!): KeyBackup
 
+  oidcToken(provider: ExternalOidcProvider!, idToken: String!, email: String!): String
+
   repositorySubscription(id: ID!): RepositorySubscription
 
   subscriptions(after: String, first: Int, before: String, last: Int): RepositorySubscriptionConnection
@@ -2419,6 +2435,26 @@ type VersionTag {
   updatedAt: DateTime
 }
 
+type Upgrade {
+  id: ID!
+  type: UpgradeType
+  message: String
+  config: UpgradeConfig
+  repository: Repository
+  insertedAt: DateTime
+  updatedAt: DateTime
+}
+
+type InviteEdge {
+  node: Invite
+  cursor: String
+}
+
+type FileEdge {
+  node: File
+  cursor: String
+}
+
 type DeferredUpdate {
   id: ID!
   dequeueAt: DateTime
@@ -2467,16 +2503,6 @@ type GroupedTagEdge {
   cursor: String
 }
 
-type Upgrade {
-  id: ID!
-  type: UpgradeType
-  message: String
-  config: UpgradeConfig
-  repository: Repository
-  insertedAt: DateTime
-  updatedAt: DateTime
-}
-
 type PlanFeature {
   name: String!
   description: String!
@@ -2494,16 +2520,6 @@ type DockerRepositoryEdge {
 
 type VersionEdge {
   node: Version
-  cursor: String
-}
-
-type InviteEdge {
-  node: Invite
-  cursor: String
-}
-
-type FileEdge {
-  node: File
   cursor: String
 }
 
@@ -3646,6 +3662,8 @@ type User {
 
   impersonationPolicy: ImpersonationPolicy
 
+  trustRelationships: OidcTrustRelationship
+
   invites: [Invite]
 
   jwt: String
@@ -3709,6 +3727,15 @@ type TestDelta {
 type UpgradeQueueDelta {
   delta: Delta
   payload: UpgradeQueue
+}
+
+type OidcTrustRelationship {
+  id: ID!
+  issuer: String!
+  trust: String!
+  scopes: [String!]
+  insertedAt: DateTime
+  updatedAt: DateTime
 }
 
 scalar Map

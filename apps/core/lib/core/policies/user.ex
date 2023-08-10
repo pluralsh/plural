@@ -1,7 +1,9 @@
 defmodule Core.Policies.User do
   use Piazza.Policy
   import Core.Policies.Utils
-  alias Core.Schema.{User, PersistedToken, Publisher, PublicKey, EabCredential}
+  alias Core.Schema.{User, PersistedToken, Publisher, PublicKey, EabCredential, OIDCTrustRelationship}
+
+  def can?(%User{id: id}, %OIDCTrustRelationship{user_id: id}, _), do: :pass
 
   def can?(%User{} = user, %Publisher{} = pub, _) do
     %{account: account} = Core.Repo.preload(pub, [:account])

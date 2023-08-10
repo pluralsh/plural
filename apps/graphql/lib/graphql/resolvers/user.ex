@@ -9,6 +9,7 @@ defmodule GraphQl.Resolvers.User do
     Notification,
     ImpersonationPolicy,
     ImpersonationPolicyBinding,
+    OIDCTrustRelationship,
     PublicKey,
     AccessTokenAudit,
     EabCredential,
@@ -29,6 +30,7 @@ defmodule GraphQl.Resolvers.User do
   def query(PublicKey, _), do: PublicKey
   def query(ImpersonationPolicy, _), do: ImpersonationPolicy
   def query(ImpersonationPolicyBinding, _), do: ImpersonationPolicyBinding
+  def query(OIDCTrustRelationship, _), do: OIDCTrustRelationship
   def query(_, _), do: User
 
   def run_batch(_, _, :repositories, publishers, repo_opts) do
@@ -265,6 +267,17 @@ defmodule GraphQl.Resolvers.User do
 
   def delete_public_key(%{id: id}, %{context: %{current_user: user}}),
     do: Users.delete_public_key(id, user)
+
+  def create_trust_relationship(%{attributes: attrs}, %{context: %{current_user: user}}),
+    do: Users.create_trust_relationship(attrs, user)
+
+  def delete_trust_relationship(%{id: id}, %{context: %{current_user: user}}),
+    do: Users.delete_trust_relationship(id, user)
+
+  def oidc_token(%{id_token: token, provider: provider, email: email}, _) do
+    with {:ok, token, _} <- Users.oidc_token(provider, token, email),
+      do: {:ok, token}
+  end
 
   def device_login(_, _),
     do: Users.device_login()

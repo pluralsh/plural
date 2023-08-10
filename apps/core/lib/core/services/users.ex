@@ -18,11 +18,13 @@ defmodule Core.Services.Users do
     DeviceLogin,
     EabCredential,
     DomainMapping,
-    UserEvent
+    UserEvent,
+    OIDCTrustRelationship
   }
 
   @type error :: {:error, term}
   @type user_resp :: {:ok, User.t} | error
+  @type trust_resp :: {:ok, OIDCTrustRelationship.t} | error
 
   @ttl :timer.hours(12)
 
@@ -165,6 +167,63 @@ defmodule Core.Services.Users do
       _ -> {:error, :not_found}
     end
   end
+
+  @doc """
+  Registers a new trust relationship for the given user
+  """
+  @spec create_trust_relationship(map, User.t) :: trust_resp
+  def create_trust_relationship(attrs, %User{id: user_id}) do
+    %OIDCTrustRelationship{user_id: user_id}
+    |> OIDCTrustRelationship.changeset(attrs)
+    |> Core.Repo.insert()
+  end
+
+  @doc """
+  Deletes a trust relationship attached to the current user
+  """
+  @spec delete_trust_relationship(binary, User.t) :: trust_resp
+  def delete_trust_relationship(id, %User{} = user) do
+    Core.Repo.get(OIDCTrustRelationship, id)
+    |> allow(user, :delete)
+    |> when_ok(:delete)
+  end
+
+  @oidc_providers ~w(github_actions)a
+
+  def oidc_providers(), do: @oidc_providers
+
+  @doc """
+  Generates a valid plural api jwt given validated claims from a supported oidc provider.  We will
+  validate existing trust relationships first before issuing this to ensure it was sourced as expected
+  """
+  @spec oidc_token(atom, map | binary, binary) :: {:ok, binary, map} | error
+  def oidc_token(provider, token, email) when is_binary(token) do
+    case OpenIDConnect.verify(provider, token) do
+      {:ok, claims} -> oidc_token(provider, claims, email)
+      _ -> {:error, "unable to verify id token"}
+    end
+  end
+
+  def oidc_token(provider, %{"iss" => issuer} = claims, email) do
+    %User{id: user_id} = user = get_user_by_email!(email)
+    trust = trust(provider, claims)
+
+    OIDCTrustRelationship.for_user(user_id)
+    |> OIDCTrustRelationship.for_issuer(issuer)
+    |> Core.Repo.all()
+    |> Enum.find(&OIDCTrustRelationship.allow?(&1, trust))
+    |> case do
+      %OIDCTrustRelationship{scopes: scopes} ->
+        Core.Guardian.encode_and_sign(user, %{"scopes" => scopes})
+      _ -> {:error, "untrusted claims for oidc handshake"}
+    end
+  end
+
+  defp trust(:github_actions, %{"repository" => repo, "ref" => ref, "workflow" => workflow}),
+    do: "#{repo}:#{ref}:#{workflow}"
+
+  def oidc_provider("https://token.actions.githubusercontent.com"), do: {:ok, :github_actions}
+  def oidc_provider(_), do: {:error, "unsupported issuer"}
 
   defp build_login_method(method, %{token: token}, _), do: %{login_method: method, token: token}
   defp build_login_method(:github, _, host),

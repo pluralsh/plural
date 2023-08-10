@@ -15,6 +15,7 @@ defmodule GraphQl.Schema.User do
   ecto_enum :user_event_status, Schema.UserEvent.Status
   ecto_enum :onboarding_state, Schema.User.OnboardingStatus
   ecto_enum :onboarding_checklist_state, Schema.User.OnboardingChecklistStatus
+  enum_from_list :external_oidc_provider, Core.Services.Users, :oidc_providers, []
 
   input_object :user_attributes do
     field :name,                 :string
@@ -87,6 +88,12 @@ defmodule GraphQl.Schema.User do
     field :key,          non_null(:string)
   end
 
+  input_object :trust_relationship_attributes do
+    field :issuer, non_null(:string)
+    field :trust,  non_null(:string)
+    field :scopes, list_of(non_null(:string))
+  end
+
   object :user do
     field :id,                   non_null(:id)
     field :name,                 non_null(:string)
@@ -114,6 +121,7 @@ defmodule GraphQl.Schema.User do
     field :publisher,            :publisher, resolve: dataloader(User)
     field :account,              non_null(:account), resolve: dataloader(Account)
     field :impersonation_policy, :impersonation_policy, resolve: dataloader(User)
+    field :trust_relationships,  :oidc_trust_relationship, resolve: dataloader(User)
     field :invites, list_of(:invite), resolve: dataloader(Account)
 
     field :jwt, :string, resolve: fn
@@ -187,6 +195,15 @@ defmodule GraphQl.Schema.User do
     field :state,   :string
     field :country, :string
     field :zip,     :string
+  end
+
+  object :oidc_trust_relationship do
+    field :id,     non_null(:id)
+    field :issuer, non_null(:string)
+    field :trust,  non_null(:string)
+    field :scopes, list_of(non_null(:string))
+
+    timestamps()
   end
 
   object :persisted_token do
@@ -434,6 +451,14 @@ defmodule GraphQl.Schema.User do
 
       safe_resolve &User.fetch_key_backup/2
     end
+
+    field :oidc_token, :string do
+      arg :provider, non_null(:external_oidc_provider)
+      arg :id_token, non_null(:string)
+      arg :email,    non_null(:string)
+
+      safe_resolve &User.oidc_token/2
+    end
   end
 
   object :user_mutations do
@@ -618,6 +643,20 @@ defmodule GraphQl.Schema.User do
       arg :name, non_null(:string)
 
       safe_resolve &User.delete_key_backup/2
+    end
+
+    field :create_trust_relationship, :oidc_trust_relationship do
+      middleware Authenticated
+      arg :attributes, non_null(:trust_relationship_attributes)
+
+      safe_resolve &User.create_trust_relationship/2
+    end
+
+    field :delete_trust_relationship, :oidc_trust_relationship do
+      middleware Authenticated
+      arg :id, non_null(:id)
+
+      safe_resolve &User.delete_trust_relationship/2
     end
   end
 end

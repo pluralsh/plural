@@ -532,14 +532,12 @@ defmodule GraphQl.UserQueriesTest do
       insert(:oidc_trust_relationship,
         user: user,
         issuer: "https://token.actions.githubusercontent.com",
-        trust: "pluralsh/.*:refs/heads/master:.*"
+        trust: "repo:pluralsh/.*:ref:refs/heads/master"
       )
       expect(OpenIDConnect, :verify, fn :github_actions, "id" ->
         {:ok, %{
           "iss" => "https://token.actions.githubusercontent.com",
-          "repository" => "pluralsh/plural",
-          "ref" => "refs/heads/master",
-          "workflow" => "publish"
+          "sub" => "repo:pluralsh/plural:ref:refs/heads/master",
         }}
       end)
 

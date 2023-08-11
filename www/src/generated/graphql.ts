@@ -4831,7 +4831,7 @@ export type User = {
   publisher?: Maybe<Publisher>;
   roles?: Maybe<Roles>;
   serviceAccount?: Maybe<Scalars['Boolean']['output']>;
-  trustRelationships?: Maybe<OidcTrustRelationship>;
+  trustRelationships?: Maybe<Array<Maybe<OidcTrustRelationship>>>;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
 };
 

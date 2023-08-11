@@ -3662,7 +3662,7 @@ type User {
 
   impersonationPolicy: ImpersonationPolicy
 
-  trustRelationships: OidcTrustRelationship
+  trustRelationships: [OidcTrustRelationship]
 
   invites: [Invite]
 

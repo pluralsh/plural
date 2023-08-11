@@ -14,7 +14,8 @@ defmodule Core.Application do
       Core.ReplicatedCache,
       Core.Cache,
       Core.Influx,
-      Core.Buffers.Supervisor
+      Core.Buffers.Supervisor,
+      {OpenIDConnect.Worker, Application.get_env(:core, :oidc_providers)},
     ] ++ conf(:consumers, [])
       ++ broker()
 

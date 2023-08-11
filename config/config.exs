@@ -49,7 +49,7 @@ config :phoenix, :json_library, Jason
 config :reverse_proxy_plug, :http_client, ReverseProxyPlug.HTTPClient.Adapters.HTTPoison
 
 config :core, Core.Guardian,
-  issuer: "forge",
+  issuer: "app.plural.sh",
   secret_key: "forge_secret"
 
 config :core, :chartmuseum, "http://localhost:8080"
@@ -179,5 +179,10 @@ config :junit_formatter,
 config :posthog,
   api_url: "https://posthog.plural.sh",
   api_key: "phc_r0v4jbKz8Rr27mfqgO15AN5BMuuvnU8hCFedd6zpSDy"
+
+config :core, :oidc_providers,
+  github_actions: [
+    discovery_document_uri: "https://token.actions.githubusercontent.com/.well-known/openid-configuration",
+  ]
 
 import_config "#{config_env()}.exs"

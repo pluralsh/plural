@@ -140,7 +140,7 @@ function useSelectCluster(shell?: CloudShell) {
           !shell ||
           (c.name === shell.cluster && c.provider === shell.provider)
       ),
-    [allClusters]
+    [allClusters, shell, userId]
   )
 
   const currentCluster = useMemo(

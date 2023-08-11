@@ -525,4 +525,33 @@ defmodule GraphQl.UserQueriesTest do
       assert found["value"] == "encryptionkey"
     end
   end
+
+  describe "oidcToken" do
+    test "it can issue a plural jwt from a valid id token" do
+      user = insert(:user)
+      insert(:oidc_trust_relationship,
+        user: user,
+        issuer: "https://token.actions.githubusercontent.com",
+        trust: "pluralsh/.*:refs/heads/master:.*"
+      )
+      expect(OpenIDConnect, :verify, fn :github_actions, "id" ->
+        {:ok, %{
+          "iss" => "https://token.actions.githubusercontent.com",
+          "repository" => "pluralsh/plural",
+          "ref" => "refs/heads/master",
+          "workflow" => "publish"
+        }}
+      end)
+
+      {:ok, %{data: %{"oidcToken" => token}}} = run_query("""
+        query OIDC($idToken: String!, $email: String!) {
+          oidcToken(idToken: $idToken, email: $email, provider: GITHUB_ACTIONS)
+        }
+      """, %{"idToken" => "id", "email" => user.email})
+
+      {:ok, found, _} = Core.Guardian.resource_from_token(token)
+
+      assert found.id == user.id
+    end
+  end
 end

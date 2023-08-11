@@ -17,6 +17,7 @@ Mimic.copy(Core.Shell.Client)
 Mimic.copy(Core.Shell.Scm)
 Mimic.copy(Kazan)
 Mimic.copy(WorkOS.SSO)
+Mimic.copy(OpenIDConnect)
 
 Mimic.copy(Goth.Token)
 Mimic.copy(GoogleApi.CloudResourceManager.V3.Api.Projects)

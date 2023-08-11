@@ -10,8 +10,8 @@ defmodule Core.Auth.JwtTest do
 
       {:ok, claims} = Jwt.verify(token, signer)
 
-      assert claims["aud"] == "forge.piazza.app"
-      assert claims["iss"] == "forge.piazza.app"
+      assert claims["aud"] == "app.plural.sh"
+      assert claims["iss"] == "app.plural.sh"
 
       {:ok, header} = Joken.peek_header(token)
 

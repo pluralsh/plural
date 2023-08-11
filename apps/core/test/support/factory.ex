@@ -624,6 +624,14 @@ defmodule Core.Factory do
     }
   end
 
+  def oidc_trust_relationship_factory do
+    %Schema.OIDCTrustRelationship{
+      user: build(:user),
+      issuer: "https://token.actions.githubusercontent.com",
+      trust: "pluralsh/.*:refs/heads/master:.*"
+    }
+  end
+
   def with_password(%Schema.User{} = user, password) do
     Schema.User.changeset(user, %{password: password})
     |> Ecto.Changeset.apply_changes()

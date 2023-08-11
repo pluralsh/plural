@@ -533,6 +533,67 @@ defmodule Core.Services.UsersTest do
     end
   end
 
+  describe "#create_trust_relationship" do
+    test "a user can create a new trust relationship w/ an oidc provider" do
+      user = insert(:user)
+
+      {:ok, trust} = Users.create_trust_relationship(%{
+        issuer: "https://token.actions.githubusercontent.com",
+        trust: "pluralsh/.*:refs/heads/master:.*"
+      }, user)
+
+      assert trust.user_id == user.id
+      assert trust.issuer == "https://token.actions.githubusercontent.com"
+      assert trust.trust == "pluralsh/.*:refs/heads/master:.*"
+    end
+  end
+
+  describe "#delete_trust_relationship/2" do
+    test "a user can delete their trust relationship" do
+      user = insert(:user)
+      trust = insert(:oidc_trust_relationship, user: user)
+
+      {:ok, deleted} = Users.delete_trust_relationship(trust.id, user)
+
+      assert deleted.id == trust.id
+      refute refetch(trust)
+    end
+  end
+
+  describe "#oidc_token/3" do
+    test "it can generate an oidc token from trusted claims" do
+      user = insert(:user)
+      insert(:oidc_trust_relationship,
+        user: user,
+        issuer: "https://token.actions.githubusercontent.com",
+        trust: "pluralsh/.*:refs/heads/master:.*"
+      )
+
+      {:ok, _, _} = Users.oidc_token(:github_actions, %{
+        "iss" => "https://token.actions.githubusercontent.com",
+        "repository" => "pluralsh/plural",
+        "ref" => "refs/heads/master",
+        "workflow" => "Publish"
+      }, user.email)
+    end
+
+    test "it will fail if no claims are trusted" do
+      user = insert(:user)
+      insert(:oidc_trust_relationship,
+        user: user,
+        issuer: "https://token.actions.githubusercontent.com",
+        trust: "pluralsh/.*:refs/heads/master:.*"
+      )
+
+      {:error, _} = Users.oidc_token(:github_actions, %{
+        "iss" => "https://token.actions.githubusercontent.com",
+        "repository" => "pluralsh/plural",
+        "ref" => "refs/heads/some-pull-request",
+        "workflow" => "Publish"
+      }, user.email)
+    end
+  end
+
   describe "#backfill_providers/0" do
     test "it will set providers based on terraform installations" do
       user = insert(:user)

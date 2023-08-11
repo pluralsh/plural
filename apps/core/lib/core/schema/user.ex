@@ -13,7 +13,8 @@ defmodule Core.Schema.User do
     GroupMember,
     Role,
     DemoProject,
-    Invite
+    Invite,
+    OIDCTrustRelationship
   }
 
   @email_re ~r/^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9-\.]+\.[a-zA-Z]{2,}$/
@@ -81,6 +82,7 @@ defmodule Core.Schema.User do
 
     has_many :invites, Invite, foreign_key: :service_account_id
     has_many :webhooks,  Webhook
+    has_many :trust_relationships, OIDCTrustRelationship
     has_many :role_bindings, RoleBinding
     many_to_many :groups, Group, join_through: "group_members"
     has_many :group_role_bindings, through: [:groups, :role_bindings]

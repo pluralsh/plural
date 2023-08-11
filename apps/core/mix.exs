@@ -126,6 +126,7 @@ defmodule Core.MixProject do
       {:google_api_cloud_resource_manager, "~> 0.41"},
       {:google_api_cloud_billing, "~> 0.23"},
       {:google_api_service_usage, "~> 0.18"},
+      {:openid_connect, "~> 0.2.2", git: "https://github.com/pluralsh/openid_connect", commit: "c3b2701b9adbe01fd89bbd09816ffa6c9e4a825e"},
     ]
   end
 

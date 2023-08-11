@@ -568,4 +568,40 @@ defmodule GraphQl.UserMutationTest do
       refute refetch(backup)
     end
   end
+
+  describe "createTrustRelationship" do
+    test "it can register a new oidc trust relationship" do
+      user = insert(:user)
+
+      {:ok, %{data: %{"createTrustRelationship" => trust}}} = run_query("""
+        mutation Create($attrs: TrustRelationshipAttributes!) {
+          createTrustRelationship(attributes: $attrs) {
+            issuer
+            trust
+          }
+        }
+      """, %{"attrs" => %{"issuer" => "test", "trust" => "some-regex"}}, %{current_user: user})
+
+      assert trust["issuer"] == "test"
+      assert trust["trust"] == "some-regex"
+    end
+  end
+
+  describe "deleteTrustRelationship" do
+    test "it can register a new oidc trust relationship" do
+      user = insert(:user)
+      trust = insert(:oidc_trust_relationship, user: user)
+
+      {:ok, %{data: %{"deleteTrustRelationship" => del}}} = run_query("""
+        mutation Delete($id: ID!) {
+          deleteTrustRelationship(id: $id) {
+            id
+          }
+        }
+      """, %{"id" => trust.id}, %{current_user: user})
+
+      assert del["id"] == trust.id
+      refute refetch(trust)
+    end
+  end
 end

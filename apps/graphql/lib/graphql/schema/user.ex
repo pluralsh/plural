@@ -121,7 +121,7 @@ defmodule GraphQl.Schema.User do
     field :publisher,            :publisher, resolve: dataloader(User)
     field :account,              non_null(:account), resolve: dataloader(Account)
     field :impersonation_policy, :impersonation_policy, resolve: dataloader(User)
-    field :trust_relationships,  :oidc_trust_relationship, resolve: dataloader(User)
+    field :trust_relationships,  list_of(:oidc_trust_relationship), resolve: dataloader(User)
     field :invites, list_of(:invite), resolve: dataloader(Account)
 
     field :jwt, :string, resolve: fn

@@ -10,6 +10,9 @@ jobs:
   deploy:
     name: Push Plural artifact to Plural
     runs-on: ubuntu-20.04
+    permissions:
+      id-token: write
+      contents: read
     steps:
     - uses: actions/checkout@v3
     - uses: hashicorp/setup-terraform@v2
@@ -17,9 +20,9 @@ jobs:
       with:
         version: latest
     - name: installing plural
-      uses: pluralsh/setup-plural@v0.1.5
+      uses: pluralsh/setup-plural@v0.1.9
       with:
-        config: ${{ secrets.PLURAL_CONF }}
+        email: mjg@plural.sh
     - run: make deploy
     - uses: 8398a7/action-slack@v3
       with:

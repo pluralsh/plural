@@ -566,14 +566,12 @@ defmodule Core.Services.UsersTest do
       insert(:oidc_trust_relationship,
         user: user,
         issuer: "https://token.actions.githubusercontent.com",
-        trust: "pluralsh/.*:refs/heads/master:.*"
+        trust: "repo:pluralsh/.*:ref:refs/heads/master"
       )
 
-      {:ok, _, _} = Users.oidc_token(:github_actions, %{
+      {:ok, _, _} = Users.oidc_token(%{
         "iss" => "https://token.actions.githubusercontent.com",
-        "repository" => "pluralsh/plural",
-        "ref" => "refs/heads/master",
-        "workflow" => "Publish"
+        "sub" => "repo:pluralsh/plural:ref:refs/heads/master",
       }, user.email)
     end
 
@@ -582,14 +580,12 @@ defmodule Core.Services.UsersTest do
       insert(:oidc_trust_relationship,
         user: user,
         issuer: "https://token.actions.githubusercontent.com",
-        trust: "pluralsh/.*:refs/heads/master:.*"
+        trust: "pluralsh/.*:ref:refs/heads/master"
       )
 
-      {:error, _} = Users.oidc_token(:github_actions, %{
+      {:error, _} = Users.oidc_token(%{
         "iss" => "https://token.actions.githubusercontent.com",
-        "repository" => "pluralsh/plural",
-        "ref" => "refs/heads/some-pull-request",
-        "workflow" => "Publish"
+        "sub" => "repo:pluralsh/plural:ref:refs/heads/some-pr",
       }, user.email)
     end
   end

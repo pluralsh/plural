@@ -22,7 +22,7 @@ jobs:
     - name: installing plural
       uses: pluralsh/setup-plural@v0.1.9
       with:
-        email: mjg@plural.sh
+        email: gh-actions@plural.sh
     - run: make deploy
     - uses: 8398a7/action-slack@v3
       with:

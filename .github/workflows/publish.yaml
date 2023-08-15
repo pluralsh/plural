@@ -162,12 +162,12 @@ jobs:
       id: plrl
       uses: pluralsh/setup-plural@v0.1.9
       with:
-        email: mjg@plural.sh
+        email: gh-actions@plural.sh
     - name: Login to plural registry
       uses: docker/login-action@v2
       with:
         registry: dkr.plural.sh
-        username: mjg@plural.sh
+        username: gh-actions@plural.sh
         password: ${{ steps.plrl.outputs.token }}
     - name: Login to GHCR
       uses: docker/login-action@v2

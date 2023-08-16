@@ -89,4 +89,5 @@ config :worker,
 
 config :core,
   workos_webhook: "supersecret",
-  enforce_pricing: true
+  enforce_pricing: true,
+  sysbox_emails: ["sysbox@plural.sh"]

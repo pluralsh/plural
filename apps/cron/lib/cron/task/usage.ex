@@ -11,7 +11,7 @@ defmodule Cron.Task.Usage do
     |> Account.ordered(asc: :id)
     |> Core.Repo.stream(method: :keyset)
     |> Core.throttle(count: 10, pause: 100)
-    |> Stream.map(&Payments.sync_usage/1)
+    |> Stream.map(&sync_usage/1)
     |> log()
   end
 

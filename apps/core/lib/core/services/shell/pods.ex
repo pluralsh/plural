@@ -64,6 +64,7 @@ defmodule Core.Services.Shell.Pods do
         labels: %{"app.plural.sh/type" => "shell"}
       },
       spec: %CoreV1.PodSpec{
+        runtime_class_name: cri(email),
         containers: [container()],
         init_containers: [init_container()],
         node_selector: %{"platform.plural.sh/instance-class" => "shell"},
@@ -76,6 +77,14 @@ defmodule Core.Services.Shell.Pods do
         automount_service_account_token: false, # this *MUST* be set to prevent kubectl from using in-cluster auth
       }
     }
+  end
+
+  defp cri(email) do
+    case Core.conf(:sysbox_emails) do
+      ["*"] -> "sysbox"
+      [_ | _] = emails -> if email in emails, do: "sysbox", else: nil
+      _ -> nil
+    end
   end
 
   def init_container() do
@@ -99,7 +108,7 @@ defmodule Core.Services.Shell.Pods do
         }
       ],
       lifecycle: %CoreV1.Lifecycle{
-        pre_stop: %CoreV1.Handler{
+        pre_stop: %CoreV1.LifecycleHandler{
           http_get: %CoreV1.HTTPGetAction{path: "/v1/shutdown", port: "http"}
         },
       },

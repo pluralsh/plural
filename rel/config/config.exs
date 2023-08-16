@@ -88,6 +88,10 @@ if get_env("VAULT_HOST") do
   config :core, vault: get_env("VAULT_HOST")
 end
 
+if get_env("SYSBOX_WHITELIST") do
+  config :core, :sysbox_emails, String.split(get_env("SYSBOX_WHITELIST"), ",")
+end
+
 config :workos,
   client_id: get_env("WORKOS_CLIENT_ID"),
   api_key: get_env("WORKOS_API_KEY")

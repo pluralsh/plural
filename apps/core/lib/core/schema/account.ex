@@ -44,7 +44,7 @@ defmodule Core.Schema.Account do
 
   def usage(query \\ __MODULE__) do
     from(a in query,
-      join: u in Core.Schema.User, on: u.account_id == a.id,
+      left_join: u in Core.Schema.User, on: u.account_id == a.id,
       left_join: q in Core.Schema.UpgradeQueue, on: q.user_id == u.id,
       group_by: a.id,
       select: %{id: a.id, users: count(fragment("case when ? then null else ? end", u.service_account, u.id), :distinct), clusters: count(q.id, :distinct)}

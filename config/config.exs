@@ -140,7 +140,8 @@ config :core,
   stripe_webhook_secret: "bogus",
   github_demo_token: "test-pat",
   github_demo_org: "pluralsh-demos",
-  trial_plan: "Pro Trial"
+  trial_plan: "Pro Trial",
+  sysbox_emails: []
 
 config :briefly,
   directory: [{:system, "TMPDIR"}, {:system, "TMP"}, {:system, "TEMP"}, "/tmp"],

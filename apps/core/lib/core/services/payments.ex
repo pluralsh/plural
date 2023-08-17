@@ -66,6 +66,18 @@ defmodule Core.Services.Payments do
   end
 
   @doc """
+  Forcibly removes an account from their current trial
+  """
+  @spec remove_trial(Account.t) :: platform_sub_resp
+  def remove_trial(%Account{} = account) do
+    case Core.Repo.preload(account, [subscription: :plan], force: true) do
+      %Account{subscription: %PlatformSubscription{plan: %PlatformPlan{trial: true}} = sub} ->
+        Core.Repo.delete(sub)
+      %Account{} -> {:ok, nil}
+    end
+  end
+
+  @doc """
   Adds the trial plan to a user's account
   """
   @spec begin_trial(User.t | Account.t) :: platform_sub_resp
@@ -728,6 +740,7 @@ defmodule Core.Services.Payments do
       %{account: account} = preload(user, force: true)
       provision_customer(account, attrs)
     end)
+    |> add_operation(:trial, fn %{account: account} -> remove_trial(account) end)
     |> add_operation(:db, fn %{account: %Account{cluster_count: cc, user_count: uc} = account} ->
       %PlatformSubscription{plan_id: plan.id, plan: plan, account_id: account.id}
       |> PlatformSubscription.changeset(Map.put(attrs, :line_items, [

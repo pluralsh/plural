@@ -83,6 +83,28 @@ defmodule Core.Services.Users do
   def get_login_token(token), do: Core.Repo.get_by(LoginToken, token: token)
 
   @doc """
+  Fetches a user from an auth token, handles:
+  * persisted api tokens
+  * jwt
+  """
+  @spec from_token(binary) :: user_resp
+  def from_token("plrl-" <> _ = token), do: resolve_persisted_token(token)
+  def from_token("cmt-" <> _ = token), do: resolve_persisted_token(token)
+  def from_token(token) when is_binary(token) do
+    case Core.Guardian.resource_from_token(token) do
+      {:ok, user, _} -> {:ok, user}
+      error -> error
+    end
+  end
+
+  defp resolve_persisted_token(token) do
+    case get_persisted_token(token) do
+      %PersistedToken{user: %User{} = user} -> {:ok, user}
+      _ -> {:error, "could not resolve persisted token"}
+    end
+  end
+
+  @doc """
   Determines if a user can view details of another user
   """
   @spec accessible(User.t | binary, User.t) :: user_resp

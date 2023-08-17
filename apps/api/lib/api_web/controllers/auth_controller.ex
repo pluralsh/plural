@@ -1,14 +1,15 @@
 defmodule ApiWeb.AuthController do
   use ApiWeb, :controller
+  alias Core.Schema.{User}
   alias Core.Services.Repositories
   alias Core.Services.Users
 
   plug :fetch_user when action == :token
 
   def post_token(conn, %{"scope" => "repository:" <> repo, "password" => token}) do
-    with %Core.Schema.PersistedToken{user: %{} = user} <- Users.get_persisted_token(token),
-          {allowed, full_name} <- fetch_scopes(repo, user),
-          {:ok, token} <- Repositories.docker_token(allowed, full_name, user) do
+    with {:ok, %User{} = user} <- Users.from_token(token),
+         {allowed, full_name} <- fetch_scopes(repo, user),
+         {:ok, token} <- Repositories.docker_token(allowed, full_name, user) do
       json(conn, %{token: token, access_token: token})
     else
       nil -> {:error, :unauthorized}
@@ -39,7 +40,7 @@ defmodule ApiWeb.AuthController do
 
   def fetch_user(conn, _) do
     with {_, pass} <- Plug.BasicAuth.parse_basic_auth(conn),
-         %{user: user} <- Users.get_persisted_token(pass) do
+         {:ok, user} <- Users.from_token(pass) do
       assign(conn, :user, user)
     else
       _ -> assign(conn, :user, nil)

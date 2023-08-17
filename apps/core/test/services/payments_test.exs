@@ -272,6 +272,41 @@ defmodule Core.Services.PaymentsTest do
       assert_receive {:event, %PubSub.PlatformSubscriptionCreated{item: ^subscription}}
     end
 
+    test "A user can create a subscription for a platform plan even if on a trial" do
+      account = insert(:account, billing_customer_id: "cus_id", user_count: 2, cluster_count: 0)
+      sub = insert(:platform_subscription, account: account, plan: trial_plan())
+      user = insert(:user, roles: %{admin: true}, account: account)
+      plan = insert(:platform_plan,
+        external_id: "plan_id",
+        line_items: [
+          %{name: "user", dimension: :user, external_id: "id_user", period: :monthly},
+          %{name: "cluster", dimension: :cluster, external_id: "id_cluster", period: :monthly},
+        ]
+      )
+
+      expect(Stripe.Subscription, :create, fn %{
+        customer: "cus_id",
+        items: [%{plan: "id_user", quantity: 2}, %{plan: "id_cluster", quantity: 0}]
+      } ->
+        {:ok, %{
+          id: "sub_id",
+          items: %{
+            data: [
+              %{id: "user_id", plan: %{id: "id_user"}},
+              %{id: "cluster_id", plan: %{id: "id_cluster"}}
+            ]
+          }
+        }}
+      end)
+
+      {:ok, subscription} = Payments.create_platform_subscription(%{}, plan, user)
+
+      refute subscription.id == sub.id
+      assert subscription.account_id == account.id
+
+      refute refetch(sub)
+    end
+
     test "It can autoprovision stripe customers" do
       account = insert(:account, user_count: 2, cluster_count: 0, root_user: build(:user))
       user = insert(:user, roles: %{admin: true}, account: account)

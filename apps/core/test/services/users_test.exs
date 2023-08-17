@@ -566,12 +566,12 @@ defmodule Core.Services.UsersTest do
       insert(:oidc_trust_relationship,
         user: user,
         issuer: "https://token.actions.githubusercontent.com",
-        trust: "repo:pluralsh/.*:ref:refs/heads/master"
+        trust: "repo:pluralsh/plural:ref:refs/tags/v.*"
       )
 
       {:ok, _, _} = Users.oidc_token(%{
         "iss" => "https://token.actions.githubusercontent.com",
-        "sub" => "repo:pluralsh/plural:ref:refs/heads/master",
+        "sub" => "repo:pluralsh/plural:ref:refs/tags/v0.10.46",
       }, user.email)
     end
 

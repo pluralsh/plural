@@ -56,6 +56,8 @@ defmodule Core.Services.Shell.Pods do
     do: Enum.into(conditions, %{}, fn %{type: t} = condition -> {t, condition} end)
 
   def pod(name, email) do
+    runtime = cri(email)
+
     %CoreV1.Pod{
       metadata: %MetaV1.ObjectMeta{
         name: name,
@@ -64,18 +66,32 @@ defmodule Core.Services.Shell.Pods do
         labels: %{"app.plural.sh/type" => "shell"}
       },
       spec: %CoreV1.PodSpec{
-        runtime_class_name: cri(email),
+        runtime_class_name: runtime,
         containers: [container()],
         init_containers: [init_container()],
-        node_selector: %{"platform.plural.sh/instance-class" => "shell"},
-        tolerations: [%CoreV1.Toleration{
-          key: "platform.plural.sh/taint",
-          value: "SHELL",
-          operator: "Equal"
-        }],
+        node_selector: node_selector(runtime),
+        tolerations: [toleration(runtime)],
         termination_grace_period_seconds: 30,
         automount_service_account_token: false, # this *MUST* be set to prevent kubectl from using in-cluster auth
       }
+    }
+  end
+
+  defp node_selector("sysbox"), do: %{"sysbox-runtime" => "running"}
+  defp node_selector(_), do: %{"platform.plural.sh/instance-class" => "shell"}
+
+  defp toleration("sysbox") do
+    %CoreV1.Toleration{
+      value: "true",
+      key: "plural.sh/sysbox",
+      operator: "Equal"
+    }
+  end
+  defp toleration(_) do
+    %CoreV1.Toleration{
+      value: "SHELL",
+      key: "platform.plural.sh/taint",
+      operator: "Equal"
     }
   end
 

@@ -546,6 +546,7 @@ type PlanFeatures {
   vpn: Boolean
   userManagement: Boolean
   audit: Boolean
+  databaseManagement: Boolean
 }
 
 type PlatformSubscriptionLineItems {

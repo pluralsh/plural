@@ -57,6 +57,7 @@ defmodule Core.Services.Shell.Pods do
 
   def pod(name, email) do
     runtime = cri(email)
+    containers = [container() | (if runtime == "sysbox", do: [dind_container()], else: [])]
 
     %CoreV1.Pod{
       metadata: %MetaV1.ObjectMeta{
@@ -67,11 +68,12 @@ defmodule Core.Services.Shell.Pods do
       },
       spec: %CoreV1.PodSpec{
         runtime_class_name: runtime,
-        containers: [container()],
+        containers: containers,
         init_containers: [init_container()],
         node_selector: node_selector(runtime),
         tolerations: [toleration(runtime)],
         termination_grace_period_seconds: 30,
+        volumes: volumes(runtime),
         automount_service_account_token: false, # this *MUST* be set to prevent kubectl from using in-cluster auth
       }
     }
@@ -135,11 +137,28 @@ defmodule Core.Services.Shell.Pods do
       env: [
         %CoreV1.EnvVar{name: "IGNORE_IN_CLUSTER", value: "true"},
         %CoreV1.EnvVar{name: "CLOUD_SHELL", value: "1"},
+        %CoreV1.EnvVar{name: "DOCKER_HOST", value: "tcp://localhost:2375"}
       ],
       liveness_probe: healthcheck(),
       readiness_probe: healthcheck(),
     }
   end
+
+  defp dind_container() do
+    %CoreV1.Container{
+      name: "dind",
+      image: dind_image(),
+      resources: %CoreV1.ResourceRequirements{
+        requests: %{cpu: "50m", memory: "512Mi"},
+        limits: %{cpu: "500m", memory: "2Gi"},
+      },
+      security_context: %CoreV1.SecurityContext{privileged: false},
+      volume_mounts: [%CoreV1.VolumeMount{name: "docker", mount_path: "/var/lib/docker"}]
+    }
+  end
+
+  defp volumes("sysbox"), do: [%CoreV1.Volume{name: "docker", empty_dir: %{}}]
+  defp volumes(_), do: []
 
   defp healthcheck() do
     %CoreV1.Probe{
@@ -151,5 +170,7 @@ defmodule Core.Services.Shell.Pods do
     }
   end
 
-  defp image(), do: Application.get_env(:core, :cloud_shell_img) || "gcr.io/pluralsh/plural-cli-cloud:0.6.23"
+  defp image(), do: Core.conf(:cloud_shell_img) || "gcr.io/pluralsh/plural-cli-cloud:0.6.23"
+
+  defp dind_image(), do: Core.conf(:dind_img) || "ghcr.io/pluralsh/plural-dind:pr-428"
 end

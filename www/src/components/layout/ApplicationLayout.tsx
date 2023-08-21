@@ -1,8 +1,6 @@
 import { A, Flex, Span } from 'honorable'
 import { Toast } from '@pluralsh/design-system'
 
-import { useIsCurrentlyOnboarding } from '../shell/hooks/useOnboarded'
-
 import BillingMigrationModal from '../account/billing/BillingMigrationModal'
 
 import Sidebar from './Sidebar'
@@ -13,7 +11,6 @@ import { ContentOverlay } from './Overlay'
 
 function ApplicationLayout({ children }: any) {
   const isProduction = import.meta.env.MODE === 'production'
-  const isCurrentlyOnboarding = useIsCurrentlyOnboarding()
 
   return (
     <>
@@ -63,7 +60,7 @@ function ApplicationLayout({ children }: any) {
             position="relative"
           >
             <ContentOverlay />
-            {!isCurrentlyOnboarding && <Subheader />}
+            <Subheader />
             {children}
           </Flex>
         </Flex>

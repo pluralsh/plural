@@ -535,13 +535,29 @@ defmodule Core.Services.Repositories do
     end)
     |> add_operation(:oidc_provider, fn
       %{installation: %{id: id}, client: %{client_id: cid, client_secret: secret}} ->
+        attrs = Map.merge(attrs, %{client_id: cid, client_secret: secret})
+                |> add_bindings(find_bindings(user))
         %OIDCProvider{installation_id: id}
-        |> OIDCProvider.changeset(Map.merge(attrs, %{client_id: cid, client_secret: secret}))
+        |> OIDCProvider.changeset(attrs)
         |> Core.Repo.insert()
     end)
     |> execute(extract: :oidc_provider)
     |> notify(:create)
   end
+
+  defp add_bindings(attrs, bindings) do
+    bindings = Enum.uniq_by((attrs[:bindings] || []) ++ bindings, & {&1[:group_id], &1[:user_id]})
+    Map.put(attrs, :bindings, bindings)
+  end
+
+  defp find_bindings(%User{service_account: true} = user) do
+    case Core.Repo.preload(user, impersonation_policy: :bindings) do
+      %{impersonation_policy: %{bindings: [_ | _] = bindings}} ->
+        Enum.map(bindings, &Map.take(&1, [:group_id, :user_id]))
+      _ -> []
+    end
+  end
+  defp find_bindings(_), do: []
 
   @doc """
   Inserts or updates the oidc provider for an installation

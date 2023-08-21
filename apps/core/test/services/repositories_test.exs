@@ -570,6 +570,37 @@ defmodule Core.Services.RepositoriesTest do
 
       assert_receive {:event, %PubSub.OIDCProviderCreated{item: ^oidc}}
     end
+
+    test "it will propagate a service accounts bindings" do
+      account = insert(:account)
+      sa = insert(:user, service_account: true, account: account)
+      policy = insert(:impersonation_policy, user: sa)
+      binding = insert(:impersonation_policy_binding, policy: policy, group: insert(:group, account: account))
+
+      installation = insert(:installation, user: sa)
+      group = insert(:group, account: account)
+      expect(HTTPoison, :post, fn _, _, _ ->
+        {:ok, %{status_code: 200, body: Jason.encode!(%{client_id: "123", client_secret: "secret"})}}
+      end)
+
+      {:ok, oidc} = Repositories.create_oidc_provider(%{
+        redirect_uris: ["https://example.com"],
+        auth_method: :basic,
+        bindings: [%{user_id: installation.user_id}, %{group_id: group.id}]
+      }, installation.id, sa)
+
+      assert oidc.client_id == "123"
+      assert oidc.client_secret == "secret"
+      assert oidc.redirect_uris == ["https://example.com"]
+
+      [first, second, third] = oidc.bindings
+
+      assert first.user_id == installation.user_id
+      assert second.group_id == group.id
+      assert third.group_id == binding.group_id
+
+      assert_receive {:event, %PubSub.OIDCProviderCreated{item: ^oidc}}
+    end
   end
 
   describe "#update_oidc_provider/3" do

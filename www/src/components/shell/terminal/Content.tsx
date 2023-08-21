@@ -4,8 +4,6 @@ import { Dispatch, useCallback, useEffect, useMemo, useState } from 'react'
 import { Button, ErrorIcon, Modal } from '@pluralsh/design-system'
 import IsEmpty from 'lodash/isEmpty'
 
-import useOnboarded from '../hooks/useOnboarded'
-import OnboardingHeader from '../onboarding/OnboardingHeader'
 import { CLOUD_SHELL_QUERY, SETUP_SHELL_MUTATION } from '../queries'
 import { RootMutationType } from '../../../generated/graphql'
 
@@ -16,36 +14,35 @@ import Terminal from './Terminal'
 import ContentCard from './ContentCard'
 import { ContextProps, State, TerminalContext } from './context/terminal'
 import { SHELL_CONFIGURATION_QUERY } from './queries'
-import { NextStepsModal } from './NextSteps'
 import { Sidebar } from './sidebar/Sidebar'
 
-function WelcomeModal() {
-  const [open, setOpen] = useState(true)
+// function WelcomeModal() {
+//   const [open, setOpen] = useState(true)
 
-  return (
-    <Modal
-      open={open}
-      style={{ padding: 0 }}
-    >
-      <Flex
-        direction="column"
-        gap="large"
-      >
-        <Span>Welcome to Plural!</Span>
-        <Span>
-          Completing the install wizard will deploy your applications and give
-          you access to your Plural Console.
-        </Span>
-        <Button
-          data-phid="start-install-cta"
-          onClick={() => setOpen(false)}
-        >
-          Start Install
-        </Button>
-      </Flex>
-    </Modal>
-  )
-}
+//   return (
+//     <Modal
+//       open={open}
+//       style={{ padding: 0 }}
+//     >
+//       <Flex
+//         direction="column"
+//         gap="large"
+//       >
+//         <Span>Welcome to Plural!</Span>
+//         <Span>
+//           Completing the install wizard will deploy your applications and give
+//           you access to your Plural Console.
+//         </Span>
+//         <Button
+//           data-phid="start-install-cta"
+//           onClick={() => setOpen(false)}
+//         >
+//           Start Install
+//         </Button>
+//       </Flex>
+//     </Modal>
+//   )
+// }
 
 function MissingPermissionsModal({ refetch, missing }): JSX.Element {
   const [open, setOpen] = useState(true)
@@ -109,7 +106,6 @@ function MissingPermissionsModal({ refetch, missing }): JSX.Element {
 }
 
 function Content() {
-  const { fresh: isOnboarding } = useOnboarded()
   const [state, setState] = useState(State.New)
   const [onAction, setOnAction] = useState<Dispatch<string>>()
 
@@ -150,14 +146,7 @@ function Content() {
   if (!shell?.provider) return <LoadingIndicator />
 
   return (
-    <Div height={isOnboarding ? '100%' : 'calc(100% - 48px)'}>
-      {isOnboarding && (
-        <>
-          <OnboardingHeader mode="shell" />
-          <WelcomeModal />
-        </>
-      )}
-
+    <Div height="calc(100% - 48px)">
       {!IsEmpty(setupShellData?.missing) && (
         <MissingPermissionsModal
           refetch={setupShell}
@@ -167,7 +156,7 @@ function Content() {
 
       <Flex
         flexGrow={1}
-        height={isOnboarding ? 'calc(100% - 56px)' : '100%'}
+        height="100%"
         padding="large"
       >
         <ContentCard>
@@ -176,7 +165,7 @@ function Content() {
             <TerminalThemeProvider>
               <Terminal provider={shell.provider} />
             </TerminalThemeProvider>
-            <NextStepsModal />
+            {/* <NextStepsModal /> */}
           </TerminalContext.Provider>
         </ContentCard>
       </Flex>

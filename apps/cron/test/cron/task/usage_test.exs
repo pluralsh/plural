@@ -6,7 +6,7 @@ defmodule Cron.Task.UsageTest do
       accounts = insert_list(3, :account, usage_updated: true)
       insert(:account)
 
-      3 = Cron.Task.Usage.run()
+      4 = Cron.Task.Usage.run()
 
       for a <- accounts,
         do: refute refetch(a).usage_updated

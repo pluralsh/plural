@@ -7,7 +7,7 @@ defmodule Cron.Task.Usage do
   alias Core.Services.{Payments, Accounts}
 
   def run() do
-    Account.usage_updated()
+    Account
     |> Account.ordered(asc: :id)
     |> Core.Repo.stream(method: :keyset)
     |> Core.throttle(count: 10, pause: 100)

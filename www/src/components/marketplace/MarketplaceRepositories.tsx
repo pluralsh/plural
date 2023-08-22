@@ -264,6 +264,7 @@ function MarketplaceRepositories({ publisher }: { publisher?: any }) {
                 position="sticky"
                 top="0"
                 backgroundColor="fill-zero"
+                zIndex={1}
               >
                 <Flex gap="small">
                   <SearchBar

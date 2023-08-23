@@ -10,7 +10,8 @@ defmodule Core.Rollable.VersionsTest do
         insert(:chart_installation,
           installation: insert(:installation, auto_upgrade: true),
           chart: chart,
-          version: chart_version
+          version: chart_version,
+          synced: true
         )
       end
 
@@ -30,8 +31,11 @@ defmodule Core.Rollable.VersionsTest do
       assert rolled.status == :finished
       assert rolled.count == 3
 
-      for bumped <- auto_upgraded,
-        do: assert refetch(bumped).version_id == version.id
+      for bumped <- auto_upgraded do
+        bumped = refetch(bumped)
+        assert bumped.version_id == version.id
+        refute bumped.synced
+      end
 
       for ignore <- ignored,
         do: assert refetch(ignore).version_id == chart_version.id

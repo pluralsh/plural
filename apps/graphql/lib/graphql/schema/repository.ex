@@ -8,7 +8,7 @@ defmodule GraphQl.Schema.Repository do
     Tag,
     Account
   }
-  alias GraphQl.LockLoader
+  alias GraphQl.{LockLoader, SyncLoader}
 
   ### INPUTS
 
@@ -153,6 +153,10 @@ defmodule GraphQl.Schema.Repository do
         manual_dataloader(loader, LockLoader, :ids, id)
     end
 
+    field :synced, :boolean, resolve: fn
+      %{id: id}, _, %{context: %{loader: loader}} ->
+        manual_dataloader(loader, SyncLoader, :ids, id)
+    end
 
     field :license, :string, resolve: fn
       installation, _, _ -> Core.Services.Repositories.generate_license(installation)
@@ -527,6 +531,13 @@ defmodule GraphQl.Schema.Repository do
       arg :attributes, non_null(:lock_attributes)
 
       safe_resolve &Repository.release_apply_lock/2
+    end
+
+    field :synced, :boolean do
+      middleware Authenticated
+      arg :repository, non_null(:string)
+
+      safe_resolve &Repository.synced/2
     end
   end
 end

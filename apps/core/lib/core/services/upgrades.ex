@@ -274,7 +274,7 @@ defmodule Core.Services.Upgrades do
     |> add_operation(:lock, fn _ -> Rollouts.lock_installation(version, inst) end)
     |> add_operation(:inst, fn %{lock: inst} ->
       inst
-      |> Ecto.Changeset.change(%{version_id: version.id})
+      |> Ecto.Changeset.change(%{version_id: version.id, synced: false})
       |> Core.Repo.update()
       |> when_ok(&Core.Repo.preload(&1, [:installation]))
     end)

@@ -4,6 +4,7 @@ defmodule Core.Schema.ChartInstallation do
 
   schema "chart_installations" do
     field :locked, :boolean, default: false
+    field :synced, :boolean, default: false
 
     belongs_to :installation, Installation
     belongs_to :chart,        Chart
@@ -80,7 +81,7 @@ defmodule Core.Schema.ChartInstallation do
   def preload(query \\ __MODULE__, preloads),
     do: from(cv in query, preload: ^preloads)
 
-  @valid ~w(installation_id chart_id version_id)a
+  @valid ~w(installation_id chart_id version_id synced)a
 
   def changeset(model, attrs \\ %{}) do
     model

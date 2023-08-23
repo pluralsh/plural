@@ -65,7 +65,8 @@ defmodule GraphQl do
     Upgrade,
     GraphQl.InstallationLoader,
     GraphQl.ShellLoader,
-    GraphQl.LockLoader
+    GraphQl.LockLoader,
+    GraphQl.SyncLoader
   ]
 
   def context(ctx) do

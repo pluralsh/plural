@@ -231,6 +231,15 @@ defmodule GraphQl.Resolvers.Repository do
     Repositories.release_apply_lock(attrs, repo.id, user)
   end
 
+  def synced(%{repository: name}, %{context: %{current_user: user}}) do
+    Repositories.get_repository_by_name!(name)
+    |> Repositories.synced(user)
+    |> case do
+      {:ok, _} -> {:ok, true}
+      error -> error
+    end
+  end
+
   def generate_scaffold(%{application: app} = ctx, _) do
     Core.Services.Scaffolds.generate(app, ctx)
     |> Enum.map(fn {file, content} ->

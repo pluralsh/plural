@@ -39,6 +39,27 @@ defmodule GraphQl.LockLoader do
   end
 end
 
+defmodule GraphQl.SyncLoader do
+  alias Core.Schema.Installation
+
+  def data(_) do
+    Dataloader.KV.new(&query/2, max_concurrency: 1)
+  end
+
+  def query(_, ids) do
+    unsynced = fetch_unsynced(ids)
+    Map.new(ids, & {&1, !unsynced[&1]})
+  end
+
+  def fetch_unsynced(ids) do
+    MapSet.to_list(ids)
+    |> Installation.for_ids()
+    |> Installation.unsynced()
+    |> Core.Repo.all()
+    |> Map.new(& {&1.id, &1.synced})
+  end
+end
+
 defmodule GraphQl.ShellLoader do
   alias Core.Schema.CloudShell
 

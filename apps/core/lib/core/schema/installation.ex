@@ -49,6 +49,15 @@ defmodule Core.Schema.Installation do
     )
   end
 
+  def unsynced(query \\ __MODULE__) do
+    from(i in query,
+      left_join: ti in assoc(i, :terraform_installations),
+      left_join: ci in assoc(i, :chart_installations),
+      where: (not is_nil(ti.id) and not ti.synced) or (not is_nil(ci.id) and not ci.synced),
+      select: %{id: i.id, synced: coalesce(ti.id, ci.id)}
+    )
+  end
+
   def ordered(query \\ __MODULE__, order \\ [desc: :inserted_at]),
     do: from(i in query, order_by: ^order)
 

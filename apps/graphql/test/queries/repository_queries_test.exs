@@ -115,7 +115,7 @@ defmodule GraphQl.RepositoryQueriesTest do
             edges {
               node {
                 id
-                installation { id locked }
+                installation { id locked synced }
               }
             }
           }
@@ -128,6 +128,7 @@ defmodule GraphQl.RepositoryQueriesTest do
 
       found = Enum.find(found_repos, & &1["installation"]["id"] == inst.id)
       assert found["installation"]["locked"]
+      refute found["installation"]["synced"]
 
       refute Enum.reject(found_repos, & &1["installation"]["id"] == inst.id)
              |> Enum.any?(& &1["installation"]["locked"])
@@ -580,6 +581,21 @@ defmodule GraphQl.RepositoryQueriesTest do
 
       assert second["tag"] == "tag"
       assert second["count"] == 1
+    end
+  end
+
+  describe "synced" do
+    test "it can mark stuff as synced" do
+      inst = insert(:installation)
+      ci = insert(:chart_installation, installation: inst)
+
+      {:ok, %{data: %{"synced" => true}}} = run_query("""
+        mutation Synced($repo: String!) {
+          synced(repository: $repo)
+        }
+      """, %{"repo" => inst.repository.name}, %{current_user: inst.user})
+
+      assert refetch(ci).synced
     end
   end
 

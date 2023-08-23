@@ -197,6 +197,31 @@ defmodule Core.Services.Repositories do
   end
 
   @doc """
+  Marks all current installations for a repository as having been synced, to be run during `plural deploy`
+  """
+  @spec synced(Repository.t, User.t) :: {:ok, map} | error
+  def synced(%Repository{id: id}, %User{id: user_id}) do
+    get_installation(user_id, id)
+    |> synced()
+  end
+
+  @spec synced(Installation.t) :: {:ok, map} | error
+  def synced(%Installation{id: id}) do
+    start_transaction()
+    |> add_operation(:tf, fn _ ->
+      TerraformInstallation.for_installation(id)
+      |> Core.Repo.update_all(set: [synced: true])
+      |> ok()
+    end)
+    |> add_operation(:helm, fn _ ->
+      ChartInstallation.for_installation(id)
+      |> Core.Repo.update_all(set: [synced: true])
+      |> ok()
+    end)
+    |> execute()
+  end
+
+  @doc """
   Returns the list of docker accesses available for `user` against the
   given repository
   """

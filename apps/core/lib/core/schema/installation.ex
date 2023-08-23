@@ -1,6 +1,6 @@
 defmodule Core.Schema.Installation do
   use Piazza.Ecto.Schema
-  alias Core.Schema.{Repository, User, Subscription, OIDCProvider}
+  alias Core.Schema.{Repository, User, Subscription, OIDCProvider, TerraformInstallation, ChartInstallation}
 
   defmodule Policy do
     use Piazza.Ecto.Schema
@@ -34,7 +34,19 @@ defmodule Core.Schema.Installation do
     has_one :subscription,  Subscription
     has_one :oidc_provider, OIDCProvider
 
+    has_many :terraform_installations, TerraformInstallation
+    has_many :chart_installations, ChartInstallation
+
     timestamps()
+  end
+
+  def locks(query \\ __MODULE__) do
+    from(i in query,
+      left_join: ti in assoc(i, :terraform_installations),
+      left_join: ci in assoc(i, :chart_installations),
+      where: ti.locked or ci.locked,
+      select: %{id: i.id, locked: coalesce(ti.id, ci.id)}
+    )
   end
 
   def ordered(query \\ __MODULE__, order \\ [desc: :inserted_at]),

@@ -8,6 +8,7 @@ defmodule GraphQl.Schema.Repository do
     Tag,
     Account
   }
+  alias GraphQl.LockLoader
 
   ### INPUTS
 
@@ -145,6 +146,11 @@ defmodule GraphQl.Schema.Repository do
 
     field :acme_secret, :string, resolve: fn
       _, _, _ -> {:ok, Core.conf(:acme_secret)}
+    end
+
+    field :locked, :boolean, resolve: fn
+      %{id: id}, _, %{context: %{loader: loader}} ->
+        manual_dataloader(loader, LockLoader, :ids, id)
     end
 
 

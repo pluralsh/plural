@@ -764,6 +764,17 @@ defmodule Core.Services.RepositoriesTest do
     end
   end
 
+  describe "#synced/1" do
+    test "it can mark module installations as synced" do
+      inst = insert(:installation)
+      ci = insert(:chart_installation, installation: inst)
+
+      {:ok, _} = Repositories.synced(inst)
+
+      assert refetch(ci).synced
+    end
+  end
+
   describe "#documentation/1" do
     test "it will find docs" do
       repo = insert(:repository, docs: %{file_name: "f", updated_at: nil})

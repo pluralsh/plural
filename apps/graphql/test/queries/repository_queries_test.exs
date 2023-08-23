@@ -105,13 +105,19 @@ defmodule GraphQl.RepositoryQueriesTest do
 
     test "It can list repositories installed by a user" do
       user = insert(:user)
-      installations = insert_list(3, :installation, user: user)
+      [inst | _ ] = installations = insert_list(3, :installation, user: user)
+      insert(:chart_installation, installation: inst, locked: true)
       insert(:repository)
 
       {:ok, %{data: %{"repositories" => repos}}} = run_query("""
         query {
           repositories(installed: true, first: 5) {
-            edges { node { id } }
+            edges {
+              node {
+                id
+                installation { id locked synced }
+              }
+            }
           }
         }
       """, %{}, %{current_user: user})
@@ -119,6 +125,13 @@ defmodule GraphQl.RepositoryQueriesTest do
       found_repos = from_connection(repos)
       assert Enum.map(installations, & &1.repository)
              |> ids_equal(found_repos)
+
+      found = Enum.find(found_repos, & &1["installation"]["id"] == inst.id)
+      assert found["installation"]["locked"]
+      refute found["installation"]["synced"]
+
+      refute Enum.reject(found_repos, & &1["installation"]["id"] == inst.id)
+             |> Enum.any?(& &1["installation"]["locked"])
     end
 
     test "It can list repositories not installed by a user" do
@@ -568,6 +581,21 @@ defmodule GraphQl.RepositoryQueriesTest do
 
       assert second["tag"] == "tag"
       assert second["count"] == 1
+    end
+  end
+
+  describe "synced" do
+    test "it can mark stuff as synced" do
+      inst = insert(:installation)
+      ci = insert(:chart_installation, installation: inst)
+
+      {:ok, %{data: %{"synced" => true}}} = run_query("""
+        mutation Synced($repo: String!) {
+          synced(repository: $repo)
+        }
+      """, %{"repo" => inst.repository.name}, %{current_user: inst.user})
+
+      assert refetch(ci).synced
     end
   end
 

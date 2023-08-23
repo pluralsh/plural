@@ -1802,6 +1802,8 @@ type RootMutationType {
 
   releaseLock(repository: String!, attributes: LockAttributes!): ApplyLock
 
+  synced(repository: String!): Boolean
+
   createRecipe(repositoryName: String, repositoryId: String, attributes: RecipeAttributes!): Recipe
 
   deleteRecipe(id: ID!): Recipe
@@ -2048,6 +2050,10 @@ type Installation {
   acmeKeyId: String
 
   acmeSecret: String
+
+  locked: Boolean
+
+  synced: Boolean
 
   license: String
 

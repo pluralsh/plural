@@ -1258,6 +1258,7 @@ export type Installation = {
   license?: Maybe<Scalars['String']['output']>;
   /** The license key for the application. */
   licenseKey?: Maybe<Scalars['String']['output']>;
+  locked?: Maybe<Scalars['Boolean']['output']>;
   /** The OIDC provider for the application. */
   oidcProvider?: Maybe<OidcProvider>;
   /** The last ping time of an installed application. */
@@ -1266,6 +1267,7 @@ export type Installation = {
   repository?: Maybe<Repository>;
   /** The subscription for the application. */
   subscription?: Maybe<RepositorySubscription>;
+  synced?: Maybe<Scalars['Boolean']['output']>;
   /** The tag to track for auto upgrades. */
   trackTag: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
@@ -2775,6 +2777,7 @@ export type RootMutationType = {
   signup?: Maybe<User>;
   ssoCallback?: Maybe<User>;
   stopShell?: Maybe<Scalars['Boolean']['output']>;
+  synced?: Maybe<Scalars['Boolean']['output']>;
   transferDemoProject?: Maybe<DemoProject>;
   /** transfers ownership of a cluster to a service account */
   transferOwnership?: Maybe<Cluster>;
@@ -3373,6 +3376,11 @@ export type RootMutationTypeSignupArgs = {
 export type RootMutationTypeSsoCallbackArgs = {
   code: Scalars['String']['input'];
   deviceToken?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type RootMutationTypeSyncedArgs = {
+  repository: Scalars['String']['input'];
 };
 
 

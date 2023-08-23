@@ -4,6 +4,7 @@ defmodule Core.Schema.TerraformInstallation do
 
   schema "terraform_installations" do
     field :locked, :boolean, default: false
+    field :synced, :boolean, default: false
 
     belongs_to :installation, Installation
     belongs_to :terraform, Terraform
@@ -79,7 +80,7 @@ defmodule Core.Schema.TerraformInstallation do
     from(ti in query, preload: ^preloads)
   end
 
-  @valid ~w(installation_id terraform_id version_id)a
+  @valid ~w(installation_id terraform_id version_id synced)a
 
   def changeset(model, attrs \\ %{}) do
     model

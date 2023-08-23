@@ -31,7 +31,7 @@ defmodule Core.Schema.Cluster do
 
   def active(query \\ __MODULE__) do
     expired = expiry()
-    from(q in query, where: q.pinged_at >= ^expired)
+    from(q in query, where: q.pinged_at >= ^expired or (is_nil(q.pinged_at) and q.inserted_at >= ^expired))
   end
 
   def expired(query \\ __MODULE__) do

@@ -22,15 +22,19 @@ type ClusterAppProps = {
 const tooltip = (app) =>
   `The installation for this application is locked, you need to apply any manual changes then run plural repos unlock ${app}`
 
-function SyncState({ synced }) {
+function SyncState({ synced, name }) {
   return (
-    <Chip
-      marginLeft="xsmall"
-      severity={synced ? 'success' : 'warning'}
-      size="small"
+    <Tooltip
+      label={`This indicates whether a \`plural deploy\` has been run for any recent upgrades to ${name}`}
     >
-      {synced ? 'Synced' : 'Pending Sync'}
-    </Chip>
+      <Chip
+        marginLeft="xsmall"
+        severity={synced ? 'success' : 'warning'}
+        size="small"
+      >
+        {synced ? 'Synced' : 'Pending Sync'}
+      </Chip>
+    </Tooltip>
   )
 }
 
@@ -91,7 +95,10 @@ export function ClusterApp({
       >
         {name}
       </Span>
-      <SyncState synced={installation?.synced} />
+      <SyncState
+        synced={installation?.synced}
+        name={name}
+      />
       {installation?.locked && <LockedBadge name={name} />}
       <Flex grow={1} />
       {/* <ClusterAppHealth

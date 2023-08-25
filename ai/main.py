@@ -43,7 +43,7 @@ async def reload_query_engine():
         query_engine = load_query_engine(PLURAL_AI_INDEX_S3_PATH)
 
 @app.on_event("startup")
-async def schedule_periodic():
+async def schedule_reload_query_engine():
     loop = asyncio.get_event_loop()
     loop.create_task(reload_query_engine())
 

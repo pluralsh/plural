@@ -37,6 +37,7 @@ class QueryResponse(BaseModel):
     answer: str
 
 async def reload_query_engine():
+    global query_engine
     while True:
         await asyncio.sleep(86400) # daily
         query_engine = load_query_engine(vector_store_index_path)

@@ -8,10 +8,10 @@ from llama_index.embeddings import OpenAIEmbedding
 from s3fs import S3FileSystem
 from pydantic import BaseModel
 
-def load_query_engine(vector_store_index_path: str):
+def load_query_engine(s3_path: str):
     storage_context = StorageContext.from_defaults(
         # persist_dir format: "<bucket-name>/<path>"
-        persist_dir=vector_store_index_path,
+        persist_dir=s3_path,
         fs=S3FileSystem()
     )
     index = load_index_from_storage(storage_context)
@@ -22,13 +22,13 @@ def load_query_engine(vector_store_index_path: str):
     )
 
 openai.api_key = os.environ["OPENAI_API_KEY"]
-vector_store_index_path = os.getenv("PLURAL_AI_INDEX_S3_PATH", "plural-assets/dagster/plural-ai/vector_store_index")
+PLURAL_AI_INDEX_S3_PATH = os.getenv("PLURAL_AI_INDEX_S3_PATH", "plural-assets/dagster/plural-ai/vector_store_index")
 
 app = FastAPI()
 embed_model = OpenAIEmbedding(embed_batch_size=10)
 service_context = ServiceContext.from_defaults(embed_model=embed_model)
 set_global_service_context(service_context)
-query_engine = load_query_engine(vector_store_index_path)
+query_engine = load_query_engine(PLURAL_AI_INDEX_S3_PATH)
 
 class QueryRequest(BaseModel):
     question: str
@@ -40,7 +40,7 @@ async def reload_query_engine():
     global query_engine
     while True:
         await asyncio.sleep(86400) # 86400 seconds in a day 
-        query_engine = load_query_engine(vector_store_index_path)
+        query_engine = load_query_engine(PLURAL_AI_INDEX_S3_PATH)
 
 @app.on_event("startup")
 async def schedule_periodic():

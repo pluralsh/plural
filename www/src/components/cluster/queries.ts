@@ -16,6 +16,8 @@ export const REPOSITORIES_Q = gql`
           darkIcon
           installation {
             pingedAt
+            synced
+            locked
           }
         }
       }

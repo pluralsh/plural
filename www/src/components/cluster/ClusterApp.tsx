@@ -1,9 +1,11 @@
 import { ReactElement } from 'react'
 import {
   ArrowTopRightIcon,
+  Chip,
   GearTrainIcon,
   IconFrame,
   ListBoxItem,
+  Tooltip,
 } from '@pluralsh/design-system'
 import { Flex, Span } from 'honorable'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -17,8 +19,35 @@ type ClusterAppProps = {
   last: boolean
 }
 
+const tooltip = (app) =>
+  `The installation for this application is locked, you need to apply any manual changes then run plural repos unlock ${app}`
+
+function SyncState({ synced, name }) {
+  return (
+    <Tooltip
+      label={`This indicates whether a \`plural deploy\` has been run for any recent upgrades to ${name}`}
+    >
+      <Chip
+        marginLeft="xsmall"
+        severity={synced ? 'success' : 'warning'}
+        size="small"
+      >
+        {synced ? 'Synced' : 'Pending Sync'}
+      </Chip>
+    </Tooltip>
+  )
+}
+
+function LockedBadge({ name }) {
+  return (
+    <Tooltip label={tooltip(name)}>
+      <Chip>Locked</Chip>
+    </Tooltip>
+  )
+}
+
 export function ClusterApp({
-  app: { name, icon, darkIcon },
+  app: { name, icon, darkIcon, installation },
   consoleUrl,
   last,
 }: ClusterAppProps): ReactElement {
@@ -66,6 +95,11 @@ export function ClusterApp({
       >
         {name}
       </Span>
+      <SyncState
+        synced={installation?.synced}
+        name={name}
+      />
+      {installation?.locked && <LockedBadge name={name} />}
       <Flex grow={1} />
       {/* <ClusterAppHealth
         pingedAt={installation?.pingedAt}

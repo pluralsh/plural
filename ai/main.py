@@ -39,7 +39,7 @@ class QueryResponse(BaseModel):
 async def reload_query_engine():
     global query_engine
     while True:
-        await asyncio.sleep(86400) # daily
+        await asyncio.sleep(86400) # 86400 seconds in a day 
         query_engine = load_query_engine(vector_store_index_path)
 
 @app.on_event("startup")

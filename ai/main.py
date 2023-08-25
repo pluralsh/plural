@@ -4,6 +4,7 @@ from fastapi import FastAPI, HTTPException
 from llama_index import StorageContext, load_index_from_storage, ServiceContext, set_global_service_context
 from llama_index.indices.postprocessor import SentenceEmbeddingOptimizer
 from llama_index.embeddings import OpenAIEmbedding
+from s3fs import S3FileSystem
 
 from pydantic import BaseModel
 
@@ -22,7 +23,11 @@ embed_model = OpenAIEmbedding(embed_batch_size=10)
 service_context = ServiceContext.from_defaults(embed_model=embed_model)
 set_global_service_context(service_context)
 
-storage_context = StorageContext.from_defaults(persist_dir="./storage")
+storage_context = StorageContext.from_defaults(
+    # persist_dir format: "<bucket-name>/<path>"
+    persist_dir=os.getenv("PLURAL_AI_INDEX_S3_PATH", "plural-assets/dagster/plural-ai/vector_store_index"),
+    fs=S3FileSystem()
+)
 index = load_index_from_storage(storage_context)
 query_engine = index.as_query_engine(
     node_postprocessors=[SentenceEmbeddingOptimizer(percentile_cutoff=0.5)],    

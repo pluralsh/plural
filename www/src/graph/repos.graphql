@@ -118,6 +118,7 @@ query Repository($id: ID, $name: String) {
         ...OIDCProvider
       }
     }
+    upgradeChannels
     tags {
       tag
     }

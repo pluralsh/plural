@@ -12,8 +12,7 @@ import capitalize from 'lodash/capitalize'
 import isEmpty from 'lodash/isEmpty'
 import { useTheme } from 'styled-components'
 
-import { useAppContext } from '../../contexts/AppContext'
-import { type Repository } from '../../generated/graphql'
+import { type Repository, useAppContext } from '../../contexts/AppContext'
 
 import { type getDocsData } from './App'
 import { useDocPageContext } from './docs/AppDocsContext'

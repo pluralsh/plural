@@ -6,12 +6,13 @@ import {
   useMemo,
 } from 'react'
 
-import { Repository } from '../generated/graphql'
+import { RepositoryQuery } from '../generated/graphql'
 
 export const AppContext = createContext<ContextProps>({} as ContextProps)
-
 export const useAppContext = () => useContext(AppContext)?.repository ?? {}
-
+export type Repository = Partial<
+  Exclude<RepositoryQuery['repository'], null | undefined>
+>
 interface ContextProps {
   repository: Repository
   refetch: DispatchWithoutAction

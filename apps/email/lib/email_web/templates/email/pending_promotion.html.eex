@@ -1,0 +1,27 @@
+<%= row do %>
+  <%= text do %>
+    You have a new promotion for your installation of <b><%= @repo.name %></b>
+  <% end %>
+<% end %>
+<%= row do %>
+  <table>
+    <tr>
+      <td>
+        <%= repo_img repo: @repo %>
+      </td>
+      <td>
+        <%= text do %>
+          <%= @repo.name %>
+        <% end %>
+      </td>
+    </tr>
+  </table>
+<% end %>
+<%= row do %>
+  <%= text do %>
+    Click the button below to go to our multicluster management view and approve the promotion
+  <% end %>
+  <a class="button margin-top-large" href="<%= url("/overview/clusters") %>">
+    Promote
+  </a>
+<% end %>

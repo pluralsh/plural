@@ -1,3 +1,14 @@
+fragment InstallationRepo on Repository {
+  id
+  name
+  icon
+  darkIcon
+  private
+  trending
+  verified
+  category
+}
+
 fragment Installation on Installation {
   id
   context
@@ -9,40 +20,12 @@ fragment Installation on Installation {
   trackTag
   pingedAt
   repository {
-    ...Repo
+    ...InstallationRepo
   }
   user {
     ...User
   }
   oidcProvider {
     ...OIDCProvider
-  }
-}
-
-query GetInstallation($name: String) {
-  installation(name: $name) {
-    ...Installation
-  }
-}
-
-query GetInstallationById($id: ID) {
-  installation(id: $id) {
-    ...Installation
-  }
-}
-
-query GetInstallations($first: Int) {
-  installations(first: $first) {
-    edges {
-      node {
-        ...Installation
-      }
-    }
-  }
-}
-
-mutation UpsertOidcProvider($id: ID!, $attributes: OidcAttributes!) {
-  upsertOidcProvider(installationId: $id, attributes: $attributes) {
-    id
   }
 }

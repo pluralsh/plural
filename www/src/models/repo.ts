@@ -39,6 +39,22 @@ export const RepoFragment = gql`
   ${PublisherFragment}
 `
 
+export const InstallationRepoFragment = gql`
+  fragment InstallationRepoFragment on Repository {
+    id
+    name
+    description
+    releaseStatus
+    icon
+    darkIcon
+    private
+    trending
+    verified
+    category
+  }
+  ${PublisherFragment}
+`
+
 export const StackFragment = gql`
   fragment StackFragment on Stack {
     id
@@ -77,13 +93,13 @@ export const InstallationFragment = gql`
     trackTag
     pingedAt
     repository {
-      ...RepoFragment
+      ...InstallationRepoFragment
     }
     user {
       ...UserFragment
     }
   }
-  ${RepoFragment}
+  ${InstallationRepoFragment}
   ${UserFragment}
 `
 

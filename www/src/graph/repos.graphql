@@ -62,7 +62,7 @@ fragment MarketplaceRepository on Repository {
     ...Publisher
   }
   installation {
-    ...Installation
+    id
   }
   tags {
     tag

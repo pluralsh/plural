@@ -1,6 +1,55 @@
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
+  name: plural-uptime-rules
+spec:
+  groups:
+  - name: plural
+    rules:
+    - alert: PluralDBUp
+      expr: sum(up{namespace="plural", pod=~"plural-plural-[0-9]*"}) < 1
+      for: 5m
+      labels:
+        severity: critical
+        labels: 
+          namespace: {{ .Release.Namespace }}
+        annotations:
+          summary: No plural db replicas are up
+          description: Validate there are not any issues in the cluster or database configuration
+    - alert: PluralHydraDBUp
+      expr: sum(up{namespace="plural", pod=~"plural-hydra-[0-9]*"}) < 1
+      for: 5m
+      labels:
+        severity: critical
+        labels: 
+          namespace: {{ .Release.Namespace }}
+        annotations:
+          summary: No plural hydra db replicas are up
+          description: Validate there are not any issues in the cluster or database configuration
+    - alert: PluralAPIUp
+      expr: sum(up{namespace="plural", pod=~"plural-api-.*-.*"}) < 1
+      for: 5m
+      labels:
+        severity: critical
+        labels: 
+          namespace: {{ .Release.Namespace }}
+        annotations:
+          summary: No plural api replicas are up
+          description: validate no code changes are infrastructure issues are causing unavailability
+    - alert: PluralRtcUp
+      expr: sum(up{namespace="plural", pod=~"plural-rtc-.*-.*"}) < 1
+      for: 5m
+      labels:
+        severity: critical
+        labels: 
+          namespace: {{ .Release.Namespace }}
+        annotations:
+          summary: No plural rtc replicas are up
+          description: validate no code changes are infrastructure issues are causing unavailability
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
   creationTimestamp: null
   labels:
     prometheus: example

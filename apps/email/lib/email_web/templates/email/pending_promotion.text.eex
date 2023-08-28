@@ -1,0 +1,1 @@
+You have upgrades pending promotion for your installation of <%= @repo.name %>, go to <%= url("/overview/clusters") %> to manually promote them into your cluster

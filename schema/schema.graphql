@@ -1582,6 +1582,9 @@ type Cluster {
   "pending upgrades for each installed app"
   upgradeInfo: [UpgradeInfo]
 
+  "CPU\/Memory history for this cluster"
+  usageHistory(begin: DateTime!): [ClusterUsageHistory]
+
   "the dependencies a cluster has"
   dependency: ClusterDependency
 
@@ -2159,6 +2162,16 @@ type Stack {
   updatedAt: DateTime
 }
 
+"A record of the utilization in a given cluster"
+type ClusterUsageHistory {
+  cpu: Int
+  memory: Int
+  cluster: Cluster
+  account: Account
+  insertedAt: DateTime
+  updatedAt: DateTime
+}
+
 type Community {
   discord: String
   slack: String
@@ -2425,19 +2438,19 @@ type UpgradePath {
   type: ValueType!
 }
 
-type RoleBinding {
-  id: ID!
-  user: User
-  group: Group
-  insertedAt: DateTime
-  updatedAt: DateTime
-}
-
 type VersionTag {
   id: ID!
   tag: String!
   version: Version
   chart: Chart
+  insertedAt: DateTime
+  updatedAt: DateTime
+}
+
+type RoleBinding {
+  id: ID!
+  user: User
+  group: Group
   insertedAt: DateTime
   updatedAt: DateTime
 }

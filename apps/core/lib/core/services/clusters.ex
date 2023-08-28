@@ -4,7 +4,7 @@ defmodule Core.Services.Clusters do
   alias Core.PubSub
   alias Core.Policies.Account, as: AccountPolicy
   alias Core.Services.{Dns, Repositories, Users, Clusters.Transfer}
-  alias Core.Schema.{Cluster, User, DnsRecord, UpgradeQueue, ClusterDependency}
+  alias Core.Schema.{Cluster, User, DnsRecord, UpgradeQueue, ClusterDependency, ClusterUsageHistory}
 
   @type error :: {:error, term}
   @type cluster_resp :: {:ok, Cluster.t} | error
@@ -42,6 +42,16 @@ defmodule Core.Services.Clusters do
   def create_cluster(attrs, %User{id: user_id, account_id: account_id} = user) do
     %Cluster{owner_id: user_id, account_id: account_id}
     |> Cluster.changeset(Map.put_new_lazy(attrs, :source, fn -> Repositories.installation_source(user) end))
+    |> Core.Repo.insert()
+  end
+
+  @doc """
+  Saves a usage record for a given cluster
+  """
+  @spec save_usage(map, Cluster.t) :: {:ok, ClusterUsageHistory.t} | error
+  def save_usage(attrs, %Cluster{id: id, account_id: account_id}) do
+    %ClusterUsageHistory{cluster_id: id, account_id: account_id}
+    |> ClusterUsageHistory.changeset(attrs)
     |> Core.Repo.insert()
   end
 

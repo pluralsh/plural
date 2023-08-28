@@ -21,6 +21,27 @@ defmodule GraphQl.ClusterQueriesTest do
       assert found["dependency"]["id"] == dep.id
     end
 
+    test "it can fetch usage history for a cluster" do
+      user = insert(:user)
+      cluster = insert(:cluster, owner: user)
+      history = insert(:cluster_usage_history, cluster: cluster)
+      begin = Timex.now() |> Timex.shift(hours: -3) |> DateTime.to_iso8601()
+
+      {:ok, %{data: %{"cluster" => found}}} = run_query("""
+        query Cluster($id: ID!, $begin: DateTime!) {
+          cluster(id: $id) {
+            id
+            usageHistory(begin: $begin) { cpu memory }
+          }
+        }
+      """, %{"id" => cluster.id, "begin" => begin}, %{current_user: user})
+
+      assert found["id"] == cluster.id
+      [hist] = found["usageHistory"]
+      assert hist["cpu"] == history.cpu
+      assert hist["memory"] == history.memory
+    end
+
     test "it can query upgrade info" do
       user = insert(:user)
       cluster = insert(:cluster, owner: user)

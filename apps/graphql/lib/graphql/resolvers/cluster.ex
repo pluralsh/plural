@@ -1,7 +1,7 @@
 defmodule GraphQl.Resolvers.Cluster do
   use GraphQl.Resolvers.Base, model: Core.Schema.Cluster
   alias Core.Services.Clusters
-  alias Core.Schema.{DeferredUpdate, ClusterDependency}
+  alias Core.Schema.{DeferredUpdate, ClusterDependency, ClusterUsageHistory}
 
   def query(ClusterDependency, _), do: ClusterDependency
   def query(_, _), do: Cluster
@@ -14,6 +14,14 @@ defmodule GraphQl.Resolvers.Cluster do
     |> Cluster.active()
     |> Cluster.ordered()
     |> paginate(args)
+  end
+
+  def usage_history(cluster, begin) do
+    ClusterUsageHistory.for_cluster(cluster.id)
+    |> ClusterUsageHistory.ordered()
+    |> ClusterUsageHistory.inserted_after(begin)
+    |> Core.Repo.all()
+    |> ok()
   end
 
   def create_dependency(%{source_id: sid, dest_id: did}, %{context: %{current_user: user}}) do

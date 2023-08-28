@@ -30,6 +30,12 @@ defmodule GraphQl.Schema.Cluster do
       cluster, _, _ -> Cluster.upgrade_info(cluster)
     end
 
+    @desc "CPU/Memory history for this cluster"
+    field :usage_history, list_of(:cluster_usage_history) do
+      arg :begin, non_null(:datetime)
+      resolve fn cluster, %{begin: begin}, _ -> Cluster.usage_history(cluster, begin) end
+    end
+
     field :dependency, :cluster_dependency, resolve: dataloader(Cluster), description: "the dependencies a cluster has"
 
     field :owner,   :user, resolve: dataloader(User), description: "The user that owns the cluster."
@@ -54,6 +60,17 @@ defmodule GraphQl.Schema.Cluster do
 
     field :cluster,    :cluster, resolve: dataloader(Cluster), description: "the cluster holding this dependency"
     field :dependency, :cluster, resolve: dataloader(Cluster), description: "the source cluster of this dependency"
+
+    timestamps()
+  end
+
+  @desc "A record of the utilization in a given cluster"
+  object :cluster_usage_history do
+    field :cpu,    :integer
+    field :memory, :integer
+
+    field :cluster, :cluster, resolve: dataloader(Cluster)
+    field :account, :account, resolve: dataloader(Account)
 
     timestamps()
   end

@@ -632,6 +632,15 @@ defmodule Core.Factory do
     }
   end
 
+  def cluster_usage_history_factory do
+    %Schema.ClusterUsageHistory{
+      account: build(:account),
+      cluster: build(:cluster),
+      cpu: 1000,
+      memory: 10000000
+    }
+  end
+
   def with_password(%Schema.User{} = user, password) do
     Schema.User.changeset(user, %{password: password})
     |> Ecto.Changeset.apply_changes()

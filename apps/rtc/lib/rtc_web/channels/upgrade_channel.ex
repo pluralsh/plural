@@ -1,8 +1,8 @@
 defmodule RtcWeb.UpgradeChannel do
   use RtcWeb, :channel
   alias Rtc.UpgradeBuffer
-  alias Core.Schema.{Upgrade}
-  alias Core.Services.Upgrades
+  alias Core.Schema.{Upgrade, Cluster}
+  alias Core.Services.{Upgrades, Clusters}
 
   @ping_interval 60 * 1000
 
@@ -63,6 +63,15 @@ defmodule RtcWeb.UpgradeChannel do
       %Upgrade{} = up -> {:reply, {:ok, up}, socket}
 
       _ -> {:reply, {:error, :none}, socket}
+    end
+  end
+
+  def handle_in("usage", attrs, socket) do
+    case Core.Repo.preload(socket.assigns.queue, [:cluster]) do
+      %{cluster: %Cluster{} = cluster} = queue ->
+        Clusters.save_usage(attrs, cluster)
+        {:reply, :ok, assign(socket, :queue, queue)}
+      _ -> {:reply, {:error, "no cluster found"}, socket}
     end
   end
 

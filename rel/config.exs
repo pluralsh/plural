@@ -62,6 +62,7 @@ release :worker do
     :runtime_tools,
     worker: :permanent,
     core: :permanent,
+    email: :permanent
   ]
 end
 

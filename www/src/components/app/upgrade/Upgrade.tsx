@@ -6,36 +6,50 @@ import {
   ListBoxItem,
   PageTitle,
   Select,
+  Switch,
   Tooltip,
   WrapWithIf,
 } from '@pluralsh/design-system'
-import { Div, Flex, P, Switch } from 'honorable'
+import { Div, Flex, P } from 'honorable'
 import { isEmpty } from 'lodash'
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useMutation } from '@apollo/client'
 
 import { UPDATE_INSTALLATION } from '../../repository/queries'
 import { useAppContext } from '../../../contexts/AppContext'
 import { GqlError } from '../../utils/Alert'
 import { AppHeaderActions } from '../AppHeaderActions'
+import { useUpdateState } from '../../../hooks/useUpdateState'
 
 export function Upgrade() {
   const { installation, upgradeChannels = [] } = useAppContext()
-  const [autoUpgrade, setAutoUpgrade] = useState(
-    installation?.autoUpgrade || false
-  )
-  const [trackTag, setTrackTag] = useState(installation?.trackTag)
+
+  const {
+    state: formState,
+    update: updateFormState,
+    hasUpdates,
+  } = useUpdateState({
+    autoUpgrade: installation?.autoUpgrade,
+    trackTag: installation?.trackTag,
+  })
+  const { autoUpgrade, trackTag } = formState
   const [mutation, { loading, error }] = useMutation(UPDATE_INSTALLATION, {
-    variables: { id: installation?.id, attributes: { trackTag, autoUpgrade } },
+    variables: {
+      id: installation?.id,
+      attributes: { trackTag, autoUpgrade },
+    },
   })
   const hasUpgradeChannels = useMemo(
     () => !isEmpty(upgradeChannels),
     [upgradeChannels]
   )
 
-  useEffect(() => {
-    if (!autoUpgrade) setTrackTag(undefined)
-  }, [autoUpgrade, setTrackTag])
+  const toggleAutoUpgrade = useCallback(() => {
+    updateFormState({
+      autoUpgrade: !autoUpgrade,
+      ...(!autoUpgrade ? { trackTag: 'latest' } : {}),
+    })
+  }, [autoUpgrade, updateFormState])
 
   return (
     <Div paddingBottom="large">
@@ -64,24 +78,29 @@ export function Upgrade() {
         >
           Determine how this application is updated on a regular basis.
         </P>
-        <WrapWithIf
-          wrapper={<Tooltip label="No upgrade channels available." />}
-          condition={!hasUpgradeChannels}
-        >
-          <Switch
-            checked={!autoUpgrade}
-            onChange={({ target: { checked } }) => setAutoUpgrade(!checked)}
-            disabled={!hasUpgradeChannels}
-            marginBottom="xlarge"
+        <Flex>
+          <WrapWithIf
+            wrapper={<Tooltip label="No upgrade channels available." />}
+            condition={!hasUpgradeChannels}
           >
-            None
-          </Switch>
-        </WrapWithIf>
+            <Switch
+              checked={autoUpgrade}
+              onChange={toggleAutoUpgrade}
+              loading
+              disabled={!hasUpgradeChannels}
+              marginBottom="xlarge"
+              flexGrow={0}
+            >
+              {autoUpgrade ? 'On' : 'None'}
+            </Switch>
+          </WrapWithIf>
+        </Flex>
+
         {autoUpgrade && upgradeChannels && hasUpgradeChannels && (
           <Select
             label="Select upgrade channel"
             selectedKey={trackTag}
-            onSelectionChange={(t) => setTrackTag(`${t}`)}
+            onSelectionChange={(t) => updateFormState({ trackTag: `${t}` })}
           >
             {upgradeChannels.flatMap((t) =>
               t
@@ -118,7 +137,7 @@ export function Upgrade() {
         />
         <Button
           onClick={mutation}
-          disabled={autoUpgrade && isEmpty(trackTag)}
+          disabled={!hasUpdates || (autoUpgrade && isEmpty(trackTag))}
           loading={loading}
           alignSelf="end"
           width="max-content"

@@ -18,7 +18,7 @@ defmodule Core.Shell.PodsTest do
     test "a whitelisted user gets the sysbox class" do
       %{spec: %{volumes: [volume]}} = pod = Pods.pod("plrl-shell-1", "sysbox@plural.sh")
 
-      assert pod.spec.runtime_class_name == "sysbox"
+      assert pod.spec.runtime_class_name == "sysbox-runc"
       assert pod.spec.node_selector["sysbox-runtime"] == "running"
 
       assert volume.name == "docker"

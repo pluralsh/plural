@@ -48,7 +48,6 @@ defmodule RtcWeb.UpgradeChannelTest do
       user = insert(:user)
       cluster = insert(:cluster, owner: user)
       q    = insert(:upgrade_queue, user: user, cluster: cluster)
-      up   = insert(:upgrade, queue: q)
 
       {:ok, socket} = mk_socket(user)
       {:ok, _, socket} = subscribe_and_join(socket, "queues:#{q.id}", %{})

@@ -1,6 +1,7 @@
 defmodule Core.Shell.PodsTest do
   use Core.SchemaCase, async: true
   alias Core.Services.Shell.Pods
+  alias Kazan.Apis.Core.V1, as: CoreV1
 
   describe "#pod/2" do
     test "it can create a pod for a user" do
@@ -21,7 +22,7 @@ defmodule Core.Shell.PodsTest do
       assert pod.spec.node_selector["sysbox-runtime"] == "running"
 
       assert volume.name == "docker"
-      assert volume.empty_dir == %{}
+      assert volume.empty_dir == %CoreV1.EmptyDirVolumeSource{}
 
       [toleration] = pod.spec.tolerations
       assert toleration.key == "plural.sh/sysbox"

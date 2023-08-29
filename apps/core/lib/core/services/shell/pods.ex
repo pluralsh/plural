@@ -57,7 +57,7 @@ defmodule Core.Services.Shell.Pods do
 
   def pod(name, email) do
     runtime = cri(email)
-    containers = [container() | (if runtime == "sysbox", do: [dind_container()], else: [])]
+    containers = [container() | (if runtime == "sysbox-runc", do: [dind_container()], else: [])]
 
     %CoreV1.Pod{
       metadata: %MetaV1.ObjectMeta{
@@ -79,10 +79,10 @@ defmodule Core.Services.Shell.Pods do
     }
   end
 
-  defp node_selector("sysbox"), do: %{"sysbox-runtime" => "running"}
+  defp node_selector("sysbox-runc"), do: %{"sysbox-runtime" => "running"}
   defp node_selector(_), do: %{"platform.plural.sh/instance-class" => "shell"}
 
-  defp toleration("sysbox") do
+  defp toleration("sysbox-runc") do
     %CoreV1.Toleration{
       value: "true",
       key: "plural.sh/sysbox",
@@ -99,8 +99,8 @@ defmodule Core.Services.Shell.Pods do
 
   defp cri(email) do
     case Core.conf(:sysbox_emails) do
-      ["*"] -> "sysbox"
-      [_ | _] = emails -> if email in emails, do: "sysbox", else: nil
+      ["*"] -> "sysbox-runc"
+      [_ | _] = emails -> if email in emails, do: "sysbox-runc", else: nil
       _ -> nil
     end
   end
@@ -157,7 +157,7 @@ defmodule Core.Services.Shell.Pods do
     }
   end
 
-  defp volumes("sysbox"), do: [%CoreV1.Volume{name: "docker", empty_dir: %CoreV1.EmptyDirVolumeSource{}}]
+  defp volumes("sysbox-runc"), do: [%CoreV1.Volume{name: "docker", empty_dir: %CoreV1.EmptyDirVolumeSource{}}]
   defp volumes(_), do: []
 
   defp healthcheck() do

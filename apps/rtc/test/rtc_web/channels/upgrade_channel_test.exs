@@ -43,5 +43,22 @@ defmodule RtcWeb.UpgradeChannelTest do
 
       refute_push "more", _
     end
+
+    test "it can receive usage history" do
+      user = insert(:user)
+      cluster = insert(:cluster, owner: user)
+      q    = insert(:upgrade_queue, user: user, cluster: cluster)
+      up   = insert(:upgrade, queue: q)
+
+      {:ok, socket} = mk_socket(user)
+      {:ok, _, socket} = subscribe_and_join(socket, "queues:#{q.id}", %{})
+
+      ref = push(socket, "usage", %{"cpu" => 1000, "memory" => 10000})
+      assert_reply ref, :ok, _
+
+      [hist] = Core.Schema.ClusterUsageHistory.for_cluster(cluster.id) |> Core.Repo.all()
+      assert hist.cpu == 1000
+      assert hist.memory == 10000
+    end
   end
 end

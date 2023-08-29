@@ -251,4 +251,17 @@ defmodule Core.Services.ClustersTest do
       {:error, _} = Clusters.transfer_ownership(cluster.name, to, user)
     end
   end
+
+  describe "#save_usage/2" do
+    test "it will save a usage record for a cluster" do
+      cluster = insert(:cluster)
+
+      {:ok, usage} = Clusters.save_usage(%{cpu: 1000, memory: 1000}, cluster)
+
+      assert usage.cluster_id == cluster.id
+      assert usage.account_id == cluster.account_id
+      assert usage.cpu == 1000
+      assert usage.memory == 1000
+    end
+  end
 end

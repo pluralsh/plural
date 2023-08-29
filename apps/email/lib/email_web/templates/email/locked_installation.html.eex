@@ -7,14 +7,14 @@
 
 <%= row do %>
 <div>
-<pre>
+<%= pre do %>
 <%= if @instructions.script do %>
 <%= @instructions.script %>
 <% end %>
 plural build --only <%= @repo.name %>
 plural deploy --commit "applying breaking changes to <%= @repo.name %>"
 plural repos unlock <%= @repo.name %>
-</pre>
+<% end %>>
 </div>
 <% end %>
 

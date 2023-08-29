@@ -157,7 +157,7 @@ defmodule Core.Services.Shell.Pods do
     }
   end
 
-  defp volumes("sysbox"), do: [%CoreV1.Volume{name: "docker", empty_dir: %{}}]
+  defp volumes("sysbox"), do: [%CoreV1.Volume{name: "docker", empty_dir: %CoreV1.EmptyDirVolumeSource{}}]
   defp volumes(_), do: []
 
   defp healthcheck() do

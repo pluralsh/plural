@@ -12,6 +12,8 @@ defmodule EmailWeb.EmailView do
 
   def space(assigns \\ %{}), do: EmailWeb.SharedView.render("space.html", Map.new(assigns))
 
+  def pre(assigns \\ %{}, do: block), do: render_template("pre.html", assigns, block)
+
   def repo_img_url(%Repository{dark_icon: icon} = repo) when is_binary(icon),
     do: Core.Storage.url({repo.dark_icon, repo}, :original)
   def repo_img_url(%Repository{icon: icon} = repo) when is_binary(icon),

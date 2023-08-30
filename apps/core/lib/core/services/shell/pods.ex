@@ -63,7 +63,10 @@ defmodule Core.Services.Shell.Pods do
       metadata: %MetaV1.ObjectMeta{
         name: name,
         namespace: @ns,
-        annotations: %{"platform.plural.sh/expire-after" => "6h", "platform.plural.sh/shell-email" => email},
+        annotations: Map.merge(
+          %{"platform.plural.sh/expire-after" => "6h", "platform.plural.sh/shell-email" => email},
+          annotations(runtime)
+        ),
         labels: %{"app.plural.sh/type" => "shell"}
       },
       spec: %CoreV1.PodSpec{
@@ -78,6 +81,9 @@ defmodule Core.Services.Shell.Pods do
       }
     }
   end
+
+  defp annotations("sysbox-runc"), do: %{"io.kubernetes.cri-o.userns-mode" => "auto:size=65536"}
+  defp annotations(_), do: %{}
 
   defp node_selector("sysbox-runc"), do: %{"sysbox-runtime" => "running"}
   defp node_selector(_), do: %{"platform.plural.sh/instance-class" => "shell"}

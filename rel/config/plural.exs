@@ -17,6 +17,10 @@ if get_env("CLOUD_SHELL_IMG") do
   config :core, :cloud_shell_img, get_env("CLOUD_SHELL_IMG")
 end
 
+if get_env("CLOUD_SHELL_SYSBOX_IMG") do
+  config :core, :cloud_shell_sysbox_img, get_env("CLOUD_SHELL_SYSBOX_IMG")
+end
+
 if get_env("CLOUD_SHELL_DIND_IMG") do
   config :core, :dind_img, get_env("CLOUD_SHELL_DIND_IMG")
 end

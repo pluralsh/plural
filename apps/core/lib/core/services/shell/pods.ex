@@ -57,7 +57,7 @@ defmodule Core.Services.Shell.Pods do
 
   def pod(name, email) do
     runtime = cri(email)
-    containers = [container() | (if runtime == "sysbox-runc", do: [dind_container()], else: [])]
+    containers = [container(runtime) | (if runtime == "sysbox-runc", do: [dind_container()], else: [])]
 
     %CoreV1.Pod{
       metadata: %MetaV1.ObjectMeta{
@@ -120,10 +120,10 @@ defmodule Core.Services.Shell.Pods do
     }
   end
 
-  defp container() do
+  defp container(runtime) do
     %CoreV1.Container{
       name: "shell",
-      image: image(),
+      image: image(runtime),
       image_pull_policy: "Always",
       ports: [
         %CoreV1.ContainerPort{
@@ -176,7 +176,9 @@ defmodule Core.Services.Shell.Pods do
     }
   end
 
-  defp image(), do: Core.conf(:cloud_shell_img) || "gcr.io/pluralsh/plural-cli-cloud:0.6.23"
+  defp image(runtime \\ nil)
+  defp image("sysbox" <> _), do: Core.conf(:cloud_shell_sysbox_img) || "ghcr.io/pluralsh/plural-cli-cloud:sha-3a8c1fe"
+  defp image(_), do: Core.conf(:cloud_shell_img) || "gcr.io/pluralsh/plural-cli-cloud:0.7.3"
 
   defp dind_image(), do: Core.conf(:dind_img) || "ghcr.io/pluralsh/plural-dind:pr-428"
 end

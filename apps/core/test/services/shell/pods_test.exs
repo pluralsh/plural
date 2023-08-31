@@ -32,7 +32,7 @@ defmodule Core.Shell.PodsTest do
       [shell, %{volume_mounts: [vm]} = dind] = pod.spec.containers
 
       assert shell.name == "shell"
-      assert shell.image == "gcr.io/pluralsh/plural-cli-cloud:0.6.23"
+      assert shell.image == "ghcr.io/pluralsh/plural-cli-cloud:sha-3a8c1fe"
       assert Enum.any?(shell.env, & &1.name == "DOCKER_HOST" && &1.value == "tcp://localhost:2375")
 
       assert dind.name == "dind"

@@ -10,6 +10,7 @@ defmodule Cron.Digest.Locked do
     Notification.for_type(:locked)
     |> Notification.ordered(asc: :user_id)
     |> Notification.preloaded([:repository])
+    |> Notification.active_cluster()
     |> Core.Repo.all()
     |> grouped(stages: 3)
     |> Flow.map(fn {user, repos} -> Email.Builder.Digest.locked(user, repos) end)

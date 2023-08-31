@@ -6,7 +6,8 @@ defmodule Cron.Digest.PendingTest do
 
   describe "#run/0" do
     test "it will prune old, unused upgrade queues" do
-      [user1, user2] = insert_list(2, :user)
+      [user1, user2] = users = insert_list(2, :user)
+      for u <- users, do: insert(:cluster, owner: u)
       notifs = for _ <- 1..3, do: insert(:notification, user: user1, repository: insert(:repository), type: :pending)
       insert_list(2, :notification, user: user1, type: :locked)
       notifs2 = for _ <- 1..2, do: insert(:notification, user: user2, repository: insert(:repository), type: :pending)

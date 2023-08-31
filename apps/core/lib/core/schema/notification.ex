@@ -1,6 +1,6 @@
 defmodule Core.Schema.Notification do
   use Piazza.Ecto.Schema
-  alias Core.Schema.{User, Incident, IncidentMessage, Repository}
+  alias Core.Schema.{User, Incident, IncidentMessage, Repository, Cluster}
 
   defenum Type, message: 0, incident_update: 1, mention: 2, locked: 3, pending: 4
 
@@ -18,6 +18,14 @@ defmodule Core.Schema.Notification do
     belongs_to :repository, Repository
 
     timestamps()
+  end
+
+  def active_cluster(query \\ __MODULE__) do
+    from(n in query,
+      left_join: c in Cluster,
+        on: c.owner_id == n.user_id,
+      where: not is_nil(c.id)
+    )
   end
 
   def expired(query \\ __MODULE__) do

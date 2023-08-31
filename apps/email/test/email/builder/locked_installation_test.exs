@@ -10,6 +10,7 @@ defmodule Email.Builder.LockedInstallationTest do
         policy: build(:impersonation_policy, user: service_account),
         group: insert(:group, account: service_account.account)
       )
+      insert(:cluster, owner: service_account)
       insert(:group_member, group: group, user: user)
 
       inst = insert(:installation, user: service_account)
@@ -30,6 +31,7 @@ defmodule Email.Builder.LockedInstallationTest do
         policy: build(:impersonation_policy, user: service_account),
         group: insert(:group, account: service_account.account)
       )
+      insert(:cluster, owner: service_account)
       insert(:group_member, group: group, user: user)
 
       inst = insert(:installation, user: service_account)

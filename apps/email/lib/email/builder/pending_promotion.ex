@@ -9,12 +9,14 @@ defmodule Email.Builder.PendingPromotion do
     ])
     repo = find_repo(update)
 
-    base_email()
-    |> to(expand_service_account(user))
-    |> subject("You have an upgrade pending promotion for #{repo.name}")
-    |> assign(:user, user)
-    |> assign(:repo, repo)
-    |> render(:pending_promotion)
+    active_cluster(user, fn ->
+      base_email()
+      |> to(expand_service_account(user))
+      |> subject("You have an upgrade pending promotion for #{repo.name}")
+      |> assign(:user, user)
+      |> assign(:repo, repo)
+      |> render(:pending_promotion)
+    end)
   end
 
   defp find_repo(%{terraform_installation: %{installation: %{repository: repo}}}), do: repo

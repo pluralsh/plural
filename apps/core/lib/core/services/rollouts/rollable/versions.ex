@@ -1,7 +1,7 @@
 defimpl Core.Rollouts.Rollable, for: [Core.PubSub.VersionCreated, Core.PubSub.VersionUpdated] do
   use Core.Rollable.Base
   alias Core.Services.{Dependencies, Upgrades, Payments}
-  alias Core.Schema.{ChartInstallation, TerraformInstallation, User}
+  alias Core.Schema.{ChartInstallation, TerraformInstallation, User, Installation}
 
   def name(%Core.PubSub.VersionCreated{}), do: "version:created"
   def name(%Core.PubSub.VersionUpdated{}), do: "version:updated"
@@ -35,9 +35,9 @@ defimpl Core.Rollouts.Rollable, for: [Core.PubSub.VersionCreated, Core.PubSub.Ve
     Upgrades.create_deferred_update(%{reasons: reason("installation locked")}, vsn.id, inst, user)
   end
 
-  def process(%{item: version}, %{installation: %{user: user}} = inst) do
-    case {Dependencies.valid?(version.dependencies, user), Payments.delinquent?(user)} do
-      {true, false} -> Upgrades.install_version(version, inst)
+  def process(%{item: version}, %{installation: %{user: user} = repo_inst} = inst) do
+    case {Dependencies.valid?(version.dependencies, user), Payments.delinquent?(user), locked?(repo_inst)} do
+      {true, false, false} -> Upgrades.install_version(version, inst)
       failed -> Upgrades.create_deferred_update(reasons(failed), version.id, inst, user)
     end
   end
@@ -45,10 +45,17 @@ defimpl Core.Rollouts.Rollable, for: [Core.PubSub.VersionCreated, Core.PubSub.Ve
   # defp maybe_ignore_version(q, Core.PubSub.VersionUpdated, _, _), do: q
   defp maybe_ignore_version(q, _, mod, id), do: mod.ignore_version(q, id)
 
-  defp reasons({false, _}), do: %{reasons: reason("missing dependencies")}
-  defp reasons({{:locked, _}, _}), do: %{reasons: reason("dependency is locked")}
-  defp reasons({_, true}), do: %{reasons: reason("your billing account is delinquent")}
+  defp reasons({false, _, _}), do: %{reasons: reason("missing dependencies")}
+  defp reasons({{:locked, _}, _, _}), do: %{reasons: reason("dependency is locked")}
+  defp reasons({_, true, _}), do: %{reasons: reason("your billing account is delinquent")}
+  defp reasons({_, _, true}), do: %{reasons: reason("installation is locked")}
   defp reasons(_), do: %{}
+
+  defp locked?(%{id: id}) do
+    Installation.for_ids([id])
+    |> Installation.locks()
+    |> Core.Repo.exists?()
+  end
 
   defp reason(msg), do: [%{message: msg}]
 end

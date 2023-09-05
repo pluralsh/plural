@@ -179,6 +179,34 @@ defmodule Core.Rollable.VersionsTest do
       assert deferred.version_id == version.id
     end
 
+    test "it will defer updates if an adjacent installation is locked" do
+      user = insert(:user, account: build(:account))
+      %{chart: chart} = chart_version = insert(:version, version: "0.1.0")
+      installation = insert(:installation, auto_upgrade: true, user: user)
+      inst = insert(:chart_installation,
+        installation: installation,
+        chart: chart,
+        version: chart_version
+      )
+      insert(:terraform_installation, installation: installation, locked: true)
+
+      version = insert(:version, version: "0.1.1", chart: chart)
+      insert(:version_tag, version: version, chart: chart, tag: "latest")
+
+      event = %PubSub.VersionCreated{item: version}
+      {:ok, rollout} = Rollouts.create_rollout(chart.repository_id, event)
+
+      {:ok, rolled} = Rollouts.execute(rollout)
+
+      assert rolled.status == :finished
+      assert rolled.count == 1
+
+      [deferred] = Core.Repo.all(Core.Schema.DeferredUpdate)
+
+      assert deferred.chart_installation_id == inst.id
+      assert deferred.version_id == version.id
+    end
+
     test "it will defer updates if a user has promotions enabled" do
       user = insert(:user, account: build(:account), upgrade_to: uuid(0))
       %{chart: chart} = chart_version = insert(:version, version: "0.1.0")

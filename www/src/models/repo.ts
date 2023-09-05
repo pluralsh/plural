@@ -52,7 +52,6 @@ export const InstallationRepoFragment = gql`
     verified
     category
   }
-  ${PublisherFragment}
 `
 
 export const StackFragment = gql`

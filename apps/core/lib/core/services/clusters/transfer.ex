@@ -78,8 +78,12 @@ defmodule Core.Services.Clusters.Transfer do
 
   defp maybe_reparent_provider(xact, %OIDCProvider{installation_id: inst_id} = provider) do
     add_operation(xact, {:oidc, inst_id}, fn %{^inst_id => inst} ->
-      OIDCProvider.changeset(provider, %{installation_id: inst.id})
-      |> Core.Repo.update()
+      case Core.Repo.get_by(OIDCProvider, installation_id: inst.id) do
+        %OIDCProvider{} = prov -> {:ok, prov}
+        _ ->
+          OIDCProvider.changeset(provider, %{installation_id: inst.id})
+          |> Core.Repo.update()
+      end
     end)
   end
   defp maybe_reparent_provider(xact, _), do: xact

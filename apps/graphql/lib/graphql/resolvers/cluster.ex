@@ -16,6 +16,10 @@ defmodule GraphQl.Resolvers.Cluster do
     |> paginate(args)
   end
 
+  def synced(cluster), do: {:ok, Clusters.synced?(cluster)}
+
+  def locked(cluster), do: {:ok, Clusters.locked?(cluster)}
+
   def usage_history(cluster, begin) do
     ClusterUsageHistory.for_cluster(cluster.id)
     |> ClusterUsageHistory.ordered()

@@ -118,7 +118,7 @@ export function Upgrade() {
         {error && (
           <GqlError
             error={error}
-            header="Failed to uninstall"
+            header="Failed to update installation"
           />
         )}
         <Flex marginTop="xlarge">

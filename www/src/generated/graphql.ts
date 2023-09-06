@@ -421,6 +421,8 @@ export type Cluster = {
   /** The ID of the cluster. */
   id: Scalars['ID']['output'];
   insertedAt?: Maybe<Scalars['DateTime']['output']>;
+  /** whether any installation in the cluster has been locked */
+  locked?: Maybe<Scalars['Boolean']['output']>;
   /** The name of the cluster. */
   name: Scalars['String']['output'];
   /** The user that owns the cluster. */
@@ -433,6 +435,8 @@ export type Cluster = {
   queue?: Maybe<UpgradeQueue>;
   /** The source of the cluster. */
   source?: Maybe<Source>;
+  /** whether all installations in the cluster have been synced */
+  synced?: Maybe<Scalars['Boolean']['output']>;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
   /** pending upgrades for each installed app */
   upgradeInfo?: Maybe<Array<Maybe<UpgradeInfo>>>;

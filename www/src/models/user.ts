@@ -116,8 +116,8 @@ export const PublisherFragment = gql`
       ...AddressFragment
     }
   }
-  ${UserFragment}
   ${AddressFragment}
+  ${UserFragment}
 `
 
 export const WebhookFragment = gql`

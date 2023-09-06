@@ -30,6 +30,16 @@ defmodule GraphQl.Schema.Cluster do
       cluster, _, _ -> Cluster.upgrade_info(cluster)
     end
 
+    @desc "whether all installations in the cluster have been synced"
+    field :synced, :boolean, resolve: fn
+      cluster, _, _ -> Cluster.synced(cluster)
+    end
+
+    @desc "whether any installation in the cluster has been locked"
+    field :locked, :boolean, resolve: fn
+      cluster, _, _ -> Cluster.locked(cluster)
+    end
+
     @desc "CPU/Memory history for this cluster"
     field :usage_history, list_of(:cluster_usage_history) do
       arg :begin, non_null(:datetime)

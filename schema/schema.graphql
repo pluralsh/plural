@@ -1582,6 +1582,12 @@ type Cluster {
   "pending upgrades for each installed app"
   upgradeInfo: [UpgradeInfo]
 
+  "whether all installations in the cluster have been synced"
+  synced: Boolean
+
+  "whether any installation in the cluster has been locked"
+  locked: Boolean
+
   "CPU\/Memory history for this cluster"
   usageHistory(begin: DateTime!): [ClusterUsageHistory]
 

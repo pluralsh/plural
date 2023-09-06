@@ -4,7 +4,7 @@ defmodule Core.Services.Clusters do
   alias Core.PubSub
   alias Core.Policies.Account, as: AccountPolicy
   alias Core.Services.{Dns, Repositories, Users, Clusters.Transfer}
-  alias Core.Schema.{Cluster, User, DnsRecord, UpgradeQueue, ClusterDependency, ClusterUsageHistory}
+  alias Core.Schema.{Cluster, User, DnsRecord, UpgradeQueue, ClusterDependency, ClusterUsageHistory, Installation}
 
   @type error :: {:error, term}
   @type cluster_resp :: {:ok, Cluster.t} | error
@@ -24,6 +24,26 @@ defmodule Core.Services.Clusters do
   @spec has_cluster?(User.t) :: boolean
   def has_cluster?(%User{id: user_id}) do
     Cluster.for_user(user_id)
+    |> Core.Repo.exists?()
+  end
+
+  @doc """
+  Determines if all installations for a cluster have been synced
+  """
+  @spec synced?(Cluster.t) :: boolean
+  def synced?(%Cluster{owner_id: uid}) do
+    !(Installation.for_user(uid)
+      |> Installation.unsynced()
+      |> Core.Repo.exists?())
+  end
+
+  @doc """
+  Determines if a cluster has any locked installation
+  """
+  @spec locked?(Cluster.t) :: boolean
+  def locked?(%Cluster{owner_id: uid}) do
+    Installation.for_user(uid)
+    |> Installation.locks()
     |> Core.Repo.exists?()
   end
 

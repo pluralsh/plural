@@ -103,6 +103,14 @@ defmodule Core.Services.Shell.Pods do
     }
   end
 
+  def new_cri?(email) do
+    case Core.conf(:sysbox_emails) do
+      ["*"] -> true
+      [_ | _] = emails -> if email in emails, do: true, else: false
+      _ -> false
+    end
+  end
+
   defp cri(email) do
     case Core.conf(:sysbox_emails) do
       ["*"] -> "sysbox-runc"

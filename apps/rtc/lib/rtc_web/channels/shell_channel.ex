@@ -7,7 +7,7 @@ defmodule RtcWeb.ShellChannel do
 
   def join("shells:me", _, socket) do
     with %CloudShell{pod_name: name} = shell <- Shell.get_shell(socket.assigns.user.id),
-         {:ok, socket} <- gated_available(shell, socket, socket.assigns.user),
+         {:ok, socket} <- available(shell, socket),
          {:ok, pid} <- exec_pod(name, socket) do
       {:ok, assign(socket, :wss_pid, pid)}
     else
@@ -36,14 +36,6 @@ defmodule RtcWeb.ShellChannel do
   defp exec_pod(name, _) do
     Pods.PodExec.exec_url(name)
     |> Pods.PodExec.start_link(self())
-  end
-
-  defp gated_available(shell, socket, %User{email: email}) do
-    # just use this for now to control end-to-end testing
-    case Core.Services.Shell.Pods.new_cri?(email) do
-      true -> available(shell, socket)
-      false -> {:ok, socket}
-    end
   end
 
   defp available(%CloudShell{owner_pid: pid}, %{assigns: %{owner_pid: pid}} = socket), do: {:ok, socket}

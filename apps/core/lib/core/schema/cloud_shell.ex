@@ -1,6 +1,6 @@
 defmodule Core.Schema.CloudShell do
   use Piazza.Ecto.Schema
-  alias Piazza.Ecto.EncryptedString
+  alias Piazza.Ecto.{EncryptedString, Types.Erlang}
   alias Core.Schema.{User, Dependencies.Provider, DemoProject}
 
   defmodule Workspace do
@@ -128,6 +128,7 @@ defmodule Core.Schema.CloudShell do
     field :aes_key,         EncryptedString
     field :ssh_public_key,  EncryptedString
     field :ssh_private_key, EncryptedString
+    field :owner_pid,       Erlang
     field :bucket_prefix,   :string
     field :missing,         {:array, :string}, virtual: true
 
@@ -168,6 +169,12 @@ defmodule Core.Schema.CloudShell do
     |> put_new_change(:aes_key, &aes_key/0)
     |> validate_required([:provider, :pod_name, :aes_key])
     |> mv_bucket_prefix()
+  end
+
+  def pid_changeset(model, attrs \\ %{}) do
+    model
+    |> cast(attrs, ~w(owner_pid)a)
+    |> validate_required([:owner_pid])
   end
 
   def update_changeset(model, attrs \\ %{}) do

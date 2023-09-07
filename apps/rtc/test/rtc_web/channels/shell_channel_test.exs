@@ -37,5 +37,27 @@ defmodule RtcWeb.ShellChannelTest do
 
       assert Base.decode64!(res) == "resized"
     end
+
+    test "it can prevent duplicate shell channels/execs" do
+      user = insert(:user, email: "sysbox@plural.sh")
+      cloud_shell = insert(:cloud_shell, user: user, pod_name: "plrl-shell")
+
+      url = Pods.PodExec.exec_url(cloud_shell.pod_name)
+      expect(Pods.PodExec, :start_link, fn ^url, _ -> {:ok, self()} end)
+
+      {:ok, socket} = mk_socket(user)
+      {:ok, _, %{assigns: %{wss_pid: wss_pid}} = socket} = subscribe_and_join(socket, "shells:me", %{})
+
+      %{owner_pid: {node, pid}} = refetch(cloud_shell)
+      assert node == node()
+      assert Process.alive?(pid)
+
+      {:ok, _, socket} = subscribe_and_join(socket, "shells:me", %{})
+      assert socket.assigns.wss_pid == wss_pid
+
+      {:ok, new_socket} = mk_socket(user)
+      {:error, error} = subscribe_and_join(new_socket, "shells:me", %{})
+      assert error == %{reason: "cloud shell already taken by another window"}
+    end
   end
 end

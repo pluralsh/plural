@@ -62,6 +62,7 @@ defmodule Core.Shell.Client do
       Piazza.Ecto.Schema.mapify(shell)
       |> Map.put(:user, %{name: user.name, email: user.email, access_token: token.token})
       |> Map.put(:is_demo, !!dem)
+      |> Map.delete(:owner_pid)
       |> ok()
     end
   end

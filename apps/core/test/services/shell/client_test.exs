@@ -13,7 +13,7 @@ defmodule Core.Shell.ClientTest do
         {:ok, %HTTPoison.Response{status_code: 200, body: Jason.encode!(%{missing: []})}}
       end)
 
-      shell = insert(:cloud_shell, pod_name: "plrl-shell-1")
+      shell = insert(:cloud_shell, pod_name: "plrl-shell-1", owner_pid: {node(), self()})
       {:ok, %Client.Setup{missing: []}} = Client.setup(shell)
     end
   end

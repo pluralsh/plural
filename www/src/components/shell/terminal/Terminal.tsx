@@ -17,6 +17,8 @@ import { Terminal as XTerm } from 'xterm'
 import { FitAddon } from 'xterm-addon-fit'
 import { useResizeDetector } from 'react-resize-detector'
 
+import { Modal } from '@pluralsh/design-system'
+
 import { useAuthToken } from '../../../contexts/AuthTokenContext'
 import { socket } from '../../../helpers/client'
 
@@ -32,6 +34,7 @@ enum ChannelEvent {
   OnData = 'command',
   OnResize = 'resize',
   OnResponse = 'stdo',
+  Reply = 'phx_reply',
 }
 
 const resize = (fitAddon: FitAddon, channel: any, terminal: XTerm) => {
@@ -51,6 +54,8 @@ function Terminal({ provider }) {
   const terminalCtx = useContext(TerminalContext)
   const { state, setState, setOnAction } = terminalCtx
   const authToken = useAuthToken()
+  const [socketError, setSocketError] = useState(null)
+  const [closeModal, setCloseModal] = useState(false)
 
   useEffect(() => {
     let skipCallback = false
@@ -125,6 +130,11 @@ function Terminal({ provider }) {
     terminal.onData((text) => channel.push(ChannelEvent.OnData, { cmd: text }))
 
     channel.onError(onConnectionError)
+    channel.on(ChannelEvent.Reply, ({ response, status }) => {
+      if (status === 'error' && response?.reason) {
+        setSocketError(response?.reason)
+      }
+    })
     channel.on(ChannelEvent.OnResponse, ({ message }) => {
       const decoded = decodeBase64(message)
 
@@ -165,6 +175,14 @@ function Terminal({ provider }) {
       flexGrow={1}
       flexDirection="column"
     >
+      <Modal
+        open={!!socketError && !closeModal}
+        onClose={() => setCloseModal(true)}
+        header="Could not bind to cloud shell"
+        severity="danger"
+      >
+        {socketError}
+      </Modal>
       <ActionBar onRepairViewport={onResize} />
       <Flex
         ref={terminalContainerRef}

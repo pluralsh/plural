@@ -1,8 +1,8 @@
 apiVersion: v2
 name: plural
 description: A helm chart for installing plural
-appVersion: 0.10.66
-version: 0.10.67
+appVersion: 0.10.67
+version: 0.10.68
 dependencies:
   - name: hydra
     version: 0.26.5

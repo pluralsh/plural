@@ -555,6 +555,15 @@ defmodule Core.Services.Payments do
     |> execute(extract: :finalized)
   end
 
+  def backfill_plan_features() do
+    Enum.each(~w(monthly yearly), fn period ->
+      with %PlatformPlan{} = p <- Core.Repo.get_by(PlatformPlan, name: "Pro", visible: true, period: period) do
+        PlatformPlan.changeset(p, %{features: Enum.into(PlatformPlan.features(), %{}, & {&1, true})})
+        |> Core.Repo.update()
+      end
+    end)
+  end
+
   def setup_plans() do
     {:ok, _} = create_default_plan(:monthly)
     {:ok, _} = create_default_plan(:yearly)

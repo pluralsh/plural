@@ -35,7 +35,7 @@ defmodule Core.Schema.PlatformPlan do
     field :external_id, :string
 
     embeds_one :features, Features, on_replace: :update do
-      boolean_fields [:vpn, :user_management, :audit, :multi_cluster, :database_management]
+      boolean_fields [:vpn, :user_management, :audit, :multi_cluster, :database_management, :cd]
     end
 
     embeds_many :line_items, LineItem, on_replace: :delete

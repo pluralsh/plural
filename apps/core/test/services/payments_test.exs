@@ -202,6 +202,18 @@ defmodule Core.Services.PaymentsTest do
     end
   end
 
+  describe "#backfill_plan_features/0" do
+    test "it will backfill features for pro plans" do
+      plan = insert(:platform_plan, name: "Pro", visible: true, features: %{audits: true})
+
+      Payments.backfill_plan_features()
+
+      plan = refetch(plan)
+      for f <- Core.Schema.PlatformPlan.features(),
+        do: assert Map.get(plan.features, f)
+    end
+  end
+
   describe "#update_plan_attributes" do
     test "publishers can update SLAs for a plan" do
       %{publisher: pub} = repository = insert(:repository, publisher: build(:publisher, billing_account_id: "account_id"))

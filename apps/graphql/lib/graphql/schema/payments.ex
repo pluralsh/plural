@@ -116,6 +116,7 @@ defmodule GraphQl.Schema.Payments do
     field :user_management,     :boolean
     field :audit,               :boolean
     field :database_management, :boolean
+    field :cd,                  :boolean
   end
 
   object :service_level do

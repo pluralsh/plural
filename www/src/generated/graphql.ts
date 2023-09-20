@@ -2030,6 +2030,7 @@ export type PlanFeatureAttributes = {
 export type PlanFeatures = {
   __typename?: 'PlanFeatures';
   audit?: Maybe<Scalars['Boolean']['output']>;
+  cd?: Maybe<Scalars['Boolean']['output']>;
   databaseManagement?: Maybe<Scalars['Boolean']['output']>;
   userManagement?: Maybe<Scalars['Boolean']['output']>;
   vpn?: Maybe<Scalars['Boolean']['output']>;

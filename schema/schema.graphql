@@ -547,6 +547,7 @@ type PlanFeatures {
   userManagement: Boolean
   audit: Boolean
   databaseManagement: Boolean
+  cd: Boolean
 }
 
 type PlatformSubscriptionLineItems {

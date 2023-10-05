@@ -44,11 +44,12 @@ defmodule Core.Services.Rbac do
     do: Enum.filter(roles, & &1.account_id == id)
   defp maybe_filter(roles, _, _), do: roles
 
-  defp matches_repository?(%Role{repositories: repos}, repository) do
+  defp matches_repository?(%Role{repositories: [_ | _] = repos}, repository) do
     repos
     |> Enum.map(& "^#{String.replace(&1, "*", ".*")}$" |> Regex.compile!())
     |> Enum.any?(&Regex.match?(&1, repository))
   end
+  defp matches_repository?(_, _), do: false
 
   defp permits_action?(%Role{permissions: %Role.Permissions{} = perms}, action),
     do: Map.get(perms, action)

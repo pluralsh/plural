@@ -1,7 +1,7 @@
 defmodule RtcWeb.ShellChannel do
   use RtcWeb, :channel
   alias Core.Services.{Shell.Pods, Shell}
-  alias Core.Schema.{CloudShell, User}
+  alias Core.Schema.{CloudShell}
 
   require Logger
 

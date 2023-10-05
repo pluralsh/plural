@@ -31,8 +31,8 @@ asdf can be finnicky when instlalling erlang with mac, in which case you can res
 
 ```sh
 brew install erlang@24
-cp -r /opt/homebrew/opt/erlang@24/lib/erlang ~/.asdf/installs/erlang/24.3.4.10
-asdf reshim erlang 24.3.4.10
+cp -r /opt/homebrew/opt/erlang@24/lib/erlang ~/.asdf/installs/erlang/24.3.4.13
+asdf reshim erlang 24.3.4.13
 ```
 
 <!-- >

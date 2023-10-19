@@ -31,15 +31,15 @@ const DIRECTORY = [
       'chmod +x plural\n' +
       'mv plural /usr/local/bin/plural',
   },
-  {
-    key: TAB_DOCKER,
-    label: 'Docker',
-    command: `docker run -it --volume $HOME/.aws:/home/plural/aws \\
-\t--volume $HOME/.plural:/home/plural/.plural \\
-\t--volume $HOME/.ssh:/home/plural/.ssh \\
-\t--volume $HOME/path-to-installation-repo:/home/plural/workspace \\ # optional if you want to manage git via a volume
-\tgcr.io/pluralsh/plural-cli:0.1.1-cloud zsh`,
-  },
+  //   {
+  //     key: TAB_DOCKER,
+  //     label: 'Docker',
+  //     command: `docker run -it --volume $HOME/.aws:/home/plural/aws \\
+  // \t--volume $HOME/.plural:/home/plural/.plural \\
+  // \t--volume $HOME/.ssh:/home/plural/.ssh \\
+  // \t--volume $HOME/path-to-installation-repo:/home/plural/workspace \\ # optional if you want to manage git via a volume
+  // \tgcr.io/pluralsh/plural-cli:0.1.1-cloud zsh`,
+  //   },
 ]
 
 function CliInstallation({ onBack, onNext }) {

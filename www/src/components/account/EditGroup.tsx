@@ -204,7 +204,7 @@ export function EditGroupAttributes({ group, open, onClose }: any) {
         />
         <Switch
           checked={global}
-          onChange={({ target: { checked } }) => update({ global: checked })}
+          onChange={(checked) => update({ global: checked })}
         >
           Apply globally
         </Switch>

@@ -6,12 +6,13 @@ import {
   useMemo,
   useState,
 } from 'react'
-import { Div, Flex, Switch } from 'honorable'
+import { Div, Flex } from 'honorable'
 import {
   Card,
   CloseIcon,
   ClusterIcon,
   PeopleIcon,
+  Switch,
 } from '@pluralsh/design-system'
 
 import PlatformPlansContext from '../../../contexts/PlatformPlansContext'
@@ -112,9 +113,9 @@ function BillingPreview({
   const totalUsers = nUsers * userPrice
 
   const handleChange = useCallback(
-    (event: any) => {
-      setIsProfessional(event.target.checked)
-      onChange?.(event.target.checked)
+    (checked) => {
+      setIsProfessional(checked)
+      onChange?.(checked)
     },
     [onChange]
   )
@@ -138,7 +139,6 @@ function BillingPreview({
       <Switch
         checked={isProfessional}
         onChange={handleChange}
-        padding={0}
       >
         <Div
           color="text-xlight"
@@ -166,7 +166,6 @@ function BillingPreview({
         <Switch
           checked={isProfessional}
           onChange={handleChange}
-          padding={0}
         >
           <Div
             body2

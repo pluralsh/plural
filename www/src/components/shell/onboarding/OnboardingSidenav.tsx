@@ -9,20 +9,18 @@ const expandAtWidth = 160
 const ResponsiveWidth = styled.div(({ theme }) => {
   const medMq = '@media only screen and (min-width: 1040px)'
   const desktopMq = `@media only screen and (min-width: ${theme.breakpoints.desktop}px)`
-  const desktopLargeMq = `@media only screen and (min-width: ${theme.breakpoints.desktopLarge}px)`
 
   return {
     width: 68,
+    marginRight: 48 - 68,
     paddingBottom: theme.spacing.large,
     textAlign: 'center',
     [medMq]: {
+      marginRight: 0,
       width: expandAtWidth,
     },
     [desktopMq]: {
-      width: expandAtWidth,
-    },
-    [desktopLargeMq]: {
-      width: 225,
+      width: 220,
     },
   }
 })
@@ -45,7 +43,7 @@ function OnboardingSidenav({ section }) {
         vertical
         steps={toSteps()}
         stepIndex={section.index}
-        collapseAtWith={expandAtWidth - 1}
+        collapseAtWidth={expandAtWidth - 1}
       />
     </ResponsiveWidth>
   )

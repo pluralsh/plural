@@ -9,5 +9,7 @@ module.exports = {
   rules: {
     '@typescript-eslint/consistent-type-exports': 'error',
     'import-newlines/enforce': 'off',
+    // Allow css prop for styled-components
+    'react/no-unknown-property': ['error', { ignore: ['css'] }],
   },
 }

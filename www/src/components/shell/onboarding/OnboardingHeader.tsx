@@ -79,6 +79,7 @@ function OnboardingHeader({
 
   return (
     <Sidebar
+      variant="app"
       layout="horizontal"
       background={theme.colors['fill-one']}
       maxHeight={56}

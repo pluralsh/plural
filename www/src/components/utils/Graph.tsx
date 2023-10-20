@@ -4,7 +4,7 @@ import moment from 'moment'
 import last from 'lodash/last'
 import { Box, Text } from 'grommet'
 import { Flex, P } from 'honorable'
-import { semanticColors } from '@pluralsh/design-system/dist/theme/colors'
+import { useTheme } from 'styled-components'
 
 export function dateFormat(date) {
   return moment(date).format('MM/DD h:mm:ss A')
@@ -80,6 +80,7 @@ export const DURATIONS = [
 ]
 
 export function Graph({ data, yFormat, tick }: any) {
+  const styledTheme = useTheme()
   const [selected, setSelected] = useState<any>(null)
   const graph = useMemo(() => {
     if (data.find(({ id }) => id === selected)) {
@@ -161,13 +162,13 @@ export function Graph({ data, yFormat, tick }: any) {
           itemHeight: 20,
           symbolSize: 12,
           symbolShape: 'circle',
-          itemTextColor: semanticColors['text-xlight'],
+          itemTextColor: styledTheme.colors['text-xlight'],
           effects: [
             {
               on: 'hover',
               style: {
                 itemBackground: 'rgba(0, 0, 0, .03)',
-                itemTextColor: semanticColors['text-light'],
+                itemTextColor: styledTheme.colors['text-light'],
               },
             },
           ],
@@ -177,21 +178,21 @@ export function Graph({ data, yFormat, tick }: any) {
         axis: {
           ticks: {
             text: {
-              fill: semanticColors['text-xlight'],
+              fill: styledTheme.colors['text-xlight'],
             },
             line: {
-              stroke: semanticColors.border,
+              stroke: styledTheme.colors.border,
             },
           },
           legend: {
             text: {
-              fill: semanticColors['text-xlight'],
+              fill: styledTheme.colors['text-xlight'],
             },
           },
         },
         grid: {
           line: {
-            stroke: semanticColors.border,
+            stroke: styledTheme.colors.border,
           },
         },
       }}

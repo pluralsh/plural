@@ -15,6 +15,7 @@ import { GqlError } from '../utils/Alert'
 
 import { CREATE_INVITE } from './queries'
 import { inviteLink } from './utils'
+import { toNumber } from 'lodash'
 
 const MAX_OPEN_SOURCE_USERS = 5
 
@@ -40,16 +41,9 @@ export function InviteUser({ refetch }: { refetch?: (() => void) | null }) {
   }, [reset])
 
   const attemptInvite = useCallback(() => {
-    console.log('attempt', {
-      isGrandfathered,
-      isPaidPlan,
-      userCount: account?.userCount,
-    })
-    if (
-      !isGrandfathered &&
-      !isPaidPlan &&
-      (account?.userCount ?? 0) >= MAX_OPEN_SOURCE_USERS
-    ) {
+    let userCount = toNumber(account?.userCount)
+    userCount = isNaN(userCount) ? 0 : userCount
+    if (!isGrandfathered && !isPaidPlan && userCount >= MAX_OPEN_SOURCE_USERS) {
       setShowLimitModal(true)
     } else {
       setShowInviteModal(true)

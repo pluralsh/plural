@@ -5,8 +5,8 @@ import {
   FormField,
   Input,
   MailIcon,
+  Switch,
 } from '@pluralsh/design-system'
-import { Switch } from 'honorable'
 import { ReactElement, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 
@@ -236,7 +236,7 @@ function InviteUserUnstyled({
       <div className="switch">
         <Switch
           checked={isAdmin}
-          onChange={({ target: { checked } }) => setAdmin(checked)}
+          onChange={(checked) => setAdmin(checked)}
         >
           <span className="message">Admin</span>
         </Switch>

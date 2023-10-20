@@ -74,18 +74,17 @@ function Onboarding({
       >
         <ResponsiveLayoutSpacer />
         <ResponsiveLayoutSidenavContainer
-          marginRight={theme.spacing.xlarge - theme.spacing.small}
-          marginLeft="xlarge"
-          paddingRight="small"
+          marginRight={theme.spacing.xlarge}
+          marginLeft={theme.spacing.xlarge}
           overflowY="auto"
           flexShrink={0}
+          width="auto"
         >
           <OnboardingSidenav section={section} />
         </ResponsiveLayoutSidenavContainer>
         <ResponsiveLayoutContentContainer
           overflowY="auto"
           paddingBottom="large"
-          paddingHorizontal="xxsmall"
           marginRight="xlarge"
           marginRight-desktop-down={theme.spacing.large}
         >

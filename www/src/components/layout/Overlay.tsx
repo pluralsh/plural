@@ -16,6 +16,7 @@ import {
 import { produce } from 'immer'
 
 import useUnmount from '../../hooks/useUnmount'
+import { AnimatedDiv } from '@pluralsh/design-system'
 
 const getTransitionProps = (isOpen: boolean) => ({
   from: { opacity: 0 /* , backdropFilter: 'blur(0px)' */ },
@@ -32,7 +33,7 @@ const getTransitionProps = (isOpen: boolean) => ({
       },
 })
 
-const OverlayBG = styled(animated.div)(({ theme }) => ({
+const OverlayBG = styled(AnimatedDiv)(({ theme }) => ({
   position: 'absolute',
   top: 0,
   left: 0,

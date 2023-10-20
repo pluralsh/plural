@@ -83,16 +83,18 @@ export function Upgrade() {
             wrapper={<Tooltip label="No upgrade channels available." />}
             condition={!hasUpgradeChannels}
           >
-            <Switch
-              checked={autoUpgrade}
-              onChange={toggleAutoUpgrade}
-              loading
-              disabled={!hasUpgradeChannels}
+            <Div
               marginBottom="xlarge"
               flexGrow={0}
             >
-              {autoUpgrade ? 'On' : 'None'}
-            </Switch>
+              <Switch
+                checked={!!autoUpgrade}
+                onChange={toggleAutoUpgrade}
+                disabled={!hasUpgradeChannels}
+              >
+                {autoUpgrade ? 'On' : 'None'}
+              </Switch>
+            </Div>
           </WrapWithIf>
         </Flex>
 

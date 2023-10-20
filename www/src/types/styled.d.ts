@@ -1,12 +1,12 @@
 // import original module declarations
 import 'styled-components'
+
 import { type styledTheme } from '@pluralsh/design-system'
 
-import { DEFAULT_THEME } from '../theme'
+// Allow css prop on html elements
+import type {} from 'styled-components/cssprop'
 
-type StyledTheme = typeof styledTheme & {
-  global: (typeof DEFAULT_THEME)['global']
-}
+type StyledTheme = typeof styledTheme
 
 // and extend them!
 declare module 'styled-components' {

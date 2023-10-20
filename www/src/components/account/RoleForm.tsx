@@ -1,6 +1,6 @@
 import { Box } from 'grommet'
-import { Span, Switch } from 'honorable'
-import { Tab, TabList, TabPanel } from '@pluralsh/design-system'
+import { Span } from 'honorable'
+import { Tab, TabList, TabPanel, Switch } from '@pluralsh/design-system'
 import { useCallback, useRef, useState } from 'react'
 
 import { ListItem } from '../profile/ListItem'
@@ -49,7 +49,7 @@ function PermissionToggle({
       </Box>
       <Switch
         checked={!!attributes.permissions.find((perm) => perm === permission)}
-        onChange={({ target: { checked } }) => toggle(checked)}
+        onChange={(checked) => toggle(checked)}
       />
     </ListItem>
   )

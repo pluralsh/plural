@@ -6,6 +6,7 @@ import SubscriptionContext from '../../../contexts/SubscriptionContext'
 
 import InviteUserModal from './InviteUserModal'
 import UserLimitModal from './UserLimitModal'
+import { toNumber } from 'lodash'
 
 const MAX_OPEN_SOURCE_USERS = 5
 
@@ -19,12 +20,14 @@ function InviteUserButton({ onInvite }): ReactElement {
   const { account } = useCurrentUser()
   const { isPaidPlan, isTrialPlan } = useContext(SubscriptionContext)
   const [action, setAction] = useState(Action.None)
+  let userCount = toNumber(account.userCount)
+  if (isNaN(userCount)) {
+    userCount = 0
+  }
 
   const openModal = useCallback(
     () =>
-      (account?.userCount ?? 0) < MAX_OPEN_SOURCE_USERS ||
-      isPaidPlan ||
-      isTrialPlan
+      userCount < MAX_OPEN_SOURCE_USERS || isPaidPlan || isTrialPlan
         ? setAction(Action.InviteUser)
         : setAction(Action.UserLimit),
     [account?.userCount, isPaidPlan, isTrialPlan]

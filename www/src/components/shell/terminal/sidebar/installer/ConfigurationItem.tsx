@@ -1,5 +1,4 @@
-import { FormField, Input, useActive } from '@pluralsh/design-system'
-import { Switch } from 'honorable'
+import { FormField, Input, useActive, Switch } from '@pluralsh/design-system'
 import StartCase from 'lodash/startCase'
 import { useContext, useEffect, useMemo, useState } from 'react'
 
@@ -248,7 +247,7 @@ function BoolConfiguration({ config: { name, default: def }, ctx, setValue }) {
   return (
     <Switch
       checked={value}
-      onChange={({ target: { checked } }) => setValue(name, checked)}
+      onChange={(checked) => setValue(name, checked)}
     >
       {StartCase(name)}
     </Switch>

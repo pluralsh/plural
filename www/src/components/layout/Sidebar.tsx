@@ -106,6 +106,7 @@ function SidebarWrapper() {
 
   return (
     <Sidebar
+      variant="app"
       transition="width 300ms ease, opacity 200ms ease"
       style={isCurrentlyOnboarding ? { display: 'none' } : null}
     />

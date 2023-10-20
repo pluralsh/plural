@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useMutation, useQuery } from '@apollo/client'
-import { Div, Flex, Form, H2, MenuItem, Select, Span, Switch } from 'honorable'
+import { Div, Flex, Form, H2, MenuItem, Select, Span } from 'honorable'
 import { TextInput } from 'grommet'
 import {
   Button,
@@ -11,6 +11,7 @@ import {
   Input,
   PageTitle,
   SearchIcon,
+  Switch,
 } from '@pluralsh/design-system'
 import isEqual from 'lodash/isEqual'
 import isArray from 'lodash/isArray'
@@ -581,9 +582,8 @@ function RepositoryEdit() {
 
           <Div paddingVertical={10}>
             <Switch
-              padding={0}
               checked={formState.private || false}
-              onChange={({ target: { checked } }) => {
+              onChange={(checked) => {
                 updateFormState({ private: checked })
               }}
             >

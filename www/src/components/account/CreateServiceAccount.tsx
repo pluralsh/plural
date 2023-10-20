@@ -43,7 +43,7 @@ function ServiceAccountForm({
   return (
     <Box
       fill
-      gap="small"
+      gap="medium"
       {...box}
     >
       {error && (

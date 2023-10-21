@@ -1,4 +1,4 @@
-import { FormField, Input, useActive, Switch } from '@pluralsh/design-system'
+import { FormField, Input, Switch, useActive } from '@pluralsh/design-system'
 import StartCase from 'lodash/startCase'
 import { useContext, useEffect, useMemo, useState } from 'react'
 

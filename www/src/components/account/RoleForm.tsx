@@ -1,13 +1,15 @@
-import { Tab, TabList, TabPanel, Switch } from '@pluralsh/design-system'
+import { Switch, Tab, TabList, TabPanel } from '@pluralsh/design-system'
 import { useCallback, useRef, useState } from 'react'
 
+import { useTheme } from 'styled-components'
+
 import { GqlError } from '../utils/Alert'
+
+import { List, ListItem } from '../utils/List'
 
 import { PermissionTypes } from './types'
 
 import { GeneralAttributes } from './Role'
-import { useTheme } from 'styled-components'
-import { List, ListItem } from '../utils/List'
 
 function PermissionToggle({
   permission,

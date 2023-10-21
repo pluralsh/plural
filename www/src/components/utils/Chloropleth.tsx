@@ -2,10 +2,12 @@ import { Box, Text } from 'grommet'
 import { ResponsiveChoropleth } from '@nivo/geo'
 import max from 'lodash/max'
 import { useTheme } from 'styled-components'
+
+import { normalizeColor } from 'grommet/utils'
+
 import { useColorMap } from './colors'
 
 import countries from './world_countries.json'
-import { normalizeColor } from 'grommet/utils'
 
 const COLOR_MAP = [
   'blue-light-2',

@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import chroma from 'chroma-js'
-import { animated, useTransition } from 'react-spring'
+import { useTransition } from 'react-spring'
 import { easings } from '@react-spring/web'
 import {
   ComponentProps,
@@ -15,8 +15,9 @@ import {
 
 import { produce } from 'immer'
 
-import useUnmount from '../../hooks/useUnmount'
 import { AnimatedDiv } from '@pluralsh/design-system'
+
+import useUnmount from '../../hooks/useUnmount'
 
 const getTransitionProps = (isOpen: boolean) => ({
   from: { opacity: 0 /* , backdropFilter: 'blur(0px)' */ },

@@ -7,7 +7,7 @@ import {
   useMemo,
 } from 'react'
 import { Flex, Span } from 'honorable'
-import { useActive, useNavigation, Switch } from '@pluralsh/design-system'
+import { Switch, useActive, useNavigation } from '@pluralsh/design-system'
 
 import {
   Datatype,

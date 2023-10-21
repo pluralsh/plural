@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction, useMemo, useRef } from 'react'
 import { Flex, P, useOutsideClick } from 'honorable'
 import { AnimatedDiv, CloseIcon } from '@pluralsh/design-system'
-import { animated, useTransition } from 'react-spring'
+import { useTransition } from 'react-spring'
 
 import styled from 'styled-components'
 

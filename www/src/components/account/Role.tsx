@@ -1,8 +1,9 @@
-import { ValidatedInput, theme } from '@pluralsh/design-system'
+import { ValidatedInput } from '@pluralsh/design-system'
 import { useState } from 'react'
 
-import { BindingInput } from './Typeaheads'
 import { useTheme } from 'styled-components'
+
+import { BindingInput } from './Typeaheads'
 
 export function GeneralAttributes({
   attributes,

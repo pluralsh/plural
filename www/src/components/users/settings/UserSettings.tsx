@@ -2,6 +2,8 @@ import { Switch } from '@pluralsh/design-system'
 import { ReactElement, useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 
+import { Div } from 'honorable'
+
 import {
   Group,
   GroupConnection,
@@ -17,7 +19,6 @@ import { GroupBase } from '../../utils/combobox/types'
 
 import { UserSettingsProps } from './types'
 import UserSettingsActions from './UserSettingsActions'
-import { Div } from 'honorable'
 
 const UserSettings = styled(UserSettingsUnstyled)(({ theme }) => ({
   display: 'flex',

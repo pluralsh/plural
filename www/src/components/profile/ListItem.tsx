@@ -1,5 +1,5 @@
-import { ComponentProps, ReactNode } from 'react'
-import styled, { useTheme } from 'styled-components'
+import { ComponentProps } from 'react'
+import styled from 'styled-components'
 
 const ListItemSC = styled.div<{ $first: boolean; $last: boolean }>(
   ({ theme, $first: first, $last: last }) => {
@@ -31,8 +31,6 @@ export function ListItem({
   first: boolean
   last: boolean
 } & ComponentProps<typeof ListItemSC>) {
-  const theme = useTheme()
-
   return (
     <ListItemSC
       $first={first}

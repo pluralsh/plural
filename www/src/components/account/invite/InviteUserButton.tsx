@@ -1,6 +1,8 @@
 import { Button } from '@pluralsh/design-system'
 import { ReactElement, useCallback, useContext, useState } from 'react'
 
+import { toNumber } from 'lodash'
+
 import { useCurrentUser } from '../../../contexts/CurrentUserContext'
 import SubscriptionContext from '../../../contexts/SubscriptionContext'
 
@@ -19,15 +21,18 @@ function InviteUserButton({ onInvite }): ReactElement {
   const { account } = useCurrentUser()
   const { isPaidPlan, isTrialPlan } = useContext(SubscriptionContext)
   const [action, setAction] = useState(Action.None)
+  let userCount = toNumber(account.userCount)
+
+  if (Number.isNaN(userCount)) {
+    userCount = 0
+  }
 
   const openModal = useCallback(
     () =>
-      (account?.userCount ?? 0) < MAX_OPEN_SOURCE_USERS ||
-      isPaidPlan ||
-      isTrialPlan
+      userCount < MAX_OPEN_SOURCE_USERS || isPaidPlan || isTrialPlan
         ? setAction(Action.InviteUser)
         : setAction(Action.UserLimit),
-    [account?.userCount, isPaidPlan, isTrialPlan]
+    [isPaidPlan, isTrialPlan, userCount]
   )
 
   return (

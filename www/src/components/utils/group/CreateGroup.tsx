@@ -3,8 +3,8 @@ import {
   CaretLeftIcon,
   FormField,
   Input,
+  Switch,
 } from '@pluralsh/design-system'
-import { Switch } from 'honorable'
 import { ReactElement, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 
@@ -72,7 +72,7 @@ function CreateGroupInputsUnstyled({
       <div className="switch">
         <Switch
           checked={global}
-          onChange={({ target: { checked } }) => setGlobal(checked)}
+          onChange={(checked) => setGlobal(checked)}
         >
           <span className="message">Global</span>
         </Switch>

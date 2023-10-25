@@ -1,6 +1,7 @@
-import { Box } from 'grommet'
 import { ValidatedInput } from '@pluralsh/design-system'
 import { useState } from 'react'
+
+import { useTheme } from 'styled-components'
 
 import { BindingInput } from './Typeaheads'
 
@@ -10,14 +11,18 @@ export function GeneralAttributes({
   bindings,
   setBindings,
 }: any) {
+  const theme = useTheme()
   const [repositories, setRepositories] = useState(
     attributes.repositories?.join(', ')
   )
 
   return (
-    <Box
-      flex={false}
-      gap="small"
+    <div
+      css={{
+        display: 'flex',
+        flexDirection: 'column',
+        rowGap: theme.spacing.medium,
+      }}
     >
       <ValidatedInput
         label="Name"
@@ -68,6 +73,6 @@ export function GeneralAttributes({
           )
         }
       />
-    </Box>
+    </div>
   )
 }

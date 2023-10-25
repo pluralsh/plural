@@ -6,7 +6,7 @@ import { useState } from 'react'
 import { useParams } from 'react-router-dom'
 
 import {
-  Invite,
+  Invite as InviteT,
   User,
   useInviteQuery,
   useRealizeInviteMutation,
@@ -38,7 +38,7 @@ function ExistingInvite({
   id,
   user,
 }: {
-  invite: Invite
+  invite: InviteT
   id: any
   user: User
 }) {
@@ -119,7 +119,7 @@ export default function Invite() {
   if (data?.invite?.user) {
     return (
       <ExistingInvite
-        invite={data?.invite as Invite}
+        invite={data?.invite as InviteT}
         id={inviteId}
         user={data?.invite?.user as User}
       />

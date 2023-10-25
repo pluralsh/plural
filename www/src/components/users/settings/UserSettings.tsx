@@ -1,6 +1,8 @@
-import { Switch } from 'honorable'
+import { Switch } from '@pluralsh/design-system'
 import { ReactElement, useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
+
+import { Div } from 'honorable'
 
 import {
   Group,
@@ -104,14 +106,14 @@ function UserSettingsUnstyled({
             user={user}
           />
         </div>
-        <Switch
-          alignSelf="flex-start"
-          padding={0}
-          checked={isAdmin}
-          onChange={({ target: { checked } }) => setAdmin(checked)}
-        >
-          Admin
-        </Switch>
+        <Div alignSelf="flex-start">
+          <Switch
+            checked={!!isAdmin}
+            onChange={(checked) => setAdmin(checked)}
+          >
+            Admin
+          </Switch>
+        </Div>
       </div>
       <GroupBindingsComboBox
         onViewMore={() =>

@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import chroma from 'chroma-js'
-import { animated, useTransition } from 'react-spring'
+import { useTransition } from 'react-spring'
 import { easings } from '@react-spring/web'
 import {
   ComponentProps,
@@ -14,6 +14,8 @@ import {
 } from 'react'
 
 import { produce } from 'immer'
+
+import { AnimatedDiv } from '@pluralsh/design-system'
 
 import useUnmount from '../../hooks/useUnmount'
 
@@ -32,7 +34,7 @@ const getTransitionProps = (isOpen: boolean) => ({
       },
 })
 
-const OverlayBG = styled(animated.div)(({ theme }) => ({
+const OverlayBG = styled(AnimatedDiv)(({ theme }) => ({
   position: 'absolute',
   top: 0,
   left: 0,

@@ -40,7 +40,6 @@ function GroupMember({ user, group, first, last, edit }: any) {
   return (
     <ListItem
       flex={false}
-      background="fill-two"
       first={first}
       last={last}
     >

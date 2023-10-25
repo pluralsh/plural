@@ -1,10 +1,11 @@
-import { Box } from 'grommet'
-import { Span, Switch } from 'honorable'
-import { Tab, TabList, TabPanel } from '@pluralsh/design-system'
+import { Switch, Tab, TabList, TabPanel } from '@pluralsh/design-system'
 import { useCallback, useRef, useState } from 'react'
 
-import { ListItem } from '../profile/ListItem'
+import { useTheme } from 'styled-components'
+
 import { GqlError } from '../utils/Alert'
+
+import { List, ListItem } from '../utils/List'
 
 import { PermissionTypes } from './types'
 
@@ -18,6 +19,7 @@ function PermissionToggle({
   first,
   last,
 }: any) {
+  const theme = useTheme()
   const toggle = useCallback(
     (enable) => {
       if (enable) {
@@ -41,15 +43,37 @@ function PermissionToggle({
     <ListItem
       first={first}
       last={last}
-      background="fill-two"
     >
-      <Box fill="horizontal">
-        <Span fontWeight={500}>{permission.toLowerCase()}</Span>
-        <Span color="text-light">{description}</Span>
-      </Box>
+      <div
+        css={{
+          display: 'flex',
+          flexDirection: 'column',
+          width: '100%',
+        }}
+      >
+        <h4
+          className="stuff"
+          css={{
+            ...theme.partials.text.body1Bold,
+            margin: 0,
+          }}
+        >
+          {permission.toLowerCase()}
+        </h4>
+        <p
+          css={{
+            ...theme.partials.text.body2,
+            color: theme.colors['text-light'],
+            margin: 0,
+          }}
+          color="text-light"
+        >
+          {description}
+        </p>
+      </div>
       <Switch
         checked={!!attributes.permissions.find((perm) => perm === permission)}
-        onChange={({ target: { checked } }) => toggle(checked)}
+        onChange={(checked) => toggle(checked)}
       />
     </ListItem>
   )
@@ -61,24 +85,31 @@ const TABS = {
 }
 
 export function RoleForm({
-  // eslint-disable-next-line
   error,
   attributes,
   setAttributes,
   bindings,
   setBindings,
-  ...box
-}): any {
+}: {
+  error: any
+  attributes: any
+  setAttributes: any
+  bindings: any
+  setBindings: any
+}) {
+  const theme = useTheme()
   const [view, setView] = useState('General')
   const permissions = Object.entries(PermissionTypes)
   const len = permissions.length
   const tabStateRef = useRef<any>(null)
 
   return (
-    <Box
-      flex={false}
-      gap="small"
-      {...box}
+    <div
+      css={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: theme.spacing.medium,
+      }}
     >
       {error && (
         <GqlError
@@ -108,14 +139,34 @@ export function RoleForm({
           />
         )}
         {view === 'Permissions' && (
-          <Box gap="small">
-            <Box>
-              <Span fontWeight="bold">Permissions</Span>
-              <Span>
+          <div
+            css={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: theme.spacing.small,
+            }}
+          >
+            <div
+              css={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: theme.spacing.xxsmall,
+              }}
+            >
+              <h3 css={{ ...theme.partials.text.body1Bold, margin: 0 }}>
+                Permissions
+              </h3>
+              <p
+                css={{
+                  ...theme.partials.text.body2,
+                  margin: 0,
+                  color: theme.colors['text-light'],
+                }}
+              >
                 Grant permissions to all users and groups bound to this role
-              </Span>
-            </Box>
-            <Box>
+              </p>
+            </div>
+            <List hue="lighter">
               {permissions.map(([perm, description], i) => (
                 <PermissionToggle
                   key={perm}
@@ -127,10 +178,10 @@ export function RoleForm({
                   last={i === len - 1}
                 />
               ))}
-            </Box>
-          </Box>
+            </List>
+          </div>
         )}
       </TabPanel>
-    </Box>
+    </div>
   )
 }

@@ -3,16 +3,18 @@ import { ResponsiveChoropleth } from '@nivo/geo'
 import max from 'lodash/max'
 import { useTheme } from 'styled-components'
 
-import { StyledTheme } from '../../types/styled'
+import { normalizeColor } from 'grommet/utils'
+
+import { useColorMap } from './colors'
 
 import countries from './world_countries.json'
 
-const COLOR_MAP = (theme: StyledTheme) => [
-  theme.global.colors['blue-light-2'],
-  theme.global.colors['blue-light'],
-  theme.global.colors.blue,
-  theme.global.colors['blue-dark'],
-  theme.global.colors['blue-dark-2'],
+const COLOR_MAP = [
+  'blue-light-2',
+  'blue-light',
+  'blue',
+  'blue-dark',
+  'blue-dark-2',
 ]
 
 function Tooltip({ feature }: any) {
@@ -50,21 +52,22 @@ function Tooltip({ feature }: any) {
 export function Chloropleth({ data }: any) {
   const maximum = max(data.map(({ value }) => value)) as number
   const theme = useTheme()
+  const colors = useColorMap(theme, COLOR_MAP)
 
   return (
     <ResponsiveChoropleth
       data={data}
-      theme={{ textColor: theme.colors['text-xlight'] }}
+      theme={{ textColor: normalizeColor('text-xlight', theme) }}
       features={countries.features}
       label="properties.name"
       valueFormat=".2s"
       domain={[0, maximum + 1]}
-      colors={COLOR_MAP(theme)}
-      unknownColor={theme.colors['fill-two']}
+      colors={colors}
+      unknownColor={normalizeColor('fill-two', theme)}
       enableGraticule
-      graticuleLineColor={theme.colors['fill-three']}
+      graticuleLineColor={normalizeColor('fill-three', theme)}
       borderWidth={0.5}
-      borderColor={theme.global.colors.cardHover}
+      borderColor={normalizeColor('cardHover', theme)}
       projectionType="naturalEarth1"
       projectionScale={150}
       tooltip={Tooltip}

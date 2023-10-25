@@ -1,6 +1,6 @@
 import { ReactNode, useCallback, useContext, useEffect, useState } from 'react'
-import { Box } from 'grommet'
 import { Button, Modal, ValidatedInput } from '@pluralsh/design-system'
+import { useTheme } from 'styled-components'
 
 import { appendConnection, updateCache } from '../../utils/graphql'
 import { GqlError } from '../utils/Alert'
@@ -10,6 +10,7 @@ import SubscriptionContext from '../../contexts/SubscriptionContext'
 import BillingFeatureBlockModal from './billing/BillingFeatureBlockModal'
 
 export function CreateGroup({ q }: any) {
+  const theme = useTheme()
   const { availableFeatures } = useContext(SubscriptionContext)
   const isAvailable = !!availableFeatures?.userManagement
   const [createModalVisible, setCreateModalVisible] = useState(false)
@@ -82,9 +83,12 @@ export function CreateGroup({ q }: any) {
           </>
         }
       >
-        <Box
-          width="50vw"
-          gap="small"
+        <div
+          css={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: theme.spacing.medium,
+          }}
         >
           {errorMsg}
           <ValidatedInput
@@ -97,7 +101,7 @@ export function CreateGroup({ q }: any) {
             value={description}
             onChange={({ target: { value } }) => setDescription(value)}
           />
-        </Box>
+        </div>
       </Modal>
       <BillingFeatureBlockModal
         open={blockModalVisible}

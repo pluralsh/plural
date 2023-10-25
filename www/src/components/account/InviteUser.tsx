@@ -9,6 +9,8 @@ import { Button, Div, P, Span } from 'honorable'
 import { useCallback, useContext, useState } from 'react'
 import { Link } from 'react-router-dom'
 
+import { toNumber } from 'lodash'
+
 import { useCurrentUser } from '../../contexts/CurrentUserContext'
 import SubscriptionContext from '../../contexts/SubscriptionContext'
 import { GqlError } from '../utils/Alert'
@@ -40,16 +42,10 @@ export function InviteUser({ refetch }: { refetch?: (() => void) | null }) {
   }, [reset])
 
   const attemptInvite = useCallback(() => {
-    console.log('attempt', {
-      isGrandfathered,
-      isPaidPlan,
-      userCount: account?.userCount,
-    })
-    if (
-      !isGrandfathered &&
-      !isPaidPlan &&
-      (account?.userCount ?? 0) >= MAX_OPEN_SOURCE_USERS
-    ) {
+    let userCount = toNumber(account?.userCount)
+
+    userCount = Number.isNaN(userCount) ? 0 : userCount
+    if (!isGrandfathered && !isPaidPlan && userCount >= MAX_OPEN_SOURCE_USERS) {
       setShowLimitModal(true)
     } else {
       setShowInviteModal(true)

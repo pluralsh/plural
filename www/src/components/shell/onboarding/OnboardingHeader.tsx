@@ -81,8 +81,9 @@ function OnboardingHeader({
     <Sidebar
       variant="app"
       layout="horizontal"
-      background={theme.colors['fill-one']}
-      maxHeight={56}
+      css={{
+        maxHeight: 56,
+      }}
     >
       <SidebarSection
         grow={1}

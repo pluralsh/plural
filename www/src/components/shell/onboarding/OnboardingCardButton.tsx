@@ -33,6 +33,7 @@ function OnboardingCardButton({ selected = false, children, ...props }: any) {
       backgroundColor="fill-two"
       border="1px solid border-fill-two"
       borderColor={selected ? 'action-link-inline' : 'border-fill-two'}
+      width="100%"
       _hover={{
         backgroundColor: 'fill-two-hover',
         borderColor: selected ? 'action-link-inline' : 'border-fill-two',

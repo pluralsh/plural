@@ -1,5 +1,6 @@
 import { Dispatch, useCallback, useContext, useEffect, useMemo } from 'react'
 import {
+  AppsIcon,
   ChecklistIcon,
   CloudIcon,
   ListIcon,
@@ -26,26 +27,32 @@ import {
 
 const defaultSections = (): Sections => {
   const sections: Sections = {
-    [SectionKey.ONBOARDING_OVERVIEW]: {
+    [SectionKey.WELCOME]: {
       index: 0,
+      key: SectionKey.WELCOME,
+      title: 'Welcome to Plural!',
+      IconComponent: AppsIcon,
+    },
+    [SectionKey.ONBOARDING_OVERVIEW]: {
+      index: 1,
       key: SectionKey.ONBOARDING_OVERVIEW,
       title: 'Onboarding overview',
       IconComponent: ChecklistIcon,
     },
     [SectionKey.CONFIGURE_CLOUD]: {
-      index: 1,
+      index: 2,
       key: SectionKey.CONFIGURE_CLOUD,
       title: 'Configure credentials',
       IconComponent: CloudIcon,
     },
     [SectionKey.CONFIGURE_WORKSPACE]: {
-      index: 2,
+      index: 3,
       key: SectionKey.CONFIGURE_WORKSPACE,
       title: 'Configure workspace',
       IconComponent: WorkspaceIcon,
     },
     [SectionKey.CREATE_CLOUD_SHELL]: {
-      index: 3,
+      index: 4,
       key: SectionKey.CREATE_CLOUD_SHELL,
       title: 'Create cloud shell',
       IconComponent: TerminalIcon,
@@ -53,8 +60,11 @@ const defaultSections = (): Sections => {
   }
 
   // build sections flow
+  sections[SectionKey.WELCOME]!.next = sections[SectionKey.ONBOARDING_OVERVIEW]
+
   sections[SectionKey.ONBOARDING_OVERVIEW]!.next =
     sections[SectionKey.CONFIGURE_CLOUD]
+  sections[SectionKey.ONBOARDING_OVERVIEW]!.prev = sections[SectionKey.WELCOME]
 
   sections[SectionKey.CONFIGURE_CLOUD]!.prev =
     sections[SectionKey.ONBOARDING_OVERVIEW]
@@ -74,26 +84,32 @@ const defaultSections = (): Sections => {
 
 const localCLISections = (): Sections => {
   const sections: Sections = {
-    [SectionKey.ONBOARDING_OVERVIEW]: {
+    [SectionKey.WELCOME]: {
       index: 0,
+      key: SectionKey.WELCOME,
+      title: 'Welcome to Plural!',
+      IconComponent: ChecklistIcon,
+    },
+    [SectionKey.ONBOARDING_OVERVIEW]: {
+      index: 1,
       key: SectionKey.ONBOARDING_OVERVIEW,
       title: 'Onboarding overview',
       IconComponent: ChecklistIcon,
     },
     [SectionKey.CONFIGURE_CLOUD]: {
-      index: 1,
+      index: 2,
       key: SectionKey.CONFIGURE_CLOUD,
       title: 'Configure credentials',
       IconComponent: CloudIcon,
     },
     [SectionKey.INSTALL_CLI]: {
-      index: 2,
+      index: 3,
       key: SectionKey.INSTALL_CLI,
       title: 'Install Plural CLI',
       IconComponent: TerminalIcon,
     },
     [SectionKey.COMPLETE_SETUP]: {
-      index: 3,
+      index: 4,
       key: SectionKey.COMPLETE_SETUP,
       title: 'Complete Setup',
       IconComponent: ListIcon,
@@ -101,8 +117,11 @@ const localCLISections = (): Sections => {
   }
 
   // build sections flow
+  sections[SectionKey.WELCOME]!.next = sections[SectionKey.ONBOARDING_OVERVIEW]
+
   sections[SectionKey.ONBOARDING_OVERVIEW]!.next =
     sections[SectionKey.CONFIGURE_CLOUD]
+  sections[SectionKey.ONBOARDING_OVERVIEW]!.prev = sections[SectionKey.WELCOME]
 
   sections[SectionKey.CONFIGURE_CLOUD]!.prev =
     sections[SectionKey.ONBOARDING_OVERVIEW]

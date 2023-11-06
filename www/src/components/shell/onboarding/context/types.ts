@@ -28,6 +28,7 @@ enum CloudProviderToProvider {
 }
 
 enum SectionKey {
+  WELCOME = 'WELCOME',
   ONBOARDING_OVERVIEW = 'ONBOARDING_OVERVIEW',
   CONFIGURE_CLOUD = 'CONFIGURE_CLOUD',
   CONFIGURE_WORKSPACE = 'CONFIGURE_WORKSPACE',
@@ -133,6 +134,12 @@ interface Impersonation {
   user?: User
 }
 
+enum OnboardingPath {
+  None,
+  CD,
+  OSS,
+}
+
 export type {
   Sections,
   Section,
@@ -155,4 +162,5 @@ export {
   CloudProviderToProvider,
   CreateCloudShellSectionState,
   ConfigureCloudSectionState,
+  OnboardingPath,
 }

@@ -16,6 +16,7 @@ import { CreateCloudShellSectionState, SectionKey } from './context/types'
 import CreateShellStep from './sections/shell/CreateShellStep'
 import OverviewStep from './sections/overview/OverviewStep'
 import OnboardingTips from './OnboardingTips'
+import WelcomeStep from './sections/welcome/WelcomeStep'
 
 function OnboardingFlow({ onNext, onBack }) {
   const token = useToken() || ''
@@ -48,8 +49,12 @@ function OnboardingFlow({ onNext, onBack }) {
         title={isCreating ? '' : section.title}
         mode={isCreating ? 'Compact' : 'Default'}
       >
+        {section?.key === SectionKey.WELCOME && <WelcomeStep onNext={onNext} />}
         {section?.key === SectionKey.ONBOARDING_OVERVIEW && (
-          <OverviewStep onNext={onNext} />
+          <OverviewStep
+            onBack={onBack}
+            onNext={onNext}
+          />
         )}
         {section?.key === SectionKey.CONFIGURE_CLOUD && (
           <CloudStep

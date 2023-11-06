@@ -22,7 +22,11 @@ function CloudOption({
         />
       }
     >
-      <div>
+      <div
+        css={{
+          width: '100%',
+        }}
+      >
         <OnboardingCardButton
           position="relative"
           selected={selected}

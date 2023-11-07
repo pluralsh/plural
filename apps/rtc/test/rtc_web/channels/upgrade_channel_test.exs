@@ -52,12 +52,15 @@ defmodule RtcWeb.UpgradeChannelTest do
       {:ok, socket} = mk_socket(user)
       {:ok, _, socket} = subscribe_and_join(socket, "queues:#{q.id}", %{})
 
-      ref = push(socket, "usage", %{"cpu" => 1000, "memory" => 10000})
+      ref = push(socket, "usage", %{"cpu" => 1000, "memory" => 10000, "services" => 5})
       assert_reply ref, :ok, _
 
       [hist] = Core.Schema.ClusterUsageHistory.for_cluster(cluster.id) |> Core.Repo.all()
       assert hist.cpu == 1000
       assert hist.memory == 10000
+      assert hist.services == 5
+
+      assert refetch(cluster).service_count == 5
     end
   end
 end

@@ -76,9 +76,20 @@ defmodule Core.Services.Clusters do
   """
   @spec save_usage(map, Cluster.t) :: {:ok, ClusterUsageHistory.t} | error
   def save_usage(attrs, %Cluster{id: id, account_id: account_id}) do
-    %ClusterUsageHistory{cluster_id: id, account_id: account_id}
-    |> ClusterUsageHistory.changeset(attrs)
-    |> Core.Repo.insert()
+    start_transaction()
+    |> add_operation(:usage, fn _ ->
+      %ClusterUsageHistory{cluster_id: id, account_id: account_id}
+      |> ClusterUsageHistory.changeset(attrs)
+      |> Core.Repo.insert()
+    end)
+    |> add_operation(:cluster, fn
+      %{usage: %ClusterUsageHistory{services: svcs}} when is_integer(svcs) and svcs > 0 ->
+        get_cluster!(id)
+        |> Cluster.changeset(%{service_count: svcs})
+        |> Core.Repo.update()
+      _ -> {:ok, nil}
+    end)
+    |> execute(extract: :usage)
   end
 
   @doc """

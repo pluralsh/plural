@@ -1580,6 +1580,9 @@ type Cluster {
   "The last time the cluster was pinged."
   pingedAt: DateTime
 
+  "the services deployed from this cluster"
+  serviceCount: Int
+
   "pending upgrades for each installed app"
   upgradeInfo: [UpgradeInfo]
 
@@ -2173,6 +2176,7 @@ type Stack {
 type ClusterUsageHistory {
   cpu: Int
   memory: Int
+  services: Int
   cluster: Cluster
   account: Account
   insertedAt: DateTime

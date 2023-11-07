@@ -26,8 +26,9 @@ defmodule Core.Schema.PlatformSubscription do
   end
 
   schema "platform_subscriptions" do
-    field :status, Status
-    field :external_id, :string
+    field :status,       Status
+    field :external_id,  :string
+    field :metered_id,   :string
 
     embeds_many :line_items, LineItem, on_replace: :delete
     belongs_to  :account,    Account
@@ -70,7 +71,7 @@ defmodule Core.Schema.PlatformSubscription do
     |> unique_constraint(:account_id)
   end
 
-  @stripe_valid ~w(external_id status)a
+  @stripe_valid ~w(external_id metered_id status)a
 
   def stripe_changeset(schema, attrs \\ %{}) do
     schema

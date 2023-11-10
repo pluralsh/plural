@@ -26,6 +26,7 @@ defmodule GraphQl.Schema.Cluster do
     field :console_url,  :string, description: "The URL of the console running on the cluster."
     field :domain,       :string, description: "The domain name used for applications deployed on the cluster."
     field :pinged_at,    :datetime, description: "The last time the cluster was pinged."
+    field :service_count, :integer, description: "the services deployed from this cluster"
     field :upgrade_info, list_of(:upgrade_info), description: "pending upgrades for each installed app", resolve: fn
       cluster, _, _ -> Cluster.upgrade_info(cluster)
     end
@@ -76,8 +77,9 @@ defmodule GraphQl.Schema.Cluster do
 
   @desc "A record of the utilization in a given cluster"
   object :cluster_usage_history do
-    field :cpu,    :integer
-    field :memory, :integer
+    field :cpu,      :integer
+    field :memory,   :integer
+    field :services, :integer
 
     field :cluster, :cluster, resolve: dataloader(Cluster)
     field :account, :account, resolve: dataloader(Account)

@@ -243,6 +243,7 @@ defmodule Core.Services.PaymentsTest do
       user = insert(:user, roles: %{admin: true}, account: account)
       plan = insert(:platform_plan,
         external_id: "plan_id",
+        service_plan: "service_plan",
         line_items: [
           %{name: "user", dimension: :user, external_id: "id_user", period: :monthly},
           %{name: "cluster", dimension: :cluster, external_id: "id_cluster", period: :monthly},
@@ -251,12 +252,13 @@ defmodule Core.Services.PaymentsTest do
 
       expect(Stripe.Subscription, :create, fn %{
         customer: "cus_id",
-        items: [%{plan: "id_user", quantity: 2}, %{plan: "id_cluster", quantity: 0}]
+        items: [%{plan: "id_user", quantity: 2}, %{plan: "id_cluster", quantity: 0}, %{plan: "service_plan"}]
       } ->
         {:ok, %{
           id: "sub_id",
           items: %{
             data: [
+              %{id: "metered_id", plan: %{id: "service_plan"}},
               %{id: "user_id", plan: %{id: "id_user"}},
               %{id: "cluster_id", plan: %{id: "id_cluster"}}
             ]
@@ -267,6 +269,7 @@ defmodule Core.Services.PaymentsTest do
       {:ok, subscription} = Payments.create_platform_subscription(%{}, plan, user)
 
       assert subscription.plan_id == plan.id
+      assert subscription.metered_id == "metered_id"
       assert subscription.account_id == user.account_id
       assert subscription.external_id == "sub_id"
 
@@ -647,11 +650,13 @@ defmodule Core.Services.PaymentsTest do
         "sub_id",
         %{items: [
           %{id: "si_1", deleted: true},
-          %{plan: "id_user", quantity: 1}
+          %{plan: "id_user", quantity: 1},
+          %{plan: "service_plan"}
         ]} -> {:ok, %{
           id: "sub_id",
           items: %{
             data: [
+              %{id: "metered_id", plan: %{id: "service_plan"}},
               %{id: "user_id", plan: %{id: "id_user"}}
             ]
           }
@@ -661,6 +666,7 @@ defmodule Core.Services.PaymentsTest do
       user = insert(:user, roles: %{admin: true})
       plan = insert(:platform_plan,
         external_id: "pl_id2",
+        service_plan: "service_plan",
         line_items: [
           %{name: "user", dimension: :user, external_id: "id_user", period: :monthly},
         ]
@@ -685,6 +691,8 @@ defmodule Core.Services.PaymentsTest do
       {:ok, updated} = Payments.update_platform_plan(plan, user)
 
       assert updated.external_id == "sub_id"
+      assert updated.metered_id == "metered_id"
+
       [%{dimension: :user} = user] = updated.line_items
 
       assert user.id

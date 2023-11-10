@@ -541,7 +541,7 @@ defmodule Core.Services.Payments do
       |> execute()
     end)
     |> add_operation(:finalized, fn %{db: %{line_items: items} = db, stripe: %{base: %{id: id}} = stripe} ->
-      rest = Map.delete(stripe, :base)
+      rest = Map.drop(stripe, [:base])
 
       items = Enum.map(items, fn %{dimension: dimension} = item ->
         Piazza.Ecto.Schema.mapify(item)
@@ -762,7 +762,7 @@ defmodule Core.Services.Payments do
     |> add_operation(:stripe, fn %{account: %Account{billing_customer_id: cust_id}, db: db} ->
       Stripe.Subscription.create(%{
         customer: cust_id,
-        items: sub_line_items(plan, db),
+        items: sub_line_items(plan, db) ++ metered_plan(plan),
         payment_behavior: "default_incomplete",
         off_session: true
       })
@@ -772,9 +772,13 @@ defmodule Core.Services.Payments do
         stripe: %{id: sub_id, items: %{data: items}},
         db: subscription
       } ->
+      metered = Enum.find(items, & &1.plan.id == plan.service_plan)
+      items = Enum.filter(items, & &1.plan.id != plan.service_plan)
+
       subscription
       |> PlatformSubscription.stripe_changeset(%{
         external_id: sub_id,
+        metered_id: metered && metered.id,
         line_items: rebuild_line_items(subscription, plan, items)
       })
       |> Core.Repo.update()
@@ -784,6 +788,9 @@ defmodule Core.Services.Payments do
   end
   def create_platform_subscription(attrs, plan_id, %User{} = user),
     do: create_platform_subscription(attrs, get_platform_plan!(plan_id), user)
+
+  defp metered_plan(%PlatformPlan{service_plan: p}) when is_binary(p), do: [%{plan: p}]
+  defp metered_plan(_), do: []
 
 
   defp provision_customer(%Account{billing_customer_id: nil} = account, args) do
@@ -1105,7 +1112,12 @@ defmodule Core.Services.Payments do
     end)
     |> add_operation(:stripe, fn %{db: updated} ->
       Stripe.Subscription.update(sub.external_id, %{
-        items: old_items(sub) ++ sub_line_items(updated.plan, updated)
+        items: (
+          old_items(sub) ++
+          (if sub.metered_id, do: [%{id: sub.metered_id, deleted: true}], else: []) ++
+          sub_line_items(updated.plan, updated) ++
+          metered_plan(plan)
+        )
       })
     end)
     |> add_operation(:finalized, fn
@@ -1113,9 +1125,13 @@ defmodule Core.Services.Payments do
         stripe: %{id: sub_id, items: %{data: items}},
         db: subscription
       } ->
+      metered = Enum.find(items, & &1.plan.id == plan.service_plan)
+      items = Enum.filter(items, & &1.plan.id != plan.service_plan)
+
       subscription
       |> PlatformSubscription.stripe_changeset(%{
         external_id: sub_id,
+        metered_id: metered && metered.id,
         line_items: rebuild_line_items(subscription, subscription.plan, items)
       })
       |> Core.Repo.update()

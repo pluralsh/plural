@@ -12,13 +12,14 @@ defmodule Core.Schema.Cluster do
   @expiry 1
 
   schema "clusters" do
-    field :provider,    Provider
-    field :name,        :string
-    field :console_url, :string
-    field :source,      Source
-    field :git_url,     :string
-    field :domain,      :string
-    field :pinged_at,   :utc_datetime_usec
+    field :provider,      Provider
+    field :name,          :string
+    field :console_url,   :string
+    field :source,        Source
+    field :git_url,       :string
+    field :domain,        :string
+    field :pinged_at,     :utc_datetime_usec
+    field :service_count, :integer
 
     belongs_to :owner,   User
     belongs_to :account, Account
@@ -80,7 +81,7 @@ defmodule Core.Schema.Cluster do
     from(c in query, order_by: ^order)
   end
 
-  @valid ~w(owner_id account_id provider name domain console_url source git_url pinged_at)a
+  @valid ~w(owner_id account_id provider name domain console_url source git_url pinged_at service_count)a
 
   def changeset(model, attrs \\ %{}) do
     model

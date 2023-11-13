@@ -101,7 +101,7 @@ function BillingPricingCards() {
               checked: true,
             },
             {
-              label: 'Unlimited apps',
+              label: 'Unlimited open-source apps',
               checked: true,
             },
             {

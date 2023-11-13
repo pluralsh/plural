@@ -60,7 +60,7 @@ function BillingPricingTable() {
           {...firstColumnCellProps}
           borderTopLeftRadius={6}
         >
-          Apps
+          Open-Source Apps
         </Div>
         <Div {...firstColumnCellProps}>Clusters</Div>
         <Div {...firstColumnCellProps}>Users</Div>

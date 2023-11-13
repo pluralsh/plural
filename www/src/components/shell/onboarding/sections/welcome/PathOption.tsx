@@ -8,7 +8,6 @@ function PathOption({
   description,
   selected,
   disabled,
-  tooltip,
   ...props
 }: any) {
   return (

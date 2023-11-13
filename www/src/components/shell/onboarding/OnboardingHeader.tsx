@@ -1,4 +1,3 @@
-import { useTheme } from 'styled-components'
 import { Dispatch, useState } from 'react'
 import {
   Button,
@@ -73,7 +72,6 @@ function OnboardingHeader({
   onRestart,
   mode = 'wizard',
 }: OnboardingHeaderProps) {
-  const theme = useTheme()
   const [open, setOpen] = useState(false)
   const { section } = useSection()
 

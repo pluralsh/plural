@@ -1,4 +1,3 @@
-import { useTheme } from 'styled-components'
 import { Dispatch, useState } from 'react'
 import {
   Button,
@@ -73,7 +72,6 @@ function OnboardingHeader({
   onRestart,
   mode = 'wizard',
 }: OnboardingHeaderProps) {
-  const theme = useTheme()
   const [open, setOpen] = useState(false)
   const { section } = useSection()
 
@@ -81,8 +79,9 @@ function OnboardingHeader({
     <Sidebar
       variant="app"
       layout="horizontal"
-      background={theme.colors['fill-one']}
-      maxHeight={56}
+      css={{
+        maxHeight: 56,
+      }}
     >
       <SidebarSection
         grow={1}

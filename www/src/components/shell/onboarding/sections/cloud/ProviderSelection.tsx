@@ -13,16 +13,23 @@ import { ImpersonationContext } from '../../../context/impersonation'
 import GCPLogoIcon from '../../assets/GCPLogoIcon.svg'
 
 import { OnboardingContext } from '../../context/onboarding'
-import { CloudType } from '../../context/types'
+import { CloudType, OnboardingPath } from '../../context/types'
 
 import { CloudOption } from './CloudOption'
 
 function ProviderSelection() {
-  const { cloud, setCloud, setValid } = useContext(OnboardingContext)
+  const {
+    cloud,
+    setCloud,
+    setValid,
+    path: onboardingPath,
+  } = useContext(OnboardingContext)
   const {
     user: { demoed },
   } = useContext(ImpersonationContext)
-  const [path, setPath] = useState(cloud?.type)
+  const [path, setPath] = useState(
+    onboardingPath === OnboardingPath.CD ? CloudType.Cloud : cloud?.type
+  )
   const isValid = useMemo(() => path !== undefined, [path])
 
   useEffect(() => setCloud((c) => ({ ...c, type: path })), [path, setCloud])
@@ -49,27 +56,29 @@ function ProviderSelection() {
           header="Use your own cloud"
           description="Connect your own cloud credentials and spin up your own cluster."
         />
-        <CloudOption
-          data-phid="select-cloud-demo"
-          selected={path === CloudType.Demo}
-          onClick={() => setPath(CloudType.Demo)}
-          disabled={demoed}
-          tooltip={
-            demoed
-              ? 'You have reached the maximum number of demo environment usage.'
-              : undefined
-          }
-          icon={
-            <img
-              src={GCPLogoIcon}
-              width={40}
-            />
-          }
-          header="Try free demo"
-          description="A six-hour GCP sandbox for you to test-drive Plural."
-        />
+        {onboardingPath === OnboardingPath.OSS && (
+          <CloudOption
+            data-phid="select-cloud-demo"
+            selected={path === CloudType.Demo}
+            onClick={() => setPath(CloudType.Demo)}
+            disabled={demoed}
+            tooltip={
+              demoed
+                ? 'You have reached the maximum number of demo environment usage.'
+                : undefined
+            }
+            icon={
+              <img
+                src={GCPLogoIcon}
+                width={40}
+              />
+            }
+            header="Try free demo"
+            description="A six-hour GCP sandbox for you to test-drive Plural."
+          />
+        )}
       </Flex>
-      <PricingCalculator />
+      {onboardingPath === OnboardingPath.OSS && <PricingCalculator />}
       {(path === CloudType.Cloud || path === CloudType.Local) && (
         <Flex
           direction="column"

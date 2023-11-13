@@ -17,6 +17,7 @@ import { ContextProps, OnboardingContext } from './context/onboarding'
 import {
   CloudProps,
   CreateCloudShellSectionState,
+  OnboardingPath,
   SCMProps,
   Section,
   SectionKey,
@@ -112,13 +113,18 @@ interface OnboardingProps {
 function OnboardingWithContext({ ...props }: OnboardingProps): ReactElement {
   const { restoredContext, reset } = useContextStorage()
 
-  const [scm, setSCM] = useState<SCMProps>(restoredContext?.scm ?? {})
-  const [valid, setValid] = useState<boolean>(restoredContext?.valid ?? true)
-  const [cloud, setCloud] = useState<CloudProps>(restoredContext?.cloud ?? {})
-  const [sections, setSections] = useState<Sections>(defaultSections())
-  const [section, setSection] = useState<Section>(
-    sections[SectionKey.ONBOARDING_OVERVIEW]!
+  const [scm, setSCM] = useState<SCMProps>(
+    restoredContext?.scm ?? ({} as SCMProps)
   )
+  const [valid, setValid] = useState<boolean>(restoredContext?.valid ?? true)
+  const [cloud, setCloud] = useState<CloudProps>(
+    restoredContext?.cloud ?? ({} as CloudProps)
+  )
+  const [path, setPath] = useState<OnboardingPath>(
+    restoredContext?.path ?? OnboardingPath.None
+  )
+  const [sections, setSections] = useState<Sections>(defaultSections())
+  const [section, setSection] = useState<Section>(sections[SectionKey.WELCOME]!)
   const [workspace, setWorkspace] = useState<WorkspaceProps>(
     restoredContext?.workspace ?? {}
   )
@@ -146,8 +152,10 @@ function OnboardingWithContext({ ...props }: OnboardingProps): ReactElement {
       workspace,
       setWorkspace,
       impersonation,
+      path,
+      setPath,
     }),
-    [scm, cloud, valid, sections, section, workspace, impersonation]
+    [scm, cloud, valid, sections, section, workspace, impersonation, path]
   )
 
   return (

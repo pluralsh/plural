@@ -70,7 +70,7 @@ function OverviewStep({ onBack, onNext }) {
 
           {path === OnboardingPath.OSS && (
             <>
-              <Span>1. Configure your cloud and git credentials.</Span>
+              <Span>1. Configure your cloud and Git credentials.</Span>
               <Span>2. Configure your cluster’s workspace.</Span>
               <Span>
                 3. Create your cloud shell where you can install applications.

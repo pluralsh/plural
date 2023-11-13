@@ -101,11 +101,15 @@ function BillingPricingCards() {
               checked: true,
             },
             {
-              label: 'Unlimited apps',
+              label: 'Unlimited open-source apps',
               checked: true,
             },
             {
-              label: 'Up to 5 users',
+              label: 'Up to 2 users',
+              checked: true,
+            },
+            {
+              label: '1 cluster',
               checked: true,
             },
             {
@@ -153,7 +157,15 @@ function BillingPricingCards() {
               checked: true,
             },
             {
+              label: 'Unlimited clusters',
+              checked: true,
+            },
+            {
               label: '24 hour SLA',
+              checked: true,
+            },
+            {
+              label: 'Continuous deployment features',
               checked: true,
             },
             {

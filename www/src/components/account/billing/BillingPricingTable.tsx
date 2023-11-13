@@ -60,13 +60,15 @@ function BillingPricingTable() {
           {...firstColumnCellProps}
           borderTopLeftRadius={6}
         >
-          Apps
+          Open-Source Apps
         </Div>
         <Div {...firstColumnCellProps}>Clusters</Div>
         <Div {...firstColumnCellProps}>Users</Div>
+        <Div {...firstColumnCellProps}>Services</Div>
         <Div {...firstColumnCellProps}>Roles</Div>
         <Div {...firstColumnCellProps}>Groups</Div>
         <Div {...firstColumnCellProps}>Service accounts</Div>
+        <Div {...firstColumnCellProps}>Continuous deployment</Div>
         <Div {...firstColumnCellProps}>Discord Forum</Div>
         <Div {...firstColumnCellProps}>Community support</Div>
         <Div {...firstColumnCellProps}>
@@ -105,7 +107,13 @@ function BillingPricingTable() {
         </Div>
         <Div body2>Unlimited</Div>
         <Div body2>Free</Div>
-        <Div body2>Up to 5</Div>
+        <Div body2>Up to 2</Div>
+        <Div>
+          <CloseIcon color="icon-default" />
+        </Div>
+        <Div>
+          <CloseIcon color="icon-default" />
+        </Div>
         <Div>
           <CloseIcon color="icon-default" />
         </Div>
@@ -174,6 +182,10 @@ function BillingPricingTable() {
         <Div body2>Unlimited</Div>
         <Div body2>${clusterMonthlyPricing}/cluster/month</Div>
         <Div body2>${userMonthlyPricing}/user/month</Div>
+        <Div body2>$200/pack of 5 services/month</Div>
+        <Div>
+          <CheckIcon color="icon-success" />
+        </Div>
         <Div>
           <CheckIcon color="icon-success" />
         </Div>
@@ -258,6 +270,15 @@ function BillingPricingTable() {
           body2
         >
           Unlimited
+        </Div>
+        <Div
+          {...lastColumnCellProps}
+          body2
+        >
+          Unlimited
+        </Div>
+        <Div {...lastColumnCellProps}>
+          <CheckIcon color="icon-success" />
         </Div>
         <Div {...lastColumnCellProps}>
           <CheckIcon color="icon-success" />

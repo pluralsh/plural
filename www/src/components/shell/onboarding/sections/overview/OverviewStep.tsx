@@ -62,8 +62,8 @@ function OverviewStep({ onBack, onNext }) {
               <Span>1. Configure your cloud and Git credentials.</Span>
               <Span>2. Configure your Management Cluster's workspace.</Span>
               <Span>
-                3. Create your cloud shell to deploy your Plural Console. (25m
-                minutes deploy wait time)
+                3. Create your cloud shell to deploy your Plural Console. (25
+                minute deploy wait time)
               </Span>
             </>
           )}

@@ -43,7 +43,7 @@ function WelcomeStep({ onNext }) {
               />
             }
             header="Deploy your own applications"
-            description="Use Plural Continuous Deployments to  deploy applications and services from your organization."
+            description="Use Plural Continuous Deployments to deploy applications and services from your organization."
           />
           <PathOption
             data-phid="deploy-oss-app"

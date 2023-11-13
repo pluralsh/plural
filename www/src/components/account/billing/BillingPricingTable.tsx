@@ -106,7 +106,7 @@ function BillingPricingTable() {
         </Div>
         <Div body2>Unlimited</Div>
         <Div body2>Free</Div>
-        <Div body2>Up to 5</Div>
+        <Div body2>Up to 2</Div>
         <Div>
           <CloseIcon color="icon-default" />
         </Div>

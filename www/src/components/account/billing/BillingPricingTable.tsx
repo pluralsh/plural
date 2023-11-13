@@ -67,6 +67,7 @@ function BillingPricingTable() {
         <Div {...firstColumnCellProps}>Roles</Div>
         <Div {...firstColumnCellProps}>Groups</Div>
         <Div {...firstColumnCellProps}>Service accounts</Div>
+        <Div {...firstColumnCellProps}>Continuous deployment</Div>
         <Div {...firstColumnCellProps}>Discord Forum</Div>
         <Div {...firstColumnCellProps}>Community support</Div>
         <Div {...firstColumnCellProps}>
@@ -106,6 +107,9 @@ function BillingPricingTable() {
         <Div body2>Unlimited</Div>
         <Div body2>Free</Div>
         <Div body2>Up to 5</Div>
+        <Div>
+          <CloseIcon color="icon-default" />
+        </Div>
         <Div>
           <CloseIcon color="icon-default" />
         </Div>
@@ -190,6 +194,9 @@ function BillingPricingTable() {
           <CheckIcon color="icon-success" />
         </Div>
         <Div>
+          <CheckIcon color="icon-success" />
+        </Div>
+        <Div>
           <CloseIcon color="icon-default" />
         </Div>
         <Div>
@@ -258,6 +265,9 @@ function BillingPricingTable() {
           body2
         >
           Unlimited
+        </Div>
+        <Div {...lastColumnCellProps}>
+          <CheckIcon color="icon-success" />
         </Div>
         <Div {...lastColumnCellProps}>
           <CheckIcon color="icon-success" />

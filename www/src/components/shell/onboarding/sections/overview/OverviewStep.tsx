@@ -74,7 +74,7 @@ function OverviewStep({ onBack, onNext }) {
               <Span>2. Configure your cluster’s workspace.</Span>
               <Span>
                 3. Create your cloud shell where you can install applications.
-                (25 minutes deploy wait time)
+                (25 minute deploy wait time)
               </Span>
             </>
           )}

@@ -133,6 +133,9 @@ export const ColCloudShell = columnHelper.accessor(
             textValue="Go to cloudshell"
             tooltip
             type="floating"
+            style={{
+              display: 'flex',
+            }}
           />
         ) : (
           <IconFrame
@@ -247,6 +250,9 @@ export const ColActions = columnHelper.accessor((row) => row.consoleUrl, {
           textValue="Go to cluster details"
           tooltip
           type="tertiary"
+          style={{
+            display: 'flex',
+          }}
         />
       ) : (
         <IconFrame

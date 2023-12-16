@@ -10,8 +10,34 @@ import {
   TabPanel,
 } from '@pluralsh/design-system'
 
-import { DURATIONS, Graph } from '../../../utils/Graph'
-import { generateColor } from '../../../utils/colors'
+import { Graph } from '../../../utils/Graph'
+
+export const DURATIONS = [
+  {
+    offset: '7d',
+    step: '2h',
+    label: '7d',
+    tick: 'every 12 hours',
+  },
+  {
+    offset: '30d',
+    step: '1d',
+    label: '30d',
+    tick: 'every 2 days',
+  },
+  {
+    offset: '60d',
+    step: '1d',
+    label: '60d',
+    tick: 'every 5 days',
+  },
+  {
+    offset: '120d',
+    step: '1d',
+    label: '120d',
+    tick: 'every 10 day',
+  },
+]
 
 function RangePicker({ duration, setDuration, tabStateRef }: any) {
   const selectedKey = `${duration.offset}+${duration.step}`
@@ -59,7 +85,6 @@ export default function ImagePullMetrics() {
             x: moment(time).toDate(),
             y: value,
           })),
-          color: generateColor(i),
         }
       }),
     [dockerRepository.metrics, dockerRepository.name]

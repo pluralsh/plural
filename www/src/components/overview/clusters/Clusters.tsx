@@ -1,7 +1,6 @@
-import { Flex } from 'honorable'
 import { isEmpty } from 'lodash'
 import { ReactElement, useContext, useMemo } from 'react'
-
+import { useTheme } from 'styled-components'
 import ClustersContext from '../../../contexts/ClustersContext'
 
 import { ClusterList } from './ClusterList'
@@ -20,6 +19,7 @@ import {
 import Upgrades from './Upgrades'
 
 export function Clusters(): ReactElement | null {
+  const theme = useTheme()
   const { clusters } = useContext(ClustersContext)
 
   const columns = useMemo(
@@ -52,17 +52,22 @@ export function Clusters(): ReactElement | null {
   // [subscribeToMore])
 
   return (
-    <Flex
-      direction="column"
-      gap="medium"
-      grow={1}
+    <div
+      css={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: theme.spacing.medium,
+        flexGrow: 1,
+      }}
     >
       <ClusterList
         columns={columns}
-        maxHeight="600px"
+        css={{
+          maxHeight: 600,
+        }}
       />
       <Upgrades />
       {isEmpty(clusters) && <ClustersHelpSection />}
-    </Flex>
+    </div>
   )
 }

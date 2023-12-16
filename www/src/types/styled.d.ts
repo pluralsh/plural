@@ -8,7 +8,7 @@ import type {} from 'styled-components/cssprop'
 
 type StyledTheme = typeof styledTheme
 
-// and extend them!
+// extend original module declarations
 declare module 'styled-components' {
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
   export interface DefaultTheme extends StyledTheme {}

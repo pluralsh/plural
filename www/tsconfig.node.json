@@ -5,5 +5,5 @@
     "moduleResolution": "Node",
     "allowSyntheticDefaultImports": true
   },
-  "include": ["vitest.config.ts", "vite.config.ts"]
+  "include": ["vitest.config.mts", "vite.config.mts"]
 }

@@ -5,7 +5,7 @@ import tsconfigPaths from 'vite-tsconfig-paths'
 import pluginRewriteAll from 'vite-plugin-rewrite-all'
 import { VitePWA } from 'vite-plugin-pwa'
 
-import vitestConfig from './vitest.config'
+import vitestConfig from './vitest.config.mts'
 
 // https://vitejs.dev/config/
 export default mergeConfig(
@@ -40,9 +40,6 @@ export default mergeConfig(
     build: {
       outDir: 'build',
       sourcemap: process.env.NODE_ENV !== 'production', // Seems to cause JavaScript heap out of memory errors on build
-      rollupOptions: {
-        plugins: [nodePolyfills],
-      },
     },
     resolve: {
       alias: {

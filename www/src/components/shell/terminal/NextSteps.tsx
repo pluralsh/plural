@@ -15,13 +15,18 @@ import useOnboarded from '../hooks/useOnboarded'
 
 import { State, TerminalContext } from './context/terminal'
 
-function HoveredIcon({ icon, color, hoveredColor, textValue, ...props }: any) {
+export function HoveredIcon({
+  icon,
+  color,
+  hoveredColor,
+  textValue,
+  ...props
+}: any) {
   const [isHovered, setIsHovered] = useState(false)
 
   return (
     <IconFrame
       cursor="pointer"
-      padding="xsmall"
       textValue={textValue}
       icon={cloneElement(icon, {
         color: isHovered ? hoveredColor : color,

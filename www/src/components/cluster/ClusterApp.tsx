@@ -12,6 +12,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 
 import { Repository } from '../../generated/graphql'
 import { MoreMenu } from '../account/MoreMenu'
+import { useTheme } from 'styled-components'
 
 type ClusterAppProps = {
   app: Repository
@@ -51,6 +52,7 @@ export function ClusterApp({
   consoleUrl,
   last,
 }: ClusterAppProps): ReactElement {
+  const theme = useTheme()
   const navigate = useNavigate()
   const { clusterId } = useParams()
 
@@ -85,9 +87,13 @@ export function ClusterApp({
             height={16}
           />
         }
-        marginRight="xxsmall"
         size="medium"
         type="floating"
+        css={{
+          '&&': {
+            marginRight: theme.spacing.xxsmall,
+          },
+        }}
       />
       <Span
         body2
@@ -115,7 +121,6 @@ export function ClusterApp({
             textValue={label}
             label={label}
             leftContent={icon}
-            color="blue"
           />
         ))}
       </MoreMenu>

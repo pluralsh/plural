@@ -4,6 +4,7 @@ import { ReactElement } from 'react'
 import { Flex } from 'honorable'
 
 import { Upgrade } from '../../../generated/graphql'
+import { useTheme } from 'styled-components'
 
 export default function UpgradeListItem({
   upgrade: { id, insertedAt, repository, message },
@@ -14,6 +15,7 @@ export default function UpgradeListItem({
   acked: string
   last: boolean
 }): ReactElement | null {
+  const theme = useTheme()
   const delivered = acked && id <= acked
 
   return (
@@ -31,10 +33,14 @@ export default function UpgradeListItem({
             height="16"
           />
         }
-        marginRight="xxsmall"
         size="medium"
         type="floating"
-        minWidth={32}
+        css={{
+          '&&': {
+            marginRight: theme.spacing.xxsmall,
+            minWidth: 32,
+          },
+        }}
       />
       <Flex
         body2

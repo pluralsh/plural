@@ -5,7 +5,7 @@ import tsconfigPaths from 'vite-tsconfig-paths'
 import pluginRewriteAll from 'vite-plugin-rewrite-all'
 import { VitePWA } from 'vite-plugin-pwa'
 
-import vitestConfig from './vitest.config.mts'
+import vitestConfig from './vitest.config'
 
 // https://vitejs.dev/config/
 export default mergeConfig(

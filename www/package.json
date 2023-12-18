@@ -44,7 +44,7 @@
     "@nivo/geo": "0.83.0",
     "@nivo/line": "0.83.0",
     "@octokit/core": "4.2.1",
-    "@pluralsh/design-system": "3.14.0",
+    "@pluralsh/design-system": "3.15.0",
     "@react-spring/web": "9.7.3",
     "@stripe/react-stripe-js": "2.1.0",
     "@stripe/stripe-js": "1.54.0",
@@ -169,11 +169,11 @@
     "stylelint": "15.7.0",
     "stylelint-config-prettier": "9.0.5",
     "typescript": "5.3.3",
-    "vite": "5.0.9",
+    "vite": "4.5.0",
     "vite-plugin-pwa": "0.17.4",
-    "vite-plugin-rewrite-all": "1.0.2",
+    "vite-plugin-rewrite-all": "1.0.1",
     "vite-tsconfig-paths": "4.2.2",
-    "vitest": "0.32.0",
+    "vitest": "1.1.0",
     "wait-on": "7.0.1"
   },
   "lint-staged": {

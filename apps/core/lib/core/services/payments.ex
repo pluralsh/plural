@@ -3,7 +3,7 @@ defmodule Core.Services.Payments do
   import Core.Policies.Payments
 
   alias Core.PubSub
-  alias Core.Services.{Repositories, Accounts}
+  alias Core.Services.{Repositories, Accounts, Clusters}
   alias Core.Schema.{
     Publisher,
     Account,
@@ -415,6 +415,17 @@ defmodule Core.Services.Payments do
     get_platform_subscription_by_account!(account.id)
     |> cancel_platform_subscription(user)
   end
+
+  def send_usage(%PlatformSubscription{metered_id: item_id, account_id: aid}) when is_binary(item_id) do
+    with services when is_integer(services) <- Clusters.services(aid) do
+      Stripe.SubscriptionItem.Usage.create(item_id, %{
+        timestamp: DateTime.utc_now() |> DateTime.to_unix(),
+        action: :set,
+        quantity: ceil(services / 5),
+      })
+    end
+  end
+  def send_usage(_), do: :ok
 
   @doc """
   Appends a new usage record for the given line item to stripe's api

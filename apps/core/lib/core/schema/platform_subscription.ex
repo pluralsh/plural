@@ -47,6 +47,10 @@ defmodule Core.Schema.PlatformSubscription do
     )
   end
 
+  def metered(query \\ __MODULE__) do
+    from(s in query, where: not is_nil(s.metered_id))
+  end
+
   def ordered(query \\ __MODULE__, order \\ [asc: :id]) do
     from(s in query, order_by: ^order)
   end

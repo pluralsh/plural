@@ -3,8 +3,9 @@ import { Flex } from 'honorable'
 import { CaretRightIcon, Chip, IconFrame } from '@pluralsh/design-system'
 import { Link } from 'react-router-dom'
 
-import { Maybe, UpgradeInfo } from '../../generated/graphql'
 import { useTheme } from 'styled-components'
+
+import { Maybe, UpgradeInfo } from '../../generated/graphql'
 
 type ClusterUpgradeInfoProps = {
   clusterId?: Maybe<string>
@@ -16,6 +17,7 @@ export function ClusterUpgradeInfo({
   upgradeInfo,
 }: ClusterUpgradeInfoProps) {
   const theme = useTheme()
+
   if (isEmpty(upgradeInfo)) return null
 
   return (

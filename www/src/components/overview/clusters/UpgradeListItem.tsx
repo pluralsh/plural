@@ -3,8 +3,9 @@ import { Chip, IconFrame, Tooltip } from '@pluralsh/design-system'
 import { ReactElement } from 'react'
 import { Flex } from 'honorable'
 
-import { Upgrade } from '../../../generated/graphql'
 import { useTheme } from 'styled-components'
+
+import { Upgrade } from '../../../generated/graphql'
 
 export default function UpgradeListItem({
   upgrade: { id, insertedAt, repository, message },

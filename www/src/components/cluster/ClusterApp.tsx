@@ -10,9 +10,10 @@ import {
 import { Flex, Span } from 'honorable'
 import { useNavigate, useParams } from 'react-router-dom'
 
+import { useTheme } from 'styled-components'
+
 import { Repository } from '../../generated/graphql'
 import { MoreMenu } from '../account/MoreMenu'
-import { useTheme } from 'styled-components'
 
 type ClusterAppProps = {
   app: Repository

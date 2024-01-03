@@ -3,8 +3,12 @@
   <head>
     <script>
       const key = 'theme-mode'
-      const theme = localStorage.getItem(key) || 'dark'
-      document.documentElement.setAttribute('data-' + key, theme)
+      function setThemeMode() {
+        const theme = localStorage.getItem(key) || 'dark'
+        document.documentElement.setAttribute('data-' + key, theme)
+      }
+      window.addEventListener('storage', setThemeMode)
+      setThemeMode()
     </script>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />

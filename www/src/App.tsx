@@ -3,7 +3,7 @@ import { Suspense, lazy, useEffect } from 'react'
 import { Route, Routes } from 'react-router-dom'
 import { ApolloProvider } from '@apollo/client'
 import { IntercomProvider } from 'react-use-intercom'
-import { Box, Grommet, ThemeType } from 'grommet'
+import { Grommet, ThemeType } from 'grommet'
 import {
   BreadcrumbsProvider,
   GlobalStyle,

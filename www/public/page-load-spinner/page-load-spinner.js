@@ -5,7 +5,7 @@
   let tickCount = 0
   let tickInterval
   const images = [
-    '/logos/plural-logomark-only-white.svg',
+    '/page-load-spinner/page-load-spinner-logo.svg',
     '/page-load-spinner/page-load-spinner-bg.png',
   ]
 

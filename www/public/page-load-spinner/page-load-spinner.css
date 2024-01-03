@@ -64,10 +64,10 @@
   width: var(--loadingLogoHeight);
   height: var(--loadingLogoHeight);
   background-color: #ffffff;
-  mask: url(/logos/plural-logomark-only-white.svg) 0 0 / contain no-repeat;
-  -webkit-mask: url(/logos/plural-logomark-only-white.svg) 0 0 / contain
+  mask: url(/page-load-spinner/page-load-spinner-logo.svg) 0 0 / contain no-repeat;
+  -webkit-mask: url(/page-load-spinner/page-load-spinner-logo.svg) 0 0 / contain
     no-repeat;
-  background: url(/logos/plural-logomark-only-white.svg);
+  background: url(/page-load-spinner/page-load-spinner-logo.svg);
   background-size: contain;
 }
 @supports (aspect-ratio: 1 / 1) {
@@ -112,6 +112,9 @@
   letter-spacing: 0.25px;
   margin-top: 24px;
   text-align: center;
+}
+html[data-theme-mode='light'] #loading-placeholder h1 {
+  color: #5d626f;
 }
 
 #loading-placeholder .dot {

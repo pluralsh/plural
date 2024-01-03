@@ -14,11 +14,8 @@ import { useFilePicker } from 'react-sage'
 
 import CurrentUserContext from '../../contexts/CurrentUserContext'
 import { UPDATE_USER } from '../users/queries'
-import {
-  DEFAULT_CHART_ICON,
-  DarkProviderIcons,
-  ProviderIcons,
-} from '../constants'
+import { getProviderIconUrl } from '../utils/ProviderIcon'
+import { useTheme } from 'styled-components'
 
 function Attribute({ header, children }: any) {
   return (
@@ -39,6 +36,7 @@ function Attribute({ header, children }: any) {
 }
 
 export function Profile() {
+  const theme = useTheme()
   const { files, onClick, HiddenFileInput } = useFilePicker({})
   const me = useContext(CurrentUserContext)
   const { dark } = useContext(ThemeContext) as any
@@ -50,16 +48,7 @@ export function Profile() {
     variables: { attributes: { name, email, avatar: avatarFile } },
   })
 
-  let url: string | undefined
-
-  if (me.provider) {
-    url = ProviderIcons[me.provider] || DEFAULT_CHART_ICON
-
-    if (dark && DarkProviderIcons[me.provider]) {
-      url = DarkProviderIcons[me.provider]
-    }
-  }
-
+  const url = getProviderIconUrl(me?.provider || '', theme.mode)
   let avatar: string | undefined
 
   if (avatarConst) {

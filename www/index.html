@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <script>
+      const key = 'theme-mode'
+      const theme = localStorage.getItem(key) || 'dark'
+      document.documentElement.setAttribute('data-' + key, theme)
+    </script>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000b11" />
@@ -127,6 +132,10 @@
       html,
       body {
         background-color: #171a21;
+      }
+      html[data-theme-mode='light'],
+      html[data-theme-mode='light'] body {
+        background-color: #f3f5f7;
       }
     </style>
     <!-- Cookiebot MUST BE FIRST script -->

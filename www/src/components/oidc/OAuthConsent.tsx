@@ -2,10 +2,10 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { useMutation, useQuery } from '@apollo/client'
 import queryString from 'query-string'
 import { ArrowRightLeftIcon, Button, IconFrame } from '@pluralsh/design-system'
-import { ThemeContext } from 'grommet'
 import { useCallback, useContext, useEffect } from 'react'
 import { A, Flex, Span } from 'honorable'
 import StartCase from 'lodash/startCase'
+import { useTheme } from 'styled-components'
 
 import { LoginPortal } from '../users/LoginPortal'
 import { GqlError } from '../utils/Alert'
@@ -20,7 +20,7 @@ import LoadingIndicator from '../utils/LoadingIndicator'
 import { GET_OIDC_CONSENT, OAUTH_CONSENT } from './queries'
 
 function Icon({ icon, darkIcon }: any) {
-  const { dark } = useContext(ThemeContext) as any
+  const dark = useTheme().mode !== 'light'
 
   return (
     <IconFrame

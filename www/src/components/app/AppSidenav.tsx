@@ -16,6 +16,7 @@ import { type Repository, useAppContext } from '../../contexts/AppContext'
 
 import { type getDocsData } from './App'
 import { useDocPageContext } from './docs/AppDocsContext'
+import { getRepoIcon } from '../repository/misc'
 
 export const getDirectory = ({
   app = null,
@@ -86,7 +87,7 @@ export default function AppSidenav({
           borderRadius="medium"
         >
           <Img
-            src={app.darkIcon || app.icon}
+            src={getRepoIcon(app, theme.mode)}
             alt={app.name}
             width={48}
           />

@@ -11,8 +11,8 @@ import LoadingIndicator from '../utils/LoadingIndicator'
 
 import { CHARTS_QUERY } from './queries'
 import { packageCardStyle } from './RepositoryPackages'
-
-const defaultChartIcon = '/chart.png'
+import { useTheme } from 'styled-components'
+import { DEFAULT_CHART_ICON } from '../constants'
 
 const searchOptions = {
   keys: ['name', 'description', 'latestVersion'],
@@ -20,6 +20,8 @@ const searchOptions = {
 }
 
 function Chart({ chart, first, last }: any) {
+  console.log('chart', chart)
+  const theme = useTheme()
   return (
     <Flex
       as={Link}
@@ -30,7 +32,7 @@ function Chart({ chart, first, last }: any) {
         alt={chart.name}
         width={64}
         height={64}
-        src={chart.icon || defaultChartIcon}
+        src={chart.icon || DEFAULT_CHART_ICON}
       />
       <Div ml={1}>
         <Flex align="center">

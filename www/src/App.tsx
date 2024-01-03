@@ -7,12 +7,15 @@ import { Box, Grommet, ThemeType } from 'grommet'
 import {
   BreadcrumbsProvider,
   GlobalStyle,
-  styledTheme,
-  theme,
+  honorableThemeDark,
+  honorableThemeLight,
+  styledThemeDark,
+  styledThemeLight,
+  useThemeColorMode,
 } from '@pluralsh/design-system'
 import { MarkdocContextProvider } from '@pluralsh/design-system/dist/markdoc'
 import { CssBaseline, ThemeProvider, mergeTheme } from 'honorable'
-import { ThemeProvider as StyledThemeProvider } from 'styled-components'
+import styled, { ThemeProvider as StyledThemeProvider } from 'styled-components'
 import { mergeDeep } from '@apollo/client/utilities'
 import mpRecipe from 'honorable-recipe-mp'
 import { GrowthBook, GrowthBookProvider } from '@growthbook/growthbook-react'
@@ -26,6 +29,7 @@ import { growthbook } from './helpers/growthbook'
 import Cookiebot from './utils/cookiebot'
 import { OverlayContextProvider } from './components/layout/Overlay'
 import NavContextProvider from './contexts/NavigationContext'
+import { CursorPositionProvider } from './components/utils/CursorPosition'
 
 const Plural = lazy(() => import('./components/Plural'))
 const Invite = lazy(() => import('./components/Invite'))
@@ -75,14 +79,6 @@ const SSOCallback = lazy(() =>
   }))
 )
 
-const honorableTheme = mergeTheme(theme, {
-  global: [
-    // This provides the mp spacing props to honorable
-    // DEPRECATED in favor of the semantic spacing system
-    mpRecipe(),
-  ],
-})
-
 function PosthogOptInOut() {
   useEffect(() => {
     if (Cookiebot?.consent?.statistics) {
@@ -105,7 +101,33 @@ function PosthogOptInOut() {
   return null
 }
 
+const RootBoxSC = styled.div(({ theme }) => ({
+  display: 'flex',
+  flexdirection: 'column',
+  boxSizing: 'border-box',
+  maxwidth: '100%',
+  minwidth: 0,
+  minHeight: 0,
+  height: '100vh',
+  width: '100vw',
+  outline: 'none',
+  backgroundColor: theme.colors['fill-zero'],
+}))
+
 function App() {
+  const colorMode = useThemeColorMode()
+
+  const honorableTheme = mergeTheme(
+    colorMode === 'light' ? honorableThemeLight : honorableThemeDark,
+    {
+      global: [
+        // This provides the mp spacing props to honorable
+        // DEPRECATED in favor of the semantic spacing system
+        mpRecipe(),
+      ],
+    }
+  )
+  const styledTheme = colorMode === 'light' ? styledThemeLight : styledThemeDark
   const mergedStyledTheme = mergeDeep(DEFAULT_THEME, styledTheme)
 
   const routes = (
@@ -175,29 +197,25 @@ function App() {
           <ThemeProvider theme={honorableTheme}>
             <StyledThemeProvider theme={mergedStyledTheme}>
               <GrowthBookProvider growthbook={growthbook as any as GrowthBook}>
-                <MarkdocContextProvider value={{ variant: 'console' }}>
-                  <NavContextProvider>
-                    <OverlayContextProvider>
-                      <BreadcrumbsProvider>
-                        <CssBaseline />
-                        <GlobalStyle />
-                        <Grommet
-                          full
-                          theme={mergedStyledTheme as any as ThemeType}
-                          themeMode="dark"
-                        >
-                          <Box
-                            width="100vw"
-                            height="100vh"
-                            background="#171A21"
+                <CursorPositionProvider>
+                  <MarkdocContextProvider value={{ variant: 'console' }}>
+                    <NavContextProvider>
+                      <OverlayContextProvider>
+                        <BreadcrumbsProvider>
+                          <CssBaseline />
+                          <GlobalStyle />
+                          <Grommet
+                            full
+                            theme={mergedStyledTheme as any as ThemeType}
+                            themeMode="dark"
                           >
-                            {routes}
-                          </Box>
-                        </Grommet>
-                      </BreadcrumbsProvider>
-                    </OverlayContextProvider>
-                  </NavContextProvider>
-                </MarkdocContextProvider>
+                            <RootBoxSC>{routes}</RootBoxSC>
+                          </Grommet>
+                        </BreadcrumbsProvider>
+                      </OverlayContextProvider>
+                    </NavContextProvider>
+                  </MarkdocContextProvider>
+                </CursorPositionProvider>
               </GrowthBookProvider>
             </StyledThemeProvider>
           </ThemeProvider>

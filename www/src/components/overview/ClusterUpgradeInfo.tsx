@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom'
 import { useTheme } from 'styled-components'
 
 import { Maybe, UpgradeInfo } from '../../generated/graphql'
+import { getRepoIcon } from '../repository/misc'
 
 type ClusterUpgradeInfoProps = {
   clusterId?: Maybe<string>
@@ -44,7 +45,7 @@ export function ClusterUpgradeInfo({
             <IconFrame
               icon={
                 <img
-                  src={repository?.darkIcon || repository?.icon || ''}
+                  src={getRepoIcon(repository, theme.mode)}
                   width={16}
                   height={16}
                 />

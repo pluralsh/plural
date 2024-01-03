@@ -10,23 +10,9 @@ import LoadingIndicator from '../utils/LoadingIndicator'
 
 import { TERRAFORM_QUERY } from './queries'
 import { packageCardStyle } from './RepositoryPackages'
-
-const defaultTerraformIcon = '/terraform.png'
-const defaultChartIcon = '/chart.png'
-const defualtGcpIcon = '/gcp.png'
-const defualtAzureIcon = '/azure.png'
-const defaultAwsIcon = '/aws-icon.png'
-const defaultEquinixIcon = '/equinix-metal.png'
-const defaultKindIcon = '/kind.png'
-
-const providerToIcon = {
-  GCP: defualtGcpIcon,
-  AWS: defaultAwsIcon,
-  AZURE: defualtAzureIcon,
-  EQUINIX: defaultEquinixIcon,
-  KIND: defaultKindIcon,
-  GENERIC: defaultChartIcon,
-}
+import { getProviderIconUrl } from '../utils/ProviderIcon'
+import { useTheme } from 'styled-components'
+import { DEFAULT_TF_ICON } from '../constants'
 
 const searchOptions = {
   keys: ['name', 'description', 'latestVersion'],
@@ -34,6 +20,7 @@ const searchOptions = {
 }
 
 function Terraform({ terraform, first, last }: any) {
+  const theme = useTheme()
   return (
     <Flex
       as={Link}
@@ -44,7 +31,7 @@ function Terraform({ terraform, first, last }: any) {
         alt={terraform.name}
         width={64}
         height={64}
-        src={defaultTerraformIcon}
+        src={DEFAULT_TF_ICON}
       />
       <Div ml={1}>
         <Flex align="center">
@@ -63,7 +50,7 @@ function Terraform({ terraform, first, last }: any) {
                 <Img
                   key={provider}
                   alt={provider}
-                  src={providerToIcon[provider] || defaultChartIcon}
+                  src={getProviderIconUrl(provider, theme.mode)}
                   width={16}
                 />
               ))}

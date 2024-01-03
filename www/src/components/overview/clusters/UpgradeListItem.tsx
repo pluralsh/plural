@@ -6,6 +6,7 @@ import { Flex } from 'honorable'
 import { useTheme } from 'styled-components'
 
 import { Upgrade } from '../../../generated/graphql'
+import { getRepoIcon } from '../../repository/misc'
 
 export default function UpgradeListItem({
   upgrade: { id, insertedAt, repository, message },
@@ -29,7 +30,7 @@ export default function UpgradeListItem({
       <IconFrame
         icon={
           <img
-            src={repository?.darkIcon || repository?.icon || ''}
+            src={getRepoIcon(repository, theme.mode)}
             width="16"
             height="16"
           />

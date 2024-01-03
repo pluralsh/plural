@@ -2,17 +2,19 @@ import { Link, useOutletContext } from 'react-router-dom'
 import { Div, Flex, Img, P } from 'honorable'
 import moment from 'moment'
 import Fuse from 'fuse.js'
+import { useTheme } from 'styled-components'
 
 import { useRepositoryContext } from '../../contexts/RepositoryContext'
 import usePaginatedQuery from '../../hooks/usePaginatedQuery'
 import InfiniteScroller from '../utils/InfiniteScroller'
 import LoadingIndicator from '../utils/LoadingIndicator'
 
+import { getProviderIconUrl } from '../utils/ProviderIcon'
+
+import { DEFAULT_TF_ICON } from '../constants'
+
 import { TERRAFORM_QUERY } from './queries'
 import { packageCardStyle } from './RepositoryPackages'
-import { getProviderIconUrl } from '../utils/ProviderIcon'
-import { useTheme } from 'styled-components'
-import { DEFAULT_TF_ICON } from '../constants'
 
 const searchOptions = {
   keys: ['name', 'description', 'latestVersion'],
@@ -21,6 +23,7 @@ const searchOptions = {
 
 function Terraform({ terraform, first, last }: any) {
   const theme = useTheme()
+
   return (
     <Flex
       as={Link}

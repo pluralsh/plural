@@ -1,6 +1,7 @@
 import { Div, Flex } from 'honorable'
 import { CheckIcon, CopyIcon, Tooltip } from '@pluralsh/design-system'
 import { useCallback, useEffect, useState } from 'react'
+import { useTheme } from 'styled-components'
 
 import { SidecarButton } from '../repository/RepositorySideCar'
 
@@ -11,7 +12,6 @@ import {
   providerToShortName,
 } from './recipeHelpers'
 import { getProviderIconUrl } from './ProviderIcon'
-import { useTheme } from 'styled-components'
 
 export function InstallCommandCopyButton({
   name,

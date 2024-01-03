@@ -76,7 +76,7 @@ export default function ImagePullMetrics() {
   } = useOutletContext() as any
   const data = useMemo(
     () =>
-      dockerRepository.metrics.map(({ tags, values }, i) => {
+      dockerRepository.metrics.map(({ tags, values }) => {
         const tag = tags.find(({ name }) => name === 'tag')
 
         return {

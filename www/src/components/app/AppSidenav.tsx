@@ -14,9 +14,10 @@ import { useTheme } from 'styled-components'
 
 import { type Repository, useAppContext } from '../../contexts/AppContext'
 
+import { getRepoIcon } from '../repository/misc'
+
 import { type getDocsData } from './App'
 import { useDocPageContext } from './docs/AppDocsContext'
-import { getRepoIcon } from '../repository/misc'
 
 export const getDirectory = ({
   app = null,

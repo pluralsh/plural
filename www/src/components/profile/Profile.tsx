@@ -11,11 +11,11 @@ import {
 } from '@pluralsh/design-system'
 import { useContext, useEffect, useState } from 'react'
 import { useFilePicker } from 'react-sage'
+import { useTheme } from 'styled-components'
 
 import CurrentUserContext from '../../contexts/CurrentUserContext'
 import { UPDATE_USER } from '../users/queries'
 import { getProviderIconUrl } from '../utils/ProviderIcon'
-import { useTheme } from 'styled-components'
 
 function Attribute({ header, children }: any) {
   return (
@@ -39,7 +39,6 @@ export function Profile() {
   const theme = useTheme()
   const { files, onClick, HiddenFileInput } = useFilePicker({})
   const me = useContext(CurrentUserContext)
-  const { dark } = useContext(ThemeContext) as any
   const [name, setName] = useState(me.name)
   const [email, setEmail] = useState(me.email)
   const [avatarConst, setAvatar] = useState(me.avatar)

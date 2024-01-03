@@ -13,6 +13,8 @@ import { extendConnection } from '../../../utils/graphql'
 
 import { ChartActions } from './Chart'
 import { TerraformActions } from './Terraform'
+import { useTheme } from 'styled-components'
+import { ComponentProps } from 'react'
 
 export function dockerPull(
   registry,
@@ -24,28 +26,39 @@ export function dockerPull(
 export const chipSeverity = {
   low: 'success',
   medium: 'warning',
-  high: 'error',
+  high: 'danger',
   critical: 'critical',
-}
+} as const satisfies Record<
+  'low' | 'medium' | 'high' | 'critical',
+  ComponentProps<typeof Chip>['severity']
+>
 
-const gradeToColor = {
-  A: '#A5F8C8',
-  B: '#A5F8C8',
-  C: '#FFE78F',
-  D: '#FFE78F',
-  E: '#FDB1A5',
-  F: '#ED456A',
-}
+const gradeToSeverity = {
+  A: 'success',
+  B: 'success',
+  C: 'warning',
+  D: 'warning',
+  E: 'danger',
+  F: 'critical',
+} as const satisfies Record<
+  'A' | 'B' | 'C' | 'D' | 'E' | 'F',
+  ComponentProps<typeof Chip>['severity']
+>
 
 export function PackageGrade({ grade, large }: any) {
+  const theme = useTheme()
   return (
     <Chip
+      severity={gradeToSeverity[grade] || 'neutral'}
       size={large ? 'large' : 'medium'}
-      paddingHorizontal={large ? 'large' : 'small'}
-      backgroundColor="fill-two"
-      borderColor="border-fill-two"
+      css={{
+        '&&': {
+          paddingLeft: large ? theme.spacing.large : theme.spacing.small,
+          paddingRight: large ? theme.spacing.large : theme.spacing.small,
+        },
+      }}
     >
-      <Span color={gradeToColor[grade]}>{grade}</Span>
+      {grade}
     </Chip>
   )
 }

@@ -5,9 +5,10 @@ import { useNavigate } from 'react-router-dom'
 import isEmpty from 'lodash/isEmpty'
 import { useTheme } from 'styled-components'
 
+import { getRepoIcon } from '../repository/misc'
+
 import { STACKS_QUERY } from './queries'
 import { CardGrid } from './CardGrid'
-import { getRepoIcon } from '../repository/misc'
 
 const hues = ['blue', 'green', 'yellow', 'red'] as const
 

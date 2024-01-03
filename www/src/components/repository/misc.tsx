@@ -1,4 +1,5 @@
 import { type styledTheme } from '@pluralsh/design-system'
+
 import { useRepositoryContext } from '../../contexts/RepositoryContext'
 import { Repository } from '../../generated/graphql'
 import InstallAppButton from '../utils/InstallAppButton'
@@ -25,6 +26,4 @@ export function RepositoryActions() {
 export const getRepoIcon = (
   repo: Nullable<Pick<Repository, 'icon' | 'darkIcon'>>,
   mode: typeof styledTheme.mode
-) => {
-  return (mode !== 'light' && repo?.darkIcon) || repo?.icon || ''
-}
+) => (mode !== 'light' && repo?.darkIcon) || repo?.icon || ''

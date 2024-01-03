@@ -7,11 +7,11 @@ import {
   ContentCard,
   FormField,
   Input,
-  PageTitle,
-  Switch,
-  ListBoxItem,
   ListBoxFooterPlus,
+  ListBoxItem,
+  PageTitle,
   Select,
+  Switch,
 } from '@pluralsh/design-system'
 import isEqual from 'lodash/isEqual'
 import isArray from 'lodash/isArray'
@@ -19,6 +19,7 @@ import uniqWith from 'lodash/uniqWith'
 import { useFilePicker } from 'react-sage'
 import filter from 'lodash/filter'
 import capitalize from 'lodash/capitalize'
+import { useTheme } from 'styled-components'
 
 import { GqlError } from '../utils/Alert'
 
@@ -33,7 +34,6 @@ import IconUploadPreview from '../utils/IconUploadPreview'
 
 import { TAGS_SEARCH_QUERY, UPDATE_REPOSITORY_MUTATION } from './queries'
 import { RepositoryActions } from './misc'
-import { useTheme } from 'styled-components'
 
 export const categories = [
   'DEVOPS',
@@ -128,12 +128,14 @@ function RepositoryEdit() {
       .replaceAll(/([\s_]+)/gu, '-')
       .replaceAll(/[^A-Za-z-]+/gu, '')
       .toLowerCase()
+
     if (results.find((res) => res.tag.toLowerCase() === newTag)) {
       newTag = null
     }
     if (newTag) {
       results.push({ tag: newTag, count: 0, new: true })
     }
+
     return results
   }, [tagSearch, tagSearchString])
 
@@ -291,7 +293,7 @@ function RepositoryEdit() {
           css={{
             display: 'flex',
             alignItems: 'center',
-            gap: theme.spacing['medium'],
+            gap: theme.spacing.medium,
           }}
         >
           <SaveButton
@@ -482,8 +484,8 @@ function RepositoryEdit() {
                 handleCreateTag(val as string)
               }}
             >
-              {tagSearchResults.map((result) => {
-                return result.new ? (
+              {tagSearchResults.map((result) =>
+                result.new ? (
                   <ListBoxFooterPlus
                     key={result.tag}
                     textValue={result.tag}
@@ -495,9 +497,9 @@ function RepositoryEdit() {
                     key={result.tag}
                     label={result.tag}
                     textValue={result.tag}
-                  ></ListBoxItem>
+                  />
                 )
-              })}
+              )}
             </ComboBox>
             <div
               css={{
@@ -512,8 +514,8 @@ function RepositoryEdit() {
                 <Chip
                   key={tag.tag}
                   onClick={() => handleDeleteTag(tag)}
-                  clickable={true}
-                  closeButton={true}
+                  clickable
+                  closeButton
                   size="small"
                 >
                   {tag.tag}
@@ -568,7 +570,7 @@ function RepositoryEdit() {
                     key={method}
                     label={capitalize(method.toLocaleLowerCase())}
                     textValue={capitalize(method.toLocaleLowerCase())}
-                  ></ListBoxItem>
+                  />
                 ))}
               </Select>
             </FormField>

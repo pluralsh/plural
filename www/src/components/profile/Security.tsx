@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from '@apollo/client'
-import { Box } from 'grommet'
-import { Button, Div, Span } from 'honorable'
+import { Div, Span } from 'honorable'
 import {
+  Button,
   ContentCard,
   PageTitle,
   StatusOkIcon,
@@ -10,29 +10,34 @@ import {
 import { createElement, useContext, useState } from 'react'
 import { Password } from 'forge-core'
 
+import styled, { useTheme } from 'styled-components'
+
 import { METHOD_ICONS } from '../users/utils'
-
 import { host } from '../../helpers/hostname'
-
 import CurrentUserContext from '../../contexts/CurrentUserContext'
 import { OAUTH_URLS, UPDATE_USER } from '../users/queries'
 
 import { LoginMethod as Method } from './types'
 
 function Section({ header, description, children }: any) {
+  const theme = useTheme()
+
   return (
-    <Div>
-      <Div marginBottom="small">
-        <Div
-          body1
-          fontWeight="600"
+    <div>
+      <div css={{ marginBottom: theme.spacing.small }}>
+        <div
+          css={{
+            ...theme.partials.text.body1Bold,
+          }}
         >
           {header}
-        </Div>
-        {description && <Div color="text-light">{description}</Div>}
-      </Div>
+        </div>
+        {description && (
+          <div css={{ color: theme.colors['text-light'] }}>{description}</div>
+        )}
+      </div>
       {children}
-    </Div>
+    </div>
   )
 }
 
@@ -42,6 +47,7 @@ const validPassword = (pass) =>
     : { error: false, message: 'valid password!' }
 
 function UpdatePassword({ cancel }: any) {
+  const theme = useTheme()
   const [password, setPassword] = useState('')
   const [confirm, setConfirm] = useState('')
   const [second, setSecond] = useState('')
@@ -50,7 +56,13 @@ function UpdatePassword({ cancel }: any) {
   })
 
   return (
-    <Box gap="small">
+    <div
+      css={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: theme.spacing.small,
+      }}
+    >
       <ValidatedInput
         width="100%"
         label="Current password"
@@ -83,11 +95,13 @@ function UpdatePassword({ cancel }: any) {
             : { error: false, message: 'passwords match!' }
         }
       />
-      <Box
-        direction="row"
-        align="center"
-        justify="end"
-        gap="small"
+      <div
+        css={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'flex-end',
+          gap: theme.spacing.small,
+        }}
       >
         <Button
           secondary
@@ -104,41 +118,55 @@ function UpdatePassword({ cancel }: any) {
         >
           Update password
         </Button>
-      </Box>
-    </Box>
+      </div>
+    </div>
   )
 }
 
+const LoginMethodSC = styled.button<{ $active }>(
+  ({ theme, $active: active }) => ({
+    ...theme.partials.reset.button,
+    display: 'flex',
+    flexDirection: 'row',
+    gap: theme.spacing.small,
+    border: theme.borders.default,
+    width: '100%',
+    minHeight: 44,
+    borderRadius: theme.borderRadiuses.large,
+    hoverIndicator: 'fill-one-hover',
+    background: active
+      ? theme.colors['fill-one-selected']
+      : theme.colors['fill-one'],
+    '&:hover': {
+      background: theme.colors['fill-one-hover'],
+    },
+    alignItems: 'center',
+    padding: `${theme.spacing.small}px ${theme.spacing.medium}px`,
+  })
+)
+
 function LoginMethod({ icon, name, onClick, active }: any) {
   return (
-    <Box
-      border
-      width="100%"
-      height={{ min: '44px' }}
-      round="xsmall"
+    <LoginMethodSC
+      $active={active}
       onClick={active ? null : onClick}
-      hoverIndicator="fill-one-hover"
-      background={active ? 'fill-one-hover' : undefined}
-      direction="row"
-      align="center"
-      gap="small"
-      pad={{ horizontal: 'medium', vertical: 'small' }}
     >
       {icon}
-      <Box fill="horizontal">
+      <div css={{ flexGrow: 1 }}>
         <Span>{name}</Span>
-      </Box>
+      </div>
       {active && (
         <StatusOkIcon
           size={20}
           color="icon-success"
         />
       )}
-    </Box>
+    </LoginMethodSC>
   )
 }
 
 function LoginMethods() {
+  const theme = useTheme()
   const me = useContext(CurrentUserContext)
   const { data } = useQuery(OAUTH_URLS, { variables: { host: host() } })
   const [mutation] = useMutation(UPDATE_USER)
@@ -146,16 +174,20 @@ function LoginMethods() {
   if (!data) return null
 
   return (
-    <Box
-      gap="small"
-      margin={{ bottom: '24px' }}
+    <div
+      css={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: theme.spacing.small,
+        marginBottom: theme.spacing.large,
+      }}
     >
       {data.oauthUrls.map(({ provider, authorizeUrl }, i) => (
         <LoginMethod
           key={i}
           icon={createElement(METHOD_ICONS[provider], {
             size: '20px',
-            color: 'white',
+            color: theme.colors['icon-default'],
           })}
           active={me.loginMethod === provider}
           name={`Login with ${provider.toLowerCase()}`}
@@ -163,7 +195,12 @@ function LoginMethods() {
         />
       ))}
       <LoginMethod
-        icon={<Password size="20px" />}
+        icon={
+          <Password
+            size="20px"
+            color={theme.colors['icon-default']}
+          />
+        }
         active={me.loginMethod === Method.PASSWORD}
         name="Login with password"
         onClick={() =>
@@ -172,20 +209,24 @@ function LoginMethods() {
           })
         }
       />
-    </Box>
+    </div>
   )
 }
 
 export function Security() {
+  const theme = useTheme()
   const [pass, setPass] = useState(false)
 
   return (
-    <Div paddingBottom="large">
+    <div css={{ paddingBottom: theme.spacing.large }}>
       <PageTitle heading="Security" />
       <ContentCard overflowY={undefined}>
-        <Box
-          gap="medium"
-          fill
+        <div
+          css={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: theme.spacing.medium,
+          }}
         >
           <Section header="Password">
             {!pass && (
@@ -205,8 +246,8 @@ export function Security() {
           >
             <LoginMethods />
           </Section>
-        </Box>
+        </div>
       </ContentCard>
-    </Div>
+    </div>
   )
 }

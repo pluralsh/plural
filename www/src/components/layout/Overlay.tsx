@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import chroma from 'chroma-js'
-import { animated, easings, useTransition } from '@react-spring/web'
+import { easings, useTransition } from '@react-spring/web'
 import {
   ComponentProps,
   createContext,

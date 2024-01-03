@@ -1,11 +1,11 @@
-import { Key, useContext, useMemo, useState } from 'react'
+import { useContext, useMemo, useState } from 'react'
 
 import { ResponsiveLine } from '@nivo/line'
 import moment from 'moment'
 import last from 'lodash/last'
 import { Box, Text, ThemeContext } from 'grommet'
 import { Card } from '@pluralsh/design-system'
-import { Flex, P, Span } from 'honorable'
+import { Flex, Span } from 'honorable'
 import { DefaultTheme, useTheme } from 'styled-components'
 
 import { DEFAULT_THEME } from '../../theme'

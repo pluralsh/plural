@@ -1,12 +1,11 @@
-import { Div, Flex, Img } from 'honorable'
 import styled, { useTheme } from 'styled-components'
+import { Link } from 'react-router-dom'
+import { LightDarkSwitch, setThemeColorMode } from '@pluralsh/design-system'
 
 import BillingLegacyUserMessage from '../account/billing/BillingLegacyUserMessage'
 import BillingSubscriptionChip from '../account/billing/BillingSubscriptionChip'
 import BillingTrialMessage from '../account/billing/BillingTrialMessage'
 import { useIsCurrentlyOnboarding } from '../shell/hooks/useOnboarded'
-import { Link } from 'react-router-dom'
-import { LightDarkSwitch, setThemeColorMode } from '@pluralsh/design-system'
 
 const APP_ICON_LIGHT = '/header-logo-light.png'
 const APP_ICON_DARK = '/header-logo-dark.png'
@@ -48,7 +47,7 @@ export default function Header() {
             alt="Plural app"
           />
         </LogoSC>
-        <Flex grow={1} />
+        <div css={{ display: 'flex', flexGrow: 1 }} />
         <BillingLegacyUserMessage />
         <BillingTrialMessage />
         <BillingSubscriptionChip />

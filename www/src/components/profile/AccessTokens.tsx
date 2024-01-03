@@ -75,6 +75,7 @@ function TokenAudits({ token }: any) {
         sizes={['25%', '25%', '25%', '25%']}
         width="100%"
         height="100%"
+        background="fill-one"
       >
         <Box fill>
           <StandardScroller

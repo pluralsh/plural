@@ -7,6 +7,7 @@ import {
   SubTab,
   TabList,
   TabPanel,
+  theme,
 } from '@pluralsh/design-system'
 import { useRef, useState } from 'react'
 import styled from 'styled-components'
@@ -44,6 +45,15 @@ const DIRECTORY = [
   { label: 'Terraform modules', path: '/terraform' },
   { label: 'Docker repositories', path: '/docker' },
 ]
+
+const InputSC = styled(Input)(({ theme }) => ({
+  '&&': {
+    backgroundColor: theme.colors['fill-one'],
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
+    borderColor: theme.colors['border-fill-two'],
+  },
+}))
 
 export default function RepositoryPackages() {
   const repository = useRepositoryContext()
@@ -86,15 +96,12 @@ export default function RepositoryPackages() {
             </LinkTabWrap>
           ))}
         </TabList>
-        <Input
+        <InputSC
           value={q}
           onChange={(event) => setQ(event.target.value)}
           placeholder={`Filter ${currentTab?.label || ''}`}
           startIcon={<SearchIcon />}
           width="100%"
-          backgroundColor="fill-one"
-          borderBottomLeftRadius="0"
-          borderBottomRightRadius="0"
         />
         <Flex
           direction="column"

@@ -19,6 +19,7 @@ export default function ClusterOwner({
       width="100%"
     >
       <AppIcon
+        spacing={avatar ? 'none' : undefined}
         name={name || ''}
         url={avatar || undefined}
         size="xxsmall"

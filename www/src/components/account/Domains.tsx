@@ -3,6 +3,7 @@ import { Box } from 'grommet'
 import { Avatar, Flex, Span } from 'honorable'
 import moment from 'moment'
 import {
+  AppIcon,
   ListBoxItem,
   Modal,
   PageTitle,
@@ -214,10 +215,11 @@ function Domain({ node, last, setDomain }: any) {
           gap="xsmall"
           align="center"
         >
-          <Avatar
-            src={node.creator.avatar}
+          <AppIcon
+            url={node?.creator?.avatar || undefined}
             name={node.creator.name}
-            size={30}
+            size="xxsmall"
+            spacing={node?.creator?.avatar ? 'none' : undefined}
           />
           <Span color="text-light">{node.creator.name}</Span>
         </Box>

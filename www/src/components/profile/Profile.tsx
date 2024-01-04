@@ -78,7 +78,7 @@ export function Profile() {
               <AppIcon
                 name={name}
                 url={avatar}
-                spacing="none"
+                spacing={avatar ? 'none' : undefined}
                 size="medium"
               />
             </Stack>

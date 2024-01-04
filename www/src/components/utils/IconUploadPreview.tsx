@@ -5,43 +5,43 @@ import { styledThemeDark, styledThemeLight } from '@pluralsh/design-system'
 type IconUploadPreviewProps = {
   src: string | null
   onClick: MouseEventHandler
-  mode: 'dark' | 'light'
+  mode?: 'dark' | 'light'
 }
 
 const IconUploadPreviewSC = styled.div<{
   $mode?: 'dark' | 'light'
-}>(({ theme, $mode }) => ({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  width: 96,
-  height: 96,
-  padding: theme.spacing.small,
-  border: theme.borders['fill-two'],
-  borderRadius: theme.borderRadiuses.medium,
-  cursor: 'pointer',
-  backgroundColor:
+}>(({ theme, $mode }) => {
+  const colors =
     $mode === 'light'
-      ? styledThemeLight.colors['fill-zero']
-      : styledThemeDark.colors['fill-zero'],
-  '&:hover': {
-    backgroundColor:
-      $mode === 'light'
-        ? styledThemeLight.colors['fill-two-hover']
-        : styledThemeDark.colors['fill-two-hover'],
-  },
-  p: {
-    ...theme.partials.text.title2,
-    color:
-      $mode === 'light'
-        ? styledThemeLight.colors['text-light']
-        : styledThemeDark.colors['text-light'],
-  },
-  img: {
-    width: '100%',
-    objectFit: 'cover',
-  },
-}))
+      ? styledThemeLight.colors
+      : $mode === 'dark'
+      ? styledThemeDark.colors
+      : theme.colors
+
+  return {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 96,
+    height: 96,
+    padding: theme.spacing.small,
+    border: theme.borders['fill-two'],
+    borderRadius: theme.borderRadiuses.medium,
+    cursor: 'pointer',
+    backgroundColor: colors['fill-zero'],
+    '&:hover': {
+      backgroundColor: colors['fill-two-hover'],
+    },
+    p: {
+      ...theme.partials.text.title2,
+      color: colors['text-light'],
+    },
+    img: {
+      width: '100%',
+      objectFit: 'cover',
+    },
+  }
+})
 
 function IconUploadPreview({
   src = null,

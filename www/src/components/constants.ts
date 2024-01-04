@@ -14,6 +14,7 @@ export const DEFAULT_AZURE_ICON = '/azure.png'
 export const DEFAULT_AWS_ICON = '/aws.png'
 export const DEFAULT_EQUINIX_ICON = '/equinix-metal.png'
 export const DEFAULT_KIND_ICON = '/kind.png'
+export const DEFAULT_LINODE_ICON = '/linode.png'
 export const DARK_AWS_ICON = '/aws-icon.png'
 
 export const ProviderIcons = {
@@ -22,6 +23,7 @@ export const ProviderIcons = {
   AZURE: DEFAULT_AZURE_ICON,
   EQUINIX: DEFAULT_EQUINIX_ICON,
   KIND: DEFAULT_KIND_ICON,
+  LINODE: DEFAULT_LINODE_ICON,
   GENERIC: DEFAULT_CHART_ICON,
 }
 

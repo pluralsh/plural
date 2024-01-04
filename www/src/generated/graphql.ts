@@ -2157,7 +2157,8 @@ export enum Provider {
   Gcp = 'GCP',
   Generic = 'GENERIC',
   Kind = 'KIND',
-  Kubernetes = 'KUBERNETES'
+  Kubernetes = 'KUBERNETES',
+  Linode = 'LINODE'
 }
 
 export type PublicKey = {

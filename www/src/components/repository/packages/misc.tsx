@@ -1,6 +1,6 @@
 import { Box } from 'grommet'
 import { useOutletContext } from 'react-router-dom'
-import { Div, Flex, H2, Img, Span } from 'honorable'
+import { Div, Flex, H2, Img } from 'honorable'
 import {
   Chip,
   ListBoxFooterPlus,

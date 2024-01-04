@@ -1,7 +1,12 @@
-import { Div, Flex, Span } from 'honorable'
 import { Tooltip, WrapWithIf } from '@pluralsh/design-system'
 
 import OnboardingCardButton from '../../OnboardingCardButton'
+import {
+  OnboardCardIconSC,
+  OnBoardCardHeaderSC,
+  OnBoardCardDescSC,
+  OnboardCardInnerSC,
+} from '../welcome/PathOption'
 
 function CloudOption({
   icon,
@@ -22,45 +27,22 @@ function CloudOption({
         />
       }
     >
-      <div
-        css={{
-          width: '100%',
-        }}
+      <OnboardingCardButton
+        position="relative"
+        selected={selected}
+        disabled={disabled}
+        {...props}
       >
-        <OnboardingCardButton
-          position="relative"
-          selected={selected}
-          disabled={disabled}
-          {...props}
-        >
-          <Flex
-            direction="column"
-            gap="xxsmall"
-          >
-            <Div
-              marginHorizontal="auto"
-              maxWidth={40}
-              maxHeight={40}
-              overflow="visible"
-            >
-              {icon}
-            </Div>
-            <Span
-              body1
-              bold
-              marginTop="small"
-            >
-              {header}
-            </Span>
-            <Span
-              caption
-              color={disabled ? 'text-disabled' : 'text-light'}
-            >
-              {description}
-            </Span>
-          </Flex>
-        </OnboardingCardButton>
-      </div>
+        <OnboardCardInnerSC>
+          <OnboardCardIconSC $disabled={disabled}>{icon}</OnboardCardIconSC>
+          <OnBoardCardHeaderSC $disabled={disabled}>
+            {header}
+          </OnBoardCardHeaderSC>
+          <OnBoardCardDescSC $disabled={disabled}>
+            {description}
+          </OnBoardCardDescSC>
+        </OnboardCardInnerSC>
+      </OnboardingCardButton>
     </WrapWithIf>
   )
 }

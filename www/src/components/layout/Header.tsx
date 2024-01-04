@@ -23,7 +23,7 @@ const HeaderContentSC = styled.div(({ theme }) => ({
   padding: `${theme.spacing.xsmall}px ${theme.spacing.large}px`,
 }))
 
-const LogoSC = styled(Link)(({ theme }) => ({
+const LogoSC = styled(Link)((_) => ({
   display: 'flex',
   alignItems: 'center',
   cursor: 'pointer',

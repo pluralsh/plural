@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { Collapsible } from 'grommet'
 import { Button, Chip, CollapseIcon, ErrorIcon } from '@pluralsh/design-system'
-import { Flex } from 'honorable'
 import Clamp from 'react-multiline-clamp'
 
 import { useOutletContext } from 'react-router-dom'

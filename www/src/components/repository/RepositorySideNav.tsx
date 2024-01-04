@@ -3,10 +3,13 @@ import { Link, useLocation } from 'react-router-dom'
 import { A, Div, Flex, Img, P } from 'honorable'
 import { Tab, TabList } from '@pluralsh/design-system'
 import capitalize from 'lodash/capitalize'
+import { useTheme } from 'styled-components'
 
 import { useRepositoryContext } from '../../contexts/RepositoryContext'
 import { LinkTabWrap } from '../utils/Tabs'
 import { SideNavOffset } from '../utils/layout/SideNavOffset'
+
+import { getRepoIcon } from './misc'
 
 const DIRECTORY = [
   { label: 'Readme', path: '' },
@@ -24,6 +27,7 @@ function RepositorySideNav({
   tabStateRef: MutableRefObject<any>
 }) {
   const repository = useRepositoryContext()
+  const theme = useTheme()
 
   const { pathname } = useLocation()
   const tabStateRef = useRef<any>()
@@ -68,7 +72,7 @@ function RepositorySideNav({
           borderRadius="medium"
         >
           <Img
-            src={repository.darkIcon || repository.icon}
+            src={getRepoIcon(repository, theme.mode)}
             alt={repository.name}
             width={48}
           />

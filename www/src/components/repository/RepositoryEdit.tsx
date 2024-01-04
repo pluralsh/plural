@@ -62,6 +62,17 @@ type FormState = {
   twitterUrl?: string
 }
 
+const ICON_PICKER_PROPS = {
+  minImageWidth: 64,
+  maxImageWidth: 512,
+  minImageHeight: 64,
+  maxImageHeight: 512,
+}
+const ICON_PICKER_INPUT_OPTS = {
+  multiple: false,
+  accept: 'image/jpeg,image/png',
+}
+
 function RepositoryEdit() {
   const theme = useTheme()
   const {
@@ -73,6 +84,7 @@ function RepositoryEdit() {
     oauthSettings,
     tags,
     icon,
+    darkIcon,
     private: privateRepo,
     community: communityUrls,
     documentation,
@@ -139,10 +151,14 @@ function RepositoryEdit() {
     return results
   }, [tagSearch, tagSearchString])
 
-  const [iconUpdate, setIconUpdate] = useState<{
+  const [lightIconUpdate, setLightIconUpdate] = useState<{
     file: File | null
     previewUrl: string | null
   }>({ file: null, previewUrl: icon || null })
+  const [darkIconUpdate, setDarkIconUpdate] = useState<{
+    file: File | null
+    previewUrl: string | null
+  }>({ file: null, previewUrl: darkIcon || null })
 
   const [mutation, { loading, error }] = useMutation(
     UPDATE_REPOSITORY_MUTATION,
@@ -160,7 +176,8 @@ function RepositoryEdit() {
                   authMethod: formState.oauthMethod,
                 }
               : null,
-          ...(iconUpdate.file ? { icon: iconUpdate.file } : {}),
+          ...(lightIconUpdate.file ? { icon: lightIconUpdate.file } : {}),
+          ...(darkIconUpdate.file ? { darkIcon: darkIconUpdate.file } : {}),
           tags: formState.tags,
           private: formState.private,
           documentation: formState.docsUrl,
@@ -174,44 +191,51 @@ function RepositoryEdit() {
         },
       },
       update: (_cache, { data: { updateRepository } }) => {
-        setIconUpdate({
+        setLightIconUpdate({
           previewUrl: updateRepository.icon || null,
+          file: null,
+        })
+        setDarkIconUpdate({
+          previewUrl: updateRepository.darkIcon || null,
           file: null,
         })
       },
     }
   )
 
-  const iconPicker = useFilePicker({
-    minImageWidth: 64,
-    maxImageWidth: 512,
-    minImageHeight: 64,
-    maxImageHeight: 512,
-  })
-  const iconPickerInputOpts = {
-    multiple: false,
-    accept: 'image/jpeg,image/png',
-  }
+  const lightIconPicker = useFilePicker(ICON_PICKER_PROPS)
+  const darkIconPicker = useFilePicker(ICON_PICKER_PROPS)
 
   useEffect(() => {
-    const preventUpdate = false
-    const file = isArray(iconPicker?.files) && iconPicker?.files[0]
+    const cleanups = [
+      { iconPicker: lightIconPicker, setIconUpdate: setLightIconUpdate },
+      { iconPicker: darkIconPicker, setIconUpdate: setDarkIconUpdate },
+    ].map(({ iconPicker, setIconUpdate }) => {
+      const preventUpdate = false
+      const file = isArray(iconPicker?.files) && iconPicker?.files[0]
 
-    if (file) {
-      const reader = generatePreview(
-        file,
-        (file: { file: File; previewUrl: string }) => {
-          if (!preventUpdate) {
-            setIconUpdate(file)
+      if (file) {
+        const reader = generatePreview(
+          file,
+          (file: { file: File; previewUrl: string }) => {
+            if (!preventUpdate) {
+              setIconUpdate(file)
+            }
           }
-        }
-      )
+        )
 
-      return () => {
-        reader.abort()
+        return () => {
+          reader.abort()
+        }
       }
+
+      return () => {}
+    })
+
+    return () => {
+      cleanups.forEach((c) => c?.())
     }
-  }, [iconPicker.files])
+  }, [lightIconPicker, darkIconPicker])
 
   function handleSubmit(event: React.SyntheticEvent<HTMLElement>) {
     event.preventDefault()
@@ -220,11 +244,6 @@ function RepositoryEdit() {
     }
     mutation()
   }
-
-  // function handleReset() {
-  //   resetFormState()
-  //   setIconUpdate({ file: null, previewUrl: icon })
-  // }
 
   function handleDeleteTag(delTag: FormState['tags'][number]) {
     updateFormState({
@@ -275,7 +294,10 @@ function RepositoryEdit() {
     )
   }
 
-  const formHasUpdates = formStateHasUpdates || icon !== iconUpdate.previewUrl
+  const formHasUpdates =
+    formStateHasUpdates ||
+    icon !== lightIconUpdate.previewUrl ||
+    darkIcon !== darkIconUpdate.previewUrl
   const submitEnabled = formHasUpdates
   const desktopMq = `@media (min-width: ${theme.breakpoints.desktop}px)`
 
@@ -336,55 +358,39 @@ function RepositoryEdit() {
               header="Something went wrong"
             />
           )}
-          {iconPicker.HiddenFileInput(iconPickerInputOpts)}
-          <FormField label="Icon">
-            <div
-              css={{
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'flex-end',
-                gap: theme.spacing.medium,
-              }}
-            >
-              <IconUploadPreview
-                src={iconUpdate.previewUrl}
-                onClick={iconPicker.onClick}
-              />
-              <div
-                css={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: theme.spacing.xsmall,
+          <div
+            css={{
+              display: 'grid',
+              gridAutoFlow: 'column',
+              gridAutoColumns: '1fr',
+              gap: theme.spacing.medium,
+            }}
+          >
+            {lightIconPicker.HiddenFileInput(ICON_PICKER_INPUT_OPTS)}
+            <FormField label="Default icon (or light mode)">
+              <IconPicker
+                {...{
+                  theme,
+                  iconUpdate: lightIconUpdate,
+                  iconPicker: lightIconPicker,
+                  setIconUpdate: setLightIconUpdate,
+                  mode: 'light',
                 }}
-              >
-                <Button
-                  type="button"
-                  secondary
-                  small
-                  onClick={iconPicker.onClick}
-                  css={{
-                    minHeight: 'auto',
-                  }}
-                >
-                  {iconUpdate.previewUrl ? 'Switch' : 'Upload'}
-                </Button>
-                {iconUpdate.previewUrl && (
-                  <Button
-                    type="button"
-                    secondary
-                    small
-                    minHeight="auto"
-                    destructive
-                    onClick={() => {
-                      setIconUpdate({ file: null, previewUrl: null })
-                    }}
-                  >
-                    Delete
-                  </Button>
-                )}
-              </div>
-            </div>
-          </FormField>
+              />
+            </FormField>
+            {darkIconPicker.HiddenFileInput(ICON_PICKER_INPUT_OPTS)}
+            <FormField label="Dark mode icon">
+              <IconPicker
+                {...{
+                  theme,
+                  iconUpdate: darkIconUpdate,
+                  iconPicker: darkIconPicker,
+                  setIconUpdate: setDarkIconUpdate,
+                  mode: 'dark',
+                }}
+              />
+            </FormField>
+          </div>
           <div
             css={{
               display: 'flex',
@@ -594,3 +600,68 @@ function RepositoryEdit() {
 }
 
 export default RepositoryEdit
+function IconPicker({
+  iconUpdate,
+  iconPicker,
+  setIconUpdate,
+  mode,
+}: {
+  iconUpdate: { file: File | null; previewUrl: string | null }
+  iconPicker
+  setIconUpdate: React.Dispatch<
+    React.SetStateAction<{ file: File | null; previewUrl: string | null }>
+  >
+  mode: 'dark' | 'light'
+}) {
+  const theme = useTheme()
+
+  return (
+    <div
+      css={{
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'flex-end',
+        gap: theme.spacing.medium,
+      }}
+    >
+      <IconUploadPreview
+        src={iconUpdate.previewUrl}
+        onClick={iconPicker.onClick}
+        mode={mode}
+      />
+      <div
+        css={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: theme.spacing.xsmall,
+        }}
+      >
+        <Button
+          type="button"
+          secondary
+          small
+          onClick={iconPicker.onClick}
+          css={{
+            minHeight: 'auto',
+          }}
+        >
+          {iconUpdate.previewUrl ? 'Switch' : 'Upload'}
+        </Button>
+        {iconUpdate.previewUrl && (
+          <Button
+            type="button"
+            secondary
+            small
+            minHeight="auto"
+            destructive
+            onClick={() => {
+              setIconUpdate({ file: null, previewUrl: null })
+            }}
+          >
+            Delete
+          </Button>
+        )}
+      </div>
+    </div>
+  )
+}

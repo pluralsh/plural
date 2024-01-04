@@ -46,6 +46,7 @@ const IconSC = styled.img(({ theme }) => ({
 
 function Chart({ chart, first, last }: any) {
   const theme = useTheme()
+
   return (
     <Flex
       as={Link}

@@ -192,9 +192,7 @@ export default function PackageDependencies() {
       gap="small"
     >
       <PageTitle heading="Dependencies">
-        <Flex display-desktop-up="none">
-          <PackageActions />
-        </Flex>
+        <PackageActions />
       </PageTitle>
       <TabPanel
         stateRef={tabStateRef}

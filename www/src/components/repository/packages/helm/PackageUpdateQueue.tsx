@@ -35,9 +35,7 @@ export default function PackageUpdateQueue() {
       gap="small"
     >
       <PageTitle heading="Update queue">
-        <Flex display-desktop-up="none">
-          <PackageActions />
-        </Flex>
+        <PackageActions />
       </PageTitle>
       {edges?.length ? (
         <Table

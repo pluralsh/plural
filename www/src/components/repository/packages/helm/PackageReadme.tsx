@@ -18,9 +18,7 @@ export default function PackageReadme() {
       gap="small"
     >
       <PageTitle heading="Readme">
-        <Flex display-desktop-up="none">
-          <PackageActions />
-        </Flex>
+        <PackageActions />
       </PageTitle>
       <Box
         pad={{ right: 'xsmall' }}

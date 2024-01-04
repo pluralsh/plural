@@ -9,12 +9,14 @@ import {
   Select,
 } from '@pluralsh/design-system'
 
+import styled, { useTheme } from 'styled-components'
+
+import { ComponentProps } from 'react'
+
 import { extendConnection } from '../../../utils/graphql'
 
 import { ChartActions } from './Chart'
 import { TerraformActions } from './Terraform'
-import { useTheme } from 'styled-components'
-import { ComponentProps } from 'react'
 
 export function dockerPull(
   registry,
@@ -47,6 +49,7 @@ const gradeToSeverity = {
 
 export function PackageGrade({ grade, large }: any) {
   const theme = useTheme()
+
   return (
     <Chip
       severity={gradeToSeverity[grade] || 'neutral'}
@@ -212,6 +215,15 @@ export function PackageProperty({ children, header, ...props }: any) {
     </>
   )
 }
+const HideAtDesktop = styled.div(({ theme }) => {
+  const mqDesktop = `@media (min-width: ${theme.breakpoints.desktop}px)`
+
+  return {
+    [mqDesktop]: {
+      display: 'none',
+    },
+  }
+})
 
 export function PackageActions() {
   const { helmChart, currentHelmChart, terraformChart, currentTerraformChart } =
@@ -219,19 +231,23 @@ export function PackageActions() {
 
   if (helmChart && currentHelmChart) {
     return (
-      <ChartActions
-        chart={helmChart}
-        currentVersion={currentHelmChart}
-      />
+      <HideAtDesktop>
+        <ChartActions
+          chart={helmChart}
+          currentVersion={currentHelmChart}
+        />
+      </HideAtDesktop>
     )
   }
 
   if (terraformChart && currentTerraformChart) {
     return (
-      <TerraformActions
-        terraformModule={terraformChart}
-        currentVersion={currentTerraformChart}
-      />
+      <HideAtDesktop>
+        <TerraformActions
+          terraformModule={terraformChart}
+          currentVersion={currentTerraformChart}
+        />
+      </HideAtDesktop>
     )
   }
 

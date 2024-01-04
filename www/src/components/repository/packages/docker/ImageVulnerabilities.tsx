@@ -12,6 +12,7 @@ import {
   PageTitle,
 } from '@pluralsh/design-system'
 import capitalize from 'lodash/capitalize'
+import { useTheme } from 'styled-components'
 
 import { Table, TableData, TableRow } from '../../../utils/Table'
 import { AttackVector } from '../../../constants'
@@ -54,21 +55,31 @@ function CVSSRow({ text, value, options, colorMap }: any) {
 }
 
 function VulnerabilityDetail({ v, last }: any) {
+  const theme = useTheme()
+
   if (!v.title && !v.description && !v.source && !v.score && !v.cvss) {
     return (
-      <Box
-        // @ts-expect-error
-        borderBottom={last ? undefined : '1px solid border'}
-        background="fill-two"
-        pad={{ horizontal: 'large', vertical: 'medium' }}
+      <div
+        css={{
+          borderBottom: last ? undefined : '1px solid border',
+          background: theme.colors['fill-two'],
+          padding: `${theme.spacing.medium}px ${theme.spacing.large}px `,
+        }}
       >
         No details available.
-      </Box>
+      </div>
     )
   }
 
   return (
-    <Box
+    <div
+      css={{
+        borderBottom: last ? undefined : '1px solid border',
+        background: theme.colors['fill-two'],
+        padding: `${theme.spacing.medium}px ${theme.spacing.large}px `,
+      }}
+    >
+      {/* <Box
       direction="column"
       pad={{ horizontal: 'large', vertical: 'medium' }}
       gap="small"
@@ -76,7 +87,7 @@ function VulnerabilityDetail({ v, last }: any) {
       borderBottom={last ? undefined : '1px solid border'}
       background="fill-two"
       round={{ corner: 'bottom', size: '4px' }}
-    >
+    > */}
       <Box
         flex={false}
         gap="small"
@@ -213,7 +224,7 @@ function VulnerabilityDetail({ v, last }: any) {
           </Flex>
         )}
       </Box>
-    </Box>
+    </div>
   )
 }
 

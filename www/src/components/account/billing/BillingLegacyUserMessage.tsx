@@ -1,6 +1,6 @@
 import { useContext } from 'react'
 import moment from 'moment'
-import styled from 'styled-components'
+import styled, { useTheme } from 'styled-components'
 import { ErrorIcon, IconFrame } from '@pluralsh/design-system'
 import { Link } from 'react-router-dom'
 
@@ -18,6 +18,7 @@ const MessageLink = styled.a(({ theme }) => ({
 }))
 
 function BillingLegacyUserMessage() {
+  const theme = useTheme()
   const { isPaidPlan, isGrandfathered, isGrandfatheringExpired, account } =
     useContext(SubscriptionContext)
 
@@ -33,7 +34,7 @@ function BillingLegacyUserMessage() {
     <Wrap>
       {isGrandfatheringExpired && (
         <IconFrame
-          icon={<ErrorIcon color="icon-error" />}
+          icon={<ErrorIcon color={theme.colors['icon-danger']} />}
           textValue={message}
         />
       )}

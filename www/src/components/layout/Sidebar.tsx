@@ -379,7 +379,7 @@ function Sidebar(props: ComponentProps<typeof DSSidebar>) {
           )}
           <MenuItem
             onClick={handleLogout}
-            color="icon-error"
+            color={theme.colors['icon-danger']}
           >
             <LogoutIcon mr={1} />
             Logout

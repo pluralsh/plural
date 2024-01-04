@@ -21,6 +21,7 @@ import { DEFAULT_CHART_ICON } from '../../constants'
 
 import {
   DetailContainer,
+  PackageActions,
   PackageGrade,
   PackageHeader,
   PackageProperty,

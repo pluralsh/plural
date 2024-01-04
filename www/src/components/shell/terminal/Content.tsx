@@ -4,6 +4,8 @@ import { Dispatch, useCallback, useEffect, useMemo, useState } from 'react'
 import { Button, ErrorIcon, Modal } from '@pluralsh/design-system'
 import IsEmpty from 'lodash/isEmpty'
 
+import { useTheme } from 'styled-components'
+
 import { CLOUD_SHELL_QUERY, SETUP_SHELL_MUTATION } from '../queries'
 import { RootMutationType } from '../../../generated/graphql'
 
@@ -45,6 +47,7 @@ import { Sidebar } from './sidebar/Sidebar'
 // }
 
 function MissingPermissionsModal({ refetch, missing }): JSX.Element {
+  const theme = useTheme()
   const [open, setOpen] = useState(true)
   const [loading, setLoading] = useState(false)
 
@@ -60,7 +63,7 @@ function MissingPermissionsModal({ refetch, missing }): JSX.Element {
       onClose={() => setOpen(false)}
       header={
         <Flex gap="small">
-          <ErrorIcon color="icon-error" />
+          <ErrorIcon color={theme.colors['icon-danger']} />
           <Span lineHeight="normal">cloud credentials error</Span>
         </Flex>
       }

@@ -18,9 +18,7 @@ export default function PackageConfiguration() {
     >
       <Div>
         <PageTitle heading="Configuration">
-          <Flex display-desktop-up="none">
-            <PackageActions />
-          </Flex>
+          <PackageActions />
         </PageTitle>
       </Div>
       <Flex

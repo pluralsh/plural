@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@apollo/client'
-import { Div, Span } from 'honorable'
+import { Span } from 'honorable'
 import {
   Button,
   ContentCard,

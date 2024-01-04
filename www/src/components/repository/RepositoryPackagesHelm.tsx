@@ -40,7 +40,7 @@ const VersionDescSC = styled.p(({ theme }) => ({
   margin: 0,
   marginTop: theme.spacing.xxsmall,
 }))
-const IconSC = styled.img(({ theme }) => ({
+const IconSC = styled.img((_) => ({
   width: 64,
 }))
 

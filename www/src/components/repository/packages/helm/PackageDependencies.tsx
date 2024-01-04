@@ -7,7 +7,6 @@ import remove from 'lodash/remove'
 import uniqueId from 'lodash/uniqueId'
 import { useOutletContext } from 'react-router-dom'
 import { PageTitle, SubTab, TabList, TabPanel } from '@pluralsh/design-system'
-import { Flex } from 'honorable'
 
 import TreeGraph from '../../../utils/TreeGraph'
 import { CLOSURE_Q } from '../queries'

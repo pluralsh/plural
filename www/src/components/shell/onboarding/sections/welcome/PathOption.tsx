@@ -1,4 +1,3 @@
-import { Div, Flex, Span } from 'honorable'
 import styled from 'styled-components'
 
 import OnboardingCardButton from '../../OnboardingCardButton'
@@ -9,7 +8,7 @@ export const OnboardCardInnerSC = styled.div(({ theme }) => ({
   gap: theme.spacing.xxsmall,
 }))
 export const OnboardCardIconSC = styled.div<{ $disabled }>(
-  ({ theme, $disabled: disabled }) => ({
+  ({ $disabled: disabled }) => ({
     marginLeft: 'auto',
     marginRight: 'auto',
     maxWidth: 40,
@@ -22,7 +21,7 @@ export const OnBoardCardHeaderSC = styled.span<{ $disabled }>(
   ({ theme, $disabled: disabled }) => ({
     ...theme.partials.text.body1Bold,
     marginTop: theme.spacing.small,
-    color: disabled ? theme.colors['text-disabled'] : theme.colors['text'],
+    color: disabled ? theme.colors['text-disabled'] : theme.colors.text,
   })
 )
 export const OnBoardCardDescSC = styled.span<{ $disabled }>(

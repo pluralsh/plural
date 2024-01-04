@@ -8,16 +8,14 @@ import {
 } from '@pluralsh/design-system'
 import { Flex, Span } from 'honorable'
 import { useContext, useEffect, useMemo, useState } from 'react'
+import { useTheme } from 'styled-components'
 
 import { ImpersonationContext } from '../../../context/impersonation'
-
 import GCPLogoIcon from '../../assets/GCPLogoIcon.svg'
-
 import { OnboardingContext } from '../../context/onboarding'
 import { CloudType, OnboardingPath } from '../../context/types'
 
 import { CloudOption } from './CloudOption'
-import { useTheme } from 'styled-components'
 
 function ProviderSelection() {
   const theme = useTheme()

@@ -2,9 +2,9 @@ import { Tooltip, WrapWithIf } from '@pluralsh/design-system'
 
 import OnboardingCardButton from '../../OnboardingCardButton'
 import {
-  OnboardCardIconSC,
-  OnBoardCardHeaderSC,
   OnBoardCardDescSC,
+  OnBoardCardHeaderSC,
+  OnboardCardIconSC,
   OnboardCardInnerSC,
 } from '../welcome/PathOption'
 

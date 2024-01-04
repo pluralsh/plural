@@ -1,37 +1,9 @@
-import styled from 'styled-components'
-
-import OnboardingCardButton from '../../OnboardingCardButton'
-
-export const OnboardCardInnerSC = styled.div(({ theme }) => ({
-  display: 'flex',
-  flexDirection: 'column',
-  gap: theme.spacing.xxsmall,
-}))
-export const OnboardCardIconSC = styled.div<{ $disabled }>(
-  ({ $disabled: disabled }) => ({
-    marginLeft: 'auto',
-    marginRight: 'auto',
-    maxWidth: 40,
-    maxHeight: 40,
-    overflow: 'visible',
-    ...(disabled ? { filter: 'grayscale(100%)' } : {}),
-  })
-)
-export const OnBoardCardHeaderSC = styled.span<{ $disabled }>(
-  ({ theme, $disabled: disabled }) => ({
-    ...theme.partials.text.body1Bold,
-    marginTop: theme.spacing.small,
-    color: disabled ? theme.colors['text-disabled'] : theme.colors.text,
-  })
-)
-export const OnBoardCardDescSC = styled.span<{ $disabled }>(
-  ({ theme, $disabled: disabled }) => ({
-    ...theme.partials.text.caption,
-    color: disabled
-      ? theme.colors['text-disabled']
-      : theme.colors['text-light'],
-  })
-)
+import OnboardingCardButton, {
+  OnBoardCardDescSC,
+  OnBoardCardHeaderSC,
+  OnboardCardIconSC,
+  OnboardCardInnerSC,
+} from '../../OnboardingCardButton'
 
 function PathOption({
   icon,

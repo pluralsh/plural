@@ -4,7 +4,6 @@ import {
   GitHubLogoIcon,
   GitLabLogoIcon,
 } from '@pluralsh/design-system'
-import { Div, Flex, Text } from 'honorable'
 import { useCallback, useContext, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
@@ -14,16 +13,28 @@ import useOnboarded from '../../../hooks/useOnboarded'
 import { useContextStorage, useSectionState } from '../../context/hooks'
 import { OnboardingContext } from '../../context/onboarding'
 import { ConfigureCloudSectionState } from '../../context/types'
-import OnboardingCardButton from '../../OnboardingCardButton'
+import OnboardingCardButton, {
+  OnBoardCardHeaderSC,
+  OnboardCardIconSC,
+  OnboardCardInnerSC,
+} from '../../OnboardingCardButton'
+import { DefaultTheme, useTheme } from 'styled-components'
 
-const providerToLogo = {
-  github: <GitHubLogoIcon size={40} />,
-  gitlab: (
-    <GitLabLogoIcon
-      size={40}
-      fullColor
-    />
-  ),
+function providerToLogo(provider, theme: DefaultTheme) {
+  return {
+    github: (
+      <GitHubLogoIcon
+        size={40}
+        color={theme.colors['icon-default']}
+      />
+    ),
+    gitlab: (
+      <GitLabLogoIcon
+        size={40}
+        fullColor
+      />
+    ),
+  }[provider]
 }
 
 const providerToDisplayName = {
@@ -32,6 +43,7 @@ const providerToDisplayName = {
 }
 
 function ProviderSelection({ data }) {
+  const theme = useTheme()
   const devToken = useDevToken()
   const navigate = useNavigate()
   const { fresh: isOnboarding, mutation } = useOnboarded()
@@ -59,11 +71,19 @@ function ProviderSelection({ data }) {
   )
 
   return (
-    <Flex
-      direction="column"
-      gap="xlarge"
+    <div
+      css={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: theme.spacing['xlarge'],
+      }}
     >
-      <Flex gap="large">
+      <div
+        css={{
+          display: 'flex',
+          gap: theme.spacing['large'],
+        }}
+      >
         {data?.scmAuthorization?.map(({ provider, url }) => (
           <OnboardingCardButton
             data-phid={`oauth-${provider.toLowerCase()}`}
@@ -93,26 +113,18 @@ function ProviderSelection({ data }) {
               window.location = url
             }}
           >
-            <Flex direction="column">
-              <Div
-                marginHorizontal="auto"
-                maxWidth={40}
-                maxHeight={40}
-              >
-                {providerToLogo[provider.toLowerCase()] || null}
-              </Div>
-              <Text
-                body1
-                bold
-                marginTop="medium"
-              >
+            <OnboardCardInnerSC>
+              <OnboardCardIconSC>
+                {providerToLogo(provider.toLowerCase(), theme) || null}
+              </OnboardCardIconSC>
+              <OnBoardCardHeaderSC>
                 Create a {providerToDisplayName[provider.toLowerCase()] || null}{' '}
                 repository
-              </Text>
-            </Flex>
+              </OnBoardCardHeaderSC>
+            </OnboardCardInnerSC>
           </OnboardingCardButton>
         ))}
-      </Flex>
+      </div>
 
       <div data-phid="git-callout">
         <Callout
@@ -129,11 +141,13 @@ function ProviderSelection({ data }) {
         </Callout>
       </div>
 
-      <Flex
-        gap="medium"
-        justify={isOnboarding ? 'space-between' : 'flex-end'}
-        borderTop="1px solid border"
-        paddingTop="large"
+      <div
+        css={{
+          gap: theme.spacing.medium,
+          justify: isOnboarding ? 'space-between' : 'flex-end',
+          borderTop: theme.borders.default,
+          paddingTop: theme.spacing.large,
+        }}
       >
         {isOnboarding && (
           <Button
@@ -147,10 +161,13 @@ function ProviderSelection({ data }) {
             Skip onboarding
           </Button>
         )}
-        <Flex
-          grow={isOnboarding ? 0 : 1}
-          gap="medium"
-          justify="space-between"
+        <div
+          css={{
+            display: 'flex',
+            flexGrow: isOnboarding ? 0 : 1,
+            gap: theme.spacing.medium,
+            justifyContent: 'space-between',
+          }}
         >
           <Button
             data-ph-id="back-from-repo-select"
@@ -166,9 +183,9 @@ function ProviderSelection({ data }) {
           >
             Continue
           </Button>
-        </Flex>
-      </Flex>
-    </Flex>
+        </div>
+      </div>
+    </div>
   )
 }
 

@@ -40,7 +40,6 @@ import { formatLocation } from '../../utils/geo'
 import { Chloropleth } from '../utils/Chloropleth'
 import { Confirm } from '../utils/Confirm'
 import { DeleteIconButton } from '../utils/IconButtons'
-
 import LoadingIndicator from '../utils/LoadingIndicator'
 
 import { ListItem } from './ListItem'
@@ -75,7 +74,6 @@ function TokenAudits({ token }: any) {
         sizes={['25%', '25%', '25%', '25%']}
         width="100%"
         height="100%"
-        background="fill-one"
       >
         <Box fill>
           <StandardScroller

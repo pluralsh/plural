@@ -258,6 +258,7 @@ export default function PackageDependencies() {
           </SubTab>
         ))}
       </TabList>
+      {/* @ts-ignore */}
       <TabPanel
         stateRef={tabStateRef}
         css={{

@@ -160,7 +160,7 @@ export const DOCKER_QUERY = gql`
   ${DockerRepoFragment}
 `
 export const TESTS_QUERY = gql`
-  query RespositoryTests($repositoryId: ID, $cursor: String) {
+  query RepositoryTests($repositoryId: ID, $cursor: String) {
     tests(after: $cursor, first: 12, repositoryId: $repositoryId) {
       pageInfo {
         ...PageInfo

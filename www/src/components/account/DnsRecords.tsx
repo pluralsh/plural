@@ -3,7 +3,7 @@ import { Box } from 'grommet'
 import { Avatar, Button, Div, Flex, Span } from 'honorable'
 import moment from 'moment'
 import { useState } from 'react'
-import { ArrowLeftIcon } from '@pluralsh/design-system'
+import { AppIcon, ArrowLeftIcon } from '@pluralsh/design-system'
 
 import { Placeholder } from '../utils/Placeholder'
 import {
@@ -20,6 +20,7 @@ import { ProviderIcon } from '../utils/ProviderIcon'
 import { Confirm } from '../utils/Confirm'
 
 import { DELETE_DNS_RECORD, DNS_RECORDS } from './queries'
+import { DnsRecordFragment } from '../../generated/graphql'
 
 function DeleteRecord({ record, domain }: any) {
   const [confirm, setConfirm] = useState(false)
@@ -104,7 +105,7 @@ export function DnsRecords({ domain, setDomain }: any) {
             items={edges}
             loading={loading}
             placeholder={Placeholder}
-            mapper={({ node }, { next }) => (
+            mapper={({ node }: { node: DnsRecordFragment }, { next }) => (
               <TableRow
                 key={node.id}
                 last={!next.node}
@@ -153,12 +154,13 @@ export function DnsRecords({ domain, setDomain }: any) {
                     gap="xsmall"
                     align="center"
                   >
-                    <Avatar
-                      src={node.creator.avatar}
-                      name={node.creator.name}
-                      size={30}
+                    <AppIcon
+                      url={node?.creator?.avatar || undefined}
+                      name={node.creator?.name || undefined}
+                      size="xxsmall"
+                      spacing={node?.creator?.avatar ? 'none' : undefined}
                     />
-                    <Span color="text-light">{node.creator.name}</Span>
+                    <Span color="text-light">{node.creator?.name}</Span>
                   </Box>
                 </TableData>
               </TableRow>

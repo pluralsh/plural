@@ -33,6 +33,7 @@ import { MoreMenu } from './MoreMenu'
 import { BindingInput } from './Typeaheads'
 import { sanitize } from './utils'
 import { DnsRecords } from './DnsRecords'
+import { DnsRecordFragment } from '../../generated/graphql'
 
 function Header({ q, setQ }: any) {
   return (
@@ -197,7 +198,15 @@ function AccessPolicy({ domain: { id, accessPolicy }, edit, setEdit }: any) {
   )
 }
 
-function Domain({ node, last, setDomain }: any) {
+function Domain({
+  node,
+  last,
+  setDomain,
+}: {
+  node: DnsRecordFragment
+  last: any
+  setDomain: any
+}) {
   return (
     <TableRow
       last={last}
@@ -217,11 +226,11 @@ function Domain({ node, last, setDomain }: any) {
         >
           <AppIcon
             url={node?.creator?.avatar || undefined}
-            name={node.creator.name}
+            name={node.creator?.name || undefined}
             size="xxsmall"
             spacing={node?.creator?.avatar ? 'none' : undefined}
           />
-          <Span color="text-light">{node.creator.name}</Span>
+          <Span color="text-light">{node.creator?.name}</Span>
         </Box>
       </TableData>
       <TableData>{moment(node.insertedAt).format('lll')}</TableData>
@@ -243,8 +252,6 @@ function DomainsInner({ q, setDomainSelected }: any) {
     },
     [setDomainSelected, setDomain]
   )
-
-  if (!data) return null
 
   if (domain) {
     return (

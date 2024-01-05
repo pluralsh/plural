@@ -1,12 +1,12 @@
-import { memo, useRef, useState } from 'react'
+import { memo, useMemo, useRef, useState } from 'react'
 import { Box, Text } from 'grommet'
 import { useQuery } from '@apollo/client'
 import cloneDeep from 'lodash/cloneDeep'
 import groupBy from 'lodash/groupBy'
 import remove from 'lodash/remove'
-import uniqueId from 'lodash/uniqueId'
 import { useOutletContext } from 'react-router-dom'
 import { PageTitle, SubTab, TabList, TabPanel } from '@pluralsh/design-system'
+import { useTheme } from 'styled-components'
 
 import TreeGraph from '../../../utils/TreeGraph'
 import { CLOSURE_Q } from '../queries'
@@ -14,11 +14,29 @@ import { DEFAULT_CHART_ICON, DEFAULT_TF_ICON, Tools } from '../../../constants'
 import { PackageActions } from '../misc'
 
 const GRAPH_HEIGHT = '400px'
-const OPTIONAL_COLOR = '#9095A2'
 const OPTIONAL_DASHARRAY = '2'
-const LEGEND = {
-  Required: { color: '#fff', dasharray: '0' },
-  Optional: { color: OPTIONAL_COLOR, dasharray: OPTIONAL_DASHARRAY },
+
+const useLegendColors = () => {
+  const theme = useTheme()
+
+  return useMemo(
+    () => ({
+      optional: theme.colors.text,
+      required: theme.colors['text-light'],
+    }),
+    [theme]
+  )
+}
+
+const useLegend = () => {
+  const legendColors = useLegendColors()
+  return useMemo(
+    () => ({
+      Required: { color: legendColors.required, dasharray: '0' },
+      Optional: { color: legendColors.optional, dasharray: OPTIONAL_DASHARRAY },
+    }),
+    [legendColors]
+  )
 }
 
 function asDep({ __typename, name: depname, version, children }: any) {
@@ -53,10 +71,12 @@ function mapify(deps) {
   return map
 }
 
-function closureDep({ helm, terraform, dep }, children) {
+function closureDep({ helm, terraform, dep }, children, legendColors) {
   const name = `${(helm || terraform).name} ${dep.version || ''}`
   const image = helm ? DEFAULT_CHART_ICON : DEFAULT_TF_ICON
-  const strokeColor = dep.optional ? OPTIONAL_COLOR : null
+  const strokeColor = dep.optional
+    ? legendColors.optional
+    : legendColors.required
   const strokeDasharray = dep.optional ? OPTIONAL_DASHARRAY : null
 
   return {
@@ -68,11 +88,11 @@ function closureDep({ helm, terraform, dep }, children) {
   }
 }
 
-function compileGraph(res, closure) {
+function compileGraph(res, closure, legendColors) {
   const resource = res.helm || res.terraform
 
   if (!resource.dependencies || !resource.dependencies.dependencies)
-    return closureDep(res, [])
+    return closureDep(res, [], legendColors)
 
   const {
     dependencies: { dependencies },
@@ -95,38 +115,85 @@ function compileGraph(res, closure) {
   )
   const children = helmChildren
     .concat(terraformChildren)
-    .map((child) => compileGraph(child, closure))
+    .map((child) => compileGraph(child, closure, legendColors))
 
-  return closureDep(res, children)
+  return closureDep(res, children, legendColors)
 }
 
 const FullDependencies = memo(({ resource }: any) => {
+  const legendColors = useLegendColors()
+  const legend = useLegend()
   const type = depType(resource)
   const { data, loading } = useQuery(CLOSURE_Q, {
     variables: { id: resource.id, type },
   })
 
-  if (loading || !data) return null
-  const closure = groupBy(data.closure, ({ helm }) =>
-    helm ? 'helm' : 'terraform'
-  )
-  const graph = compileGraph(
-    { [type.toLowerCase()]: resource, dep: {} },
-    cloneDeep(closure)
-  )
+  const graph = useMemo(() => {
+    if (loading || !data) return null
+    const closure = groupBy(data.closure, ({ helm }) =>
+      helm ? 'helm' : 'terraform'
+    )
+
+    return compileGraph(
+      { [type.toLowerCase()]: resource, dep: {} },
+      cloneDeep(closure),
+      legendColors
+    )
+  }, [legendColors, data, loading, resource, type])
+
+  if (!graph) return null
 
   return (
     <TreeGraph
-      id={`${uniqueId('full_')}-full-tree`}
       tree={graph}
       height={GRAPH_HEIGHT}
-      legend={LEGEND}
+      legend={legend}
     />
   )
 })
 
-const Dependencies = memo(({ name, dependencies, resource }: any) => {
-  if (!dependencies || !dependencies.dependencies) {
+const Dependencies = memo(({ dependencies, resource }: any) => {
+  const legend = useLegend()
+  const legendColors = useLegendColors()
+
+  const tree = useMemo(() => {
+    const deps = dependencies?.dependencies?.map(
+      ({ name, version, ...dep }) => {
+        const strokeColor = dep.optional
+          ? legendColors.optional
+          : legendColors.required
+        const strokeDasharray = dep.optional ? OPTIONAL_DASHARRAY : null
+
+        if (dep.type === Tools.TERRAFORM) {
+          return {
+            ...dep,
+            strokeColor,
+            strokeDasharray,
+            name: `${name} ${version || ''}`,
+            image: DEFAULT_TF_ICON,
+          }
+        }
+        if (dep.type === Tools.HELM) {
+          return {
+            ...dep,
+            strokeColor,
+            strokeDasharray,
+            name: `${name} ${version || ''}`,
+            image: DEFAULT_CHART_ICON,
+          }
+        }
+
+        return dep
+      }
+    )
+    if (!deps) {
+      return null
+    }
+
+    return asDep({ ...resource, children: deps })
+  }, [dependencies, legendColors, resource])
+
+  if (!tree) {
     return (
       <Box pad="small">
         <Text size="small">No dependencies</Text>
@@ -134,38 +201,11 @@ const Dependencies = memo(({ name, dependencies, resource }: any) => {
     )
   }
 
-  const deps = dependencies.dependencies.map(({ name, version, ...dep }) => {
-    const strokeColor = dep.optional ? OPTIONAL_COLOR : null
-    const strokeDasharray = dep.optional ? OPTIONAL_DASHARRAY : null
-
-    if (dep.type === Tools.TERRAFORM) {
-      return {
-        ...dep,
-        strokeColor,
-        strokeDasharray,
-        name: `${name} ${version || ''}`,
-        image: DEFAULT_TF_ICON,
-      }
-    }
-    if (dep.type === Tools.HELM) {
-      return {
-        ...dep,
-        strokeColor,
-        strokeDasharray,
-        name: `${name} ${version || ''}`,
-        image: DEFAULT_CHART_ICON,
-      }
-    }
-
-    return dep
-  })
-
   return (
     <TreeGraph
-      id={`${uniqueId(name)}-tree`}
-      tree={asDep({ ...resource, children: deps })}
+      tree={tree}
       height={GRAPH_HEIGHT}
-      legend={LEGEND}
+      legend={legend}
     />
   )
 })
@@ -176,6 +216,7 @@ const DIRECTORY = [
 ]
 
 export default function PackageDependencies() {
+  const theme = useTheme()
   const { helmChart, terraformChart, currentHelmChart, currentTerraformChart } =
     useOutletContext() as any
   const chart = helmChart || terraformChart
@@ -186,49 +227,53 @@ export default function PackageDependencies() {
   const selectedTabKey = full ? 'full' : 'immediate'
 
   return (
-    <Box
-      fill
-      gap="small"
+    <div
+      css={{
+        display: 'flex',
+        flexDirection: 'column',
+        overflow: 'hidden',
+        height: '100%',
+      }}
     >
       <PageTitle heading="Dependencies">
         <PackageActions />
       </PageTitle>
+      <TabList
+        stateRef={tabStateRef}
+        stateProps={{
+          orientation: 'horizontal',
+          selectedKey: selectedTabKey,
+          onSelectionChange: (key) => setFull(key === 'full'),
+        }}
+        css={{
+          marginBottom: theme.spacing.small,
+        }}
+      >
+        {DIRECTORY.map(({ label, key }) => (
+          <SubTab
+            key={key}
+            textValue={label}
+          >
+            {label}
+          </SubTab>
+        ))}
+      </TabList>
       <TabPanel
         stateRef={tabStateRef}
-        as={
-          <Box
-            pad={{ right: 'small' }}
-            overflow={{ vertical: 'auto' }}
-          />
-        }
+        css={{
+          display: 'flex',
+          flexDirection: 'column',
+          overflow: 'auto',
+        }}
       >
-        <TabList
-          stateRef={tabStateRef}
-          stateProps={{
-            orientation: 'horizontal',
-            selectedKey: selectedTabKey,
-            onSelectionChange: (key) => setFull(key === 'full'),
-          }}
-          marginBottom="small"
-        >
-          {DIRECTORY.map(({ label, key }) => (
-            <SubTab
-              key={key}
-              textValue={label}
-            >
-              {label}
-            </SubTab>
-          ))}
-        </TabList>
         {full && <FullDependencies resource={chart} />}
         {!full && (
           <Dependencies
-            name={chart.name}
             resource={chart}
             dependencies={(current || chart).dependencies}
           />
         )}
       </TabPanel>
-    </Box>
+    </div>
   )
 }

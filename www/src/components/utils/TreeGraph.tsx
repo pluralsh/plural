@@ -1,8 +1,9 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useId, useRef } from 'react'
 import { Box } from 'grommet'
 import { hierarchy, tree as treeLayout } from 'd3-hierarchy'
 import { select } from 'd3-selection'
 import { Div, Span } from 'honorable'
+import { DefaultTheme, useTheme } from 'styled-components'
 
 function diagonal(d) {
   return `M${d.x},${d.y}C${d.x},${(d.y + d.parent.y) / 2} ${d.parent.x},${
@@ -10,7 +11,7 @@ function diagonal(d) {
   } ${d.parent.x},${d.parent.y}`
 }
 
-function renderTree(id, tree, height, width) {
+function renderTree(id, tree, height, width, theme: DefaultTheme) {
   const margin = {
     top: 50,
     right: 90,
@@ -25,7 +26,7 @@ function renderTree(id, tree, height, width) {
   const root = hierarchy(tree, (d) => d.children)
 
   treemap(root)
-  const svg = select(`#${id}`)
+  const svg = select(`#${CSS.escape(id)}`)
     .append('svg')
     .attr('width', width)
     .attr('height', height)
@@ -40,7 +41,11 @@ function renderTree(id, tree, height, width) {
     .append('path')
     .attr('d', diagonal)
     .style('fill', 'none')
-    .attr('stroke', (d) => d.data.strokeColor || '#ccc')
+    .attr('stroke', (d) => {
+      console.log('d', d)
+
+      return d.data.strokeColor || theme.colors.text
+    })
     .attr('stroke-dasharray', (d) => d.data.strokeDasharray || '0')
 
   const nodes = svg
@@ -48,12 +53,11 @@ function renderTree(id, tree, height, width) {
     .data(root.descendants())
     .enter()
     .append('g')
-    .attr('style', 'border: 1px solid black')
     .attr('transform', (d) => `translate(${d.x}, ${d.y})`)
 
   nodes
     .append('text')
-    .style('fill', 'white')
+    .style('fill', theme.colors.text)
     .attr('dy', '.35em')
     .attr('y', (d) => (d.children ? -32 : 32))
     .style('text-anchor', 'middle')
@@ -68,35 +72,50 @@ function renderTree(id, tree, height, width) {
     .attr('xlink:href', (d) => d.data.image)
 }
 
-export default function TreeGraph({ id, tree, width, height, legend }: any) {
+export default function TreeGraph({ tree, width, height, legend }: any) {
+  const id = useId()
+  const theme = useTheme()
   const boxRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (!boxRef.current) return
     const { width, height } = boxRef.current.getBoundingClientRect()
 
-    renderTree(id, tree, height, width)
+    renderTree(id, tree, height, width, theme)
     const { current } = boxRef
 
     return () => {
-      current.removeChild(current.children[0])
+      console.log('removing', current)
+      if (current) {
+        current.innerHTML = ''
+      }
     }
-  }, [id, boxRef, tree])
+  }, [id, boxRef, tree, theme])
 
   return (
-    <Box
-      style={{ overflow: 'auto' }}
-      ref={boxRef}
-      id={id}
-      width={width}
-      height={height}
-      // @ts-expect-error
-      position="relative"
+    <div
+      css={{
+        position: 'relative',
+      }}
     >
+      <div
+        id={id}
+        ref={boxRef}
+        className="svg-box"
+        css={{
+          position: 'relative',
+          overflow: 'hidden',
+          width,
+          height,
+        }}
+      />
       {legend && (
-        <Div
-          position="absolute"
-          right="8px"
+        <div
+          css={{
+            position: 'absolute',
+            top: 0,
+            right: 8,
+          }}
         >
           {Object.entries(legend).map(([k, v], index) => (
             <Box
@@ -132,8 +151,8 @@ export default function TreeGraph({ id, tree, width, height, legend }: any) {
               <Span>{k}</Span>
             </Box>
           ))}
-        </Div>
+        </div>
       )}
-    </Box>
+    </div>
   )
 }

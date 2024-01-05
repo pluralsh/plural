@@ -109,7 +109,7 @@ function ExpirationToast({
     messageOpening = (
       <>Last chance to upgrade! Extended feature access ending {endDate}.</>
     )
-    severity = 'error'
+    severity = 'danger'
     dismissState = EXPIRATION_NOTICE_STATE.DISMISSED_2
   } else if (remainingDays <= 20) {
     messageOpening = <>Extended feature access ending {endDate}.</>

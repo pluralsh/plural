@@ -1,3 +1,4 @@
+import { ComponentProps } from 'react'
 import { Box } from 'grommet'
 import { useOutletContext } from 'react-router-dom'
 import { Div, Flex, H2, Img } from 'honorable'
@@ -8,10 +9,7 @@ import {
   ListBoxItemChipList,
   Select,
 } from '@pluralsh/design-system'
-
 import styled, { useTheme } from 'styled-components'
-
-import { ComponentProps } from 'react'
 
 import { extendConnection } from '../../../utils/graphql'
 

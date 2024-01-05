@@ -1,6 +1,13 @@
 import 'xterm/css/xterm.css'
 
-import { useEffect, useMemo, useRef, useState } from 'react'
+import {
+  ComponentProps,
+  ReactNode,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import { useApolloClient, useSubscription } from '@apollo/client'
 import moment from 'moment'
 import { Div, Flex, P, Span } from 'honorable'
@@ -34,8 +41,15 @@ const statusAttrs = {
   QUEUED: { severity: 'neutral', icon: <StatusIpIcon /> },
   RUNNING: { severity: 'info', loading: true },
   SUCCEEDED: { severity: 'success', icon: <StatusOkIcon /> },
-  FAILED: { severity: 'error', icon: <ErrorIcon /> },
-}
+  FAILED: { severity: 'danger', icon: <ErrorIcon /> },
+} as const satisfies Record<
+  string,
+  {
+    severity: ComponentProps<typeof Chip>['severity']
+    loading?: boolean
+    icon?: ReactNode
+  }
+>
 
 function Status({ status }: any) {
   return (

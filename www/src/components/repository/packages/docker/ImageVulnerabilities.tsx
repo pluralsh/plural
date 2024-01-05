@@ -147,7 +147,7 @@ function VulnerabilityDetail({ v, last }: any) {
                   colorMap={{
                     PHYSICAL: 'success',
                     LOCAL: 'warning',
-                    ADJACENT: 'error',
+                    ADJACENT: 'danger',
                     NETWORK: 'critical',
                   }}
                 />
@@ -168,7 +168,11 @@ function VulnerabilityDetail({ v, last }: any) {
                     { name: 'Low', value: 'LOW' },
                     { name: 'None', value: 'NONE' },
                   ]}
-                  colorMap={{ HIGH: 'warning', LOW: 'error', NONE: 'critical' }}
+                  colorMap={{
+                    HIGH: 'warning',
+                    LOW: 'danger',
+                    NONE: 'critical',
+                  }}
                 />
                 <CVSSRow
                   text="User interaction"
@@ -177,7 +181,7 @@ function VulnerabilityDetail({ v, last }: any) {
                     { name: 'Required', value: 'REQUIRED' },
                     { name: 'None', value: 'NONE' },
                   ]}
-                  colorMap={{ REQUIRED: 'warning', NONE: 'error' }}
+                  colorMap={{ REQUIRED: 'warning', NONE: 'danger' }}
                 />
               </div>
               <div>
@@ -190,7 +194,11 @@ function VulnerabilityDetail({ v, last }: any) {
                     { name: 'Low', value: 'LOW' },
                     { name: 'High', value: 'HIGH' },
                   ]}
-                  colorMap={{ NONE: 'warning', LOW: 'error', HIGH: 'critical' }}
+                  colorMap={{
+                    NONE: 'warning',
+                    LOW: 'danger',
+                    HIGH: 'critical',
+                  }}
                 />
                 <CVSSRow
                   text="Integrity"
@@ -200,7 +208,11 @@ function VulnerabilityDetail({ v, last }: any) {
                     { name: 'Low', value: 'LOW' },
                     { name: 'High', value: 'HIGH' },
                   ]}
-                  colorMap={{ NONE: 'warning', LOW: 'error', HIGH: 'critical' }}
+                  colorMap={{
+                    NONE: 'warning',
+                    LOW: 'danger',
+                    HIGH: 'critical',
+                  }}
                 />
                 <CVSSRow
                   text="Availability"
@@ -210,7 +222,11 @@ function VulnerabilityDetail({ v, last }: any) {
                     { name: 'Low', value: 'LOW' },
                     { name: 'High', value: 'HIGH' },
                   ]}
-                  colorMap={{ NONE: 'warning', LOW: 'error', HIGH: 'critical' }}
+                  colorMap={{
+                    NONE: 'warning',
+                    LOW: 'danger',
+                    HIGH: 'critical',
+                  }}
                 />
               </div>
             </div>

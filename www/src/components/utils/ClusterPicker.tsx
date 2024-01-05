@@ -32,7 +32,7 @@ function ClusterPickerReadyChip({ upgradeInfo }: ClusterPickerReadyChipProps) {
 
   return (
     <Chip
-      severity={ready ? 'success' : 'error'}
+      severity={ready ? 'success' : 'danger'}
       size="small"
       hue="lightest"
     >

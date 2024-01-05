@@ -1,7 +1,6 @@
 import { useState } from 'react'
-import { Box, Collapsible } from 'grommet'
+import { Collapsible } from 'grommet'
 import { useOutletContext } from 'react-router-dom'
-import { A, Flex, P, Span } from 'honorable'
 import {
   ArrowTopRightIcon,
   Chip,
@@ -12,131 +11,130 @@ import {
   PageTitle,
 } from '@pluralsh/design-system'
 import capitalize from 'lodash/capitalize'
-import { useTheme } from 'styled-components'
+import styled, { useTheme } from 'styled-components'
 
 import { Table, TableData, TableRow } from '../../../utils/Table'
 import { AttackVector } from '../../../constants'
 import { PackageGrade, chipSeverity } from '../misc'
 
+const H3 = styled.h3(({ theme }) => ({
+  margin: 0,
+  ...theme.partials.text.overline,
+  color: theme.colors['text-xlight'],
+}))
+const H4 = styled.h4(({ theme }) => ({
+  margin: 0,
+  ...theme.partials.text.body2Bold,
+}))
+const PBody2Light = styled.p(({ theme }) => ({
+  margin: 0,
+  ...theme.partials.text.body2,
+  color: theme.colors['text-light'],
+}))
+const LinkOut = styled.a(({ theme }) => ({
+  ...theme.partials.text.inlineLink,
+  display: 'flex',
+  alignItems: 'center',
+  paddingRight: theme.spacing.small,
+  gap: theme.spacing.xsmall,
+}))
+
+const CVSSRowSC = styled.div(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  marginTop: theme.spacing.small,
+  gap: theme.spacing.xsmall,
+  '.cvssRowContent': {
+    display: 'flex',
+    gap: theme.spacing.xsmall,
+    flexWrap: 'wrap',
+  },
+}))
+
 function CVSSRow({ text, value, options, colorMap }: any) {
   return (
-    <Box
-      direction="column"
-      margin={{ top: 'small' }}
-      gap="xsmall"
-    >
-      <P
-        body2
-        fontWeight={600}
-      >
-        {text}
-      </P>
-      <Box
-        direction="row"
-        gap="xsmall"
-        wrap
-      >
+    <CVSSRowSC>
+      <H4>{text}</H4>
+      <div className="cvssRowContent">
         {options.map(({ name, value: val }) => (
           <Chip
             key={name}
             severity={value === val ? colorMap[val] : null}
             size="small"
-            backgroundColor="fill-three"
-            borderColor="border-input"
-            opacity={value === val ? 1 : 0.4}
-            marginBottom="xxsmall"
+            fillLevel={3}
+            css={{
+              opacity: value === val ? 1 : 0.4,
+            }}
           >
             {name}
           </Chip>
         ))}
-      </Box>
-    </Box>
+      </div>
+    </CVSSRowSC>
   )
 }
+const VulnerabilityDetailSC = styled.div<{ $last: boolean }>(
+  ({ theme, $last: last }) => ({
+    borderBottom: last ? undefined : '1px solid border',
+    background: theme.colors['fill-two'],
+    padding: `${theme.spacing.medium}px ${theme.spacing.large}px`,
+    '.section': {
+      display: 'flex',
+      flex: '0 0 auto',
+      flexDirection: 'column',
+      gap: theme.spacing.small,
+    },
+    '.cvss': {
+      display: 'flex',
+      flex: '0 0 auto',
+      flexDirection: 'column',
+      gap: theme.spacing.small,
+    },
+    '.columns': {
+      display: 'flex',
+      gap: theme.spacing.medium,
+      '& > *': {
+        flexBasis: '50%',
+      },
+    },
+  })
+)
 
 function VulnerabilityDetail({ v, last }: any) {
   const theme = useTheme()
 
   if (!v.title && !v.description && !v.source && !v.score && !v.cvss) {
     return (
-      <div
-        css={{
-          borderBottom: last ? undefined : '1px solid border',
-          background: theme.colors['fill-two'],
-          padding: `${theme.spacing.medium}px ${theme.spacing.large}px `,
-        }}
-      >
+      <VulnerabilityDetailSC $last={last}>
         No details available.
-      </div>
+      </VulnerabilityDetailSC>
     )
   }
 
   return (
-    <div
-      css={{
-        borderBottom: last ? undefined : '1px solid border',
-        background: theme.colors['fill-two'],
-        padding: `${theme.spacing.medium}px ${theme.spacing.large}px `,
-      }}
-    >
-      {/* <Box
-      direction="column"
-      pad={{ horizontal: 'large', vertical: 'medium' }}
-      gap="small"
-      // @ts-expect-error
-      borderBottom={last ? undefined : '1px solid border'}
-      background="fill-two"
-      round={{ corner: 'bottom', size: '4px' }}
-    > */}
-      <Box
-        flex={false}
-        gap="small"
-      >
-        <P
-          body2
-          fontWeight={600}
-        >
-          {v.title}
-        </P>
-        <P
-          body2
-          color="text-light"
-        >
-          {v.description}
-        </P>
-      </Box>
-      <Box
-        flex={false}
-        gap="small"
-      >
+    <VulnerabilityDetailSC $last={last}>
+      <div className="section">
+        <H4>{v.title}</H4>
+        <PBody2Light>{v.description}</PBody2Light>
+      </div>
+      <div className="section">
         {v.source && v.score && (
-          <P
-            body2
-            fontWeight={600}
-            marginTop="large"
+          <H4
+            css={{
+              marginTop: theme.spacing.large,
+            }}
           >
             CVSS V3 Vector (source {v.source}, score: {v.score})
-          </P>
+          </H4>
         )}
         {v.cvss && (
-          <Flex direction="column">
-            <P
-              body2
-              color="text-light"
-            >
+          <div className="cvss">
+            <PBody2Light>
               Each metric is ordered from low to high severity.
-            </P>
-            <Flex marginTop="large">
-              <Box
-                basis="1/2"
-                margin={{ right: 'xsmall' }}
-              >
-                <P
-                  overline
-                  color="text-xlight"
-                >
-                  EXPLOITABILITY METRICS
-                </P>
+            </PBody2Light>
+            <div className="columns">
+              <div>
+                <H3>Exploitability metrics</H3>
                 <CVSSRow
                   text="Attack vector"
                   value={v.cvss.attackVector}
@@ -181,14 +179,9 @@ function VulnerabilityDetail({ v, last }: any) {
                   ]}
                   colorMap={{ REQUIRED: 'warning', NONE: 'error' }}
                 />
-              </Box>
-              <Box basis="1/2">
-                <P
-                  overline
-                  color="text-xlight"
-                >
-                  IMPACT METRICS
-                </P>
+              </div>
+              <div>
+                <H3>Impact metrics</H3>
                 <CVSSRow
                   text="Confidentiality"
                   value={v.cvss.confidentiality}
@@ -219,12 +212,12 @@ function VulnerabilityDetail({ v, last }: any) {
                   ]}
                   colorMap={{ NONE: 'warning', LOW: 'error', HIGH: 'critical' }}
                 />
-              </Box>
-            </Flex>
-          </Flex>
+              </div>
+            </div>
+          </div>
         )}
-      </Box>
-    </div>
+      </div>
+    </VulnerabilityDetailSC>
   )
 }
 
@@ -232,7 +225,12 @@ function Vulnerability({ v, last }: any) {
   const [open, setOpen] = useState(false)
 
   return (
-    <Flex direction="column">
+    <div
+      css={{
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+    >
       <TableRow
         last={last}
         hoverIndicator="fill-one-hover"
@@ -260,25 +258,17 @@ function Vulnerability({ v, last }: any) {
         </TableData>
         <TableData>
           {v.url ? (
-            <Box direction="row">
-              <A
-                inline
-                href={v.url}
-                onClick={(e) => e.stopPropagation()}
-                target="_blank"
-                rel="noopener noreferrer"
-                display="flex"
-                alignItems="center"
-              >
-                <Span>{v.vulnerabilityId}</Span>
-                <ArrowTopRightIcon
-                  marginLeft="xsmall"
-                  size={12}
-                />
-              </A>
-            </Box>
+            <LinkOut
+              href={v.url}
+              onClick={(e) => e.stopPropagation()}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <span>{v.vulnerabilityId}</span>
+              <ArrowTopRightIcon size={12} />
+            </LinkOut>
           ) : (
-            <Span>{v.vulnerabilityId}</Span>
+            <span>{v.vulnerabilityId}</span>
           )}
         </TableData>
         <TableData>{v.package}</TableData>
@@ -287,10 +277,9 @@ function Vulnerability({ v, last }: any) {
         <TableData>
           <Chip
             severity={chipSeverity[v.severity?.toLowerCase()]}
-            backgroundColor="fill-two"
-            borderColor="border-fill-two"
+            fillLevel={2}
           >
-            <Span fontWeight="600">{capitalize(v.severity)}</Span>
+            {capitalize(v.severity)}
           </Chip>
         </TableData>
       </TableRow>
@@ -303,43 +292,63 @@ function Vulnerability({ v, last }: any) {
           last={last}
         />
       </Collapsible>
-    </Flex>
+    </div>
   )
 }
+
+const ImageVulnerabilitiesSC = styled.div(({ theme }) => {
+  const mqDesktop =
+    `@media (min-width: ${theme.breakpoints.desktop}px)` as const
+
+  return {
+    display: 'flex',
+    flexDirection: 'column',
+    width: '100%',
+    height: '100%',
+    gap: theme.spacing.small,
+    '.titleContent': {
+      display: 'flex',
+      alignItems: 'center',
+      gap: theme.spacing.large,
+      '.codeline': {
+        maxWidth: 200,
+        [mqDesktop]: {
+          display: 'none',
+        },
+      },
+    },
+    '.content': {
+      display: 'flex',
+      flexDirection: 'column',
+      height: '100%',
+      overflow: 'hidden',
+      justifyContent: 'center',
+    },
+    '.table': {
+      background: theme.colors['fill-one'],
+      width: '100%',
+      maxHeight: '100%',
+      overflow: 'auto',
+    },
+  }
+})
 
 export default function ImageVulnerabilities() {
   const { image, imageName } = useOutletContext() as any
   const { vulnerabilities } = image
 
   return (
-    <Box
-      fill
-      flex={false}
-      gap="small"
-    >
+    <ImageVulnerabilitiesSC>
       <PageTitle heading="Vulnerabilities">
-        <Flex
-          alignItems="center"
-          gap="large"
-        >
+        <div className="titleContent">
           <PackageGrade
             grade={image.grade}
             large
           />
-          <Codeline
-            maxWidth="200px"
-            display-desktop-up="none"
-          >
-            {`docker pull ${imageName}`}
-          </Codeline>
-        </Flex>
+          <Codeline className="codeline">{`docker pull ${imageName}`}</Codeline>
+        </div>
       </PageTitle>
-      <Flex
-        flexDirection="vertical"
-        height="100%"
-        overflow="hidden"
-        justifyContent="center"
-      >
+      <div className="content">
         {vulnerabilities?.length ? (
           <Table
             headers={[
@@ -351,10 +360,7 @@ export default function ImageVulnerabilities() {
               'Severity',
             ]}
             sizes={['5%', '20%', '20%', '20%', '20%', '15%']}
-            background="fill-one"
-            width="100%"
-            maxHeight="100%"
-            overflow="auto"
+            className="table"
           >
             {vulnerabilities.map((v, ind, arr) => (
               <Vulnerability
@@ -376,7 +382,7 @@ export default function ImageVulnerabilities() {
             }
           />
         )}
-      </Flex>
-    </Box>
+      </div>
+    </ImageVulnerabilitiesSC>
   )
 }

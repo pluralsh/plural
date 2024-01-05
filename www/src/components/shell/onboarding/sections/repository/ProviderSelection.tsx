@@ -6,6 +6,7 @@ import {
 } from '@pluralsh/design-system'
 import { useCallback, useContext, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { DefaultTheme, useTheme } from 'styled-components'
 
 import { ImpersonationContext } from '../../../context/impersonation'
 import { useDevToken } from '../../../hooks/useDevToken'
@@ -18,7 +19,6 @@ import OnboardingCardButton, {
   OnboardCardIconSC,
   OnboardCardInnerSC,
 } from '../../OnboardingCardButton'
-import { DefaultTheme, useTheme } from 'styled-components'
 
 function providerToLogo(provider, theme: DefaultTheme) {
   return {
@@ -75,13 +75,13 @@ function ProviderSelection({ data }) {
       css={{
         display: 'flex',
         flexDirection: 'column',
-        gap: theme.spacing['xlarge'],
+        gap: theme.spacing.xlarge,
       }}
     >
       <div
         css={{
           display: 'flex',
-          gap: theme.spacing['large'],
+          gap: theme.spacing.large,
         }}
       >
         {data?.scmAuthorization?.map(({ provider, url }) => (

@@ -108,6 +108,7 @@ export function PackageVersionPicker({
   pageInfo,
   fetchMore,
 }: any) {
+  const theme = useTheme()
   const versions = edges.map(({ node }) => node)
 
   return (
@@ -184,9 +185,13 @@ export function PackageVersionPicker({
           />
         ))}
       </Select>
-      <Box
-        direction="row"
-        gap="8px"
+      <div
+        css={{
+          display: 'flex',
+          flexDirection: 'row',
+          gap: theme.spacing.xsmall,
+          flexWrap: 'wrap',
+        }}
       >
         {version?.tags.map(({ tag }, i) => (
           <Chip
@@ -196,7 +201,7 @@ export function PackageVersionPicker({
             {tag}
           </Chip>
         ))}
-      </Box>
+      </div>
     </Box>
   )
 }

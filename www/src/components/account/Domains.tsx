@@ -24,8 +24,8 @@ import { StandardScroller } from '../utils/SmoothScroller'
 import { Table, TableData, TableRow } from '../utils/Table'
 import ListInput from '../utils/ListInput'
 import { List } from '../utils/List'
-
 import { Confirm } from '../utils/Confirm'
+import { DnsRecordFragment } from '../../generated/graphql'
 
 import { DELETE_DOMAIN, DNS_DOMAINS, UPDATE_DOMAIN } from './queries'
 import { Actions } from './Actions'
@@ -33,7 +33,6 @@ import { MoreMenu } from './MoreMenu'
 import { BindingInput } from './Typeaheads'
 import { sanitize } from './utils'
 import { DnsRecords } from './DnsRecords'
-import { DnsRecordFragment } from '../../generated/graphql'
 
 function Header({ q, setQ }: any) {
   return (

@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from '@apollo/client'
 import { Box } from 'grommet'
-import { Avatar, Button, Div, Flex, Span } from 'honorable'
+import { Button, Div, Flex, Span } from 'honorable'
 import moment from 'moment'
 import { useState } from 'react'
 import { AppIcon, ArrowLeftIcon } from '@pluralsh/design-system'
@@ -16,11 +16,9 @@ import { DeleteIconButton } from '../utils/IconButtons'
 import { StandardScroller } from '../utils/SmoothScroller'
 import { Table, TableData, TableRow } from '../utils/Table'
 import { ProviderIcon } from '../utils/ProviderIcon'
-
 import { Confirm } from '../utils/Confirm'
 
 import { DELETE_DNS_RECORD, DNS_RECORDS } from './queries'
-import { DnsRecordFragment } from '../../generated/graphql'
 
 function DeleteRecord({ record, domain }: any) {
   const [confirm, setConfirm] = useState(false)
@@ -105,7 +103,7 @@ export function DnsRecords({ domain, setDomain }: any) {
             items={edges}
             loading={loading}
             placeholder={Placeholder}
-            mapper={({ node }: { node: DnsRecordFragment }, { next }) => (
+            mapper={({ node }, { next }) => (
               <TableRow
                 key={node.id}
                 last={!next.node}

@@ -73,8 +73,12 @@ defmodule Core.Schema.Cluster do
     from(c in query, where: c.owner_id == ^user_id)
   end
 
-  def for_account(query, account_id) do
+  def for_account(query \\ __MODULE__, account_id) do
     from(c in query, where: c.account_id == ^account_id)
+  end
+
+  def services(query \\ __MODULE__) do
+    from(c in query, select: sum(c.service_count))
   end
 
   def ordered(query \\ __MODULE__, order \\ [asc: :name]) do

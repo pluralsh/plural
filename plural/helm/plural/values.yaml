@@ -506,9 +506,14 @@ crons:
   cronModule: Prune.Notifications
   cronTab: "15 1 * * *"
   envVars: []
+- cronName: plrl-metering
+  cronModule: Task.Metering
+  cronTab: "30 1 * * *"
+  envVars: []
 - cronName: plrl-digest
   cronModule: Digest.Pending
   cronTab: "0 12 * * 1"
+  envVars: []
 
 hydraSecrets:
   dsn: memory

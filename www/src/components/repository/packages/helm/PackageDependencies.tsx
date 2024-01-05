@@ -30,6 +30,7 @@ const useLegendColors = () => {
 
 const useLegend = () => {
   const legendColors = useLegendColors()
+
   return useMemo(
     () => ({
       Required: { color: legendColors.required, dasharray: '0' },
@@ -186,6 +187,7 @@ const Dependencies = memo(({ dependencies, resource }: any) => {
         return dep
       }
     )
+
     if (!deps) {
       return null
     }

@@ -28,7 +28,6 @@ export default mergeConfig(
       }),
       tsconfigPaths(),
       pluginRewriteAll(), // Fix 404 error for urls with dots in their path
-
     ],
     server: {
       port: 3001,

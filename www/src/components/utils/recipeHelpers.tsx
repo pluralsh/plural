@@ -28,6 +28,7 @@ export const providerToIcon = {
   GCP: '/gcp.png',
   KIND: '/kind.png',
   GENERIC: '/chart.png',
+  LINODE: '/linode.png',
 }
 
 export const providerToIconWidth = {
@@ -48,6 +49,7 @@ export const providerToLongName: Record<Provider, ReactNode> = {
   CUSTOM: 'Custom',
   KUBERNETES: 'Kubernetes',
   GENERIC: 'Generic',
+  LINODE: 'Linode',
 }
 
 export const providerToShortName: Record<Provider, ReactNode> = {
@@ -59,6 +61,7 @@ export const providerToShortName: Record<Provider, ReactNode> = {
   CUSTOM: 'Custom',
   KUBERNETES: 'Kubernetes',
   GENERIC: 'Generic',
+  LINODE: 'Linode',
 }
 
 export function getInstallCommand({

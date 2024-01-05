@@ -683,6 +683,7 @@ enum Provider {
   EQUINIX
   KIND
   GENERIC
+  LINODE
 }
 
 type Publisher {

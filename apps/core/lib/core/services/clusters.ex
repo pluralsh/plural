@@ -28,6 +28,16 @@ defmodule Core.Services.Clusters do
   end
 
   @doc """
+  Attempts to compute the service count for all clusters in an account
+  """
+  @spec services(binary) :: integer | nil
+  def services(account_id) do
+    Cluster.for_account(account_id)
+    |> Cluster.services()
+    |> Core.Repo.one()
+  end
+
+  @doc """
   Determines if all installations for a cluster have been synced
   """
   @spec synced?(Cluster.t) :: boolean

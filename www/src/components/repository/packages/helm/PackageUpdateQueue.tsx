@@ -3,7 +3,7 @@ import { useQuery } from '@apollo/client'
 import { Box } from 'grommet'
 import { useOutletContext } from 'react-router-dom'
 import { Date, PageTitle } from '@pluralsh/design-system'
-import { Div, Flex } from 'honorable'
+import { Div } from 'honorable'
 
 import { Table, TableData, TableRow } from '../../../utils/Table'
 import { extendConnection } from '../../../../utils/graphql'
@@ -35,9 +35,7 @@ export default function PackageUpdateQueue() {
       gap="small"
     >
       <PageTitle heading="Update queue">
-        <Flex display-desktop-up="none">
-          <PackageActions />
-        </Flex>
+        <PackageActions />
       </PageTitle>
       {edges?.length ? (
         <Table

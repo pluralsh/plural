@@ -14,6 +14,8 @@ import { useTheme } from 'styled-components'
 
 import { type Repository, useAppContext } from '../../contexts/AppContext'
 
+import { getRepoIcon } from '../repository/misc'
+
 import { type getDocsData } from './App'
 import { useDocPageContext } from './docs/AppDocsContext'
 
@@ -86,7 +88,7 @@ export default function AppSidenav({
           borderRadius="medium"
         >
           <Img
-            src={app.darkIcon || app.icon}
+            src={getRepoIcon(app, theme.mode)}
             alt={app.name}
             width={48}
           />

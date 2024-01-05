@@ -1,9 +1,9 @@
 import { useMutation, useQuery } from '@apollo/client'
 import { Box } from 'grommet'
-import { Avatar, Button, Div, Flex, Span } from 'honorable'
+import { Button, Div, Flex, Span } from 'honorable'
 import moment from 'moment'
 import { useState } from 'react'
-import { ArrowLeftIcon } from '@pluralsh/design-system'
+import { AppIcon, ArrowLeftIcon } from '@pluralsh/design-system'
 
 import { Placeholder } from '../utils/Placeholder'
 import {
@@ -16,7 +16,6 @@ import { DeleteIconButton } from '../utils/IconButtons'
 import { StandardScroller } from '../utils/SmoothScroller'
 import { Table, TableData, TableRow } from '../utils/Table'
 import { ProviderIcon } from '../utils/ProviderIcon'
-
 import { Confirm } from '../utils/Confirm'
 
 import { DELETE_DNS_RECORD, DNS_RECORDS } from './queries'
@@ -153,12 +152,13 @@ export function DnsRecords({ domain, setDomain }: any) {
                     gap="xsmall"
                     align="center"
                   >
-                    <Avatar
-                      src={node.creator.avatar}
-                      name={node.creator.name}
-                      size={30}
+                    <AppIcon
+                      url={node?.creator?.avatar || undefined}
+                      name={node.creator?.name || undefined}
+                      size="xxsmall"
+                      spacing={node?.creator?.avatar ? 'none' : undefined}
                     />
-                    <Span color="text-light">{node.creator.name}</Span>
+                    <Span color="text-light">{node.creator?.name}</Span>
                   </Box>
                 </TableData>
               </TableRow>

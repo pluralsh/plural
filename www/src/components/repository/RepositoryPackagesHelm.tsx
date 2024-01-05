@@ -1,64 +1,76 @@
 import { Link, useOutletContext } from 'react-router-dom'
-import { Div, Flex, Img, P, Span } from 'honorable'
+import { Flex } from 'honorable'
 import moment from 'moment'
 import Fuse from 'fuse.js'
 import { Chip } from '@pluralsh/design-system'
+import styled, { useTheme } from 'styled-components'
 
 import { useRepositoryContext } from '../../contexts/RepositoryContext'
 import usePaginatedQuery from '../../hooks/usePaginatedQuery'
 import InfiniteScroller from '../utils/InfiniteScroller'
 import LoadingIndicator from '../utils/LoadingIndicator'
 
+import { DEFAULT_CHART_ICON } from '../constants'
+
 import { CHARTS_QUERY } from './queries'
 import { packageCardStyle } from './RepositoryPackages'
-
-const defaultChartIcon = '/chart.png'
 
 const searchOptions = {
   keys: ['name', 'description', 'latestVersion'],
   threshold: 0.25,
 }
 
+const ChartNameSC = styled.p(({ theme }) => ({
+  margin: 0,
+  ...theme.partials.text.body1Bold,
+}))
+const ChartNameDepsSC = styled.div(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  gap: theme.spacing.medium,
+}))
+const CreatedSC = styled.div(({ theme }) => ({
+  ...theme.partials.text.caption,
+  textAlign: 'end',
+  flexGrow: 1,
+  justifyContent: 'flex-end',
+  color: theme.colors['text-xlight'],
+}))
+const VersionDescSC = styled.p(({ theme }) => ({
+  margin: 0,
+  marginTop: theme.spacing.xxsmall,
+}))
+const IconSC = styled.img((_) => ({
+  width: 64,
+}))
+
 function Chart({ chart, first, last }: any) {
+  const theme = useTheme()
+
   return (
     <Flex
       as={Link}
       to={`/charts/${chart.id}`}
       {...packageCardStyle(first, last)}
+      gap={theme.spacing.medium}
     >
-      <Img
+      <IconSC
         alt={chart.name}
-        width={64}
-        height={64}
-        src={chart.icon || defaultChartIcon}
+        src={chart.icon || DEFAULT_CHART_ICON}
       />
-      <Div ml={1}>
-        <Flex align="center">
-          <P
-            body1
-            fontWeight={500}
-          >
-            {chart.name}
-          </P>
+      <div>
+        <ChartNameDepsSC>
+          <ChartNameSC>{chart.name}</ChartNameSC>
           {chart.dependencies && chart.dependencies.application && (
-            <Chip ml={1}>
-              <Span fontWeight="400">APP</Span>
-            </Chip>
+            <Chip size="small">APP</Chip>
           )}
-        </Flex>
-        <P mt={0.5}>
+        </ChartNameDepsSC>
+        <VersionDescSC>
           {chart.latestVersion}{' '}
           {chart.description ? `- ${chart.description}` : null}
-        </P>
-      </Div>
-      <Flex
-        flexGrow={1}
-        justifyContent="flex-end"
-        color="text-xlight"
-        caption
-      >
-        Created {moment(chart.insertedAt).fromNow()}
-      </Flex>
+        </VersionDescSC>
+      </div>
+      <CreatedSC>Created {moment(chart.insertedAt).fromNow()}</CreatedSC>
     </Flex>
   )
 }

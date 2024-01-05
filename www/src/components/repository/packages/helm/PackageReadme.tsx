@@ -1,7 +1,6 @@
 import { Box } from 'grommet'
 import { useOutletContext } from 'react-router-dom'
 import { Markdown, PageTitle } from '@pluralsh/design-system'
-import { Flex } from 'honorable'
 
 import { PackageActions } from '../misc'
 
@@ -18,9 +17,7 @@ export default function PackageReadme() {
       gap="small"
     >
       <PageTitle heading="Readme">
-        <Flex display-desktop-up="none">
-          <PackageActions />
-        </Flex>
+        <PackageActions />
       </PageTitle>
       <Box
         pad={{ right: 'xsmall' }}

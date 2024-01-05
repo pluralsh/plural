@@ -3,7 +3,10 @@ import { Flex } from 'honorable'
 import { CaretRightIcon, Chip, IconFrame } from '@pluralsh/design-system'
 import { Link } from 'react-router-dom'
 
+import { useTheme } from 'styled-components'
+
 import { Maybe, UpgradeInfo } from '../../generated/graphql'
+import { getRepoIcon } from '../repository/misc'
 
 type ClusterUpgradeInfoProps = {
   clusterId?: Maybe<string>
@@ -14,6 +17,8 @@ export function ClusterUpgradeInfo({
   clusterId,
   upgradeInfo,
 }: ClusterUpgradeInfoProps) {
+  const theme = useTheme()
+
   if (isEmpty(upgradeInfo)) return null
 
   return (
@@ -40,14 +45,18 @@ export function ClusterUpgradeInfo({
             <IconFrame
               icon={
                 <img
-                  src={repository?.darkIcon || repository?.icon || ''}
+                  src={getRepoIcon(repository, theme.mode)}
                   width={16}
                   height={16}
                 />
               }
-              marginRight="xxsmall"
               size="medium"
               type="floating"
+              css={{
+                '&&': {
+                  marginRight: theme.spacing.xxsmall,
+                },
+              }}
             />
             <Flex
               body2
@@ -67,7 +76,6 @@ export function ClusterUpgradeInfo({
               clickable
               size="medium"
               icon={<CaretRightIcon />}
-              // @ts-expect-error
               as={Link}
               to={`/apps/${clusterId}/${repository?.name}`}
               textValue="Go to app settings"

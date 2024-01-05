@@ -1,85 +1,65 @@
-import { Box, Text } from 'grommet'
-import { ResponsiveChoropleth } from '@nivo/geo'
-import max from 'lodash/max'
 import { useTheme } from 'styled-components'
+import { ResponsiveChoropleth } from '@nivo/geo'
+import { max } from 'lodash'
 
-import { normalizeColor } from 'grommet/utils'
-
-import { useColorMap } from './colors'
+import { ChartTooltip } from './ChartTooltip'
 
 import countries from './world_countries.json'
 
-const COLOR_MAP = [
-  'blue-light-2',
-  'blue-light',
-  'blue',
-  'blue-dark',
-  'blue-dark-2',
-]
-
-function Tooltip({ feature }: any) {
+function Tooltip({ feature }) {
   if (!feature.data) return null
-
   const { id, value } = feature.data
 
   return (
-    <Box
-      flex={false}
-      direction="row"
-      pad="xsmall"
-      round="2px"
-      gap="xsmall"
-      background="white"
-      align="center"
-    >
-      <Box
-        flex={false}
-        height="12px"
-        width="12px"
-        background={feature.color}
-      />
-      <Text
-        size="12px"
-        weight={500}
-        color="black"
-      >
-        {id} {value}
-      </Text>
-    </Box>
+    <ChartTooltip
+      color={feature.color}
+      label={id}
+      value={value}
+    />
   )
 }
 
-export function Chloropleth({ data }: any) {
-  const maximum = max(data.map(({ value }) => value)) as number
+export function Chloropleth({ data }) {
+  const maximum: number = max(data.map(({ value }) => value)) ?? 0
   const theme = useTheme()
-  const colors = useColorMap(theme, COLOR_MAP)
+  const colors = [
+    theme.colors.blue[400],
+    theme.colors.blue[500],
+    theme.colors.blue[600],
+    theme.colors.blue[700],
+    theme.colors.blue[800],
+  ]
 
   return (
     <ResponsiveChoropleth
       data={data}
-      theme={{ textColor: normalizeColor('text-xlight', theme) }}
+      theme={{ textColor: theme.colors.text }}
       features={countries.features}
       label="properties.name"
       valueFormat=".2s"
       domain={[0, maximum + 1]}
       colors={colors}
-      unknownColor={normalizeColor('fill-two', theme)}
+      unknownColor={theme.colors['fill-two']}
       enableGraticule
-      graticuleLineColor={normalizeColor('fill-three', theme)}
+      graticuleLineColor={theme.colors.border}
       borderWidth={0.5}
-      borderColor={normalizeColor('cardHover', theme)}
+      isInteractive
+      borderColor={theme.colors['border-fill-two']}
       projectionType="naturalEarth1"
-      projectionScale={150}
       tooltip={Tooltip}
       legends={[
         {
-          anchor: 'left',
+          anchor: 'bottom-left',
           direction: 'column',
           justify: true,
-          translateX: 50,
-          itemWidth: 96,
-          itemHeight: 16,
+          translateX: 48,
+          translateY: -48,
+          itemsSpacing: 0,
+          itemWidth: 94,
+          itemHeight: 18,
+          itemDirection: 'left-to-right',
           itemOpacity: 0.85,
+          symbolSize: 18,
           effects: [
             {
               on: 'hover',

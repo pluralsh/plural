@@ -45,6 +45,15 @@ const DIRECTORY = [
   { label: 'Docker repositories', path: '/docker' },
 ]
 
+const InputSC = styled(Input)(({ theme }) => ({
+  '&&': {
+    backgroundColor: theme.colors['fill-one'],
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
+    borderColor: theme.colors['border-fill-two'],
+  },
+}))
+
 export default function RepositoryPackages() {
   const repository = useRepositoryContext()
   const [q, setQ] = useState('')
@@ -86,15 +95,12 @@ export default function RepositoryPackages() {
             </LinkTabWrap>
           ))}
         </TabList>
-        <Input
+        <InputSC
           value={q}
           onChange={(event) => setQ(event.target.value)}
           placeholder={`Filter ${currentTab?.label || ''}`}
           startIcon={<SearchIcon />}
           width="100%"
-          backgroundColor="fill-one"
-          borderBottomLeftRadius="0"
-          borderBottomRightRadius="0"
         />
         <Flex
           direction="column"

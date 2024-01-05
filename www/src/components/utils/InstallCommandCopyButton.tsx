@@ -1,6 +1,7 @@
 import { Div, Flex } from 'honorable'
 import { CheckIcon, CopyIcon, Tooltip } from '@pluralsh/design-system'
 import { useCallback, useEffect, useState } from 'react'
+import { useTheme } from 'styled-components'
 
 import { SidecarButton } from '../repository/RepositorySideCar'
 
@@ -8,10 +9,9 @@ import {
   RecipeSubset,
   RecipeType,
   getInstallCommand,
-  providerToIcon,
-  providerToIconWidth,
   providerToShortName,
 } from './recipeHelpers'
+import { getProviderIconUrl } from './ProviderIcon'
 
 export function InstallCommandCopyButton({
   name,
@@ -22,6 +22,7 @@ export function InstallCommandCopyButton({
   recipe: RecipeSubset
   type: RecipeType
 }) {
+  const theme = useTheme()
   const provider = recipe?.provider
   const [copiedAt, setCopiedAt] = useState<false | number>(false)
 
@@ -72,8 +73,8 @@ export function InstallCommandCopyButton({
               justifyContent="center"
             >
               <img
-                src={providerToIcon[provider]}
-                width={providerToIconWidth[provider]}
+                src={getProviderIconUrl(provider, theme.mode)}
+                width={16}
               />
             </Flex>
           }

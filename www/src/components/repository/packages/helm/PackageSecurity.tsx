@@ -1,16 +1,12 @@
 import { useState } from 'react'
-import { Box, Collapsible } from 'grommet'
-import {
-  Chip,
-  CollapseIcon,
-  ErrorIcon,
-  PageTitle,
-} from '@pluralsh/design-system'
-import { Button, Div, Flex, H2, Span } from 'honorable'
+import { Collapsible } from 'grommet'
+import { Button, Chip, CollapseIcon, ErrorIcon } from '@pluralsh/design-system'
 import Clamp from 'react-multiline-clamp'
 
 import { useOutletContext } from 'react-router-dom'
 import capitalize from 'lodash/capitalize'
+
+import styled, { useTheme } from 'styled-components'
 
 import { Table, TableData, TableRow } from '../../../utils/Table'
 import {
@@ -19,12 +15,37 @@ import {
   PackageProperty,
   chipSeverity,
 } from '../misc'
+import { ScrollablePage } from '../../../utils/layout/ScrollablePage'
+
+const Body2SC = styled.p(({ theme }) => ({
+  margin: 0,
+  ...theme.partials.text.body2,
+}))
+const HeadingSC = styled.h2(({ theme }) => ({
+  ...theme.partials.text.subtitle1,
+  marginBottom: theme.spacing.medium,
+}))
+const VulnDetailsSC = styled.div<{ $last }>(({ theme, $last: last }) => ({
+  display: 'flex',
+  gap: theme.spacing.medium,
+  flexDirection: 'row',
+  padding: `${theme.spacing.medium}px ${theme.spacing.large}px`,
+  background: theme.colors['fill-two'],
+  borderColor: theme.colors.border,
+  ...(last
+    ? {
+        borderBottomRightRadius: theme.borderRadiuses.medium,
+        borderBottomLeftRadius: theme.borderRadiuses.medium,
+      }
+    : { borderBottom: theme.borders.default }),
+}))
 
 function ScanViolation({ violation, last }: any) {
+  const theme = useTheme()
   const [open, setOpen] = useState(false)
 
   return (
-    <Flex direction="column">
+    <div css={{ display: 'flex', flexDirection: 'column' }}>
       <TableRow
         last={last}
         hoverIndicator="fill-one-hover"
@@ -33,7 +54,6 @@ function ScanViolation({ violation, last }: any) {
       >
         <TableData>
           <CollapseIcon
-            marginLeft="8px"
             size={8}
             style={
               open
@@ -48,6 +68,9 @@ function ScanViolation({ violation, last }: any) {
                     transitionProperty: 'transform',
                   }
             }
+            css={{
+              marginLeft: theme.spacing.xsmall,
+            }}
           />
         </TableData>
         <TableData>
@@ -56,10 +79,9 @@ function ScanViolation({ violation, last }: any) {
         <TableData>
           <Chip
             severity={chipSeverity[violation.severity?.toLowerCase()]}
-            backgroundColor="fill-two"
-            borderColor="border-fill-two"
+            fillLevel={2}
           >
-            <Span fontWeight="600">{capitalize(violation.severity)}</Span>
+            {capitalize(violation.severity)}
           </Chip>
         </TableData>
       </TableRow>
@@ -67,47 +89,44 @@ function ScanViolation({ violation, last }: any) {
         open={open}
         direction="vertical"
       >
-        <Box
-          direction="row"
-          pad={{ horizontal: 'large', vertical: 'medium' }}
-          gap="small"
-          // @ts-expect-error
-          borderBottom={last ? null : '1px solid border'}
-          background="fill-two"
-          round={{ corner: 'bottom', size: '4px' }}
-        >
-          <Box basis="1/2">
+        <VulnDetailsSC $last={last}>
+          <div css={{ flexBasis: '50%' }}>
             <PackageProperty header="Error message">
               {violation.description}
             </PackageProperty>
-          </Box>
-          <Box
-            basis="1/2"
-            gap="small"
+          </div>
+          <div
+            css={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: theme.spacing.small,
+              flexBasis: '50%',
+            }}
           >
             <PackageProperty header="Resource">{`${violation.resourceType}.${violation.resourceName}`}</PackageProperty>
             <PackageProperty header="Location">{`${violation.file}:${violation.line}`}</PackageProperty>
-          </Box>
-        </Box>
+          </div>
+        </VulnDetailsSC>
       </Collapsible>
-    </Flex>
+    </div>
   )
 }
 
 export default function PackageSecurity() {
+  const theme = useTheme()
   const { currentHelmChart, currentTerraformChart } = useOutletContext() as any
   const current = currentHelmChart || currentTerraformChart
 
   return (
-    <Box
-      fill
-      flex={false}
-      gap="medium"
-    >
-      <PageTitle heading="Security">
-        <Flex
-          alignItems="center"
-          gap="large"
+    <ScrollablePage
+      heading="Security"
+      headingContent={
+        <div
+          css={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: theme.spacing.large,
+          }}
         >
           {current?.scan && (
             <PackageGrade
@@ -115,97 +134,111 @@ export default function PackageSecurity() {
               large
             />
           )}
-          <Flex display-desktop-up="none">
-            <PackageActions />
-          </Flex>
-        </Flex>
-      </PageTitle>
-      <Box
-        pad={{ right: 'small' }}
-        gap="medium"
-        overflow={{ vertical: 'auto' }}
+          <PackageActions />
+        </div>
+      }
+    >
+      <div
+        css={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: theme.spacing.xlarge,
+        }}
       >
-        <H2>Scan failures</H2>
-        {current.scan?.errors?.length ? (
-          <Box
-            direction="column"
-            background="fill-one"
-            border
-            round="xsmall"
-            height={{ max: '460px' }}
-            flex="grow"
-            overflow="auto"
-          >
-            {current.scan?.errors.map((item, i) => (
-              <Box
-                key={i}
-                direction="row"
-                align="center"
-                gap="medium"
-                pad={{ horizontal: 'medium', vertical: 'small' }}
-                height={{ min: '60px' }}
-                flex="grow"
-                // @ts-expect-error
-                border={i === current.scan.errors.length - 1 ? null : 'bottom'}
-              >
-                <ErrorIcon
-                  size={24}
-                  color="icon-error"
-                />
-                <Clamp
-                  withToggle
-                  lines={2}
-                  showMoreElement={({ toggle }) => (
-                    <Button
-                      secondary
-                      height="40px"
-                      width="70px"
-                      marginLeft="medium"
-                      onClick={toggle}
-                    >
-                      More
-                    </Button>
-                  )}
-                  showLessElement={({ toggle }) => (
-                    <Button
-                      secondary
-                      height="40px"
-                      width="70px"
-                      marginLeft="medium"
-                      onClick={toggle}
-                    >
-                      Hide
-                    </Button>
-                  )}
+        <div>
+          <HeadingSC>Scan failures</HeadingSC>
+          {current.scan?.errors?.length ? (
+            <div
+              css={{
+                display: 'flex',
+                flexDirection: 'column',
+                flex: 'grow',
+                overflow: 'auto',
+                background: theme.colors['fill-one'],
+                border: theme.borders.default,
+                borderRadius: theme.borderRadiuses.medium,
+                maxHeight: 440,
+              }}
+            >
+              {current.scan?.errors.map((item, i) => (
+                <div
+                  key={i}
+                  css={{
+                    display: 'flex',
+                    flexGrow: 1,
+                    alignItems: 'center',
+                    gap: theme.spacing.medium,
+                    padding: `${theme.spacing.medium}px ${theme.spacing.small}px`,
+                    borderBottom:
+                      i === current.scan.errors.length - 1
+                        ? undefined
+                        : theme.borders.default,
+                  }}
                 >
-                  <p>{item.message}</p>
-                </Clamp>
-              </Box>
-            ))}
-          </Box>
-        ) : (
-          <Div body2>No scan failures found.</Div>
-        )}
-        <H2>Vulnerabilities</H2>
-        {current.scan?.violations?.length ? (
-          <Table
-            headers={['', 'Rule', 'Severity']}
-            sizes={['40px', '80%', '15%']}
-            background="fill-one"
-            width="100%"
-          >
-            {current.scan?.violations.map((vio, ind, arr) => (
-              <ScanViolation
-                key={`${ind}`}
-                violation={vio}
-                last={ind === arr.length - 1}
-              />
-            ))}
-          </Table>
-        ) : (
-          <Div body2>No vulnerabilities found.</Div>
-        )}
-      </Box>
-    </Box>
+                  <ErrorIcon
+                    size={16}
+                    color={theme.colors['icon-danger']}
+                  />
+                  <Clamp
+                    withToggle
+                    lines={2}
+                    showMoreElement={({ toggle }) => (
+                      <Button
+                        secondary
+                        onClick={toggle}
+                        css={{
+                          minWidth: 70,
+                          marginLeft: theme.spacing.medium,
+                        }}
+                      >
+                        More
+                      </Button>
+                    )}
+                    showLessElement={({ toggle }) => (
+                      <Button
+                        secondary
+                        onClick={toggle}
+                        css={{
+                          minWidth: 70,
+                          marginLeft: theme.spacing.medium,
+                        }}
+                      >
+                        Hide
+                      </Button>
+                    )}
+                  >
+                    <p css={{ margin: 0 }}>{item.message}</p>
+                  </Clamp>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <Body2SC>No scan failures found.</Body2SC>
+          )}
+        </div>
+        <div>
+          <HeadingSC>Vulnerabilities</HeadingSC>
+          {current.scan?.violations?.length ? (
+            <Table
+              headers={['', 'Rule', 'Severity']}
+              sizes={['40px', '80%', '15%']}
+              background="fill-one"
+              width="100%"
+              overflow="hidden"
+            >
+              {current.scan?.violations.map((vio, ind, arr) => (
+                <ScanViolation
+                  key={`${ind}`}
+                  violation={vio}
+                  last={ind === arr.length - 1}
+                />
+              ))}
+            </Table>
+          ) : (
+            <Body2SC>No vulnerabilities found.</Body2SC>
+          )}
+        </div>
+      </div>
+    </ScrollablePage>
   )
 }

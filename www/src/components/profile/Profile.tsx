@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client'
-import { Box, Stack, ThemeContext } from 'grommet'
+import { Box, Stack } from 'grommet'
 import { Div, Flex, P } from 'honorable'
 import {
   AppIcon,
@@ -11,14 +11,11 @@ import {
 } from '@pluralsh/design-system'
 import { useContext, useEffect, useState } from 'react'
 import { useFilePicker } from 'react-sage'
+import { useTheme } from 'styled-components'
 
 import CurrentUserContext from '../../contexts/CurrentUserContext'
 import { UPDATE_USER } from '../users/queries'
-import {
-  DEFAULT_CHART_ICON,
-  DarkProviderIcons,
-  ProviderIcons,
-} from '../constants'
+import { getProviderIconUrl } from '../utils/ProviderIcon'
 
 function Attribute({ header, children }: any) {
   return (
@@ -39,9 +36,9 @@ function Attribute({ header, children }: any) {
 }
 
 export function Profile() {
+  const theme = useTheme()
   const { files, onClick, HiddenFileInput } = useFilePicker({})
   const me = useContext(CurrentUserContext)
-  const { dark } = useContext(ThemeContext) as any
   const [name, setName] = useState(me.name)
   const [email, setEmail] = useState(me.email)
   const [avatarConst, setAvatar] = useState(me.avatar)
@@ -50,16 +47,7 @@ export function Profile() {
     variables: { attributes: { name, email, avatar: avatarFile } },
   })
 
-  let url: string | undefined
-
-  if (me.provider) {
-    url = ProviderIcons[me.provider] || DEFAULT_CHART_ICON
-
-    if (dark && DarkProviderIcons[me.provider]) {
-      url = DarkProviderIcons[me.provider]
-    }
-  }
-
+  const url = getProviderIconUrl(me?.provider || '', theme.mode)
   let avatar: string | undefined
 
   if (avatarConst) {
@@ -90,7 +78,7 @@ export function Profile() {
               <AppIcon
                 name={name}
                 url={avatar}
-                spacing="none"
+                spacing={avatar ? 'none' : undefined}
                 size="medium"
               />
             </Stack>

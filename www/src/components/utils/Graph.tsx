@@ -1,14 +1,43 @@
-import { useMemo, useState } from 'react'
+import { useContext, useMemo, useState } from 'react'
+
 import { ResponsiveLine } from '@nivo/line'
 import moment from 'moment'
 import last from 'lodash/last'
-import { Box, Text } from 'grommet'
-import { Flex, P } from 'honorable'
-import { useTheme } from 'styled-components'
+import { Box, Text, ThemeContext } from 'grommet'
+import { Card } from '@pluralsh/design-system'
+import { Flex, Span } from 'honorable'
+import { DefaultTheme, useTheme } from 'styled-components'
+
+import { DEFAULT_THEME } from '../../theme'
+import { useColorMap } from '../../utils/color'
 
 export function dateFormat(date) {
   return moment(date).format('MM/DD h:mm:ss A')
 }
+
+const graphTheme = (theme: DefaultTheme) => ({
+  ...DEFAULT_THEME,
+  axis: {
+    ticks: {
+      text: {
+        fill: theme.colors['text-xlight'],
+      },
+      line: {
+        stroke: theme.colors.border,
+      },
+    },
+    legend: {
+      text: {
+        fill: theme.colors['text-light'],
+      },
+    },
+  },
+  grid: {
+    line: {
+      stroke: theme.colors.border,
+    },
+  },
+})
 
 export function GraphHeader({ text }: any) {
   return (
@@ -27,60 +56,37 @@ export function GraphHeader({ text }: any) {
   )
 }
 
-function SliceTooltip({ point: { serieColor, serieId, data } }: any) {
+function SliceTooltip({ point: { serieColor, serieId, data } }) {
   return (
-    <Flex
-      background="fill-one"
-      border="1px solid border"
-      borderRadius="4px"
+    <Card
+      display="flex"
+      alignItems="center"
+      fillLevel={2}
       paddingVertical="xxsmall"
       paddingHorizontal="xsmall"
       direction="row"
       gap="xsmall"
-      align="center"
+      caption
     >
       <Flex
-        width="10px"
-        height="10px"
-        borderRadius="50%"
+        width={12}
+        height={12}
         backgroundColor={serieColor}
       />
-      <P body2>
-        {serieId} [x: {data.xFormatted}, y: {data.yFormatted}]
-      </P>
-    </Flex>
+      <div>
+        {serieId}: <Span style={{ fontWeight: 700 }}>{data.yFormatted}</Span>
+        <br />
+        {data.xFormatted}
+      </div>
+    </Card>
   )
 }
 
-export const DURATIONS = [
-  {
-    offset: '7d',
-    step: '2h',
-    label: '7d',
-    tick: 'every 12 hours',
-  },
-  {
-    offset: '30d',
-    step: '1d',
-    label: '30d',
-    tick: 'every 2 days',
-  },
-  {
-    offset: '60d',
-    step: '1d',
-    label: '60d',
-    tick: 'every 5 days',
-  },
-  {
-    offset: '120d',
-    step: '1d',
-    label: '120d',
-    tick: 'every 10 day',
-  },
-]
-
 export function Graph({ data, yFormat, tick }: any) {
   const styledTheme = useTheme()
+  const theme = useContext(ThemeContext)
+  const colors = useColorMap(theme)
+
   const [selected, setSelected] = useState<any>(null)
   const graph = useMemo(() => {
     if (data.find(({ id }) => id === selected)) {
@@ -117,7 +123,7 @@ export function Graph({ data, yFormat, tick }: any) {
         stacked: false,
         reverse: false,
       }}
-      colors={(data) => data.color}
+      colors={colors}
       yFormat={yFormat}
       xFormat={dateFormat}
       tooltip={SliceTooltip}
@@ -174,28 +180,7 @@ export function Graph({ data, yFormat, tick }: any) {
           ],
         },
       ]}
-      theme={{
-        axis: {
-          ticks: {
-            text: {
-              fill: styledTheme.colors['text-xlight'],
-            },
-            line: {
-              stroke: styledTheme.colors.border,
-            },
-          },
-          legend: {
-            text: {
-              fill: styledTheme.colors['text-xlight'],
-            },
-          },
-        },
-        grid: {
-          line: {
-            stroke: styledTheme.colors.border,
-          },
-        },
-      }}
+      theme={graphTheme(styledTheme)}
     />
   )
 }

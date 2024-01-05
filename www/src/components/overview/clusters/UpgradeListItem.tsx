@@ -3,7 +3,10 @@ import { Chip, IconFrame, Tooltip } from '@pluralsh/design-system'
 import { ReactElement } from 'react'
 import { Flex } from 'honorable'
 
+import { useTheme } from 'styled-components'
+
 import { Upgrade } from '../../../generated/graphql'
+import { getRepoIcon } from '../../repository/misc'
 
 export default function UpgradeListItem({
   upgrade: { id, insertedAt, repository, message },
@@ -14,6 +17,7 @@ export default function UpgradeListItem({
   acked: string
   last: boolean
 }): ReactElement | null {
+  const theme = useTheme()
   const delivered = acked && id <= acked
 
   return (
@@ -26,15 +30,19 @@ export default function UpgradeListItem({
       <IconFrame
         icon={
           <img
-            src={repository?.darkIcon || repository?.icon || ''}
+            src={getRepoIcon(repository, theme.mode)}
             width="16"
             height="16"
           />
         }
-        marginRight="xxsmall"
         size="medium"
         type="floating"
-        minWidth={32}
+        css={{
+          '&&': {
+            marginRight: theme.spacing.xxsmall,
+            minWidth: 32,
+          },
+        }}
       />
       <Flex
         body2

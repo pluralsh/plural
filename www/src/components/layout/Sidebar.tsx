@@ -7,8 +7,9 @@ import {
   useState,
 } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { Avatar, Flex, Menu, MenuItem, Span, useOutsideClick } from 'honorable'
+import { Menu, MenuItem } from 'honorable'
 import {
+  AppIcon,
   ArrowTopRightIcon,
   BellIcon,
   BrowseAppsIcon,
@@ -28,7 +29,8 @@ import {
   SidebarSection,
   TerminalIcon,
 } from '@pluralsh/design-system'
-import { useTheme } from 'styled-components'
+import styled, { useTheme } from 'styled-components'
+import { useClickOutside } from '@react-hooks-library/core'
 
 import { getPreviousUserData } from '../../helpers/authentication'
 import { handlePreviousUserClick } from '../login/CurrentUser'
@@ -104,14 +106,13 @@ function isActiveMenuItem(
 function SidebarWrapper() {
   const isCurrentlyOnboarding = useIsCurrentlyOnboarding()
 
-  return (
-    <Sidebar
-      variant="app"
-      transition="width 300ms ease, opacity 200ms ease"
-      style={isCurrentlyOnboarding ? { display: 'none' } : null}
-    />
-  )
+  return <Sidebar style={isCurrentlyOnboarding ? { display: 'none' } : null} />
 }
+
+const FlexGrow1 = styled.div((_) => ({
+  display: 'flex',
+  flexGrow: 1,
+}))
 
 function SidebarMenuItem({
   tooltip,
@@ -140,7 +141,30 @@ function SidebarMenuItem({
   )
 }
 
-function Sidebar(props: ComponentProps<typeof DSSidebar>) {
+const SidebarSC = styled(DSSidebar).attrs(() => ({ variant: 'app' }))((_) => ({
+  flexGrow: 1,
+  minHeight: 0,
+  height: 'auto',
+  overflow: 'auto',
+}))
+
+const NotificationsCountSC = styled.div(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  color: theme.colors['text-always-white'],
+  backgroundColor: theme.colors['icon-danger-critical'],
+  borderRadius: '50%',
+  fontSize: 10,
+  height: 15,
+  width: 15,
+  position: 'absolute',
+  left: 16,
+  top: 2,
+  userSelect: 'none',
+}))
+
+function Sidebar(props: Omit<ComponentProps<typeof DSSidebar>, 'variant'>) {
   const menuItemRef = useRef<HTMLDivElement>(null)
   const menuRef = useRef<HTMLDivElement>(null)
   const [isMenuOpen, setIsMenuOpened] = useState(false)
@@ -161,8 +185,11 @@ function Sidebar(props: ComponentProps<typeof DSSidebar>) {
     [pathname]
   )
   const [readNotifications] = useReadNotificationsMutation()
-  const notificationsCount = useNotificationsCount()
-  const toggleNotifPanel = useCallback(
+  const notificationsCount = useNotificationsCount() ?? 0
+  const notificationsLabel = `${
+    notificationsCount > 0 ? `${notificationsCount} ` : ''
+  } Notifications`
+  const toggleNotificationPanel = useCallback(
     (open) => {
       setIsNotificationsPanelOpen(open)
       if (!open) {
@@ -172,7 +199,7 @@ function Sidebar(props: ComponentProps<typeof DSSidebar>) {
     [setIsNotificationsPanelOpen, readNotifications]
   )
 
-  useOutsideClick(menuRef, (event) => {
+  useClickOutside(menuRef, (event) => {
     if (!menuItemRef.current?.contains(event.target as any)) {
       setIsMenuOpened(false)
     }
@@ -187,17 +214,12 @@ function Sidebar(props: ComponentProps<typeof DSSidebar>) {
 
   return (
     <>
-      <DSSidebar
-        backgroundColor={theme.colors?.['fill-one']}
-        {...props}
-      >
+      <SidebarSC {...props}>
         <SidebarSection
           grow={1}
           shrink={1}
         >
-          {/* ---
-          MENU ITEMS
-        --- */}
+          {/* --- MENU ITEMS --- */}
           {menuItems.map((item, i) => {
             const isActive = active(item)
 
@@ -213,27 +235,15 @@ function Sidebar(props: ComponentProps<typeof DSSidebar>) {
                 className={`sidebar-${item.text}`}
                 as={Link}
                 to={item.path}
-                backgroundColor={
-                  isActive ? theme.colors?.['fill-one-selected'] : null
-                }
-                _hover={{
-                  backgroundColor: isActive
-                    ? theme.colors?.['fill-one-selected']
-                    : theme.colors?.['fill-one-hover'],
-                  cursor: 'pointer',
-                }}
-                borderRadius="normal"
-                height={32}
-                width={32}
+                active={isActive}
               >
                 {item.icon}
               </SidebarItem>
             )
           })}
-          <Flex grow={1} />
-          {/* ---
-          SOCIAL
-        --- */}
+          <FlexGrow1 />
+
+          {/* --- SOCIAL --- */}
           <SidebarMenuItem
             data-phid="sidebar-item-discord"
             tooltip="Discord"
@@ -250,53 +260,31 @@ function Sidebar(props: ComponentProps<typeof DSSidebar>) {
           >
             <GitHubLogoIcon />
           </SidebarMenuItem>
-          {/* ---
-          NOTIFICATIONS BELL
-        --- */}
+
+          {/* --- NOTIFICATIONS BELL --- */}
           <SidebarItem
-            data-phid="sidebar-item-notifications"
-            position="relative"
             clickable
-            label="Notifications"
-            tooltip="Notifications"
+            label={notificationsLabel}
+            tooltip={notificationsLabel}
             className="sidebar-notifications"
             onClick={(event) => {
               event.stopPropagation()
-              toggleNotifPanel((isOpen) => !isOpen)
+              toggleNotificationPanel(!isNotificationsPanelOpen)
             }}
-            backgroundColor={
-              isNotificationsPanelOpen
-                ? theme.colors?.['fill-one-selected']
-                : null
-            }
-            width={32}
-            height={32}
+            active={isNotificationsPanelOpen}
+            css={{
+              position: 'relative',
+            }}
           >
             <BellIcon />
-            {typeof notificationsCount === 'number' &&
-              notificationsCount > 0 && (
-                <Flex
-                  color="white"
-                  backgroundColor="error"
-                  borderRadius="100%"
-                  fontSize={11}
-                  align="start"
-                  justify="center"
-                  height={15}
-                  width={15}
-                  position="absolute"
-                  left={16}
-                  top={2}
-                >
-                  <Span marginTop={-2}>
-                    {notificationsCount > 99 ? '!' : notificationsCount}
-                  </Span>
-                </Flex>
-              )}
+            {notificationsCount > 0 && (
+              <NotificationsCountSC>
+                {notificationsCount > 99 ? '!' : notificationsCount}
+              </NotificationsCountSC>
+            )}
           </SidebarItem>
-          {/* ---
-          USER
-        --- */}
+
+          {/* --- USER -- */}
           <SidebarItem
             data-phid="sidebar-item-user"
             ref={menuItemRef}
@@ -307,17 +295,25 @@ function Sidebar(props: ComponentProps<typeof DSSidebar>) {
             onClick={() => setIsMenuOpened((x) => !x)}
             userSelect="none"
           >
-            <Avatar
-              name={me.name}
-              src={me.avatar}
-              size={32}
+            <AppIcon
+              clickable
+              url={me.avatar || undefined}
+              name={me.name || undefined}
+              size="xxsmall"
+              spacing={me.avatar ? 'none' : undefined}
+              css={{
+                color: theme.colors['action-always-white'],
+                backgroundColor: theme.colors['action-primary'],
+                '&:hover': {
+                  backgroundColor: theme.colors['action-primary-hover'],
+                },
+              }}
             />
           </SidebarItem>
         </SidebarSection>
-      </DSSidebar>
-      {/* ---
-        MENU
-      --- */}
+      </SidebarSC>
+
+      {/* --- MENU --- */}
       {isMenuOpen && (
         <Menu
           ref={menuRef}
@@ -341,7 +337,7 @@ function Sidebar(props: ComponentProps<typeof DSSidebar>) {
             color="inherit"
             textDecoration="none"
           >
-            <PersonIcon mr={1} />
+            <PersonIcon css={{ marginRight: theme.spacing.medium }} />
             My profile
           </MenuItem>
           <MenuItem
@@ -362,41 +358,39 @@ function Sidebar(props: ComponentProps<typeof DSSidebar>) {
             color="inherit"
             textDecoration="none"
           >
-            <ScrollIcon mr={1} />
+            <ScrollIcon css={{ marginRight: theme.spacing.medium }} />
             Docs
-            <Flex flexGrow={1} />
+            <FlexGrow1 />
             <ArrowTopRightIcon />
           </MenuItem>
           <MenuItem onClick={() => setIsCreatePublisherModalOpen(true)}>
-            <MarketPlusIcon mr={1} />
+            <MarketPlusIcon css={{ marginRight: theme.spacing.medium }} />
             Create a publisher
           </MenuItem>
           {!!previousUserData && (
             <MenuItem onClick={switchPrevious}>
-              <LogoutIcon mr={1} />
+              <LogoutIcon css={{ marginRight: theme.spacing.medium }} />
               Log back as {previousUserData.me.email}
             </MenuItem>
           )}
           <MenuItem
             onClick={handleLogout}
-            color="icon-error"
+            color={theme.colors['icon-danger']}
           >
-            <LogoutIcon mr={1} />
+            <LogoutIcon css={{ marginRight: theme.spacing.medium }} />
             Logout
           </MenuItem>
         </Menu>
       )}
-      {/* ---
-        NOTIFICATIONS PANEL
-      --- */}
+
+      {/* --- NOTIFICATIONS PANEL --- */}
       <NotificationsPanelOverlay
         leftOffset={sidebarWidth}
         isOpen={isNotificationsPanelOpen}
-        setIsOpen={toggleNotifPanel}
+        setIsOpen={toggleNotificationPanel}
       />
-      {/* ---
-        CREATE PUBLISHER MODAL
-      --- */}
+
+      {/* --- CREATE PUBLISHER MODAL --- */}
       <CreatePublisherModal
         open={isCreatePublisherModalOpen}
         onClose={() => setIsCreatePublisherModalOpen(false)}

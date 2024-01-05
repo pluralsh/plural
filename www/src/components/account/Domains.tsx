@@ -1,8 +1,9 @@
 import { useMutation, useQuery } from '@apollo/client'
 import { Box } from 'grommet'
-import { Avatar, Flex, Span } from 'honorable'
+import { Flex, Span } from 'honorable'
 import moment from 'moment'
 import {
+  AppIcon,
   ListBoxItem,
   Modal,
   PageTitle,
@@ -23,8 +24,8 @@ import { StandardScroller } from '../utils/SmoothScroller'
 import { Table, TableData, TableRow } from '../utils/Table'
 import ListInput from '../utils/ListInput'
 import { List } from '../utils/List'
-
 import { Confirm } from '../utils/Confirm'
+import { DnsRecordFragment } from '../../generated/graphql'
 
 import { DELETE_DOMAIN, DNS_DOMAINS, UPDATE_DOMAIN } from './queries'
 import { Actions } from './Actions'
@@ -196,7 +197,15 @@ function AccessPolicy({ domain: { id, accessPolicy }, edit, setEdit }: any) {
   )
 }
 
-function Domain({ node, last, setDomain }: any) {
+function Domain({
+  node,
+  last,
+  setDomain,
+}: {
+  node: DnsRecordFragment
+  last: any
+  setDomain: any
+}) {
   return (
     <TableRow
       last={last}
@@ -214,12 +223,13 @@ function Domain({ node, last, setDomain }: any) {
           gap="xsmall"
           align="center"
         >
-          <Avatar
-            src={node.creator.avatar}
-            name={node.creator.name}
-            size={30}
+          <AppIcon
+            url={node?.creator?.avatar || undefined}
+            name={node.creator?.name || undefined}
+            size="xxsmall"
+            spacing={node?.creator?.avatar ? 'none' : undefined}
           />
-          <Span color="text-light">{node.creator.name}</Span>
+          <Span color="text-light">{node.creator?.name}</Span>
         </Box>
       </TableData>
       <TableData>{moment(node.insertedAt).format('lll')}</TableData>
@@ -241,8 +251,6 @@ function DomainsInner({ q, setDomainSelected }: any) {
     },
     [setDomainSelected, setDomain]
   )
-
-  if (!data) return null
 
   if (domain) {
     return (

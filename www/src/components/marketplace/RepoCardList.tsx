@@ -1,7 +1,9 @@
 import { RepositoryCard } from '@pluralsh/design-system'
 import { Link } from 'react-router-dom'
+import { useTheme } from 'styled-components'
 
 import { CardGrid } from '../utils/layout/CardGrid'
+import { getRepoIcon } from '../repository/misc'
 
 export function RepoCardList({
   repositories,
@@ -10,6 +12,8 @@ export function RepoCardList({
   size = 'small',
   ...props
 }: any) {
+  const theme = useTheme()
+
   return (
     <CardGrid {...props}>
       {repositories?.map((repository) => (
@@ -23,7 +27,7 @@ export function RepoCardList({
           textDecoration="none"
           width="100%"
           title={repository.name}
-          imageUrl={repository.darkIcon || repository.icon}
+          imageUrl={getRepoIcon(repository, theme.mode)}
           publisher={repository.publisher?.name}
           description={repository.description}
           tags={repository.tags.map(({ tag }) => tag)}

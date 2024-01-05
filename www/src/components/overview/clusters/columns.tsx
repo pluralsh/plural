@@ -127,7 +127,6 @@ export const ColCloudShell = columnHelper.accessor(
           <IconFrame
             clickable
             icon={<TerminalIcon />}
-            // @ts-expect-error
             as={Link}
             to={`/shell?user=${owner?.id}`}
             textValue="Go to cloudshell"
@@ -244,7 +243,6 @@ export const ColActions = columnHelper.accessor((row) => row.consoleUrl, {
           clickable
           size="medium"
           icon={<CaretRightIcon />}
-          // @ts-expect-error
           as={Link}
           to={`/clusters/${row.id}`}
           textValue="Go to cluster details"

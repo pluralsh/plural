@@ -6,8 +6,8 @@ import { useState } from 'react'
 import { useParams } from 'react-router-dom'
 
 import {
-  Invite as InviteT,
-  User,
+  type Invite as InviteT,
+  type User,
   useInviteQuery,
   useRealizeInviteMutation,
   useSignupInviteMutation,

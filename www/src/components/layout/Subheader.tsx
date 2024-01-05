@@ -78,6 +78,7 @@ const SubheaderRight = styled.div(({ theme: _ }) => ({
 }))
 
 export default function Subheader() {
+  const theme = useTheme()
   const navigate = useNavigate()
   const previousUser = getPreviousUserData()
 
@@ -104,11 +105,15 @@ export default function Subheader() {
         />
       </NavButtons>
       <Breadcrumbs
-        flexGrow="1"
-        marginLeft="large"
-        marginRight="large"
-        minWidth={16}
-        flexBasis={16}
+        css={{
+          '&&': {
+            flexGrow: '1',
+            marginLeft: theme.spacing.large,
+            marginRight: theme.spacing.large,
+            minWidth: 16,
+            flexBasis: 16,
+          },
+        }}
       />
       <SubheaderRight>
         {!!previousUser && <ServiceAccountBanner />}

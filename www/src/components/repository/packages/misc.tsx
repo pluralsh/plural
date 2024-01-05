@@ -1,6 +1,7 @@
+import { ComponentProps } from 'react'
 import { Box } from 'grommet'
 import { useOutletContext } from 'react-router-dom'
-import { Div, Flex, H2, Img, Span } from 'honorable'
+import { Div, Flex, H2, Img } from 'honorable'
 import {
   Chip,
   ListBoxFooterPlus,
@@ -8,6 +9,7 @@ import {
   ListBoxItemChipList,
   Select,
 } from '@pluralsh/design-system'
+import styled, { useTheme } from 'styled-components'
 
 import { extendConnection } from '../../../utils/graphql'
 
@@ -24,28 +26,40 @@ export function dockerPull(
 export const chipSeverity = {
   low: 'success',
   medium: 'warning',
-  high: 'error',
+  high: 'danger',
   critical: 'critical',
-}
+} as const satisfies Record<
+  'low' | 'medium' | 'high' | 'critical',
+  ComponentProps<typeof Chip>['severity']
+>
 
-const gradeToColor = {
-  A: '#A5F8C8',
-  B: '#A5F8C8',
-  C: '#FFE78F',
-  D: '#FFE78F',
-  E: '#FDB1A5',
-  F: '#ED456A',
-}
+const gradeToSeverity = {
+  A: 'success',
+  B: 'success',
+  C: 'warning',
+  D: 'warning',
+  E: 'danger',
+  F: 'critical',
+} as const satisfies Record<
+  'A' | 'B' | 'C' | 'D' | 'E' | 'F',
+  ComponentProps<typeof Chip>['severity']
+>
 
 export function PackageGrade({ grade, large }: any) {
+  const theme = useTheme()
+
   return (
     <Chip
+      severity={gradeToSeverity[grade] || 'neutral'}
       size={large ? 'large' : 'medium'}
-      paddingHorizontal={large ? 'large' : 'small'}
-      backgroundColor="fill-two"
-      borderColor="border-fill-two"
+      css={{
+        '&&': {
+          paddingLeft: large ? theme.spacing.large : theme.spacing.small,
+          paddingRight: large ? theme.spacing.large : theme.spacing.small,
+        },
+      }}
     >
-      <Span color={gradeToColor[grade]}>{grade}</Span>
+      {grade}
     </Chip>
   )
 }
@@ -92,6 +106,7 @@ export function PackageVersionPicker({
   pageInfo,
   fetchMore,
 }: any) {
+  const theme = useTheme()
   const versions = edges.map(({ node }) => node)
 
   return (
@@ -168,9 +183,13 @@ export function PackageVersionPicker({
           />
         ))}
       </Select>
-      <Box
-        direction="row"
-        gap="8px"
+      <div
+        css={{
+          display: 'flex',
+          flexDirection: 'row',
+          gap: theme.spacing.xsmall,
+          flexWrap: 'wrap',
+        }}
       >
         {version?.tags.map(({ tag }, i) => (
           <Chip
@@ -180,7 +199,7 @@ export function PackageVersionPicker({
             {tag}
           </Chip>
         ))}
-      </Box>
+      </div>
     </Box>
   )
 }
@@ -199,6 +218,15 @@ export function PackageProperty({ children, header, ...props }: any) {
     </>
   )
 }
+const HideAtDesktop = styled.div(({ theme }) => {
+  const mqDesktop = `@media (min-width: ${theme.breakpoints.desktop}px)`
+
+  return {
+    [mqDesktop]: {
+      display: 'none',
+    },
+  }
+})
 
 export function PackageActions() {
   const { helmChart, currentHelmChart, terraformChart, currentTerraformChart } =
@@ -206,19 +234,23 @@ export function PackageActions() {
 
   if (helmChart && currentHelmChart) {
     return (
-      <ChartActions
-        chart={helmChart}
-        currentVersion={currentHelmChart}
-      />
+      <HideAtDesktop>
+        <ChartActions
+          chart={helmChart}
+          currentVersion={currentHelmChart}
+        />
+      </HideAtDesktop>
     )
   }
 
   if (terraformChart && currentTerraformChart) {
     return (
-      <TerraformActions
-        terraformModule={terraformChart}
-        currentVersion={currentTerraformChart}
-      />
+      <HideAtDesktop>
+        <TerraformActions
+          terraformModule={terraformChart}
+          currentVersion={currentTerraformChart}
+        />
+      </HideAtDesktop>
     )
   }
 

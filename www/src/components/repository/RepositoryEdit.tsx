@@ -1,16 +1,16 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useMutation, useQuery } from '@apollo/client'
-import { Div, Flex, Form, H2, MenuItem, Select, Span } from 'honorable'
-import { TextInput } from 'grommet'
 import {
   Button,
   Chip,
-  CloseIcon,
+  ComboBox,
   ContentCard,
   FormField,
   Input,
+  ListBoxFooterPlus,
+  ListBoxItem,
   PageTitle,
-  SearchIcon,
+  Select,
   Switch,
 } from '@pluralsh/design-system'
 import isEqual from 'lodash/isEqual'
@@ -18,8 +18,8 @@ import isArray from 'lodash/isArray'
 import uniqWith from 'lodash/uniqWith'
 import { useFilePicker } from 'react-sage'
 import filter from 'lodash/filter'
-import styled from '@emotion/styled'
 import capitalize from 'lodash/capitalize'
+import { useTheme } from 'styled-components'
 
 import { GqlError } from '../utils/Alert'
 
@@ -46,14 +46,6 @@ export const categories = [
   'STORAGE',
 ]
 
-const StyledTextInput = styled(TextInput)`
-  border: 1px solid #454954;
-  border-radius: 3px;
-  &:focus {
-    border-color: #5c77ff;
-  }
-`
-
 type FormState = {
   name: string
   description: string
@@ -70,7 +62,19 @@ type FormState = {
   twitterUrl?: string
 }
 
+const ICON_PICKER_PROPS = {
+  minImageWidth: 64,
+  maxImageWidth: 512,
+  minImageHeight: 64,
+  maxImageHeight: 512,
+}
+const ICON_PICKER_INPUT_OPTS = {
+  multiple: false,
+  accept: 'image/jpeg,image/png',
+}
+
 function RepositoryEdit() {
+  const theme = useTheme()
   const {
     id,
     name,
@@ -80,6 +84,7 @@ function RepositoryEdit() {
     oauthSettings,
     tags,
     icon,
+    darkIcon,
     private: privateRepo,
     community: communityUrls,
     documentation,
@@ -125,22 +130,35 @@ function RepositoryEdit() {
   )
 
   const [tagSearchString, setTagSearchString] = useState('')
-  const newTag = tagSearchString
-    .replaceAll(/([\s_]+)/gu, '-')
-    .replaceAll(/[^A-Za-z-]+/gu, '')
-    .toLowerCase()
   const tagSearch = useQuery(TAGS_SEARCH_QUERY, {
     variables: { q: tagSearchString, first: 200 },
   })
-  const tagSearchResults: { tag: string; count: number }[] =
-    tagSearch?.data?.tags?.edges?.map((edge: any) => edge?.node) || []
+  const tagSearchResults = useMemo(() => {
+    const results: { tag: string; count: number; new?: boolean }[] =
+      tagSearch?.data?.tags?.edges?.map((edge: any) => edge?.node) || []
+    let newTag: string | null = tagSearchString
+      .replaceAll(/([\s_]+)/gu, '-')
+      .replaceAll(/[^A-Za-z-]+/gu, '')
+      .toLowerCase()
 
-  const [iconUpdate, setIconUpdate] = useState<{
+    if (results.find((res) => res.tag.toLowerCase() === newTag)) {
+      newTag = null
+    }
+    if (newTag) {
+      results.push({ tag: newTag, count: 0, new: true })
+    }
+
+    return results
+  }, [tagSearch, tagSearchString])
+
+  const [lightIconUpdate, setLightIconUpdate] = useState<{
     file: File | null
     previewUrl: string | null
   }>({ file: null, previewUrl: icon || null })
-
-  const tagSearchRef = useRef<any>(null)
+  const [darkIconUpdate, setDarkIconUpdate] = useState<{
+    file: File | null
+    previewUrl: string | null
+  }>({ file: null, previewUrl: darkIcon || null })
 
   const [mutation, { loading, error }] = useMutation(
     UPDATE_REPOSITORY_MUTATION,
@@ -158,7 +176,8 @@ function RepositoryEdit() {
                   authMethod: formState.oauthMethod,
                 }
               : null,
-          ...(iconUpdate.file ? { icon: iconUpdate.file } : {}),
+          ...(lightIconUpdate.file ? { icon: lightIconUpdate.file } : {}),
+          ...(darkIconUpdate.file ? { darkIcon: darkIconUpdate.file } : {}),
           tags: formState.tags,
           private: formState.private,
           documentation: formState.docsUrl,
@@ -172,44 +191,51 @@ function RepositoryEdit() {
         },
       },
       update: (_cache, { data: { updateRepository } }) => {
-        setIconUpdate({
+        setLightIconUpdate({
           previewUrl: updateRepository.icon || null,
+          file: null,
+        })
+        setDarkIconUpdate({
+          previewUrl: updateRepository.darkIcon || null,
           file: null,
         })
       },
     }
   )
 
-  const iconPicker = useFilePicker({
-    minImageWidth: 64,
-    maxImageWidth: 512,
-    minImageHeight: 64,
-    maxImageHeight: 512,
-  })
-  const iconPickerInputOpts = {
-    multiple: false,
-    accept: 'image/jpeg,image/png',
-  }
+  const lightIconPicker = useFilePicker(ICON_PICKER_PROPS)
+  const darkIconPicker = useFilePicker(ICON_PICKER_PROPS)
 
   useEffect(() => {
-    const preventUpdate = false
-    const file = isArray(iconPicker?.files) && iconPicker?.files[0]
+    const cleanups = [
+      { iconPicker: lightIconPicker, setIconUpdate: setLightIconUpdate },
+      { iconPicker: darkIconPicker, setIconUpdate: setDarkIconUpdate },
+    ].map(({ iconPicker, setIconUpdate }) => {
+      const preventUpdate = false
+      const file = isArray(iconPicker?.files) && iconPicker?.files[0]
 
-    if (file) {
-      const reader = generatePreview(
-        file,
-        (file: { file: File; previewUrl: string }) => {
-          if (!preventUpdate) {
-            setIconUpdate(file)
+      if (file) {
+        const reader = generatePreview(
+          file,
+          (file: { file: File; previewUrl: string }) => {
+            if (!preventUpdate) {
+              setIconUpdate(file)
+            }
           }
-        }
-      )
+        )
 
-      return () => {
-        reader.abort()
+        return () => {
+          reader.abort()
+        }
       }
+
+      return () => {}
+    })
+
+    return () => {
+      cleanups.forEach((c) => c?.())
     }
-  }, [iconPicker.files])
+  }, [lightIconPicker, darkIconPicker])
 
   function handleSubmit(event: React.SyntheticEvent<HTMLElement>) {
     event.preventDefault()
@@ -218,11 +244,6 @@ function RepositoryEdit() {
     }
     mutation()
   }
-
-  // function handleReset() {
-  //   resetFormState()
-  //   setIconUpdate({ file: null, previewUrl: icon })
-  // }
 
   function handleDeleteTag(delTag: FormState['tags'][number]) {
     updateFormState({
@@ -246,8 +267,9 @@ function RepositoryEdit() {
         label={label}
         error={formStateErrors[key]}
         hint={formStateErrors[key] ? 'Must be a valid URL' : ''}
-        marginBottom="large"
-        flexGrow={1}
+        css={{
+          flexGrow: 1,
+        }}
       >
         <Input
           value={formState[key]}
@@ -265,72 +287,36 @@ function RepositoryEdit() {
   }
 
   if (!editable) {
-    return <H2>You cannot edit this repository</H2>
+    return (
+      <h2 css={{ margin: 0, ...theme.partials.text.title1 }}>
+        You cannot edit this repository
+      </h2>
+    )
   }
 
-  const formHasUpdates = formStateHasUpdates || icon !== iconUpdate.previewUrl
+  const formHasUpdates =
+    formStateHasUpdates ||
+    icon !== lightIconUpdate.previewUrl ||
+    darkIcon !== darkIconUpdate.previewUrl
   const submitEnabled = formHasUpdates
-
-  const suggestions = tagSearchResults.map((tag, index) => ({
-    value: tag.tag,
-    label: (
-      <MenuItem
-        key={tag.tag}
-        body2
-        marginTop={index === 0 ? 'xxsmall' : 0}
-        backgroundColor="fill-two"
-        borderBottom="1px solid border-fill-two"
-        _hover={{
-          backgroundColor: 'fill-two-hover',
-        }}
-        color="text"
-      >
-        {tag.tag}
-      </MenuItem>
-    ),
-  }))
-
-  if (newTag) {
-    suggestions.push({
-      value: newTag,
-      label: (
-        <Flex
-          direction="row"
-          body2
-          backgroundColor="fill-two"
-          paddingVertical="small"
-          paddingHorizontal="medium"
-          _hover={{
-            backgroundColor: 'fill-two-hover',
-          }}
-          color="text-primary-accent"
-        >
-          <Div
-            fontSize="26px"
-            paddingRight="medium"
-            position="relative"
-            marginTop="-0.1em"
-            marginRight="-0.15em"
-          >
-            +
-          </Div>
-          Create new tag, &ldquo;{newTag}&rdquo;
-        </Flex>
-      ),
-    })
-  }
+  const desktopMq = `@media (min-width: ${theme.breakpoints.desktop}px)`
 
   return (
-    <Form
+    <form
       onSubmit={handleSubmit}
-      maxHeight="100%"
-      display="flex"
-      flexDirection="column"
+      css={{
+        maxHeight: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+      }}
     >
       <PageTitle heading="Edit">
-        <Flex
-          align="center"
-          gap="medium"
+        <div
+          css={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: theme.spacing.medium,
+          }}
         >
           <SaveButton
             type="submit"
@@ -342,18 +328,29 @@ function RepositoryEdit() {
             }
             loading={loading}
           />
-          <Flex display-desktop-up="none">
+          <div
+            css={{
+              [desktopMq]: {
+                display: 'none',
+              },
+            }}
+          >
             <RepositoryActions />
-          </Flex>
-        </Flex>
+          </div>
+        </div>
       </PageTitle>
       <ContentCard
         marginBottom="xlarge"
         overflow="auto"
       >
-        <Div
-          maxWidth={608}
-          width="100%"
+        <div
+          css={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: theme.spacing.large,
+            maxWidth: 608,
+            width: '100%',
+          }}
         >
           {error && (
             <GqlError
@@ -361,57 +358,48 @@ function RepositoryEdit() {
               header="Something went wrong"
             />
           )}
-          {iconPicker.HiddenFileInput(iconPickerInputOpts)}
-          <FormField
-            marginBottom="large"
-            label="Icon"
+          <div
+            css={{
+              display: 'grid',
+              gridAutoFlow: 'column',
+              gridAutoColumns: '1fr',
+              gap: theme.spacing.medium,
+            }}
           >
-            <Flex
-              direction="row"
-              alignItems="flex-end"
-              gap="medium"
-            >
-              <IconUploadPreview
-                src={iconUpdate.previewUrl}
-                onClick={iconPicker.onClick}
+            {lightIconPicker.HiddenFileInput(ICON_PICKER_INPUT_OPTS)}
+            <FormField label="Default icon (or light mode)">
+              <IconPicker
+                {...{
+                  theme,
+                  iconUpdate: lightIconUpdate,
+                  iconPicker: lightIconPicker,
+                  setIconUpdate: setLightIconUpdate,
+                  mode: 'light',
+                }}
               />
-              <Flex
-                direction="column"
-                gap="xsmall"
-              >
-                <Button
-                  type="button"
-                  secondary
-                  small
-                  minHeight="auto"
-                  onClick={iconPicker.onClick}
-                >
-                  {iconUpdate.previewUrl ? 'Switch' : 'Upload'}
-                </Button>
-                {iconUpdate.previewUrl && (
-                  <Button
-                    type="button"
-                    secondary
-                    small
-                    minHeight="auto"
-                    destructive
-                    onClick={() => {
-                      setIconUpdate({ file: null, previewUrl: null })
-                    }}
-                  >
-                    Delete
-                  </Button>
-                )}
-              </Flex>
-            </Flex>
-          </FormField>
-          <Flex
-            gap="medium"
-            marginBottom="large"
+            </FormField>
+            {darkIconPicker.HiddenFileInput(ICON_PICKER_INPUT_OPTS)}
+            <FormField label="Dark mode icon">
+              <IconPicker
+                {...{
+                  theme,
+                  iconUpdate: darkIconUpdate,
+                  iconPicker: darkIconPicker,
+                  setIconUpdate: setDarkIconUpdate,
+                  mode: 'dark',
+                }}
+              />
+            </FormField>
+          </div>
+          <div
+            css={{
+              display: 'flex',
+              gap: theme.spacing.medium,
+            }}
           >
             <FormField
               label="Name"
-              flexGrow={1}
+              css={{ flexGrow: 1 }}
             >
               <Input
                 placeholder={formInitialState.name}
@@ -423,35 +411,35 @@ function RepositoryEdit() {
             </FormField>
             <FormField
               label="Category"
-              width={148}
-              flexShrink={1}
+              css={{
+                flexShrink: 1,
+                width: 160,
+              }}
             >
               <Select
-                value={formState.category}
-                onChange={(event) =>
-                  updateFormState({ category: event.target.value })
-                }
-                width="100%"
-                minHeight={40}
-                minWidth="auto"
+                label={capitalize(formState.category)}
+                selectedKey={formState.category}
+                onSelectionChange={(key) => {
+                  updateFormState({ category: key as string })
+                }}
               >
                 {categories.map((category) => (
-                  <MenuItem
+                  <ListBoxItem
                     key={category}
-                    value={category}
-                  >
-                    {capitalize(category.toLocaleLowerCase())}
-                  </MenuItem>
+                    label={capitalize(category.toLocaleLowerCase())}
+                    textValue={capitalize(category.toLocaleLowerCase())}
+                  />
                 ))}
               </Select>
             </FormField>
-          </Flex>
+          </div>
           <FormField
-            marginBottom="large"
             label="Description"
-            width="100%"
             length={formState.description.length}
             maxLength={200}
+            css={{
+              width: '100%',
+            }}
           >
             <Input
               multiline
@@ -465,82 +453,97 @@ function RepositoryEdit() {
               }
             />
           </FormField>
-          <Flex gap="medium">
+          <div
+            css={{
+              display: 'flex',
+              gap: theme.spacing.medium,
+            }}
+          >
             {renderUrlField('websiteUrl', 'Website link', 'Website URL')}
             {renderUrlField('docsUrl', 'Docs link', 'Docs URL')}
-          </Flex>
-          <Flex gap="medium">
+          </div>
+          <div
+            css={{
+              display: 'flex',
+              gap: theme.spacing.medium,
+            }}
+          >
             {renderUrlField('githubUrl', 'GitHub link', 'GitHub URL')}
             {renderUrlField('discordUrl', 'Discord link', 'Discord invite URL')}
-          </Flex>
-          <Flex gap="medium">
+          </div>
+          <div
+            css={{
+              display: 'flex',
+              gap: theme.spacing.medium,
+            }}
+          >
             {renderUrlField('slackUrl', 'Slack link', 'Slack invite URL')}
             {renderUrlField('twitterUrl', 'Twitter link', 'Twitter URL')}
-          </Flex>
-          <FormField
-            marginBottom="large"
-            label="Tags"
-          >
-            <StyledTextInput
-              style={{}}
-              ref={tagSearchRef}
-              icon={<SearchIcon size={12} />}
-              placeholder="Search for tags"
-              value={tagSearchString}
-              suggestions={suggestions}
-              dropHeight="200px"
-              onSelect={(event) => {
-                tagSearchRef?.current?.blur()
-                handleCreateTag(event?.suggestion?.value)
+          </div>
+          <FormField label="Tags">
+            <ComboBox
+              inputProps={{ placeholder: 'Search for tags' }}
+              onInputChange={(inputVal) => {
+                setTagSearchString(inputVal)
               }}
-              onChange={(event) => setTagSearchString(event?.target?.value)}
-            />
-            <Flex
-              wrap="wrap"
-              align="flex-start"
-              gap="xsmall"
-              marginTop="small"
+              onSelectionChange={(val) => {
+                handleCreateTag(val as string)
+              }}
+            >
+              {tagSearchResults.map((result) =>
+                result.new ? (
+                  <ListBoxFooterPlus
+                    key={result.tag}
+                    textValue={result.tag}
+                  >
+                    New tag: {result.tag}
+                  </ListBoxFooterPlus>
+                ) : (
+                  <ListBoxItem
+                    key={result.tag}
+                    label={result.tag}
+                    textValue={result.tag}
+                  />
+                )
+              )}
+            </ComboBox>
+            <div
+              css={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                alignItems: 'flex-start',
+                gap: theme.spacing.xsmall,
+                marginTop: theme.spacing.small,
+              }}
             >
               {formState.tags.map((tag) => (
                 <Chip
                   key={tag.tag}
                   onClick={() => handleDeleteTag(tag)}
-                  backgroundColor="fill-two"
-                  _hover={{
-                    backgroundColor: 'fill-two-hover',
-                    '& svg': {
-                      color: 'text',
-                    },
-                  }}
-                  cursor="pointer"
+                  clickable
+                  closeButton
+                  size="small"
                 >
-                  <Span fontWeight="400">{tag.tag}</Span>
-                  <CloseIcon
-                    size={8}
-                    marginLeft="xsmall"
-                    {...{
-                      ':hover &': {
-                        color: 'red',
-                      },
-                    }}
-                  />
+                  {tag.tag}
                 </Chip>
               ))}
-            </Flex>
+            </div>
           </FormField>
 
-          <Flex
-            marginLeft="minus-medium"
-            alignItems="stretch"
-            alignContent="stretch"
-            flexWrap=""
+          <div
+            css={{
+              display: 'flex',
+              alignItems: 'stretch',
+              alignContent: 'stretch',
+              flexWrap: 'nowrap',
+            }}
           >
             <FormField
               label="OAuth settings"
               hint="This must be a valid url beginning with https://"
-              width="100%"
-              marginLeft="medium"
-              marginBottom="large"
+              css={{
+                width: '100%',
+              }}
             >
               <Input
                 value={formState.oauthUrl}
@@ -554,46 +557,111 @@ function RepositoryEdit() {
             </FormField>
             <FormField
               label="HTTP method"
-              width={148}
-              flexShrink={1}
-              marginLeft="medium"
-              marginBottom="large"
+              css={{
+                width: 148,
+                flexShrink: 1,
+                marginLeft: theme.spacing.medium,
+                marginBottom: theme.spacing.large,
+              }}
             >
               <Select
-                width="100%"
-                minWidth="auto"
-                minHeight={40}
-                value={formState.oauthMethod}
-                onChange={(event) =>
-                  updateFormState({ oauthMethod: event.target.value })
+                selectedKey={formState.oauthMethod}
+                label={capitalize(formState.oauthMethod)}
+                onSelectionChange={(key) =>
+                  updateFormState({ oauthMethod: key as string })
                 }
               >
                 {Object.keys(authMethods).map((method) => (
-                  <MenuItem
+                  <ListBoxItem
                     key={method}
-                    value={method}
-                  >
-                    {capitalize(method.toLocaleLowerCase())}
-                  </MenuItem>
+                    label={capitalize(method.toLocaleLowerCase())}
+                    textValue={capitalize(method.toLocaleLowerCase())}
+                  />
                 ))}
               </Select>
             </FormField>
-          </Flex>
-
-          <Div paddingVertical={10}>
-            <Switch
-              checked={formState.private || false}
-              onChange={(checked) => {
-                updateFormState({ private: checked })
-              }}
-            >
-              Private repository
-            </Switch>
-          </Div>
-        </Div>
+          </div>
+          <Switch
+            checked={formState.private || false}
+            onChange={(checked) => {
+              updateFormState({ private: checked })
+            }}
+            css={{
+              paddingTop: theme.spacing.xsmall,
+              paddingBottom: theme.spacing.xsmall,
+            }}
+          >
+            Private repository
+          </Switch>
+        </div>
       </ContentCard>
-    </Form>
+    </form>
   )
 }
 
 export default RepositoryEdit
+function IconPicker({
+  iconUpdate,
+  iconPicker,
+  setIconUpdate,
+  mode,
+}: {
+  iconUpdate: { file: File | null; previewUrl: string | null }
+  iconPicker
+  setIconUpdate: React.Dispatch<
+    React.SetStateAction<{ file: File | null; previewUrl: string | null }>
+  >
+  mode: 'dark' | 'light'
+}) {
+  const theme = useTheme()
+
+  return (
+    <div
+      css={{
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'flex-end',
+        gap: theme.spacing.medium,
+      }}
+    >
+      <IconUploadPreview
+        src={iconUpdate.previewUrl}
+        onClick={iconPicker.onClick}
+        mode={mode}
+      />
+      <div
+        css={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: theme.spacing.xsmall,
+        }}
+      >
+        <Button
+          type="button"
+          secondary
+          small
+          onClick={iconPicker.onClick}
+          css={{
+            minHeight: 'auto',
+          }}
+        >
+          {iconUpdate.previewUrl ? 'Switch' : 'Upload'}
+        </Button>
+        {iconUpdate.previewUrl && (
+          <Button
+            type="button"
+            secondary
+            small
+            minHeight="auto"
+            destructive
+            onClick={() => {
+              setIconUpdate({ file: null, previewUrl: null })
+            }}
+          >
+            Delete
+          </Button>
+        )}
+      </div>
+    </div>
+  )
+}

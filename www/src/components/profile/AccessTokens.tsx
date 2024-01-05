@@ -40,7 +40,6 @@ import { formatLocation } from '../../utils/geo'
 import { Chloropleth } from '../utils/Chloropleth'
 import { Confirm } from '../utils/Confirm'
 import { DeleteIconButton } from '../utils/IconButtons'
-
 import LoadingIndicator from '../utils/LoadingIndicator'
 
 import { ListItem } from './ListItem'

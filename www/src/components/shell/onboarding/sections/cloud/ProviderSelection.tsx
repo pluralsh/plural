@@ -3,21 +3,22 @@ import {
   InfoOutlineIcon,
   PricingCalculator,
   Radio,
+  RadioGroup,
   Tooltip,
 } from '@pluralsh/design-system'
 import { Flex, Span } from 'honorable'
 import { useContext, useEffect, useMemo, useState } from 'react'
+import { useTheme } from 'styled-components'
 
 import { ImpersonationContext } from '../../../context/impersonation'
-
 import GCPLogoIcon from '../../assets/GCPLogoIcon.svg'
-
 import { OnboardingContext } from '../../context/onboarding'
 import { CloudType, OnboardingPath } from '../../context/types'
 
 import { CloudOption } from './CloudOption'
 
 function ProviderSelection() {
+  const theme = useTheme()
   const {
     cloud,
     setCloud,
@@ -40,7 +41,13 @@ function ProviderSelection() {
       direction="column"
       gap="xlarge"
     >
-      <Flex gap="xlarge">
+      <div
+        css={{
+          display: 'flex',
+          gap: theme.spacing.xlarge,
+          alignItems: 'stretch',
+        }}
+      >
         <CloudOption
           data-phid="select-cloud-shell"
           selected={path === CloudType.Cloud || path === CloudType.Local}
@@ -50,7 +57,7 @@ function ProviderSelection() {
           icon={
             <CloudIcon
               size={40}
-              color="text-light"
+              color={theme.colors['text-light']}
             />
           }
           header="Use your own cloud"
@@ -77,20 +84,21 @@ function ProviderSelection() {
             description="A six-hour GCP sandbox for you to test-drive Plural."
           />
         )}
-      </Flex>
+      </div>
       {onboardingPath === OnboardingPath.OSS && <PricingCalculator />}
       {(path === CloudType.Cloud || path === CloudType.Local) && (
-        <Flex
-          direction="column"
-          gap="small"
+        <RadioGroup
+          value={path.toString()}
+          onChange={(e) => {
+            setPath(Number(e))
+          }}
+          css={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: theme.spacing.xxsmall,
+          }}
         >
-          <Radio
-            value={CloudType.Cloud.toString()}
-            checked={path === CloudType.Cloud}
-            onChange={({ target: { checked } }: any) =>
-              checked && setPath(CloudType.Cloud)
-            }
-          >
+          <Radio value={CloudType.Cloud.toString()}>
             <Flex gap="small">
               <Span>Use our cloud shell (quick and easy)</Span>
               <Tooltip label="We host a free cloud environment for you to use our CLI and run commands as if it was on your own computer.">
@@ -98,13 +106,7 @@ function ProviderSelection() {
               </Tooltip>
             </Flex>
           </Radio>
-          <Radio
-            value={CloudType.Local.toString()}
-            checked={path === CloudType.Local}
-            onChange={({ target: { checked } }: any) =>
-              checked && setPath(CloudType.Local)
-            }
-          >
+          <Radio value={CloudType.Local.toString()}>
             <Flex gap="small">
               <Span>Install the CLI on your local machine (most secure)</Span>
               <Tooltip label="If you'd rather not upload your cloud credentials, you can set up your applications locally w/ our cli in a maximally secure setup">
@@ -112,7 +114,7 @@ function ProviderSelection() {
               </Tooltip>
             </Flex>
           </Radio>
-        </Flex>
+        </RadioGroup>
       )}
     </Flex>
   )

@@ -1,40 +1,49 @@
 import './installation.css'
-import { Children, cloneElement, forwardRef } from 'react'
+import {
+  Children,
+  ComponentProps,
+  ReactElement,
+  cloneElement,
+  forwardRef,
+} from 'react'
 import { Box, Text } from 'grommet'
-import styled from 'styled-components'
+import { Link } from 'react-router-dom'
+import styled, { CSSProperties } from 'styled-components'
+import { TabBaseProps } from '@pluralsh/design-system'
 
 import { UnstyledLink } from './Link'
 
-export const LinkTabWrap = styled(
-  forwardRef(
-    (
-      {
-        className,
+const LinkTabWrapUnstyled = forwardRef(
+  (
+    {
+      className,
+      active,
+      vertical,
+      children,
+      textValue: _textValue,
+      subTab: _,
+      ...props
+    }: ComponentProps<typeof Link> &
+      TabBaseProps & { children: ReactElement; subTab?: boolean },
+    ref
+  ) => (
+    <UnstyledLink
+      ref={ref as any}
+      className={className}
+      $extendStyle={{ display: 'block' }}
+      {...props}
+    >
+      {cloneElement(Children.only(children), {
         active,
         vertical,
-        children,
-        textValue: _textValue,
-        subTab: _,
-        ...props
-      },
-      ref
-    ) => (
-      <UnstyledLink
-        ref={ref as any}
-        className={className}
-        // @ts-expect-error
-        $extendStyle={{ display: 'block' }}
-        {...props}
-      >
-        {cloneElement(Children.only(children), {
-          active,
-          vertical,
-        })}
-      </UnstyledLink>
-    )
+      })}
+    </UnstyledLink>
   )
-)(({ theme, vertical, subTab, $extendStyle }) => ({
-  ...(!vertical ? { marginRight: theme.spacing.xsmall } : {}),
+)
+
+export const LinkTabWrap = styled(LinkTabWrapUnstyled)<{
+  $extendStyle?: CSSProperties
+}>(({ theme, vertical, subTab, $extendStyle }) => ({
   ...(vertical ? { width: '100%' } : {}),
   ...(subTab ? { borderRadius: theme.borderRadiuses.medium } : {}),
   ...$extendStyle,

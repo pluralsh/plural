@@ -3,6 +3,9 @@ import { H1 } from 'honorable'
 import { Divider, StackCard } from '@pluralsh/design-system'
 import { useNavigate } from 'react-router-dom'
 import isEmpty from 'lodash/isEmpty'
+import { useTheme } from 'styled-components'
+
+import { getRepoIcon } from '../repository/misc'
 
 import { STACKS_QUERY } from './queries'
 import { CardGrid } from './CardGrid'
@@ -10,6 +13,7 @@ import { CardGrid } from './CardGrid'
 const hues = ['blue', 'green', 'yellow', 'red'] as const
 
 export default function MarketplaceStacks() {
+  const theme = useTheme()
   const navigate = useNavigate()
   const { data } = useQuery(STACKS_QUERY, { variables: { featured: true } })
 
@@ -20,13 +24,10 @@ export default function MarketplaceStacks() {
   } = data
   const apps = ({ collections: c }) =>
     c?.length > 0
-      ? c[0].bundles?.map(
-          ({
-            recipe: {
-              repository: { name, darkIcon, icon },
-            },
-          }) => ({ name, imageUrl: darkIcon || icon })
-        )
+      ? c[0].bundles?.map(({ recipe: { repository } }) => ({
+          name: repository.name,
+          imageUrl: getRepoIcon(repository, theme.mode),
+        }))
       : []
   const hue = (i) => hues[i % hues.length]
 

@@ -1,23 +1,26 @@
-import { Box } from 'grommet'
-import { Span } from 'honorable'
+import { AppIcon } from '@pluralsh/design-system'
+import styled from 'styled-components'
 
-import Avatar from '../users/Avatar'
+import { User } from '../../generated/graphql'
 
-export function AuditUser({ user }: { user?: any }) {
+const AuditUserSC = styled.div(({ theme }) => ({
+  display: 'flex',
+  gap: theme.spacing.small,
+  alignItems: 'center',
+}))
+
+export function AuditUser({ user }: { user?: Pick<User, 'avatar' | 'name'> }) {
   if (!user) return null
 
   return (
-    <Box
-      flex={false}
-      direction="row"
-      gap="xsmall"
-      align="center"
-    >
-      <Avatar
-        user={user}
-        size="24px"
+    <AuditUserSC>
+      <AppIcon
+        spacing={user.avatar ? 'none' : undefined}
+        name={user.name}
+        url={user.avatar || undefined}
+        size="xxsmall"
       />
-      <Span>{user.name}</Span>
-    </Box>
+      <span>{user.name}</span>
+    </AuditUserSC>
   )
 }

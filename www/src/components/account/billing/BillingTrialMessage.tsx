@@ -1,7 +1,7 @@
 import { ErrorIcon, IconFrame, WarningIcon } from '@pluralsh/design-system'
 import { useContext, useMemo } from 'react'
 import { Link } from 'react-router-dom'
-import styled from 'styled-components'
+import styled, { useTheme } from 'styled-components'
 
 import SubscriptionContext from '../../../contexts/SubscriptionContext'
 
@@ -17,6 +17,7 @@ const MessageLink = styled.a(({ theme }) => ({
 }))
 
 function BillingTrialMessage() {
+  const theme = useTheme()
   const {
     isTrialExpired,
     isPaidPlan,
@@ -45,7 +46,7 @@ function BillingTrialMessage() {
     <Wrap>
       {(isTrialExpired || isTrialExpiringSoon) && (
         <IconFrame
-          icon={<ErrorIcon color="icon-error" />}
+          icon={<ErrorIcon color={theme.colors['icon-danger']} />}
           textValue={message}
         />
       )}

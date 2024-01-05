@@ -10,7 +10,7 @@ import {
   MagnifyingGlassIcon,
 } from '@pluralsh/design-system'
 import Fuse from 'fuse.js'
-import styled from 'styled-components'
+import styled, { useTheme } from 'styled-components'
 import isEmpty from 'lodash/isEmpty'
 import capitalize from 'lodash/capitalize'
 import orderBy from 'lodash/orderBy'
@@ -84,6 +84,7 @@ function SearchBar({ search, setSearch }) {
 }
 
 function MarketplaceRepositories({ publisher }: { publisher?: any }) {
+  const theme = useTheme()
   const scrollRef = useRef<HTMLDivElement>(null)
   const [searchParams, setSearchParams] = useSearchParams()
   const categories = searchParams.getAll('category')
@@ -307,7 +308,9 @@ function MarketplaceRepositories({ publisher }: { publisher?: any }) {
                 )}
               <RepoCardList
                 repositories={resultRepositories}
-                marginTop={publisher ? 0 : 'medium'}
+                css={{
+                  marginTop: publisher ? 0 : theme.spacing.medium,
+                }}
               />
               {loadingRepositories && <LoadingIndicator />}
               {!resultRepositories?.length && (

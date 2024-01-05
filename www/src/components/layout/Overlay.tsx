@@ -1,7 +1,6 @@
 import styled from 'styled-components'
 import chroma from 'chroma-js'
-import { useTransition } from 'react-spring'
-import { easings } from '@react-spring/web'
+import { easings, useTransition } from '@react-spring/web'
 import {
   ComponentProps,
   createContext,
@@ -12,9 +11,7 @@ import {
   useMemo,
   useReducer,
 } from 'react'
-
 import { produce } from 'immer'
-
 import { AnimatedDiv } from '@pluralsh/design-system'
 
 import useUnmount from '../../hooks/useUnmount'

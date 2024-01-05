@@ -1,41 +1,63 @@
-import { Div, Flex, Img } from 'honorable'
-import { useTheme } from 'styled-components'
+import styled, { useTheme } from 'styled-components'
+import { Link } from 'react-router-dom'
+import { LightDarkSwitch, setThemeColorMode } from '@pluralsh/design-system'
 
 import BillingLegacyUserMessage from '../account/billing/BillingLegacyUserMessage'
 import BillingSubscriptionChip from '../account/billing/BillingSubscriptionChip'
 import BillingTrialMessage from '../account/billing/BillingTrialMessage'
 import { useIsCurrentlyOnboarding } from '../shell/hooks/useOnboarded'
 
-const APP_ICON = '/app-logo-white.png'
+const APP_ICON_LIGHT = '/header-logo-light.png'
+const APP_ICON_DARK = '/header-logo-dark.png'
+
+const HeaderSC = styled.div(({ theme }) => ({
+  backgroundColor:
+    theme.mode === 'light' ? theme.colors['fill-one'] : theme.colors.grey[850],
+  borderBottom: theme.borders.default,
+}))
+
+const HeaderContentSC = styled.div(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  gap: theme.spacing.medium,
+  padding: `${theme.spacing.xsmall}px ${theme.spacing.large}px`,
+}))
+
+const LogoSC = styled(Link)((_) => ({
+  display: 'flex',
+  alignItems: 'center',
+  cursor: 'pointer',
+  marginLeft: -2.0 /* Optically center with sidebar buttons */,
+  minHeight: 40,
+  img: {
+    height: 24,
+  },
+}))
 
 export default function Header() {
   const theme = useTheme()
   const isCurrentlyOnboarding = useIsCurrentlyOnboarding()
 
   return (
-    <Div
-      backgroundColor={theme.colors['fill-one']}
-      borderBottom="1px solid border"
-      paddingHorizontal="large"
-      paddingVertical="xsmall"
-      style={isCurrentlyOnboarding ? { display: 'none' } : null}
-    >
-      <Flex
-        align="center"
-        gap="medium"
-        minHeight={40}
-      >
-        <Img
-          height={24}
-          marginLeft={-2} /* Optically center with sidebar buttons */
-          src={APP_ICON}
-          alt="Plural app"
-        />
-        <Flex grow={1} />
+    <HeaderSC style={isCurrentlyOnboarding ? { display: 'none' } : {}}>
+      <HeaderContentSC>
+        <LogoSC to="/">
+          <img
+            src={theme.mode === 'light' ? APP_ICON_LIGHT : APP_ICON_DARK}
+            alt="Plural app"
+          />
+        </LogoSC>
+        <div css={{ display: 'flex', flexGrow: 1 }} />
         <BillingLegacyUserMessage />
         <BillingTrialMessage />
         <BillingSubscriptionChip />
-      </Flex>
-    </Div>
+        <LightDarkSwitch
+          checked={theme.mode === 'dark'}
+          onChange={(val) => {
+            setThemeColorMode(val ? 'dark' : 'light')
+          }}
+        />
+      </HeaderContentSC>
+    </HeaderSC>
   )
 }

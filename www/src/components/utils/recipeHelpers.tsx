@@ -21,25 +21,6 @@ export type InstallAppButtonProps = {
   [x: string]: any
 }
 
-export const providerToIcon = {
-  AWS: '/aws-icon.png',
-  AZURE: '/azure.png',
-  EQUINIX: '/equinix-metal.png',
-  GCP: '/gcp.png',
-  KIND: '/kind.png',
-  GENERIC: '/chart.png',
-  LINODE: '/linode.png',
-}
-
-export const providerToIconWidth = {
-  AWS: 16,
-  AZURE: 15,
-  EQUINIX: 16,
-  GCP: 16,
-  KIND: 16,
-  GENERIC: 16,
-}
-
 export const providerToLongName: Record<Provider, ReactNode> = {
   AWS: 'Amazon Web Services',
   AZURE: 'Microsoft Azure',

@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from '@apollo/client'
 import { Box } from 'grommet'
-import { Avatar, Flex, Span } from 'honorable'
+import { Flex, Span } from 'honorable'
 import moment from 'moment'
 import {
   AppIcon,

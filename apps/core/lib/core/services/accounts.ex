@@ -3,6 +3,7 @@ defmodule Core.Services.Accounts do
   import Core.Policies.Account
   alias Core.PubSub
   alias Core.Services.{Users, Payments}
+  alias Core.Auth.Jwt
   alias Core.Schema.{
     User,
     Account,
@@ -415,6 +416,14 @@ defmodule Core.Services.Accounts do
 
   def impersonate_service_account(%User{} = service_account, %User{} = user),
     do: allow(service_account, user, :impersonate)
+
+
+  def license_key() do
+    exp = Timex.now() |> Timex.shift(days: 365) |> Timex.to_unix()
+    with {:ok, claims} <- Jwt.generate_claims(%{"enterprise" => true, "exp" => exp}),
+         {:ok, token, _} <- Jwt.encode_and_sign(claims, Jwt.signer()),
+      do: {:ok, token}
+  end
 
   @doc """
   Fetch all users that can impersonate this service account.  Return just the user if not a service account

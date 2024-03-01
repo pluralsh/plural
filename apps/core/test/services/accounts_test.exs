@@ -3,6 +3,7 @@ defmodule Core.Services.AccountsTest do
   use Mimic
   alias Core.PubSub
   alias Core.Services.Accounts
+  alias Core.Auth.Jwt
 
   describe "#create_service_account/2" do
     setup [:setup_root_user]
@@ -754,6 +755,20 @@ defmodule Core.Services.AccountsTest do
 
       refute refetch(user)
       assert refetch(other)
+    end
+  end
+
+  describe "#license_key/0" do
+    test "It can generate a valid year-long jwt with an enterprise claim" do
+      {:ok, token} = Accounts.license_key()
+
+      signer = Jwt.signer()
+      {:ok, claims} = Jwt.verify(token, signer)
+
+      assert claims["enterprise"]
+
+      assert Timex.from_unix(claims["exp"])
+             |> Timex.after?(Timex.shift(Timex.now(), days: 364))
     end
   end
 

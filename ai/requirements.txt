@@ -57,3 +57,4 @@ python-graphql-client
 nltk
 config
 html2text
+s3fs

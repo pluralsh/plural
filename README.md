@@ -38,7 +38,7 @@
 
 ## ✨ Features
 
-Plural will deploy open-source applications and proprietary services on Kubernetes in your cloud using common standards like Helm and Terraform.
+Use Plural to manage your Kubernetes Fleet from a single pane of glass.
 
 The Plural platform provides the following:
 
@@ -46,13 +46,8 @@ The Plural platform provides the following:
 * Full visibility of your fleet and all deployed services via our secure Auth Proxy.
 * Configuration management for deployments, allowing you to parameterize services for each deployment.
 * Horizontal scaling to ingest and auto-shard as many repos as necessary.
-* Dependency management between Terraform/Helm modules for open-source applications, with dependency-aware deployment and upgrades.
-* Authenticated docker registry and chartmuseum proxy per repository.
-
-In addition, Plural also handles:
-* Issuing the certificates.
-* Configuring a DNS service to register fully-qualified domains under onplural.sh to eliminate the hassle of DNS registration for users.
-* Being an OIDC provider to enable zero touch login security for all Plural applications.
+* Configurable pipelines for testing out code changes.
+* PR automation to generate PRs for updates, new repositories, and more.
 
 We think it's pretty cool! 😎 Some other nice things:
 

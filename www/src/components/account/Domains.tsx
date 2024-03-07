@@ -27,6 +27,8 @@ import { List } from '../utils/List'
 import { Confirm } from '../utils/Confirm'
 import { DnsRecordFragment } from '../../generated/graphql'
 
+import LoadingIndicator from '../utils/LoadingIndicator'
+
 import { DELETE_DOMAIN, DNS_DOMAINS, UPDATE_DOMAIN } from './queries'
 import { Actions } from './Actions'
 import { MoreMenu } from './MoreMenu'
@@ -259,6 +261,10 @@ function DomainsInner({ q, setDomainSelected }: any) {
         setDomain={setDomainWrapper}
       />
     )
+  }
+
+  if (!data) {
+    return <LoadingIndicator />
   }
 
   const {

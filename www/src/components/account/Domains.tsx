@@ -5,6 +5,7 @@ import moment from 'moment'
 import {
   AppIcon,
   ListBoxItem,
+  LoadingSpinner,
   Modal,
   PageTitle,
   SearchIcon,
@@ -26,6 +27,8 @@ import ListInput from '../utils/ListInput'
 import { List } from '../utils/List'
 import { Confirm } from '../utils/Confirm'
 import { DnsRecordFragment } from '../../generated/graphql'
+
+import LoadingIndicator from '../utils/LoadingIndicator'
 
 import { DELETE_DOMAIN, DNS_DOMAINS, UPDATE_DOMAIN } from './queries'
 import { Actions } from './Actions'
@@ -259,6 +262,10 @@ function DomainsInner({ q, setDomainSelected }: any) {
         setDomain={setDomainWrapper}
       />
     )
+  }
+
+  if (!data) {
+    return <LoadingIndicator />
   }
 
   const {

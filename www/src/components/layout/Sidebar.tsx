@@ -128,6 +128,8 @@ function SidebarMenuItem({
 }) {
   return (
     <SidebarItem
+      as={href ? 'a' : undefined}
+      target="_blank"
       clickable
       tooltip={tooltip}
       href={href}

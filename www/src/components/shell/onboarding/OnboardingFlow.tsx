@@ -1,44 +1,44 @@
-import { useQuery } from '@apollo/client'
+// import { useQuery } from '@apollo/client'
 import { Flex } from 'honorable'
 import { useMemo } from 'react'
-import { LoopingLogo } from '@pluralsh/design-system'
+// import { LoopingLogo } from '@pluralsh/design-system'
 
-import { AUTHENTICATION_URLS_QUERY } from '../queries'
-import { useDevTokenOutputSecretCode } from '../hooks/useDevToken'
+// import { AUTHENTICATION_URLS_QUERY } from '../queries'
+// import { useDevTokenOutputSecretCode } from '../hooks/useDevToken'
 
 import OnboardingCard from './OnboardingCard'
-import CloudStep from './sections/cloud/CloudStep'
-import WorkspaceStep from './sections/workspace/WorkspaceStep'
-import { useSection, useToken } from './context/hooks'
+// import CloudStep from './sections/cloud/CloudStep'
+// import WorkspaceStep from './sections/workspace/WorkspaceStep'
+import { useSection } from './context/hooks'
 import CLIInstallationStep from './sections/cli/CLIInstallationStep'
 import CLICompletionStep from './sections/cli/CLICompletionStep'
 import { CreateCloudShellSectionState, SectionKey } from './context/types'
-import CreateShellStep from './sections/shell/CreateShellStep'
-import OverviewStep from './sections/overview/OverviewStep'
+// import CreateShellStep from './sections/shell/CreateShellStep'
+// import OverviewStep from './sections/overview/OverviewStep'
 import OnboardingTips from './OnboardingTips'
 import WelcomeStep from './sections/welcome/WelcomeStep'
 
 function OnboardingFlow({ onNext, onBack }) {
-  const token = useToken() || ''
   const { section } = useSection()
   const isCreating = useMemo(
     () => section.state === CreateCloudShellSectionState.Creating,
     [section]
   )
-  const { data, loading } = useQuery(AUTHENTICATION_URLS_QUERY)
+  // const { data, loading } = useQuery(AUTHENTICATION_URLS_QUERY)
 
-  useDevTokenOutputSecretCode(token)
+  // const token = useToken() || ''
+  // useDevTokenOutputSecretCode(token)
 
-  if (loading) {
-    return (
-      <Flex
-        align="center"
-        justify="center"
-      >
-        <LoopingLogo />
-      </Flex>
-    )
-  }
+  // if (loading) {
+  //   return (
+  //     <Flex
+  //       align="center"
+  //       justify="center"
+  //     >
+  //       <LoopingLogo />
+  //     </Flex>
+  //   )
+  // }
 
   return (
     <Flex
@@ -50,13 +50,13 @@ function OnboardingFlow({ onNext, onBack }) {
         mode={isCreating ? 'Compact' : 'Default'}
       >
         {section?.key === SectionKey.WELCOME && <WelcomeStep onNext={onNext} />}
-        {section?.key === SectionKey.ONBOARDING_OVERVIEW && (
+        {/* {section?.key === SectionKey.ONBOARDING_OVERVIEW && (
           <OverviewStep
             onBack={onBack}
             onNext={onNext}
           />
-        )}
-        {section?.key === SectionKey.CONFIGURE_CLOUD && (
+        )} */}
+        {/* {section?.key === SectionKey.CONFIGURE_CLOUD && (
           <CloudStep
             data={data}
             onNext={onNext}
@@ -71,7 +71,7 @@ function OnboardingFlow({ onNext, onBack }) {
         )}
         {section?.key === SectionKey.CREATE_CLOUD_SHELL && (
           <CreateShellStep onBack={onBack} />
-        )}
+        )} */}
         {section?.key === SectionKey.INSTALL_CLI && (
           <CLIInstallationStep
             onNext={onNext}

@@ -123,6 +123,7 @@ function OnboardingWithContext({ ...props }: OnboardingProps): ReactElement {
   const [path, setPath] = useState<OnboardingPath>(
     restoredContext?.path ?? OnboardingPath.None
   )
+  // const [sections, setSections] = useState<Sections>(defaultSections())
   const [sections, setSections] = useState<Sections>(defaultSections())
   const [section, setSection] = useState<Section>(sections[SectionKey.WELCOME]!)
   const [workspace, setWorkspace] = useState<WorkspaceProps>(

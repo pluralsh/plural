@@ -54,7 +54,8 @@ const reverseLookup = (
 
 function CloudStep({ onBack, onNext, data }) {
   const cloudType = useCloudType()
-  const setPath = usePath(cloudType)
+  // const setPath = usePath(cloudType)
+  const setPath = usePath()
   const navigate = useNavigate()
   const setSectionState = useSectionState()
   const { fresh: isOnboarding, mutation } = useOnboarded()

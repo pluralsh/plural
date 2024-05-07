@@ -1,11 +1,11 @@
 import { Dispatch, useCallback, useContext, useEffect, useMemo } from 'react'
 import {
-  AppsIcon,
+  // AppsIcon,
   ChecklistIcon,
-  CloudIcon,
+  // CloudIcon,
   ListIcon,
   TerminalIcon,
-  WorkspaceIcon,
+  // WorkspaceIcon,
 } from '@pluralsh/design-system'
 
 import {
@@ -25,62 +25,62 @@ import {
   WorkspaceProps,
 } from './types'
 
-const defaultSections = (): Sections => {
-  const sections: Sections = {
-    [SectionKey.WELCOME]: {
-      index: 0,
-      key: SectionKey.WELCOME,
-      title: 'Welcome to Plural!',
-      IconComponent: AppsIcon,
-    },
-    [SectionKey.ONBOARDING_OVERVIEW]: {
-      index: 1,
-      key: SectionKey.ONBOARDING_OVERVIEW,
-      title: 'Onboarding overview',
-      IconComponent: ChecklistIcon,
-    },
-    [SectionKey.CONFIGURE_CLOUD]: {
-      index: 2,
-      key: SectionKey.CONFIGURE_CLOUD,
-      title: 'Configure credentials',
-      IconComponent: CloudIcon,
-    },
-    [SectionKey.CONFIGURE_WORKSPACE]: {
-      index: 3,
-      key: SectionKey.CONFIGURE_WORKSPACE,
-      title: 'Configure workspace',
-      IconComponent: WorkspaceIcon,
-    },
-    [SectionKey.CREATE_CLOUD_SHELL]: {
-      index: 4,
-      key: SectionKey.CREATE_CLOUD_SHELL,
-      title: 'Create cloud shell',
-      IconComponent: TerminalIcon,
-    },
-  }
+// const defaultSections = (): Sections => {
+//   const sections: Sections = {
+//     [SectionKey.WELCOME]: {
+//       index: 0,
+//       key: SectionKey.WELCOME,
+//       title: 'Welcome to Plural!',
+//       IconComponent: AppsIcon,
+//     },
+//     [SectionKey.ONBOARDING_OVERVIEW]: {
+//       index: 1,
+//       key: SectionKey.ONBOARDING_OVERVIEW,
+//       title: 'Onboarding overview',
+//       IconComponent: ChecklistIcon,
+//     },
+//     [SectionKey.CONFIGURE_CLOUD]: {
+//       index: 2,
+//       key: SectionKey.CONFIGURE_CLOUD,
+//       title: 'Configure credentials',
+//       IconComponent: CloudIcon,
+//     },
+//     [SectionKey.CONFIGURE_WORKSPACE]: {
+//       index: 3,
+//       key: SectionKey.CONFIGURE_WORKSPACE,
+//       title: 'Configure workspace',
+//       IconComponent: WorkspaceIcon,
+//     },
+//     [SectionKey.CREATE_CLOUD_SHELL]: {
+//       index: 4,
+//       key: SectionKey.CREATE_CLOUD_SHELL,
+//       title: 'Create cloud shell',
+//       IconComponent: TerminalIcon,
+//     },
+//   }
 
-  // build sections flow
-  sections[SectionKey.WELCOME]!.next = sections[SectionKey.ONBOARDING_OVERVIEW]
+//   // build sections flow
+//   sections[SectionKey.WELCOME]!.next = sections[SectionKey.ONBOARDING_OVERVIEW]
 
-  sections[SectionKey.ONBOARDING_OVERVIEW]!.next =
-    sections[SectionKey.CONFIGURE_CLOUD]
-  sections[SectionKey.ONBOARDING_OVERVIEW]!.prev = sections[SectionKey.WELCOME]
+//   sections[SectionKey.ONBOARDING_OVERVIEW]!.next =
+//     sections[SectionKey.CONFIGURE_CLOUD]
+//   sections[SectionKey.ONBOARDING_OVERVIEW]!.prev = sections[SectionKey.WELCOME]
 
-  sections[SectionKey.CONFIGURE_CLOUD]!.prev =
-    sections[SectionKey.ONBOARDING_OVERVIEW]
-  sections[SectionKey.CONFIGURE_CLOUD]!.next =
-    sections[SectionKey.CONFIGURE_WORKSPACE]
+//   sections[SectionKey.CONFIGURE_CLOUD]!.prev =
+//     sections[SectionKey.ONBOARDING_OVERVIEW]
+//   sections[SectionKey.CONFIGURE_CLOUD]!.next =
+//     sections[SectionKey.CONFIGURE_WORKSPACE]
 
-  sections[SectionKey.CONFIGURE_WORKSPACE]!.prev =
-    sections[SectionKey.CONFIGURE_CLOUD]
-  sections[SectionKey.CONFIGURE_WORKSPACE]!.next =
-    sections[SectionKey.CREATE_CLOUD_SHELL]
+//   sections[SectionKey.CONFIGURE_WORKSPACE]!.prev =
+//     sections[SectionKey.CONFIGURE_CLOUD]
+//   sections[SectionKey.CONFIGURE_WORKSPACE]!.next =
+//     sections[SectionKey.CREATE_CLOUD_SHELL]
 
-  sections[SectionKey.CREATE_CLOUD_SHELL]!.prev =
-    sections[SectionKey.CONFIGURE_WORKSPACE]
+//   sections[SectionKey.CREATE_CLOUD_SHELL]!.prev =
+//     sections[SectionKey.CONFIGURE_WORKSPACE]
 
-  return sections
-}
+//   return sections
+// }
 
 const localCLISections = (): Sections => {
   const sections: Sections = {
@@ -90,26 +90,26 @@ const localCLISections = (): Sections => {
       title: 'Welcome to Plural!',
       IconComponent: ChecklistIcon,
     },
-    [SectionKey.ONBOARDING_OVERVIEW]: {
-      index: 1,
-      key: SectionKey.ONBOARDING_OVERVIEW,
-      title: 'Onboarding overview',
-      IconComponent: ChecklistIcon,
-    },
-    [SectionKey.CONFIGURE_CLOUD]: {
-      index: 2,
-      key: SectionKey.CONFIGURE_CLOUD,
-      title: 'Configure credentials',
-      IconComponent: CloudIcon,
-    },
+    // [SectionKey.ONBOARDING_OVERVIEW]: {
+    //   index: 1,
+    //   key: SectionKey.ONBOARDING_OVERVIEW,
+    //   title: 'Onboarding overview',
+    //   IconComponent: ChecklistIcon,
+    // },
+    // [SectionKey.CONFIGURE_CLOUD]: {
+    //   index: 2,
+    //   key: SectionKey.CONFIGURE_CLOUD,
+    //   title: 'Configure credentials',
+    //   IconComponent: CloudIcon,
+    // },
     [SectionKey.INSTALL_CLI]: {
-      index: 3,
+      index: 1,
       key: SectionKey.INSTALL_CLI,
       title: 'Install Plural CLI',
       IconComponent: TerminalIcon,
     },
     [SectionKey.COMPLETE_SETUP]: {
-      index: 4,
+      index: 2,
       key: SectionKey.COMPLETE_SETUP,
       title: 'Complete Setup',
       IconComponent: ListIcon,
@@ -117,17 +117,19 @@ const localCLISections = (): Sections => {
   }
 
   // build sections flow
-  sections[SectionKey.WELCOME]!.next = sections[SectionKey.ONBOARDING_OVERVIEW]
+  // sections[SectionKey.WELCOME]!.next = sections[SectionKey.ONBOARDING_OVERVIEW]
+  sections[SectionKey.WELCOME]!.next = sections[SectionKey.INSTALL_CLI]
 
-  sections[SectionKey.ONBOARDING_OVERVIEW]!.next =
-    sections[SectionKey.CONFIGURE_CLOUD]
-  sections[SectionKey.ONBOARDING_OVERVIEW]!.prev = sections[SectionKey.WELCOME]
+  // sections[SectionKey.ONBOARDING_OVERVIEW]!.next =
+  //   sections[SectionKey.CONFIGURE_CLOUD]
+  // sections[SectionKey.ONBOARDING_OVERVIEW]!.prev = sections[SectionKey.WELCOME]
 
-  sections[SectionKey.CONFIGURE_CLOUD]!.prev =
-    sections[SectionKey.ONBOARDING_OVERVIEW]
-  sections[SectionKey.CONFIGURE_CLOUD]!.next = sections[SectionKey.INSTALL_CLI]
+  // sections[SectionKey.CONFIGURE_CLOUD]!.prev =
+  //   sections[SectionKey.ONBOARDING_OVERVIEW]
+  // sections[SectionKey.CONFIGURE_CLOUD]!.next = sections[SectionKey.INSTALL_CLI]
 
-  sections[SectionKey.INSTALL_CLI]!.prev = sections[SectionKey.CONFIGURE_CLOUD]
+  // sections[SectionKey.INSTALL_CLI]!.prev = sections[SectionKey.CONFIGURE_CLOUD]
+  sections[SectionKey.INSTALL_CLI]!.prev = sections[SectionKey.WELCOME]
   sections[SectionKey.INSTALL_CLI]!.next = sections[SectionKey.COMPLETE_SETUP]
 
   sections[SectionKey.COMPLETE_SETUP]!.prev = sections[SectionKey.INSTALL_CLI]
@@ -157,34 +159,37 @@ const useSection = (s?: Section) => {
   }
 }
 
-const useCloudType = (): CloudType => {
-  const {
-    cloud: { type },
-  } = useContext(OnboardingContext)
+const useCloudType = (): CloudType =>
+  // const {
+  //   cloud: { type },
+  // } = useContext(OnboardingContext)
 
-  return type || CloudType.Cloud
-}
+  // return type || CloudType.Cloud
+  CloudType.Local
 
-const usePath = (path: CloudType): Dispatch<void> => {
+const usePath = (): Dispatch<void> => {
+  // const usePath = (path: CloudType): Dispatch<void> => {
   const { setSections, setSection } = useContext(OnboardingContext)
 
   return useCallback(() => {
-    let sections: Sections
+    const sections = localCLISections()
+    // let sections: Sections
 
-    switch (path) {
-      case CloudType.Cloud:
-        sections = defaultSections()
-        break
-      case CloudType.Demo:
-        sections = defaultSections()
-        break
-      case CloudType.Local:
-        sections = localCLISections()
-    }
+    // switch (path) {
+    //   case CloudType.Cloud:
+    //     sections = defaultSections()
+    //     break
+    //   case CloudType.Demo:
+    //     sections = defaultSections()
+    //   break
+    //   case CloudType.Local:
+    //     sections = localCLISections()
+    // }
 
     setSections(sections)
     setSection((section) => ({ ...section, ...sections[section.key] }))
-  }, [path, setSection, setSections])
+    // }, [path, setSection, setSections])
+  }, [setSection, setSections])
 }
 
 const useSectionState = () => {
@@ -263,7 +268,8 @@ const useContextStorage = () => {
 export {
   useToken,
   useCloudType,
-  defaultSections,
+  // defaultSections,
+  localCLISections as defaultSections,
   useSection,
   usePath,
   useSetWorkspaceKeys,

@@ -23,13 +23,22 @@ config :core, Core.Guardian,
   issuer: "plural",
   secret_key: get_env("JWT_SECRET")
 
-config :core, Core.Repo,
-  database: "plural",
-  username: "plural",
-  password: get_env("POSTGRES_PASSWORD"),
-  hostname: get_env("DBHOST") || "plural-postgresql",
-  ssl: String.to_existing_atom(get_env("DBSSL") || "false"),
-  pool_size: 5
+
+
+if get_env("POSTGRES_URL") do
+  config :core, Core.Repo,
+    url: get_env("POSTGRES_URL"),
+    ssl: String.to_existing_atom(get_env("DBSSL") || "true"),
+    pool_size: 5
+else
+  config :core, Core.Repo,
+    database: "plural",
+    username: "plural",
+    password: get_env("POSTGRES_PASSWORD"),
+    hostname: get_env("DBHOST") || "plural-postgresql",
+    ssl: String.to_existing_atom(get_env("DBSSL") || "false"),
+    pool_size: 5
+end
 
 config :cloudflare,
   auth_token: get_env("CLOUDFLARE_AUTH_TOKEN")

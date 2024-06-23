@@ -325,6 +325,7 @@ admin:
   enabled: false
 
 postgres:
+  create: true
   plural:
     resources: {}
     size: 50Gi

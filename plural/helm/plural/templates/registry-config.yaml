@@ -29,7 +29,7 @@ metadata:
 type: Opaque
 data:
   {{- if .Values.registry.secrets.haSharedSecret }}
-  haSharedSecret: {{ .Values.secrets.haSharedSecret | b64enc | quote }}
+  haSharedSecret: {{ .Values.registry.secrets.haSharedSecret | b64enc | quote }}
   {{- else }}
   haSharedSecret: {{ randAlphaNum 16 | b64enc | quote }}
   {{- end }}

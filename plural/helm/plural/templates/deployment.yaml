@@ -232,9 +232,6 @@ spec:
       - name: www
         image: "{{ .Values.global.registry }}/{{ .Values.www.repository }}:{{ .Values.www.tag | default .Chart.AppVersion }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-        env:
-        - name: DEPLOYED_AT
-          value: {{ now | unixEpoch | quote }}
         ports:
         - name: http
           containerPort: {{ .Values.www.port }}

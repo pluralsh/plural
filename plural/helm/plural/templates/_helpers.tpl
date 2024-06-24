@@ -48,8 +48,6 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- define "plural.env" -}}
 - name: HOST
   value: {{ .Values.ingress.dns }}
-- name: DEPLOYED_AT
-  value: {{ now | unixEpoch | quote }}
 - name: NAMESPACE
   valueFrom:
     fieldRef:
@@ -95,7 +93,7 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end -}}
 
 {{- define "plural.migration-name" -}}
-plural-migration-{{ .Release.Revision }}
+plural-migration-{{ .Values.image.tag | default .Chart.AppVersion | sha256sum | trunc 8 }}
 {{- end -}}
 
 {{- define "plural.wait-for-migration" -}}

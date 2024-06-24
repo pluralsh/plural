@@ -43,12 +43,8 @@ spec:
         {{ end }}
         - name: STORAGE_GOOGLE_BUCKET
           value: {{ .Values.chartmuseum.bucket }}
-        - name: STORAGE_GOOGLE_BUCKET
-          value: {{ .Values.chartmuseum.bucket }}
         - name: STORAGE_GOOGLE_PREFIX
           value: ""
-        - name: STORAGE_AMAZON_BUCKET
-          value: {{ .Values.chartmuseum.bucket }}
         - name: STORAGE_AMAZON_BUCKET
           value: {{ .Values.chartmuseum.bucket }}
         - name: STORAGE_AMAZON_PREFIX

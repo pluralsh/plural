@@ -69,7 +69,7 @@ defmodule Rtc.MixProject do
   defp deps do
     [
       {:sentry, "8.0.6"},
-      {:phoenix, "~> 1.6.0"},
+      {:phoenix, "~> 1.7.0"},
       {:phoenix_html, "~> 3.2.0"},
       {:phoenix_live_reload, "~> 1.4.0", only: :dev},
       {:telemetry_metrics, "~> 0.6.1"},

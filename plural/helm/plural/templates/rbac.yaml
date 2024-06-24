@@ -4,7 +4,6 @@ metadata:
   name: plural-role
   labels:
 {{ include "plural.labels" . | indent 4 }}
-spec:
 rules:
 - apiGroups: [""]
   resources: ["endpoints", "pods"]
@@ -19,7 +18,6 @@ metadata:
   name: plural-shell-role
   labels:
 {{ include "plural.labels" . | indent 4 }}
-spec:
 rules:
 - apiGroups: [""]
   resources: ["pods", "pods/exec", "pods/status"]

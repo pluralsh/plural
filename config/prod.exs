@@ -29,7 +29,6 @@ config :core, :consumers, [
   Core.PubSub.Consumers.Audits,
   Core.PubSub.Consumers.Cache,
   Core.PubSub.Consumers.Usage,
-  Core.PubSub.Consumers.Posthog
 ]
 
 config :email, :consumers, [

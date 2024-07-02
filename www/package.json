@@ -72,7 +72,6 @@
     "moment": "2.29.4",
     "phoenix": "1.7.3",
     "pluralsh-absinthe-socket-apollo-link": "0.2.0",
-    "posthog-js": "1.66.1",
     "process": "0.11.10",
     "prop-types": "15.8.1",
     "query-string": "8.1.0",

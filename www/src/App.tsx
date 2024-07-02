@@ -1,5 +1,5 @@
 import 'react-toggle/style.css'
-import { Suspense, lazy, useEffect } from 'react'
+import { Suspense, lazy } from 'react'
 import { Route, Routes } from 'react-router-dom'
 import { ApolloProvider } from '@apollo/client'
 import { IntercomProvider } from 'react-use-intercom'
@@ -19,14 +19,12 @@ import styled, { ThemeProvider as StyledThemeProvider } from 'styled-components'
 import { mergeDeep } from '@apollo/client/utilities'
 import mpRecipe from 'honorable-recipe-mp'
 import { GrowthBook, GrowthBookProvider } from '@growthbook/growthbook-react'
-import posthog from 'posthog-js'
 
 import { client } from './helpers/client'
 import { INTERCOM_APP_ID } from './constants'
 import { DEFAULT_THEME } from './theme'
 import { HistoryRouter, browserHistory } from './router'
 import { growthbook } from './helpers/growthbook'
-import Cookiebot from './utils/cookiebot'
 import { OverlayContextProvider } from './components/layout/Overlay'
 import NavContextProvider from './contexts/NavigationContext'
 import { CursorPositionProvider } from './components/utils/CursorPosition'
@@ -78,28 +76,6 @@ const SSOCallback = lazy(() =>
     default: module.SSOCallback,
   }))
 )
-
-function PosthogOptInOut() {
-  useEffect(() => {
-    if (Cookiebot?.consent?.statistics) {
-      posthog.opt_in_capturing()
-    } else {
-      posthog.opt_out_capturing()
-    }
-    const onPrefChange = () => {
-      if (Cookiebot?.consent?.statistics) {
-        posthog.opt_in_capturing()
-      } else {
-        posthog.opt_out_capturing()
-      }
-    }
-
-    window.addEventListener('CookiebotOnAccept', onPrefChange)
-    window.addEventListener('CookiebotOnDecline', onPrefChange)
-  }, [])
-
-  return null
-}
 
 const RootBoxSC = styled.div(({ theme }) => ({
   display: 'flex',
@@ -191,7 +167,6 @@ function App() {
 
   return (
     <Suspense>
-      <PosthogOptInOut />
       <ApolloProvider client={client}>
         <IntercomProvider appId={INTERCOM_APP_ID}>
           <ThemeProvider theme={honorableTheme}>

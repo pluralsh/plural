@@ -26,15 +26,13 @@ import {
 } from '../../../../../generated/graphql'
 import { OnboardingContext } from '../../context/onboarding'
 import { generateString } from '../../../../../utils/string'
-import { PosthogEvent, posthogCapture } from '../../../../../utils/posthog'
 
 import { DemoStatus } from './DemoStatus'
 
 function CreateDemo({ onBack, onNext }): JSX.Element {
   const setSectionState = useSectionState()
   const setSectionError = useSectionError()
-  const { cloud, workspace, setSCM, setCloud, setWorkspace } =
-    useContext(OnboardingContext)
+  const { setSCM, setCloud, setWorkspace } = useContext(OnboardingContext)
   const [demoCreated, setDemoCreated] = useState(false)
   const [shouldCreate, setShouldCreate] = useState(true)
 
@@ -94,19 +92,6 @@ function CreateDemo({ onBack, onNext }): JSX.Element {
     } as WorkspaceProps)
     setDemoCreated(true)
   }, [demoCreated, demoProject, isProjectReady, setCloud, setSCM, setWorkspace])
-
-  // Capture errors and send to posthog
-  useEffect(
-    () =>
-      error &&
-      posthogCapture(PosthogEvent.Onboarding, {
-        type: cloud.type,
-        provider: cloud.provider,
-        clusterName: workspace.clusterName,
-        error,
-      }),
-    [cloud.provider, cloud.type, error, workspace.clusterName]
-  )
 
   useEffect(() => setSectionError(!!error), [error, setSectionError])
 

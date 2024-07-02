@@ -36,7 +36,6 @@ import {
   WorkspaceProps,
 } from '../../context/types'
 import { toCloudProviderAttributes } from '../../../utils/provider'
-import { PosthogEvent, posthogCapture } from '../../../../../utils/posthog'
 
 import { useSectionError, useSectionState } from '../../context/hooks'
 
@@ -191,19 +190,6 @@ function CreateShell() {
     if (shell?.alive && !error && setupShellCompleted)
       setSectionState(CreateCloudShellSectionState.Finished)
   }, [shell, setupShellCompleted, error, setSectionState])
-
-  // Capture errors and send to posthog
-  useEffect(
-    () =>
-      error &&
-      posthogCapture(PosthogEvent.Onboarding, {
-        type: cloud.type,
-        provider: cloud.provider,
-        clusterName: workspace.clusterName,
-        error,
-      }),
-    [cloud.provider, cloud.type, error, workspace.clusterName]
-  )
 
   useEffect(() => setSectionError(!!error), [error, setSectionError])
 

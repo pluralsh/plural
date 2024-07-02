@@ -1,11 +1,9 @@
-import { Suspense, lazy, useContext, useEffect, useState } from 'react'
+import { Suspense, lazy, useEffect, useState } from 'react'
 import { Navigate, Outlet, Route, Routes, useMatch } from 'react-router-dom'
 import { Toast } from '@pluralsh/design-system'
 
 import { growthbook } from '../helpers/growthbook'
 import { useHistory } from '../router'
-import CurrentUserContext from '../contexts/CurrentUserContext'
-import PosthogIdentify from '../utils/posthog'
 
 import { WrapStripe } from './WrapStripe'
 import { LegacyExpirationNotice } from './login/LegacyExpiration'
@@ -296,23 +294,6 @@ function TestBanner() {
   return null
 }
 
-function PosthogIdentifier() {
-  const me = useContext(CurrentUserContext)
-
-  PosthogIdentify(me)
-
-  useEffect(() => {
-    const onPrefChange = () => {
-      PosthogIdentify(me)
-    }
-
-    window.addEventListener('CookiebotOnAccept', onPrefChange)
-    window.addEventListener('CookiebotOnDecline', onPrefChange)
-  }, [me])
-
-  return null
-}
-
 export function PluralInner() {
   return (
     <WrapStripe>
@@ -321,7 +302,6 @@ export function PluralInner() {
           <ApplicationLayout>
             <DelinquencyToast />
             <LegacyExpirationNotice />
-            <PosthogIdentifier />
             <VerifyEmailConfirmed />
             <DeviceLoginNotif />
             <TestBanner />

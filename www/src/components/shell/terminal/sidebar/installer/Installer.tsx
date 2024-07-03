@@ -19,7 +19,6 @@ import {
 } from 'react'
 import { useSearchParams } from 'react-router-dom'
 
-import { PosthogEvent, posthogCapture } from '../../../../../utils/posthog'
 import LoadingIndicator from '../../../../utils/LoadingIndicator'
 import { ImpersonationContext } from '../../../context/impersonation'
 import useOnboarded from '../../../hooks/useOnboarded'
@@ -52,9 +51,6 @@ function Installer({ onInstallSuccess }) {
   const [steps, setSteps] = useState<Array<WizardStepConfig>>([])
   const [error, setError] = useState<ApolloError | undefined>()
   const [defaultSteps, setDefaultSteps] = useState<Array<WizardStepConfig>>([])
-  const [selectedApplications, setSelectedApplications] = useState<
-    Array<string>
-  >([])
   const [domains, setDomains] = useState<Record<string, string>>({})
 
   const {
@@ -111,10 +107,6 @@ function Installer({ onInstallSuccess }) {
           mutation()
           refetch()
           refetchInstalledApps()
-          posthogCapture(PosthogEvent.Installer, {
-            provider,
-            applications: selectedApplications,
-          })
           onInstallSuccess()
         })
         .catch((err) => setError(err))
@@ -139,9 +131,6 @@ function Installer({ onInstallSuccess }) {
         setSteps(steps)
       }
 
-      setSelectedApplications(
-        selectedApplications.map((app) => app.label ?? 'unknown')
-      )
       setStepsLoading(true)
       build().finally(() => setStepsLoading(false))
     },
@@ -157,18 +146,6 @@ function Installer({ onInstallSuccess }) {
         })
       ),
     [applications, preselectedApps, provider]
-  )
-
-  // Capture errors and send to posthog
-  useEffect(
-    () =>
-      error &&
-      posthogCapture(PosthogEvent.Installer, {
-        error,
-        applications: selectedApplications,
-        provider,
-      }),
-    [error, selectedApplications, provider]
   )
 
   if (!applications || defaultSteps.length === 0) {

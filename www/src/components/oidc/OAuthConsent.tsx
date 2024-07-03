@@ -2,7 +2,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { useMutation, useQuery } from '@apollo/client'
 import queryString from 'query-string'
 import { ArrowRightLeftIcon, Button, IconFrame } from '@pluralsh/design-system'
-import { useCallback, useEffect } from 'react'
+import { useCallback } from 'react'
 import { A, Flex, Span } from 'honorable'
 import StartCase from 'lodash/startCase'
 import { useTheme } from 'styled-components'
@@ -12,8 +12,6 @@ import { GqlError } from '../utils/Alert'
 import { PLURAL_MARK, PLURAL_MARK_WHITE } from '../constants'
 import { useMeQuery } from '../../generated/graphql'
 import { clearLocalStorage } from '../../helpers/localStorage'
-
-import { PosthogEvent, posthogCapture } from '../../utils/posthog'
 
 import LoadingIndicator from '../utils/LoadingIndicator'
 
@@ -60,16 +58,6 @@ export function OAuthConsent() {
     clearLocalStorage()
     navigate('/login')
   }, [navigate])
-
-  useEffect(() => {
-    if (repository) {
-      posthogCapture(PosthogEvent.OIDCLogin, {
-        applicationID: repository.id,
-        applicationName: repository.name,
-        installationID: repository.installation?.id,
-      })
-    }
-  }, [repository])
 
   if (!data || userLoading) return <LoadingIndicator />
 

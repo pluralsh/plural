@@ -1,5 +1,3 @@
-import posthog from 'posthog-js'
-
 import { LocalStorageKeys } from '../constants'
 
 import { wipeToken } from './authentication'
@@ -22,7 +20,6 @@ export enum EXPIRATION_NOTICE_STATE {
 // Clears the user related local storage keys during logout.
 function clearLocalStorage(): void {
   wipeToken()
-  posthog.reset()
   localStorage.removeItem(LocalStorageKeys.AuthPreviousUserData)
   localStorage.removeItem(LocalStorageKeys.BrowserHistory)
   localStorage.removeItem(LocalStorageKeys.LegacyExpirationNotice)

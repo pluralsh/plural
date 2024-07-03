@@ -10165,13 +10165,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fflate@npm:^0.4.1":
-  version: 0.4.8
-  resolution: "fflate@npm:0.4.8"
-  checksum: 29d8cbe44d5e7f53e7f5a160ac7f9cc025480c7b3bfd85c5f898cbe20dfa2dad4732daa534982664bf30b35896a90af44ea33ede5d94c5ffd1b8b0c0a0a56ca2
-  languageName: node
-  linkType: hard
-
 "fflate@npm:^0.8.1":
   version: 0.8.1
   resolution: "fflate@npm:0.8.1"
@@ -14376,15 +14369,6 @@ __metadata:
     picocolors: ^1.0.0
     source-map-js: ^1.0.2
   checksum: 220d9d0bf5d65be7ed31006c523bfb11619461d296245c1231831f90150aeb4a31eab9983ac9c5c89759a3ca8b60b3e0d098574964e1691673c3ce5c494305ae
-  languageName: node
-  linkType: hard
-
-"posthog-js@npm:1.66.1":
-  version: 1.66.1
-  resolution: "posthog-js@npm:1.66.1"
-  dependencies:
-    fflate: ^0.4.1
-  checksum: 55c2696bd26b0d73aef45d7a08cad82a1ce7b20f79dc65cff434b3fb45f8a5fe65a0d6ad265250ff27404ae236f91181230577fc8eb56f91e8a20912cf4737c0
   languageName: node
   linkType: hard
 
@@ -19003,7 +18987,6 @@ __metadata:
     npm-run-all: 4.1.5
     phoenix: 1.7.3
     pluralsh-absinthe-socket-apollo-link: 0.2.0
-    posthog-js: 1.66.1
     prettier: 2.8.8
     process: 0.11.10
     prop-types: 15.8.1

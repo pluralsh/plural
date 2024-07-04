@@ -79,7 +79,7 @@ defmodule Api.MixProject do
       {:libcluster, "~> 3.3.1"},
       {:prometheus_ex, "~> 3.0"},
       {:prometheus_plugs, "~> 1.1.1"},
-      {:remote_ip, "~> 0.2.0"},
+      {:remote_ip, "~> 1.2.0"},
       {:k8s_traffic_plug, github: "Financial-Times/k8s_traffic_plug"},
 
       {:core, in_umbrella: true},

@@ -62,7 +62,7 @@ defmodule Api.MixProject do
   defp deps do
     [
       {:sentry, "8.0.6"},
-      {:phoenix, "~> 1.6.0"},
+      {:phoenix, "~> 1.7.0"},
       {:phoenix_pubsub, "~> 2.0"},
       {:phoenix_ecto, "~> 4.4.0"},
       {:ecto_sql, "~> 3.9.0"},

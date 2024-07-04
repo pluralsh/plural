@@ -52,7 +52,7 @@ defmodule Plural.MixProject do
       {:distillery, "~> 2.1"},
       {:x509, "~> 0.8.5"},
       {:shards, "~> 1.0"},
-      {:ecto, "~> 3.9.0", override: true},
+      {:ecto, "~> 3.11.0", override: true},
       {:hackney, "~> 1.18.1", override: true},
       {:absinthe_plug, "~> 1.5.8"},
       {:credo, "~> 1.6", only: [:dev, :test], runtime: false},

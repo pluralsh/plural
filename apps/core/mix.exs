@@ -90,7 +90,7 @@ defmodule Core.MixProject do
       {:arc_ecto, "~> 0.11.3"},
       {:dictionary, "~> 0.1.0"},
       {:mojito, "~> 0.7.0"},
-      {:nebulex, "== 2.4.2"},
+      {:nebulex, "== 2.6.2"},
       {:kazan, "~> 0.11", github: "michaeljguarino/kazan", branch: "k8s-1.23"},
       {:workos, "~> 0.1.2"},
       {:decorator, "~> 1.3"},   #=> For using Caching Annotations

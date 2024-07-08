@@ -9,7 +9,7 @@
     "lint:fix": "npx eslint . --fix"
   },
   "engines": {
-    "node": "18.12.1"
+    "node": "18.20.4"
   },
   "packageManager": "yarn@3.6.0",
   "devDependencies": {

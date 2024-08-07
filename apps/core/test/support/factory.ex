@@ -651,6 +651,7 @@ defmodule Core.Factory do
       size:        :small,
       cluster:     build(:cloud_cluster),
       cockroach:   build(:cockroach_cluster),
+      owner:       build(:user, service_account: true),
       subdomain:   "#{name}.cloud.plural.sh",
       url:         "console.#{name}.cloud.plural.sh",
       instance_status: %{db: true, svc: true},

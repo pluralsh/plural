@@ -98,6 +98,25 @@ defmodule Core.Services.Cloud do
     |> notify(:delete, user)
   end
 
+  @doc """
+  Proceeds to attempt to reap a cloud cluster, we'll give two notifications, then
+  """
+  @spec reap(ConsoleInstance.t) :: console_resp
+  def reap(%ConsoleInstance{first_notif_at: nil} = inst),
+    do: notify_reaping(inst, :first_notif_at)
+  def reap(%ConsoleInstance{second_notif_at: nil} = inst),
+    do: notify_reaping(inst, :second_notif_at)
+  def reap(%ConsoleInstance{} = inst) do
+    %{owner: owner} = Repo.preload(inst, [:owner])
+    delete_instance(inst.id, owner)
+  end
+
+  defp notify_reaping(instance, field) do
+    Ecto.Changeset.change(instance, %{field => Timex.now()})
+    |> Repo.update()
+    |> notify(:reap)
+  end
+
   def authorize(id, %User{} = user) do
     inst = get_instance!(id) |> Repo.preload([:owner])
     with {:ok, _} <- Core.Policies.Account.allow(inst.owner, user, :impersonate),
@@ -193,4 +212,8 @@ defmodule Core.Services.Cloud do
   defp notify({:ok, %ConsoleInstance{} = inst}, :delete, user),
     do: handle_notify(PubSub.ConsoleInstanceDeleted, inst, actor: user)
   defp notify(pass, _, _), do: pass
+
+  defp notify({:ok, %ConsoleInstance{} = inst}, :reap),
+    do: handle_notify(PubSub.ConsoleInstanceReaped, inst)
+  defp notify(pass, _), do: pass
 end

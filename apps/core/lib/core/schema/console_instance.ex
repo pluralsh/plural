@@ -26,7 +26,9 @@ defmodule Core.Schema.ConsoleInstance do
     field :size,          Size
     field :region,        :string
 
-    field :deleted_at,    :utc_datetime_usec
+    field :first_notif_at,  :utc_datetime_usec
+    field :second_notif_at, :utc_datetime_usec
+    field :deleted_at,      :utc_datetime_usec
 
     embeds_one :instance_status, InstanceStatus, on_replace: :update do
       field :db,  :boolean, default: false
@@ -63,6 +65,23 @@ defmodule Core.Schema.ConsoleInstance do
     from(c in query,
       join: u in assoc(c, :owner),
       where: u.account_id == ^account_id
+    )
+  end
+
+  def unpaid(query \\ __MODULE__) do
+    from(c in query,
+      join: u in assoc(c, :owner),
+      join: a in assoc(u, :account),
+      left_join: s in assoc(a, :subscription),
+      where: not is_nil(a.delinquent_at) or is_nil(s.id)
+    )
+  end
+
+  def reapable(query \\ __MODULE__) do
+    week_ago = Timex.now() |> Timex.shift(weeks: -1)
+    default = Timex.shift(week_ago, weeks: -1)
+    from(c in query,
+      where: coalesce(coalesce(c.second_notif_at, c.first_notif_at), ^default) < ^week_ago
     )
   end
 

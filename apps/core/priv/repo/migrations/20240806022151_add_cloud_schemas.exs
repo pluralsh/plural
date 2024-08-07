@@ -39,6 +39,9 @@ defmodule Core.Repo.Migrations.AddCloudSchemas do
       add :configuration, :map
       add :deleted_at,    :utc_datetime_usec
 
+      add :first_notif_at,  :utc_datetime_usec
+      add :second_notif_at, :utc_datetime_usec
+
       add :instance_status,        :map
 
       add :cockroach_id, references(:cockroach_clusters, type: :uuid)

@@ -88,4 +88,39 @@ defmodule Core.Services.CloudTest do
       {:error, _} = Cloud.delete_instance(instance.id, user)
     end
   end
+
+  describe "#reap/1" do
+    test "it will send a first warning" do
+      inst = insert(:console_instance)
+
+      {:ok, reaped} = Cloud.reap(inst)
+
+      assert reaped.first_notif_at
+
+      assert_receive {:event, %PubSub.ConsoleInstanceReaped{item: ^reaped}}
+    end
+
+    test "it will send a second warning" do
+      inst = insert(:console_instance, first_notif_at: Timex.now())
+
+      {:ok, reaped} = Cloud.reap(inst)
+
+      assert reaped.second_notif_at
+
+      assert_receive {:event, %PubSub.ConsoleInstanceReaped{item: ^reaped}}
+    end
+
+    test "it will finally delete" do
+      inst = insert(:console_instance,
+        first_notif_at: Timex.now(),
+        second_notif_at: Timex.now()
+      )
+
+      {:ok, reaped} = Cloud.reap(inst)
+
+      assert reaped.deleted_at
+
+      assert_receive {:event, %PubSub.ConsoleInstanceDeleted{item: ^reaped}}
+    end
+  end
 end

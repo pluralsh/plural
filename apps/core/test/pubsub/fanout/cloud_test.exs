@@ -1,4 +1,4 @@
-defmodule Core.PubSub.Fanout.ChartsTest do
+defmodule Core.PubSub.Fanout.CloudTest do
   use Core.SchemaCase, async: false
   alias Core.PubSub
   use Mimic
@@ -8,7 +8,7 @@ defmodule Core.PubSub.Fanout.ChartsTest do
       expect(Core.Conduit.Broker, :publish, fn msg, :cloud -> {:ok, msg} end)
 
       event = %PubSub.ConsoleInstanceCreated{item: insert(:console_instance)}
-      {:ok, ^event} = PubSub.Fanout.handle_event(event)
+      {:ok, %Conduit.Message{body: ^event}} = PubSub.Fanout.fanout(event)
     end
   end
 
@@ -17,7 +17,7 @@ defmodule Core.PubSub.Fanout.ChartsTest do
       expect(Core.Conduit.Broker, :publish, fn msg, :cloud -> {:ok, msg} end)
 
       event = %PubSub.ConsoleInstanceUpdated{item: insert(:console_instance)}
-      {:ok, ^event} = PubSub.Fanout.handle_event(event)
+      {:ok, %Conduit.Message{body: ^event}} = PubSub.Fanout.fanout(event)
     end
   end
 
@@ -26,7 +26,7 @@ defmodule Core.PubSub.Fanout.ChartsTest do
       expect(Core.Conduit.Broker, :publish, fn msg, :cloud -> {:ok, msg} end)
 
       event = %PubSub.ConsoleInstanceDeleted{item: insert(:console_instance)}
-      {:ok, ^event} = PubSub.Fanout.handle_event(event)
+      {:ok, %Conduit.Message{body: ^event}} = PubSub.Fanout.fanout(event)
     end
   end
 end

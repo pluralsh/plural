@@ -94,3 +94,4 @@ defmodule Core.PubSub.UpgradesPromoted, do: use Piazza.PubSub.Event
 defmodule Core.PubSub.ConsoleInstanceCreated, do: use Piazza.PubSub.Event
 defmodule Core.PubSub.ConsoleInstanceUpdated, do: use Piazza.PubSub.Event
 defmodule Core.PubSub.ConsoleInstanceDeleted, do: use Piazza.PubSub.Event
+defmodule Core.PubSub.ConsoleInstanceReaped, do: use Piazza.PubSub.Event

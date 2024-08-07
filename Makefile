@@ -57,19 +57,18 @@ install-cockroach:
 	sudo cp -i cockroach-$(COCKROACH_VSN).linux-amd64/lib/libgeos_c.so /usr/local/lib/cockroach/ && \
 	cockroach version
 
-setup-certs:
+test-certs:
 	mkdir test-certs && \
 	cockroach cert create-ca --certs-dir test-certs --ca-key test-certs/ca.key && \
 	cockroach cert create-node localhost 127.0.0.1 --certs-dir test-certs --ca-key test-certs/ca.key && \
 	cockroach cert create-client root --certs-dir test-certs --ca-key test-certs/ca.key && \
 	cockroach cert list --certs-dir test-certs
 
-testup: setup-certs ## sets up dependent services for test
+testup: test-certs ## sets up dependent services for test
 	docker compose up -d
 
 testdown: ## tear down test dependencies
-	docker compose down && \
-	  rm -rf test-certs || echo 'no cert folder to remove'
+	docker compose down
 
 connectdb: ## proxies the db in kubernetes via kubectl
 	@echo "run psql -U forge -h 127.0.0.1 forge to connect"

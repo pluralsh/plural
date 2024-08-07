@@ -7,6 +7,7 @@ defmodule Core.Services.CloudTest do
   describe "#create_instance/2" do
     test "creates a new cloud console instance" do
       account = insert(:account)
+      enable_features(account, [:cd])
       user = admin_user(account)
       cluster = insert(:cloud_cluster)
       cockroach = insert(:cockroach_cluster)
@@ -32,6 +33,21 @@ defmodule Core.Services.CloudTest do
       assert refetch(cockroach).count == 1
 
       assert_receive {:event, %PubSub.ConsoleInstanceCreated{item: ^instance}}
+    end
+
+    test "unpaid users cannot create instances" do
+      account = insert(:account)
+      user = admin_user(account)
+      insert(:cloud_cluster)
+      insert(:cockroach_cluster)
+      insert(:repository, name: "console")
+
+      {:error, "you must be on a paid plan to use Plural Cloud"} = Cloud.create_instance(%{
+        name: "plrltest",
+        cloud: :aws,
+        region: "us-east-1",
+        size: :small
+      }, user)
     end
   end
 

@@ -6,6 +6,7 @@ defmodule GraphQl.CloudMutationsTest do
   describe "createConsoleInstance" do
     test "it can create an instance" do
       account = insert(:account)
+      enable_features(account, [:cd])
       user = admin_user(account)
       insert(:cloud_cluster)
       insert(:cockroach_cluster)

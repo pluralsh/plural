@@ -6,6 +6,7 @@ defmodule Core.Services.Cloud.WorkflowTest do
   describe "up and down" do
     test "it will consistently provision a cloud console's infrastructure" do
       account = insert(:account)
+      enable_features(account, [:cd])
       user = admin_user(account)
       %{external_id: cluster_id} = cluster = insert(:cloud_cluster)
       roach = insert(:cockroach_cluster)

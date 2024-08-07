@@ -1,5 +1,6 @@
 defmodule Core.Services.Cloud do
   use Core.Services.Base
+  import Core.Policies.Cloud
   alias Core.Repo
   alias Core.PubSub
   alias Core.Services.{Accounts, Users, Repositories, Shell}
@@ -38,6 +39,7 @@ defmodule Core.Services.Cloud do
   @spec create_instance(map, User.t) :: console_resp
   def create_instance(%{name: name} = attrs, %User{} = user) do
     start_transaction()
+    |> add_operation(:auth, fn _ -> allow(%ConsoleInstance{}, user, :create) end)
     |> add_operation(:cluster, fn _ -> select_cluster(attrs[:cloud], attrs[:region]) end)
     |> add_operation(:cockroach, fn _ -> select_roach(attrs[:cloud]) end)
     |> add_operation(:sa, fn _ ->

@@ -271,7 +271,7 @@ defmodule Core.Services.Payments do
     case {enforce?(), delinquent?(account), grandfathered?(account), account} do
       {false, _, _, _} -> true
       {_, true, _, _} -> false
-      {_, _, true, _} -> true
+      {_, _, true, _} when feature != :cd -> true
       {_, _, _, %Account{subscription: %PlatformSubscription{plan: %PlatformPlan{enterprise: true}}}} -> true
       {_, _, _, %Account{subscription: %PlatformSubscription{plan: %PlatformPlan{features: %{^feature => true}}}}} -> true
       _ -> false

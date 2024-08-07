@@ -17,10 +17,16 @@ defmodule Core.Services.Cloud.Configuration do
       kas_private
       kas_redis
     )a)
-    |> Map.put(:postgres_url, build_pg_url(inst))
+    |> Map.merge(%{
+      postgres_url: build_pg_url(inst),
+      size: "#{size}",
+      postgres_certificate: certificate(inst)
+    })
     |> Map.put(:size, "#{size}")
     |> Enum.map(fn {k, v} -> %{name: Macro.camelize("#{k}"), value: v} end)
   end
+
+  defp certificate(%ConsoleInstance{cockroach: %CockroachCluster{certificate: cert}}), do: cert
 
   defp build_pg_url(%ConsoleInstance{
     configuration: %{dbuser: u, dbpassword: p, database: database},

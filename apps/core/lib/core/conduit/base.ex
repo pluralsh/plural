@@ -13,6 +13,7 @@ defmodule Core.Conduit.Base do
         defqueue "plural.upgrade"
         defqueue "plural.scan"
         defqueue "plural.cluster"
+        defqueue "plural.cloud"
       end
 
       pipeline :out_tracking do
@@ -36,6 +37,7 @@ defmodule Core.Conduit.Base do
         publish :upgrade, exchange: "plural.topic", to: "plural.upgrade"
         publish :scan, exchange: "plural.topic", to: "plural.scan"
         publish :cluster, exchange: "plural.topic", to: "plural.cluster"
+        publish :cloud, exchange: "plural.topic", to: "plural.cloud"
       end
 
       outgoing do

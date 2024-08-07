@@ -19,5 +19,6 @@ defmodule Worker.Conduit.Broker do
     pipe_through [:in_tracking, :error_handling, :deserialize]
     subscribe :scan, Scan, from: "plural.scan"
     subscribe :cluster, Cluster, from: "plural.cluster"
+    subscribe :cloud, Cloud, from: "plural.cloud"
   end
 end

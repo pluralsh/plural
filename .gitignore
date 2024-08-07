@@ -67,4 +67,7 @@ yarn-error.log*
 cert.pem
 key.pem
 
+
+/test-certs/
+
 .vscode

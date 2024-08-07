@@ -90,3 +90,7 @@ defmodule Core.PubSub.ClusterDependencyCreated, do: use Piazza.PubSub.Event
 defmodule Core.PubSub.DeferredUpdateCreated, do: use Piazza.PubSub.Event
 
 defmodule Core.PubSub.UpgradesPromoted, do: use Piazza.PubSub.Event
+
+defmodule Core.PubSub.ConsoleInstanceCreated, do: use Piazza.PubSub.Event
+defmodule Core.PubSub.ConsoleInstanceUpdated, do: use Piazza.PubSub.Event
+defmodule Core.PubSub.ConsoleInstanceDeleted, do: use Piazza.PubSub.Event

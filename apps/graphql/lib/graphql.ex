@@ -26,6 +26,7 @@ defmodule GraphQl do
   import_types GraphQl.Schema.Test
   import_types GraphQl.Schema.AI
   import_types GraphQl.Schema.Cluster
+  import_types GraphQl.Schema.Cloud
 
   alias GraphQl.Resolvers.{
     User,
@@ -43,7 +44,8 @@ defmodule GraphQl do
     Dns,
     Test,
     Cluster,
-    Upgrade
+    Upgrade,
+    Cloud
   }
 
   @sources [
@@ -63,6 +65,7 @@ defmodule GraphQl do
     Test,
     Cluster,
     Upgrade,
+    Cloud,
     GraphQl.InstallationLoader,
     GraphQl.ShellLoader,
     GraphQl.LockLoader,
@@ -124,6 +127,7 @@ defmodule GraphQl do
     import_fields :test_queries
     import_fields :ai_queries
     import_fields :cluster_queries
+    import_fields :cloud_queries
   end
 
   mutation do
@@ -144,6 +148,7 @@ defmodule GraphQl do
     import_fields :rollout_mutations
     import_fields :test_mutations
     import_fields :cluster_mutations
+    import_fields :cloud_mutations
   end
 
   subscription do

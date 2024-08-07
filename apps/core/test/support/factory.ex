@@ -641,6 +641,41 @@ defmodule Core.Factory do
     }
   end
 
+  def console_instance_factory do
+    name = sequence(:console_instance, & "instance#{&1}")
+    %Schema.ConsoleInstance{
+      name:        name,
+      cloud:       :aws,
+      external_id: Ecto.UUID.generate(),
+      status:      :provisioned,
+      size:        :small,
+      cluster:     build(:cloud_cluster),
+      cockroach:   build(:cockroach_cluster),
+      subdomain:   "#{name}.cloud.plural.sh",
+      url:         "console.#{name}.cloud.plural.sh",
+      instance_status: %{db: true, svc: true},
+      region:      "us-east-1"
+    }
+  end
+
+  def cloud_cluster_factory do
+    %Schema.CloudCluster{
+      name:        sequence(:cloud_cluster, & "cluster-#{&1}"),
+      cloud:       :aws,
+      region:      "us-east-1",
+      external_id: Ecto.UUID.generate()
+    }
+  end
+
+  def cockroach_cluster_factory do
+    %Schema.CockroachCluster{
+      name:  sequence(:cockroach, & "cockroach-#{&1}"),
+      cloud: :aws,
+      url:   "postgresql://plrl:plural@localhost:26257/plural",
+      certificate: File.read!("../../test-certs/client.root.crt")
+    }
+  end
+
   def with_password(%Schema.User{} = user, password) do
     Schema.User.changeset(user, %{password: password})
     |> Ecto.Changeset.apply_changes()

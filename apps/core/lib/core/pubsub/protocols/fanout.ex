@@ -235,3 +235,21 @@ defimpl Core.PubSub.Fanout, for: [Core.PubSub.RoleCreated, Core.PubSub.RoleUpdat
     |> Enum.count()
   end
 end
+
+defimpl Core.PubSub.Fanout, for: Core.PubSub.ConsoleInstanceCreated do
+  alias Core.Services.Cloud.Workflow
+
+  def fanout(%{item: instance}), do: Workflow.provision(instance)
+end
+
+defimpl Core.PubSub.Fanout, for: Core.PubSub.ConsoleInstanceUpdated do
+  alias Core.Services.Cloud.Workflow
+
+  def fanout(%{item: instance}), do: Workflow.sync(instance)
+end
+
+defimpl Core.PubSub.Fanout, for: Core.PubSub.ConsoleInstanceDeleted do
+  alias Core.Services.Cloud.Workflow
+
+  def fanout(%{item: instance}), do: Workflow.deprovision(instance)
+end

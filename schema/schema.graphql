@@ -1114,6 +1114,17 @@ type PolicyBinding {
   updatedAt: DateTime
 }
 
+type ConsoleInstanceEdge {
+  node: ConsoleInstance
+  cursor: String
+}
+
+enum ConsoleSize {
+  SMALL
+  MEDIUM
+  LARGE
+}
+
 type UpgradeQueue {
   id: ID!
   acked: ID
@@ -1141,6 +1152,42 @@ type WebhookLogEdge {
 type AuditEdge {
   node: Audit
   cursor: String
+}
+
+type ConsoleInstance {
+  id: ID!
+
+  "the name of this instance (globally unique)"
+  name: String!
+
+  "the subdomain this instance lives under"
+  subdomain: String!
+
+  "full console url of this instance"
+  url: String!
+
+  "the cloud provider hosting this instance"
+  cloud: CloudProvider!
+
+  "the heuristic size of this instance"
+  size: ConsoleSize!
+
+  "the region this instance is hosted in"
+  region: String!
+
+  "the provisioning status of this instance, liveness is fetched through the console field"
+  status: ConsoleInstanceStatus!
+
+  "the time this instance was deleted on"
+  deletedAt: DateTime
+
+  console: Cluster
+
+  owner: User
+
+  insertedAt: DateTime
+
+  updatedAt: DateTime
 }
 
 type InvoiceEdge {
@@ -1320,6 +1367,15 @@ type RecipeTest {
   args: [TestArgument]
 }
 
+enum ConsoleInstanceStatus {
+  PENDING
+  DATABASE_CREATED
+  DEPLOYMENT_CREATED
+  PROVISIONED
+  DEPLOYMENT_DELETED
+  DATABASE_DELETED
+}
+
 input IncidentAttributes {
   title: String
   severity: Int
@@ -1348,6 +1404,10 @@ type Cvss {
 input ChartInstallationAttributes {
   chartId: ID
   versionId: ID
+}
+
+input ConsoleConfigurationUpdateAttributes {
+  encryptionKey: String
 }
 
 enum TestStatus {
@@ -1539,16 +1599,16 @@ input LockAttributes {
   lock: String!
 }
 
-input IncidentFilter {
-  type: IncidentFilterType!
-  value: String
-  statuses: [IncidentStatus]
-}
-
 enum OauthProvider {
   GITHUB
   GOOGLE
   GITLAB
+}
+
+input IncidentFilter {
+  type: IncidentFilterType!
+  value: String
+  statuses: [IncidentStatus]
 }
 
 type ScanError {
@@ -1642,6 +1702,19 @@ type PlanMetadata {
 type IncidentMessageDelta {
   delta: Delta
   payload: IncidentMessage
+}
+
+type DnsRecordConnection {
+  pageInfo: PageInfo!
+  edges: [DnsRecordEdge]
+}
+
+type Reaction {
+  name: String!
+  creator: User!
+  message: IncidentMessage!
+  insertedAt: DateTime
+  updatedAt: DateTime
 }
 
 type ShellConfiguration {
@@ -2014,19 +2087,17 @@ type RootMutationType {
     "The cluster's cloud provider."
     provider: Provider!
   ): Cluster
+
+  createConsoleInstance(attributes: ConsoleInstanceAttributes!): ConsoleInstance
+
+  updateConsoleInstance(id: ID!, attributes: ConsoleInstanceUpdateAttributes!): ConsoleInstance
+
+  deleteConsoleInstance(id: ID!): ConsoleInstance
 }
 
-type DnsRecordConnection {
+type ConsoleInstanceConnection {
   pageInfo: PageInfo!
-  edges: [DnsRecordEdge]
-}
-
-type Reaction {
-  name: String!
-  creator: User!
-  message: IncidentMessage!
-  insertedAt: DateTime
-  updatedAt: DateTime
+  edges: [ConsoleInstanceEdge]
 }
 
 "An installation of an application."
@@ -2397,6 +2468,10 @@ type RootQueryType {
 
   "Get a list of clusters owned by the current account."
   clusters(after: String, first: Int, before: String, last: Int): ClusterConnection
+
+  consoleInstance(id: ID!): ConsoleInstance
+
+  consoleInstances(after: String, first: Int, before: String, last: Int): ConsoleInstanceConnection
 
   configuration: PluralConfiguration
 
@@ -2817,6 +2892,11 @@ input OnboardingChecklistAttributes {
   dismissed: Boolean
 }
 
+input ConsoleInstanceUpdateAttributes {
+  size: ConsoleSize
+  configuration: ConsoleConfigurationUpdateAttributes
+}
+
 enum RolloutStatus {
   QUEUED
   RUNNING
@@ -3025,6 +3105,10 @@ type Contributor {
   user: User
   insertedAt: DateTime
   updatedAt: DateTime
+}
+
+enum CloudProvider {
+  AWS
 }
 
 type ImageLayer {
@@ -3639,6 +3723,20 @@ type PlatformMetrics {
   rollouts: Int
   clusters: Int
   publishers: Int
+}
+
+input ConsoleInstanceAttributes {
+  "the name of this instance (globally unique)"
+  name: String!
+
+  "a heuristic size of this instance"
+  size: ConsoleSize!
+
+  "the cloud provider to deploy to"
+  cloud: CloudProvider!
+
+  "the region to deploy to (provider specific)"
+  region: String!
 }
 
 type OidcSettings {

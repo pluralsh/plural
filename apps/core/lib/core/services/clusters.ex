@@ -21,6 +21,9 @@ defmodule Core.Services.Clusters do
   @spec get_cluster_by_owner(binary) :: Cluster.t | nil
   def get_cluster_by_owner(user_id), do: Core.Repo.get_by(Cluster, owner_id: user_id)
 
+  @spec get_cluster_by_url(binary) :: Cluster.t | nil
+  def get_cluster_by_url(url), do: Core.Repo.get_by(Cluster, console_url: url)
+
   @spec has_cluster?(User.t) :: boolean
   def has_cluster?(%User{id: user_id}) do
     Cluster.for_user(user_id)

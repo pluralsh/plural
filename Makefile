@@ -49,10 +49,10 @@ else
 endif
 
 testup: ## sets up dependent services for test
-	docker-compose up -d
+	docker compose up -d
 
 testdown: ## tear down test dependencies
-	docker-compose down
+	docker compose down
 
 connectdb: ## proxies the db in kubernetes via kubectl
 	@echo "run psql -U forge -h 127.0.0.1 forge to connect"

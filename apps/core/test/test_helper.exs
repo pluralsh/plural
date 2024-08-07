@@ -33,5 +33,7 @@ Mimic.copy(Core.Services.Shell.Pods)
 Mimic.copy(Vault)
 Mimic.copy(System)
 Mimic.copy(Core.Clients.Vault)
+Mimic.copy(Core.Clients.Console)
+Mimic.copy(Core.Services.Cloud.Poller)
 
 {:ok, _} = Application.ensure_all_started(:ex_machina)

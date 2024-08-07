@@ -220,8 +220,8 @@ defmodule Core.Services.Shell do
 
   defp maybe_enable_oidc(_, _, _, _), do: {:ok, true}
 
-  defp oidc_bindings(nil, %User{id: uid}), do: [%{user_id: uid}]
-  defp oidc_bindings(%OIDCProvider{bindings: bindings}, %User{id: uid}) do
+  def oidc_bindings(nil, %User{id: uid}), do: [%{user_id: uid}]
+  def oidc_bindings(%OIDCProvider{bindings: bindings}, %User{id: uid}) do
     bindings = Enum.map(bindings, fn
       %{user_id: uid, id: id} when is_binary(uid) -> %{user_id: uid, id: id}
       %{group_id: gid, id: id} when is_binary(gid) -> %{group_id: gid, id: id}
@@ -244,8 +244,8 @@ defmodule Core.Services.Shell do
     |> String.replace("{subdomain}", domain)
   end
 
-  defp merge_uris(uris, nil), do: uris
-  defp merge_uris(new, %OIDCProvider{redirect_uris: old}), do: Enum.uniq(new ++ old)
+  def merge_uris(uris, nil), do: uris
+  def merge_uris(new, %OIDCProvider{redirect_uris: old}), do: Enum.uniq(new ++ old)
 
   @doc """
   updates a user's shell workspace context (eg for configuring bundles)

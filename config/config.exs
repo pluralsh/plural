@@ -141,7 +141,12 @@ config :core,
   github_demo_token: "test-pat",
   github_demo_org: "pluralsh-demos",
   trial_plan: "Pro Trial",
-  sysbox_emails: []
+  console_token: "bogus",
+  console_url: "https://console.example.com",
+  sysbox_emails: [],
+  mgmt_repo: "https://github.com/pluralsh/plural.git",
+  cockroach_parameters: [],
+  cockroach_ssl: true
 
 config :briefly,
   directory: [{:system, "TMPDIR"}, {:system, "TMP"}, {:system, "TEMP"}, "/tmp"],

@@ -29,7 +29,7 @@ function useOnboarded() {
             cache.writeFragment({
               data: data?.updateUser,
               fragment: UserFragment,
-            }),
+            }) ?? {},
         },
       })
     },

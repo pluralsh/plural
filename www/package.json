@@ -33,7 +33,7 @@
   "packageManager": "yarn@3.6.0",
   "dependencies": {
     "@absinthe/socket": "0.2.1",
-    "@apollo/client": "3.7.15",
+    "@apollo/client": "3.10.3",
     "@emotion/react": "11.11.1",
     "@emotion/styled": "11.11.0",
     "@fireworks-js/react": "2.10.5",

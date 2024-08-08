@@ -515,6 +515,10 @@ crons:
   cronModule: Digest.Pending
   cronTab: "0 12 * * 1"
   envVars: []
+- cronName: plrl-prune-cloud-instances
+  cronModule: Prune.Cloud
+  cronTab: "45 1 * * *"
+  envVars: []
 
 hydraSecrets:
   dsn: memory

@@ -8,6 +8,7 @@ DKR_HOST ?= dkr.plural.sh
 dep ?= forge-core
 GIT_COMMIT ?= abe123
 TARGETARCH ?= amd64
+COCKROACH_VSN ?= v24.1.3
 
 help:
 	@perl -nle'print $& if m{^[a-zA-Z_-]+:.*?## .*$$}' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
@@ -48,11 +49,26 @@ else
 	docker push $(DKR_HOST)/plural/${APP_NAME}:$(APP_VSN)
 endif
 
-testup: ## sets up dependent services for test
-	docker-compose up -d
+install-cockroach:
+	sudo curl https://binaries.cockroachdb.com/cockroach-$(COCKROACH_VSN).linux-amd64.tgz | tar -xz && \
+	sudo cp -i cockroach-$(COCKROACH_VSN).linux-amd64/cockroach /usr/local/bin/ && \
+	sudo mkdir -p /usr/local/lib/cockroach && \
+	sudo cp -i cockroach-$(COCKROACH_VSN).linux-amd64/lib/libgeos.so /usr/local/lib/cockroach/ && \
+	sudo cp -i cockroach-$(COCKROACH_VSN).linux-amd64/lib/libgeos_c.so /usr/local/lib/cockroach/ && \
+	cockroach version
+
+test-certs:
+	mkdir test-certs && \
+	cockroach cert create-ca --certs-dir test-certs --ca-key test-certs/ca.key && \
+	cockroach cert create-node localhost 127.0.0.1 --certs-dir test-certs --ca-key test-certs/ca.key && \
+	cockroach cert create-client root --certs-dir test-certs --ca-key test-certs/ca.key && \
+	cockroach cert list --certs-dir test-certs
+
+testup: test-certs ## sets up dependent services for test
+	docker compose up -d
 
 testdown: ## tear down test dependencies
-	docker-compose down
+	docker compose down
 
 connectdb: ## proxies the db in kubernetes via kubectl
 	@echo "run psql -U forge -h 127.0.0.1 forge to connect"

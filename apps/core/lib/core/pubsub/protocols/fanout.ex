@@ -235,3 +235,14 @@ defimpl Core.PubSub.Fanout, for: [Core.PubSub.RoleCreated, Core.PubSub.RoleUpdat
     |> Enum.count()
   end
 end
+
+defimpl Core.PubSub.Fanout, for: [
+    Core.PubSub.ConsoleInstanceCreated,
+    Core.PubSub.ConsoleInstanceUpdated,
+    Core.PubSub.ConsoleInstanceDeleted
+  ] do
+  def fanout(event) do
+    %Conduit.Message{body: event}
+    |> Core.Conduit.Broker.publish(:cloud)
+  end
+end

@@ -90,7 +90,10 @@ config :core,
   openai_token: get_env("OPENAI_BEARER_TOKEN"),
   enforce_pricing: get_env("ENFORCE_PRICING"),
   stripe_webhook_secret: get_env("STRIPE_WEBHOOK_SECRET"),
-  github_demo_token: get_env("GITHUB_DEMO_TOKEN")
+  github_demo_token: get_env("GITHUB_DEMO_TOKEN"),
+  console_token: get_env("CONSOLE_SA_TOKEN"),
+  console_url: get_env("CONSOLE_URL"),
+  mgmt_repo: get_env("CONSOLE_MGMT_REPO")
 
 
 if get_env("VAULT_HOST") do

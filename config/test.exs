@@ -90,4 +90,6 @@ config :worker,
 config :core,
   workos_webhook: "supersecret",
   enforce_pricing: true,
-  sysbox_emails: ["sysbox@plural.sh"]
+  sysbox_emails: ["sysbox@plural.sh"],
+  cockroach_parameters: [sslmode: "allow"],
+  cockroach_ssl: true

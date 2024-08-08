@@ -1,0 +1,22 @@
+<div class="fit-content margin-horizontal-auto text-lead">
+  Your Plural Cloud instance <%= @inst.name %> is eligible to be deprovisioned.
+</div>
+<div class="fit-content margin-horizontal-auto text-content text-align-center margin-top-large">
+  You must have an active, paid plan to continue using Plural Cloud, please update your billing information and/or initiate a new subscription
+  to continue using your instance
+</div>
+
+<%= if @warning == 2 do %>
+<div class="fit-content margin-horizontal-auto text-content text-align-center margin-top-large">
+  Since your instance has been unpaid for 1 week, you have <b>only one more week</b> before we reap your instance
+</div>
+<% else %>
+<div class="fit-content margin-horizontal-auto text-content text-align-center margin-top-large">
+  We provide a <b>two week grace period</b> for delinquent accounts to fix any billing issues.  After that period, your instance will
+  be scheduled to be reaped.
+</div>
+<% end %>
+
+<a class="button margin-top-large" href="<%= url("/account/billing") %>">
+  Go to Billing
+</a>

@@ -26,7 +26,7 @@ defmodule Worker.Application do
 
   def broker() do
     case Worker.conf(:start_broker) do
-      true -> [{Worker.Conduit.Broker, []}, Core.Services.Coud.Poller]
+      true -> [{Worker.Conduit.Broker, []}, Core.Services.Cloud.Poller]
       _ -> []
     end
   end

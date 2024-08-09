@@ -3,6 +3,7 @@ defmodule Core.Services.Cloud.Poller do
   alias Core.Clients.Console
   alias Core.Services.Cloud
   alias Kazan.Apis.Core.V1, as: CoreV1
+  require Logger
 
   @poll :timer.minutes(5)
 
@@ -28,7 +29,9 @@ defmodule Core.Services.Cloud.Poller do
   def handle_info(:repo, %{client: client} = state) do
     case Console.repo(client, Core.conf(:mgmt_repo)) do
       {:ok, id} -> {:noreply, %{state | repo: id}}
-      _ -> {:noreply, state}
+      err ->
+        Logger.warn "failed to find mgmt repo: #{inspect(err)}"
+        {:noreply, state}
     end
   end
 
@@ -41,8 +44,11 @@ defmodule Core.Services.Cloud.Poller do
   end
 
   def handle_info(:roaches, state) do
-    with {:ok, roaches} <- read_secret() do
-      Enum.each(roaches, &upsert_roach/1)
+    case read_secret() do
+      {:ok, roaches} ->
+        Enum.each(roaches, &upsert_roach/1)
+      err ->
+        Logger.warn "failed to fetch available cockroach clusters: #{inspect(err)}"
     end
     {:noreply, state}
   end

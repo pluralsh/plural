@@ -42,7 +42,7 @@ defmodule Core.Clients.Console do
   """
 
   def new(url, token) do
-    Req.new(base_url: url, auth: "Token #{token}")
+    Req.new(base_url: with_gql(url), auth: "Token #{token}")
     |> AbsintheClient.attach()
   end
 
@@ -92,5 +92,12 @@ defmodule Core.Clients.Console do
   defp service_resp(resp, _) do
     Logger.error "failed to fetch from console: #{inspect(resp)}"
     {:error, "console error"}
+  end
+
+  defp with_gql(url) do
+    case String.ends_with?(url, "/gql") do
+      true -> url
+      _ -> "#{url}/gql"
+    end
   end
 end

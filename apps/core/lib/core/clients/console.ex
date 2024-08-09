@@ -49,7 +49,8 @@ defmodule Core.Clients.Console do
   def clusters(client) do
     Req.post(client, graphql: @clusters_q)
     |> case do
-      {:ok, %Req.Response{body: %{"clusters" => %{"edges" => edges}}}} -> {:ok, Enum.map(edges, & &1["node"])}
+      {:ok, %Req.Response{body: %{"data" => %{"clusters" => %{"edges" => edges}}}}} ->
+        {:ok, Enum.map(edges, & &1["node"])}
       res ->
         Logger.warn "Failed to fetch clusters: #{inspect(res)}"
         {:error, "could not fetch clusters"}

@@ -29,6 +29,6 @@ defmodule Core.Schema.CockroachCluster do
     model
     |> cast(attrs, ~w(name cloud region url certificate endpoints)a)
     |> unique_constraint(:name)
-    |> validate_required(~w(name cloud region url certificate endpoints)a)
+    |> validate_required(~w(name cloud url certificate endpoints)a)
   end
 end

@@ -61,6 +61,7 @@ defmodule Core.Services.Cloud.Poller do
       cloud: to_cloud(distro),
       region: meta["region"]
     }, name)
+    |> log_err("failed to insert cloud cluster")
   end
 
   defp upsert_roach(%{"name" => name} = roach) do
@@ -70,6 +71,7 @@ defmodule Core.Services.Cloud.Poller do
       certificate: roach["certificate"],
       endpoints: roach["endpoints"]
     }, name)
+    |> log_err("failed to insert cockroach cluster")
   end
 
   defp read_secret() do
@@ -77,7 +79,8 @@ defmodule Core.Services.Cloud.Poller do
     |> Kazan.run()
     |> case do
       {:ok, %CoreV1.Secret{data: %{"cockroaches" => roaches}}} ->
-        Jason.decode(roaches)
+        Base.decode64!(roaches)
+        |> Jason.decode()
       _ -> {:error, "could not find secret"}
     end
   end
@@ -86,4 +89,7 @@ defmodule Core.Services.Cloud.Poller do
   defp to_cloud("GKE"), do: :gcp
   defp to_cloud("AKS"), do: :azure
   defp to_cloud(_), do: :aws
+
+  defp log_err({:error, _} = err, msg), do: "#{msg}: #{inspect(err)}"
+  defp log_err(pass, _), do: pass
 end

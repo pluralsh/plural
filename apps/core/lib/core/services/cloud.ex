@@ -4,12 +4,12 @@ defmodule Core.Services.Cloud do
   alias Core.Repo
   alias Core.PubSub
   alias Core.Services.{Accounts, Users, Repositories, Shell}
-  alias Core.Schema.{CloudCluster, CockroachCluster, ConsoleInstance, User, OIDCProvider}
+  alias Core.Schema.{CloudCluster, PostgresCluster, ConsoleInstance, User, OIDCProvider}
 
   @type error :: {:error, term}
   @type console_resp :: {:ok, ConsoleInstance.t} | error
   @type cluster_resp :: {:ok, CloudCluster.t} | error
-  @type cockroach_resp :: {:ok, CockroachCluster.t} | error
+  @type postgres_resp :: {:ok, PostgresCluster.t} | error
 
   def get_instance!(id), do: Repo.get!(ConsoleInstance, id)
 
@@ -23,13 +23,13 @@ defmodule Core.Services.Cloud do
     |> Repo.insert_or_update()
   end
 
-  @spec upsert_cockroach(map, binary) :: cockroach_resp
-  def upsert_cockroach(attrs, name) do
-    case Repo.get_by(CockroachCluster, name: name) do
-      %CockroachCluster{} = cluster -> cluster
-      nil -> %CockroachCluster{name: name}
+  @spec upsert_postgres(map, binary) :: postgres_resp
+  def upsert_postgres(attrs, name) do
+    case Repo.get_by(PostgresCluster, name: name) do
+      %PostgresCluster{} = cluster -> cluster
+      nil -> %PostgresCluster{name: name}
     end
-    |> CockroachCluster.changeset(attrs)
+    |> PostgresCluster.changeset(attrs)
     |> Repo.insert_or_update()
   end
 
@@ -41,7 +41,7 @@ defmodule Core.Services.Cloud do
     start_transaction()
     |> add_operation(:auth, fn _ -> allow(%ConsoleInstance{}, user, :create) end)
     |> add_operation(:cluster, fn _ -> select_cluster(attrs[:cloud], attrs[:region]) end)
-    |> add_operation(:cockroach, fn _ -> select_roach(attrs[:cloud]) end)
+    |> add_operation(:postgres, fn _ -> select_roach(attrs[:cloud]) end)
     |> add_operation(:sa, fn _ ->
       Accounts.create_service_account(%{name: "#{name}-cloud-sa", email: "#{name}-cloud-sa@srv.plural.sh"}, user)
     end)
@@ -58,11 +58,11 @@ defmodule Core.Services.Cloud do
       Repositories.upsert_oidc_provider(%{
         auth_method: :post,
         bindings: Shell.oidc_bindings(inst.oidc_provider, user),
-        redirect_uris: Shell.merge_uris(["https://console.#{name}.cloud.plural.sh/oauth/callback"], inst.oidc_provider)
+        redirect_uris: Shell.merge_uris(["https://console-#{name}.cloud.plural.sh/oauth/callback"], inst.oidc_provider)
       }, inst.id, sa)
     end)
-    |> add_operation(:instance, fn %{oidc: oidc, token: token, cluster: cluster, cockroach: roach, sa: sa} ->
-      %ConsoleInstance{status: :pending, cluster_id: cluster.id, cockroach_id: roach.id, owner_id: sa.id}
+    |> add_operation(:instance, fn %{oidc: oidc, token: token, cluster: cluster, postgres: roach, sa: sa} ->
+      %ConsoleInstance{status: :pending, cluster_id: cluster.id, postgres_id: roach.id, owner_id: sa.id}
       |> ConsoleInstance.changeset(add_configuration(attrs, name, token.token, oidc, user))
       |> Repo.insert()
     end)
@@ -135,24 +135,25 @@ defmodule Core.Services.Cloud do
   end
 
   defp add_configuration(attrs, name, token, %OIDCProvider{} = oidc, %User{} = user) do
-    Map.merge(attrs, %{subdomain: "#{name}.cloud.plural.sh", url: "console.#{name}.cloud.plural.sh"})
+    Map.merge(attrs, %{subdomain: "#{name}.cloud.plural.sh", url: "console-#{name}.cloud.plural.sh"})
     |> Map.put(:configuration, %{
       aes_key:        aes_key(),
       encryption_key: encryption_key(),
       database:       "#{name}_cloud",
       dbuser:         "#{name}_user",
-      dbpassword:     Core.random_alphanum(30),
+      dbpassword:     Core.random_alphanum(32),
       subdomain:      "#{name}.cloud.plural.sh",
-      jwt_secret:     Core.random_alphanum(30),
+      jwt_secret:     Core.random_alphanum(32) |> Base.encode64(),
       owner_name:     user.name,
       owner_email:    user.email,
-      admin_password: Core.random_alphanum(30),
+      admin_password: Core.random_alphanum(32) |> Base.encode64(),
+      erlang_secret:  Core.random_alphanum(32) |> Base.encode64(),
       client_id:      oidc.client_id,
       client_secret:  oidc.client_secret,
       plural_token:   token,
-      kas_api:        Core.random_alphanum(30),
-      kas_private:    Core.random_alphanum(30),
-      kas_redis:      Core.random_alphanum(30)
+      kas_api:        Core.random_alphanum(64) |> Base.encode64(),
+      kas_private:    Core.random_alphanum(64) |> Base.encode64(),
+      kas_redis:      Core.random_alphanum(64) |> Base.encode64(),
     })
   end
 
@@ -165,8 +166,8 @@ defmodule Core.Services.Cloud do
   end
 
   defp select_roach(cloud) do
-    CockroachCluster.for_cloud(cloud)
-    |> CockroachCluster.unsaturated()
+    PostgresCluster.for_cloud(cloud)
+    |> PostgresCluster.unsaturated()
     |> Repo.all()
     |> random_choice("Could not place in #{cloud}")
   end

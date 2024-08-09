@@ -92,4 +92,4 @@ config :core,
   enforce_pricing: true,
   sysbox_emails: ["sysbox@plural.sh"],
   cockroach_parameters: [sslmode: "allow"],
-  cockroach_ssl: true
+  bootstrap_ssl: false

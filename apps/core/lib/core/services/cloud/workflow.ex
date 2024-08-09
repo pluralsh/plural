@@ -1,15 +1,15 @@
 defmodule Core.Services.Cloud.Workflow do
   use Core.Services.Base
   alias Core.Clients.Console
-  alias Core.Services.Cloud
+  alias Core.Services.{Cloud, Users}
   alias Core.Services.Cloud.{Poller, Configuration}
-  alias Core.Schema.{ConsoleInstance, CockroachCluster}
+  alias Core.Schema.{ConsoleInstance, PostgresCluster, User}
   alias Core.Repo
 
   require Logger
 
   def sync(%ConsoleInstance{external_id: id} = instance) when is_binary(id) do
-    instance = Repo.preload(instance, [:cluster, :cockroach])
+    instance = Repo.preload(instance, [:cluster, :postgres])
     Console.update_service(console(), %{
       size: instance.size,
       configuration: Configuration.build(instance)
@@ -18,7 +18,7 @@ defmodule Core.Services.Cloud.Workflow do
   def sync(_), do: :ok
 
   def provision(%ConsoleInstance{} = instance) do
-    instance = Repo.preload(instance, [:cockroach, :cluster])
+    instance = Repo.preload(instance, [:postgres, :cluster])
 
     Enum.reduce_while(0..10, instance, fn _, acc ->
       case up(acc) do
@@ -34,10 +34,11 @@ defmodule Core.Services.Cloud.Workflow do
   end
 
   def deprovision(%ConsoleInstance{} = instance) do
-    instance = Repo.preload(instance, [:cockroach, :cluster])
+    instance = Repo.preload(instance, [:postgres, :cluster])
 
     Enum.reduce_while(0..10, instance, fn _, acc ->
       case down(acc) do
+        {:ok, %ConsoleInstance{status: :pending} = inst} -> {:halt, inst}
         {:ok, %ConsoleInstance{status: :database_deleted} = inst} -> {:halt, inst}
         {:ok, inst} -> {:cont, inst}
         err ->
@@ -49,11 +50,11 @@ defmodule Core.Services.Cloud.Workflow do
     |> finalize(:down)
   end
 
-  defp up(%ConsoleInstance{status: :pending, cockroach: roach, configuration: conf} = inst) do
-    with {:ok, pid} <- connect(roach),
+  defp up(%ConsoleInstance{status: :pending, postgres: pg, configuration: conf} = inst) do
+    with {:ok, pid} <- connect(pg),
+         {:ok, _} <- Postgrex.query(pid, "CREATE DATABASE #{conf.database}", []),
          {:ok, _} <- Postgrex.transaction(pid, fn conn ->
-                       Postgrex.query!(conn, "CREATE DATABASE #{conf.database}", [])
-                       Postgrex.query!(conn, "CREATE USER #{conf.dbuser} WITH PASSWORD $1", [conf.dbpassword])
+                       Postgrex.query!(conn, "CREATE USER #{conf.dbuser} WITH PASSWORD '#{conf.dbpassword}'", [])
                        Postgrex.query!(conn, "GRANT ALL ON DATABASE #{conf.database} TO #{conf.dbuser}", [])
                      end) do
       ConsoleInstance.changeset(inst, %{
@@ -71,7 +72,8 @@ defmodule Core.Services.Cloud.Workflow do
                               namespace: "plrl-cloud-#{name}",
                               helm: %{
                                 url: "https://pluralsh.github.io/console",
-                                chart: "console",
+                                chart: "console-rapid",
+                                release: "console",
                                 version: "x.x.x",
                                 valuesFiles: ["console.yaml.liquid"]
                               },
@@ -88,11 +90,11 @@ defmodule Core.Services.Cloud.Workflow do
     end
   end
 
-  defp down(%ConsoleInstance{instance_status: %{svc: false, db: true}, configuration: conf, cockroach: roach} = inst) do
-    with {:ok, pid} <- connect(roach),
+  defp down(%ConsoleInstance{instance_status: %{svc: false, db: true}, configuration: conf, postgres: pg} = inst) do
+    with {:ok, pid} <- connect(pg),
+         {:ok, _} <- Postgrex.query(pid, "DROP DATABASE IF EXISTS #{conf.database}", []),
          {:ok, _} <-  Postgrex.transaction(pid, fn conn ->
-                        Postgrex.query!(conn, "DROP DATABASE #{conf.database}", [])
-                        Postgrex.query!(conn, "DROP USER #{conf.dbuser}", [])
+                        Postgrex.query!(conn, "DROP USER IF EXISTS #{conf.dbuser}", [])
                       end) do
       ConsoleInstance.changeset(inst, %{
         instance_status: %{db: false},
@@ -112,16 +114,24 @@ defmodule Core.Services.Cloud.Workflow do
     end
   end
 
+  defp down(inst), do: {:ok, inst}
+
   defp finalize(%ConsoleInstance{status: :deployment_created} = inst, :up) do
     ConsoleInstance.changeset(inst, %{status: :provisioned})
     |> Repo.update()
   end
 
-  defp finalize(%ConsoleInstance{status: :database_deleted, cluster: cluster, cockroach: roach} = inst, :down) do
+  defp finalize(%ConsoleInstance{status: :database_deleted, cluster: cluster, postgres: pg} = inst, :down) do
     start_transaction()
     |> add_operation(:inst, fn _ -> Repo.delete(inst) end)
     |> add_operation(:cluster, fn _ -> Cloud.dec(cluster) end)
-    |> add_operation(:roach, fn _ -> Cloud.dec(roach) end)
+    |> add_operation(:pg, fn _ -> Cloud.dec(pg) end)
+    |> add_operation(:sa, fn %{inst: %{name: name}} ->
+      case Users.get_user_by_email("#{name}-cloud-sa@srv.plural.sh") do
+        %User{} = u -> Repo.delete(u)
+        _ -> {:ok, nil}
+      end
+    end)
     |> execute(extract: :inst)
   end
 
@@ -130,20 +140,17 @@ defmodule Core.Services.Cloud.Workflow do
     {:ok, inst}
   end
 
-  defp connect(%CockroachCluster{certificate: cert_pem} = roach) do
-    with [cert | _] <- :public_key.pem_decode(cert_pem) do
-      uri = URI.parse(roach.url)
-      user = userinfo(uri)
-      Postgrex.start_link(
-        database: uri.path && String.trim_leading(uri.path, "/"),
-        username: user[:username],
-        password: user[:password],
-        hostname: uri.host,
-        port: uri.port,
-        ssl: true,
-        ssl_opts: [cacerts: [:public_key.pem_entry_decode(cert)]]
-      )
-    end
+  defp connect(%PostgresCluster{} = roach) do
+    uri = URI.parse(roach.url)
+    user = userinfo(uri)
+    Postgrex.start_link(
+      database: uri.path && String.trim_leading(uri.path, "/"),
+      username: user[:username],
+      password: user[:password],
+      hostname: uri.host,
+      port: uri.port,
+      ssl: Core.conf(:bootstrap_ssl)
+    )
   end
 
   defp userinfo(%URI{userinfo: info}) when is_binary(info) do

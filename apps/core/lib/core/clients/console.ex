@@ -41,6 +41,18 @@ defmodule Core.Clients.Console do
   }
   """
 
+  @stack_q """
+  query Stack($id: ID!) {
+    infrastructureStack(id: $id) {
+      id
+      output {
+        name
+        value
+      }
+    }
+  }
+  """
+
   def new(url, token) do
     Req.new(base_url: with_gql(url), auth: "Token #{token}")
     |> AbsintheClient.attach()
@@ -49,7 +61,8 @@ defmodule Core.Clients.Console do
   def clusters(client) do
     Req.post(client, graphql: @clusters_q)
     |> case do
-      {:ok, %Req.Response{body: %{"clusters" => %{"edges" => edges}}}} -> {:ok, Enum.map(edges, & &1["node"])}
+      {:ok, %Req.Response{body: %{"data" => %{"clusters" => %{"edges" => edges}}}}} ->
+        {:ok, Enum.map(edges, & &1["node"])}
       res ->
         Logger.warn "Failed to fetch clusters: #{inspect(res)}"
         {:error, "could not fetch clusters"}
@@ -59,7 +72,7 @@ defmodule Core.Clients.Console do
   def repo(client, url) do
     Req.post(client, graphql: {@repo_q, %{url: url}})
     |> case do
-      {:ok, %Req.Response{body: %{"gitRepository" => %{"id" => id}}}} -> {:ok, id}
+      {:ok, %Req.Response{body: %{"data" => %{"gitRepository" => %{"id" => id}}}}} -> {:ok, id}
       res ->
         Logger.warn "Failed to fetch clusters: #{inspect(res)}"
         {:error, "could not fetch repo"}
@@ -81,7 +94,18 @@ defmodule Core.Clients.Console do
     |> service_resp("deleteServiceDeployment")
   end
 
-  defp service_resp({:ok, %Req.Response{status: 200, body: body}}, field) do
+  def stack(client, id) do
+    Req.post(client, graphql: {@stack_q, %{id: id}})
+    |> case do
+      {:ok, %Req.Response{body: %{"data" => %{"infrastructureStack" => stack}}}} ->
+        {:ok, stack}
+      res ->
+        Logger.warn "Failed to fetch stack: #{inspect(res)}"
+        {:error, "could not fetch stack"}
+    end
+  end
+
+  defp service_resp({:ok, %Req.Response{status: 200, body: %{"data" => body}}}, field) do
     case body[field] do
       %{"id" => id} -> {:ok, id}
       err ->

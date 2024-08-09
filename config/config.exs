@@ -146,7 +146,7 @@ config :core,
   sysbox_emails: [],
   mgmt_repo: "https://github.com/pluralsh/plural.git",
   cockroach_parameters: [],
-  cockroach_ssl: true
+  bootstrap_ssl: true
 
 config :briefly,
   directory: [{:system, "TMPDIR"}, {:system, "TMP"}, {:system, "TEMP"}, "/tmp"],

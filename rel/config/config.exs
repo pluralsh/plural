@@ -93,7 +93,8 @@ config :core,
   github_demo_token: get_env("GITHUB_DEMO_TOKEN"),
   console_token: get_env("CONSOLE_SA_TOKEN"),
   console_url: get_env("CONSOLE_URL"),
-  mgmt_repo: get_env("CONSOLE_MGMT_REPO")
+  mgmt_repo: get_env("CONSOLE_MGMT_REPO"),
+  stack_id: get_env("CONSOLE_CLOUD_STACK_ID")
 
 
 if get_env("VAULT_HOST") do

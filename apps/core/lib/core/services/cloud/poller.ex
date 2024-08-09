@@ -2,10 +2,9 @@ defmodule Core.Services.Cloud.Poller do
   use GenServer
   alias Core.Clients.Console
   alias Core.Services.Cloud
-  alias Kazan.Apis.Core.V1, as: CoreV1
   require Logger
 
-  @poll :timer.minutes(5)
+  @poll :timer.minutes(2)
 
   defmodule State, do: defstruct [:client, :repo]
 
@@ -15,16 +14,16 @@ defmodule Core.Services.Cloud.Poller do
 
   def init(_) do
     :timer.send_interval(@poll, :clusters)
-    :timer.send_interval(@poll, :roaches)
+    :timer.send_interval(@poll, :pgs)
     send self(), :repo
     {:ok, %State{client: Console.new(Core.conf(:console_url), Core.conf(:console_token))}}
   end
 
   def repository(), do: GenServer.call(__MODULE__, :repo)
 
-  def handle_call(:repo, %{repo: id} = state) when is_binary(id),
+  def handle_call(:repo, _, %{repo: id} = state) when is_binary(id),
     do: {:reply, {:ok, id}, state}
-  def handle_call(:repo, state), do: {:reply, {:error, "repo not pulled"}, state}
+  def handle_call(:repo, _, state), do: {:reply, {:error, "repo not pulled"}, state}
 
   def handle_info(:repo, %{client: client} = state) do
     case Console.repo(client, Core.conf(:mgmt_repo)) do
@@ -43,12 +42,13 @@ defmodule Core.Services.Cloud.Poller do
     {:noreply, state}
   end
 
-  def handle_info(:roaches, state) do
-    case read_secret() do
-      {:ok, roaches} ->
-        Enum.each(roaches, &upsert_roach/1)
-      err ->
-        Logger.warn "failed to fetch available cockroach clusters: #{inspect(err)}"
+  def handle_info(:pgs, %{client: client} = state) do
+    with {:ok, stack} <- Console.stack(client, Core.conf(:stack_id)),
+         %{"value" => v} <- Enum.find(stack["output"], & &1["name"] == "clusters"),
+         {:ok, pgs} <- Jason.decode(v) do
+      Enum.each(pgs, fn {k, v} -> upsert_pg(k, v) end)
+    else
+      err -> Logger.warn "failed to fetch cluster info: #{inspect(err)}"
     end
     {:noreply, state}
   end
@@ -61,29 +61,24 @@ defmodule Core.Services.Cloud.Poller do
       cloud: to_cloud(distro),
       region: meta["region"]
     }, name)
+    |> log_err("failed to insert cloud cluster")
   end
 
-  defp upsert_roach(%{"name" => name} = roach) do
-    Cloud.upsert_cockroach(%{
-      cloud: roach["cloud"],
-      url: roach["url"],
-      certificate: roach["certificate"],
-      endpoints: roach["endpoints"]
+  defp upsert_pg(name, pg) do
+    Cloud.upsert_postgres(%{
+      cloud: pg["cloud"],
+      url: pg["url"],
+      # certificate: pg["certificate"],
+      host: pg["host"]
     }, name)
-  end
-
-  defp read_secret() do
-    CoreV1.read_namespaced_secret!("plural", "plrl-cloud-config")
-    |> Kazan.run()
-    |> case do
-      {:ok, %CoreV1.Secret{data: %{"cockroaches" => roaches}}} ->
-        Jason.decode(roaches)
-      _ -> {:error, "could not find secret"}
-    end
+    |> log_err("failed to insert postgres cluster")
   end
 
   defp to_cloud("EKS"), do: :aws
   defp to_cloud("GKE"), do: :gcp
   defp to_cloud("AKS"), do: :azure
   defp to_cloud(_), do: :aws
+
+  defp log_err({:error, _} = err, msg), do: "#{msg}: #{inspect(err)}"
+  defp log_err(pass, _), do: pass
 end

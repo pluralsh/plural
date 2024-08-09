@@ -650,7 +650,7 @@ defmodule Core.Factory do
       status:      :provisioned,
       size:        :small,
       cluster:     build(:cloud_cluster),
-      cockroach:   build(:cockroach_cluster),
+      postgres:   build(:postgres_cluster),
       owner:       build(:user, service_account: true),
       subdomain:   "#{name}.cloud.plural.sh",
       url:         "console.#{name}.cloud.plural.sh",
@@ -668,12 +668,12 @@ defmodule Core.Factory do
     }
   end
 
-  def cockroach_cluster_factory do
-    %Schema.CockroachCluster{
-      name:  sequence(:cockroach, & "cockroach-#{&1}"),
+  def postgres_cluster_factory do
+    %Schema.PostgresCluster{
+      name:  sequence(:postgres, & "pg-#{&1}"),
       cloud: :aws,
-      url:   "postgresql://plrl:plural@localhost:26257/plural",
-      certificate: File.read!("../../test-certs/client.root.crt")
+      url:   "postgresql://postgres:postgres@localhost:5433/postgres",
+      host:  "localhost:5433"
     }
   end
 

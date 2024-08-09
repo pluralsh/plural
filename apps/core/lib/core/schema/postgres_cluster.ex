@@ -1,15 +1,16 @@
-defmodule Core.Schema.CockroachCluster do
+defmodule Core.Schema.PostgresCluster do
   use Piazza.Ecto.Schema
   alias Piazza.Ecto.EncryptedString
   alias Core.Schema.CloudCluster
 
   @saturation 1000
 
-  schema "cockroach_clusters" do
+  schema "postgres_clusters" do
     field :name,        :string
     field :cloud,       CloudCluster.Cloud
     field :region,      :string
     field :url,         EncryptedString
+    field :host,        :string
     field :certificate, :string
     field :endpoints,   :map
     field :count,       :integer, default: 0
@@ -27,8 +28,8 @@ defmodule Core.Schema.CockroachCluster do
 
   def changeset(model, attrs \\ %{}) do
     model
-    |> cast(attrs, ~w(name cloud region url certificate endpoints)a)
+    |> cast(attrs, ~w(name cloud region url host certificate endpoints)a)
     |> unique_constraint(:name)
-    |> validate_required(~w(name cloud region url certificate endpoints)a)
+    |> validate_required(~w(name cloud url host)a)
   end
 end

@@ -9,7 +9,7 @@ defmodule GraphQl.CloudMutationsTest do
       enable_features(account, [:cd])
       user = admin_user(account)
       insert(:cloud_cluster)
-      insert(:cockroach_cluster)
+      insert(:postgres_cluster)
       insert(:repository, name: "console")
 
       expect(HTTPoison, :post, fn _, _, _ ->

@@ -64,8 +64,8 @@ test-certs:
 	cockroach cert create-client root --certs-dir test-certs --ca-key test-certs/ca.key && \
 	cockroach cert list --certs-dir test-certs
 
-testup: test-certs ## sets up dependent services for test
-	docker compose up -d
+testup: ## sets up dependent services for test
+	docker compose up -d --remove-orphans
 
 testdown: ## tear down test dependencies
 	docker compose down

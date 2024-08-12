@@ -1,7 +1,7 @@
 defmodule Core.Schema.ConsoleInstance do
   use Piazza.Ecto.Schema
   alias Piazza.Ecto.EncryptedString
-  alias Core.Schema.{CockroachCluster, CloudCluster, User}
+  alias Core.Schema.{PostgresCluster, CloudCluster, User}
 
   defenum Size, small: 0, medium: 1, large: 2
   defenum Status,
@@ -41,6 +41,7 @@ defmodule Core.Schema.ConsoleInstance do
       field :dbpassword,     EncryptedString
       field :subdomain,      :string
       field :jwt_secret,     EncryptedString
+      field :erlang_secret,  EncryptedString
       field :owner_name,     :string
       field :owner_email,    :string
       field :admin_password, EncryptedString
@@ -54,7 +55,7 @@ defmodule Core.Schema.ConsoleInstance do
       field :kas_redis,      EncryptedString
     end
 
-    belongs_to :cockroach, CockroachCluster
+    belongs_to :postgres,  PostgresCluster
     belongs_to :cluster,   CloudCluster
     belongs_to :owner,     User
 
@@ -91,7 +92,7 @@ defmodule Core.Schema.ConsoleInstance do
 
   def regions(), do: @region_map
 
-  @valid ~w(name cloud size region status subdomain url external_id cockroach_id cluster_id owner_id)a
+  @valid ~w(name cloud size region status subdomain url external_id postgres_id cluster_id owner_id)a
 
   def changeset(model, attrs \\ %{}) do
     model
@@ -117,7 +118,7 @@ defmodule Core.Schema.ConsoleInstance do
   end
 
   @conf_valid ~w(
-    database dbuser dbpassword
+    database dbuser dbpassword erlang_secret
     subdomain jwt_secret owner_name owner_email admin_password aes_key
     encryption_key client_id client_secret plural_token
     kas_api kas_private kas_redis

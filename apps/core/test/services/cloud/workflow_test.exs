@@ -9,7 +9,7 @@ defmodule Core.Services.Cloud.WorkflowTest do
       enable_features(account, [:cd])
       user = admin_user(account)
       %{external_id: cluster_id} = cluster = insert(:cloud_cluster)
-      roach = insert(:cockroach_cluster)
+      roach = insert(:postgres_cluster)
       insert(:repository, name: "console")
 
       expect(HTTPoison, :post, fn _, _, _ ->
@@ -24,7 +24,9 @@ defmodule Core.Services.Cloud.WorkflowTest do
       }, user)
 
       expect(Core.Services.Cloud.Poller, :repository, fn -> {:ok, "some-id"} end)
-      expect(Core.Clients.Console, :create_service, fn _, ^cluster_id, _ -> {:ok, Ecto.UUID.generate()} end)
+      expect(Req, :post, fn _, [graphql: {_, %{clusterId: ^cluster_id}}] ->
+        {:ok, %Req.Response{status: 200, body: %{"data" => %{"createServiceDeployment" => %{"id" => Ecto.UUID.generate()}}}}}
+      end)
 
       {:ok, %{external_id: svc_id} = instance} = Workflow.provision(instance)
 
@@ -32,7 +34,9 @@ defmodule Core.Services.Cloud.WorkflowTest do
       assert instance.instance_status.db
       assert instance.instance_status.svc
 
-      expect(Core.Clients.Console, :delete_service, fn _, ^svc_id -> {:ok, svc_id} end)
+      expect(Req, :post, fn _, [graphql: {_, %{id: ^svc_id}}] ->
+        {:ok, %Req.Response{status: 200, body: %{"data" => %{"deleteServiceDeployment" => %{"id" => svc_id}}}}}
+      end)
 
       {:ok, instance} = Workflow.deprovision(instance)
 

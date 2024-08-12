@@ -35,5 +35,6 @@ Mimic.copy(System)
 Mimic.copy(Core.Clients.Vault)
 Mimic.copy(Core.Clients.Console)
 Mimic.copy(Core.Services.Cloud.Poller)
+Mimic.copy(Req)
 
 {:ok, _} = Application.ensure_all_started(:ex_machina)

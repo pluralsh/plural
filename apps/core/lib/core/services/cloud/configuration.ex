@@ -1,5 +1,5 @@
 defmodule Core.Services.Cloud.Configuration do
-  alias Core.Schema.{ConsoleInstance, CockroachCluster}
+  alias Core.Schema.{ConsoleInstance, PostgresCluster}
 
   def build(%ConsoleInstance{configuration: conf, size: size} = inst) do
     Map.take(conf, ~w(
@@ -16,23 +16,24 @@ defmodule Core.Services.Cloud.Configuration do
       kas_api
       kas_private
       kas_redis
+      erlang_secret
     )a)
     |> Map.merge(%{
       postgres_url: build_pg_url(inst),
+      cloud: "#{inst.cloud}",
+      cluster_name: inst.name,
       size: "#{size}",
-      postgres_certificate: certificate(inst)
     })
     |> Map.put(:size, "#{size}")
-    |> Enum.map(fn {k, v} -> %{name: Macro.camelize("#{k}"), value: v} end)
+    |> Enum.map(fn {k, v} -> %{name: k, value: v} end)
   end
 
-  defp certificate(%ConsoleInstance{cockroach: %CockroachCluster{certificate: cert}}), do: cert
+  # defp certificate(%ConsoleInstance{postgres: %PostgresCluster{certificate: cert}}), do: cert
 
   defp build_pg_url(%ConsoleInstance{
     configuration: %{dbuser: u, dbpassword: p, database: database},
-    region: region,
-    cockroach: %CockroachCluster{endpoints: endpoints}
+    postgres: %PostgresCluster{host: host}
   }) do
-    "postgresql://#{u}:#{p}@#{endpoints[region]}/#{database}"
+    "postgresql://#{u}:#{p}@#{host}/#{database}"
   end
 end

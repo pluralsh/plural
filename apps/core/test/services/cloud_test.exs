@@ -10,7 +10,7 @@ defmodule Core.Services.CloudTest do
       enable_features(account, [:cd])
       user = admin_user(account)
       cluster = insert(:cloud_cluster)
-      cockroach = insert(:cockroach_cluster)
+      postgres = insert(:postgres_cluster)
       insert(:repository, name: "console")
 
       expect(HTTPoison, :post, fn _, _, _ ->
@@ -30,7 +30,7 @@ defmodule Core.Services.CloudTest do
       assert instance.size == :small
 
       assert refetch(cluster).count == 1
-      assert refetch(cockroach).count == 1
+      assert refetch(postgres).count == 1
 
       assert_receive {:event, %PubSub.ConsoleInstanceCreated{item: ^instance}}
     end
@@ -39,7 +39,7 @@ defmodule Core.Services.CloudTest do
       account = insert(:account)
       user = admin_user(account)
       insert(:cloud_cluster)
-      insert(:cockroach_cluster)
+      insert(:postgres_cluster)
       insert(:repository, name: "console")
 
       {:error, "you must be on a paid plan to use Plural Cloud"} = Cloud.create_instance(%{

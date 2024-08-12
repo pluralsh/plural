@@ -28,8 +28,6 @@ spec:
         env:
         - name: PORT
           value: '8080'
-        - name: DEPLOYED_AT
-          value: {{ now | unixEpoch | quote }}
         - name: DEPTH
           value: '1'
         - name: CONTEXT_PATH

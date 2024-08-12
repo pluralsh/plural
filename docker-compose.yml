@@ -8,20 +8,15 @@ services:
       POSTGRES_PASSWORD: postgres
     volumes:
     - database_data:/var/lib/postgresql/data
-  cockroach:
-    image: cockroachdb/cockroach:v24.1.3
+  cloud:
+    image: postgres:14
     restart: always
     ports:
-    - 26257:26257
-    - 8080:8080
-    command: start-single-node --certs-dir /cockroach/certs
+    - 5433:5432
     environment:
-    - COCKROACH_DATABASE=plural
-    - COCKROACH_USER=plrl
-    - COCKROACH_PASSWORD=plural
+      POSTGRES_PASSWORD: postgres
     volumes:
-    - roach_data:/cockroach/cockroach-data
-    - ./test-certs:/cockroach/certs
+    - cld_db_data:/var/lib/postgresql/data
   rabbit:
     image: rabbitmq:3-management
     hostname: "rabbit1"
@@ -64,7 +59,7 @@ services:
 volumes:
   database_data:
     driver: local
-  roach_data:
+  cld_db_data:
     driver: local
   influxdb:
     driver: local

@@ -3,7 +3,6 @@ import { Flex } from 'honorable'
 import { useCallback, useContext, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 
-import PlatformPlansContext from '../../../contexts/PlatformPlansContext'
 import SubscriptionContext from '../../../contexts/SubscriptionContext'
 
 import BillingDowngradeModal from './BillingDowngradeModal'
@@ -42,10 +41,7 @@ function CurrentPlanButton() {
 
 function BillingPricingCards() {
   const [searchParams, setSearchParams] = useSearchParams()
-  const { clusterMonthlyPricing, userMonthlyPricing } =
-    useContext(PlatformPlansContext)
-  const { isProPlan, isEnterprisePlan, isTrialAvailable } =
-    useContext(SubscriptionContext)
+  const { isProPlan, isEnterprisePlan } = useContext(SubscriptionContext)
 
   const [downgradeModalOpen, setDowngradeModalOpen] = useState(false)
 
@@ -136,76 +132,6 @@ function BillingPricingCards() {
               <ContactUs />
             ) : (
               <CurrentPlanButton />
-            )
-          }
-        />
-        <BillingPricingCard
-          title="Professional"
-          subtitle={
-            <>
-              ${clusterMonthlyPricing}/cluster/month
-              <br />${userMonthlyPricing}/user/month
-            </>
-          }
-          items={[
-            {
-              label: 'Everything in Open-source plan',
-              checked: false,
-            },
-            {
-              label: 'Unlimited users',
-              checked: true,
-            },
-            {
-              label: 'Unlimited clusters',
-              checked: true,
-            },
-            {
-              label: '24 hour SLA',
-              checked: true,
-            },
-            {
-              label: 'Continuous deployment features',
-              checked: true,
-            },
-            {
-              label: 'Advanced user management',
-              checked: true,
-            },
-            {
-              label: 'Audit logs',
-              checked: true,
-            },
-            {
-              label: 'VPN',
-              checked: true,
-            },
-            {
-              label: 'Emergency hotfixes',
-              checked: true,
-            },
-          ]}
-          callToAction={
-            isProPlan ? (
-              <CurrentPlanButton />
-            ) : isEnterprisePlan ? (
-              <ContactUs />
-            ) : isTrialAvailable ? (
-              <Button
-                primary
-                width="100%"
-                onClick={() => setOpenTrialModal(true)}
-              >
-                Start free trial
-              </Button>
-            ) : (
-              <Button
-                primary
-                width="100%"
-                onClick={() => setUpgradeToProfessionalModalOpen(true)}
-              >
-                Upgrade now
-              </Button>
             )
           }
         />

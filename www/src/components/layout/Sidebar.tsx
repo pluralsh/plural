@@ -14,7 +14,6 @@ import {
   BellIcon,
   BrowseAppsIcon,
   ClusterIcon,
-  CompassIcon,
   CookieIcon,
   Sidebar as DSSidebar,
   DiscordIcon,
@@ -86,11 +85,11 @@ const MENU_ITEMS: MenuItem[] = [
     icon: <PeopleIcon />,
     path: '/account',
   },
-  {
-    text: 'Roadmap',
-    icon: <CompassIcon />,
-    path: '/roadmap',
-  },
+  // {
+  //   text: 'Roadmap',
+  //   icon: <CompassIcon />,
+  //   path: '/roadmap',
+  // },
 ]
 
 function isActiveMenuItem(

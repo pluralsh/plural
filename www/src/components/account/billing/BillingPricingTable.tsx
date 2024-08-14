@@ -1,8 +1,5 @@
-import { Div } from 'honorable'
 import { CheckIcon, CloseIcon } from '@pluralsh/design-system'
-import { useContext } from 'react'
-
-import PlatformPlansContext from '../../../contexts/PlatformPlansContext'
+import { Div } from 'honorable'
 
 const columnStyles = {
   position: 'relative',
@@ -43,13 +40,10 @@ const lastColumnCellProps = {
 }
 
 function BillingPricingTable() {
-  const { clusterMonthlyPricing, userMonthlyPricing } =
-    useContext(PlatformPlansContext)
-
   return (
     <Div
       display="grid"
-      gridTemplateColumns="repeat(4, 1fr)"
+      gridTemplateColumns="repeat(3, 1fr)"
     >
       <Div {...columnStyles}>
         <Div
@@ -164,74 +158,6 @@ function BillingPricingTable() {
         <Div>
           <CloseIcon color="icon-default" />
         </Div>
-        <Div>
-          <CloseIcon color="icon-default" />
-        </Div>
-        <Div>
-          <CloseIcon color="icon-default" />
-        </Div>
-        <Div>
-          <CloseIcon color="icon-default" />
-        </Div>
-        <Div borderBottom="1px solid border-fill-two">
-          <CloseIcon color="icon-default" />
-        </Div>
-      </Div>
-      <Div {...columnStyles}>
-        <Div subtitle2>Professional</Div>
-        <Div body2>Unlimited</Div>
-        <Div body2>${clusterMonthlyPricing}/cluster/month</Div>
-        <Div body2>${userMonthlyPricing}/user/month</Div>
-        <Div body2>$200/pack of 5 services/month</Div>
-        <Div>
-          <CheckIcon color="icon-success" />
-        </Div>
-        <Div>
-          <CheckIcon color="icon-success" />
-        </Div>
-        <Div>
-          <CheckIcon color="icon-success" />
-        </Div>
-        <Div>
-          <CheckIcon color="icon-success" />
-        </Div>
-        <Div>
-          <CheckIcon color="icon-success" />
-        </Div>
-        <Div>
-          <CheckIcon color="icon-success" />
-        </Div>
-        <Div>
-          <CloseIcon color="icon-default" />
-        </Div>
-        <Div>
-          <CloseIcon color="icon-default" />
-        </Div>
-        <Div>
-          <CloseIcon color="icon-default" />
-        </Div>
-        <Div>
-          <CheckIcon color="icon-success" />
-        </Div>
-        <Div>24 hours</Div>
-        <Div body2>Best effort</Div>
-        <Div body2>Google OAuth + OIDC</Div>
-        <Div>
-          <CheckIcon color="icon-success" />
-        </Div>
-        <Div>
-          <CloseIcon color="icon-default" />
-        </Div>
-        <Div>
-          <CheckIcon color="icon-success" />
-        </Div>
-        <Div>
-          <CheckIcon color="icon-success" />
-        </Div>
-        <Div>
-          <CloseIcon color="icon-default" />
-        </Div>
-        <Div>Available</Div>
         <Div>
           <CloseIcon color="icon-default" />
         </Div>

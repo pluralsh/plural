@@ -27,7 +27,7 @@ defmodule Core.Clients.Console do
 
   @update_svc_q """
   mutation Update($id: ID!, $attributes: ServiceUpdateAttributes!) {
-    updateServiceDeployment(id: $id) {
+    updateServiceDeployment(id: $id, attributes: $attributes) {
       id
     }
   }

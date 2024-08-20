@@ -10,10 +10,9 @@ defmodule Core.Services.Cloud.Workflow do
 
   def sync(%ConsoleInstance{external_id: id} = instance) when is_binary(id) do
     instance = Repo.preload(instance, [:cluster, :postgres])
-    Console.update_service(console(), %{
-      size: instance.size,
+    Console.update_service(console(), id, %{
       configuration: Configuration.build(instance)
-    }, id)
+    })
   end
   def sync(_), do: :ok
 

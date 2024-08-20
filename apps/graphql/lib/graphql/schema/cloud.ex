@@ -15,7 +15,7 @@ defmodule GraphQl.Schema.Cloud do
   end
 
   input_object :console_instance_update_attributes do
-    field :size, :console_size
+    field :size,          :console_size
     field :configuration, :console_configuration_update_attributes
   end
 

@@ -55,6 +55,30 @@ spec:
         resources:
           {{- toYaml .Values.cron.resources | nindent 10 }}
 {{ end }}
+{{ if .Values.createHydraDb }}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: create-hydra-db
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      serviceAccountName: plural
+      containers:
+      - name: createdb
+        image: postgres:14
+        command: 
+        - "/bin/sh"
+        - "-c"
+        - |
+          psql "$POSTGRES_URL" -c "CREATE DATABASE hydra"
+        envFrom:
+        - secretRef:
+            name: plural-env
+  backoffLimit: 5
+{{ end }}
 ---
 apiVersion: batch/v1
 kind: Job

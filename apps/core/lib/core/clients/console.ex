@@ -71,12 +71,7 @@ defmodule Core.Clients.Console do
 
   def repo(client, url) do
     Req.post(client, graphql: {@repo_q, %{url: url}})
-    |> case do
-      {:ok, %Req.Response{body: %{"data" => %{"gitRepository" => %{"id" => id}}}}} -> {:ok, id}
-      res ->
-        Logger.warn "Failed to fetch clusters: #{inspect(res)}"
-        {:error, "could not fetch repo"}
-    end
+    |> service_resp("gitRepository")
   end
 
   def create_service(client, cluster_id, attrs) do
@@ -92,6 +87,7 @@ defmodule Core.Clients.Console do
   def delete_service(client, id) do
     Req.post(client, graphql: {@delete_svc_q, %{id: id}})
     |> service_resp("deleteServiceDeployment")
+    |> ignore_not_found()
   end
 
   def stack(client, id) do
@@ -105,11 +101,16 @@ defmodule Core.Clients.Console do
     end
   end
 
+  defp ignore_not_found({:error, ["could not find resource" <> _ | _]}), do: {:ok, nil}
+  defp ignore_not_found(pass), do: pass
+
+  defp service_resp({:ok, %Req.Response{body: %{"errors" => [_ | _] = errors}}}, _), do: {:error, errors}
   defp service_resp({:ok, %Req.Response{status: 200, body: %{"data" => body}}}, field) do
     case body[field] do
       %{"id" => id} -> {:ok, id}
       err ->
         Logger.warn "invalid console gql response: #{inspect(err)}"
+        {:error, "#{field} query failed"}
     end
   end
 

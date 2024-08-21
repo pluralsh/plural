@@ -106,7 +106,7 @@ defmodule Core.Services.Cloud.Workflow do
   defp down(%ConsoleInstance{instance_status: %{svc: true}} = inst) do
     with {:ok, _} <- Console.delete_service(console(), inst.external_id) do
       ConsoleInstance.changeset(inst, %{
-        instance_status: %{svc: false},
+        instance_status: %{svc: false, db: true},
         status: :deployment_deleted,
       })
       |> Repo.update()

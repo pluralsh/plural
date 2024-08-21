@@ -58,7 +58,7 @@ defmodule Core.Services.Cloud do
       Repositories.upsert_oidc_provider(%{
         auth_method: :post,
         bindings: Shell.oidc_bindings(inst.oidc_provider, user),
-        redirect_uris: Shell.merge_uris(["https://console-#{name}.cloud.plural.sh/oauth/callback"], inst.oidc_provider)
+        redirect_uris: Shell.merge_uris(["https://console.#{name}.cloud.plural.sh/oauth/callback"], inst.oidc_provider)
       }, inst.id, sa)
     end)
     |> add_operation(:instance, fn %{oidc: oidc, token: token, cluster: cluster, postgres: roach, sa: sa} ->
@@ -135,7 +135,7 @@ defmodule Core.Services.Cloud do
   end
 
   defp add_configuration(attrs, name, token, %OIDCProvider{} = oidc, %User{} = user) do
-    Map.merge(attrs, %{subdomain: "#{name}.cloud.plural.sh", url: "console-#{name}.cloud.plural.sh"})
+    Map.merge(attrs, %{subdomain: "#{name}.cloud.plural.sh", url: "console.#{name}.cloud.plural.sh"})
     |> Map.put(:configuration, %{
       aes_key:        aes_key(),
       encryption_key: encryption_key(),

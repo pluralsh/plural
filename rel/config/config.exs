@@ -143,3 +143,6 @@ config :core,
 
 config :openai,
   token: get_env("OPENAI_BEARER_TOKEN")
+
+
+config :tzdata, :autoupdate, :disabled

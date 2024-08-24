@@ -227,6 +227,7 @@ spec:
       labels:
         app.kubernetes.io/name: plural-www
         app.kubernetes.io/instance: {{ .Release.Name }}
+      annotations:
         checksum/config: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
     spec:
       {{- with .Values.imagePullSecrets }}

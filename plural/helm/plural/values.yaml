@@ -1,5 +1,6 @@
 global:
   registry: dkr.plural.sh/plural
+  tag: ~
 
 replicaCount: 3
 rabbitmqNamespace: rabbitmq

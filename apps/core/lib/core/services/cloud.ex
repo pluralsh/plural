@@ -58,7 +58,7 @@ defmodule Core.Services.Cloud do
       Repositories.upsert_oidc_provider(%{
         auth_method: :post,
         bindings: Shell.oidc_bindings(inst.oidc_provider, user),
-        redirect_uris: Shell.merge_uris(["https://console.#{name}.cloud.plural.sh/oauth/callback"], inst.oidc_provider)
+        redirect_uris: Shell.merge_uris(["https://console.#{name}.#{domain()}/oauth/callback"], inst.oidc_provider)
       }, inst.id, sa)
     end)
     |> add_operation(:instance, fn %{oidc: oidc, token: token, cluster: cluster, postgres: roach, sa: sa} ->
@@ -135,14 +135,14 @@ defmodule Core.Services.Cloud do
   end
 
   defp add_configuration(attrs, name, token, %OIDCProvider{} = oidc, %User{} = user) do
-    Map.merge(attrs, %{subdomain: "#{name}.cloud.plural.sh", url: "console.#{name}.cloud.plural.sh"})
+    Map.merge(attrs, %{subdomain: "#{name}.#{domain()}", url: "console.#{name}.#{domain()}"})
     |> Map.put(:configuration, %{
       aes_key:        aes_key(),
       encryption_key: encryption_key(),
       database:       "#{name}_cloud",
       dbuser:         "#{name}_user",
       dbpassword:     Core.random_alphanum(32),
-      subdomain:      "#{name}.cloud.plural.sh",
+      subdomain:      "#{name}.#{domain()}",
       jwt_secret:     Core.random_alphanum(32) |> Base.encode64(),
       owner_name:     user.name,
       owner_email:    user.email,
@@ -207,6 +207,8 @@ defmodule Core.Services.Cloud do
     :crypto.strong_rand_bytes(32)
     |> Base.encode64()
   end
+
+  defp domain(), do: Core.conf(:cloud_domain)
 
   defp notify({:ok, %ConsoleInstance{} = inst}, :create, user),
     do: handle_notify(PubSub.ConsoleInstanceCreated, inst, actor: user)

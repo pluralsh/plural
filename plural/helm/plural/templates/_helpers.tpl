@@ -93,7 +93,7 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end -}}
 
 {{- define "plural.migration-name" -}}
-plural-migration-{{ .Values.image.tag | default .Chart.AppVersion | sha256sum | trunc 8 }}
+plural-migration-{{ .Values.global.tag | default .Values.image.tag | default .Chart.AppVersion | sha256sum | trunc 8 }}
 {{- end -}}
 
 {{- define "plural.wait-for-migration" -}}

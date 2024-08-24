@@ -2,6 +2,8 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: {{ include "plural.migration-name" . }}
+  annotations:
+    platform.plural.sh/ignore: 'true'
 spec:
   template:
     spec:
@@ -84,6 +86,8 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: hydra-migration-{{ .Values.image.tag | default .Chart.AppVersion | sha256sum | trunc 8 }}
+  annotations:
+    platform.plural.sh/ignore: 'true'
 spec:
   backoffLimit: 10
   template:

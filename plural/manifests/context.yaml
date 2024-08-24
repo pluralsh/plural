@@ -1,0 +1,10 @@
+apiVersion: deployments.plural.sh/v1alpha1
+kind: PipelineContext
+metadata:
+  name: plural
+spec:
+  pipelineRef:
+    name: plural
+    namespace: infra
+  context:
+    version: sha-a1f4280 # VERSION

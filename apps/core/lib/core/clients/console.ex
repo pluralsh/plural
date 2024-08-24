@@ -93,6 +93,7 @@ defmodule Core.Clients.Console do
   def stack(client, id) do
     Req.post(client, graphql: {@stack_q, %{id: id}})
     |> case do
+      {:ok, %Req.Response{body: %{"errors" => [_ | _] = errors}}} -> {:error, errors}
       {:ok, %Req.Response{body: %{"data" => %{"infrastructureStack" => stack}}}} ->
         {:ok, stack}
       res ->

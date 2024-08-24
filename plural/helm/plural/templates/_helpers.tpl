@@ -102,3 +102,7 @@ plural-migration-{{ .Values.image.tag | default .Chart.AppVersion | sha256sum | 
   imagePullPolicy: IfNotPresent
   command: [ "/bin/sh", "-c", "until nc -zv plural-plural 5432 -w1; do echo 'waiting for db'; sleep 1; done" ]
 {{- end -}}
+
+{{- define "plural.imageTag" -}}
+{{ .Values.global.tag | default .Values.image.tag | default .Chart.AppVersion }}
+{{- end -}}

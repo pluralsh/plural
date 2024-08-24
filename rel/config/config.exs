@@ -94,7 +94,8 @@ config :core,
   console_token: get_env("CONSOLE_SA_TOKEN"),
   console_url: get_env("CONSOLE_URL"),
   mgmt_repo: get_env("CONSOLE_MGMT_REPO"),
-  stack_id: get_env("CONSOLE_CLOUD_STACK_ID")
+  stack_id: get_env("CONSOLE_CLOUD_STACK_ID"),
+  cloud_domain: get_env("CONSOLE_CLOUD_DOMAIN") || "cloud.plural.sh"
 
 
 if get_env("VAULT_HOST") do
@@ -143,3 +144,6 @@ config :core,
 
 config :openai,
   token: get_env("OPENAI_BEARER_TOKEN")
+
+
+config :tzdata, :autoupdate, :disabled

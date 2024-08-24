@@ -4,6 +4,8 @@ import System, only: [get_env: 1]
 alias Core.Repo
 alias Core.Schema
 
+Application.ensure_all_started(:tzdata)
+
 seed do
   {:ok, admin} = Core.Services.Users.create_user(%{
     name: get_env("ADMIN_NAME"),

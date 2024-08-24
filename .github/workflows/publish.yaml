@@ -315,11 +315,9 @@ jobs:
       with: 
         persist-credentials: false
         fetch-depth: 0 # otherwise, you will failed to push refs to dest repo
-    - name: push chart
-      uses: pluralsh/chart-releaser@v0.1.3
-      with:
-        path: ./plural/helm/plural
-        release: ${{github.ref_name}}
+    - name: update context
+      run: |
+        sed -i '' 's/version: .* # VERSION/version: ${{github.ref_name}} # VERSION/' plural/manifests/context.yaml
     - name: Create Pull Request
       uses: peter-evans/create-pull-request@v5
       with:

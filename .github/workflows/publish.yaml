@@ -317,7 +317,7 @@ jobs:
         fetch-depth: 0 # otherwise, you will failed to push refs to dest repo
     - name: update context
       run: |
-        sed -i '' 's/version: .* # VERSION/version: ${{github.ref_name}} # VERSION/' plural/manifests/context.yaml
+        sed -i 's/version: .* # VERSION/version: ${{github.ref_name}} # VERSION/' plural/manifests/context.yaml
     - name: Create Pull Request
       uses: peter-evans/create-pull-request@v5
       with:

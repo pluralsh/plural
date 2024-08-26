@@ -7,9 +7,8 @@ import {
   useState,
 } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { Menu, MenuItem } from 'honorable'
+import { Avatar, Menu, MenuItem } from 'honorable'
 import {
-  AppIcon,
   ArrowTopRightIcon,
   BellIcon,
   BrowseAppsIcon,
@@ -234,6 +233,11 @@ function Sidebar(props: Omit<ComponentProps<typeof DSSidebar>, 'variant'>) {
                 clickable
                 tooltip={item.text}
                 className={`sidebar-${item.text}`}
+                style={{
+                  outline: isActive
+                    ? `1px solid ${theme.colors['border-fill-two']}`
+                    : undefined,
+                }}
                 as={Link}
                 to={item.path}
                 active={isActive}
@@ -293,22 +297,18 @@ function Sidebar(props: Omit<ComponentProps<typeof DSSidebar>, 'variant'>) {
             active={isMenuOpen}
             clickable
             collapsed
-            onClick={() => setIsMenuOpened((x) => !x)}
-            userSelect="none"
+            onClick={(e) => {
+              e.stopPropagation()
+              setIsMenuOpened((x) => !x)
+            }}
+            css={{
+              paddingLeft: theme.spacing.xxsmall,
+            }}
           >
-            <AppIcon
-              clickable
-              url={me.avatar || undefined}
-              name={me.name || undefined}
-              size="xxsmall"
-              spacing={me.avatar ? 'none' : undefined}
-              css={{
-                color: theme.colors['action-always-white'],
-                backgroundColor: theme.colors['action-primary'],
-                '&:hover': {
-                  backgroundColor: theme.colors['action-primary-hover'],
-                },
-              }}
+            <Avatar
+              name={me.name}
+              src={me.avatar}
+              size={32}
             />
           </SidebarItem>
         </SidebarSection>

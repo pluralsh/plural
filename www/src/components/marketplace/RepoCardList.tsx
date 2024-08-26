@@ -1,6 +1,6 @@
 import { RepositoryCard } from '@pluralsh/design-system'
 import { Link } from 'react-router-dom'
-import { useTheme } from 'styled-components'
+import styled, { useTheme } from 'styled-components'
 
 import { CardGrid } from '../utils/layout/CardGrid'
 import { getRepoIcon } from '../repository/misc'
@@ -17,9 +17,9 @@ export function RepoCardList({
   return (
     <CardGrid {...props}>
       {repositories?.map((repository) => (
-        <RepositoryCard
+        <FixedRepositoryCard
           key={repository.id}
-          as={Link}
+          forwardedAs={Link}
           to={`/repository/${repository.name}${
             urlParams ? `?${urlParams}` : ''
           }`}
@@ -43,3 +43,11 @@ export function RepoCardList({
     </CardGrid>
   )
 }
+
+const FixedRepositoryCard = styled(RepositoryCard)(({ theme }) => ({
+  flexDirection: 'column',
+  padding: theme.spacing.large,
+  width: '100%',
+  position: 'relative',
+  textDecoration: 'none',
+}))

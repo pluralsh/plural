@@ -93,7 +93,6 @@ function ClusterPromoteModalInternal({
   return (
     <>
       <Modal
-        portal
         open={open}
         onClose={close}
         actions={

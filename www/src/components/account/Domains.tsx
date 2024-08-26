@@ -143,7 +143,6 @@ function AccessPolicy({ domain: { id, accessPolicy }, edit, setEdit }: any) {
   return (
     <Modal
       header="Edit access policy"
-      portal
       open={edit}
       onClose={() => setEdit(false)}
       width="100%"

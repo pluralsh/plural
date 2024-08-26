@@ -8,7 +8,6 @@ function DeleteUserModal({ user, update, onClose }): ReactElement {
     <Modal
       size="large"
       open
-      portal
       style={{ padding: 0 }}
       header="confirm deletion"
       onClose={onClose}

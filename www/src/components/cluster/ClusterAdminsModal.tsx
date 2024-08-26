@@ -175,7 +175,6 @@ export function ClusterAdminsModal({ onClose, serviceAccount }) {
   return (
     <Modal
       header={header}
-      portal
       open
       onClose={onClose}
       style={{ padding: 0 }}

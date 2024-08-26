@@ -219,7 +219,6 @@ function AccessToken({ token, first, last }: any) {
               style={{ padding: 0 }}
               maxWidth="900px"
               width="900px"
-              portal
               onClose={() => setGraph(false)}
             >
               <TokenMetrics token={token} />
@@ -236,7 +235,6 @@ function AccessToken({ token, first, last }: any) {
             <Modal
               header="Audit logs"
               open={audits}
-              portal
               onClose={() => setAudits(false)}
             >
               <TokenAudits token={token} />

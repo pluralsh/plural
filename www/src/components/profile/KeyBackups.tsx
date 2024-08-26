@@ -210,7 +210,6 @@ function LocalSyncButton() {
         onClose={openState.setOff}
         header="Sync encryption keys locally"
         size="large"
-        portal
       >
         <Flex
           direction="column"
@@ -244,7 +243,6 @@ function CreateKeyButton() {
         onClose={openState.setOff}
         header="Create encryption key"
         size="large"
-        portal
       >
         <Flex
           direction="column"

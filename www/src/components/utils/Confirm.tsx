@@ -34,7 +34,6 @@ export function Confirm({
       open={open}
       onClose={close}
       width="512px"
-      portal
       actions={
         <>
           <Button

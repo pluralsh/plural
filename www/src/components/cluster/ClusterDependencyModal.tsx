@@ -64,7 +64,6 @@ export function ClusterDependencyModal({
 
   return (
     <Modal
-      portal
       open={open}
       onClose={close}
       actions={

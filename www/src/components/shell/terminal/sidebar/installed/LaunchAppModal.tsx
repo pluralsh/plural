@@ -79,7 +79,6 @@ function LaunchAppModal({ name, domain, setVisible }): JSX.Element {
   return (
     <Modal
       open
-      portal
       header="Access information"
       style={{ padding: 0 }}
       actions={

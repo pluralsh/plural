@@ -167,7 +167,7 @@ export function OnboardingChecklist() {
     >
       {error && (
         <Toast
-          severity="error"
+          severity="danger"
           marginBottom="medium"
           marginRight="xxxxlarge"
         >

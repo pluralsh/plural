@@ -32,7 +32,6 @@ function UpgradeNeededModal({
 
   return (
     <Modal
-      BackdropProps={{ zIndex: 20 }}
       header={
         <Header>
           <WarningIcon

@@ -77,7 +77,6 @@ function DomainMappingFunc({
               onClick={() => {
                 setConfirm(true)
               }}
-              // @ts-expect-error
               hue="lighter"
             />
           </Flex>

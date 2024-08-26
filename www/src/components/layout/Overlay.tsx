@@ -31,6 +31,7 @@ const getTransitionProps = (isOpen: boolean) => ({
       },
 })
 
+// @ts-ignore, see https://github.com/pmndrs/react-spring/issues/1515
 const OverlayBG = styled(AnimatedDiv)(({ theme }) => ({
   position: 'absolute',
   top: 0,

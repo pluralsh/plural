@@ -40,7 +40,6 @@ function InviteUserModalUnstyled({
     <Modal
       open
       onClose={onClose}
-      style={{ padding: 0 }}
       size="large"
       header={header}
     >

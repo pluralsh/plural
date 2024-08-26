@@ -61,8 +61,8 @@ export default function RepositoryPackages() {
   const tabStateRef = useRef<any>(null)
   const pathPrefix = `/repository/${repository.name}/packages`
 
-  const currentTab = DIRECTORY.find((tab) =>
-    pathname?.startsWith(`${pathPrefix}${tab.path}`)
+  const currentTab = DIRECTORY.find(
+    (tab) => pathname?.startsWith(`${pathPrefix}${tab.path}`)
   )
 
   return (

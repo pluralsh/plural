@@ -86,7 +86,7 @@ export function InviteUser({ refetch }: { refetch?: (() => void) | null }) {
         header="Invite users"
         open={showInviteModal}
         onClose={() => resetAndClose()}
-        width="100%"
+        size="auto"
         actions={
           invite ? (
             <Button onClick={() => resetAndClose()}>Done</Button>

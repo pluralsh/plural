@@ -129,6 +129,7 @@ function TokenMetrics({ token }: any) {
     <Flex
       direction="column"
       gap="large"
+      overflow="hidden"
     >
       <Span
         body2
@@ -215,10 +216,8 @@ function AccessToken({ token, first, last }: any) {
             />
             <Modal
               open={graph}
-              size="large"
-              style={{ padding: 0 }}
-              maxWidth="900px"
-              width="900px"
+              size="custom"
+              css={{ width: '900px' }}
               onClose={() => setGraph(false)}
             >
               <TokenMetrics token={token} />

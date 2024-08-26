@@ -25,7 +25,7 @@ export function AppContextProvider({
   refetch,
 }: ContextProps) {
   const finalValue = useMemo(
-    () => ({ repository, refetch } as ContextProps),
+    () => ({ repository, refetch }) as ContextProps,
     [refetch, repository]
   )
 

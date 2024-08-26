@@ -366,7 +366,6 @@ function CreateClusterModal({ open, onClose }): ReactElement {
 
   return (
     <Modal
-      BackdropProps={{ zIndex: 20 }}
       header={<Header>Create cluster</Header>}
       open={open}
       onClose={() => {

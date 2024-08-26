@@ -48,7 +48,6 @@ function BillingStartTrialModal({
 
   return (
     <Modal
-      BackdropProps={{ zIndex: 20 }}
       open={open}
       onClose={onClose}
       style={{ padding: 0 }}

@@ -80,7 +80,6 @@ function EditCloudCredentialsModal({ onClose }) {
         />
       )}
       <Modal
-        BackdropProps={{ zIndex: 20 }}
         size="large"
         open={open}
         onClose={close}

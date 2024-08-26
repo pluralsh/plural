@@ -26,7 +26,6 @@ export default function BillingFeatureBlockModal({
 }: BillingFeatureBlockModalProps) {
   return (
     <Modal
-      BackdropProps={{ zIndex: 20 }}
       header={
         <Header>
           <WarningIcon

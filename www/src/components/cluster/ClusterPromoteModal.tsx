@@ -128,11 +128,11 @@ function ClusterPromoteModalInternal({
           </>
         }
         size="large"
-        overflow="hidden"
       >
         <Flex
           direction="column"
           gap="xlarge"
+          overflow="hidden"
         >
           <Div subtitle2>
             {finished ? 'Cluster promotion complete' : 'Cluster promotion'}

@@ -32,7 +32,7 @@ export default function ClusterHealth({
   return (
     <Flex gap="xsmall">
       <Chip
-        severity={pinged ? (healthy ? 'success' : 'error') : 'warning'}
+        severity={pinged ? (healthy ? 'success' : 'danger') : 'warning'}
         size={size}
         hue={hue}
       >

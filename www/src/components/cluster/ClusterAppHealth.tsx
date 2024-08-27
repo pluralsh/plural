@@ -23,7 +23,7 @@ export default function ClusterAppHealth({
 
   return (
     <Chip
-      severity={healthy ? 'success' : 'error'}
+      severity={healthy ? 'success' : 'danger'}
       {...props}
     >
       {healthy ? 'Healthy' : 'Unhealthy'}

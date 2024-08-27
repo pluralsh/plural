@@ -24,7 +24,7 @@ export function StripeElements({
         appearance,
         mode: 'setup',
         currency: 'usd',
-      } satisfies StripeElementsOptions),
+      }) satisfies StripeElementsOptions,
     [appearance]
   )
 

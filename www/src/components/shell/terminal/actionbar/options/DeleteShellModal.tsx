@@ -9,6 +9,8 @@ import {
 import { A, Button, Flex, Span } from 'honorable'
 import { useCallback, useContext, useState } from 'react'
 
+import { useTheme } from 'styled-components'
+
 import { ImpersonationContext } from '../../../context/impersonation'
 
 import {
@@ -17,6 +19,7 @@ import {
 } from '../../../queries'
 
 function DeleteDemoModal({ onClose }) {
+  const theme = useTheme()
   const [open, setOpen] = useState(true)
   const close = useCallback(() => {
     setOpen(false)
@@ -32,8 +35,7 @@ function DeleteDemoModal({ onClose }) {
       size="large"
       open={open}
       onClose={close}
-      style={{ padding: 0 }}
-      borderTop="4px solid border-warning"
+      css={{ borderTop: `4px solid ${theme.colors['border-warning']}` }}
     >
       <Flex
         direction="column"
@@ -85,6 +87,7 @@ function DeleteDemoModal({ onClose }) {
 }
 
 function DeleteShellModal({ onClose }) {
+  const theme = useTheme()
   const {
     user: { demoing },
   } = useContext(ImpersonationContext)
@@ -116,8 +119,7 @@ function DeleteShellModal({ onClose }) {
       size="large"
       open={open}
       onClose={close}
-      style={{ padding: 0 }}
-      borderTop="4px solid border-warning"
+      css={{ borderTop: `4px solid ${theme.colors['border-warning']}` }}
     >
       <Flex
         direction="column"

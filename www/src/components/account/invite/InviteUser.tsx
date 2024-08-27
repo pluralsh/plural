@@ -205,7 +205,7 @@ function InviteUserUnstyled({
       attributes: {
         email,
         inviteGroups: groupBindings.map(
-          (g) => ({ groupId: g.id } as BindingAttributes)
+          (g) => ({ groupId: g.id }) as BindingAttributes
         ),
         admin: isAdmin,
         serviceAccountId,

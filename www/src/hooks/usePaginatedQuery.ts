@@ -87,14 +87,14 @@ export function usePaginatedQueryHook<Q, V extends OperationVars, N>(
     () => void,
     <
       TSubscriptionData = Q,
-      TSubscriptionVariables extends Apollo.OperationVariables = V
+      TSubscriptionVariables extends Apollo.OperationVariables = V,
     >(
       options: Apollo.SubscribeToMoreOptions<
         Q,
         TSubscriptionVariables,
         TSubscriptionData
       >
-    ) => () => void
+    ) => () => void,
   ] = [
     [...previousEdgeNodes, ...(mapExistingNodes(workingResults) || [])],
     results.loading,

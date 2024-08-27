@@ -47,7 +47,6 @@ function ExpiredModal() {
   return (
     <Modal
       header="Expired feature access"
-      portal
       open={isOpen}
       onClose={onClose}
       actions={

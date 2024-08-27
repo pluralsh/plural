@@ -71,7 +71,6 @@ export function CreateRole({ q }: any) {
         header="Create role"
         open={createModalVisible}
         onClose={() => resetAndClose()}
-        marginVertical={16}
         size="large"
         actions={
           <Actions

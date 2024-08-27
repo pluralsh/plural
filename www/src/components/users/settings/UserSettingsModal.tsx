@@ -38,7 +38,6 @@ function UserSettingsModal({
     <Modal
       size="large"
       open
-      portal
       style={{ padding: 0 }}
       header={header}
       onClose={onClose}

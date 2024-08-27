@@ -31,7 +31,7 @@ const toOnboardingContext = (
       authUrls: authUrlData?.scmAuthorization as Array<AuthorizationUrl>,
       token,
     },
-  } as ContextProps)
+  }) as ContextProps
 
 function OAuthCallback({ provider }: any) {
   const navigate = useNavigate()

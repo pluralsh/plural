@@ -5,7 +5,7 @@
  */
 function IsObjectPartiallyEmpty<
   K extends keyof any = string | number,
-  T = unknown
+  T = unknown,
 >(obj: { [P in K]?: T } | undefined) {
   return !obj || Object.values(obj).some((val) => !val)
 }

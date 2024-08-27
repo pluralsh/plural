@@ -64,7 +64,6 @@ export function ClusterDependencyModal({
 
   return (
     <Modal
-      portal
       open={open}
       onClose={close}
       actions={
@@ -86,11 +85,11 @@ export function ClusterDependencyModal({
         </>
       }
       size="large"
-      overflow="hidden"
     >
       <Flex
         direction="column"
         gap="xlarge"
+        overflow="hidden"
       >
         <Div subtitle2>Set up promotions</Div>
         {error && (

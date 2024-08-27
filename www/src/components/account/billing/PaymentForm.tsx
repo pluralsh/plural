@@ -128,7 +128,7 @@ function PaymentFormProvider({
   children,
 }: PropsWithChildren<{
   formVariant: PaymentFormVariant
-  onClose?: () => void
+  onClose?: Nullable<() => void>
 }>) {
   const initialFormState =
     formVariant === PaymentFormVariant.Upgrade

@@ -23,8 +23,8 @@ export function DeviceLoginNotif() {
       header="Device Login Successful"
       open={open}
       onClose={() => setOpen(false)}
-      width="512px"
-      portal
+      size="custom"
+      css={{ width: '512px' }}
     >
       The device you requested on should now have access.
     </Modal>

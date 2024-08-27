@@ -218,7 +218,6 @@ export function EditServiceAccount({ user, update }: any) {
       />
       <Modal
         header="Edit service account"
-        portal
         open={edit}
         onClose={() => {
           setEdit(false)

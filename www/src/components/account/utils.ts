@@ -16,8 +16,8 @@ export function hasRbac(user: CurrentUser, permission: Permission) {
   if (user.boundRoles != null) {
     const boundRoles = user.boundRoles.filter(notNil)
 
-    return boundRoles.some(({ permissions }) =>
-      permissions?.includes(permission)
+    return boundRoles.some(
+      ({ permissions }) => permissions?.includes(permission)
     )
   }
 

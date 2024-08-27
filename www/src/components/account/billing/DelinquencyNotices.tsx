@@ -80,7 +80,7 @@ export function DelinquencyToast() {
 
   return (
     <Toast
-      severity="error"
+      severity="danger"
       marginBottom="medium"
       marginRight="xxxxlarge"
       closeTimeout="none"

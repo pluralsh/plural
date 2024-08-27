@@ -25,7 +25,7 @@ function StatusChip({ loading, error }: StatusChipProps) {
       loading={loading && !error}
       backgroundColor="fill-two"
       borderColor="border-fill-two"
-      severity={error ? 'error' : loading ? 'info' : 'success'}
+      severity={error ? 'danger' : loading ? 'info' : 'success'}
     >
       {error ? 'Error' : loading ? 'Running' : 'Success'}
     </Chip>

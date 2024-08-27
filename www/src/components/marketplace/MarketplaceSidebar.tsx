@@ -57,6 +57,8 @@ function AccordionWithExpanded({ children, ...props }: any) {
     <Accordion
       expanded={expanded}
       onExpand={() => setExpanded(!expanded)}
+      background="transparent"
+      boxShadow="none"
       {...props}
     >
       {children(expanded)}

@@ -5,10 +5,18 @@ import {
   TabList,
   TabPanel,
 } from '@pluralsh/design-system'
-import { Button, Div, Flex, H2, ModalBaseProps, P } from 'honorable'
+import { Key } from '@react-types/shared'
+import { Button, Div, Flex, H2, P } from 'honorable'
 import isEmpty from 'lodash/isEmpty'
 import upperFirst from 'lodash/upperFirst'
-import { Key, useContext, useEffect, useMemo, useRef, useState } from 'react'
+import {
+  ComponentProps,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import { Link } from 'react-router-dom'
 
 import ClustersContext from '../../contexts/ClustersContext'
@@ -218,7 +226,7 @@ function InstallModal({
   ...props
 }: Omit<InstallAppButtonProps, 'loading'> & {
   clusters: Cluster[]
-} & ModalBaseProps) {
+} & ComponentProps<typeof Modal>) {
   const [clusterId, setClusterId] = useState<string | undefined>(
     !isEmpty(clusters) ? clusters[0].id : undefined
   )

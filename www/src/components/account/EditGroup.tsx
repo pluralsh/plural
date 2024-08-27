@@ -74,7 +74,6 @@ export function EditGroupMembers({ group, open, onClose }: any) {
   return (
     <Modal
       header="Edit group members"
-      portal
       open={open}
       size="large"
       onClose={onClose}
@@ -174,7 +173,6 @@ export function EditGroupAttributes({ group, open, onClose }: any) {
   return (
     <Modal
       header="Edit group attributes"
-      portal
       open={open}
       size="large"
       onClose={onClose}

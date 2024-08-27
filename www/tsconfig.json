@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "baseUrl": "src",
     "target": "ESNext",
     "useDefineForClassFields": true,
     "lib": ["DOM", "DOM.Iterable", "ESNext", "WebWorker"],
@@ -19,6 +20,5 @@
     "types": ["vite/client", "vitest/globals"]
   },
   "include": ["src"],
-  "exclude": ["src/components/shell/_old/**/*", "src/_deprecated/**/*"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "exclude": ["src/components/shell/_old/**/*", "src/_deprecated/**/*"]
 }

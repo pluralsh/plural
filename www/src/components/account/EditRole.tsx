@@ -44,7 +44,6 @@ export function EditRole({ role }: any) {
       </Button>
       <Modal
         header="Edit role"
-        portal
         open={open}
         size="large"
         onClose={() => setOpen(false)}

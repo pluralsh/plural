@@ -33,8 +33,8 @@ export function Confirm({
       header={title}
       open={open}
       onClose={close}
-      width="512px"
-      portal
+      css={{ width: '512px' }}
+      size="custom"
       actions={
         <>
           <Button

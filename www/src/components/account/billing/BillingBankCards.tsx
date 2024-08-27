@@ -160,9 +160,7 @@ function AddPaymentMethodModal({
     >
       <PaymentForm
         formVariant={PaymentFormVariant.AddCard}
-        onClose={() => {
-          onClose()
-        }}
+        onClose={onClose}
       />
     </Modal>
   )

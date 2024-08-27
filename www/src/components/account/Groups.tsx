@@ -123,7 +123,6 @@ export function Group({ group, q }: { group: GroupT; q: any }) {
           </Flex>
         </Flex>
         <Modal
-          portal
           header="View group"
           open={dialogKey === 'viewGroup'}
           onClose={() => dialogKey === 'viewGroup' && setDialogKey('')}

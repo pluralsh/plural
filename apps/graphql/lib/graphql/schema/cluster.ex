@@ -10,6 +10,7 @@ defmodule GraphQl.Schema.Cluster do
   input_object :cluster_attributes do
     field :name,        non_null(:string), description: "The name of the cluster."
     field :provider,    non_null(:provider), description: "The cluster's cloud provider."
+    field :legacy,      :boolean, description: "whether this is a legacy oss cluster"
     field :source,      :source, description: "The source of the cluster."
     field :git_url,     :string, description: "The git repository URL for the cluster."
     field :console_url, :string, description: "The URL of the console running on the cluster."
@@ -21,6 +22,7 @@ defmodule GraphQl.Schema.Cluster do
     field :id,           non_null(:id), description: "The ID of the cluster."
     field :name,         non_null(:string), description: "The name of the cluster."
     field :provider,     non_null(:provider), description: "The cluster's cloud provider."
+    field :legacy,       :boolean, description: "whether this is a legacy OSS cluster"
     field :source,       :source, description: "The source of the cluster."
     field :git_url,      :string, description: "The git repository URL for the cluster."
     field :console_url,  :string, description: "The URL of the console running on the cluster."

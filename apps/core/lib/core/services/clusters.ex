@@ -158,6 +158,7 @@ defmodule Core.Services.Clusters do
       upsert_cluster(%{
         console_url: d,
         domain: infer_domain(d),
+        legacy: q.legacy,
         git_url: g,
         pinged_at: pinged,
       }, p, n, user)

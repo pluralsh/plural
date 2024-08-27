@@ -31,11 +31,17 @@ defmodule Core.Services.ClustersTest do
 
   describe "#create_from_queue/1" do
     test "it can create a new cluster from an upgrade queue" do
-      queue = insert(:upgrade_queue, domain: "console.plural.sh", git: "git@github.com/pluralsh/repo", provider: :aws)
+      queue = insert(:upgrade_queue,
+        domain: "console.plural.sh",
+        git: "git@github.com/pluralsh/repo",
+        provider: :aws,
+        legacy: true
+      )
 
       {:ok, cluster} = Clusters.create_from_queue(queue)
 
       assert cluster.name == queue.name
+      assert cluster.legacy
       assert cluster.provider == queue.provider
       assert cluster.owner_id == queue.user_id
       assert cluster.account_id == queue.user.account_id

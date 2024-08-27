@@ -425,6 +425,8 @@ export type Cluster = {
   /** The ID of the cluster. */
   id: Scalars['ID']['output'];
   insertedAt?: Maybe<Scalars['DateTime']['output']>;
+  /** whether this is a legacy OSS cluster */
+  legacy?: Maybe<Scalars['Boolean']['output']>;
   /** whether any installation in the cluster has been locked */
   locked?: Maybe<Scalars['Boolean']['output']>;
   /** The name of the cluster. */
@@ -464,6 +466,8 @@ export type ClusterAttributes = {
   domain?: InputMaybe<Scalars['String']['input']>;
   /** The git repository URL for the cluster. */
   gitUrl?: InputMaybe<Scalars['String']['input']>;
+  /** whether this is a legacy oss cluster */
+  legacy?: InputMaybe<Scalars['Boolean']['input']>;
   /** The name of the cluster. */
   name: Scalars['String']['input'];
   /** The cluster's cloud provider. */
@@ -4926,6 +4930,7 @@ export type UpgradeQueueUpgradesArgs = {
 export type UpgradeQueueAttributes = {
   domain?: InputMaybe<Scalars['String']['input']>;
   git?: InputMaybe<Scalars['String']['input']>;
+  legacy?: InputMaybe<Scalars['Boolean']['input']>;
   name: Scalars['String']['input'];
   provider?: InputMaybe<Provider>;
 };

@@ -34,6 +34,7 @@ defmodule GraphQl.Schema.Upgrade do
 
   input_object :upgrade_queue_attributes do
     field :name,     non_null(:string)
+    field :legacy,   :boolean
     field :domain,   :string
     field :git,      :string
     field :provider, :provider
@@ -129,8 +130,8 @@ defmodule GraphQl.Schema.Upgrade do
   object :upgrade_mutations do
     field :create_queue, :upgrade_queue do
       middleware Authenticated
-
       arg :attributes, non_null(:upgrade_queue_attributes)
+
       resolve &Upgrade.create_upgrade_queue/2
     end
 

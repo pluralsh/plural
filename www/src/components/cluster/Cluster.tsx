@@ -11,9 +11,10 @@ import {
 } from '@pluralsh/design-system'
 import { Div, Flex } from 'honorable'
 
+import { CLUSTERS_ROOT_CRUMB } from 'components/overview/clusters/Clusters'
+
 import ClustersContext from '../../contexts/ClustersContext'
 import ImpersonateServiceAccount from '../utils/ImpersonateServiceAccount'
-import { CLUSTERS_ROOT_CRUMB } from '../overview/Overview'
 import { ensureURLValidity } from '../../utils/url'
 import { ClusterPicker } from '../utils/ClusterPicker'
 import { ResponsiveLayoutPage } from '../utils/layout/ResponsiveLayoutPage'

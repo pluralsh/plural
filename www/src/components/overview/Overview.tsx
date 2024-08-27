@@ -1,8 +1,12 @@
-import { ReactElement } from 'react'
+import { ReactElement, useContext } from 'react'
 import { Outlet } from 'react-router-dom'
 import { Flex } from 'honorable'
 
 import { useSetBreadcrumbs } from '@pluralsh/design-system'
+
+import ClustersContext from 'contexts/ClustersContext'
+
+import { isEmpty } from 'lodash'
 
 import OverviewHeader from './OverviewHeader'
 
@@ -13,6 +17,8 @@ const breadcrumbs = [
 ]
 
 export function Overview(): ReactElement {
+  const { clusters } = useContext(ClustersContext)
+
   useSetBreadcrumbs(breadcrumbs)
 
   return (
@@ -22,7 +28,7 @@ export function Overview(): ReactElement {
       padding="large"
       overflowY="auto"
     >
-      <OverviewHeader />
+      {!isEmpty(clusters) && <OverviewHeader />}
       <Outlet />
     </Flex>
   )

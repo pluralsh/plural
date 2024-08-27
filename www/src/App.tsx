@@ -79,10 +79,10 @@ const SSOCallback = lazy(() =>
 
 const RootBoxSC = styled.div(({ theme }) => ({
   display: 'flex',
-  flexdirection: 'column',
+  flexDirection: 'column',
   boxSizing: 'border-box',
-  maxwidth: '100%',
-  minwidth: 0,
+  maxWidth: '100%',
+  minWidth: 0,
   minHeight: 0,
   height: '100vh',
   width: '100vw',

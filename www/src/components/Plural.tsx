@@ -76,8 +76,12 @@ const Clusters = lazy(() =>
     default: module.Clusters,
   }))
 )
-const Apps = lazy(() =>
-  import('./overview/apps/Apps').then((module) => ({ default: module.Apps }))
+
+// Create cluster.
+const CreateCluster = lazy(() =>
+  import('./create-cluster/CreateCluster').then((module) => ({
+    default: module.CreateCluster,
+  }))
 )
 
 // Cluster and app.
@@ -638,11 +642,12 @@ export function PluralInner() {
                   path="clusters"
                   element={<Clusters />}
                 />
-                <Route
-                  path="apps"
-                  element={<Apps />}
-                />
               </Route>
+              {/* CREATE CLUSTER */}
+              <Route
+                path="/create-cluster"
+                element={<CreateCluster />}
+              />
               {/* CLUSTERS  */}
               <Route
                 path="/clusters/:clusterId/"

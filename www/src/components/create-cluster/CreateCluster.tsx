@@ -1,16 +1,19 @@
 import {
   Button,
-  Flex,
   ReturnIcon,
   SendMessageIcon,
   Stepper,
 } from '@pluralsh/design-system'
 import { useNavigate } from 'react-router-dom'
-import { useTheme } from 'styled-components'
+import styled, { useTheme } from 'styled-components'
 
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 
+import OnboardingCard from 'components/shell/onboarding/OnboardingCard'
+
+import { CreateClusterActions } from './CreateClusterActions'
 import {
+  CreateClusterContext,
   CreateClusterStepKey,
   cloudSteps,
   localSteps,
@@ -22,20 +25,13 @@ export function CreateCluster() {
   const [curStep, setCurStep] = useState<CreateClusterStepKey>(
     CreateClusterStepKey.HostingOptions
   )
-  const [hostingOption, setHostingOption] = useState<'local' | 'cloud'>('local')
+  const [hostingOption, setHostingOption] = useState<'local' | 'cloud'>('cloud')
   const steps = hostingOption === 'local' ? localSteps : cloudSteps
   const curStepIndex = steps.findIndex((step) => step.key === curStep)
 
   return (
-    <Flex
-      gap="xlarge"
-      padding={theme.spacing.large}
-    >
-      <Flex
-        width={256}
-        flexDirection="column"
-        gap="large"
-      >
+    <MainWrapperSC>
+      <SidebarWrapperSC>
         <Button
           css={{ width: '100%' }}
           secondary
@@ -49,16 +45,9 @@ export function CreateCluster() {
           steps={steps}
           stepIndex={curStepIndex}
         />
-      </Flex>
-      <Flex
-        width={600}
-        flexDirection="column"
-        gap="large"
-      >
-        <Flex
-          justifyContent="space-between"
-          alignItems="center"
-        >
+      </SidebarWrapperSC>
+      <ContentWrapperSC>
+        <ContentHeaderSC>
           <span css={theme.partials.text.title2}>Create Cluster</span>
           <Button
             secondary
@@ -70,9 +59,53 @@ export function CreateCluster() {
           >
             Contact sales
           </Button>
-        </Flex>
-        {steps[curStepIndex]?.component}
-      </Flex>
-    </Flex>
+        </ContentHeaderSC>
+        <CreateClusterContext.Provider
+          value={useMemo(
+            () => ({ curStep, setCurStep, hostingOption, setHostingOption }),
+            [curStep, setCurStep, hostingOption, setHostingOption]
+          )}
+        >
+          <OnboardingCard title={steps[curStepIndex]?.stepTitle}>
+            {steps[curStepIndex]?.component}
+            <CreateClusterActions />
+          </OnboardingCard>
+        </CreateClusterContext.Provider>
+      </ContentWrapperSC>
+    </MainWrapperSC>
   )
 }
+
+const MainWrapperSC = styled.div(({ theme }) => ({
+  display: 'flex',
+  justifyContent: 'space-between',
+  gap: theme.spacing.xlarge,
+  padding: theme.spacing.large,
+  '::after': {
+    // makes the spacing look a little nicer
+    content: '""',
+    flex: 0.35,
+  },
+}))
+
+const SidebarWrapperSC = styled.div(({ theme }) => ({
+  display: 'flex',
+  minWidth: 256,
+  flexDirection: 'column',
+  gap: theme.spacing.large,
+}))
+
+const ContentWrapperSC = styled.div(({ theme }) => ({
+  display: 'flex',
+  margin: 'auto',
+  minWidth: 600,
+  maxWidth: 720,
+  flexDirection: 'column',
+  gap: theme.spacing.large,
+}))
+
+const ContentHeaderSC = styled.div({
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+})

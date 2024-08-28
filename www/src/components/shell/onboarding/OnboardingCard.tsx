@@ -2,7 +2,7 @@ import { Flex, H2 } from 'honorable'
 
 interface OnboardingCardProps {
   title?: string
-  mode: 'Compact' | 'Default'
+  mode?: 'Compact' | 'Default'
   children: JSX.Element | Array<JSX.Element> | unknown
 }
 

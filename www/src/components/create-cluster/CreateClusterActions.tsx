@@ -9,12 +9,17 @@ import {
 
 export function CreateClusterActions() {
   const theme = useTheme()
-  const { curStep, setCurStep, hostingOption } = useCreateClusterContext()
+  const { curStep, setCurStep, hostingOption, finishEnabled } =
+    useCreateClusterContext()
 
   const steps = hostingOption === 'local' ? localSteps : cloudSteps
   const curStepIndex = steps.findIndex((step) => step.key === curStep)
   const prevStep = steps[curStepIndex - 1]?.key
   const nextStep = steps[curStepIndex + 1]?.key
+
+  const handleFinish = () => {
+    // TODO
+  }
 
   return (
     <>
@@ -45,8 +50,15 @@ export function CreateClusterActions() {
               Back
             </Button>
           )}
-          {nextStep && (
+          {nextStep ? (
             <Button onClick={() => setCurStep(nextStep)}>Continue</Button>
+          ) : (
+            <Button
+              disabled={!finishEnabled}
+              onClick={handleFinish}
+            >
+              Finish
+            </Button>
           )}
         </Flex>
       </Flex>

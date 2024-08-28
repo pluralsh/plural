@@ -25,9 +25,29 @@ export function CreateCluster() {
   const [curStep, setCurStep] = useState<CreateClusterStepKey>(
     CreateClusterStepKey.HostingOptions
   )
-  const [hostingOption, setHostingOption] = useState<'local' | 'cloud'>('cloud')
+  const [hostingOption, setHostingOption] = useState<'local' | 'cloud'>('local')
+  const [finishEnabled, setFinishEnabled] = useState(false)
   const steps = hostingOption === 'local' ? localSteps : cloudSteps
   const curStepIndex = steps.findIndex((step) => step.key === curStep)
+
+  const context = useMemo(
+    () => ({
+      curStep,
+      setCurStep,
+      hostingOption,
+      setHostingOption,
+      finishEnabled,
+      setFinishEnabled,
+    }),
+    [
+      curStep,
+      setCurStep,
+      hostingOption,
+      setHostingOption,
+      finishEnabled,
+      setFinishEnabled,
+    ]
+  )
 
   return (
     <MainWrapperSC>
@@ -60,12 +80,7 @@ export function CreateCluster() {
             Contact sales
           </Button>
         </ContentHeaderSC>
-        <CreateClusterContext.Provider
-          value={useMemo(
-            () => ({ curStep, setCurStep, hostingOption, setHostingOption }),
-            [curStep, setCurStep, hostingOption, setHostingOption]
-          )}
-        >
+        <CreateClusterContext.Provider value={context}>
           <OnboardingCard title={steps[curStepIndex]?.stepTitle}>
             {steps[curStepIndex]?.component}
             <CreateClusterActions />

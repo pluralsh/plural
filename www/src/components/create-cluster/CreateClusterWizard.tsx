@@ -35,6 +35,8 @@ type CreateClusterContextType = {
   setHostingOption: (option: HostingOption) => void
   curStep: CreateClusterStepKey
   setCurStep: (step: CreateClusterStepKey) => void
+  finishEnabled: boolean
+  setFinishEnabled: (enabled: boolean) => void
 }
 
 export const CreateClusterContext = createContext<

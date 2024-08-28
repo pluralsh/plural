@@ -9,6 +9,7 @@ import {
   TabList,
   TabPanel,
 } from '@pluralsh/design-system'
+import { useTheme } from 'styled-components'
 
 const TAB_MAC = 'TAB_MAC'
 const TAB_CURL = 'TAB_CURL'
@@ -43,6 +44,29 @@ const DIRECTORY = [
 ]
 
 function CliInstallation({ onBack, onNext }) {
+  return (
+    <>
+      <CliInstallationBaseInfo />
+      <Flex
+        gap="medium"
+        justify="space-between"
+        borderTop="1px solid border"
+        paddingTop="large"
+        marginTop="xlarge"
+      >
+        <Button
+          secondary
+          onClick={onBack}
+        >
+          Back
+        </Button>
+        <Button onClick={onNext}>Continue</Button>
+      </Flex>
+    </>
+  )
+}
+export function CliInstallationBaseInfo() {
+  const theme = useTheme()
   const [tab, setTab] = useState(TAB_MAC)
   const tabStateRef = useRef<any>(null)
   const currentTab = useMemo(() => DIRECTORY.find((t) => t.key === tab), [tab])
@@ -110,9 +134,14 @@ function CliInstallation({ onBack, onNext }) {
           <>
             <Div marginTop="small">
               {tab === TAB_MAC ? (
-                <Codeline>{currentTab?.command}</Codeline>
+                <Codeline css={{ background: theme.colors['fill-two'] }}>
+                  {currentTab?.command}
+                </Codeline>
               ) : (
-                <Code onSelectedTabChange={() => {}}>
+                <Code
+                  css={{ background: theme.colors['fill-two'] }}
+                  onSelectedTabChange={() => {}}
+                >
                   {currentTab?.command || ''}
                 </Code>
               )}
@@ -184,22 +213,6 @@ function CliInstallation({ onBack, onNext }) {
           </>
         )}
       </TabPanel>
-
-      <Flex
-        gap="medium"
-        justify="space-between"
-        borderTop="1px solid border"
-        paddingTop="large"
-        marginTop="xlarge"
-      >
-        <Button
-          secondary
-          onClick={onBack}
-        >
-          Back
-        </Button>
-        <Button onClick={onNext}>Continue</Button>
-      </Flex>
     </>
   )
 }

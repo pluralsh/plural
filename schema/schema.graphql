@@ -1626,6 +1626,9 @@ type Cluster {
   "The cluster's cloud provider."
   provider: Provider!
 
+  "whether this is a legacy OSS cluster"
+  legacy: Boolean
+
   "The source of the cluster."
   source: Source
 
@@ -2837,6 +2840,9 @@ input ClusterAttributes {
   "The cluster's cloud provider."
   provider: Provider!
 
+  "whether this is a legacy oss cluster"
+  legacy: Boolean
+
   "The source of the cluster."
   source: Source
 
@@ -3675,6 +3681,7 @@ input StackAttributes {
 
 input UpgradeQueueAttributes {
   name: String!
+  legacy: Boolean
   domain: String
   git: String
   provider: Provider

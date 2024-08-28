@@ -9,6 +9,7 @@ defmodule Core.Schema.UpgradeQueue do
     field :name,      :string
     field :domain,    :string
     field :git,       :string
+    field :legacy,    :boolean
     field :provider,  Core.Schema.Recipe.Provider
     field :pinged_at, :utc_datetime_usec
 
@@ -35,7 +36,7 @@ defmodule Core.Schema.UpgradeQueue do
     from(q in query, where: is_nil(q.cluster_id))
   end
 
-  @valid ~w(acked user_id name domain git provider cluster_id)a
+  @valid ~w(acked legacy user_id name domain git provider cluster_id)a
 
   def changeset(model, attrs \\ %{}) do
     model

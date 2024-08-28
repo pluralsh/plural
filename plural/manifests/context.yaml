@@ -7,4 +7,4 @@ spec:
     name: plural
     namespace: infra
   context:
-    version: 0.11.9 # VERSION
+    version: 0.11.10 # VERSION

@@ -5,8 +5,10 @@ import { useLocation, useNavigate } from 'react-router-dom'
 
 import { LinkTabWrap } from '../utils/Tabs'
 
-// TODO: add toggle between self-hosted and plural-cloud instances
-const DIRECTORY = [{ path: '/overview/clusters', label: 'Cluster overview' }]
+const DIRECTORY = [
+  { path: '/overview/clusters/self-hosted', label: 'Self-hosted clusters' },
+  { path: '/overview/clusters/plural-cloud', label: 'Plural cloud instances' },
+]
 
 export default function OverviewHeader(): ReactElement {
   const tabStateRef = useRef<any>(null)
@@ -15,10 +17,7 @@ export default function OverviewHeader(): ReactElement {
   const currentTab = DIRECTORY.find((tab) => pathname?.startsWith(tab.path))
 
   return (
-    <Flex
-      marginBottom="medium"
-      justifyContent="space-between"
-    >
+    <Flex justifyContent="space-between">
       <TabList
         stateRef={tabStateRef}
         stateProps={{

@@ -9,7 +9,6 @@ import CurrentUserContext, {
 import { Cluster } from '../../../generated/graphql'
 import { ensureURLValidity } from '../../../utils/url'
 
-import ClusterListEmptyState from './ClusterListEmptyState'
 import { ClusterListElement } from './types'
 
 type ClustersListProps = Omit<ComponentProps<typeof Table>, 'data'> & {
@@ -65,7 +64,7 @@ export const ClusterList = memo(({ columns, ...props }: ClustersListProps) => {
     [clusters, me]
   )
 
-  if (isEmpty(clusters)) return <ClusterListEmptyState />
+  if (isEmpty(clusters)) return null
 
   return (
     <Table

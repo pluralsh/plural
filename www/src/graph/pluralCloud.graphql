@@ -20,17 +20,7 @@ fragment ConsoleInstance on ConsoleInstance {
 }
 query ConsoleInstance($id: ID!) {
   consoleInstance(id: $id) {
-    id
-    name
-    subdomain
-    url
-    cloud
-    size
-    region
-    status
-    deletedAt
-    insertedAt
-    updatedAt
+    ...ConsoleInstance
   }
 }
 
@@ -43,42 +33,18 @@ query ConsoleInstances(
   consoleInstances(after: $after, first: $first, before: $before, last: $last) {
     edges {
       node {
-        id
-        name
-        subdomain
-        url
-        cloud
-        size
-        region
-        status
-        deletedAt
-        insertedAt
-        updatedAt
+        ...ConsoleInstance
       }
-      cursor
     }
     pageInfo {
-      hasNextPage
-      hasPreviousPage
-      startCursor
-      endCursor
+      ...PageInfo
     }
   }
 }
 
 mutation CreateConsoleInstance($attributes: ConsoleInstanceAttributes!) {
   createConsoleInstance(attributes: $attributes) {
-    id
-    name
-    subdomain
-    url
-    cloud
-    size
-    region
-    status
-    deletedAt
-    insertedAt
-    updatedAt
+    ...ConsoleInstance
   }
 }
 
@@ -87,32 +53,12 @@ mutation UpdateConsoleInstance(
   $attributes: ConsoleInstanceUpdateAttributes!
 ) {
   updateConsoleInstance(id: $id, attributes: $attributes) {
-    id
-    name
-    subdomain
-    url
-    cloud
-    size
-    region
-    status
-    deletedAt
-    insertedAt
-    updatedAt
+    ...ConsoleInstance
   }
 }
 
 mutation DeleteConsoleInstance($id: ID!) {
   deleteConsoleInstance(id: $id) {
-    id
-    name
-    subdomain
-    url
-    cloud
-    size
-    region
-    status
-    deletedAt
-    insertedAt
-    updatedAt
+    ...ConsoleInstance
   }
 }

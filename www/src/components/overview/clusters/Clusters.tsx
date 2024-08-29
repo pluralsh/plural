@@ -1,68 +1,48 @@
 import { isEmpty } from 'lodash'
-import { ReactElement, useContext, useMemo } from 'react'
-import { useTheme } from 'styled-components'
+import { ReactElement, useContext } from 'react'
 
-import { useSetBreadcrumbs } from '@pluralsh/design-system'
+import { Flex } from '@pluralsh/design-system'
+
+import { Outlet } from 'react-router-dom'
 
 import ClustersContext from '../../../contexts/ClustersContext'
 
-import { ClusterList } from './ClusterList'
+import OverviewHeader from '../OverviewHeader'
+
+import ClusterListEmptyState from './ClusterListEmptyState'
 import ClustersHelpSection from './ClustersHelpSection'
-import {
-  ColActions,
-  ColCloudShell,
-  ColCluster,
-  ColGit,
-  ColHealth,
-  ColOwner,
-  ColPromotions,
-  ColUpgrades,
-} from './columns'
 
-export const CLUSTERS_ROOT_CRUMB = { label: 'clusters', url: '/overview' }
+export const CLUSTERS_ROOT_CRUMB = {
+  label: 'clusters',
+  url: '/overview/clusters',
+}
 
-const breadcrumbs = [
-  { label: 'overview', url: '/overview/clusters' },
+export const CLUSTERS_OVERVIEW_BREADCRUMBS = [
+  { label: 'overview', url: '/overview' },
   CLUSTERS_ROOT_CRUMB,
 ]
 
 export function Clusters(): ReactElement | null {
-  const theme = useTheme()
-
-  useSetBreadcrumbs(breadcrumbs)
   const { clusters } = useContext(ClustersContext)
 
-  const columns = useMemo(
-    () => [
-      ColCluster,
-      ColHealth,
-      ColGit,
-      ColCloudShell,
-      ColOwner,
-      ColUpgrades,
-      ColPromotions,
-      ColActions,
-    ],
-    []
-  )
-
   return (
-    <div
-      css={{
-        display: 'flex',
-        flexDirection: 'column',
-        minWidth: 'fit-content',
-        overflow: 'auto',
-        gap: theme.spacing.large,
-      }}
+    <Flex
+      direction="column"
+      gap={isEmpty(clusters) ? 'large' : 'medium'}
+      minWidth="fit-content"
+      overflow="auto"
     >
-      <ClusterList
-        columns={columns}
-        css={{
-          maxHeight: 600,
-        }}
-      />
-      {isEmpty(clusters) && <ClustersHelpSection />}
-    </div>
+      {isEmpty(clusters) ? (
+        <>
+          <ClusterListEmptyState />
+          <ClustersHelpSection />
+        </>
+      ) : (
+        <>
+          <OverviewHeader />
+          <Outlet />
+        </>
+      )}
+    </Flex>
   )
 }

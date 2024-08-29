@@ -5612,7 +5612,7 @@ export type ConsoleInstanceQueryVariables = Exact<{
 }>;
 
 
-export type ConsoleInstanceQuery = { __typename?: 'RootQueryType', consoleInstance?: { __typename?: 'ConsoleInstance', id: string, name: string, subdomain: string, url: string, cloud: CloudProvider, size: ConsoleSize, region: string, status: ConsoleInstanceStatus, deletedAt?: Date | null, insertedAt?: Date | null, updatedAt?: Date | null } | null };
+export type ConsoleInstanceQuery = { __typename?: 'RootQueryType', consoleInstance?: { __typename?: 'ConsoleInstance', id: string, name: string, subdomain: string, url: string, cloud: CloudProvider, size: ConsoleSize, region: string, status: ConsoleInstanceStatus, deletedAt?: Date | null, insertedAt?: Date | null, updatedAt?: Date | null, console?: { __typename?: 'Cluster', id: string, pingedAt?: Date | null } | null, owner?: { __typename?: 'User', id: string } | null } | null };
 
 export type ConsoleInstancesQueryVariables = Exact<{
   after?: InputMaybe<Scalars['String']['input']>;
@@ -5622,14 +5622,14 @@ export type ConsoleInstancesQueryVariables = Exact<{
 }>;
 
 
-export type ConsoleInstancesQuery = { __typename?: 'RootQueryType', consoleInstances?: { __typename?: 'ConsoleInstanceConnection', edges?: Array<{ __typename?: 'ConsoleInstanceEdge', cursor?: string | null, node?: { __typename?: 'ConsoleInstance', id: string, name: string, subdomain: string, url: string, cloud: CloudProvider, size: ConsoleSize, region: string, status: ConsoleInstanceStatus, deletedAt?: Date | null, insertedAt?: Date | null, updatedAt?: Date | null } | null } | null> | null, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null, endCursor?: string | null } } | null };
+export type ConsoleInstancesQuery = { __typename?: 'RootQueryType', consoleInstances?: { __typename?: 'ConsoleInstanceConnection', edges?: Array<{ __typename?: 'ConsoleInstanceEdge', node?: { __typename?: 'ConsoleInstance', id: string, name: string, subdomain: string, url: string, cloud: CloudProvider, size: ConsoleSize, region: string, status: ConsoleInstanceStatus, deletedAt?: Date | null, insertedAt?: Date | null, updatedAt?: Date | null, console?: { __typename?: 'Cluster', id: string, pingedAt?: Date | null } | null, owner?: { __typename?: 'User', id: string } | null } | null } | null> | null, pageInfo: { __typename?: 'PageInfo', endCursor?: string | null, hasNextPage: boolean } } | null };
 
 export type CreateConsoleInstanceMutationVariables = Exact<{
   attributes: ConsoleInstanceAttributes;
 }>;
 
 
-export type CreateConsoleInstanceMutation = { __typename?: 'RootMutationType', createConsoleInstance?: { __typename?: 'ConsoleInstance', id: string, name: string, subdomain: string, url: string, cloud: CloudProvider, size: ConsoleSize, region: string, status: ConsoleInstanceStatus, deletedAt?: Date | null, insertedAt?: Date | null, updatedAt?: Date | null } | null };
+export type CreateConsoleInstanceMutation = { __typename?: 'RootMutationType', createConsoleInstance?: { __typename?: 'ConsoleInstance', id: string, name: string, subdomain: string, url: string, cloud: CloudProvider, size: ConsoleSize, region: string, status: ConsoleInstanceStatus, deletedAt?: Date | null, insertedAt?: Date | null, updatedAt?: Date | null, console?: { __typename?: 'Cluster', id: string, pingedAt?: Date | null } | null, owner?: { __typename?: 'User', id: string } | null } | null };
 
 export type UpdateConsoleInstanceMutationVariables = Exact<{
   id: Scalars['ID']['input'];
@@ -5637,14 +5637,14 @@ export type UpdateConsoleInstanceMutationVariables = Exact<{
 }>;
 
 
-export type UpdateConsoleInstanceMutation = { __typename?: 'RootMutationType', updateConsoleInstance?: { __typename?: 'ConsoleInstance', id: string, name: string, subdomain: string, url: string, cloud: CloudProvider, size: ConsoleSize, region: string, status: ConsoleInstanceStatus, deletedAt?: Date | null, insertedAt?: Date | null, updatedAt?: Date | null } | null };
+export type UpdateConsoleInstanceMutation = { __typename?: 'RootMutationType', updateConsoleInstance?: { __typename?: 'ConsoleInstance', id: string, name: string, subdomain: string, url: string, cloud: CloudProvider, size: ConsoleSize, region: string, status: ConsoleInstanceStatus, deletedAt?: Date | null, insertedAt?: Date | null, updatedAt?: Date | null, console?: { __typename?: 'Cluster', id: string, pingedAt?: Date | null } | null, owner?: { __typename?: 'User', id: string } | null } | null };
 
 export type DeleteConsoleInstanceMutationVariables = Exact<{
   id: Scalars['ID']['input'];
 }>;
 
 
-export type DeleteConsoleInstanceMutation = { __typename?: 'RootMutationType', deleteConsoleInstance?: { __typename?: 'ConsoleInstance', id: string, name: string, subdomain: string, url: string, cloud: CloudProvider, size: ConsoleSize, region: string, status: ConsoleInstanceStatus, deletedAt?: Date | null, insertedAt?: Date | null, updatedAt?: Date | null } | null };
+export type DeleteConsoleInstanceMutation = { __typename?: 'RootMutationType', deleteConsoleInstance?: { __typename?: 'ConsoleInstance', id: string, name: string, subdomain: string, url: string, cloud: CloudProvider, size: ConsoleSize, region: string, status: ConsoleInstanceStatus, deletedAt?: Date | null, insertedAt?: Date | null, updatedAt?: Date | null, console?: { __typename?: 'Cluster', id: string, pingedAt?: Date | null } | null, owner?: { __typename?: 'User', id: string } | null } | null };
 
 export type RecipeFragment = { __typename?: 'Recipe', id: string, name: string, description?: string | null, restricted?: boolean | null, provider?: Provider | null, tests?: Array<{ __typename?: 'RecipeTest', type: TestType, name: string, message?: string | null, args?: Array<{ __typename?: 'TestArgument', name: string, repo: string, key: string } | null> | null } | null> | null, repository?: { __typename?: 'Repository', id: string, name: string } | null, oidcSettings?: { __typename?: 'OidcSettings', uriFormat?: string | null, uriFormats?: Array<string | null> | null, authMethod: OidcAuthMethod, domainKey?: string | null, subdomain?: boolean | null } | null, recipeSections?: Array<{ __typename?: 'RecipeSection', index?: number | null, repository?: { __typename?: 'Repository', id: string, name: string, notes?: string | null, description?: string | null, documentation?: string | null, icon?: string | null, darkIcon?: string | null, private?: boolean | null, trending?: boolean | null, verified?: boolean | null, category?: Category | null, installation?: { __typename?: 'Installation', id: string, context?: Map<string, unknown> | null, license?: string | null, licenseKey?: string | null, acmeKeyId?: string | null, acmeSecret?: string | null, autoUpgrade?: boolean | null, trackTag: string, pingedAt?: Date | null, repository?: { __typename?: 'Repository', id: string, name: string, icon?: string | null, darkIcon?: string | null, private?: boolean | null, trending?: boolean | null, verified?: boolean | null, category?: Category | null } | null, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null } | null, oidcProvider?: { __typename?: 'OidcProvider', id: string, clientId: string, authMethod: OidcAuthMethod, clientSecret: string, redirectUris?: Array<string | null> | null, bindings?: Array<{ __typename?: 'OidcProviderBinding', id: string, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null } | null, group?: { __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null } | null> | null, configuration?: { __typename?: 'OuathConfiguration', issuer?: string | null, authorizationEndpoint?: string | null, tokenEndpoint?: string | null, jwksUri?: string | null, userinfoEndpoint?: string | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null } | null } | null, docs?: Array<{ __typename?: 'FileContent', content: string, path: string } | null> | null, oauthSettings?: { __typename?: 'OauthSettings', uriFormat: string, authMethod: OidcAuthMethod } | null, publisher?: { __typename?: 'Publisher', id?: string | null, name: string, phone?: string | null, avatar?: string | null, description?: string | null, backgroundColor?: string | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null } | null, address?: { __typename?: 'Address', line1?: string | null, line2?: string | null, city?: string | null, country?: string | null, state?: string | null, zip?: string | null } | null } | null, recipes?: Array<{ __typename?: 'Recipe', name: string, provider?: Provider | null, description?: string | null } | null> | null } | null, recipeItems?: Array<{ __typename?: 'RecipeItem', id?: string | null, chart?: { __typename?: 'Chart', id?: string | null, name: string, description?: string | null, latestVersion?: string | null, insertedAt?: Date | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', name?: string | null, repo?: string | null, type?: DependencyType | null, version?: string | null, optional?: boolean | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null } | null, terraform?: { __typename?: 'Terraform', id?: string | null, name?: string | null, readme?: string | null, package?: string | null, description?: string | null, latestVersion?: string | null, valuesTemplate?: string | null, insertedAt?: Date | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', name?: string | null, repo?: string | null, type?: DependencyType | null, version?: string | null, optional?: boolean | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null } | null, configuration?: Array<{ __typename?: 'RecipeConfiguration', name?: string | null, type?: Datatype | null, default?: string | null, documentation?: string | null, optional?: boolean | null, placeholder?: string | null, functionName?: string | null, condition?: { __typename?: 'RecipeCondition', field: string, operation: Operation, value?: string | null } | null, validation?: { __typename?: 'RecipeValidation', type: ValidationType, regex?: string | null, message: string } | null } | null> | null } | null> | null, configuration?: Array<{ __typename?: 'RecipeConfiguration', name?: string | null, type?: Datatype | null, default?: string | null, documentation?: string | null, optional?: boolean | null, placeholder?: string | null, functionName?: string | null, condition?: { __typename?: 'RecipeCondition', field: string, operation: Operation, value?: string | null } | null, validation?: { __typename?: 'RecipeValidation', type: ValidationType, regex?: string | null, message: string } | null } | null> | null } | null> | null };
 
@@ -9051,20 +9051,10 @@ export type InvoicesQueryResult = Apollo.QueryResult<InvoicesQuery, InvoicesQuer
 export const ConsoleInstanceDocument = gql`
     query ConsoleInstance($id: ID!) {
   consoleInstance(id: $id) {
-    id
-    name
-    subdomain
-    url
-    cloud
-    size
-    region
-    status
-    deletedAt
-    insertedAt
-    updatedAt
+    ...ConsoleInstance
   }
 }
-    `;
+    ${ConsoleInstanceFragmentDoc}`;
 
 /**
  * __useConsoleInstanceQuery__
@@ -9103,29 +9093,16 @@ export const ConsoleInstancesDocument = gql`
   consoleInstances(after: $after, first: $first, before: $before, last: $last) {
     edges {
       node {
-        id
-        name
-        subdomain
-        url
-        cloud
-        size
-        region
-        status
-        deletedAt
-        insertedAt
-        updatedAt
+        ...ConsoleInstance
       }
-      cursor
     }
     pageInfo {
-      hasNextPage
-      hasPreviousPage
-      startCursor
-      endCursor
+      ...PageInfo
     }
   }
 }
-    `;
+    ${ConsoleInstanceFragmentDoc}
+${PageInfoFragmentDoc}`;
 
 /**
  * __useConsoleInstancesQuery__
@@ -9165,20 +9142,10 @@ export type ConsoleInstancesQueryResult = Apollo.QueryResult<ConsoleInstancesQue
 export const CreateConsoleInstanceDocument = gql`
     mutation CreateConsoleInstance($attributes: ConsoleInstanceAttributes!) {
   createConsoleInstance(attributes: $attributes) {
-    id
-    name
-    subdomain
-    url
-    cloud
-    size
-    region
-    status
-    deletedAt
-    insertedAt
-    updatedAt
+    ...ConsoleInstance
   }
 }
-    `;
+    ${ConsoleInstanceFragmentDoc}`;
 export type CreateConsoleInstanceMutationFn = Apollo.MutationFunction<CreateConsoleInstanceMutation, CreateConsoleInstanceMutationVariables>;
 
 /**
@@ -9208,20 +9175,10 @@ export type CreateConsoleInstanceMutationOptions = Apollo.BaseMutationOptions<Cr
 export const UpdateConsoleInstanceDocument = gql`
     mutation UpdateConsoleInstance($id: ID!, $attributes: ConsoleInstanceUpdateAttributes!) {
   updateConsoleInstance(id: $id, attributes: $attributes) {
-    id
-    name
-    subdomain
-    url
-    cloud
-    size
-    region
-    status
-    deletedAt
-    insertedAt
-    updatedAt
+    ...ConsoleInstance
   }
 }
-    `;
+    ${ConsoleInstanceFragmentDoc}`;
 export type UpdateConsoleInstanceMutationFn = Apollo.MutationFunction<UpdateConsoleInstanceMutation, UpdateConsoleInstanceMutationVariables>;
 
 /**
@@ -9252,20 +9209,10 @@ export type UpdateConsoleInstanceMutationOptions = Apollo.BaseMutationOptions<Up
 export const DeleteConsoleInstanceDocument = gql`
     mutation DeleteConsoleInstance($id: ID!) {
   deleteConsoleInstance(id: $id) {
-    id
-    name
-    subdomain
-    url
-    cloud
-    size
-    region
-    status
-    deletedAt
-    insertedAt
-    updatedAt
+    ...ConsoleInstance
   }
 }
-    `;
+    ${ConsoleInstanceFragmentDoc}`;
 export type DeleteConsoleInstanceMutationFn = Apollo.MutationFunction<DeleteConsoleInstanceMutation, DeleteConsoleInstanceMutationVariables>;
 
 /**

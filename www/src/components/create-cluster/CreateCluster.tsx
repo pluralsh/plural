@@ -136,7 +136,7 @@ const MainWrapperSC = styled.div(({ theme }) => ({
 
 const SidebarWrapperSC = styled.div(({ theme }) => ({
   display: 'flex',
-  minWidth: 256,
+  width: 300,
   flexDirection: 'column',
   gap: theme.spacing.xlarge,
 }))

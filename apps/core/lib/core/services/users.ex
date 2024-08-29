@@ -373,8 +373,9 @@ defmodule Core.Services.Users do
         |> Map.merge(login_args(service))
         |> Map.put(:password, Ecto.UUID.generate())
         |> create_user()
-      %User{} = user ->
+      %User{login_method: ^service} = user ->
         update_user(login_args(service), user)
+      _ -> {:error, "you don't have login with #{service} enabled"}
     end
   end
 

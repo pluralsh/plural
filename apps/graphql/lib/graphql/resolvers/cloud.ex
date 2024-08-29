@@ -5,7 +5,9 @@ defmodule GraphQl.Resolvers.Cloud do
   def resolve_instance(%{id: id}, %{context: %{current_user: user}}),
     do: Cloud.visible(id, user)
 
-  def resolve_cluster(%ConsoleInstance{url: url}, _, _), do: {:ok, Clusters.get_cluster_by_url(url)}
+  def resolve_cluster(%ConsoleInstance{url: url}, _, _) do
+    ok(Clusters.get_cluster_by_url("https://#{url}") || Clusters.get_cluster_by_url(url))
+  end
 
   def list_instances(args, %{context: %{current_user: user}}) do
     ConsoleInstance.for_account(user.account_id)

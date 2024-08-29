@@ -35,6 +35,24 @@ defmodule GraphQl.CloudQueriesTest do
       assert found["id"] == instance.id
     end
 
+    test "it can sideload a console cluster" do
+      user = insert(:user)
+      instance = insert(:console_instance, owner: insert(:user, account: user.account))
+      cluster = insert(:cluster, console_url: "https://#{instance.url}", owner: user)
+
+      {:ok, %{data: %{"consoleInstance" => found}}} = run_query("""
+        query Get($id: ID!) {
+          consoleInstance(id: $id) {
+            id
+            console { id }
+          }
+        }
+      """, %{"id" => instance.id}, %{current_user: user})
+
+      assert found["id"] == instance.id
+      assert found["console"]["id"] == cluster.id
+    end
+
     test "you cannot describe console instances you cannot see" do
       user = insert(:user)
       instance = insert(:console_instance)

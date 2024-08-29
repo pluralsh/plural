@@ -1,1777 +1,221 @@
-"Represents a schema"
 schema {
-  query: RootQueryType
-  mutation: RootMutationType
   subscription: RootSubscriptionType
+  mutation: RootMutationType
+  query: RootQueryType
 }
 
-"The pending upgrades for a repository"
-type UpgradeInfo {
-  installation: Installation
-  count: Int
-}
-
-type PageInfo {
-  "When paginating backwards, are there more items?"
-  hasPreviousPage: Boolean!
-
-  "When paginating forwards, are there more items?"
-  hasNextPage: Boolean!
-
-  "When paginating backwards, the cursor to continue."
-  startCursor: String
-
-  "When paginating forwards, the cursor to continue."
-  endCursor: String
-}
-
-enum IncidentAction {
-  EDIT
-  CREATE
-  STATUS
-  SEVERITY
-  ACCEPT
-  COMPLETE
-}
-
-type ChartInstallation {
-  id: ID
-  chart: Chart
-  version: Version
-  installation: Installation
-  insertedAt: DateTime
-  updatedAt: DateTime
-}
-
-type RepositorySubscriptionConnection {
-  pageInfo: PageInfo!
-  edges: [RepositorySubscriptionEdge]
-}
-
-type IncidentConnection {
-  pageInfo: PageInfo!
-  edges: [IncidentEdge]
-}
-
-type ChartInstallationConnection {
-  pageInfo: PageInfo!
-  edges: [ChartInstallationEdge]
-}
-
-type NextAction {
-  type: String
-  redirectToUrl: RedirectToUrl
-}
-
-type PersistedTokenConnection {
-  pageInfo: PageInfo!
-  edges: [PersistedTokenEdge]
-}
-
-type ApplicationInformation {
-  name: String!
-  ready: Boolean
-  componentsReady: String
-  components: [ApplicationComponent]
-  spec: ApplicationSpec
-}
-
-type DeferredUpdateConnection {
-  pageInfo: PageInfo!
-  edges: [DeferredUpdateEdge]
-}
-
-type IncidentMessageConnection {
-  pageInfo: PageInfo!
-  edges: [IncidentMessageEdge]
-}
-
-type RecipeSection {
-  id: ID
-  repository: Repository
-  recipe: Recipe
-  index: Int
-  recipeItems: [RecipeItem]
-  configuration: [RecipeConfiguration]
-  insertedAt: DateTime
-  updatedAt: DateTime
-}
-
-type UserConnection {
-  pageInfo: PageInfo!
-  edges: [UserEdge]
-}
-
-type PublisherConnection {
-  pageInfo: PageInfo!
-  edges: [PublisherEdge]
-}
-
-type RecipeValidation {
-  type: ValidationType!
-  regex: String
-  message: String!
-}
-
-type Plan {
-  id: ID!
-  name: String!
-  default: Boolean
-  visible: Boolean!
-  cost: Int!
-  period: String
-  lineItems: PlanLineItems
-  metadata: PlanMetadata
-  serviceLevels: [ServiceLevel]
-  insertedAt: DateTime
-  updatedAt: DateTime
-}
-
-type ResetToken {
-  id: ID!
-  externalId: ID!
-  type: ResetTokenType!
-  user: User!
-  email: String!
-  insertedAt: DateTime
-  updatedAt: DateTime
-}
-
-type NotificationConnection {
-  pageInfo: PageInfo!
-  edges: [NotificationEdge]
-}
-
-type TerraformInstallationConnection {
-  pageInfo: PageInfo!
-  edges: [TerraformInstallationEdge]
-}
-
-enum Operation {
-  NOT
-  GT
-  LT
-  EQ
-  GTE
-  LTE
-  PREFIX
-  SUFFIX
-}
-
-type StackCollection {
-  id: ID!
-  provider: Provider!
-  bundles: [StackRecipe]
-  insertedAt: DateTime
-  updatedAt: DateTime
-}
-
-type ActionItem {
-  type: ActionItemType!
-  link: String!
-}
-
-type LineItem {
-  name: String!
-  dimension: String!
-  cost: Int!
-  period: String
-  type: PlanType
-}
-
-type RecipeItem {
-  id: ID
-  chart: Chart
-  terraform: Terraform
-  recipeSection: RecipeSection
-  configuration: [RecipeConfiguration]
-  insertedAt: DateTime
-  updatedAt: DateTime
-}
-
-type ClosureItem {
-  helm: Chart
-  terraform: Terraform
-  dep: Dependency
-}
-
-type EabCredential {
-  id: ID!
-  cluster: String!
-  provider: Provider!
-  keyId: String!
-  hmacKey: String!
-  insertedAt: DateTime
-  updatedAt: DateTime
-}
-
-scalar UploadOrUrl
-
-type RedirectToUrl {
-  url: String
-  returnUrl: String
-}
-
-scalar Yaml
-
-type ImageDependency {
-  id: ID!
-  image: DockerImage!
-  version: Version!
-  insertedAt: DateTime
-  updatedAt: DateTime
-}
-
-type DomainMapping {
-  id: ID!
-  domain: String!
-  enableSso: Boolean
-  account: Account
-  insertedAt: DateTime
-  updatedAt: DateTime
-}
-
-type GroupedTag {
-  tag: String!
-  count: Int!
-}
-
-type Tag {
-  id: ID!
-  tag: String!
-}
-
-type ChatMessage {
-  role: String!
-  content: String!
-  name: String
-}
-
-enum SpecDatatype {
-  STRING
-  INT
-  FLOAT
-  BOOL
-  OBJECT
-  LIST
-}
-
-type WebhookEdge {
-  node: Webhook
-  cursor: String
-}
-
-type IntegrationEdge {
-  node: Integration
-  cursor: String
-}
-
-type DockerImageEdge {
-  node: DockerImage
-  cursor: String
-}
-
-type RoleEdge {
-  node: Role
-  cursor: String
-}
-
-type GroupEdge {
-  node: Group
-  cursor: String
-}
-
-type RolloutEdge {
-  node: Rollout
-  cursor: String
-}
-
-type PublicKeyEdge {
-  node: PublicKey
-  cursor: String
-}
-
-type RepositoryEdge {
-  node: Repository
-  cursor: String
-}
-
-type IncidentChange {
-  key: String!
-  prev: String
-  next: String
-}
-
-type KeyBackupEdge {
-  node: KeyBackup
-  cursor: String
-}
-
-type OidcLoginEdge {
-  node: OidcLogin
-  cursor: String
-}
-
-type DnsDomainEdge {
-  node: DnsDomain
-  cursor: String
-}
-
-input ChartName {
-  repo: String
-  chart: String
-}
-
-type MetricValue {
-  time: DateTime
-  value: Int
-}
-
-type InstallationEdge {
-  node: Installation
-  cursor: String
-}
-
-type OidcStepResponse {
-  repository: Repository
-  login: LoginRequest
-  consent: ConsentRequest
-}
-
-enum ActionItemType {
-  PULL
-  ISSUE
-  BLOG
-}
-
-enum ImageGrade {
-  A
-  B
-  C
-  D
-  F
-}
+type RootQueryType {
+  me: User
 
-type StackRecipe {
-  id: ID!
-  recipe: Recipe!
-  insertedAt: DateTime
-  updatedAt: DateTime
-}
-
-enum ArtifactType {
-  CLI
-  MOBILE
-  DESKTOP
-}
-
-enum NotificationType {
-  MESSAGE
-  INCIDENT_UPDATE
-  MENTION
-  LOCKED
-  PENDING
-}
-
-enum OnboardingState {
-  NEW
-  ONBOARDED
-  INSTALLED
-  ACTIVE
-}
-
-type ClusterEdge {
-  node: Cluster
-  cursor: String
-}
-
-type PaymentMethodEdge {
-  node: PaymentMethod
-  cursor: String
-}
-
-input DomainMappingInput {
-  id: ID
-  domain: String
-  enableSso: Boolean
-}
-
-type FileContent {
-  path: String!
-  content: String!
-}
-
-type LoginRequest {
-  requestedScope: [String]
-  subject: String
-}
-
-type Rollout {
-  id: ID!
-  status: RolloutStatus!
-  heartbeat: DateTime
-  cursor: ID
-  count: Int
-  event: String
-  repository: Repository
-  insertedAt: DateTime
-  updatedAt: DateTime
-}
-
-type Account {
-  id: ID!
-  name: String
-  billingCustomerId: String
-  workosConnectionId: String
-  clusterCount: String
-  userCount: String
-  delinquentAt: DateTime
-  grandfatheredUntil: DateTime
-  billingAddress: Address
-  trialed: Boolean
-  icon: String
-  paymentMethods(after: String, first: Int, before: String, last: Int): PaymentMethodConnection
-  rootUser: User
-  domainMappings: [DomainMapping]
-  subscription: PlatformSubscription
-  backgroundColor: String
-  availableFeatures: PlanFeatures
-  insertedAt: DateTime
-  updatedAt: DateTime
-}
-
-type SetupIntent {
-  id: String
-  clientSecret: String
-  nextAction: NextAction
-  paymentMethodTypes: [String]
-  status: String
-}
-
-input TestAttributes {
-  name: String
-  status: TestStatus
-  promoteTag: String
-  tags: [String]
-  steps: [TestStepAttributes]
-}
-
-input ContextAttributes {
-  configuration: Map!
-  buckets: [String]
-  domains: [String]
-}
-
-input PostmortemAttributes {
-  content: String!
-  actionItems: [ActionItemAttributes]
-}
-
-input AccountAttributes {
-  name: String
-  icon: UploadOrUrl
-  domainMappings: [DomainMappingInput]
-  billingAddress: AddressAttributes
-}
-
-input IntegrationWebhookAttributes {
-  name: String!
-  url: String!
-  actions: [String]
-}
-
-input OauthAttributes {
-  service: OauthService
-  code: String
-  redirectUri: String
-}
-
-input TerraformAttributes {
-  name: String
-  description: String
-  package: UploadOrUrl
-  dependencies: Yaml
-  version: String
-}
-
-input AddressAttributes {
-  name: String
-  line1: String!
-  line2: String
-  city: String!
-  state: String
-  country: String!
-  zip: String!
-}
-
-"attributes of a path update"
-input UpgradePathAttributes {
-  "path the upgrade will occur on, formatted like .some.key[0].here"
-  path: String!
-
-  "the stringified value that will be applied on this path"
-  value: String!
-
-  "the ultimate type of the value"
-  type: ValueType!
-}
-
-input VersionAttributes {
-  tags: [VersionTagAttributes]
-}
-
-input DockerRepositoryAttributes {
-  public: Boolean!
-}
-
-input RecipeAttributes {
-  name: String!
-  description: String
-  provider: Provider
-  tests: [RecipeTestAttributes]
-  sections: [RecipeSectionAttributes]
-  dependencies: [RecipeReference]
-  oidcSettings: OidcSettingsAttributes
-  private: Boolean
-  primary: Boolean
-  restricted: Boolean
-}
-
-input StackCollectionAttributes {
-  provider: Provider!
-  bundles: [RecipeReference]
-}
-
-type PlanFeatures {
-  vpn: Boolean
-  userManagement: Boolean
-  audit: Boolean
-  databaseManagement: Boolean
-  cd: Boolean
-}
-
-type PlatformSubscriptionLineItems {
-  dimension: LineItemDimension!
-  quantity: Int!
-  externalId: String
-}
-
-type SubscriptionLineItems {
-  items: [Limit]
-}
-
-input LimitAttributes {
-  dimension: String!
-  quantity: Int!
-}
-
-input SubscriptionLineItemAttributes {
-  items: [LimitAttributes]
-}
-
-input ChartAttributes {
-  tags: [VersionTagAttributes]
-}
-
-"The release status of a repository, defaults to ALPHA, GA if it is ready for general consumption"
-enum ReleaseStatus {
-  GA
-  BETA
-  ALPHA
-}
-
-input PlanFeatureAttributes {
-  name: String!
-  description: String!
-}
-
-input ResetTokenAttributes {
-  type: ResetTokenType!
-  email: String
-}
-
-type Metric {
-  name: String!
-  tags: [MetricTag]
-  values: [MetricValue]
-}
-
-input GcpShellCredentialsAttributes {
-  applicationCredentials: String!
-}
-
-input DnsAccessPolicyAttributes {
-  id: ID
-  bindings: [BindingAttributes]
-}
-
-input VersionSpec {
-  repository: String
-  chart: String
-  terraform: String
-  version: String
-}
-
-input RecipeConditionAttributes {
-  field: String!
-  value: String
-  operation: Operation!
-}
-
-input TestStepAttributes {
-  id: ID
-  name: String
-  description: String
-  status: TestStatus
-  logs: UploadOrUrl
-}
+  user(id: ID!): User
 
-input EntityAttributes {
-  type: MessageEntityType!
-  text: String
-  userId: ID
-  startIndex: Int
-  endIndex: Int
-}
-
-input FileAttributes {
-  blob: UploadOrUrl
-}
-
-input InviteAttributes {
-  email: String
-  admin: Boolean
-  oidcProviderId: ID
-  serviceAccountId: ID
-  inviteGroups: [BindingAttributes]
-}
-
-input ServiceAccountAttributes {
-  name: String
-  email: String
-  impersonationPolicy: ImpersonationPolicyAttributes
-}
-
-input BindingAttributes {
-  id: ID
-  userId: ID
-  groupId: ID
-}
+  loginMethod(email: String!, host: String): LoginMethodResponse
 
-input MeetingAttributes {
-  topic: String!
-  incidentId: ID
-}
+  resetToken(id: ID!): ResetToken
 
-input RecipeItemAttributes {
-  name: String!
-  type: RecipeItemType!
-  configuration: [RecipeConfigurationAttributes]
-}
+  tokens(after: String, first: Int, before: String, last: Int): PersistedTokenConnection
 
-input ImpersonationPolicyAttributes {
-  id: ID
-  bindings: [ImpersonationPolicyBindingAttributes]
-}
+  token(id: ID!): PersistedToken
 
-enum Provider {
-  GCP
-  AWS
-  AZURE
-  CUSTOM
-  KUBERNETES
-  EQUINIX
-  KIND
-  GENERIC
-  LINODE
-}
+  publisher(id: ID): Publisher
 
-type Publisher {
-  id: ID
-  name: String!
-  description: String
-  billingAccountId: String
-  phone: String
-  address: Address
-  community: Community
-  owner: User
-  avatar: String
-  backgroundColor: String
-  repositories: [Repository]
-  insertedAt: DateTime
-  updatedAt: DateTime
-}
+  users(after: String, first: Int, before: String, last: Int, q: String, serviceAccount: Boolean, all: Boolean): UserConnection
 
-enum ExternalOidcProvider {
-  GITHUB_ACTIONS
-}
+  searchUsers(after: String, first: Int, before: String, last: Int, incidentId: ID!, q: String!): UserConnection
 
-type IncidentDelta {
-  delta: Delta
-  payload: Incident
-}
+  publishers(after: String, first: Int, before: String, last: Int, accountId: ID, publishable: Boolean): PublisherConnection
 
-enum TagGroup {
-  INTEGRATIONS
-  REPOSITORIES
-}
+  webhooks(after: String, first: Int, before: String, last: Int): WebhookConnection
 
-type KeyBackup {
-  id: ID!
-  name: String!
-  repositories: [String!]
-  digest: String!
-  value: String!
-  user: User!
-  insertedAt: DateTime
-  updatedAt: DateTime
-}
+  publicKeys(after: String, first: Int, before: String, last: Int, emails: [String]): PublicKeyConnection
 
-type RepositoryConnection {
-  pageInfo: PageInfo!
-  edges: [RepositoryEdge]
-}
+  eabCredential(cluster: String!, provider: Provider!): EabCredential
 
-type PublicKeyConnection {
-  pageInfo: PageInfo!
-  edges: [PublicKeyEdge]
-}
+  eabCredentials: [EabCredential]
 
-type RolloutConnection {
-  pageInfo: PageInfo!
-  edges: [RolloutEdge]
-}
+  keyBackups(after: String, first: Int, before: String, last: Int): KeyBackupConnection
 
-type DeferredReason {
-  message: String
-  package: String
-  repository: String
-}
+  keyBackup(name: String!): KeyBackup
 
-type GroupConnection {
-  pageInfo: PageInfo!
-  edges: [GroupEdge]
-}
+  oidcToken(provider: ExternalOidcProvider!, idToken: String!, email: String!): String
 
-type RoleConnection {
-  pageInfo: PageInfo!
-  edges: [RoleEdge]
-}
+  repositorySubscription(id: ID!): RepositorySubscription
 
-type DockerImageConnection {
-  pageInfo: PageInfo!
-  edges: [DockerImageEdge]
-}
+  subscriptions(after: String, first: Int, before: String, last: Int): RepositorySubscriptionConnection
 
-type RecipeConfiguration {
-  type: Datatype
-  name: String
-  default: String
-  documentation: String
-  placeholder: String
-  longform: String
-  optional: Boolean
-  condition: RecipeCondition
-  validation: RecipeValidation
-  functionName: String
-  args: [String]
-}
+  platformPlans: [PlatformPlan]
 
-type IntegrationConnection {
-  pageInfo: PageInfo!
-  edges: [IntegrationEdge]
-}
+  platformSubscription: PlatformSubscription
 
-type RepositorySubscription {
-  id: ID!
-  externalId: String
-  customerId: String
-  lineItems: SubscriptionLineItems
-  installation: Installation
-  plan: Plan
   invoices(after: String, first: Int, before: String, last: Int): InvoiceConnection
-}
 
-type WebhookConnection {
-  pageInfo: PageInfo!
-  edges: [WebhookEdge]
-}
+  "Get an application by its ID or name."
+  repository(
+    "The ID of the application."
+    id: ID
 
-type ScanViolation {
-  ruleName: String
-  description: String
-  ruleId: String
-  severity: VulnGrade
-  category: String
-  resourceName: String
-  resourceType: String
-  line: Int
-  file: String
-  insertedAt: DateTime
-  updatedAt: DateTime
-}
+    "The name of the application."
+    name: String
+  ): Repository
 
-type RootSubscriptionType {
-  incidentDelta(repositoryId: ID, incidentId: ID): IncidentDelta
-  incidentMessageDelta(incidentId: ID): IncidentMessageDelta
-  notification: Notification
-  upgrade(id: ID): Upgrade
-  upgradeQueueDelta: UpgradeQueueDelta
-  rolloutDelta(repositoryId: ID!): RolloutDelta
-  testDelta(repositoryId: ID!): TestDelta
-  testLogs(testId: ID!): StepLogs
-}
+  installation(id: ID, name: String): Installation
 
-type GitConfiguration {
-  url: String
-  name: String
-  root: String
-  branch: String
-}
+  repositories(
+    after: String, first: Int, before: String, last: Int, publisherId: ID, q: String, tag: String, supports: Boolean, installed: Boolean, category: Category, provider: Provider, categories: [Category], tags: [String], publishers: [ID]
+  ): RepositoryConnection
 
-type Integration {
-  id: ID!
-  name: String!
-  sourceUrl: String
-  description: String
-  type: String
-  spec: Map
-  icon: String
-  repository: Repository
-  publisher: Publisher
-  tags: [Tag]
-  insertedAt: DateTime
-  updatedAt: DateTime
-}
+  searchRepositories(after: String, first: Int, before: String, last: Int, query: String!): RepositoryConnection
 
-type PlatformSubscription {
-  id: ID!
-  externalId: String
-  lineItems: [PlatformSubscriptionLineItems]
-  plan: PlatformPlan
-  trialUntil: DateTime
-  latestInvoice: Invoice
-  insertedAt: DateTime
-  updatedAt: DateTime
-}
+  installations(after: String, first: Int, before: String, last: Int): InstallationConnection
 
-type PaymentMethodConnection {
-  pageInfo: PageInfo!
-  edges: [PaymentMethodEdge]
-}
+  integrations(
+    after: String, first: Int, before: String, last: Int, repositoryId: ID, repositoryName: String, tag: String, type: String
+  ): IntegrationConnection
 
-input ResetTokenRealization {
-  password: String
-}
+  closure(id: ID!, type: DependencyType!): [ClosureItem]
 
-type KeyBackupConnection {
-  pageInfo: PageInfo!
-  edges: [KeyBackupEdge]
-}
+  categories: [CategoryInfo]
 
-type ClusterConnection {
-  pageInfo: PageInfo!
-  edges: [ClusterEdge]
-}
+  category(name: Category!): CategoryInfo
 
-type DnsDomain {
-  id: ID!
-  name: String!
-  accessPolicy: DnsAccessPolicy
-  creator: User
-  account: Account
-  dnsRecords(after: String, first: Int, before: String, last: Int): DnsRecordConnection
-  insertedAt: DateTime
-  updatedAt: DateTime
-}
+  scaffold(application: String!, category: Category!, publisher: String!, ingress: Boolean, postgres: Boolean): [ScaffoldFile]
 
-type InstallationConnection {
-  pageInfo: PageInfo!
-  edges: [InstallationEdge]
-}
+  recipe(id: ID, name: String, repo: String): Recipe
 
-type DeviceLogin {
-  loginUrl: String!
-  deviceToken: String!
-}
+  stack(name: String!, provider: Provider!): Stack
 
-type NetworkConfiguration {
-  pluralDns: Boolean
-  subdomain: String
-}
+  recipes(
+    after: String, first: Int, before: String, last: Int, repositoryId: ID, repositoryName: String, provider: Provider
+  ): RecipeConnection
 
-type DnsDomainConnection {
-  pageInfo: PageInfo!
-  edges: [DnsDomainEdge]
-}
+  stacks(after: String, first: Int, before: String, last: Int, featured: Boolean): StackConnection
 
-type OidcLoginConnection {
-  pageInfo: PageInfo!
-  edges: [OidcLoginEdge]
-}
+  chart(id: ID!): Chart
 
-"The version of a package."
-type Version {
-  id: ID!
+  charts(after: String, first: Int, before: String, last: Int, repositoryId: ID!): ChartConnection
 
-  version: String!
+  chartInstallations(after: String, first: Int, before: String, last: Int, repositoryId: ID!): ChartInstallationConnection
 
-  readme: String
+  terraformModule(id: ID!): Terraform
 
-  valuesTemplate: String
+  terraform(after: String, first: Int, before: String, last: Int, repositoryId: ID!): TerraformConnection
 
-  "The template engine used to render the valuesTemplate."
-  templateType: TemplateType
+  terraformInstallations(after: String, first: Int, before: String, last: Int, repositoryId: ID!): TerraformInstallationConnection
 
-  helm: Map
+  dockerRepositories(after: String, first: Int, before: String, last: Int, repositoryId: ID!): DockerRepositoryConnection
 
-  tags: [VersionTag]
+  dockerImages(after: String, first: Int, before: String, last: Int, dockerRepositoryId: ID!, q: String): DockerImageConnection
 
-  dependencies: Dependencies
+  dockerImage(id: ID!): DockerImage
 
-  package: String
+  versions(after: String, first: Int, before: String, last: Int, chartId: ID, terraformId: ID): VersionConnection
 
-  chart: Chart
-
-  terraform: Terraform
-
-  crds: [Crd]
-
-  scan: PackageScan
-
-  imageDependencies: [ImageDependency]
-
-  insertedAt: DateTime
-
-  updatedAt: DateTime
-}
-
-enum ArtifactPlatform {
-  MAC
-  WINDOWS
-  LINUX
-  ANDROID
-  FREEBSD
-  OPENBSD
-  SOLARIS
-}
-
-type ApplyLock {
-  id: ID!
-  lock: String
-  repository: Repository
-  owner: User
-  insertedAt: DateTime
-  updatedAt: DateTime
-}
-
-type Webhook {
-  id: ID
-  url: String
-  secret: String
-  user: User
-  insertedAt: DateTime
-  updatedAt: DateTime
-}
-
-"Container for all resources to create an application."
-type Repository {
-  "The application's ID."
-  id: ID!
-
-  "The name of the application."
-  name: String!
-
-  "The description of the application."
-  description: String
-
-  "The documentation of the application."
-  documentation: String
-
-  "The category of the application."
-  category: Category
-
-  "release status of the repository"
-  releaseStatus: ReleaseStatus
-
-  "Whether the application is private."
-  private: Boolean
-
-  "Whether the application is verified."
-  verified: Boolean
-
-  "Whether the application is trending."
-  trending: Boolean
-
-  "Notes about the application rendered after deploying and displayed to the user."
-  notes: String
-
-  "The default tag to deploy."
-  defaultTag: String
-
-  "The git URL of the application."
-  gitUrl: String
-
-  "The main branch of the application."
-  mainBranch: String
-
-  "The README of the application."
-  readme: String
-
-  "The license of the application."
-  license: License
-
-  "The community links of the application."
-  community: Community
-
-  "The homepage of the application."
-  homepage: String
-
-  "The application publisher."
-  publisher: Publisher
-
-  "The available plans for the application."
-  plans: [Plan]
-
-  "The tags of the application."
-  tags: [Tag]
-
-  "The artifacts of the application."
-  artifacts: [Artifact]
-
-  "The recipes used to install the application."
-  recipes: [Recipe]
-
-  "The OAuth settings for the application."
-  oauthSettings: OauthSettings
-
-  icon: String
-
-  darkIcon: String
-
-  "The external contributors to this repository"
-  contributors: [Contributor]
-
-  "The installation of the application by a user."
-  installation: Installation
-
-  "version tags that can be followed to control upgrade flow"
-  upgradeChannels: [String]
-
-  "If the application can be edited by the current user."
-  editable: Boolean
-
-  "A map of secrets of the application."
-  secrets: Map
-
-  "The application's public key."
-  publicKey: String
-
-  "The documentation of the application."
-  docs: [FileContent]
-
-  insertedAt: DateTime
-
-  updatedAt: DateTime
-}
-
-"A dependncy reference between clusters"
-type ClusterDependency {
-  id: ID!
-
-  "the cluster holding this dependency"
-  cluster: Cluster
-
-  "the source cluster of this dependency"
-  dependency: Cluster
-
-  insertedAt: DateTime
-
-  updatedAt: DateTime
-}
-
-type WebhookLog {
-  id: ID!
-  state: WebhookLogState!
-  status: Int
-  response: String
-  payload: Map
-  webhook: IntegrationWebhook
-  insertedAt: DateTime
-  updatedAt: DateTime
-}
-
-type ZoomMeeting {
-  joinUrl: String!
-  password: String
-}
-
-type PolicyBinding {
-  id: ID!
-  user: User
-  group: Group
-  insertedAt: DateTime
-  updatedAt: DateTime
-}
-
-type ConsoleInstanceEdge {
-  node: ConsoleInstance
-  cursor: String
-}
-
-enum ConsoleSize {
-  SMALL
-  MEDIUM
-  LARGE
-}
-
-type UpgradeQueue {
-  id: ID!
-  acked: ID
-  name: String
-  domain: String
-  git: String
-  provider: Provider
-  pingedAt: DateTime
-  user: User!
-  upgrades(after: String, first: Int, before: String, last: Int): UpgradeConnection
-  insertedAt: DateTime
-  updatedAt: DateTime
-}
-
-enum RecipeItemType {
-  HELM
-  TERRAFORM
-}
-
-type WebhookLogEdge {
-  node: WebhookLog
-  cursor: String
-}
-
-type AuditEdge {
-  node: Audit
-  cursor: String
-}
-
-type ConsoleInstance {
-  id: ID!
-
-  "the name of this instance (globally unique)"
-  name: String!
-
-  "the subdomain this instance lives under"
-  subdomain: String!
-
-  "full console url of this instance"
-  url: String!
-
-  "the cloud provider hosting this instance"
-  cloud: CloudProvider!
-
-  "the heuristic size of this instance"
-  size: ConsoleSize!
-
-  "the region this instance is hosted in"
-  region: String!
-
-  "the provisioning status of this instance, liveness is fetched through the console field"
-  status: ConsoleInstanceStatus!
-
-  "the time this instance was deleted on"
-  deletedAt: DateTime
-
-  console: Cluster
-
-  owner: User
-
-  insertedAt: DateTime
-
-  updatedAt: DateTime
-}
-
-type InvoiceEdge {
-  node: Invoice
-  cursor: String
-}
-
-enum DependencyType {
-  TERRAFORM
-  HELM
-}
-
-enum ValidationType {
-  REGEX
-}
-
-type License {
-  name: String
-  url: String
-}
-
-type Invoice {
-  number: String!
-  amountDue: Int!
-  amountPaid: Int!
-  currency: String!
-  status: String
-  hostedInvoiceUrl: String
-  paymentIntent: PaymentIntent
-  createdAt: DateTime
-  lines: [InvoiceItem]
-}
-
-enum ResetTokenType {
-  PASSWORD
-  EMAIL
-}
-
-type DnsRecordEdge {
-  node: DnsRecord
-  cursor: String
-}
-
-type Invite {
-  id: ID!
-  admin: Boolean
-  secureId: String
-  existing: Boolean!
-  email: String
-  expiresAt: DateTime
-  account: Account
-  user: User
-  groups: [Group]
-  insertedAt: DateTime
-  updatedAt: DateTime
-}
-
-enum TestType {
-  GIT
-}
-
-type StackEdge {
-  node: Stack
-  cursor: String
-}
-
-type UpgradeEdge {
-  node: Upgrade
-  cursor: String
-}
-
-enum DemoProjectState {
-  CREATED
-  READY
-  ENABLED
-}
-
-type Recipe {
-  id: ID!
-  name: String!
-  description: String
-  provider: Provider
-  oidcSettings: OidcSettings
-  private: Boolean
-  restricted: Boolean
-  primary: Boolean
-  oidcEnabled: Boolean
-  tests: [RecipeTest]
-  repository: Repository
-  recipeSections: [RecipeSection]
-  recipeDependencies: [Recipe]
-  insertedAt: DateTime
-  updatedAt: DateTime
-}
-
-type FollowerEdge {
-  node: Follower
-  cursor: String
-}
-
-type File {
-  id: ID!
-  mediaType: MediaType
-  filename: String
-  filesize: Int
-  width: Int
-  height: Int
-  contentType: String
-  blob: String!
-  message: IncidentMessage!
-  insertedAt: DateTime
-  updatedAt: DateTime
-}
-
-type Role {
-  id: ID!
-  name: String!
-  description: String
-  repositories: [String]
-  permissions: [Permission]
-  roleBindings: [RoleBinding]
-  account: Account
-  insertedAt: DateTime
-  updatedAt: DateTime
-}
-
-enum OnboardingChecklistState {
-  NEW
-  CONFIGURED
-  CONSOLE_INSTALLED
-  FINISHED
-}
-
-type TestArgument {
-  name: String!
-  repo: String!
-  key: String!
-}
-
-type Artifact {
-  id: ID
-  name: String
-  readme: String
-  type: ArtifactType
-  platform: ArtifactPlatform
-  filesize: Int
-  sha: String
-  arch: String
-  blob: String
-  insertedAt: DateTime
-  updatedAt: DateTime
-}
-
-type Test {
-  id: ID!
-  name: String
-  status: TestStatus!
-  sourceTag: String!
-  promoteTag: String!
-  tags: [String!]
-  steps: [TestStep]
-  creator: User
-  repository: Repository
-  insertedAt: DateTime
-  updatedAt: DateTime
-}
-
-type ConsentRequest {
-  requestedScope: [String]
-  skip: Boolean
-}
-
-type RecipeTest {
-  type: TestType!
-  name: String!
-  message: String
-  args: [TestArgument]
-}
-
-enum ConsoleInstanceStatus {
-  PENDING
-  DATABASE_CREATED
-  DEPLOYMENT_CREATED
-  PROVISIONED
-  DEPLOYMENT_DELETED
-  DATABASE_DELETED
-}
-
-input IncidentAttributes {
-  title: String
-  severity: Int
-  description: String
-  status: IncidentStatus
-  tags: [TagAttributes]
-  clusterInformation: ClusterInformationAttributes
-}
-
-type NotificationPreferences {
-  message: Boolean
-  incidentUpdate: Boolean
-  mention: Boolean
-}
-
-type Cvss {
-  attackVector: VulnVector
-  attackComplexity: VulnGrade
-  privilegesRequired: VulnGrade
-  userInteraction: VulnRequirement
-  confidentiality: VulnGrade
-  integrity: VulnGrade
-  availability: VulnGrade
-}
-
-input ChartInstallationAttributes {
-  chartId: ID
-  versionId: ID
-}
-
-input ConsoleConfigurationUpdateAttributes {
-  encryptionKey: String
-}
-
-enum TestStatus {
-  QUEUED
-  RUNNING
-  SUCCEEDED
-  FAILED
-}
-
-input ActionItemAttributes {
-  type: ActionItemType!
-  link: String!
-}
-
-input TerraformInstallationAttributes {
-  terraformId: ID
-  versionId: ID
-}
-
-input ArtifactAttributes {
-  name: String!
-  readme: String!
-  type: String!
-  platform: String!
-  arch: String
-  blob: UploadOrUrl
-}
-
-input AzureShellCredentialsAttributes {
-  tenantId: String!
-  clientId: String!
-  clientSecret: String!
-  storageAccount: String!
-  subscriptionId: String!
-}
-
-type ApplicationSpec {
-  description: String
-  version: String
-  links: [AppLink]
-}
-
-"Input for the application's OAuth settings."
-input OauthSettingsAttributes {
-  "The URI format for the OAuth provider."
-  uriFormat: String!
-
-  "The authentication method for the OAuth provider."
-  authMethod: OidcAuthMethod!
-}
-
-type OauthSettings {
-  uriFormat: String!
-  authMethod: OidcAuthMethod!
-}
-
-type PlanLineItems {
-  included: [Limit]
-  items: [LineItem]
-}
-
-input ScmAttributes {
-  provider: ScmProvider
-  token: String
-  name: String
-  org: String
-  gitUrl: String
-  publicKey: String
-  privateKey: String
-}
-
-input WorkspaceAttributes {
-  cluster: String!
-  bucketPrefix: String!
-  region: String!
-  project: String
-  subdomain: String!
-}
-
-input AwsShellCredentialsAttributes {
-  accessKeyId: String!
-  secretAccessKey: String!
-}
-
-type ShellStatus {
-  ready: Boolean
-  initialized: Boolean
-  containersReady: Boolean
-  podScheduled: Boolean
-}
-
-input ClusterInformationAttributes {
-  gitCommit: String
-  version: String
-  platform: String
-}
-
-input IncidentMessageAttributes {
-  text: String!
-  file: FileAttributes
-  entities: [EntityAttributes]
-}
-
-input ResourceDefinitionAttributes {
-  name: String!
-  spec: [SpecificationAttributes]
-}
-
-input LineItemAttributes {
-  name: String!
-  dimension: String!
-  cost: Int!
-  period: String!
-  type: PlanType
-}
-
-enum UserEventStatus {
-  OK
-  ERROR
-}
-
-input UserAttributes {
-  name: String
-  email: String
-  password: String
-  avatar: UploadOrUrl
-  onboarding: OnboardingState
-  onboardingChecklist: OnboardingChecklistAttributes
-  loginMethod: LoginMethod
-  roles: RolesAttributes
-  confirm: String
-  groupIds: [ID!]
-}
-
-input PublisherAttributes {
-  name: String
-  description: String
-  avatar: UploadOrUrl
-  phone: String
-  address: AddressAttributes
-  community: CommunityAttributes
-}
-
-input ChatMessageAttributes {
-  role: String!
-  content: String!
-  name: String
-}
-
-type GeoMetric {
-  country: String
-  count: Int
-}
-
-input TrustRelationshipAttributes {
-  issuer: String!
-  trust: String!
-  scopes: [String!]
-}
-
-input ShellCredentialsAttributes {
-  aws: AwsShellCredentialsAttributes
-  gcp: GcpShellCredentialsAttributes
-  azure: AzureShellCredentialsAttributes
-}
-
-"the attributes of the config upgrade"
-input UpgradeConfigAttributes {
-  "paths for a configuration change"
-  paths: [UpgradePathAttributes]
-}
-
-input SpecificationAttributes {
-  name: String!
-  type: SpecDatatype!
-  inner: SpecDatatype
-  spec: [SpecificationAttributes]
-  required: Boolean
-}
-
-enum IncidentStatus {
-  OPEN
-  IN_PROGRESS
-  RESOLVED
-  COMPLETE
-}
-
-input LockAttributes {
-  lock: String!
-}
-
-enum OauthProvider {
-  GITHUB
-  GOOGLE
-  GITLAB
-}
-
-input IncidentFilter {
-  type: IncidentFilterType!
-  value: String
-  statuses: [IncidentStatus]
-}
-
-type ScanError {
-  message: String
-}
-
-"A Kubernetes cluster that can be used to deploy applications on with Plural."
-type Cluster {
-  "The ID of the cluster."
-  id: ID!
-
-  "The name of the cluster."
-  name: String!
-
-  "The cluster's cloud provider."
-  provider: Provider!
-
-  "whether this is a legacy OSS cluster"
-  legacy: Boolean
-
-  "The source of the cluster."
-  source: Source
-
-  "The git repository URL for the cluster."
-  gitUrl: String
-
-  "The URL of the console running on the cluster."
-  consoleUrl: String
-
-  "The domain name used for applications deployed on the cluster."
-  domain: String
-
-  "The last time the cluster was pinged."
-  pingedAt: DateTime
-
-  "the services deployed from this cluster"
-  serviceCount: Int
-
-  "pending upgrades for each installed app"
-  upgradeInfo: [UpgradeInfo]
-
-  "whether all installations in the cluster have been synced"
-  synced: Boolean
-
-  "whether any installation in the cluster has been locked"
-  locked: Boolean
-
-  "CPU\/Memory history for this cluster"
-  usageHistory(begin: DateTime!): [ClusterUsageHistory]
-
-  "the dependencies a cluster has"
-  dependency: ClusterDependency
-
-  "The user that owns the cluster."
-  owner: User
-
-  "The account that the cluster belongs to."
   account: Account
 
-  "The upgrade queue for applications running on the cluster."
-  queue: UpgradeQueue
+  invite(id: String!): Invite
 
-  insertedAt: DateTime
+  invites(after: String, first: Int, before: String, last: Int): InviteConnection
 
-  updatedAt: DateTime
-}
+  groups(after: String, first: Int, before: String, last: Int, q: String): GroupConnection
 
-type GroupMember {
-  id: ID!
-  user: User
-  group: Group
-  insertedAt: DateTime
-  updatedAt: DateTime
-}
+  groupMembers(after: String, first: Int, before: String, last: Int, groupId: ID!): GroupMemberConnection
 
-enum VulnVector {
-  NETWORK
-  ADJACENT
-  LOCAL
-  PHYSICAL
-}
+  role(id: ID!): Role
 
-enum Delta {
-  CREATE
-  UPDATE
-  DELETE
-}
+  roles(after: String, first: Int, before: String, last: Int, q: String, userId: ID): RoleConnection
 
-type PlanMetadata {
-  freeform: Map
-  features: [PlanFeature]
-}
+  integrationWebhooks(after: String, first: Int, before: String, last: Int): IntegrationWebhookConnection
 
-type IncidentMessageDelta {
-  delta: Delta
-  payload: IncidentMessage
-}
+  integrationWebhook(id: ID!): IntegrationWebhook
 
-type DnsRecordConnection {
-  pageInfo: PageInfo!
-  edges: [DnsRecordEdge]
-}
+  oauthIntegrations: [OauthIntegration]
 
-type Reaction {
-  name: String!
-  creator: User!
-  message: IncidentMessage!
-  insertedAt: DateTime
-  updatedAt: DateTime
-}
+  incidents(
+    after: String, first: Int, before: String, last: Int, repositoryId: ID, supports: Boolean, q: String, sort: IncidentSort, order: Order, filters: [IncidentFilter]
+  ): IncidentConnection
 
-type ShellConfiguration {
-  workspace: ShellWorkspace
-  git: GitConfiguration
-  contextConfiguration: Map
-  buckets: [String]
-  domains: [String]
-}
+  incident(id: ID!): Incident
 
-type ClusterInformation {
-  id: ID!
-  version: String
-  gitCommit: String
-  platform: String
-  insertedAt: DateTime
-  updatedAt: DateTime
-}
+  notifications(after: String, first: Int, before: String, last: Int, incidentId: ID, cli: Boolean): NotificationConnection
 
-type Notification {
-  id: ID!
-  type: NotificationType!
-  msg: String
-  user: User!
-  actor: User!
-  incident: Incident
-  message: IncidentMessage
-  repository: Repository
-  insertedAt: DateTime
-  updatedAt: DateTime
-}
+  audits(after: String, first: Int, before: String, last: Int): AuditConnection
 
-type InvoiceConnection {
-  pageInfo: PageInfo!
-  edges: [InvoiceEdge]
-}
+  auditMetrics: [GeoMetric]
 
-type FollowerConnection {
-  pageInfo: PageInfo!
-  edges: [FollowerEdge]
-}
+  upgradeQueues: [UpgradeQueue]
 
-type PlatformPlan {
-  id: ID!
-  name: String!
-  visible: Boolean!
-  cost: Int!
-  period: PaymentPeriod!
-  enterprise: Boolean
-  trial: Boolean
-  features: PlanFeatures
-  lineItems: [PlatformPlanItem]
-  insertedAt: DateTime
-  updatedAt: DateTime
+  deferredUpdates(
+    after: String, first: Int, before: String, last: Int, chartInstallationId: ID, terraformInstallationId: ID
+  ): DeferredUpdateConnection
+
+  upgradeQueue(id: ID): UpgradeQueue
+
+  rollouts(after: String, first: Int, before: String, last: Int, repositoryId: ID!): RolloutConnection
+
+  oauthLogin(challenge: String!): Repository
+
+  oauthConsent(challenge: String!): Repository
+
+  oidcLogin(challenge: String!): OidcStepResponse
+
+  oidcConsent(challenge: String!): OidcStepResponse
+
+  oauthUrls(host: String): [OauthInfo]
+
+  oidcLogins(after: String, first: Int, before: String, last: Int): OidcLoginConnection
+
+  loginMetrics: [GeoMetric]
+
+  dnsDomain(id: ID!): DnsDomain
+
+  dnsDomains(after: String, first: Int, before: String, last: Int, q: String): DnsDomainConnection
+
+  dnsRecords(after: String, first: Int, before: String, last: Int, domainId: ID, cluster: String, provider: Provider): DnsRecordConnection
+
+  shell: CloudShell
+
+  shellConfiguration: ShellConfiguration
+
+  shellApplications: [ApplicationInformation]
+
+  scmAuthorization: [AuthorizationUrl]
+
+  scmToken(provider: ScmProvider!, code: String!): String
+
+  demoProject(id: ID): DemoProject
+
+  platformMetrics: PlatformMetrics
+
+  terraformProviders: [Provider]
+
+  terraformProvider(name: Provider!, vsn: String): TerraformProvider
+
+  tests(after: String, first: Int, before: String, last: Int, versionId: ID, repositoryId: ID): TestConnection
+
+  test(id: ID!): Test
+
+  testLogs(id: ID!, step: ID!): String
+
+  chat(history: [ChatMessageAttributes]): ChatMessage
+
+  helpQuestion(prompt: String!): String
+
+  "Get a cluster by its ID."
+  cluster(
+    "The ID of the cluster."
+    id: ID!
+  ): Cluster
+
+  "Get a list of clusters owned by the current account."
+  clusters(after: String, first: Int, before: String, last: Int): ClusterConnection
+
+  consoleInstance(id: ID!): ConsoleInstance
+
+  consoleInstances(after: String, first: Int, before: String, last: Int): ConsoleInstanceConnection
+
+  configuration: PluralConfiguration
+
+  tags(after: String, first: Int, before: String, last: Int, id: ID, type: TagGroup!, q: String): GroupedTagConnection
 }
 
 type RootMutationType {
@@ -2098,539 +542,98 @@ type RootMutationType {
   deleteConsoleInstance(id: ID!): ConsoleInstance
 }
 
+type RootSubscriptionType {
+  incidentDelta(repositoryId: ID, incidentId: ID): IncidentDelta
+  incidentMessageDelta(incidentId: ID): IncidentMessageDelta
+  notification: Notification
+  upgrade(id: ID): Upgrade
+  upgradeQueueDelta: UpgradeQueueDelta
+  rolloutDelta(repositoryId: ID!): RolloutDelta
+  testDelta(repositoryId: ID!): TestDelta
+  testLogs(testId: ID!): StepLogs
+}
+
+enum CloudProvider {
+  AWS
+}
+
+enum ConsoleInstanceStatus {
+  PENDING
+  DATABASE_CREATED
+  DEPLOYMENT_CREATED
+  PROVISIONED
+  DEPLOYMENT_DELETED
+  DATABASE_DELETED
+}
+
+enum ConsoleSize {
+  SMALL
+  MEDIUM
+  LARGE
+}
+
+input ConsoleInstanceAttributes {
+  "the name of this instance (globally unique)"
+  name: String!
+
+  "a heuristic size of this instance"
+  size: ConsoleSize!
+
+  "the cloud provider to deploy to"
+  cloud: CloudProvider!
+
+  "the region to deploy to (provider specific)"
+  region: String!
+}
+
+input ConsoleInstanceUpdateAttributes {
+  size: ConsoleSize
+  configuration: ConsoleConfigurationUpdateAttributes
+}
+
+input ConsoleConfigurationUpdateAttributes {
+  encryptionKey: String
+}
+
+type ConsoleInstance {
+  id: ID!
+
+  "the name of this instance (globally unique)"
+  name: String!
+
+  "the subdomain this instance lives under"
+  subdomain: String!
+
+  "full console url of this instance"
+  url: String!
+
+  "the cloud provider hosting this instance"
+  cloud: CloudProvider!
+
+  "the heuristic size of this instance"
+  size: ConsoleSize!
+
+  "the region this instance is hosted in"
+  region: String!
+
+  "the provisioning status of this instance, liveness is fetched through the console field"
+  status: ConsoleInstanceStatus!
+
+  "the time this instance was deleted on"
+  deletedAt: DateTime
+
+  console: Cluster
+
+  owner: User
+
+  insertedAt: DateTime
+
+  updatedAt: DateTime
+}
+
 type ConsoleInstanceConnection {
   pageInfo: PageInfo!
   edges: [ConsoleInstanceEdge]
-}
-
-"An installation of an application."
-type Installation {
-  "The installation's ID."
-  id: ID!
-
-  "A YAML object of context."
-  context: Map
-
-  "Whether the application should auto upgrade."
-  autoUpgrade: Boolean
-
-  "The application that was installed."
-  repository: Repository
-
-  "The user that installed the application."
-  user: User
-
-  "The subscription for the application."
-  subscription: RepositorySubscription
-
-  "The OIDC provider for the application."
-  oidcProvider: OidcProvider
-
-  "The license key for the application."
-  licenseKey: String
-
-  "The tag to track for auto upgrades."
-  trackTag: String!
-
-  "The last ping time of an installed application."
-  pingedAt: DateTime
-
-  acmeKeyId: String
-
-  acmeSecret: String
-
-  locked: Boolean
-
-  synced: Boolean
-
-  license: String
-
-  insertedAt: DateTime
-
-  updatedAt: DateTime
-}
-
-type PluralConfiguration {
-  stripeConnectId: String
-  stripePublishableKey: String
-  registry: String
-  gitCommit: String
-}
-
-type OidcLogin {
-  id: ID!
-  ip: String
-  country: String
-  city: String
-  latitude: String
-  longitude: String
-  user: User
-  owner: User
-  repository: Repository
-  insertedAt: DateTime
-  updatedAt: DateTime
-}
-
-type AuditConnection {
-  pageInfo: PageInfo!
-  edges: [AuditEdge]
-}
-
-type WebhookLogConnection {
-  pageInfo: PageInfo!
-  edges: [WebhookLogEdge]
-}
-
-type RecipeCondition {
-  field: String!
-  value: String
-  operation: Operation!
-}
-
-type UpgradeConnection {
-  pageInfo: PageInfo!
-  edges: [UpgradeEdge]
-}
-
-type StackConnection {
-  pageInfo: PageInfo!
-  edges: [StackEdge]
-}
-
-type Postmortem {
-  id: ID!
-  content: String!
-  actionItems: [ActionItem]
-  creator: User!
-  insertedAt: DateTime
-  updatedAt: DateTime
-}
-
-type ServiceLevel {
-  maxSeverity: Int
-  minSeverity: Int
-  responseTime: Int
-}
-
-type AuthorizationUrl {
-  provider: ScmProvider!
-  url: String!
-}
-
-type CloudShell {
-  id: ID!
-  provider: Provider!
-  gitUrl: String!
-  aesKey: String!
-  missing: [String]
-  cluster: String!
-  subdomain: String!
-  alive: Boolean!
-  status: ShellStatus
-  region: String!
-  insertedAt: DateTime
-  updatedAt: DateTime
-}
-
-type Stack {
-  id: ID!
-  name: String!
-  description: String
-  featured: Boolean
-  community: Community
-  displayName: String
-  collections: [StackCollection]
-  creator: User
-  bundles: [Recipe]
-  sections: [RecipeSection]
-  insertedAt: DateTime
-  updatedAt: DateTime
-}
-
-"A record of the utilization in a given cluster"
-type ClusterUsageHistory {
-  cpu: Int
-  memory: Int
-  services: Int
-  cluster: Cluster
-  account: Account
-  insertedAt: DateTime
-  updatedAt: DateTime
-}
-
-type Community {
-  discord: String
-  slack: String
-  twitter: String
-  homepage: String
-  gitUrl: String
-  videos: [String]
-}
-
-type RootQueryType {
-  me: User
-
-  user(id: ID!): User
-
-  loginMethod(email: String!, host: String): LoginMethodResponse
-
-  resetToken(id: ID!): ResetToken
-
-  tokens(after: String, first: Int, before: String, last: Int): PersistedTokenConnection
-
-  token(id: ID!): PersistedToken
-
-  publisher(id: ID): Publisher
-
-  users(after: String, first: Int, before: String, last: Int, q: String, serviceAccount: Boolean, all: Boolean): UserConnection
-
-  searchUsers(after: String, first: Int, before: String, last: Int, incidentId: ID!, q: String!): UserConnection
-
-  publishers(after: String, first: Int, before: String, last: Int, accountId: ID, publishable: Boolean): PublisherConnection
-
-  webhooks(after: String, first: Int, before: String, last: Int): WebhookConnection
-
-  publicKeys(after: String, first: Int, before: String, last: Int, emails: [String]): PublicKeyConnection
-
-  eabCredential(cluster: String!, provider: Provider!): EabCredential
-
-  eabCredentials: [EabCredential]
-
-  keyBackups(after: String, first: Int, before: String, last: Int): KeyBackupConnection
-
-  keyBackup(name: String!): KeyBackup
-
-  oidcToken(provider: ExternalOidcProvider!, idToken: String!, email: String!): String
-
-  repositorySubscription(id: ID!): RepositorySubscription
-
-  subscriptions(after: String, first: Int, before: String, last: Int): RepositorySubscriptionConnection
-
-  platformPlans: [PlatformPlan]
-
-  platformSubscription: PlatformSubscription
-
-  invoices(after: String, first: Int, before: String, last: Int): InvoiceConnection
-
-  "Get an application by its ID or name."
-  repository(
-    "The ID of the application."
-    id: ID
-
-    "The name of the application."
-    name: String
-  ): Repository
-
-  installation(id: ID, name: String): Installation
-
-  repositories(
-    after: String, first: Int, before: String, last: Int, publisherId: ID, q: String, tag: String, supports: Boolean, installed: Boolean, category: Category, provider: Provider, categories: [Category], tags: [String], publishers: [ID]
-  ): RepositoryConnection
-
-  searchRepositories(after: String, first: Int, before: String, last: Int, query: String!): RepositoryConnection
-
-  installations(after: String, first: Int, before: String, last: Int): InstallationConnection
-
-  integrations(
-    after: String, first: Int, before: String, last: Int, repositoryId: ID, repositoryName: String, tag: String, type: String
-  ): IntegrationConnection
-
-  closure(id: ID!, type: DependencyType!): [ClosureItem]
-
-  categories: [CategoryInfo]
-
-  category(name: Category!): CategoryInfo
-
-  scaffold(application: String!, category: Category!, publisher: String!, ingress: Boolean, postgres: Boolean): [ScaffoldFile]
-
-  recipe(id: ID, name: String, repo: String): Recipe
-
-  stack(name: String!, provider: Provider!): Stack
-
-  recipes(
-    after: String, first: Int, before: String, last: Int, repositoryId: ID, repositoryName: String, provider: Provider
-  ): RecipeConnection
-
-  stacks(after: String, first: Int, before: String, last: Int, featured: Boolean): StackConnection
-
-  chart(id: ID!): Chart
-
-  charts(after: String, first: Int, before: String, last: Int, repositoryId: ID!): ChartConnection
-
-  chartInstallations(after: String, first: Int, before: String, last: Int, repositoryId: ID!): ChartInstallationConnection
-
-  terraformModule(id: ID!): Terraform
-
-  terraform(after: String, first: Int, before: String, last: Int, repositoryId: ID!): TerraformConnection
-
-  terraformInstallations(after: String, first: Int, before: String, last: Int, repositoryId: ID!): TerraformInstallationConnection
-
-  dockerRepositories(after: String, first: Int, before: String, last: Int, repositoryId: ID!): DockerRepositoryConnection
-
-  dockerImages(after: String, first: Int, before: String, last: Int, dockerRepositoryId: ID!, q: String): DockerImageConnection
-
-  dockerImage(id: ID!): DockerImage
-
-  versions(after: String, first: Int, before: String, last: Int, chartId: ID, terraformId: ID): VersionConnection
-
-  account: Account
-
-  invite(id: String!): Invite
-
-  invites(after: String, first: Int, before: String, last: Int): InviteConnection
-
-  groups(after: String, first: Int, before: String, last: Int, q: String): GroupConnection
-
-  groupMembers(after: String, first: Int, before: String, last: Int, groupId: ID!): GroupMemberConnection
-
-  role(id: ID!): Role
-
-  roles(after: String, first: Int, before: String, last: Int, q: String, userId: ID): RoleConnection
-
-  integrationWebhooks(after: String, first: Int, before: String, last: Int): IntegrationWebhookConnection
-
-  integrationWebhook(id: ID!): IntegrationWebhook
-
-  oauthIntegrations: [OauthIntegration]
-
-  incidents(
-    after: String, first: Int, before: String, last: Int, repositoryId: ID, supports: Boolean, q: String, sort: IncidentSort, order: Order, filters: [IncidentFilter]
-  ): IncidentConnection
-
-  incident(id: ID!): Incident
-
-  notifications(after: String, first: Int, before: String, last: Int, incidentId: ID, cli: Boolean): NotificationConnection
-
-  audits(after: String, first: Int, before: String, last: Int): AuditConnection
-
-  auditMetrics: [GeoMetric]
-
-  upgradeQueues: [UpgradeQueue]
-
-  deferredUpdates(
-    after: String, first: Int, before: String, last: Int, chartInstallationId: ID, terraformInstallationId: ID
-  ): DeferredUpdateConnection
-
-  upgradeQueue(id: ID): UpgradeQueue
-
-  rollouts(after: String, first: Int, before: String, last: Int, repositoryId: ID!): RolloutConnection
-
-  oauthLogin(challenge: String!): Repository
-
-  oauthConsent(challenge: String!): Repository
-
-  oidcLogin(challenge: String!): OidcStepResponse
-
-  oidcConsent(challenge: String!): OidcStepResponse
-
-  oauthUrls(host: String): [OauthInfo]
-
-  oidcLogins(after: String, first: Int, before: String, last: Int): OidcLoginConnection
-
-  loginMetrics: [GeoMetric]
-
-  dnsDomain(id: ID!): DnsDomain
-
-  dnsDomains(after: String, first: Int, before: String, last: Int, q: String): DnsDomainConnection
-
-  dnsRecords(after: String, first: Int, before: String, last: Int, domainId: ID, cluster: String, provider: Provider): DnsRecordConnection
-
-  shell: CloudShell
-
-  shellConfiguration: ShellConfiguration
-
-  shellApplications: [ApplicationInformation]
-
-  scmAuthorization: [AuthorizationUrl]
-
-  scmToken(provider: ScmProvider!, code: String!): String
-
-  demoProject(id: ID): DemoProject
-
-  platformMetrics: PlatformMetrics
-
-  terraformProviders: [Provider]
-
-  terraformProvider(name: Provider!, vsn: String): TerraformProvider
-
-  tests(after: String, first: Int, before: String, last: Int, versionId: ID, repositoryId: ID): TestConnection
-
-  test(id: ID!): Test
-
-  testLogs(id: ID!, step: ID!): String
-
-  chat(history: [ChatMessageAttributes]): ChatMessage
-
-  helpQuestion(prompt: String!): String
-
-  "Get a cluster by its ID."
-  cluster(
-    "The ID of the cluster."
-    id: ID!
-  ): Cluster
-
-  "Get a list of clusters owned by the current account."
-  clusters(after: String, first: Int, before: String, last: Int): ClusterConnection
-
-  consoleInstance(id: ID!): ConsoleInstance
-
-  consoleInstances(after: String, first: Int, before: String, last: Int): ConsoleInstanceConnection
-
-  configuration: PluralConfiguration
-
-  tags(after: String, first: Int, before: String, last: Int, id: ID, type: TagGroup!, q: String): GroupedTagConnection
-}
-
-type IncidentHistory {
-  id: ID!
-  action: IncidentAction!
-  changes: [IncidentChange]
-  actor: User!
-  incident: Incident!
-  insertedAt: DateTime
-  updatedAt: DateTime
-}
-
-type PublicKey {
-  id: ID!
-  name: String!
-  content: String!
-  digest: String!
-  user: User!
-  insertedAt: DateTime
-  updatedAt: DateTime
-}
-
-type MessageEntity {
-  id: ID!
-  type: MessageEntityType!
-  text: String
-  startIndex: Int
-  endIndex: Int
-  user: User
-  insertedAt: DateTime
-  updatedAt: DateTime
-}
-
-type DockerRepository {
-  id: ID!
-  name: String!
-  public: Boolean
-  repository: Repository
-  metrics(tag: String, precision: String, offset: String): [Metric]
-  insertedAt: DateTime
-  updatedAt: DateTime
-}
-
-type UpgradePath {
-  path: String!
-  value: String!
-  type: ValueType!
-}
-
-type VersionTag {
-  id: ID!
-  tag: String!
-  version: Version
-  chart: Chart
-  insertedAt: DateTime
-  updatedAt: DateTime
-}
-
-type RoleBinding {
-  id: ID!
-  user: User
-  group: Group
-  insertedAt: DateTime
-  updatedAt: DateTime
-}
-
-type Upgrade {
-  id: ID!
-  type: UpgradeType
-  message: String
-  config: UpgradeConfig
-  repository: Repository
-  insertedAt: DateTime
-  updatedAt: DateTime
-}
-
-type InviteEdge {
-  node: Invite
-  cursor: String
-}
-
-type FileEdge {
-  node: File
-  cursor: String
-}
-
-type DeferredUpdate {
-  id: ID!
-  dequeueAt: DateTime
-  attempts: Int
-  pending: Boolean
-  messages: [DeferredReason]
-  chartInstallation: ChartInstallation
-  terraformInstallation: TerraformInstallation
-  version: Version
-  insertedAt: DateTime
-  updatedAt: DateTime
-}
-
-enum VulnGrade {
-  LOW
-  MEDIUM
-  HIGH
-  CRITICAL
-  NONE
-}
-
-type GroupMemberEdge {
-  node: GroupMember
-  cursor: String
-}
-
-enum DnsRecordType {
-  A
-  AAAA
-  TXT
-  CNAME
-}
-
-type CardEdge {
-  node: Card
-  cursor: String
-}
-
-type ScaffoldFile {
-  path: String
-  content: String
-}
-
-type GroupedTagEdge {
-  node: GroupedTag
-  cursor: String
-}
-
-type PlanFeature {
-  name: String!
-  description: String!
-}
-
-type RecipeEdge {
-  node: Recipe
-  cursor: String
-}
-
-type DockerRepositoryEdge {
-  node: DockerRepository
-  cursor: String
-}
-
-type VersionEdge {
-  node: Version
-  cursor: String
 }
 
 "Possible cluster sources."
@@ -2638,198 +641,6 @@ enum Source {
   DEFAULT
   SHELL
   DEMO
-}
-
-enum IncidentFilterType {
-  NOTIFICATIONS
-  FOLLOWING
-  TAG
-  STATUS
-}
-
-"Template engines that can be used at build time."
-enum TemplateType {
-  GOTEMPLATE
-  LUA
-  JAVASCRIPT
-}
-
-type WebhookResponse {
-  statusCode: Int!
-  body: String
-  headers: Map
-}
-
-"""
-The `DateTime` scalar type represents a date and time in the UTC
-timezone. The DateTime appears in a JSON response as an ISO8601 formatted
-string, including UTC timezone ("Z"). The parsed date and time string will
-be converted to UTC if there is an offset.
-"""
-scalar DateTime
-
-enum ValueType {
-  INT
-  STRING
-  FLOAT
-}
-
-type PersistedTokenAuditEdge {
-  node: PersistedTokenAudit
-  cursor: String
-}
-
-type ChartEdge {
-  node: Chart
-  cursor: String
-}
-
-type IncidentHistoryEdge {
-  node: IncidentHistory
-  cursor: String
-}
-
-type ShellWorkspace {
-  network: NetworkConfiguration
-  bucketPrefix: String
-  cluster: String
-  region: String
-}
-
-enum UpgradeType {
-  DEPLOY
-  APPROVAL
-  BOUNCE
-  DEDICATED
-  CONFIG
-}
-
-type DockerImage {
-  id: ID!
-  tag: String
-  digest: String!
-  scannedAt: DateTime
-  scanCompletedAt: DateTime
-  grade: ImageGrade
-  dockerRepository: DockerRepository
-  vulnerabilities: [Vulnerability]
-  insertedAt: DateTime
-  updatedAt: DateTime
-}
-
-type TerraformEdge {
-  node: Terraform
-  cursor: String
-}
-
-type IntegrationWebhookEdge {
-  node: IntegrationWebhook
-  cursor: String
-}
-
-type TestEdge {
-  node: Test
-  cursor: String
-}
-
-type Incident {
-  id: ID!
-  title: String!
-  description: String
-  severity: Int!
-  status: IncidentStatus!
-  nextResponseAt: DateTime
-  repository: Repository!
-  creator: User!
-  owner: User
-  tags: [Tag]
-  postmortem: Postmortem
-  clusterInformation: ClusterInformation
-  subscription: SlimSubscription
-  notificationCount: Int
-  follower: Follower
-  messages(after: String, first: Int, before: String, last: Int): IncidentMessageConnection
-  files(after: String, first: Int, before: String, last: Int): FileConnection
-  history(after: String, first: Int, before: String, last: Int): IncidentHistoryConnection
-  followers(after: String, first: Int, before: String, last: Int): FollowerConnection
-  insertedAt: DateTime
-  updatedAt: DateTime
-}
-
-enum PaymentPeriod {
-  MONTHLY
-  YEARLY
-}
-
-type PaymentIntent {
-  id: String
-  description: String
-  clientSecret: String
-  amount: Int
-  captureMethod: String
-  currency: String
-  nextAction: NextAction
-  status: String
-}
-
-type DnsRecord {
-  id: ID!
-  type: DnsRecordType!
-  name: String!
-  cluster: String!
-  provider: Provider!
-  records: [String]
-  creator: User
-  domain: DnsDomain
-  insertedAt: DateTime
-  updatedAt: DateTime
-}
-
-enum LoginMethod {
-  PASSWORD
-  PASSWORDLESS
-  GOOGLE
-  GITHUB
-  SSO
-}
-
-"Supported OIDC authentication methods."
-enum OidcAuthMethod {
-  POST
-  BASIC
-}
-
-type PersistedTokenAudit {
-  id: ID
-  ip: String
-  timestamp: DateTime
-  count: Int
-  city: String
-  country: String
-  latitude: String
-  longitude: String
-  insertedAt: DateTime
-  updatedAt: DateTime
-}
-
-type Chart {
-  id: ID
-  name: String!
-  description: String
-  latestVersion: String
-  repository: Repository
-  dependencies: Dependencies
-  tags: [VersionTag]
-  installation: ChartInstallation
-  insertedAt: DateTime
-  updatedAt: DateTime
-}
-
-type PaymentMethod {
-  id: String
-  card: Card
-  type: String
-  isDefault: Boolean
 }
 
 "Input for creating or updating a cluster."
@@ -2856,19 +667,1583 @@ input ClusterAttributes {
   domain: String
 }
 
-input CrdAttributes {
+"A Kubernetes cluster that can be used to deploy applications on with Plural."
+type Cluster {
+  "The ID of the cluster."
+  id: ID!
+
+  "The name of the cluster."
   name: String!
-  blob: UploadOrUrl
+
+  "The cluster's cloud provider."
+  provider: Provider!
+
+  "whether this is a legacy OSS cluster"
+  legacy: Boolean
+
+  "The source of the cluster."
+  source: Source
+
+  "The git repository URL for the cluster."
+  gitUrl: String
+
+  "The URL of the console running on the cluster."
+  consoleUrl: String
+
+  "The domain name used for applications deployed on the cluster."
+  domain: String
+
+  "The last time the cluster was pinged."
+  pingedAt: DateTime
+
+  "the services deployed from this cluster"
+  serviceCount: Int
+
+  "pending upgrades for each installed app"
+  upgradeInfo: [UpgradeInfo]
+
+  "whether all installations in the cluster have been synced"
+  synced: Boolean
+
+  "whether any installation in the cluster has been locked"
+  locked: Boolean
+
+  "CPU\/Memory history for this cluster"
+  usageHistory(begin: DateTime!): [ClusterUsageHistory]
+
+  "the dependencies a cluster has"
+  dependency: ClusterDependency
+
+  "The user that owns the cluster."
+  owner: User
+
+  "The account that the cluster belongs to."
+  account: Account
+
+  "The upgrade queue for applications running on the cluster."
+  queue: UpgradeQueue
+
+  insertedAt: DateTime
+
+  updatedAt: DateTime
 }
 
-input PlanMetadataAttributes {
-  freeform: Yaml
-  features: [PlanFeatureAttributes]
+"The pending upgrades for a repository"
+type UpgradeInfo {
+  installation: Installation
+  count: Int
+}
+
+"A dependncy reference between clusters"
+type ClusterDependency {
+  id: ID!
+
+  "the cluster holding this dependency"
+  cluster: Cluster
+
+  "the source cluster of this dependency"
+  dependency: Cluster
+
+  insertedAt: DateTime
+
+  updatedAt: DateTime
+}
+
+"A record of the utilization in a given cluster"
+type ClusterUsageHistory {
+  cpu: Int
+  memory: Int
+  services: Int
+  cluster: Cluster
+  account: Account
+  insertedAt: DateTime
+  updatedAt: DateTime
+}
+
+type ClusterConnection {
+  pageInfo: PageInfo!
+  edges: [ClusterEdge]
+}
+
+input ChatMessageAttributes {
+  role: String!
+  content: String!
+  name: String
+}
+
+type ChatMessage {
+  role: String!
+  content: String!
+  name: String
+}
+
+enum TestStatus {
+  QUEUED
+  RUNNING
+  SUCCEEDED
+  FAILED
+}
+
+input TestAttributes {
+  name: String
+  status: TestStatus
+  promoteTag: String
+  tags: [String]
+  steps: [TestStepAttributes]
+}
+
+input TestStepAttributes {
+  id: ID
+  name: String
+  description: String
+  status: TestStatus
+  logs: UploadOrUrl
+}
+
+type Test {
+  id: ID!
+  name: String
+  status: TestStatus!
+  sourceTag: String!
+  promoteTag: String!
+  tags: [String!]
+  steps: [TestStep]
+  creator: User
+  repository: Repository
+  insertedAt: DateTime
+  updatedAt: DateTime
+}
+
+type TestStep {
+  id: ID!
+  status: TestStatus!
+  name: String!
+  description: String!
+  hasLogs: Boolean
+  insertedAt: DateTime
+  updatedAt: DateTime
+}
+
+type StepLogs {
+  step: TestStep
+  logs: [String]
+}
+
+type TestConnection {
+  pageInfo: PageInfo!
+  edges: [TestEdge]
+}
+
+type TestDelta {
+  delta: Delta
+  payload: Test
+}
+
+type TerraformProvider {
+  name: Provider
+  content: String
+}
+
+enum DemoProjectState {
+  CREATED
+  READY
+  ENABLED
+}
+
+input CloudShellAttributes {
+  provider: Provider
+  workspace: WorkspaceAttributes!
+  credentials: ShellCredentialsAttributes!
+  scm: ScmAttributes
+  demoId: ID
+}
+
+enum ScmProvider {
+  GITHUB
+  GITLAB
+  MANUAL
+  DEMO
+}
+
+input ScmAttributes {
+  provider: ScmProvider
+  token: String
+  name: String
+  org: String
+  gitUrl: String
+  publicKey: String
+  privateKey: String
+}
+
+input WorkspaceAttributes {
+  cluster: String!
+  bucketPrefix: String!
+  region: String!
+  project: String
+  subdomain: String!
+}
+
+input ShellCredentialsAttributes {
+  aws: AwsShellCredentialsAttributes
+  gcp: GcpShellCredentialsAttributes
+  azure: AzureShellCredentialsAttributes
+}
+
+input AwsShellCredentialsAttributes {
+  accessKeyId: String!
+  secretAccessKey: String!
+}
+
+input GcpShellCredentialsAttributes {
+  applicationCredentials: String!
+}
+
+input AzureShellCredentialsAttributes {
+  tenantId: String!
+  clientId: String!
+  clientSecret: String!
+  storageAccount: String!
+  subscriptionId: String!
+}
+
+input ContextAttributes {
+  configuration: Map!
+  buckets: [String]
+  domains: [String]
+}
+
+type CloudShell {
+  id: ID!
+  provider: Provider!
+  gitUrl: String!
+  aesKey: String!
+  missing: [String]
+  cluster: String!
+  subdomain: String!
+  alive: Boolean!
+  status: ShellStatus
+  region: String!
+  insertedAt: DateTime
+  updatedAt: DateTime
+}
+
+type ShellConfiguration {
+  workspace: ShellWorkspace
+  git: GitConfiguration
+  contextConfiguration: Map
+  buckets: [String]
+  domains: [String]
+}
+
+type ShellWorkspace {
+  network: NetworkConfiguration
+  bucketPrefix: String
+  cluster: String
+  region: String
+}
+
+type NetworkConfiguration {
+  pluralDns: Boolean
+  subdomain: String
+}
+
+type GitConfiguration {
+  url: String
+  name: String
+  root: String
+  branch: String
+}
+
+type ShellStatus {
+  ready: Boolean
+  initialized: Boolean
+  containersReady: Boolean
+  podScheduled: Boolean
+}
+
+type AuthorizationUrl {
+  provider: ScmProvider!
+  url: String!
+}
+
+type DemoProject {
+  id: ID!
+  projectId: String!
+  credentials: String
+  ready: Boolean
+  state: DemoProjectState
+  insertedAt: DateTime
+  updatedAt: DateTime
+}
+
+type ApplicationInformation {
+  name: String!
+  ready: Boolean
+  componentsReady: String
+  components: [ApplicationComponent]
+  spec: ApplicationSpec
+}
+
+type ApplicationSpec {
+  description: String
+  version: String
+  links: [AppLink]
+}
+
+type AppLink {
+  url: String
+  description: String
+}
+
+type ApplicationComponent {
+  group: String
+  name: String
+  kind: String
+  status: String
+}
+
+enum DnsRecordType {
+  A
+  AAAA
+  TXT
+  CNAME
 }
 
 input DnsDomainAttributes {
   name: String
   accessPolicy: DnsAccessPolicyAttributes
+}
+
+input DnsAccessPolicyAttributes {
+  id: ID
+  bindings: [BindingAttributes]
+}
+
+input DnsRecordAttributes {
+  name: String!
+  type: DnsRecordType!
+  records: [String]
+}
+
+type DnsDomain {
+  id: ID!
+  name: String!
+  accessPolicy: DnsAccessPolicy
+  creator: User
+  account: Account
+  dnsRecords(after: String, first: Int, before: String, last: Int): DnsRecordConnection
+  insertedAt: DateTime
+  updatedAt: DateTime
+}
+
+type DnsRecord {
+  id: ID!
+  type: DnsRecordType!
+  name: String!
+  cluster: String!
+  provider: Provider!
+  records: [String]
+  creator: User
+  domain: DnsDomain
+  insertedAt: DateTime
+  updatedAt: DateTime
+}
+
+type DnsAccessPolicy {
+  id: ID!
+  bindings: [PolicyBinding]
+  insertedAt: DateTime
+  updatedAt: DateTime
+}
+
+type PolicyBinding {
+  id: ID!
+  user: User
+  group: Group
+  insertedAt: DateTime
+  updatedAt: DateTime
+}
+
+type DnsDomainConnection {
+  pageInfo: PageInfo!
+  edges: [DnsDomainEdge]
+}
+
+type DnsRecordConnection {
+  pageInfo: PageInfo!
+  edges: [DnsRecordEdge]
+}
+
+enum OauthProvider {
+  GITHUB
+  GOOGLE
+  GITLAB
+}
+
+type OauthResponse {
+  redirectTo: String!
+}
+
+type OauthInfo {
+  provider: OauthProvider!
+  authorizeUrl: String!
+}
+
+type OuathConfiguration {
+  issuer: String
+  authorizationEndpoint: String
+  tokenEndpoint: String
+  jwksUri: String
+  userinfoEndpoint: String
+}
+
+type ConsentRequest {
+  requestedScope: [String]
+  skip: Boolean
+}
+
+type LoginRequest {
+  requestedScope: [String]
+  subject: String
+}
+
+type OidcLogin {
+  id: ID!
+  ip: String
+  country: String
+  city: String
+  latitude: String
+  longitude: String
+  user: User
+  owner: User
+  repository: Repository
+  insertedAt: DateTime
+  updatedAt: DateTime
+}
+
+type OidcStepResponse {
+  repository: Repository
+  login: LoginRequest
+  consent: ConsentRequest
+}
+
+type OidcLoginConnection {
+  pageInfo: PageInfo!
+  edges: [OidcLoginEdge]
+}
+
+enum RolloutStatus {
+  QUEUED
+  RUNNING
+  FINISHED
+}
+
+type Rollout {
+  id: ID!
+  status: RolloutStatus!
+  heartbeat: DateTime
+  cursor: ID
+  count: Int
+  event: String
+  repository: Repository
+  insertedAt: DateTime
+  updatedAt: DateTime
+}
+
+type RolloutConnection {
+  pageInfo: PageInfo!
+  edges: [RolloutEdge]
+}
+
+type RolloutDelta {
+  delta: Delta
+  payload: Rollout
+}
+
+enum UpgradeType {
+  DEPLOY
+  APPROVAL
+  BOUNCE
+  DEDICATED
+  CONFIG
+}
+
+enum ValueType {
+  INT
+  STRING
+  FLOAT
+}
+
+"The information for this upgrade"
+input UpgradeAttributes {
+  "a simple message to explain this upgrade"
+  message: String!
+
+  "the type of upgrade"
+  type: UpgradeType!
+
+  "information for a config upgrade"
+  config: UpgradeConfigAttributes
+}
+
+"the attributes of the config upgrade"
+input UpgradeConfigAttributes {
+  "paths for a configuration change"
+  paths: [UpgradePathAttributes]
+}
+
+"attributes of a path update"
+input UpgradePathAttributes {
+  "path the upgrade will occur on, formatted like .some.key[0].here"
+  path: String!
+
+  "the stringified value that will be applied on this path"
+  value: String!
+
+  "the ultimate type of the value"
+  type: ValueType!
+}
+
+input UpgradeQueueAttributes {
+  name: String!
+  legacy: Boolean
+  domain: String
+  git: String
+  provider: Provider
+}
+
+type UpgradeQueue {
+  id: ID!
+  acked: ID
+  name: String
+  domain: String
+  git: String
+  provider: Provider
+  pingedAt: DateTime
+  user: User!
+  upgrades(after: String, first: Int, before: String, last: Int): UpgradeConnection
+  insertedAt: DateTime
+  updatedAt: DateTime
+}
+
+type Upgrade {
+  id: ID!
+  type: UpgradeType
+  message: String
+  config: UpgradeConfig
+  repository: Repository
+  insertedAt: DateTime
+  updatedAt: DateTime
+}
+
+type UpgradeConfig {
+  paths: [UpgradePath]
+}
+
+type UpgradePath {
+  path: String!
+  value: String!
+  type: ValueType!
+}
+
+type DeferredUpdate {
+  id: ID!
+  dequeueAt: DateTime
+  attempts: Int
+  pending: Boolean
+  messages: [DeferredReason]
+  chartInstallation: ChartInstallation
+  terraformInstallation: TerraformInstallation
+  version: Version
+  insertedAt: DateTime
+  updatedAt: DateTime
+}
+
+type DeferredReason {
+  message: String
+  package: String
+  repository: String
+}
+
+type UpgradeConnection {
+  pageInfo: PageInfo!
+  edges: [UpgradeEdge]
+}
+
+type DeferredUpdateConnection {
+  pageInfo: PageInfo!
+  edges: [DeferredUpdateEdge]
+}
+
+type UpgradeQueueDelta {
+  delta: Delta
+  payload: UpgradeQueue
+}
+
+type Audit {
+  id: ID!
+  action: String!
+  ip: String
+  city: String
+  country: String
+  latitude: String
+  longitude: String
+  actor: User
+  group: Group
+  role: Role
+  user: User
+  integrationWebhook: IntegrationWebhook
+  repository: Repository
+  version: Version
+  image: DockerImage
+  insertedAt: DateTime
+  updatedAt: DateTime
+}
+
+type GeoMetric {
+  country: String
+  count: Int
+}
+
+type AuditConnection {
+  pageInfo: PageInfo!
+  edges: [AuditEdge]
+}
+
+enum IncidentStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  COMPLETE
+}
+
+enum MediaType {
+  IMAGE
+  VIDEO
+  AUDIO
+  OTHER
+  PDF
+}
+
+enum IncidentAction {
+  EDIT
+  CREATE
+  STATUS
+  SEVERITY
+  ACCEPT
+  COMPLETE
+}
+
+enum ActionItemType {
+  PULL
+  ISSUE
+  BLOG
+}
+
+enum MessageEntityType {
+  MENTION
+  EMOJI
+}
+
+enum IncidentSort {
+  INSERTED_AT
+  TITLE
+  STATUS
+  SEVERITY
+}
+
+enum IncidentFilterType {
+  NOTIFICATIONS
+  FOLLOWING
+  TAG
+  STATUS
+}
+
+input IncidentAttributes {
+  title: String
+  severity: Int
+  description: String
+  status: IncidentStatus
+  tags: [TagAttributes]
+  clusterInformation: ClusterInformationAttributes
+}
+
+input ClusterInformationAttributes {
+  gitCommit: String
+  version: String
+  platform: String
+}
+
+input IncidentMessageAttributes {
+  text: String!
+  file: FileAttributes
+  entities: [EntityAttributes]
+}
+
+input EntityAttributes {
+  type: MessageEntityType!
+  text: String
+  userId: ID
+  startIndex: Int
+  endIndex: Int
+}
+
+input PostmortemAttributes {
+  content: String!
+  actionItems: [ActionItemAttributes]
+}
+
+input ActionItemAttributes {
+  type: ActionItemType!
+  link: String!
+}
+
+input FileAttributes {
+  blob: UploadOrUrl
+}
+
+input NotificationPreferencesAttributes {
+  message: Boolean!
+  incidentUpdate: Boolean!
+  mention: Boolean!
+}
+
+input FollowerAttributes {
+  preferences: NotificationPreferencesAttributes
+}
+
+input IncidentFilter {
+  type: IncidentFilterType!
+  value: String
+  statuses: [IncidentStatus]
+}
+
+type SlimSubscription {
+  id: ID!
+  lineItems: SubscriptionLineItems
+  plan: Plan
+}
+
+type Incident {
+  id: ID!
+  title: String!
+  description: String
+  severity: Int!
+  status: IncidentStatus!
+  nextResponseAt: DateTime
+  repository: Repository!
+  creator: User!
+  owner: User
+  tags: [Tag]
+  postmortem: Postmortem
+  clusterInformation: ClusterInformation
+  subscription: SlimSubscription
+  notificationCount: Int
+  follower: Follower
+  messages(after: String, first: Int, before: String, last: Int): IncidentMessageConnection
+  files(after: String, first: Int, before: String, last: Int): FileConnection
+  history(after: String, first: Int, before: String, last: Int): IncidentHistoryConnection
+  followers(after: String, first: Int, before: String, last: Int): FollowerConnection
+  insertedAt: DateTime
+  updatedAt: DateTime
+}
+
+type ClusterInformation {
+  id: ID!
+  version: String
+  gitCommit: String
+  platform: String
+  insertedAt: DateTime
+  updatedAt: DateTime
+}
+
+type Postmortem {
+  id: ID!
+  content: String!
+  actionItems: [ActionItem]
+  creator: User!
+  insertedAt: DateTime
+  updatedAt: DateTime
+}
+
+type ActionItem {
+  type: ActionItemType!
+  link: String!
+}
+
+type IncidentHistory {
+  id: ID!
+  action: IncidentAction!
+  changes: [IncidentChange]
+  actor: User!
+  incident: Incident!
+  insertedAt: DateTime
+  updatedAt: DateTime
+}
+
+type IncidentChange {
+  key: String!
+  prev: String
+  next: String
+}
+
+type IncidentMessage {
+  id: ID!
+  text: String!
+  incident: Incident!
+  creator: User!
+  reactions: [Reaction]
+  file: File
+  entities: [MessageEntity]
+  insertedAt: DateTime
+  updatedAt: DateTime
+}
+
+type MessageEntity {
+  id: ID!
+  type: MessageEntityType!
+  text: String
+  startIndex: Int
+  endIndex: Int
+  user: User
+  insertedAt: DateTime
+  updatedAt: DateTime
+}
+
+type File {
+  id: ID!
+  mediaType: MediaType
+  filename: String
+  filesize: Int
+  width: Int
+  height: Int
+  contentType: String
+  blob: String!
+  message: IncidentMessage!
+  insertedAt: DateTime
+  updatedAt: DateTime
+}
+
+type Reaction {
+  name: String!
+  creator: User!
+  message: IncidentMessage!
+  insertedAt: DateTime
+  updatedAt: DateTime
+}
+
+type Notification {
+  id: ID!
+  type: NotificationType!
+  msg: String
+  user: User!
+  actor: User!
+  incident: Incident
+  message: IncidentMessage
+  repository: Repository
+  insertedAt: DateTime
+  updatedAt: DateTime
+}
+
+type Follower {
+  id: ID!
+  user: User!
+  incident: Incident
+  preferences: NotificationPreferences
+  insertedAt: DateTime
+  updatedAt: DateTime
+}
+
+type NotificationPreferences {
+  message: Boolean
+  incidentUpdate: Boolean
+  mention: Boolean
+}
+
+type IncidentConnection {
+  pageInfo: PageInfo!
+  edges: [IncidentEdge]
+}
+
+type IncidentMessageConnection {
+  pageInfo: PageInfo!
+  edges: [IncidentMessageEdge]
+}
+
+type IncidentHistoryConnection {
+  pageInfo: PageInfo!
+  edges: [IncidentHistoryEdge]
+}
+
+type FileConnection {
+  pageInfo: PageInfo!
+  edges: [FileEdge]
+}
+
+type NotificationConnection {
+  pageInfo: PageInfo!
+  edges: [NotificationEdge]
+}
+
+type FollowerConnection {
+  pageInfo: PageInfo!
+  edges: [FollowerEdge]
+}
+
+type IncidentDelta {
+  delta: Delta
+  payload: Incident
+}
+
+type IncidentMessageDelta {
+  delta: Delta
+  payload: IncidentMessage
+}
+
+enum Permission {
+  INSTALL
+  PUBLISH
+  BILLING
+  USERS
+  SUPPORT
+  INTEGRATIONS
+}
+
+enum WebhookLogState {
+  SENDING
+  DELIVERED
+  FAILED
+}
+
+enum OauthService {
+  ZOOM
+}
+
+input AccountAttributes {
+  name: String
+  icon: UploadOrUrl
+  domainMappings: [DomainMappingInput]
+  billingAddress: AddressAttributes
+}
+
+input DomainMappingInput {
+  id: ID
+  domain: String
+  enableSso: Boolean
+}
+
+input InviteAttributes {
+  email: String
+  admin: Boolean
+  oidcProviderId: ID
+  serviceAccountId: ID
+  inviteGroups: [BindingAttributes]
+}
+
+input GroupAttributes {
+  name: String!
+  description: String
+  global: Boolean
+}
+
+input RoleAttributes {
+  name: String
+  description: String
+  repositories: [String]
+  roleBindings: [BindingAttributes]
+  permissions: [Permission]
+}
+
+input ServiceAccountAttributes {
+  name: String
+  email: String
+  impersonationPolicy: ImpersonationPolicyAttributes
+}
+
+input BindingAttributes {
+  id: ID
+  userId: ID
+  groupId: ID
+}
+
+input ImpersonationPolicyAttributes {
+  id: ID
+  bindings: [ImpersonationPolicyBindingAttributes]
+}
+
+input ImpersonationPolicyBindingAttributes {
+  id: ID
+  userId: ID
+  groupId: ID
+}
+
+input IntegrationWebhookAttributes {
+  name: String!
+  url: String!
+  actions: [String]
+}
+
+input OauthAttributes {
+  service: OauthService
+  code: String
+  redirectUri: String
+}
+
+input MeetingAttributes {
+  topic: String!
+  incidentId: ID
+}
+
+type Account {
+  id: ID!
+  name: String
+  billingCustomerId: String
+  workosConnectionId: String
+  clusterCount: String
+  userCount: String
+  delinquentAt: DateTime
+  grandfatheredUntil: DateTime
+  billingAddress: Address
+  trialed: Boolean
+  icon: String
+  paymentMethods(after: String, first: Int, before: String, last: Int): PaymentMethodConnection
+  rootUser: User
+  domainMappings: [DomainMapping]
+  subscription: PlatformSubscription
+  backgroundColor: String
+  availableFeatures: PlanFeatures
+  insertedAt: DateTime
+  updatedAt: DateTime
+}
+
+type DomainMapping {
+  id: ID!
+  domain: String!
+  enableSso: Boolean
+  account: Account
+  insertedAt: DateTime
+  updatedAt: DateTime
+}
+
+type Invite {
+  id: ID!
+  admin: Boolean
+  secureId: String
+  existing: Boolean!
+  email: String
+  expiresAt: DateTime
+  account: Account
+  user: User
+  groups: [Group]
+  insertedAt: DateTime
+  updatedAt: DateTime
+}
+
+type Group {
+  id: ID!
+  name: String!
+  global: Boolean
+  description: String
+  insertedAt: DateTime
+  updatedAt: DateTime
+}
+
+type GroupMember {
+  id: ID!
+  user: User
+  group: Group
+  insertedAt: DateTime
+  updatedAt: DateTime
+}
+
+type Role {
+  id: ID!
+  name: String!
+  description: String
+  repositories: [String]
+  permissions: [Permission]
+  roleBindings: [RoleBinding]
+  account: Account
+  insertedAt: DateTime
+  updatedAt: DateTime
+}
+
+type RoleBinding {
+  id: ID!
+  user: User
+  group: Group
+  insertedAt: DateTime
+  updatedAt: DateTime
+}
+
+type IntegrationWebhook {
+  id: ID!
+  name: String!
+  url: String!
+  actions: [String]
+  secret: String!
+  account: Account
+  logs(after: String, first: Int, before: String, last: Int): WebhookLogConnection
+  insertedAt: DateTime
+  updatedAt: DateTime
+}
+
+type WebhookLog {
+  id: ID!
+  state: WebhookLogState!
+  status: Int
+  response: String
+  payload: Map
+  webhook: IntegrationWebhook
+  insertedAt: DateTime
+  updatedAt: DateTime
+}
+
+type OauthIntegration {
+  id: ID!
+  service: OauthService!
+  account: Account
+  insertedAt: DateTime
+  updatedAt: DateTime
+}
+
+type ZoomMeeting {
+  joinUrl: String!
+  password: String
+}
+
+type GroupConnection {
+  pageInfo: PageInfo!
+  edges: [GroupEdge]
+}
+
+type GroupMemberConnection {
+  pageInfo: PageInfo!
+  edges: [GroupMemberEdge]
+}
+
+type RoleConnection {
+  pageInfo: PageInfo!
+  edges: [RoleEdge]
+}
+
+type IntegrationWebhookConnection {
+  pageInfo: PageInfo!
+  edges: [IntegrationWebhookEdge]
+}
+
+type WebhookLogConnection {
+  pageInfo: PageInfo!
+  edges: [WebhookLogEdge]
+}
+
+type InviteConnection {
+  pageInfo: PageInfo!
+  edges: [InviteEdge]
+}
+
+input VersionSpec {
+  repository: String
+  chart: String
+  terraform: String
+  version: String
+}
+
+input VersionAttributes {
+  tags: [VersionTagAttributes]
+}
+
+input VersionTagAttributes {
+  versionId: ID
+  tag: String!
+}
+
+"The version of a package."
+type Version {
+  id: ID!
+
+  version: String!
+
+  readme: String
+
+  valuesTemplate: String
+
+  "The template engine used to render the valuesTemplate."
+  templateType: TemplateType
+
+  helm: Map
+
+  tags: [VersionTag]
+
+  dependencies: Dependencies
+
+  package: String
+
+  chart: Chart
+
+  terraform: Terraform
+
+  crds: [Crd]
+
+  scan: PackageScan
+
+  imageDependencies: [ImageDependency]
+
+  insertedAt: DateTime
+
+  updatedAt: DateTime
+}
+
+"Template engines that can be used at build time."
+enum TemplateType {
+  GOTEMPLATE
+  LUA
+  JAVASCRIPT
+}
+
+type PackageScan {
+  id: ID!
+  grade: ImageGrade
+  violations: [ScanViolation]
+  errors: [ScanError]
+  insertedAt: DateTime
+  updatedAt: DateTime
+}
+
+type ScanViolation {
+  ruleName: String
+  description: String
+  ruleId: String
+  severity: VulnGrade
+  category: String
+  resourceName: String
+  resourceType: String
+  line: Int
+  file: String
+  insertedAt: DateTime
+  updatedAt: DateTime
+}
+
+type ScanError {
+  message: String
+}
+
+type VersionTag {
+  id: ID!
+  tag: String!
+  version: Version
+  chart: Chart
+  insertedAt: DateTime
+  updatedAt: DateTime
+}
+
+type Dependencies {
+  dependencies: [Dependency]
+  providers: [Provider]
+  secrets: [String]
+  providerVsn: String
+  cliVsn: String
+  application: Boolean
+  providerWirings: Map
+  outputs: Map
+  wirings: Wirings
+  breaking: Boolean
+  wait: Boolean
+  instructions: ChangeInstructions
+}
+
+type ChangeInstructions {
+  script: String
+  instructions: String
+}
+
+enum DependencyType {
+  TERRAFORM
+  HELM
+}
+
+type Dependency {
+  type: DependencyType
+  name: String
+  repo: String
+  version: String
+  optional: Boolean
+}
+
+type Wirings {
+  terraform: Map
+  helm: Map
+}
+
+type VersionConnection {
+  pageInfo: PageInfo!
+  edges: [VersionEdge]
+}
+
+enum ImageGrade {
+  A
+  B
+  C
+  D
+  F
+}
+
+enum VulnGrade {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+  NONE
+}
+
+enum VulnVector {
+  NETWORK
+  ADJACENT
+  LOCAL
+  PHYSICAL
+}
+
+enum VulnRequirement {
+  NONE
+  REQUIRED
+}
+
+input DockerRepositoryAttributes {
+  public: Boolean!
+}
+
+type DockerRepository {
+  id: ID!
+  name: String!
+  public: Boolean
+  repository: Repository
+  metrics(tag: String, precision: String, offset: String): [Metric]
+  insertedAt: DateTime
+  updatedAt: DateTime
+}
+
+type DockerImage {
+  id: ID!
+  tag: String
+  digest: String!
+  scannedAt: DateTime
+  scanCompletedAt: DateTime
+  grade: ImageGrade
+  dockerRepository: DockerRepository
+  vulnerabilities: [Vulnerability]
+  insertedAt: DateTime
+  updatedAt: DateTime
+}
+
+type ImageDependency {
+  id: ID!
+  image: DockerImage!
+  version: Version!
+  insertedAt: DateTime
+  updatedAt: DateTime
+}
+
+type Vulnerability {
+  id: ID!
+  title: String
+  description: String
+  vulnerabilityId: String
+  package: String
+  installedVersion: String
+  fixedVersion: String
+  source: String
+  url: String
+  severity: VulnGrade
+  score: Float
+  cvss: Cvss
+  layer: ImageLayer
+  insertedAt: DateTime
+  updatedAt: DateTime
+}
+
+type ImageLayer {
+  digest: String
+  diffId: String
+}
+
+type Cvss {
+  attackVector: VulnVector
+  attackComplexity: VulnGrade
+  privilegesRequired: VulnGrade
+  userInteraction: VulnRequirement
+  confidentiality: VulnGrade
+  integrity: VulnGrade
+  availability: VulnGrade
+}
+
+type DockerRepositoryConnection {
+  pageInfo: PageInfo!
+  edges: [DockerRepositoryEdge]
+}
+
+type DockerImageConnection {
+  pageInfo: PageInfo!
+  edges: [DockerImageEdge]
+}
+
+input TerraformAttributes {
+  name: String
+  description: String
+  package: UploadOrUrl
+  dependencies: Yaml
+  version: String
+}
+
+input TerraformInstallationAttributes {
+  terraformId: ID
+  versionId: ID
+}
+
+type TerraformInstallation {
+  id: ID
+  terraform: Terraform
+  installation: Installation
+  version: Version
+  insertedAt: DateTime
+  updatedAt: DateTime
+}
+
+type Terraform {
+  id: ID
+  name: String
+  readme: String
+  description: String
+  valuesTemplate: String
+  latestVersion: String
+  dependencies: Dependencies
+  package: String
+  repository: Repository
+  editable: Boolean
+  installation: TerraformInstallation
+  insertedAt: DateTime
+  updatedAt: DateTime
+}
+
+type TerraformConnection {
+  pageInfo: PageInfo!
+  edges: [TerraformEdge]
+}
+
+type TerraformInstallationConnection {
+  pageInfo: PageInfo!
+  edges: [TerraformInstallationEdge]
+}
+
+input ChartName {
+  repo: String
+  chart: String
+}
+
+input ChartInstallationAttributes {
+  chartId: ID
+  versionId: ID
+}
+
+input ChartAttributes {
+  tags: [VersionTagAttributes]
+}
+
+input CrdAttributes {
+  name: String!
+  blob: UploadOrUrl
+}
+
+type Chart {
+  id: ID
+  name: String!
+  description: String
+  latestVersion: String
+  repository: Repository
+  dependencies: Dependencies
+  tags: [VersionTag]
+  installation: ChartInstallation
+  insertedAt: DateTime
+  updatedAt: DateTime
+}
+
+type ChartInstallation {
+  id: ID
+  chart: Chart
+  version: Version
+  installation: Installation
+  insertedAt: DateTime
+  updatedAt: DateTime
+}
+
+type Crd {
+  id: ID!
+  name: String!
+  blob: String
+  insertedAt: DateTime
+  updatedAt: DateTime
+}
+
+type ChartConnection {
+  pageInfo: PageInfo!
+  edges: [ChartEdge]
+}
+
+type ChartInstallationConnection {
+  pageInfo: PageInfo!
+  edges: [ChartInstallationEdge]
+}
+
+input RecipeAttributes {
+  name: String!
+  description: String
+  provider: Provider
+  tests: [RecipeTestAttributes]
+  sections: [RecipeSectionAttributes]
+  dependencies: [RecipeReference]
+  oidcSettings: OidcSettingsAttributes
+  private: Boolean
+  primary: Boolean
+  restricted: Boolean
+}
+
+input StackAttributes {
+  name: String!
+  description: String
+  featured: Boolean
+  displayName: String
+  collections: [StackCollectionAttributes]
+  community: CommunityAttributes
+}
+
+input StackCollectionAttributes {
+  provider: Provider!
+  bundles: [RecipeReference]
+}
+
+input OidcSettingsAttributes {
+  uriFormat: String
+  authMethod: OidcAuthMethod!
+  uriFormats: [String]
+  domainKey: String
+  subdomain: Boolean
+}
+
+input RecipeReference {
+  repo: String!
+  name: String!
+}
+
+input RecipeTestAttributes {
+  type: TestType!
+  message: String
+  name: String!
+  args: [TestArgumentAttributes]
+}
+
+input TestArgumentAttributes {
+  name: String!
+  repo: String!
+  key: String!
 }
 
 input RecipeSectionAttributes {
@@ -2877,36 +2252,233 @@ input RecipeSectionAttributes {
   configuration: [RecipeConfigurationAttributes]
 }
 
-input RolesAttributes {
-  admin: Boolean
+input RecipeConditionAttributes {
+  field: String!
+  value: String
+  operation: Operation!
 }
 
-"Input for creating or updating the tag attributes of an application installation."
-input InstallationAttributes {
-  "A YAML object of context."
-  context: Yaml
-
-  "Whether the application should auto upgrade."
-  autoUpgrade: Boolean
-
-  "The tag to track for auto upgrades."
-  trackTag: String
+input RecipeValidationAttributes {
+  type: ValidationType!
+  regex: String
+  message: String!
 }
 
-input OnboardingChecklistAttributes {
-  status: OnboardingChecklistState
-  dismissed: Boolean
+input RecipeItemAttributes {
+  name: String!
+  type: RecipeItemType!
+  configuration: [RecipeConfigurationAttributes]
 }
 
-input ConsoleInstanceUpdateAttributes {
-  size: ConsoleSize
-  configuration: ConsoleConfigurationUpdateAttributes
+input RecipeConfigurationAttributes {
+  type: Datatype!
+  name: String!
+  default: String
+  documentation: String
+  longform: String
+  placeholder: String
+  condition: RecipeConditionAttributes
+  validation: RecipeValidationAttributes
+  functionName: String
+  optional: Boolean
 }
 
-enum RolloutStatus {
-  QUEUED
-  RUNNING
-  FINISHED
+enum RecipeItemType {
+  HELM
+  TERRAFORM
+}
+
+enum Datatype {
+  STRING
+  INT
+  BOOL
+  DOMAIN
+  BUCKET
+  FILE
+  FUNCTION
+  PASSWORD
+}
+
+enum TestType {
+  GIT
+}
+
+enum Operation {
+  NOT
+  GT
+  LT
+  EQ
+  GTE
+  LTE
+  PREFIX
+  SUFFIX
+}
+
+enum ValidationType {
+  REGEX
+}
+
+enum Provider {
+  GCP
+  AWS
+  AZURE
+  CUSTOM
+  KUBERNETES
+  EQUINIX
+  KIND
+  GENERIC
+  LINODE
+}
+
+type Recipe {
+  id: ID!
+  name: String!
+  description: String
+  provider: Provider
+  oidcSettings: OidcSettings
+  private: Boolean
+  restricted: Boolean
+  primary: Boolean
+  oidcEnabled: Boolean
+  tests: [RecipeTest]
+  repository: Repository
+  recipeSections: [RecipeSection]
+  recipeDependencies: [Recipe]
+  insertedAt: DateTime
+  updatedAt: DateTime
+}
+
+type RecipeTest {
+  type: TestType!
+  name: String!
+  message: String
+  args: [TestArgument]
+}
+
+type TestArgument {
+  name: String!
+  repo: String!
+  key: String!
+}
+
+type OidcSettings {
+  uriFormat: String
+  uriFormats: [String]
+  authMethod: OidcAuthMethod!
+  domainKey: String
+  subdomain: Boolean
+}
+
+type RecipeSection {
+  id: ID
+  repository: Repository
+  recipe: Recipe
+  index: Int
+  recipeItems: [RecipeItem]
+  configuration: [RecipeConfiguration]
+  insertedAt: DateTime
+  updatedAt: DateTime
+}
+
+type RecipeItem {
+  id: ID
+  chart: Chart
+  terraform: Terraform
+  recipeSection: RecipeSection
+  configuration: [RecipeConfiguration]
+  insertedAt: DateTime
+  updatedAt: DateTime
+}
+
+type RecipeConfiguration {
+  type: Datatype
+  name: String
+  default: String
+  documentation: String
+  placeholder: String
+  longform: String
+  optional: Boolean
+  condition: RecipeCondition
+  validation: RecipeValidation
+  functionName: String
+  args: [String]
+}
+
+type RecipeCondition {
+  field: String!
+  value: String
+  operation: Operation!
+}
+
+type RecipeValidation {
+  type: ValidationType!
+  regex: String
+  message: String!
+}
+
+type Stack {
+  id: ID!
+  name: String!
+  description: String
+  featured: Boolean
+  community: Community
+  displayName: String
+  collections: [StackCollection]
+  creator: User
+  bundles: [Recipe]
+  sections: [RecipeSection]
+  insertedAt: DateTime
+  updatedAt: DateTime
+}
+
+type StackCollection {
+  id: ID!
+  provider: Provider!
+  bundles: [StackRecipe]
+  insertedAt: DateTime
+  updatedAt: DateTime
+}
+
+type StackRecipe {
+  id: ID!
+  recipe: Recipe!
+  insertedAt: DateTime
+  updatedAt: DateTime
+}
+
+type StackConnection {
+  pageInfo: PageInfo!
+  edges: [StackEdge]
+}
+
+type RecipeConnection {
+  pageInfo: PageInfo!
+  edges: [RecipeEdge]
+}
+
+"Application categories."
+enum Category {
+  DEVOPS
+  DATABASE
+  MESSAGING
+  SECURITY
+  DATA
+  PRODUCTIVITY
+  NETWORK
+  STORAGE
+}
+
+"The release status of a repository, defaults to ALPHA, GA if it is ready for general consumption"
+enum ReleaseStatus {
+  GA
+  BETA
+  ALPHA
+}
+
+"Supported OIDC authentication methods."
+enum OidcAuthMethod {
+  POST
+  BASIC
 }
 
 "Input for creating or updating an application's attributes."
@@ -2978,6 +2550,84 @@ input RepositoryAttributes {
   community: CommunityAttributes
 }
 
+"Input for the application's OAuth settings."
+input OauthSettingsAttributes {
+  "The URI format for the OAuth provider."
+  uriFormat: String!
+
+  "The authentication method for the OAuth provider."
+  authMethod: OidcAuthMethod!
+}
+
+"Input for creating or updating the tag attributes of an application installation."
+input InstallationAttributes {
+  "A YAML object of context."
+  context: Yaml
+
+  "Whether the application should auto upgrade."
+  autoUpgrade: Boolean
+
+  "The tag to track for auto upgrades."
+  trackTag: String
+}
+
+input IntegrationAttributes {
+  name: String!
+  icon: UploadOrUrl
+  sourceUrl: String
+  description: String
+  type: String
+  spec: Yaml
+  tags: [TagAttributes]
+}
+
+input ResourceDefinitionAttributes {
+  name: String!
+  spec: [SpecificationAttributes]
+}
+
+enum SpecDatatype {
+  STRING
+  INT
+  FLOAT
+  BOOL
+  OBJECT
+  LIST
+}
+
+input SpecificationAttributes {
+  name: String!
+  type: SpecDatatype!
+  inner: SpecDatatype
+  spec: [SpecificationAttributes]
+  required: Boolean
+}
+
+input ArtifactAttributes {
+  name: String!
+  readme: String!
+  type: String!
+  platform: String!
+  arch: String
+  blob: UploadOrUrl
+}
+
+"Input for creating or updating the OIDC attributes of an application installation."
+input OidcAttributes {
+  "The redirect URIs for the OIDC provider."
+  redirectUris: [String]
+
+  "The authentication method for the OIDC provider."
+  authMethod: OidcAuthMethod!
+
+  "The users or groups that can login through the OIDC provider."
+  bindings: [BindingAttributes]
+}
+
+input LockAttributes {
+  lock: String!
+}
+
 "Input for creating or updating the community links of an application."
 input CommunityAttributes {
   "The application's Discord server."
@@ -2999,46 +2649,296 @@ input CommunityAttributes {
   videos: [String]
 }
 
-input PublicKeyAttributes {
+type CategoryInfo {
+  category: Category
+  count: Int
+  tags(after: String, first: Int, before: String, last: Int, q: String): GroupedTagConnection
+}
+
+"An installation of an application."
+type Installation {
+  "The installation's ID."
+  id: ID!
+
+  "A YAML object of context."
+  context: Map
+
+  "Whether the application should auto upgrade."
+  autoUpgrade: Boolean
+
+  "The application that was installed."
+  repository: Repository
+
+  "The user that installed the application."
+  user: User
+
+  "The subscription for the application."
+  subscription: RepositorySubscription
+
+  "The OIDC provider for the application."
+  oidcProvider: OidcProvider
+
+  "The license key for the application."
+  licenseKey: String
+
+  "The tag to track for auto upgrades."
+  trackTag: String!
+
+  "The last ping time of an installed application."
+  pingedAt: DateTime
+
+  acmeKeyId: String
+
+  acmeSecret: String
+
+  locked: Boolean
+
+  synced: Boolean
+
+  license: String
+
+  insertedAt: DateTime
+
+  updatedAt: DateTime
+}
+
+type License {
+  name: String
+  url: String
+}
+
+type Community {
+  discord: String
+  slack: String
+  twitter: String
+  homepage: String
+  gitUrl: String
+  videos: [String]
+}
+
+"Container for all resources to create an application."
+type Repository {
+  "The application's ID."
+  id: ID!
+
+  "The name of the application."
   name: String!
-  content: String!
+
+  "The description of the application."
+  description: String
+
+  "The documentation of the application."
+  documentation: String
+
+  "The category of the application."
+  category: Category
+
+  "release status of the repository"
+  releaseStatus: ReleaseStatus
+
+  "Whether the application is private."
+  private: Boolean
+
+  "Whether the application is verified."
+  verified: Boolean
+
+  "Whether the application is trending."
+  trending: Boolean
+
+  "Notes about the application rendered after deploying and displayed to the user."
+  notes: String
+
+  "The default tag to deploy."
+  defaultTag: String
+
+  "The git URL of the application."
+  gitUrl: String
+
+  "The main branch of the application."
+  mainBranch: String
+
+  "The README of the application."
+  readme: String
+
+  "The license of the application."
+  license: License
+
+  "The community links of the application."
+  community: Community
+
+  "The homepage of the application."
+  homepage: String
+
+  "The application publisher."
+  publisher: Publisher
+
+  "The available plans for the application."
+  plans: [Plan]
+
+  "The tags of the application."
+  tags: [Tag]
+
+  "The artifacts of the application."
+  artifacts: [Artifact]
+
+  "The recipes used to install the application."
+  recipes: [Recipe]
+
+  "The OAuth settings for the application."
+  oauthSettings: OauthSettings
+
+  icon: String
+
+  darkIcon: String
+
+  "The external contributors to this repository"
+  contributors: [Contributor]
+
+  "The installation of the application by a user."
+  installation: Installation
+
+  "version tags that can be followed to control upgrade flow"
+  upgradeChannels: [String]
+
+  "If the application can be edited by the current user."
+  editable: Boolean
+
+  "A map of secrets of the application."
+  secrets: Map
+
+  "The application's public key."
+  publicKey: String
+
+  "The documentation of the application."
+  docs: [FileContent]
+
+  insertedAt: DateTime
+
+  updatedAt: DateTime
 }
 
-input TagAttributes {
-  tag: String!
+"An external repository contributor"
+type Contributor {
+  id: ID!
+  user: User
+  insertedAt: DateTime
+  updatedAt: DateTime
 }
 
-input CloudShellAttributes {
-  provider: Provider
-  workspace: WorkspaceAttributes!
-  credentials: ShellCredentialsAttributes!
-  scm: ScmAttributes
-  demoId: ID
+type Artifact {
+  id: ID
+  name: String
+  readme: String
+  type: ArtifactType
+  platform: ArtifactPlatform
+  filesize: Int
+  sha: String
+  arch: String
+  blob: String
+  insertedAt: DateTime
+  updatedAt: DateTime
 }
 
-type Wirings {
-  terraform: Map
-  helm: Map
+enum ArtifactType {
+  CLI
+  MOBILE
+  DESKTOP
 }
 
-input KeyBackupAttributes {
+enum ArtifactPlatform {
+  MAC
+  WINDOWS
+  LINUX
+  ANDROID
+  FREEBSD
+  OPENBSD
+  SOLARIS
+}
+
+type Integration {
+  id: ID!
   name: String!
-  repositories: [String]
-  key: String!
+  sourceUrl: String
+  description: String
+  type: String
+  spec: Map
+  icon: String
+  repository: Repository
+  publisher: Publisher
+  tags: [Tag]
+  insertedAt: DateTime
+  updatedAt: DateTime
 }
 
-input OidcSettingsAttributes {
-  uriFormat: String
+type OidcProvider {
+  id: ID!
+  clientSecret: String!
+  clientId: String!
+  redirectUris: [String]
   authMethod: OidcAuthMethod!
-  uriFormats: [String]
-  domainKey: String
-  subdomain: Boolean
+  configuration: OuathConfiguration
+  consent: ConsentRequest
+  invites: [Invite]
+  bindings: [OidcProviderBinding]
+  insertedAt: DateTime
+  updatedAt: DateTime
 }
 
-input RecipeValidationAttributes {
-  type: ValidationType!
-  regex: String
-  message: String!
+type OidcProviderBinding {
+  id: ID!
+  user: User
+  group: Group
+  insertedAt: DateTime
+  updatedAt: DateTime
+}
+
+type OauthSettings {
+  uriFormat: String!
+  authMethod: OidcAuthMethod!
+}
+
+type ApplyLock {
+  id: ID!
+  lock: String
+  repository: Repository
+  owner: User
+  insertedAt: DateTime
+  updatedAt: DateTime
+}
+
+type ScaffoldFile {
+  path: String
+  content: String
+}
+
+type RepositoryConnection {
+  pageInfo: PageInfo!
+  edges: [RepositoryEdge]
+}
+
+type InstallationConnection {
+  pageInfo: PageInfo!
+  edges: [InstallationEdge]
+}
+
+type IntegrationConnection {
+  pageInfo: PageInfo!
+  edges: [IntegrationEdge]
+}
+
+enum PlanType {
+  LICENSED
+  METERED
+}
+
+enum PaymentPeriod {
+  MONTHLY
+  YEARLY
+}
+
+enum LineItemDimension {
+  USER
+  CLUSTER
 }
 
 input PlanAttributes {
@@ -3056,219 +2956,74 @@ input UpdatablePlanAttributes {
   serviceLevels: [ServiceLevelAttributes]
 }
 
-input GroupAttributes {
+input ServiceLevelAttributes {
+  maxSeverity: Int
+  minSeverity: Int
+  responseTime: Int
+}
+
+input PlanMetadataAttributes {
+  freeform: Yaml
+  features: [PlanFeatureAttributes]
+}
+
+input PlanFeatureAttributes {
   name: String!
-  description: String
-  global: Boolean
+  description: String!
 }
 
-input RoleAttributes {
-  name: String
-  description: String
-  repositories: [String]
-  roleBindings: [BindingAttributes]
-  permissions: [Permission]
+input PlanLineItemAttributes {
+  included: [LimitAttributes]
+  items: [LineItemAttributes]
 }
 
-type ChangeInstructions {
-  script: String
-  instructions: String
+input LimitAttributes {
+  dimension: String!
+  quantity: Int!
 }
 
-input RecipeTestAttributes {
-  type: TestType!
-  message: String
+input LineItemAttributes {
   name: String!
-  args: [TestArgumentAttributes]
+  dimension: String!
+  cost: Int!
+  period: String!
+  type: PlanType
 }
 
-input IntegrationAttributes {
+input SubscriptionAttributes {
+  lineItems: SubscriptionLineItemAttributes
+}
+
+input SubscriptionLineItemAttributes {
+  items: [LimitAttributes]
+}
+
+type Plan {
+  id: ID!
   name: String!
-  icon: UploadOrUrl
-  sourceUrl: String
-  description: String
-  type: String
-  spec: Yaml
-  tags: [TagAttributes]
+  default: Boolean
+  visible: Boolean!
+  cost: Int!
+  period: String
+  lineItems: PlanLineItems
+  metadata: PlanMetadata
+  serviceLevels: [ServiceLevel]
+  insertedAt: DateTime
+  updatedAt: DateTime
 }
 
-input WebhookAttributes {
-  url: String!
-}
-
-type Follower {
+type PlatformPlan {
   id: ID!
-  user: User!
-  incident: Incident
-  preferences: NotificationPreferences
+  name: String!
+  visible: Boolean!
+  cost: Int!
+  period: PaymentPeriod!
+  enterprise: Boolean
+  trial: Boolean
+  features: PlanFeatures
+  lineItems: [PlatformPlanItem]
   insertedAt: DateTime
   updatedAt: DateTime
-}
-
-"An external repository contributor"
-type Contributor {
-  id: ID!
-  user: User
-  insertedAt: DateTime
-  updatedAt: DateTime
-}
-
-enum CloudProvider {
-  AWS
-}
-
-type ImageLayer {
-  digest: String
-  diffId: String
-}
-
-type RolloutDelta {
-  delta: Delta
-  payload: Rollout
-}
-
-type CategoryInfo {
-  category: Category
-  count: Int
-  tags(after: String, first: Int, before: String, last: Int, q: String): GroupedTagConnection
-}
-
-type OauthInfo {
-  provider: OauthProvider!
-  authorizeUrl: String!
-}
-
-type SlimSubscription {
-  id: ID!
-  lineItems: SubscriptionLineItems
-  plan: Plan
-}
-
-type PersistedToken {
-  id: ID
-  token: String
-  audits(after: String, first: Int, before: String, last: Int): PersistedTokenAuditConnection
-  metrics: [GeoMetric]
-  insertedAt: DateTime
-  updatedAt: DateTime
-}
-
-type GroupedTagConnection {
-  pageInfo: PageInfo!
-  edges: [GroupedTagEdge]
-}
-
-type OuathConfiguration {
-  issuer: String
-  authorizationEndpoint: String
-  tokenEndpoint: String
-  jwksUri: String
-  userinfoEndpoint: String
-}
-
-type TerraformInstallation {
-  id: ID
-  terraform: Terraform
-  installation: Installation
-  version: Version
-  insertedAt: DateTime
-  updatedAt: DateTime
-}
-
-type CardConnection {
-  pageInfo: PageInfo!
-  edges: [CardEdge]
-}
-
-type GroupMemberConnection {
-  pageInfo: PageInfo!
-  edges: [GroupMemberEdge]
-}
-
-type FileConnection {
-  pageInfo: PageInfo!
-  edges: [FileEdge]
-}
-
-type InviteConnection {
-  pageInfo: PageInfo!
-  edges: [InviteEdge]
-}
-
-type TestConnection {
-  pageInfo: PageInfo!
-  edges: [TestEdge]
-}
-
-enum Permission {
-  INSTALL
-  PUBLISH
-  BILLING
-  USERS
-  SUPPORT
-  INTEGRATIONS
-}
-
-type IntegrationWebhookConnection {
-  pageInfo: PageInfo!
-  edges: [IntegrationWebhookEdge]
-}
-
-type TerraformConnection {
-  pageInfo: PageInfo!
-  edges: [TerraformEdge]
-}
-
-enum LineItemDimension {
-  USER
-  CLUSTER
-}
-
-type IncidentHistoryConnection {
-  pageInfo: PageInfo!
-  edges: [IncidentHistoryEdge]
-}
-
-type ChartConnection {
-  pageInfo: PageInfo!
-  edges: [ChartEdge]
-}
-
-type PersistedTokenAuditConnection {
-  pageInfo: PageInfo!
-  edges: [PersistedTokenAuditEdge]
-}
-
-type OauthIntegration {
-  id: ID!
-  service: OauthService!
-  account: Account
-  insertedAt: DateTime
-  updatedAt: DateTime
-}
-
-type PackageScan {
-  id: ID!
-  grade: ImageGrade
-  violations: [ScanViolation]
-  errors: [ScanError]
-  insertedAt: DateTime
-  updatedAt: DateTime
-}
-
-type VersionConnection {
-  pageInfo: PageInfo!
-  edges: [VersionEdge]
-}
-
-type DockerRepositoryConnection {
-  pageInfo: PageInfo!
-  edges: [DockerRepositoryEdge]
-}
-
-type RecipeConnection {
-  pageInfo: PageInfo!
-  edges: [RecipeEdge]
 }
 
 type PlatformPlanItem {
@@ -3279,286 +3034,93 @@ type PlatformPlanItem {
   period: PaymentPeriod!
 }
 
-type InvoiceItem {
-  amount: Int!
+type PlanFeatures {
+  vpn: Boolean
+  userManagement: Boolean
+  audit: Boolean
+  databaseManagement: Boolean
+  cd: Boolean
+}
+
+type ServiceLevel {
+  maxSeverity: Int
+  minSeverity: Int
+  responseTime: Int
+}
+
+type Invoice {
+  number: String!
+  amountDue: Int!
+  amountPaid: Int!
   currency: String!
+  status: String
+  hostedInvoiceUrl: String
+  paymentIntent: PaymentIntent
+  createdAt: DateTime
+  lines: [InvoiceItem]
+}
+
+type PaymentMethod {
+  id: String
+  card: Card
+  type: String
+  isDefault: Boolean
+}
+
+type PaymentIntent {
+  id: String
   description: String
-}
-
-type Terraform {
-  id: ID
-  name: String
-  readme: String
-  description: String
-  valuesTemplate: String
-  latestVersion: String
-  dependencies: Dependencies
-  package: String
-  repository: Repository
-  editable: Boolean
-  installation: TerraformInstallation
-  insertedAt: DateTime
-  updatedAt: DateTime
-}
-
-type AppLink {
-  url: String
-  description: String
-}
-
-type IntegrationWebhook {
-  id: ID!
-  name: String!
-  url: String!
-  actions: [String]
-  secret: String!
-  account: Account
-  logs(after: String, first: Int, before: String, last: Int): WebhookLogConnection
-  insertedAt: DateTime
-  updatedAt: DateTime
-}
-
-type Dependency {
-  type: DependencyType
-  name: String
-  repo: String
-  version: String
-  optional: Boolean
-}
-
-type ImpersonationPolicy {
-  id: ID!
-  bindings: [ImpersonationPolicyBinding]
-  insertedAt: DateTime
-  updatedAt: DateTime
-}
-
-type DnsAccessPolicy {
-  id: ID!
-  bindings: [PolicyBinding]
-  insertedAt: DateTime
-  updatedAt: DateTime
-}
-
-type Vulnerability {
-  id: ID!
-  title: String
-  description: String
-  vulnerabilityId: String
-  package: String
-  installedVersion: String
-  fixedVersion: String
-  source: String
-  url: String
-  severity: VulnGrade
-  score: Float
-  cvss: Cvss
-  layer: ImageLayer
-  insertedAt: DateTime
-  updatedAt: DateTime
-}
-
-"Application categories."
-enum Category {
-  DEVOPS
-  DATABASE
-  MESSAGING
-  SECURITY
-  DATA
-  PRODUCTIVITY
-  NETWORK
-  STORAGE
-}
-
-type UpgradeConfig {
-  paths: [UpgradePath]
-}
-
-type ImpersonationPolicyBinding {
-  id: ID!
-  user: User
-  group: Group
-  insertedAt: DateTime
-  updatedAt: DateTime
-}
-
-type MetricTag {
-  name: String!
-  value: String!
-}
-
-type OidcProviderBinding {
-  id: ID!
-  user: User
-  group: Group
-  insertedAt: DateTime
-  updatedAt: DateTime
-}
-
-enum MediaType {
-  IMAGE
-  VIDEO
-  AUDIO
-  OTHER
-  PDF
-}
-
-enum OauthService {
-  ZOOM
-}
-
-input RecipeReference {
-  repo: String!
-  name: String!
-}
-
-type LoginMethodResponse {
-  loginMethod: LoginMethod!
-  token: String
-  authorizeUrl: String
-}
-
-enum PlanType {
-  LICENSED
-  METERED
-}
-
-type RepositorySubscriptionEdge {
-  node: RepositorySubscription
-  cursor: String
-}
-
-type IncidentMessage {
-  id: ID!
-  text: String!
-  incident: Incident!
-  creator: User!
-  reactions: [Reaction]
-  file: File
-  entities: [MessageEntity]
-  insertedAt: DateTime
-  updatedAt: DateTime
-}
-
-enum WebhookLogState {
-  SENDING
-  DELIVERED
-  FAILED
-}
-
-type PersistedTokenEdge {
-  node: PersistedToken
-  cursor: String
-}
-
-enum MessageEntityType {
-  MENTION
-  EMOJI
-}
-
-enum Datatype {
-  STRING
-  INT
-  BOOL
-  DOMAIN
-  BUCKET
-  FILE
-  FUNCTION
-  PASSWORD
-}
-
-type TerraformInstallationEdge {
-  node: TerraformInstallation
-  cursor: String
-}
-
-type NotificationEdge {
-  node: Notification
-  cursor: String
-}
-
-type OauthResponse {
-  redirectTo: String!
-}
-
-type PublisherEdge {
-  node: Publisher
-  cursor: String
-}
-
-type UserEdge {
-  node: User
-  cursor: String
-}
-
-type IncidentMessageEdge {
-  node: IncidentMessage
-  cursor: String
-}
-
-type DeferredUpdateEdge {
-  node: DeferredUpdate
-  cursor: String
-}
-
-type ChartInstallationEdge {
-  node: ChartInstallation
-  cursor: String
-}
-
-type IncidentEdge {
-  node: Incident
-  cursor: String
-}
-
-type Audit {
-  id: ID!
-  action: String!
-  ip: String
-  city: String
-  country: String
-  latitude: String
-  longitude: String
-  actor: User
-  group: Group
-  role: Role
-  user: User
-  integrationWebhook: IntegrationWebhook
-  repository: Repository
-  version: Version
-  image: DockerImage
-  insertedAt: DateTime
-  updatedAt: DateTime
-}
-
-type DemoProject {
-  id: ID!
-  projectId: String!
-  credentials: String
-  ready: Boolean
-  state: DemoProjectState
-  insertedAt: DateTime
-  updatedAt: DateTime
-}
-
-type ApplicationComponent {
-  group: String
-  name: String
-  kind: String
+  clientSecret: String
+  amount: Int
+  captureMethod: String
+  currency: String
+  nextAction: NextAction
   status: String
 }
 
-enum VulnRequirement {
-  NONE
-  REQUIRED
+type SetupIntent {
+  id: String
+  clientSecret: String
+  nextAction: NextAction
+  paymentMethodTypes: [String]
+  status: String
 }
 
-type Crd {
+type NextAction {
+  type: String
+  redirectToUrl: RedirectToUrl
+}
+
+type RedirectToUrl {
+  url: String
+  returnUrl: String
+}
+
+type RepositorySubscription {
   id: ID!
-  name: String!
-  blob: String
+  externalId: String
+  customerId: String
+  lineItems: SubscriptionLineItems
+  installation: Installation
+  plan: Plan
+  invoices(after: String, first: Int, before: String, last: Int): InvoiceConnection
+}
+
+type PlatformSubscription {
+  id: ID!
+  externalId: String
+  lineItems: [PlatformSubscriptionLineItems]
+  plan: PlatformPlan
+  trialUntil: DateTime
+  latestInvoice: Invoice
   insertedAt: DateTime
   updatedAt: DateTime
+}
+
+type PlatformSubscriptionLineItems {
+  dimension: LineItemDimension!
+  quantity: Int!
+  externalId: String
 }
 
 type Card {
@@ -3570,16 +3132,37 @@ type Card {
   name: String
 }
 
-type OnboardingChecklist {
-  status: OnboardingChecklistState
-  dismissed: Boolean
+type InvoiceItem {
+  amount: Int!
+  currency: String!
+  description: String
 }
 
-enum IncidentSort {
-  INSERTED_AT
-  TITLE
-  STATUS
-  SEVERITY
+type PlanLineItems {
+  included: [Limit]
+  items: [LineItem]
+}
+
+type PlanMetadata {
+  freeform: Map
+  features: [PlanFeature]
+}
+
+type PlanFeature {
+  name: String!
+  description: String!
+}
+
+type SubscriptionLineItems {
+  items: [Limit]
+}
+
+type LineItem {
+  name: String!
+  dimension: String!
+  cost: Int!
+  period: String
+  type: PlanType
 }
 
 type Limit {
@@ -3587,63 +3170,127 @@ type Limit {
   quantity: Int!
 }
 
-input FollowerAttributes {
-  preferences: NotificationPreferencesAttributes
+type InvoiceConnection {
+  pageInfo: PageInfo!
+  edges: [InvoiceEdge]
 }
 
-type Dependencies {
-  dependencies: [Dependency]
-  providers: [Provider]
-  secrets: [String]
-  providerVsn: String
-  cliVsn: String
-  application: Boolean
-  providerWirings: Map
-  outputs: Map
-  wirings: Wirings
-  breaking: Boolean
-  wait: Boolean
-  instructions: ChangeInstructions
+type CardConnection {
+  pageInfo: PageInfo!
+  edges: [CardEdge]
 }
 
-input RecipeConfigurationAttributes {
-  type: Datatype!
+type PaymentMethodConnection {
+  pageInfo: PageInfo!
+  edges: [PaymentMethodEdge]
+}
+
+type RepositorySubscriptionConnection {
+  pageInfo: PageInfo!
+  edges: [RepositorySubscriptionEdge]
+}
+
+enum NotificationType {
+  MESSAGE
+  INCIDENT_UPDATE
+  MENTION
+  LOCKED
+  PENDING
+}
+
+enum ResetTokenType {
+  PASSWORD
+  EMAIL
+}
+
+enum LoginMethod {
+  PASSWORD
+  PASSWORDLESS
+  GOOGLE
+  GITHUB
+  SSO
+}
+
+enum UserEventStatus {
+  OK
+  ERROR
+}
+
+enum OnboardingState {
+  NEW
+  ONBOARDED
+  INSTALLED
+  ACTIVE
+}
+
+enum OnboardingChecklistState {
+  NEW
+  CONFIGURED
+  CONSOLE_INSTALLED
+  FINISHED
+}
+
+enum ExternalOidcProvider {
+  GITHUB_ACTIONS
+}
+
+input UserAttributes {
+  name: String
+  email: String
+  password: String
+  avatar: UploadOrUrl
+  onboarding: OnboardingState
+  onboardingChecklist: OnboardingChecklistAttributes
+  loginMethod: LoginMethod
+  roles: RolesAttributes
+  confirm: String
+  groupIds: [ID!]
+}
+
+input RolesAttributes {
+  admin: Boolean
+}
+
+input OnboardingChecklistAttributes {
+  status: OnboardingChecklistState
+  dismissed: Boolean
+}
+
+input PublisherAttributes {
+  name: String
+  description: String
+  avatar: UploadOrUrl
+  phone: String
+  address: AddressAttributes
+  community: CommunityAttributes
+}
+
+input AddressAttributes {
+  name: String
+  line1: String!
+  line2: String
+  city: String!
+  state: String
+  country: String!
+  zip: String!
+}
+
+input WebhookAttributes {
+  url: String!
+}
+
+input ResetTokenAttributes {
+  type: ResetTokenType!
+  email: String
+}
+
+input ResetTokenRealization {
+  password: String
+}
+
+input PublicKeyAttributes {
   name: String!
-  default: String
-  documentation: String
-  longform: String
-  placeholder: String
-  condition: RecipeConditionAttributes
-  validation: RecipeValidationAttributes
-  functionName: String
-  optional: Boolean
-}
-
-input PlanLineItemAttributes {
-  included: [LimitAttributes]
-  items: [LineItemAttributes]
-}
-
-type StepLogs {
-  step: TestStep
-  logs: [String]
-}
-
-input NotificationPreferencesAttributes {
-  message: Boolean!
-  incidentUpdate: Boolean!
-  mention: Boolean!
-}
-
-input VersionTagAttributes {
-  versionId: ID
-  tag: String!
-}
-
-input ServiceLevelAttributes {
-  maxSeverity: Int
-  minSeverity: Int
-  responseTime: Int
+  content: String!
 }
 
 input UserEventAttributes {
@@ -3652,110 +3299,16 @@ input UserEventAttributes {
   status: UserEventStatus
 }
 
-"The information for this upgrade"
-input UpgradeAttributes {
-  "a simple message to explain this upgrade"
-  message: String!
-
-  "the type of upgrade"
-  type: UpgradeType!
-
-  "information for a config upgrade"
-  config: UpgradeConfigAttributes
-}
-
-input ImpersonationPolicyBindingAttributes {
-  id: ID
-  userId: ID
-  groupId: ID
-}
-
-input StackAttributes {
+input KeyBackupAttributes {
   name: String!
-  description: String
-  featured: Boolean
-  displayName: String
-  collections: [StackCollectionAttributes]
-  community: CommunityAttributes
-}
-
-input UpgradeQueueAttributes {
-  name: String!
-  legacy: Boolean
-  domain: String
-  git: String
-  provider: Provider
-}
-
-type Roles {
-  admin: Boolean
-}
-
-type Address {
-  name: String
-  line1: String
-  line2: String
-  city: String
-  state: String
-  country: String
-  zip: String
-}
-
-input TestArgumentAttributes {
-  name: String!
-  repo: String!
+  repositories: [String]
   key: String!
 }
 
-"Input for creating or updating the OIDC attributes of an application installation."
-input OidcAttributes {
-  "The redirect URIs for the OIDC provider."
-  redirectUris: [String]
-
-  "The authentication method for the OIDC provider."
-  authMethod: OidcAuthMethod!
-
-  "The users or groups that can login through the OIDC provider."
-  bindings: [BindingAttributes]
-}
-
-input DnsRecordAttributes {
-  name: String!
-  type: DnsRecordType!
-  records: [String]
-}
-
-type PlatformMetrics {
-  repositories: Int
-  rollouts: Int
-  clusters: Int
-  publishers: Int
-}
-
-input ConsoleInstanceAttributes {
-  "the name of this instance (globally unique)"
-  name: String!
-
-  "a heuristic size of this instance"
-  size: ConsoleSize!
-
-  "the cloud provider to deploy to"
-  cloud: CloudProvider!
-
-  "the region to deploy to (provider specific)"
-  region: String!
-}
-
-type OidcSettings {
-  uriFormat: String
-  uriFormats: [String]
-  authMethod: OidcAuthMethod!
-  domainKey: String
-  subdomain: Boolean
-}
-
-input SubscriptionAttributes {
-  lineItems: SubscriptionLineItemAttributes
+input TrustRelationshipAttributes {
+  issuer: String!
+  trust: String!
+  scopes: [String!]
 }
 
 type User {
@@ -3825,45 +3378,38 @@ type User {
   updatedAt: DateTime
 }
 
-type TerraformProvider {
-  name: Provider
-  content: String
+type Roles {
+  admin: Boolean
 }
 
-type OidcProvider {
+type OnboardingChecklist {
+  status: OnboardingChecklistState
+  dismissed: Boolean
+}
+
+type ImpersonationPolicy {
   id: ID!
-  clientSecret: String!
-  clientId: String!
-  redirectUris: [String]
-  authMethod: OidcAuthMethod!
-  configuration: OuathConfiguration
-  consent: ConsentRequest
-  invites: [Invite]
-  bindings: [OidcProviderBinding]
+  bindings: [ImpersonationPolicyBinding]
   insertedAt: DateTime
   updatedAt: DateTime
 }
 
-enum Order {
-  ASC
-  DESC
+type ImpersonationPolicyBinding {
+  id: ID!
+  user: User
+  group: Group
+  insertedAt: DateTime
+  updatedAt: DateTime
 }
 
-enum ScmProvider {
-  GITHUB
-  GITLAB
-  MANUAL
-  DEMO
-}
-
-type TestDelta {
-  delta: Delta
-  payload: Test
-}
-
-type UpgradeQueueDelta {
-  delta: Delta
-  payload: UpgradeQueue
+type Address {
+  name: String
+  line1: String
+  line2: String
+  city: String
+  state: String
+  country: String
+  zip: String
 }
 
 type OidcTrustRelationship {
@@ -3875,23 +3421,476 @@ type OidcTrustRelationship {
   updatedAt: DateTime
 }
 
-scalar Map
-
-type Group {
-  id: ID!
-  name: String!
-  global: Boolean
-  description: String
+type PersistedToken {
+  id: ID
+  token: String
+  audits(after: String, first: Int, before: String, last: Int): PersistedTokenAuditConnection
+  metrics: [GeoMetric]
   insertedAt: DateTime
   updatedAt: DateTime
 }
 
-type TestStep {
-  id: ID!
-  status: TestStatus!
-  name: String!
-  description: String!
-  hasLogs: Boolean
+type PersistedTokenAudit {
+  id: ID
+  ip: String
+  timestamp: DateTime
+  count: Int
+  city: String
+  country: String
+  latitude: String
+  longitude: String
   insertedAt: DateTime
   updatedAt: DateTime
+}
+
+type Publisher {
+  id: ID
+  name: String!
+  description: String
+  billingAccountId: String
+  phone: String
+  address: Address
+  community: Community
+  owner: User
+  avatar: String
+  backgroundColor: String
+  repositories: [Repository]
+  insertedAt: DateTime
+  updatedAt: DateTime
+}
+
+type Webhook {
+  id: ID
+  url: String
+  secret: String
+  user: User
+  insertedAt: DateTime
+  updatedAt: DateTime
+}
+
+type WebhookResponse {
+  statusCode: Int!
+  body: String
+  headers: Map
+}
+
+type ResetToken {
+  id: ID!
+  externalId: ID!
+  type: ResetTokenType!
+  user: User!
+  email: String!
+  insertedAt: DateTime
+  updatedAt: DateTime
+}
+
+type PublicKey {
+  id: ID!
+  name: String!
+  content: String!
+  digest: String!
+  user: User!
+  insertedAt: DateTime
+  updatedAt: DateTime
+}
+
+type EabCredential {
+  id: ID!
+  cluster: String!
+  provider: Provider!
+  keyId: String!
+  hmacKey: String!
+  insertedAt: DateTime
+  updatedAt: DateTime
+}
+
+type LoginMethodResponse {
+  loginMethod: LoginMethod!
+  token: String
+  authorizeUrl: String
+}
+
+type DeviceLogin {
+  loginUrl: String!
+  deviceToken: String!
+}
+
+type KeyBackup {
+  id: ID!
+  name: String!
+  repositories: [String!]
+  digest: String!
+  value: String!
+  user: User!
+  insertedAt: DateTime
+  updatedAt: DateTime
+}
+
+type UserConnection {
+  pageInfo: PageInfo!
+  edges: [UserEdge]
+}
+
+type PublisherConnection {
+  pageInfo: PageInfo!
+  edges: [PublisherEdge]
+}
+
+type WebhookConnection {
+  pageInfo: PageInfo!
+  edges: [WebhookEdge]
+}
+
+type PersistedTokenConnection {
+  pageInfo: PageInfo!
+  edges: [PersistedTokenEdge]
+}
+
+type PublicKeyConnection {
+  pageInfo: PageInfo!
+  edges: [PublicKeyEdge]
+}
+
+type PersistedTokenAuditConnection {
+  pageInfo: PageInfo!
+  edges: [PersistedTokenAuditEdge]
+}
+
+type KeyBackupConnection {
+  pageInfo: PageInfo!
+  edges: [KeyBackupEdge]
+}
+
+type Metric {
+  name: String!
+  tags: [MetricTag]
+  values: [MetricValue]
+}
+
+type MetricTag {
+  name: String!
+  value: String!
+}
+
+type MetricValue {
+  time: DateTime
+  value: Int
+}
+
+type PlatformMetrics {
+  repositories: Int
+  rollouts: Int
+  clusters: Int
+  publishers: Int
+}
+
+enum Delta {
+  CREATE
+  UPDATE
+  DELETE
+}
+
+enum Order {
+  ASC
+  DESC
+}
+
+input TagAttributes {
+  tag: String!
+}
+
+type ClosureItem {
+  helm: Chart
+  terraform: Terraform
+  dep: Dependency
+}
+
+type Tag {
+  id: ID!
+  tag: String!
+}
+
+enum TagGroup {
+  INTEGRATIONS
+  REPOSITORIES
+}
+
+type GroupedTag {
+  tag: String!
+  count: Int!
+}
+
+type FileContent {
+  path: String!
+  content: String!
+}
+
+type PluralConfiguration {
+  stripeConnectId: String
+  stripePublishableKey: String
+  registry: String
+  gitCommit: String
+}
+
+type GroupedTagConnection {
+  pageInfo: PageInfo!
+  edges: [GroupedTagEdge]
+}
+
+scalar Map
+
+scalar Yaml
+
+"""
+The `DateTime` scalar type represents a date and time in the UTC
+timezone. The DateTime appears in a JSON response as an ISO8601 formatted
+string, including UTC timezone ("Z"). The parsed date and time string will
+be converted to UTC if there is an offset.
+"""
+scalar DateTime
+
+scalar UploadOrUrl
+
+type PageInfo {
+  "When paginating backwards, are there more items?"
+  hasPreviousPage: Boolean!
+
+  "When paginating forwards, are there more items?"
+  hasNextPage: Boolean!
+
+  "When paginating backwards, the cursor to continue."
+  startCursor: String
+
+  "When paginating forwards, the cursor to continue."
+  endCursor: String
+}
+
+type GroupedTagEdge {
+  node: GroupedTag
+  cursor: String
+}
+
+type KeyBackupEdge {
+  node: KeyBackup
+  cursor: String
+}
+
+type PersistedTokenAuditEdge {
+  node: PersistedTokenAudit
+  cursor: String
+}
+
+type PublicKeyEdge {
+  node: PublicKey
+  cursor: String
+}
+
+type PersistedTokenEdge {
+  node: PersistedToken
+  cursor: String
+}
+
+type WebhookEdge {
+  node: Webhook
+  cursor: String
+}
+
+type PublisherEdge {
+  node: Publisher
+  cursor: String
+}
+
+type UserEdge {
+  node: User
+  cursor: String
+}
+
+type RepositorySubscriptionEdge {
+  node: RepositorySubscription
+  cursor: String
+}
+
+type PaymentMethodEdge {
+  node: PaymentMethod
+  cursor: String
+}
+
+type CardEdge {
+  node: Card
+  cursor: String
+}
+
+type InvoiceEdge {
+  node: Invoice
+  cursor: String
+}
+
+type IntegrationEdge {
+  node: Integration
+  cursor: String
+}
+
+type InstallationEdge {
+  node: Installation
+  cursor: String
+}
+
+type RepositoryEdge {
+  node: Repository
+  cursor: String
+}
+
+type RecipeEdge {
+  node: Recipe
+  cursor: String
+}
+
+type StackEdge {
+  node: Stack
+  cursor: String
+}
+
+type ChartInstallationEdge {
+  node: ChartInstallation
+  cursor: String
+}
+
+type ChartEdge {
+  node: Chart
+  cursor: String
+}
+
+type TerraformInstallationEdge {
+  node: TerraformInstallation
+  cursor: String
+}
+
+type TerraformEdge {
+  node: Terraform
+  cursor: String
+}
+
+type DockerImageEdge {
+  node: DockerImage
+  cursor: String
+}
+
+type DockerRepositoryEdge {
+  node: DockerRepository
+  cursor: String
+}
+
+type VersionEdge {
+  node: Version
+  cursor: String
+}
+
+type InviteEdge {
+  node: Invite
+  cursor: String
+}
+
+type WebhookLogEdge {
+  node: WebhookLog
+  cursor: String
+}
+
+type IntegrationWebhookEdge {
+  node: IntegrationWebhook
+  cursor: String
+}
+
+type RoleEdge {
+  node: Role
+  cursor: String
+}
+
+type GroupMemberEdge {
+  node: GroupMember
+  cursor: String
+}
+
+type GroupEdge {
+  node: Group
+  cursor: String
+}
+
+type FollowerEdge {
+  node: Follower
+  cursor: String
+}
+
+type NotificationEdge {
+  node: Notification
+  cursor: String
+}
+
+type FileEdge {
+  node: File
+  cursor: String
+}
+
+type IncidentHistoryEdge {
+  node: IncidentHistory
+  cursor: String
+}
+
+type IncidentMessageEdge {
+  node: IncidentMessage
+  cursor: String
+}
+
+type IncidentEdge {
+  node: Incident
+  cursor: String
+}
+
+type AuditEdge {
+  node: Audit
+  cursor: String
+}
+
+type DeferredUpdateEdge {
+  node: DeferredUpdate
+  cursor: String
+}
+
+type UpgradeEdge {
+  node: Upgrade
+  cursor: String
+}
+
+type RolloutEdge {
+  node: Rollout
+  cursor: String
+}
+
+type OidcLoginEdge {
+  node: OidcLogin
+  cursor: String
+}
+
+type DnsRecordEdge {
+  node: DnsRecord
+  cursor: String
+}
+
+type DnsDomainEdge {
+  node: DnsDomain
+  cursor: String
+}
+
+type TestEdge {
+  node: Test
+  cursor: String
+}
+
+type ClusterEdge {
+  node: Cluster
+  cursor: String
+}
+
+type ConsoleInstanceEdge {
+  node: ConsoleInstance
+  cursor: String
 }

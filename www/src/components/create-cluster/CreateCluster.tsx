@@ -7,7 +7,7 @@ import {
 import { useNavigate } from 'react-router-dom'
 import styled, { useTheme } from 'styled-components'
 
-import { useMemo, useState } from 'react'
+import { ReactElement, useMemo, useState } from 'react'
 
 import OnboardingCard from 'components/shell/onboarding/OnboardingCard'
 
@@ -27,6 +27,8 @@ export function CreateCluster() {
   )
   const [hostingOption, setHostingOption] = useState<'local' | 'cloud'>('local')
   const [finishEnabled, setFinishEnabled] = useState(false)
+  const [continueBtn, setContinueBtn] = useState<ReactElement | undefined>()
+
   const steps = hostingOption === 'local' ? localSteps : cloudSteps
   const curStepIndex = steps.findIndex((step) => step.key === curStep)
 
@@ -38,6 +40,8 @@ export function CreateCluster() {
       setHostingOption,
       finishEnabled,
       setFinishEnabled,
+      continueBtn,
+      setContinueBtn,
     }),
     [
       curStep,
@@ -46,6 +50,8 @@ export function CreateCluster() {
       setHostingOption,
       finishEnabled,
       setFinishEnabled,
+      continueBtn,
+      setContinueBtn,
     ]
   )
 

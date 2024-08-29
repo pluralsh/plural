@@ -6,7 +6,7 @@ import {
   StepperSteps,
 } from '@pluralsh/design-system'
 
-import React, { createContext, useContext } from 'react'
+import React, { ReactElement, createContext, useContext } from 'react'
 
 import { HostingOptionsStep } from './steps/HostingOptionsStep'
 import { InstallCliStep } from './steps/InstallCliStep'
@@ -37,6 +37,8 @@ type CreateClusterContextType = {
   setCurStep: (step: CreateClusterStepKey) => void
   finishEnabled: boolean
   setFinishEnabled: (enabled: boolean) => void
+  continueBtn?: ReactElement
+  setContinueBtn: (continueBtn?: ReactElement) => void
 }
 
 export const CreateClusterContext = createContext<

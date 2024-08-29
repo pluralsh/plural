@@ -9,7 +9,7 @@ import {
 
 export function CreateClusterActions() {
   const theme = useTheme()
-  const { curStep, setCurStep, hostingOption, finishEnabled } =
+  const { curStep, setCurStep, hostingOption, finishEnabled, continueBtn } =
     useCreateClusterContext()
 
   const steps = hostingOption === 'local' ? localSteps : cloudSteps
@@ -51,7 +51,9 @@ export function CreateClusterActions() {
             </Button>
           )}
           {nextStep ? (
-            <Button onClick={() => setCurStep(nextStep)}>Continue</Button>
+            continueBtn || (
+              <Button onClick={() => setCurStep(nextStep)}>Continue</Button>
+            )
           ) : (
             <Button
               disabled={!finishEnabled}

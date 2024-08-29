@@ -7,9 +7,15 @@ import {
   ListBoxItem,
   Select,
 } from '@pluralsh/design-system'
-import { CloudProvider, ConsoleSize } from 'generated/graphql'
+import {
+  CloudProvider,
+  ConsoleSize,
+  useCreateConsoleInstanceMutation,
+} from 'generated/graphql'
 import { useLayoutEffect, useState } from 'react'
 import styled, { useTheme } from 'styled-components'
+
+import { GqlError } from 'components/utils/Alert'
 
 import {
   CreateClusterStepKey,
@@ -18,30 +24,44 @@ import {
 
 export function ConfigureCloudInstanceStep() {
   const theme = useTheme()
-  const { setCurStep, setContinueBtn } = useCreateClusterContext()
+  const { setCurStep, setContinueBtn, setConsoleInstanceId } =
+    useCreateClusterContext()
 
-  const [clusterName, setClusterName] = useState('')
-  const [clusterSize, setClusterSize] = useState<ConsoleSize>(ConsoleSize.Small)
-  const [cloudProvider, setCloudProvider] = useState<CloudProvider>(
-    CloudProvider.Aws
-  )
-  const [region, setRegion] = useState<string | undefined>(regions[0])
+  const [name, setName] = useState('')
+  const [size, setSize] = useState<ConsoleSize>(ConsoleSize.Small)
+  const [cloud, setCloud] = useState<CloudProvider>(CloudProvider.Aws)
+  const [region, setRegion] = useState<string>(regions[0])
 
   const canSubmit = !!(
-    clusterName &&
-    clusterSize &&
-    cloudProvider &&
-    (cloudProvider === CloudProvider.Aws ? region : true)
+    name &&
+    size &&
+    cloud &&
+    (cloud === CloudProvider.Aws ? region : true)
   )
+
+  const [mutation, { loading, error }] = useCreateConsoleInstanceMutation({
+    variables: {
+      attributes: {
+        name,
+        size,
+        cloud,
+        region,
+      },
+    },
+    onCompleted: (data) => {
+      setConsoleInstanceId(data?.createConsoleInstance?.id)
+      setCurStep(CreateClusterStepKey.InstallCli)
+    },
+  })
 
   // using layout effect to avoid flickering
   useLayoutEffect(() => {
     setContinueBtn(
       <Button
         key="create"
+        loading={loading}
         disabled={!canSubmit}
-        // TODO: this should call useCreateConsoleInstance mutation
-        onClick={() => setCurStep(CreateClusterStepKey.InstallCli)}
+        onClick={() => mutation()}
       >
         Continue
       </Button>
@@ -50,13 +70,14 @@ export function ConfigureCloudInstanceStep() {
     return () => {
       setContinueBtn(undefined)
     }
-  }, [canSubmit, setContinueBtn, setCurStep])
+  }, [canSubmit, loading, mutation, setContinueBtn])
 
   return (
     <Flex
       flexDirection="column"
       gap="medium"
     >
+      {error && <GqlError error={error} />}
       <Callout
         css={{ marginBottom: theme.spacing.medium }}
         title="Your Console may take a few minutes to deploy."
@@ -67,14 +88,14 @@ export function ConfigureCloudInstanceStep() {
       <FormFieldSC label="Cluster name">
         <Input
           placeholder="Enter cluster name"
-          value={clusterName}
-          onChange={(e) => setClusterName(e.target.value)}
+          value={name}
+          onChange={(e) => setName(e.target.value)}
         />
       </FormFieldSC>
       <FormFieldSC label="Cluster size">
         <Select
-          selectedKey={clusterSize}
-          onSelectionChange={(size) => setClusterSize(size as ConsoleSize)}
+          selectedKey={size}
+          onSelectionChange={(size) => setSize(size as ConsoleSize)}
         >
           {Object.values(ConsoleSize)
             .reverse()
@@ -88,10 +109,8 @@ export function ConfigureCloudInstanceStep() {
       </FormFieldSC>
       <FormFieldSC label="Cloud">
         <Select
-          selectedKey={cloudProvider}
-          onSelectionChange={(cloudProvider) =>
-            setCloudProvider(cloudProvider as CloudProvider)
-          }
+          selectedKey={cloud}
+          onSelectionChange={(cloud) => setCloud(cloud as CloudProvider)}
         >
           {Object.values(CloudProvider).map((value) => (
             <ListBoxItem
@@ -101,7 +120,7 @@ export function ConfigureCloudInstanceStep() {
           ))}
         </Select>
       </FormFieldSC>
-      {cloudProvider === CloudProvider.Aws && (
+      {cloud === CloudProvider.Aws && (
         <FormFieldSC label="Region">
           <Select
             selectedKey={region}

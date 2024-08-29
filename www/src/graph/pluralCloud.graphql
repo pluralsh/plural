@@ -1,0 +1,118 @@
+fragment ConsoleInstance on ConsoleInstance {
+  id
+  name
+  subdomain
+  url
+  cloud
+  size
+  region
+  status
+  deletedAt
+  console {
+    id
+    pingedAt
+  }
+  owner {
+    id
+  }
+  insertedAt
+  updatedAt
+}
+query ConsoleInstance($id: ID!) {
+  consoleInstance(id: $id) {
+    id
+    name
+    subdomain
+    url
+    cloud
+    size
+    region
+    status
+    deletedAt
+    insertedAt
+    updatedAt
+  }
+}
+
+query ConsoleInstances(
+  $after: String
+  $first: Int
+  $before: String
+  $last: Int
+) {
+  consoleInstances(after: $after, first: $first, before: $before, last: $last) {
+    edges {
+      node {
+        id
+        name
+        subdomain
+        url
+        cloud
+        size
+        region
+        status
+        deletedAt
+        insertedAt
+        updatedAt
+      }
+      cursor
+    }
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+  }
+}
+
+mutation CreateConsoleInstance($attributes: ConsoleInstanceAttributes!) {
+  createConsoleInstance(attributes: $attributes) {
+    id
+    name
+    subdomain
+    url
+    cloud
+    size
+    region
+    status
+    deletedAt
+    insertedAt
+    updatedAt
+  }
+}
+
+mutation UpdateConsoleInstance(
+  $id: ID!
+  $attributes: ConsoleInstanceUpdateAttributes!
+) {
+  updateConsoleInstance(id: $id, attributes: $attributes) {
+    id
+    name
+    subdomain
+    url
+    cloud
+    size
+    region
+    status
+    deletedAt
+    insertedAt
+    updatedAt
+  }
+}
+
+mutation DeleteConsoleInstance($id: ID!) {
+  deleteConsoleInstance(id: $id) {
+    id
+    name
+    subdomain
+    url
+    cloud
+    size
+    region
+    status
+    deletedAt
+    insertedAt
+    updatedAt
+  }
+}

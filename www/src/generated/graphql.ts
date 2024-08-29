@@ -5318,6 +5318,8 @@ export type UninstallChartMutationVariables = Exact<{
 
 export type UninstallChartMutation = { __typename?: 'RootMutationType', deleteChartInstallation?: { __typename?: 'ChartInstallation', id?: string | null } | null };
 
+export type ClusterFragment = { __typename?: 'Cluster', id: string, name: string, provider: Provider, source?: Source | null, pingedAt?: Date | null, gitUrl?: string | null, consoleUrl?: string | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null } | null, queue?: { __typename?: 'UpgradeQueue', id: string, acked?: string | null, upgrades?: { __typename?: 'UpgradeConnection', edges?: Array<{ __typename?: 'UpgradeEdge', node?: { __typename?: 'Upgrade', id: string } | null } | null> | null } | null } | null, upgradeInfo?: Array<{ __typename?: 'UpgradeInfo', count?: number | null, installation?: { __typename?: 'Installation', id: string, context?: Map<string, unknown> | null, license?: string | null, licenseKey?: string | null, acmeKeyId?: string | null, acmeSecret?: string | null, autoUpgrade?: boolean | null, trackTag: string, pingedAt?: Date | null, repository?: { __typename?: 'Repository', id: string, name: string, icon?: string | null, darkIcon?: string | null, private?: boolean | null, trending?: boolean | null, verified?: boolean | null, category?: Category | null } | null, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null } | null, oidcProvider?: { __typename?: 'OidcProvider', id: string, clientId: string, authMethod: OidcAuthMethod, clientSecret: string, redirectUris?: Array<string | null> | null, bindings?: Array<{ __typename?: 'OidcProviderBinding', id: string, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null } | null, group?: { __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null } | null> | null, configuration?: { __typename?: 'OuathConfiguration', issuer?: string | null, authorizationEndpoint?: string | null, tokenEndpoint?: string | null, jwksUri?: string | null, userinfoEndpoint?: string | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null } | null } | null } | null> | null, dependency?: { __typename?: 'ClusterDependency', dependency?: { __typename?: 'Cluster', id: string, name: string, provider: Provider } | null } | null };
+
 export type ClustersQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']['input']>;
 }>;
@@ -5602,6 +5604,47 @@ export type InvoicesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type InvoicesQuery = { __typename?: 'RootQueryType', invoices?: { __typename?: 'InvoiceConnection', edges?: Array<{ __typename?: 'InvoiceEdge', node?: { __typename?: 'Invoice', number: string, amountDue: number, amountPaid: number, currency: string, status?: string | null, createdAt?: Date | null, hostedInvoiceUrl?: string | null, lines?: Array<{ __typename?: 'InvoiceItem', amount: number, currency: string, description?: string | null } | null> | null } | null } | null> | null } | null };
+
+export type ConsoleInstanceFragment = { __typename?: 'ConsoleInstance', id: string, name: string, subdomain: string, url: string, cloud: CloudProvider, size: ConsoleSize, region: string, status: ConsoleInstanceStatus, deletedAt?: Date | null, insertedAt?: Date | null, updatedAt?: Date | null, console?: { __typename?: 'Cluster', id: string, pingedAt?: Date | null } | null, owner?: { __typename?: 'User', id: string } | null };
+
+export type ConsoleInstanceQueryVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type ConsoleInstanceQuery = { __typename?: 'RootQueryType', consoleInstance?: { __typename?: 'ConsoleInstance', id: string, name: string, subdomain: string, url: string, cloud: CloudProvider, size: ConsoleSize, region: string, status: ConsoleInstanceStatus, deletedAt?: Date | null, insertedAt?: Date | null, updatedAt?: Date | null } | null };
+
+export type ConsoleInstancesQueryVariables = Exact<{
+  after?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+
+export type ConsoleInstancesQuery = { __typename?: 'RootQueryType', consoleInstances?: { __typename?: 'ConsoleInstanceConnection', edges?: Array<{ __typename?: 'ConsoleInstanceEdge', cursor?: string | null, node?: { __typename?: 'ConsoleInstance', id: string, name: string, subdomain: string, url: string, cloud: CloudProvider, size: ConsoleSize, region: string, status: ConsoleInstanceStatus, deletedAt?: Date | null, insertedAt?: Date | null, updatedAt?: Date | null } | null } | null> | null, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null, endCursor?: string | null } } | null };
+
+export type CreateConsoleInstanceMutationVariables = Exact<{
+  attributes: ConsoleInstanceAttributes;
+}>;
+
+
+export type CreateConsoleInstanceMutation = { __typename?: 'RootMutationType', createConsoleInstance?: { __typename?: 'ConsoleInstance', id: string, name: string, subdomain: string, url: string, cloud: CloudProvider, size: ConsoleSize, region: string, status: ConsoleInstanceStatus, deletedAt?: Date | null, insertedAt?: Date | null, updatedAt?: Date | null } | null };
+
+export type UpdateConsoleInstanceMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+  attributes: ConsoleInstanceUpdateAttributes;
+}>;
+
+
+export type UpdateConsoleInstanceMutation = { __typename?: 'RootMutationType', updateConsoleInstance?: { __typename?: 'ConsoleInstance', id: string, name: string, subdomain: string, url: string, cloud: CloudProvider, size: ConsoleSize, region: string, status: ConsoleInstanceStatus, deletedAt?: Date | null, insertedAt?: Date | null, updatedAt?: Date | null } | null };
+
+export type DeleteConsoleInstanceMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type DeleteConsoleInstanceMutation = { __typename?: 'RootMutationType', deleteConsoleInstance?: { __typename?: 'ConsoleInstance', id: string, name: string, subdomain: string, url: string, cloud: CloudProvider, size: ConsoleSize, region: string, status: ConsoleInstanceStatus, deletedAt?: Date | null, insertedAt?: Date | null, updatedAt?: Date | null } | null };
 
 export type RecipeFragment = { __typename?: 'Recipe', id: string, name: string, description?: string | null, restricted?: boolean | null, provider?: Provider | null, tests?: Array<{ __typename?: 'RecipeTest', type: TestType, name: string, message?: string | null, args?: Array<{ __typename?: 'TestArgument', name: string, repo: string, key: string } | null> | null } | null> | null, repository?: { __typename?: 'Repository', id: string, name: string } | null, oidcSettings?: { __typename?: 'OidcSettings', uriFormat?: string | null, uriFormats?: Array<string | null> | null, authMethod: OidcAuthMethod, domainKey?: string | null, subdomain?: boolean | null } | null, recipeSections?: Array<{ __typename?: 'RecipeSection', index?: number | null, repository?: { __typename?: 'Repository', id: string, name: string, notes?: string | null, description?: string | null, documentation?: string | null, icon?: string | null, darkIcon?: string | null, private?: boolean | null, trending?: boolean | null, verified?: boolean | null, category?: Category | null, installation?: { __typename?: 'Installation', id: string, context?: Map<string, unknown> | null, license?: string | null, licenseKey?: string | null, acmeKeyId?: string | null, acmeSecret?: string | null, autoUpgrade?: boolean | null, trackTag: string, pingedAt?: Date | null, repository?: { __typename?: 'Repository', id: string, name: string, icon?: string | null, darkIcon?: string | null, private?: boolean | null, trending?: boolean | null, verified?: boolean | null, category?: Category | null } | null, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null } | null, oidcProvider?: { __typename?: 'OidcProvider', id: string, clientId: string, authMethod: OidcAuthMethod, clientSecret: string, redirectUris?: Array<string | null> | null, bindings?: Array<{ __typename?: 'OidcProviderBinding', id: string, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null } | null, group?: { __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null } | null> | null, configuration?: { __typename?: 'OuathConfiguration', issuer?: string | null, authorizationEndpoint?: string | null, tokenEndpoint?: string | null, jwksUri?: string | null, userinfoEndpoint?: string | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null } | null } | null, docs?: Array<{ __typename?: 'FileContent', content: string, path: string } | null> | null, oauthSettings?: { __typename?: 'OauthSettings', uriFormat: string, authMethod: OidcAuthMethod } | null, publisher?: { __typename?: 'Publisher', id?: string | null, name: string, phone?: string | null, avatar?: string | null, description?: string | null, backgroundColor?: string | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null } | null, address?: { __typename?: 'Address', line1?: string | null, line2?: string | null, city?: string | null, country?: string | null, state?: string | null, zip?: string | null } | null } | null, recipes?: Array<{ __typename?: 'Recipe', name: string, provider?: Provider | null, description?: string | null } | null> | null } | null, recipeItems?: Array<{ __typename?: 'RecipeItem', id?: string | null, chart?: { __typename?: 'Chart', id?: string | null, name: string, description?: string | null, latestVersion?: string | null, insertedAt?: Date | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', name?: string | null, repo?: string | null, type?: DependencyType | null, version?: string | null, optional?: boolean | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null } | null, terraform?: { __typename?: 'Terraform', id?: string | null, name?: string | null, readme?: string | null, package?: string | null, description?: string | null, latestVersion?: string | null, valuesTemplate?: string | null, insertedAt?: Date | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', name?: string | null, repo?: string | null, type?: DependencyType | null, version?: string | null, optional?: boolean | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null } | null, configuration?: Array<{ __typename?: 'RecipeConfiguration', name?: string | null, type?: Datatype | null, default?: string | null, documentation?: string | null, optional?: boolean | null, placeholder?: string | null, functionName?: string | null, condition?: { __typename?: 'RecipeCondition', field: string, operation: Operation, value?: string | null } | null, validation?: { __typename?: 'RecipeValidation', type: ValidationType, regex?: string | null, message: string } | null } | null> | null } | null> | null, configuration?: Array<{ __typename?: 'RecipeConfiguration', name?: string | null, type?: Datatype | null, default?: string | null, documentation?: string | null, optional?: boolean | null, placeholder?: string | null, functionName?: string | null, condition?: { __typename?: 'RecipeCondition', field: string, operation: Operation, value?: string | null } | null, validation?: { __typename?: 'RecipeValidation', type: ValidationType, regex?: string | null, message: string } | null } | null> | null } | null> | null };
 
@@ -6474,6 +6517,132 @@ export const PackageScanFragmentDoc = gql`
 }
     ${ScanViolationFragmentDoc}
 ${ScanErrorFragmentDoc}`;
+export const ImpersonationPolicyFragmentDoc = gql`
+    fragment ImpersonationPolicy on ImpersonationPolicy {
+  id
+  bindings {
+    id
+    group {
+      id
+      name
+    }
+    user {
+      id
+      name
+      email
+    }
+  }
+}
+    `;
+export const InstallationRepoFragmentDoc = gql`
+    fragment InstallationRepo on Repository {
+  id
+  name
+  icon
+  darkIcon
+  private
+  trending
+  verified
+  category
+}
+    `;
+export const OidcProviderFragmentDoc = gql`
+    fragment OIDCProvider on OidcProvider {
+  id
+  clientId
+  authMethod
+  clientSecret
+  redirectUris
+  bindings {
+    id
+    user {
+      ...User
+    }
+    group {
+      ...Group
+    }
+  }
+  configuration {
+    issuer
+    authorizationEndpoint
+    tokenEndpoint
+    jwksUri
+    userinfoEndpoint
+  }
+  invites {
+    id
+    email
+  }
+}
+    ${UserFragmentDoc}
+${GroupFragmentDoc}`;
+export const InstallationFragmentDoc = gql`
+    fragment Installation on Installation {
+  id
+  context
+  license
+  licenseKey
+  acmeKeyId
+  acmeSecret
+  autoUpgrade
+  trackTag
+  pingedAt
+  repository {
+    ...InstallationRepo
+  }
+  user {
+    ...User
+  }
+  oidcProvider {
+    ...OIDCProvider
+  }
+}
+    ${InstallationRepoFragmentDoc}
+${UserFragmentDoc}
+${OidcProviderFragmentDoc}`;
+export const ClusterFragmentDoc = gql`
+    fragment Cluster on Cluster {
+  id
+  name
+  provider
+  source
+  pingedAt
+  gitUrl
+  consoleUrl
+  owner {
+    ...User
+    impersonationPolicy {
+      ...ImpersonationPolicy
+    }
+  }
+  queue {
+    id
+    acked
+    upgrades(first: 3) {
+      edges {
+        node {
+          id
+        }
+      }
+    }
+  }
+  upgradeInfo {
+    installation {
+      ...Installation
+    }
+    count
+  }
+  dependency {
+    dependency {
+      id
+      name
+      provider
+    }
+  }
+}
+    ${UserFragmentDoc}
+${ImpersonationPolicyFragmentDoc}
+${InstallationFragmentDoc}`;
 export const DnsRecordFragmentDoc = gql`
     fragment DnsRecord on DnsRecord {
   id
@@ -6983,72 +7152,28 @@ export const SetupIntentFragmentDoc = gql`
   paymentMethodTypes
 }
     ${NextActionFragmentDoc}`;
-export const InstallationRepoFragmentDoc = gql`
-    fragment InstallationRepo on Repository {
+export const ConsoleInstanceFragmentDoc = gql`
+    fragment ConsoleInstance on ConsoleInstance {
   id
   name
-  icon
-  darkIcon
-  private
-  trending
-  verified
-  category
+  subdomain
+  url
+  cloud
+  size
+  region
+  status
+  deletedAt
+  console {
+    id
+    pingedAt
+  }
+  owner {
+    id
+  }
+  insertedAt
+  updatedAt
 }
     `;
-export const OidcProviderFragmentDoc = gql`
-    fragment OIDCProvider on OidcProvider {
-  id
-  clientId
-  authMethod
-  clientSecret
-  redirectUris
-  bindings {
-    id
-    user {
-      ...User
-    }
-    group {
-      ...Group
-    }
-  }
-  configuration {
-    issuer
-    authorizationEndpoint
-    tokenEndpoint
-    jwksUri
-    userinfoEndpoint
-  }
-  invites {
-    id
-    email
-  }
-}
-    ${UserFragmentDoc}
-${GroupFragmentDoc}`;
-export const InstallationFragmentDoc = gql`
-    fragment Installation on Installation {
-  id
-  context
-  license
-  licenseKey
-  acmeKeyId
-  acmeSecret
-  autoUpgrade
-  trackTag
-  pingedAt
-  repository {
-    ...InstallationRepo
-  }
-  user {
-    ...User
-  }
-  oidcProvider {
-    ...OIDCProvider
-  }
-}
-    ${InstallationRepoFragmentDoc}
-${UserFragmentDoc}
-${OidcProviderFragmentDoc}`;
 export const TerraformFragmentDoc = gql`
     fragment Terraform on Terraform {
   id
@@ -7348,23 +7473,6 @@ export const AccountFragmentDoc = gql`
   backgroundColor
   userCount
   trialed
-}
-    `;
-export const ImpersonationPolicyFragmentDoc = gql`
-    fragment ImpersonationPolicy on ImpersonationPolicy {
-  id
-  bindings {
-    id
-    group {
-      id
-      name
-    }
-    user {
-      id
-      name
-      email
-    }
-  }
 }
     `;
 export const GroupMemberFragmentDoc = gql`
@@ -7850,51 +7958,13 @@ export const ClustersDocument = gql`
     }
     edges {
       node {
-        id
-        name
-        provider
-        source
-        pingedAt
-        gitUrl
-        consoleUrl
-        owner {
-          ...User
-          impersonationPolicy {
-            ...ImpersonationPolicy
-          }
-        }
-        queue {
-          id
-          acked
-          upgrades(first: 3) {
-            edges {
-              node {
-                id
-              }
-            }
-          }
-        }
-        upgradeInfo {
-          installation {
-            ...Installation
-          }
-          count
-        }
-        dependency {
-          dependency {
-            id
-            name
-            provider
-          }
-        }
+        ...Cluster
       }
     }
   }
 }
     ${PageInfoFragmentDoc}
-${UserFragmentDoc}
-${ImpersonationPolicyFragmentDoc}
-${InstallationFragmentDoc}`;
+${ClusterFragmentDoc}`;
 
 /**
  * __useClustersQuery__
@@ -8978,6 +9048,250 @@ export type InvoicesQueryHookResult = ReturnType<typeof useInvoicesQuery>;
 export type InvoicesLazyQueryHookResult = ReturnType<typeof useInvoicesLazyQuery>;
 export type InvoicesSuspenseQueryHookResult = ReturnType<typeof useInvoicesSuspenseQuery>;
 export type InvoicesQueryResult = Apollo.QueryResult<InvoicesQuery, InvoicesQueryVariables>;
+export const ConsoleInstanceDocument = gql`
+    query ConsoleInstance($id: ID!) {
+  consoleInstance(id: $id) {
+    id
+    name
+    subdomain
+    url
+    cloud
+    size
+    region
+    status
+    deletedAt
+    insertedAt
+    updatedAt
+  }
+}
+    `;
+
+/**
+ * __useConsoleInstanceQuery__
+ *
+ * To run a query within a React component, call `useConsoleInstanceQuery` and pass it any options that fit your needs.
+ * When your component renders, `useConsoleInstanceQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useConsoleInstanceQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useConsoleInstanceQuery(baseOptions: Apollo.QueryHookOptions<ConsoleInstanceQuery, ConsoleInstanceQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ConsoleInstanceQuery, ConsoleInstanceQueryVariables>(ConsoleInstanceDocument, options);
+      }
+export function useConsoleInstanceLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ConsoleInstanceQuery, ConsoleInstanceQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ConsoleInstanceQuery, ConsoleInstanceQueryVariables>(ConsoleInstanceDocument, options);
+        }
+export function useConsoleInstanceSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<ConsoleInstanceQuery, ConsoleInstanceQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<ConsoleInstanceQuery, ConsoleInstanceQueryVariables>(ConsoleInstanceDocument, options);
+        }
+export type ConsoleInstanceQueryHookResult = ReturnType<typeof useConsoleInstanceQuery>;
+export type ConsoleInstanceLazyQueryHookResult = ReturnType<typeof useConsoleInstanceLazyQuery>;
+export type ConsoleInstanceSuspenseQueryHookResult = ReturnType<typeof useConsoleInstanceSuspenseQuery>;
+export type ConsoleInstanceQueryResult = Apollo.QueryResult<ConsoleInstanceQuery, ConsoleInstanceQueryVariables>;
+export const ConsoleInstancesDocument = gql`
+    query ConsoleInstances($after: String, $first: Int, $before: String, $last: Int) {
+  consoleInstances(after: $after, first: $first, before: $before, last: $last) {
+    edges {
+      node {
+        id
+        name
+        subdomain
+        url
+        cloud
+        size
+        region
+        status
+        deletedAt
+        insertedAt
+        updatedAt
+      }
+      cursor
+    }
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+  }
+}
+    `;
+
+/**
+ * __useConsoleInstancesQuery__
+ *
+ * To run a query within a React component, call `useConsoleInstancesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useConsoleInstancesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useConsoleInstancesQuery({
+ *   variables: {
+ *      after: // value for 'after'
+ *      first: // value for 'first'
+ *      before: // value for 'before'
+ *      last: // value for 'last'
+ *   },
+ * });
+ */
+export function useConsoleInstancesQuery(baseOptions?: Apollo.QueryHookOptions<ConsoleInstancesQuery, ConsoleInstancesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ConsoleInstancesQuery, ConsoleInstancesQueryVariables>(ConsoleInstancesDocument, options);
+      }
+export function useConsoleInstancesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ConsoleInstancesQuery, ConsoleInstancesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ConsoleInstancesQuery, ConsoleInstancesQueryVariables>(ConsoleInstancesDocument, options);
+        }
+export function useConsoleInstancesSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<ConsoleInstancesQuery, ConsoleInstancesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<ConsoleInstancesQuery, ConsoleInstancesQueryVariables>(ConsoleInstancesDocument, options);
+        }
+export type ConsoleInstancesQueryHookResult = ReturnType<typeof useConsoleInstancesQuery>;
+export type ConsoleInstancesLazyQueryHookResult = ReturnType<typeof useConsoleInstancesLazyQuery>;
+export type ConsoleInstancesSuspenseQueryHookResult = ReturnType<typeof useConsoleInstancesSuspenseQuery>;
+export type ConsoleInstancesQueryResult = Apollo.QueryResult<ConsoleInstancesQuery, ConsoleInstancesQueryVariables>;
+export const CreateConsoleInstanceDocument = gql`
+    mutation CreateConsoleInstance($attributes: ConsoleInstanceAttributes!) {
+  createConsoleInstance(attributes: $attributes) {
+    id
+    name
+    subdomain
+    url
+    cloud
+    size
+    region
+    status
+    deletedAt
+    insertedAt
+    updatedAt
+  }
+}
+    `;
+export type CreateConsoleInstanceMutationFn = Apollo.MutationFunction<CreateConsoleInstanceMutation, CreateConsoleInstanceMutationVariables>;
+
+/**
+ * __useCreateConsoleInstanceMutation__
+ *
+ * To run a mutation, you first call `useCreateConsoleInstanceMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateConsoleInstanceMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createConsoleInstanceMutation, { data, loading, error }] = useCreateConsoleInstanceMutation({
+ *   variables: {
+ *      attributes: // value for 'attributes'
+ *   },
+ * });
+ */
+export function useCreateConsoleInstanceMutation(baseOptions?: Apollo.MutationHookOptions<CreateConsoleInstanceMutation, CreateConsoleInstanceMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateConsoleInstanceMutation, CreateConsoleInstanceMutationVariables>(CreateConsoleInstanceDocument, options);
+      }
+export type CreateConsoleInstanceMutationHookResult = ReturnType<typeof useCreateConsoleInstanceMutation>;
+export type CreateConsoleInstanceMutationResult = Apollo.MutationResult<CreateConsoleInstanceMutation>;
+export type CreateConsoleInstanceMutationOptions = Apollo.BaseMutationOptions<CreateConsoleInstanceMutation, CreateConsoleInstanceMutationVariables>;
+export const UpdateConsoleInstanceDocument = gql`
+    mutation UpdateConsoleInstance($id: ID!, $attributes: ConsoleInstanceUpdateAttributes!) {
+  updateConsoleInstance(id: $id, attributes: $attributes) {
+    id
+    name
+    subdomain
+    url
+    cloud
+    size
+    region
+    status
+    deletedAt
+    insertedAt
+    updatedAt
+  }
+}
+    `;
+export type UpdateConsoleInstanceMutationFn = Apollo.MutationFunction<UpdateConsoleInstanceMutation, UpdateConsoleInstanceMutationVariables>;
+
+/**
+ * __useUpdateConsoleInstanceMutation__
+ *
+ * To run a mutation, you first call `useUpdateConsoleInstanceMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateConsoleInstanceMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateConsoleInstanceMutation, { data, loading, error }] = useUpdateConsoleInstanceMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      attributes: // value for 'attributes'
+ *   },
+ * });
+ */
+export function useUpdateConsoleInstanceMutation(baseOptions?: Apollo.MutationHookOptions<UpdateConsoleInstanceMutation, UpdateConsoleInstanceMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateConsoleInstanceMutation, UpdateConsoleInstanceMutationVariables>(UpdateConsoleInstanceDocument, options);
+      }
+export type UpdateConsoleInstanceMutationHookResult = ReturnType<typeof useUpdateConsoleInstanceMutation>;
+export type UpdateConsoleInstanceMutationResult = Apollo.MutationResult<UpdateConsoleInstanceMutation>;
+export type UpdateConsoleInstanceMutationOptions = Apollo.BaseMutationOptions<UpdateConsoleInstanceMutation, UpdateConsoleInstanceMutationVariables>;
+export const DeleteConsoleInstanceDocument = gql`
+    mutation DeleteConsoleInstance($id: ID!) {
+  deleteConsoleInstance(id: $id) {
+    id
+    name
+    subdomain
+    url
+    cloud
+    size
+    region
+    status
+    deletedAt
+    insertedAt
+    updatedAt
+  }
+}
+    `;
+export type DeleteConsoleInstanceMutationFn = Apollo.MutationFunction<DeleteConsoleInstanceMutation, DeleteConsoleInstanceMutationVariables>;
+
+/**
+ * __useDeleteConsoleInstanceMutation__
+ *
+ * To run a mutation, you first call `useDeleteConsoleInstanceMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteConsoleInstanceMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteConsoleInstanceMutation, { data, loading, error }] = useDeleteConsoleInstanceMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteConsoleInstanceMutation(baseOptions?: Apollo.MutationHookOptions<DeleteConsoleInstanceMutation, DeleteConsoleInstanceMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteConsoleInstanceMutation, DeleteConsoleInstanceMutationVariables>(DeleteConsoleInstanceDocument, options);
+      }
+export type DeleteConsoleInstanceMutationHookResult = ReturnType<typeof useDeleteConsoleInstanceMutation>;
+export type DeleteConsoleInstanceMutationResult = Apollo.MutationResult<DeleteConsoleInstanceMutation>;
+export type DeleteConsoleInstanceMutationOptions = Apollo.BaseMutationOptions<DeleteConsoleInstanceMutation, DeleteConsoleInstanceMutationVariables>;
 export const GetRecipeDocument = gql`
     query GetRecipe($repo: String, $name: String) {
   recipe(repo: $repo, name: $name) {
@@ -11190,6 +11504,8 @@ export const namedOperations = {
     Subscription: 'Subscription',
     Cards: 'Cards',
     Invoices: 'Invoices',
+    ConsoleInstance: 'ConsoleInstance',
+    ConsoleInstances: 'ConsoleInstances',
     GetRecipe: 'GetRecipe',
     ListRecipes: 'ListRecipes',
     GetStack: 'GetStack',
@@ -11237,6 +11553,9 @@ export const namedOperations = {
     SetupIntent: 'SetupIntent',
     DefaultPaymentMethod: 'DefaultPaymentMethod',
     DeletePaymentMethod: 'DeletePaymentMethod',
+    CreateConsoleInstance: 'CreateConsoleInstance',
+    UpdateConsoleInstance: 'UpdateConsoleInstance',
+    DeleteConsoleInstance: 'DeleteConsoleInstance',
     CreateRecipe: 'CreateRecipe',
     InstallRecipe: 'InstallRecipe',
     CreateStack: 'CreateStack',
@@ -11287,6 +11606,7 @@ export const namedOperations = {
     ScanViolation: 'ScanViolation',
     ScanError: 'ScanError',
     PackageScan: 'PackageScan',
+    Cluster: 'Cluster',
     DnsRecord: 'DnsRecord',
     DockerRepo: 'DockerRepo',
     DockerRepository: 'DockerRepository',
@@ -11327,6 +11647,7 @@ export const namedOperations = {
     SubscriptionAccount: 'SubscriptionAccount',
     SetupIntent: 'SetupIntent',
     PaymentMethod: 'PaymentMethod',
+    ConsoleInstance: 'ConsoleInstance',
     Recipe: 'Recipe',
     RecipeItem: 'RecipeItem',
     RecipeSection: 'RecipeSection',

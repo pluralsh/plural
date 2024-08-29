@@ -41,27 +41,21 @@ export function DeployLocallyStep() {
           </a>
         </span>
       </Flex>
-      <Flex
-        direction="column"
-        gap="small"
-        css={{ marginTop: theme.spacing.medium }}
+      <Checkbox
+        small
+        checked={finishEnabled}
+        onChange={(e) => setFinishEnabled(e.target.checked)}
+        css={
+          {
+            '& .label': {
+              userSelect: 'none',
+            },
+          } as CSSProp
+        }
       >
-        <Checkbox
-          small
-          checked={finishEnabled}
-          onChange={(e) => setFinishEnabled(e.target.checked)}
-          css={
-            {
-              '& .label': {
-                userSelect: 'none',
-              },
-            } as CSSProp
-          }
-        >
-          The `plural up` command has finished running.
-          <span css={{ color: theme.colors['text-danger'] }}>*</span>
-        </Checkbox>
-      </Flex>
+        The `plural up` command has finished running.
+        <span css={{ color: theme.colors['text-danger'] }}>*</span>
+      </Checkbox>
     </Flex>
   )
 }

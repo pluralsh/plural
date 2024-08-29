@@ -17,17 +17,8 @@ export default function ClusterHealth({
   hue,
   size = 'medium',
 }: QueueHealthProps) {
-  const [now, setNow] = useState(moment())
-
-  useEffect(() => {
-    const int = setInterval(() => setNow(moment()), 1000)
-
-    return () => clearInterval(int)
-  }, [])
-
   const pinged = pingedAt !== null
-  const healthy =
-    pingedAt && now.clone().subtract(2, 'minutes').isBefore(pingedAt)
+  const healthy = useIsClusterHealthy(pingedAt)
 
   return (
     <Flex gap="xsmall">
@@ -51,4 +42,16 @@ export default function ClusterHealth({
       )}
     </Flex>
   )
+}
+
+export function useIsClusterHealthy(pingedAt?: Date | null) {
+  const [now, setNow] = useState(moment())
+
+  useEffect(() => {
+    const int = setInterval(() => setNow(moment()), 1000)
+
+    return () => clearInterval(int)
+  }, [])
+
+  return pingedAt && now.clone().subtract(2, 'minutes').isBefore(pingedAt)
 }

@@ -8,11 +8,11 @@ import {
 
 import React, { ReactElement, createContext, useContext } from 'react'
 
-import { HostingOptionsStep } from './steps/HostingOptionsStep'
-import { InstallCliStep } from './steps/InstallCliStep'
 import { AuthenticationStep } from './steps/AuthenticationStep'
 import { ConfigureCloudInstanceStep } from './steps/ConfigureCloudInstanceStep'
 import { DeployLocallyStep } from './steps/DeployLocallyStep'
+import { HostingOptionsStep } from './steps/HostingOptionsStep'
+import { InstallCliStep } from './steps/InstallCliStep'
 
 export enum CreateClusterStepKey {
   HostingOptions = 'hosting-options',
@@ -39,6 +39,9 @@ type CreateClusterContextType = {
   setFinishEnabled: (enabled: boolean) => void
   continueBtn?: ReactElement
   setContinueBtn: (continueBtn?: ReactElement) => void
+  consoleInstanceId?: string
+  setConsoleInstanceId: (consoleInstanceId?: string) => void
+  consoleUrl?: string
 }
 
 export const CreateClusterContext = createContext<

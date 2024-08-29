@@ -11,6 +11,11 @@ import { ReactElement, useMemo, useState } from 'react'
 
 import OnboardingCard from 'components/shell/onboarding/OnboardingCard'
 
+import { useConsoleInstanceQuery } from 'generated/graphql'
+
+import { GqlError } from 'components/utils/Alert'
+
+import { ConsoleCreationStatus } from './ConsoleCreationStatus'
 import { CreateClusterActions } from './CreateClusterActions'
 import {
   CreateClusterContext,
@@ -28,9 +33,21 @@ export function CreateCluster() {
   const [hostingOption, setHostingOption] = useState<'local' | 'cloud'>('local')
   const [finishEnabled, setFinishEnabled] = useState(false)
   const [continueBtn, setContinueBtn] = useState<ReactElement | undefined>()
+  const [consoleInstanceId, setConsoleInstanceId] = useState<
+    string | undefined
+  >()
 
   const steps = hostingOption === 'local' ? localSteps : cloudSteps
   const curStepIndex = steps.findIndex((step) => step.key === curStep)
+
+  const { data, error } = useConsoleInstanceQuery({
+    variables: {
+      id: consoleInstanceId ?? '',
+    },
+    skip: !consoleInstanceId,
+    fetchPolicy: 'cache-and-network',
+    pollInterval: 10000,
+  })
 
   const context = useMemo(
     () => ({
@@ -42,16 +59,17 @@ export function CreateCluster() {
       setFinishEnabled,
       continueBtn,
       setContinueBtn,
+      consoleInstanceId,
+      setConsoleInstanceId,
+      consoleUrl: data?.consoleInstance?.url,
     }),
     [
       curStep,
-      setCurStep,
       hostingOption,
-      setHostingOption,
       finishEnabled,
-      setFinishEnabled,
       continueBtn,
-      setContinueBtn,
+      consoleInstanceId,
+      data?.consoleInstance?.url,
     ]
   )
 
@@ -71,6 +89,13 @@ export function CreateCluster() {
           steps={steps}
           stepIndex={curStepIndex}
         />
+        {error ? (
+          <GqlError error={error} />
+        ) : (
+          data?.consoleInstance && (
+            <ConsoleCreationStatus consoleInstance={data.consoleInstance} />
+          )
+        )}
       </SidebarWrapperSC>
       <ContentWrapperSC>
         <ContentHeaderSC>
@@ -113,7 +138,7 @@ const SidebarWrapperSC = styled.div(({ theme }) => ({
   display: 'flex',
   minWidth: 256,
   flexDirection: 'column',
-  gap: theme.spacing.large,
+  gap: theme.spacing.xlarge,
 }))
 
 const ContentWrapperSC = styled.div(({ theme }) => ({
@@ -122,7 +147,7 @@ const ContentWrapperSC = styled.div(({ theme }) => ({
   minWidth: 600,
   maxWidth: 720,
   flexDirection: 'column',
-  gap: theme.spacing.large,
+  gap: theme.spacing.xlarge,
 }))
 
 const ContentHeaderSC = styled.div({

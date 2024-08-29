@@ -1,16 +1,27 @@
 import { Button, Divider, Flex } from '@pluralsh/design-system'
 import { useTheme } from 'styled-components'
 
+import { useNavigate } from 'react-router-dom'
+
 import {
   cloudSteps,
   localSteps,
   useCreateClusterContext,
 } from './CreateClusterWizard'
 
+export const NEW_CONSOLE_INSTANCE_KEY = 'new-console-instance'
+
 export function CreateClusterActions() {
   const theme = useTheme()
-  const { curStep, setCurStep, hostingOption, finishEnabled, continueBtn } =
-    useCreateClusterContext()
+  const navigate = useNavigate()
+  const {
+    curStep,
+    setCurStep,
+    hostingOption,
+    finishEnabled,
+    continueBtn,
+    consoleInstanceId,
+  } = useCreateClusterContext()
 
   const steps = hostingOption === 'local' ? localSteps : cloudSteps
   const curStepIndex = steps.findIndex((step) => step.key === curStep)
@@ -18,7 +29,10 @@ export function CreateClusterActions() {
   const nextStep = steps[curStepIndex + 1]?.key
 
   const handleFinish = () => {
-    // TODO
+    if (consoleInstanceId) {
+      localStorage.setItem(NEW_CONSOLE_INSTANCE_KEY, consoleInstanceId)
+    }
+    navigate('/overview')
   }
 
   return (

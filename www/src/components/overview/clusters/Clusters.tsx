@@ -19,8 +19,6 @@ import {
   ColUpgrades,
 } from './columns'
 
-import Upgrades from './Upgrades'
-
 export const CLUSTERS_ROOT_CRUMB = { label: 'clusters', url: '/overview' }
 
 const breadcrumbs = [
@@ -64,7 +62,6 @@ export function Clusters(): ReactElement | null {
           maxHeight: 600,
         }}
       />
-      <Upgrades />
       {isEmpty(clusters) && <ClustersHelpSection />}
     </div>
   )

@@ -1,5 +1,3 @@
-import { useContext, useEffect, useMemo, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
 import {
   Button,
   ClusterIcon,
@@ -10,24 +8,25 @@ import {
   useSetBreadcrumbs,
 } from '@pluralsh/design-system'
 import { Div, Flex } from 'honorable'
+import { useContext, useEffect, useMemo, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
 
 import { CLUSTERS_ROOT_CRUMB } from 'components/overview/clusters/Clusters'
 
 import ClustersContext from '../../contexts/ClustersContext'
-import ImpersonateServiceAccount from '../utils/ImpersonateServiceAccount'
+import CurrentUserContext from '../../contexts/CurrentUserContext'
 import { ensureURLValidity } from '../../utils/url'
 import { ClusterPicker } from '../utils/ClusterPicker'
+import ImpersonateServiceAccount from '../utils/ImpersonateServiceAccount'
 import { ResponsiveLayoutPage } from '../utils/layout/ResponsiveLayoutPage'
-import CurrentUserContext from '../../contexts/CurrentUserContext'
 
-import { ClusterDependencyModal } from './ClusterDependencyModal'
-import { ClusterSidecar } from './ClusterSidecar'
-import { ClusterApps } from './ClusterApps'
-import { ClusterUpgrades } from './ClusterUpgrades'
 import { ClusterAdminsModal } from './ClusterAdminsModal'
+import { ClusterApps } from './ClusterApps'
+import { ClusterDependencyModal } from './ClusterDependencyModal'
 import ClusterMetadataPanel from './ClusterMetadataPanel'
-import { CollapsibleButton } from './misc'
 import { ClusterPromoteModal } from './ClusterPromoteModal'
+import { ClusterSidecar } from './ClusterSidecar'
+import { CollapsibleButton } from './misc'
 
 export function Cluster() {
   const [dependencyOpen, setDependencyOpen] = useState(false)
@@ -178,10 +177,7 @@ export function Cluster() {
             id={cluster?.owner?.id}
             skip={!cluster.owner?.serviceAccount}
           >
-            <>
-              <ClusterApps cluster={cluster} />
-              <ClusterUpgrades cluster={cluster} />
-            </>
+            <ClusterApps cluster={cluster} />
           </ImpersonateServiceAccount>
         </Flex>
       </Flex>

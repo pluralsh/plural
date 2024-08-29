@@ -1,6 +1,7 @@
 defmodule Core.Schema.Account do
   use Piazza.Ecto.Schema
   use Arc.Ecto.Schema
+  import Core.Schema.Validations
   alias Core.Schema.{User, DomainMapping, PlatformSubscription, Address}
 
   schema "accounts" do
@@ -64,6 +65,7 @@ defmodule Core.Schema.Account do
     |> generate_uuid(:icon_id)
     |> cast_attachments(attrs, [:icon], allow_urls: true)
     |> set_address_updated()
+    |> reject_urls(:name)
   end
 
 

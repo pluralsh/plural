@@ -147,6 +147,10 @@ defmodule Core.Services.AccountsTest do
       assert account.name == "updated"
     end
 
+    test "cannot put urls in names", %{user: user} do
+      {:error, _} = Accounts.update_account(%{name: "https://evil.com"}, user)
+    end
+
     test "if billing address is updated, it will update the stripe customer", %{user: user, account: account} do
       {:ok, _} = update_record(account, %{billing_customer_id: "strp"})
       me = self()
@@ -335,7 +339,7 @@ defmodule Core.Services.AccountsTest do
       assert invite.user_id == user.id
     end
 
-    test "nonroot users can create group members", %{account: account} do
+    test "nonroot users cannot create group members", %{account: account} do
       {:error, _} = Accounts.create_invite(%{email: "some@example.com"}, insert(:user, account: account))
     end
   end

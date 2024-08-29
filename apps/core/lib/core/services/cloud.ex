@@ -43,7 +43,13 @@ defmodule Core.Services.Cloud do
     |> add_operation(:cluster, fn _ -> select_cluster(attrs[:cloud], attrs[:region]) end)
     |> add_operation(:postgres, fn _ -> select_roach(attrs[:cloud]) end)
     |> add_operation(:sa, fn _ ->
-      Accounts.create_service_account(%{name: "#{name}-cloud-sa", email: "#{name}-cloud-sa@srv.plural.sh"}, user)
+      Accounts.create_service_account(%{
+        name: "#{name}-cloud-sa",
+        email: "#{name}-cloud-sa@srv.plural.sh",
+        impersonation_policy: %{
+          bindings: [%{user_id: user.id}]
+        }
+      }, user)
     end)
     |> add_operation(:token, fn %{sa: sa} -> Users.create_persisted_token(sa) end)
     |> add_operation(:install, fn %{sa: sa} ->

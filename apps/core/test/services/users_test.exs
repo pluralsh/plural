@@ -524,12 +524,18 @@ defmodule Core.Services.UsersTest do
     end
 
     test "it will update login method for existing users" do
-      user = insert(:user)
+      user = insert(:user, login_method: :google)
 
       {:ok, upd} = Users.bootstrap_user(:google, %{email: user.email})
 
       assert upd.id == user.id
       assert upd.login_method == :google
+    end
+
+    test "it will not allow logins w/o login method set" do
+      user = insert(:user)
+
+      {:error, _} = Users.bootstrap_user(:google, %{email: user.email})
     end
   end
 

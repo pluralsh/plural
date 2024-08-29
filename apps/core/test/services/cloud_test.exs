@@ -32,6 +32,10 @@ defmodule Core.Services.CloudTest do
       assert refetch(cluster).count == 1
       assert refetch(postgres).count == 1
 
+      sa = Core.Services.Users.get_user_by_email("plrltest-cloud-sa@srv.plural.sh")
+      %{impersonation_policy: %{bindings: [binding]}} = Core.Repo.preload(sa, [impersonation_policy: :bindings])
+      assert binding.user_id == user.id
+
       assert_receive {:event, %PubSub.ConsoleInstanceCreated{item: ^instance}}
     end
 

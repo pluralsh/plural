@@ -100,9 +100,19 @@ defmodule Core.Schema.ConsoleInstance do
     |> cast_embed(:configuration, with: &configuration_changeset/2)
     |> cast_embed(:instance_status, with: &status_changeset/2)
     |> validate_required(@valid -- [:external_id])
+    |> foreign_key_constraint(:cluster_id)
+    |> foreign_key_constraint(:postgres_id)
+    |> foreign_key_constraint(:owner_id)
     |> unique_constraint(:subdomain)
     |> unique_constraint(:name)
-    |> validate_format(:name, ~r/[a-z][a-z0-9]{5,10}/, message: "must be an alphanumeric string between 5 and 10 characters")
+    |> validate_format(:name, ~r/[a-z][a-z0-9]{5,10}/, message: "must be an alphanumeric string between 5 and 11 characters")
+    |> validate_region()
+  end
+
+  def create_changeset(model, attrs \\ %{}) do
+    model
+    |> cast(attrs, @valid)
+    |> validate_required(~w(name region status cloud size)a)
     |> validate_region()
   end
 

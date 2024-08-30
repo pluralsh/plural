@@ -13,6 +13,8 @@ defmodule Core.Services.Cloud do
 
   def get_instance!(id), do: Repo.get!(ConsoleInstance, id)
 
+  def get_instance_by_name(name), do: Repo.get_by(ConsoleInstance, name: name)
+
   @spec upsert_cluster(map, binary) :: cluster_resp
   def upsert_cluster(attrs, name) do
     case Repo.get_by(CloudCluster, name: name) do
@@ -39,7 +41,12 @@ defmodule Core.Services.Cloud do
   @spec create_instance(map, User.t) :: console_resp
   def create_instance(%{name: name} = attrs, %User{} = user) do
     start_transaction()
-    |> add_operation(:auth, fn _ -> allow(%ConsoleInstance{}, user, :create) end)
+    |> add_operation(:inst, fn _ ->
+      %ConsoleInstance{status: :pending}
+      |> ConsoleInstance.create_changeset(attrs)
+      |> allow(user, :create)
+      |> when_ok(:insert)
+    end)
     |> add_operation(:cluster, fn _ -> select_cluster(attrs[:cloud], attrs[:region]) end)
     |> add_operation(:postgres, fn _ -> select_roach(attrs[:cloud]) end)
     |> add_operation(:sa, fn _ ->
@@ -67,10 +74,12 @@ defmodule Core.Services.Cloud do
         redirect_uris: Shell.merge_uris(["https://console.#{name}.#{domain()}/oauth/callback"], inst.oidc_provider)
       }, inst.id, sa)
     end)
-    |> add_operation(:instance, fn %{oidc: oidc, token: token, cluster: cluster, postgres: roach, sa: sa} ->
-      %ConsoleInstance{status: :pending, cluster_id: cluster.id, postgres_id: roach.id, owner_id: sa.id}
-      |> ConsoleInstance.changeset(add_configuration(attrs, name, token.token, oidc, user))
-      |> Repo.insert()
+    |> add_operation(:instance, fn %{inst: inst, oidc: oidc, token: token, cluster: cluster, postgres: roach, sa: sa} ->
+      ConsoleInstance.changeset(inst, Map.merge(
+        %{cluster_id: cluster.id, postgres_id: roach.id, owner_id: sa.id},
+        add_configuration(attrs, name, token.token, oidc, user)
+      ))
+      |> Repo.update()
     end)
     |> execute(extract: :instance)
     |> notify(:create, user)

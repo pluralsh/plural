@@ -21,7 +21,7 @@ defmodule Core.Services.Cloud.Workflow do
 
     Enum.reduce_while(0..10, instance, fn _, acc ->
       case up(acc) do
-        {:ok, %ConsoleInstance{status: :deployment_created} = inst} -> {:halt, inst}
+        {:ok, %ConsoleInstance{status: :provisioned} = inst} -> {:halt, inst}
         {:ok, inst} -> {:cont, inst}
         err ->
           :timer.sleep(:timer.seconds(1))
@@ -35,18 +35,26 @@ defmodule Core.Services.Cloud.Workflow do
   def deprovision(%ConsoleInstance{} = instance) do
     instance = Repo.preload(instance, [:postgres, :cluster])
 
-    Enum.reduce_while(0..10, instance, fn _, acc ->
+    Enum.reduce_while(0..20, instance, fn _, acc ->
       case down(acc) do
         {:ok, %ConsoleInstance{status: :pending} = inst} -> {:halt, inst}
         {:ok, %ConsoleInstance{status: :database_deleted} = inst} -> {:halt, inst}
         {:ok, inst} -> {:cont, inst}
         err ->
-          :timer.sleep(:timer.seconds(1))
+          :timer.sleep(:timer.seconds(10))
           Logger.error "failed to transition deprovisioning console: #{inspect(err)}"
           {:cont, acc}
       end
     end)
     |> finalize(:down)
+  end
+
+  defp up(%ConsoleInstance{status: :deployment_created, url: url} = inst) do
+    case {DNS.resolve(url), DNS.resolve(url, :cname)} do
+      {{:ok, [_ | _]}, _} -> mark_provisioned(inst)
+      {_, {:ok, [_ | _]}} -> mark_provisioned(inst)
+      {{:error, err}, _} -> {:error, "cannot resolve #{url}: #{inspect(err)}"}
+    end
   end
 
   defp up(%ConsoleInstance{status: :pending, postgres: pg, configuration: conf} = inst) do
@@ -115,10 +123,7 @@ defmodule Core.Services.Cloud.Workflow do
 
   defp down(inst), do: {:ok, inst}
 
-  defp finalize(%ConsoleInstance{status: :deployment_created} = inst, :up) do
-    ConsoleInstance.changeset(inst, %{status: :provisioned})
-    |> Repo.update()
-  end
+  defp finalize(%ConsoleInstance{status: :provisioned} = inst, :up), do: {:ok, inst}
 
   defp finalize(%ConsoleInstance{status: :database_deleted, cluster: cluster, postgres: pg} = inst, :down) do
     start_transaction()
@@ -160,6 +165,11 @@ defmodule Core.Services.Cloud.Workflow do
     end
   end
   defp userinfo(_), do: %{}
+
+  defp mark_provisioned(inst) do
+    ConsoleInstance.changeset(inst, %{status: :provisioned})
+    |> Repo.update()
+  end
 
   defp console(), do: Console.new(Core.conf(:console_url), Core.conf(:console_token))
 end

@@ -1,18 +1,3 @@
-<!--- Hello Plural contributor! It's great to have you on board! -->
-
-## Summary
-<!-- Describe your changes here, include the motivation/context, test coverage, -->
-<!-- the type of change i.e. breaking change, new feature, or bug fix -->
-<!-- and related GitHub issue or screenshots (if applicable). -->
-
-<!-- Adding a meaningful title and description allows us to better communicate -->
-<!-- your work with our users. -->
-
-## Labels
-<!-- For breaking changes, add the `breaking-change` label.️ -->
-<!-- For bug fixes, add the `bug-fix` label. -->
-<!-- For new features and notable changes, add the `enhancement` label. -->
-
 
 ## Test Plan
 <!--- Please describe the tests you have added and your testing environment (if applicable). -->

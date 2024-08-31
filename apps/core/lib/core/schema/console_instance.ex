@@ -86,6 +86,10 @@ defmodule Core.Schema.ConsoleInstance do
     )
   end
 
+  def provisioned(query \\ __MODULE__) do
+    from(c in query, where: c.status == ^:provisioned)
+  end
+
   def ordered(query \\ __MODULE__, order \\ [asc: :name]) do
     from(c in query, order_by: ^order)
   end

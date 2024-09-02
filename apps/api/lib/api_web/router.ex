@@ -21,7 +21,10 @@ defmodule ApiWeb.Router do
 
     forward "/", Absinthe.Plug,
       schema: GraphQl,
-      document_providers: [GraphQl.APQ, Absinthe.Plug.DocumentProvider.Default]
+      document_providers: [GraphQl.APQ, Absinthe.Plug.DocumentProvider.Default],
+      analyze_complexity: true,
+      max_complexity: 500,
+      token_limit: 5_000
   end
 
   scope "/", ApiWeb do

@@ -1,8 +1,13 @@
-import { createContext, useMemo } from 'react'
+import { ReactNode, createContext, useMemo } from 'react'
 import styled from 'styled-components'
 
 import LoadingIndicator from '../components/utils/LoadingIndicator'
-import { Cluster, Source, useClustersQuery } from '../generated/graphql'
+import {
+  Cluster,
+  ConsoleInstanceFragment,
+  Source,
+  useClustersQuery,
+} from '../generated/graphql'
 
 type ClustersContextType = {
   clusters: Cluster[]
@@ -21,7 +26,13 @@ const Error = styled.div(({ theme }) => ({
   alignItems: 'center',
 }))
 
-export function ClustersContextProvider({ children }) {
+export function ClustersContextProvider({
+  consoleInstances = [],
+  children,
+}: {
+  consoleInstances?: ConsoleInstanceFragment[]
+  children: ReactNode
+}) {
   const { data, loading, error, refetch } = useClustersQuery({
     pollInterval: 30_000,
   })
@@ -36,10 +47,14 @@ export function ClustersContextProvider({ children }) {
             c.source === Source.Default ||
             c.owner?.hasShell ||
             c.owner?.hasInstallations
+        )
+        .filter(
+          (c) =>
+            !consoleInstances.some((instance) => instance.console?.id === c.id)
         ) ?? []
 
     return { clusters, refetchClusters: refetch }
-  }, [data, refetch])
+  }, [consoleInstances, data?.clusters?.edges, refetch])
 
   if (error) return <Error>{error.message}</Error>
   if (!data && loading) return <LoadingIndicator />

@@ -1,6 +1,8 @@
 import { Card, Flex, Spinner, SuccessIcon } from '@pluralsh/design-system'
-import { useIsClusterHealthy } from 'components/overview/clusters/ClusterHealth'
-import { ConsoleInstanceFragment } from 'generated/graphql'
+import {
+  ConsoleInstanceFragment,
+  ConsoleInstanceStatus,
+} from 'generated/graphql'
 import styled, { useTheme } from 'styled-components'
 
 export function ConsoleCreationStatus({
@@ -9,7 +11,10 @@ export function ConsoleCreationStatus({
   consoleInstance: ConsoleInstanceFragment
 }) {
   const theme = useTheme()
-  const loading = !useIsClusterHealthy(consoleInstance?.console?.pingedAt)
+  const loading = !(
+    consoleInstance?.console?.pingedAt &&
+    consoleInstance.status === ConsoleInstanceStatus.Provisioned
+  )
 
   return (
     <CreationStatusCardSC>

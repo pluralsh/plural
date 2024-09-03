@@ -13,7 +13,8 @@ fragment ConsoleInstance on ConsoleInstance {
     pingedAt
   }
   owner {
-    id
+    name
+    email
   }
   insertedAt
   updatedAt
@@ -26,7 +27,7 @@ query ConsoleInstance($id: ID!) {
 
 query ConsoleInstances(
   $after: String
-  $first: Int
+  $first: Int = 100
   $before: String
   $last: Int
 ) {

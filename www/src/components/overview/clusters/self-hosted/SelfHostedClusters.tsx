@@ -11,7 +11,7 @@ import {
   ColOwner,
   ColPromotions,
   ColUpgrades,
-} from '../columns'
+} from '../SelfHostedTableCols'
 
 const breadcrumbs = [
   ...CLUSTERS_OVERVIEW_BREADCRUMBS,

@@ -3,7 +3,8 @@ import { useEffect } from 'react'
 import { Navigate, useLocation } from 'react-router-dom'
 import { useIntercom } from 'react-use-intercom'
 
-import { ClustersContextProvider } from '../../contexts/ClustersContext'
+import { ConsoleInstancesContextProvider } from '../../contexts/ConsoleInstancesContext'
+
 import { CurrentUserContextProvider } from '../../contexts/CurrentUserContext'
 import PluralConfigurationContext from '../../contexts/PluralConfigurationContext'
 import { useMeQuery, useSubscriptionQuery } from '../../generated/graphql'
@@ -104,7 +105,9 @@ export function PluralProvider({ children }: any) {
             error={subscriptionError}
             refetch={subscriptionRefetch}
           >
-            <ClustersContextProvider>{children}</ClustersContextProvider>
+            <ConsoleInstancesContextProvider>
+              {children}
+            </ConsoleInstancesContextProvider>
           </BillingSubscriptionProvider>
         </BillingPlatformPlansProvider>
       </CurrentUserContextProvider>

@@ -32,7 +32,11 @@ export function CreateClusterActions() {
     if (consoleInstanceId) {
       localStorage.setItem(NEW_CONSOLE_INSTANCE_KEY, consoleInstanceId)
     }
-    navigate('/overview')
+    navigate(
+      `/overview/clusters/${
+        hostingOption === 'local' ? 'self-hosted' : 'plural-cloud'
+      }`
+    )
   }
 
   return (

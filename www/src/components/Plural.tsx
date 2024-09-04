@@ -1,8 +1,6 @@
-import { Suspense, lazy, useEffect, useState } from 'react'
+import { Suspense, lazy } from 'react'
 import { Navigate, Outlet, Route, Routes, useMatch } from 'react-router-dom'
-import { Toast } from '@pluralsh/design-system'
 
-import { growthbook } from '../helpers/growthbook'
 import { useHistory } from '../router'
 
 import { WrapStripe } from './WrapStripe'
@@ -288,30 +286,6 @@ function OAuthOrFallback() {
   )
 }
 
-function TestBanner() {
-  const [enable, setEnable] = useState(true)
-
-  useEffect(() => {
-    const timeout = setTimeout(() => setEnable(false), 5000)
-
-    return () => clearTimeout(timeout)
-  }, [])
-
-  if (growthbook.isOn('growthbook-test') && enable) {
-    return (
-      <Toast
-        severity="success"
-        marginBottom="medium"
-        marginRight="xxxxlarge"
-      >
-        Growthbook Test!
-      </Toast>
-    )
-  }
-
-  return null
-}
-
 export function PluralInner() {
   return (
     <WrapStripe>
@@ -322,7 +296,6 @@ export function PluralInner() {
             <LegacyExpirationNotice />
             <VerifyEmailConfirmed />
             <DeviceLoginNotif />
-            <TestBanner />
             <Routes>
               {/* --- OAUTH --- */}
               {/* TODO: Enable if route will be used by the app */}

@@ -2,14 +2,12 @@ import { useContext, useEffect, useState } from 'react'
 
 import { FormField, ListBoxItem, Select } from '@pluralsh/design-system'
 
-import { growthbook } from '../../../../../helpers/growthbook'
 import { CloudProvider, CloudProviderDisplayName } from '../../context/types'
 import { OnboardingContext } from '../../context/onboarding'
 
 import Provider from './provider/Provider'
 
 const CLOUDS = Object.values(CloudProvider)
-const GROWTHBOOK_AZURE_CLOUD_KEY = 'azure-cloud-shell'
 
 interface ProviderItem {
   key: string
@@ -21,11 +19,7 @@ function CloudCredentials() {
   const [provider, setProvider] = useState<CloudProvider>(
     cloud?.provider || CloudProvider.AWS
   )
-  const providers = (
-    growthbook.isOn(GROWTHBOOK_AZURE_CLOUD_KEY)
-      ? CLOUDS
-      : CLOUDS.filter((c) => c !== CloudProvider.Azure)
-  ).map<ProviderItem>((c) => ({
+  const providers = CLOUDS.map<ProviderItem>((c) => ({
     key: c,
     label: CloudProviderDisplayName[c],
   }))

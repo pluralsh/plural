@@ -90,6 +90,8 @@ defmodule Core.Schema.User do
     timestamps()
   end
 
+  def intercom_id(%__MODULE__{id: id}), do: Core.sha("#{id}:#{Core.conf(:intercom_salt)}")
+
   def service_account(query \\ __MODULE__, is_svc \\ :yes)
 
   def service_account(query, :yes) do

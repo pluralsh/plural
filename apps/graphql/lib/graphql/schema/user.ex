@@ -130,6 +130,12 @@ defmodule GraphQl.Schema.User do
       _, _, _ -> {:error, "forbidden"}
     end
 
+    field :intercom_id, :string, resolve: fn
+      %{id: id} = user, _, %{context: %{current_user: %{id: id}}} ->
+        {:ok, Schema.User.intercom_id(user)}
+      _, _, _ -> {:error, "you can only read your own intercom id"}
+    end
+
     field :has_installations, :boolean, resolve: fn
       user, _, _ -> {:ok, Core.Services.Users.has_installations?(user)}
     end

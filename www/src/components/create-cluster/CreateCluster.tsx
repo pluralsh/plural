@@ -11,7 +11,10 @@ import { ReactElement, useMemo, useState } from 'react'
 
 import OnboardingCard from 'components/shell/onboarding/OnboardingCard'
 
-import { useConsoleInstanceQuery } from 'generated/graphql'
+import {
+  ConsoleInstanceStatus,
+  useConsoleInstanceQuery,
+} from 'generated/graphql'
 
 import { GqlError } from 'components/utils/Alert'
 
@@ -19,6 +22,7 @@ import { ConsoleCreationStatus } from './ConsoleCreationStatus'
 import { CreateClusterActions } from './CreateClusterActions'
 import {
   CreateClusterContext,
+  CreateClusterContextType,
   CreateClusterStepKey,
   cloudSteps,
   localSteps,
@@ -49,7 +53,7 @@ export function CreateCluster() {
     pollInterval: 10000,
   })
 
-  const context = useMemo(
+  const context: CreateClusterContextType = useMemo(
     () => ({
       curStep,
       setCurStep,
@@ -62,6 +66,10 @@ export function CreateCluster() {
       consoleInstanceId,
       setConsoleInstanceId,
       consoleUrl: data?.consoleInstance?.url,
+      isCreatingInstance: !(
+        data?.consoleInstance?.console?.pingedAt &&
+        data.consoleInstance.status === ConsoleInstanceStatus.Provisioned
+      ),
     }),
     [
       curStep,
@@ -70,55 +78,57 @@ export function CreateCluster() {
       continueBtn,
       consoleInstanceId,
       data?.consoleInstance?.url,
+      data?.consoleInstance?.console?.pingedAt,
+      data?.consoleInstance?.status,
     ]
   )
 
   return (
-    <MainWrapperSC>
-      <SidebarWrapperSC>
-        <Button
-          css={{ width: '100%' }}
-          secondary
-          startIcon={<ReturnIcon />}
-          onClick={() => navigate('/overview')}
-        >
-          Back home
-        </Button>
-        <Stepper
-          vertical
-          steps={steps}
-          stepIndex={curStepIndex}
-        />
-        {error ? (
-          <GqlError error={error} />
-        ) : (
-          data?.consoleInstance && (
-            <ConsoleCreationStatus consoleInstance={data.consoleInstance} />
-          )
-        )}
-      </SidebarWrapperSC>
-      <ContentWrapperSC>
-        <ContentHeaderSC>
-          <span css={theme.partials.text.title2}>Create Cluster</span>
+    <CreateClusterContext.Provider value={context}>
+      <MainWrapperSC>
+        <SidebarWrapperSC>
           <Button
+            css={{ width: '100%' }}
             secondary
-            startIcon={<SendMessageIcon />}
-            as="a"
-            href="mailto:sales@plural.sh"
-            target="_blank"
-            rel="noopener noreferrer"
+            startIcon={<ReturnIcon />}
+            onClick={() => navigate('/overview')}
           >
-            Contact sales
+            Back home
           </Button>
-        </ContentHeaderSC>
-        <CreateClusterContext.Provider value={context}>
+          <Stepper
+            vertical
+            steps={steps}
+            stepIndex={curStepIndex}
+          />
+          {error ? (
+            <GqlError error={error} />
+          ) : (
+            data?.consoleInstance && (
+              <ConsoleCreationStatus consoleInstance={data.consoleInstance} />
+            )
+          )}
+        </SidebarWrapperSC>
+        <ContentWrapperSC>
+          <ContentHeaderSC>
+            <span css={theme.partials.text.title2}>Create Cluster</span>
+            <Button
+              secondary
+              startIcon={<SendMessageIcon />}
+              as="a"
+              href="mailto:sales@plural.sh"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Contact sales
+            </Button>
+          </ContentHeaderSC>
           <OnboardingCard title={steps[curStepIndex]?.stepTitle}>
             {steps[curStepIndex]?.component}
             <CreateClusterActions />
           </OnboardingCard>
-        </CreateClusterContext.Provider>
-      </ContentWrapperSC>
-    </MainWrapperSC>
+        </ContentWrapperSC>
+      </MainWrapperSC>
+    </CreateClusterContext.Provider>
   )
 }
 

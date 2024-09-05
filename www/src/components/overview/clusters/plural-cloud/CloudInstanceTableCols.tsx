@@ -1,4 +1,12 @@
-import { AppIcon, Chip, ConsoleIcon, Flex } from '@pluralsh/design-system'
+import {
+  AppIcon,
+  Button,
+  Chip,
+  ConsoleIcon,
+  Flex,
+  ListBoxItem,
+  PeopleIcon,
+} from '@pluralsh/design-system'
 import { createColumnHelper } from '@tanstack/react-table'
 import { ProviderIcon } from 'components/utils/ProviderIcon'
 
@@ -7,11 +15,21 @@ import {
   ConsoleInstanceStatus,
 } from 'generated/graphql'
 
+import { MoreMenu } from 'components/account/MoreMenu'
+import ConsoleInstancesContext from 'contexts/ConsoleInstancesContext'
+import { useCallback, useContext, useState } from 'react'
+import { useTheme } from 'styled-components'
+
+import { ClusterAdminsModal } from 'components/cluster/ClusterAdminsModal'
+
 import { CellCaption, CellWrap } from '../SelfHostedTableCols'
+
+import { EditInstanceSizeModal } from './EditInstance'
+import { DeleteInstanceModal } from './DeleteInstance'
 
 const columnHelper = createColumnHelper<ConsoleInstanceFragment>()
 
-const formatStr = (string: Nullable<string>) =>
+export const firstLetterUppercase = (string: Nullable<string>) =>
   string && string.charAt(0).toUpperCase() + string.slice(1).toLowerCase()
 
 function getStatusSeverity(
@@ -32,6 +50,7 @@ const ColInstance = columnHelper.accessor((instance) => instance.name, {
   id: 'instance',
   header: 'Instance',
   enableSorting: true,
+  meta: { gridTemplate: '1fr' },
   cell: ({ getValue }) => (
     <CellWrap>
       <AppIcon
@@ -52,7 +71,7 @@ const ColStatus = columnHelper.accessor((instance) => instance.status, {
   enableSorting: true,
   cell: ({ getValue }) => (
     <Chip severity={getStatusSeverity(getValue())}>
-      {formatStr(getValue())}
+      {firstLetterUppercase(getValue())}
     </Chip>
   ),
 })
@@ -88,12 +107,13 @@ const ColSize = columnHelper.accessor((instance) => instance.size, {
   id: 'size',
   header: 'Size',
   enableSorting: true,
-  cell: ({ getValue }) => formatStr(getValue()),
+  cell: ({ getValue }) => firstLetterUppercase(getValue()),
 })
 
 const ColOwner = columnHelper.accessor((instance) => instance.owner, {
   id: 'owner',
   header: 'Owner',
+  meta: { gridTemplate: '1fr' },
   enableSorting: true,
   sortingFn: (rowA, rowB) =>
     (rowA.original.owner?.name ?? '') < (rowB.original.owner?.name ?? '')
@@ -107,10 +127,91 @@ const ColOwner = columnHelper.accessor((instance) => instance.owner, {
   ),
 })
 
+enum MenuItemKey {
+  EditSize = 'editSize',
+  EditOidc = 'editOidc',
+  Delete = 'delete',
+}
+
 const ColActions = columnHelper.accessor((instance) => instance, {
   id: 'actions',
   header: '',
-  cell: ({ getValue }) => <div>actions</div>,
+  meta: { gridTemplate: 'max-content' },
+  cell: function Cell({ getValue }) {
+    const theme = useTheme()
+    const [menuKey, setMenuKey] = useState<Nullable<string>>('')
+    const instance = getValue()
+    const { refetchInstances } = useContext(ConsoleInstancesContext)
+    const onClose = useCallback(() => setMenuKey(''), [])
+
+    return (
+      <Flex
+        align="center"
+        gap="small"
+      >
+        <Button
+          secondary
+          startIcon={<PeopleIcon />}
+          onClick={() => setMenuKey(MenuItemKey.EditOidc)}
+        >
+          OIDC
+        </Button>
+        <Button
+          secondary
+          startIcon={<ConsoleIcon color={theme.colors['icon-default']} />}
+          as="a"
+          href={`https://${instance.url}`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <span
+            css={{
+              color: theme.colors['text-primary-accent'],
+            }}
+          >
+            Go to Console
+          </span>
+        </Button>
+        <MoreMenu onSelectionChange={(newKey) => setMenuKey(newKey)}>
+          <ListBoxItem
+            key={MenuItemKey.EditSize}
+            label="Edit instance size"
+            textValue="Edit instance size"
+          />
+          <ListBoxItem
+            key={MenuItemKey.EditOidc}
+            label="Edit OIDC settings"
+            textValue="Edit OIDC settings"
+          />
+          <ListBoxItem
+            key={MenuItemKey.Delete}
+            destructive
+            label="Delete instance"
+            textValue="Delete instance"
+          />
+        </MoreMenu>
+        {/* Modals */}
+        <EditInstanceSizeModal
+          open={menuKey === MenuItemKey.EditSize}
+          onClose={onClose}
+          refetch={refetchInstances}
+          instance={instance}
+        />
+        <ClusterAdminsModal
+          open={menuKey === MenuItemKey.EditOidc}
+          onClose={onClose}
+          serviceAccount={instance.console?.owner}
+          showHeading={false}
+        />
+        <DeleteInstanceModal
+          open={menuKey === MenuItemKey.Delete}
+          onClose={onClose}
+          refetch={refetchInstances}
+          instance={instance}
+        />
+      </Flex>
+    )
+  },
 })
 
 export const cloudInstanceCols = [
@@ -120,5 +221,5 @@ export const cloudInstanceCols = [
   ColRegion,
   ColSize,
   ColOwner,
-  // ColActions,
+  ColActions,
 ]

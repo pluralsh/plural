@@ -30,7 +30,7 @@ type CreateClusterStep = Omit<StepperSteps[number], 'stepTitle' | 'key'> & {
 
 type HostingOption = 'local' | 'cloud'
 
-type CreateClusterContextType = {
+export type CreateClusterContextType = {
   hostingOption: HostingOption
   setHostingOption: (option: HostingOption) => void
   curStep: CreateClusterStepKey
@@ -42,6 +42,7 @@ type CreateClusterContextType = {
   consoleInstanceId?: string
   setConsoleInstanceId: (consoleInstanceId?: string) => void
   consoleUrl?: string
+  isCreatingInstance: boolean
 }
 
 export const CreateClusterContext = createContext<

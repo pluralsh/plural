@@ -11,6 +11,12 @@ fragment ConsoleInstance on ConsoleInstance {
   console {
     id
     pingedAt
+    owner {
+      ...User
+      impersonationPolicy {
+        ...ImpersonationPolicy
+      }
+    }
   }
   owner {
     name

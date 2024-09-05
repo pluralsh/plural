@@ -11,11 +11,12 @@ import { ClustersContextProvider } from './ClustersContext'
 
 type ConsoleInstancesContextType = {
   instances: ConsoleInstanceFragment[]
-  refetchInstances?: () => Promise<any>
+  refetchInstances: () => void
 }
 
 const ConsoleInstancesContext = createContext<ConsoleInstancesContextType>({
   instances: [],
+  refetchInstances: () => {},
 })
 
 const Error = styled.div(({ theme }) => ({

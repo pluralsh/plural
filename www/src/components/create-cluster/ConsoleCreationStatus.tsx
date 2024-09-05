@@ -1,9 +1,9 @@
 import { Card, Flex, Spinner, SuccessIcon } from '@pluralsh/design-system'
-import {
-  ConsoleInstanceFragment,
-  ConsoleInstanceStatus,
-} from 'generated/graphql'
 import styled, { useTheme } from 'styled-components'
+
+import { ConsoleInstanceFragment } from 'generated/graphql'
+
+import { useCreateClusterContext } from './CreateClusterWizard'
 
 export function ConsoleCreationStatus({
   consoleInstance,
@@ -11,10 +11,7 @@ export function ConsoleCreationStatus({
   consoleInstance: ConsoleInstanceFragment
 }) {
   const theme = useTheme()
-  const loading = !(
-    consoleInstance?.console?.pingedAt &&
-    consoleInstance.status === ConsoleInstanceStatus.Provisioned
-  )
+  const { isCreatingInstance } = useCreateClusterContext()
 
   return (
     <CreationStatusCardSC>
@@ -24,7 +21,7 @@ export function ConsoleCreationStatus({
       >
         <Flex>
           <span css={theme.partials.text.body2Bold}>
-            {loading
+            {isCreatingInstance
               ? 'Creating console instance...'
               : 'Console successfully provisioned'}
           </span>
@@ -39,12 +36,12 @@ export function ConsoleCreationStatus({
             color: theme.colors['text-light'],
           }}
         >
-          {loading
+          {isCreatingInstance
             ? 'Your Console is being deployed in the background on your Plural Cloud instance. This might take a few minutes.'
             : 'You are now ready to complete your cluster creation.'}
         </span>
       </Flex>
-      {loading && (
+      {isCreatingInstance && (
         <Flex
           gap="medium"
           align="center"

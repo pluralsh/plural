@@ -17,6 +17,8 @@ import styled, { useTheme } from 'styled-components'
 
 import { GqlError } from 'components/utils/Alert'
 
+import { firstLetterUppercase } from 'components/overview/clusters/plural-cloud/CloudInstanceTableCols'
+
 import {
   CreateClusterStepKey,
   useCreateClusterContext,
@@ -102,7 +104,7 @@ export function ConfigureCloudInstanceStep() {
             .map((value) => (
               <ListBoxItem
                 key={value}
-                label={value}
+                label={firstLetterUppercase(value)}
               />
             ))}
         </Select>
@@ -139,7 +141,7 @@ export function ConfigureCloudInstanceStep() {
   )
 }
 
-const FormFieldSC = styled(FormField)(({ theme }) => ({
+export const FormFieldSC = styled(FormField)(({ theme }) => ({
   color: theme.colors.text,
 }))
 

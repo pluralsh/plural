@@ -42,6 +42,7 @@ function ClusterAdmins({
   onInvite,
   onGroupCreate,
   selected,
+  showHeading = true,
 }): ReactElement {
   const [bindings, setBindings] = useState([
     ...(serviceAccount?.impersonationPolicy?.bindings ?? []),
@@ -64,13 +65,15 @@ function ClusterAdmins({
           error={error}
         />
       )}
-      <Div
-        body2
-        color="text-light"
-      >
-        Bind users to the service account owning this cluster. This will allow
-        users to do low level git operations to this cluster.
-      </Div>
+      {showHeading && (
+        <Div
+          body2
+          color="text-light"
+        >
+          Bind users to the service account owning this cluster. This will allow
+          users to do low level git operations to this cluster.
+        </Div>
+      )}
       <BindingInput
         type="user"
         hint="Users that can administer this cluster"
@@ -143,7 +146,12 @@ function ClusterAdmins({
   )
 }
 
-export function ClusterAdminsModal({ onClose, serviceAccount }) {
+export function ClusterAdminsModal({
+  open = true,
+  onClose,
+  serviceAccount,
+  showHeading = true,
+}) {
   const { refetchClusters } = useContext(ClustersContext)
   const { isPaidPlan, isTrialPlan } = useContext(subscriptionContext)
 
@@ -167,15 +175,16 @@ export function ClusterAdminsModal({ onClose, serviceAccount }) {
   if (!(isPaidPlan || isTrialPlan))
     return (
       <UpgradeNeededModal
-        open
+        open={open}
         onClose={onClose}
       />
     )
 
   return (
     <Modal
+      onOpenAutoFocus={(e) => e.preventDefault()}
       header={header}
-      open
+      open={open}
       onClose={onClose}
       style={{ padding: 0 }}
       size="large"
@@ -194,6 +203,7 @@ export function ClusterAdminsModal({ onClose, serviceAccount }) {
               setLastView(View.Managers)
             }}
             selected={bindings}
+            showHeading={showHeading}
           />
         )}
         {view === View.InviteUser && (

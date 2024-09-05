@@ -28,7 +28,6 @@ export function PluralCloudInstances() {
   useEffect(() => {
     const id = localStorage.getItem(NEW_CONSOLE_INSTANCE_KEY)
 
-    console.log(id)
     if (id && instances.some((i) => i.id === id)) {
       localStorage.removeItem(NEW_CONSOLE_INSTANCE_KEY)
       setShowToast(true)

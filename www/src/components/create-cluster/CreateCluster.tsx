@@ -18,6 +18,8 @@ import {
 
 import { GqlError } from 'components/utils/Alert'
 
+import usePersistedState from 'hooks/usePersistedState'
+
 import { ConsoleCreationStatus } from './ConsoleCreationStatus'
 import { CreateClusterActions } from './CreateClusterActions'
 import {
@@ -28,18 +30,25 @@ import {
   localSteps,
 } from './CreateClusterWizard'
 
+export const CUR_CREATE_CLUSTER_STEP_KEY = 'cur-create-cluster-step'
+export const HOSTING_OPTION_KEY = 'hosting-option'
+export const CUR_CONSOLE_INSTANCE_KEY = 'cur-console-instance-id'
+
 export function CreateCluster() {
   const theme = useTheme()
   const navigate = useNavigate()
-  const [curStep, setCurStep] = useState<CreateClusterStepKey>(
+  const [curStep, setCurStep] = usePersistedState<CreateClusterStepKey>(
+    CUR_CREATE_CLUSTER_STEP_KEY,
     CreateClusterStepKey.HostingOptions
   )
-  const [hostingOption, setHostingOption] = useState<'local' | 'cloud'>('local')
+  const [hostingOption, setHostingOption] = usePersistedState<
+    'local' | 'cloud'
+  >(HOSTING_OPTION_KEY, 'local')
   const [finishEnabled, setFinishEnabled] = useState(false)
   const [continueBtn, setContinueBtn] = useState<ReactElement | undefined>()
-  const [consoleInstanceId, setConsoleInstanceId] = useState<
-    string | undefined
-  >()
+  const [consoleInstanceId, setConsoleInstanceId] = usePersistedState<
+    string | null
+  >(CUR_CONSOLE_INSTANCE_KEY, null)
 
   const steps = hostingOption === 'local' ? localSteps : cloudSteps
   const curStepIndex = steps.findIndex((step) => step.key === curStep)
@@ -50,7 +59,7 @@ export function CreateCluster() {
     },
     skip: !consoleInstanceId,
     fetchPolicy: 'cache-and-network',
-    pollInterval: 10000,
+    pollInterval: 10_000,
   })
 
   const context: CreateClusterContextType = useMemo(
@@ -66,17 +75,22 @@ export function CreateCluster() {
       consoleInstanceId,
       setConsoleInstanceId,
       consoleUrl: data?.consoleInstance?.url,
-      isCreatingInstance: !(
-        data?.consoleInstance?.console?.pingedAt &&
-        data.consoleInstance.status === ConsoleInstanceStatus.Provisioned
-      ),
+      isCreatingInstance:
+        !!consoleInstanceId &&
+        !(
+          data?.consoleInstance?.console?.pingedAt &&
+          data.consoleInstance.status === ConsoleInstanceStatus.Provisioned
+        ),
     }),
     [
       curStep,
+      setCurStep,
       hostingOption,
+      setHostingOption,
       finishEnabled,
       continueBtn,
       consoleInstanceId,
+      setConsoleInstanceId,
       data?.consoleInstance?.url,
       data?.consoleInstance?.console?.pingedAt,
       data?.consoleInstance?.status,
@@ -130,6 +144,12 @@ export function CreateCluster() {
       </MainWrapperSC>
     </CreateClusterContext.Provider>
   )
+}
+
+export function clearCreateClusterState() {
+  localStorage.removeItem(`plural-${CUR_CREATE_CLUSTER_STEP_KEY}`)
+  localStorage.removeItem(`plural-${HOSTING_OPTION_KEY}`)
+  localStorage.removeItem(`plural-${CUR_CONSOLE_INSTANCE_KEY}`)
 }
 
 const MainWrapperSC = styled.div(({ theme }) => ({

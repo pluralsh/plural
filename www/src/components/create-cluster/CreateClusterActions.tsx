@@ -4,12 +4,14 @@ import { useTheme } from 'styled-components'
 import { useNavigate } from 'react-router-dom'
 
 import {
+  CreateClusterStepKey,
   cloudSteps,
   localSteps,
   useCreateClusterContext,
 } from './CreateClusterWizard'
+import { clearCreateClusterState } from './CreateCluster'
 
-export const NEW_CONSOLE_INSTANCE_KEY = 'new-console-instance'
+export const FINISHED_CONSOLE_INSTANCE_KEY = 'finished-console-instance'
 
 export function CreateClusterActions() {
   const theme = useTheme()
@@ -30,8 +32,9 @@ export function CreateClusterActions() {
 
   const handleFinish = () => {
     if (consoleInstanceId) {
-      localStorage.setItem(NEW_CONSOLE_INSTANCE_KEY, consoleInstanceId)
+      localStorage.setItem(FINISHED_CONSOLE_INSTANCE_KEY, consoleInstanceId)
     }
+    clearCreateClusterState()
     navigate(
       `/overview/clusters/${
         hostingOption === 'local' ? 'self-hosted' : 'plural-cloud'
@@ -60,14 +63,18 @@ export function CreateClusterActions() {
           Read docs
         </Button>
         <Flex gap="medium">
-          {prevStep && (
-            <Button
-              secondary
-              onClick={() => setCurStep(prevStep)}
-            >
-              Back
-            </Button>
-          )}
+          {prevStep &&
+            !(
+              hostingOption === 'cloud' &&
+              curStep === CreateClusterStepKey.InstallCli
+            ) && (
+              <Button
+                secondary
+                onClick={() => setCurStep(prevStep)}
+              >
+                Back
+              </Button>
+            )}
           {nextStep ? (
             continueBtn || (
               <Button onClick={() => setCurStep(nextStep)}>Continue</Button>

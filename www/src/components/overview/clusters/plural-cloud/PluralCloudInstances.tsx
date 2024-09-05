@@ -4,9 +4,9 @@ import { useContext, useEffect, useState } from 'react'
 
 import ConsoleInstancesContext from 'contexts/ConsoleInstancesContext'
 
-import { NEW_CONSOLE_INSTANCE_KEY } from 'components/create-cluster/CreateClusterActions'
-
 import { useTheme } from 'styled-components'
+
+import { FINISHED_CONSOLE_INSTANCE_KEY } from 'components/create-cluster/CreateClusterActions'
 
 import { CLUSTERS_OVERVIEW_BREADCRUMBS } from '../Clusters'
 
@@ -26,10 +26,10 @@ export function PluralCloudInstances() {
   const { instances } = useContext(ConsoleInstancesContext)
 
   useEffect(() => {
-    const id = localStorage.getItem(NEW_CONSOLE_INSTANCE_KEY)
+    const id = localStorage.getItem(FINISHED_CONSOLE_INSTANCE_KEY)
 
     if (id && instances.some((i) => i.id === id)) {
-      localStorage.removeItem(NEW_CONSOLE_INSTANCE_KEY)
+      localStorage.removeItem(FINISHED_CONSOLE_INSTANCE_KEY)
       setShowToast(true)
     }
   }, [instances])

@@ -7,6 +7,10 @@ import {
   useDeleteConsoleInstanceMutation,
 } from 'generated/graphql'
 import { useState } from 'react'
+import {
+  CUR_CONSOLE_INSTANCE_KEY,
+  clearCreateClusterState,
+} from 'components/create-cluster/CreateCluster'
 
 export function DeleteInstanceModal({
   open,
@@ -47,6 +51,12 @@ function DeleteInstance({
   const [mutation, { loading, error }] = useDeleteConsoleInstanceMutation({
     variables: { id: instance.id },
     onCompleted: () => {
+      if (
+        `"${instance.id}"` ===
+        localStorage.getItem(`plural-${CUR_CONSOLE_INSTANCE_KEY}`)
+      ) {
+        clearCreateClusterState()
+      }
       onClose()
       refetch()
     },

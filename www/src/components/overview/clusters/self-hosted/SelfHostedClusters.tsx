@@ -4,13 +4,9 @@ import { ClusterList } from '../ClusterList'
 import { CLUSTERS_OVERVIEW_BREADCRUMBS } from '../Clusters'
 import {
   ColActions,
-  ColCloudShell,
   ColCluster,
-  ColGit,
   ColHealth,
   ColOwner,
-  ColPromotions,
-  ColUpgrades,
 } from '../SelfHostedTableCols'
 
 const breadcrumbs = [
@@ -31,13 +27,4 @@ export function SelfHostedClusters() {
   )
 }
 
-const columns = [
-  ColCluster,
-  ColHealth,
-  ColGit,
-  ColCloudShell,
-  ColOwner,
-  ColUpgrades,
-  ColPromotions,
-  ColActions,
-]
+const columns = [ColCluster, ColHealth, ColOwner, ColActions]

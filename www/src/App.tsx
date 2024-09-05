@@ -20,7 +20,7 @@ import { mergeDeep } from '@apollo/client/utilities'
 import mpRecipe from 'honorable-recipe-mp'
 import { GrowthBook, GrowthBookProvider } from '@growthbook/growthbook-react'
 
-import { PluralErrorBoundary } from 'components/utils/PluralErrorBoundary'
+import { PluralErrorBoundary } from './components/utils/PluralErrorBoundary'
 
 import { client } from './helpers/client'
 import { INTERCOM_APP_ID } from './constants'

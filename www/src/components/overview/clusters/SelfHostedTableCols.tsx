@@ -1,22 +1,18 @@
 import {
   AppIcon,
+  Button,
   CaretRightIcon,
-  CheckRoundedIcon,
-  Chip,
   ConsoleIcon,
   IconFrame,
   TerminalIcon,
 } from '@pluralsh/design-system'
-import styled from 'styled-components'
 import { createColumnHelper } from '@tanstack/react-table'
-import { Link } from 'react-router-dom'
 import { A, Div } from 'honorable'
-import { ReactElement, useState } from 'react'
+import { Link } from 'react-router-dom'
+import styled, { useTheme } from 'styled-components'
 
+import { Source } from '../../../generated/graphql'
 import { ProviderIcon } from '../../utils/ProviderIcon'
-import { Cluster, Source } from '../../../generated/graphql'
-import CopyButton from '../../utils/CopyButton'
-import { ClusterPromoteModal } from '../../cluster/ClusterPromoteModal'
 
 import ClusterHealth from './ClusterHealth'
 import ClusterOwner from './ClusterOwner'
@@ -46,6 +42,7 @@ const sourceDisplayNames = {
 
 export const ColCluster = columnHelper.accessor((row) => row.name, {
   id: 'cluster',
+  meta: { gridTemplate: '3fr' },
   enableGlobalFilter: true,
   enableSorting: true,
   cell: ({
@@ -84,6 +81,7 @@ export const ColCluster = columnHelper.accessor((row) => row.name, {
 
 export const ColHealth = columnHelper.accessor((row) => row.pingedAt, {
   id: 'health',
+  meta: { gridTemplate: '1fr' },
   enableGlobalFilter: true,
   enableSorting: true,
   cell: ({
@@ -99,59 +97,9 @@ export const ColHealth = columnHelper.accessor((row) => row.pingedAt, {
   header: 'Health',
 })
 
-export const ColGit = columnHelper.accessor((row) => row.gitUrl, {
-  id: 'git',
-  enableGlobalFilter: true,
-  enableSorting: true,
-  cell: ({
-    row: {
-      original: { gitUrl },
-    },
-  }) => (gitUrl ? <CopyButton text={gitUrl} /> : undefined),
-  header: 'Git',
-})
-
-export const ColCloudShell = columnHelper.accessor(
-  (row) => row.owner?.hasShell,
-  {
-    id: 'cloudshell',
-    enableGlobalFilter: true,
-    enableSorting: true,
-    cell: ({
-      row: {
-        original: { owner, accessible },
-      },
-    }) =>
-      owner?.hasShell ? (
-        accessible ? (
-          <IconFrame
-            clickable
-            icon={<TerminalIcon />}
-            as={Link}
-            to={`/shell?user=${owner?.id}`}
-            textValue="Go to cloudshell"
-            tooltip
-            type="floating"
-            style={{
-              display: 'flex',
-            }}
-          />
-        ) : (
-          <IconFrame
-            size="medium"
-            icon={<TerminalIcon color="icon-disabled" />}
-            textValue="You aren't an administrator of this cluster"
-            tooltip
-            type="floating"
-          />
-        )
-      ) : null,
-    header: 'Cloudshell',
-  }
-)
-
 export const ColOwner = columnHelper.accessor((row) => row.owner?.name, {
   id: 'owner',
+  meta: { gridTemplate: '2fr' },
   enableGlobalFilter: true,
   enableSorting: true,
   cell: ({
@@ -168,104 +116,78 @@ export const ColOwner = columnHelper.accessor((row) => row.owner?.name, {
   header: 'Owner',
 })
 
-type PromotionsProps = { cluster: Cluster }
-
-function Promotions({ cluster }: PromotionsProps): ReactElement {
-  const [promoteOpen, setPromoteOpen] = useState(false)
-
-  return (
-    <>
-      <IconFrame
-        clickable
-        onClick={() => setPromoteOpen(true)}
-        icon={<CheckRoundedIcon color="icon-success" />}
-        type="floating"
-      />
-      <ClusterPromoteModal
-        open={promoteOpen}
-        setOpen={setPromoteOpen}
-        destination={cluster}
-      />
-    </>
-  )
-}
-
-export const ColPromotions = columnHelper.accessor((row) => row, {
-  id: 'promotions',
-  enableGlobalFilter: true,
-  enableSorting: true,
-  cell: ({
-    row: {
-      original: { hasDependency, raw },
-    },
-  }) => hasDependency && <Promotions cluster={raw} />,
-  header: 'Promotions',
-})
-
-export const ColUpgrades = columnHelper.accessor((row) => row, {
-  id: 'upgrades',
-  enableGlobalFilter: true,
-  enableSorting: true,
-  cell: ({ row: { original: row } }) =>
-    clusterExists(row) && (
-      <Chip
-        severity={row.delivered ? 'success' : 'warning'}
-        hue="lighter"
-        size="small"
-      >
-        {row.delivered ? 'Delivered' : 'Pending'}
-      </Chip>
-    ),
-  header: 'Upgrades',
-})
-
 const ActionsWrap = styled(CellWrap)({ alignSelf: 'end' })
 
 export const ColActions = columnHelper.accessor((row) => row.consoleUrl, {
   id: 'actions',
+  header: '',
+  meta: { gridTemplate: 'max-content' },
   enableGlobalFilter: false,
   enableSorting: false,
-  cell: ({ row: { original: row } }) => (
-    <ActionsWrap>
-      {row.consoleUrl && (
-        <IconFrame
-          clickable
-          size="medium"
-          icon={<ConsoleIcon />}
-          textValue="Launch Console"
-          tooltip
-          type="secondary"
-          onClick={() => window.open(row.consoleUrl!, '_blank')}
-        />
-      )}
-      {row.accessible && clusterExists(row) ? (
-        <IconFrame
-          clickable
-          size="medium"
-          icon={<CaretRightIcon />}
-          as={Link}
-          to={`/clusters/${row.id}`}
-          textValue="Go to cluster details"
-          tooltip
-          type="tertiary"
-          style={{
-            display: 'flex',
-          }}
-        />
-      ) : (
-        <IconFrame
-          size="medium"
-          icon={<CaretRightIcon color="icon-disabled" />}
-          textValue={
-            !clusterExists(row)
-              ? ''
-              : "You aren't an administrator of this cluster"
-          }
-          tooltip
-          type="tertiary"
-        />
-      )}
-    </ActionsWrap>
-  ),
-  header: '',
+  cell: function Cell({ row: { original: row } }) {
+    const theme = useTheme()
+
+    return (
+      <ActionsWrap>
+        {!row.owner?.hasShell && row.accessible && (
+          <Button
+            secondary
+            startIcon={<TerminalIcon color={theme.colors['icon-default']} />}
+            as="a"
+            href={`/shell?user=${row.owner?.id}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Cloud shell
+          </Button>
+        )}
+        {row.consoleUrl && (
+          <Button
+            secondary
+            startIcon={<ConsoleIcon color={theme.colors['icon-default']} />}
+            as="a"
+            href={`${row.consoleUrl}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <span
+              css={{
+                color: theme.colors['text-primary-accent'],
+              }}
+            >
+              Go to Console
+            </span>
+          </Button>
+        )}
+
+        {row.accessible && clusterExists(row) ? (
+          <IconFrame
+            clickable
+            size="medium"
+            icon={<CaretRightIcon />}
+            as={Link}
+            to={`/clusters/${row.id}`}
+            textValue="Go to cluster details"
+            tooltip
+            type="tertiary"
+            style={{
+              display: 'flex',
+            }}
+          />
+        ) : (
+          <IconFrame
+            size="medium"
+            icon={<CaretRightIcon color="icon-disabled" />}
+            textValue={
+              !clusterExists(row)
+                ? ''
+                : "You aren't an administrator of this cluster"
+            }
+            tooltip
+            type="tertiary"
+          />
+        )}
+      </ActionsWrap>
+    )
+  },
 })

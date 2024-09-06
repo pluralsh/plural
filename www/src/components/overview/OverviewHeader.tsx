@@ -3,7 +3,7 @@ import { Flex } from 'honorable'
 import { ReactElement, useRef } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
-import { CUR_CONSOLE_INSTANCE_KEY } from 'components/create-cluster/CreateCluster'
+import { hasUnfinishedCreation } from 'components/create-cluster/CreateCluster'
 
 import { LinkTabWrap } from '../utils/Tabs'
 
@@ -17,13 +17,6 @@ export default function OverviewHeader(): ReactElement {
   const navigate = useNavigate()
   const { pathname } = useLocation()
   const currentTab = DIRECTORY.find((tab) => pathname?.startsWith(tab.path))
-  const curConsoleInstanceId = localStorage.getItem(
-    `plural-${CUR_CONSOLE_INSTANCE_KEY}`
-  )
-  const unfinishedCreation =
-    !!curConsoleInstanceId &&
-    curConsoleInstanceId !== 'null' &&
-    curConsoleInstanceId !== 'undefined'
 
   return (
     <Flex justifyContent="space-between">
@@ -45,9 +38,7 @@ export default function OverviewHeader(): ReactElement {
         ))}
       </TabList>
       <Button onClick={() => navigate('/create-cluster')}>
-        {unfinishedCreation
-          ? 'Finish Creating Cloud Instance'
-          : 'Create Cluster'}
+        {hasUnfinishedCreation() ? 'Resume cluster creation' : 'Create cluster'}
       </Button>
     </Flex>
   )

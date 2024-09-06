@@ -1,5 +1,4 @@
 import { Table } from '@pluralsh/design-system'
-import isEmpty from 'lodash/isEmpty'
 import { ComponentProps, memo, useContext, useMemo } from 'react'
 
 import ClustersContext from '../../../contexts/ClustersContext'
@@ -64,12 +63,11 @@ export const ClusterList = memo(({ columns, ...props }: ClustersListProps) => {
     [clusters, me]
   )
 
-  if (isEmpty(clusters)) return null
-
   return (
     <Table
       data={tableData}
       columns={columns}
+      emptyStateProps={{ message: 'No self-hosted clusters found' }}
       {...props}
     />
   )

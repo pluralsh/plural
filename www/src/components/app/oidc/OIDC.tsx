@@ -41,7 +41,7 @@ import CreateGroupModal from '../../utils/group/CreateGroupModal'
 import ImpersonateServiceAccount from '../../utils/ImpersonateServiceAccount'
 import { AppHeaderActions } from '../AppHeaderActions'
 
-function UrlsInput({ uriFormat = '', urls, setUrls }: any) {
+export function UrlsInput({ uriFormat = '', urls, setUrls }: any) {
   const [baseScheme, basePath] = ['https://', '/oauth2/callback']
   const [value, setValue] = useState('')
   const [scheme = baseScheme, path = basePath] = uriFormat

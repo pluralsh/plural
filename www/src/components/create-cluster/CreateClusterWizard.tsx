@@ -39,8 +39,8 @@ export type CreateClusterContextType = {
   setFinishEnabled: (enabled: boolean) => void
   continueBtn?: ReactElement
   setContinueBtn: (continueBtn?: ReactElement) => void
-  consoleInstanceId: string | null
-  setConsoleInstanceId: (consoleInstanceId: string | null) => void
+  consoleInstanceId: Nullable<string>
+  setConsoleInstanceId: (consoleInstanceId: Nullable<string>) => void
   consoleUrl?: string
   isCreatingInstance: boolean
 }

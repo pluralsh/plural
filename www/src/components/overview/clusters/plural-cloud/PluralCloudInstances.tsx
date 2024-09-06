@@ -1,12 +1,14 @@
 import { Table, Toast, useSetBreadcrumbs } from '@pluralsh/design-system'
 
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useMemo, useState } from 'react'
 
 import ConsoleInstancesContext from 'contexts/ConsoleInstancesContext'
 
 import { useTheme } from 'styled-components'
 
 import { FINISHED_CONSOLE_INSTANCE_KEY } from 'components/create-cluster/CreateClusterActions'
+
+import { ConsoleInstanceStatus } from 'generated/graphql'
 
 import { CLUSTERS_OVERVIEW_BREADCRUMBS } from '../Clusters'
 
@@ -23,7 +25,14 @@ export function PluralCloudInstances() {
   useSetBreadcrumbs(breadcrumbs)
   const [showToast, setShowToast] = useState(false)
 
-  const { instances } = useContext(ConsoleInstancesContext)
+  const { instances: instancesBase } = useContext(ConsoleInstancesContext)
+  const instances = useMemo(
+    () =>
+      instancesBase.filter(
+        (i) => i.status !== ConsoleInstanceStatus.DeploymentDeleted
+      ),
+    [instancesBase]
+  )
 
   useEffect(() => {
     const id = localStorage.getItem(FINISHED_CONSOLE_INSTANCE_KEY)
@@ -39,6 +48,7 @@ export function PluralCloudInstances() {
       <Table
         data={instances}
         columns={cloudInstanceCols}
+        emptyStateProps={{ message: 'No Plural Cloud instances found' }}
       />
       <Toast
         show={showToast}

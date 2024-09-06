@@ -1,4 +1,5 @@
 import { Button, Card, ClusterIcon, Flex } from '@pluralsh/design-system'
+import { hasUnfinishedCreation } from 'components/create-cluster/CreateCluster'
 import { useNavigate } from 'react-router-dom'
 import styled, { useTheme } from 'styled-components'
 
@@ -33,7 +34,9 @@ export default function ClusterListEmptyState() {
           css={{ maxWidth: 300, width: '100%' }}
           onClick={() => navigate('/create-cluster')}
         >
-          Create Cluster
+          {hasUnfinishedCreation()
+            ? 'Resume cluster creation'
+            : 'Create cluster'}
         </Button>
       </Wrapper>
     </Card>

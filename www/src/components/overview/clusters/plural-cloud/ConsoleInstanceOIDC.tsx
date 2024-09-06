@@ -1,11 +1,11 @@
 import {
+  Accordion,
+  AccordionItem,
   Button,
-  Chip,
   Flex,
-  InfoOutlineIcon,
+  FormField,
   Modal,
   PeopleIcon,
-  Tooltip,
 } from '@pluralsh/design-system'
 import {
   BindingInput,
@@ -13,36 +13,66 @@ import {
   fetchUsers,
 } from 'components/account/Typeaheads'
 import { SanitizePropsType, sanitize } from 'components/account/utils'
+import { UrlsInput } from 'components/app/oidc/OIDC'
 import { GqlError } from 'components/utils/Alert'
 import ImpersonateServiceAccount from 'components/utils/ImpersonateServiceAccount'
 import {
   ConsoleInstanceFragment,
+  InputMaybe,
   OidcAuthMethod,
   OidcProviderBinding,
-  OidcProviderFragment,
   useRepositoryQuery,
   useUpdateOidcProviderMutation,
 } from 'generated/graphql'
-import { Span } from 'honorable'
+import { isEmpty } from 'lodash'
 import { useState } from 'react'
+import { useTheme } from 'styled-components'
 
 export function ConsoleInstanceOIDC({
   instance,
 }: {
   instance: ConsoleInstanceFragment
 }) {
+  const [open, setOpen] = useState(false)
+
   return (
     <ImpersonateServiceAccount
       id={instance.console?.owner?.id}
       renderIndicators={false}
     >
-      <ConsoleInstanceOIDCInner />
+      <>
+        <Button
+          secondary
+          startIcon={<PeopleIcon />}
+          onClick={() => setOpen(true)}
+        >
+          OIDC
+        </Button>
+        <Modal
+          onOpenAutoFocus={(e) => e.preventDefault()}
+          open={open}
+          onClose={() => setOpen(false)}
+          size="large"
+        >
+          <ConsoleInstanceOIDCInner
+            instance={instance}
+            onClose={() => setOpen(false)}
+          />
+        </Modal>
+      </>
     </ImpersonateServiceAccount>
   )
 }
 
-function ConsoleInstanceOIDCInner() {
-  const [open, setOpen] = useState(false)
+function ConsoleInstanceOIDCInner({
+  instance,
+  onClose,
+}: {
+  instance: ConsoleInstanceFragment
+  onClose: () => void
+}) {
+  const [bindings, setBindings] = useState<any>([])
+  const [redirectUris, setRedirectUris] = useState<InputMaybe<string>[]>([])
 
   const {
     data,
@@ -50,11 +80,17 @@ function ConsoleInstanceOIDCInner() {
     error: errorRepo,
   } = useRepositoryQuery({
     variables: { name: 'console' },
+    fetchPolicy: 'cache-and-network',
+    onCompleted: (data) => {
+      setBindings(data?.repository?.installation?.oidcProvider?.bindings)
+      setRedirectUris(
+        data?.repository?.installation?.oidcProvider?.redirectUris ?? []
+      )
+    },
   })
 
   const installation = data?.repository?.installation
   const provider = installation?.oidcProvider
-  const [bindings, setBindings] = useState<any>(provider?.bindings ?? [])
 
   const [mutation, { loading: loadingMutation, error: errorMutation }] =
     useUpdateOidcProviderMutation({
@@ -62,75 +98,70 @@ function ConsoleInstanceOIDCInner() {
         id: installation?.id ?? '',
         attributes: {
           authMethod: provider?.authMethod ?? OidcAuthMethod.Post,
+          redirectUris: isEmpty(redirectUris)
+            ? [`https://${instance.url}/oauth/callback`]
+            : redirectUris,
           bindings: bindings.map((value) =>
             sanitize(value as SanitizePropsType)
           ),
         },
       },
-      onCompleted: () => setOpen(false),
+      onCompleted: onClose,
     })
 
-  if (!installation || loadingRepo || errorRepo) return null
+  if (!provider?.bindings || loadingRepo || errorRepo) return null
 
   return (
-    <>
-      <Button
-        secondary
-        startIcon={<PeopleIcon />}
-        onClick={() => setOpen(true)}
+    <Flex
+      direction="column"
+      gap="medium"
+    >
+      {errorMutation && <GqlError error={errorMutation} />}
+      <MiniProviderForm
+        bindings={bindings}
+        setBindings={setBindings}
+        redirectUris={redirectUris}
+        setRedirectUris={setRedirectUris}
+        uriFormat={data?.repository?.oauthSettings?.uriFormat}
+      />
+      <Flex
+        gap="medium"
+        alignSelf="flex-end"
       >
-        OIDC
-      </Button>
-      <Modal
-        onOpenAutoFocus={(e) => e.preventDefault()}
-        open={open}
-        onClose={() => setOpen(false)}
-      >
-        <Flex
-          direction="column"
-          gap="medium"
+        <Button
+          secondary
+          onClick={onClose}
         >
-          {errorMutation && <GqlError error={errorMutation} />}
-          <MiniProviderForm
-            provider={provider}
-            bindings={bindings}
-            setBindings={setBindings}
-          />
-          <Flex
-            gap="medium"
-            alignSelf="flex-end"
-          >
-            <Button
-              secondary
-              onClick={() => setOpen(false)}
-              loading={loadingMutation}
-            >
-              Cancel
-            </Button>
-            <Button
-              onClick={() => {
-                mutation()
-              }}
-              loading={loadingMutation}
-            >
-              Save
-            </Button>
-          </Flex>
-        </Flex>
-      </Modal>
-    </>
+          Cancel
+        </Button>
+        <Button
+          onClick={() => {
+            mutation()
+          }}
+          loading={loadingMutation}
+        >
+          Save
+        </Button>
+      </Flex>
+    </Flex>
   )
 }
 
 function MiniProviderForm({
-  provider,
   bindings,
   setBindings,
+  redirectUris,
+  setRedirectUris,
+  uriFormat,
 }: {
-  provider: Nullable<OidcProviderFragment>
   bindings: Omit<OidcProviderBinding, 'id'>[]
   setBindings: (bindings: Omit<OidcProviderBinding, 'id'>[]) => void
+  redirectUris: InputMaybe<string>[]
+  setRedirectUris: (redirectUris: InputMaybe<string>[]) => void
+  uriFormat?: string
 }) {
+  const theme = useTheme()
+
   return (
     <>
       <BindingInput
@@ -139,17 +170,6 @@ function MiniProviderForm({
         bindings={bindings
           .filter(({ user }) => !!user)
           .map(({ user }) => user?.email)}
-        customBindings={provider?.invites?.map((invite) => (
-          <Tooltip label="Pending invitation">
-            <Chip
-              fillLevel={2}
-              size="small"
-              icon={<InfoOutlineIcon color="icon-xlight" />}
-            >
-              <Span color="text-primary-disabled">{invite?.email}</Span>
-            </Chip>
-          </Tooltip>
-        ))}
         fetcher={fetchUsers}
         add={(user) => setBindings([...bindings, { user }])}
         remove={(email) =>
@@ -172,6 +192,26 @@ function MiniProviderForm({
           )
         }
       />
+      <Accordion
+        type="single"
+        css={{ background: 'transparent' }}
+      >
+        <AccordionItem
+          trigger={<span css={theme.partials.text.overline}>advanced</span>}
+          padding="compact"
+        >
+          <FormField
+            label="Redirect urls"
+            marginTop={theme.spacing.small}
+          >
+            <UrlsInput
+              uriFormat={uriFormat}
+              urls={redirectUris}
+              setUrls={setRedirectUris}
+            />
+          </FormField>
+        </AccordionItem>
+      </Accordion>
     </>
   )
 }

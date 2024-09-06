@@ -20,7 +20,7 @@ import {
 
 import ClustersContext from '../../contexts/ClustersContext'
 import subscriptionContext from '../../contexts/SubscriptionContext'
-import { Group } from '../../generated/graphql'
+import { Group, UserFragment } from '../../generated/graphql'
 import InviteUser from '../account/invite/InviteUser'
 import { UPDATE_SERVICE_ACCOUNT } from '../account/queries'
 import { BindingInput } from '../account/Typeaheads'
@@ -43,6 +43,13 @@ function ClusterAdmins({
   onGroupCreate,
   selected,
   showHeading = true,
+}: {
+  serviceAccount: Nullable<UserFragment>
+  onClose: () => void
+  onInvite: () => void
+  onGroupCreate: () => void
+  selected: any
+  showHeading?: boolean
 }): ReactElement {
   const [bindings, setBindings] = useState([
     ...(serviceAccount?.impersonationPolicy?.bindings ?? []),
@@ -51,7 +58,7 @@ function ClusterAdmins({
 
   const [mutation, { loading, error }] = useMutation(UPDATE_SERVICE_ACCOUNT, {
     variables: {
-      id: serviceAccount.id,
+      id: serviceAccount?.id,
       attributes: { impersonationPolicy: { bindings: bindings.map(sanitize) } },
     },
     onCompleted: onClose,
@@ -80,14 +87,14 @@ function ClusterAdmins({
         bindings={bindings
           .filter(({ user }) => !!user)
           .map(({ user: { email } }) => email)}
-        customBindings={serviceAccount.invites?.map((invite) => (
+        customBindings={serviceAccount?.invites?.map((invite) => (
           <Tooltip label="Pending invitation">
             <Chip
               fillLevel={2}
               size="small"
               icon={<InfoOutlineIcon color="icon-xlight" />}
             >
-              <Span color="text-primary-disabled">{invite.email}</Span>
+              <Span color="text-primary-disabled">{invite?.email}</Span>
             </Chip>
           </Tooltip>
         ))}
@@ -151,6 +158,11 @@ export function ClusterAdminsModal({
   onClose,
   serviceAccount,
   showHeading = true,
+}: {
+  open?: boolean
+  onClose: () => void
+  serviceAccount: Nullable<UserFragment>
+  showHeading?: boolean
 }) {
   const { refetchClusters } = useContext(ClustersContext)
   const { isPaidPlan, isTrialPlan } = useContext(subscriptionContext)
@@ -220,7 +232,7 @@ export function ClusterAdminsModal({
             onBack={() => setView(View.Managers)}
             bindings={groups}
             refetch={setOnCreateGroup}
-            serviceAccountId={serviceAccount.id}
+            serviceAccountId={serviceAccount?.id}
           />
         )}
         {view === View.CreateGroup && (

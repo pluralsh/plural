@@ -3,6 +3,8 @@ import { useTheme } from 'styled-components'
 
 import { useNavigate } from 'react-router-dom'
 
+import { useBillingSubscription } from 'components/account/billing/BillingSubscriptionProvider'
+
 import {
   CreateClusterStepKey,
   cloudSteps,
@@ -11,7 +13,8 @@ import {
 } from './CreateClusterWizard'
 import { clearCreateClusterState } from './CreateCluster'
 
-export const FINISHED_CONSOLE_INSTANCE_KEY = 'finished-console-instance'
+export const FINISHED_CONSOLE_INSTANCE_KEY = 'plural-finished-console-instance'
+export const FINISHED_LOCAL_CREATE_KEY = 'plural-finished-local-create'
 
 export function CreateClusterActions() {
   const theme = useTheme()
@@ -25,6 +28,11 @@ export function CreateClusterActions() {
     consoleInstanceId,
   } = useCreateClusterContext()
 
+  const { isPaidPlan, isTrialPlan, isTrialExpired } = useBillingSubscription()
+  const disableContinue =
+    hostingOption === 'cloud' &&
+    ((!isPaidPlan && !isTrialPlan) || (isTrialPlan && isTrialExpired))
+
   const steps = hostingOption === 'local' ? localSteps : cloudSteps
   const curStepIndex = steps.findIndex((step) => step.key === curStep)
   const prevStep = steps[curStepIndex - 1]?.key
@@ -33,6 +41,9 @@ export function CreateClusterActions() {
   const handleFinish = () => {
     if (consoleInstanceId) {
       localStorage.setItem(FINISHED_CONSOLE_INSTANCE_KEY, consoleInstanceId)
+    }
+    if (hostingOption === 'local') {
+      localStorage.setItem(FINISHED_LOCAL_CREATE_KEY, 'true')
     }
     clearCreateClusterState()
     navigate(
@@ -77,7 +88,12 @@ export function CreateClusterActions() {
             )}
           {nextStep ? (
             continueBtn || (
-              <Button onClick={() => setCurStep(nextStep)}>Continue</Button>
+              <Button
+                disabled={disableContinue}
+                onClick={() => setCurStep(nextStep)}
+              >
+                Continue
+              </Button>
             )
           ) : (
             <Button

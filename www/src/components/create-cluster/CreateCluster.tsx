@@ -47,7 +47,7 @@ export function CreateCluster() {
   const [finishEnabled, setFinishEnabled] = useState(false)
   const [continueBtn, setContinueBtn] = useState<ReactElement | undefined>()
   const [consoleInstanceId, setConsoleInstanceId] = usePersistedState<
-    string | null
+    Nullable<string>
   >(CUR_CONSOLE_INSTANCE_KEY, null)
 
   const steps = hostingOption === 'local' ? localSteps : cloudSteps
@@ -129,7 +129,7 @@ export function CreateCluster() {
               secondary
               startIcon={<SendMessageIcon />}
               as="a"
-              href="mailto:sales@plural.sh"
+              href="https://plural.sh/contact-sales"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -150,6 +150,17 @@ export function clearCreateClusterState() {
   localStorage.removeItem(`plural-${CUR_CREATE_CLUSTER_STEP_KEY}`)
   localStorage.removeItem(`plural-${HOSTING_OPTION_KEY}`)
   localStorage.removeItem(`plural-${CUR_CONSOLE_INSTANCE_KEY}`)
+}
+export function hasUnfinishedCreation() {
+  const curConsoleInstanceId = localStorage.getItem(
+    `plural-${CUR_CONSOLE_INSTANCE_KEY}`
+  )
+
+  return (
+    !!curConsoleInstanceId &&
+    curConsoleInstanceId !== 'null' &&
+    curConsoleInstanceId !== 'undefined'
+  )
 }
 
 const MainWrapperSC = styled.div(({ theme }) => ({

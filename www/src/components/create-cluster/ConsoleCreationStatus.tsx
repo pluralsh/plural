@@ -25,10 +25,12 @@ export function ConsoleCreationStatus({
               ? 'Creating console instance...'
               : 'Console successfully provisioned'}
           </span>
-          <SuccessIcon
-            marginLeft="xsmall"
-            color={theme.colors['icon-success']}
-          />
+          {!isCreatingInstance && (
+            <SuccessIcon
+              marginLeft="xsmall"
+              color={theme.colors['icon-success']}
+            />
+          )}
         </Flex>
         <span
           css={{

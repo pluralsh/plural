@@ -47,7 +47,7 @@ export default function ClustersHelpSection(): ReactElement {
             floating
             startIcon={<SendMessageIcon />}
             forwardedAs="a"
-            href="mailto:sales@plural.sh"
+            href="https://plural.sh/contact-sales"
             target="_blank"
             rel="noopener noreferrer"
           >

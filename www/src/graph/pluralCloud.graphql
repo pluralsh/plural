@@ -69,3 +69,9 @@ mutation DeleteConsoleInstance($id: ID!) {
     ...ConsoleInstance
   }
 }
+
+mutation UpdateOidcProvider($id: ID!, $attributes: OidcAttributes!) {
+  updateOidcProvider(installationId: $id, attributes: $attributes) {
+    ...OIDCProvider
+  }
+}

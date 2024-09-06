@@ -7,19 +7,29 @@ import {
   SendMessageIcon,
 } from '@pluralsh/design-system'
 import { ReactElement } from 'react'
-import ReactPlayer from 'react-player'
 import { useIntercom } from 'react-use-intercom'
 import styled from 'styled-components'
 
 export default function ClustersHelpSection(): ReactElement {
   const { show } = useIntercom()
+  // const [isVideoPlaying, setIsVideoPlaying] = useState(false)
 
   return (
+    // taking out for the time being
     <>
-      <ReactPlayer
-        url="https://www.youtube.com/watch?v=W8KCaiZRV3M"
-        width="100%"
-      />
+      {/* <div
+        css={{
+          minHeight: isVideoPlaying ? 800 : 256,
+        }}
+      >
+        <ReactPlayer
+          url="https://www.youtube.com/watch?v=W8KCaiZRV3M"
+          controls
+          width="100%"
+          height="100%"
+          onPlay={() => setIsVideoPlaying(true)}
+        />
+      </div> */}
       <ResourcesCard>
         <div className="header">Helpful resources</div>
         <Flex gap="medium">

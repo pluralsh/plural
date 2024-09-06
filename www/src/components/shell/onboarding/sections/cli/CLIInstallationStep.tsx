@@ -3,6 +3,7 @@ import { A, Div, Flex, P } from 'honorable'
 
 import {
   Button,
+  Callout,
   Code,
   Codeline,
   Tab,
@@ -97,25 +98,63 @@ export function CliInstallationBaseInfo() {
         </TabList>
       </Flex>
       <TabPanel stateRef={tabStateRef}>
-        <P marginTop="small">
+        <>
           {tab === TAB_MAC &&
             'Start by running this command in your local terminal:'}
           {tab === TAB_CURL && (
-            <>
-              You can download the binaries attached to our &nbsp;
-              <A
-                inline
-                href="https://github.com/pluralsh/plural-cli/releases"
-                target="_blank"
-                rel="noopener noreferrer"
+            <Flex
+              direction="column"
+              gap="small"
+            >
+              <Callout
+                size="compact"
+                css={theme.partials.text.body2Bold}
               >
-                GitHub releases
-              </A>
-              .
-              <br />
+                <A
+                  // relative so it's displayed above visually hidden title element
+                  position="relative"
+                  href="https://helm.sh/docs/intro/install/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Helm
+                </A>
+                ,{' '}
+                <A
+                  inline
+                  href="https://developer.hashicorp.com/terraform/install"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Terraform
+                </A>{' '}
+                and{' '}
+                <A
+                  inline
+                  href="https://kubernetes.io/docs/tasks/tools/#kubectl"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Kubectl
+                </A>{' '}
+                are dependencies of the Plural CLI.
+              </Callout>
+              <span>
+                After downloading the dependencies above, you can download the
+                binaries attached to our{' '}
+                <A
+                  inline
+                  href="https://github.com/pluralsh/plural-cli/releases"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  GitHub releases
+                </A>
+                .
+              </span>
               For example, you can download the latest version for Darwin arm64
               via:
-            </>
+            </Flex>
           )}
           {tab === TAB_DOCKER && (
             <>
@@ -128,7 +167,7 @@ export function CliInstallationBaseInfo() {
               using, like (~/.aws), in the docker run command:
             </>
           )}
-        </P>
+        </>
 
         {tab !== TAB_EC2 && (
           <>
@@ -150,11 +189,8 @@ export function CliInstallationBaseInfo() {
               {tab === TAB_MAC && (
                 <>
                   The brew tap will install plural, alongside terraform, helm
-                  and kubectl for you.
-                  <br />
-                  If you've already installed any of those dependencies, you can
-                  add
-                  <br />
+                  and kubectl for you. If you've already installed any of those
+                  dependencies, you can add{' '}
                   <strong>
                     <code>--without-helm</code>
                   </strong>
@@ -167,38 +203,6 @@ export function CliInstallationBaseInfo() {
                     <code>--without-kubectl</code>
                   </strong>
                   .
-                </>
-              )}
-              {tab === TAB_CURL && (
-                <>
-                  You will still need to ensure &nbsp;
-                  <A
-                    inline
-                    href="https://helm.sh/docs/intro/install"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Helm
-                  </A>
-                  , &nbsp;
-                  <A
-                    inline
-                    href="https://learn.hashicorp.com/tutorials/terraform/install-cli"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Terraform
-                  </A>
-                  &nbsp;and&nbsp;
-                  <A
-                    inline
-                    href="https://kubernetes.io/docs/tasks/tools/#kubectl"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Kubectl
-                  </A>
-                  &nbsp; are properly installed.
                 </>
               )}
               {tab === TAB_DOCKER && (

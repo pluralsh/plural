@@ -5,7 +5,6 @@ import {
   ConsoleIcon,
   Flex,
   ListBoxItem,
-  PeopleIcon,
 } from '@pluralsh/design-system'
 import { createColumnHelper } from '@tanstack/react-table'
 import { ProviderIcon } from 'components/utils/ProviderIcon'
@@ -24,8 +23,9 @@ import { ClusterAdminsModal } from 'components/cluster/ClusterAdminsModal'
 
 import { CellCaption, CellWrap } from '../SelfHostedTableCols'
 
-import { EditInstanceSizeModal } from './EditInstance'
+import { ConsoleInstanceOIDC } from './ConsoleInstanceOIDC'
 import { DeleteInstanceModal } from './DeleteInstance'
+import { EditInstanceSizeModal } from './EditInstance'
 
 const columnHelper = createColumnHelper<ConsoleInstanceFragment>()
 
@@ -148,14 +148,10 @@ const ColActions = columnHelper.accessor((instance) => instance, {
       <Flex
         align="center"
         gap="small"
+        justifyContent="flex-end"
+        width="100%"
       >
-        <Button
-          secondary
-          startIcon={<PeopleIcon />}
-          onClick={() => setMenuKey(MenuItemKey.EditOidc)}
-        >
-          OIDC
-        </Button>
+        <ConsoleInstanceOIDC instance={instance} />
         <Button
           secondary
           startIcon={<ConsoleIcon color={theme.colors['icon-default']} />}
@@ -180,8 +176,8 @@ const ColActions = columnHelper.accessor((instance) => instance, {
           />
           <ListBoxItem
             key={MenuItemKey.EditOidc}
-            label="Edit OIDC settings"
-            textValue="Edit OIDC settings"
+            label="Edit cluster managers"
+            textValue="Edit cluster managers"
           />
           <ListBoxItem
             key={MenuItemKey.Delete}

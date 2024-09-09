@@ -1,0 +1,77 @@
+fragment ConsoleInstance on ConsoleInstance {
+  id
+  name
+  subdomain
+  url
+  cloud
+  size
+  region
+  status
+  deletedAt
+  console {
+    id
+    pingedAt
+    owner {
+      ...User
+      impersonationPolicy {
+        ...ImpersonationPolicy
+      }
+    }
+  }
+  owner {
+    name
+    email
+  }
+  insertedAt
+  updatedAt
+}
+query ConsoleInstance($id: ID!) {
+  consoleInstance(id: $id) {
+    ...ConsoleInstance
+  }
+}
+
+query ConsoleInstances(
+  $after: String
+  $first: Int = 100
+  $before: String
+  $last: Int
+) {
+  consoleInstances(after: $after, first: $first, before: $before, last: $last) {
+    edges {
+      node {
+        ...ConsoleInstance
+      }
+    }
+    pageInfo {
+      ...PageInfo
+    }
+  }
+}
+
+mutation CreateConsoleInstance($attributes: ConsoleInstanceAttributes!) {
+  createConsoleInstance(attributes: $attributes) {
+    ...ConsoleInstance
+  }
+}
+
+mutation UpdateConsoleInstance(
+  $id: ID!
+  $attributes: ConsoleInstanceUpdateAttributes!
+) {
+  updateConsoleInstance(id: $id, attributes: $attributes) {
+    ...ConsoleInstance
+  }
+}
+
+mutation DeleteConsoleInstance($id: ID!) {
+  deleteConsoleInstance(id: $id) {
+    ...ConsoleInstance
+  }
+}
+
+mutation UpdateOidcProvider($id: ID!, $attributes: OidcAttributes!) {
+  updateOidcProvider(installationId: $id, attributes: $attributes) {
+    ...OIDCProvider
+  }
+}

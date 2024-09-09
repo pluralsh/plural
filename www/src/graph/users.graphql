@@ -42,6 +42,9 @@ fragment User on User {
   groups {
     ...Group
   }
+  impersonationPolicy {
+    ...ImpersonationPolicy
+  }
 }
 
 fragment ImpersonationPolicy on ImpersonationPolicy {

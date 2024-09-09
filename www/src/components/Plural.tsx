@@ -76,8 +76,26 @@ const Clusters = lazy(() =>
     default: module.Clusters,
   }))
 )
-const Apps = lazy(() =>
-  import('./overview/apps/Apps').then((module) => ({ default: module.Apps }))
+const SelfHostedClusters = lazy(() =>
+  import('./overview/clusters/self-hosted/SelfHostedClusters').then(
+    (module) => ({
+      default: module.SelfHostedClusters,
+    })
+  )
+)
+const PluralCloudInstances = lazy(() =>
+  import('./overview/clusters/plural-cloud/PluralCloudInstances').then(
+    (module) => ({
+      default: module.PluralCloudInstances,
+    })
+  )
+)
+
+// Create cluster.
+const CreateCluster = lazy(() =>
+  import('./create-cluster/CreateCluster').then((module) => ({
+    default: module.CreateCluster,
+  }))
 )
 
 // Cluster and app.
@@ -637,12 +655,31 @@ export function PluralInner() {
                 <Route
                   path="clusters"
                   element={<Clusters />}
-                />
-                <Route
-                  path="apps"
-                  element={<Apps />}
-                />
+                >
+                  <Route
+                    index
+                    element={
+                      <Navigate
+                        replace
+                        to="self-hosted"
+                      />
+                    }
+                  />
+                  <Route
+                    path="self-hosted"
+                    element={<SelfHostedClusters />}
+                  />
+                  <Route
+                    path="plural-cloud"
+                    element={<PluralCloudInstances />}
+                  />
+                </Route>
               </Route>
+              {/* CREATE CLUSTER */}
+              <Route
+                path="/create-cluster"
+                element={<CreateCluster />}
+              />
               {/* CLUSTERS  */}
               <Route
                 path="/clusters/:clusterId/"

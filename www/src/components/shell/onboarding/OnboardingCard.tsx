@@ -2,7 +2,7 @@ import { Flex, H2 } from 'honorable'
 
 interface OnboardingCardProps {
   title?: string
-  mode: 'Compact' | 'Default'
+  mode?: 'Compact' | 'Default'
   children: JSX.Element | Array<JSX.Element> | unknown
 }
 
@@ -22,7 +22,7 @@ function OnboardingCard({
       border="1px solid border"
       borderRadius="large"
       paddingVertical={mode === 'Default' ? 'xlarge' : 'medium'}
-      paddingHorizontal={mode === 'Default' ? 64 : 0}
+      paddingHorizontal={mode === 'Default' ? 'xlarge' : 0}
       overflowY="auto"
       {...props}
     >

@@ -1,3 +1,43 @@
+fragment Cluster on Cluster {
+  id
+  name
+  provider
+  source
+  pingedAt
+  gitUrl
+  consoleUrl
+  owner {
+    ...User
+    impersonationPolicy {
+      ...ImpersonationPolicy
+    }
+  }
+  queue {
+    id
+    acked
+    upgrades(first: 3) {
+      edges {
+        node {
+          id
+        }
+      }
+    }
+  }
+  upgradeInfo {
+    installation {
+      ...Installation
+    }
+    count
+  }
+  dependency {
+    dependency {
+      id
+      name
+      provider
+    }
+  }
+}
+
 query Clusters($first: Int = 100) {
   clusters(first: $first) {
     pageInfo {
@@ -5,43 +45,7 @@ query Clusters($first: Int = 100) {
     }
     edges {
       node {
-        id
-        name
-        provider
-        source
-        pingedAt
-        gitUrl
-        consoleUrl
-        owner {
-          ...User
-          impersonationPolicy {
-            ...ImpersonationPolicy
-          }
-        }
-        queue {
-          id
-          acked
-          upgrades(first: 3) {
-            edges {
-              node {
-                id
-              }
-            }
-          }
-        }
-        upgradeInfo {
-          installation {
-            ...Installation
-          }
-          count
-        }
-        dependency {
-          dependency {
-            id
-            name
-            provider
-          }
-        }
+        ...Cluster
       }
     }
   }

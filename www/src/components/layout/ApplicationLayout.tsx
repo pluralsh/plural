@@ -1,13 +1,12 @@
-import { A, Flex, Span } from 'honorable'
 import { Toast } from '@pluralsh/design-system'
+import { A, Flex, Span } from 'honorable'
 
 import BillingMigrationModal from '../account/billing/BillingMigrationModal'
 
-import Sidebar from './Sidebar'
-import WithApplicationUpdate from './WithApplicationUpdate'
 import Header from './Header'
+import Sidebar from './Sidebar'
 import Subheader from './Subheader'
-import { ContentOverlay } from './Overlay'
+import WithApplicationUpdate from './WithApplicationUpdate'
 
 function ApplicationLayout({ children }: any) {
   const isProduction = import.meta.env.MODE === 'production'
@@ -16,14 +15,12 @@ function ApplicationLayout({ children }: any) {
     <>
       <Flex
         position="relative"
-        width="100vw"
-        maxWidth="100vw"
-        height="100vh"
-        minWidth="0"
+        height="100%"
         minHeight="0"
         maxHeight="100vh"
         overflow="hidden"
         flexDirection="column"
+        flexGrow={1}
       >
         {isProduction && (
           <WithApplicationUpdate>
@@ -51,15 +48,14 @@ function ApplicationLayout({ children }: any) {
           minWidth={0}
           minHeight={0}
           flexGrow={1}
+          overflowX="auto"
         >
           <Sidebar />
           <Flex
             direction="column"
             flexGrow={1}
-            overflowX="hidden"
             position="relative"
           >
-            <ContentOverlay />
             <Subheader />
             {children}
           </Flex>

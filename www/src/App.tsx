@@ -20,6 +20,8 @@ import { mergeDeep } from '@apollo/client/utilities'
 import mpRecipe from 'honorable-recipe-mp'
 import { GrowthBook, GrowthBookProvider } from '@growthbook/growthbook-react'
 
+import { PluralErrorBoundary } from './components/utils/PluralErrorBoundary'
+
 import { client } from './helpers/client'
 import { INTERCOM_APP_ID } from './constants'
 import { DEFAULT_THEME } from './theme'
@@ -79,10 +81,10 @@ const SSOCallback = lazy(() =>
 
 const RootBoxSC = styled.div(({ theme }) => ({
   display: 'flex',
-  flexdirection: 'column',
+  flexDirection: 'column',
   boxSizing: 'border-box',
-  maxwidth: '100%',
-  minwidth: 0,
+  maxWidth: '100%',
+  minWidth: 0,
   minHeight: 0,
   height: '100vh',
   width: '100vw',
@@ -184,7 +186,9 @@ function App() {
                             theme={mergedStyledTheme as any as ThemeType}
                             themeMode="dark"
                           >
-                            <RootBoxSC>{routes}</RootBoxSC>
+                            <PluralErrorBoundary>
+                              <RootBoxSC>{routes}</RootBoxSC>
+                            </PluralErrorBoundary>
                           </Grommet>
                         </BreadcrumbsProvider>
                       </OverlayContextProvider>

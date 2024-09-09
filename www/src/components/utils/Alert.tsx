@@ -31,7 +31,7 @@ export function GqlError({
     <Alert
       status={AlertStatus.ERROR}
       header={header}
-      description={error?.graphQLErrors[0].message}
+      description={error?.graphQLErrors?.[0]?.message ?? 'Error'}
       {...props}
     />
   )

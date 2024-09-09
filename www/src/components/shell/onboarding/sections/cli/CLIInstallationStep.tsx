@@ -3,12 +3,14 @@ import { A, Div, Flex, P } from 'honorable'
 
 import {
   Button,
+  Callout,
   Code,
   Codeline,
   Tab,
   TabList,
   TabPanel,
 } from '@pluralsh/design-system'
+import { useTheme } from 'styled-components'
 
 const TAB_MAC = 'TAB_MAC'
 const TAB_CURL = 'TAB_CURL'
@@ -43,6 +45,29 @@ const DIRECTORY = [
 ]
 
 function CliInstallation({ onBack, onNext }) {
+  return (
+    <>
+      <CliInstallationBaseInfo />
+      <Flex
+        gap="medium"
+        justify="space-between"
+        borderTop="1px solid border"
+        paddingTop="large"
+        marginTop="xlarge"
+      >
+        <Button
+          secondary
+          onClick={onBack}
+        >
+          Back
+        </Button>
+        <Button onClick={onNext}>Continue</Button>
+      </Flex>
+    </>
+  )
+}
+export function CliInstallationBaseInfo() {
+  const theme = useTheme()
   const [tab, setTab] = useState(TAB_MAC)
   const tabStateRef = useRef<any>(null)
   const currentTab = useMemo(() => DIRECTORY.find((t) => t.key === tab), [tab])
@@ -73,25 +98,63 @@ function CliInstallation({ onBack, onNext }) {
         </TabList>
       </Flex>
       <TabPanel stateRef={tabStateRef}>
-        <P marginTop="small">
+        <>
           {tab === TAB_MAC &&
             'Start by running this command in your local terminal:'}
           {tab === TAB_CURL && (
-            <>
-              You can download the binaries attached to our &nbsp;
-              <A
-                inline
-                href="https://github.com/pluralsh/plural-cli/releases"
-                target="_blank"
-                rel="noopener noreferrer"
+            <Flex
+              direction="column"
+              gap="small"
+            >
+              <Callout
+                size="compact"
+                css={theme.partials.text.body2Bold}
               >
-                GitHub releases
-              </A>
-              .
-              <br />
+                <A
+                  // relative so it's displayed above visually hidden title element
+                  position="relative"
+                  href="https://helm.sh/docs/intro/install/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Helm
+                </A>
+                ,{' '}
+                <A
+                  inline
+                  href="https://developer.hashicorp.com/terraform/install"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Terraform
+                </A>{' '}
+                and{' '}
+                <A
+                  inline
+                  href="https://kubernetes.io/docs/tasks/tools/#kubectl"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Kubectl
+                </A>{' '}
+                are dependencies of the Plural CLI.
+              </Callout>
+              <span>
+                After downloading the dependencies above, you can download the
+                binaries attached to our{' '}
+                <A
+                  inline
+                  href="https://github.com/pluralsh/plural-cli/releases"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  GitHub releases
+                </A>
+                .
+              </span>
               For example, you can download the latest version for Darwin arm64
               via:
-            </>
+            </Flex>
           )}
           {tab === TAB_DOCKER && (
             <>
@@ -104,15 +167,20 @@ function CliInstallation({ onBack, onNext }) {
               using, like (~/.aws), in the docker run command:
             </>
           )}
-        </P>
+        </>
 
         {tab !== TAB_EC2 && (
           <>
             <Div marginTop="small">
               {tab === TAB_MAC ? (
-                <Codeline>{currentTab?.command}</Codeline>
+                <Codeline css={{ background: theme.colors['fill-two'] }}>
+                  {currentTab?.command}
+                </Codeline>
               ) : (
-                <Code onSelectedTabChange={() => {}}>
+                <Code
+                  css={{ background: theme.colors['fill-two'] }}
+                  onSelectedTabChange={() => {}}
+                >
                   {currentTab?.command || ''}
                 </Code>
               )}
@@ -121,11 +189,8 @@ function CliInstallation({ onBack, onNext }) {
               {tab === TAB_MAC && (
                 <>
                   The brew tap will install plural, alongside terraform, helm
-                  and kubectl for you.
-                  <br />
-                  If you've already installed any of those dependencies, you can
-                  add
-                  <br />
+                  and kubectl for you. If you've already installed any of those
+                  dependencies, you can add{' '}
                   <strong>
                     <code>--without-helm</code>
                   </strong>
@@ -140,38 +205,6 @@ function CliInstallation({ onBack, onNext }) {
                   .
                 </>
               )}
-              {tab === TAB_CURL && (
-                <>
-                  You will still need to ensure &nbsp;
-                  <A
-                    inline
-                    href="https://helm.sh/docs/intro/install"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Helm
-                  </A>
-                  , &nbsp;
-                  <A
-                    inline
-                    href="https://learn.hashicorp.com/tutorials/terraform/install-cli"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Terraform
-                  </A>
-                  &nbsp;and&nbsp;
-                  <A
-                    inline
-                    href="https://kubernetes.io/docs/tasks/tools/#kubectl"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Kubectl
-                  </A>
-                  &nbsp; are properly installed.
-                </>
-              )}
               {tab === TAB_DOCKER && (
                 <>
                   Once you're in the container's zsh, you'll want to clone the
@@ -184,22 +217,6 @@ function CliInstallation({ onBack, onNext }) {
           </>
         )}
       </TabPanel>
-
-      <Flex
-        gap="medium"
-        justify="space-between"
-        borderTop="1px solid border"
-        paddingTop="large"
-        marginTop="xlarge"
-      >
-        <Button
-          secondary
-          onClick={onBack}
-        >
-          Back
-        </Button>
-        <Button onClick={onNext}>Continue</Button>
-      </Flex>
     </>
   )
 }

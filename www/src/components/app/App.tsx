@@ -7,11 +7,12 @@ import { Flex, P } from 'honorable'
 import { useContext, useMemo } from 'react'
 import { Link, Outlet, useParams } from 'react-router-dom'
 
+import { CLUSTERS_ROOT_CRUMB } from 'components/overview/clusters/Clusters'
+
 import { AppContextProvider } from '../../contexts/AppContext'
 import ClustersContext from '../../contexts/ClustersContext'
 import { Repository, useRepositoryQuery } from '../../generated/graphql'
 import { config } from '../../markdoc/mdSchema'
-import { CLUSTERS_ROOT_CRUMB } from '../overview/Overview'
 import ImpersonateServiceAccount from '../utils/ImpersonateServiceAccount'
 import { ResponsiveLayoutContentContainer } from '../utils/layout/ResponsiveLayoutContentContainer'
 import { ResponsiveLayoutPage } from '../utils/layout/ResponsiveLayoutPage'

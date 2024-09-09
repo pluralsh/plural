@@ -1,57 +1,54 @@
-import { BrowseAppsIcon, Button, Card } from '@pluralsh/design-system'
-import { Div, Flex } from 'honorable'
-import { Link } from 'react-router-dom'
+import { Button, Card, ClusterIcon, Flex } from '@pluralsh/design-system'
+import { hasUnfinishedCreation } from 'components/create-cluster/CreateCluster'
+import { useNavigate } from 'react-router-dom'
+import styled, { useTheme } from 'styled-components'
 
 export default function ClusterListEmptyState() {
+  const theme = useTheme()
+  const navigate = useNavigate()
+
   return (
-    <Div
-      minHeight={180}
-      minWidth={500}
-      position="relative"
-    >
-      <img
-        src="/placeholders/clusters.png"
-        width="100%"
-      />
-      <Card
-        padding="large"
-        position="absolute"
-        top={24}
-        bottom={24}
-        left={24}
-        right={24}
-        margin="auto"
-        height="max-content"
-        width="max-content"
-        fillLevel={2}
-      >
-        <Div
-          body1
-          fontWeight={600}
-        >
-          Create your first cluster and install applications.
-        </Div>
+    <Card css={{ minWidth: 'fit-content' }}>
+      <Wrapper>
+        <ClusterIcon size={theme.spacing.xxxlarge} />
         <Flex
-          gap="medium"
-          marginTop="large"
+          direction="column"
+          gap="xxsmall"
+          textAlign="center"
+          marginTop={theme.spacing.medium}
         >
-          <Button
-            as={Link}
-            to="/shell"
+          <span css={theme.partials.text.subtitle2}>
+            You don't have any clusters yet.
+          </span>
+          <span
+            css={{
+              ...theme.partials.text.body2,
+              color: theme.colors['text-light'],
+            }}
           >
-            Start onboarding
-          </Button>
-          <Button
-            secondary
-            startIcon={<BrowseAppsIcon />}
-            as={Link}
-            to="/marketplace"
-            textDecoration="none"
-          >
-            Browse the marketplace
-          </Button>
+            Once you create your first cluster, you will find an overview of its
+            details here.
+          </span>
         </Flex>
-      </Card>
-    </Div>
+        <Button
+          css={{ maxWidth: 300, width: '100%' }}
+          onClick={() => navigate('/create-cluster')}
+        >
+          {hasUnfinishedCreation()
+            ? 'Resume cluster creation'
+            : 'Create cluster'}
+        </Button>
+      </Wrapper>
+    </Card>
   )
 }
+
+const Wrapper = styled.div(({ theme }) => ({
+  margin: 'auto',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  maxWidth: '600px',
+  padding: `${theme.spacing.xxxlarge}px`,
+  gap: `${theme.spacing.medium}px`,
+}))

@@ -6,6 +6,7 @@ import {
   FormField,
   Modal,
   PeopleIcon,
+  Spinner,
 } from '@pluralsh/design-system'
 import {
   BindingInput,
@@ -21,11 +22,11 @@ import {
   InputMaybe,
   OidcAuthMethod,
   OidcProviderBinding,
-  useRepositoryQuery,
+  useRepositorySuspenseQuery,
   useUpdateOidcProviderMutation,
 } from 'generated/graphql'
 import { isEmpty } from 'lodash'
-import { useState } from 'react'
+import { Suspense, useState } from 'react'
 import { useTheme } from 'styled-components'
 
 export function ConsoleInstanceOIDC({
@@ -36,31 +37,40 @@ export function ConsoleInstanceOIDC({
   const [open, setOpen] = useState(false)
 
   return (
-    <ImpersonateServiceAccount
-      id={instance.console?.owner?.id}
-      renderIndicators={false}
+    <Suspense
+      fallback={
+        <Spinner
+          size={24}
+          css={{ width: '100%' }}
+        />
+      }
     >
-      <>
-        <Button
-          secondary
-          startIcon={<PeopleIcon />}
-          onClick={() => setOpen(true)}
-        >
-          OIDC
-        </Button>
-        <Modal
-          onOpenAutoFocus={(e) => e.preventDefault()}
-          open={open}
-          onClose={() => setOpen(false)}
-          size="large"
-        >
-          <ConsoleInstanceOIDCInner
-            instance={instance}
+      <ImpersonateServiceAccount
+        id={instance.console?.owner?.id}
+        renderIndicators={false}
+      >
+        <>
+          <Button
+            secondary
+            startIcon={<PeopleIcon />}
+            onClick={() => setOpen(true)}
+          >
+            OIDC
+          </Button>
+          <Modal
+            onOpenAutoFocus={(e) => e.preventDefault()}
+            open={open}
             onClose={() => setOpen(false)}
-          />
-        </Modal>
-      </>
-    </ImpersonateServiceAccount>
+            size="large"
+          >
+            <ConsoleInstanceOIDCInner
+              instance={instance}
+              onClose={() => setOpen(false)}
+            />
+          </Modal>
+        </>
+      </ImpersonateServiceAccount>
+    </Suspense>
   )
 }
 
@@ -71,26 +81,18 @@ function ConsoleInstanceOIDCInner({
   instance: ConsoleInstanceFragment
   onClose: () => void
 }) {
-  const [bindings, setBindings] = useState<any>([])
-  const [redirectUris, setRedirectUris] = useState<InputMaybe<string>[]>([])
-
-  const {
-    data,
-    loading: loadingRepo,
-    error: errorRepo,
-  } = useRepositoryQuery({
+  const { data, error: errorRepo } = useRepositorySuspenseQuery({
     variables: { name: 'console' },
     fetchPolicy: 'cache-and-network',
-    onCompleted: (data) => {
-      setBindings(data?.repository?.installation?.oidcProvider?.bindings)
-      setRedirectUris(
-        data?.repository?.installation?.oidcProvider?.redirectUris ?? []
-      )
-    },
   })
 
   const installation = data?.repository?.installation
   const provider = installation?.oidcProvider
+
+  const [bindings, setBindings] = useState<any>(provider?.bindings ?? [])
+  const [redirectUris, setRedirectUris] = useState<InputMaybe<string>[]>(
+    provider?.redirectUris ?? []
+  )
 
   const [mutation, { loading: loadingMutation, error: errorMutation }] =
     useUpdateOidcProviderMutation({
@@ -109,7 +111,7 @@ function ConsoleInstanceOIDCInner({
       onCompleted: onClose,
     })
 
-  if (!provider?.bindings || loadingRepo || errorRepo) return null
+  if (!installation || errorRepo) return <p>Something went wrong.</p>
 
   return (
     <Flex

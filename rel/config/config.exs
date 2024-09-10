@@ -106,6 +106,10 @@ if get_env("SYSBOX_WHITELIST") do
   config :core, :sysbox_emails, String.split(get_env("SYSBOX_WHITELIST"), ",")
 end
 
+if get_env("INTERCOM_SALT") do
+  config :core, intercom_salt: get_env("INTERCOM_SALT")
+end
+
 config :workos,
   client_id: get_env("WORKOS_CLIENT_ID"),
   api_key: get_env("WORKOS_API_KEY")

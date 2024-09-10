@@ -13,7 +13,6 @@ import {
   setToken,
   wipeToken,
 } from '../../helpers/authentication'
-import { growthbook } from '../../helpers/growthbook'
 import { useNotificationSubscription } from '../../hooks/useNotificationSubscription'
 import BillingPlatformPlansProvider from '../account/billing/BillingPlatformPlansProvider'
 import BillingSubscriptionProvider from '../account/billing/BillingSubscriptionProvider'
@@ -66,12 +65,7 @@ export function PluralProvider({ children }: any) {
     if (!data?.me) return
     const { me } = data
 
-    boot({ name: me.name, email: me.email, userId: me.id })
-    growthbook.setAttributes({
-      company: me.account.name,
-      id: me.id,
-      email: me.email,
-    })
+    boot({ name: me.name, email: me.email, userId: me.intercomId || me.id })
   }, [data, boot])
 
   useEffect(() => {

@@ -3358,6 +3358,8 @@ type User {
 
   jwt: String
 
+  intercomId: String
+
   hasInstallations: Boolean
 
   demoing: Boolean

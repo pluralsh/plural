@@ -24,6 +24,25 @@ defmodule GraphQl.UserQueriesTest do
       assert length(me["boundRoles"]) == 1
     end
 
+    test "it can fetch an intercom id" do
+      user = insert(:user)
+      insert(:role_binding, user: user, group_id: nil)
+
+      {:ok, %{data: %{"me" => me}}} = run_query("""
+        query {
+          me {
+            id
+            name
+            intercomId
+          }
+        }
+      """, %{}, %{current_user: Core.Services.Rbac.preload(user)})
+
+      assert me["id"] == user.id
+      assert me["name"] == user.name
+      assert me["intercomId"] && me["intercomId"] != user.id
+    end
+
     test "It will mark user as demoed if demo_count reaches the limit" do
       user = insert(:user, demo_count: 3)
 

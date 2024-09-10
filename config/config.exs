@@ -147,6 +147,7 @@ config :core,
   mgmt_repo: "https://github.com/pluralsh/plural.git",
   cockroach_parameters: [],
   bootstrap_ssl: true,
+  intercom_salt: "intercomsalt",
   cloud_domain: "cloud.plural.sh"
 
 config :briefly,

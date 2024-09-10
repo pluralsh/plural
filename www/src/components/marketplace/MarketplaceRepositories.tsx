@@ -17,8 +17,6 @@ import orderBy from 'lodash/orderBy'
 
 import { upperFirst } from 'lodash'
 
-import { growthbook } from '../../helpers/growthbook'
-
 import { ResponsiveLayoutSidecarContainer } from '../utils/layout/ResponsiveLayoutSidecarContainer'
 import { ResponsiveLayoutSpacer } from '../utils/layout/ResponsiveLayoutSpacer'
 
@@ -109,7 +107,7 @@ function MarketplaceRepositories({ publisher }: { publisher?: any }) {
 
   const isFiltered = !isEmpty(categories) || !isEmpty(tags)
   const isFilteredOrSearched = isFiltered || search
-  const shouldRenderStacks = growthbook.isOn('stacks') && !isFilteredOrSearched
+  const shouldRenderStacks = !isFilteredOrSearched
 
   useEffect(() => {
     const { current } = scrollRef

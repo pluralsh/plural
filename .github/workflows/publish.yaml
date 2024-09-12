@@ -301,36 +301,36 @@ jobs:
       with:
         generate_release_notes: true
         prerelease: ${{ steps.check.outputs.RC }}
-  bump:
-    name: Bump Chart Version
-    runs-on: ubuntu-20.04
-    needs: [release]
-    permissions:
-      contents: write
-      discussions: write
-      pull-requests: write
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-      with: 
-        persist-credentials: false
-        fetch-depth: 0 # otherwise, you will failed to push refs to dest repo
-    - id: semver
-      uses: actions/github-script@0.9.0
-      env:
-        REF_NAME: ${{ github.ref_name }}
-      with:
-        script: |
-          core.setOutput('formatted', process.env.REF_NAME.replace(/^v/, ""))
-    - name: update context
-      run: |
-        sed -i 's/version: .* # VERSION/version: ${{steps.semver.outputs.formatted}} # VERSION/' plural/manifests/context.yaml
-    - name: Create Pull Request
-      uses: peter-evans/create-pull-request@v5
-      with:
-        title: Release ${{github.ref_name}}
-        body: Automated Pull Request to release ${{github.ref_name}}
-        commit-message: Updated chart to release ${{github.ref_name}}
-        branch: release-${{github.ref_name}}
-        labels: release
-        base: master
+  # bump:
+  #   name: Bump Chart Version
+  #   runs-on: ubuntu-20.04
+  #   needs: [release]
+  #   permissions:
+  #     contents: write
+  #     discussions: write
+  #     pull-requests: write
+  #   steps:
+  #   - name: Checkout
+  #     uses: actions/checkout@v3
+  #     with: 
+  #       persist-credentials: false
+  #       fetch-depth: 0 # otherwise, you will failed to push refs to dest repo
+  #   - id: semver
+  #     uses: actions/github-script@0.9.0
+  #     env:
+  #       REF_NAME: ${{ github.ref_name }}
+  #     with:
+  #       script: |
+  #         core.setOutput('formatted', process.env.REF_NAME.replace(/^v/, ""))
+  #   - name: update context
+  #     run: |
+  #       sed -i 's/version: .* # VERSION/version: ${{steps.semver.outputs.formatted}} # VERSION/' plural/manifests/context.yaml
+  #   - name: Create Pull Request
+  #     uses: peter-evans/create-pull-request@v5
+  #     with:
+  #       title: Release ${{github.ref_name}}
+  #       body: Automated Pull Request to release ${{github.ref_name}}
+  #       commit-message: Updated chart to release ${{github.ref_name}}
+  #       branch: release-${{github.ref_name}}
+  #       labels: release
+  #       base: master

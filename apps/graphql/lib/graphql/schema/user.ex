@@ -7,7 +7,7 @@ defmodule GraphQl.Schema.User do
     Payments,
     Account
   }
-  alias GraphQl.Middleware.{Authenticated, AllowJwt, RateLimit, Differentiate, CheckOrigin}
+  alias GraphQl.Middleware.{Authenticated, AllowJwt, RateLimit, Differentiate, CheckOrigin, Captcha}
 
   ecto_enum :notification_type, Schema.Notification.Type
   ecto_enum :reset_token_type, Schema.ResetToken.Type
@@ -470,6 +470,9 @@ defmodule GraphQl.Schema.User do
       arg :email,        non_null(:string)
       arg :password,     non_null(:string)
       arg :device_token, :string
+      arg :captcha,      :string
+
+      middleware Captcha
 
       safe_resolve &User.login_user/2
     end

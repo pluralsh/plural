@@ -3397,6 +3397,7 @@ export type RootMutationTypeLinkPublisherArgs = {
 
 
 export type RootMutationTypeLoginArgs = {
+  captcha?: InputMaybe<Scalars['String']['input']>;
   deviceToken?: InputMaybe<Scalars['String']['input']>;
   email: Scalars['String']['input'];
   password: Scalars['String']['input'];

@@ -189,4 +189,9 @@ config :core, :oidc_providers,
     discovery_document_uri: "https://token.actions.githubusercontent.com/.well-known/openid-configuration",
   ]
 
+config :recaptcha,
+  json_library: Jason,
+  public_key: {:system, "RECAPTCHA_SITE_KEY"},
+  secret: {:system, "RECAPTURE_SECRET_KEY"}
+
 import_config "#{config_env()}.exs"

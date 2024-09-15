@@ -126,6 +126,7 @@ defmodule Core.MixProject do
       {:cloudflare, "~> 0.2"},
       {:mimic, "~> 1.1", only: :test},
       {:google_api_iam, "~> 0.40"},
+      {:recaptcha, "~> 3.0", git: "https://github.com/samueljseay/recaptcha"},
       {:google_api_cloud_resource_manager, "~> 0.41"},
       {:google_api_cloud_billing, "~> 0.23"},
       {:google_api_service_usage, "~> 0.18"},

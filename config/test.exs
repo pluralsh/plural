@@ -93,3 +93,7 @@ config :core,
   sysbox_emails: ["sysbox@plural.sh"],
   cockroach_parameters: [sslmode: "allow"],
   bootstrap_ssl: false
+
+config :recaptcha,
+  http_client: Recaptcha.Http.MockClient,
+  secret: "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe"

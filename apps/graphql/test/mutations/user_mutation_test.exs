@@ -25,6 +25,51 @@ defmodule GraphQl.UserMutationTest do
       assert found["jwt"]
     end
 
+    test "it will validate captchas" do
+      {:ok, user} = Users.create_user(%{
+        name: "Michael Guarino",
+        email: "mjg@plural.sh",
+        password: "super strong password"
+      })
+
+      {:ok, %{data: %{"login" => found}}} = run_query("""
+        mutation Login($email: String!, $password: String!, $captcha: String!) {
+          login(email: $email, password: $password, captcha: $captcha) {
+            id
+            jwt
+          }
+        }
+      """, %{
+        "email" => "mjg@plural.sh",
+        "password" => "super strong password",
+        "captcha" => "valid_response"
+      }, %{origin: "https://app.plural.sh"})
+
+      assert found["id"] == user.id
+      assert found["jwt"]
+    end
+
+    test "it will fail on invalid captchas" do
+      {:ok, user} = Users.create_user(%{
+        name: "Michael Guarino",
+        email: "mjg@plural.sh",
+        password: "super strong password"
+      })
+
+      {:ok, %{errors: [_ | _]}} = run_query("""
+        mutation Login($email: String!, $password: String!, $captcha: String!) {
+          login(email: $email, password: $password, captcha: $captcha) {
+            id
+            jwt
+          }
+        }
+      """, %{
+        "email" => "mjg@plural.sh",
+        "password" => "super strong password",
+        "captcha" => "invalid_response"
+      }, %{origin: "https://app.plural.sh"})
+    end
+
     test "invalid origins fail" do
       {:ok, _} = Users.create_user(%{
         name: "Michael Guarino",

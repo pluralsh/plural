@@ -219,7 +219,7 @@ type RootQueryType {
 }
 
 type RootMutationType {
-  login(email: String!, password: String!, deviceToken: String): User
+  login(email: String!, password: String!, deviceToken: String, captcha: String): User
 
   deviceLogin: DeviceLogin
 

@@ -12,8 +12,10 @@ import { useApolloClient } from '@apollo/client'
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import queryString from 'query-string'
 import { A, Button, Div, Flex, Icon } from 'honorable'
-import ReCAPTCHA from 'react-google-recaptcha'
-
+import {
+  GoogleReCaptchaProvider,
+  GoogleReCaptcha
+} from 'react-google-recaptcha-v3'
 import styled, { useTheme } from 'styled-components'
 
 import {
@@ -501,12 +503,11 @@ export function Login() {
                   onChange={setPassword}
                   placeholder="Enter password"
                 />
-                <ReCAPTCHA
-                  ref={recaptchaRef}
-                  sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
-                  theme={ theme.mode }
-                  css={{ alignSelf: 'center', marginBottom: theme.spacing.medium }}
-                />
+                <GoogleReCaptchaProvider reCaptchaKey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
+                                         container={{ parameters: { theme: theme.mode }}} >
+                  <GoogleReCaptcha onVerify={(token) => console.log(token)}
+                                   css={{ alignSelf: 'center', marginBottom: theme.spacing.medium }} />
+                </GoogleReCaptchaProvider>
               </Collapsible>
               <Button
                 type="submit"

@@ -12,6 +12,7 @@ import { useApolloClient } from '@apollo/client'
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import queryString from 'query-string'
 import { A, Button, Div, Flex, Icon } from 'honorable'
+import ReCAPTCHA from 'react-google-recaptcha'
 
 import styled from 'styled-components'
 
@@ -252,6 +253,7 @@ export function Login() {
   const navigate = useNavigate()
   const passwordRef = useRef<HTMLElement>()
   const emailRef = useRef<HTMLElement>()
+  const recaptchaRef = useRef<HTMLElement>()
 
   useEffect(() => {
     setInputFocus(emailRef)
@@ -497,6 +499,10 @@ export function Login() {
                   value={password}
                   onChange={setPassword}
                   placeholder="Enter password"
+                />
+                <ReCAPTCHA
+                  ref={recaptchaRef}
+                  sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
                 />
               </Collapsible>
               <Button

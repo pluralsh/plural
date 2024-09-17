@@ -253,6 +253,8 @@ export function Login() {
   )
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [captcha, setCaptcha] = useState('')
+  const [refreshCaptcha, setRefreshCaptcha] = useState(false);
   const navigate = useNavigate()
   const passwordRef = useRef<HTMLElement>()
   const emailRef = useRef<HTMLElement>()
@@ -505,7 +507,8 @@ export function Login() {
                 />
                 <GoogleReCaptchaProvider reCaptchaKey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
                                          container={{ parameters: { theme: theme.mode }}} >
-                  <GoogleReCaptcha onVerify={(token) => console.log(token)}
+                  <GoogleReCaptcha onVerify={(t) => setCaptcha(t)}
+                                   refreshReCaptcha={refreshCaptcha}
                                    css={{ alignSelf: 'center', marginBottom: theme.spacing.medium }} />
                 </GoogleReCaptchaProvider>
               </Collapsible>

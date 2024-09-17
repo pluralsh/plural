@@ -14,7 +14,7 @@ import queryString from 'query-string'
 import { A, Button, Div, Flex, Icon } from 'honorable'
 import ReCAPTCHA from 'react-google-recaptcha'
 
-import styled from 'styled-components'
+import styled, { useTheme } from 'styled-components'
 
 import {
   AcceptLoginDocument,
@@ -238,6 +238,7 @@ const setInputFocus = (ref: RefObject<any>) => {
 }
 
 export function Login() {
+  const theme = useTheme()
   const [state, setState] = useState<LoginState>(State.Initial)
   const prevState = useRef<LoginState>(State.Initial)
   const history = useHistory()
@@ -503,6 +504,8 @@ export function Login() {
                 <ReCAPTCHA
                   ref={recaptchaRef}
                   sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
+                  theme={ theme.mode }
+                  css={{ alignSelf: 'center', marginBottom: theme.spacing.medium }}
                 />
               </Collapsible>
               <Button

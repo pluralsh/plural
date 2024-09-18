@@ -6,8 +6,10 @@ defmodule GraphQl.Schema.Cloud do
   ecto_enum :cloud_provider, CloudCluster.Cloud
   ecto_enum :console_instance_status, ConsoleInstance.Status
   ecto_enum :console_size, ConsoleInstance.Size
+  ecto_enum :console_instance_type, ConsoleInstance.Type
 
   input_object :console_instance_attributes do
+    field :type,   non_null(:console_instance_type), description: "the type of console instance"
     field :name,   non_null(:string), description: "the name of this instance (globally unique)"
     field :size,   non_null(:console_size), description: "a heuristic size of this instance"
     field :cloud,  non_null(:cloud_provider), description: "the cloud provider to deploy to"
@@ -25,6 +27,7 @@ defmodule GraphQl.Schema.Cloud do
 
   object :console_instance do
     field :id,        non_null(:id)
+    field :type,      non_null(:console_instance_type), description: "whether this is a shared or dedicated console"
     field :name,      non_null(:string), description: "the name of this instance (globally unique)"
     field :subdomain, non_null(:string), description: "the subdomain this instance lives under"
     field :url,       non_null(:string), description: "full console url of this instance"

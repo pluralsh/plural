@@ -584,6 +584,8 @@ export type ConsoleInstance = {
   status: ConsoleInstanceStatus;
   /** the subdomain this instance lives under */
   subdomain: Scalars['String']['output'];
+  /** whether this is a shared or dedicated console */
+  type: ConsoleInstanceType;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
   /** full console url of this instance */
   url: Scalars['String']['output'];
@@ -598,6 +600,8 @@ export type ConsoleInstanceAttributes = {
   region: Scalars['String']['input'];
   /** a heuristic size of this instance */
   size: ConsoleSize;
+  /** the type of console instance */
+  type: ConsoleInstanceType;
 };
 
 export type ConsoleInstanceConnection = {
@@ -618,7 +622,14 @@ export enum ConsoleInstanceStatus {
   DeploymentCreated = 'DEPLOYMENT_CREATED',
   DeploymentDeleted = 'DEPLOYMENT_DELETED',
   Pending = 'PENDING',
-  Provisioned = 'PROVISIONED'
+  Provisioned = 'PROVISIONED',
+  StackCreated = 'STACK_CREATED',
+  StackDeleted = 'STACK_DELETED'
+}
+
+export enum ConsoleInstanceType {
+  Dedicated = 'DEDICATED',
+  Shared = 'SHARED'
 }
 
 export type ConsoleInstanceUpdateAttributes = {

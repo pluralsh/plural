@@ -1,6 +1,12 @@
 defmodule Core.Clients.Console do
   require Logger
 
+  @me_q """
+  query {
+    me { id }
+  }
+  """
+
   @clusters_q """
   query {
     clusters(first: 100) {
@@ -33,6 +39,30 @@ defmodule Core.Clients.Console do
   }
   """
 
+  @create_stack_q """
+  mutation Create($attributes: StackAttributes!) {
+    createStack(attributes: $attributes) {
+      id
+    }
+  }
+  """
+
+  @update_stack_q """
+  mutation update($id: ID!, $attributes: StackAttributes!) {
+    updateStack(id: $id, attributes: $attributes) {
+      id
+    }
+  }
+  """
+
+  @delete_stack_q """
+  mutation delete($id: ID!) {
+    deleteStack(id: $id) {
+      id
+    }
+  }
+  """
+
   @repo_q """
   query Repo($url: String!) {
     gitRepository(url: $url) {
@@ -41,10 +71,17 @@ defmodule Core.Clients.Console do
   }
   """
 
+  @project_q """
+  query Project($name: String!) {
+    project(name: $name) { id }
+  }
+  """
+
   @stack_q """
   query Stack($id: ID!) {
     infrastructureStack(id: $id) {
       id
+      status
       output {
         name
         value
@@ -74,6 +111,16 @@ defmodule Core.Clients.Console do
     |> service_resp("gitRepository")
   end
 
+  def me(client) do
+    Req.post(client, graphql: {@me_q, %{}})
+    |> service_resp("me")
+  end
+
+  def project(client, name) do
+    Req.post(client, graphql: {@project_q, %{name: name}})
+    |> service_resp("project")
+  end
+
   def create_service(client, cluster_id, attrs) do
     Req.post(client, graphql: {@create_svc_q, %{clusterId: cluster_id, attributes: attrs}})
     |> service_resp("createServiceDeployment")
@@ -87,6 +134,22 @@ defmodule Core.Clients.Console do
   def delete_service(client, id) do
     Req.post(client, graphql: {@delete_svc_q, %{id: id}})
     |> service_resp("deleteServiceDeployment")
+    |> ignore_not_found()
+  end
+
+  def create_stack(client, attrs) do
+    Req.post(client, graphql: {@create_stack_q, %{attributes: attrs}})
+    |> service_resp("createStack")
+  end
+
+  def update_stack(client, id, attrs) do
+    Req.post(client, graphql: {@update_stack_q, %{id: id, attributes: attrs}})
+    |> service_resp("updateStack")
+  end
+
+  def delete_stack(client, id) do
+    Req.post(client, graphql: {@delete_stack_q, %{id: id}})
+    |> service_resp("deleteStack")
     |> ignore_not_found()
   end
 

@@ -39,6 +39,57 @@ defmodule Core.Services.CloudTest do
       assert_receive {:event, %PubSub.ConsoleInstanceCreated{item: ^instance}}
     end
 
+    test "enterprise accounts can create dedicated console instances" do
+      account = insert(:account)
+      enterprise_plan(account)
+      user = admin_user(account)
+      insert(:repository, name: "console")
+
+      expect(HTTPoison, :post, fn _, _, _ ->
+        {:ok, %{status_code: 200, body: Jason.encode!(%{client_id: "123", client_secret: "secret"})}}
+      end)
+
+      {:ok, instance} = Cloud.create_instance(%{
+        type: :dedicated,
+        name: "plrltest",
+        cloud: :aws,
+        region: "us-east-1",
+        size: :small
+      }, user)
+
+      assert instance.name == "plrltest"
+      assert instance.cloud == :aws
+      assert instance.region == "us-east-1"
+      assert instance.size == :small
+      refute instance.postgres_id
+      refute instance.cluster_id
+
+      sa = Core.Services.Users.get_user_by_email("plrltest-cloud-sa@srv.plural.sh")
+      %{impersonation_policy: %{bindings: [binding]}} = Core.Repo.preload(sa, [impersonation_policy: :bindings])
+      assert binding.user_id == user.id
+
+      assert_receive {:event, %PubSub.ConsoleInstanceCreated{item: ^instance}}
+    end
+
+    test "nonenterprise plans cannot create a dedicated cloud console instance" do
+      account = insert(:account)
+      enable_features(account, [:cd])
+      user = admin_user(account)
+      insert(:cloud_cluster)
+      insert(:postgres_cluster)
+      insert(:repository, name: "console")
+
+      {:error, err} = Cloud.create_instance(%{
+        type: :dedicated,
+        name: "plrltest",
+        cloud: :aws,
+        region: "us-east-1",
+        size: :small
+      }, user)
+
+      assert err =~ "enterprise"
+    end
+
     test "unpaid users cannot create instances" do
       account = insert(:account)
       user = admin_user(account)

@@ -6,7 +6,7 @@ defmodule Core.Services.Cloud.Poller do
 
   @poll :timer.minutes(2)
 
-  defmodule State, do: defstruct [:client, :repo]
+  defmodule State, do: defstruct [:client, :dedicated_client, :repo, :project]
 
   def start_link(_) do
     GenServer.start_link(__MODULE__, :ok, name: __MODULE__)
@@ -16,20 +16,38 @@ defmodule Core.Services.Cloud.Poller do
     :timer.send_interval(@poll, :clusters)
     :timer.send_interval(@poll, :pgs)
     send self(), :repo
-    {:ok, %State{client: Console.new(Core.conf(:console_url), Core.conf(:console_token))}}
+    send self(), :project
+    client = Console.new(Core.conf(:console_url), Core.conf(:console_token))
+    dedicated_client = Console.new(Core.conf(:console_url), Core.conf(:dedicated_console_token))
+    {:ok, %State{client: client, dedicated_client: dedicated_client}}
   end
 
   def repository(), do: GenServer.call(__MODULE__, :repo)
 
+  def project(), do: GenServer.call(__MODULE__, :project)
+
   def handle_call(:repo, _, %{repo: id} = state) when is_binary(id),
     do: {:reply, {:ok, id}, state}
   def handle_call(:repo, _, state), do: {:reply, {:error, "repo not pulled"}, state}
+
+  def handle_call(:project, _, %{project: id} = state) when is_binary(id),
+    do: {:reply, {:ok, id}, state}
+  def handle_call(:project, _, state), do: {:reply, {:error, "project not pulled"}, state}
 
   def handle_info(:repo, %{client: client} = state) do
     case Console.repo(client, Core.conf(:mgmt_repo)) do
       {:ok, id} -> {:noreply, %{state | repo: id}}
       err ->
         Logger.warn "failed to find mgmt repo: #{inspect(err)}"
+        {:noreply, state}
+    end
+  end
+
+  def handle_info(:project, %{dedicated_client: client} = state) do
+    case Console.project(client, Core.conf(:dedicated_project)) do
+      {:ok, id} -> {:noreply, %{state | project: id}}
+      err ->
+        Logger.warn "failed to find dedicated project: #{inspect(err)}"
         {:noreply, state}
     end
   end

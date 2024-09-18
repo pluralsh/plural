@@ -8,6 +8,14 @@ defmodule Core.Services.Cloud.Workflow do
 
   require Logger
 
+  def sync(%ConsoleInstance{type: :dedicated, external_id: id} = inst) when is_binary(id) do
+    with {:ok, project_id} <- Poller.project(),
+         {:ok, repo_id} <- Poller.repository(),
+         {:ok, actor} <- Console.me(dedicated_console()),
+         attrs = %{actor_id: actor, project_id: project_id, repository_id: repo_id},
+      do: Console.update_stack(dedicated_console(), id, Configuration.stack_attributes(inst, attrs))
+  end
+
   def sync(%ConsoleInstance{external_id: id} = instance) when is_binary(id) do
     instance = Repo.preload(instance, [:cluster, :postgres])
     Console.update_service(console(), id, %{
@@ -39,6 +47,7 @@ defmodule Core.Services.Cloud.Workflow do
       case down(acc) do
         {:ok, %ConsoleInstance{status: :pending} = inst} -> {:halt, inst}
         {:ok, %ConsoleInstance{status: :database_deleted} = inst} -> {:halt, inst}
+        {:ok, %ConsoleInstance{status: :stack_deleted} = inst} -> {:halt, inst}
         {:ok, inst} -> {:cont, inst}
         err ->
           :timer.sleep(:timer.seconds(10))
@@ -47,6 +56,37 @@ defmodule Core.Services.Cloud.Workflow do
       end
     end)
     |> finalize(:down)
+  end
+
+  defp up(%ConsoleInstance{status: :pending, type: :dedicated} = inst) do
+    with {:ok, id} <- Poller.project(),
+         {:ok, repo_id} <- Poller.repository(),
+         {:ok, actor} <- Console.me(dedicated_console()),
+         attrs = %{actor_id: actor, project_id: id, repository_id: repo_id},
+         {:ok, stack_id} <- Console.create_stack(dedicated_console(), Configuration.stack_attributes(inst, attrs)) do
+      ConsoleInstance.changeset(inst, %{
+        instance_status: %{stack: true},
+        status: :stack_created,
+        external_id: stack_id
+      })
+      |> Repo.update()
+    end
+  end
+
+  defp up(%ConsoleInstance{type: :dedicated, status: :stack_created, external_id: id} = inst) do
+    Enum.reduce_while(0..120, inst, fn _, inst ->
+      dedicated_console()
+      |> Console.stack(id)
+      |> case do
+        {:ok, %{"status" => "SUCCESSFUL"}} ->
+          ConsoleInstance.changeset(inst, %{status: :provisioned})
+          |> Repo.update()
+        status ->
+          Logger.info "stack not ready yet, sleeping: #{inspect(status)}"
+          :timer.sleep(:timer.minutes(1))
+          {:ok, inst}
+      end
+    end)
   end
 
   defp up(%ConsoleInstance{status: :deployment_created, url: url} = inst) do
@@ -97,6 +137,15 @@ defmodule Core.Services.Cloud.Workflow do
     end
   end
 
+  defp up(inst), do: {:ok, inst}
+
+  defp down(%ConsoleInstance{type: :dedicated, instance_status: %{stack: true}, external_id: id} = inst) do
+    with {:ok, _} <- Console.delete_stack(dedicated_console(), id) do
+      ConsoleInstance.changeset(inst, %{status: :stack_deleted})
+      |> Repo.update()
+    end
+  end
+
   defp down(%ConsoleInstance{instance_status: %{svc: false, db: true}, configuration: conf, postgres: pg} = inst) do
     with {:ok, pid} <- connect(pg),
          {:ok, _} <- Postgrex.query(pid, "DROP DATABASE IF EXISTS #{conf.database}", []),
@@ -139,6 +188,18 @@ defmodule Core.Services.Cloud.Workflow do
     |> execute(extract: :inst)
   end
 
+  defp finalize(%ConsoleInstance{type: :dedicated} = inst, :down) do
+    start_transaction()
+    |> add_operation(:inst, fn _ -> Repo.delete(inst) end)
+    |> add_operation(:sa, fn %{inst: %{name: name}} ->
+      case Users.get_user_by_email("#{name}-cloud-sa@srv.plural.sh") do
+        %User{} = u -> Repo.delete(u)
+        _ -> {:ok, nil}
+      end
+    end)
+    |> execute(extract: :inst)
+  end
+
   defp finalize(inst, _) do
     Logger.warn "failed to finalize console instance: #{inst.id}"
     {:ok, inst}
@@ -172,4 +233,6 @@ defmodule Core.Services.Cloud.Workflow do
   end
 
   defp console(), do: Console.new(Core.conf(:console_url), Core.conf(:console_token))
+
+  defp dedicated_console(), do: Console.new(Core.conf(:console_url), Core.conf(:dedicated_console_token))
 end

@@ -687,6 +687,10 @@ defmodule Core.Factory do
     insert(:platform_subscription, account: account, plan: build(:platform_plan, features: features))
   end
 
+  def enterprise_plan(account) do
+    insert(:platform_subscription, account: account, plan: build(:platform_plan, enterprise: true))
+  end
+
   def bound_service_account(user, args \\ []) do
     sa = insert(:user, args ++ [service_account: true, account: user.account])
     insert(:impersonation_policy_binding,

@@ -50,7 +50,7 @@ defmodule GraphQl.UserMutationTest do
     end
 
     test "it will fail on invalid captchas" do
-      {:ok, user} = Users.create_user(%{
+      {:ok, _} = Users.create_user(%{
         name: "Michael Guarino",
         email: "mjg@plural.sh",
         password: "super strong password"

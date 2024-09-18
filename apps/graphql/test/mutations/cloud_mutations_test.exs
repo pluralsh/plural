@@ -27,6 +27,7 @@ defmodule GraphQl.CloudMutationsTest do
           }
         }
       """, %{"attrs" => %{
+        "type" => "SHARED",
         "name" => "plrltest",
         "cloud" => "AWS",
         "size" => "SMALL",

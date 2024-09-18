@@ -25,11 +25,32 @@ defmodule Core.Services.Cloud.Configuration do
       size: "#{size}",
     })
     |> Map.put(:size, "#{size}")
+    |> Enum.filter(fn {_, v} -> is_binary(v) end)
     |> Enum.map(fn {k, v} -> %{name: k, value: v} end)
+  end
+
+  def stack_attributes(%ConsoleInstance{name: name} = inst, attrs) do
+   Map.merge(attrs, %{
+      name: "dedicated-#{name}",
+      cluster_id: Core.conf(:mgmt_cluster),
+      type: "TERRAFORM",
+      manageState: true,
+      approval: true,
+      configuration: %{version: "1.8"},
+      git: %{ref: "main", folder: "terraform/modules/dedicated/#{inst.cloud}"},
+      environment: Enum.map([
+        region: inst.region,
+        development: String.contains?(Core.conf(:dedicated_project), "dev"),
+        cluster_name: "dedicated-#{inst.name}",
+        size: inst.size,
+        service_secrets: build(inst) |> Map.new(fn %{name: n, value: v} -> {n, v} end) |> Jason.encode!()
+      ], fn {k, v} -> %{name: "TF_VAR_#{k}", value: "#{v}"} end)
+    })
   end
 
   # defp certificate(%ConsoleInstance{postgres: %PostgresCluster{certificate: cert}}), do: cert
 
+  defp build_pg_url(%ConsoleInstance{type: :dedicated}), do: nil
   defp build_pg_url(%ConsoleInstance{
     configuration: %{dbuser: u, dbpassword: p, database: database},
     postgres: %PostgresCluster{host: host}

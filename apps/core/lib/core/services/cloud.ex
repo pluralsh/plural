@@ -47,8 +47,14 @@ defmodule Core.Services.Cloud do
       |> allow(user, :create)
       |> when_ok(:insert)
     end)
-    |> add_operation(:cluster, fn _ -> select_cluster(attrs[:cloud], attrs[:region]) end)
-    |> add_operation(:postgres, fn _ -> select_roach(attrs[:cloud]) end)
+    |> add_operation(:cluster, fn
+      %{inst: %ConsoleInstance{type: :dedicated}} -> {:ok, %{id: nil}}
+      _ -> select_cluster(attrs[:cloud], attrs[:region])
+    end)
+    |> add_operation(:postgres, fn
+      %{inst: %ConsoleInstance{type: :dedicated}} -> {:ok, %{id: nil}}
+      _ -> select_roach(attrs[:cloud])
+    end)
     |> add_operation(:sa, fn _ ->
       Accounts.create_service_account(%{
         name: "#{name}-cloud-sa",

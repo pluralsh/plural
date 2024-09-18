@@ -367,13 +367,13 @@ defmodule Core.Services.Users do
   """
   @spec bootstrap_user(Core.OAuth.method, map) :: user_resp
   def bootstrap_user(service, %{email: email} = attrs) do
-    case get_user_by_email(email) do
-      nil ->
+    case {service, get_user_by_email(email)} do
+      {_, nil} ->
         attrs
         |> Map.merge(login_args(service))
         |> Map.put(:password, Ecto.UUID.generate())
         |> create_user()
-      %User{login_method: ^service} = user ->
+      {service, %User{login_method: svc} = user} when service == :sso or service == svc ->
         update_user(login_args(service), user)
       _ -> {:error, "you don't have login with #{service} enabled"}
     end

@@ -170,7 +170,10 @@ function App() {
 
   return (
     <Suspense>
-      <GoogleReCaptchaProvider reCaptchaKey="">
+      <GoogleReCaptchaProvider
+        reCaptchaKey=""
+        language="en"
+      >
         <ApolloProvider client={client}>
           <IntercomProvider appId={INTERCOM_APP_ID}>
             <ThemeProvider theme={honorableTheme}>

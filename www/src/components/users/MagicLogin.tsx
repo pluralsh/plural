@@ -14,7 +14,8 @@ import queryString from 'query-string'
 import { A, Button, Div, Flex, Icon } from 'honorable'
 import {
   GoogleReCaptchaProvider,
-  GoogleReCaptcha
+  GoogleReCaptcha,
+  useGoogleReCaptcha,
 } from 'react-google-recaptcha-v3'
 import styled, { useTheme } from 'styled-components'
 
@@ -48,6 +49,7 @@ import {
 import { finishedDeviceLogin } from './DeviceLoginNotif'
 import { LabelledInput } from './LabelledInput'
 import { LOGIN_BREAKPOINT, LoginPortal } from './LoginPortal'
+import { HintText } from '@pluralsh/design-system/dist/stories/FormField.stories'
 
 export function PasswordlessLogin() {
   const { token } = useParams()
@@ -241,6 +243,7 @@ const setInputFocus = (ref: RefObject<any>) => {
 
 export function Login() {
   const theme = useTheme()
+  const navigate = useNavigate()
   const [state, setState] = useState<LoginState>(State.Initial)
   const prevState = useRef<LoginState>(State.Initial)
   const history = useHistory()
@@ -253,12 +256,20 @@ export function Login() {
   )
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [captcha, setCaptcha] = useState('')
-  const [refreshCaptcha, setRefreshCaptcha] = useState(false);
-  const navigate = useNavigate()
   const passwordRef = useRef<HTMLElement>()
   const emailRef = useRef<HTMLElement>()
-  const recaptchaRef = useRef<HTMLElement>()
+
+  const { executeRecaptcha } = useGoogleReCaptcha()
+  const [captcha, setCaptcha] = useState('')
+  const handleReCaptchaVerify = useCallback(async () => {
+    if (!executeRecaptcha) return
+
+    setCaptcha(await executeRecaptcha('login'))
+  }, [executeRecaptcha, setCaptcha])
+
+  useEffect(() => {
+    handleReCaptchaVerify()
+  }, [handleReCaptchaVerify])
 
   useEffect(() => {
     setInputFocus(emailRef)
@@ -284,6 +295,7 @@ export function Login() {
         email,
         password,
         deviceToken: typeof deviceToken === 'string' ? deviceToken : undefined,
+        captcha,
       },
       onCompleted: ({ login }) => {
         setToken(login?.jwt)
@@ -393,7 +405,7 @@ export function Login() {
     state === State.PwdLogin_CheckingPwd ||
     state === State.PwdLogin_CheckPwd
   const disableSubmit = isPasswordLogin
-    ? password.length === 0
+    ? password.length === 0 || !captcha
     : !isValidEmail(email)
 
   const onSubmit = useCallback(
@@ -505,13 +517,20 @@ export function Login() {
                   onChange={setPassword}
                   placeholder="Enter password"
                 />
-                <GoogleReCaptchaProvider reCaptchaKey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
-                                         container={{ parameters: { theme: theme.mode }}} >
-                  <GoogleReCaptcha onVerify={(t) => setCaptcha(t)}
-                                   refreshReCaptcha={refreshCaptcha}
-                                   css={{ alignSelf: 'center', marginBottom: theme.spacing.medium }} />
-                </GoogleReCaptchaProvider>
               </Collapsible>
+              {!captcha && (
+                <div
+                  css={{
+                    ...theme.partials.text.inlineLink,
+                    textAlign: 'end',
+                    cursor: 'pointer',
+                    marginBottom: theme.spacing.xsmall,
+                  }}
+                  onClick={handleReCaptchaVerify}
+                >
+                  verify reCAPTCHA
+                </div>
+              )}
               <Button
                 type="submit"
                 width="100%"

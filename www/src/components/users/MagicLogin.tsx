@@ -12,11 +12,7 @@ import { useApolloClient } from '@apollo/client'
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import queryString from 'query-string'
 import { A, Button, Div, Flex, Icon } from 'honorable'
-import {
-  GoogleReCaptchaProvider,
-  GoogleReCaptcha,
-  useGoogleReCaptcha,
-} from 'react-google-recaptcha-v3'
+import { useGoogleReCaptcha } from 'react-google-recaptcha-v3'
 import styled, { useTheme } from 'styled-components'
 
 import {
@@ -49,7 +45,6 @@ import {
 import { finishedDeviceLogin } from './DeviceLoginNotif'
 import { LabelledInput } from './LabelledInput'
 import { LOGIN_BREAKPOINT, LoginPortal } from './LoginPortal'
-import { HintText } from '@pluralsh/design-system/dist/stories/FormField.stories'
 
 export function PasswordlessLogin() {
   const { token } = useParams()

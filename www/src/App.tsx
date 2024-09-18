@@ -20,6 +20,8 @@ import { mergeDeep } from '@apollo/client/utilities'
 import mpRecipe from 'honorable-recipe-mp'
 import { GrowthBook, GrowthBookProvider } from '@growthbook/growthbook-react'
 
+import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3'
+
 import { PluralErrorBoundary } from './components/utils/PluralErrorBoundary'
 
 import { client } from './helpers/client'
@@ -30,7 +32,6 @@ import { growthbook } from './helpers/growthbook'
 import { OverlayContextProvider } from './components/layout/Overlay'
 import NavContextProvider from './contexts/NavigationContext'
 import { CursorPositionProvider } from './components/utils/CursorPosition'
-import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3'
 
 const Plural = lazy(() => import('./components/Plural'))
 const Invite = lazy(() => import('./components/Invite'))

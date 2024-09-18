@@ -171,7 +171,7 @@ function App() {
   return (
     <Suspense>
       <GoogleReCaptchaProvider
-        reCaptchaKey=""
+        reCaptchaKey="6LcKLkQqAAAAABfRRfhQGp3c0rcytvDzcx8cddcq"
         language="en"
       >
         <ApolloProvider client={client}>

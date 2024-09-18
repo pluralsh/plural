@@ -90,6 +90,11 @@ defmodule Core.Clients.Console do
   }
   """
 
+  def queries(:me_q), do: @me_q
+  def queries(:stack_q), do: @stack_q
+  def queries(:stack_create), do: @create_stack_q
+  def queries(:stack_delete), do: @delete_stack_q
+
   def new(url, token) do
     Req.new(base_url: with_gql(url), auth: "Token #{token}")
     |> AbsintheClient.attach()

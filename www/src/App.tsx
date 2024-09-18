@@ -20,8 +20,6 @@ import { mergeDeep } from '@apollo/client/utilities'
 import mpRecipe from 'honorable-recipe-mp'
 import { GrowthBook, GrowthBookProvider } from '@growthbook/growthbook-react'
 
-import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3'
-
 import { PluralErrorBoundary } from './components/utils/PluralErrorBoundary'
 
 import { client } from './helpers/client'
@@ -171,44 +169,37 @@ function App() {
 
   return (
     <Suspense>
-      <GoogleReCaptchaProvider
-        reCaptchaKey="6LcKLkQqAAAAABfRRfhQGp3c0rcytvDzcx8cddcq"
-        language="en"
-      >
-        <ApolloProvider client={client}>
-          <IntercomProvider appId={INTERCOM_APP_ID}>
-            <ThemeProvider theme={honorableTheme}>
-              <StyledThemeProvider theme={mergedStyledTheme}>
-                <GrowthBookProvider
-                  growthbook={growthbook as any as GrowthBook}
-                >
-                  <CursorPositionProvider>
-                    <MarkdocContextProvider value={{ variant: 'console' }}>
-                      <NavContextProvider>
-                        <OverlayContextProvider>
-                          <BreadcrumbsProvider>
-                            <CssBaseline />
-                            <GlobalStyle />
-                            <Grommet
-                              full
-                              theme={mergedStyledTheme as any as ThemeType}
-                              themeMode="dark"
-                            >
-                              <PluralErrorBoundary>
-                                <RootBoxSC>{routes}</RootBoxSC>
-                              </PluralErrorBoundary>
-                            </Grommet>
-                          </BreadcrumbsProvider>
-                        </OverlayContextProvider>
-                      </NavContextProvider>
-                    </MarkdocContextProvider>
-                  </CursorPositionProvider>
-                </GrowthBookProvider>
-              </StyledThemeProvider>
-            </ThemeProvider>
-          </IntercomProvider>
-        </ApolloProvider>
-      </GoogleReCaptchaProvider>
+      <ApolloProvider client={client}>
+        <IntercomProvider appId={INTERCOM_APP_ID}>
+          <ThemeProvider theme={honorableTheme}>
+            <StyledThemeProvider theme={mergedStyledTheme}>
+              <GrowthBookProvider growthbook={growthbook as any as GrowthBook}>
+                <CursorPositionProvider>
+                  <MarkdocContextProvider value={{ variant: 'console' }}>
+                    <NavContextProvider>
+                      <OverlayContextProvider>
+                        <BreadcrumbsProvider>
+                          <CssBaseline />
+                          <GlobalStyle />
+                          <Grommet
+                            full
+                            theme={mergedStyledTheme as any as ThemeType}
+                            themeMode="dark"
+                          >
+                            <PluralErrorBoundary>
+                              <RootBoxSC>{routes}</RootBoxSC>
+                            </PluralErrorBoundary>
+                          </Grommet>
+                        </BreadcrumbsProvider>
+                      </OverlayContextProvider>
+                    </NavContextProvider>
+                  </MarkdocContextProvider>
+                </CursorPositionProvider>
+              </GrowthBookProvider>
+            </StyledThemeProvider>
+          </ThemeProvider>
+        </IntercomProvider>
+      </ApolloProvider>
     </Suspense>
   )
 }

@@ -12,7 +12,10 @@ import { useApolloClient } from '@apollo/client'
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import queryString from 'query-string'
 import { A, Button, Div, Flex, Icon } from 'honorable'
-import { useGoogleReCaptcha } from 'react-google-recaptcha-v3'
+import {
+  GoogleReCaptchaProvider,
+  useGoogleReCaptcha,
+} from 'react-google-recaptcha-v3'
 import styled, { useTheme } from 'styled-components'
 
 import {
@@ -237,6 +240,17 @@ const setInputFocus = (ref: RefObject<any>) => {
 }
 
 export function Login() {
+  return (
+    <GoogleReCaptchaProvider
+      reCaptchaKey="6LcKLkQqAAAAABfRRfhQGp3c0rcytvDzcx8cddcq"
+      language="en"
+    >
+      <LoginInternal />
+    </GoogleReCaptchaProvider>
+  )
+}
+
+function LoginInternal() {
   const theme = useTheme()
   const navigate = useNavigate()
   const [state, setState] = useState<LoginState>(State.Initial)

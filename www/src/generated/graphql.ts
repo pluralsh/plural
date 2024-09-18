@@ -6011,6 +6011,7 @@ export type LoginMutationVariables = Exact<{
   email: Scalars['String']['input'];
   password: Scalars['String']['input'];
   deviceToken?: InputMaybe<Scalars['String']['input']>;
+  captcha?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
@@ -10777,8 +10778,13 @@ export type DevLoginMutationHookResult = ReturnType<typeof useDevLoginMutation>;
 export type DevLoginMutationResult = Apollo.MutationResult<DevLoginMutation>;
 export type DevLoginMutationOptions = Apollo.BaseMutationOptions<DevLoginMutation, DevLoginMutationVariables>;
 export const LoginDocument = gql`
-    mutation Login($email: String!, $password: String!, $deviceToken: String) {
-  login(email: $email, password: $password, deviceToken: $deviceToken) {
+    mutation Login($email: String!, $password: String!, $deviceToken: String, $captcha: String) {
+  login(
+    email: $email
+    password: $password
+    deviceToken: $deviceToken
+    captcha: $captcha
+  ) {
     jwt
   }
 }
@@ -10801,6 +10807,7 @@ export type LoginMutationFn = Apollo.MutationFunction<LoginMutation, LoginMutati
  *      email: // value for 'email'
  *      password: // value for 'password'
  *      deviceToken: // value for 'deviceToken'
+ *      captcha: // value for 'captcha'
  *   },
  * });
  */

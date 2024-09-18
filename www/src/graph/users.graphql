@@ -235,8 +235,18 @@ mutation DevLogin {
   }
 }
 
-mutation Login($email: String!, $password: String!, $deviceToken: String) {
-  login(email: $email, password: $password, deviceToken: $deviceToken) {
+mutation Login(
+  $email: String!
+  $password: String!
+  $deviceToken: String
+  $captcha: String
+) {
+  login(
+    email: $email
+    password: $password
+    deviceToken: $deviceToken
+    captcha: $captcha
+  ) {
     jwt
   }
 }

@@ -12,8 +12,11 @@ import { useApolloClient } from '@apollo/client'
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import queryString from 'query-string'
 import { A, Button, Div, Flex, Icon } from 'honorable'
-
-import styled from 'styled-components'
+import {
+  GoogleReCaptchaProvider,
+  useGoogleReCaptcha,
+} from 'react-google-recaptcha-v3'
+import styled, { useTheme } from 'styled-components'
 
 import {
   AcceptLoginDocument,
@@ -237,6 +240,19 @@ const setInputFocus = (ref: RefObject<any>) => {
 }
 
 export function Login() {
+  return (
+    <GoogleReCaptchaProvider
+      reCaptchaKey="6LcKLkQqAAAAABfRRfhQGp3c0rcytvDzcx8cddcq"
+      language="en"
+    >
+      <LoginInternal />
+    </GoogleReCaptchaProvider>
+  )
+}
+
+function LoginInternal() {
+  const theme = useTheme()
+  const navigate = useNavigate()
   const [state, setState] = useState<LoginState>(State.Initial)
   const prevState = useRef<LoginState>(State.Initial)
   const history = useHistory()
@@ -249,9 +265,20 @@ export function Login() {
   )
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const navigate = useNavigate()
   const passwordRef = useRef<HTMLElement>()
   const emailRef = useRef<HTMLElement>()
+
+  const { executeRecaptcha } = useGoogleReCaptcha()
+  const [captcha, setCaptcha] = useState('')
+  const handleReCaptchaVerify = useCallback(async () => {
+    if (!executeRecaptcha) return
+
+    setCaptcha(await executeRecaptcha('login'))
+  }, [executeRecaptcha, setCaptcha])
+
+  useEffect(() => {
+    handleReCaptchaVerify()
+  }, [handleReCaptchaVerify])
 
   useEffect(() => {
     setInputFocus(emailRef)
@@ -277,6 +304,7 @@ export function Login() {
         email,
         password,
         deviceToken: typeof deviceToken === 'string' ? deviceToken : undefined,
+        captcha,
       },
       onCompleted: ({ login }) => {
         setToken(login?.jwt)
@@ -386,7 +414,7 @@ export function Login() {
     state === State.PwdLogin_CheckingPwd ||
     state === State.PwdLogin_CheckPwd
   const disableSubmit = isPasswordLogin
-    ? password.length === 0
+    ? password.length === 0 || !captcha
     : !isValidEmail(email)
 
   const onSubmit = useCallback(
@@ -499,6 +527,19 @@ export function Login() {
                   placeholder="Enter password"
                 />
               </Collapsible>
+              {!captcha && (
+                <div
+                  css={{
+                    ...theme.partials.text.inlineLink,
+                    textAlign: 'end',
+                    cursor: 'pointer',
+                    marginBottom: theme.spacing.xsmall,
+                  }}
+                  onClick={handleReCaptchaVerify}
+                >
+                  verify reCAPTCHA
+                </div>
+              )}
               <Button
                 type="submit"
                 width="100%"

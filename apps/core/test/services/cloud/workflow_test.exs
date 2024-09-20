@@ -1,6 +1,7 @@
 defmodule Core.Services.Cloud.WorkflowTest do
   use Core.SchemaCase, async: true
   use Mimic
+  alias Core.Clients.Console
   alias Core.Services.{Cloud, Cloud.Workflow}
 
   describe "up and down" do
@@ -46,6 +47,64 @@ defmodule Core.Services.Cloud.WorkflowTest do
 
       assert refetch(roach).count == 0
       assert refetch(cluster).count == 0
+    end
+
+    test "it can handle setup and teardown of a dedicated cloud instance" do
+      account = insert(:account)
+      enterprise_plan(account)
+      user = admin_user(account)
+      insert(:repository, name: "console")
+
+      expect(HTTPoison, :post, fn _, _, _ ->
+        {:ok, %{status_code: 200, body: Jason.encode!(%{client_id: "123", client_secret: "secret"})}}
+      end)
+
+      {:ok, instance} = Cloud.create_instance(%{
+        name: "plrltest",
+        cloud: :aws,
+        region: "us-east-1",
+        size: :small,
+        type: :dedicated
+      }, user)
+
+      expect(Core.Services.Cloud.Poller, :repository, fn -> {:ok, "repo-id"} end)
+      expect(Core.Services.Cloud.Poller, :project, fn -> {:ok, "proj-id"} end)
+      stack_id = Ecto.UUID.generate()
+      stack_q = Console.queries(:stack_q)
+      me_q = Console.queries(:me_q)
+      expect(Req, :post, 3, fn
+        _, [graphql: {^me_q, _}] -> {:ok, %Req.Response{status: 200, body: %{"data" => %{"me" => %{"id" => "me-id"}}}}}
+        _, [graphql: {_, %{attributes: attrs}}] ->
+          send self(), {:attributes, attrs}
+          {:ok, %Req.Response{status: 200, body: %{"data" => %{"createStack" => %{"id" => stack_id}}}}}
+        _, [graphql: {^stack_q, %{id: ^stack_id}}] ->
+          {:ok, %Req.Response{
+            status: 200,
+            body: %{"data" => %{"infrastructureStack" => %{"id" => stack_id, "status" => "SUCCESSFUL"}}}
+          }}
+      end)
+
+      {:ok, %{external_id: stack_id} = instance} = Workflow.provision(instance)
+
+      assert instance.status == :provisioned
+      assert instance.instance_status.stack
+
+      assert_receive {:attributes, attrs}
+
+      assert attrs.project_id == "proj-id"
+      assert attrs.actor_id == "me-id"
+      assert attrs.repository_id == "repo-id"
+      assert attrs.git.ref == "main"
+      assert attrs.git.folder == "terraform/modules/dedicated/aws"
+
+      del_q = Console.queries(:stack_delete)
+      expect(Req, :post, fn _, [graphql: {^del_q, %{id: ^stack_id}}] ->
+        {:ok, %Req.Response{status: 200, body: %{"data" => %{"deleteStack" => %{"id" => stack_id}}}}}
+      end)
+
+      {:ok, instance} = Workflow.deprovision(instance)
+
+      refute refetch(instance)
     end
   end
 end

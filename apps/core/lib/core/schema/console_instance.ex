@@ -3,6 +3,7 @@ defmodule Core.Schema.ConsoleInstance do
   alias Piazza.Ecto.EncryptedString
   alias Core.Schema.{PostgresCluster, CloudCluster, User}
 
+  defenum Type, shared: 0, dedicated: 1
   defenum Size, small: 0, medium: 1, large: 2
   defenum Status,
     pending: 0,
@@ -10,13 +11,16 @@ defmodule Core.Schema.ConsoleInstance do
     deployment_created: 2,
     provisioned: 3,
     deployment_deleted: 4,
-    database_deleted: 5
+    database_deleted: 5,
+    stack_created: 6,
+    stack_deleted: 7
 
   @region_map %{
     aws: ~w(us-east-1)
   }
 
   schema "console_instances" do
+    field :type,          Type, default: :shared
     field :name,          :string
     field :status,        Status
     field :subdomain,     :string
@@ -33,6 +37,7 @@ defmodule Core.Schema.ConsoleInstance do
     embeds_one :instance_status, InstanceStatus, on_replace: :update do
       field :db,  :boolean, default: false
       field :svc, :boolean, default: false
+      field :stack, :boolean, default: false
     end
 
     embeds_one :configuration, Configuration, on_replace: :update do
@@ -96,14 +101,14 @@ defmodule Core.Schema.ConsoleInstance do
 
   def regions(), do: @region_map
 
-  @valid ~w(name cloud size region status subdomain url external_id postgres_id cluster_id owner_id)a
+  @valid ~w(name type cloud size region status subdomain url external_id postgres_id cluster_id owner_id)a
 
   def changeset(model, attrs \\ %{}) do
     model
     |> cast(attrs, @valid)
     |> cast_embed(:configuration, with: &configuration_changeset/2)
     |> cast_embed(:instance_status, with: &status_changeset/2)
-    |> validate_required(@valid -- [:external_id])
+    |> validate_required(@valid -- ~w(external_id postgres_id cluster_id)a)
     |> foreign_key_constraint(:cluster_id)
     |> foreign_key_constraint(:postgres_id)
     |> foreign_key_constraint(:owner_id)
@@ -117,6 +122,13 @@ defmodule Core.Schema.ConsoleInstance do
     model
     |> cast(attrs, @valid)
     |> validate_required(~w(name region status cloud size)a)
+    |> validate_region()
+    |> foreign_key_constraint(:cluster_id)
+    |> foreign_key_constraint(:postgres_id)
+    |> foreign_key_constraint(:owner_id)
+    |> unique_constraint(:subdomain)
+    |> unique_constraint(:name)
+    |> validate_format(:name, ~r/[a-z][a-z0-9]{5,10}/, message: "must be an alphanumeric string between 5 and 11 characters")
     |> validate_region()
   end
 
@@ -146,6 +158,6 @@ defmodule Core.Schema.ConsoleInstance do
 
   defp status_changeset(model, attrs) do
     model
-    |> cast(attrs, ~w(db svc)a)
+    |> cast(attrs, ~w(db svc stack)a)
   end
 end

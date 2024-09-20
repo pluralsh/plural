@@ -263,6 +263,23 @@ defmodule Core.Services.Payments do
   def limited?(_, _), do: false
 
   @doc """
+  Determines if an account is on an enterprise plan
+  """
+  @spec enterprise?(Account.t | User.t) :: boolean
+  def enterprise?(%Account{} = account) do
+    case Core.Repo.preload(account, [subscription: :plan]) do
+      %Account{subscription: %PlatformSubscription{plan: %PlatformPlan{enterprise: ent}}} -> ent
+      _ -> false
+    end
+  end
+
+  def enterprise?(%User{} = user) do
+    preload(user)
+    |> Map.get(:account)
+    |> enterprise?()
+  end
+
+  @doc """
   Determine's if a user's account has access to the given feature.  Returns `true` if enforcement is not enabled yet.
   """
   @spec has_feature?(User.t | Account.t, atom) :: boolean

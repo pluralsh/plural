@@ -9,6 +9,7 @@ import {
 } from '@pluralsh/design-system'
 import {
   CloudProvider,
+  ConsoleInstanceType,
   ConsoleSize,
   useCreateConsoleInstanceMutation,
 } from 'generated/graphql'
@@ -48,6 +49,7 @@ export function ConfigureCloudInstanceStep() {
         size,
         cloud,
         region,
+        type: ConsoleInstanceType.Shared,
       },
     },
     onCompleted: (data) => {

@@ -564,6 +564,8 @@ enum ConsoleInstanceStatus {
   PROVISIONED
   DEPLOYMENT_DELETED
   DATABASE_DELETED
+  STACK_CREATED
+  STACK_DELETED
 }
 
 enum ConsoleSize {
@@ -572,7 +574,15 @@ enum ConsoleSize {
   LARGE
 }
 
+enum ConsoleInstanceType {
+  SHARED
+  DEDICATED
+}
+
 input ConsoleInstanceAttributes {
+  "the type of console instance"
+  type: ConsoleInstanceType!
+
   "the name of this instance (globally unique)"
   name: String!
 
@@ -597,6 +607,9 @@ input ConsoleConfigurationUpdateAttributes {
 
 type ConsoleInstance {
   id: ID!
+
+  "whether this is a shared or dedicated console"
+  type: ConsoleInstanceType!
 
   "the name of this instance (globally unique)"
   name: String!

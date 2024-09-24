@@ -1,4 +1,6 @@
 defmodule Core.Retry do
+  require Logger
+
   defstruct [wait: 200, attempts: 0, max: 3]
 
   def retry(fun, args) when is_function(fun) and (is_list(args) or is_map(args)) do

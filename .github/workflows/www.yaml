@@ -4,15 +4,9 @@ on:
     branches:
       - master
       - "renovate/frontend/*"
-    paths:
-      - ".github/workflows/www.yaml"
-      - "www/**"
   pull_request:
     branches:
       - "**"
-    paths:
-      - ".github/workflows/www.yaml"
-      - "www/**"
 jobs:
   build:
     name: Build image

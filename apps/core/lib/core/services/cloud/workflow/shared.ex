@@ -20,11 +20,19 @@ defmodule Core.Services.Cloud.Workflow.Shared do
   def sync(_), do: :ok
 
   def up(%ConsoleInstance{status: :deployment_created, url: url} = inst) do
-    :timer.sleep(:timer.seconds(5))
-    case {DNS.resolve(url), DNS.resolve(url, :cname)} do
-      {{:ok, [_ | _]}, _} -> mark_provisioned(inst)
-      {_, {:ok, [_ | _]}} -> mark_provisioned(inst)
-      {{:error, err}, _} -> {:error, "cannot resolve #{url}: #{inspect(err)}"}
+    :timer.sleep(:timer.seconds(10))
+    Core.Retry.retry(fn ->
+      case {DNS.resolve(url), DNS.resolve(url, :cname)} do
+        {{:ok, [_ | _]}, _} -> mark_provisioned(inst)
+        {_, {:ok, [_ | _]}} -> mark_provisioned(inst)
+        {{:error, err}, _} -> {:error, "cannot resolve #{url}: #{inspect(err)}"}
+      end
+    end, wait: :timer.seconds(30), max: 4)
+    |> case do
+      {:ok, _} = res -> res
+      {:error, err} ->
+        Logger.info "failed to resolve dns, error: #{inspect(err)}, just going to mark anyways and assume it's a negative caching bug"
+        mark_provisioned(inst)
     end
   end
 

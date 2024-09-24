@@ -20,12 +20,13 @@ defmodule Core.Services.Cloud.Workflow.Shared do
   def sync(_), do: :ok
 
   def up(%ConsoleInstance{status: :deployment_created, url: url} = inst) do
-    :timer.sleep(:timer.seconds(5))
-    case {DNS.resolve(url), DNS.resolve(url, :cname)} do
-      {{:ok, [_ | _]}, _} -> mark_provisioned(inst)
-      {_, {:ok, [_ | _]}} -> mark_provisioned(inst)
-      {{:error, err}, _} -> {:error, "cannot resolve #{url}: #{inspect(err)}"}
-    end
+    Core.Retry.retry(fn ->
+      case {DNS.resolve(url), DNS.resolve(url, :cname)} do
+        {{:ok, [_ | _]}, _} -> mark_provisioned(inst)
+        {_, {:ok, [_ | _]}} -> mark_provisioned(inst)
+        {{:error, err}, _} -> {:error, "cannot resolve #{url}: #{inspect(err)}"}
+      end
+    end, wait: :timer.seconds(30), max: 100)
   end
 
   def up(%ConsoleInstance{status: :pending, postgres: pg, configuration: conf} = inst) do

@@ -3,9 +3,12 @@ import { CloudOption } from 'components/shell/onboarding/sections/cloud/CloudOpt
 
 import { useBillingSubscription } from 'components/account/billing/BillingSubscriptionProvider'
 
+import { useTheme } from 'styled-components'
+
 import { useCreateClusterContext } from '../CreateClusterWizard'
 
 export function HostingOptionsStep() {
+  const theme = useTheme()
   const { hostingOption, setHostingOption } = useCreateClusterContext()
   const { isPaidPlan, isTrialPlan, daysUntilTrialExpires, isTrialExpired } =
     useBillingSubscription()
@@ -20,14 +23,24 @@ export function HostingOptionsStep() {
         <CloudOption
           selected={hostingOption === 'local'}
           onClick={() => setHostingOption('local')}
-          icon={<CloudIcon size={40} />}
+          icon={
+            <CloudIcon
+              size={40}
+              color={theme.colors['icon-light']}
+            />
+          }
           header="Deploy Yourself"
           description="Host your control plane in your own cloud."
         />
         <CloudOption
           selected={hostingOption === 'cloud'}
           onClick={() => setHostingOption('cloud')}
-          icon={<ConsoleIcon size={40} />}
+          icon={
+            <ConsoleIcon
+              size={40}
+              color={theme.colors['icon-light']}
+            />
+          }
           header="Use Plural Cloud"
           description="Host your control plane in a Plural Cloud instance."
         />

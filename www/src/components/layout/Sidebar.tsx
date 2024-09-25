@@ -177,7 +177,9 @@ function Sidebar(props: Omit<ComponentProps<typeof DSSidebar>, 'variant'>) {
   const previousUserData = getPreviousUserData()
   const theme = useTheme()
   const me = useContext(CurrentUserContext)
-  const menuItems = MENU_ITEMS
+  const menuItems = MENU_ITEMS.filter(
+    (item) => item.path !== '/shell' || me.hasShell
+  )
   const { pathname } = useLocation()
   const active = useCallback(
     (menuItem: Parameters<typeof isActiveMenuItem>[0]) =>

@@ -36,6 +36,8 @@ export function ConsoleInstanceOIDC({
 }) {
   const [open, setOpen] = useState(false)
 
+  if (!instance.console?.owner?.id) return null
+
   return (
     <Suspense
       fallback={

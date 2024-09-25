@@ -1,16 +1,16 @@
 import { useTheme } from 'styled-components'
 
 import { Button, Flex, Input, Modal } from '@pluralsh/design-system'
+import {
+  clearCreateClusterState,
+  getUnfinishedConsoleInstanceId,
+} from 'components/create-cluster/CreateCluster'
 import { GqlError } from 'components/utils/Alert'
 import {
   ConsoleInstanceFragment,
   useDeleteConsoleInstanceMutation,
 } from 'generated/graphql'
-import { useState } from 'react'
-import {
-  CUR_CONSOLE_INSTANCE_KEY,
-  clearCreateClusterState,
-} from 'components/create-cluster/CreateCluster'
+import { useCallback, useState } from 'react'
 
 export function DeleteInstanceModal({
   open,
@@ -51,10 +51,7 @@ function DeleteInstance({
   const [mutation, { loading, error }] = useDeleteConsoleInstanceMutation({
     variables: { id: instance.id },
     onCompleted: () => {
-      if (
-        `"${instance.id}"` ===
-        localStorage.getItem(`plural-${CUR_CONSOLE_INSTANCE_KEY}`)
-      ) {
+      if (instance.id === getUnfinishedConsoleInstanceId()) {
         clearCreateClusterState()
       }
       onClose()
@@ -108,4 +105,26 @@ function DeleteInstance({
       </Flex>
     </Flex>
   )
+}
+
+export function useDeleteUnfinishedInstance({
+  onClear,
+}: {
+  onClear?: () => void
+}) {
+  const id = getUnfinishedConsoleInstanceId()
+  const [mutation, { loading, error }] = useDeleteConsoleInstanceMutation()
+  const triggerDelete = useCallback(() => {
+    clearCreateClusterState()
+    onClear?.()
+    if (id && id !== 'null' && id !== 'undefined') {
+      mutation({ variables: { id } })
+    }
+  }, [id, mutation, onClear])
+
+  return {
+    triggerDelete,
+    loading,
+    error,
+  }
 }

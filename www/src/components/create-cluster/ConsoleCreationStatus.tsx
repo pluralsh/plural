@@ -3,6 +3,8 @@ import styled, { useTheme } from 'styled-components'
 
 import { ConsoleInstanceFragment } from 'generated/graphql'
 
+import { statusToLabel } from 'components/overview/clusters/plural-cloud/CloudInstanceTableCols'
+
 import { useCreateClusterContext } from './CreateClusterWizard'
 
 export function ConsoleCreationStatus({
@@ -50,7 +52,9 @@ export function ConsoleCreationStatus({
           color={theme.colors['text-primary-accent']}
           {...theme.partials.text.badgeLabel}
         >
-          <span>Status: {consoleInstance?.status}</span>
+          <span css={{ width: 'max-content' }}>
+            Status: {statusToLabel[consoleInstance?.status]}
+          </span>
           <Spinner />
         </Flex>
       )}

@@ -1,11 +1,13 @@
 import { Button, SubTab, TabList } from '@pluralsh/design-system'
 import { Flex } from 'honorable'
-import { ReactElement, useRef } from 'react'
+import { ReactElement, useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 import { hasUnfinishedCreation } from 'components/create-cluster/CreateCluster'
 
 import { LinkTabWrap } from '../utils/Tabs'
+
+import { useDeleteUnfinishedInstance } from './clusters/plural-cloud/DeleteInstance'
 
 const DIRECTORY = [
   { path: '/overview/clusters/self-hosted', label: 'Self-hosted clusters' },
@@ -17,6 +19,11 @@ export default function OverviewHeader(): ReactElement {
   const navigate = useNavigate()
   const { pathname } = useLocation()
   const currentTab = DIRECTORY.find((tab) => pathname?.startsWith(tab.path))
+
+  const [showUnfinished, setShowUnfinished] = useState(hasUnfinishedCreation())
+  const { triggerDelete, loading } = useDeleteUnfinishedInstance({
+    onClear: () => setShowUnfinished(false),
+  })
 
   return (
     <Flex justifyContent="space-between">
@@ -37,9 +44,20 @@ export default function OverviewHeader(): ReactElement {
           </LinkTabWrap>
         ))}
       </TabList>
-      <Button onClick={() => navigate('/create-cluster')}>
-        {hasUnfinishedCreation() ? 'Resume cluster creation' : 'Create cluster'}
-      </Button>
+      <Flex gap="medium">
+        {showUnfinished && (
+          <Button
+            destructive
+            loading={loading}
+            onClick={triggerDelete}
+          >
+            Cancel cluster creation
+          </Button>
+        )}
+        <Button onClick={() => navigate('/create-cluster')}>
+          {showUnfinished ? 'Resume cluster creation' : 'Create cluster'}
+        </Button>
+      </Flex>
     </Flex>
   )
 }

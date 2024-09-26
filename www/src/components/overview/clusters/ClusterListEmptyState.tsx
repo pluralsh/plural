@@ -1,11 +1,19 @@
 import { Button, Card, ClusterIcon, Flex } from '@pluralsh/design-system'
 import { hasUnfinishedCreation } from 'components/create-cluster/CreateCluster'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import styled, { useTheme } from 'styled-components'
+
+import { useDeleteUnfinishedInstance } from './plural-cloud/DeleteInstance'
 
 export default function ClusterListEmptyState() {
   const theme = useTheme()
   const navigate = useNavigate()
+
+  const [showUnfinished, setShowUnfinished] = useState(hasUnfinishedCreation())
+  const { triggerDelete, loading } = useDeleteUnfinishedInstance({
+    onClear: () => setShowUnfinished(false),
+  })
 
   return (
     <Card css={{ minWidth: 'fit-content' }}>
@@ -34,10 +42,18 @@ export default function ClusterListEmptyState() {
           css={{ maxWidth: 300, width: '100%' }}
           onClick={() => navigate('/create-cluster')}
         >
-          {hasUnfinishedCreation()
-            ? 'Resume cluster creation'
-            : 'Create cluster'}
+          {showUnfinished ? 'Resume cluster creation' : 'Create cluster'}
         </Button>
+        {showUnfinished && (
+          <Button
+            loading={loading}
+            destructive
+            css={{ maxWidth: 300, width: '100%' }}
+            onClick={triggerDelete}
+          >
+            Cancel cluster creation
+          </Button>
+        )}
       </Wrapper>
     </Card>
   )

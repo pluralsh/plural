@@ -105,7 +105,7 @@ export function CreateCluster() {
             css={{ width: '100%' }}
             secondary
             startIcon={<ReturnIcon />}
-            onClick={() => navigate('/overview')}
+            onClick={() => navigate('/overview/clusters/plural-cloud')}
           >
             Back home
           </Button>
@@ -151,16 +151,21 @@ export function clearCreateClusterState() {
   localStorage.removeItem(`plural-${HOSTING_OPTION_KEY}`)
   localStorage.removeItem(`plural-${CUR_CONSOLE_INSTANCE_KEY}`)
 }
+
 export function hasUnfinishedCreation() {
-  const curConsoleInstanceId = localStorage.getItem(
-    `plural-${CUR_CONSOLE_INSTANCE_KEY}`
-  )
+  const curConsoleInstanceId = getUnfinishedConsoleInstanceId()
 
   return (
     !!curConsoleInstanceId &&
     curConsoleInstanceId !== 'null' &&
     curConsoleInstanceId !== 'undefined'
   )
+}
+
+export function getUnfinishedConsoleInstanceId() {
+  return localStorage
+    .getItem(`plural-${CUR_CONSOLE_INSTANCE_KEY}`)
+    ?.replace(/"/g, '')
 }
 
 const MainWrapperSC = styled.div(({ theme }) => ({

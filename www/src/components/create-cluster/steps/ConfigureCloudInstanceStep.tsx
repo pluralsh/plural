@@ -25,6 +25,8 @@ import {
   useCreateClusterContext,
 } from '../CreateClusterWizard'
 
+const nameRegex = /^[a-z][a-z0-9-][a-z0-9]{4,9}$/
+
 export function ConfigureCloudInstanceStep() {
   const theme = useTheme()
   const { setCurStep, setContinueBtn, setConsoleInstanceId } =
@@ -34,9 +36,10 @@ export function ConfigureCloudInstanceStep() {
   const [size, setSize] = useState<ConsoleSize>(ConsoleSize.Small)
   const [cloud, setCloud] = useState<CloudProvider>(CloudProvider.Aws)
   const [region, setRegion] = useState<string>(regions[0])
+  const isNameValid = nameRegex.test(name)
 
   const canSubmit = !!(
-    name &&
+    isNameValid &&
     size &&
     cloud &&
     (cloud === CloudProvider.Aws ? region : true)
@@ -89,9 +92,22 @@ export function ConfigureCloudInstanceStep() {
         After completing this step it may take a few minutes for your Console to
         deploy. It will run in the background as you proceed.
       </Callout>
-      <FormFieldSC label="Cluster name">
+      <FormFieldSC
+        label="Cluster name"
+        hint={
+          <FormFieldCaptionSC $name={name}>
+            Name must be between 6 and 11 characters, lowercase, alphanumeric,
+            and begin with a letter.
+          </FormFieldCaptionSC>
+        }
+      >
         <Input
           placeholder="Enter cluster name"
+          borderColor={
+            name === '' || isNameValid
+              ? undefined
+              : theme.colors['border-danger']
+          }
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
@@ -145,6 +161,17 @@ export function ConfigureCloudInstanceStep() {
 
 export const FormFieldSC = styled(FormField)(({ theme }) => ({
   color: theme.colors.text,
+}))
+
+const FormFieldCaptionSC = styled.span<{
+  $name: string
+}>(({ theme, $name }) => ({
+  ...theme.partials.text.caption,
+  color: nameRegex.test($name)
+    ? theme.colors['text-success-light']
+    : $name !== ''
+    ? theme.colors['text-danger-light']
+    : theme.colors['text-light'],
 }))
 
 const regions = ['us-east-1']

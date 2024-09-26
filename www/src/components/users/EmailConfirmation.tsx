@@ -10,6 +10,8 @@ import {
 import moment from 'moment'
 import { useParams } from 'react-router-dom'
 
+import { useTheme } from 'styled-components'
+
 import { useIsCurrentlyOnboarding } from '../shell/hooks/useOnboarded'
 import CurrentUserContext from '../../contexts/CurrentUserContext'
 import { Alert, AlertStatus, GqlError } from '../utils/Alert'
@@ -60,6 +62,7 @@ export function EmailConfirmed() {
 }
 
 export function VerifyEmailConfirmed() {
+  const theme = useTheme()
   const [open, setOpen] = useState(true)
   const me = useContext(CurrentUserContext)
   const [mutation] = useMutation(CREATE_RESET_TOKEN, {
@@ -86,10 +89,11 @@ export function VerifyEmailConfirmed() {
         round="xsmall"
         direction="row"
         gap="small"
-        background="fill-two"
+        background={theme.colors['fill-two']}
+        color={theme.colors.text}
+        border={{ color: theme.colors['fill-three'] }}
         pad="small"
         align="center"
-        border={{ color: 'border' }}
       >
         <Box
           flex={false}

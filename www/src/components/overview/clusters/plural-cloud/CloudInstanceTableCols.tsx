@@ -46,6 +46,17 @@ function getStatusSeverity(
   }
 }
 
+export const statusToLabel = {
+  [ConsoleInstanceStatus.DatabaseCreated]: 'Database Created',
+  [ConsoleInstanceStatus.DatabaseDeleted]: 'Database Deleted',
+  [ConsoleInstanceStatus.DeploymentCreated]: 'Deployment Created',
+  [ConsoleInstanceStatus.DeploymentDeleted]: 'Deployment Deleted',
+  [ConsoleInstanceStatus.Pending]: 'Pending',
+  [ConsoleInstanceStatus.Provisioned]: 'Provisioned',
+  [ConsoleInstanceStatus.StackCreated]: 'Stack Created',
+  [ConsoleInstanceStatus.StackDeleted]: 'Stack Deleted',
+}
+
 const ColInstance = columnHelper.accessor((instance) => instance.name, {
   id: 'instance',
   header: 'Instance',
@@ -70,8 +81,11 @@ const ColStatus = columnHelper.accessor((instance) => instance.status, {
   header: 'Status',
   enableSorting: true,
   cell: ({ getValue }) => (
-    <Chip severity={getStatusSeverity(getValue())}>
-      {firstLetterUppercase(getValue())}
+    <Chip
+      css={{ width: 'max-content' }}
+      severity={getStatusSeverity(getValue())}
+    >
+      {statusToLabel[getValue()]}
     </Chip>
   ),
 })

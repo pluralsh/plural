@@ -104,7 +104,7 @@ defmodule Core.Services.Cloud.Workflow.Shared do
 
   def down(inst), do: {:ok, inst}
 
-  def finalize(%ConsoleInstance{status: :database_deleted, cluster: cluster, postgres: pg} = inst, :down) do
+  def finalize(%ConsoleInstance{status: s, cluster: cluster, postgres: pg} = inst, :down) when s in ~w(database_deleted pending)a do
     start_transaction()
     |> add_operation(:inst, fn _ -> Repo.delete(inst) end)
     |> add_operation(:cluster, fn _ -> Cloud.dec(cluster) end)

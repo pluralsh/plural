@@ -16,7 +16,12 @@ defmodule Core.Schema.ConsoleInstance do
     stack_deleted: 7
 
   @region_map %{
-    aws: ~w(us-east-1)
+    shared: %{
+      aws: ~w(us-east-1)
+    },
+    dedicated: %{
+      aws: ~w(us-east-1 me-central-1)
+    }
   }
 
   schema "console_instances" do
@@ -134,7 +139,8 @@ defmodule Core.Schema.ConsoleInstance do
 
   defp validate_region(cs) do
     cloud = get_field(cs, :cloud)
-    regions = @region_map[cloud]
+    type = get_field(cs, :type)
+    regions = @region_map[type][cloud]
     validate_change(cs, :region, fn :region, reg ->
       case reg in regions do
         true -> []

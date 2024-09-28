@@ -2,6 +2,12 @@ defmodule GraphQl.Resolvers.Cloud do
   use GraphQl.Resolvers.Base, model: Core.Schema.ConsoleInstance
   alias Core.Services.{Cloud, Clusters}
 
+  def resolve_settings(_, _) do
+    {:ok, %{
+      regions: ConsoleInstance.regions()
+    }}
+  end
+
   def resolve_instance(%{id: id}, %{context: %{current_user: user}}),
     do: Cloud.visible(id, user)
 

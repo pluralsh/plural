@@ -33,6 +33,11 @@ defmodule ApiWeb.Endpoint do
   plug Plug.RequestId
   plug Plug.Telemetry, event_prefix: [:phoenix, :endpoint]
 
+  plug Hammer.Plug, [
+    rate_limit: {"api.global", 60_000, 1000},
+    by: :ip
+  ]
+
   plug Plug.Parsers,
     parsers: [:urlencoded, {:multipart, length: @upload_maximum}, ApiWeb.Parsers.ApplicationJson],
     pass: ["*/*"],

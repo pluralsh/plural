@@ -239,7 +239,7 @@ mutation Login(
   $email: String!
   $password: String!
   $deviceToken: String
-  $captcha: String
+  $captcha: String!
 ) {
   login(
     email: $email

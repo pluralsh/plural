@@ -8,6 +8,8 @@ defmodule Core.Services.Cloud.Workflow.Shared do
   alias Core.Schema.{ConsoleInstance, PostgresCluster, User}
   alias Core.Repo
 
+  require Logger
+
   @behaviour Core.Services.Cloud.Workflow
 
   def sync(%ConsoleInstance{external_id: id} = instance) when is_binary(id) do

@@ -209,6 +209,8 @@ type RootQueryType {
   "Get a list of clusters owned by the current account."
   clusters(after: String, first: Int, before: String, last: Int): ClusterConnection
 
+  cloudSettings: PluralCloudSettings
+
   consoleInstance(id: ID!): ConsoleInstance
 
   consoleInstances(after: String, first: Int, before: String, last: Int): ConsoleInstanceConnection
@@ -219,7 +221,7 @@ type RootQueryType {
 }
 
 type RootMutationType {
-  login(email: String!, password: String!, deviceToken: String, captcha: String): User
+  login(email: String!, password: String!, deviceToken: String, captcha: String!): User
 
   deviceLogin: DeviceLogin
 
@@ -642,6 +644,19 @@ type ConsoleInstance {
   insertedAt: DateTime
 
   updatedAt: DateTime
+}
+
+type PluralCloudSettings {
+  regions: PluralCloudRegions
+}
+
+type PluralCloudRegions {
+  shared: CloudRegions!
+  dedicated: CloudRegions!
+}
+
+type CloudRegions {
+  aws: [String]
 }
 
 type ConsoleInstanceConnection {

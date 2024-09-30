@@ -2,6 +2,24 @@ defmodule GraphQl.CloudQueriesTest do
   use Core.SchemaCase, async: true
   import GraphQl.TestHelpers
 
+  describe "cloudSettings" do
+    test "it can list supported regions" do
+      {:ok, %{data: %{"cloudSettings" => settings}}} = run_query("""
+        query {
+          cloudSettings {
+            regions {
+              shared { aws }
+              dedicated { aws }
+            }
+          }
+        }
+      """, %{}, %{current_user: insert(:user)})
+
+      refute Enum.empty?(settings["regions"]["shared"]["aws"])
+      refute Enum.empty?(settings["regions"]["dedicated"]["aws"])
+    end
+  end
+
   describe "consoleInstances" do
     test "it can fetch the cloud instances in your account" do
       user = insert(:user)

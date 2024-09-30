@@ -1,7 +1,6 @@
 defmodule Core.Services.Cloud.Workflow do
   use Core.Services.Base
   alias Core.Repo
-  alias Core.Clients.Console
   alias Core.Schema.{ConsoleInstance}
   alias Core.Services.Cloud.Workflow.{Dedicated, Shared}
 

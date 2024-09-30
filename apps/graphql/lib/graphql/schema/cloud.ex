@@ -45,9 +45,28 @@ defmodule GraphQl.Schema.Cloud do
     timestamps()
   end
 
+  object :plural_cloud_settings do
+    field :regions, :plural_cloud_regions
+  end
+
+  object :plural_cloud_regions do
+    field :shared,    non_null(:cloud_regions)
+    field :dedicated, non_null(:cloud_regions)
+  end
+
+  object :cloud_regions do
+    field :aws, list_of(:string)
+  end
+
   connection node_type: :console_instance
 
   object :cloud_queries do
+    field :cloud_settings, :plural_cloud_settings do
+      middleware Authenticated
+
+      resolve &Cloud.resolve_settings/2
+    end
+
     field :console_instance, :console_instance do
       middleware Authenticated
       arg :id, non_null(:id)

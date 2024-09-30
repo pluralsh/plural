@@ -715,8 +715,8 @@ defmodule Core.Services.Users do
     |> when_ok(&delete_eab_key/1)
   end
 
-  @decorate cache_evict(cache: Core.Cache, keys: [{:eab, c, p, u}])
-  def delete_eab_key(%EabCredential{user_id: u, cluster: c, provider: p} = eab),
+  @decorate cache_evict(cache: Core.Cache, keys: [{:eab, eab.user_id, eab.cluster, eab.provider}])
+  def delete_eab_key(%EabCredential{} = eab),
     do: Core.Repo.delete(eab)
 
   defp materialize_eab_key(cluster, provider, %User{id: user_id}) do

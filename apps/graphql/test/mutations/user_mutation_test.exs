@@ -13,13 +13,17 @@ defmodule GraphQl.UserMutationTest do
       })
 
       {:ok, %{data: %{"login" => found}}} = run_query("""
-        mutation Login($email: String!, $password: String!) {
-          login(email: $email, password: $password) {
+        mutation Login($email: String!, $password: String!, $captcha: String!) {
+          login(email: $email, password: $password, captcha: $captcha) {
             id
             jwt
           }
         }
-      """, %{"email" => "mjg@plural.sh", "password" => "super strong password"}, %{origin: "https://app.plural.sh"})
+      """, %{
+        "email" => "mjg@plural.sh",
+        "password" => "super strong password",
+        "captcha" => "valid_response"
+      }, %{origin: "https://app.plural.sh"})
 
       assert found["id"] == user.id
       assert found["jwt"]
@@ -112,8 +116,8 @@ defmodule GraphQl.UserMutationTest do
       token = insert(:login_token)
 
       {:ok, %{data: %{"login" => found}}} = run_query("""
-        mutation Login($email: String!, $password: String!, $deviceToken: String) {
-          login(email: $email, password: $password, deviceToken: $deviceToken) {
+        mutation Login($email: String!, $password: String!, $deviceToken: String, $captcha: String!) {
+          login(email: $email, password: $password, deviceToken: $deviceToken, captcha: $captcha) {
             id
             jwt
           }
@@ -121,7 +125,8 @@ defmodule GraphQl.UserMutationTest do
       """, %{
         "email" => "mjg@plural.sh",
         "password" => "super strong password",
-        "deviceToken" => token.token
+        "deviceToken" => token.token,
+        "captcha" => "valid_response"
       })
 
       assert found["id"] == user.id

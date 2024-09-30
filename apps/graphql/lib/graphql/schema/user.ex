@@ -476,7 +476,7 @@ defmodule GraphQl.Schema.User do
       arg :email,        non_null(:string)
       arg :password,     non_null(:string)
       arg :device_token, :string
-      arg :captcha,      :string
+      arg :captcha,      non_null(:string)
 
       middleware Captcha
 
@@ -558,6 +558,7 @@ defmodule GraphQl.Schema.User do
 
     field :update_user, :user do
       middleware Authenticated
+      middleware RateLimit, limit: 10, time: 60_000
       arg :id,         :id
       arg :attributes, non_null(:user_attributes)
 

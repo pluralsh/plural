@@ -367,6 +367,7 @@ defmodule Core.Services.Users do
   """
   @spec bootstrap_user(Core.OAuth.method, map) :: user_resp
   def bootstrap_user(service, %{email: email} = attrs) do
+    User.mark_url_safe()
     case {service, get_user_by_email(email)} do
       {_, nil} ->
         attrs

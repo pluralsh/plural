@@ -232,7 +232,7 @@ defmodule Core.Schema.Repository do
     |> unique_constraint(:name)
     |> validate_required([:name, :category])
     |> generate_uuid(:icon_id)
-    |> cast_attachments(attrs, [:icon, :dark_icon, :docs], allow_urls: true)
+    |> cast_attachments(attrs, [:icon, :dark_icon, :docs])
   end
 
   @keyvalid ~w(public_key private_key)a

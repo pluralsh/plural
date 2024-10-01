@@ -75,7 +75,7 @@ defmodule Core.Schema.Publisher do
     |> unique_constraint(:owner_id)
     |> validate_length(:name, max: 255)
     |> generate_uuid(:avatar_id)
-    |> cast_attachments(attrs, [:avatar], allow_urls: true)
+    |> cast_attachments(attrs, [:avatar])
   end
 
   @stripe_valid ~w(billing_account_id)a

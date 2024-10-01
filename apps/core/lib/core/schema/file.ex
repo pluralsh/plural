@@ -39,7 +39,7 @@ defmodule Core.Schema.File do
     model
     |> cast(attrs, @valid)
     |> generate_uuid(:blob_id)
-    |> cast_attachments(attrs, [:blob], allow_urls: true)
+    |> cast_attachments(attrs, [:blob])
     |> foreign_key_constraint(:message_id)
     |> put_change(:filename, filename(upload))
     |> put_change(:filesize, file_size(upload))

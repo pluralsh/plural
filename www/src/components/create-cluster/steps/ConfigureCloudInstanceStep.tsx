@@ -9,7 +9,6 @@ import {
 } from '@pluralsh/design-system'
 import {
   CloudProvider,
-  ConsoleInstanceType,
   ConsoleSize,
   useCreateConsoleInstanceMutation,
 } from 'generated/graphql'
@@ -29,7 +28,7 @@ const nameRegex = /^[a-z][a-z0-9-][a-z0-9]{4,9}$/
 
 export function ConfigureCloudInstanceStep() {
   const theme = useTheme()
-  const { setCurStep, setContinueBtn, setConsoleInstanceId } =
+  const { setCurStep, setContinueBtn, setConsoleInstanceId, hostingOption } =
     useCreateClusterContext()
 
   const [name, setName] = useState('')
@@ -52,7 +51,7 @@ export function ConfigureCloudInstanceStep() {
         size,
         cloud,
         region,
-        type: ConsoleInstanceType.Shared,
+        type: hostingOption,
       },
     },
     onCompleted: (data) => {

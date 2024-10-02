@@ -5,7 +5,6 @@ import {
   Flex,
   FormField,
   Modal,
-  PeopleIcon,
   Spinner,
 } from '@pluralsh/design-system'
 import {
@@ -54,7 +53,6 @@ export function ConsoleInstanceOIDC({
         <>
           <Button
             secondary
-            startIcon={<PeopleIcon />}
             onClick={() => setOpen(true)}
           >
             OIDC

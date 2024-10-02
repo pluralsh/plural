@@ -13,6 +13,7 @@ import OnboardingCard from 'components/shell/onboarding/OnboardingCard'
 
 import {
   ConsoleInstanceStatus,
+  ConsoleInstanceType,
   useConsoleInstanceQuery,
 } from 'generated/graphql'
 
@@ -23,6 +24,7 @@ import usePersistedState from 'hooks/usePersistedState'
 import { ConsoleCreationStatus } from './ConsoleCreationStatus'
 import { CreateClusterActions } from './CreateClusterActions'
 import {
+  CloudOption,
   CreateClusterContext,
   CreateClusterContextType,
   CreateClusterStepKey,
@@ -31,6 +33,7 @@ import {
 } from './CreateClusterWizard'
 
 export const CUR_CREATE_CLUSTER_STEP_KEY = 'cur-create-cluster-step'
+export const CLOUD_OPTION_KEY = 'cloud-option'
 export const HOSTING_OPTION_KEY = 'hosting-option'
 export const CUR_CONSOLE_INSTANCE_KEY = 'cur-console-instance-id'
 
@@ -39,18 +42,24 @@ export function CreateCluster() {
   const navigate = useNavigate()
   const [curStep, setCurStep] = usePersistedState<CreateClusterStepKey>(
     CUR_CREATE_CLUSTER_STEP_KEY,
-    CreateClusterStepKey.HostingOptions
+    CreateClusterStepKey.ChooseCloud
   )
-  const [hostingOption, setHostingOption] = usePersistedState<
-    'local' | 'cloud'
-  >(HOSTING_OPTION_KEY, 'local')
+  const [cloudOption, setCloudOption] = usePersistedState<CloudOption>(
+    CLOUD_OPTION_KEY,
+    'local'
+  )
+  const [hostingOption, setHostingOption] =
+    usePersistedState<ConsoleInstanceType>(
+      HOSTING_OPTION_KEY,
+      ConsoleInstanceType.Shared
+    )
   const [finishEnabled, setFinishEnabled] = useState(false)
   const [continueBtn, setContinueBtn] = useState<ReactElement | undefined>()
   const [consoleInstanceId, setConsoleInstanceId] = usePersistedState<
     Nullable<string>
   >(CUR_CONSOLE_INSTANCE_KEY, null)
 
-  const steps = hostingOption === 'local' ? localSteps : cloudSteps
+  const steps = cloudOption === 'local' ? localSteps : cloudSteps
   const curStepIndex = steps.findIndex((step) => step.key === curStep)
 
   const { data, error } = useConsoleInstanceQuery({
@@ -66,6 +75,8 @@ export function CreateCluster() {
     () => ({
       curStep,
       setCurStep,
+      cloudOption,
+      setCloudOption,
       hostingOption,
       setHostingOption,
       finishEnabled,
@@ -85,6 +96,8 @@ export function CreateCluster() {
     [
       curStep,
       setCurStep,
+      cloudOption,
+      setCloudOption,
       hostingOption,
       setHostingOption,
       finishEnabled,
@@ -148,6 +161,7 @@ export function CreateCluster() {
 
 export function clearCreateClusterState() {
   localStorage.removeItem(`plural-${CUR_CREATE_CLUSTER_STEP_KEY}`)
+  localStorage.removeItem(`plural-${CLOUD_OPTION_KEY}`)
   localStorage.removeItem(`plural-${HOSTING_OPTION_KEY}`)
   localStorage.removeItem(`plural-${CUR_CONSOLE_INSTANCE_KEY}`)
 }

@@ -5,6 +5,8 @@ import { useNavigate } from 'react-router-dom'
 
 import { useBillingSubscription } from 'components/account/billing/BillingSubscriptionProvider'
 
+import { ConsoleInstanceType } from 'generated/graphql'
+
 import {
   CreateClusterStepKey,
   cloudSteps,
@@ -22,18 +24,22 @@ export function CreateClusterActions() {
   const {
     curStep,
     setCurStep,
+    cloudOption,
     hostingOption,
     finishEnabled,
     continueBtn,
     consoleInstanceId,
   } = useCreateClusterContext()
 
-  const { isPaidPlan, isTrialPlan, isTrialExpired } = useBillingSubscription()
+  const { isPaidPlan, isTrialPlan, isTrialExpired, isEnterprisePlan } =
+    useBillingSubscription()
   const disableContinue =
-    hostingOption === 'cloud' &&
-    ((!isPaidPlan && !isTrialPlan) || (isTrialPlan && isTrialExpired))
+    cloudOption === 'cloud' &&
+    ((!isPaidPlan && !isTrialPlan) ||
+      (isTrialPlan && isTrialExpired) ||
+      (!isEnterprisePlan && hostingOption === ConsoleInstanceType.Dedicated))
 
-  const steps = hostingOption === 'local' ? localSteps : cloudSteps
+  const steps = cloudOption === 'local' ? localSteps : cloudSteps
   const curStepIndex = steps.findIndex((step) => step.key === curStep)
   const prevStep = steps[curStepIndex - 1]?.key
   const nextStep = steps[curStepIndex + 1]?.key
@@ -42,13 +48,13 @@ export function CreateClusterActions() {
     if (consoleInstanceId) {
       localStorage.setItem(FINISHED_CONSOLE_INSTANCE_KEY, consoleInstanceId)
     }
-    if (hostingOption === 'local') {
+    if (cloudOption === 'local') {
       localStorage.setItem(FINISHED_LOCAL_CREATE_KEY, 'true')
     }
     clearCreateClusterState()
     navigate(
       `/overview/clusters/${
-        hostingOption === 'local' ? 'self-hosted' : 'plural-cloud'
+        cloudOption === 'local' ? 'self-hosted' : 'plural-cloud'
       }`
     )
   }
@@ -76,7 +82,7 @@ export function CreateClusterActions() {
         <Flex gap="medium">
           {prevStep &&
             !(
-              hostingOption === 'cloud' &&
+              cloudOption === 'cloud' &&
               curStep === CreateClusterStepKey.InstallCli
             ) && (
               <Button

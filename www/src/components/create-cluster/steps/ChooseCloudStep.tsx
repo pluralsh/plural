@@ -1,15 +1,20 @@
-import { Callout, CloudIcon, ConsoleIcon, Flex } from '@pluralsh/design-system'
+import {
+  Callout,
+  Chip,
+  CloudIcon,
+  ConsoleIcon,
+  Flex,
+} from '@pluralsh/design-system'
 import { CloudOption } from 'components/shell/onboarding/sections/cloud/CloudOption'
 
 import { useBillingSubscription } from 'components/account/billing/BillingSubscriptionProvider'
 
-import { useTheme } from 'styled-components'
-
 import { useCreateClusterContext } from '../CreateClusterWizard'
 
-export function HostingOptionsStep() {
-  const theme = useTheme()
-  const { hostingOption, setHostingOption } = useCreateClusterContext()
+import { CalloutLinkButton } from './ChooseHostingOptionStep'
+
+export function ChooseCloudStep() {
+  const { cloudOption, setCloudOption } = useCreateClusterContext()
   const { isPaidPlan, isTrialPlan, daysUntilTrialExpires, isTrialExpired } =
     useBillingSubscription()
   const isFreePlan = !isPaidPlan && !isTrialPlan
@@ -21,44 +26,47 @@ export function HostingOptionsStep() {
     >
       <Flex gap="large">
         <CloudOption
-          selected={hostingOption === 'local'}
-          onClick={() => setHostingOption('local')}
-          icon={
-            <CloudIcon
-              size={40}
-              color={theme.colors['icon-light']}
-            />
-          }
+          selected={cloudOption === 'local'}
+          onClick={() => setCloudOption('local')}
+          icon={<CloudIcon size={40} />}
+          chip={<Chip>Free Plan</Chip>}
           header="Deploy Yourself"
           description="Host your control plane in your own cloud."
         />
         <CloudOption
-          selected={hostingOption === 'cloud'}
-          onClick={() => setHostingOption('cloud')}
-          icon={
-            <ConsoleIcon
-              size={40}
-              color={theme.colors['icon-light']}
-            />
-          }
+          selected={cloudOption === 'cloud'}
+          onClick={() => setCloudOption('cloud')}
+          icon={<ConsoleIcon size={40} />}
+          chip={<Chip severity="info">Pro Plan</Chip>}
           header="Use Plural Cloud"
           description="Host your control plane in a Plural Cloud instance."
         />
       </Flex>
-      {hostingOption === 'cloud' &&
+      {cloudOption === 'cloud' &&
         (isFreePlan || (isTrialPlan && isTrialExpired) ? (
           <Callout
             severity="warning"
-            title="This option is not available on a free plan."
+            title="This option is only available on the Pro plan."
           >
-            To use a Plural Cloud Instance for your cluster deployment, consider{' '}
-            <a
-              href="/account/billing"
-              target="_blank"
-              rel="noopener noreferrer"
+            <Flex
+              direction="column"
+              gap="medium"
             >
-              upgrading your plan.
-            </a>
+              If you would like to create a shared cloud instance, please
+              upgrade to a Pro or Enterprise plan - or contact sales to learn
+              more.
+              <Flex gap="medium">
+                <CalloutLinkButton href="/account/billing">
+                  Upgrade to Pro Plan
+                </CalloutLinkButton>
+                <CalloutLinkButton
+                  secondary
+                  href="https://plural.sh/contact-sales"
+                >
+                  Contact sales
+                </CalloutLinkButton>
+              </Flex>
+            </Flex>
           </Callout>
         ) : isTrialPlan ? (
           <Callout

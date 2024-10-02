@@ -1,6 +1,7 @@
 import {
   CliIcon,
   CloudIcon,
+  GlobeIcon,
   ListIcon,
   ShieldOutlineIcon,
   StepperSteps,
@@ -8,14 +9,18 @@ import {
 
 import React, { ReactElement, createContext, useContext } from 'react'
 
+import { ConsoleInstanceType } from 'generated/graphql'
+
 import { AuthenticationStep } from './steps/AuthenticationStep'
 import { ConfigureCloudInstanceStep } from './steps/ConfigureCloudInstanceStep'
 import { DeployLocallyStep } from './steps/DeployLocallyStep'
-import { HostingOptionsStep } from './steps/HostingOptionsStep'
+import { ChooseCloudStep } from './steps/ChooseCloudStep'
 import { InstallCliStep } from './steps/InstallCliStep'
+import { ChooseHostingOptionStep } from './steps/ChooseHostingOptionStep'
 
 export enum CreateClusterStepKey {
-  HostingOptions = 'hosting-options',
+  ChooseCloud = 'choose-cloud',
+  ChooseHostingOption = 'choose-hosting-option',
   ConfigureCloudInstance = 'configure-cloud-instance',
   InstallCli = 'install-cli',
   Authentication = 'authentication',
@@ -28,11 +33,13 @@ type CreateClusterStep = Omit<StepperSteps[number], 'stepTitle' | 'key'> & {
   component: React.ReactNode
 }
 
-type HostingOption = 'local' | 'cloud'
+export type CloudOption = 'local' | 'cloud'
 
 export type CreateClusterContextType = {
-  hostingOption: HostingOption
-  setHostingOption: (option: HostingOption) => void
+  cloudOption: CloudOption
+  setCloudOption: (option: CloudOption) => void
+  hostingOption: ConsoleInstanceType
+  setHostingOption: (option: ConsoleInstanceType) => void
   curStep: CreateClusterStepKey
   setCurStep: (step: CreateClusterStepKey) => void
   finishEnabled: boolean
@@ -63,10 +70,10 @@ export const useCreateClusterContext = () => {
 
 export const localSteps: CreateClusterStep[] = [
   {
-    key: CreateClusterStepKey.HostingOptions,
+    key: CreateClusterStepKey.ChooseCloud,
     stepTitle: 'Hosting options',
     IconComponent: CloudIcon,
-    component: <HostingOptionsStep />,
+    component: <ChooseCloudStep />,
   },
   {
     key: CreateClusterStepKey.InstallCli,
@@ -84,10 +91,16 @@ export const localSteps: CreateClusterStep[] = [
 
 export const cloudSteps: CreateClusterStep[] = [
   {
-    key: CreateClusterStepKey.HostingOptions,
-    stepTitle: 'Hosting options',
+    key: CreateClusterStepKey.ChooseCloud,
+    stepTitle: 'Choose cloud',
     IconComponent: CloudIcon,
-    component: <HostingOptionsStep />,
+    component: <ChooseCloudStep />,
+  },
+  {
+    key: CreateClusterStepKey.ChooseHostingOption,
+    stepTitle: 'Choose hosting option',
+    IconComponent: GlobeIcon,
+    component: <ChooseHostingOptionStep />,
   },
   {
     key: CreateClusterStepKey.ConfigureCloudInstance,

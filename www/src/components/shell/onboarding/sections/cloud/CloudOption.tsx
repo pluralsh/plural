@@ -1,8 +1,9 @@
-import { Tooltip, WrapWithIf } from '@pluralsh/design-system'
+import { Flex, Tooltip, WrapWithIf } from '@pluralsh/design-system'
 
 import OnboardingCardButton, {
   OnBoardCardDescSC,
   OnBoardCardHeaderSC,
+  OnboardCardHintSC,
   OnboardCardIconSC,
   OnboardCardInnerSC,
 } from '../../OnboardingCardButton'
@@ -11,6 +12,8 @@ function CloudOption({
   icon,
   header,
   description,
+  hint,
+  chip,
   selected,
   disabled,
   tooltip,
@@ -33,13 +36,20 @@ function CloudOption({
         {...props}
       >
         <OnboardCardInnerSC>
+          {hint && <OnboardCardHintSC>{hint}</OnboardCardHintSC>}
           <OnboardCardIconSC $disabled={disabled}>{icon}</OnboardCardIconSC>
-          <OnBoardCardHeaderSC $disabled={disabled}>
-            {header}
-          </OnBoardCardHeaderSC>
-          <OnBoardCardDescSC $disabled={disabled}>
-            {description}
-          </OnBoardCardDescSC>
+          <Flex
+            direction="column"
+            gap="xxsmall"
+          >
+            <OnBoardCardHeaderSC $disabled={disabled}>
+              {header}
+            </OnBoardCardHeaderSC>
+            <OnBoardCardDescSC $disabled={disabled}>
+              {description}
+            </OnBoardCardDescSC>
+          </Flex>
+          {chip}
         </OnboardCardInnerSC>
       </OnboardingCardButton>
     </WrapWithIf>

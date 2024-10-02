@@ -12,6 +12,7 @@ import { ProviderIcon } from 'components/utils/ProviderIcon'
 import {
   ConsoleInstanceFragment,
   ConsoleInstanceStatus,
+  ConsoleInstanceType,
 } from 'generated/graphql'
 
 import { MoreMenu } from 'components/account/MoreMenu'
@@ -20,6 +21,8 @@ import { useCallback, useContext, useState } from 'react'
 import { useTheme } from 'styled-components'
 
 import { ClusterAdminsModal } from 'components/cluster/ClusterAdminsModal'
+
+import { upperFirst } from 'lodash'
 
 import { CellCaption, CellWrap } from '../SelfHostedTableCols'
 
@@ -61,17 +64,13 @@ const ColInstance = columnHelper.accessor((instance) => instance.name, {
   id: 'instance',
   header: 'Instance',
   enableSorting: true,
-  meta: { gridTemplate: '1fr' },
   cell: ({ getValue }) => (
     <CellWrap>
       <AppIcon
         size="xxsmall"
         icon={<ConsoleIcon />}
       />
-      <div>
-        <span>{getValue()}</span>
-        <CellCaption>Plural Cloud</CellCaption>
-      </div>
+      {getValue()}
     </CellWrap>
   ),
 })
@@ -110,6 +109,22 @@ const ColCloud = columnHelper.accessor((instance) => instance.cloud, {
   ),
 })
 
+const ColHosting = columnHelper.accessor((instance) => instance.type, {
+  id: 'hosting',
+  header: 'Hosting',
+  enableSorting: true,
+  cell: ({ getValue }) => (
+    <Chip
+      css={{ width: 'max-content' }}
+      severity={
+        getValue() === ConsoleInstanceType.Dedicated ? 'info' : 'neutral'
+      }
+    >
+      {upperFirst(getValue().toLowerCase())}
+    </Chip>
+  ),
+})
+
 const ColRegion = columnHelper.accessor((instance) => instance.region, {
   id: 'region',
   header: 'Region',
@@ -127,7 +142,6 @@ const ColSize = columnHelper.accessor((instance) => instance.size, {
 const ColOwner = columnHelper.accessor((instance) => instance.owner, {
   id: 'owner',
   header: 'Owner',
-  meta: { gridTemplate: '1fr' },
   enableSorting: true,
   sortingFn: (rowA, rowB) =>
     (rowA.original.owner?.name ?? '') < (rowB.original.owner?.name ?? '')
@@ -174,13 +188,7 @@ const ColActions = columnHelper.accessor((instance) => instance, {
           target="_blank"
           rel="noopener noreferrer"
         >
-          <span
-            css={{
-              color: theme.colors['text-primary-accent'],
-            }}
-          >
-            Go to Console
-          </span>
+          Go to Console
         </Button>
         <MoreMenu onSelectionChange={(newKey) => setMenuKey(newKey)}>
           <ListBoxItem
@@ -228,6 +236,7 @@ export const cloudInstanceCols = [
   ColInstance,
   ColStatus,
   ColCloud,
+  ColHosting,
   ColRegion,
   ColSize,
   ColOwner,

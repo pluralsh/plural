@@ -1,8 +1,13 @@
-import { StatusOkIcon } from '@pluralsh/design-system'
+import { FillLevelProvider, StatusOkIcon } from '@pluralsh/design-system'
 import { Button, Div } from 'honorable'
 import styled from 'styled-components'
 
-function OnboardingCardButton({ selected = false, children, ...props }: any) {
+function OnboardingCardButton({
+  selected = false,
+  children,
+  showCheckMark = false,
+  ...props
+}: any) {
   const checkMark = (
     <Div
       position="absolute"
@@ -21,30 +26,32 @@ function OnboardingCardButton({ selected = false, children, ...props }: any) {
   )
 
   return (
-    <Button
-      display="flex"
-      position="relative"
-      flex="1 1 100%"
-      paddingLeft="large"
-      paddingRight="large"
-      paddingTop="large"
-      paddingBottom="large"
-      alignContent="center"
-      justify="center"
-      backgroundColor="fill-two"
-      border="1px solid border-fill-two"
-      borderColor={selected ? 'action-link-inline' : 'border-fill-two'}
-      width="100%"
-      _hover={{
-        backgroundColor: 'fill-two-hover',
-        borderColor: selected ? 'action-link-inline' : 'border-fill-two',
-      }}
-      _active={{ backgroundColor: 'fill-two-selected' }}
-      {...props}
-    >
-      {children}
-      {checkMark}
-    </Button>
+    <FillLevelProvider value={2}>
+      <Button
+        display="flex"
+        position="relative"
+        flex="1 1 100%"
+        paddingLeft="large"
+        paddingRight="large"
+        paddingTop="large"
+        paddingBottom="large"
+        alignContent="center"
+        justify="center"
+        backgroundColor="fill-two"
+        border="1px solid border-fill-two"
+        borderColor={selected ? 'action-link-inline' : 'border-fill-two'}
+        width="100%"
+        _hover={{
+          backgroundColor: 'fill-two-hover',
+          borderColor: selected ? 'action-link-inline' : 'border-fill-two',
+        }}
+        _active={{ backgroundColor: 'fill-two-selected' }}
+        {...props}
+      >
+        {children}
+        {showCheckMark && checkMark}
+      </Button>
+    </FillLevelProvider>
   )
 }
 
@@ -53,8 +60,16 @@ export default OnboardingCardButton
 export const OnboardCardInnerSC = styled.div(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
-  gap: theme.spacing.xxsmall,
+  alignItems: 'center',
+  gap: theme.spacing.medium,
 }))
+
+export const OnboardCardHintSC = styled.div(({ theme }) => ({
+  ...theme.partials.text.caption,
+  fontStyle: 'italic',
+  color: theme.colors['text-light'],
+}))
+
 export const OnboardCardIconSC = styled.div<{ $disabled?: boolean }>(
   ({ $disabled: disabled }) => ({
     marginLeft: 'auto',
@@ -68,7 +83,6 @@ export const OnboardCardIconSC = styled.div<{ $disabled?: boolean }>(
 export const OnBoardCardHeaderSC = styled.span<{ $disabled?: boolean }>(
   ({ theme, $disabled: disabled }) => ({
     ...theme.partials.text.body1Bold,
-    marginTop: theme.spacing.small,
     color: disabled ? theme.colors['text-disabled'] : theme.colors.text,
   })
 )

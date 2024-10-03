@@ -90,6 +90,10 @@ defmodule Core.Schema.User do
     timestamps()
   end
 
+  def mark_url_safe(), do: Process.put({__MODULE__, :url_safe}, true)
+
+  def url_safe?(), do: !!Process.get({__MODULE__, :url_safe})
+
   def intercom_id(%__MODULE__{id: id}), do: Core.sha("#{id}:#{Core.conf(:intercom_salt)}")
 
   def service_account(query \\ __MODULE__, is_svc \\ :yes)
@@ -209,7 +213,7 @@ defmodule Core.Schema.User do
     |> hash_password()
     |> generate_uuid(:avatar_id)
     |> change_markers(password_hash: :password_change)
-    |> cast_attachments(attrs, [:avatar], allow_urls: true)
+    |> cast_attachments(attrs, [:avatar], (if url_safe?(), do: [allow_urls: true], else: []))
     |> set_email_changed()
     |> reject_passwordless()
   end

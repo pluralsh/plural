@@ -34,7 +34,7 @@ defmodule Core.Schema.Artifact do
     |> validate_required([:name, :platform, :type, :arch])
     |> foreign_key_constraint(:repository_id)
     |> unique_constraint(:repository_id, name: index_name(:artifacts, [:repository_id, :name, :platform, :arch]))
-    |> cast_attachments(attrs, [:blob], allow_urls: true)
+    |> cast_attachments(attrs, [:blob])
     |> add_sha(attrs)
     |> add_filesize(attrs)
   end

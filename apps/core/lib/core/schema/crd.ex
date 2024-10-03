@@ -21,7 +21,7 @@ defmodule Core.Schema.Crd do
     |> generate_uuid(:blob_id)
     |> foreign_key_constraint(:version_id)
     |> unique_constraint(:name, name: index_name(:crds, [:version_id, :name]))
-    |> cast_attachments(attrs, [:blob], allow_urls: true)
+    |> cast_attachments(attrs, [:blob])
     |> validate_required([:name, :version_id])
   end
 end

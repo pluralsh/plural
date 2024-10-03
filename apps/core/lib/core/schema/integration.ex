@@ -51,7 +51,7 @@ defmodule Core.Schema.Integration do
     |> foreign_key_constraint(:repository_id)
     |> unique_constraint(:name, name: index_name(:integrations, [:repository_id, :name]))
     |> generate_uuid(:icon_id)
-    |> cast_attachments(attrs, [:icon], allow_urls: true)
+    |> cast_attachments(attrs, [:icon])
     |> validate_required([:name, :spec])
   end
 

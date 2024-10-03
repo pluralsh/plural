@@ -49,7 +49,7 @@ defmodule Core.Schema.Terraform do
     |> unique_constraint(:name, name: index_name(:terraform, [:repository_id, :name]))
     |> foreign_key_constraint(:repository_id)
     |> bump_version(schema)
-    |> cast_attachments(attrs, [:package], allow_urls: true)
+    |> cast_attachments(attrs, [:package])
     |> validate_required([:name, :repository_id])
   end
 

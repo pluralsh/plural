@@ -59,7 +59,7 @@ defmodule Core.Schema.Version do
     |> cast_assoc(:tags)
     |> validate_required([:version])
     |> generate_uuid(:package_id)
-    |> cast_attachments(attrs, [:package], allow_urls: true)
+    |> cast_attachments(attrs, [:package])
     |> unique_constraint(:chart_id, name: index_name(:versions, [:chart_id, :version]))
     |> unique_constraint(:terraform_id, name: index_name(:versions, [:terraform_id, :version]))
     |> foreign_key_constraint(:chart_id)

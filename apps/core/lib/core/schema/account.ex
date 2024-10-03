@@ -63,7 +63,7 @@ defmodule Core.Schema.Account do
     |> unique_constraint(:name)
     |> validate_required([:name])
     |> generate_uuid(:icon_id)
-    |> cast_attachments(attrs, [:icon], allow_urls: true)
+    |> cast_attachments(attrs, [:icon])
     |> set_address_updated()
     |> reject_urls(:name)
   end

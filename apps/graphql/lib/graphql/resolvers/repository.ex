@@ -1,6 +1,6 @@
 defmodule GraphQl.Resolvers.Repository do
   use GraphQl.Resolvers.Base, model: Core.Schema.Repository
-  alias Core.Services.{Repositories, Users}
+  alias Core.Services.{Repositories, Users, OAuth}
   alias Core.Schema.{
     Installation,
     Integration,
@@ -205,14 +205,22 @@ defmodule GraphQl.Resolvers.Repository do
   def reset_installations(_, %{context: %{current_user: user}}),
     do: Repositories.reset_installations(user)
 
-  def create_oidc_provider(%{attributes: attrs, installation_id: id}, %{context: %{current_user: user}}),
-    do: Repositories.create_oidc_provider(attrs, id, user)
+  def create_oidc_provider(%{attributes: attrs, installation_id: id}, %{context: %{current_user: user}})
+    when is_binary(id), do: Repositories.create_oidc_provider(attrs, id, user)
+  def create_oidc_provider(%{attributes: attrs}, %{context: %{current_user: user}}),
+    do: OAuth.create_oidc_provider(attrs, user)
 
-  def update_oidc_provider(%{attributes: attrs, installation_id: id}, %{context: %{current_user: user}}),
-    do: Repositories.update_oidc_provider(attrs, id, user)
+  def update_oidc_provider(%{attributes: attrs, installation_id: id}, %{context: %{current_user: user}})
+    when is_binary(id), do: Repositories.update_oidc_provider(attrs, id, user)
+  def update_oidc_provider(%{attributes: attrs, id: id}, %{context: %{current_user: user}})
+    when is_binary(id), do: OAuth.update_oidc_provider(attrs, id, user)
+  def update_oidc_provider(_, _), do: {:error, "you must provide either id or installation id"}
 
   def upsert_oidc_provider(%{attributes: attrs, installation_id: id}, %{context: %{current_user: user}}),
     do: Repositories.upsert_oidc_provider(attrs, id, user)
+
+  def delete_oidc_provider(%{id: id}, %{context: %{current_user: user}})
+    when is_binary(id), do: OAuth.delete_oidc_provider(id, user)
 
   def create_artifact(%{repository_id: repo_id, attributes: attrs}, %{context: %{current_user: user}}),
     do: Repositories.create_artifact(attrs, repo_id, user)

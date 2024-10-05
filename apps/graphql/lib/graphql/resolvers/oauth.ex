@@ -1,6 +1,6 @@
 defmodule GraphQl.Resolvers.OAuth do
   use GraphQl.Resolvers.Base, model: Core.Schema.OIDCProvider
-  alias Core.Schema.OIDCLogin
+  alias Core.Schema.{OIDCLogin, OIDCProvider}
   alias Core.Services.{OAuth, Users}
   alias Core.OAuth, as: OAuthHandler
   alias GraphQl.Resolvers.User
@@ -8,6 +8,12 @@ defmodule GraphQl.Resolvers.OAuth do
   def list_logins(args, %{context: %{current_user: %{account_id: aid}}}) do
     OIDCLogin.for_account(aid)
     |> OIDCLogin.ordered()
+    |> paginate(args)
+  end
+
+  def list_oidc_providers(args, %{context: %{current_user: user}}) do
+    OIDCProvider.for_owner(user.id)
+    |> OIDCProvider.ordered()
     |> paginate(args)
   end
 

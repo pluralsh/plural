@@ -1,5 +1,7 @@
 defmodule Core.Services.OAuth do
   use Core.Services.Base
+  import Core.Policies.OAuth
+  alias Core.PubSub
   alias Core.Schema.{User, OIDCProvider, OIDCLogin}
   alias Core.Clients.Hydra
   alias Core.Services.{Repositories, Audits}
@@ -7,6 +9,90 @@ defmodule Core.Services.OAuth do
 
   @type error :: {:error, term}
   @type oauth_resp :: {:ok, %Hydra.Response{}} | error
+  @type oidc_resp :: {:ok, OidcProvider.t} | error
+
+  @oidc_scopes "profile code openid offline_access offline"
+  @grant_types ~w(authorization_code refresh_token client_credentials)
+
+  def get_provider(id), do: Repo.get(OIDCProvider, id)
+
+  def get_provider!(id), do: Repo.get!(OIDCProvider, id)
+
+  @doc """
+  Creates a new oidc provider for a given installation, enabling a log-in with plural experience
+  """
+  @spec create_oidc_provider(map, User.t) :: oidc_resp
+  def create_oidc_provider(attrs, %User{id: id} = user) do
+    start_transaction()
+    |> add_operation(:client, fn _ ->
+      Map.take(attrs, [:redirect_uris])
+      |> Map.put(:scope, @oidc_scopes)
+      |> Map.put(:grant_types, @grant_types)
+      |> Map.put(:token_endpoint_auth_method, oidc_auth_method(attrs.auth_method))
+      |> Hydra.create_client()
+    end)
+    |> add_operation(:oidc_provider, fn
+      %{client: %{client_id: cid, client_secret: secret}} ->
+        attrs = Map.merge(attrs, %{client_id: cid, client_secret: secret})
+                |> add_bindings(find_bindings(user))
+        %OIDCProvider{owner_id: id}
+        |> OIDCProvider.changeset(attrs)
+        |> allow(user, :create)
+        |> when_ok(:insert)
+    end)
+    |> execute(extract: :oidc_provider)
+    |> notify(:create)
+  end
+
+  defp add_bindings(attrs, bindings) do
+    bindings = Enum.uniq_by((attrs[:bindings] || []) ++ bindings, & {&1[:group_id], &1[:user_id]})
+    Map.put(attrs, :bindings, bindings)
+  end
+
+  defp oidc_auth_method(:basic), do: "client_secret_basic"
+  defp oidc_auth_method(:post), do: "client_secret_post"
+
+  @doc """
+  Updates the spec of an installation's oidc provider
+  """
+  @spec update_oidc_provider(map, binary, User.t) :: oidc_resp
+  def update_oidc_provider(attrs, id, %User{} = user) do
+    start_transaction()
+    |> add_operation(:oidc, fn _ ->
+      get_provider!(id)
+      |> Repo.preload([:bindings])
+      |> OIDCProvider.changeset(attrs)
+      |> allow(user, :edit)
+      |> when_ok(:update)
+    end)
+    |> add_operation(:client, fn
+      %{oidc: %{client_id: id, auth_method: auth_method}} ->
+        attrs = Map.take(attrs, [:redirect_uris])
+                |> Map.put(:scope, @oidc_scopes)
+                |> Map.put(:token_endpoint_auth_method, oidc_auth_method(auth_method))
+        Hydra.update_client(id, attrs)
+    end)
+    |> execute(extract: :oidc)
+    |> notify(:update)
+  end
+
+  @doc """
+  Deletes an oidc provider and its hydra counterpart
+  """
+  @spec delete_oidc_provider(binary, User.t) :: oidc_resp
+  def delete_oidc_provider(id, %User{} = user) do
+    start_transaction()
+    |> add_operation(:oidc, fn _ ->
+      get_provider!(id)
+      |> allow(user, :edit)
+      |> when_ok(:delete)
+    end)
+    |> add_operation(:client, fn %{oidc: %{client_id: id}} ->
+      with :ok <- Hydra.delete_client(id),
+        do: {:ok, nil}
+    end)
+    |> execute(extract: :oidc)
+  end
 
   @doc """
   Gets the data related to a specific login
@@ -85,4 +171,11 @@ defmodule Core.Services.OAuth do
         {:error, :failure}
     end
   end
+
+  defp notify({:ok, %OIDCProvider{} = oidc}, :create),
+    do: handle_notify(PubSub.OIDCProviderCreated, oidc)
+  defp notify({:ok, %OIDCProvider{} = oidc}, :update),
+    do: handle_notify(PubSub.OIDCProviderUpdated, oidc)
+
+  defp notify(pass, _), do: pass
 end

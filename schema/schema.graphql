@@ -166,6 +166,8 @@ type RootQueryType {
 
   loginMetrics: [GeoMetric]
 
+  oidcProviders(after: String, first: Int, before: String, last: Int): OidcProviderConnection
+
   dnsDomain(id: ID!): DnsDomain
 
   dnsDomains(after: String, first: Int, before: String, last: Int, q: String): DnsDomainConnection
@@ -324,15 +326,17 @@ type RootMutationType {
   createArtifact(repositoryId: ID, repositoryName: String, attributes: ArtifactAttributes!): Artifact
 
   createOidcProvider(
-    "The installation ID"
-    installationId: ID!
+    "The installation ID this provider will be bound to"
+    installationId: ID
 
     attributes: OidcAttributes!
   ): OidcProvider
 
-  updateOidcProvider(installationId: ID!, attributes: OidcAttributes!): OidcProvider
+  updateOidcProvider(id: ID, installationId: ID, attributes: OidcAttributes!): OidcProvider
 
   upsertOidcProvider(installationId: ID!, attributes: OidcAttributes!): OidcProvider
+
+  deleteOidcProvider(id: ID!): OidcProvider
 
   acquireLock(repository: String!): ApplyLock
 
@@ -2642,6 +2646,10 @@ input ArtifactAttributes {
 
 "Input for creating or updating the OIDC attributes of an application installation."
 input OidcAttributes {
+  name: String
+
+  description: String
+
   "The redirect URIs for the OIDC provider."
   redirectUris: [String]
 
@@ -2900,12 +2908,15 @@ type Integration {
 
 type OidcProvider {
   id: ID!
+  name: String
+  description: String
   clientSecret: String!
   clientId: String!
   redirectUris: [String]
   authMethod: OidcAuthMethod!
   configuration: OuathConfiguration
   consent: ConsentRequest
+  owner: User
   invites: [Invite]
   bindings: [OidcProviderBinding]
   insertedAt: DateTime
@@ -2952,6 +2963,11 @@ type InstallationConnection {
 type IntegrationConnection {
   pageInfo: PageInfo!
   edges: [IntegrationEdge]
+}
+
+type OidcProviderConnection {
+  pageInfo: PageInfo!
+  edges: [OidcProviderEdge]
 }
 
 enum PlanType {
@@ -3752,6 +3768,11 @@ type CardEdge {
 
 type InvoiceEdge {
   node: Invoice
+  cursor: String
+}
+
+type OidcProviderEdge {
+  node: OidcProvider
   cursor: String
 }
 

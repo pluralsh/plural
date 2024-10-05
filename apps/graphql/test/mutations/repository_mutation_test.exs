@@ -340,6 +340,106 @@ defmodule GraphQl.RepositoryMutationsTest do
       [%{"group" => g}] = provider["bindings"]
       assert g["id"] == group.id
     end
+
+    test "it will create an user-bound oidc provider" do
+      user = insert(:user)
+      account = insert(:account)
+      group = insert(:group, account: account)
+      expect(HTTPoison, :post, fn _, _, _ ->
+        {:ok, %{status_code: 200, body: Jason.encode!(%{client_id: "123", client_secret: "secret"})}}
+      end)
+
+      expect(HTTPoison, :get, fn _, _ ->
+        {:ok, %{status_code: 200, body: Jason.encode!(%{issuer: "https://oidc.plural.sh/"})}}
+      end)
+
+      {:ok, %{data: %{"createOidcProvider" => provider}}} = run_query("""
+        mutation Create($attributes: OidcAttributes!) {
+          createOidcProvider(attributes: $attributes) {
+            id
+            clientId
+            clientSecret
+            redirectUris
+            authMethod
+            bindings {
+              user { id }
+              group { id }
+            }
+            configuration {
+              issuer
+            }
+          }
+        }
+      """, %{
+        "attributes" => %{
+          "authMethod" => "BASIC",
+          "redirectUris" => ["example.com"],
+          "bindings" => [%{"groupId" => group.id}]
+        }
+      }, %{current_user: user})
+
+      assert provider["id"]
+      assert provider["clientId"] == "123"
+      assert provider["authMethod"] == "BASIC"
+      assert provider["clientSecret"] == "secret"
+      assert provider["redirectUris"] == ["example.com"]
+      assert provider["configuration"]["issuer"] == "https://oidc.plural.sh/"
+
+      [%{"group" => g}] = provider["bindings"]
+      assert g["id"] == group.id
+    end
+  end
+
+  describe "updateOidcProvider" do
+    test "it can update a user-bound oidc provider" do
+      user = insert(:user)
+      oidc = insert(:oidc_provider, owner: user)
+      expect(HTTPoison, :put, fn _, _, _ ->
+        {:ok, %{status_code: 200, body: Jason.encode!(%{client_id: "123", client_secret: "secret"})}}
+      end)
+
+      {:ok, %{data: %{"updateOidcProvider" => updated}}} = run_query("""
+        mutation Update($id: ID!, $attrs: OidcAttributes!) {
+          updateOidcProvider(id: $id, attributes: $attrs) {
+            id
+            redirectUris
+            authMethod
+          }
+        }
+      """, %{
+        "id" => oidc.id,
+        "attrs" => %{
+          "authMethod" => "BASIC",
+          "redirectUris" => ["example.com"],
+        }
+      }, %{current_user: user})
+
+      assert updated["id"] == oidc.id
+      assert updated["authMethod"] == "BASIC"
+      assert updated["redirectUris"] == ["example.com"]
+    end
+  end
+
+  describe "deleteOidcProvider" do
+    test "it can update a user-bound oidc provider" do
+      user = insert(:user)
+      oidc = insert(:oidc_provider, owner: user)
+      expect(HTTPoison, :delete, fn _, _ -> {:ok, %{status_code: 204, body: ""}} end)
+
+      {:ok, %{data: %{"deleteOidcProvider" => updated}}} = run_query("""
+        mutation Update($id: ID!) {
+          deleteOidcProvider(id: $id) {
+            id
+            clientId
+            clientSecret
+            redirectUris
+            authMethod
+          }
+        }
+      """, %{"id" => oidc.id}, %{current_user: user})
+
+      assert updated["id"] == oidc.id
+    end
   end
 
   describe "updateDockerRepository" do

@@ -22,10 +22,7 @@ export function GroupsList({ q }: any) {
   const { edges, pageInfo } = data.groups
 
   return (
-    <Div
-      flexGrow={1}
-      maxHeight="max-content"
-    >
+    <Div flexGrow={1}>
       {edges?.length ? (
         <StandardScroller
           listRef={listRef}

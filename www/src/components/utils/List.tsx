@@ -93,7 +93,6 @@ const List = forwardRef<HTMLDivElement, ListProps>(
           padding={0}
           margin={0}
           flexGrow={1}
-          maxHeight="min-content"
           {...props}
           overflow="hidden"
           as={Ul}

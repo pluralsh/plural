@@ -40,7 +40,7 @@ const ListItemInner = styled(LiBare)<{
   borderColor: theme.colors[hueToBorderColor[$hue]] || 'transparent',
   borderWidth: '1px',
 
-  ':hover': {
+  '&:hover': {
     backgroundColor: theme.colors['fill-one-hover'],
   },
 }))

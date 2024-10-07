@@ -43,7 +43,7 @@ function dot(color, theme) {
     alignItems: 'center',
     display: 'flex',
 
-    ':before': {
+    '&:before': {
       backgroundColor: clr,
       borderRadius: 10,
       content: '" "',

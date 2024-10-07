@@ -187,7 +187,7 @@ const MainWrapperSC = styled.div(({ theme }) => ({
   justifyContent: 'space-between',
   gap: theme.spacing.xlarge,
   padding: theme.spacing.large,
-  '::after': {
+  '&::after': {
     // makes the spacing look a little nicer
     content: '""',
     flex: 0.35,

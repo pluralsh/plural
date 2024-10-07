@@ -207,13 +207,9 @@ function MarketplaceRepositories({ publisher }: { publisher?: any }) {
       padding={0}
       overflow="auto"
     >
-      {!publisher && <ResponsiveLayoutSpacer />}
       <Flex
         direction="column"
         overflow="hidden"
-        maxWidth-desktopLarge-up={publisher ? null : 1640}
-        width-desktopLarge-up={publisher ? null : 1640}
-        width-desktopLarge-down="100%"
         flexGrow={publisher ? 1 : 0}
       >
         <Flex

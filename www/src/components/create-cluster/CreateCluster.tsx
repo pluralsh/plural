@@ -187,6 +187,8 @@ const MainWrapperSC = styled.div(({ theme }) => ({
   justifyContent: 'space-between',
   gap: theme.spacing.xlarge,
   padding: theme.spacing.large,
+  height: '100%',
+  overflow: 'auto',
   '&::after': {
     // makes the spacing look a little nicer
     content: '""',
@@ -197,6 +199,7 @@ const MainWrapperSC = styled.div(({ theme }) => ({
 const SidebarWrapperSC = styled.div(({ theme }) => ({
   display: 'flex',
   width: 300,
+  height: 'min-content',
   flexDirection: 'column',
   gap: theme.spacing.xlarge,
 }))

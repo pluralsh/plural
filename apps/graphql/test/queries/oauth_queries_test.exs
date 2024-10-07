@@ -3,6 +3,27 @@ defmodule GraphQl.OAuthQueriesTest do
   import GraphQl.TestHelpers
   use Mimic
 
+  describe "oidcProviders" do
+    test "it will list oidc providers" do
+      user = insert(:user)
+      providers = insert_list(3, :oidc_provider, owner: user)
+      insert_list(2, :oidc_provider)
+
+      {:ok, %{data: %{"oidcProviders" => found}}} = run_query("""
+        query {
+          oidcProviders(first: 5) {
+            edges {
+              node { id }
+            }
+          }
+        }
+      """, %{}, %{current_user: user})
+
+      assert from_connection(found)
+             |> ids_equal(providers)
+    end
+  end
+
   describe "oauthLogin" do
     test "it can fetch an oauth login's details" do
       provider = insert(:oidc_provider)

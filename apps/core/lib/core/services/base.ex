@@ -1,12 +1,24 @@
 defmodule Core.Services.Base do
+  alias Core.Schema.User
+
   defmacro __using__(_) do
     quote do
       import Core.Services.Base
+      alias Core.Repo
 
       defp conf(key),
         do: Application.get_env(:core, __MODULE__)[key]
     end
   end
+
+  def find_bindings(%User{service_account: true} = user) do
+    case Core.Repo.preload(user, impersonation_policy: :bindings) do
+      %{impersonation_policy: %{bindings: [_ | _] = bindings}} ->
+        Enum.map(bindings, &Map.take(&1, [:group_id, :user_id]))
+      _ -> []
+    end
+  end
+  def find_bindings(_), do: []
 
   def ok(val), do: {:ok, val}
 

@@ -197,4 +197,6 @@ config :recaptcha,
   public_key: {:system, "RECAPTCHA_SITE_KEY"},
   secret: {:system, "RECAPTURE_SECRET_KEY"}
 
+config :tzdata, :autoupdate, :disabled
+
 import_config "#{config_env()}.exs"

@@ -1821,6 +1821,8 @@ export type OidcAttributes = {
   authMethod: OidcAuthMethod;
   /** The users or groups that can login through the OIDC provider. */
   bindings?: InputMaybe<Array<InputMaybe<BindingAttributes>>>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
   /** The redirect URIs for the OIDC provider. */
   redirectUris?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
 };
@@ -1866,9 +1868,12 @@ export type OidcProvider = {
   clientSecret: Scalars['String']['output'];
   configuration?: Maybe<OuathConfiguration>;
   consent?: Maybe<ConsentRequest>;
+  description?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
   insertedAt?: Maybe<Scalars['DateTime']['output']>;
   invites?: Maybe<Array<Maybe<Invite>>>;
+  name?: Maybe<Scalars['String']['output']>;
+  owner?: Maybe<User>;
   redirectUris?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
 };
@@ -1880,6 +1885,18 @@ export type OidcProviderBinding = {
   insertedAt?: Maybe<Scalars['DateTime']['output']>;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
   user?: Maybe<User>;
+};
+
+export type OidcProviderConnection = {
+  __typename?: 'OidcProviderConnection';
+  edges?: Maybe<Array<Maybe<OidcProviderEdge>>>;
+  pageInfo: PageInfo;
+};
+
+export type OidcProviderEdge = {
+  __typename?: 'OidcProviderEdge';
+  cursor?: Maybe<Scalars['String']['output']>;
+  node?: Maybe<OidcProvider>;
 };
 
 export type OidcSettings = {
@@ -2864,6 +2881,7 @@ export type RootMutationType = {
   deleteInvite?: Maybe<Invite>;
   deleteKeyBackup?: Maybe<KeyBackup>;
   deleteMessage?: Maybe<IncidentMessage>;
+  deleteOidcProvider?: Maybe<OidcProvider>;
   deletePaymentMethod?: Maybe<PaymentMethod>;
   deletePlatformSubscription?: Maybe<Account>;
   deletePublicKey?: Maybe<PublicKey>;
@@ -3080,7 +3098,7 @@ export type RootMutationTypeCreateOauthIntegrationArgs = {
 
 export type RootMutationTypeCreateOidcProviderArgs = {
   attributes: OidcAttributes;
-  installationId: Scalars['ID']['input'];
+  installationId?: InputMaybe<Scalars['ID']['input']>;
 };
 
 
@@ -3292,6 +3310,11 @@ export type RootMutationTypeDeleteKeyBackupArgs = {
 
 
 export type RootMutationTypeDeleteMessageArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type RootMutationTypeDeleteOidcProviderArgs = {
   id: Scalars['ID']['input'];
 };
 
@@ -3632,7 +3655,8 @@ export type RootMutationTypeUpdateMessageArgs = {
 
 export type RootMutationTypeUpdateOidcProviderArgs = {
   attributes: OidcAttributes;
-  installationId: Scalars['ID']['input'];
+  id?: InputMaybe<Scalars['ID']['input']>;
+  installationId?: InputMaybe<Scalars['ID']['input']>;
 };
 
 
@@ -3793,6 +3817,7 @@ export type RootQueryType = {
   oidcConsent?: Maybe<OidcStepResponse>;
   oidcLogin?: Maybe<OidcStepResponse>;
   oidcLogins?: Maybe<OidcLoginConnection>;
+  oidcProviders?: Maybe<OidcProviderConnection>;
   oidcToken?: Maybe<Scalars['String']['output']>;
   platformMetrics?: Maybe<PlatformMetrics>;
   platformPlans?: Maybe<Array<Maybe<PlatformPlan>>>;
@@ -4141,6 +4166,14 @@ export type RootQueryTypeOidcLoginArgs = {
 
 
 export type RootQueryTypeOidcLoginsArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type RootQueryTypeOidcProvidersArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;

@@ -100,6 +100,12 @@ defmodule GraphQl.Schema.OAuth do
 
       resolve &OAuth.login_metrics/2
     end
+
+    connection field :oidc_providers, node_type: :oidc_provider do
+      middleware Authenticated
+
+      safe_resolve &OAuth.list_oidc_providers/2
+    end
   end
 
   object :oauth_mutations do

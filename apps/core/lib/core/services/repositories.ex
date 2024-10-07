@@ -575,15 +575,6 @@ defmodule Core.Services.Repositories do
     Map.put(attrs, :bindings, bindings)
   end
 
-  defp find_bindings(%User{service_account: true} = user) do
-    case Core.Repo.preload(user, impersonation_policy: :bindings) do
-      %{impersonation_policy: %{bindings: [_ | _] = bindings}} ->
-        Enum.map(bindings, &Map.take(&1, [:group_id, :user_id]))
-      _ -> []
-    end
-  end
-  defp find_bindings(_), do: []
-
   @doc """
   Inserts or updates the oidc provider for an installation
   """

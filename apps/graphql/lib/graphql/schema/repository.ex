@@ -96,9 +96,11 @@ defmodule GraphQl.Schema.Repository do
 
   @desc "Input for creating or updating the OIDC attributes of an application installation."
   input_object :oidc_attributes do
+    field :name,          :string
+    field :description,   :string
     field :redirect_uris, list_of(:string), description: "The redirect URIs for the OIDC provider."
-    field :auth_method, non_null(:oidc_auth_method), description: "The authentication method for the OIDC provider."
-    field :bindings, list_of(:binding_attributes), description: "The users or groups that can login through the OIDC provider."
+    field :auth_method,   non_null(:oidc_auth_method), description: "The authentication method for the OIDC provider."
+    field :bindings,      list_of(:binding_attributes), description: "The users or groups that can login through the OIDC provider."
   end
 
   input_object :lock_attributes do
@@ -284,6 +286,8 @@ defmodule GraphQl.Schema.Repository do
 
   object :oidc_provider do
     field :id,            non_null(:id)
+    field :name,          :string
+    field :description,   :string
     field :client_secret, non_null(:string)
     field :client_id,     non_null(:string)
     field :redirect_uris, list_of(:string)
@@ -292,6 +296,7 @@ defmodule GraphQl.Schema.Repository do
 
     field :consent,  :consent_request
 
+    field :owner,    :user, resolve: dataloader(User)
     field :invites,  list_of(:invite), resolve: dataloader(Account)
     field :bindings, list_of(:oidc_provider_binding), resolve: dataloader(Repository)
 
@@ -329,6 +334,7 @@ defmodule GraphQl.Schema.Repository do
   connection node_type: :repository
   connection node_type: :installation
   connection node_type: :integration
+  connection node_type: :oidc_provider
 
   object :repository_queries do
     @desc "Get an application by its ID or name."
@@ -496,16 +502,17 @@ defmodule GraphQl.Schema.Repository do
 
     field :create_oidc_provider, :oidc_provider do
       middleware Authenticated, :external
-      arg :installation_id, non_null(:id), description: "The installation ID"
-      arg :attributes, non_null(:oidc_attributes)
+      arg :installation_id, :id, description: "The installation ID this provider will be bound to"
+      arg :attributes,      non_null(:oidc_attributes)
 
       safe_resolve &Repository.create_oidc_provider/2
     end
 
     field :update_oidc_provider, :oidc_provider do
       middleware Authenticated, :external
-      arg :installation_id, non_null(:id)
-      arg :attributes, non_null(:oidc_attributes)
+      arg :id,              :id
+      arg :installation_id, :id
+      arg :attributes,      non_null(:oidc_attributes)
 
       safe_resolve &Repository.update_oidc_provider/2
     end
@@ -513,9 +520,16 @@ defmodule GraphQl.Schema.Repository do
     field :upsert_oidc_provider, :oidc_provider do
       middleware Authenticated, :external
       arg :installation_id, non_null(:id)
-      arg :attributes, non_null(:oidc_attributes)
+      arg :attributes,      non_null(:oidc_attributes)
 
       safe_resolve &Repository.upsert_oidc_provider/2
+    end
+
+    field :delete_oidc_provider, :oidc_provider do
+      middleware Authenticated
+      arg :id, non_null(:id)
+
+      safe_resolve &Repository.delete_oidc_provider/2
     end
 
     field :acquire_lock, :apply_lock do

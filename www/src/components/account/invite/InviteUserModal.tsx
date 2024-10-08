@@ -1,8 +1,8 @@
 import { Modal } from '@pluralsh/design-system'
-import { DispatchWithoutAction, ReactElement, useMemo, useState } from 'react'
+import { ComponentProps, DispatchWithoutAction, useMemo, useState } from 'react'
 import styled from 'styled-components'
 
-import { Group } from '../../../generated/graphql'
+import { Group, Invite } from '../../../generated/graphql'
 import { GroupBase } from '../../utils/combobox/types'
 import CreateGroup from '../../utils/group/CreateGroup'
 
@@ -21,7 +21,12 @@ function InviteUserModalUnstyled({
   serviceAccountId,
   oidcProviderId,
   ...props
-}): ReactElement {
+}: {
+  onInvite?: (invite: Invite) => void
+  onClose?: () => void
+  serviceAccountId?: string
+  oidcProviderId?: string
+} & ComponentProps<'div'>) {
   const [view, setView] = useState(View.InviteUser)
   const [refetch, setRefetch] = useState<DispatchWithoutAction>()
   const [bindings, setBindings] = useState<Array<GroupBase>>([])
@@ -58,8 +63,10 @@ function InviteUserModalUnstyled({
         {view === View.CreateGroup && (
           <CreateGroup
             onBack={() => setView(View.InviteUser)}
-            onCreate={(group: Group) => {
-              setBindings((bindings) => [...bindings, group])
+            onCreate={(group: Nullable<Group>) => {
+              setBindings((bindings) =>
+                group ? [...bindings, group] : [...bindings]
+              )
               refetch?.()
             }}
           />

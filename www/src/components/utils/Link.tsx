@@ -15,6 +15,7 @@ const unstyledStyles = ({ $extendStyle }: UnstyledLinkProps) => ({
   ...$extendStyle,
 })
 
-export const UnstyledLink = styled(Link)(unstyledStyles)
+export const UnstyledLink = styled(Link)<UnstyledLinkProps>(unstyledStyles)
 
-export const UnstyledSafeLink = styled(SafeLink)(unstyledStyles)
+export const UnstyledSafeLink =
+  styled(SafeLink)<UnstyledLinkProps>(unstyledStyles)

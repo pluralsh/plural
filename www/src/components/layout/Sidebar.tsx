@@ -104,7 +104,12 @@ function isActiveMenuItem(
 function SidebarWrapper() {
   const isCurrentlyOnboarding = useIsCurrentlyOnboarding()
 
-  return <Sidebar style={isCurrentlyOnboarding ? { display: 'none' } : null} />
+  return (
+    <Sidebar
+      variant="app"
+      style={isCurrentlyOnboarding ? { display: 'none' } : undefined}
+    />
+  )
 }
 
 const FlexGrow1 = styled.div((_) => ({
@@ -141,7 +146,7 @@ function SidebarMenuItem({
   )
 }
 
-const SidebarSC = styled(DSSidebar).attrs(() => ({ variant: 'app' }))((_) => ({
+const SidebarSC = styled(DSSidebar)((_) => ({
   flexGrow: 1,
   minHeight: 0,
   height: 'auto',
@@ -164,7 +169,7 @@ const NotificationsCountSC = styled.div(({ theme }) => ({
   userSelect: 'none',
 }))
 
-function Sidebar(props: Omit<ComponentProps<typeof DSSidebar>, 'variant'>) {
+function Sidebar(props: Omit<ComponentProps<typeof DSSidebar>, '$variant'>) {
   const menuItemRef = useRef<HTMLDivElement>(null)
   const menuRef = useRef<HTMLDivElement>(null)
   const [isMenuOpen, setIsMenuOpened] = useState(false)

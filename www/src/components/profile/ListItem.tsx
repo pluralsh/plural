@@ -30,7 +30,7 @@ export function ListItem({
 }: {
   first: boolean
   last: boolean
-} & ComponentProps<typeof ListItemSC>) {
+} & ComponentProps<'div'>) {
   return (
     <ListItemSC
       $first={first}

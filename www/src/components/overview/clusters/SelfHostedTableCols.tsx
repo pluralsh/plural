@@ -88,12 +88,7 @@ export const ColHealth = columnHelper.accessor((row) => row.pingedAt, {
     row: {
       original: { pingedAt },
     },
-  }) => (
-    <ClusterHealth
-      pingedAt={pingedAt}
-      size="small"
-    />
-  ),
+  }) => <ClusterHealth pingedAt={pingedAt} />,
   header: 'Health',
 })
 

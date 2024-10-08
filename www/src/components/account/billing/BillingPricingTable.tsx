@@ -4,7 +4,7 @@ import { Div } from 'honorable'
 const columnStyles = {
   position: 'relative',
   boxShadow: '-12px 0 12px 0px rgb(14 16 21 / 20%)',
-  ':first-child': {
+  '&:first-child': {
     boxShadow: 'none',
     '> div': {
       display: 'flex',

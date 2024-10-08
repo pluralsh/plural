@@ -63,8 +63,10 @@ function UserSettingsModal({
       {view === View.CreateGroup && (
         <CreateGroup
           onBack={() => setView(View.UserSettings)}
-          onCreate={(group: Group) => {
-            setBindings((bindings) => [...bindings, group])
+          onCreate={(group: Nullable<Group>) => {
+            setBindings((bindings) =>
+              group ? [...bindings, group] : [...bindings]
+            )
           }}
         />
       )}

@@ -5,10 +5,8 @@ import { Outlet, useParams } from 'react-router-dom'
 import { Flex } from 'honorable'
 
 import { ResponsiveLayoutContentContainer } from '../utils/layout/ResponsiveLayoutContentContainer'
-import { ResponsiveLayoutSidecarContainer } from '../utils/layout/ResponsiveLayoutSidecarContainer'
-import { ResponsiveLayoutSpacer } from '../utils/layout/ResponsiveLayoutSpacer'
-import { ResponsiveLayoutSidenavContainer } from '../utils/layout/ResponsiveLayoutSidenavContainer'
 import { ResponsiveLayoutPage } from '../utils/layout/ResponsiveLayoutPage'
+import { ResponsiveLayoutSidenavContainer } from '../utils/layout/ResponsiveLayoutSidenavContainer'
 
 import AccountSideNav from './AccountSidenav'
 
@@ -67,15 +65,12 @@ export function Account() {
         overflowY="auto"
         padding="large"
       >
-        <ResponsiveLayoutSpacer />
         <TabPanel
           as={<ResponsiveLayoutContentContainer overflow="visible" />}
           stateRef={tabStateRef}
         >
           <Outlet />
         </TabPanel>
-        <ResponsiveLayoutSpacer />
-        <ResponsiveLayoutSidecarContainer />
       </Flex>
     </ResponsiveLayoutPage>
   )

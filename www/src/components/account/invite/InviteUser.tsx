@@ -7,7 +7,13 @@ import {
   MailIcon,
   Switch,
 } from '@pluralsh/design-system'
-import { ReactElement, useEffect, useMemo, useState } from 'react'
+import {
+  ComponentProps,
+  ReactElement,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
 import styled from 'styled-components'
 
 import {
@@ -77,7 +83,14 @@ function InviteUserActionsUnstyled({
   onCreate,
   invited,
   ...props
-}): ReactElement {
+}: {
+  disabled?: boolean
+  loading?: boolean
+  onCancel?: () => void
+  onBack?: () => void
+  onCreate?: () => void
+  invited?: boolean
+} & ComponentProps<'div'>) {
   return (
     <div {...props}>
       {onBack && (
@@ -182,6 +195,15 @@ function InviteUserUnstyled({
   serviceAccountId,
   oidcProviderId,
   ...props
+}: {
+  onGroupCreate?: () => void
+  onInvite?: (invite: Invite) => void
+  onCancel?: () => void
+  onBack?: () => void
+  bindings?: Array<GroupBase>
+  refetch?: any
+  serviceAccountId?: string
+  oidcProviderId?: string
 }): ReactElement {
   const [valid, setValid] = useState(false)
   const [query, setQuery] = useState('')

@@ -5,10 +5,17 @@ import {
   Input,
   Switch,
 } from '@pluralsh/design-system'
-import { ReactElement, useEffect, useMemo, useState } from 'react'
+import {
+  ComponentProps,
+  ReactElement,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
 import styled from 'styled-components'
 
 import {
+  Group,
   GroupAttributes,
   useCreateGroupMutation,
 } from '../../../generated/graphql'
@@ -126,7 +133,14 @@ const CreateGroup = styled(CreateGroupUnstyled)(({ theme }) => ({
   gap: theme.spacing.medium,
 }))
 
-function CreateGroupUnstyled({ onCreate, onBack, ...props }): ReactElement {
+function CreateGroupUnstyled({
+  onCreate,
+  onBack,
+  ...props
+}: {
+  onCreate?: (group: Nullable<Group>) => void
+  onBack?: () => void
+} & ComponentProps<'div'>) {
   const [valid, setValid] = useState(false)
   const [attributes, setAttributes] = useState<GroupAttributes>(
     {} as GroupAttributes

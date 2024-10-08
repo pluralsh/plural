@@ -238,15 +238,16 @@ export function ClusterAdminsModal({
         {view === View.CreateGroup && (
           <CreateGroup
             onBack={() => setView(lastView)}
-            onCreate={(group: Group) => {
+            onCreate={(group: Nullable<Group>) => {
               switch (lastView) {
                 case View.Managers:
                   setBindings((bindings) => [...bindings, { group }])
                   break
                 case View.InviteUser:
-                  setGroups((groups) => [...groups, group])
+                  setGroups((groups) =>
+                    group ? [...groups, group] : [...groups]
+                  )
               }
-
               setView(lastView)
               onCreateGroup?.()
             }}

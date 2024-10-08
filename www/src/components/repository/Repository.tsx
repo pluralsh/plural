@@ -33,7 +33,7 @@ function Repository() {
     () => [
       MARKETPLACE_CRUMB,
       {
-        label: `${name}-${subPath || 'readme'}` ?? '',
+        label: `${name}-${subPath || 'readme'}`,
         url: `/repository/${name}`,
       },
     ],

@@ -31,6 +31,7 @@ function AccountTabList({ tabStateRef }: any) {
     >
       {DIRECTORY.map(({ label, path }) => (
         <LinkTabWrap
+          vertical
           key={path}
           textValue={label}
           to={path}

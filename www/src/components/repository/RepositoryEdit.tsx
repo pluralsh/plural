@@ -492,10 +492,7 @@ function RepositoryEdit() {
             >
               {tagSearchResults.map((result) =>
                 result.new ? (
-                  <ListBoxFooterPlus
-                    key={result.tag}
-                    textValue={result.tag}
-                  >
+                  <ListBoxFooterPlus key={result.tag}>
                     New tag: {result.tag}
                   </ListBoxFooterPlus>
                 ) : (

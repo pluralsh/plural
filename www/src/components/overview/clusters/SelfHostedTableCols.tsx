@@ -145,13 +145,7 @@ export const ColActions = columnHelper.accessor((row) => row.consoleUrl, {
             target="_blank"
             rel="noopener noreferrer"
           >
-            <span
-              css={{
-                color: theme.colors['text-primary-accent'],
-              }}
-            >
-              Go to Console
-            </span>
+            Go to Console
           </Button>
         )}
 

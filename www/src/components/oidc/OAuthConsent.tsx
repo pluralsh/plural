@@ -1,5 +1,4 @@
 import { useLocation, useNavigate } from 'react-router-dom'
-import { useMutation, useQuery } from '@apollo/client'
 import queryString, { ParsedQuery } from 'query-string'
 import { ArrowRightLeftIcon, Button, IconFrame } from '@pluralsh/design-system'
 import { useCallback } from 'react'
@@ -19,14 +18,21 @@ import { clearLocalStorage } from '../../helpers/localStorage'
 import LoadingIndicator from '../utils/LoadingIndicator'
 import { isEmpty } from 'lodash'
 
-function Icon({ icon, darkIcon }: any) {
+function Icon({
+  icon,
+  darkIcon,
+}: {
+  icon: Nullable<string>
+  darkIcon: Nullable<string>
+}) {
   const dark = useTheme().mode !== 'light'
+  const src = dark ? darkIcon ?? icon : icon
 
-  return (
+  return src ? (
     <IconFrame
       icon={
         <img
-          src={dark ? darkIcon || icon : icon}
+          src={src}
           width="48px"
           height="48px"
         />
@@ -35,7 +41,7 @@ function Icon({ icon, darkIcon }: any) {
       height="64px"
       type="floating"
     />
-  )
+  ) : null
 }
 
 const getChallenge = (parsedQueryString: ParsedQuery): string => {

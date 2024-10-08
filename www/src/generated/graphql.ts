@@ -5605,6 +5605,22 @@ export type ConsentMutationVariables = Exact<{
 
 export type ConsentMutation = { __typename?: 'RootMutationType', oauthConsent?: { __typename?: 'OauthResponse', redirectTo: string } | null };
 
+export type CreateProviderMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+  attributes: OidcAttributes;
+}>;
+
+
+export type CreateProviderMutation = { __typename?: 'RootMutationType', createOidcProvider?: { __typename?: 'OidcProvider', id: string, clientId: string, authMethod: OidcAuthMethod, clientSecret: string, redirectUris?: Array<string | null> | null, bindings?: Array<{ __typename?: 'OidcProviderBinding', id: string, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null, group?: { __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null } | null> | null, configuration?: { __typename?: 'OuathConfiguration', issuer?: string | null, authorizationEndpoint?: string | null, tokenEndpoint?: string | null, jwksUri?: string | null, userinfoEndpoint?: string | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null } | null };
+
+export type UpdateProviderMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+  attributes: OidcAttributes;
+}>;
+
+
+export type UpdateProviderMutation = { __typename?: 'RootMutationType', updateOidcProvider?: { __typename?: 'OidcProvider', id: string, clientId: string, authMethod: OidcAuthMethod, clientSecret: string, redirectUris?: Array<string | null> | null, bindings?: Array<{ __typename?: 'OidcProviderBinding', id: string, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null, group?: { __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null } | null> | null, configuration?: { __typename?: 'OuathConfiguration', issuer?: string | null, authorizationEndpoint?: string | null, tokenEndpoint?: string | null, jwksUri?: string | null, userinfoEndpoint?: string | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null } | null };
+
 export type LimitFragment = { __typename?: 'Limit', dimension: string, quantity: number };
 
 export type LineItemFragment = { __typename?: 'LineItem', name: string, dimension: string, cost: number, period?: string | null, type?: PlanType | null };
@@ -8906,6 +8922,74 @@ export function useConsentMutation(baseOptions?: Apollo.MutationHookOptions<Cons
 export type ConsentMutationHookResult = ReturnType<typeof useConsentMutation>;
 export type ConsentMutationResult = Apollo.MutationResult<ConsentMutation>;
 export type ConsentMutationOptions = Apollo.BaseMutationOptions<ConsentMutation, ConsentMutationVariables>;
+export const CreateProviderDocument = gql`
+    mutation CreateProvider($id: ID!, $attributes: OidcAttributes!) {
+  createOidcProvider(installationId: $id, attributes: $attributes) {
+    ...OIDCProvider
+  }
+}
+    ${OidcProviderFragmentDoc}`;
+export type CreateProviderMutationFn = Apollo.MutationFunction<CreateProviderMutation, CreateProviderMutationVariables>;
+
+/**
+ * __useCreateProviderMutation__
+ *
+ * To run a mutation, you first call `useCreateProviderMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateProviderMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createProviderMutation, { data, loading, error }] = useCreateProviderMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      attributes: // value for 'attributes'
+ *   },
+ * });
+ */
+export function useCreateProviderMutation(baseOptions?: Apollo.MutationHookOptions<CreateProviderMutation, CreateProviderMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateProviderMutation, CreateProviderMutationVariables>(CreateProviderDocument, options);
+      }
+export type CreateProviderMutationHookResult = ReturnType<typeof useCreateProviderMutation>;
+export type CreateProviderMutationResult = Apollo.MutationResult<CreateProviderMutation>;
+export type CreateProviderMutationOptions = Apollo.BaseMutationOptions<CreateProviderMutation, CreateProviderMutationVariables>;
+export const UpdateProviderDocument = gql`
+    mutation UpdateProvider($id: ID!, $attributes: OidcAttributes!) {
+  updateOidcProvider(installationId: $id, attributes: $attributes) {
+    ...OIDCProvider
+  }
+}
+    ${OidcProviderFragmentDoc}`;
+export type UpdateProviderMutationFn = Apollo.MutationFunction<UpdateProviderMutation, UpdateProviderMutationVariables>;
+
+/**
+ * __useUpdateProviderMutation__
+ *
+ * To run a mutation, you first call `useUpdateProviderMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateProviderMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateProviderMutation, { data, loading, error }] = useUpdateProviderMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      attributes: // value for 'attributes'
+ *   },
+ * });
+ */
+export function useUpdateProviderMutation(baseOptions?: Apollo.MutationHookOptions<UpdateProviderMutation, UpdateProviderMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateProviderMutation, UpdateProviderMutationVariables>(UpdateProviderDocument, options);
+      }
+export type UpdateProviderMutationHookResult = ReturnType<typeof useUpdateProviderMutation>;
+export type UpdateProviderMutationResult = Apollo.MutationResult<UpdateProviderMutation>;
+export type UpdateProviderMutationOptions = Apollo.BaseMutationOptions<UpdateProviderMutation, UpdateProviderMutationVariables>;
 export const SubscriptionDocument = gql`
     query Subscription {
   account {
@@ -11731,6 +11815,8 @@ export const namedOperations = {
     DeleteKeyBackup: 'DeleteKeyBackup',
     CreateKeyBackup: 'CreateKeyBackup',
     Consent: 'Consent',
+    CreateProvider: 'CreateProvider',
+    UpdateProvider: 'UpdateProvider',
     UpdateAccountBilling: 'UpdateAccountBilling',
     CreatePlatformSubscription: 'CreatePlatformSubscription',
     DowngradeToFreePlanMutation: 'DowngradeToFreePlanMutation',

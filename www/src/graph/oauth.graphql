@@ -55,3 +55,15 @@ mutation Consent($challenge: String!, $scopes: [String]) {
     redirectTo
   }
 }
+
+mutation CreateProvider($id: ID!, $attributes: OidcAttributes!) {
+  createOidcProvider(installationId: $id, attributes: $attributes) {
+    ...OIDCProvider
+  }
+}
+
+mutation UpdateProvider($id: ID!, $attributes: OidcAttributes!) {
+  updateOidcProvider(installationId: $id, attributes: $attributes) {
+    ...OIDCProvider
+  }
+}

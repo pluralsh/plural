@@ -1,0 +1,41 @@
+fragment NotificationFragment on Notification {
+  id
+  type
+  msg
+  actor {
+    ...User
+  }
+  incident {
+    id
+    title
+    repository {
+      id
+      name
+      icon
+      darkIcon
+    }
+  }
+  message {
+    text
+  }
+  repository {
+    id
+    name
+    icon
+    darkIcon
+  }
+  insertedAt
+}
+
+query Notifications($incidentId: ID, $first: Int = 50, $cursor: String) {
+  notifications(incidentId: $incidentId, first: $first, after: $cursor) {
+    pageInfo {
+      ...PageInfo
+    }
+    edges {
+      node {
+        ...NotificationFragment
+      }
+    }
+  }
+}

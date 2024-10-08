@@ -2,7 +2,7 @@ import { useMutation, useQuery } from '@apollo/client'
 import { Div, Flex, P } from 'honorable'
 import moment from 'moment'
 import { AppIcon, Button, Card, Markdown } from '@pluralsh/design-system'
-import { useCallback, useContext } from 'react'
+import { useCallback, useContext, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { useTheme } from 'styled-components'
 
@@ -13,42 +13,38 @@ import {
   RootMutationType,
   RootMutationTypeUpdateUserArgs,
   RootQueryType,
+  useNotificationsQuery,
 } from '../../generated/graphql'
 import { OnboardingChecklistContext } from '../../contexts/OnboardingChecklistContext'
 import usePaginatedQuery from '../../hooks/usePaginatedQuery'
 import { UPDATE_USER } from '../users/queries'
 import InfiniteScroller from '../utils/InfiniteScroller'
 import CurrentUserContext from '../../contexts/CurrentUserContext'
-import { updateUserFragment } from '../../utils/graphql'
+import { mapExistingNodes, updateUserFragment } from '../../utils/graphql'
 import {
   clearOnboardingChecklistState,
   isOnboardingChecklistHidden,
 } from '../../helpers/localStorage'
-
-import { NOTIFICATIONS_QUERY } from './queries'
+import { useFetchPaginatedData } from '../utils/useFetchPaginatedData'
 
 export function useNotificationsCount() {
-  const { data } = useQuery<{ notifications: RootQueryType['notifications'] }>(
-    NOTIFICATIONS_QUERY,
-    {
-      variables: { first: 100 },
-      pollInterval: 10000,
-    }
-  )
+  const { data } = useNotificationsQuery({
+    variables: { first: 100 },
+    pollInterval: 10000,
+  })
 
   return data?.notifications?.edges?.length ?? undefined
 }
 
 export function NotificationsPanel({ closePanel }: any) {
-  const [
-    notifications,
-    loadingNotifications,
-    hasMoreNotifications,
-    fetchMoreNotifications,
-  ] = usePaginatedQuery(
-    NOTIFICATIONS_QUERY,
-    { variables: {} },
-    (data) => data.notifications
+  const { data, loading, pageInfo, fetchNextPage } = useFetchPaginatedData(
+    { queryHook: useNotificationsQuery, keyPath: ['notifications'] },
+    {}
+  )
+
+  const notifications = useMemo(
+    () => mapExistingNodes(data?.notifications),
+    [data?.notifications]
   )
 
   const me = useContext(CurrentUserContext)
@@ -59,11 +55,11 @@ export function NotificationsPanel({ closePanel }: any) {
     [me]
   )
 
-  if (showOnboardingNotification() && !notifications.length) {
+  if (showOnboardingNotification() && !notifications?.length) {
     return <OnboardingChecklistNotification closePanel={closePanel} />
   }
 
-  if (!notifications.length) {
+  if (!notifications?.length) {
     return <P padding="medium">You do not have any notifications yet.</P>
   }
 
@@ -76,9 +72,9 @@ export function NotificationsPanel({ closePanel }: any) {
         <OnboardingChecklistNotification closePanel={closePanel} />
       )}
       <InfiniteScroller
-        loading={loadingNotifications}
-        hasMore={hasMoreNotifications}
-        loadMore={fetchMoreNotifications}
+        loading={loading}
+        hasMore={pageInfo?.hasNextPage}
+        loadMore={fetchNextPage}
         // Allow for scrolling in a flexbox layout
         flexGrow={1}
         height={0}

@@ -66,6 +66,7 @@ export function MyProfile() {
           >
             {DIRECTORY.map(({ label, path }) => (
               <LinkTabWrap
+                vertical
                 key={path}
                 textValue={label}
                 to={path}

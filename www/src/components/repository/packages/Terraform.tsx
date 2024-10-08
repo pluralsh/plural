@@ -157,6 +157,7 @@ export default function Terraform() {
           >
             {filteredDirectory.map(({ label, textValue, path }) => (
               <LinkTabWrap
+                vertical
                 key={path}
                 textValue={typeof label === 'string' ? label : textValue || ''}
                 to={`${pathPrefix}${path}`}

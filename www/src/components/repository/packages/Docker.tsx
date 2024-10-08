@@ -253,6 +253,7 @@ export function Docker() {
           >
             {DIRECTORY.map(({ label, textValue, path }: any) => (
               <LinkTabWrap
+                vertical
                 key={path}
                 textValue={typeof label === 'string' ? label : textValue || ''}
                 to={`${pathPrefix}${path}`}

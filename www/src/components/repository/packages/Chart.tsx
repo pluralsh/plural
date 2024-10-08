@@ -232,6 +232,7 @@ export default function Chart() {
           >
             {filteredDirectory.map(({ label, textValue, path }) => (
               <LinkTabWrap
+                vertical
                 key={path}
                 textValue={typeof label === 'string' ? label : textValue || ''}
                 to={`${pathPrefix}${path}`}

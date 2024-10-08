@@ -104,6 +104,7 @@ function Sidenav({ stack }: StackContext) {
         >
           {DIRECTORY.map(({ label, path }) => (
             <LinkTabWrap
+              vertical
               key={path}
               textValue={label}
               to={`${pathPrefix}${path}`}

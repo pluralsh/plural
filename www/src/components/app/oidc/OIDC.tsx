@@ -1,4 +1,3 @@
-import { useMutation } from '@apollo/client'
 import {
   Card,
   CheckIcon,
@@ -33,13 +32,16 @@ import { deepUpdate, updateCache } from '../../../utils/graphql'
 import InviteUserModal from '../../account/invite/InviteUserModal'
 import { BindingInput, fetchGroups, fetchUsers } from '../../account/Typeaheads'
 import { sanitize } from '../../account/utils'
-import { CREATE_PROVIDER, UPDATE_PROVIDER } from '../../oidc/queries'
 import { AuthMethod } from '../../oidc/types'
 import { REPO_Q } from '../../repository/packages/queries'
 import { GqlError } from '../../utils/Alert'
 import CreateGroupModal from '../../utils/group/CreateGroupModal'
 import ImpersonateServiceAccount from '../../utils/ImpersonateServiceAccount'
 import { AppHeaderActions } from '../AppHeaderActions'
+import {
+  useCreateProviderMutation,
+  useUpdateProviderMutation,
+} from '../../../generated/graphql'
 
 export function UrlsInput({ uriFormat = '', urls, setUrls }: any) {
   const [baseScheme, basePath] = ['https://', '/oauth2/callback']
@@ -310,12 +312,12 @@ export function CreateProvider({ installation }: any) {
     authMethod: settings.authMethod || AuthMethod.POST,
   })
   const [bindings, setBindings] = useState([])
-  const [mutation, { loading, error }] = useMutation(CREATE_PROVIDER, {
+  const [mutation, { loading, error }] = useCreateProviderMutation({
     variables: {
       id: installation.id,
       attributes: { ...attributes, bindings: bindings.map(sanitize) },
     },
-    update: (cache, { data: { createOidcProvider } }) =>
+    update: (cache, { data }) =>
       updateCache(cache, {
         query: REPO_Q,
         variables: { repositoryId: installation.repository.id },
@@ -323,7 +325,7 @@ export function CreateProvider({ installation }: any) {
           deepUpdate(
             prev,
             'repository.installation.oidcProvider',
-            () => createOidcProvider
+            () => data?.createOidcProvider
           ),
       }),
   })
@@ -380,7 +382,7 @@ export function UpdateProvider({ installation }: any) {
     ModalSelection.None
   )
 
-  const [mutation, { loading, error }] = useMutation(UPDATE_PROVIDER, {
+  const [mutation, { loading, error }] = useUpdateProviderMutation({
     variables: {
       id: installation.id,
       attributes: {

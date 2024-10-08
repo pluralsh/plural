@@ -30,3 +30,39 @@ fragment OAuthInfo on OauthInfo {
   provider
   authorizeUrl
 }
+
+fragment Repository on Repository {
+  name
+  icon
+  darkIcon
+}
+
+query OIDCConsent($challenge: String!) {
+  oidcConsent(challenge: $challenge) {
+    repository {
+      ...Repository
+    }
+    consent {
+      requestedScope
+      skip
+    }
+  }
+}
+
+mutation Consent($challenge: String!, $scopes: [String]) {
+  oauthConsent(challenge: $challenge, scopes: $scopes) {
+    redirectTo
+  }
+}
+
+mutation CreateProvider($id: ID!, $attributes: OidcAttributes!) {
+  createOidcProvider(installationId: $id, attributes: $attributes) {
+    ...OIDCProvider
+  }
+}
+
+mutation UpdateProvider($id: ID!, $attributes: OidcAttributes!) {
+  updateOidcProvider(installationId: $id, attributes: $attributes) {
+    ...OIDCProvider
+  }
+}

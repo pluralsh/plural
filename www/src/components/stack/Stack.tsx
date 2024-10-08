@@ -1,4 +1,3 @@
-import { useQuery } from '@apollo/client'
 import { Outlet, useLocation, useParams } from 'react-router-dom'
 import { Div, Flex, P, Span } from 'honorable'
 import {
@@ -22,13 +21,16 @@ import { LinkTabWrap } from '../utils/Tabs'
 
 import { ProvidersSidecar } from '../utils/recipeHelpers'
 
-import { StackCollection } from '../../generated/graphql'
+import {
+  Provider,
+  StackCollectionFragment,
+  useGetStackQuery,
+} from '../../generated/graphql'
 
 import LoadingIndicator from '../utils/LoadingIndicator'
 
 import { MARKETPLACE_CRUMB } from '../marketplace/Marketplace'
 
-import { STACK_QUERY } from './queries'
 import { StackContext } from './types'
 
 const DIRECTORY = [{ label: 'Stack applications', path: '' }]
@@ -102,6 +104,7 @@ function Sidenav({ stack }: StackContext) {
         >
           {DIRECTORY.map(({ label, path }) => (
             <LinkTabWrap
+              vertical
               key={path}
               textValue={label}
               to={`${pathPrefix}${path}`}
@@ -117,7 +120,9 @@ function Sidenav({ stack }: StackContext) {
 
 function StackSidecar({ stack }: StackContext) {
   const filteredCollections = stack?.collections?.filter(
-    (sC: StackCollection | null | undefined): sC is StackCollection => !!sC
+    (
+      sC: StackCollectionFragment | null | undefined
+    ): sC is StackCollectionFragment => !!sC
   )
   const recipes = filteredCollections?.map(({ provider }) => ({
     description: `Installs ${stack.displayName || stack.name} on ${provider}`,
@@ -145,8 +150,8 @@ function StackSidecar({ stack }: StackContext) {
 
 export default function Stack() {
   const { name } = useParams()
-  const { data } = useQuery(STACK_QUERY, {
-    variables: { name, provider: 'AWS' },
+  const { data } = useGetStackQuery({
+    variables: { name: name ?? '', provider: Provider.Aws },
   })
   const tabStateRef = useRef<any>(null)
   const breadcrumbs = useMemo(
@@ -156,9 +161,10 @@ export default function Stack() {
 
   useSetBreadcrumbs(breadcrumbs)
 
-  if (!data) return <LoadingIndicator />
+  if (!data?.stack) return <LoadingIndicator />
 
   const { stack } = data
+
   const outletContext: StackContext = { stack }
 
   return (

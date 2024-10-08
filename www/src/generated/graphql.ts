@@ -5584,9 +5584,53 @@ export type MetricFragment = { __typename?: 'Metric', name: string, tags?: Array
 
 export type PageInfoFragment = { __typename?: 'PageInfo', endCursor?: string | null, hasNextPage: boolean };
 
+export type NotificationFragmentFragment = { __typename?: 'Notification', id: string, type: NotificationType, msg?: string | null, insertedAt?: Date | null, actor: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null }, incident?: { __typename?: 'Incident', id: string, title: string, repository: { __typename?: 'Repository', id: string, name: string, icon?: string | null, darkIcon?: string | null } } | null, message?: { __typename?: 'IncidentMessage', text: string } | null, repository?: { __typename?: 'Repository', id: string, name: string, icon?: string | null, darkIcon?: string | null } | null };
+
+export type NotificationsQueryVariables = Exact<{
+  incidentId?: InputMaybe<Scalars['ID']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  cursor?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type NotificationsQuery = { __typename?: 'RootQueryType', notifications?: { __typename?: 'NotificationConnection', pageInfo: { __typename?: 'PageInfo', endCursor?: string | null, hasNextPage: boolean }, edges?: Array<{ __typename?: 'NotificationEdge', node?: { __typename?: 'Notification', id: string, type: NotificationType, msg?: string | null, insertedAt?: Date | null, actor: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null }, incident?: { __typename?: 'Incident', id: string, title: string, repository: { __typename?: 'Repository', id: string, name: string, icon?: string | null, darkIcon?: string | null } } | null, message?: { __typename?: 'IncidentMessage', text: string } | null, repository?: { __typename?: 'Repository', id: string, name: string, icon?: string | null, darkIcon?: string | null } | null } | null } | null> | null } | null };
+
 export type OidcProviderFragment = { __typename?: 'OidcProvider', id: string, clientId: string, authMethod: OidcAuthMethod, clientSecret: string, redirectUris?: Array<string | null> | null, bindings?: Array<{ __typename?: 'OidcProviderBinding', id: string, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null, group?: { __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null } | null> | null, configuration?: { __typename?: 'OuathConfiguration', issuer?: string | null, authorizationEndpoint?: string | null, tokenEndpoint?: string | null, jwksUri?: string | null, userinfoEndpoint?: string | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null };
 
 export type OAuthInfoFragment = { __typename?: 'OauthInfo', provider: OauthProvider, authorizeUrl: string };
+
+export type RepositoryFragment = { __typename?: 'Repository', name: string, icon?: string | null, darkIcon?: string | null };
+
+export type OidcConsentQueryVariables = Exact<{
+  challenge: Scalars['String']['input'];
+}>;
+
+
+export type OidcConsentQuery = { __typename?: 'RootQueryType', oidcConsent?: { __typename?: 'OidcStepResponse', repository?: { __typename?: 'Repository', name: string, icon?: string | null, darkIcon?: string | null } | null, consent?: { __typename?: 'ConsentRequest', requestedScope?: Array<string | null> | null, skip?: boolean | null } | null } | null };
+
+export type ConsentMutationVariables = Exact<{
+  challenge: Scalars['String']['input'];
+  scopes?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>> | InputMaybe<Scalars['String']['input']>>;
+}>;
+
+
+export type ConsentMutation = { __typename?: 'RootMutationType', oauthConsent?: { __typename?: 'OauthResponse', redirectTo: string } | null };
+
+export type CreateProviderMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+  attributes: OidcAttributes;
+}>;
+
+
+export type CreateProviderMutation = { __typename?: 'RootMutationType', createOidcProvider?: { __typename?: 'OidcProvider', id: string, clientId: string, authMethod: OidcAuthMethod, clientSecret: string, redirectUris?: Array<string | null> | null, bindings?: Array<{ __typename?: 'OidcProviderBinding', id: string, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null, group?: { __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null } | null> | null, configuration?: { __typename?: 'OuathConfiguration', issuer?: string | null, authorizationEndpoint?: string | null, tokenEndpoint?: string | null, jwksUri?: string | null, userinfoEndpoint?: string | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null } | null };
+
+export type UpdateProviderMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+  attributes: OidcAttributes;
+}>;
+
+
+export type UpdateProviderMutation = { __typename?: 'RootMutationType', updateOidcProvider?: { __typename?: 'OidcProvider', id: string, clientId: string, authMethod: OidcAuthMethod, clientSecret: string, redirectUris?: Array<string | null> | null, bindings?: Array<{ __typename?: 'OidcProviderBinding', id: string, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null, group?: { __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null } | null> | null, configuration?: { __typename?: 'OuathConfiguration', issuer?: string | null, authorizationEndpoint?: string | null, tokenEndpoint?: string | null, jwksUri?: string | null, userinfoEndpoint?: string | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null } | null };
 
 export type LimitFragment = { __typename?: 'Limit', dimension: string, quantity: number };
 
@@ -5732,6 +5776,8 @@ export type RecipeConfigurationFragment = { __typename?: 'RecipeConfiguration', 
 
 export type StackFragment = { __typename?: 'Stack', id: string, name: string, displayName?: string | null, description?: string | null, featured?: boolean | null, creator?: { __typename?: 'User', id: string, name: string } | null, collections?: Array<{ __typename?: 'StackCollection', id: string, provider: Provider, bundles?: Array<{ __typename?: 'StackRecipe', recipe: { __typename?: 'Recipe', repository?: { __typename?: 'Repository', id: string, name: string, notes?: string | null, description?: string | null, documentation?: string | null, icon?: string | null, darkIcon?: string | null, private?: boolean | null, trending?: boolean | null, verified?: boolean | null, category?: Category | null, tags?: Array<{ __typename?: 'Tag', tag: string } | null> | null, docs?: Array<{ __typename?: 'FileContent', content: string, path: string } | null> | null, oauthSettings?: { __typename?: 'OauthSettings', uriFormat: string, authMethod: OidcAuthMethod } | null, publisher?: { __typename?: 'Publisher', id?: string | null, name: string, phone?: string | null, avatar?: string | null, description?: string | null, backgroundColor?: string | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null, address?: { __typename?: 'Address', line1?: string | null, line2?: string | null, city?: string | null, country?: string | null, state?: string | null, zip?: string | null } | null } | null, recipes?: Array<{ __typename?: 'Recipe', name: string, provider?: Provider | null, description?: string | null } | null> | null } | null } } | null> | null } | null> | null };
 
+export type StackCollectionFragment = { __typename?: 'StackCollection', id: string, provider: Provider, bundles?: Array<{ __typename?: 'StackRecipe', recipe: { __typename?: 'Recipe', repository?: { __typename?: 'Repository', id: string, name: string, notes?: string | null, description?: string | null, documentation?: string | null, icon?: string | null, darkIcon?: string | null, private?: boolean | null, trending?: boolean | null, verified?: boolean | null, category?: Category | null, tags?: Array<{ __typename?: 'Tag', tag: string } | null> | null, docs?: Array<{ __typename?: 'FileContent', content: string, path: string } | null> | null, oauthSettings?: { __typename?: 'OauthSettings', uriFormat: string, authMethod: OidcAuthMethod } | null, publisher?: { __typename?: 'Publisher', id?: string | null, name: string, phone?: string | null, avatar?: string | null, description?: string | null, backgroundColor?: string | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null, address?: { __typename?: 'Address', line1?: string | null, line2?: string | null, city?: string | null, country?: string | null, state?: string | null, zip?: string | null } | null } | null, recipes?: Array<{ __typename?: 'Recipe', name: string, provider?: Provider | null, description?: string | null } | null> | null } | null } } | null> | null };
+
 export type GetRecipeQueryVariables = Exact<{
   repo?: InputMaybe<Scalars['String']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
@@ -5779,6 +5825,7 @@ export type GetStackQueryVariables = Exact<{
 export type GetStackQuery = { __typename?: 'RootQueryType', stack?: { __typename?: 'Stack', id: string, name: string, displayName?: string | null, description?: string | null, featured?: boolean | null, creator?: { __typename?: 'User', id: string, name: string } | null, collections?: Array<{ __typename?: 'StackCollection', id: string, provider: Provider, bundles?: Array<{ __typename?: 'StackRecipe', recipe: { __typename?: 'Recipe', repository?: { __typename?: 'Repository', id: string, name: string, notes?: string | null, description?: string | null, documentation?: string | null, icon?: string | null, darkIcon?: string | null, private?: boolean | null, trending?: boolean | null, verified?: boolean | null, category?: Category | null, tags?: Array<{ __typename?: 'Tag', tag: string } | null> | null, docs?: Array<{ __typename?: 'FileContent', content: string, path: string } | null> | null, oauthSettings?: { __typename?: 'OauthSettings', uriFormat: string, authMethod: OidcAuthMethod } | null, publisher?: { __typename?: 'Publisher', id?: string | null, name: string, phone?: string | null, avatar?: string | null, description?: string | null, backgroundColor?: string | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null, address?: { __typename?: 'Address', line1?: string | null, line2?: string | null, city?: string | null, country?: string | null, state?: string | null, zip?: string | null } | null } | null, recipes?: Array<{ __typename?: 'Recipe', name: string, provider?: Provider | null, description?: string | null } | null> | null } | null } } | null> | null } | null> | null } | null };
 
 export type ListStacksQueryVariables = Exact<{
+  first?: InputMaybe<Scalars['Int']['input']>;
   featured?: InputMaybe<Scalars['Boolean']['input']>;
   cursor?: InputMaybe<Scalars['String']['input']>;
 }>;
@@ -7079,10 +7126,47 @@ export const PageInfoFragmentDoc = gql`
   hasNextPage
 }
     `;
+export const NotificationFragmentFragmentDoc = gql`
+    fragment NotificationFragment on Notification {
+  id
+  type
+  msg
+  actor {
+    ...User
+  }
+  incident {
+    id
+    title
+    repository {
+      id
+      name
+      icon
+      darkIcon
+    }
+  }
+  message {
+    text
+  }
+  repository {
+    id
+    name
+    icon
+    darkIcon
+  }
+  insertedAt
+}
+    ${UserFragmentDoc}`;
 export const OAuthInfoFragmentDoc = gql`
     fragment OAuthInfo on OauthInfo {
   provider
   authorizeUrl
+}
+    `;
+export const RepositoryFragmentDoc = gql`
+    fragment Repository on Repository {
+  name
+  icon
+  darkIcon
 }
     `;
 export const SubscriptionFragmentDoc = gql`
@@ -7369,6 +7453,22 @@ export const RecipeFragmentDoc = gql`
   }
 }
     ${RecipeSectionFragmentDoc}`;
+export const StackCollectionFragmentDoc = gql`
+    fragment StackCollection on StackCollection {
+  id
+  provider
+  bundles {
+    recipe {
+      repository {
+        ...Repo
+        tags {
+          tag
+        }
+      }
+    }
+  }
+}
+    ${RepoFragmentDoc}`;
 export const StackFragmentDoc = gql`
     fragment Stack on Stack {
   id
@@ -7381,21 +7481,10 @@ export const StackFragmentDoc = gql`
     name
   }
   collections {
-    id
-    provider
-    bundles {
-      recipe {
-        repository {
-          ...Repo
-          tags {
-            tag
-          }
-        }
-      }
-    }
+    ...StackCollection
   }
 }
-    ${RepoFragmentDoc}`;
+    ${StackCollectionFragmentDoc}`;
 export const ApplyLockFragmentDoc = gql`
     fragment ApplyLock on ApplyLock {
   id
@@ -8802,6 +8891,204 @@ export function useCreateKeyBackupMutation(baseOptions?: Apollo.MutationHookOpti
 export type CreateKeyBackupMutationHookResult = ReturnType<typeof useCreateKeyBackupMutation>;
 export type CreateKeyBackupMutationResult = Apollo.MutationResult<CreateKeyBackupMutation>;
 export type CreateKeyBackupMutationOptions = Apollo.BaseMutationOptions<CreateKeyBackupMutation, CreateKeyBackupMutationVariables>;
+export const NotificationsDocument = gql`
+    query Notifications($incidentId: ID, $first: Int = 50, $cursor: String) {
+  notifications(incidentId: $incidentId, first: $first, after: $cursor) {
+    pageInfo {
+      ...PageInfo
+    }
+    edges {
+      node {
+        ...NotificationFragment
+      }
+    }
+  }
+}
+    ${PageInfoFragmentDoc}
+${NotificationFragmentFragmentDoc}`;
+
+/**
+ * __useNotificationsQuery__
+ *
+ * To run a query within a React component, call `useNotificationsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useNotificationsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useNotificationsQuery({
+ *   variables: {
+ *      incidentId: // value for 'incidentId'
+ *      first: // value for 'first'
+ *      cursor: // value for 'cursor'
+ *   },
+ * });
+ */
+export function useNotificationsQuery(baseOptions?: Apollo.QueryHookOptions<NotificationsQuery, NotificationsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<NotificationsQuery, NotificationsQueryVariables>(NotificationsDocument, options);
+      }
+export function useNotificationsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<NotificationsQuery, NotificationsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<NotificationsQuery, NotificationsQueryVariables>(NotificationsDocument, options);
+        }
+export function useNotificationsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<NotificationsQuery, NotificationsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<NotificationsQuery, NotificationsQueryVariables>(NotificationsDocument, options);
+        }
+export type NotificationsQueryHookResult = ReturnType<typeof useNotificationsQuery>;
+export type NotificationsLazyQueryHookResult = ReturnType<typeof useNotificationsLazyQuery>;
+export type NotificationsSuspenseQueryHookResult = ReturnType<typeof useNotificationsSuspenseQuery>;
+export type NotificationsQueryResult = Apollo.QueryResult<NotificationsQuery, NotificationsQueryVariables>;
+export const OidcConsentDocument = gql`
+    query OIDCConsent($challenge: String!) {
+  oidcConsent(challenge: $challenge) {
+    repository {
+      ...Repository
+    }
+    consent {
+      requestedScope
+      skip
+    }
+  }
+}
+    ${RepositoryFragmentDoc}`;
+
+/**
+ * __useOidcConsentQuery__
+ *
+ * To run a query within a React component, call `useOidcConsentQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOidcConsentQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOidcConsentQuery({
+ *   variables: {
+ *      challenge: // value for 'challenge'
+ *   },
+ * });
+ */
+export function useOidcConsentQuery(baseOptions: Apollo.QueryHookOptions<OidcConsentQuery, OidcConsentQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<OidcConsentQuery, OidcConsentQueryVariables>(OidcConsentDocument, options);
+      }
+export function useOidcConsentLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<OidcConsentQuery, OidcConsentQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<OidcConsentQuery, OidcConsentQueryVariables>(OidcConsentDocument, options);
+        }
+export function useOidcConsentSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<OidcConsentQuery, OidcConsentQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<OidcConsentQuery, OidcConsentQueryVariables>(OidcConsentDocument, options);
+        }
+export type OidcConsentQueryHookResult = ReturnType<typeof useOidcConsentQuery>;
+export type OidcConsentLazyQueryHookResult = ReturnType<typeof useOidcConsentLazyQuery>;
+export type OidcConsentSuspenseQueryHookResult = ReturnType<typeof useOidcConsentSuspenseQuery>;
+export type OidcConsentQueryResult = Apollo.QueryResult<OidcConsentQuery, OidcConsentQueryVariables>;
+export const ConsentDocument = gql`
+    mutation Consent($challenge: String!, $scopes: [String]) {
+  oauthConsent(challenge: $challenge, scopes: $scopes) {
+    redirectTo
+  }
+}
+    `;
+export type ConsentMutationFn = Apollo.MutationFunction<ConsentMutation, ConsentMutationVariables>;
+
+/**
+ * __useConsentMutation__
+ *
+ * To run a mutation, you first call `useConsentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useConsentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [consentMutation, { data, loading, error }] = useConsentMutation({
+ *   variables: {
+ *      challenge: // value for 'challenge'
+ *      scopes: // value for 'scopes'
+ *   },
+ * });
+ */
+export function useConsentMutation(baseOptions?: Apollo.MutationHookOptions<ConsentMutation, ConsentMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ConsentMutation, ConsentMutationVariables>(ConsentDocument, options);
+      }
+export type ConsentMutationHookResult = ReturnType<typeof useConsentMutation>;
+export type ConsentMutationResult = Apollo.MutationResult<ConsentMutation>;
+export type ConsentMutationOptions = Apollo.BaseMutationOptions<ConsentMutation, ConsentMutationVariables>;
+export const CreateProviderDocument = gql`
+    mutation CreateProvider($id: ID!, $attributes: OidcAttributes!) {
+  createOidcProvider(installationId: $id, attributes: $attributes) {
+    ...OIDCProvider
+  }
+}
+    ${OidcProviderFragmentDoc}`;
+export type CreateProviderMutationFn = Apollo.MutationFunction<CreateProviderMutation, CreateProviderMutationVariables>;
+
+/**
+ * __useCreateProviderMutation__
+ *
+ * To run a mutation, you first call `useCreateProviderMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateProviderMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createProviderMutation, { data, loading, error }] = useCreateProviderMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      attributes: // value for 'attributes'
+ *   },
+ * });
+ */
+export function useCreateProviderMutation(baseOptions?: Apollo.MutationHookOptions<CreateProviderMutation, CreateProviderMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateProviderMutation, CreateProviderMutationVariables>(CreateProviderDocument, options);
+      }
+export type CreateProviderMutationHookResult = ReturnType<typeof useCreateProviderMutation>;
+export type CreateProviderMutationResult = Apollo.MutationResult<CreateProviderMutation>;
+export type CreateProviderMutationOptions = Apollo.BaseMutationOptions<CreateProviderMutation, CreateProviderMutationVariables>;
+export const UpdateProviderDocument = gql`
+    mutation UpdateProvider($id: ID!, $attributes: OidcAttributes!) {
+  updateOidcProvider(installationId: $id, attributes: $attributes) {
+    ...OIDCProvider
+  }
+}
+    ${OidcProviderFragmentDoc}`;
+export type UpdateProviderMutationFn = Apollo.MutationFunction<UpdateProviderMutation, UpdateProviderMutationVariables>;
+
+/**
+ * __useUpdateProviderMutation__
+ *
+ * To run a mutation, you first call `useUpdateProviderMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateProviderMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateProviderMutation, { data, loading, error }] = useUpdateProviderMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      attributes: // value for 'attributes'
+ *   },
+ * });
+ */
+export function useUpdateProviderMutation(baseOptions?: Apollo.MutationHookOptions<UpdateProviderMutation, UpdateProviderMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateProviderMutation, UpdateProviderMutationVariables>(UpdateProviderDocument, options);
+      }
+export type UpdateProviderMutationHookResult = ReturnType<typeof useUpdateProviderMutation>;
+export type UpdateProviderMutationResult = Apollo.MutationResult<UpdateProviderMutation>;
+export type UpdateProviderMutationOptions = Apollo.BaseMutationOptions<UpdateProviderMutation, UpdateProviderMutationVariables>;
 export const SubscriptionDocument = gql`
     query Subscription {
   account {
@@ -9594,8 +9881,8 @@ export type GetStackLazyQueryHookResult = ReturnType<typeof useGetStackLazyQuery
 export type GetStackSuspenseQueryHookResult = ReturnType<typeof useGetStackSuspenseQuery>;
 export type GetStackQueryResult = Apollo.QueryResult<GetStackQuery, GetStackQueryVariables>;
 export const ListStacksDocument = gql`
-    query ListStacks($featured: Boolean, $cursor: String) {
-  stacks(first: 100, after: $cursor, featured: $featured) {
+    query ListStacks($first: Int = 100, $featured: Boolean, $cursor: String) {
+  stacks(first: $first, after: $cursor, featured: $featured) {
     edges {
       node {
         ...Stack
@@ -9617,6 +9904,7 @@ export const ListStacksDocument = gql`
  * @example
  * const { data, loading, error } = useListStacksQuery({
  *   variables: {
+ *      first: // value for 'first'
  *      featured: // value for 'featured'
  *      cursor: // value for 'cursor'
  *   },
@@ -11579,6 +11867,8 @@ export const namedOperations = {
     Invite: 'Invite',
     KeyBackups: 'KeyBackups',
     KeyBackup: 'KeyBackup',
+    Notifications: 'Notifications',
+    OIDCConsent: 'OIDCConsent',
     Subscription: 'Subscription',
     Cards: 'Cards',
     Invoices: 'Invoices',
@@ -11625,6 +11915,9 @@ export const namedOperations = {
     CreateInvite: 'CreateInvite',
     DeleteKeyBackup: 'DeleteKeyBackup',
     CreateKeyBackup: 'CreateKeyBackup',
+    Consent: 'Consent',
+    CreateProvider: 'CreateProvider',
+    UpdateProvider: 'UpdateProvider',
     UpdateAccountBilling: 'UpdateAccountBilling',
     CreatePlatformSubscription: 'CreatePlatformSubscription',
     DowngradeToFreePlanMutation: 'DowngradeToFreePlanMutation',
@@ -11710,8 +12003,10 @@ export const namedOperations = {
     KeyBackup: 'KeyBackup',
     Metric: 'Metric',
     PageInfo: 'PageInfo',
+    NotificationFragment: 'NotificationFragment',
     OIDCProvider: 'OIDCProvider',
     OAuthInfo: 'OAuthInfo',
+    Repository: 'Repository',
     Limit: 'Limit',
     LineItem: 'LineItem',
     ServiceLevel: 'ServiceLevel',
@@ -11732,6 +12027,7 @@ export const namedOperations = {
     RecipeSection: 'RecipeSection',
     RecipeConfiguration: 'RecipeConfiguration',
     Stack: 'Stack',
+    StackCollection: 'StackCollection',
     ApplyLock: 'ApplyLock',
     Category: 'Category',
     FileContent: 'FileContent',

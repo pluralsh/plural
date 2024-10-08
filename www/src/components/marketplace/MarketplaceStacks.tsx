@@ -1,13 +1,16 @@
-import { useQuery } from '@apollo/client'
 import { H1 } from 'honorable'
 import { Divider, StackCard } from '@pluralsh/design-system'
 import { useNavigate } from 'react-router-dom'
 import isEmpty from 'lodash/isEmpty'
 import { useTheme } from 'styled-components'
 
+import { useMemo } from 'react'
+
 import { getRepoIcon } from '../repository/misc'
 
-import { STACKS_QUERY } from './queries'
+import { StackFragment, useListStacksQuery } from '../../generated/graphql'
+import { mapExistingNodes } from '../../utils/graphql'
+
 import { CardGrid } from './CardGrid'
 
 const hues = ['blue', 'green', 'yellow', 'red'] as const
@@ -15,20 +18,25 @@ const hues = ['blue', 'green', 'yellow', 'red'] as const
 export default function MarketplaceStacks() {
   const theme = useTheme()
   const navigate = useNavigate()
-  const { data } = useQuery(STACKS_QUERY, { variables: { featured: true } })
+  const { data } = useListStacksQuery({
+    variables: { first: 10, featured: true },
+  })
 
-  if (isEmpty(data?.stacks?.edges)) return null
+  const stacks = useMemo(() => mapExistingNodes(data?.stacks), [data?.stacks])
 
-  const {
-    stacks: { edges },
-  } = data
-  const apps = ({ collections: c }) =>
-    c?.length > 0
-      ? c[0].bundles?.map(({ recipe: { repository } }) => ({
-          name: repository.name,
-          imageUrl: getRepoIcon(repository, theme.mode),
-        }))
-      : []
+  if (!stacks || isEmpty(stacks)) return null
+
+  const apps = (stack: StackFragment) => {
+    const c = stack.collections
+
+    if (!c || c.length === 0) return []
+
+    return c[0]?.bundles?.map((bundle) => ({
+      name: bundle?.recipe?.repository?.name,
+      imageUrl: getRepoIcon(bundle?.recipe?.repository, theme.mode),
+    }))
+  }
+
   const hue = (i) => hues[i % hues.length]
 
   return (
@@ -38,11 +46,11 @@ export default function MarketplaceStacks() {
         marginBottom="xlarge"
         marginTop="medium"
       >
-        {edges.map(({ node: stack }, i) => (
+        {stacks.map((stack, i) => (
           <StackCard
             key={stack.name}
             title={stack.displayName || stack.name}
-            description={stack.description}
+            description={stack.description ?? ''}
             apps={apps(stack)}
             hue={hue(i)}
             onClick={() => navigate(`/stack/${stack.name}`)}

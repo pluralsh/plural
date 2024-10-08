@@ -5,7 +5,6 @@ import {
   DnsDomainFragment,
   DnsRecordFragment,
   InviteFragment,
-  OidcLoginFragment,
 } from '../../models/account'
 import { PageInfo } from '../../models/misc'
 import {
@@ -80,15 +79,6 @@ export const SEARCH_GROUPS = gql`
   }
   ${PageInfo}
   ${GroupFragment}
-`
-
-export const EDIT_USER = gql`
-  mutation UpdateUser($id: ID, $attributes: UserAttributes!) {
-    updateUser(id: $id, attributes: $attributes) {
-      ...UserFragment
-    }
-  }
-  ${UserFragment}
 `
 
 export const CREATE_INVITE = gql`
@@ -185,41 +175,6 @@ export const AUDITS_Q = gql`
   }
   ${PageInfo}
   ${AuditFragment}
-`
-
-export const LOGINS_Q = gql`
-  query Logins($cursor: String) {
-    oidcLogins(first: 50, after: $cursor) {
-      pageInfo {
-        ...PageInfo
-      }
-      edges {
-        node {
-          ...OidcLoginFragment
-        }
-      }
-    }
-  }
-  ${PageInfo}
-  ${OidcLoginFragment}
-`
-
-export const AUDIT_METRICS = gql`
-  query {
-    auditMetrics {
-      country
-      count
-    }
-  }
-`
-
-export const LOGIN_METRICS = gql`
-  query {
-    loginMetrics {
-      country
-      count
-    }
-  }
 `
 
 export const IMPERSONATE_SERVICE_ACCOUNT = gql`

@@ -107,6 +107,7 @@ function RepositorySideNav({
         >
           {filteredDirectory.map(({ label, path }) => (
             <LinkTabWrap
+              vertical
               key={path}
               textValue={label}
               to={`${pathPrefix}${path}`}

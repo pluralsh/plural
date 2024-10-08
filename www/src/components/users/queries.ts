@@ -7,7 +7,6 @@ import {
   TokenAuditFragment,
   TokenFragment,
   UserFragment,
-  WebhookFragment,
 } from '../../models/user'
 import { CardFragment } from '../../models/payments'
 import { PageInfo } from '../../models/misc'
@@ -109,33 +108,6 @@ export const TOKEN_METRICS = gql`
   }
 `
 
-export const WEBHOOKS_Q = gql`
-  query Webhooks($cursor: String) {
-    webhooks(first: 10, after: $cursor) {
-      edges {
-        node {
-          ...WebhookFragment
-        }
-      }
-      pageInfo {
-        ...PageInfo
-      }
-    }
-  }
-  ${WebhookFragment}
-  ${PageInfo}
-`
-
-export const PING_WEBHOOK = gql`
-  mutation PingWebhook($repo: String!, $id: ID!) {
-    pingWebhook(repo: $repo, id: $id) {
-      statusCode
-      body
-      headers
-    }
-  }
-`
-
 export const REGISTER_CARD = gql`
   mutation RegisterCard($source: String!) {
     createCard(source: $source) {
@@ -166,18 +138,6 @@ export const REALIZE_TOKEN = gql`
   }
 `
 
-export const RESET_TOKEN = gql`
-  query Token($id: ID!) {
-    resetToken(id: $id) {
-      type
-      user {
-        ...UserFragment
-      }
-    }
-  }
-  ${UserFragment}
-`
-
 export const LIST_KEYS = gql`
   query Keys($cursor: String) {
     publicKeys(after: $cursor, first: 20) {
@@ -203,63 +163,6 @@ export const DELETE_KEY = gql`
   }
 `
 
-export const LOGIN_METHOD = gql`
-  query LoginMethod($email: String!, $host: String) {
-    loginMethod(email: $email, host: $host) {
-      loginMethod
-      token
-      authorizeUrl
-    }
-  }
-`
-
-export const SIGNUP_MUTATION = gql`
-  mutation Signup(
-    $attributes: UserAttributes!
-    $account: AccountAttributes
-    $deviceToken: String
-  ) {
-    signup(
-      attributes: $attributes
-      account: $account
-      deviceToken: $deviceToken
-    ) {
-      jwt
-      id
-      onboarding
-    }
-  }
-`
-
-export const LOGIN_MUTATION = gql`
-  mutation Login($email: String!, $password: String!, $deviceToken: String) {
-    login(email: $email, password: $password, deviceToken: $deviceToken) {
-      jwt
-      id
-      email
-    }
-  }
-`
-
-export const PASSWORDLESS_LOGIN = gql`
-  mutation Passwordless($token: String!) {
-    passwordlessLogin(token: $token) {
-      jwt
-      id
-      email
-    }
-  }
-`
-
-export const POLL_LOGIN_TOKEN = gql`
-  mutation Poll($token: String!, $deviceToken: String) {
-    loginToken(token: $token, deviceToken: $deviceToken) {
-      jwt
-      id
-      email
-    }
-  }
-`
 export const EAB_CREDENTIALS = gql`
   query {
     eabCredentials {

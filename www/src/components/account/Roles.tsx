@@ -66,7 +66,6 @@ function Role({ role, q }: any) {
     <Box
       fill="horizontal"
       direction="row"
-      align="center"
     >
       <Info
         text={role.name}

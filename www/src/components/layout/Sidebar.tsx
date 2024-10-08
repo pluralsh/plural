@@ -10,7 +10,6 @@ import { Link, useLocation } from 'react-router-dom'
 import { Avatar, Menu, MenuItem } from 'honorable'
 import {
   ArrowTopRightIcon,
-  BellIcon,
   BrowseAppsIcon,
   ClusterIcon,
   CookieIcon,
@@ -38,15 +37,6 @@ import CreatePublisherModal from '../publisher/CreatePublisherModal'
 import { clearLocalStorage } from '../../helpers/localStorage'
 
 import Cookiebot from '../../utils/cookiebot'
-
-import { useReadNotificationsMutation } from '../../generated/graphql'
-
-import { useNotificationsCount } from './WithNotifications'
-import { NotificationsPanelOverlay } from './NotificationsPanelOverlay'
-
-export const SIDEBAR_ICON_HEIGHT = '40px'
-export const SIDEBAR_WIDTH = '224px'
-export const SMALL_WIDTH = '60px'
 
 type MenuItem = {
   text: string
@@ -153,29 +143,29 @@ const SidebarSC = styled(DSSidebar)((_) => ({
   overflow: 'auto',
 }))
 
-const NotificationsCountSC = styled.div(({ theme }) => ({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  color: theme.colors['text-always-white'],
-  backgroundColor: theme.colors['icon-danger-critical'],
-  borderRadius: '50%',
-  fontSize: 10,
-  height: 15,
-  width: 15,
-  position: 'absolute',
-  left: 16,
-  top: 2,
-  userSelect: 'none',
-}))
+// const NotificationsCountSC = styled.div(({ theme }) => ({
+//   display: 'flex',
+//   alignItems: 'center',
+//   justifyContent: 'center',
+//   color: theme.colors['text-always-white'],
+//   backgroundColor: theme.colors['icon-danger-critical'],
+//   borderRadius: '50%',
+//   fontSize: 10,
+//   height: 15,
+//   width: 15,
+//   position: 'absolute',
+//   left: 16,
+//   top: 2,
+//   userSelect: 'none',
+// }))
 
 function Sidebar(props: Omit<ComponentProps<typeof DSSidebar>, '$variant'>) {
   const menuItemRef = useRef<HTMLDivElement>(null)
   const menuRef = useRef<HTMLDivElement>(null)
   const [isMenuOpen, setIsMenuOpened] = useState(false)
   const [collapsed, _setCollapsed] = useState(true)
-  const [isNotificationsPanelOpen, setIsNotificationsPanelOpen] =
-    useState(false)
+  // const [isNotificationsPanelOpen, setIsNotificationsPanelOpen] =
+  //   useState(false)
   const [isCreatePublisherModalOpen, setIsCreatePublisherModalOpen] =
     useState(false)
   const sidebarWidth = collapsed ? 65 : 256 - 32 // 64 + 1px border
@@ -191,20 +181,20 @@ function Sidebar(props: Omit<ComponentProps<typeof DSSidebar>, '$variant'>) {
       isActiveMenuItem(menuItem, pathname),
     [pathname]
   )
-  const [readNotifications] = useReadNotificationsMutation()
-  const notificationsCount = useNotificationsCount() ?? 0
-  const notificationsLabel = `${
-    notificationsCount > 0 ? `${notificationsCount} ` : ''
-  } Notifications`
-  const toggleNotificationPanel = useCallback(
-    (open) => {
-      setIsNotificationsPanelOpen(open)
-      if (!open) {
-        readNotifications()
-      }
-    },
-    [setIsNotificationsPanelOpen, readNotifications]
-  )
+  // const [readNotifications] = useReadNotificationsMutation()
+  // const notificationsCount = useNotificationsCount() ?? 0
+  // const notificationsLabel = `${
+  //   notificationsCount > 0 ? `${notificationsCount} ` : ''
+  // } Notifications`
+  // const toggleNotificationPanel = useCallback(
+  //   (open) => {
+  //     setIsNotificationsPanelOpen(open)
+  //     if (!open) {
+  //       readNotifications()
+  //     }
+  //   },
+  //   [setIsNotificationsPanelOpen, readNotifications]
+  // )
 
   useClickOutside(menuRef, (event) => {
     if (!menuItemRef.current?.contains(event.target as any)) {
@@ -274,27 +264,27 @@ function Sidebar(props: Omit<ComponentProps<typeof DSSidebar>, '$variant'>) {
           </SidebarMenuItem>
 
           {/* --- NOTIFICATIONS BELL --- */}
-          <SidebarItem
-            clickable
-            label={notificationsLabel}
-            tooltip={notificationsLabel}
-            className="sidebar-notifications"
-            onClick={(event) => {
-              event.stopPropagation()
-              toggleNotificationPanel(!isNotificationsPanelOpen)
-            }}
-            active={isNotificationsPanelOpen}
-            css={{
-              position: 'relative',
-            }}
-          >
-            <BellIcon />
-            {notificationsCount > 0 && (
-              <NotificationsCountSC>
-                {notificationsCount > 99 ? '!' : notificationsCount}
-              </NotificationsCountSC>
-            )}
-          </SidebarItem>
+          {/* <SidebarItem */}
+          {/*  clickable */}
+          {/*  label={notificationsLabel} */}
+          {/*  tooltip={notificationsLabel} */}
+          {/*  className="sidebar-notifications" */}
+          {/*  onClick={(event) => { */}
+          {/*    event.stopPropagation() */}
+          {/*    toggleNotificationPanel(!isNotificationsPanelOpen) */}
+          {/*  }} */}
+          {/*  active={isNotificationsPanelOpen} */}
+          {/*  css={{ */}
+          {/*    position: 'relative', */}
+          {/*  }} */}
+          {/* > */}
+          {/*  <BellIcon /> */}
+          {/*  {notificationsCount > 0 && ( */}
+          {/*    <NotificationsCountSC> */}
+          {/*      {notificationsCount > 99 ? '!' : notificationsCount} */}
+          {/*    </NotificationsCountSC> */}
+          {/*  )} */}
+          {/* </SidebarItem> */}
 
           {/* --- USER -- */}
           <SidebarItem
@@ -392,11 +382,11 @@ function Sidebar(props: Omit<ComponentProps<typeof DSSidebar>, '$variant'>) {
       )}
 
       {/* --- NOTIFICATIONS PANEL --- */}
-      <NotificationsPanelOverlay
-        leftOffset={sidebarWidth}
-        isOpen={isNotificationsPanelOpen}
-        setIsOpen={toggleNotificationPanel}
-      />
+      {/* <NotificationsPanelOverlay */}
+      {/*  leftOffset={sidebarWidth} */}
+      {/*  isOpen={isNotificationsPanelOpen} */}
+      {/*  setIsOpen={toggleNotificationPanel} */}
+      {/* /> */}
 
       {/* --- CREATE PUBLISHER MODAL --- */}
       <CreatePublisherModal

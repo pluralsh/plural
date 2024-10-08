@@ -1,8 +1,6 @@
 import { gql } from '@apollo/client'
 
 import { CloudShellFragment, DemoProjectFragment } from '../../models/shell'
-import { RepoFragment, StackFragment } from '../../models/repo'
-import { PageInfo } from '../../models/misc'
 
 export const AUTHENTICATION_URLS_QUERY = gql`
   query {
@@ -89,54 +87,6 @@ export const DELETE_DEMO_PROJECT_MUTATION = gql`
     }
   }
   ${DemoProjectFragment}
-`
-
-export const APPLICATIONS_QUERY = gql`
-  query ApplicationsQuery($cursor: String) {
-    repositories(after: $cursor, first: 200) {
-      pageInfo {
-        ...PageInfo
-      }
-      edges {
-        node {
-          ...RepoFragment
-          recipes {
-            id
-            name
-            provider
-          }
-        }
-      }
-    }
-  }
-  ${RepoFragment}
-  ${PageInfo}
-`
-
-export const STACKS_QUERY = gql`
-  query Stacks($featured: Boolean) {
-    stacks(featured: $featured, first: 10) {
-      pageInfo {
-        ...PageInfo
-      }
-      edges {
-        node {
-          ...StackFragment
-        }
-      }
-    }
-  }
-  ${PageInfo}
-  ${StackFragment}
-`
-
-export const STACK_QUERY = gql`
-  query StackQuery($name: String!, $provider: Provider!) {
-    stack(name: $name, provider: $provider) {
-      ...StackFragment
-    }
-  }
-  ${StackFragment}
 `
 
 export const CREATE_QUICK_STACK_MUTATION = gql`

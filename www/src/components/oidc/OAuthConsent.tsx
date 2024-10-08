@@ -1,30 +1,39 @@
 import { useLocation, useNavigate } from 'react-router-dom'
-import { useMutation, useQuery } from '@apollo/client'
-import queryString from 'query-string'
+import queryString, { ParsedQuery } from 'query-string'
 import { ArrowRightLeftIcon, Button, IconFrame } from '@pluralsh/design-system'
 import { useCallback } from 'react'
 import { A, Flex, Span } from 'honorable'
 import StartCase from 'lodash/startCase'
 import { useTheme } from 'styled-components'
 
+import { isEmpty } from 'lodash'
+
 import { LoginPortal } from '../users/LoginPortal'
 import { GqlError } from '../utils/Alert'
 import { PLURAL_MARK, PLURAL_MARK_WHITE } from '../constants'
-import { useMeQuery } from '../../generated/graphql'
+import {
+  useConsentMutation,
+  useMeQuery,
+  useOidcConsentQuery,
+} from '../../generated/graphql'
 import { clearLocalStorage } from '../../helpers/localStorage'
-
 import LoadingIndicator from '../utils/LoadingIndicator'
 
-import { GET_OIDC_CONSENT, OAUTH_CONSENT } from './queries'
-
-function Icon({ icon, darkIcon }: any) {
+function Icon({
+  icon,
+  darkIcon,
+}: {
+  icon: Nullable<string>
+  darkIcon: Nullable<string>
+}) {
   const dark = useTheme().mode !== 'light'
+  const src = dark ? darkIcon ?? icon : icon
 
-  return (
+  return src ? (
     <IconFrame
       icon={
         <img
-          src={dark ? darkIcon || icon : icon}
+          src={src}
           width="48px"
           height="48px"
         />
@@ -33,24 +42,36 @@ function Icon({ icon, darkIcon }: any) {
       height="64px"
       type="floating"
     />
-  )
+  ) : null
+}
+
+const getChallenge = (parsedQueryString: ParsedQuery): string => {
+  const challenge = parsedQueryString.consent_challenge
+
+  if (Array.isArray(challenge)) {
+    return !isEmpty(challenge) ? challenge[0] ?? '' : ''
+  }
+
+  return challenge ?? ''
 }
 
 export function OAuthConsent() {
   const location = useLocation()
   const navigate = useNavigate()
   const { data: userData, loading: userLoading } = useMeQuery()
-  const { consent_challenge: challenge } = queryString.parse(location.search)
-  const { data } = useQuery(GET_OIDC_CONSENT, { variables: { challenge } })
+  const challenge = getChallenge(queryString.parse(location.search))
+  const { data } = useOidcConsentQuery({ variables: { challenge } })
   const repository = data?.oidcConsent?.repository
   const consent = data?.oidcConsent?.consent
-  const [mutation, { loading, error }] = useMutation(OAUTH_CONSENT, {
+  const [mutation, { loading, error }] = useConsentMutation({
     variables: {
       challenge,
       scopes: consent?.requestedScope || ['profile', 'openid'],
     },
-    onCompleted: ({ oauthConsent: { redirectTo } }) => {
-      window.location = redirectTo
+    onCompleted: ({ oauthConsent }) => {
+      if (oauthConsent?.redirectTo) {
+        window.location.href = oauthConsent.redirectTo
+      }
     },
   })
 
@@ -80,11 +101,15 @@ export function OAuthConsent() {
             icon={PLURAL_MARK}
             darkIcon={PLURAL_MARK_WHITE}
           />
-          <ArrowRightLeftIcon size={18} />
-          <Icon
-            icon={repository.icon}
-            darkIcon={repository.darkIcon}
-          />
+          {repository && (
+            <>
+              <ArrowRightLeftIcon size={18} />
+              <Icon
+                icon={repository.icon}
+                darkIcon={repository.darkIcon}
+              />
+            </>
+          )}
         </Flex>
 
         <Flex
@@ -98,7 +123,9 @@ export function OAuthConsent() {
             size="medium"
             textAlign="center"
           >
-            {StartCase(repository.name)} requires access
+            {repository?.name
+              ? `${StartCase(repository.name)} requires access`
+              : 'Access required'}
           </Span>
           <Span
             body1

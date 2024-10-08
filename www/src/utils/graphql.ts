@@ -39,6 +39,28 @@ export function extendConnection(prev, next, key) {
   }
 }
 
+export function updateNestedConnection<TData>(
+  keyPath: string[],
+  fullQuery: TData,
+  newConnection: any
+): TData {
+  if (keyPath.length < 2) return newConnection
+
+  const res = { ...fullQuery }
+  let cur = res
+
+  for (let i = 0; i < keyPath.length - 2; i++) {
+    const key = keyPath[i]
+
+    if (!cur[key]) cur[key] = {}
+    cur = cur[key]
+  }
+
+  cur[keyPath[keyPath.length - 2]] = newConnection
+
+  return res
+}
+
 export function deepUpdate(prev, path, update) {
   if (isString(path)) return deepUpdate(prev, path.split('.'), update)
 

@@ -54,35 +54,6 @@ export const InstallationRepoFragment = gql`
   }
 `
 
-export const StackFragment = gql`
-  fragment StackFragment on Stack {
-    id
-    name
-    displayName
-    description
-    featured
-    creator {
-      id
-      name
-    }
-    collections {
-      id
-      provider
-      bundles {
-        recipe {
-          repository {
-            ...RepoFragment
-            tags {
-              tag
-            }
-          }
-        }
-      }
-    }
-  }
-  ${RepoFragment}
-`
-
 export const InstallationFragment = gql`
   fragment InstallationFragment on Installation {
     id

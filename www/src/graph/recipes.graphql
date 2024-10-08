@@ -152,8 +152,8 @@ query GetStack($name: String!, $provider: Provider!) {
   }
 }
 
-query ListStacks($featured: Boolean, $cursor: String) {
-  stacks(first: 100, after: $cursor, featured: $featured) {
+query ListStacks($first: Int = 100, $featured: Boolean, $cursor: String) {
+  stacks(first: $first, after: $cursor, featured: $featured) {
     edges {
       node {
         ...Stack

@@ -5814,6 +5814,7 @@ export type GetStackQueryVariables = Exact<{
 export type GetStackQuery = { __typename?: 'RootQueryType', stack?: { __typename?: 'Stack', id: string, name: string, displayName?: string | null, description?: string | null, featured?: boolean | null, creator?: { __typename?: 'User', id: string, name: string } | null, collections?: Array<{ __typename?: 'StackCollection', id: string, provider: Provider, bundles?: Array<{ __typename?: 'StackRecipe', recipe: { __typename?: 'Recipe', repository?: { __typename?: 'Repository', id: string, name: string, notes?: string | null, description?: string | null, documentation?: string | null, icon?: string | null, darkIcon?: string | null, private?: boolean | null, trending?: boolean | null, verified?: boolean | null, category?: Category | null, tags?: Array<{ __typename?: 'Tag', tag: string } | null> | null, docs?: Array<{ __typename?: 'FileContent', content: string, path: string } | null> | null, oauthSettings?: { __typename?: 'OauthSettings', uriFormat: string, authMethod: OidcAuthMethod } | null, publisher?: { __typename?: 'Publisher', id?: string | null, name: string, phone?: string | null, avatar?: string | null, description?: string | null, backgroundColor?: string | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null, address?: { __typename?: 'Address', line1?: string | null, line2?: string | null, city?: string | null, country?: string | null, state?: string | null, zip?: string | null } | null } | null, recipes?: Array<{ __typename?: 'Recipe', name: string, provider?: Provider | null, description?: string | null } | null> | null } | null } } | null> | null } | null> | null } | null };
 
 export type ListStacksQueryVariables = Exact<{
+  first?: InputMaybe<Scalars['Int']['input']>;
   featured?: InputMaybe<Scalars['Boolean']['input']>;
   cursor?: InputMaybe<Scalars['String']['input']>;
 }>;
@@ -9789,8 +9790,8 @@ export type GetStackLazyQueryHookResult = ReturnType<typeof useGetStackLazyQuery
 export type GetStackSuspenseQueryHookResult = ReturnType<typeof useGetStackSuspenseQuery>;
 export type GetStackQueryResult = Apollo.QueryResult<GetStackQuery, GetStackQueryVariables>;
 export const ListStacksDocument = gql`
-    query ListStacks($featured: Boolean, $cursor: String) {
-  stacks(first: 100, after: $cursor, featured: $featured) {
+    query ListStacks($first: Int = 100, $featured: Boolean, $cursor: String) {
+  stacks(first: $first, after: $cursor, featured: $featured) {
     edges {
       node {
         ...Stack
@@ -9812,6 +9813,7 @@ export const ListStacksDocument = gql`
  * @example
  * const { data, loading, error } = useListStacksQuery({
  *   variables: {
+ *      first: // value for 'first'
  *      featured: // value for 'featured'
  *      cursor: // value for 'cursor'
  *   },

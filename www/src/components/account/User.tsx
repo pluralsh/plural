@@ -45,7 +45,7 @@ export function UserInfo({
         size="xsmall"
         hue={hue}
       />
-      <Box>
+      <Box align="start">
         <Span fontWeight="bold">{name}</Span>
         <Span
           color="text-light"

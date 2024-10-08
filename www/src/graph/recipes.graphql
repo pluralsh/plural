@@ -90,15 +90,19 @@ fragment Stack on Stack {
     name
   }
   collections {
-    id
-    provider
-    bundles {
-      recipe {
-        repository {
-          ...Repo
-          tags {
-            tag
-          }
+   ...StackCollection
+  }
+}
+
+fragment StackCollection on StackCollection {
+  id
+  provider
+  bundles {
+    recipe {
+      repository {
+        ...Repo
+        tags {
+          tag
         }
       }
     }

@@ -5588,6 +5588,15 @@ export type OidcProviderFragment = { __typename?: 'OidcProvider', id: string, cl
 
 export type OAuthInfoFragment = { __typename?: 'OauthInfo', provider: OauthProvider, authorizeUrl: string };
 
+export type RepositoryFragment = { __typename?: 'Repository', name: string, icon?: string | null, darkIcon?: string | null };
+
+export type OidcConsentQueryVariables = Exact<{
+  challenge: Scalars['String']['input'];
+}>;
+
+
+export type OidcConsentQuery = { __typename?: 'RootQueryType', oidcConsent?: { __typename?: 'OidcStepResponse', repository?: { __typename?: 'Repository', name: string, icon?: string | null, darkIcon?: string | null } | null, consent?: { __typename?: 'ConsentRequest', requestedScope?: Array<string | null> | null, skip?: boolean | null } | null } | null };
+
 export type LimitFragment = { __typename?: 'Limit', dimension: string, quantity: number };
 
 export type LineItemFragment = { __typename?: 'LineItem', name: string, dimension: string, cost: number, period?: string | null, type?: PlanType | null };
@@ -7083,6 +7092,13 @@ export const OAuthInfoFragmentDoc = gql`
     fragment OAuthInfo on OauthInfo {
   provider
   authorizeUrl
+}
+    `;
+export const RepositoryFragmentDoc = gql`
+    fragment Repository on Repository {
+  name
+  icon
+  darkIcon
 }
     `;
 export const SubscriptionFragmentDoc = gql`
@@ -8802,6 +8818,52 @@ export function useCreateKeyBackupMutation(baseOptions?: Apollo.MutationHookOpti
 export type CreateKeyBackupMutationHookResult = ReturnType<typeof useCreateKeyBackupMutation>;
 export type CreateKeyBackupMutationResult = Apollo.MutationResult<CreateKeyBackupMutation>;
 export type CreateKeyBackupMutationOptions = Apollo.BaseMutationOptions<CreateKeyBackupMutation, CreateKeyBackupMutationVariables>;
+export const OidcConsentDocument = gql`
+    query OIDCConsent($challenge: String!) {
+  oidcConsent(challenge: $challenge) {
+    repository {
+      ...Repository
+    }
+    consent {
+      requestedScope
+      skip
+    }
+  }
+}
+    ${RepositoryFragmentDoc}`;
+
+/**
+ * __useOidcConsentQuery__
+ *
+ * To run a query within a React component, call `useOidcConsentQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOidcConsentQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOidcConsentQuery({
+ *   variables: {
+ *      challenge: // value for 'challenge'
+ *   },
+ * });
+ */
+export function useOidcConsentQuery(baseOptions: Apollo.QueryHookOptions<OidcConsentQuery, OidcConsentQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<OidcConsentQuery, OidcConsentQueryVariables>(OidcConsentDocument, options);
+      }
+export function useOidcConsentLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<OidcConsentQuery, OidcConsentQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<OidcConsentQuery, OidcConsentQueryVariables>(OidcConsentDocument, options);
+        }
+export function useOidcConsentSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<OidcConsentQuery, OidcConsentQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<OidcConsentQuery, OidcConsentQueryVariables>(OidcConsentDocument, options);
+        }
+export type OidcConsentQueryHookResult = ReturnType<typeof useOidcConsentQuery>;
+export type OidcConsentLazyQueryHookResult = ReturnType<typeof useOidcConsentLazyQuery>;
+export type OidcConsentSuspenseQueryHookResult = ReturnType<typeof useOidcConsentSuspenseQuery>;
+export type OidcConsentQueryResult = Apollo.QueryResult<OidcConsentQuery, OidcConsentQueryVariables>;
 export const SubscriptionDocument = gql`
     query Subscription {
   account {
@@ -11579,6 +11641,7 @@ export const namedOperations = {
     Invite: 'Invite',
     KeyBackups: 'KeyBackups',
     KeyBackup: 'KeyBackup',
+    OIDCConsent: 'OIDCConsent',
     Subscription: 'Subscription',
     Cards: 'Cards',
     Invoices: 'Invoices',
@@ -11712,6 +11775,7 @@ export const namedOperations = {
     PageInfo: 'PageInfo',
     OIDCProvider: 'OIDCProvider',
     OAuthInfo: 'OAuthInfo',
+    Repository: 'Repository',
     Limit: 'Limit',
     LineItem: 'LineItem',
     ServiceLevel: 'ServiceLevel',

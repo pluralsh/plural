@@ -1,6 +1,6 @@
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useMutation, useQuery } from '@apollo/client'
-import queryString from 'query-string'
+import queryString, { ParsedQuery } from 'query-string'
 import { ArrowRightLeftIcon, Button, IconFrame } from '@pluralsh/design-system'
 import { useCallback } from 'react'
 import { A, Flex, Span } from 'honorable'
@@ -10,12 +10,13 @@ import { useTheme } from 'styled-components'
 import { LoginPortal } from '../users/LoginPortal'
 import { GqlError } from '../utils/Alert'
 import { PLURAL_MARK, PLURAL_MARK_WHITE } from '../constants'
-import { useMeQuery } from '../../generated/graphql'
+import { useMeQuery, useOidcConsentQuery } from '../../generated/graphql'
 import { clearLocalStorage } from '../../helpers/localStorage'
 
 import LoadingIndicator from '../utils/LoadingIndicator'
 
-import { GET_OIDC_CONSENT, OAUTH_CONSENT } from './queries'
+import { OAUTH_CONSENT } from './queries'
+import { isEmpty } from 'lodash'
 
 function Icon({ icon, darkIcon }: any) {
   const dark = useTheme().mode !== 'light'
@@ -36,12 +37,22 @@ function Icon({ icon, darkIcon }: any) {
   )
 }
 
+const getChallenge = (parsedQueryString: ParsedQuery): string => {
+  const challenge = parsedQueryString.consent_challenge
+
+  if (Array.isArray(challenge)) {
+    return !isEmpty(challenge) ? challenge[0] ?? '' : ''
+  }
+
+  return challenge ?? ''
+}
+
 export function OAuthConsent() {
   const location = useLocation()
   const navigate = useNavigate()
   const { data: userData, loading: userLoading } = useMeQuery()
-  const { consent_challenge: challenge } = queryString.parse(location.search)
-  const { data } = useQuery(GET_OIDC_CONSENT, { variables: { challenge } })
+  const challenge = getChallenge(queryString.parse(location.search))
+  const { data } = useOidcConsentQuery({ variables: { challenge } })
   const repository = data?.oidcConsent?.repository
   const consent = data?.oidcConsent?.consent
   const [mutation, { loading, error }] = useMutation(OAUTH_CONSENT, {
@@ -80,11 +91,15 @@ export function OAuthConsent() {
             icon={PLURAL_MARK}
             darkIcon={PLURAL_MARK_WHITE}
           />
-          <ArrowRightLeftIcon size={18} />
-          <Icon
-            icon={repository.icon}
-            darkIcon={repository.darkIcon}
-          />
+          {repository && (
+            <>
+              <ArrowRightLeftIcon size={18} />
+              <Icon
+                icon={repository.icon}
+                darkIcon={repository.darkIcon}
+              />
+            </>
+          )}
         </Flex>
 
         <Flex
@@ -98,7 +113,9 @@ export function OAuthConsent() {
             size="medium"
             textAlign="center"
           >
-            {StartCase(repository.name)} requires access
+            {repository?.name
+              ? `${StartCase(repository.name)} requires access`
+              : 'Access required'}
           </Span>
           <Span
             body1

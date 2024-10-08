@@ -30,3 +30,22 @@ fragment OAuthInfo on OauthInfo {
   provider
   authorizeUrl
 }
+
+
+fragment Repository on Repository {
+  name
+  icon
+  darkIcon
+}
+
+query OIDCConsent($challenge: String!) {
+  oidcConsent(challenge: $challenge) {
+    repository {
+      ...Repository
+    }
+    consent {
+      requestedScope
+      skip
+    }
+  }
+}

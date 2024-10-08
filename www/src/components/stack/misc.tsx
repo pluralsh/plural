@@ -1,4 +1,7 @@
-import { StackCollection } from '../../generated/graphql'
+import {
+  StackCollection,
+  StackCollectionFragment,
+} from '../../generated/graphql'
 import InstallAppButton from '../utils/InstallAppButton'
 import { RecipeSubset } from '../utils/recipeHelpers'
 
@@ -9,7 +12,9 @@ export function StackActions({
   recipes,
 }: StackContext & { recipes?: RecipeSubset[] }) {
   const filteredCollections = stack?.collections?.filter(
-    (sC: StackCollection | null | undefined): sC is StackCollection => !!sC
+    (
+      sC: StackCollectionFragment | null | undefined
+    ): sC is StackCollectionFragment => !!sC
   )
 
   const apps = filteredCollections?.[0].bundles

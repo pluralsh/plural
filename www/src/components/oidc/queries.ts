@@ -19,11 +19,3 @@ export const UPDATE_PROVIDER = gql`
   }
   ${OIDCProvider}
 `
-
-export const OAUTH_CONSENT = gql`
-  mutation Consent($challenge: String!, $scopes: [String]) {
-    oauthConsent(challenge: $challenge, scopes: $scopes) {
-      redirectTo
-    }
-  }
-`

@@ -49,3 +49,9 @@ query OIDCConsent($challenge: String!) {
     }
   }
 }
+
+mutation Consent($challenge: String!, $scopes: [String]) {
+  oauthConsent(challenge: $challenge, scopes: $scopes) {
+    redirectTo
+  }
+}

@@ -5597,6 +5597,14 @@ export type OidcConsentQueryVariables = Exact<{
 
 export type OidcConsentQuery = { __typename?: 'RootQueryType', oidcConsent?: { __typename?: 'OidcStepResponse', repository?: { __typename?: 'Repository', name: string, icon?: string | null, darkIcon?: string | null } | null, consent?: { __typename?: 'ConsentRequest', requestedScope?: Array<string | null> | null, skip?: boolean | null } | null } | null };
 
+export type ConsentMutationVariables = Exact<{
+  challenge: Scalars['String']['input'];
+  scopes?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>> | InputMaybe<Scalars['String']['input']>>;
+}>;
+
+
+export type ConsentMutation = { __typename?: 'RootMutationType', oauthConsent?: { __typename?: 'OauthResponse', redirectTo: string } | null };
+
 export type LimitFragment = { __typename?: 'Limit', dimension: string, quantity: number };
 
 export type LineItemFragment = { __typename?: 'LineItem', name: string, dimension: string, cost: number, period?: string | null, type?: PlanType | null };
@@ -8864,6 +8872,40 @@ export type OidcConsentQueryHookResult = ReturnType<typeof useOidcConsentQuery>;
 export type OidcConsentLazyQueryHookResult = ReturnType<typeof useOidcConsentLazyQuery>;
 export type OidcConsentSuspenseQueryHookResult = ReturnType<typeof useOidcConsentSuspenseQuery>;
 export type OidcConsentQueryResult = Apollo.QueryResult<OidcConsentQuery, OidcConsentQueryVariables>;
+export const ConsentDocument = gql`
+    mutation Consent($challenge: String!, $scopes: [String]) {
+  oauthConsent(challenge: $challenge, scopes: $scopes) {
+    redirectTo
+  }
+}
+    `;
+export type ConsentMutationFn = Apollo.MutationFunction<ConsentMutation, ConsentMutationVariables>;
+
+/**
+ * __useConsentMutation__
+ *
+ * To run a mutation, you first call `useConsentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useConsentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [consentMutation, { data, loading, error }] = useConsentMutation({
+ *   variables: {
+ *      challenge: // value for 'challenge'
+ *      scopes: // value for 'scopes'
+ *   },
+ * });
+ */
+export function useConsentMutation(baseOptions?: Apollo.MutationHookOptions<ConsentMutation, ConsentMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ConsentMutation, ConsentMutationVariables>(ConsentDocument, options);
+      }
+export type ConsentMutationHookResult = ReturnType<typeof useConsentMutation>;
+export type ConsentMutationResult = Apollo.MutationResult<ConsentMutation>;
+export type ConsentMutationOptions = Apollo.BaseMutationOptions<ConsentMutation, ConsentMutationVariables>;
 export const SubscriptionDocument = gql`
     query Subscription {
   account {
@@ -11688,6 +11730,7 @@ export const namedOperations = {
     CreateInvite: 'CreateInvite',
     DeleteKeyBackup: 'DeleteKeyBackup',
     CreateKeyBackup: 'CreateKeyBackup',
+    Consent: 'Consent',
     UpdateAccountBilling: 'UpdateAccountBilling',
     CreatePlatformSubscription: 'CreatePlatformSubscription',
     DowngradeToFreePlanMutation: 'DowngradeToFreePlanMutation',

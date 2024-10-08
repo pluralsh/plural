@@ -10,12 +10,13 @@ import { useTheme } from 'styled-components'
 import { LoginPortal } from '../users/LoginPortal'
 import { GqlError } from '../utils/Alert'
 import { PLURAL_MARK, PLURAL_MARK_WHITE } from '../constants'
-import { useMeQuery, useOidcConsentQuery } from '../../generated/graphql'
+import {
+  useConsentMutation,
+  useMeQuery,
+  useOidcConsentQuery,
+} from '../../generated/graphql'
 import { clearLocalStorage } from '../../helpers/localStorage'
-
 import LoadingIndicator from '../utils/LoadingIndicator'
-
-import { OAUTH_CONSENT } from './queries'
 import { isEmpty } from 'lodash'
 
 function Icon({ icon, darkIcon }: any) {
@@ -55,13 +56,15 @@ export function OAuthConsent() {
   const { data } = useOidcConsentQuery({ variables: { challenge } })
   const repository = data?.oidcConsent?.repository
   const consent = data?.oidcConsent?.consent
-  const [mutation, { loading, error }] = useMutation(OAUTH_CONSENT, {
+  const [mutation, { loading, error }] = useConsentMutation({
     variables: {
       challenge,
       scopes: consent?.requestedScope || ['profile', 'openid'],
     },
-    onCompleted: ({ oauthConsent: { redirectTo } }) => {
-      window.location = redirectTo
+    onCompleted: ({ oauthConsent }) => {
+      if (oauthConsent?.redirectTo) {
+        window.location.href = oauthConsent.redirectTo
+      }
     },
   })
 

@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@apollo/client'
+import { useMutation } from '@apollo/client'
 import { Div, Flex, P } from 'honorable'
 import moment from 'moment'
 import { AppIcon, Button, Card, Markdown } from '@pluralsh/design-system'

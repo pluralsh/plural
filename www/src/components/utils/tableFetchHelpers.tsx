@@ -4,6 +4,7 @@ import { InputMaybe } from 'generated/graphql'
 import { usePrevious } from 'honorable'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { extendConnection, updateNestedConnection } from 'utils/graphql'
+
 import { POLL_INTERVAL } from './useFetchPaginatedData'
 
 type FetchSliceOptions = {

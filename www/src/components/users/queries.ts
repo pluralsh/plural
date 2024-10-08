@@ -7,7 +7,6 @@ import {
   TokenAuditFragment,
   TokenFragment,
   UserFragment,
-  WebhookFragment,
 } from '../../models/user'
 import { CardFragment } from '../../models/payments'
 import { PageInfo } from '../../models/misc'

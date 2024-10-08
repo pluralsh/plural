@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client'
 
-import { AuditFragment, OidcLoginFragment } from '../../models/account'
+import { OidcLoginFragment } from '../../models/account'
 import { PageInfo } from '../../models/misc'
 
 export const LOGINS_Q = gql`

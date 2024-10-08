@@ -31,7 +31,6 @@ fragment OAuthInfo on OauthInfo {
   authorizeUrl
 }
 
-
 fragment Repository on Repository {
   name
   icon

@@ -1,6 +1,5 @@
 import { gql } from '@apollo/client'
 
-import { PageInfo } from '../../models/misc'
 import { PublisherFragment } from '../../models/user'
 
 export const PUBLISHER_QUERY = gql`

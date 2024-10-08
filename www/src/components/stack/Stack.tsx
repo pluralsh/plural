@@ -5,8 +5,8 @@ import {
   Tab,
   TabList,
   TabPanel,
-  useSetBreadcrumbs,
   VerifiedIcon,
+  useSetBreadcrumbs,
 } from '@pluralsh/design-system'
 import { useMemo, useRef } from 'react'
 
@@ -23,7 +23,6 @@ import { ProvidersSidecar } from '../utils/recipeHelpers'
 
 import {
   Provider,
-  StackCollection,
   StackCollectionFragment,
   useGetStackQuery,
 } from '../../generated/graphql'
@@ -31,6 +30,7 @@ import {
 import LoadingIndicator from '../utils/LoadingIndicator'
 
 import { MARKETPLACE_CRUMB } from '../marketplace/Marketplace'
+
 import { StackContext } from './types'
 
 const DIRECTORY = [{ label: 'Stack applications', path: '' }]

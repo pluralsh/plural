@@ -1,16 +1,17 @@
-import { useQuery } from '@apollo/client'
 import { H1 } from 'honorable'
 import { Divider, StackCard } from '@pluralsh/design-system'
 import { useNavigate } from 'react-router-dom'
 import isEmpty from 'lodash/isEmpty'
 import { useTheme } from 'styled-components'
 
+import { useMemo } from 'react'
+
 import { getRepoIcon } from '../repository/misc'
 
-import { CardGrid } from './CardGrid'
 import { StackFragment, useListStacksQuery } from '../../generated/graphql'
 import { mapExistingNodes } from '../../utils/graphql'
-import { useMemo } from 'react'
+
+import { CardGrid } from './CardGrid'
 
 const hues = ['blue', 'green', 'yellow', 'red'] as const
 

@@ -1,7 +1,4 @@
-import {
-  StackCollection,
-  StackCollectionFragment,
-} from '../../generated/graphql'
+import { StackCollectionFragment } from '../../generated/graphql'
 import InstallAppButton from '../utils/InstallAppButton'
 import { RecipeSubset } from '../utils/recipeHelpers'
 

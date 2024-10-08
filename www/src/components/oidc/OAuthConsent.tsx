@@ -6,6 +6,8 @@ import { A, Flex, Span } from 'honorable'
 import StartCase from 'lodash/startCase'
 import { useTheme } from 'styled-components'
 
+import { isEmpty } from 'lodash'
+
 import { LoginPortal } from '../users/LoginPortal'
 import { GqlError } from '../utils/Alert'
 import { PLURAL_MARK, PLURAL_MARK_WHITE } from '../constants'
@@ -16,7 +18,6 @@ import {
 } from '../../generated/graphql'
 import { clearLocalStorage } from '../../helpers/localStorage'
 import LoadingIndicator from '../utils/LoadingIndicator'
-import { isEmpty } from 'lodash'
 
 function Icon({
   icon,

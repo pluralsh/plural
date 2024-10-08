@@ -90,7 +90,7 @@ fragment Stack on Stack {
     name
   }
   collections {
-   ...StackCollection
+    ...StackCollection
   }
 }
 

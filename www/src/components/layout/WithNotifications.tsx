@@ -12,11 +12,9 @@ import {
   OnboardingChecklistState,
   RootMutationType,
   RootMutationTypeUpdateUserArgs,
-  RootQueryType,
   useNotificationsQuery,
 } from '../../generated/graphql'
 import { OnboardingChecklistContext } from '../../contexts/OnboardingChecklistContext'
-import usePaginatedQuery from '../../hooks/usePaginatedQuery'
 import { UPDATE_USER } from '../users/queries'
 import InfiniteScroller from '../utils/InfiniteScroller'
 import CurrentUserContext from '../../contexts/CurrentUserContext'

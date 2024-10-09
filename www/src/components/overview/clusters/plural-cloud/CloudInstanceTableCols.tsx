@@ -5,6 +5,7 @@ import {
   ConsoleIcon,
   Flex,
   ListBoxItem,
+  Tooltip,
 } from '@pluralsh/design-system'
 import { createColumnHelper } from '@tanstack/react-table'
 import { ProviderIcon } from 'components/utils/ProviderIcon'
@@ -194,18 +195,19 @@ const ColActions = columnHelper.accessor((instance) => instance, {
           <ListBoxItem
             key={MenuItemKey.EditSize}
             label="Edit instance size"
-            textValue="Edit instance size"
           />
           <ListBoxItem
             key={MenuItemKey.EditOidc}
-            label="Edit cluster managers"
-            textValue="Edit cluster managers"
+            label={
+              <Tooltip label="Allow other team members to reconfigure this console instance">
+                <span>Edit cluster managers</span>
+              </Tooltip>
+            }
           />
           <ListBoxItem
             key={MenuItemKey.Delete}
             destructive
             label="Delete instance"
-            textValue="Delete instance"
           />
         </MoreMenu>
         {/* Modals */}

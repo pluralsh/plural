@@ -4025,9 +4025,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pluralsh/design-system@npm:3.74.3":
-  version: 3.74.3
-  resolution: "@pluralsh/design-system@npm:3.74.3"
+"@pluralsh/design-system@npm:3.74.4":
+  version: 3.74.4
+  resolution: "@pluralsh/design-system@npm:3.74.4"
   dependencies:
     "@floating-ui/react-dom-interactions": 0.13.3
     "@loomhq/loom-embed": 1.5.0
@@ -4073,7 +4073,7 @@ __metadata:
     react-dom: ">=18.3.1"
     react-transition-group: ">=4.4.5"
     styled-components: ">=6.1.13"
-  checksum: 8d9246768e5f2cb42011aff03b4e54d25d0eb9962f084e849219502567a491d2f051dd7cd8869ac4dc4531f9956cb7e0daf767f42bd4843797d68523733a937d
+  checksum: b50d9b7f2fda9e769911de1895ed83318771e7fae74fb6c4c3ce8ca88562f4890d4859e806af1bf8fc3175841ca1639e7b64376d1e6d7966d980a8c2e5fcd01a
   languageName: node
   linkType: hard
 
@@ -20092,7 +20092,7 @@ __metadata:
     "@nivo/geo": 0.83.0
     "@nivo/line": 0.83.0
     "@octokit/core": 4.2.1
-    "@pluralsh/design-system": 3.74.3
+    "@pluralsh/design-system": 3.74.4
     "@pluralsh/eslint-config-typescript": 2.5.150
     "@pluralsh/stylelint-config": 2.0.10
     "@react-spring/web": 9.7.3

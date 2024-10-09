@@ -6,6 +6,7 @@ import {
   FormField,
   Modal,
   Spinner,
+  Tooltip,
 } from '@pluralsh/design-system'
 import {
   BindingInput,
@@ -42,7 +43,7 @@ export function ConsoleInstanceOIDC({
       fallback={
         <Spinner
           size={24}
-          css={{ width: '100%' }}
+          css={{ minWidth: '70px' }}
         />
       }
     >
@@ -51,12 +52,17 @@ export function ConsoleInstanceOIDC({
         renderIndicators={false}
       >
         <>
-          <Button
-            secondary
-            onClick={() => setOpen(true)}
+          <Tooltip
+            placement="top"
+            label="Enable login for your team members for this console instance"
           >
-            OIDC
-          </Button>
+            <Button
+              secondary
+              onClick={() => setOpen(true)}
+            >
+              OIDC
+            </Button>
+          </Tooltip>
           <Modal
             onOpenAutoFocus={(e) => e.preventDefault()}
             open={open}

@@ -15,10 +15,15 @@ import {
 } from '@pluralsh/design-system'
 import { MarkdocContextProvider } from '@pluralsh/design-system/dist/markdoc'
 import { CssBaseline, ThemeProvider, mergeTheme } from 'honorable'
-import styled, { ThemeProvider as StyledThemeProvider } from 'styled-components'
+import styled, {
+  StyleSheetManager,
+  ThemeProvider as StyledThemeProvider,
+} from 'styled-components'
 import { mergeDeep } from '@apollo/client/utilities'
 import mpRecipe from 'honorable-recipe-mp'
 import { GrowthBook, GrowthBookProvider } from '@growthbook/growthbook-react'
+
+import { shouldForwardProp } from './utils/shouldForwardProp'
 
 import { PluralErrorBoundary } from './components/utils/PluralErrorBoundary'
 
@@ -172,31 +177,35 @@ function App() {
       <ApolloProvider client={client}>
         <IntercomProvider appId={INTERCOM_APP_ID}>
           <ThemeProvider theme={honorableTheme}>
-            <StyledThemeProvider theme={mergedStyledTheme}>
-              <GrowthBookProvider growthbook={growthbook as any as GrowthBook}>
-                <CursorPositionProvider>
-                  <MarkdocContextProvider value={{ variant: 'console' }}>
-                    <NavContextProvider>
-                      <OverlayContextProvider>
-                        <BreadcrumbsProvider>
-                          <CssBaseline />
-                          <GlobalStyle />
-                          <Grommet
-                            full
-                            theme={mergedStyledTheme as any as ThemeType}
-                            themeMode="dark"
-                          >
-                            <PluralErrorBoundary>
-                              <RootBoxSC>{routes}</RootBoxSC>
-                            </PluralErrorBoundary>
-                          </Grommet>
-                        </BreadcrumbsProvider>
-                      </OverlayContextProvider>
-                    </NavContextProvider>
-                  </MarkdocContextProvider>
-                </CursorPositionProvider>
-              </GrowthBookProvider>
-            </StyledThemeProvider>
+            <StyleSheetManager shouldForwardProp={shouldForwardProp}>
+              <StyledThemeProvider theme={mergedStyledTheme}>
+                <GrowthBookProvider
+                  growthbook={growthbook as any as GrowthBook}
+                >
+                  <CursorPositionProvider>
+                    <MarkdocContextProvider value={{ variant: 'console' }}>
+                      <NavContextProvider>
+                        <OverlayContextProvider>
+                          <BreadcrumbsProvider>
+                            <CssBaseline />
+                            <GlobalStyle />
+                            <Grommet
+                              full
+                              theme={mergedStyledTheme as any as ThemeType}
+                              themeMode="dark"
+                            >
+                              <PluralErrorBoundary>
+                                <RootBoxSC>{routes}</RootBoxSC>
+                              </PluralErrorBoundary>
+                            </Grommet>
+                          </BreadcrumbsProvider>
+                        </OverlayContextProvider>
+                      </NavContextProvider>
+                    </MarkdocContextProvider>
+                  </CursorPositionProvider>
+                </GrowthBookProvider>
+              </StyledThemeProvider>
+            </StyleSheetManager>
           </ThemeProvider>
         </IntercomProvider>
       </ApolloProvider>

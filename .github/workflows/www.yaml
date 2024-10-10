@@ -18,6 +18,9 @@ jobs:
       security-events: write
       actions: read
     steps:
+      - name: Get current date
+        id: date
+        run: echo "date=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
       - uses: actions/checkout@v3
       - name: Docker meta
         id: meta
@@ -63,6 +66,9 @@ jobs:
           security-checks: 'vuln,secret'
           ignore-unfixed: true
            #severity: 'CRITICAL,HIGH'
+        env:
+          TRIVY_SKIP_DB_UPDATE: true
+          TRIVY_SKIP_JAVA_DB_UPDATE: true
       - name: Upload Trivy scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v2
         with:
@@ -88,6 +94,9 @@ jobs:
           security-checks: 'vuln,secret'
           ignore-unfixed: true
           #severity: 'CRITICAL,HIGH'
+        env:
+          TRIVY_SKIP_DB_UPDATE: true
+          TRIVY_SKIP_JAVA_DB_UPDATE: true
       - name: Upload Trivy scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v2
         with:

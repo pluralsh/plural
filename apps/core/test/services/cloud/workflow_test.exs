@@ -1,5 +1,5 @@
 defmodule Core.Services.Cloud.WorkflowTest do
-  use Core.SchemaCase, async: true
+  use Core.SchemaCase, async: false
   use Mimic
   alias Core.Clients.Console
   alias Core.Services.{Cloud, Cloud.Workflow}
@@ -28,6 +28,7 @@ defmodule Core.Services.Cloud.WorkflowTest do
       expect(Req, :post, fn _, [graphql: {_, %{clusterId: ^cluster_id}}] ->
         {:ok, %Req.Response{status: 200, body: %{"data" => %{"createServiceDeployment" => %{"id" => Ecto.UUID.generate()}}}}}
       end)
+      expect(DNS, :resolve, fn _ -> {:ok, ['some-ip']} end)
 
       {:ok, %{external_id: svc_id} = instance} = Workflow.provision(instance)
 

@@ -129,7 +129,7 @@ defmodule Core.Clients.Hydra do
     do: {:ok, Poison.decode!(body, as: type)}
   defp handle_response(error, _) do
     Logger.error "Failed to call hydra: #{inspect(error)}"
-    {:error, :unauthorized}
+    {:error, hydra_error(error)}
   end
 
   defp user_details(user) do
@@ -155,6 +155,10 @@ defmodule Core.Clients.Hydra do
   defp public_url(path), do: "#{conf(:hydra_public)}#{path}"
 
   defp conf(key), do: Application.get_env(:core, __MODULE__)[key]
+
+  defp hydra_error({:error, _}), do: "internal network error"
+  defp hydra_error({:ok, %HTTPoison.Response{status_code: code, body: body}}),
+    do: "hydra error: code=#{code}, body=#{body}"
 
   defp headers(), do: [{"accept", "application/json"}, {"content-type", "application/json"}]
 end

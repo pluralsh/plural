@@ -14,7 +14,11 @@ import {
   useThemeColorMode,
 } from '@pluralsh/design-system'
 import { MarkdocContextProvider } from '@pluralsh/design-system/dist/markdoc'
-import { CssBaseline, ThemeProvider, mergeTheme } from 'honorable'
+import {
+  CssBaseline,
+  ThemeProvider as HonorableThemeProvider,
+  mergeTheme,
+} from 'honorable'
 import styled, {
   StyleSheetManager,
   ThemeProvider as StyledThemeProvider,
@@ -176,8 +180,8 @@ function App() {
     <Suspense>
       <ApolloProvider client={client}>
         <IntercomProvider appId={INTERCOM_APP_ID}>
-          <ThemeProvider theme={honorableTheme}>
-            <StyleSheetManager shouldForwardProp={shouldForwardProp}>
+          <StyleSheetManager shouldForwardProp={shouldForwardProp}>
+            <HonorableThemeProvider theme={honorableTheme}>
               <StyledThemeProvider theme={mergedStyledTheme}>
                 <GrowthBookProvider
                   growthbook={growthbook as any as GrowthBook}
@@ -205,8 +209,8 @@ function App() {
                   </CursorPositionProvider>
                 </GrowthBookProvider>
               </StyledThemeProvider>
-            </StyleSheetManager>
-          </ThemeProvider>
+            </HonorableThemeProvider>
+          </StyleSheetManager>
         </IntercomProvider>
       </ApolloProvider>
     </Suspense>

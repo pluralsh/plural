@@ -1,7 +1,9 @@
 import { Flex } from 'honorable'
 
-export function ResponsiveLayoutContentContainer(props: any) {
-  return (
+import { forwardRef } from 'react'
+
+export const ResponsiveLayoutContentContainer = forwardRef(
+  (props: any, ref) => (
     <Flex
       direction="column"
       flexGrow={1}
@@ -15,7 +17,8 @@ export function ResponsiveLayoutContentContainer(props: any) {
       width-desktopLarge-up={896}
       overflowY="auto"
       overflowX="hidden"
+      ref={ref}
       {...props}
     />
   )
-}
+)

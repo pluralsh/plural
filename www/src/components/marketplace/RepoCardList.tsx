@@ -23,9 +23,6 @@ export function RepoCardList({
           to={`/repository/${repository.name}${
             urlParams ? `?${urlParams}` : ''
           }`}
-          color="text"
-          textDecoration="none"
-          width="100%"
           title={repository.name}
           imageUrl={getRepoIcon(repository, theme.mode)}
           publisher={repository.publisher?.name}
@@ -50,4 +47,5 @@ const FixedRepositoryCard = styled(RepositoryCard)(({ theme }) => ({
   width: '100%',
   position: 'relative',
   textDecoration: 'none',
+  color: theme.colors.text,
 }))

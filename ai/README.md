@@ -13,6 +13,18 @@ The server is built with FastAPI. To start the server by running `uvicorn main:a
 Swaggger Documentation: /docs
 Chat endpoint: /chat
 
+The storage context is pulled from s3 so the `main.py` script needs to know where to find it and how to authenticate.
+
+- Auth:
+    IRSA should work, otherwise you'll need to set the standard AWS env vars:
+    - `AWS_ACCESS_KEY_ID`
+    - `AWS_SECRET_ACCESS_KEY`
+- Path:
+    The script expects the AWS path in `PLURAL_AI_INDEX_S3_PATH` in the format `<bucket-name>/<path>`.
+    Defaults to `plural-assets/dagster/plural-ai/vector_store_index`
+
+To be safe `AWS_DEFAULT_REGION` should be set to the region of the bucket.
+
 ## Running scraper.py
 
 The scraper currently incorporates three datasources:

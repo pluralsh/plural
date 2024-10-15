@@ -27,8 +27,6 @@ export default function AppMetadataPanel({
   return (
     <InfoPanel
       title="Metadata"
-      width={388}
-      marginTop="172px"
       contentHeight={140}
       contentPadding={16}
       contentGap={16}

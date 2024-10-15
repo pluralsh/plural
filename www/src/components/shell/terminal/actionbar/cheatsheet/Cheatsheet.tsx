@@ -1,17 +1,13 @@
-import { Layer } from 'grommet'
-import { Card, CloseIcon, IconFrame } from '@pluralsh/design-system'
+import { Card, CloseIcon, IconFrame, Modal } from '@pluralsh/design-system'
 import { Div, Flex, Span } from 'honorable'
 
 import { CheatsheetCommand } from './CheatsheetCommand'
 
 function Cheatsheet({ onClose }) {
   return (
-    <Layer
-      plain
-      animation="fadeIn"
-      position="bottom-right"
-      modal={false}
-      margin={{ bottom: '56x' }}
+    <Modal
+      open
+      onOpenChange={onClose}
     >
       <Card
         fillLevel={2}
@@ -50,7 +46,7 @@ function Cheatsheet({ onClose }) {
         </Flex>
         <CheatsheetCommands />
       </Card>
-    </Layer>
+    </Modal>
   )
 }
 

@@ -1,25 +1,19 @@
-import { useCallback, useContext, useEffect, useState } from 'react'
 import { useMutation } from '@apollo/client'
-import { Box, Layer, Text } from 'grommet'
-import {
-  CloseIcon,
-  ErrorIcon,
-  IconFrame,
-  ReloadIcon,
-} from '@pluralsh/design-system'
-import moment from 'moment'
+import { Button, Flex, SendMessageIcon, Toast } from '@pluralsh/design-system'
+import { Box } from 'grommet'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 
 import { useTheme } from 'styled-components'
 
-import { useIsCurrentlyOnboarding } from '../shell/hooks/useOnboarded'
 import CurrentUserContext from '../../contexts/CurrentUserContext'
+import { useIsCurrentlyOnboarding } from '../shell/hooks/useOnboarded'
 import { Alert, AlertStatus, GqlError } from '../utils/Alert'
 import LoadingIndicator from '../utils/LoadingIndicator'
 
+import { LoginPortal } from './LoginPortal'
 import { CREATE_RESET_TOKEN, REALIZE_TOKEN } from './queries'
 import { ResetTokenType } from './types'
-import { LoginPortal } from './LoginPortal'
 
 export function EmailConfirmed() {
   const { id } = useParams()
@@ -77,74 +71,31 @@ export function VerifyEmailConfirmed() {
     return null
 
   return (
-    <Layer
-      plain
-      modal={false}
+    <Toast
+      heading="Email not confirmed"
+      show={open}
+      onClose={close}
       position="top"
-      margin={{ top: 'medium' }}
-      onEsc={close}
-      onClickOutside={close}
+      severity="danger"
+      css={{ marginTop: theme.spacing.medium }}
     >
-      <Box
-        round="xsmall"
-        direction="row"
+      <Flex
         gap="small"
-        background={theme.colors['fill-two']}
-        color={theme.colors.text}
-        border={{ color: theme.colors['fill-three'] }}
-        pad="small"
-        align="center"
+        direction="column"
       >
-        <Box
-          flex={false}
-          align="center"
+        <span>
+          Please confirm your email address to continue using your Plural
+          account.
+        </span>
+        <Button
+          secondary
+          startIcon={<SendMessageIcon />}
+          onClick={() => mutation()}
+          css={{ width: 'fit-content' }}
         >
-          <ErrorIcon
-            size={24}
-            color="error"
-          />
-        </Box>
-        <Box
-          fill="horizontal"
-          align="center"
-        >
-          <Text
-            size="small"
-            weight={500}
-          >
-            Your email is not confirmed
-          </Text>
-          {me.emailConfirmBy && (
-            <Text size="small">
-              you have {moment(me.emailConfirmBy).fromNow(true)} to confirm your
-              email
-            </Text>
-          )}
-        </Box>
-        <Box
-          flex={false}
-          gap="xsmall"
-          direction="row"
-          align="center"
-        >
-          <IconFrame
-            icon={<ReloadIcon />}
-            clickable
-            textValue="Resend"
-            tooltip
-            tooltipProps={{ placement: 'bottom' }}
-            onClick={() => mutation()}
-          />
-          <IconFrame
-            icon={<CloseIcon />}
-            clickable
-            textValue="Close"
-            tooltip
-            tooltipProps={{ placement: 'bottom' }}
-            onClick={() => setOpen(false)}
-          />
-        </Box>
-      </Box>
-    </Layer>
+          Resend confirmation email
+        </Button>
+      </Flex>
+    </Toast>
   )
 }

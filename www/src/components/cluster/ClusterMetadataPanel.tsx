@@ -27,8 +27,6 @@ export default function ClusterMetadataPanel({
   return (
     <InfoPanel
       title="Metadata"
-      width={388}
-      marginTop="155px"
       contentHeight={442}
       contentPadding={16}
       contentGap={16}

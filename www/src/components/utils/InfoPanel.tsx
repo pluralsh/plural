@@ -1,13 +1,10 @@
-import { Card, CloseIcon, IconFrame } from '@pluralsh/design-system'
-import { Layer } from 'grommet'
+import { CloseIcon, IconFrame, Modal } from '@pluralsh/design-system'
 import { Div, Flex, Span } from 'honorable'
 import { ReactNode } from 'react'
 
 type InfoPanelProps = {
   title: string
   onClose?: () => void
-  width?: number | string
-  marginTop?: string
   contentHeight?: number | string
   contentPadding?: number | string
   contentGap?: number | string
@@ -17,58 +14,44 @@ type InfoPanelProps = {
 export function InfoPanel({
   title,
   onClose = () => {},
-  width = 420,
-  marginTop = '0',
   contentHeight = 300,
   contentPadding = 0,
   contentGap = 0,
   children,
 }: InfoPanelProps) {
   return (
-    <Layer
-      plain
-      onClickOutside={onClose}
-      position="top-right"
-      margin={{ top: marginTop }}
+    <Modal
+      open
+      onOpenChange={onClose}
     >
-      <Card
-        fillLevel={2}
-        width={width}
-        overflow="hidden"
-        margin="large"
-      >
-        <Div
-          padding="medium"
-          borderBottom="1px solid border-fill-two"
-        >
-          <Flex
-            align="center"
-            justify="space-between"
-          >
-            <Span
-              fontSize={18}
-              fontWeight={500}
-              lineHeight="24px"
-            >
-              {title}
-            </Span>
-            <IconFrame
-              clickable
-              icon={<CloseIcon />}
-              onClick={(_) => onClose()}
-            />
-          </Flex>
-        </Div>
+      <Div borderBottom="1px solid border-fill-two">
         <Flex
-          direction="column"
-          overflowY="auto"
-          gap={contentGap}
-          padding={contentPadding}
-          height={contentHeight}
+          align="center"
+          justify="space-between"
         >
-          {children}
+          <Span
+            fontSize={18}
+            fontWeight={500}
+            lineHeight="24px"
+          >
+            {title}
+          </Span>
+          <IconFrame
+            clickable
+            icon={<CloseIcon />}
+            onClick={(_) => onClose()}
+          />
         </Flex>
-      </Card>
-    </Layer>
+      </Div>
+      <Flex
+        direction="column"
+        overflowY="auto"
+        gap={contentGap}
+        padding={contentPadding}
+        height={contentHeight}
+      >
+        {children}
+      </Flex>
+    </Modal>
   )
 }

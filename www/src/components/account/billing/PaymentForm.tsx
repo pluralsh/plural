@@ -182,6 +182,7 @@ function PaymentFormInner() {
     <Flex
       flexDirection="column"
       gap="large"
+      overflow="hidden"
     >
       {formVariant === PaymentFormVariant.Upgrade && (
         <BillingPreview

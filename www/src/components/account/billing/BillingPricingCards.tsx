@@ -1,119 +1,65 @@
-import { Button } from '@pluralsh/design-system'
+import { Button, Card } from '@pluralsh/design-system'
 import { Flex } from 'honorable'
-import { useCallback, useContext, useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useContext } from 'react'
+
+import styled from 'styled-components'
+
+import { ButtonProps } from '@pluralsh/design-system/dist/components/Button'
 
 import SubscriptionContext from '../../../contexts/SubscriptionContext'
 
-import BillingDowngradeModal from './BillingDowngradeModal'
-
 import BillingPricingCard from './BillingPricingCard'
-import BillingStartTrialModal from './BillingStartTrialModal'
-import BillingUpgradeToProfessionalModal from './BillingUpgradeToProfessionalModal'
+import { EnterprisePlanCTA } from './BillingManagePlan'
 
-function ContactUs({ primary }: { primary?: boolean }) {
+export function ContactUs({ ...props }: ButtonProps) {
   return (
     <Button
       as="a"
       href="https://plural.sh/contact-sales"
       target="_blank"
       rel="noopener noreferer"
-      primary={primary}
-      secondary={!primary}
       width="100%"
+      {...props}
     >
       Contact sales
     </Button>
   )
 }
 
-function CurrentPlanButton() {
-  return (
-    <Button
-      primary
-      disabled
-      width="100%"
-    >
-      Current plan
-    </Button>
-  )
-}
-
-function BillingPricingCards() {
-  const [searchParams, setSearchParams] = useSearchParams()
+function BillingPricingCards({
+  onCancel,
+  onUpgrade,
+}: {
+  onCancel: () => void
+  onUpgrade: () => void
+}) {
   const { isProPlan, isEnterprisePlan } = useContext(SubscriptionContext)
 
-  const [downgradeModalOpen, setDowngradeModalOpen] = useState(false)
-
-  const upgradeToProfessionalModalOpen =
-    typeof searchParams.get('upgrade') === 'string'
-  const setUpgradeToProfessionalModalOpen = useCallback(
-    (isOpen) => {
-      setSearchParams((sp) => {
-        if (isOpen) {
-          sp.set('upgrade', '1')
-        } else {
-          sp.delete('upgrade')
-        }
-
-        return sp
-      })
-    },
-    [setSearchParams]
-  )
-
-  const trialModalOpen = typeof searchParams.get('trial') === 'string'
-  const setOpenTrialModal = useCallback(
-    (isOpen) => {
-      setSearchParams((params) => {
-        if (isOpen) {
-          params.set('trial', '1')
-        } else {
-          params.delete('trial')
-        }
-
-        return params
-      })
-    },
-    [setSearchParams]
-  )
-
   return (
-    <>
-      <Flex gap="medium">
+    <Flex
+      direction="column"
+      gap="large"
+    >
+      <CurrentPlanCard onCancel={onCancel} />
+      <Flex gap="xlarge">
         <BillingPricingCard
-          selected
-          title="Open-source"
-          subtitle={
-            <>
-              Free
-              <br />
-              <br />
-            </>
-          }
+          title="Pro Plan"
+          subtitle="Cost based on # of clusters"
           items={[
             {
-              label: 'Free forever',
+              label: '30 day free trial',
               checked: true,
             },
             {
-              label: 'Unlimited open-source apps',
+              label: 'Up to 10 clusters',
               checked: true,
             },
             {
-              label: 'Up to 2 users',
+              label: 'Plural cloud hosting',
               checked: true,
             },
             {
-              label: '1 cluster',
-              checked: true,
-            },
-            {
-              label: 'OAuth integration',
-              checked: true,
-            },
-            {
-              label: 'Community support',
+              label: '24 hour, 99.9% SLA uptime',
               checked: true,
             },
           ]}
@@ -122,79 +68,95 @@ function BillingPricingCards() {
               <Button
                 secondary
                 width="100%"
-                onClick={
-                  isEnterprisePlan ? null : () => setDowngradeModalOpen(true)
-                }
+                onClick={onCancel}
               >
-                Downgrade
+                Cancel plan
               </Button>
             ) : isEnterprisePlan ? (
-              <ContactUs />
+              <Button
+                primary
+                disabled
+                width="100%"
+              >
+                You have an Enterprise plan
+              </Button>
             ) : (
-              <CurrentPlanButton />
+              <Button
+                primary
+                width="100%"
+                onClick={onUpgrade}
+              >
+                Upgrade
+              </Button>
             )
           }
         />
         <BillingPricingCard
-          title="Custom"
-          subtitle={
-            <>
-              Tailored
-              <br />
-              <br />
-            </>
-          }
+          title="Enterprise"
+          subtitle="Custom"
           items={[
             {
-              label: 'Everything in Pro plan',
+              label: 'Pro plan perks',
               checked: false,
             },
             {
-              label: '4 hour SLA',
+              label: 'Unlimited clusters',
               checked: true,
             },
             {
-              label: 'Dedicated SRE',
+              label: 'Flexible hosting options',
               checked: true,
             },
             {
-              label: 'SSO',
+              label: '1 hour SLA',
               checked: true,
             },
             {
-              label: 'Commercial license',
+              label: 'Customized training',
               checked: true,
             },
             {
-              label: 'Cost optimization',
+              label: 'Dedicated success team',
               checked: true,
             },
           ]}
-          callToAction={
-            isEnterprisePlan ? (
-              <CurrentPlanButton />
-            ) : isProPlan ? (
-              <ContactUs primary />
-            ) : (
-              <ContactUs />
-            )
-          }
+          callToAction={<EnterprisePlanCTA />}
         />
       </Flex>
-      <BillingUpgradeToProfessionalModal
-        open={upgradeToProfessionalModalOpen}
-        onClose={() => setUpgradeToProfessionalModalOpen(false)}
-      />
-      <BillingDowngradeModal
-        open={downgradeModalOpen}
-        onClose={() => setDowngradeModalOpen(false)}
-      />
-      <BillingStartTrialModal
-        open={trialModalOpen}
-        onClose={() => setOpenTrialModal(false)}
-      />
-    </>
+    </Flex>
   )
 }
+
+function CurrentPlanCard({ onCancel }: { onCancel: () => void }) {
+  const { subscription, isProPlan } = useContext(SubscriptionContext)
+
+  return (
+    <CurrentPlanCardSC>
+      <span>
+        You are currently on the{' '}
+        <em>{subscription?.plan?.name ?? 'Free'} Plan</em>
+      </span>
+      {isProPlan && (
+        <Button
+          secondary
+          onClick={onCancel}
+        >
+          Cancel plan
+        </Button>
+      )}
+    </CurrentPlanCardSC>
+  )
+}
+const CurrentPlanCardSC = styled(Card)(({ theme }) => ({
+  ...theme.partials.text.body1Bold,
+  padding: theme.spacing.medium,
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  '& em': {
+    fontStyle: 'normal',
+    color: theme.colors['text-primary-accent'],
+  },
+}))
 
 export default BillingPricingCards

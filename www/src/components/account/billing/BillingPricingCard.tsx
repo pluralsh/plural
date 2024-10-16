@@ -67,7 +67,7 @@ function BillingPricingCard({
       </Flex>
       <Div flexGrow={1} />
       <Flex
-        marginTop="large"
+        marginTop="xxlarge"
         align="center"
         justify="center"
       >

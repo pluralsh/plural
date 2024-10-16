@@ -1,285 +1,171 @@
 import { CheckIcon, CloseIcon } from '@pluralsh/design-system'
-import { Div } from 'honorable'
+import styled from 'styled-components'
 
-const columnStyles = {
-  position: 'relative',
-  boxShadow: '-12px 0 12px 0px rgb(14 16 21 / 20%)',
-  '&:first-child': {
-    boxShadow: 'none',
-    '> div': {
-      display: 'flex',
-      justifyContent: 'flex-end',
-      textAlign: 'right',
-    },
-  },
-  '> div': {
-    display: 'flex',
-    alignItems: 'center',
-    padding: '8px 16px',
-    height: 52,
-    borderTop: '1px solid border-fill-two',
-  },
-  '> div:nth-child(even)': {
-    backgroundColor: 'fill-two',
-  },
-  '> div:nth-child(odd)': {
-    backgroundColor: 'fill-one',
-  },
-  '> div:first-child': {
-    height: 96,
-  },
-}
+import { ReactNode } from 'react'
 
-const firstColumnCellProps = {
-  body2: true,
-  borderLeft: '1px solid border-fill-two',
-}
+import { EnterprisePlanCTA, ProPlanCTA } from './BillingManagePlan'
 
-const lastColumnCellProps = {
-  borderRight: '1px solid border-fill-two',
-}
+export default function BillingPricingTable({
+  onUpgrade,
+  onCancel,
+}: {
+  onUpgrade: () => void
+  onCancel: () => void
+}) {
+  const plans = getPlans({
+    proPlanCTA: (
+      <ProPlanCTA
+        onUpgrade={onUpgrade}
+        onCancel={onCancel}
+      />
+    ),
+    enterprisePlanCTA: <EnterprisePlanCTA />,
+  })
 
-function BillingPricingTable() {
   return (
-    <Div
-      display="grid"
-      gridTemplateColumns="repeat(3, 1fr)"
-    >
-      <Div {...columnStyles}>
-        <Div
-          backgroundColor="transparent !important"
-          borderTop="none !important"
-        />
-        <Div
-          {...firstColumnCellProps}
-          borderTopLeftRadius={6}
-        >
-          Open-Source Apps
-        </Div>
-        <Div {...firstColumnCellProps}>Clusters</Div>
-        <Div {...firstColumnCellProps}>Users</Div>
-        <Div {...firstColumnCellProps}>Services</Div>
-        <Div {...firstColumnCellProps}>Roles</Div>
-        <Div {...firstColumnCellProps}>Groups</Div>
-        <Div {...firstColumnCellProps}>Service accounts</Div>
-        <Div {...firstColumnCellProps}>Continuous deployment</Div>
-        <Div {...firstColumnCellProps}>Discord Forum</Div>
-        <Div {...firstColumnCellProps}>Community support</Div>
-        <Div {...firstColumnCellProps}>
-          Private Slack Connect to Plural engineers
-        </Div>
-        <Div {...firstColumnCellProps}>Dedicated support engineer</Div>
-        <Div {...firstColumnCellProps}>Onboarding</Div>
-        <Div {...firstColumnCellProps}>Emergency Hotfixes</Div>
-        <Div {...firstColumnCellProps}>SLAs</Div>
-        <Div {...firstColumnCellProps}>Coverage</Div>
-        <Div {...firstColumnCellProps}>Authentication</Div>
-        <Div {...firstColumnCellProps}>VPN</Div>
-        <Div {...firstColumnCellProps}>Audit logs</Div>
-        <Div {...firstColumnCellProps}>SOC 2</Div>
-        <Div {...firstColumnCellProps}>GDPR</Div>
-        <Div {...firstColumnCellProps}>Compliance reports</Div>
-        <Div {...firstColumnCellProps}>Training</Div>
-        <Div {...firstColumnCellProps}>Developer support</Div>
-        <Div {...firstColumnCellProps}>Commercial license</Div>
-        <Div {...firstColumnCellProps}>Cost optimization</Div>
-        <Div
-          {...firstColumnCellProps}
-          borderBottomLeftRadius={6}
-          borderBottom="1px solid border-fill-two"
-        >
-          Invoices
-        </Div>
-      </Div>
-      <Div {...columnStyles}>
-        <Div
-          subtitle2
-          borderTopLeftRadius={6}
-          borderLeft="1px solid border-fill-two"
-        >
-          Open-source
-        </Div>
-        <Div body2>Unlimited</Div>
-        <Div body2>Free</Div>
-        <Div body2>Up to 2</Div>
-        <Div>
-          <CloseIcon color="icon-default" />
-        </Div>
-        <Div>
-          <CloseIcon color="icon-default" />
-        </Div>
-        <Div>
-          <CloseIcon color="icon-default" />
-        </Div>
-        <Div>
-          <CloseIcon color="icon-default" />
-        </Div>
-        <Div>
-          <CloseIcon color="icon-default" />
-        </Div>
-        <Div>
-          <CheckIcon color="icon-success" />
-        </Div>
-        <Div>
-          <CheckIcon color="icon-success" />
-        </Div>
-        <Div>
-          <CloseIcon color="icon-default" />
-        </Div>
-        <Div>
-          <CloseIcon color="icon-default" />
-        </Div>
-        <Div>
-          <CloseIcon color="icon-default" />
-        </Div>
-        <Div>
-          <CloseIcon color="icon-default" />
-        </Div>
-        <Div>
-          <CloseIcon color="icon-default" />
-        </Div>
-        <Div body2>Best effort</Div>
-        <Div body2>Google OAuth + OIDC</Div>
-        <Div>
-          <CloseIcon color="icon-default" />
-        </Div>
-        <Div>
-          <CloseIcon color="icon-default" />
-        </Div>
-        <Div>
-          <CheckIcon color="icon-success" />
-        </Div>
-        <Div>
-          <CheckIcon color="icon-success" />
-        </Div>
-        <Div>
-          <CloseIcon color="icon-default" />
-        </Div>
-        <Div>
-          <CloseIcon color="icon-default" />
-        </Div>
-        <Div>
-          <CloseIcon color="icon-default" />
-        </Div>
-        <Div>
-          <CloseIcon color="icon-default" />
-        </Div>
-        <Div>
-          <CloseIcon color="icon-default" />
-        </Div>
-        <Div borderBottom="1px solid border-fill-two">
-          <CloseIcon color="icon-default" />
-        </Div>
-      </Div>
-      <Div {...columnStyles}>
-        <Div
-          {...lastColumnCellProps}
-          subtitle2
-          borderTopRightRadius={6}
-        >
-          Custom
-        </Div>
-        <Div
-          {...lastColumnCellProps}
-          body2
-        >
-          Unlimited
-        </Div>
-        <Div
-          {...lastColumnCellProps}
-          body2
-        >
-          Custom
-        </Div>
-        <Div
-          {...lastColumnCellProps}
-          body2
-        >
-          Unlimited
-        </Div>
-        <Div
-          {...lastColumnCellProps}
-          body2
-        >
-          Unlimited
-        </Div>
-        <Div {...lastColumnCellProps}>
-          <CheckIcon color="icon-success" />
-        </Div>
-        <Div {...lastColumnCellProps}>
-          <CheckIcon color="icon-success" />
-        </Div>
-        <Div {...lastColumnCellProps}>
-          <CheckIcon color="icon-success" />
-        </Div>
-        <Div {...lastColumnCellProps}>
-          <CheckIcon color="icon-success" />
-        </Div>
-        <Div {...lastColumnCellProps}>
-          <CheckIcon color="icon-success" />
-        </Div>
-        <Div {...lastColumnCellProps}>
-          <CheckIcon color="icon-success" />
-        </Div>
-        <Div {...lastColumnCellProps}>
-          <CheckIcon color="icon-success" />
-        </Div>
-        <Div {...lastColumnCellProps}>
-          <CheckIcon color="icon-success" />
-        </Div>
-        <Div {...lastColumnCellProps}>
-          <CheckIcon color="icon-success" />
-        </Div>
-        <Div {...lastColumnCellProps}>
-          <CheckIcon color="icon-success" />
-        </Div>
-        <Div {...lastColumnCellProps}>4 hours</Div>
-        <Div
-          {...lastColumnCellProps}
-          body2
-        >
-          Extended
-        </Div>
-        <Div
-          {...lastColumnCellProps}
-          body2
-        >
-          SSO + Google OAuth + OIDC
-        </Div>
-        <Div {...lastColumnCellProps}>
-          <CheckIcon color="icon-success" />
-        </Div>
-        <Div {...lastColumnCellProps}>
-          <CheckIcon color="icon-success" />
-        </Div>
-        <Div {...lastColumnCellProps}>
-          <CheckIcon color="icon-success" />
-        </Div>
-        <Div {...lastColumnCellProps}>
-          <CheckIcon color="icon-success" />
-        </Div>
-        <Div {...lastColumnCellProps}>
-          <CheckIcon color="icon-success" />
-        </Div>
-        <Div {...lastColumnCellProps}>Available</Div>
-        <Div {...lastColumnCellProps}>
-          <CheckIcon color="icon-success" />
-        </Div>
-        <Div {...lastColumnCellProps}>
-          <CheckIcon color="icon-success" />
-        </Div>
-        <Div {...lastColumnCellProps}>
-          <CheckIcon color="icon-success" />
-        </Div>
-        <Div
-          borderBottom="1px solid border-fill-two"
-          borderBottomRightRadius={6}
-        >
-          <CheckIcon color="icon-success" />
-        </Div>
-      </Div>
-    </Div>
+    <TableSC>
+      <colgroup>
+        <col style={{ width: 'fit-content' }} />
+        {plans.map((plan) => (
+          <col
+            // makes the label column a little smaller than the others
+            style={{ width: `${100 / (plans.length + 0.75)}%` }}
+            key={plan.name}
+          />
+        ))}
+      </colgroup>
+      <thead>
+        <tr>
+          <TableHeaderCellSC />
+          {plans.map((plan) => (
+            <TableHeaderCellSC key={plan.name}>{plan.name}</TableHeaderCellSC>
+          ))}
+        </tr>
+      </thead>
+      <TableBodySC>
+        {rows.map((rowLabel) => (
+          <tr key={rowLabel}>
+            <TableCellSC>{rowLabel !== 'action' && rowLabel}</TableCellSC>
+            {plans.map((plan) => (
+              <TableCellSC key={plan.name}>{plan.values[rowLabel]}</TableCellSC>
+            ))}
+          </tr>
+        ))}
+      </TableBodySC>
+    </TableSC>
   )
 }
 
-export default BillingPricingTable
+const CheckIconSC = styled(CheckIcon).attrs(() => ({
+  color: 'icon-success',
+}))``
+
+const TableSC = styled.table(({ theme }) => ({
+  tableLayout: 'fixed',
+  width: '100%',
+  background: theme.colors['fill-one'],
+  borderSpacing: 0,
+  borderRadius: theme.borderRadiuses.medium,
+  border: theme.borders.default,
+  '& th, & td': {
+    borderBottom: theme.borders.default,
+    borderRight: theme.borders.default,
+    // targets last cell in each row
+    '&:last-child': {
+      borderRight: 'none',
+    },
+  },
+  // targets each cell in last row
+  '& tr:last-child td': {
+    borderBottom: 'none',
+  },
+}))
+
+const TableBodySC = styled.tbody(({ theme }) => ({
+  '& tr:nth-child(odd)': {
+    backgroundColor: theme.colors['fill-one-selected'],
+  },
+}))
+
+const TableHeaderCellSC = styled.th(({ theme }) => ({
+  ...theme.partials.text.subtitle2,
+  padding: `${theme.spacing.xlarge}px ${theme.spacing.large}px`,
+  textAlign: 'left',
+}))
+
+const TableCellSC = styled.td(({ theme }) => ({
+  ...theme.partials.text.body2,
+  padding: `${theme.spacing.medium}px ${theme.spacing.large}px`,
+  color: theme.colors['text-xlight'],
+  whiteSpace: 'pre-wrap',
+}))
+
+const rows = [
+  'Clusters',
+  'Hosting',
+  'SLA',
+  'SLA Response',
+  'Communication',
+  'Success Team',
+  'Customized Training',
+  'Multi-cluster Deployment',
+  'CD Pipelines',
+  'IaC Management',
+  'PR Automations',
+  'Git Integrations',
+  'Policy Management',
+  'GDPR Compliant',
+  'SOC 2 Compliant',
+  'action', // not shown but used for bottom button
+]
+
+const getPlans = ({
+  proPlanCTA,
+  enterprisePlanCTA,
+}: {
+  proPlanCTA: ReactNode
+  enterprisePlanCTA: ReactNode
+}) => [
+  {
+    name: 'Pro Plan',
+    values: {
+      Clusters: 'Up to 10',
+      Hosting: 'Plural shared infrastructure',
+      SLA: '99.9% uptime',
+      'SLA Response': '1 business day response',
+      Communication: 'Email support',
+      'Success Team': <CloseIcon />,
+      'Customized Training': <CloseIcon />,
+      'Multi-cluster Deployment': <CheckIconSC />,
+      'CD Pipelines': <CheckIconSC />,
+      'IaC Management': <CheckIconSC />,
+      'PR Automations': <CheckIconSC />,
+      'Git Integrations': <CheckIconSC />,
+      'Policy Management': <CheckIconSC />,
+      'GDPR Compliant': <CheckIconSC />,
+      'SOC 2 Compliant': <CheckIconSC />,
+      action: proPlanCTA,
+    },
+  },
+  {
+    name: 'Enterprise',
+    values: {
+      Clusters: 'Unlimited',
+      Hosting: 'Shared, dedicated, or on-prem infrastructure',
+      SLA: '99.9% uptime',
+      'SLA Response': '1 hour guaranteed response',
+      Communication: 'Dedicated Slack or Teams\nOn-demand Calls',
+      'Success Team': <CheckIconSC />,
+      'Customized Training': <CheckIconSC />,
+      'Multi-cluster Deployment': <CheckIconSC />,
+      'CD Pipelines': <CheckIconSC />,
+      'IaC Management': <CheckIconSC />,
+      'PR Automations': <CheckIconSC />,
+      'Git Integrations': <CheckIconSC />,
+      'Policy Management': <CheckIconSC />,
+      'GDPR Compliant': <CheckIconSC />,
+      'SOC 2 Compliant': <CheckIconSC />,
+      action: enterprisePlanCTA,
+    },
+  },
+]

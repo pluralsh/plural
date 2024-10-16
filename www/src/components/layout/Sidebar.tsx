@@ -321,12 +321,6 @@ function Sidebar(props: Omit<ComponentProps<typeof DSSidebar>, '$variant'>) {
           minWidth="175px"
           left={sidebarWidth + 8}
           border="1px solid border"
-          // Fix incorrect borders due to mixed element types
-          {...{
-            '&, &>*:first-of-type:not(:first-child) > div': {
-              borderTop: theme.borders['fill-two'],
-            },
-          }}
           onClick={() => setIsMenuOpened(false)}
         >
           <MenuItem

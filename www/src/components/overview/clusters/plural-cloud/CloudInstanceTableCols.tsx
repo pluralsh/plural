@@ -7,6 +7,8 @@ import {
   Flex,
   ListBoxItem,
   PeopleIcon,
+  PeoplePlusIcon,
+  PersonPlusIcon,
   Tooltip,
   TrashCanIcon,
 } from '@pluralsh/design-system'
@@ -209,6 +211,7 @@ const ColActions = columnHelper.accessor((instance) => instance, {
                 <span>Edit cluster managers</span>
               </Tooltip>
             }
+            leftContent={<PersonPlusIcon />}
           />
           <ListBoxItem
             key={MenuItemKey.EditPluralOIDCClients}

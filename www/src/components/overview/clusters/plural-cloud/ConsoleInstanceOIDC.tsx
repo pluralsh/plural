@@ -2,6 +2,7 @@ import {
   Accordion,
   AccordionItem,
   Button,
+  ConsoleIcon,
   Flex,
   FormField,
   Modal,
@@ -57,6 +58,7 @@ export function ConsoleInstanceOIDC({
             label="Enable login for your team members for this console instance"
           >
             <Button
+              startIcon={<ConsoleIcon />}
               secondary
               onClick={() => setOpen(true)}
             >

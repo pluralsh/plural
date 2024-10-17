@@ -1,5 +1,7 @@
 fragment OIDCProvider on OidcProvider {
   id
+  name
+  description
   clientId
   authMethod
   clientSecret
@@ -52,6 +54,19 @@ query OIDCConsent($challenge: String!) {
 mutation Consent($challenge: String!, $scopes: [String]) {
   oauthConsent(challenge: $challenge, scopes: $scopes) {
     redirectTo
+  }
+}
+
+query OIDCProviders($first: Int, $last: Int, $after: String, $before: String) {
+  oidcProviders(first: $first, last: $last, after: $after, before: $before) {
+    pageInfo {
+      ...PageInfo
+    }
+    edges {
+      node {
+        ...OIDCProvider
+      }
+    }
   }
 }
 

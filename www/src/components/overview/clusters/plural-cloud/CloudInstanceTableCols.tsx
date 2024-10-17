@@ -2,10 +2,12 @@ import {
   AppIcon,
   Button,
   Chip,
+  CloudIcon,
   ConsoleIcon,
   Flex,
   ListBoxItem,
   Tooltip,
+  TrashCanIcon,
 } from '@pluralsh/design-system'
 import { createColumnHelper } from '@tanstack/react-table'
 import { ProviderIcon } from 'components/utils/ProviderIcon'
@@ -194,7 +196,8 @@ const ColActions = columnHelper.accessor((instance) => instance, {
         <MoreMenu onSelectionChange={(newKey) => setMenuKey(newKey)}>
           <ListBoxItem
             key={MenuItemKey.EditSize}
-            label="Edit instance size"
+            label="Edit cloud instance size"
+            leftContent={<CloudIcon />}
           />
           <ListBoxItem
             key={MenuItemKey.EditOidc}
@@ -208,6 +211,7 @@ const ColActions = columnHelper.accessor((instance) => instance, {
             key={MenuItemKey.Delete}
             destructive
             label="Delete instance"
+            leftContent={<TrashCanIcon color={'icon-danger'} />}
           />
         </MoreMenu>
         {/* Modals */}

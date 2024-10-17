@@ -7,7 +7,7 @@ import {
   WarningOutlineIcon,
   useSetBreadcrumbs,
 } from '@pluralsh/design-system'
-import { Div, Flex } from 'honorable'
+import { Div, Flex, H1, H2, H3 } from 'honorable'
 import { useContext, useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
@@ -28,8 +28,11 @@ import { ClusterPromoteModal } from './ClusterPromoteModal'
 import { ClusterSidecar } from './ClusterSidecar'
 import { CollapsibleButton } from './misc'
 import { EditPluralOIDCClients } from '../overview/clusters/plural-cloud/EditPluralOIDCClients'
+import Header from '../layout/Header'
+import { useTheme } from 'styled-components'
 
 export function Cluster() {
+  const theme = useTheme()
   const [dependencyOpen, setDependencyOpen] = useState(false)
   const [promoteOpen, setPromoteOpen] = useState(false)
   const [adminsOpen, setAdminsOpen] = useState(false)
@@ -180,6 +183,14 @@ export function Cluster() {
           >
             <>
               <ClusterApps cluster={cluster} />
+              <div
+                css={{
+                  ...theme.partials.text.body1Bold,
+                  marginTop: theme.spacing.medium,
+                }}
+              >
+                Plural OIDC clients
+              </div>
               <EditPluralOIDCClients instanceName={cluster.name} />
             </>
           </ImpersonateServiceAccount>

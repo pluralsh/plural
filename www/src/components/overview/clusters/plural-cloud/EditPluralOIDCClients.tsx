@@ -1,4 +1,11 @@
-import { Button, Modal, PlusIcon, Table } from '@pluralsh/design-system'
+import {
+  Button,
+  IconFrame,
+  Modal,
+  PencilIcon,
+  PlusIcon,
+  Table,
+} from '@pluralsh/design-system'
 import {
   ConsoleInstanceFragment,
   OidcProviderFragment,
@@ -64,12 +71,45 @@ const columnHelper = createColumnHelper<OidcProviderFragment>()
 
 const columns = [
   columnHelper.accessor((row) => row, {
-    id: 'name',
-    enableSorting: true,
-    cell: ({ getValue }) => {
+    id: 'meta',
+    cell: function Cell({ getValue }) {
+      const theme = useTheme()
       const oidcProvider = getValue()
 
-      return <div>{oidcProvider.name}</div>
+      return (
+        <div>
+          <div
+            css={{
+              ...theme.partials.text.body2Bold,
+              color: theme.colors['text'],
+            }}
+          >
+            {oidcProvider.name}
+          </div>
+          <div
+            css={{
+              ...theme.partials.text.body2,
+              color: theme.colors['text-light'],
+            }}
+          >
+            {oidcProvider.description}
+          </div>
+        </div>
+      )
+    },
+  }),
+  columnHelper.accessor((row) => row, {
+    id: 'actions',
+    meta: { gridTemplate: 'max-content' },
+    cell: function Cell({ getValue }) {
+      const oidcProvider = getValue()
+
+      return (
+        <IconFrame
+          clickable
+          icon={<PencilIcon />}
+        />
+      )
     },
   }),
 ]
@@ -116,7 +156,12 @@ export function EditPluralOIDCClients({
           border: 'none',
           borderBottomLeftRadius: 0,
           borderBottomRightRadius: 0,
-          height: '100%',
+        }}
+        css={{
+          td: {
+            backgroundColor: theme.colors['fill-one'],
+            borderColor: theme.colors['border-fill-two'],
+          },
         }}
       />
       <div

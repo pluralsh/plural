@@ -7,7 +7,6 @@ import {
   Flex,
   ListBoxItem,
   PeopleIcon,
-  PeoplePlusIcon,
   PersonPlusIcon,
   Tooltip,
   TrashCanIcon,

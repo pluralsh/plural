@@ -7,7 +7,7 @@ import {
   WarningOutlineIcon,
   useSetBreadcrumbs,
 } from '@pluralsh/design-system'
-import { Div, Flex, H1, H2, H3 } from 'honorable'
+import { Div, Flex } from 'honorable'
 import { useContext, useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
@@ -28,7 +28,6 @@ import { ClusterPromoteModal } from './ClusterPromoteModal'
 import { ClusterSidecar } from './ClusterSidecar'
 import { CollapsibleButton } from './misc'
 import { EditPluralOIDCClients } from '../overview/clusters/plural-cloud/EditPluralOIDCClients'
-import Header from '../layout/Header'
 import { useTheme } from 'styled-components'
 
 export function Cluster() {

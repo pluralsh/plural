@@ -1,42 +1,17 @@
-import {
-  AppIcon,
-  Button,
-  ConsoleIcon,
-  Flex,
-  FormField,
-  Input,
-  ListBoxItem,
-  MailIcon,
-  Modal,
-  PlusIcon,
-  Select,
-  Table,
-} from '@pluralsh/design-system'
-import { FormFieldSC } from 'components/create-cluster/steps/ConfigureCloudInstanceStep'
-import {
-  ConsoleInstanceFragment,
-  ConsoleSize,
-  OidcProviderFragment,
-  useGroupMembersQuery,
-  useNotificationsQuery,
-  useOidcProvidersQuery,
-  useUpdateConsoleInstanceMutation,
-} from 'generated/graphql'
+import { Button, FormField, Input, Modal } from '@pluralsh/design-system'
+import { InputMaybe, OidcProviderFragment } from 'generated/graphql'
 import { useMemo, useState } from 'react'
-
-import { GqlError } from 'components/utils/Alert'
 
 import { useTheme } from 'styled-components'
 
-import { firstLetterUppercase } from './CloudInstanceTableCols'
+import { isEmpty, uniqBy } from 'lodash'
 import {
-  DEFAULT_REACT_VIRTUAL_OPTIONS,
-  useFetchPaginatedData,
-} from '../../../utils/useFetchPaginatedData'
-import { mapExistingNodes } from '../../../../utils/graphql'
-import { createColumnHelper } from '@tanstack/react-table'
-import { CellWrap } from '../SelfHostedTableCols'
-import { isEmpty } from 'lodash'
+  BindingInput,
+  fetchGroups,
+  fetchUsers,
+} from '../../../account/Typeaheads'
+import sortBy from 'lodash/sortBy'
+import { UrlsInput } from '../../../app/oidc/OIDC'
 
 export function EditPluralOIDCClientModal({
   open,
@@ -57,10 +32,11 @@ export function EditPluralOIDCClientModal({
       onClose={onClose}
       overlayStyles={{ background: useModalOverlay ? undefined : 'none' }}
       header={`${instanceName} - Edit Plural OIDC clients`}
+      size="large"
     >
       <EditPluralOIDCClient
         onClose={onClose}
-        oidcProvider={oidcProvider}
+        provider={oidcProvider}
       />
     </Modal>
   )
@@ -68,16 +44,19 @@ export function EditPluralOIDCClientModal({
 
 function EditPluralOIDCClient({
   onClose,
-  oidcProvider,
+  provider,
 }: {
   onClose: () => void
-  oidcProvider?: OidcProviderFragment
+  provider?: OidcProviderFragment
 }) {
   const theme = useTheme()
-  const createMode = isEmpty(oidcProvider)
-  const [name, setName] = useState(oidcProvider?.name ?? '')
-  const [description, setDescription] = useState(oidcProvider?.name ?? '')
-
+  const createMode = isEmpty(provider)
+  const [name, setName] = useState(provider?.name ?? '')
+  const [description, setDescription] = useState(provider?.name ?? '')
+  const [bindings, setBindings] = useState<any>(provider?.bindings ?? [])
+  const [redirectUris, setRedirectUris] = useState<InputMaybe<string>[]>(
+    provider?.redirectUris ?? []
+  )
   return (
     <div
       css={{
@@ -86,7 +65,13 @@ function EditPluralOIDCClient({
         gap: theme.spacing.xlarge,
       }}
     >
-      <div>
+      <div
+        css={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: theme.spacing.small,
+        }}
+      >
         <FormField
           label="Name"
           required
@@ -101,6 +86,40 @@ function EditPluralOIDCClient({
           <Input
             value={description}
             onChange={({ target: { value } }) => setDescription(value)}
+          />
+        </FormField>
+        <BindingInput
+          label="User bindings"
+          placeholder="Search for user"
+          bindings={bindings
+            .filter(({ user }) => !!user)
+            .map(({ user }) => user?.email)}
+          fetcher={fetchUsers}
+          add={(user) => setBindings([...bindings, { user }])}
+          remove={(email) =>
+            setBindings(
+              bindings.filter(({ user }) => !user || user.email !== email)
+            )
+          }
+        />
+        <BindingInput
+          label="Group bindings"
+          placeholder="Search for group"
+          bindings={bindings
+            .filter(({ group }) => !!group)
+            .map(({ group }) => group?.name)}
+          fetcher={fetchGroups}
+          add={(group) => setBindings([...bindings, { group }])}
+          remove={(name) =>
+            setBindings(
+              bindings.filter(({ group }) => !group || group.name !== name)
+            )
+          }
+        />
+        <FormField label="Redirect URIs">
+          <UrlsInput
+            urls={redirectUris}
+            setUrls={setRedirectUris}
           />
         </FormField>
       </div>

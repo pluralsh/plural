@@ -38,6 +38,7 @@ export function EditPluralOIDCClientsModal({
       open={open}
       onClose={onClose}
       header={`${instance.name} - Edit Plural OIDC clients`}
+      size="large"
     >
       <div
         css={{

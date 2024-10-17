@@ -153,7 +153,6 @@ export function EditPluralOIDCClients({
     >
       <Table
         virtualizeRows
-        rowBg="raised"
         data={oidcProviders}
         columns={columns}
         hideHeader

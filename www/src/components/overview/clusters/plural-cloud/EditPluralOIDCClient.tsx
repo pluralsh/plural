@@ -1,29 +1,26 @@
 import { Button, FormField, Input, Modal } from '@pluralsh/design-system'
 import { InputMaybe, OidcProviderFragment } from 'generated/graphql'
-import { useMemo, useState } from 'react'
-
+import { useState } from 'react'
 import { useTheme } from 'styled-components'
-
-import { isEmpty, uniqBy } from 'lodash'
+import { isEmpty } from 'lodash'
 import {
   BindingInput,
   fetchGroups,
   fetchUsers,
 } from '../../../account/Typeaheads'
-import sortBy from 'lodash/sortBy'
 import { UrlsInput } from '../../../app/oidc/OIDC'
 
 export function EditPluralOIDCClientModal({
   open,
   onClose,
   instanceName,
-  oidcProvider,
+  provider,
   useModalOverlay = true,
 }: {
   open: boolean
   onClose: () => void
   instanceName: string
-  oidcProvider?: OidcProviderFragment
+  provider?: OidcProviderFragment
   useModalOverlay?: boolean
 }) {
   return (
@@ -36,7 +33,7 @@ export function EditPluralOIDCClientModal({
     >
       <EditPluralOIDCClient
         onClose={onClose}
-        provider={oidcProvider}
+        provider={provider}
       />
     </Modal>
   )
@@ -50,9 +47,9 @@ function EditPluralOIDCClient({
   provider?: OidcProviderFragment
 }) {
   const theme = useTheme()
-  const createMode = isEmpty(provider)
+  const createMode = !provider
   const [name, setName] = useState(provider?.name ?? '')
-  const [description, setDescription] = useState(provider?.name ?? '')
+  const [description, setDescription] = useState(provider?.description ?? '')
   const [bindings, setBindings] = useState<any>(provider?.bindings ?? [])
   const [redirectUris, setRedirectUris] = useState<InputMaybe<string>[]>(
     provider?.redirectUris ?? []

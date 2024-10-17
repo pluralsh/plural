@@ -73,7 +73,7 @@ const columnHelper = createColumnHelper<OidcProviderFragment>()
 const columns = [
   columnHelper.display({
     id: 'meta',
-    cell: function Cell({ row: { original: oidcProvider } }) {
+    cell: function Cell({ row: { original: provider } }) {
       const theme = useTheme()
 
       return (
@@ -84,7 +84,7 @@ const columns = [
               color: theme.colors['text'],
             }}
           >
-            {oidcProvider.name}
+            {provider.name}
           </div>
           <div
             css={{
@@ -92,7 +92,7 @@ const columns = [
               color: theme.colors['text-light'],
             }}
           >
-            {oidcProvider.description}
+            {provider.description}
           </div>
         </div>
       )
@@ -101,7 +101,7 @@ const columns = [
   columnHelper.display({
     id: 'actions',
     meta: { gridTemplate: 'max-content' },
-    cell: function Cell({ row: { original: oidcProvider }, table }) {
+    cell: function Cell({ row: { original: provider }, table }) {
       const [editOpen, setEditOpen] = useState(false)
 
       return (
@@ -116,6 +116,7 @@ const columns = [
             onClose={() => setEditOpen(false)}
             instanceName={table.options.meta?.instanceName}
             useModalOverlay={table.options.meta?.useModalOverlay}
+            provider={provider}
           />
         </>
       )

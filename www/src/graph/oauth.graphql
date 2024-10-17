@@ -1,5 +1,7 @@
 fragment OIDCProvider on OidcProvider {
   id
+  name
+  description
   clientId
   authMethod
   clientSecret

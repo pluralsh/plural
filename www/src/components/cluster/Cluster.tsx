@@ -27,6 +27,7 @@ import ClusterMetadataPanel from './ClusterMetadataPanel'
 import { ClusterPromoteModal } from './ClusterPromoteModal'
 import { ClusterSidecar } from './ClusterSidecar'
 import { CollapsibleButton } from './misc'
+import { EditPluralOIDCClients } from '../overview/clusters/plural-cloud/EditPluralOIDCClients'
 
 export function Cluster() {
   const [dependencyOpen, setDependencyOpen] = useState(false)
@@ -177,7 +178,10 @@ export function Cluster() {
             id={cluster?.owner?.id}
             skip={!cluster.owner?.serviceAccount}
           >
-            <ClusterApps cluster={cluster} />
+            <>
+              <ClusterApps cluster={cluster} />
+              <EditPluralOIDCClients instanceName={cluster.name} />
+            </>
           </ImpersonateServiceAccount>
         </Flex>
       </Flex>

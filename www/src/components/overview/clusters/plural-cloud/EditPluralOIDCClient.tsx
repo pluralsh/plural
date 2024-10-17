@@ -41,20 +41,22 @@ import { isEmpty } from 'lodash'
 export function EditPluralOIDCClientModal({
   open,
   onClose,
-  instance,
+  instanceName,
   oidcProvider,
+  useModalOverlay = true,
 }: {
   open: boolean
   onClose: () => void
-  instance: ConsoleInstanceFragment
+  instanceName: string
   oidcProvider?: OidcProviderFragment
+  useModalOverlay?: boolean
 }) {
   return (
     <Modal
       open={open}
       onClose={onClose}
-      overlayStyles={{ background: 'none' }} // TODO
-      header={`${instance.name} - Edit Plural OIDC clients`}
+      overlayStyles={{ background: useModalOverlay ? undefined : 'none' }}
+      header={`${instanceName} - Edit Plural OIDC clients`}
     >
       <EditPluralOIDCClient
         onClose={onClose}

@@ -13,6 +13,7 @@ import {
 import { mapExistingNodes } from '../../../../utils/graphql'
 import { createColumnHelper } from '@tanstack/react-table'
 import { EditPluralOIDCClientModal } from './EditPluralOIDCClient'
+import ImpersonateServiceAccount from '../../../utils/ImpersonateServiceAccount'
 
 export function EditPluralOIDCClientsModal({
   open,
@@ -38,7 +39,15 @@ export function EditPluralOIDCClientsModal({
           gap: theme.spacing.xlarge,
         }}
       >
-        <EditPluralOIDCClients instance={instance} />
+        <ImpersonateServiceAccount
+          id={instance.console?.owner?.id}
+          renderIndicators={false}
+        >
+          <EditPluralOIDCClients
+            instanceName={instance.name}
+            useModalOverlay={false}
+          />
+        </ImpersonateServiceAccount>
         <Button
           secondary
           onClick={onClose}
@@ -65,10 +74,12 @@ const columns = [
   }),
 ]
 
-function EditPluralOIDCClients({
-  instance,
+export function EditPluralOIDCClients({
+  instanceName,
+  useModalOverlay = true,
 }: {
-  instance: ConsoleInstanceFragment
+  instanceName: string
+  useModalOverlay?: boolean
 }) {
   const theme = useTheme()
   const [createOpen, setCreateOpen] = useState(false)
@@ -128,7 +139,8 @@ function EditPluralOIDCClients({
       <EditPluralOIDCClientModal
         open={createOpen}
         onClose={() => setCreateOpen(false)}
-        instance={instance}
+        instanceName={instanceName}
+        useModalOverlay={useModalOverlay}
       />
     </div>
   )

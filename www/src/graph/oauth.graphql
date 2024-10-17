@@ -55,6 +55,19 @@ mutation Consent($challenge: String!, $scopes: [String]) {
   }
 }
 
+query OIDCProviders($first: Int, $last: Int, $after: String, $before: String) {
+  oidcProviders(first: $first, last: $last, after: $after, before: $before) {
+    pageInfo {
+      ...PageInfo
+    }
+    edges {
+      node {
+        ...OIDCProvider
+      }
+    }
+  }
+}
+
 mutation CreateProvider($id: ID!, $attributes: OidcAttributes!) {
   createOidcProvider(installationId: $id, attributes: $attributes) {
     ...OIDCProvider

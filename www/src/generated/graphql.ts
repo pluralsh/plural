@@ -5616,6 +5616,16 @@ export type ConsentMutationVariables = Exact<{
 
 export type ConsentMutation = { __typename?: 'RootMutationType', oauthConsent?: { __typename?: 'OauthResponse', redirectTo: string } | null };
 
+export type OidcProvidersQueryVariables = Exact<{
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type OidcProvidersQuery = { __typename?: 'RootQueryType', oidcProviders?: { __typename?: 'OidcProviderConnection', pageInfo: { __typename?: 'PageInfo', endCursor?: string | null, hasNextPage: boolean }, edges?: Array<{ __typename?: 'OidcProviderEdge', node?: { __typename?: 'OidcProvider', id: string, clientId: string, authMethod: OidcAuthMethod, clientSecret: string, redirectUris?: Array<string | null> | null, bindings?: Array<{ __typename?: 'OidcProviderBinding', id: string, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null, group?: { __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null } | null> | null, configuration?: { __typename?: 'OuathConfiguration', issuer?: string | null, authorizationEndpoint?: string | null, tokenEndpoint?: string | null, jwksUri?: string | null, userinfoEndpoint?: string | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null } | null } | null> | null } | null };
+
 export type CreateProviderMutationVariables = Exact<{
   id: Scalars['ID']['input'];
   attributes: OidcAttributes;
@@ -9021,6 +9031,57 @@ export function useConsentMutation(baseOptions?: Apollo.MutationHookOptions<Cons
 export type ConsentMutationHookResult = ReturnType<typeof useConsentMutation>;
 export type ConsentMutationResult = Apollo.MutationResult<ConsentMutation>;
 export type ConsentMutationOptions = Apollo.BaseMutationOptions<ConsentMutation, ConsentMutationVariables>;
+export const OidcProvidersDocument = gql`
+    query OIDCProviders($first: Int, $last: Int, $after: String, $before: String) {
+  oidcProviders(first: $first, last: $last, after: $after, before: $before) {
+    pageInfo {
+      ...PageInfo
+    }
+    edges {
+      node {
+        ...OIDCProvider
+      }
+    }
+  }
+}
+    ${PageInfoFragmentDoc}
+${OidcProviderFragmentDoc}`;
+
+/**
+ * __useOidcProvidersQuery__
+ *
+ * To run a query within a React component, call `useOidcProvidersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOidcProvidersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOidcProvidersQuery({
+ *   variables: {
+ *      first: // value for 'first'
+ *      last: // value for 'last'
+ *      after: // value for 'after'
+ *      before: // value for 'before'
+ *   },
+ * });
+ */
+export function useOidcProvidersQuery(baseOptions?: Apollo.QueryHookOptions<OidcProvidersQuery, OidcProvidersQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<OidcProvidersQuery, OidcProvidersQueryVariables>(OidcProvidersDocument, options);
+      }
+export function useOidcProvidersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<OidcProvidersQuery, OidcProvidersQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<OidcProvidersQuery, OidcProvidersQueryVariables>(OidcProvidersDocument, options);
+        }
+export function useOidcProvidersSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<OidcProvidersQuery, OidcProvidersQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<OidcProvidersQuery, OidcProvidersQueryVariables>(OidcProvidersDocument, options);
+        }
+export type OidcProvidersQueryHookResult = ReturnType<typeof useOidcProvidersQuery>;
+export type OidcProvidersLazyQueryHookResult = ReturnType<typeof useOidcProvidersLazyQuery>;
+export type OidcProvidersSuspenseQueryHookResult = ReturnType<typeof useOidcProvidersSuspenseQuery>;
+export type OidcProvidersQueryResult = Apollo.QueryResult<OidcProvidersQuery, OidcProvidersQueryVariables>;
 export const CreateProviderDocument = gql`
     mutation CreateProvider($id: ID!, $attributes: OidcAttributes!) {
   createOidcProvider(installationId: $id, attributes: $attributes) {
@@ -11869,6 +11930,7 @@ export const namedOperations = {
     KeyBackup: 'KeyBackup',
     Notifications: 'Notifications',
     OIDCConsent: 'OIDCConsent',
+    OIDCProviders: 'OIDCProviders',
     Subscription: 'Subscription',
     Cards: 'Cards',
     Invoices: 'Invoices',

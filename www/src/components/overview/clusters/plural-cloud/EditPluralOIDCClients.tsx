@@ -188,7 +188,8 @@ export function EditPluralOIDCClients({
           },
         }}
       >
-        Add new Plural OIDC client <PlusIcon color={'icon-light'} />
+        Add new Plural OIDC client
+        <IconFrame icon={<PlusIcon color={'icon-light'} />} />
       </div>
       <EditPluralOIDCClientModal
         open={createOpen}

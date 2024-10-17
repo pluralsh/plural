@@ -70,11 +70,10 @@ export function EditPluralOIDCClientsModal({
 const columnHelper = createColumnHelper<OidcProviderFragment>()
 
 const columns = [
-  columnHelper.accessor((row) => row, {
+  columnHelper.display({
     id: 'meta',
-    cell: function Cell({ getValue }) {
+    cell: function Cell({ row: { original: oidcProvider } }) {
       const theme = useTheme()
-      const oidcProvider = getValue()
 
       return (
         <div>
@@ -98,17 +97,26 @@ const columns = [
       )
     },
   }),
-  columnHelper.accessor((row) => row, {
+  columnHelper.display({
     id: 'actions',
     meta: { gridTemplate: 'max-content' },
-    cell: function Cell({ getValue }) {
-      const oidcProvider = getValue()
+    cell: function Cell({ row: { original: oidcProvider }, table }) {
+      const [editOpen, setEditOpen] = useState(false)
 
       return (
-        <IconFrame
-          clickable
-          icon={<PencilIcon />}
-        />
+        <>
+          <IconFrame
+            clickable
+            onClick={() => setEditOpen(true)}
+            icon={<PencilIcon />}
+          />
+          <EditPluralOIDCClientModal
+            open={editOpen}
+            onClose={() => setEditOpen(false)}
+            instanceName={table.options.meta?.instanceName}
+            useModalOverlay={table.options.meta?.useModalOverlay}
+          />
+        </>
       )
     },
   }),
@@ -152,6 +160,7 @@ export function EditPluralOIDCClients({
         isFetchingNextPage={loading}
         onVirtualSliceChange={setVirtualSlice}
         reactVirtualOptions={DEFAULT_REACT_VIRTUAL_OPTIONS}
+        reactTableOptions={{ meta: { instanceName, useModalOverlay } }}
         style={{
           border: 'none',
           borderBottomLeftRadius: 0,

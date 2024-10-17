@@ -33,6 +33,7 @@ import { CellCaption, CellWrap } from '../SelfHostedTableCols'
 import { ConsoleInstanceOIDC } from './ConsoleInstanceOIDC'
 import { DeleteInstanceModal } from './DeleteInstance'
 import { EditInstanceSizeModal } from './EditInstance'
+import { EditPluralOIDCClientsModal } from './EditPluralOIDCClients'
 
 const columnHelper = createColumnHelper<ConsoleInstanceFragment>()
 
@@ -233,6 +234,11 @@ const ColActions = columnHelper.accessor((instance) => instance, {
           onClose={onClose}
           serviceAccount={instance.console?.owner}
           showHeading={false}
+        />
+        <EditPluralOIDCClientsModal
+          open={menuKey === MenuItemKey.EditPluralOIDCClients}
+          onClose={onClose}
+          instance={instance}
         />
         <DeleteInstanceModal
           open={menuKey === MenuItemKey.Delete}

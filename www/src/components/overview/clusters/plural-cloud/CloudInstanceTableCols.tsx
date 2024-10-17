@@ -6,6 +6,7 @@ import {
   ConsoleIcon,
   Flex,
   ListBoxItem,
+  PeopleIcon,
   Tooltip,
   TrashCanIcon,
 } from '@pluralsh/design-system'
@@ -161,6 +162,7 @@ const ColOwner = columnHelper.accessor((instance) => instance.owner, {
 enum MenuItemKey {
   EditSize = 'editSize',
   EditOidc = 'editOidc',
+  EditPluralOIDCClients = 'editPluralOIDCClients',
   Delete = 'delete',
 }
 
@@ -206,6 +208,11 @@ const ColActions = columnHelper.accessor((instance) => instance, {
                 <span>Edit cluster managers</span>
               </Tooltip>
             }
+          />
+          <ListBoxItem
+            key={MenuItemKey.EditPluralOIDCClients}
+            label="Edit Plural OIDC clients"
+            leftContent={<PeopleIcon />}
           />
           <ListBoxItem
             key={MenuItemKey.Delete}

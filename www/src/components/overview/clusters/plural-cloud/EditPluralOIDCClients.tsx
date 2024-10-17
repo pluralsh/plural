@@ -177,10 +177,11 @@ export function EditPluralOIDCClients({
         onClick={() => setCreateOpen(true)}
         css={{
           ...theme.partials.text.body2Bold,
+          alignItems: 'center',
           borderTop: theme.borders['fill-two'],
           display: 'flex',
           justifyContent: 'space-between',
-          padding: theme.spacing.medium,
+          padding: theme.spacing.small,
 
           '&:hover': {
             backgroundColor: theme.colors['fill-one-hover'],

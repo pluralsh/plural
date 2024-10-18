@@ -8,6 +8,9 @@ import {
   fetchUsers,
 } from '../../../account/Typeaheads'
 
+const urlPrefix = 'https://'
+const urlSuffix = '/oauth2/callback'
+
 export function EditPluralOIDCClientModal({
   open,
   onClose,
@@ -55,9 +58,11 @@ function EditPluralOIDCClient({
   )
 
   const addUrl = useCallback(() => {
-    if (redirectUris.indexOf(url) > -1) return
+    const u = `${urlPrefix}${url}${urlSuffix}`
 
-    setRedirectUris([...redirectUris, url])
+    if (redirectUris.includes(u)) return
+
+    setRedirectUris([...redirectUris, u])
     setUrl('')
   }, [url, setUrl, redirectUris, setRedirectUris])
 
@@ -133,13 +138,11 @@ function EditPluralOIDCClient({
               gap: theme.spacing.small,
             }}
           >
-            <div
-              css={{
-                display: 'flex',
-              }}
-            >
+            <div css={{ display: 'flex' }}>
               <Input
                 value={url}
+                prefix={urlPrefix}
+                suffix={urlSuffix}
                 width="100%"
                 placeholder="Enter a redirect URI"
                 onChange={({ target: { value } }) => setUrl(value)}

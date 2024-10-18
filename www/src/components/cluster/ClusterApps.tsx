@@ -54,6 +54,7 @@ export function ClusterApps({
           onChange={({ target: { value } }) => setSearch(value)}
         />
       }
+      flexGrow={0}
     >
       {!isEmpty(apps) ? (
         <InfiniteScroller

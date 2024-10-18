@@ -159,7 +159,6 @@ export function EditPluralOIDCClients({
         borderRadius: theme.borderRadiuses.large,
         display: 'flex',
         flexDirection: 'column',
-        flexGrow: 1,
         position: 'relative',
         overflow: 'auto',
       }}
@@ -170,37 +169,34 @@ export function EditPluralOIDCClients({
           css={{
             backgroundColor: theme.colors['fill-one'],
             justifyContent: 'center',
-            flexGrow: 1,
           }}
         ></EmptyState>
       ) : (
-        <div css={{ backgroundColor: theme.colors['fill-one'], flexGrow: 1 }}>
-          <Table
-            virtualizeRows
-            data={oidcProviders}
-            columns={columns}
-            hideHeader
-            hasNextPage={pageInfo?.hasNextPage}
-            fetchNextPage={fetchNextPage}
-            isFetchingNextPage={loading}
-            onVirtualSliceChange={setVirtualSlice}
-            reactVirtualOptions={DEFAULT_REACT_VIRTUAL_OPTIONS}
-            reactTableOptions={{
-              meta: { instanceName, useModalOverlay } as TableMetaT,
-            }}
-            style={{
-              border: 'none',
-              borderBottomLeftRadius: 0,
-              borderBottomRightRadius: 0,
-            }}
-            css={{
-              td: {
-                backgroundColor: theme.colors['fill-one'],
-                borderColor: theme.colors['border-fill-two'],
-              },
-            }}
-          />
-        </div>
+        <Table
+          virtualizeRows
+          data={oidcProviders}
+          columns={columns}
+          hideHeader
+          hasNextPage={pageInfo?.hasNextPage}
+          fetchNextPage={fetchNextPage}
+          isFetchingNextPage={loading}
+          onVirtualSliceChange={setVirtualSlice}
+          reactVirtualOptions={DEFAULT_REACT_VIRTUAL_OPTIONS}
+          reactTableOptions={{
+            meta: { instanceName, useModalOverlay } as TableMetaT,
+          }}
+          style={{
+            border: 'none',
+            borderBottomLeftRadius: 0,
+            borderBottomRightRadius: 0,
+          }}
+          css={{
+            td: {
+              backgroundColor: theme.colors['fill-one'],
+              borderColor: theme.colors['border-fill-two'],
+            },
+          }}
+        />
       )}
       <div
         onClick={() => setCreateOpen(true)}

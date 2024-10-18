@@ -70,14 +70,14 @@ query OIDCProviders($first: Int, $last: Int, $after: String, $before: String) {
   }
 }
 
-mutation CreateProvider($id: ID!, $attributes: OidcAttributes!) {
-  createOidcProvider(installationId: $id, attributes: $attributes) {
+mutation CreateProvider($installationId: ID, $attributes: OidcAttributes!) {
+  createOidcProvider(installationId: $installationId, attributes: $attributes) {
     ...OIDCProvider
   }
 }
 
-mutation UpdateProvider($id: ID!, $attributes: OidcAttributes!) {
-  updateOidcProvider(installationId: $id, attributes: $attributes) {
+mutation UpdateProvider($id: ID, $installationId: ID, $attributes: OidcAttributes!) {
+  updateOidcProvider(id: $id, installationId: $installationId, attributes: $attributes) {
     ...OIDCProvider
   }
 }

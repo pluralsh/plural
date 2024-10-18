@@ -314,7 +314,7 @@ export function CreateProvider({ installation }: any) {
   const [bindings, setBindings] = useState([])
   const [mutation, { loading, error }] = useCreateProviderMutation({
     variables: {
-      id: installation.id,
+      installationId: installation.id,
       attributes: { ...attributes, bindings: bindings.map(sanitize) },
     },
     update: (cache, { data }) =>
@@ -384,7 +384,7 @@ export function UpdateProvider({ installation }: any) {
 
   const [mutation, { loading, error }] = useUpdateProviderMutation({
     variables: {
-      id: installation.id,
+      installationId: installation.id,
       attributes: {
         ...{
           redirectUris: attributes.redirectUris,

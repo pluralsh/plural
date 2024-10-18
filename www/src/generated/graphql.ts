@@ -5627,7 +5627,7 @@ export type OidcProvidersQueryVariables = Exact<{
 export type OidcProvidersQuery = { __typename?: 'RootQueryType', oidcProviders?: { __typename?: 'OidcProviderConnection', pageInfo: { __typename?: 'PageInfo', endCursor?: string | null, hasNextPage: boolean }, edges?: Array<{ __typename?: 'OidcProviderEdge', node?: { __typename?: 'OidcProvider', id: string, name?: string | null, description?: string | null, clientId: string, authMethod: OidcAuthMethod, clientSecret: string, redirectUris?: Array<string | null> | null, bindings?: Array<{ __typename?: 'OidcProviderBinding', id: string, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null, group?: { __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null } | null> | null, configuration?: { __typename?: 'OuathConfiguration', issuer?: string | null, authorizationEndpoint?: string | null, tokenEndpoint?: string | null, jwksUri?: string | null, userinfoEndpoint?: string | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null } | null } | null> | null } | null };
 
 export type CreateProviderMutationVariables = Exact<{
-  id: Scalars['ID']['input'];
+  installationId?: InputMaybe<Scalars['ID']['input']>;
   attributes: OidcAttributes;
 }>;
 
@@ -5635,7 +5635,8 @@ export type CreateProviderMutationVariables = Exact<{
 export type CreateProviderMutation = { __typename?: 'RootMutationType', createOidcProvider?: { __typename?: 'OidcProvider', id: string, name?: string | null, description?: string | null, clientId: string, authMethod: OidcAuthMethod, clientSecret: string, redirectUris?: Array<string | null> | null, bindings?: Array<{ __typename?: 'OidcProviderBinding', id: string, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null, group?: { __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null } | null> | null, configuration?: { __typename?: 'OuathConfiguration', issuer?: string | null, authorizationEndpoint?: string | null, tokenEndpoint?: string | null, jwksUri?: string | null, userinfoEndpoint?: string | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null } | null };
 
 export type UpdateProviderMutationVariables = Exact<{
-  id: Scalars['ID']['input'];
+  id?: InputMaybe<Scalars['ID']['input']>;
+  installationId?: InputMaybe<Scalars['ID']['input']>;
   attributes: OidcAttributes;
 }>;
 
@@ -9085,8 +9086,8 @@ export type OidcProvidersLazyQueryHookResult = ReturnType<typeof useOidcProvider
 export type OidcProvidersSuspenseQueryHookResult = ReturnType<typeof useOidcProvidersSuspenseQuery>;
 export type OidcProvidersQueryResult = Apollo.QueryResult<OidcProvidersQuery, OidcProvidersQueryVariables>;
 export const CreateProviderDocument = gql`
-    mutation CreateProvider($id: ID!, $attributes: OidcAttributes!) {
-  createOidcProvider(installationId: $id, attributes: $attributes) {
+    mutation CreateProvider($installationId: ID, $attributes: OidcAttributes!) {
+  createOidcProvider(installationId: $installationId, attributes: $attributes) {
     ...OIDCProvider
   }
 }
@@ -9106,7 +9107,7 @@ export type CreateProviderMutationFn = Apollo.MutationFunction<CreateProviderMut
  * @example
  * const [createProviderMutation, { data, loading, error }] = useCreateProviderMutation({
  *   variables: {
- *      id: // value for 'id'
+ *      installationId: // value for 'installationId'
  *      attributes: // value for 'attributes'
  *   },
  * });
@@ -9119,8 +9120,12 @@ export type CreateProviderMutationHookResult = ReturnType<typeof useCreateProvid
 export type CreateProviderMutationResult = Apollo.MutationResult<CreateProviderMutation>;
 export type CreateProviderMutationOptions = Apollo.BaseMutationOptions<CreateProviderMutation, CreateProviderMutationVariables>;
 export const UpdateProviderDocument = gql`
-    mutation UpdateProvider($id: ID!, $attributes: OidcAttributes!) {
-  updateOidcProvider(installationId: $id, attributes: $attributes) {
+    mutation UpdateProvider($id: ID, $installationId: ID, $attributes: OidcAttributes!) {
+  updateOidcProvider(
+    id: $id
+    installationId: $installationId
+    attributes: $attributes
+  ) {
     ...OIDCProvider
   }
 }
@@ -9141,6 +9146,7 @@ export type UpdateProviderMutationFn = Apollo.MutationFunction<UpdateProviderMut
  * const [updateProviderMutation, { data, loading, error }] = useUpdateProviderMutation({
  *   variables: {
  *      id: // value for 'id'
+ *      installationId: // value for 'installationId'
  *      attributes: // value for 'attributes'
  *   },
  * });

@@ -1,12 +1,20 @@
 import { Button, Chip, FormField, Input, Modal } from '@pluralsh/design-system'
-import { InputMaybe, OidcProviderFragment } from 'generated/graphql'
-import { useCallback, useState } from 'react'
+import {
+  InputMaybe,
+  OidcAttributes,
+  OidcAuthMethod,
+  OidcProviderFragment,
+  useCreateProviderMutation,
+  useUpdateProviderMutation,
+} from 'generated/graphql'
+import { useCallback, useMemo, useState } from 'react'
 import { useTheme } from 'styled-components'
 import {
   BindingInput,
   fetchGroups,
   fetchUsers,
 } from '../../../account/Typeaheads'
+import { GqlError } from '../../../utils/Alert'
 
 const urlPrefix = 'https://'
 const urlSuffix = '/oauth2/callback'
@@ -70,6 +78,29 @@ function EditPluralOIDCClient({
     (url) => setRedirectUris(redirectUris.filter((item) => item !== url)),
     [redirectUris, setRedirectUris]
   )
+
+  const attributes: OidcAttributes = useMemo(
+    () => ({
+      name,
+      bindings,
+      redirectUris,
+      authMethod: OidcAuthMethod.Basic, // TODO
+      description,
+    }),
+    [name, description, bindings, description]
+  )
+
+  const onCompleted = useCallback(() => {
+    // TODO: How to show client ID and client secret?
+    onClose()
+  }, [onClose])
+
+  const [mutation, { loading, error }] = createMode
+    ? useCreateProviderMutation({ variables: { attributes }, onCompleted })
+    : useUpdateProviderMutation({
+        variables: { id: provider.id, attributes }, // FIXME
+        onCompleted,
+      })
 
   return (
     <div
@@ -177,6 +208,14 @@ function EditPluralOIDCClient({
           </div>
         </FormField>
       </div>
+      {error && (
+        <GqlError
+          error={error}
+          header={`${
+            createMode ? 'Create' : 'Edit'
+          } OIDC provider request failed`}
+        />
+      )}
       <div css={{ display: 'flex', justifyContent: 'space-between' }}>
         <Button
           secondary
@@ -186,7 +225,8 @@ function EditPluralOIDCClient({
         </Button>
         <Button
           secondary
-          onClick={onClose}
+          loading={loading}
+          onClick={mutation}
         >
           {createMode ? 'Create' : 'Save'}
         </Button>

@@ -1,5 +1,6 @@
 import {
   Button,
+  EmptyState,
   IconFrame,
   Modal,
   PencilIcon,
@@ -21,6 +22,7 @@ import { mapExistingNodes } from '../../../../utils/graphql'
 import { createColumnHelper } from '@tanstack/react-table'
 import { EditPluralOIDCClientModal } from './EditPluralOIDCClient'
 import ImpersonateServiceAccount from '../../../utils/ImpersonateServiceAccount'
+import { isEmpty } from 'lodash'
 
 export function EditPluralOIDCClientsModal({
   open,
@@ -149,31 +151,46 @@ export function EditPluralOIDCClients({
       css={{
         border: theme.borders['fill-two'],
         borderRadius: theme.borderRadiuses.large,
+        display: 'flex',
+        flexDirection: 'column',
+        flexGrow: 1,
+        overflow: 'auto', // FIXME: Scroll only table.
       }}
     >
-      <Table
-        virtualizeRows
-        data={oidcProviders}
-        columns={columns}
-        hideHeader
-        hasNextPage={pageInfo?.hasNextPage}
-        fetchNextPage={fetchNextPage}
-        isFetchingNextPage={loading}
-        onVirtualSliceChange={setVirtualSlice}
-        reactVirtualOptions={DEFAULT_REACT_VIRTUAL_OPTIONS}
-        reactTableOptions={{ meta: { instanceName, useModalOverlay } }}
-        style={{
-          border: 'none',
-          borderBottomLeftRadius: 0,
-          borderBottomRightRadius: 0,
-        }}
-        css={{
-          td: {
+      {isEmpty(oidcProviders) ? (
+        <EmptyState
+          message={'No Plural OIDC clients found'}
+          css={{
             backgroundColor: theme.colors['fill-one'],
-            borderColor: theme.colors['border-fill-two'],
-          },
-        }}
-      />
+            justifyContent: 'center',
+            flexGrow: 1,
+          }}
+        ></EmptyState>
+      ) : (
+        <Table
+          virtualizeRows
+          data={oidcProviders}
+          columns={columns}
+          hideHeader
+          hasNextPage={pageInfo?.hasNextPage}
+          fetchNextPage={fetchNextPage}
+          isFetchingNextPage={loading}
+          onVirtualSliceChange={setVirtualSlice}
+          reactVirtualOptions={DEFAULT_REACT_VIRTUAL_OPTIONS}
+          reactTableOptions={{ meta: { instanceName, useModalOverlay } }}
+          style={{
+            border: 'none',
+            borderBottomLeftRadius: 0,
+            borderBottomRightRadius: 0,
+          }}
+          css={{
+            td: {
+              backgroundColor: theme.colors['fill-one'],
+              borderColor: theme.colors['border-fill-two'],
+            },
+          }}
+        />
+      )}
       <div
         onClick={() => setCreateOpen(true)}
         css={{

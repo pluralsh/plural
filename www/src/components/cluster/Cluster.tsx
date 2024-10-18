@@ -72,10 +72,7 @@ export function Cluster() {
   }
 
   return (
-    <ResponsiveLayoutPage
-      gap="large"
-      overflowY="auto"
-    >
+    <ResponsiveLayoutPage gap="large">
       <Flex
         direction="column"
         grow={1}
@@ -175,6 +172,7 @@ export function Cluster() {
           direction="column"
           gap="medium"
           grow={1}
+          minHeight={0}
         >
           <ImpersonateServiceAccount
             id={cluster?.owner?.id}

@@ -232,6 +232,7 @@ export function EditPluralOIDCClients({
         onClose={() => setCreateOpen(false)}
         instanceName={instanceName}
         insideModal={insideModal}
+        refetch={refetch}
       />
     </div>
   )

@@ -85,7 +85,7 @@ function DeletePluralOIDCClient({
           " to confirm deletion.
         </p>
         <Input
-          placeholder="Enter OIDC provider name"
+          placeholder="Enter OIDC client name"
           value={confirmText}
           onChange={(e) => setConfirmText(e.target.value)}
         />

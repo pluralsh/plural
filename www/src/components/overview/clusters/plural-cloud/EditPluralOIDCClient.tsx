@@ -83,6 +83,11 @@ function EditPluralOIDCClient({
     [redirectUris, setRedirectUris]
   )
 
+  const m = useMemo(
+    () => (!provider ? useCreateProviderMutation : useUpdateProviderMutation),
+    [provider]
+  )
+
   const attributes: OidcAttributes = useMemo(
     () => ({
       name,
@@ -100,12 +105,10 @@ function EditPluralOIDCClient({
     refetch()
   }, [onClose, refetch])
 
-  const [mutation, { loading, error }] = !provider
-    ? useCreateProviderMutation({ variables: { attributes }, onCompleted })
-    : useUpdateProviderMutation({
-        variables: { id: provider.id, attributes },
-        onCompleted,
-      })
+  const [mutation, { loading, error }] = m({
+    variables: { id: provider?.id, attributes },
+    onCompleted,
+  })
 
   return (
     <div

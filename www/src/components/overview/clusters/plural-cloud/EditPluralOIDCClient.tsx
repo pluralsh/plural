@@ -135,6 +135,7 @@ function EditPluralOIDCClient({
         display: 'flex',
         flexDirection: 'column',
         gap: theme.spacing.xlarge,
+        overflow: 'hidden',
       }}
     >
       <div
@@ -142,6 +143,7 @@ function EditPluralOIDCClient({
           display: 'flex',
           flexDirection: 'column',
           gap: theme.spacing.small,
+          overflow: 'auto',
         }}
       >
         <FormField label="Client ID">

@@ -56,7 +56,6 @@ function EditPluralOIDCClient({
   provider?: OidcProviderFragment
 }) {
   const theme = useTheme()
-  const createMode = !provider
   const [name, setName] = useState(provider?.name ?? '')
   const [description, setDescription] = useState(provider?.description ?? '')
   const [bindings, setBindings] = useState<any>(provider?.bindings ?? [])
@@ -95,10 +94,10 @@ function EditPluralOIDCClient({
     onClose()
   }, [onClose])
 
-  const [mutation, { loading, error }] = createMode
+  const [mutation, { loading, error }] = !provider
     ? useCreateProviderMutation({ variables: { attributes }, onCompleted })
     : useUpdateProviderMutation({
-        variables: { id: provider.id, attributes }, // FIXME
+        variables: { id: provider.id, attributes },
         onCompleted,
       })
 
@@ -212,7 +211,7 @@ function EditPluralOIDCClient({
         <GqlError
           error={error}
           header={`${
-            createMode ? 'Create' : 'Edit'
+            !provider ? 'Create' : 'Edit'
           } OIDC provider request failed`}
         />
       )}
@@ -228,7 +227,7 @@ function EditPluralOIDCClient({
           loading={loading}
           onClick={mutation}
         >
-          {createMode ? 'Create' : 'Save'}
+          {!provider ? 'Create' : 'Save'}
         </Button>
       </div>
     </div>

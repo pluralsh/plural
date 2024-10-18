@@ -6,6 +6,7 @@ import {
   PencilIcon,
   PlusIcon,
   Table,
+  TrashCanIcon,
 } from '@pluralsh/design-system'
 import {
   ConsoleInstanceFragment,
@@ -23,6 +24,7 @@ import { createColumnHelper } from '@tanstack/react-table'
 import { EditPluralOIDCClientModal } from './EditPluralOIDCClient'
 import ImpersonateServiceAccount from '../../../utils/ImpersonateServiceAccount'
 import { isEmpty } from 'lodash'
+import { DeletePluralOIDCClientModal } from './DeletePluralOIDCClient'
 
 export function EditPluralOIDCClientsModal({
   open,
@@ -110,16 +112,23 @@ const columns = [
     id: 'actions',
     meta: { gridTemplate: 'max-content' },
     cell: function Cell({ row: { original: provider }, table }) {
+      const theme = useTheme()
       const [editOpen, setEditOpen] = useState(false)
+      const [deleteOpen, setDeleteOpen] = useState(false)
       const { instanceName, insideModal, refetch } = table.options
         .meta as TableMetaT
 
       return (
-        <>
+        <div css={{ display: 'flex', gap: theme.spacing.small }}>
           <IconFrame
             clickable
             onClick={() => setEditOpen(true)}
             icon={<PencilIcon />}
+          />
+          <IconFrame
+            clickable
+            onClick={() => setDeleteOpen(true)}
+            icon={<TrashCanIcon color={'icon-danger'} />}
           />
           <EditPluralOIDCClientModal
             open={editOpen}
@@ -129,7 +138,14 @@ const columns = [
             provider={provider}
             refetch={refetch}
           />
-        </>
+          <DeletePluralOIDCClientModal
+            open={deleteOpen}
+            onClose={() => setDeleteOpen(false)}
+            insideModal={insideModal}
+            provider={provider}
+            refetch={refetch}
+          />
+        </div>
       )
     },
   }),
@@ -227,6 +243,13 @@ export function EditPluralOIDCClients({
         Add new Plural OIDC client
         <IconFrame icon={<PlusIcon color={'icon-light'} />} />
       </div>
+      <EditPluralOIDCClientModal
+        open={createOpen}
+        onClose={() => setCreateOpen(false)}
+        instanceName={instanceName}
+        insideModal={insideModal}
+        refetch={refetch}
+      />
       <EditPluralOIDCClientModal
         open={createOpen}
         onClose={() => setCreateOpen(false)}

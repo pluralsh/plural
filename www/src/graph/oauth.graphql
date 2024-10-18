@@ -81,3 +81,9 @@ mutation UpdateProvider($id: ID, $installationId: ID, $attributes: OidcAttribute
     ...OIDCProvider
   }
 }
+
+mutation DeleteProvider($id: ID!) {
+  deleteOidcProvider(id: $id) {
+    ...OIDCProvider
+  }
+}

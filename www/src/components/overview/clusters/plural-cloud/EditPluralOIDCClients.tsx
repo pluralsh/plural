@@ -73,6 +73,7 @@ export function EditPluralOIDCClientsModal({
 type TableMetaT = {
   instanceName: string
   insideModal?: boolean
+  refetch: () => void
 }
 
 const columnHelper = createColumnHelper<OidcProviderFragment>()
@@ -110,7 +111,8 @@ const columns = [
     meta: { gridTemplate: 'max-content' },
     cell: function Cell({ row: { original: provider }, table }) {
       const [editOpen, setEditOpen] = useState(false)
-      const { instanceName, insideModal } = table.options.meta as TableMetaT
+      const { instanceName, insideModal, refetch } = table.options
+        .meta as TableMetaT
 
       return (
         <>
@@ -125,6 +127,7 @@ const columns = [
             instanceName={instanceName}
             insideModal={insideModal}
             provider={provider}
+            refetch={refetch}
           />
         </>
       )
@@ -141,7 +144,7 @@ export function EditPluralOIDCClients({
 }) {
   const theme = useTheme()
   const [createOpen, setCreateOpen] = useState(false)
-  const { data, loading, pageInfo, setVirtualSlice, fetchNextPage } =
+  const { data, loading, pageInfo, setVirtualSlice, fetchNextPage, refetch } =
     useFetchPaginatedData(
       { queryHook: useOidcProvidersQuery, keyPath: ['oidcProviders'] },
       {}
@@ -183,7 +186,7 @@ export function EditPluralOIDCClients({
           onVirtualSliceChange={setVirtualSlice}
           reactVirtualOptions={DEFAULT_REACT_VIRTUAL_OPTIONS}
           reactTableOptions={{
-            meta: { instanceName, insideModal } as TableMetaT,
+            meta: { instanceName, insideModal, refetch } as TableMetaT,
           }}
           style={{
             border: 'none',

@@ -25,12 +25,14 @@ export function EditPluralOIDCClientModal({
   instanceName,
   provider,
   insideModal = false,
+  refetch,
 }: {
   open: boolean
   onClose: () => void
   instanceName: string
   provider?: OidcProviderFragment
   insideModal?: boolean
+  refetch: () => void
 }) {
   return (
     <Modal
@@ -43,6 +45,7 @@ export function EditPluralOIDCClientModal({
       <EditPluralOIDCClient
         onClose={onClose}
         provider={provider}
+        refetch={refetch}
       />
     </Modal>
   )
@@ -51,9 +54,11 @@ export function EditPluralOIDCClientModal({
 function EditPluralOIDCClient({
   onClose,
   provider,
+  refetch,
 }: {
   onClose: () => void
   provider?: OidcProviderFragment
+  refetch: () => void
 }) {
   const theme = useTheme()
   const [name, setName] = useState(provider?.name ?? '')
@@ -92,7 +97,8 @@ function EditPluralOIDCClient({
   const onCompleted = useCallback(() => {
     // TODO: How to show client ID and client secret?
     onClose()
-  }, [onClose])
+    refetch()
+  }, [onClose, refetch])
 
   const [mutation, { loading, error }] = !provider
     ? useCreateProviderMutation({ variables: { attributes }, onCompleted })

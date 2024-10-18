@@ -154,7 +154,8 @@ export function EditPluralOIDCClients({
         display: 'flex',
         flexDirection: 'column',
         flexGrow: 1,
-        overflow: 'auto', // FIXME: Scroll only table.
+        position: 'relative',
+        overflow: 'auto',
       }}
     >
       {isEmpty(oidcProviders) ? (
@@ -167,39 +168,46 @@ export function EditPluralOIDCClients({
           }}
         ></EmptyState>
       ) : (
-        <Table
-          virtualizeRows
-          data={oidcProviders}
-          columns={columns}
-          hideHeader
-          hasNextPage={pageInfo?.hasNextPage}
-          fetchNextPage={fetchNextPage}
-          isFetchingNextPage={loading}
-          onVirtualSliceChange={setVirtualSlice}
-          reactVirtualOptions={DEFAULT_REACT_VIRTUAL_OPTIONS}
-          reactTableOptions={{ meta: { instanceName, useModalOverlay } }}
-          style={{
-            border: 'none',
-            borderBottomLeftRadius: 0,
-            borderBottomRightRadius: 0,
-          }}
-          css={{
-            td: {
-              backgroundColor: theme.colors['fill-one'],
-              borderColor: theme.colors['border-fill-two'],
-            },
-          }}
-        />
+        <div css={{ backgroundColor: theme.colors['fill-one'], flexGrow: 1 }}>
+          <Table
+            virtualizeRows
+            data={oidcProviders}
+            columns={columns}
+            hideHeader
+            hasNextPage={pageInfo?.hasNextPage}
+            fetchNextPage={fetchNextPage}
+            isFetchingNextPage={loading}
+            onVirtualSliceChange={setVirtualSlice}
+            reactVirtualOptions={DEFAULT_REACT_VIRTUAL_OPTIONS}
+            reactTableOptions={{ meta: { instanceName, useModalOverlay } }}
+            style={{
+              border: 'none',
+              borderBottomLeftRadius: 0,
+              borderBottomRightRadius: 0,
+            }}
+            css={{
+              td: {
+                backgroundColor: theme.colors['fill-one'],
+                borderColor: theme.colors['border-fill-two'],
+              },
+            }}
+          />
+        </div>
       )}
       <div
         onClick={() => setCreateOpen(true)}
         css={{
           ...theme.partials.text.body2Bold,
+          backgroundColor: theme.colors['fill-two'],
           alignItems: 'center',
           borderTop: theme.borders['fill-two'],
           display: 'flex',
           justifyContent: 'space-between',
           padding: theme.spacing.small,
+          position: 'sticky',
+          bottom: 0,
+          right: 0,
+          left: 0,
 
           '&:hover': {
             backgroundColor: theme.colors['fill-one-hover'],

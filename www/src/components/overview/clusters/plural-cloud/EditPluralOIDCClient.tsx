@@ -4,6 +4,7 @@ import {
   OidcAttributes,
   OidcAuthMethod,
   OidcProviderFragment,
+  PolicyBinding,
   useCreateProviderMutation,
   useUpdateProviderMutation,
 } from 'generated/graphql'
@@ -51,6 +52,16 @@ export function EditPluralOIDCClientModal({
   )
 }
 
+export const bindingsToBindingAttributes = (
+  bindings: Nullable<PolicyBinding>[]
+) =>
+  bindings?.map((binding) => {
+    if (binding?.group?.id) return { groupId: binding.group.id }
+    if (binding?.user?.id) return { userId: binding.user.id }
+
+    return null
+  })
+
 function EditPluralOIDCClient({
   onClose,
   provider,
@@ -91,7 +102,7 @@ function EditPluralOIDCClient({
   const attributes: OidcAttributes = useMemo(
     () => ({
       name,
-      bindings,
+      bindings: bindingsToBindingAttributes(bindings),
       redirectUris,
       authMethod: OidcAuthMethod.Basic, // TODO
       description,
@@ -160,7 +171,7 @@ function EditPluralOIDCClient({
           placeholder="Search for group"
           bindings={bindings
             .filter(({ group }) => !!group)
-            .map(({ group }) => group?.name)}
+            .map(({ group: { name } }) => name)}
           fetcher={fetchGroups}
           add={(group) => setBindings([...bindings, { group }])}
           remove={(name) =>

@@ -55,7 +55,7 @@ export function EditPluralOIDCClientsModal({
         >
           <EditPluralOIDCClients
             instanceName={instance.name}
-            useModalOverlay={false}
+            insideModal
           />
         </ImpersonateServiceAccount>
         <Button
@@ -72,7 +72,7 @@ export function EditPluralOIDCClientsModal({
 
 type TableMetaT = {
   instanceName: string
-  useModalOverlay?: boolean
+  insideModal?: boolean
 }
 
 const columnHelper = createColumnHelper<OidcProviderFragment>()
@@ -110,7 +110,7 @@ const columns = [
     meta: { gridTemplate: 'max-content' },
     cell: function Cell({ row: { original: provider }, table }) {
       const [editOpen, setEditOpen] = useState(false)
-      const { instanceName, useModalOverlay } = table.options.meta as TableMetaT
+      const { instanceName, insideModal } = table.options.meta as TableMetaT
 
       return (
         <>
@@ -123,7 +123,7 @@ const columns = [
             open={editOpen}
             onClose={() => setEditOpen(false)}
             instanceName={instanceName}
-            useModalOverlay={useModalOverlay}
+            insideModal={insideModal}
             provider={provider}
           />
         </>
@@ -134,10 +134,10 @@ const columns = [
 
 export function EditPluralOIDCClients({
   instanceName,
-  useModalOverlay = true,
+  insideModal = false,
 }: {
   instanceName: string
-  useModalOverlay?: boolean
+  insideModal?: boolean
 }) {
   const theme = useTheme()
   const [createOpen, setCreateOpen] = useState(false)
@@ -183,7 +183,7 @@ export function EditPluralOIDCClients({
           onVirtualSliceChange={setVirtualSlice}
           reactVirtualOptions={DEFAULT_REACT_VIRTUAL_OPTIONS}
           reactTableOptions={{
-            meta: { instanceName, useModalOverlay } as TableMetaT,
+            meta: { instanceName, insideModal } as TableMetaT,
           }}
           style={{
             border: 'none',
@@ -192,7 +192,8 @@ export function EditPluralOIDCClients({
           }}
           css={{
             td: {
-              backgroundColor: theme.colors['fill-one'],
+              backgroundColor:
+                theme.colors[insideModal ? 'fill-two' : 'fill-one'],
               borderColor: theme.colors['border-fill-two'],
             },
           }}
@@ -202,7 +203,7 @@ export function EditPluralOIDCClients({
         onClick={() => setCreateOpen(true)}
         css={{
           ...theme.partials.text.body2Bold,
-          backgroundColor: theme.colors['fill-two'],
+          backgroundColor: theme.colors[insideModal ? 'fill-one' : 'fill-zero'],
           alignItems: 'center',
           borderTop: theme.borders['fill-two'],
           display: 'flex',
@@ -214,7 +215,8 @@ export function EditPluralOIDCClients({
           left: 0,
 
           '&:hover': {
-            backgroundColor: theme.colors['fill-one-hover'],
+            backgroundColor:
+              theme.colors[insideModal ? 'fill-one-hover' : 'fill-zero-hover'],
             cursor: 'pointer',
           },
         }}
@@ -226,7 +228,7 @@ export function EditPluralOIDCClients({
         open={createOpen}
         onClose={() => setCreateOpen(false)}
         instanceName={instanceName}
-        useModalOverlay={useModalOverlay}
+        insideModal={insideModal}
       />
     </div>
   )

@@ -45,7 +45,7 @@
     "@nivo/geo": "0.83.0",
     "@nivo/line": "0.83.0",
     "@octokit/core": "4.2.1",
-    "@pluralsh/design-system": "3.75.0",
+    "@pluralsh/design-system": "3.75.1",
     "@react-spring/web": "9.7.3",
     "@stripe/react-stripe-js": "2.1.0",
     "@stripe/stripe-js": "1.54.0",

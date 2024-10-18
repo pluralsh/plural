@@ -70,6 +70,11 @@ export function EditPluralOIDCClientsModal({
   )
 }
 
+type TableMetaT = {
+  instanceName: string
+  useModalOverlay?: boolean
+}
+
 const columnHelper = createColumnHelper<OidcProviderFragment>()
 
 const columns = [
@@ -105,6 +110,7 @@ const columns = [
     meta: { gridTemplate: 'max-content' },
     cell: function Cell({ row: { original: provider }, table }) {
       const [editOpen, setEditOpen] = useState(false)
+      const { instanceName, useModalOverlay } = table.options.meta as TableMetaT
 
       return (
         <>
@@ -116,8 +122,8 @@ const columns = [
           <EditPluralOIDCClientModal
             open={editOpen}
             onClose={() => setEditOpen(false)}
-            instanceName={table.options.meta?.instanceName}
-            useModalOverlay={table.options.meta?.useModalOverlay}
+            instanceName={instanceName}
+            useModalOverlay={useModalOverlay}
             provider={provider}
           />
         </>
@@ -179,7 +185,9 @@ export function EditPluralOIDCClients({
             isFetchingNextPage={loading}
             onVirtualSliceChange={setVirtualSlice}
             reactVirtualOptions={DEFAULT_REACT_VIRTUAL_OPTIONS}
-            reactTableOptions={{ meta: { instanceName, useModalOverlay } }}
+            reactTableOptions={{
+              meta: { instanceName, useModalOverlay } as TableMetaT,
+            }}
             style={{
               border: 'none',
               borderBottomLeftRadius: 0,

@@ -1,14 +1,12 @@
-import { Button, FormField, Input, Modal } from '@pluralsh/design-system'
+import { Button, Chip, FormField, Input, Modal } from '@pluralsh/design-system'
 import { InputMaybe, OidcProviderFragment } from 'generated/graphql'
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { useTheme } from 'styled-components'
-import { isEmpty } from 'lodash'
 import {
   BindingInput,
   fetchGroups,
   fetchUsers,
 } from '../../../account/Typeaheads'
-import { UrlsInput } from '../../../app/oidc/OIDC'
 
 export function EditPluralOIDCClientModal({
   open,
@@ -51,9 +49,23 @@ function EditPluralOIDCClient({
   const [name, setName] = useState(provider?.name ?? '')
   const [description, setDescription] = useState(provider?.description ?? '')
   const [bindings, setBindings] = useState<any>(provider?.bindings ?? [])
+  const [url, setUrl] = useState('')
   const [redirectUris, setRedirectUris] = useState<InputMaybe<string>[]>(
     provider?.redirectUris ?? []
   )
+
+  const addUrl = useCallback(() => {
+    if (redirectUris.indexOf(url) > -1) return
+
+    setRedirectUris([...redirectUris, url])
+    setUrl('')
+  }, [url, setUrl, redirectUris, setRedirectUris])
+
+  const removeUrl = useCallback(
+    (url) => setRedirectUris(redirectUris.filter((item) => item !== url)),
+    [redirectUris, setRedirectUris]
+  )
+
   return (
     <div
       css={{
@@ -114,10 +126,52 @@ function EditPluralOIDCClient({
           }
         />
         <FormField label="Redirect URIs">
-          <UrlsInput
-            urls={redirectUris}
-            setUrls={setRedirectUris}
-          />
+          <div
+            css={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: theme.spacing.small,
+            }}
+          >
+            <div
+              css={{
+                display: 'flex',
+              }}
+            >
+              <Input
+                value={url}
+                width="100%"
+                placeholder="Enter a redirect URI"
+                onChange={({ target: { value } }) => setUrl(value)}
+              />
+              <Button
+                onClick={addUrl}
+                secondary
+                marginLeft="small"
+              >
+                Add
+              </Button>
+            </div>
+            <div
+              css={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: theme.spacing.xxsmall,
+              }}
+            >
+              {redirectUris.map((url, i) => (
+                <Chip
+                  key={i}
+                  size="small"
+                  clickable
+                  closeButton
+                  onClick={() => removeUrl(url)}
+                >
+                  {url}
+                </Chip>
+              ))}
+            </div>
+          </div>
         </FormField>
       </div>
       <div css={{ display: 'flex', justifyContent: 'space-between' }}>

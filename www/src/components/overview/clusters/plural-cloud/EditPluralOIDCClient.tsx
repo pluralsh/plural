@@ -1,4 +1,12 @@
-import { Button, Chip, FormField, Input, Modal } from '@pluralsh/design-system'
+import {
+  Button,
+  Chip,
+  Codeline,
+  Divider,
+  FormField,
+  Input,
+  Modal,
+} from '@pluralsh/design-system'
 import {
   InputMaybe,
   OidcAttributes,
@@ -116,7 +124,7 @@ function EditPluralOIDCClient({
     refetch()
   }, [onClose, refetch])
 
-  const [mutation, { loading, error }] = m({
+  const [mutation, { data, loading, error }] = m({
     variables: { id: provider?.id, attributes },
     onCompleted,
   })
@@ -136,6 +144,32 @@ function EditPluralOIDCClient({
           gap: theme.spacing.small,
         }}
       >
+        <FormField label="Client ID">
+          <Codeline
+            displayText={
+              provider?.clientId ??
+              'A client ID will be generated upon creation'
+            }
+          >
+            {provider?.clientId}
+          </Codeline>
+        </FormField>
+        <FormField label="Client secret">
+          <Codeline
+            displayText={
+              provider?.clientSecret
+                ? '•••••••••••••••••••••'
+                : 'A client secret will be generated upon creation'
+            }
+          >
+            {provider?.clientSecret}
+          </Codeline>
+        </FormField>
+        <Divider
+          backgroundColor="border-fill-two"
+          marginTop="medium"
+          marginBottom="medium"
+        />
         <FormField
           label="Name"
           required

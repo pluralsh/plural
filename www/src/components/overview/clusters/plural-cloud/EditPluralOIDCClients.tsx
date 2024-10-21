@@ -75,7 +75,6 @@ export function EditPluralOIDCClientsModal({
 
 type TableMetaT = {
   instanceName: string
-  insideModal?: boolean
   refetch: () => void
 }
 
@@ -116,8 +115,7 @@ const columns = [
       const theme = useTheme()
       const [editOpen, setEditOpen] = useState(false)
       const [deleteOpen, setDeleteOpen] = useState(false)
-      const { instanceName, insideModal, refetch } = table.options
-        .meta as TableMetaT
+      const { instanceName, refetch } = table.options.meta as TableMetaT
 
       return (
         <div css={{ display: 'flex', gap: theme.spacing.small }}>
@@ -135,14 +133,12 @@ const columns = [
             open={editOpen}
             onClose={() => setEditOpen(false)}
             instanceName={instanceName}
-            insideModal={insideModal}
             provider={provider}
             refetch={refetch}
           />
           <DeletePluralOIDCClientModal
             open={deleteOpen}
             onClose={() => setDeleteOpen(false)}
-            insideModal={insideModal}
             provider={provider}
             refetch={refetch}
           />
@@ -250,7 +246,6 @@ export function EditPluralOIDCClients({
         open={createOpen}
         onClose={() => setCreateOpen(false)}
         instanceName={instanceName}
-        insideModal={insideModal}
         refetch={refetch}
       />
     </div>

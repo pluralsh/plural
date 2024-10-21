@@ -12,20 +12,17 @@ export function DeletePluralOIDCClientModal({
   open,
   onClose,
   provider,
-  insideModal = false,
   refetch,
 }: {
   open: boolean
   onClose: () => void
   provider?: OidcProviderFragment
-  insideModal?: boolean
   refetch: () => void
 }) {
   return (
     <Modal
       open={open}
       onClose={onClose}
-      overlayStyles={{ background: insideModal ? 'none' : undefined }}
       header={`Confirm deletion`}
       size="large"
     >

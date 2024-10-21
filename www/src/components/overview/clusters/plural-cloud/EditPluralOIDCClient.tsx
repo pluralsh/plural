@@ -36,14 +36,12 @@ export function EditPluralOIDCClientModal({
   onClose,
   instanceName,
   provider,
-  insideModal = false,
   refetch,
 }: {
   open: boolean
   onClose: () => void
   instanceName: string
   provider?: OidcProviderFragment
-  insideModal?: boolean
   refetch: () => void
 }) {
   const theme = useTheme()
@@ -55,7 +53,6 @@ export function EditPluralOIDCClientModal({
       <Modal
         open={open}
         onClose={onClose}
-        overlayStyles={{ background: insideModal ? 'none' : undefined }}
         header={`${instanceName} - Edit Plural OIDC clients`}
         size="large"
       >

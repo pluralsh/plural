@@ -2,6 +2,7 @@ import {
   Button,
   EmptyState,
   IconFrame,
+  LoopingLogo,
   Modal,
   PencilIcon,
   PlusIcon,
@@ -170,6 +171,8 @@ export function EditPluralOIDCClients({
     () => mapExistingNodes(data?.oidcProviders) ?? [],
     [data?.oidcProviders]
   )
+
+  if (!data) return <LoopingLogo />
 
   return (
     <div

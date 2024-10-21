@@ -152,11 +152,6 @@ function EditPluralOIDCClient({
     [redirectUris, setRedirectUris]
   )
 
-  const m = useMemo(
-    () => (createMode ? useCreateProviderMutation : useUpdateProviderMutation),
-    [provider]
-  )
-
   const attributes: OidcAttributes = useMemo(
     () => ({
       name,
@@ -179,15 +174,21 @@ function EditPluralOIDCClient({
     }
   }, [onClose, refetch])
 
-  const [mutation, { data, loading, error }] = m({
-    variables: { id: provider?.id, attributes },
-    onCompleted,
-  })
+  const [create, { data, loading: creating, error: createError }] =
+    useCreateProviderMutation({
+      variables: { attributes },
+      onCompleted,
+    })
 
-  const newProvider: Nullable<OidcProviderFragment> =
-    (data as any)?.updateOidcProvider || (data as any)?.createOidcProvider
-  const clientId = provider?.clientId ?? newProvider?.clientId
-  const clientSecret = provider?.clientSecret ?? newProvider?.clientSecret
+  const [update, { loading: updating, error: updateError }] =
+    useUpdateProviderMutation({
+      variables: { id: provider?.id, attributes },
+      onCompleted,
+    })
+
+  const clientId = provider?.clientId ?? data?.createOidcProvider?.clientId
+  const clientSecret =
+    provider?.clientSecret ?? data?.createOidcProvider?.clientSecret
 
   return (
     <div
@@ -346,12 +347,16 @@ function EditPluralOIDCClient({
           </>
         )}
       </div>
-      {error && (
+      {createError && (
         <GqlError
-          error={error}
-          header={`${
-            createMode ? 'Create' : 'Edit'
-          } OIDC provider request failed`}
+          error={createError}
+          header={'Create OIDC provider request failed'}
+        />
+      )}
+      {updateError && (
+        <GqlError
+          error={updateError}
+          header={'Update OIDC provider request failed'}
         />
       )}
       <div
@@ -371,8 +376,9 @@ function EditPluralOIDCClient({
             </Button>
             <div css={{ flexGrow: 1 }} />
             <Button
-              loading={loading}
-              onClick={mutation}
+              disabled={!name || !authMethod}
+              loading={creating || updating}
+              onClick={() => (createMode ? create() : update())}
             >
               {createMode ? 'Create' : 'Save'}
             </Button>

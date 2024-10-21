@@ -5,7 +5,9 @@ import {
   Divider,
   FormField,
   Input,
+  ListBoxItem,
   Modal,
+  Select,
 } from '@pluralsh/design-system'
 import {
   InputMaybe,
@@ -87,6 +89,9 @@ function EditPluralOIDCClient({
   const [redirectUris, setRedirectUris] = useState<InputMaybe<string>[]>(
     provider?.redirectUris ?? []
   )
+  const [authMethod, setAuthMethod] = useState<OidcAuthMethod>(
+    provider?.authMethod ?? OidcAuthMethod.Basic
+  )
 
   const addUrl = useCallback(() => {
     const u = `${urlPrefix}${url}${urlSuffix}`
@@ -112,7 +117,7 @@ function EditPluralOIDCClient({
       name,
       bindings: bindingsToBindingAttributes(bindings),
       redirectUris,
-      authMethod: OidcAuthMethod.Basic, // TODO
+      authMethod,
       description,
     }),
     [name, description, bindings, description]
@@ -216,6 +221,23 @@ function EditPluralOIDCClient({
             )
           }
         />
+        <FormField label="Auth method">
+          <Select
+            selectedKey={authMethod}
+            onSelectionChange={(v) => setAuthMethod(v as OidcAuthMethod)}
+          >
+            <ListBoxItem
+              key={OidcAuthMethod.Basic}
+              label={'Basic'}
+              textValue={OidcAuthMethod.Basic}
+            />
+            <ListBoxItem
+              key={OidcAuthMethod.Post}
+              label={'Post'}
+              textValue={OidcAuthMethod.Post}
+            />
+          </Select>
+        </FormField>
         <FormField label="Redirect URIs">
           <div
             css={{

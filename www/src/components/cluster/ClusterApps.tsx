@@ -48,11 +48,13 @@ export function ClusterApps({
           placeholder="Search for a repository"
           disabled={isEmpty(apps)}
           border="none"
+          borderRadius={0}
           value={search}
           width="100%"
           onChange={({ target: { value } }) => setSearch(value)}
         />
       }
+      flexGrow={0}
     >
       {!isEmpty(apps) ? (
         <InfiniteScroller

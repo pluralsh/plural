@@ -2,10 +2,14 @@ import {
   AppIcon,
   Button,
   Chip,
+  CloudIcon,
   ConsoleIcon,
   Flex,
   ListBoxItem,
+  PeopleIcon,
+  PersonPlusIcon,
   Tooltip,
+  TrashCanIcon,
 } from '@pluralsh/design-system'
 import { createColumnHelper } from '@tanstack/react-table'
 import { ProviderIcon } from 'components/utils/ProviderIcon'
@@ -30,6 +34,7 @@ import { CellCaption, CellWrap } from '../SelfHostedTableCols'
 import { ConsoleInstanceOIDC } from './ConsoleInstanceOIDC'
 import { DeleteInstanceModal } from './DeleteInstance'
 import { EditInstanceSizeModal } from './EditInstance'
+import { EditPluralOIDCClientsModal } from './EditPluralOIDCClients'
 
 const columnHelper = createColumnHelper<ConsoleInstanceFragment>()
 
@@ -159,6 +164,7 @@ const ColOwner = columnHelper.accessor((instance) => instance.owner, {
 enum MenuItemKey {
   EditSize = 'editSize',
   EditOidc = 'editOidc',
+  EditPluralOIDCClients = 'editPluralOIDCClients',
   Delete = 'delete',
 }
 
@@ -194,7 +200,8 @@ const ColActions = columnHelper.accessor((instance) => instance, {
         <MoreMenu onSelectionChange={(newKey) => setMenuKey(newKey)}>
           <ListBoxItem
             key={MenuItemKey.EditSize}
-            label="Edit instance size"
+            label="Edit cloud instance size"
+            leftContent={<CloudIcon />}
           />
           <ListBoxItem
             key={MenuItemKey.EditOidc}
@@ -203,11 +210,18 @@ const ColActions = columnHelper.accessor((instance) => instance, {
                 <span>Edit cluster managers</span>
               </Tooltip>
             }
+            leftContent={<PersonPlusIcon />}
+          />
+          <ListBoxItem
+            key={MenuItemKey.EditPluralOIDCClients}
+            label="Edit Plural OIDC clients"
+            leftContent={<PeopleIcon />}
           />
           <ListBoxItem
             key={MenuItemKey.Delete}
             destructive
             label="Delete instance"
+            leftContent={<TrashCanIcon color="icon-danger" />}
           />
         </MoreMenu>
         {/* Modals */}
@@ -222,6 +236,11 @@ const ColActions = columnHelper.accessor((instance) => instance, {
           onClose={onClose}
           serviceAccount={instance.console?.owner}
           showHeading={false}
+        />
+        <EditPluralOIDCClientsModal
+          open={menuKey === MenuItemKey.EditPluralOIDCClients}
+          onClose={onClose}
+          instance={instance}
         />
         <DeleteInstanceModal
           open={menuKey === MenuItemKey.Delete}

@@ -13,12 +13,16 @@ import { useNavigate, useParams } from 'react-router-dom'
 
 import { CLUSTERS_ROOT_CRUMB } from 'components/overview/clusters/Clusters'
 
+import { useTheme } from 'styled-components'
+
 import ClustersContext from '../../contexts/ClustersContext'
 import CurrentUserContext from '../../contexts/CurrentUserContext'
 import { ensureURLValidity } from '../../utils/url'
 import { ClusterPicker } from '../utils/ClusterPicker'
 import ImpersonateServiceAccount from '../utils/ImpersonateServiceAccount'
 import { ResponsiveLayoutPage } from '../utils/layout/ResponsiveLayoutPage'
+
+import { EditPluralOIDCClients } from '../overview/clusters/plural-cloud/EditPluralOIDCClients'
 
 import { ClusterAdminsModal } from './ClusterAdminsModal'
 import { ClusterApps } from './ClusterApps'
@@ -29,6 +33,7 @@ import { ClusterSidecar } from './ClusterSidecar'
 import { CollapsibleButton } from './misc'
 
 export function Cluster() {
+  const theme = useTheme()
   const [dependencyOpen, setDependencyOpen] = useState(false)
   const [promoteOpen, setPromoteOpen] = useState(false)
   const [adminsOpen, setAdminsOpen] = useState(false)
@@ -69,10 +74,7 @@ export function Cluster() {
   }
 
   return (
-    <ResponsiveLayoutPage
-      gap="large"
-      overflowY="auto"
-    >
+    <ResponsiveLayoutPage gap="large">
       <Flex
         direction="column"
         grow={1}
@@ -172,12 +174,24 @@ export function Cluster() {
           direction="column"
           gap="medium"
           grow={1}
+          minHeight={0}
         >
           <ImpersonateServiceAccount
             id={cluster?.owner?.id}
             skip={!cluster.owner?.serviceAccount}
           >
-            <ClusterApps cluster={cluster} />
+            <>
+              <ClusterApps cluster={cluster} />
+              <div
+                css={{
+                  ...theme.partials.text.body1Bold,
+                  marginTop: theme.spacing.medium,
+                }}
+              >
+                Plural OIDC clients
+              </div>
+              <EditPluralOIDCClients instanceName={cluster.name} />
+            </>
           </ImpersonateServiceAccount>
         </Flex>
       </Flex>

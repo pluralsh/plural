@@ -76,8 +76,16 @@ mutation CreateProvider($installationId: ID, $attributes: OidcAttributes!) {
   }
 }
 
-mutation UpdateProvider($id: ID, $installationId: ID, $attributes: OidcAttributes!) {
-  updateOidcProvider(id: $id, installationId: $installationId, attributes: $attributes) {
+mutation UpdateProvider(
+  $id: ID
+  $installationId: ID
+  $attributes: OidcAttributes!
+) {
+  updateOidcProvider(
+    id: $id
+    installationId: $installationId
+    attributes: $attributes
+  ) {
     ...OIDCProvider
   }
 }

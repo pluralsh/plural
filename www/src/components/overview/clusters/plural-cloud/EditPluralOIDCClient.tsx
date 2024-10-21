@@ -1,4 +1,5 @@
 import {
+  Banner,
   Button,
   Chip,
   Codeline,
@@ -8,7 +9,6 @@ import {
   ListBoxItem,
   Modal,
   Select,
-  Banner,
 } from '@pluralsh/design-system'
 import {
   InputMaybe,
@@ -21,6 +21,7 @@ import {
 } from 'generated/graphql'
 import { useCallback, useMemo, useState } from 'react'
 import { useTheme } from 'styled-components'
+
 import {
   BindingInput,
   fetchGroups,
@@ -72,12 +73,12 @@ export function EditPluralOIDCClientModal({
       </Modal>
       {createToastVisible && (
         <Banner
-          heading={'OIDC client successfully created.'}
+          heading="OIDC client successfully created."
           severity="success"
-          position={'fixed'}
+          position="fixed"
           bottom={theme.spacing.large}
-          left={'50%'}
-          transform={'translate(-50%, 0)'}
+          left="50%"
+          transform="translate(-50%, 0)"
           zIndex={theme.zIndexes.tooltip}
         >
           The Client ID and Client secret have been generated.
@@ -86,10 +87,10 @@ export function EditPluralOIDCClientModal({
       {editToastVisible && (
         <Banner
           severity="success"
-          position={'fixed'}
+          position="fixed"
           bottom={theme.spacing.large}
-          left={'50%'}
-          transform={'translate(-50%, 0)'}
+          left="50%"
+          transform="translate(-50%, 0)"
           zIndex={theme.zIndexes.tooltip}
         >
           OIDC client successfully saved.
@@ -157,7 +158,7 @@ function EditPluralOIDCClient({
       authMethod,
       description,
     }),
-    [name, description, authMethod, bindings, description]
+    [name, description, authMethod, bindings, redirectUris]
   )
 
   const onCompleted = useCallback(() => {
@@ -169,7 +170,7 @@ function EditPluralOIDCClient({
       onEdit()
       onClose()
     }
-  }, [onClose, refetch])
+  }, [onClose, onCreate, onEdit, refetch])
 
   const [create, { data, loading: creating, error: createError }] =
     useCreateProviderMutation({
@@ -285,12 +286,12 @@ function EditPluralOIDCClient({
               >
                 <ListBoxItem
                   key={OidcAuthMethod.Basic}
-                  label={'Basic'}
+                  label="Basic"
                   textValue={OidcAuthMethod.Basic}
                 />
                 <ListBoxItem
                   key={OidcAuthMethod.Post}
-                  label={'Post'}
+                  label="Post"
                   textValue={OidcAuthMethod.Post}
                 />
               </Select>
@@ -347,13 +348,13 @@ function EditPluralOIDCClient({
       {createError && (
         <GqlError
           error={createError}
-          header={'Create OIDC provider request failed'}
+          header="Create OIDC provider request failed"
         />
       )}
       {updateError && (
         <GqlError
           error={updateError}
-          header={'Update OIDC provider request failed'}
+          header="Update OIDC provider request failed"
         />
       )}
       <div

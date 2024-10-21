@@ -16,15 +16,21 @@ import {
 } from 'generated/graphql'
 import { useMemo, useState } from 'react'
 import { useTheme } from 'styled-components'
+
+import { createColumnHelper } from '@tanstack/react-table'
+
+import { isEmpty } from 'lodash'
+
 import {
   DEFAULT_REACT_VIRTUAL_OPTIONS,
   useFetchPaginatedData,
 } from '../../../utils/useFetchPaginatedData'
 import { mapExistingNodes } from '../../../../utils/graphql'
-import { createColumnHelper } from '@tanstack/react-table'
-import { EditPluralOIDCClientModal } from './EditPluralOIDCClient'
+
 import ImpersonateServiceAccount from '../../../utils/ImpersonateServiceAccount'
-import { isEmpty } from 'lodash'
+
+import { EditPluralOIDCClientModal } from './EditPluralOIDCClient'
+
 import { DeletePluralOIDCClientModal } from './DeletePluralOIDCClient'
 
 export function EditPluralOIDCClientsModal({
@@ -91,7 +97,7 @@ const columns = [
           <div
             css={{
               ...theme.partials.text.body2Bold,
-              color: theme.colors['text'],
+              color: theme.colors.text,
             }}
           >
             {provider.name}
@@ -127,7 +133,7 @@ const columns = [
           <IconFrame
             clickable
             onClick={() => setDeleteOpen(true)}
-            icon={<TrashCanIcon color={'icon-danger'} />}
+            icon={<TrashCanIcon color="icon-danger" />}
           />
           <EditPluralOIDCClientModal
             open={editOpen}
@@ -183,12 +189,12 @@ export function EditPluralOIDCClients({
     >
       {isEmpty(oidcProviders) ? (
         <EmptyState
-          message={'No Plural OIDC clients found'}
+          message="No Plural OIDC clients found"
           css={{
             backgroundColor: theme.colors['fill-one'],
             justifyContent: 'center',
           }}
-        ></EmptyState>
+        />
       ) : (
         <Table
           virtualizeRows
@@ -240,7 +246,7 @@ export function EditPluralOIDCClients({
         }}
       >
         Add new Plural OIDC client
-        <IconFrame icon={<PlusIcon color={'icon-light'} />} />
+        <IconFrame icon={<PlusIcon color="icon-light" />} />
       </div>
       <EditPluralOIDCClientModal
         open={createOpen}

@@ -13,12 +13,16 @@ import { useNavigate, useParams } from 'react-router-dom'
 
 import { CLUSTERS_ROOT_CRUMB } from 'components/overview/clusters/Clusters'
 
+import { useTheme } from 'styled-components'
+
 import ClustersContext from '../../contexts/ClustersContext'
 import CurrentUserContext from '../../contexts/CurrentUserContext'
 import { ensureURLValidity } from '../../utils/url'
 import { ClusterPicker } from '../utils/ClusterPicker'
 import ImpersonateServiceAccount from '../utils/ImpersonateServiceAccount'
 import { ResponsiveLayoutPage } from '../utils/layout/ResponsiveLayoutPage'
+
+import { EditPluralOIDCClients } from '../overview/clusters/plural-cloud/EditPluralOIDCClients'
 
 import { ClusterAdminsModal } from './ClusterAdminsModal'
 import { ClusterApps } from './ClusterApps'
@@ -27,8 +31,6 @@ import ClusterMetadataPanel from './ClusterMetadataPanel'
 import { ClusterPromoteModal } from './ClusterPromoteModal'
 import { ClusterSidecar } from './ClusterSidecar'
 import { CollapsibleButton } from './misc'
-import { EditPluralOIDCClients } from '../overview/clusters/plural-cloud/EditPluralOIDCClients'
-import { useTheme } from 'styled-components'
 
 export function Cluster() {
   const theme = useTheme()

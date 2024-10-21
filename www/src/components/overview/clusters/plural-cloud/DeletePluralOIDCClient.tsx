@@ -5,8 +5,9 @@ import {
 } from 'generated/graphql'
 import { useTheme } from 'styled-components'
 
-import { GqlError } from '../../../utils/Alert'
 import { useState } from 'react'
+
+import { GqlError } from '../../../utils/Alert'
 
 export function DeletePluralOIDCClientModal({
   open,
@@ -23,7 +24,7 @@ export function DeletePluralOIDCClientModal({
     <Modal
       open={open}
       onClose={onClose}
-      header={`Confirm deletion`}
+      header="Confirm deletion"
       size="large"
     >
       <DeletePluralOIDCClient
@@ -90,7 +91,7 @@ function DeletePluralOIDCClient({
       {error && (
         <GqlError
           error={error}
-          header={`Delete OIDC provider request failed`}
+          header="Delete OIDC provider request failed"
         />
       )}
       <div

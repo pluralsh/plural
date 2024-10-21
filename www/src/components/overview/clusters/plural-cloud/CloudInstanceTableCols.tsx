@@ -221,7 +221,7 @@ const ColActions = columnHelper.accessor((instance) => instance, {
             key={MenuItemKey.Delete}
             destructive
             label="Delete instance"
-            leftContent={<TrashCanIcon color={'icon-danger'} />}
+            leftContent={<TrashCanIcon color="icon-danger" />}
           />
         </MoreMenu>
         {/* Modals */}

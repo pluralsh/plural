@@ -8,6 +8,7 @@ import {
   ListBoxItem,
   Modal,
   Select,
+  Banner,
 } from '@pluralsh/design-system'
 import {
   InputMaybe,
@@ -45,20 +46,59 @@ export function EditPluralOIDCClientModal({
   insideModal?: boolean
   refetch: () => void
 }) {
+  const theme = useTheme()
+  const [editToastVisible, setEditToastVisible] = useState(false)
+  const [createToastVisible, setCreateToastVisible] = useState(false)
+
   return (
-    <Modal
-      open={open}
-      onClose={onClose}
-      overlayStyles={{ background: insideModal ? 'none' : undefined }}
-      header={`${instanceName} - Edit Plural OIDC clients`}
-      size="large"
-    >
-      <EditPluralOIDCClient
+    <>
+      <Modal
+        open={open}
         onClose={onClose}
-        provider={provider}
-        refetch={refetch}
-      />
-    </Modal>
+        overlayStyles={{ background: insideModal ? 'none' : undefined }}
+        header={`${instanceName} - Edit Plural OIDC clients`}
+        size="large"
+      >
+        <EditPluralOIDCClient
+          onClose={onClose}
+          onCreate={() => {
+            setCreateToastVisible(true)
+            setTimeout(() => setCreateToastVisible(false), 3000)
+          }}
+          onEdit={() => {
+            setEditToastVisible(true)
+            setTimeout(() => setEditToastVisible(false), 3000)
+          }}
+          provider={provider}
+          refetch={refetch}
+        />
+      </Modal>
+      {createToastVisible && (
+        <Banner
+          heading={'OIDC client successfully created.'}
+          severity="success"
+          position={'fixed'}
+          bottom={theme.spacing.large}
+          left={'50%'}
+          transform={'translate(-50%, 0)'}
+          zIndex={theme.zIndexes.tooltip}
+        >
+          The Client ID and Client secret have been generated.
+        </Banner>
+      )}
+      {editToastVisible && (
+        <Banner
+          severity="success"
+          position={'fixed'}
+          bottom={theme.spacing.large}
+          left={'50%'}
+          transform={'translate(-50%, 0)'}
+          zIndex={theme.zIndexes.tooltip}
+        >
+          OIDC client successfully saved.
+        </Banner>
+      )}
+    </>
   )
 }
 
@@ -74,14 +114,19 @@ export const bindingsToBindingAttributes = (
 
 function EditPluralOIDCClient({
   onClose,
+  onCreate,
+  onEdit,
   provider,
   refetch,
 }: {
   onClose: () => void
+  onCreate: () => void
+  onEdit: () => void
   provider?: OidcProviderFragment
   refetch: () => void
 }) {
   const theme = useTheme()
+  const createMode = !provider
   const [name, setName] = useState(provider?.name ?? '')
   const [description, setDescription] = useState(provider?.description ?? '')
   const [bindings, setBindings] = useState<any>(provider?.bindings ?? [])
@@ -108,7 +153,7 @@ function EditPluralOIDCClient({
   )
 
   const m = useMemo(
-    () => (!provider ? useCreateProviderMutation : useUpdateProviderMutation),
+    () => (createMode ? useCreateProviderMutation : useUpdateProviderMutation),
     [provider]
   )
 
@@ -124,9 +169,14 @@ function EditPluralOIDCClient({
   )
 
   const onCompleted = useCallback(() => {
-    // TODO: How to show client ID and client secret?
-    onClose()
     refetch()
+
+    if (createMode) {
+      onCreate()
+    } else {
+      onEdit()
+      onClose()
+    }
   }, [onClose, refetch])
 
   const [mutation, { data, loading, error }] = m({
@@ -292,7 +342,7 @@ function EditPluralOIDCClient({
         <GqlError
           error={error}
           header={`${
-            !provider ? 'Create' : 'Edit'
+            createMode ? 'Create' : 'Edit'
           } OIDC provider request failed`}
         />
       )}
@@ -308,7 +358,7 @@ function EditPluralOIDCClient({
           loading={loading}
           onClick={mutation}
         >
-          {!provider ? 'Create' : 'Save'}
+          {createMode ? 'Create' : 'Save'}
         </Button>
       </div>
     </div>

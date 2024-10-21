@@ -172,7 +172,7 @@ export function EditPluralOIDCClients({
     [data?.oidcProviders]
   )
 
-  if (!data) return <LoopingLogo />
+  if (loading && !data) return <LoopingLogo />
 
   return (
     <div

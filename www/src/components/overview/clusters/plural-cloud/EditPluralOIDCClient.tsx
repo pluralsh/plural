@@ -120,7 +120,7 @@ function EditPluralOIDCClient({
       authMethod,
       description,
     }),
-    [name, description, bindings, description]
+    [name, description, authMethod, bindings, description]
   )
 
   const onCompleted = useCallback(() => {

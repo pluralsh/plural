@@ -221,7 +221,10 @@ function EditPluralOIDCClient({
             )
           }
         />
-        <FormField label="Auth method">
+        <FormField
+          label="Auth method"
+          required
+        >
           <Select
             selectedKey={authMethod}
             onSelectionChange={(v) => setAuthMethod(v as OidcAuthMethod)}

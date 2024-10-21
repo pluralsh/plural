@@ -184,6 +184,11 @@ function EditPluralOIDCClient({
     onCompleted,
   })
 
+  const newProvider: Nullable<OidcProviderFragment> =
+    (data as any)?.updateOidcProvider || (data as any)?.createOidcProvider
+  const clientId = provider?.clientId ?? newProvider?.clientId
+  const clientSecret = provider?.clientSecret ?? newProvider?.clientSecret
+
   return (
     <div
       css={{
@@ -204,22 +209,21 @@ function EditPluralOIDCClient({
         <FormField label="Client ID">
           <Codeline
             displayText={
-              provider?.clientId ??
-              'A client ID will be generated upon creation'
+              clientId ?? 'A client ID will be generated upon creation'
             }
           >
-            {provider?.clientId}
+            {clientId}
           </Codeline>
         </FormField>
         <FormField label="Client secret">
           <Codeline
             displayText={
-              provider?.clientSecret
+              clientSecret
                 ? '•••••••••••••••••••••'
                 : 'A client secret will be generated upon creation'
             }
           >
-            {provider?.clientSecret}
+            {clientSecret}
           </Codeline>
         </FormField>
         {!data && (

@@ -209,7 +209,7 @@ function EditPluralOIDCClient({
         >
           <FormField label="Client ID">
             <Codeline
-              backgroundColor={'fill-two'}
+              backgroundColor="fill-two"
               displayText={
                 clientId ?? 'A client ID will be generated upon creation'
               }
@@ -219,7 +219,7 @@ function EditPluralOIDCClient({
           </FormField>
           <FormField label="Client secret">
             <Codeline
-              backgroundColor={'fill-two'}
+              backgroundColor="fill-two"
               displayText={
                 clientSecret
                   ? '•••••••••••••••••••••'

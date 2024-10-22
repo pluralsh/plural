@@ -4,6 +4,7 @@ import {
   Chip,
   Codeline,
   Divider,
+  FillLevelProvider,
   FormField,
   Input,
   ListBoxItem,
@@ -189,202 +190,209 @@ function EditPluralOIDCClient({
     provider?.clientSecret ?? data?.createOidcProvider?.clientSecret
 
   return (
-    <div
-      css={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: theme.spacing.xlarge,
-        overflow: 'hidden',
-      }}
-    >
+    <FillLevelProvider value={0}>
       <div
         css={{
           display: 'flex',
           flexDirection: 'column',
-          gap: theme.spacing.small,
-          overflow: 'auto',
+          gap: theme.spacing.xlarge,
+          overflow: 'hidden',
         }}
       >
-        <FormField label="Client ID">
-          <Codeline
-            displayText={
-              clientId ?? 'A client ID will be generated upon creation'
-            }
-          >
-            {clientId}
-          </Codeline>
-        </FormField>
-        <FormField label="Client secret">
-          <Codeline
-            displayText={
-              clientSecret
-                ? '•••••••••••••••••••••'
-                : 'A client secret will be generated upon creation'
-            }
-          >
-            {clientSecret}
-          </Codeline>
-        </FormField>
-        {!data && (
-          <>
-            <Divider
-              backgroundColor="border-fill-two"
-              marginTop="medium"
-              marginBottom="medium"
-            />
-            <FormField
-              label="Name"
-              required
-            >
-              <Input
-                autoFocus
-                value={name}
-                onChange={({ target: { value } }) => setName(value)}
-              />
-            </FormField>
-            <FormField label="Description">
-              <Input
-                value={description}
-                onChange={({ target: { value } }) => setDescription(value)}
-              />
-            </FormField>
-            <BindingInput
-              label="User bindings"
-              placeholder="Search for user"
-              bindings={bindings
-                .filter(({ user }) => !!user)
-                .map(({ user }) => user?.email)}
-              fetcher={fetchUsers}
-              add={(user) => setBindings([...bindings, { user }])}
-              remove={(email) =>
-                setBindings(
-                  bindings.filter(({ user }) => !user || user.email !== email)
-                )
+        <div
+          css={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: theme.spacing.small,
+            overflow: 'auto',
+          }}
+        >
+          <FormField label="Client ID">
+            <Codeline
+              backgroundColor="fill-two"
+              displayText={
+                clientId ?? 'A client ID will be generated upon creation'
               }
-            />
-            <BindingInput
-              label="Group bindings"
-              placeholder="Search for group"
-              bindings={bindings
-                .filter(({ group }) => !!group)
-                .map(({ group: { name } }) => name)}
-              fetcher={fetchGroups}
-              add={(group) => setBindings([...bindings, { group }])}
-              remove={(name) =>
-                setBindings(
-                  bindings.filter(({ group }) => !group || group.name !== name)
-                )
-              }
-            />
-            <FormField
-              label="Auth method"
-              required
             >
-              <Select
-                selectedKey={authMethod}
-                onSelectionChange={(v) => setAuthMethod(v as OidcAuthMethod)}
+              {clientId}
+            </Codeline>
+          </FormField>
+          <FormField label="Client secret">
+            <Codeline
+              backgroundColor="fill-two"
+              displayText={
+                clientSecret
+                  ? '•••••••••••••••••••••'
+                  : 'A client secret will be generated upon creation'
+              }
+            >
+              {clientSecret}
+            </Codeline>
+          </FormField>
+          {!data && (
+            <>
+              <Divider
+                backgroundColor="border-fill-two"
+                marginTop="medium"
+                marginBottom="medium"
+              />
+              <FormField
+                label="Name"
+                required
               >
-                <ListBoxItem
-                  key={OidcAuthMethod.Basic}
-                  label="Basic"
-                  textValue={OidcAuthMethod.Basic}
+                <Input
+                  autoFocus
+                  value={name}
+                  onChange={({ target: { value } }) => setName(value)}
                 />
-                <ListBoxItem
-                  key={OidcAuthMethod.Post}
-                  label="Post"
-                  textValue={OidcAuthMethod.Post}
+              </FormField>
+              <FormField label="Description">
+                <Input
+                  value={description}
+                  onChange={({ target: { value } }) => setDescription(value)}
                 />
-              </Select>
-            </FormField>
-            <FormField label="Redirect URIs">
-              <div
-                css={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: theme.spacing.small,
-                }}
+              </FormField>
+              <BindingInput
+                label="User bindings"
+                placeholder="Search for user"
+                bindings={bindings
+                  .filter(({ user }) => !!user)
+                  .map(({ user }) => user?.email)}
+                fetcher={fetchUsers}
+                add={(user) => setBindings([...bindings, { user }])}
+                remove={(email) =>
+                  setBindings(
+                    bindings.filter(({ user }) => !user || user.email !== email)
+                  )
+                }
+              />
+              <BindingInput
+                label="Group bindings"
+                placeholder="Search for group"
+                bindings={bindings
+                  .filter(({ group }) => !!group)
+                  .map(({ group: { name } }) => name)}
+                fetcher={fetchGroups}
+                add={(group) => setBindings([...bindings, { group }])}
+                remove={(name) =>
+                  setBindings(
+                    bindings.filter(
+                      ({ group }) => !group || group.name !== name
+                    )
+                  )
+                }
+              />
+              <FormField
+                label="Auth method"
+                required
               >
-                <div css={{ display: 'flex' }}>
-                  <Input
-                    value={url}
-                    prefix={urlPrefix}
-                    suffix={urlSuffix}
-                    width="100%"
-                    placeholder="Enter a redirect URI"
-                    onChange={({ target: { value } }) => setUrl(value)}
+                <Select
+                  selectedKey={authMethod}
+                  onSelectionChange={(v) => setAuthMethod(v as OidcAuthMethod)}
+                >
+                  <ListBoxItem
+                    key={OidcAuthMethod.Basic}
+                    label="Basic"
+                    textValue={OidcAuthMethod.Basic}
                   />
-                  <Button
-                    onClick={addUrl}
-                    secondary
-                    marginLeft="small"
-                  >
-                    Add
-                  </Button>
-                </div>
+                  <ListBoxItem
+                    key={OidcAuthMethod.Post}
+                    label="Post"
+                    textValue={OidcAuthMethod.Post}
+                  />
+                </Select>
+              </FormField>
+              <FormField label="Redirect URIs">
                 <div
                   css={{
                     display: 'flex',
-                    flexWrap: 'wrap',
-                    gap: theme.spacing.xxsmall,
+                    flexDirection: 'column',
+                    gap: theme.spacing.small,
                   }}
                 >
-                  {redirectUris.map((url, i) => (
-                    <Chip
-                      key={i}
-                      size="small"
-                      clickable
-                      closeButton
-                      onClick={() => removeUrl(url)}
+                  <div css={{ display: 'flex' }}>
+                    <Input
+                      value={url}
+                      prefix={urlPrefix}
+                      suffix={urlSuffix}
+                      width="100%"
+                      placeholder="Enter a redirect URI"
+                      onChange={({ target: { value } }) => setUrl(value)}
+                    />
+                    <Button
+                      onClick={addUrl}
+                      secondary
+                      marginLeft="small"
                     >
-                      {url}
-                    </Chip>
-                  ))}
+                      Add
+                    </Button>
+                  </div>
+                  <div
+                    css={{
+                      display: 'flex',
+                      flexWrap: 'wrap',
+                      gap: theme.spacing.xxsmall,
+                    }}
+                  >
+                    {redirectUris.map((url, i) => (
+                      <Chip
+                        key={i}
+                        size="small"
+                        clickable
+                        closeButton
+                        onClick={() => removeUrl(url)}
+                        fillLevel={2}
+                      >
+                        {url}
+                      </Chip>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            </FormField>
-          </>
+              </FormField>
+            </>
+          )}
+        </div>
+        {createError && (
+          <GqlError
+            error={createError}
+            header="Create OIDC provider request failed"
+          />
         )}
-      </div>
-      {createError && (
-        <GqlError
-          error={createError}
-          header="Create OIDC provider request failed"
-        />
-      )}
-      {updateError && (
-        <GqlError
-          error={updateError}
-          header="Update OIDC provider request failed"
-        />
-      )}
-      <div
-        css={{
-          display: 'flex',
-          justifyContent: 'end',
-          gap: theme.spacing.small,
-        }}
-      >
-        {!data ? (
-          <>
-            <Button
-              secondary
-              onClick={onClose}
-            >
-              Back to Plural OIDC clients
-            </Button>
-            <div css={{ flexGrow: 1 }} />
-            <Button
-              disabled={!name || !authMethod}
-              loading={creating || updating}
-              onClick={() => (createMode ? create() : update())}
-            >
-              {createMode ? 'Create' : 'Save'}
-            </Button>
-          </>
-        ) : (
-          <Button onClick={onClose}>Close</Button>
+        {updateError && (
+          <GqlError
+            error={updateError}
+            header="Update OIDC provider request failed"
+          />
         )}
+        <div
+          css={{
+            display: 'flex',
+            justifyContent: 'end',
+            gap: theme.spacing.small,
+          }}
+        >
+          {!data ? (
+            <>
+              <Button
+                secondary
+                onClick={onClose}
+              >
+                Back to Plural OIDC clients
+              </Button>
+              <div css={{ flexGrow: 1 }} />
+              <Button
+                disabled={!name || !authMethod}
+                loading={creating || updating}
+                onClick={() => (createMode ? create() : update())}
+              >
+                {createMode ? 'Create' : 'Save'}
+              </Button>
+            </>
+          ) : (
+            <Button onClick={onClose}>Close</Button>
+          )}
+        </div>
       </div>
-    </div>
+    </FillLevelProvider>
   )
 }

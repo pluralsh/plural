@@ -189,10 +189,12 @@ export function EditPluralOIDCClients({
     >
       {isEmpty(oidcProviders) ? (
         <EmptyState
-          message="No Plural OIDC clients found"
+          message="No Plural OIDC clients found."
           css={{
             backgroundColor: theme.colors['fill-one'],
+            color: theme.colors['text-light'],
             justifyContent: 'center',
+            p: { ...theme.partials.text.body2 },
           }}
         />
       ) : (

@@ -113,13 +113,13 @@ defmodule Core.Schema.ConsoleInstance do
     |> cast(attrs, @valid)
     |> cast_embed(:configuration, with: &configuration_changeset/2)
     |> cast_embed(:instance_status, with: &status_changeset/2)
-    |> validate_required(@valid -- ~w(external_id postgres_id cluster_id)a)
+    |> validate_required(@valid -- ~w(external_id name postgres_id cluster_id)a)
     |> foreign_key_constraint(:cluster_id)
     |> foreign_key_constraint(:postgres_id)
     |> foreign_key_constraint(:owner_id)
     |> unique_constraint(:subdomain)
     |> unique_constraint(:name)
-    |> validate_format(:name, ~r/[a-z][a-z0-9]{5,10}/, message: "must be an alphanumeric string between 5 and 11 characters")
+    |> validate_format(:name, ~r/^[a-z][a-z0-9-]{4,14}$/, message: "must be an alphanumeric string between 5 and 15 characters, hyphens allowed")
     |> validate_region()
   end
 
@@ -133,7 +133,7 @@ defmodule Core.Schema.ConsoleInstance do
     |> foreign_key_constraint(:owner_id)
     |> unique_constraint(:subdomain)
     |> unique_constraint(:name)
-    |> validate_format(:name, ~r/[a-z][a-z0-9]{5,10}/, message: "must be an alphanumeric string between 5 and 11 characters")
+    |> validate_format(:name, ~r/^[a-z][a-z0-9-]{4,14}$/, message: "must be an alphanumeric string between 5 and 15 characters, hyphens allowed")
     |> validate_region()
   end
 

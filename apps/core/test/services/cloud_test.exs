@@ -71,6 +71,21 @@ defmodule Core.Services.CloudTest do
       assert_receive {:event, %PubSub.ConsoleInstanceCreated{item: ^instance}}
     end
 
+    test "cannot create instances w/ capitalized names" do
+      account = insert(:account)
+      enterprise_plan(account)
+      user = admin_user(account)
+      insert(:repository, name: "console")
+
+      {:error, _} = Cloud.create_instance(%{
+        type: :dedicated,
+        name: "My-Cluster",
+        cloud: :aws,
+        region: "us-east-1",
+        size: :small
+      }, user)
+    end
+
     test "nonenterprise plans cannot create a dedicated cloud console instance" do
       account = insert(:account)
       enable_features(account, [:cd])

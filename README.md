@@ -42,50 +42,32 @@ Plural will deploy open-source applications and proprietary services on Kubernet
 
 The Plural platform provides the following:
 
-* Cluster API Providers to create and manage clusters at scale.
+* Fleet-Scale GitOps Engine to deploy any helm/kustomize or yaml based service into your fleet, securely and seamlessly scalable.
 * Full visibility of your fleet and all deployed services via our secure Auth Proxy.
-* Configuration management for deployments, allowing you to parameterize services for each deployment.
-* Horizontal scaling to ingest and auto-shard as many repos as necessary.
-* Dependency management between Terraform/Helm modules for open-source applications, with dependency-aware deployment and upgrades.
-* Authenticated docker registry and chartmuseum proxy per repository.
+* Kubernetes CRD-native Infrastructure As Code Management, supporting Terraform, Ansible and Pulumi, to allow you to scale usage of best practices tools without labor intensive CI/CD and branching strategies.  Get the scaling promise of Crossplane with the configuration language of terraform.
+* Automated Pull Request Generation to provide full ui-based self-service while still maintaining the rigor and auditability of GitOps
+* 360 Degree AI Integration, leveraging the fully integrated, all-in-one Plural platform to generate uniquely accurate AI insights into the state of your fleet and how to fix inevitable misconfigurations that might have arisen. 
 
-In addition, Plural also handles:
-* Issuing the certificates.
-* Configuring a DNS service to register fully-qualified domains under onplural.sh to eliminate the hassle of DNS registration for users.
-* Being an OIDC provider to enable zero touch login security for all Plural applications.
+In addition, the Plural api also provides:
+* A DNS service to register fully-qualified domains under onplural.sh to eliminate the hassle of DNS registration for users.
+* Being an OIDC provider to enable zero touch login security for all deployed Plural Console applications or any other application managed by it.
 
 We think it's pretty cool! 😎 Some other nice things:
 
-### ☁️ Build and manage open cloud-native architectures
+## ✨ 360-degree AI Powered Insights
 
-<p align="center">
-  <br/>
-  <img src="www/public/console.png" width="60%" />
-  <br/><br/>
-</p>
+Use Plural's accumulated knowledge of the state of your infrastructure from metadata gathered from GitOps deployments, IaC management and the Kubernetes API's rich REST API to give AI insights that actually work.  We'll know what's going on, and let AI explain it back to you in accessible natural language, in an automated way so your devops engineers don't have to.  This includes:
 
-The Plural platform also ingests all deployment artifacts needed to deploy open-source cloud-native applications, allowing for easy installs and no-touch upgrades post-install.
-
-### 🤖 Day-2 Operational Toolkit
-
-<p align="center">
-  <img src="www/public/graph.png" width="60%" />
-  <br/>
-</p>
-
-Monitor all your installations from one central control plane. Our Auth Proxy makes it easy to make secure Kubernetes API calls to give you full dashboarding capabilities for all your clusters, regardless of where they live without direct network access. 
-
-Spin up ephemeral environments to test out new configurations in seconds; our CAPI providers make it easy to modify your architecture as you need it. 
-
-Manage Kubernetes upgrades easily with our built-in Kubernetes API deprecation management - we surface all endpoints on all clusters that need to be addressed.
+* provide natural language explanations why any service or terraform stack is currently failing
+* provide suggested code changes using context from the GitOps manifests associated with any failing service
+* explain any kubernetes or terraform UI page to blunt the sharp edges of the Platform Engineering learning curve
 
 ### 🔓 Secure by default
 Plural is fully self-hosted within your own environment, meaning we don't touch your credentials or sensitive information. 
 
-Cluster setup includes deploying our Plural deployment operator, which efficiently polls the control plane for any changes that need to be applied. This ensures that our control plane doesn’t reach into these workload clusters, providing a more secure setup than push-based models.
+Cluster setup includes deploying our Plural deployment operator, which efficiently polls the control plane for any changes that need to be applied. This ensures that our control plane doesn’t reach into these workload clusters, providing a more secure setup than push-based models and removing the need for credentials to be centralized in a single major attack-vector.
 
-### 🥳 Flexible configuration
-All Plural deployments are fully customizable with our centralized secrets management. Additionally, we natively support deploying to brand new clusters or adopting existing K8s clusters.
+All Plural deployments are also fully customizable with our centralized secrets management. Additionally, we natively support deploying to brand new clusters or adopting existing K8s clusters.
 <br/><br/>
 
 
@@ -93,24 +75,24 @@ All Plural deployments are fully customizable with our centralized secrets manag
 
 <br /><br />
 
-https://github.com/pluralsh/plural/assets/1610133/43f8d4c5-c74b-4098-97e9-39c9ed302a16
+[![Fleet Management with Plural](https://img.youtube.com/vi/W8KCaiZRV3M/0.jpg)](https://www.youtube.com/watch?v=W8KCaiZRV3M&ab_channel=Plural)
 
 
 
 ## 🏁 Getting Started
 
 1. Go to https://app.plural.sh to create an account.<br />
-*Note: This is simply to track your open-source installations and deploy your Console; if you use our CLI you will not be asked to provide any infrastructure credentials or sensitive information.*
+*Note: This is simply to track your open-source installations and deploy your Console.*
 2. [Install the Plural CLI](https://docs.plural.sh/getting-started/getting-started#install-plural-cli)
-3. [Create and initialize a new git repo](https://docs.plural.sh/getting-started/getting-started#create-your-plural-repo) to store your Plural installation.
-4. [Install, build and deploy Plural Console](https://docs.plural.sh/basic-setup-and-deployment/admin-console) and [any other applications](https://docs.plural.sh/getting-started/getting-started#install-plural-applications) from the Plural marketplace.
+3. [Deploy your Plural Console](https://docs.plural.sh/how-to/set-up/mgmt-cluster).
 
-You should now have a fully functioning Plural environment with any open-source apps and the management console running. From here, you can spin up additional clusters, deploy your services, track upgrades, and more. For more details or further information check out the rest of the docs below.
+Once you have your Plural Console running, feel free to walk through our how-to guide to see more of the core functionality of Plural: https://docs.plural.sh/how-to
 
 
 ## 📚 Documentation
 
-The full documentation is available on our [Documentation site](https://docs.plural.sh/).
+Full documentation is available on our [Documentation site](https://docs.plural.sh/).  It covers both our mainline Fleet Management platform, and our legacy open source marketplace (soon to be merged into the mainline product).  Feel free to browse either, but we'd recommend any new users start with Plural's fleet management suite of solutions.
+
 <br /><br />
 
 

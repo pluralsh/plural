@@ -1,14 +1,13 @@
 import { useEffect, useMemo } from 'react'
 import { Errors } from 'forge-core'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
-import { useMutation } from '@apollo/client'
 
 import { Box, Text } from 'grommet'
 
 import { LoopingLogo } from '../../../components/utils/AnimatedLogo'
 
-import { CREATE_OAUTH } from './queries'
 import { ParamToService } from './types'
+import { useCreateOauthIntegrationMutation } from '../../../generated/graphql'
 
 function OauthError({ error, service }: any) {
   return (
@@ -40,11 +39,12 @@ export function OauthCreator() {
       redirectUri: `${window.location.origin}${window.location.pathname}`,
     }
   }, [location])
-  const [mutation, { loading, data, error }] = useMutation(CREATE_OAUTH, {
-    variables: {
-      attributes: { code, redirectUri, service: ParamToService[service] },
-    },
-  })
+  const [mutation, { loading, data, error }] =
+    useCreateOauthIntegrationMutation({
+      variables: {
+        attributes: { code, redirectUri, service: ParamToService[service] },
+      },
+    })
 
   useEffect(() => {
     mutation()

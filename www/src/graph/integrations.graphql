@@ -25,3 +25,15 @@ fragment ZoomMeeting on ZoomMeeting {
   joinUrl
   password
 }
+
+query OauthIntegrations {
+  oauthIntegrations {
+    ...OauthIntegration
+  }
+}
+
+mutation CreateOauthIntegration($attributes: OauthAttributes!) {
+  createOauthIntegration(attributes: $attributes) {
+    ...OauthIntegration
+  }
+}

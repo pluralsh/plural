@@ -5521,6 +5521,18 @@ export type OauthIntegrationFragment = { __typename?: 'OauthIntegration', id: st
 
 export type ZoomMeetingFragment = { __typename?: 'ZoomMeeting', joinUrl: string, password?: string | null };
 
+export type OauthIntegrationsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type OauthIntegrationsQuery = { __typename?: 'RootQueryType', oauthIntegrations?: Array<{ __typename?: 'OauthIntegration', id: string, service: OauthService, insertedAt?: Date | null } | null> | null };
+
+export type CreateOauthIntegrationMutationVariables = Exact<{
+  attributes: OauthAttributes;
+}>;
+
+
+export type CreateOauthIntegrationMutation = { __typename?: 'RootMutationType', createOauthIntegration?: { __typename?: 'OauthIntegration', id: string, service: OauthService, insertedAt?: Date | null } | null };
+
 export type SignupInviteMutationVariables = Exact<{
   attributes: UserAttributes;
   inviteId: Scalars['String']['input'];
@@ -8610,6 +8622,78 @@ export type GroupsQueryHookResult = ReturnType<typeof useGroupsQuery>;
 export type GroupsLazyQueryHookResult = ReturnType<typeof useGroupsLazyQuery>;
 export type GroupsSuspenseQueryHookResult = ReturnType<typeof useGroupsSuspenseQuery>;
 export type GroupsQueryResult = Apollo.QueryResult<GroupsQuery, GroupsQueryVariables>;
+export const OauthIntegrationsDocument = gql`
+    query OauthIntegrations {
+  oauthIntegrations {
+    ...OauthIntegration
+  }
+}
+    ${OauthIntegrationFragmentDoc}`;
+
+/**
+ * __useOauthIntegrationsQuery__
+ *
+ * To run a query within a React component, call `useOauthIntegrationsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOauthIntegrationsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOauthIntegrationsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useOauthIntegrationsQuery(baseOptions?: Apollo.QueryHookOptions<OauthIntegrationsQuery, OauthIntegrationsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<OauthIntegrationsQuery, OauthIntegrationsQueryVariables>(OauthIntegrationsDocument, options);
+      }
+export function useOauthIntegrationsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<OauthIntegrationsQuery, OauthIntegrationsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<OauthIntegrationsQuery, OauthIntegrationsQueryVariables>(OauthIntegrationsDocument, options);
+        }
+export function useOauthIntegrationsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<OauthIntegrationsQuery, OauthIntegrationsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<OauthIntegrationsQuery, OauthIntegrationsQueryVariables>(OauthIntegrationsDocument, options);
+        }
+export type OauthIntegrationsQueryHookResult = ReturnType<typeof useOauthIntegrationsQuery>;
+export type OauthIntegrationsLazyQueryHookResult = ReturnType<typeof useOauthIntegrationsLazyQuery>;
+export type OauthIntegrationsSuspenseQueryHookResult = ReturnType<typeof useOauthIntegrationsSuspenseQuery>;
+export type OauthIntegrationsQueryResult = Apollo.QueryResult<OauthIntegrationsQuery, OauthIntegrationsQueryVariables>;
+export const CreateOauthIntegrationDocument = gql`
+    mutation CreateOauthIntegration($attributes: OauthAttributes!) {
+  createOauthIntegration(attributes: $attributes) {
+    ...OauthIntegration
+  }
+}
+    ${OauthIntegrationFragmentDoc}`;
+export type CreateOauthIntegrationMutationFn = Apollo.MutationFunction<CreateOauthIntegrationMutation, CreateOauthIntegrationMutationVariables>;
+
+/**
+ * __useCreateOauthIntegrationMutation__
+ *
+ * To run a mutation, you first call `useCreateOauthIntegrationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateOauthIntegrationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createOauthIntegrationMutation, { data, loading, error }] = useCreateOauthIntegrationMutation({
+ *   variables: {
+ *      attributes: // value for 'attributes'
+ *   },
+ * });
+ */
+export function useCreateOauthIntegrationMutation(baseOptions?: Apollo.MutationHookOptions<CreateOauthIntegrationMutation, CreateOauthIntegrationMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateOauthIntegrationMutation, CreateOauthIntegrationMutationVariables>(CreateOauthIntegrationDocument, options);
+      }
+export type CreateOauthIntegrationMutationHookResult = ReturnType<typeof useCreateOauthIntegrationMutation>;
+export type CreateOauthIntegrationMutationResult = Apollo.MutationResult<CreateOauthIntegrationMutation>;
+export type CreateOauthIntegrationMutationOptions = Apollo.BaseMutationOptions<CreateOauthIntegrationMutation, CreateOauthIntegrationMutationVariables>;
 export const SignupInviteDocument = gql`
     mutation SignupInvite($attributes: UserAttributes!, $inviteId: String!) {
   signup(attributes: $attributes, inviteId: $inviteId) {
@@ -11973,6 +12057,7 @@ export const namedOperations = {
     GetDnsRecords: 'GetDnsRecords',
     GroupMembers: 'GroupMembers',
     Groups: 'Groups',
+    OauthIntegrations: 'OauthIntegrations',
     Invite: 'Invite',
     KeyBackups: 'KeyBackups',
     KeyBackup: 'KeyBackup',
@@ -12020,6 +12105,7 @@ export const namedOperations = {
     CreateGroup: 'CreateGroup',
     UpdateGroup: 'UpdateGroup',
     DeleteGroup: 'DeleteGroup',
+    CreateOauthIntegration: 'CreateOauthIntegration',
     SignupInvite: 'SignupInvite',
     RealizeInvite: 'RealizeInvite',
     CreateInvite: 'CreateInvite',

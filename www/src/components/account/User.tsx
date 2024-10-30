@@ -10,7 +10,11 @@ import { Button, Span } from 'honorable'
 import { useContext, useMemo, useState } from 'react'
 
 import CurrentUserContext from '../../contexts/CurrentUserContext'
-import { Permission, useUpdateUserMutation } from '../../generated/graphql'
+import {
+  Permission,
+  useImpersonateServiceAccountMutation,
+  useUpdateUserMutation,
+} from '../../generated/graphql'
 import {
   fetchToken,
   setPreviousUserData,
@@ -23,7 +27,6 @@ import DeleteUserModal from '../utils/user/DeleteUserModal'
 
 import { EditServiceAccount } from './CreateServiceAccount'
 import { MoreMenu } from './MoreMenu'
-import { IMPERSONATE_SERVICE_ACCOUNT } from './queries'
 import { hasRbac } from './utils'
 
 export function UserInfo({
@@ -185,21 +188,11 @@ export function User({ user, update }: any) {
 export function ServiceAccount({ user, update }: any) {
   const me = useContext(CurrentUserContext)
   const editable = canEdit(me, me.account) || hasRbac(me, Permission.Users)
-  const [mutation, { error }] = useMutation(IMPERSONATE_SERVICE_ACCOUNT, {
+  const [mutation, { error }] = useImpersonateServiceAccountMutation({
     variables: { id: user.id },
-    update: (
-      _cache,
-      {
-        data: {
-          impersonateServiceAccount: { jwt },
-        },
-      }
-    ) => {
-      setPreviousUserData({
-        me,
-        jwt: fetchToken(),
-      })
-      setToken(jwt)
+    update: (_cache, { data }) => {
+      setPreviousUserData({ me, jwt: fetchToken() })
+      setToken(data?.impersonateServiceAccount?.jwt)
       ;(window as Window).location = '/'
     },
   })

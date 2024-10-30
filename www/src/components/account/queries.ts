@@ -177,14 +177,6 @@ export const AUDITS_Q = gql`
   ${AuditFragment}
 `
 
-export const IMPERSONATE_SERVICE_ACCOUNT = gql`
-  mutation Impersonate($id: ID) {
-    impersonateServiceAccount(id: $id) {
-      jwt
-    }
-  }
-`
-
 export const DNS_DOMAINS = gql`
   query Domains($cursor: String) {
     dnsDomains(after: $cursor, first: 50) {

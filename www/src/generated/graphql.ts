@@ -6156,6 +6156,7 @@ export type LoginMutationVariables = Exact<{
 export type LoginMutation = { __typename?: 'RootMutationType', login?: { __typename?: 'User', jwt?: string | null } | null };
 
 export type ImpersonateServiceAccountMutationVariables = Exact<{
+  id?: InputMaybe<Scalars['ID']['input']>;
   email?: InputMaybe<Scalars['String']['input']>;
 }>;
 
@@ -11362,8 +11363,8 @@ export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
 export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
 export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
 export const ImpersonateServiceAccountDocument = gql`
-    mutation ImpersonateServiceAccount($email: String) {
-  impersonateServiceAccount(email: $email) {
+    mutation ImpersonateServiceAccount($id: ID, $email: String) {
+  impersonateServiceAccount(id: $id, email: $email) {
     jwt
     email
   }
@@ -11384,6 +11385,7 @@ export type ImpersonateServiceAccountMutationFn = Apollo.MutationFunction<Impers
  * @example
  * const [impersonateServiceAccountMutation, { data, loading, error }] = useImpersonateServiceAccountMutation({
  *   variables: {
+ *      id: // value for 'id'
  *      email: // value for 'email'
  *   },
  * });

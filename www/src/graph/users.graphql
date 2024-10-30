@@ -251,8 +251,8 @@ mutation Login(
   }
 }
 
-mutation ImpersonateServiceAccount($email: String) {
-  impersonateServiceAccount(email: $email) {
+mutation ImpersonateServiceAccount($id: ID, $email: String) {
+  impersonateServiceAccount(id: $id, email: $email) {
     jwt
     email
   }

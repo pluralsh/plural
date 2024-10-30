@@ -46,3 +46,30 @@ query Audits($cursor: String) {
         }
     }
 }
+
+query Logins($cursor: String) {
+    oidcLogins(first: 50, after: $cursor) {
+        pageInfo {
+            ...PageInfo
+        }
+        edges {
+            node {
+                ...OidcLogin
+            }
+        }
+    }
+}
+
+query AuditMetrics {
+    auditMetrics {
+        country
+        count
+    }
+}
+
+query LoginMetrics {
+    loginMetrics {
+        country
+        count
+    }
+}

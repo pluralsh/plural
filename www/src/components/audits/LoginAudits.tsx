@@ -1,4 +1,3 @@
-import { useQuery } from '@apollo/client'
 import { Box } from 'grommet'
 import { memo, useCallback, useMemo } from 'react'
 import { Date, IconFrame, PageTitle, Table } from '@pluralsh/design-system'
@@ -6,12 +5,12 @@ import { createColumnHelper } from '@tanstack/react-table'
 import isEmpty from 'lodash/isEmpty'
 import { Flex } from 'honorable'
 
-import { extendConnection } from '../../utils/graphql'
+import { extendConnection, mapExistingNodes } from '../../utils/graphql'
 import LoadingIndicator from '../utils/LoadingIndicator'
 
 import { AuditUser } from './AuditUser'
 import { Location } from './Location'
-import { LOGINS_Q } from './queries'
+import { useLoginsQuery } from '../../generated/graphql'
 
 const FETCH_MARGIN = 30
 
@@ -87,12 +86,14 @@ const LoginAuditsTable = memo(({ logins, fetchMoreOnBottomReached }: any) =>
 )
 
 export function LoginAudits() {
-  const { data, loading, fetchMore } = useQuery(LOGINS_Q, {
+  const { data, loading, fetchMore } = useLoginsQuery({
     fetchPolicy: 'cache-and-network',
   })
   const pageInfo = data?.oidcLogins?.pageInfo
-  const edges = data?.oidcLogins?.edges
-  const logins = useMemo(() => edges?.map(({ node }) => node) || [], [edges])
+  const logins = useMemo(
+    () => mapExistingNodes(data?.oidcLogins) || [],
+    [data?.oidcLogins]
+  )
 
   const fetchMoreOnBottomReached = useCallback(
     (element?: HTMLDivElement | undefined) => {
@@ -104,10 +105,10 @@ export function LoginAudits() {
       if (
         scrollHeight - scrollTop - clientHeight < FETCH_MARGIN &&
         !loading &&
-        pageInfo.hasNextPage
+        pageInfo?.hasNextPage
       ) {
         fetchMore({
-          variables: { cursor: pageInfo.endCursor },
+          variables: { cursor: pageInfo?.endCursor },
           updateQuery: (prev, { fetchMoreResult: { oidcLogins } }) =>
             extendConnection(prev, oidcLogins, 'oidcLogins'),
         })

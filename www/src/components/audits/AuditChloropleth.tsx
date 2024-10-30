@@ -1,4 +1,3 @@
-import { useQuery } from '@apollo/client'
 import { useRef, useState } from 'react'
 
 import lookup from 'country-code-lookup'
@@ -8,7 +7,10 @@ import { Card, PageTitle, SubTab, TabList } from '@pluralsh/design-system'
 
 import { Chloropleth } from '../utils/Chloropleth'
 
-import { AUDIT_METRICS, LOGIN_METRICS } from './queries'
+import {
+  useAuditMetricsQuery,
+  useLoginMetricsQuery,
+} from '../../generated/graphql'
 
 const DIRECTORY = [
   { key: 'audit-logs', label: 'Audit logs' },
@@ -19,14 +21,13 @@ export function AuditChloropleth() {
   const [selectedKey, setSelectedKey] = useState<any>('audit-logs')
   const tabStateRef = useRef<any>(null)
 
-  const { data } = useQuery(
-    selectedKey === 'logins' ? LOGIN_METRICS : AUDIT_METRICS,
-    { fetchPolicy: 'cache-and-network' }
-  )
+  const query =
+    selectedKey === 'logins' ? useLoginMetricsQuery : useAuditMetricsQuery
+  const { data } = query({ fetchPolicy: 'cache-and-network' })
 
   if (!data) return null
 
-  const results = data.auditMetrics || data.loginMetrics
+  const results = data['auditMetrics'] || data['loginMetrics']
   const metrics = results.map(({ country, count }) => ({
     // @ts-expect-error
     id: lookup.byIso(country).iso3,

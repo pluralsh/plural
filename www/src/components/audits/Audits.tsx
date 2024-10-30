@@ -1,18 +1,17 @@
 import { memo, useCallback, useMemo } from 'react'
 import { Box } from 'grommet'
 import { Link } from 'react-router-dom'
-import { useQuery } from '@apollo/client'
 import { A, Div } from 'honorable'
 import { Date, PageTitle, Table } from '@pluralsh/design-system'
 import { createColumnHelper } from '@tanstack/react-table'
 import isEmpty from 'lodash/isEmpty'
 
 import { extendConnection } from '../../utils/graphql'
-import { AUDITS_Q } from '../account/queries'
 import LoadingIndicator from '../utils/LoadingIndicator'
 
 import { AuditUser } from './AuditUser'
 import { Location } from './Location'
+import { useAuditsQuery } from '../../generated/graphql'
 
 const FETCH_MARGIN = 30
 
@@ -133,7 +132,7 @@ const AuditsTable = memo(({ audits, fetchMoreOnBottomReached }: any) =>
 )
 
 export function Audits() {
-  const { data, loading, fetchMore } = useQuery(AUDITS_Q, {
+  const { data, loading, fetchMore } = useAuditsQuery({
     fetchPolicy: 'cache-and-network',
   })
   const pageInfo = data?.audits?.pageInfo

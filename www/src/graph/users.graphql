@@ -117,27 +117,6 @@ fragment Webhook on Webhook {
   insertedAt
 }
 
-fragment RoleBinding on RoleBinding {
-  id
-  user {
-    ...User
-  }
-  group {
-    ...Group
-  }
-}
-
-fragment Role on Role {
-  id
-  name
-  description
-  repositories
-  permissions
-  roleBindings {
-    ...RoleBinding
-  }
-}
-
 fragment PublicKey on PublicKey {
   id
   name
@@ -248,6 +227,15 @@ mutation Login(
     captcha: $captcha
   ) {
     jwt
+  }
+}
+
+mutation CreateServiceAccount($attributes: ServiceAccountAttributes!) {
+  createServiceAccount(attributes: $attributes) {
+    ...User
+    impersonationPolicy {
+      ...ImpersonationPolicy
+    }
   }
 }
 

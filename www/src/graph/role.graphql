@@ -1,0 +1,38 @@
+fragment Role on Role {
+    id
+    name
+    description
+    repositories
+    permissions
+    roleBindings {
+        ...RoleBinding
+    }
+}
+
+fragment RoleBinding on RoleBinding {
+    id
+    user {
+        ...User
+    }
+    group {
+        ...Group
+    }
+}
+
+mutation CreateRole($attributes: RoleAttributes!) {
+    createRole(attributes: $attributes) {
+        ...Role
+    }
+}
+
+mutation UpdateRole($id: ID!, $attributes: RoleAttributes!) {
+    updateRole(id: $id, attributes: $attributes) {
+        ...Role
+    }
+}
+
+mutation DeleteRole($id: ID!) {
+    deleteRole(id: $id) {
+        ...Role
+    }
+}

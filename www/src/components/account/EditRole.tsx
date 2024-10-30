@@ -1,15 +1,13 @@
-import { useMutation } from '@apollo/client'
 import { Button } from 'honorable'
 import { Modal } from '@pluralsh/design-system'
 import { useMemo, useState } from 'react'
 import uniqWith from 'lodash/uniqWith'
 import isEqual from 'lodash/isEqual'
 
-import { UPDATE_ROLE } from './queries'
-
 import { Actions } from './Actions'
 import { sanitize } from './utils'
 import { RoleForm } from './RoleForm'
+import { useUpdateRoleMutation } from '../../generated/graphql'
 
 export function EditRole({ role }: any) {
   const [open, setOpen] = useState(false)
@@ -25,7 +23,7 @@ export function EditRole({ role }: any) {
     [roleBindings]
   )
 
-  const [mutation, { loading, error }] = useMutation(UPDATE_ROLE, {
+  const [mutation, { loading, error }] = useUpdateRoleMutation({
     variables: {
       id: role.id,
       attributes: { ...attributes, roleBindings: roleBindings.map(sanitize) },

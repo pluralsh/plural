@@ -1,0 +1,48 @@
+fragment Audit on Audit {
+    id
+    action
+    ip
+    country
+    city
+    latitude
+    longitude
+    actor {
+        ...User
+    }
+    repository {
+        ...Repo
+    }
+    group {
+        ...Group
+    }
+    integrationWebhook {
+        ...IntegrationWebhook
+    }
+    role {
+        ...Role
+    }
+    version {
+        ...Version
+    }
+    image {
+        id
+        tag
+        dockerRepository {
+            name
+        }
+    }
+    insertedAt
+}
+
+query Audits($cursor: String) {
+    audits(first: 50, after: $cursor) {
+        pageInfo {
+            ...PageInfo
+        }
+        edges {
+            node {
+                ...Audit
+            }
+        }
+    }
+}

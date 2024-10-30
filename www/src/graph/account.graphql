@@ -1,39 +1,3 @@
-fragment Audit on Audit {
-  id
-  action
-  ip
-  country
-  city
-  latitude
-  longitude
-  actor {
-    ...User
-  }
-  repository {
-    ...Repo
-  }
-  group {
-    ...Group
-  }
-  integrationWebhook {
-    ...IntegrationWebhook
-  }
-  role {
-    ...Role
-  }
-  version {
-    ...Version
-  }
-  image {
-    id
-    tag
-    dockerRepository {
-      name
-    }
-  }
-  insertedAt
-}
-
 fragment PolicyBinding on PolicyBinding {
   id
   group {
@@ -60,16 +24,6 @@ fragment DnsDomain on DnsDomain {
     }
   }
   insertedAt
-}
-
-fragment Invite on Invite {
-  id
-  secureId
-  email
-  insertedAt
-  user {
-    ...User
-  }
 }
 
 fragment OidcLogin on OidcLogin {

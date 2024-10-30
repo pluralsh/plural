@@ -1,4 +1,3 @@
-import { useMutation } from '@apollo/client'
 import {
   Codeline,
   MailIcon,
@@ -15,8 +14,8 @@ import { useCurrentUser } from '../../contexts/CurrentUserContext'
 import SubscriptionContext from '../../contexts/SubscriptionContext'
 import { GqlError } from '../utils/Alert'
 
-import { CREATE_INVITE } from './queries'
 import { inviteLink } from './utils'
+import { useCreateInviteMutation } from '../../generated/graphql'
 
 const MAX_OPEN_SOURCE_USERS = 5
 
@@ -27,10 +26,10 @@ export function InviteUser({ refetch }: { refetch?: (() => void) | null }) {
   const [invite, setInvite] = useState<any>(null)
   const { account } = useCurrentUser()
   const { isGrandfathered, isPaidPlan } = useContext(SubscriptionContext)
-  const [mutation, { loading, error, reset }] = useMutation(CREATE_INVITE, {
+  const [mutation, { loading, error, reset }] = useCreateInviteMutation({
     variables: { attributes: { email } },
     onCompleted: (data) => {
-      setInvite(data && data.createInvite)
+      setInvite(data?.createInvite)
       refetch?.()
     },
   })

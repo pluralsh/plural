@@ -32,11 +32,12 @@ function DeleteInvite({ invite }: any) {
   const [mutation, { loading, error }] = useDeleteInviteMutation({
     variables: { id: invite.id },
     onCompleted: () => setConfirm(false),
-    update: (cache, { data: { deleteInvite } }) =>
+    update: (cache, { data }) =>
       updateCache(cache, {
         query: INVITES_Q,
         variables: {},
-        update: (invites) => removeConnection(invites, deleteInvite, 'invites'),
+        update: (invites) =>
+          removeConnection(invites, data?.deleteInvite, 'invites'),
       }),
   })
 

@@ -6,7 +6,7 @@ import { Date, PageTitle, Table } from '@pluralsh/design-system'
 import { createColumnHelper } from '@tanstack/react-table'
 import isEmpty from 'lodash/isEmpty'
 
-import { extendConnection } from '../../utils/graphql'
+import { extendConnection, mapExistingNodes } from '../../utils/graphql'
 import LoadingIndicator from '../utils/LoadingIndicator'
 
 import { AuditUser } from './AuditUser'
@@ -136,8 +136,7 @@ export function Audits() {
     fetchPolicy: 'cache-and-network',
   })
   const pageInfo = data?.audits?.pageInfo
-  const edges = data?.audits?.edges
-  const audits = useMemo(() => edges?.map(({ node }) => node) || [], [edges])
+  const audits = useMemo(() => mapExistingNodes(data?.audits), [data?.audits])
 
   const fetchMoreOnBottomReached = useCallback(
     (element?: HTMLDivElement | undefined) => {
@@ -149,10 +148,10 @@ export function Audits() {
       if (
         scrollHeight - scrollTop - clientHeight < FETCH_MARGIN &&
         !loading &&
-        pageInfo.hasNextPage
+        pageInfo?.hasNextPage
       ) {
         fetchMore({
-          variables: { cursor: pageInfo.endCursor },
+          variables: { cursor: pageInfo?.endCursor },
           updateQuery: (prev, { fetchMoreResult: { audits } }) =>
             extendConnection(prev, audits, 'audits'),
         })

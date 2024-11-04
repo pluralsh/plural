@@ -1,7 +1,6 @@
 import { gql } from '@apollo/client'
 
 import {
-  AuditFragment,
   DnsDomainFragment,
   DnsRecordFragment,
   InviteFragment,

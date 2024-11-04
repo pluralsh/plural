@@ -20,6 +20,8 @@ import SubscriptionContext from '../../contexts/SubscriptionContext'
 
 import { Confirm } from '../utils/Confirm'
 
+import { useCreateServiceAccountMutation } from '../../generated/graphql'
+
 import { UPDATE_SERVICE_ACCOUNT, USERS_Q } from './queries'
 
 import { MoreMenu } from './MoreMenu'
@@ -27,7 +29,6 @@ import { MoreMenu } from './MoreMenu'
 import { BindingInput } from './Typeaheads'
 import { sanitize } from './utils'
 import BillingFeatureBlockModal from './billing/BillingFeatureBlockModal'
-import { useCreateServiceAccountMutation } from '../../generated/graphql'
 
 function ServiceAccountForm({
   error,

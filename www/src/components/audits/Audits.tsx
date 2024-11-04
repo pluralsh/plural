@@ -9,9 +9,10 @@ import isEmpty from 'lodash/isEmpty'
 import { extendConnection, mapExistingNodes } from '../../utils/graphql'
 import LoadingIndicator from '../utils/LoadingIndicator'
 
+import { useAuditsQuery } from '../../generated/graphql'
+
 import { AuditUser } from './AuditUser'
 import { Location } from './Location'
-import { useAuditsQuery } from '../../generated/graphql'
 
 const FETCH_MARGIN = 30
 

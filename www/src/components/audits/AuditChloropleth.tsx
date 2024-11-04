@@ -27,7 +27,7 @@ export function AuditChloropleth() {
 
   if (!data) return null
 
-  const results = data['auditMetrics'] || data['loginMetrics']
+  const results = data.auditMetrics || data.loginMetrics
   const metrics = results.map(({ country, count }) => ({
     // @ts-expect-error
     id: lookup.byIso(country).iso3,

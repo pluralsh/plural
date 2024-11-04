@@ -1,5 +1,4 @@
 import { useCallback, useContext, useMemo, useState } from 'react'
-import { useMutation } from '@apollo/client'
 import { Button } from 'honorable'
 import { Modal } from '@pluralsh/design-system'
 import uniqWith from 'lodash/uniqWith'
@@ -9,13 +8,14 @@ import { appendConnection, updateCache } from '../../utils/graphql'
 
 import SubscriptionContext from '../../contexts/SubscriptionContext'
 
+import { useCreateRoleMutation } from '../../generated/graphql'
+
 import { ROLES_Q } from './queries'
 
 import { Actions } from './Actions'
 import { sanitize } from './utils'
 import { RoleForm } from './RoleForm'
 import BillingFeatureBlockModal from './billing/BillingFeatureBlockModal'
-import { useCreateRoleMutation } from '../../generated/graphql'
 
 const defaultAttributes = {
   name: '',

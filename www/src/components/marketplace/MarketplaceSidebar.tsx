@@ -1,5 +1,4 @@
 import { useCallback, useMemo, useState } from 'react'
-import { useQuery } from '@apollo/client'
 import { useSearchParams } from 'react-router-dom'
 import { A, Accordion, Div } from 'honorable'
 import { Card, Checkbox, CloseIcon, Input } from '@pluralsh/design-system'
@@ -8,16 +7,8 @@ import capitalize from 'lodash/capitalize'
 
 import styled from 'styled-components'
 
-import usePaginatedQuery from '../../hooks/usePaginatedQuery'
-
-import { CATEGORIES_QUERY, TAGS_QUERY } from './queries'
-import {
-  useCategoriesQuery,
-  useOidcProvidersQuery,
-  useTagsQuery,
-} from '../../generated/graphql'
+import { useCategoriesQuery, useTagsQuery } from '../../generated/graphql'
 import { useFetchPaginatedData } from '../utils/useFetchPaginatedData'
-import { mapExistingNodes } from '../../utils/graphql'
 
 const SIDEBAR_WIDTH = 256 - 32
 

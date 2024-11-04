@@ -18,8 +18,9 @@ import { Table, TableData, TableRow } from '../utils/Table'
 import { ProviderIcon } from '../utils/ProviderIcon'
 import { Confirm } from '../utils/Confirm'
 
-import { DNS_RECORDS } from './queries'
 import { useDeleteDnsRecordMutation } from '../../generated/graphql'
+
+import { DNS_RECORDS } from './queries'
 
 function DeleteRecord({ record, domain }: any) {
   const [confirm, setConfirm] = useState(false)

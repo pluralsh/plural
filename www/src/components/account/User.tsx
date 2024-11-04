@@ -1,4 +1,3 @@
-import { useMutation } from '@apollo/client'
 import {
   AppIcon,
   Chip,

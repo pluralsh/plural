@@ -8,9 +8,10 @@ import { Flex } from 'honorable'
 import { extendConnection, mapExistingNodes } from '../../utils/graphql'
 import LoadingIndicator from '../utils/LoadingIndicator'
 
+import { useLoginsQuery } from '../../generated/graphql'
+
 import { AuditUser } from './AuditUser'
 import { Location } from './Location'
-import { useLoginsQuery } from '../../generated/graphql'
 
 const FETCH_MARGIN = 30
 

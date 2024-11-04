@@ -1,75 +1,75 @@
 fragment Audit on Audit {
+  id
+  action
+  ip
+  country
+  city
+  latitude
+  longitude
+  actor {
+    ...User
+  }
+  repository {
+    ...Repo
+  }
+  group {
+    ...Group
+  }
+  integrationWebhook {
+    ...IntegrationWebhook
+  }
+  role {
+    ...Role
+  }
+  version {
+    ...Version
+  }
+  image {
     id
-    action
-    ip
-    country
-    city
-    latitude
-    longitude
-    actor {
-        ...User
+    tag
+    dockerRepository {
+      name
     }
-    repository {
-        ...Repo
-    }
-    group {
-        ...Group
-    }
-    integrationWebhook {
-        ...IntegrationWebhook
-    }
-    role {
-        ...Role
-    }
-    version {
-        ...Version
-    }
-    image {
-        id
-        tag
-        dockerRepository {
-            name
-        }
-    }
-    insertedAt
+  }
+  insertedAt
 }
 
 query Audits($cursor: String) {
-    audits(first: 50, after: $cursor) {
-        pageInfo {
-            ...PageInfo
-        }
-        edges {
-            node {
-                ...Audit
-            }
-        }
+  audits(first: 50, after: $cursor) {
+    pageInfo {
+      ...PageInfo
     }
+    edges {
+      node {
+        ...Audit
+      }
+    }
+  }
 }
 
 query Logins($cursor: String) {
-    oidcLogins(first: 50, after: $cursor) {
-        pageInfo {
-            ...PageInfo
-        }
-        edges {
-            node {
-                ...OidcLogin
-            }
-        }
+  oidcLogins(first: 50, after: $cursor) {
+    pageInfo {
+      ...PageInfo
     }
+    edges {
+      node {
+        ...OidcLogin
+      }
+    }
+  }
 }
 
 query AuditMetrics {
-    auditMetrics {
-        country
-        count
-    }
+  auditMetrics {
+    country
+    count
+  }
 }
 
 query LoginMetrics {
-    loginMetrics {
-        country
-        count
-    }
+  loginMetrics {
+    country
+    count
+  }
 }

@@ -23,9 +23,10 @@ import LoadingIndicator from '../utils/LoadingIndicator'
 
 import { Confirm } from '../utils/Confirm'
 
+import { useDeleteInviteMutation } from '../../generated/graphql'
+
 import { INVITES_Q } from './queries'
 import { inviteLink } from './utils'
-import { useDeleteInviteMutation } from '../../generated/graphql'
 
 function DeleteInvite({ invite }: any) {
   const [confirm, setConfirm] = useState(false)

@@ -4,10 +4,11 @@ import { useMemo, useState } from 'react'
 import uniqWith from 'lodash/uniqWith'
 import isEqual from 'lodash/isEqual'
 
+import { useUpdateRoleMutation } from '../../generated/graphql'
+
 import { Actions } from './Actions'
 import { sanitize } from './utils'
 import { RoleForm } from './RoleForm'
-import { useUpdateRoleMutation } from '../../generated/graphql'
 
 export function EditRole({ role }: any) {
   const [open, setOpen] = useState(false)

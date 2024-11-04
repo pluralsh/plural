@@ -14,8 +14,9 @@ import { useCurrentUser } from '../../contexts/CurrentUserContext'
 import SubscriptionContext from '../../contexts/SubscriptionContext'
 import { GqlError } from '../utils/Alert'
 
-import { inviteLink } from './utils'
 import { useCreateInviteMutation } from '../../generated/graphql'
+
+import { inviteLink } from './utils'
 
 const MAX_OPEN_SOURCE_USERS = 5
 

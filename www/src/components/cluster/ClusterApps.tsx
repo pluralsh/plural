@@ -10,9 +10,10 @@ import InfiniteScroller from '../utils/InfiniteScroller'
 import { Cluster, useRepositoriesQuery } from '../../generated/graphql'
 import { ensureURLValidity } from '../../utils/url'
 
-import { ClusterApp } from './ClusterApp'
 import { useFetchPaginatedData } from '../utils/useFetchPaginatedData'
 import { mapExistingNodes } from '../../utils/graphql'
+
+import { ClusterApp } from './ClusterApp'
 
 const searchOptions = {
   keys: ['name'],

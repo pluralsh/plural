@@ -8,7 +8,6 @@ import { Card, PageTitle, SubTab, TabList } from '@pluralsh/design-system'
 import { Chloropleth } from '../utils/Chloropleth'
 
 import {
-  LoginMetricsQueryResult,
   useAuditMetricsQuery,
   useLoginMetricsQuery,
 } from '../../generated/graphql'

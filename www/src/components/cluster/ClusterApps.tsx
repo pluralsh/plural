@@ -4,15 +4,15 @@ import Fuse from 'fuse.js'
 import { Input, MagnifyingGlassIcon } from '@pluralsh/design-system'
 
 import ListCard from '../utils/ListCard'
-import usePaginatedQuery from '../../hooks/usePaginatedQuery'
 import LoadingIndicator from '../utils/LoadingIndicator'
 import { EmptyListMessage } from '../overview/clusters/misc'
 import InfiniteScroller from '../utils/InfiniteScroller'
-import { Cluster } from '../../generated/graphql'
+import { Cluster, useRepositoriesQuery } from '../../generated/graphql'
 import { ensureURLValidity } from '../../utils/url'
 
 import { ClusterApp } from './ClusterApp'
-import { REPOSITORIES_Q } from './queries'
+import { useFetchPaginatedData } from '../utils/useFetchPaginatedData'
+import { mapExistingNodes } from '../../utils/graphql'
 
 const searchOptions = {
   keys: ['name'],
@@ -25,11 +25,12 @@ export function ClusterApps({
   cluster: { consoleUrl },
 }: ClusterAppsProps): ReactElement {
   const [search, setSearch] = useState('')
-  const [apps, loading, hasMore, loadMore] = usePaginatedQuery(
-    REPOSITORIES_Q,
-    { variables: { installed: true } },
-    (data) => data.repositories
+  const { data, loading, pageInfo, fetchNextPage } = useFetchPaginatedData(
+    { queryHook: useRepositoriesQuery, keyPath: ['repositories'] },
+    { installed: true }
   )
+
+  const apps = useMemo(() => mapExistingNodes(data?.repositories) ?? [], [data])
 
   const fuse = useMemo(() => new Fuse(apps, searchOptions), [apps])
   const filteredApps = useMemo(
@@ -59,8 +60,8 @@ export function ClusterApps({
       {!isEmpty(apps) ? (
         <InfiniteScroller
           loading={loading}
-          hasMore={hasMore}
-          loadMore={loadMore}
+          hasMore={pageInfo.hasNextPage}
+          loadMore={fetchNextPage}
           // Allow for scrolling in a flexbox layout
           flexGrow={1}
           height={0}

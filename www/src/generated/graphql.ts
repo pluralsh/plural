@@ -5642,8 +5642,6 @@ export type OidcProviderFragment = { __typename?: 'OidcProvider', id: string, na
 
 export type OAuthInfoFragment = { __typename?: 'OauthInfo', provider: OauthProvider, authorizeUrl: string };
 
-export type RepositoryFragment = { __typename?: 'Repository', name: string, icon?: string | null, darkIcon?: string | null };
-
 export type OidcConsentQueryVariables = Exact<{
   challenge: Scalars['String']['input'];
 }>;
@@ -5902,6 +5900,8 @@ export type FileContentFragment = { __typename?: 'FileContent', content: string,
 
 export type RepoFragment = { __typename?: 'Repository', id: string, name: string, notes?: string | null, description?: string | null, documentation?: string | null, icon?: string | null, darkIcon?: string | null, private?: boolean | null, trending?: boolean | null, verified?: boolean | null, category?: Category | null, docs?: Array<{ __typename?: 'FileContent', content: string, path: string } | null> | null, oauthSettings?: { __typename?: 'OauthSettings', uriFormat: string, authMethod: OidcAuthMethod } | null, publisher?: { __typename?: 'Publisher', id?: string | null, name: string, phone?: string | null, avatar?: string | null, description?: string | null, backgroundColor?: string | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null, address?: { __typename?: 'Address', line1?: string | null, line2?: string | null, city?: string | null, country?: string | null, state?: string | null, zip?: string | null } | null } | null, recipes?: Array<{ __typename?: 'Recipe', name: string, provider?: Provider | null, description?: string | null } | null> | null };
 
+export type RepositoryFragment = { __typename?: 'Repository', id: string, name: string, icon?: string | null, darkIcon?: string | null, installation?: { __typename?: 'Installation', pingedAt?: Date | null, synced?: boolean | null, locked?: boolean | null } | null };
+
 export type MarketplaceRepositoryFragment = { __typename?: 'Repository', id: string, name: string, description?: string | null, releaseStatus?: ReleaseStatus | null, documentation?: string | null, icon?: string | null, darkIcon?: string | null, private?: boolean | null, trending?: boolean | null, verified?: boolean | null, category?: Category | null, oauthSettings?: { __typename?: 'OauthSettings', uriFormat: string, authMethod: OidcAuthMethod } | null, publisher?: { __typename?: 'Publisher', id?: string | null, name: string, phone?: string | null, avatar?: string | null, description?: string | null, backgroundColor?: string | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null, address?: { __typename?: 'Address', line1?: string | null, line2?: string | null, city?: string | null, country?: string | null, state?: string | null, zip?: string | null } | null } | null, installation?: { __typename?: 'Installation', id: string } | null, tags?: Array<{ __typename?: 'Tag', tag: string } | null> | null };
 
 export type DependenciesFragment = { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', name?: string | null, repo?: string | null, type?: DependencyType | null, version?: string | null, optional?: boolean | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null };
@@ -5970,6 +5970,14 @@ export type UnlockRepositoryMutationVariables = Exact<{
 
 
 export type UnlockRepositoryMutation = { __typename?: 'RootMutationType', unlockRepository?: number | null };
+
+export type RepositoriesQueryVariables = Exact<{
+  cursor?: InputMaybe<Scalars['String']['input']>;
+  installed?: InputMaybe<Scalars['Boolean']['input']>;
+}>;
+
+
+export type RepositoriesQuery = { __typename?: 'RootQueryType', repositories?: { __typename?: 'RepositoryConnection', pageInfo: { __typename?: 'PageInfo', endCursor?: string | null, hasNextPage: boolean }, edges?: Array<{ __typename?: 'RepositoryEdge', node?: { __typename?: 'Repository', id: string, name: string, icon?: string | null, darkIcon?: string | null, installation?: { __typename?: 'Installation', pingedAt?: Date | null, synced?: boolean | null, locked?: boolean | null } | null } | null } | null> | null } | null };
 
 export type MarketplaceRepositoriesQueryVariables = Exact<{
   publisherId?: InputMaybe<Scalars['ID']['input']>;
@@ -7255,13 +7263,6 @@ export const OAuthInfoFragmentDoc = gql`
   authorizeUrl
 }
     `;
-export const RepositoryFragmentDoc = gql`
-    fragment Repository on Repository {
-  name
-  icon
-  darkIcon
-}
-    `;
 export const SubscriptionFragmentDoc = gql`
     fragment Subscription on RepositorySubscription {
   id
@@ -7588,6 +7589,19 @@ export const CategoryFragmentDoc = gql`
     fragment Category on CategoryInfo {
   category
   count
+}
+    `;
+export const RepositoryFragmentDoc = gql`
+    fragment Repository on Repository {
+  id
+  name
+  icon
+  darkIcon
+  installation {
+    pingedAt
+    synced
+    locked
+  }
 }
     `;
 export const MarketplaceRepositoryFragmentDoc = gql`
@@ -9319,7 +9333,9 @@ export const OidcConsentDocument = gql`
     query OIDCConsent($challenge: String!) {
   oidcConsent(challenge: $challenge) {
     repository {
-      ...Repository
+      name
+      icon
+      darkIcon
     }
     consent {
       requestedScope
@@ -9327,7 +9343,7 @@ export const OidcConsentDocument = gql`
     }
   }
 }
-    ${RepositoryFragmentDoc}`;
+    `;
 
 /**
  * __useOidcConsentQuery__
@@ -10703,6 +10719,55 @@ export function useUnlockRepositoryMutation(baseOptions?: Apollo.MutationHookOpt
 export type UnlockRepositoryMutationHookResult = ReturnType<typeof useUnlockRepositoryMutation>;
 export type UnlockRepositoryMutationResult = Apollo.MutationResult<UnlockRepositoryMutation>;
 export type UnlockRepositoryMutationOptions = Apollo.BaseMutationOptions<UnlockRepositoryMutation, UnlockRepositoryMutationVariables>;
+export const RepositoriesDocument = gql`
+    query Repositories($cursor: String, $installed: Boolean) {
+  repositories(after: $cursor, first: 200, installed: $installed) {
+    pageInfo {
+      ...PageInfo
+    }
+    edges {
+      node {
+        ...Repository
+      }
+    }
+  }
+}
+    ${PageInfoFragmentDoc}
+${RepositoryFragmentDoc}`;
+
+/**
+ * __useRepositoriesQuery__
+ *
+ * To run a query within a React component, call `useRepositoriesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useRepositoriesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useRepositoriesQuery({
+ *   variables: {
+ *      cursor: // value for 'cursor'
+ *      installed: // value for 'installed'
+ *   },
+ * });
+ */
+export function useRepositoriesQuery(baseOptions?: Apollo.QueryHookOptions<RepositoriesQuery, RepositoriesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<RepositoriesQuery, RepositoriesQueryVariables>(RepositoriesDocument, options);
+      }
+export function useRepositoriesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<RepositoriesQuery, RepositoriesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<RepositoriesQuery, RepositoriesQueryVariables>(RepositoriesDocument, options);
+        }
+export function useRepositoriesSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<RepositoriesQuery, RepositoriesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<RepositoriesQuery, RepositoriesQueryVariables>(RepositoriesDocument, options);
+        }
+export type RepositoriesQueryHookResult = ReturnType<typeof useRepositoriesQuery>;
+export type RepositoriesLazyQueryHookResult = ReturnType<typeof useRepositoriesLazyQuery>;
+export type RepositoriesSuspenseQueryHookResult = ReturnType<typeof useRepositoriesSuspenseQuery>;
+export type RepositoriesQueryResult = Apollo.QueryResult<RepositoriesQuery, RepositoriesQueryVariables>;
 export const MarketplaceRepositoriesDocument = gql`
     query MarketplaceRepositories($publisherId: ID, $tag: String, $cursor: String) {
   repositories(publisherId: $publisherId, tag: $tag, after: $cursor, first: 200) {
@@ -12486,6 +12551,7 @@ export const namedOperations = {
     GetStack: 'GetStack',
     ListStacks: 'ListStacks',
     Repository: 'Repository',
+    Repositories: 'Repositories',
     MarketplaceRepositories: 'MarketplaceRepositories',
     Scaffolds: 'Scaffolds',
     GetTfProviders: 'GetTfProviders',
@@ -12620,7 +12686,6 @@ export const namedOperations = {
     NotificationFragment: 'NotificationFragment',
     OIDCProvider: 'OIDCProvider',
     OAuthInfo: 'OAuthInfo',
-    Repository: 'Repository',
     Limit: 'Limit',
     LineItem: 'LineItem',
     ServiceLevel: 'ServiceLevel',
@@ -12646,6 +12711,7 @@ export const namedOperations = {
     Category: 'Category',
     FileContent: 'FileContent',
     Repo: 'Repo',
+    Repository: 'Repository',
     MarketplaceRepository: 'MarketplaceRepository',
     Dependencies: 'Dependencies',
     Integration: 'Integration',

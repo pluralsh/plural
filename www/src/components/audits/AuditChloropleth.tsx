@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 
 import lookup from 'country-code-lookup'
 import { Box } from 'grommet'
@@ -8,6 +8,7 @@ import { Card, PageTitle, SubTab, TabList } from '@pluralsh/design-system'
 import { Chloropleth } from '../utils/Chloropleth'
 
 import {
+  LoginMetricsQueryResult,
   useAuditMetricsQuery,
   useLoginMetricsQuery,
 } from '../../generated/graphql'
@@ -21,9 +22,14 @@ export function AuditChloropleth() {
   const [selectedKey, setSelectedKey] = useState<any>('audit-logs')
   const tabStateRef = useRef<any>(null)
 
-  const query =
-    selectedKey === 'logins' ? useLoginMetricsQuery : useAuditMetricsQuery
-  const { data } = query({ fetchPolicy: 'cache-and-network' })
+  const query = useMemo(
+    () =>
+      selectedKey === 'logins' ? useLoginMetricsQuery : useAuditMetricsQuery,
+    [selectedKey]
+  )
+  const { data }: { data: any } = query({
+    fetchPolicy: 'cache-and-network',
+  })
 
   if (!data) return null
 

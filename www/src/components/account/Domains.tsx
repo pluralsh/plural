@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@apollo/client'
+import { useQuery } from '@apollo/client'
 import { Box } from 'grommet'
 import { Flex, Span } from 'honorable'
 import moment from 'moment'
@@ -25,11 +25,15 @@ import { Table, TableData, TableRow } from '../utils/Table'
 import ListInput from '../utils/ListInput'
 import { List } from '../utils/List'
 import { Confirm } from '../utils/Confirm'
-import { DnsRecordFragment } from '../../generated/graphql'
+import {
+  DnsRecordFragment,
+  useDeleteDomainMutation,
+  useUpdateDomainMutation,
+} from '../../generated/graphql'
 
 import LoadingIndicator from '../utils/LoadingIndicator'
 
-import { DELETE_DOMAIN, DNS_DOMAINS, UPDATE_DOMAIN } from './queries'
+import { DNS_DOMAINS } from './queries'
 import { Actions } from './Actions'
 import { MoreMenu } from './MoreMenu'
 import { BindingInput } from './Typeaheads'
@@ -52,12 +56,13 @@ function Header({ q, setQ }: any) {
 function DomainOptions({ domain, setDomain }: any) {
   const [confirm, setConfirm] = useState(false)
   const [edit, setEdit] = useState(false)
-  const [mutation, { loading, error }] = useMutation(DELETE_DOMAIN, {
+  const [mutation, { loading, error }] = useDeleteDomainMutation({
     variables: { id: domain.id },
-    update: (cache, { data: { deleteDomain } }) => {
+    update: (cache, { data }) => {
       updateCache(cache, {
         query: DNS_DOMAINS,
-        update: (prev) => removeConnection(prev, deleteDomain, 'dnsDomains'),
+        update: (prev) =>
+          removeConnection(prev, data?.deleteDomain, 'dnsDomains'),
         variables: {},
       })
     },
@@ -124,7 +129,7 @@ function AccessPolicy({ domain: { id, accessPolicy }, edit, setEdit }: any) {
     accessPolicy ? accessPolicy.bindings : []
   )
   const uniqueBindings = useMemo(() => uniqWith(bindings, isEqual), [bindings])
-  const [mutation, { loading, error }] = useMutation(UPDATE_DOMAIN, {
+  const [mutation, { loading, error }] = useUpdateDomainMutation({
     variables: {
       id,
       attributes: {

@@ -1,10 +1,9 @@
-import { useQuery } from '@apollo/client'
 import { Box, Text } from 'grommet'
 import { Check as Checkmark } from 'forge-core'
 
 import { ZOOM_ICON, ZOOM_INSTALL_URL } from './constants'
-import { OAUTH_Q } from './queries'
 import { OAuthService } from './types'
+import { useOauthIntegrationsQuery } from '../../../generated/graphql'
 
 function redirectUrl(format, service) {
   const location = `${
@@ -66,7 +65,9 @@ function Integration({
 }
 
 export function OAuthIntegrations() {
-  const { data } = useQuery(OAUTH_Q, { fetchPolicy: 'cache-and-network' })
+  const { data } = useOauthIntegrationsQuery({
+    fetchPolicy: 'cache-and-network',
+  })
 
   if (!data) return null
 

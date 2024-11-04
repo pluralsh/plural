@@ -171,7 +171,7 @@ function EditPluralOIDCClient({
       onEdit()
       onClose()
     }
-  }, [onClose, onCreate, onEdit, refetch])
+  }, [createMode, onClose, onCreate, onEdit, refetch])
 
   const [create, { data, loading: creating, error: createError }] =
     useCreateProviderMutation({

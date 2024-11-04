@@ -12,11 +12,11 @@ import { useNavigate, useParams } from 'react-router-dom'
 
 import { useTheme } from 'styled-components'
 
-import { Repository } from '../../generated/graphql'
+import { RepositoryFragment } from '../../generated/graphql'
 import { MoreMenu } from '../account/MoreMenu'
 
 type ClusterAppProps = {
-  app: Repository
+  app: RepositoryFragment
   consoleUrl?: string | null
   last: boolean
 }

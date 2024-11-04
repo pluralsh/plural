@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@apollo/client'
+import { useQuery } from '@apollo/client'
 import { Box } from 'grommet'
 import isEmpty from 'lodash/isEmpty'
 import { Flex } from 'honorable'
@@ -16,7 +16,7 @@ import {
 } from '../../utils/graphql'
 import { DeleteIconButton } from '../utils/IconButtons'
 import { StandardScroller } from '../utils/SmoothScroller'
-import { Permission } from '../../generated/graphql'
+import { Permission, useDeleteRoleMutation } from '../../generated/graphql'
 import { canEdit } from '../../utils/account'
 import LoadingIndicator from '../utils/LoadingIndicator'
 
@@ -26,7 +26,7 @@ import { Confirm } from '../utils/Confirm'
 
 import BillingTrialBanner from './billing/BillingTrialBanner'
 
-import { DELETE_ROLE, ROLES_Q } from './queries'
+import { ROLES_Q } from './queries'
 import { hasRbac } from './utils'
 import { Info } from './Info'
 import { EditRole } from './EditRole'
@@ -51,13 +51,13 @@ function Role({ role, q }: any) {
   const [confirm, setConfirm] = useState(false)
   const me = useContext(CurrentUserContext)
   const editable = canEdit(me, me.account) || hasRbac(me, Permission.Users)
-  const [mutation, { loading, error }] = useMutation(DELETE_ROLE, {
+  const [mutation, { loading, error }] = useDeleteRoleMutation({
     variables: { id: role.id },
     update: (cache, { data }) =>
       updateCache(cache, {
         query: ROLES_Q,
         variables: { q },
-        update: (prev) => removeConnection(prev, data.deleteRole, 'roles'),
+        update: (prev) => removeConnection(prev, data?.deleteRole, 'roles'),
       }),
     onCompleted: () => setConfirm(false),
   })

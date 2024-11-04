@@ -1,20 +1,14 @@
 import { useEffect, useMemo, useState } from 'react'
-import { ApolloClient, useMutation } from '@apollo/client'
+import { ApolloClient } from '@apollo/client'
 import memoize from 'lodash/memoize'
 
 import { buildClient, client as defaultClient } from '../helpers/client'
-import { IMPERSONATE_SERVICE_ACCOUNT } from '../components/account/queries'
 import { fetchToken } from '../helpers/authentication'
+import { useImpersonateServiceAccountMutation } from '../generated/graphql'
 
 // Cache tokens with service account ID as keys.
 const getImpersonatedToken = memoize((id, mutation) =>
-  mutation().then(
-    ({
-      data: {
-        impersonateServiceAccount: { jwt },
-      },
-    }) => jwt
-  )
+  mutation().then(({ data }) => data?.impersonateServiceAccount?.jwt)
 )
 
 // Cache clients with impersonated service account tokens as keys.
@@ -26,7 +20,7 @@ export default function useImpersonatedServiceAccount(
 ) {
   const [client, setClient] = useState<ApolloClient<unknown> | undefined>()
   const [token, setToken] = useState<any | undefined>()
-  const [mutation, { error }] = useMutation(IMPERSONATE_SERVICE_ACCOUNT, {
+  const [mutation, { error }] = useImpersonateServiceAccountMutation({
     variables: { id },
   })
 

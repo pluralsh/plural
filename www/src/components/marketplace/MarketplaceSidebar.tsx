@@ -1,5 +1,4 @@
 import { useCallback, useMemo, useState } from 'react'
-import { useQuery } from '@apollo/client'
 import { useSearchParams } from 'react-router-dom'
 import { A, Accordion, Div } from 'honorable'
 import { Card, Checkbox, CloseIcon, Input } from '@pluralsh/design-system'
@@ -8,9 +7,9 @@ import capitalize from 'lodash/capitalize'
 
 import styled from 'styled-components'
 
-import usePaginatedQuery from '../../hooks/usePaginatedQuery'
-
-import { CATEGORIES_QUERY, TAGS_QUERY } from './queries'
+import { useCategoriesQuery, useTagsQuery } from '../../generated/graphql'
+import { useFetchPaginatedData } from '../utils/useFetchPaginatedData'
+import { mapExistingNodes } from '../../utils/graphql'
 
 const SIDEBAR_WIDTH = 256 - 32
 
@@ -241,17 +240,20 @@ const SidebarWrapper = styled(Card)<{ $isOpen: boolean }>(
 )
 
 function MarketplaceSidebar({ isOpen }: { isOpen: boolean }) {
-  const { data: categoriesData } = useQuery(CATEGORIES_QUERY)
-  const [tags, , hasMoreTags, fetchMoreTags] = usePaginatedQuery(
-    TAGS_QUERY,
-    {},
-    (data) => data.tags
+  const { data: categoriesData } = useCategoriesQuery()
+  const { data, pageInfo, fetchNextPage } = useFetchPaginatedData(
+    { queryHook: useTagsQuery, keyPath: ['tags'] },
+    {}
   )
+
   const [search, setSearch] = useState('')
 
+  const tags = useMemo(() => mapExistingNodes(data?.tags) ?? [], [data])
+
   if (!categoriesData) return null
+
   const filteredCategories = categoriesData.categories?.filter(
-    (c) => !!c.category
+    (c) => !!c?.category
   )
 
   return (
@@ -260,8 +262,8 @@ function MarketplaceSidebar({ isOpen }: { isOpen: boolean }) {
         <Categories categories={filteredCategories} />
         <Tags
           tags={tags}
-          hasMore={hasMoreTags}
-          fetchMore={fetchMoreTags}
+          hasMore={pageInfo?.hasNextPage}
+          fetchMore={fetchNextPage}
           search={search}
           setSearch={setSearch}
         />

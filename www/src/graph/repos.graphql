@@ -42,6 +42,18 @@ fragment Repo on Repository {
   }
 }
 
+fragment Repository on Repository {
+  id
+  name
+  icon
+  darkIcon
+  installation {
+    pingedAt
+    synced
+    locked
+  }
+}
+
 fragment MarketplaceRepository on Repository {
   id
   name
@@ -193,6 +205,19 @@ mutation ReleaseLock($name: String!, $attrs: LockAttributes!) {
 
 mutation UnlockRepository($name: String!) {
   unlockRepository(name: $name)
+}
+
+query Repositories($cursor: String, $installed: Boolean) {
+  repositories(after: $cursor, first: 200, installed: $installed) {
+    pageInfo {
+      ...PageInfo
+    }
+    edges {
+      node {
+        ...Repository
+      }
+    }
+  }
 }
 
 query MarketplaceRepositories($publisherId: ID, $tag: String, $cursor: String) {

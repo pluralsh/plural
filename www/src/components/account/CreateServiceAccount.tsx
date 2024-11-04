@@ -20,11 +20,9 @@ import SubscriptionContext from '../../contexts/SubscriptionContext'
 
 import { Confirm } from '../utils/Confirm'
 
-import {
-  CREATE_SERVICE_ACCOUNT,
-  UPDATE_SERVICE_ACCOUNT,
-  USERS_Q,
-} from './queries'
+import { useCreateServiceAccountMutation } from '../../generated/graphql'
+
+import { UPDATE_SERVICE_ACCOUNT, USERS_Q } from './queries'
 
 import { MoreMenu } from './MoreMenu'
 
@@ -274,18 +272,19 @@ export function CreateServiceAccount({ q }: any) {
     setCreateModalVisible(false)
   }, [])
 
-  const [mutation, { loading, error }] = useMutation(CREATE_SERVICE_ACCOUNT, {
+  const [mutation, { loading, error }] = useCreateServiceAccountMutation({
     variables: {
       attributes: {
         ...attributes,
         impersonationPolicy: { bindings: bindings.map(sanitize) },
       },
     },
-    update: (cache, { data: { createServiceAccount } }) =>
+    update: (cache, { data }) =>
       updateCache(cache, {
         query: USERS_Q,
         variables: { q, serviceAccount: true },
-        update: (prev) => appendConnection(prev, createServiceAccount, 'users'),
+        update: (prev) =>
+          appendConnection(prev, data?.createServiceAccount, 'users'),
       }),
     onCompleted: () => {
       resetAndClose()

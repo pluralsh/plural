@@ -1,0 +1,28 @@
+fragment CategoryInfo on CategoryInfo {
+  category
+  count
+}
+
+fragment GroupedTag on GroupedTag {
+  tag
+  count
+}
+
+query Categories {
+  categories {
+    ...CategoryInfo
+  }
+}
+
+query Tags($cursor: String) {
+  tags(type: REPOSITORIES, first: 200, after: $cursor) {
+    pageInfo {
+      ...PageInfo
+    }
+    edges {
+      node {
+        ...GroupedTag
+      }
+    }
+  }
+}

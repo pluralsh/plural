@@ -5286,13 +5286,9 @@ export type ZoomMeeting = {
   password?: Maybe<Scalars['String']['output']>;
 };
 
-export type AuditFragment = { __typename?: 'Audit', id: string, action: string, ip?: string | null, country?: string | null, city?: string | null, latitude?: string | null, longitude?: string | null, insertedAt?: Date | null, actor?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null, repository?: { __typename?: 'Repository', id: string, name: string, notes?: string | null, description?: string | null, documentation?: string | null, icon?: string | null, darkIcon?: string | null, private?: boolean | null, trending?: boolean | null, verified?: boolean | null, category?: Category | null, docs?: Array<{ __typename?: 'FileContent', content: string, path: string } | null> | null, oauthSettings?: { __typename?: 'OauthSettings', uriFormat: string, authMethod: OidcAuthMethod } | null, publisher?: { __typename?: 'Publisher', id?: string | null, name: string, phone?: string | null, avatar?: string | null, description?: string | null, backgroundColor?: string | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null, address?: { __typename?: 'Address', line1?: string | null, line2?: string | null, city?: string | null, country?: string | null, state?: string | null, zip?: string | null } | null } | null, recipes?: Array<{ __typename?: 'Recipe', name: string, provider?: Provider | null, description?: string | null } | null> | null } | null, group?: { __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null, integrationWebhook?: { __typename?: 'IntegrationWebhook', id: string, name: string, url: string, secret: string, actions?: Array<string | null> | null } | null, role?: { __typename?: 'Role', id: string, name: string, description?: string | null, repositories?: Array<string | null> | null, permissions?: Array<Permission | null> | null, roleBindings?: Array<{ __typename?: 'RoleBinding', id: string, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null, group?: { __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null } | null> | null } | null, version?: { __typename?: 'Version', id: string, helm?: Map<string, unknown> | null, readme?: string | null, valuesTemplate?: string | null, version: string, insertedAt?: Date | null, package?: string | null, crds?: Array<{ __typename?: 'Crd', id: string, name: string, blob?: string | null } | null> | null, chart?: { __typename?: 'Chart', id?: string | null, name: string, description?: string | null, latestVersion?: string | null, insertedAt?: Date | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', name?: string | null, repo?: string | null, type?: DependencyType | null, version?: string | null, optional?: boolean | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null } | null, terraform?: { __typename?: 'Terraform', id?: string | null, name?: string | null } | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', name?: string | null, repo?: string | null, type?: DependencyType | null, version?: string | null, optional?: boolean | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null } | null, image?: { __typename?: 'DockerImage', id: string, tag?: string | null, dockerRepository?: { __typename?: 'DockerRepository', name: string } | null } | null };
-
 export type PolicyBindingFragment = { __typename?: 'PolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null };
 
 export type DnsDomainFragment = { __typename?: 'DnsDomain', id: string, name: string, insertedAt?: Date | null, creator?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null, accessPolicy?: { __typename?: 'DnsAccessPolicy', id: string, bindings?: Array<{ __typename?: 'PolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null };
-
-export type InviteFragment = { __typename?: 'Invite', id: string, secureId?: string | null, email?: string | null, insertedAt?: Date | null, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null };
 
 export type OidcLoginFragment = { __typename?: 'OidcLogin', ip?: string | null, country?: string | null, city?: string | null, latitude?: string | null, longitude?: string | null, insertedAt?: Date | null, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null, repository?: { __typename?: 'Repository', id: string, name: string, notes?: string | null, description?: string | null, documentation?: string | null, icon?: string | null, darkIcon?: string | null, private?: boolean | null, trending?: boolean | null, verified?: boolean | null, category?: Category | null, docs?: Array<{ __typename?: 'FileContent', content: string, path: string } | null> | null, oauthSettings?: { __typename?: 'OauthSettings', uriFormat: string, authMethod: OidcAuthMethod } | null, publisher?: { __typename?: 'Publisher', id?: string | null, name: string, phone?: string | null, avatar?: string | null, description?: string | null, backgroundColor?: string | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null, address?: { __typename?: 'Address', line1?: string | null, line2?: string | null, city?: string | null, country?: string | null, state?: string | null, zip?: string | null } | null } | null, recipes?: Array<{ __typename?: 'Recipe', name: string, provider?: Provider | null, description?: string | null } | null> | null } | null };
 
@@ -5329,6 +5325,32 @@ export type CreateArtifactMutationVariables = Exact<{
 
 
 export type CreateArtifactMutation = { __typename?: 'RootMutationType', createArtifact?: { __typename?: 'Artifact', id?: string | null, name?: string | null, blob?: string | null, type?: ArtifactType | null, platform?: ArtifactPlatform | null, arch?: string | null, filesize?: number | null, sha?: string | null, readme?: string | null, insertedAt?: Date | null, updatedAt?: Date | null } | null };
+
+export type AuditFragment = { __typename?: 'Audit', id: string, action: string, ip?: string | null, country?: string | null, city?: string | null, latitude?: string | null, longitude?: string | null, insertedAt?: Date | null, actor?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null, repository?: { __typename?: 'Repository', id: string, name: string, notes?: string | null, description?: string | null, documentation?: string | null, icon?: string | null, darkIcon?: string | null, private?: boolean | null, trending?: boolean | null, verified?: boolean | null, category?: Category | null, docs?: Array<{ __typename?: 'FileContent', content: string, path: string } | null> | null, oauthSettings?: { __typename?: 'OauthSettings', uriFormat: string, authMethod: OidcAuthMethod } | null, publisher?: { __typename?: 'Publisher', id?: string | null, name: string, phone?: string | null, avatar?: string | null, description?: string | null, backgroundColor?: string | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null, address?: { __typename?: 'Address', line1?: string | null, line2?: string | null, city?: string | null, country?: string | null, state?: string | null, zip?: string | null } | null } | null, recipes?: Array<{ __typename?: 'Recipe', name: string, provider?: Provider | null, description?: string | null } | null> | null } | null, group?: { __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null, integrationWebhook?: { __typename?: 'IntegrationWebhook', id: string, name: string, url: string, secret: string, actions?: Array<string | null> | null } | null, role?: { __typename?: 'Role', id: string, name: string, description?: string | null, repositories?: Array<string | null> | null, permissions?: Array<Permission | null> | null, roleBindings?: Array<{ __typename?: 'RoleBinding', id: string, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null, group?: { __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null } | null> | null } | null, version?: { __typename?: 'Version', id: string, helm?: Map<string, unknown> | null, readme?: string | null, valuesTemplate?: string | null, version: string, insertedAt?: Date | null, package?: string | null, crds?: Array<{ __typename?: 'Crd', id: string, name: string, blob?: string | null } | null> | null, chart?: { __typename?: 'Chart', id?: string | null, name: string, description?: string | null, latestVersion?: string | null, insertedAt?: Date | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', name?: string | null, repo?: string | null, type?: DependencyType | null, version?: string | null, optional?: boolean | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null } | null, terraform?: { __typename?: 'Terraform', id?: string | null, name?: string | null } | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', name?: string | null, repo?: string | null, type?: DependencyType | null, version?: string | null, optional?: boolean | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null } | null, image?: { __typename?: 'DockerImage', id: string, tag?: string | null, dockerRepository?: { __typename?: 'DockerRepository', name: string } | null } | null };
+
+export type AuditsQueryVariables = Exact<{
+  cursor?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type AuditsQuery = { __typename?: 'RootQueryType', audits?: { __typename?: 'AuditConnection', pageInfo: { __typename?: 'PageInfo', endCursor?: string | null, hasNextPage: boolean }, edges?: Array<{ __typename?: 'AuditEdge', node?: { __typename?: 'Audit', id: string, action: string, ip?: string | null, country?: string | null, city?: string | null, latitude?: string | null, longitude?: string | null, insertedAt?: Date | null, actor?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null, repository?: { __typename?: 'Repository', id: string, name: string, notes?: string | null, description?: string | null, documentation?: string | null, icon?: string | null, darkIcon?: string | null, private?: boolean | null, trending?: boolean | null, verified?: boolean | null, category?: Category | null, docs?: Array<{ __typename?: 'FileContent', content: string, path: string } | null> | null, oauthSettings?: { __typename?: 'OauthSettings', uriFormat: string, authMethod: OidcAuthMethod } | null, publisher?: { __typename?: 'Publisher', id?: string | null, name: string, phone?: string | null, avatar?: string | null, description?: string | null, backgroundColor?: string | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null, address?: { __typename?: 'Address', line1?: string | null, line2?: string | null, city?: string | null, country?: string | null, state?: string | null, zip?: string | null } | null } | null, recipes?: Array<{ __typename?: 'Recipe', name: string, provider?: Provider | null, description?: string | null } | null> | null } | null, group?: { __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null, integrationWebhook?: { __typename?: 'IntegrationWebhook', id: string, name: string, url: string, secret: string, actions?: Array<string | null> | null } | null, role?: { __typename?: 'Role', id: string, name: string, description?: string | null, repositories?: Array<string | null> | null, permissions?: Array<Permission | null> | null, roleBindings?: Array<{ __typename?: 'RoleBinding', id: string, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null, group?: { __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null } | null> | null } | null, version?: { __typename?: 'Version', id: string, helm?: Map<string, unknown> | null, readme?: string | null, valuesTemplate?: string | null, version: string, insertedAt?: Date | null, package?: string | null, crds?: Array<{ __typename?: 'Crd', id: string, name: string, blob?: string | null } | null> | null, chart?: { __typename?: 'Chart', id?: string | null, name: string, description?: string | null, latestVersion?: string | null, insertedAt?: Date | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', name?: string | null, repo?: string | null, type?: DependencyType | null, version?: string | null, optional?: boolean | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null } | null, terraform?: { __typename?: 'Terraform', id?: string | null, name?: string | null } | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', name?: string | null, repo?: string | null, type?: DependencyType | null, version?: string | null, optional?: boolean | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null } | null, image?: { __typename?: 'DockerImage', id: string, tag?: string | null, dockerRepository?: { __typename?: 'DockerRepository', name: string } | null } | null } | null } | null> | null } | null };
+
+export type LoginsQueryVariables = Exact<{
+  cursor?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type LoginsQuery = { __typename?: 'RootQueryType', oidcLogins?: { __typename?: 'OidcLoginConnection', pageInfo: { __typename?: 'PageInfo', endCursor?: string | null, hasNextPage: boolean }, edges?: Array<{ __typename?: 'OidcLoginEdge', node?: { __typename?: 'OidcLogin', ip?: string | null, country?: string | null, city?: string | null, latitude?: string | null, longitude?: string | null, insertedAt?: Date | null, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null, repository?: { __typename?: 'Repository', id: string, name: string, notes?: string | null, description?: string | null, documentation?: string | null, icon?: string | null, darkIcon?: string | null, private?: boolean | null, trending?: boolean | null, verified?: boolean | null, category?: Category | null, docs?: Array<{ __typename?: 'FileContent', content: string, path: string } | null> | null, oauthSettings?: { __typename?: 'OauthSettings', uriFormat: string, authMethod: OidcAuthMethod } | null, publisher?: { __typename?: 'Publisher', id?: string | null, name: string, phone?: string | null, avatar?: string | null, description?: string | null, backgroundColor?: string | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null, address?: { __typename?: 'Address', line1?: string | null, line2?: string | null, city?: string | null, country?: string | null, state?: string | null, zip?: string | null } | null } | null, recipes?: Array<{ __typename?: 'Recipe', name: string, provider?: Provider | null, description?: string | null } | null> | null } | null } | null } | null> | null } | null };
+
+export type AuditMetricsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type AuditMetricsQuery = { __typename?: 'RootQueryType', auditMetrics?: Array<{ __typename?: 'GeoMetric', country?: string | null, count?: number | null } | null> | null };
+
+export type LoginMetricsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type LoginMetricsQuery = { __typename?: 'RootQueryType', loginMetrics?: Array<{ __typename?: 'GeoMetric', country?: string | null, count?: number | null } | null> | null };
 
 export type ChartFragment = { __typename?: 'Chart', id?: string | null, name: string, description?: string | null, latestVersion?: string | null, insertedAt?: Date | null, dependencies?: { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', name?: string | null, repo?: string | null, type?: DependencyType | null, version?: string | null, optional?: boolean | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null } | null };
 
@@ -5397,13 +5419,13 @@ export type ClustersQuery = { __typename?: 'RootQueryType', clusters?: { __typen
 
 export type DnsRecordFragment = { __typename?: 'DnsRecord', id: string, name: string, type: DnsRecordType, records?: Array<string | null> | null, cluster: string, provider: Provider, insertedAt?: Date | null, creator?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null };
 
-export type GetDnsRecordsQueryVariables = Exact<{
+export type DnsRecordsQueryVariables = Exact<{
   cluster: Scalars['String']['input'];
   provider: Provider;
 }>;
 
 
-export type GetDnsRecordsQuery = { __typename?: 'RootQueryType', dnsRecords?: { __typename?: 'DnsRecordConnection', edges?: Array<{ __typename?: 'DnsRecordEdge', node?: { __typename?: 'DnsRecord', id: string, name: string, type: DnsRecordType, records?: Array<string | null> | null, cluster: string, provider: Provider, insertedAt?: Date | null, creator?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null } | null } | null> | null } | null };
+export type DnsRecordsQuery = { __typename?: 'RootQueryType', dnsRecords?: { __typename?: 'DnsRecordConnection', edges?: Array<{ __typename?: 'DnsRecordEdge', node?: { __typename?: 'DnsRecord', id: string, name: string, type: DnsRecordType, records?: Array<string | null> | null, cluster: string, provider: Provider, insertedAt?: Date | null, creator?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null } | null } | null> | null } | null };
 
 export type CreateDnsRecordMutationVariables = Exact<{
   cluster: Scalars['String']['input'];
@@ -5421,6 +5443,21 @@ export type DeleteDnsRecordMutationVariables = Exact<{
 
 
 export type DeleteDnsRecordMutation = { __typename?: 'RootMutationType', deleteDnsRecord?: { __typename?: 'DnsRecord', id: string, name: string, type: DnsRecordType, records?: Array<string | null> | null, cluster: string, provider: Provider, insertedAt?: Date | null, creator?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null } | null };
+
+export type UpdateDomainMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+  attributes: DnsDomainAttributes;
+}>;
+
+
+export type UpdateDomainMutation = { __typename?: 'RootMutationType', updateDomain?: { __typename?: 'DnsDomain', id: string, name: string, insertedAt?: Date | null, creator?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null, accessPolicy?: { __typename?: 'DnsAccessPolicy', id: string, bindings?: Array<{ __typename?: 'PolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null };
+
+export type DeleteDomainMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type DeleteDomainMutation = { __typename?: 'RootMutationType', deleteDomain?: { __typename?: 'DnsDomain', id: string, name: string, insertedAt?: Date | null, creator?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null, accessPolicy?: { __typename?: 'DnsAccessPolicy', id: string, bindings?: Array<{ __typename?: 'PolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null };
 
 export type DockerRepoFragment = { __typename?: 'DockerRepository', id: string, name: string, public?: boolean | null, insertedAt?: Date | null, updatedAt?: Date | null, repository?: { __typename?: 'Repository', id: string, name: string } | null };
 
@@ -5521,6 +5558,34 @@ export type OauthIntegrationFragment = { __typename?: 'OauthIntegration', id: st
 
 export type ZoomMeetingFragment = { __typename?: 'ZoomMeeting', joinUrl: string, password?: string | null };
 
+export type OauthIntegrationsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type OauthIntegrationsQuery = { __typename?: 'RootQueryType', oauthIntegrations?: Array<{ __typename?: 'OauthIntegration', id: string, service: OauthService, insertedAt?: Date | null } | null> | null };
+
+export type CreateOauthIntegrationMutationVariables = Exact<{
+  attributes: OauthAttributes;
+}>;
+
+
+export type CreateOauthIntegrationMutation = { __typename?: 'RootMutationType', createOauthIntegration?: { __typename?: 'OauthIntegration', id: string, service: OauthService, insertedAt?: Date | null } | null };
+
+export type InviteFragment = { __typename?: 'Invite', id: string, secureId?: string | null, email?: string | null, insertedAt?: Date | null, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null };
+
+export type InviteQueryVariables = Exact<{
+  id: Scalars['String']['input'];
+}>;
+
+
+export type InviteQuery = { __typename?: 'RootQueryType', invite?: { __typename?: 'Invite', id: string, email?: string | null, existing: boolean, account?: { __typename?: 'Account', id: string, name?: string | null, billingCustomerId?: string | null, backgroundColor?: string | null, userCount?: string | null, trialed?: boolean | null } | null, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, account: { __typename?: 'Account', id: string, name?: string | null, billingCustomerId?: string | null, backgroundColor?: string | null, userCount?: string | null, trialed?: boolean | null }, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null } | null };
+
+export type CreateInviteMutationVariables = Exact<{
+  attributes: InviteAttributes;
+}>;
+
+
+export type CreateInviteMutation = { __typename?: 'RootMutationType', createInvite?: { __typename?: 'Invite', id: string, secureId?: string | null, email?: string | null, insertedAt?: Date | null, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null } | null };
+
 export type SignupInviteMutationVariables = Exact<{
   attributes: UserAttributes;
   inviteId: Scalars['String']['input'];
@@ -5536,19 +5601,12 @@ export type RealizeInviteMutationVariables = Exact<{
 
 export type RealizeInviteMutation = { __typename?: 'RootMutationType', realizeInvite?: { __typename?: 'User', jwt?: string | null } | null };
 
-export type InviteQueryVariables = Exact<{
-  id: Scalars['String']['input'];
+export type DeleteInviteMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
 }>;
 
 
-export type InviteQuery = { __typename?: 'RootQueryType', invite?: { __typename?: 'Invite', id: string, email?: string | null, existing: boolean, account?: { __typename?: 'Account', id: string, name?: string | null, billingCustomerId?: string | null, backgroundColor?: string | null, userCount?: string | null, trialed?: boolean | null } | null, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, account: { __typename?: 'Account', id: string, name?: string | null, billingCustomerId?: string | null, backgroundColor?: string | null, userCount?: string | null, trialed?: boolean | null }, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null } | null };
-
-export type CreateInviteMutationVariables = Exact<{
-  attributes: InviteAttributes;
-}>;
-
-
-export type CreateInviteMutation = { __typename?: 'RootMutationType', createInvite?: { __typename?: 'Invite', id: string, secureId?: string | null, email?: string | null, insertedAt?: Date | null, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null } | null };
+export type DeleteInviteMutation = { __typename?: 'RootMutationType', deleteInvite?: { __typename?: 'Invite', id: string, secureId?: string | null, email?: string | null, insertedAt?: Date | null, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null } | null };
 
 export type KeyBackupUserFragment = { __typename?: 'User', email: string };
 
@@ -5580,6 +5638,22 @@ export type CreateKeyBackupMutationVariables = Exact<{
 
 export type CreateKeyBackupMutation = { __typename?: 'RootMutationType', createKeyBackup?: { __typename?: 'KeyBackup', digest: string, id: string, insertedAt?: Date | null, name: string, repositories?: Array<string> | null, updatedAt?: Date | null, value: string, user: { __typename?: 'User', email: string } } | null };
 
+export type CategoryInfoFragment = { __typename?: 'CategoryInfo', category?: Category | null, count?: number | null };
+
+export type GroupedTagFragment = { __typename?: 'GroupedTag', tag: string, count: number };
+
+export type CategoriesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type CategoriesQuery = { __typename?: 'RootQueryType', categories?: Array<{ __typename?: 'CategoryInfo', category?: Category | null, count?: number | null } | null> | null };
+
+export type TagsQueryVariables = Exact<{
+  cursor?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type TagsQuery = { __typename?: 'RootQueryType', tags?: { __typename?: 'GroupedTagConnection', pageInfo: { __typename?: 'PageInfo', endCursor?: string | null, hasNextPage: boolean }, edges?: Array<{ __typename?: 'GroupedTagEdge', node?: { __typename?: 'GroupedTag', tag: string, count: number } | null } | null> | null } | null };
+
 export type MetricFragment = { __typename?: 'Metric', name: string, tags?: Array<{ __typename?: 'MetricTag', name: string, value: string } | null> | null, values?: Array<{ __typename?: 'MetricValue', time?: Date | null, value?: number | null } | null> | null };
 
 export type PageInfoFragment = { __typename?: 'PageInfo', endCursor?: string | null, hasNextPage: boolean };
@@ -5598,8 +5672,6 @@ export type NotificationsQuery = { __typename?: 'RootQueryType', notifications?:
 export type OidcProviderFragment = { __typename?: 'OidcProvider', id: string, name?: string | null, description?: string | null, clientId: string, authMethod: OidcAuthMethod, clientSecret: string, redirectUris?: Array<string | null> | null, bindings?: Array<{ __typename?: 'OidcProviderBinding', id: string, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null, group?: { __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null } | null> | null, configuration?: { __typename?: 'OuathConfiguration', issuer?: string | null, authorizationEndpoint?: string | null, tokenEndpoint?: string | null, jwksUri?: string | null, userinfoEndpoint?: string | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null };
 
 export type OAuthInfoFragment = { __typename?: 'OauthInfo', provider: OauthProvider, authorizeUrl: string };
-
-export type RepositoryFragment = { __typename?: 'Repository', name: string, icon?: string | null, darkIcon?: string | null };
 
 export type OidcConsentQueryVariables = Exact<{
   challenge: Scalars['String']['input'];
@@ -5859,6 +5931,8 @@ export type FileContentFragment = { __typename?: 'FileContent', content: string,
 
 export type RepoFragment = { __typename?: 'Repository', id: string, name: string, notes?: string | null, description?: string | null, documentation?: string | null, icon?: string | null, darkIcon?: string | null, private?: boolean | null, trending?: boolean | null, verified?: boolean | null, category?: Category | null, docs?: Array<{ __typename?: 'FileContent', content: string, path: string } | null> | null, oauthSettings?: { __typename?: 'OauthSettings', uriFormat: string, authMethod: OidcAuthMethod } | null, publisher?: { __typename?: 'Publisher', id?: string | null, name: string, phone?: string | null, avatar?: string | null, description?: string | null, backgroundColor?: string | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null, address?: { __typename?: 'Address', line1?: string | null, line2?: string | null, city?: string | null, country?: string | null, state?: string | null, zip?: string | null } | null } | null, recipes?: Array<{ __typename?: 'Recipe', name: string, provider?: Provider | null, description?: string | null } | null> | null };
 
+export type RepositoryFragment = { __typename?: 'Repository', id: string, name: string, icon?: string | null, darkIcon?: string | null, installation?: { __typename?: 'Installation', pingedAt?: Date | null, synced?: boolean | null, locked?: boolean | null } | null };
+
 export type MarketplaceRepositoryFragment = { __typename?: 'Repository', id: string, name: string, description?: string | null, releaseStatus?: ReleaseStatus | null, documentation?: string | null, icon?: string | null, darkIcon?: string | null, private?: boolean | null, trending?: boolean | null, verified?: boolean | null, category?: Category | null, oauthSettings?: { __typename?: 'OauthSettings', uriFormat: string, authMethod: OidcAuthMethod } | null, publisher?: { __typename?: 'Publisher', id?: string | null, name: string, phone?: string | null, avatar?: string | null, description?: string | null, backgroundColor?: string | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null, address?: { __typename?: 'Address', line1?: string | null, line2?: string | null, city?: string | null, country?: string | null, state?: string | null, zip?: string | null } | null } | null, installation?: { __typename?: 'Installation', id: string } | null, tags?: Array<{ __typename?: 'Tag', tag: string } | null> | null };
 
 export type DependenciesFragment = { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', name?: string | null, repo?: string | null, type?: DependencyType | null, version?: string | null, optional?: boolean | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null };
@@ -5928,6 +6002,14 @@ export type UnlockRepositoryMutationVariables = Exact<{
 
 export type UnlockRepositoryMutation = { __typename?: 'RootMutationType', unlockRepository?: number | null };
 
+export type RepositoriesQueryVariables = Exact<{
+  cursor?: InputMaybe<Scalars['String']['input']>;
+  installed?: InputMaybe<Scalars['Boolean']['input']>;
+}>;
+
+
+export type RepositoriesQuery = { __typename?: 'RootQueryType', repositories?: { __typename?: 'RepositoryConnection', pageInfo: { __typename?: 'PageInfo', endCursor?: string | null, hasNextPage: boolean }, edges?: Array<{ __typename?: 'RepositoryEdge', node?: { __typename?: 'Repository', id: string, name: string, icon?: string | null, darkIcon?: string | null, installation?: { __typename?: 'Installation', pingedAt?: Date | null, synced?: boolean | null, locked?: boolean | null } | null } | null } | null> | null } | null };
+
 export type MarketplaceRepositoriesQueryVariables = Exact<{
   publisherId?: InputMaybe<Scalars['ID']['input']>;
   tag?: InputMaybe<Scalars['String']['input']>;
@@ -5962,6 +6044,32 @@ export type ReleaseMutationVariables = Exact<{
 
 
 export type ReleaseMutation = { __typename?: 'RootMutationType', release?: boolean | null };
+
+export type RoleFragment = { __typename?: 'Role', id: string, name: string, description?: string | null, repositories?: Array<string | null> | null, permissions?: Array<Permission | null> | null, roleBindings?: Array<{ __typename?: 'RoleBinding', id: string, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null, group?: { __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null } | null> | null };
+
+export type RoleBindingFragment = { __typename?: 'RoleBinding', id: string, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null, group?: { __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null };
+
+export type CreateRoleMutationVariables = Exact<{
+  attributes: RoleAttributes;
+}>;
+
+
+export type CreateRoleMutation = { __typename?: 'RootMutationType', createRole?: { __typename?: 'Role', id: string, name: string, description?: string | null, repositories?: Array<string | null> | null, permissions?: Array<Permission | null> | null, roleBindings?: Array<{ __typename?: 'RoleBinding', id: string, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null, group?: { __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null } | null> | null } | null };
+
+export type UpdateRoleMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+  attributes: RoleAttributes;
+}>;
+
+
+export type UpdateRoleMutation = { __typename?: 'RootMutationType', updateRole?: { __typename?: 'Role', id: string, name: string, description?: string | null, repositories?: Array<string | null> | null, permissions?: Array<Permission | null> | null, roleBindings?: Array<{ __typename?: 'RoleBinding', id: string, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null, group?: { __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null } | null> | null } | null };
+
+export type DeleteRoleMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type DeleteRoleMutation = { __typename?: 'RootMutationType', deleteRole?: { __typename?: 'Role', id: string, name: string, description?: string | null, repositories?: Array<string | null> | null, permissions?: Array<Permission | null> | null, roleBindings?: Array<{ __typename?: 'RoleBinding', id: string, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null, group?: { __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null } | null> | null } | null };
 
 export type GetTfProvidersQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -6088,10 +6196,6 @@ export type PublisherFragment = { __typename?: 'Publisher', id?: string | null, 
 
 export type WebhookFragment = { __typename?: 'Webhook', id?: string | null, url?: string | null, secret?: string | null, insertedAt?: Date | null };
 
-export type RoleBindingFragment = { __typename?: 'RoleBinding', id: string, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null, group?: { __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null };
-
-export type RoleFragment = { __typename?: 'Role', id: string, name: string, description?: string | null, repositories?: Array<string | null> | null, permissions?: Array<Permission | null> | null, roleBindings?: Array<{ __typename?: 'RoleBinding', id: string, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null, group?: { __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null } | null> | null };
-
 export type PublicKeyFragment = { __typename?: 'PublicKey', id: string, name: string, digest: string, insertedAt?: Date | null, content: string, user: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } };
 
 export type EabCredentialFragment = { __typename?: 'EabCredential', id: string, keyId: string, hmacKey: string, cluster: string, provider: Provider, insertedAt?: Date | null };
@@ -6143,7 +6247,15 @@ export type LoginMutationVariables = Exact<{
 
 export type LoginMutation = { __typename?: 'RootMutationType', login?: { __typename?: 'User', jwt?: string | null } | null };
 
+export type CreateServiceAccountMutationVariables = Exact<{
+  attributes: ServiceAccountAttributes;
+}>;
+
+
+export type CreateServiceAccountMutation = { __typename?: 'RootMutationType', createServiceAccount?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null } | null };
+
 export type ImpersonateServiceAccountMutationVariables = Exact<{
+  id?: InputMaybe<Scalars['ID']['input']>;
   email?: InputMaybe<Scalars['String']['input']>;
 }>;
 
@@ -6351,6 +6463,37 @@ export const UserFragmentDoc = gql`
 }
     ${GroupFragmentDoc}
 ${ImpersonationPolicyFragmentDoc}`;
+export const PolicyBindingFragmentDoc = gql`
+    fragment PolicyBinding on PolicyBinding {
+  id
+  group {
+    id
+    name
+  }
+  user {
+    id
+    name
+    email
+  }
+}
+    `;
+export const DnsDomainFragmentDoc = gql`
+    fragment DnsDomain on DnsDomain {
+  id
+  name
+  creator {
+    ...User
+  }
+  accessPolicy {
+    id
+    bindings {
+      ...PolicyBinding
+    }
+  }
+  insertedAt
+}
+    ${UserFragmentDoc}
+${PolicyBindingFragmentDoc}`;
 export const FileContentFragmentDoc = gql`
     fragment FileContent on FileContent {
   content
@@ -6415,6 +6558,41 @@ export const RepoFragmentDoc = gql`
 }
     ${FileContentFragmentDoc}
 ${PublisherFragmentDoc}`;
+export const OidcLoginFragmentDoc = gql`
+    fragment OidcLogin on OidcLogin {
+  ip
+  country
+  city
+  latitude
+  longitude
+  user {
+    ...User
+  }
+  owner {
+    ...User
+  }
+  repository {
+    ...Repo
+  }
+  insertedAt
+}
+    ${UserFragmentDoc}
+${RepoFragmentDoc}`;
+export const ArtifactFragmentDoc = gql`
+    fragment Artifact on Artifact {
+  id
+  name
+  blob
+  type
+  platform
+  arch
+  filesize
+  sha
+  readme
+  insertedAt
+  updatedAt
+}
+    `;
 export const IntegrationWebhookFragmentDoc = gql`
     fragment IntegrationWebhook on IntegrationWebhook {
   id
@@ -6556,83 +6734,6 @@ ${GroupFragmentDoc}
 ${IntegrationWebhookFragmentDoc}
 ${RoleFragmentDoc}
 ${VersionFragmentDoc}`;
-export const PolicyBindingFragmentDoc = gql`
-    fragment PolicyBinding on PolicyBinding {
-  id
-  group {
-    id
-    name
-  }
-  user {
-    id
-    name
-    email
-  }
-}
-    `;
-export const DnsDomainFragmentDoc = gql`
-    fragment DnsDomain on DnsDomain {
-  id
-  name
-  creator {
-    ...User
-  }
-  accessPolicy {
-    id
-    bindings {
-      ...PolicyBinding
-    }
-  }
-  insertedAt
-}
-    ${UserFragmentDoc}
-${PolicyBindingFragmentDoc}`;
-export const InviteFragmentDoc = gql`
-    fragment Invite on Invite {
-  id
-  secureId
-  email
-  insertedAt
-  user {
-    ...User
-  }
-}
-    ${UserFragmentDoc}`;
-export const OidcLoginFragmentDoc = gql`
-    fragment OidcLogin on OidcLogin {
-  ip
-  country
-  city
-  latitude
-  longitude
-  user {
-    ...User
-  }
-  owner {
-    ...User
-  }
-  repository {
-    ...Repo
-  }
-  insertedAt
-}
-    ${UserFragmentDoc}
-${RepoFragmentDoc}`;
-export const ArtifactFragmentDoc = gql`
-    fragment Artifact on Artifact {
-  id
-  name
-  blob
-  type
-  platform
-  arch
-  filesize
-  sha
-  readme
-  insertedAt
-  updatedAt
-}
-    `;
 export const ChartInstallationFragmentDoc = gql`
     fragment ChartInstallation on ChartInstallation {
   id
@@ -7108,6 +7209,17 @@ export const ZoomMeetingFragmentDoc = gql`
   password
 }
     `;
+export const InviteFragmentDoc = gql`
+    fragment Invite on Invite {
+  id
+  secureId
+  email
+  insertedAt
+  user {
+    ...User
+  }
+}
+    ${UserFragmentDoc}`;
 export const KeyBackupUserFragmentDoc = gql`
     fragment KeyBackupUser on User {
   email
@@ -7127,6 +7239,18 @@ export const KeyBackupFragmentDoc = gql`
   value
 }
     ${KeyBackupUserFragmentDoc}`;
+export const CategoryInfoFragmentDoc = gql`
+    fragment CategoryInfo on CategoryInfo {
+  category
+  count
+}
+    `;
+export const GroupedTagFragmentDoc = gql`
+    fragment GroupedTag on GroupedTag {
+  tag
+  count
+}
+    `;
 export const MetricFragmentDoc = gql`
     fragment Metric on Metric {
   name
@@ -7180,13 +7304,6 @@ export const OAuthInfoFragmentDoc = gql`
     fragment OAuthInfo on OauthInfo {
   provider
   authorizeUrl
-}
-    `;
-export const RepositoryFragmentDoc = gql`
-    fragment Repository on Repository {
-  name
-  icon
-  darkIcon
 }
     `;
 export const SubscriptionFragmentDoc = gql`
@@ -7515,6 +7632,19 @@ export const CategoryFragmentDoc = gql`
     fragment Category on CategoryInfo {
   category
   count
+}
+    `;
+export const RepositoryFragmentDoc = gql`
+    fragment Repository on Repository {
+  id
+  name
+  icon
+  darkIcon
+  installation {
+    pingedAt
+    synced
+    locked
+  }
 }
     `;
 export const MarketplaceRepositoryFragmentDoc = gql`
@@ -7897,6 +8027,182 @@ export function useCreateArtifactMutation(baseOptions?: Apollo.MutationHookOptio
 export type CreateArtifactMutationHookResult = ReturnType<typeof useCreateArtifactMutation>;
 export type CreateArtifactMutationResult = Apollo.MutationResult<CreateArtifactMutation>;
 export type CreateArtifactMutationOptions = Apollo.BaseMutationOptions<CreateArtifactMutation, CreateArtifactMutationVariables>;
+export const AuditsDocument = gql`
+    query Audits($cursor: String) {
+  audits(first: 50, after: $cursor) {
+    pageInfo {
+      ...PageInfo
+    }
+    edges {
+      node {
+        ...Audit
+      }
+    }
+  }
+}
+    ${PageInfoFragmentDoc}
+${AuditFragmentDoc}`;
+
+/**
+ * __useAuditsQuery__
+ *
+ * To run a query within a React component, call `useAuditsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAuditsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAuditsQuery({
+ *   variables: {
+ *      cursor: // value for 'cursor'
+ *   },
+ * });
+ */
+export function useAuditsQuery(baseOptions?: Apollo.QueryHookOptions<AuditsQuery, AuditsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<AuditsQuery, AuditsQueryVariables>(AuditsDocument, options);
+      }
+export function useAuditsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AuditsQuery, AuditsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<AuditsQuery, AuditsQueryVariables>(AuditsDocument, options);
+        }
+export function useAuditsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<AuditsQuery, AuditsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<AuditsQuery, AuditsQueryVariables>(AuditsDocument, options);
+        }
+export type AuditsQueryHookResult = ReturnType<typeof useAuditsQuery>;
+export type AuditsLazyQueryHookResult = ReturnType<typeof useAuditsLazyQuery>;
+export type AuditsSuspenseQueryHookResult = ReturnType<typeof useAuditsSuspenseQuery>;
+export type AuditsQueryResult = Apollo.QueryResult<AuditsQuery, AuditsQueryVariables>;
+export const LoginsDocument = gql`
+    query Logins($cursor: String) {
+  oidcLogins(first: 50, after: $cursor) {
+    pageInfo {
+      ...PageInfo
+    }
+    edges {
+      node {
+        ...OidcLogin
+      }
+    }
+  }
+}
+    ${PageInfoFragmentDoc}
+${OidcLoginFragmentDoc}`;
+
+/**
+ * __useLoginsQuery__
+ *
+ * To run a query within a React component, call `useLoginsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useLoginsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useLoginsQuery({
+ *   variables: {
+ *      cursor: // value for 'cursor'
+ *   },
+ * });
+ */
+export function useLoginsQuery(baseOptions?: Apollo.QueryHookOptions<LoginsQuery, LoginsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<LoginsQuery, LoginsQueryVariables>(LoginsDocument, options);
+      }
+export function useLoginsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<LoginsQuery, LoginsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<LoginsQuery, LoginsQueryVariables>(LoginsDocument, options);
+        }
+export function useLoginsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<LoginsQuery, LoginsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<LoginsQuery, LoginsQueryVariables>(LoginsDocument, options);
+        }
+export type LoginsQueryHookResult = ReturnType<typeof useLoginsQuery>;
+export type LoginsLazyQueryHookResult = ReturnType<typeof useLoginsLazyQuery>;
+export type LoginsSuspenseQueryHookResult = ReturnType<typeof useLoginsSuspenseQuery>;
+export type LoginsQueryResult = Apollo.QueryResult<LoginsQuery, LoginsQueryVariables>;
+export const AuditMetricsDocument = gql`
+    query AuditMetrics {
+  auditMetrics {
+    country
+    count
+  }
+}
+    `;
+
+/**
+ * __useAuditMetricsQuery__
+ *
+ * To run a query within a React component, call `useAuditMetricsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAuditMetricsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAuditMetricsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useAuditMetricsQuery(baseOptions?: Apollo.QueryHookOptions<AuditMetricsQuery, AuditMetricsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<AuditMetricsQuery, AuditMetricsQueryVariables>(AuditMetricsDocument, options);
+      }
+export function useAuditMetricsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AuditMetricsQuery, AuditMetricsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<AuditMetricsQuery, AuditMetricsQueryVariables>(AuditMetricsDocument, options);
+        }
+export function useAuditMetricsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<AuditMetricsQuery, AuditMetricsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<AuditMetricsQuery, AuditMetricsQueryVariables>(AuditMetricsDocument, options);
+        }
+export type AuditMetricsQueryHookResult = ReturnType<typeof useAuditMetricsQuery>;
+export type AuditMetricsLazyQueryHookResult = ReturnType<typeof useAuditMetricsLazyQuery>;
+export type AuditMetricsSuspenseQueryHookResult = ReturnType<typeof useAuditMetricsSuspenseQuery>;
+export type AuditMetricsQueryResult = Apollo.QueryResult<AuditMetricsQuery, AuditMetricsQueryVariables>;
+export const LoginMetricsDocument = gql`
+    query LoginMetrics {
+  loginMetrics {
+    country
+    count
+  }
+}
+    `;
+
+/**
+ * __useLoginMetricsQuery__
+ *
+ * To run a query within a React component, call `useLoginMetricsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useLoginMetricsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useLoginMetricsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useLoginMetricsQuery(baseOptions?: Apollo.QueryHookOptions<LoginMetricsQuery, LoginMetricsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<LoginMetricsQuery, LoginMetricsQueryVariables>(LoginMetricsDocument, options);
+      }
+export function useLoginMetricsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<LoginMetricsQuery, LoginMetricsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<LoginMetricsQuery, LoginMetricsQueryVariables>(LoginMetricsDocument, options);
+        }
+export function useLoginMetricsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<LoginMetricsQuery, LoginMetricsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<LoginMetricsQuery, LoginMetricsQueryVariables>(LoginMetricsDocument, options);
+        }
+export type LoginMetricsQueryHookResult = ReturnType<typeof useLoginMetricsQuery>;
+export type LoginMetricsLazyQueryHookResult = ReturnType<typeof useLoginMetricsLazyQuery>;
+export type LoginMetricsSuspenseQueryHookResult = ReturnType<typeof useLoginMetricsSuspenseQuery>;
+export type LoginMetricsQueryResult = Apollo.QueryResult<LoginMetricsQuery, LoginMetricsQueryVariables>;
 export const GetChartsDocument = gql`
     query GetCharts($id: ID!) {
   charts(repositoryId: $id, first: 100) {
@@ -8197,8 +8503,8 @@ export type ClustersQueryHookResult = ReturnType<typeof useClustersQuery>;
 export type ClustersLazyQueryHookResult = ReturnType<typeof useClustersLazyQuery>;
 export type ClustersSuspenseQueryHookResult = ReturnType<typeof useClustersSuspenseQuery>;
 export type ClustersQueryResult = Apollo.QueryResult<ClustersQuery, ClustersQueryVariables>;
-export const GetDnsRecordsDocument = gql`
-    query GetDnsRecords($cluster: String!, $provider: Provider!) {
+export const DnsRecordsDocument = gql`
+    query DnsRecords($cluster: String!, $provider: Provider!) {
   dnsRecords(cluster: $cluster, provider: $provider, first: 500) {
     edges {
       node {
@@ -8210,38 +8516,38 @@ export const GetDnsRecordsDocument = gql`
     ${DnsRecordFragmentDoc}`;
 
 /**
- * __useGetDnsRecordsQuery__
+ * __useDnsRecordsQuery__
  *
- * To run a query within a React component, call `useGetDnsRecordsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetDnsRecordsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useDnsRecordsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useDnsRecordsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetDnsRecordsQuery({
+ * const { data, loading, error } = useDnsRecordsQuery({
  *   variables: {
  *      cluster: // value for 'cluster'
  *      provider: // value for 'provider'
  *   },
  * });
  */
-export function useGetDnsRecordsQuery(baseOptions: Apollo.QueryHookOptions<GetDnsRecordsQuery, GetDnsRecordsQueryVariables>) {
+export function useDnsRecordsQuery(baseOptions: Apollo.QueryHookOptions<DnsRecordsQuery, DnsRecordsQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetDnsRecordsQuery, GetDnsRecordsQueryVariables>(GetDnsRecordsDocument, options);
+        return Apollo.useQuery<DnsRecordsQuery, DnsRecordsQueryVariables>(DnsRecordsDocument, options);
       }
-export function useGetDnsRecordsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetDnsRecordsQuery, GetDnsRecordsQueryVariables>) {
+export function useDnsRecordsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<DnsRecordsQuery, DnsRecordsQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetDnsRecordsQuery, GetDnsRecordsQueryVariables>(GetDnsRecordsDocument, options);
+          return Apollo.useLazyQuery<DnsRecordsQuery, DnsRecordsQueryVariables>(DnsRecordsDocument, options);
         }
-export function useGetDnsRecordsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetDnsRecordsQuery, GetDnsRecordsQueryVariables>) {
+export function useDnsRecordsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<DnsRecordsQuery, DnsRecordsQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<GetDnsRecordsQuery, GetDnsRecordsQueryVariables>(GetDnsRecordsDocument, options);
+          return Apollo.useSuspenseQuery<DnsRecordsQuery, DnsRecordsQueryVariables>(DnsRecordsDocument, options);
         }
-export type GetDnsRecordsQueryHookResult = ReturnType<typeof useGetDnsRecordsQuery>;
-export type GetDnsRecordsLazyQueryHookResult = ReturnType<typeof useGetDnsRecordsLazyQuery>;
-export type GetDnsRecordsSuspenseQueryHookResult = ReturnType<typeof useGetDnsRecordsSuspenseQuery>;
-export type GetDnsRecordsQueryResult = Apollo.QueryResult<GetDnsRecordsQuery, GetDnsRecordsQueryVariables>;
+export type DnsRecordsQueryHookResult = ReturnType<typeof useDnsRecordsQuery>;
+export type DnsRecordsLazyQueryHookResult = ReturnType<typeof useDnsRecordsLazyQuery>;
+export type DnsRecordsSuspenseQueryHookResult = ReturnType<typeof useDnsRecordsSuspenseQuery>;
+export type DnsRecordsQueryResult = Apollo.QueryResult<DnsRecordsQuery, DnsRecordsQueryVariables>;
 export const CreateDnsRecordDocument = gql`
     mutation CreateDnsRecord($cluster: String!, $provider: Provider!, $attributes: DnsRecordAttributes!) {
   createDnsRecord(cluster: $cluster, provider: $provider, attributes: $attributes) {
@@ -8311,6 +8617,73 @@ export function useDeleteDnsRecordMutation(baseOptions?: Apollo.MutationHookOpti
 export type DeleteDnsRecordMutationHookResult = ReturnType<typeof useDeleteDnsRecordMutation>;
 export type DeleteDnsRecordMutationResult = Apollo.MutationResult<DeleteDnsRecordMutation>;
 export type DeleteDnsRecordMutationOptions = Apollo.BaseMutationOptions<DeleteDnsRecordMutation, DeleteDnsRecordMutationVariables>;
+export const UpdateDomainDocument = gql`
+    mutation UpdateDomain($id: ID!, $attributes: DnsDomainAttributes!) {
+  updateDomain(id: $id, attributes: $attributes) {
+    ...DnsDomain
+  }
+}
+    ${DnsDomainFragmentDoc}`;
+export type UpdateDomainMutationFn = Apollo.MutationFunction<UpdateDomainMutation, UpdateDomainMutationVariables>;
+
+/**
+ * __useUpdateDomainMutation__
+ *
+ * To run a mutation, you first call `useUpdateDomainMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateDomainMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateDomainMutation, { data, loading, error }] = useUpdateDomainMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      attributes: // value for 'attributes'
+ *   },
+ * });
+ */
+export function useUpdateDomainMutation(baseOptions?: Apollo.MutationHookOptions<UpdateDomainMutation, UpdateDomainMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateDomainMutation, UpdateDomainMutationVariables>(UpdateDomainDocument, options);
+      }
+export type UpdateDomainMutationHookResult = ReturnType<typeof useUpdateDomainMutation>;
+export type UpdateDomainMutationResult = Apollo.MutationResult<UpdateDomainMutation>;
+export type UpdateDomainMutationOptions = Apollo.BaseMutationOptions<UpdateDomainMutation, UpdateDomainMutationVariables>;
+export const DeleteDomainDocument = gql`
+    mutation DeleteDomain($id: ID!) {
+  deleteDomain(id: $id) {
+    ...DnsDomain
+  }
+}
+    ${DnsDomainFragmentDoc}`;
+export type DeleteDomainMutationFn = Apollo.MutationFunction<DeleteDomainMutation, DeleteDomainMutationVariables>;
+
+/**
+ * __useDeleteDomainMutation__
+ *
+ * To run a mutation, you first call `useDeleteDomainMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteDomainMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteDomainMutation, { data, loading, error }] = useDeleteDomainMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteDomainMutation(baseOptions?: Apollo.MutationHookOptions<DeleteDomainMutation, DeleteDomainMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteDomainMutation, DeleteDomainMutationVariables>(DeleteDomainDocument, options);
+      }
+export type DeleteDomainMutationHookResult = ReturnType<typeof useDeleteDomainMutation>;
+export type DeleteDomainMutationResult = Apollo.MutationResult<DeleteDomainMutation>;
+export type DeleteDomainMutationOptions = Apollo.BaseMutationOptions<DeleteDomainMutation, DeleteDomainMutationVariables>;
 export const CreateDomainDocument = gql`
     mutation CreateDomain($name: String!) {
   provisionDomain(name: $name) {
@@ -8610,73 +8983,78 @@ export type GroupsQueryHookResult = ReturnType<typeof useGroupsQuery>;
 export type GroupsLazyQueryHookResult = ReturnType<typeof useGroupsLazyQuery>;
 export type GroupsSuspenseQueryHookResult = ReturnType<typeof useGroupsSuspenseQuery>;
 export type GroupsQueryResult = Apollo.QueryResult<GroupsQuery, GroupsQueryVariables>;
-export const SignupInviteDocument = gql`
-    mutation SignupInvite($attributes: UserAttributes!, $inviteId: String!) {
-  signup(attributes: $attributes, inviteId: $inviteId) {
-    jwt
+export const OauthIntegrationsDocument = gql`
+    query OauthIntegrations {
+  oauthIntegrations {
+    ...OauthIntegration
   }
 }
-    `;
-export type SignupInviteMutationFn = Apollo.MutationFunction<SignupInviteMutation, SignupInviteMutationVariables>;
+    ${OauthIntegrationFragmentDoc}`;
 
 /**
- * __useSignupInviteMutation__
+ * __useOauthIntegrationsQuery__
  *
- * To run a mutation, you first call `useSignupInviteMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useSignupInviteMutation` returns a tuple that includes:
+ * To run a query within a React component, call `useOauthIntegrationsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOauthIntegrationsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOauthIntegrationsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useOauthIntegrationsQuery(baseOptions?: Apollo.QueryHookOptions<OauthIntegrationsQuery, OauthIntegrationsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<OauthIntegrationsQuery, OauthIntegrationsQueryVariables>(OauthIntegrationsDocument, options);
+      }
+export function useOauthIntegrationsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<OauthIntegrationsQuery, OauthIntegrationsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<OauthIntegrationsQuery, OauthIntegrationsQueryVariables>(OauthIntegrationsDocument, options);
+        }
+export function useOauthIntegrationsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<OauthIntegrationsQuery, OauthIntegrationsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<OauthIntegrationsQuery, OauthIntegrationsQueryVariables>(OauthIntegrationsDocument, options);
+        }
+export type OauthIntegrationsQueryHookResult = ReturnType<typeof useOauthIntegrationsQuery>;
+export type OauthIntegrationsLazyQueryHookResult = ReturnType<typeof useOauthIntegrationsLazyQuery>;
+export type OauthIntegrationsSuspenseQueryHookResult = ReturnType<typeof useOauthIntegrationsSuspenseQuery>;
+export type OauthIntegrationsQueryResult = Apollo.QueryResult<OauthIntegrationsQuery, OauthIntegrationsQueryVariables>;
+export const CreateOauthIntegrationDocument = gql`
+    mutation CreateOauthIntegration($attributes: OauthAttributes!) {
+  createOauthIntegration(attributes: $attributes) {
+    ...OauthIntegration
+  }
+}
+    ${OauthIntegrationFragmentDoc}`;
+export type CreateOauthIntegrationMutationFn = Apollo.MutationFunction<CreateOauthIntegrationMutation, CreateOauthIntegrationMutationVariables>;
+
+/**
+ * __useCreateOauthIntegrationMutation__
+ *
+ * To run a mutation, you first call `useCreateOauthIntegrationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateOauthIntegrationMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [signupInviteMutation, { data, loading, error }] = useSignupInviteMutation({
+ * const [createOauthIntegrationMutation, { data, loading, error }] = useCreateOauthIntegrationMutation({
  *   variables: {
  *      attributes: // value for 'attributes'
- *      inviteId: // value for 'inviteId'
  *   },
  * });
  */
-export function useSignupInviteMutation(baseOptions?: Apollo.MutationHookOptions<SignupInviteMutation, SignupInviteMutationVariables>) {
+export function useCreateOauthIntegrationMutation(baseOptions?: Apollo.MutationHookOptions<CreateOauthIntegrationMutation, CreateOauthIntegrationMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<SignupInviteMutation, SignupInviteMutationVariables>(SignupInviteDocument, options);
+        return Apollo.useMutation<CreateOauthIntegrationMutation, CreateOauthIntegrationMutationVariables>(CreateOauthIntegrationDocument, options);
       }
-export type SignupInviteMutationHookResult = ReturnType<typeof useSignupInviteMutation>;
-export type SignupInviteMutationResult = Apollo.MutationResult<SignupInviteMutation>;
-export type SignupInviteMutationOptions = Apollo.BaseMutationOptions<SignupInviteMutation, SignupInviteMutationVariables>;
-export const RealizeInviteDocument = gql`
-    mutation RealizeInvite($id: String!) {
-  realizeInvite(id: $id) {
-    jwt
-  }
-}
-    `;
-export type RealizeInviteMutationFn = Apollo.MutationFunction<RealizeInviteMutation, RealizeInviteMutationVariables>;
-
-/**
- * __useRealizeInviteMutation__
- *
- * To run a mutation, you first call `useRealizeInviteMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useRealizeInviteMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [realizeInviteMutation, { data, loading, error }] = useRealizeInviteMutation({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useRealizeInviteMutation(baseOptions?: Apollo.MutationHookOptions<RealizeInviteMutation, RealizeInviteMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<RealizeInviteMutation, RealizeInviteMutationVariables>(RealizeInviteDocument, options);
-      }
-export type RealizeInviteMutationHookResult = ReturnType<typeof useRealizeInviteMutation>;
-export type RealizeInviteMutationResult = Apollo.MutationResult<RealizeInviteMutation>;
-export type RealizeInviteMutationOptions = Apollo.BaseMutationOptions<RealizeInviteMutation, RealizeInviteMutationVariables>;
+export type CreateOauthIntegrationMutationHookResult = ReturnType<typeof useCreateOauthIntegrationMutation>;
+export type CreateOauthIntegrationMutationResult = Apollo.MutationResult<CreateOauthIntegrationMutation>;
+export type CreateOauthIntegrationMutationOptions = Apollo.BaseMutationOptions<CreateOauthIntegrationMutation, CreateOauthIntegrationMutationVariables>;
 export const InviteDocument = gql`
     query Invite($id: String!) {
   invite(id: $id) {
@@ -8762,6 +9140,106 @@ export function useCreateInviteMutation(baseOptions?: Apollo.MutationHookOptions
 export type CreateInviteMutationHookResult = ReturnType<typeof useCreateInviteMutation>;
 export type CreateInviteMutationResult = Apollo.MutationResult<CreateInviteMutation>;
 export type CreateInviteMutationOptions = Apollo.BaseMutationOptions<CreateInviteMutation, CreateInviteMutationVariables>;
+export const SignupInviteDocument = gql`
+    mutation SignupInvite($attributes: UserAttributes!, $inviteId: String!) {
+  signup(attributes: $attributes, inviteId: $inviteId) {
+    jwt
+  }
+}
+    `;
+export type SignupInviteMutationFn = Apollo.MutationFunction<SignupInviteMutation, SignupInviteMutationVariables>;
+
+/**
+ * __useSignupInviteMutation__
+ *
+ * To run a mutation, you first call `useSignupInviteMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSignupInviteMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [signupInviteMutation, { data, loading, error }] = useSignupInviteMutation({
+ *   variables: {
+ *      attributes: // value for 'attributes'
+ *      inviteId: // value for 'inviteId'
+ *   },
+ * });
+ */
+export function useSignupInviteMutation(baseOptions?: Apollo.MutationHookOptions<SignupInviteMutation, SignupInviteMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SignupInviteMutation, SignupInviteMutationVariables>(SignupInviteDocument, options);
+      }
+export type SignupInviteMutationHookResult = ReturnType<typeof useSignupInviteMutation>;
+export type SignupInviteMutationResult = Apollo.MutationResult<SignupInviteMutation>;
+export type SignupInviteMutationOptions = Apollo.BaseMutationOptions<SignupInviteMutation, SignupInviteMutationVariables>;
+export const RealizeInviteDocument = gql`
+    mutation RealizeInvite($id: String!) {
+  realizeInvite(id: $id) {
+    jwt
+  }
+}
+    `;
+export type RealizeInviteMutationFn = Apollo.MutationFunction<RealizeInviteMutation, RealizeInviteMutationVariables>;
+
+/**
+ * __useRealizeInviteMutation__
+ *
+ * To run a mutation, you first call `useRealizeInviteMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRealizeInviteMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [realizeInviteMutation, { data, loading, error }] = useRealizeInviteMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useRealizeInviteMutation(baseOptions?: Apollo.MutationHookOptions<RealizeInviteMutation, RealizeInviteMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RealizeInviteMutation, RealizeInviteMutationVariables>(RealizeInviteDocument, options);
+      }
+export type RealizeInviteMutationHookResult = ReturnType<typeof useRealizeInviteMutation>;
+export type RealizeInviteMutationResult = Apollo.MutationResult<RealizeInviteMutation>;
+export type RealizeInviteMutationOptions = Apollo.BaseMutationOptions<RealizeInviteMutation, RealizeInviteMutationVariables>;
+export const DeleteInviteDocument = gql`
+    mutation DeleteInvite($id: ID!) {
+  deleteInvite(id: $id) {
+    ...Invite
+  }
+}
+    ${InviteFragmentDoc}`;
+export type DeleteInviteMutationFn = Apollo.MutationFunction<DeleteInviteMutation, DeleteInviteMutationVariables>;
+
+/**
+ * __useDeleteInviteMutation__
+ *
+ * To run a mutation, you first call `useDeleteInviteMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteInviteMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteInviteMutation, { data, loading, error }] = useDeleteInviteMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteInviteMutation(baseOptions?: Apollo.MutationHookOptions<DeleteInviteMutation, DeleteInviteMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteInviteMutation, DeleteInviteMutationVariables>(DeleteInviteDocument, options);
+      }
+export type DeleteInviteMutationHookResult = ReturnType<typeof useDeleteInviteMutation>;
+export type DeleteInviteMutationResult = Apollo.MutationResult<DeleteInviteMutation>;
+export type DeleteInviteMutationOptions = Apollo.BaseMutationOptions<DeleteInviteMutation, DeleteInviteMutationVariables>;
 export const KeyBackupsDocument = gql`
     query KeyBackups {
   keyBackups(first: 1000) {
@@ -8911,6 +9389,93 @@ export function useCreateKeyBackupMutation(baseOptions?: Apollo.MutationHookOpti
 export type CreateKeyBackupMutationHookResult = ReturnType<typeof useCreateKeyBackupMutation>;
 export type CreateKeyBackupMutationResult = Apollo.MutationResult<CreateKeyBackupMutation>;
 export type CreateKeyBackupMutationOptions = Apollo.BaseMutationOptions<CreateKeyBackupMutation, CreateKeyBackupMutationVariables>;
+export const CategoriesDocument = gql`
+    query Categories {
+  categories {
+    ...CategoryInfo
+  }
+}
+    ${CategoryInfoFragmentDoc}`;
+
+/**
+ * __useCategoriesQuery__
+ *
+ * To run a query within a React component, call `useCategoriesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCategoriesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCategoriesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useCategoriesQuery(baseOptions?: Apollo.QueryHookOptions<CategoriesQuery, CategoriesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<CategoriesQuery, CategoriesQueryVariables>(CategoriesDocument, options);
+      }
+export function useCategoriesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CategoriesQuery, CategoriesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<CategoriesQuery, CategoriesQueryVariables>(CategoriesDocument, options);
+        }
+export function useCategoriesSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<CategoriesQuery, CategoriesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<CategoriesQuery, CategoriesQueryVariables>(CategoriesDocument, options);
+        }
+export type CategoriesQueryHookResult = ReturnType<typeof useCategoriesQuery>;
+export type CategoriesLazyQueryHookResult = ReturnType<typeof useCategoriesLazyQuery>;
+export type CategoriesSuspenseQueryHookResult = ReturnType<typeof useCategoriesSuspenseQuery>;
+export type CategoriesQueryResult = Apollo.QueryResult<CategoriesQuery, CategoriesQueryVariables>;
+export const TagsDocument = gql`
+    query Tags($cursor: String) {
+  tags(type: REPOSITORIES, first: 200, after: $cursor) {
+    pageInfo {
+      ...PageInfo
+    }
+    edges {
+      node {
+        ...GroupedTag
+      }
+    }
+  }
+}
+    ${PageInfoFragmentDoc}
+${GroupedTagFragmentDoc}`;
+
+/**
+ * __useTagsQuery__
+ *
+ * To run a query within a React component, call `useTagsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useTagsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useTagsQuery({
+ *   variables: {
+ *      cursor: // value for 'cursor'
+ *   },
+ * });
+ */
+export function useTagsQuery(baseOptions?: Apollo.QueryHookOptions<TagsQuery, TagsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<TagsQuery, TagsQueryVariables>(TagsDocument, options);
+      }
+export function useTagsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<TagsQuery, TagsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<TagsQuery, TagsQueryVariables>(TagsDocument, options);
+        }
+export function useTagsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<TagsQuery, TagsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<TagsQuery, TagsQueryVariables>(TagsDocument, options);
+        }
+export type TagsQueryHookResult = ReturnType<typeof useTagsQuery>;
+export type TagsLazyQueryHookResult = ReturnType<typeof useTagsLazyQuery>;
+export type TagsSuspenseQueryHookResult = ReturnType<typeof useTagsSuspenseQuery>;
+export type TagsQueryResult = Apollo.QueryResult<TagsQuery, TagsQueryVariables>;
 export const NotificationsDocument = gql`
     query Notifications($incidentId: ID, $first: Int = 50, $cursor: String) {
   notifications(incidentId: $incidentId, first: $first, after: $cursor) {
@@ -8965,7 +9530,9 @@ export const OidcConsentDocument = gql`
     query OIDCConsent($challenge: String!) {
   oidcConsent(challenge: $challenge) {
     repository {
-      ...Repository
+      name
+      icon
+      darkIcon
     }
     consent {
       requestedScope
@@ -8973,7 +9540,7 @@ export const OidcConsentDocument = gql`
     }
   }
 }
-    ${RepositoryFragmentDoc}`;
+    `;
 
 /**
  * __useOidcConsentQuery__
@@ -10349,6 +10916,55 @@ export function useUnlockRepositoryMutation(baseOptions?: Apollo.MutationHookOpt
 export type UnlockRepositoryMutationHookResult = ReturnType<typeof useUnlockRepositoryMutation>;
 export type UnlockRepositoryMutationResult = Apollo.MutationResult<UnlockRepositoryMutation>;
 export type UnlockRepositoryMutationOptions = Apollo.BaseMutationOptions<UnlockRepositoryMutation, UnlockRepositoryMutationVariables>;
+export const RepositoriesDocument = gql`
+    query Repositories($cursor: String, $installed: Boolean) {
+  repositories(after: $cursor, first: 200, installed: $installed) {
+    pageInfo {
+      ...PageInfo
+    }
+    edges {
+      node {
+        ...Repository
+      }
+    }
+  }
+}
+    ${PageInfoFragmentDoc}
+${RepositoryFragmentDoc}`;
+
+/**
+ * __useRepositoriesQuery__
+ *
+ * To run a query within a React component, call `useRepositoriesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useRepositoriesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useRepositoriesQuery({
+ *   variables: {
+ *      cursor: // value for 'cursor'
+ *      installed: // value for 'installed'
+ *   },
+ * });
+ */
+export function useRepositoriesQuery(baseOptions?: Apollo.QueryHookOptions<RepositoriesQuery, RepositoriesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<RepositoriesQuery, RepositoriesQueryVariables>(RepositoriesDocument, options);
+      }
+export function useRepositoriesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<RepositoriesQuery, RepositoriesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<RepositoriesQuery, RepositoriesQueryVariables>(RepositoriesDocument, options);
+        }
+export function useRepositoriesSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<RepositoriesQuery, RepositoriesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<RepositoriesQuery, RepositoriesQueryVariables>(RepositoriesDocument, options);
+        }
+export type RepositoriesQueryHookResult = ReturnType<typeof useRepositoriesQuery>;
+export type RepositoriesLazyQueryHookResult = ReturnType<typeof useRepositoriesLazyQuery>;
+export type RepositoriesSuspenseQueryHookResult = ReturnType<typeof useRepositoriesSuspenseQuery>;
+export type RepositoriesQueryResult = Apollo.QueryResult<RepositoriesQuery, RepositoriesQueryVariables>;
 export const MarketplaceRepositoriesDocument = gql`
     query MarketplaceRepositories($publisherId: ID, $tag: String, $cursor: String) {
   repositories(publisherId: $publisherId, tag: $tag, after: $cursor, first: 200) {
@@ -10515,6 +11131,106 @@ export function useReleaseMutation(baseOptions?: Apollo.MutationHookOptions<Rele
 export type ReleaseMutationHookResult = ReturnType<typeof useReleaseMutation>;
 export type ReleaseMutationResult = Apollo.MutationResult<ReleaseMutation>;
 export type ReleaseMutationOptions = Apollo.BaseMutationOptions<ReleaseMutation, ReleaseMutationVariables>;
+export const CreateRoleDocument = gql`
+    mutation CreateRole($attributes: RoleAttributes!) {
+  createRole(attributes: $attributes) {
+    ...Role
+  }
+}
+    ${RoleFragmentDoc}`;
+export type CreateRoleMutationFn = Apollo.MutationFunction<CreateRoleMutation, CreateRoleMutationVariables>;
+
+/**
+ * __useCreateRoleMutation__
+ *
+ * To run a mutation, you first call `useCreateRoleMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateRoleMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createRoleMutation, { data, loading, error }] = useCreateRoleMutation({
+ *   variables: {
+ *      attributes: // value for 'attributes'
+ *   },
+ * });
+ */
+export function useCreateRoleMutation(baseOptions?: Apollo.MutationHookOptions<CreateRoleMutation, CreateRoleMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateRoleMutation, CreateRoleMutationVariables>(CreateRoleDocument, options);
+      }
+export type CreateRoleMutationHookResult = ReturnType<typeof useCreateRoleMutation>;
+export type CreateRoleMutationResult = Apollo.MutationResult<CreateRoleMutation>;
+export type CreateRoleMutationOptions = Apollo.BaseMutationOptions<CreateRoleMutation, CreateRoleMutationVariables>;
+export const UpdateRoleDocument = gql`
+    mutation UpdateRole($id: ID!, $attributes: RoleAttributes!) {
+  updateRole(id: $id, attributes: $attributes) {
+    ...Role
+  }
+}
+    ${RoleFragmentDoc}`;
+export type UpdateRoleMutationFn = Apollo.MutationFunction<UpdateRoleMutation, UpdateRoleMutationVariables>;
+
+/**
+ * __useUpdateRoleMutation__
+ *
+ * To run a mutation, you first call `useUpdateRoleMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateRoleMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateRoleMutation, { data, loading, error }] = useUpdateRoleMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      attributes: // value for 'attributes'
+ *   },
+ * });
+ */
+export function useUpdateRoleMutation(baseOptions?: Apollo.MutationHookOptions<UpdateRoleMutation, UpdateRoleMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateRoleMutation, UpdateRoleMutationVariables>(UpdateRoleDocument, options);
+      }
+export type UpdateRoleMutationHookResult = ReturnType<typeof useUpdateRoleMutation>;
+export type UpdateRoleMutationResult = Apollo.MutationResult<UpdateRoleMutation>;
+export type UpdateRoleMutationOptions = Apollo.BaseMutationOptions<UpdateRoleMutation, UpdateRoleMutationVariables>;
+export const DeleteRoleDocument = gql`
+    mutation DeleteRole($id: ID!) {
+  deleteRole(id: $id) {
+    ...Role
+  }
+}
+    ${RoleFragmentDoc}`;
+export type DeleteRoleMutationFn = Apollo.MutationFunction<DeleteRoleMutation, DeleteRoleMutationVariables>;
+
+/**
+ * __useDeleteRoleMutation__
+ *
+ * To run a mutation, you first call `useDeleteRoleMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteRoleMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteRoleMutation, { data, loading, error }] = useDeleteRoleMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteRoleMutation(baseOptions?: Apollo.MutationHookOptions<DeleteRoleMutation, DeleteRoleMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteRoleMutation, DeleteRoleMutationVariables>(DeleteRoleDocument, options);
+      }
+export type DeleteRoleMutationHookResult = ReturnType<typeof useDeleteRoleMutation>;
+export type DeleteRoleMutationResult = Apollo.MutationResult<DeleteRoleMutation>;
+export type DeleteRoleMutationOptions = Apollo.BaseMutationOptions<DeleteRoleMutation, DeleteRoleMutationVariables>;
 export const GetTfProvidersDocument = gql`
     query GetTfProviders {
   terraformProviders
@@ -11277,9 +11993,46 @@ export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginM
 export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
 export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
 export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
+export const CreateServiceAccountDocument = gql`
+    mutation CreateServiceAccount($attributes: ServiceAccountAttributes!) {
+  createServiceAccount(attributes: $attributes) {
+    ...User
+    impersonationPolicy {
+      ...ImpersonationPolicy
+    }
+  }
+}
+    ${UserFragmentDoc}
+${ImpersonationPolicyFragmentDoc}`;
+export type CreateServiceAccountMutationFn = Apollo.MutationFunction<CreateServiceAccountMutation, CreateServiceAccountMutationVariables>;
+
+/**
+ * __useCreateServiceAccountMutation__
+ *
+ * To run a mutation, you first call `useCreateServiceAccountMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateServiceAccountMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createServiceAccountMutation, { data, loading, error }] = useCreateServiceAccountMutation({
+ *   variables: {
+ *      attributes: // value for 'attributes'
+ *   },
+ * });
+ */
+export function useCreateServiceAccountMutation(baseOptions?: Apollo.MutationHookOptions<CreateServiceAccountMutation, CreateServiceAccountMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateServiceAccountMutation, CreateServiceAccountMutationVariables>(CreateServiceAccountDocument, options);
+      }
+export type CreateServiceAccountMutationHookResult = ReturnType<typeof useCreateServiceAccountMutation>;
+export type CreateServiceAccountMutationResult = Apollo.MutationResult<CreateServiceAccountMutation>;
+export type CreateServiceAccountMutationOptions = Apollo.BaseMutationOptions<CreateServiceAccountMutation, CreateServiceAccountMutationVariables>;
 export const ImpersonateServiceAccountDocument = gql`
-    mutation ImpersonateServiceAccount($email: String) {
-  impersonateServiceAccount(email: $email) {
+    mutation ImpersonateServiceAccount($id: ID, $email: String) {
+  impersonateServiceAccount(id: $id, email: $email) {
     jwt
     email
   }
@@ -11300,6 +12053,7 @@ export type ImpersonateServiceAccountMutationFn = Apollo.MutationFunction<Impers
  * @example
  * const [impersonateServiceAccountMutation, { data, loading, error }] = useImpersonateServiceAccountMutation({
  *   variables: {
+ *      id: // value for 'id'
  *      email: // value for 'email'
  *   },
  * });
@@ -11965,17 +12719,24 @@ export type UpdateVersionMutationOptions = Apollo.BaseMutationOptions<UpdateVers
 export const namedOperations = {
   Query: {
     ListArtifacts: 'ListArtifacts',
+    Audits: 'Audits',
+    Logins: 'Logins',
+    AuditMetrics: 'AuditMetrics',
+    LoginMetrics: 'LoginMetrics',
     GetCharts: 'GetCharts',
     GetVersions: 'GetVersions',
     GetChartInstallations: 'GetChartInstallations',
     GetPackageInstallations: 'GetPackageInstallations',
     Clusters: 'Clusters',
-    GetDnsRecords: 'GetDnsRecords',
+    DnsRecords: 'DnsRecords',
     GroupMembers: 'GroupMembers',
     Groups: 'Groups',
+    OauthIntegrations: 'OauthIntegrations',
     Invite: 'Invite',
     KeyBackups: 'KeyBackups',
     KeyBackup: 'KeyBackup',
+    Categories: 'Categories',
+    Tags: 'Tags',
     Notifications: 'Notifications',
     OIDCConsent: 'OIDCConsent',
     OIDCProviders: 'OIDCProviders',
@@ -11989,6 +12750,7 @@ export const namedOperations = {
     GetStack: 'GetStack',
     ListStacks: 'ListStacks',
     Repository: 'Repository',
+    Repositories: 'Repositories',
     MarketplaceRepositories: 'MarketplaceRepositories',
     Scaffolds: 'Scaffolds',
     GetTfProviders: 'GetTfProviders',
@@ -12014,15 +12776,19 @@ export const namedOperations = {
     UninstallChart: 'UninstallChart',
     CreateDnsRecord: 'CreateDnsRecord',
     DeleteDnsRecord: 'DeleteDnsRecord',
+    UpdateDomain: 'UpdateDomain',
+    DeleteDomain: 'DeleteDomain',
     CreateDomain: 'CreateDomain',
     CreateGroupMember: 'CreateGroupMember',
     DeleteGroupMember: 'DeleteGroupMember',
     CreateGroup: 'CreateGroup',
     UpdateGroup: 'UpdateGroup',
     DeleteGroup: 'DeleteGroup',
+    CreateOauthIntegration: 'CreateOauthIntegration',
+    CreateInvite: 'CreateInvite',
     SignupInvite: 'SignupInvite',
     RealizeInvite: 'RealizeInvite',
-    CreateInvite: 'CreateInvite',
+    DeleteInvite: 'DeleteInvite',
     DeleteKeyBackup: 'DeleteKeyBackup',
     CreateKeyBackup: 'CreateKeyBackup',
     Consent: 'Consent',
@@ -12051,6 +12817,9 @@ export const namedOperations = {
     UnlockRepository: 'UnlockRepository',
     DeleteRepository: 'DeleteRepository',
     Release: 'Release',
+    CreateRole: 'CreateRole',
+    UpdateRole: 'UpdateRole',
+    DeleteRole: 'DeleteRole',
     DeleteShell: 'DeleteShell',
     UploadTerraform: 'UploadTerraform',
     UninstallTerraform: 'UninstallTerraform',
@@ -12060,6 +12829,7 @@ export const namedOperations = {
     PublishLogs: 'PublishLogs',
     DevLogin: 'DevLogin',
     Login: 'Login',
+    CreateServiceAccount: 'CreateServiceAccount',
     ImpersonateServiceAccount: 'ImpersonateServiceAccount',
     CreateAccessToken: 'CreateAccessToken',
     CreateKey: 'CreateKey',
@@ -12077,12 +12847,11 @@ export const namedOperations = {
     UpdateVersion: 'UpdateVersion'
   },
   Fragment: {
-    Audit: 'Audit',
     PolicyBinding: 'PolicyBinding',
     DnsDomain: 'DnsDomain',
-    Invite: 'Invite',
     OidcLogin: 'OidcLogin',
     Artifact: 'Artifact',
+    Audit: 'Audit',
     Chart: 'Chart',
     Crd: 'Crd',
     ChartInstallation: 'ChartInstallation',
@@ -12110,14 +12879,16 @@ export const namedOperations = {
     WebhookLog: 'WebhookLog',
     OauthIntegration: 'OauthIntegration',
     ZoomMeeting: 'ZoomMeeting',
+    Invite: 'Invite',
     KeyBackupUser: 'KeyBackupUser',
     KeyBackup: 'KeyBackup',
+    CategoryInfo: 'CategoryInfo',
+    GroupedTag: 'GroupedTag',
     Metric: 'Metric',
     PageInfo: 'PageInfo',
     NotificationFragment: 'NotificationFragment',
     OIDCProvider: 'OIDCProvider',
     OAuthInfo: 'OAuthInfo',
-    Repository: 'Repository',
     Limit: 'Limit',
     LineItem: 'LineItem',
     ServiceLevel: 'ServiceLevel',
@@ -12143,9 +12914,12 @@ export const namedOperations = {
     Category: 'Category',
     FileContent: 'FileContent',
     Repo: 'Repo',
+    Repository: 'Repository',
     MarketplaceRepository: 'MarketplaceRepository',
     Dependencies: 'Dependencies',
     Integration: 'Integration',
+    Role: 'Role',
+    RoleBinding: 'RoleBinding',
     CloudShell: 'CloudShell',
     DemoProject: 'DemoProject',
     Terraform: 'Terraform',
@@ -12166,8 +12940,6 @@ export const namedOperations = {
     Address: 'Address',
     Publisher: 'Publisher',
     Webhook: 'Webhook',
-    RoleBinding: 'RoleBinding',
-    Role: 'Role',
     PublicKey: 'PublicKey',
     EabCredential: 'EabCredential',
     VersionTag: 'VersionTag',

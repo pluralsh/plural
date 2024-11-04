@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@apollo/client'
+import { useQuery } from '@apollo/client'
 import moment from 'moment'
 import { useEffect, useState } from 'react'
 import { Div, Flex, Text } from 'honorable'
@@ -23,19 +23,22 @@ import LoadingIndicator from '../utils/LoadingIndicator'
 
 import { Confirm } from '../utils/Confirm'
 
-import { DELETE_INVITE, INVITES_Q } from './queries'
+import { useDeleteInviteMutation } from '../../generated/graphql'
+
+import { INVITES_Q } from './queries'
 import { inviteLink } from './utils'
 
 function DeleteInvite({ invite }: any) {
   const [confirm, setConfirm] = useState(false)
-  const [mutation, { loading, error }] = useMutation(DELETE_INVITE, {
+  const [mutation, { loading, error }] = useDeleteInviteMutation({
     variables: { id: invite.id },
     onCompleted: () => setConfirm(false),
-    update: (cache, { data: { deleteInvite } }) =>
+    update: (cache, { data }) =>
       updateCache(cache, {
         query: INVITES_Q,
         variables: {},
-        update: (invites) => removeConnection(invites, deleteInvite, 'invites'),
+        update: (invites) =>
+          removeConnection(invites, data?.deleteInvite, 'invites'),
       }),
   })
 

@@ -1,12 +1,10 @@
-mutation SignupInvite($attributes: UserAttributes!, $inviteId: String!) {
-  signup(attributes: $attributes, inviteId: $inviteId) {
-    jwt
-  }
-}
-
-mutation RealizeInvite($id: String!) {
-  realizeInvite(id: $id) {
-    jwt
+fragment Invite on Invite {
+  id
+  secureId
+  email
+  insertedAt
+  user {
+    ...User
   }
 }
 
@@ -29,6 +27,24 @@ query Invite($id: String!) {
 
 mutation CreateInvite($attributes: InviteAttributes!) {
   createInvite(attributes: $attributes) {
+    ...Invite
+  }
+}
+
+mutation SignupInvite($attributes: UserAttributes!, $inviteId: String!) {
+  signup(attributes: $attributes, inviteId: $inviteId) {
+    jwt
+  }
+}
+
+mutation RealizeInvite($id: String!) {
+  realizeInvite(id: $id) {
+    jwt
+  }
+}
+
+mutation DeleteInvite($id: ID!) {
+  deleteInvite(id: $id) {
     ...Invite
   }
 }

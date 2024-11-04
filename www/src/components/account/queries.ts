@@ -1,7 +1,6 @@
 import { gql } from '@apollo/client'
 
 import {
-  AuditFragment,
   DnsDomainFragment,
   DnsRecordFragment,
   InviteFragment,
@@ -81,55 +80,6 @@ export const SEARCH_GROUPS = gql`
   ${GroupFragment}
 `
 
-export const CREATE_INVITE = gql`
-  mutation CreateInvite($attributes: InviteAttributes!) {
-    createInvite(attributes: $attributes) {
-      ...InviteFragment
-    }
-  }
-  ${InviteFragment}
-`
-
-export const CREATE_ROLE = gql`
-  mutation CreateRole($attributes: RoleAttributes!) {
-    createRole(attributes: $attributes) {
-      ...RoleFragment
-    }
-  }
-  ${RoleFragment}
-`
-
-export const UPDATE_ROLE = gql`
-  mutation UpdateRole($id: ID!, $attributes: RoleAttributes!) {
-    updateRole(id: $id, attributes: $attributes) {
-      ...RoleFragment
-    }
-  }
-  ${RoleFragment}
-`
-
-export const DELETE_ROLE = gql`
-  mutation DeleteRow($id: ID!) {
-    deleteRole(id: $id) {
-      ...RoleFragment
-    }
-  }
-  ${RoleFragment}
-`
-
-export const CREATE_SERVICE_ACCOUNT = gql`
-  mutation Create($attributes: ServiceAccountAttributes!) {
-    createServiceAccount(attributes: $attributes) {
-      ...UserFragment
-      impersonationPolicy {
-        ...ImpersonationPolicy
-      }
-    }
-  }
-  ${ImpersonationPolicy}
-  ${UserFragment}
-`
-
 export const UPDATE_SERVICE_ACCOUNT = gql`
   mutation Create($id: ID!, $attributes: ServiceAccountAttributes!) {
     updateServiceAccount(id: $id, attributes: $attributes) {
@@ -158,31 +108,6 @@ export const ROLES_Q = gql`
   }
   ${PageInfo}
   ${RoleFragment}
-`
-
-export const AUDITS_Q = gql`
-  query Audits($cursor: String) {
-    audits(first: 50, after: $cursor) {
-      pageInfo {
-        ...PageInfo
-      }
-      edges {
-        node {
-          ...AuditFragment
-        }
-      }
-    }
-  }
-  ${PageInfo}
-  ${AuditFragment}
-`
-
-export const IMPERSONATE_SERVICE_ACCOUNT = gql`
-  mutation Impersonate($id: ID) {
-    impersonateServiceAccount(id: $id) {
-      jwt
-    }
-  }
 `
 
 export const DNS_DOMAINS = gql`
@@ -223,42 +148,6 @@ export const DNS_RECORDS = gql`
   ${DnsRecordFragment}
 `
 
-export const CREATE_DOMAIN = gql`
-  mutation Create($attributes: DnsDomainAttributes!) {
-    createDomain(attributes: $attributes) {
-      ...DnsDomainFragment
-    }
-  }
-  ${DnsDomainFragment}
-`
-
-export const UPDATE_DOMAIN = gql`
-  mutation Update($id: ID!, $attributes: DnsDomainAttributes!) {
-    updateDomain(id: $id, attributes: $attributes) {
-      ...DnsDomainFragment
-    }
-  }
-  ${DnsDomainFragment}
-`
-
-export const DELETE_DOMAIN = gql`
-  mutation Delete($id: ID!) {
-    deleteDomain(id: $id) {
-      ...DnsDomainFragment
-    }
-  }
-  ${DnsDomainFragment}
-`
-
-export const DELETE_DNS_RECORD = gql`
-  mutation Delete($name: String!, $type: DnsRecordType!) {
-    deleteDnsRecord(name: $name, type: $type) {
-      ...DnsRecordFragment
-    }
-  }
-  ${DnsRecordFragment}
-`
-
 export const INVITES_Q = gql`
   query Invites($cursor: String) {
     invites(first: 50, after: $cursor) {
@@ -273,14 +162,5 @@ export const INVITES_Q = gql`
     }
   }
   ${PageInfo}
-  ${InviteFragment}
-`
-
-export const DELETE_INVITE = gql`
-  mutation Delete($id: ID!) {
-    deleteInvite(id: $id) {
-      ...InviteFragment
-    }
-  }
   ${InviteFragment}
 `

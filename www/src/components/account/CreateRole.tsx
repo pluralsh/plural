@@ -1,5 +1,4 @@
 import { useCallback, useContext, useMemo, useState } from 'react'
-import { useMutation } from '@apollo/client'
 import { Button } from 'honorable'
 import { Modal } from '@pluralsh/design-system'
 import uniqWith from 'lodash/uniqWith'
@@ -9,7 +8,9 @@ import { appendConnection, updateCache } from '../../utils/graphql'
 
 import SubscriptionContext from '../../contexts/SubscriptionContext'
 
-import { CREATE_ROLE, ROLES_Q } from './queries'
+import { useCreateRoleMutation } from '../../generated/graphql'
+
+import { ROLES_Q } from './queries'
 
 import { Actions } from './Actions'
 import { sanitize } from './utils'
@@ -42,15 +43,15 @@ export function CreateRole({ q }: any) {
     setCreateModalVisible(false)
   }, [])
 
-  const [mutation, { loading, error }] = useMutation(CREATE_ROLE, {
+  const [mutation, { loading, error }] = useCreateRoleMutation({
     variables: {
       attributes: { ...attributes, roleBindings: roleBindings.map(sanitize) },
     },
-    update: (cache, { data: { createRole } }) =>
+    update: (cache, { data }) =>
       updateCache(cache, {
         query: ROLES_Q,
         variables: { q },
-        update: (prev) => appendConnection(prev, createRole, 'roles'),
+        update: (prev) => appendConnection(prev, data?.createRole, 'roles'),
       }),
     onCompleted: () => resetAndClose(),
   })

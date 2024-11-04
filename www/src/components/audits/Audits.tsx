@@ -1,15 +1,15 @@
 import { memo, useCallback, useMemo } from 'react'
 import { Box } from 'grommet'
 import { Link } from 'react-router-dom'
-import { useQuery } from '@apollo/client'
 import { A, Div } from 'honorable'
 import { Date, PageTitle, Table } from '@pluralsh/design-system'
 import { createColumnHelper } from '@tanstack/react-table'
 import isEmpty from 'lodash/isEmpty'
 
-import { extendConnection } from '../../utils/graphql'
-import { AUDITS_Q } from '../account/queries'
+import { extendConnection, mapExistingNodes } from '../../utils/graphql'
 import LoadingIndicator from '../utils/LoadingIndicator'
+
+import { useAuditsQuery } from '../../generated/graphql'
 
 import { AuditUser } from './AuditUser'
 import { Location } from './Location'
@@ -133,12 +133,11 @@ const AuditsTable = memo(({ audits, fetchMoreOnBottomReached }: any) =>
 )
 
 export function Audits() {
-  const { data, loading, fetchMore } = useQuery(AUDITS_Q, {
+  const { data, loading, fetchMore } = useAuditsQuery({
     fetchPolicy: 'cache-and-network',
   })
   const pageInfo = data?.audits?.pageInfo
-  const edges = data?.audits?.edges
-  const audits = useMemo(() => edges?.map(({ node }) => node) || [], [edges])
+  const audits = useMemo(() => mapExistingNodes(data?.audits), [data?.audits])
 
   const fetchMoreOnBottomReached = useCallback(
     (element?: HTMLDivElement | undefined) => {
@@ -150,10 +149,10 @@ export function Audits() {
       if (
         scrollHeight - scrollTop - clientHeight < FETCH_MARGIN &&
         !loading &&
-        pageInfo.hasNextPage
+        pageInfo?.hasNextPage
       ) {
         fetchMore({
-          variables: { cursor: pageInfo.endCursor },
+          variables: { cursor: pageInfo?.endCursor },
           updateQuery: (prev, { fetchMoreResult: { audits } }) =>
             extendConnection(prev, audits, 'audits'),
         })

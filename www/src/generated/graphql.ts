@@ -5419,13 +5419,13 @@ export type ClustersQuery = { __typename?: 'RootQueryType', clusters?: { __typen
 
 export type DnsRecordFragment = { __typename?: 'DnsRecord', id: string, name: string, type: DnsRecordType, records?: Array<string | null> | null, cluster: string, provider: Provider, insertedAt?: Date | null, creator?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null };
 
-export type GetDnsRecordsQueryVariables = Exact<{
+export type DnsRecordsQueryVariables = Exact<{
   cluster: Scalars['String']['input'];
   provider: Provider;
 }>;
 
 
-export type GetDnsRecordsQuery = { __typename?: 'RootQueryType', dnsRecords?: { __typename?: 'DnsRecordConnection', edges?: Array<{ __typename?: 'DnsRecordEdge', node?: { __typename?: 'DnsRecord', id: string, name: string, type: DnsRecordType, records?: Array<string | null> | null, cluster: string, provider: Provider, insertedAt?: Date | null, creator?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null } | null } | null> | null } | null };
+export type DnsRecordsQuery = { __typename?: 'RootQueryType', dnsRecords?: { __typename?: 'DnsRecordConnection', edges?: Array<{ __typename?: 'DnsRecordEdge', node?: { __typename?: 'DnsRecord', id: string, name: string, type: DnsRecordType, records?: Array<string | null> | null, cluster: string, provider: Provider, insertedAt?: Date | null, creator?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null } | null } | null> | null } | null };
 
 export type CreateDnsRecordMutationVariables = Exact<{
   cluster: Scalars['String']['input'];
@@ -5443,6 +5443,21 @@ export type DeleteDnsRecordMutationVariables = Exact<{
 
 
 export type DeleteDnsRecordMutation = { __typename?: 'RootMutationType', deleteDnsRecord?: { __typename?: 'DnsRecord', id: string, name: string, type: DnsRecordType, records?: Array<string | null> | null, cluster: string, provider: Provider, insertedAt?: Date | null, creator?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null } | null };
+
+export type UpdateDomainMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+  attributes: DnsDomainAttributes;
+}>;
+
+
+export type UpdateDomainMutation = { __typename?: 'RootMutationType', updateDomain?: { __typename?: 'DnsDomain', id: string, name: string, insertedAt?: Date | null, creator?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null, accessPolicy?: { __typename?: 'DnsAccessPolicy', id: string, bindings?: Array<{ __typename?: 'PolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null };
+
+export type DeleteDomainMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type DeleteDomainMutation = { __typename?: 'RootMutationType', deleteDomain?: { __typename?: 'DnsDomain', id: string, name: string, insertedAt?: Date | null, creator?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null, accessPolicy?: { __typename?: 'DnsAccessPolicy', id: string, bindings?: Array<{ __typename?: 'PolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null };
 
 export type DockerRepoFragment = { __typename?: 'DockerRepository', id: string, name: string, public?: boolean | null, insertedAt?: Date | null, updatedAt?: Date | null, repository?: { __typename?: 'Repository', id: string, name: string } | null };
 
@@ -8460,8 +8475,8 @@ export type ClustersQueryHookResult = ReturnType<typeof useClustersQuery>;
 export type ClustersLazyQueryHookResult = ReturnType<typeof useClustersLazyQuery>;
 export type ClustersSuspenseQueryHookResult = ReturnType<typeof useClustersSuspenseQuery>;
 export type ClustersQueryResult = Apollo.QueryResult<ClustersQuery, ClustersQueryVariables>;
-export const GetDnsRecordsDocument = gql`
-    query GetDnsRecords($cluster: String!, $provider: Provider!) {
+export const DnsRecordsDocument = gql`
+    query DnsRecords($cluster: String!, $provider: Provider!) {
   dnsRecords(cluster: $cluster, provider: $provider, first: 500) {
     edges {
       node {
@@ -8473,38 +8488,38 @@ export const GetDnsRecordsDocument = gql`
     ${DnsRecordFragmentDoc}`;
 
 /**
- * __useGetDnsRecordsQuery__
+ * __useDnsRecordsQuery__
  *
- * To run a query within a React component, call `useGetDnsRecordsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetDnsRecordsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useDnsRecordsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useDnsRecordsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetDnsRecordsQuery({
+ * const { data, loading, error } = useDnsRecordsQuery({
  *   variables: {
  *      cluster: // value for 'cluster'
  *      provider: // value for 'provider'
  *   },
  * });
  */
-export function useGetDnsRecordsQuery(baseOptions: Apollo.QueryHookOptions<GetDnsRecordsQuery, GetDnsRecordsQueryVariables>) {
+export function useDnsRecordsQuery(baseOptions: Apollo.QueryHookOptions<DnsRecordsQuery, DnsRecordsQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetDnsRecordsQuery, GetDnsRecordsQueryVariables>(GetDnsRecordsDocument, options);
+        return Apollo.useQuery<DnsRecordsQuery, DnsRecordsQueryVariables>(DnsRecordsDocument, options);
       }
-export function useGetDnsRecordsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetDnsRecordsQuery, GetDnsRecordsQueryVariables>) {
+export function useDnsRecordsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<DnsRecordsQuery, DnsRecordsQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetDnsRecordsQuery, GetDnsRecordsQueryVariables>(GetDnsRecordsDocument, options);
+          return Apollo.useLazyQuery<DnsRecordsQuery, DnsRecordsQueryVariables>(DnsRecordsDocument, options);
         }
-export function useGetDnsRecordsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetDnsRecordsQuery, GetDnsRecordsQueryVariables>) {
+export function useDnsRecordsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<DnsRecordsQuery, DnsRecordsQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<GetDnsRecordsQuery, GetDnsRecordsQueryVariables>(GetDnsRecordsDocument, options);
+          return Apollo.useSuspenseQuery<DnsRecordsQuery, DnsRecordsQueryVariables>(DnsRecordsDocument, options);
         }
-export type GetDnsRecordsQueryHookResult = ReturnType<typeof useGetDnsRecordsQuery>;
-export type GetDnsRecordsLazyQueryHookResult = ReturnType<typeof useGetDnsRecordsLazyQuery>;
-export type GetDnsRecordsSuspenseQueryHookResult = ReturnType<typeof useGetDnsRecordsSuspenseQuery>;
-export type GetDnsRecordsQueryResult = Apollo.QueryResult<GetDnsRecordsQuery, GetDnsRecordsQueryVariables>;
+export type DnsRecordsQueryHookResult = ReturnType<typeof useDnsRecordsQuery>;
+export type DnsRecordsLazyQueryHookResult = ReturnType<typeof useDnsRecordsLazyQuery>;
+export type DnsRecordsSuspenseQueryHookResult = ReturnType<typeof useDnsRecordsSuspenseQuery>;
+export type DnsRecordsQueryResult = Apollo.QueryResult<DnsRecordsQuery, DnsRecordsQueryVariables>;
 export const CreateDnsRecordDocument = gql`
     mutation CreateDnsRecord($cluster: String!, $provider: Provider!, $attributes: DnsRecordAttributes!) {
   createDnsRecord(cluster: $cluster, provider: $provider, attributes: $attributes) {
@@ -8574,6 +8589,73 @@ export function useDeleteDnsRecordMutation(baseOptions?: Apollo.MutationHookOpti
 export type DeleteDnsRecordMutationHookResult = ReturnType<typeof useDeleteDnsRecordMutation>;
 export type DeleteDnsRecordMutationResult = Apollo.MutationResult<DeleteDnsRecordMutation>;
 export type DeleteDnsRecordMutationOptions = Apollo.BaseMutationOptions<DeleteDnsRecordMutation, DeleteDnsRecordMutationVariables>;
+export const UpdateDomainDocument = gql`
+    mutation UpdateDomain($id: ID!, $attributes: DnsDomainAttributes!) {
+  updateDomain(id: $id, attributes: $attributes) {
+    ...DnsDomain
+  }
+}
+    ${DnsDomainFragmentDoc}`;
+export type UpdateDomainMutationFn = Apollo.MutationFunction<UpdateDomainMutation, UpdateDomainMutationVariables>;
+
+/**
+ * __useUpdateDomainMutation__
+ *
+ * To run a mutation, you first call `useUpdateDomainMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateDomainMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateDomainMutation, { data, loading, error }] = useUpdateDomainMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      attributes: // value for 'attributes'
+ *   },
+ * });
+ */
+export function useUpdateDomainMutation(baseOptions?: Apollo.MutationHookOptions<UpdateDomainMutation, UpdateDomainMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateDomainMutation, UpdateDomainMutationVariables>(UpdateDomainDocument, options);
+      }
+export type UpdateDomainMutationHookResult = ReturnType<typeof useUpdateDomainMutation>;
+export type UpdateDomainMutationResult = Apollo.MutationResult<UpdateDomainMutation>;
+export type UpdateDomainMutationOptions = Apollo.BaseMutationOptions<UpdateDomainMutation, UpdateDomainMutationVariables>;
+export const DeleteDomainDocument = gql`
+    mutation DeleteDomain($id: ID!) {
+  deleteDomain(id: $id) {
+    ...DnsDomain
+  }
+}
+    ${DnsDomainFragmentDoc}`;
+export type DeleteDomainMutationFn = Apollo.MutationFunction<DeleteDomainMutation, DeleteDomainMutationVariables>;
+
+/**
+ * __useDeleteDomainMutation__
+ *
+ * To run a mutation, you first call `useDeleteDomainMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteDomainMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteDomainMutation, { data, loading, error }] = useDeleteDomainMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteDomainMutation(baseOptions?: Apollo.MutationHookOptions<DeleteDomainMutation, DeleteDomainMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteDomainMutation, DeleteDomainMutationVariables>(DeleteDomainDocument, options);
+      }
+export type DeleteDomainMutationHookResult = ReturnType<typeof useDeleteDomainMutation>;
+export type DeleteDomainMutationResult = Apollo.MutationResult<DeleteDomainMutation>;
+export type DeleteDomainMutationOptions = Apollo.BaseMutationOptions<DeleteDomainMutation, DeleteDomainMutationVariables>;
 export const CreateDomainDocument = gql`
     mutation CreateDomain($name: String!) {
   provisionDomain(name: $name) {
@@ -12531,7 +12613,7 @@ export const namedOperations = {
     GetChartInstallations: 'GetChartInstallations',
     GetPackageInstallations: 'GetPackageInstallations',
     Clusters: 'Clusters',
-    GetDnsRecords: 'GetDnsRecords',
+    DnsRecords: 'DnsRecords',
     GroupMembers: 'GroupMembers',
     Groups: 'Groups',
     OauthIntegrations: 'OauthIntegrations',
@@ -12577,6 +12659,8 @@ export const namedOperations = {
     UninstallChart: 'UninstallChart',
     CreateDnsRecord: 'CreateDnsRecord',
     DeleteDnsRecord: 'DeleteDnsRecord',
+    UpdateDomain: 'UpdateDomain',
+    DeleteDomain: 'DeleteDomain',
     CreateDomain: 'CreateDomain',
     CreateGroupMember: 'CreateGroupMember',
     DeleteGroupMember: 'DeleteGroupMember',

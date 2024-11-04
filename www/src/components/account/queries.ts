@@ -149,33 +149,6 @@ export const DNS_RECORDS = gql`
   ${DnsRecordFragment}
 `
 
-export const UPDATE_DOMAIN = gql`
-  mutation Update($id: ID!, $attributes: DnsDomainAttributes!) {
-    updateDomain(id: $id, attributes: $attributes) {
-      ...DnsDomainFragment
-    }
-  }
-  ${DnsDomainFragment}
-`
-
-export const DELETE_DOMAIN = gql`
-  mutation Delete($id: ID!) {
-    deleteDomain(id: $id) {
-      ...DnsDomainFragment
-    }
-  }
-  ${DnsDomainFragment}
-`
-
-export const DELETE_DNS_RECORD = gql`
-  mutation Delete($name: String!, $type: DnsRecordType!) {
-    deleteDnsRecord(name: $name, type: $type) {
-      ...DnsRecordFragment
-    }
-  }
-  ${DnsRecordFragment}
-`
-
 export const INVITES_Q = gql`
   query Invites($cursor: String) {
     invites(first: 50, after: $cursor) {

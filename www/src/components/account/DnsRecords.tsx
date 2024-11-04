@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@apollo/client'
+import { useQuery } from '@apollo/client'
 import { Box } from 'grommet'
 import { Button, Div, Flex, Span } from 'honorable'
 import moment from 'moment'
@@ -18,19 +18,20 @@ import { Table, TableData, TableRow } from '../utils/Table'
 import { ProviderIcon } from '../utils/ProviderIcon'
 import { Confirm } from '../utils/Confirm'
 
-import { DELETE_DNS_RECORD, DNS_RECORDS } from './queries'
+import { DNS_RECORDS } from './queries'
+import { useDeleteDnsRecordMutation } from '../../generated/graphql'
 
 function DeleteRecord({ record, domain }: any) {
   const [confirm, setConfirm] = useState(false)
-  const [mutation, { loading, error }] = useMutation(DELETE_DNS_RECORD, {
+  const [mutation, { loading, error }] = useDeleteDnsRecordMutation({
     variables: { name: record.name, type: record.type },
-    update: (cache, { data: { deleteDnsRecord } }) =>
+    update: (cache, { data }) =>
       updateCache(cache, {
         query: DNS_RECORDS,
         variables: { id: domain.id },
         update: (prev) =>
           deepUpdate(prev, 'dnsDomain', (domain) =>
-            removeConnection(domain, deleteDnsRecord, 'dnsRecords')
+            removeConnection(domain, data?.deleteDnsRecord, 'dnsRecords')
           ),
       }),
     onCompleted: () => setConfirm(false),

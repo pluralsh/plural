@@ -11,7 +11,22 @@ fragment DnsRecord on DnsRecord {
   insertedAt
 }
 
-query GetDnsRecords($cluster: String!, $provider: Provider!) {
+fragment DnsDomain on DnsDomain {
+  id
+  name
+  creator {
+    ...User
+  }
+  accessPolicy {
+    id
+    bindings {
+      ...PolicyBinding
+    }
+  }
+  insertedAt
+}
+
+query DnsRecords($cluster: String!, $provider: Provider!) {
   dnsRecords(cluster: $cluster, provider: $provider, first: 500) {
     edges {
       node {
@@ -38,5 +53,17 @@ mutation CreateDnsRecord(
 mutation DeleteDnsRecord($name: String!, $type: DnsRecordType!) {
   deleteDnsRecord(name: $name, type: $type) {
     ...DnsRecord
+  }
+}
+
+mutation UpdateDomain($id: ID!, $attributes: DnsDomainAttributes!) {
+  updateDomain(id: $id, attributes: $attributes) {
+    ...DnsDomain
+  }
+}
+
+mutation DeleteDomain($id: ID!) {
+  deleteDomain(id: $id) {
+    ...DnsDomain
   }
 }

@@ -9,6 +9,7 @@ import styled from 'styled-components'
 
 import { useCategoriesQuery, useTagsQuery } from '../../generated/graphql'
 import { useFetchPaginatedData } from '../utils/useFetchPaginatedData'
+import { mapExistingNodes } from '../../utils/graphql'
 
 const SIDEBAR_WIDTH = 256 - 32
 
@@ -247,6 +248,8 @@ function MarketplaceSidebar({ isOpen }: { isOpen: boolean }) {
 
   const [search, setSearch] = useState('')
 
+  const tags = useMemo(() => mapExistingNodes(data?.tags) ?? [], [data])
+
   if (!categoriesData) return null
 
   const filteredCategories = categoriesData.categories?.filter(
@@ -258,7 +261,7 @@ function MarketplaceSidebar({ isOpen }: { isOpen: boolean }) {
       <Div>
         <Categories categories={filteredCategories} />
         <Tags
-          tags={data?.tags}
+          tags={tags}
           hasMore={pageInfo?.hasNextPage}
           fetchMore={fetchNextPage}
           search={search}

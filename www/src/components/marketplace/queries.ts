@@ -4,11 +4,6 @@ import { CategoryFragment } from '../../models/repo'
 import { PageInfo } from '../../models/misc'
 
 export const CATEGORIES_QUERY = gql`
-  query {
-    categories {
-      ...CategoryFragment
-    }
-  }
   ${CategoryFragment}
 `
 

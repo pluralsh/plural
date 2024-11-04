@@ -5638,6 +5638,22 @@ export type CreateKeyBackupMutationVariables = Exact<{
 
 export type CreateKeyBackupMutation = { __typename?: 'RootMutationType', createKeyBackup?: { __typename?: 'KeyBackup', digest: string, id: string, insertedAt?: Date | null, name: string, repositories?: Array<string> | null, updatedAt?: Date | null, value: string, user: { __typename?: 'User', email: string } } | null };
 
+export type CategoryInfoFragment = { __typename?: 'CategoryInfo', category?: Category | null, count?: number | null };
+
+export type GroupedTagFragment = { __typename?: 'GroupedTag', tag: string, count: number };
+
+export type CategoriesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type CategoriesQuery = { __typename?: 'RootQueryType', categories?: Array<{ __typename?: 'CategoryInfo', category?: Category | null, count?: number | null } | null> | null };
+
+export type TagsQueryVariables = Exact<{
+  cursor?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type TagsQuery = { __typename?: 'RootQueryType', tags?: { __typename?: 'GroupedTagConnection', pageInfo: { __typename?: 'PageInfo', endCursor?: string | null, hasNextPage: boolean }, edges?: Array<{ __typename?: 'GroupedTagEdge', node?: { __typename?: 'GroupedTag', tag: string, count: number } | null } | null> | null } | null };
+
 export type MetricFragment = { __typename?: 'Metric', name: string, tags?: Array<{ __typename?: 'MetricTag', name: string, value: string } | null> | null, values?: Array<{ __typename?: 'MetricValue', time?: Date | null, value?: number | null } | null> | null };
 
 export type PageInfoFragment = { __typename?: 'PageInfo', endCursor?: string | null, hasNextPage: boolean };
@@ -7223,6 +7239,18 @@ export const KeyBackupFragmentDoc = gql`
   value
 }
     ${KeyBackupUserFragmentDoc}`;
+export const CategoryInfoFragmentDoc = gql`
+    fragment CategoryInfo on CategoryInfo {
+  category
+  count
+}
+    `;
+export const GroupedTagFragmentDoc = gql`
+    fragment GroupedTag on GroupedTag {
+  tag
+  count
+}
+    `;
 export const MetricFragmentDoc = gql`
     fragment Metric on Metric {
   name
@@ -9361,6 +9389,93 @@ export function useCreateKeyBackupMutation(baseOptions?: Apollo.MutationHookOpti
 export type CreateKeyBackupMutationHookResult = ReturnType<typeof useCreateKeyBackupMutation>;
 export type CreateKeyBackupMutationResult = Apollo.MutationResult<CreateKeyBackupMutation>;
 export type CreateKeyBackupMutationOptions = Apollo.BaseMutationOptions<CreateKeyBackupMutation, CreateKeyBackupMutationVariables>;
+export const CategoriesDocument = gql`
+    query Categories {
+  categories {
+    ...CategoryInfo
+  }
+}
+    ${CategoryInfoFragmentDoc}`;
+
+/**
+ * __useCategoriesQuery__
+ *
+ * To run a query within a React component, call `useCategoriesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCategoriesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCategoriesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useCategoriesQuery(baseOptions?: Apollo.QueryHookOptions<CategoriesQuery, CategoriesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<CategoriesQuery, CategoriesQueryVariables>(CategoriesDocument, options);
+      }
+export function useCategoriesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CategoriesQuery, CategoriesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<CategoriesQuery, CategoriesQueryVariables>(CategoriesDocument, options);
+        }
+export function useCategoriesSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<CategoriesQuery, CategoriesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<CategoriesQuery, CategoriesQueryVariables>(CategoriesDocument, options);
+        }
+export type CategoriesQueryHookResult = ReturnType<typeof useCategoriesQuery>;
+export type CategoriesLazyQueryHookResult = ReturnType<typeof useCategoriesLazyQuery>;
+export type CategoriesSuspenseQueryHookResult = ReturnType<typeof useCategoriesSuspenseQuery>;
+export type CategoriesQueryResult = Apollo.QueryResult<CategoriesQuery, CategoriesQueryVariables>;
+export const TagsDocument = gql`
+    query Tags($cursor: String) {
+  tags(type: REPOSITORIES, first: 200, after: $cursor) {
+    pageInfo {
+      ...PageInfo
+    }
+    edges {
+      node {
+        ...GroupedTag
+      }
+    }
+  }
+}
+    ${PageInfoFragmentDoc}
+${GroupedTagFragmentDoc}`;
+
+/**
+ * __useTagsQuery__
+ *
+ * To run a query within a React component, call `useTagsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useTagsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useTagsQuery({
+ *   variables: {
+ *      cursor: // value for 'cursor'
+ *   },
+ * });
+ */
+export function useTagsQuery(baseOptions?: Apollo.QueryHookOptions<TagsQuery, TagsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<TagsQuery, TagsQueryVariables>(TagsDocument, options);
+      }
+export function useTagsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<TagsQuery, TagsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<TagsQuery, TagsQueryVariables>(TagsDocument, options);
+        }
+export function useTagsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<TagsQuery, TagsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<TagsQuery, TagsQueryVariables>(TagsDocument, options);
+        }
+export type TagsQueryHookResult = ReturnType<typeof useTagsQuery>;
+export type TagsLazyQueryHookResult = ReturnType<typeof useTagsLazyQuery>;
+export type TagsSuspenseQueryHookResult = ReturnType<typeof useTagsSuspenseQuery>;
+export type TagsQueryResult = Apollo.QueryResult<TagsQuery, TagsQueryVariables>;
 export const NotificationsDocument = gql`
     query Notifications($incidentId: ID, $first: Int = 50, $cursor: String) {
   notifications(incidentId: $incidentId, first: $first, after: $cursor) {
@@ -12620,6 +12735,8 @@ export const namedOperations = {
     Invite: 'Invite',
     KeyBackups: 'KeyBackups',
     KeyBackup: 'KeyBackup',
+    Categories: 'Categories',
+    Tags: 'Tags',
     Notifications: 'Notifications',
     OIDCConsent: 'OIDCConsent',
     OIDCProviders: 'OIDCProviders',
@@ -12765,6 +12882,8 @@ export const namedOperations = {
     Invite: 'Invite',
     KeyBackupUser: 'KeyBackupUser',
     KeyBackup: 'KeyBackup',
+    CategoryInfo: 'CategoryInfo',
+    GroupedTag: 'GroupedTag',
     Metric: 'Metric',
     PageInfo: 'PageInfo',
     NotificationFragment: 'NotificationFragment',

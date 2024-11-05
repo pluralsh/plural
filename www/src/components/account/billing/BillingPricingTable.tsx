@@ -25,7 +25,7 @@ export default function BillingPricingTable({
   return (
     <TableSC>
       <colgroup>
-        <col style={{ width: 'fit-content' }} />
+        <col />
         {plans.map((plan) => (
           <col
             // makes the label column a little smaller than the others

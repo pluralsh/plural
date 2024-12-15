@@ -4,13 +4,24 @@ defmodule Core.Services.Cloud.Workflow.Shared do
 
   alias Core.Clients.Console
   alias Core.Services.{Cloud, Users}
-  alias Core.Services.Cloud.{Poller, Configuration}
+  alias Core.Services.Cloud.{Poller, Configuration, Scram}
   alias Core.Schema.{ConsoleInstance, PostgresCluster, User}
   alias Core.Repo
 
   require Logger
 
   @behaviour Core.Services.Cloud.Workflow
+
+  @table """
+  CREATE TABLE IF NOT EXISTS console_users (
+    usename VARCHAR(255) NOT NULL PRIMARY KEY,
+    passwd VARCHAR(500) NOT NULL
+  )
+  """
+
+  @user_insert """
+  INSERT INTO console_users (usename, passwd) values ($1, $2) ON CONFLICT (usename) DO UPDATE SET passwd = EXCLUDED.passwd
+  """
 
   def sync(%ConsoleInstance{external_id: id} = instance) when is_binary(id) do
     instance = Repo.preload(instance, [:cluster, :postgres])
@@ -42,6 +53,8 @@ defmodule Core.Services.Cloud.Workflow.Shared do
     with {:ok, pid} <- connect(pg),
          {:ok, _} <- Postgrex.query(pid, "CREATE DATABASE #{conf.database}", []),
          {:ok, _} <- Postgrex.transaction(pid, fn conn ->
+                       Postgrex.query!(conn, @table, [])
+                       Postgrex.query!(conn, @user_insert, [conf.dbuser, Scram.encrypt(conf.dbpassword)])
                        Postgrex.query!(conn, "CREATE USER #{conf.dbuser} WITH PASSWORD '#{conf.dbpassword}'", [])
                        Postgrex.query!(conn, "GRANT ALL ON DATABASE #{conf.database} TO #{conf.dbuser}", [])
                      end) do

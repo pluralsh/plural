@@ -92,6 +92,7 @@ defmodule Core.MixProject do
       {:mojito, "~> 0.7.0"},
       {:nebulex, "== 2.4.2"},
       {:castore, "~> 0.1.7"},
+      {:plug_crypto, "~> 1.2"},
       {:req, "~> 0.4.14", override: true},
       {:mint, "~> 1.4.0", override: true},
       {:finch, "~> 0.17.0", override: true},

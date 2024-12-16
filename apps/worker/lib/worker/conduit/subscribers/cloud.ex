@@ -2,8 +2,10 @@ defmodule Worker.Conduit.Subscribers.Cloud do
   use Worker.Conduit.Subscribers.Base
   alias Core.Services.Cloud.Workflow
   alias Core.PubSub
+  require Logger
 
   def process(%Conduit.Message{body: body} = msg, _) do
+    Logger.info "handling #{body.__struct__} for #{body.item.name}"
     case handle(body) do
       {:ok, _} -> ack(msg)
       _ -> nack(msg)

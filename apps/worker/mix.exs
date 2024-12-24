@@ -56,7 +56,7 @@ defmodule Worker.MixProject do
 
   defp deps do
     [
-      {:k8s_traffic_plug, github: "Financial-Times/k8s_traffic_plug"},
+      {:k8s_traffic_plug, git: "https://github.com/pluralsh/k8s_traffic_plug"},
       {:core, in_umbrella: true},
       {:email, in_umbrella: true}
     ]

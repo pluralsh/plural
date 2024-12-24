@@ -82,7 +82,7 @@ defmodule Rtc.MixProject do
       {:prometheus_ex, "~> 3.0"},
       {:prometheus_plugs, "~> 1.1.1"},
       {:websockex, "~> 0.4"},
-      {:k8s_traffic_plug, github: "Financial-Times/k8s_traffic_plug"},
+      {:k8s_traffic_plug, git: "https://github.com/pluralsh/k8s_traffic_plug"},
       {:briefly, [env: :prod, git: "https://github.com/CargoSense/briefly", ref: "b0fd495bf0c5ef2c44de2791a8cc7a20813c7d36"]},
 
       {:core, in_umbrella: true},

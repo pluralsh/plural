@@ -33,7 +33,7 @@ export function Chloropleth({ data }) {
   return (
     <ResponsiveChoropleth
       data={data}
-      theme={{ textColor: theme.colors.text }}
+      theme={{ text: { fill: theme.colors.text } }}
       features={countries.features}
       label="properties.name"
       valueFormat=".2s"

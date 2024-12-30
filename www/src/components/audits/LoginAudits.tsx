@@ -37,20 +37,23 @@ const columns = [
     id: 'repo',
     cell: (login: any) => (
       <Flex gap="xsmall">
-        <IconFrame
-          size="small"
-          icon={
-            <img
-              src={
-                login.getValue().repository?.darkIcon ||
-                login.getValue().repository?.icon
-              }
-              width="24px"
-              height="24px"
-            />
-          }
-        />
-        {login.getValue().repository.name}
+        {(login.getValue().repository?.darkIcon ||
+          login.getValue().repository?.icon) && (
+          <IconFrame
+            size="small"
+            icon={
+              <img
+                src={
+                  login.getValue().repository?.darkIcon ||
+                  login.getValue().repository?.icon
+                }
+                width="24px"
+                height="24px"
+              />
+            }
+          />
+        )}
+        {login.getValue().repository?.name}
       </Flex>
     ),
     header: 'Repository',

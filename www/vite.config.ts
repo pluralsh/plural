@@ -25,6 +25,7 @@ export default mergeConfig(
         filename: 'service-worker.ts',
         srcDir: 'src',
         strategies: 'injectManifest',
+        showMaximumFileSizeToCacheInBytesWarning: true,
       }),
       tsconfigPaths(),
       pluginRewriteAll(), // Fix 404 error for urls with dots in their path

@@ -6805,16 +6805,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-dom@npm:18.3.0":
-  version: 18.3.0
-  resolution: "@types/react-dom@npm:18.3.0"
-  dependencies:
-    "@types/react": "*"
-  checksum: a0cd9b1b815a6abd2a367a9eabdd8df8dd8f13f95897b2f9e1359ea3ac6619f957c1432ece004af7d95e2a7caddbba19faa045f831f32d6263483fc5404a7596
-  languageName: node
-  linkType: hard
-
-"@types/react-dom@npm:^18.0.0":
+"@types/react-dom@npm:18.3.5, @types/react-dom@npm:^18.0.0":
   version: 18.3.5
   resolution: "@types/react-dom@npm:18.3.5"
   peerDependencies:
@@ -20329,7 +20320,7 @@ __metadata:
     "@types/jsdom": 21.1.5
     "@types/react": 18.3.3
     "@types/react-credit-cards": 0.8.1
-    "@types/react-dom": 18.3.0
+    "@types/react-dom": 18.3.5
     "@types/react-stripe-elements": 6.0.6
     "@types/styled-components": 5.1.30
     "@types/uuid": 9.0.7

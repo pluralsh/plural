@@ -128,6 +128,11 @@ defmodule Core.Services.Payments do
   def allow(%Subscription{} = subscription, %User{} = user),
     do: allow(subscription, user, :access)
 
+  def allow_billing(%User{} = user) do
+    %{account: account} = Repo.preload(user, [:account])
+    allow(account, user, :pay)
+  end
+
   @doc """
   List all invoices against a subscription
   """

@@ -418,6 +418,20 @@ defmodule Core.Services.Accounts do
     do: allow(service_account, user, :impersonate)
 
 
+  @doc """
+  Grabs the license key for a users account
+  """
+  @spec license_key(User.t) :: {:ok, binary} | {:error, term}
+  def license_key(%User{} = user) do
+    with {:ent, true} <- {:ent, Payments.enterprise?(user)},
+         {:ok, _} <- Payments.allow_billing(user) do
+      license_key()
+    else
+      {:ent, _} -> {:error, "only enterprise accounts can download license keys"}
+      err -> err
+    end
+  end
+
   def license_key() do
     exp = Timex.now() |> Timex.shift(days: 365) |> Timex.to_unix()
     with {:ok, claims} <- Jwt.generate_claims(%{"enterprise" => true, "exp" => exp}),

@@ -329,4 +329,20 @@ defmodule GraphQl.AccountQueriesTest do
              |> ids_equal(invites)
     end
   end
+
+  describe "licenseKey" do
+    test "enterprise billing users can download license keys" do
+      account = insert(:account, billing_customer_id: "cus_id", user_count: 2, cluster_count: 0)
+      user = insert(:user, roles: %{admin: true}, account: account)
+      enterprise_plan(account)
+
+      {:ok, %{data: %{"licenseKey" => k}}} = run_query("""
+        query {
+          licenseKey
+        }
+      """, %{}, %{current_user: user})
+
+      assert is_binary(k)
+    end
+  end
 end

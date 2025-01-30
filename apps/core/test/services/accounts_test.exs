@@ -794,4 +794,31 @@ defmodule Core.Services.AccountsTest do
       assert updated.usage_updated
     end
   end
+
+  describe "#license_key/1" do
+    test "enterprise billing users can download license keys" do
+      account = insert(:account, billing_customer_id: "cus_id", user_count: 2, cluster_count: 0)
+      user = insert(:user, roles: %{admin: true}, account: account)
+      enterprise_plan(account)
+
+      {:ok, key} = Accounts.license_key(user)
+
+      assert is_binary(key)
+    end
+
+    test "non billing users cannot downlod license keys" do
+      account = insert(:account, billing_customer_id: "cus_id", user_count: 2, cluster_count: 0)
+      user = insert(:user, account: account)
+      enterprise_plan(account)
+
+      {:error, _} = Accounts.license_key(user)
+    end
+
+    test "non enterprise accounts cannot downlod license keys" do
+      account = insert(:account, billing_customer_id: "cus_id", user_count: 2, cluster_count: 0)
+      user = insert(:user, roles: %{admin: true}, account: account)
+
+      {:error, _} = Accounts.license_key(user)
+    end
+  end
 end

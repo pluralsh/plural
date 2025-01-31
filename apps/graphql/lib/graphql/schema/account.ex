@@ -302,6 +302,12 @@ defmodule GraphQl.Schema.Account do
 
       resolve &Account.list_oauth_integrations/2
     end
+
+    field :license_key, :string do
+      middleware Authenticated
+
+      resolve &Account.license_key/2
+    end
   end
 
   object :account_mutations do

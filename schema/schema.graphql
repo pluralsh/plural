@@ -130,6 +130,8 @@ type RootQueryType {
 
   oauthIntegrations: [OauthIntegration]
 
+  licenseKey: String
+
   incidents(
     after: String, first: Int, before: String, last: Int, repositoryId: ID, supports: Boolean, q: String, sort: IncidentSort, order: Order, filters: [IncidentFilter]
   ): IncidentConnection

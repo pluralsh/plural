@@ -88,6 +88,9 @@ defmodule GraphQl.Resolvers.Account do
   def resolve_invite(%{id: secure_id}, _),
     do: {:ok, Accounts.get_invite(secure_id)}
 
+  def license_key(_, %{context: %{current_user: user}}),
+    do: Accounts.license_key(user)
+
   def create_service_account(%{attributes: attrs}, %{context: %{current_user: user}}),
     do: Accounts.create_service_account(attrs, user)
 

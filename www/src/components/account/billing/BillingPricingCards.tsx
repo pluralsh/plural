@@ -1,15 +1,18 @@
-import { Button, Card } from '@pluralsh/design-system'
+import { Button, Card, KeyIcon } from '@pluralsh/design-system'
 import { Flex } from 'honorable'
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 
-import styled from 'styled-components'
+import styled, { useTheme } from 'styled-components'
 
 import { ButtonProps } from '@pluralsh/design-system/dist/components/Button'
 
 import SubscriptionContext from '../../../contexts/SubscriptionContext'
 
-import BillingPricingCard from './BillingPricingCard'
+import { useGenerateLicenseKeyLazyQuery } from 'generated/graphql'
 import { EnterprisePlanCTA } from './BillingManagePlan'
+import BillingPricingCard from './BillingPricingCard'
+import { LicenseKeyModal } from './LicenseKeyModal'
+import { GqlError } from 'components/utils/Alert'
 
 export function ContactUs({ ...props }: ButtonProps) {
   return (
@@ -128,23 +131,53 @@ function BillingPricingCards({
 }
 
 function CurrentPlanCard({ onCancel }: { onCancel: () => void }) {
-  const { subscription, isProPlan } = useContext(SubscriptionContext)
+  const { colors } = useTheme()
+  const { subscription, isProPlan, isEnterprisePlan } =
+    useContext(SubscriptionContext)
+  const [licenseKey, setLicenseKey] = useState('')
+  const [licenseKeyModalOpen, setLicenseKeyModalOpen] = useState(false)
+  const [generateLicenseKey, { loading, error }] =
+    useGenerateLicenseKeyLazyQuery({
+      onCompleted: (data) => {
+        setLicenseKey(data.licenseKey ?? '')
+        setLicenseKeyModalOpen(true)
+      },
+    })
 
   return (
-    <CurrentPlanCardSC>
-      <span>
-        You are currently on the{' '}
-        <em>{subscription?.plan?.name ?? 'Free'} Plan</em>
-      </span>
-      {isProPlan && (
-        <Button
-          secondary
-          onClick={onCancel}
-        >
-          Cancel plan
-        </Button>
-      )}
-    </CurrentPlanCardSC>
+    <>
+      {error && <GqlError error={error} />}
+      <CurrentPlanCardSC>
+        <span>
+          You are currently on the{' '}
+          <em>{subscription?.plan?.name ?? 'Free'} Plan</em>
+        </span>
+        {isProPlan && (
+          <Button
+            secondary
+            onClick={onCancel}
+          >
+            Cancel plan
+          </Button>
+        )}
+        {isEnterprisePlan && (
+          <Button
+            floating
+            startIcon={<KeyIcon />}
+            loading={loading}
+            onClick={() => generateLicenseKey()}
+            style={{ color: colors.text }}
+          >
+            Generate license key
+          </Button>
+        )}
+        <LicenseKeyModal
+          licenseKey={licenseKey}
+          open={licenseKeyModalOpen}
+          onOpenChange={setLicenseKeyModalOpen}
+        />
+      </CurrentPlanCardSC>
+    </>
   )
 }
 const CurrentPlanCardSC = styled(Card)(({ theme }) => ({

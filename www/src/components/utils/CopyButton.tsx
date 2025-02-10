@@ -1,5 +1,6 @@
 import { Ref, forwardRef, useCallback, useEffect, useState } from 'react'
 import { CheckIcon, CopyIcon, IconFrame } from '@pluralsh/design-system'
+import { useCopy } from 'hooks/useCopy'
 
 type CopyButtonProps = {
   text?: string
@@ -10,23 +11,7 @@ function CopyButtonRef(
   { text, type = 'floating' }: CopyButtonProps,
   ref: Ref<any>
 ) {
-  const [copied, setCopied] = useState(false)
-
-  useEffect(() => {
-    if (copied) {
-      const timeout = setTimeout(() => setCopied(false), 1000)
-
-      return () => clearTimeout(timeout)
-    }
-  }, [copied])
-
-  const handleCopy = useCallback(
-    () =>
-      window.navigator.clipboard
-        .writeText(text ?? '')
-        .then(() => setCopied(true)),
-    [text]
-  )
+  const { copied, handleCopy } = useCopy(text)
 
   return (
     <IconFrame

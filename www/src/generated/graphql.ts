@@ -5293,6 +5293,11 @@ export type DnsDomainFragment = { __typename?: 'DnsDomain', id: string, name: st
 
 export type OidcLoginFragment = { __typename?: 'OidcLogin', ip?: string | null, country?: string | null, city?: string | null, latitude?: string | null, longitude?: string | null, insertedAt?: Date | null, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null, repository?: { __typename?: 'Repository', id: string, name: string, notes?: string | null, description?: string | null, documentation?: string | null, icon?: string | null, darkIcon?: string | null, private?: boolean | null, trending?: boolean | null, verified?: boolean | null, category?: Category | null, docs?: Array<{ __typename?: 'FileContent', content: string, path: string } | null> | null, oauthSettings?: { __typename?: 'OauthSettings', uriFormat: string, authMethod: OidcAuthMethod } | null, publisher?: { __typename?: 'Publisher', id?: string | null, name: string, phone?: string | null, avatar?: string | null, description?: string | null, backgroundColor?: string | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null, address?: { __typename?: 'Address', line1?: string | null, line2?: string | null, city?: string | null, country?: string | null, state?: string | null, zip?: string | null } | null } | null, recipes?: Array<{ __typename?: 'Recipe', name: string, provider?: Provider | null, description?: string | null } | null> | null } | null };
 
+export type GenerateLicenseKeyQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GenerateLicenseKeyQuery = { __typename?: 'RootQueryType', licenseKey?: string | null };
+
 export type UpdateAccountMutationVariables = Exact<{
   attributes: AccountAttributes;
 }>;
@@ -7870,6 +7875,43 @@ export const VersionTagFragmentDoc = gql`
   }
 }
     `;
+export const GenerateLicenseKeyDocument = gql`
+    query GenerateLicenseKey {
+  licenseKey
+}
+    `;
+
+/**
+ * __useGenerateLicenseKeyQuery__
+ *
+ * To run a query within a React component, call `useGenerateLicenseKeyQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGenerateLicenseKeyQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGenerateLicenseKeyQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGenerateLicenseKeyQuery(baseOptions?: Apollo.QueryHookOptions<GenerateLicenseKeyQuery, GenerateLicenseKeyQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GenerateLicenseKeyQuery, GenerateLicenseKeyQueryVariables>(GenerateLicenseKeyDocument, options);
+      }
+export function useGenerateLicenseKeyLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GenerateLicenseKeyQuery, GenerateLicenseKeyQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GenerateLicenseKeyQuery, GenerateLicenseKeyQueryVariables>(GenerateLicenseKeyDocument, options);
+        }
+export function useGenerateLicenseKeySuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GenerateLicenseKeyQuery, GenerateLicenseKeyQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GenerateLicenseKeyQuery, GenerateLicenseKeyQueryVariables>(GenerateLicenseKeyDocument, options);
+        }
+export type GenerateLicenseKeyQueryHookResult = ReturnType<typeof useGenerateLicenseKeyQuery>;
+export type GenerateLicenseKeyLazyQueryHookResult = ReturnType<typeof useGenerateLicenseKeyLazyQuery>;
+export type GenerateLicenseKeySuspenseQueryHookResult = ReturnType<typeof useGenerateLicenseKeySuspenseQuery>;
+export type GenerateLicenseKeyQueryResult = Apollo.QueryResult<GenerateLicenseKeyQuery, GenerateLicenseKeyQueryVariables>;
 export const UpdateAccountDocument = gql`
     mutation UpdateAccount($attributes: AccountAttributes!) {
   updateAccount(attributes: $attributes) {
@@ -12719,6 +12761,7 @@ export type UpdateVersionMutationResult = Apollo.MutationResult<UpdateVersionMut
 export type UpdateVersionMutationOptions = Apollo.BaseMutationOptions<UpdateVersionMutation, UpdateVersionMutationVariables>;
 export const namedOperations = {
   Query: {
+    GenerateLicenseKey: 'GenerateLicenseKey',
     ListArtifacts: 'ListArtifacts',
     Audits: 'Audits',
     Logins: 'Logins',

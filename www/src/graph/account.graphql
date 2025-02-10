@@ -44,6 +44,10 @@ fragment OidcLogin on OidcLogin {
   insertedAt
 }
 
+query GenerateLicenseKey {
+  licenseKey
+}
+
 mutation UpdateAccount($attributes: AccountAttributes!) {
   updateAccount(attributes: $attributes) {
     ...Account

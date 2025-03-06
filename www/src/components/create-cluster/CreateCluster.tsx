@@ -142,7 +142,7 @@ export function CreateCluster() {
               secondary
               startIcon={<SendMessageIcon />}
               as="a"
-              href="https://plural.sh/contact-sales"
+              href="https://www.plural.sh/contact"
               target="_blank"
               rel="noopener noreferrer"
             >

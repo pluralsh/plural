@@ -56,7 +56,7 @@ export function ChooseHostingOptionStep() {
           >
             If you would like to create a dedicated cloud instance, please
             contact sales to inquire about upgrading to an Enterprise plan.
-            <CalloutLinkButton href="https://plural.sh/contact-sales">
+            <CalloutLinkButton href="https://www.plural.sh/contact">
               Contact sales
             </CalloutLinkButton>
           </Flex>

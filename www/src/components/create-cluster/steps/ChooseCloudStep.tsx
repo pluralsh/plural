@@ -61,7 +61,7 @@ export function ChooseCloudStep() {
                 </CalloutLinkButton>
                 <CalloutLinkButton
                   secondary
-                  href="https://plural.sh/contact-sales"
+                  href="https://www.plural.sh/contact"
                 >
                   Contact sales
                 </CalloutLinkButton>

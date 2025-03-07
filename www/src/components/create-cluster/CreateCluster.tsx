@@ -36,28 +36,32 @@ export const CUR_CREATE_CLUSTER_STEP_KEY = 'cur-create-cluster-step'
 export const CLOUD_OPTION_KEY = 'cloud-option'
 export const HOSTING_OPTION_KEY = 'hosting-option'
 export const CUR_CONSOLE_INSTANCE_KEY = 'cur-console-instance-id'
+const TTL_KEY = 'create-cluster-ttl'
 
 export function CreateCluster() {
   const theme = useTheme()
   const navigate = useNavigate()
   const [curStep, setCurStep] = usePersistedState<CreateClusterStepKey>(
     CUR_CREATE_CLUSTER_STEP_KEY,
-    CreateClusterStepKey.ChooseCloud
+    CreateClusterStepKey.ChooseCloud,
+    { key: TTL_KEY }
   )
   const [cloudOption, setCloudOption] = usePersistedState<CloudOption>(
     CLOUD_OPTION_KEY,
-    'local'
+    'local',
+    { key: TTL_KEY }
   )
   const [hostingOption, setHostingOption] =
     usePersistedState<ConsoleInstanceType>(
       HOSTING_OPTION_KEY,
-      ConsoleInstanceType.Shared
+      ConsoleInstanceType.Shared,
+      { key: TTL_KEY }
     )
   const [finishEnabled, setFinishEnabled] = useState(false)
   const [continueBtn, setContinueBtn] = useState<ReactElement | undefined>()
   const [consoleInstanceId, setConsoleInstanceId] = usePersistedState<
     Nullable<string>
-  >(CUR_CONSOLE_INSTANCE_KEY, null)
+  >(CUR_CONSOLE_INSTANCE_KEY, null, { key: TTL_KEY })
 
   const steps = cloudOption === 'local' ? localSteps : cloudSteps
   const curStepIndex = steps.findIndex((step) => step.key === curStep)
@@ -142,7 +146,7 @@ export function CreateCluster() {
               secondary
               startIcon={<SendMessageIcon />}
               as="a"
-              href="https://plural.sh/contact-sales"
+              href="https://www.plural.sh/contact"
               target="_blank"
               rel="noopener noreferrer"
             >

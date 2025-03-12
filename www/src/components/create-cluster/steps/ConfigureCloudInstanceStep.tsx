@@ -23,6 +23,7 @@ import {
   CreateClusterStepKey,
   useCreateClusterContext,
 } from '../CreateClusterWizard'
+import { Confirm } from '../../utils/Confirm'
 
 const nameRegex = /^[a-z][a-z0-9-][a-z0-9]{4,9}$/
 
@@ -35,6 +36,7 @@ export function ConfigureCloudInstanceStep() {
   const [size, setSize] = useState<ConsoleSize>(ConsoleSize.Small)
   const [cloud, setCloud] = useState<CloudProvider>(CloudProvider.Aws)
   const [region, setRegion] = useState<string>(regions[0])
+  const [confirm, setConfirm] = useState(false)
   const isNameValid = nameRegex.test(name)
 
   const canSubmit = !!(
@@ -65,9 +67,8 @@ export function ConfigureCloudInstanceStep() {
     setContinueBtn(
       <Button
         key="create"
-        loading={loading}
         disabled={!canSubmit}
-        onClick={() => mutation()}
+        onClick={() => setConfirm(true)}
       >
         Continue
       </Button>
@@ -79,82 +80,94 @@ export function ConfigureCloudInstanceStep() {
   }, [canSubmit, loading, mutation, setContinueBtn])
 
   return (
-    <Flex
-      flexDirection="column"
-      gap="medium"
-    >
-      {error && <GqlError error={error} />}
-      <Callout
-        css={{ marginBottom: theme.spacing.medium }}
-        title="Your Console may take a few minutes to deploy."
+    <>
+      <Flex
+        flexDirection="column"
+        gap="medium"
       >
-        After completing this step it may take a few minutes for your Console to
-        deploy. It will run in the background as you proceed.
-      </Callout>
-      <FormFieldSC
-        label="Cluster name"
-        hint={
-          <FormFieldCaptionSC $name={name}>
-            Name must be between 6 and 11 characters, lowercase, alphanumeric,
-            and begin with a letter.
-          </FormFieldCaptionSC>
-        }
-      >
-        <Input
-          placeholder="Enter cluster name"
-          borderColor={
-            name === '' || isNameValid
-              ? undefined
-              : theme.colors['border-danger']
-          }
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-      </FormFieldSC>
-      <FormFieldSC label="Cluster size">
-        <Select
-          selectedKey={size}
-          onSelectionChange={(size) => setSize(size as ConsoleSize)}
+        {error && <GqlError error={error} />}
+        <Callout
+          css={{ marginBottom: theme.spacing.medium }}
+          title="Your Console may take a few minutes to deploy."
         >
-          {Object.values(ConsoleSize)
-            .reverse()
-            .map((value) => (
+          After completing this step it may take a few minutes for your Console
+          to deploy. It will run in the background as you proceed.
+        </Callout>
+        <FormFieldSC
+          label="Cluster name"
+          hint={
+            <FormFieldCaptionSC $name={name}>
+              Name must be between 6 and 11 characters, lowercase, alphanumeric,
+              and begin with a letter.
+            </FormFieldCaptionSC>
+          }
+        >
+          <Input
+            placeholder="Enter cluster name"
+            borderColor={
+              name === '' || isNameValid
+                ? undefined
+                : theme.colors['border-danger']
+            }
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+        </FormFieldSC>
+        <FormFieldSC label="Cluster size">
+          <Select
+            selectedKey={size}
+            onSelectionChange={(size) => setSize(size as ConsoleSize)}
+          >
+            {Object.values(ConsoleSize)
+              .reverse()
+              .map((value) => (
+                <ListBoxItem
+                  key={value}
+                  label={firstLetterUppercase(value)}
+                />
+              ))}
+          </Select>
+        </FormFieldSC>
+        <FormFieldSC label="Cloud">
+          <Select
+            selectedKey={cloud}
+            onSelectionChange={(cloud) => setCloud(cloud as CloudProvider)}
+          >
+            {Object.values(CloudProvider).map((value) => (
               <ListBoxItem
                 key={value}
-                label={firstLetterUppercase(value)}
-              />
-            ))}
-        </Select>
-      </FormFieldSC>
-      <FormFieldSC label="Cloud">
-        <Select
-          selectedKey={cloud}
-          onSelectionChange={(cloud) => setCloud(cloud as CloudProvider)}
-        >
-          {Object.values(CloudProvider).map((value) => (
-            <ListBoxItem
-              key={value}
-              label={value}
-            />
-          ))}
-        </Select>
-      </FormFieldSC>
-      {cloud === CloudProvider.Aws && (
-        <FormFieldSC label="Region">
-          <Select
-            selectedKey={region}
-            onSelectionChange={(region) => setRegion(region as string)}
-          >
-            {regions.map((region) => (
-              <ListBoxItem
-                key={region}
-                label={region}
+                label={value}
               />
             ))}
           </Select>
         </FormFieldSC>
-      )}
-    </Flex>
+        {cloud === CloudProvider.Aws && (
+          <FormFieldSC label="Region">
+            <Select
+              selectedKey={region}
+              onSelectionChange={(region) => setRegion(region as string)}
+            >
+              {regions.map((region) => (
+                <ListBoxItem
+                  key={region}
+                  label={region}
+                />
+              ))}
+            </Select>
+          </FormFieldSC>
+        )}
+      </Flex>
+      <Confirm
+        open={confirm}
+        error={error}
+        title={`Create cluster`}
+        text={`Would you like to proceed with cluster creation?`}
+        submit={() => mutation()}
+        close={() => setConfirm(false)}
+        label="Create cluster"
+        loading={loading}
+      />
+    </>
   )
 }
 

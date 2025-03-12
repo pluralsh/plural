@@ -1,12 +1,13 @@
 import { useMutation, useQuery } from '@apollo/client'
 import { Box } from 'grommet'
-import { Button, Div, Flex, Span } from 'honorable'
+import { Button, Div, Span } from 'honorable'
 import moment from 'moment'
 import { useState } from 'react'
 import lookup from 'country-code-lookup'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import {
   CopyIcon,
+  Flex,
   EmptyState,
   GraphIcon,
   IconFrame,
@@ -280,14 +281,12 @@ export function AccessTokens() {
       height="100%"
       overflow="hidden"
     >
-      <PageTitle
-        heading="Access tokens"
-        justifyContent="flex-start"
-      >
+      <PageTitle heading="Access tokens">
         <Flex
           direction="row"
           align="center"
           overflow="auto"
+          flexGrow={1}
         >
           <Tooltip
             width="315px"

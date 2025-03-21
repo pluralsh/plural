@@ -284,14 +284,7 @@ export function KeyBackups() {
               color="text-light"
             >
               Secure cloud backups of the machine-local AES encryption keys for
-              your installation repositories.{' '}
-              <A
-                href="https://docs.plural.sh/getting-started/manage-git-repositories/workspace-encryption"
-                target="_blank"
-                inline
-              >
-                Learn more
-              </A>
+              your installation repositories.
             </P>
           </>
         }

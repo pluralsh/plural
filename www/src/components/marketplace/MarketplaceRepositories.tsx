@@ -317,15 +317,6 @@ function MarketplaceRepositories({ publisher }: { publisher?: any }) {
                     marginTop="large"
                     gap="medium"
                   >
-                    <Button
-                      as="a"
-                      href="https://docs.plural.sh/adding-new-application"
-                      target="_blank"
-                      primary
-                      endIcon={<ArrowTopRightIcon />}
-                    >
-                      Add an application
-                    </Button>
                     {!publisher && (
                       <Button
                         secondary

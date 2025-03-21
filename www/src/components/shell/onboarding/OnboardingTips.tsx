@@ -30,32 +30,14 @@ function OnboardingTips({ autoAdvanceTime = 10000, ...props }: any) {
             key="sa"
           >
             You can use service accounts to have an entire team manage a set of
-            installations for one of your plural clusters. Learn more{' '}
-            <A
-              inline
-              target="_blank"
-              rel="noopener noreferrer"
-              href="https://docs.plural.sh/advanced-topics/identity-and-access-management/identity-and-installations/service-accounts"
-            >
-              here
-            </A>
-            .
+            installations for one of your plural clusters.
           </Span>,
           <Span
             margin={0}
             key="oidc"
           >
             Plural can be an identity provider for most web facing applications
-            using OpenId Connect. Learn more{' '}
-            <A
-              inline
-              target="_blank"
-              rel="noopener noreferrer"
-              href="https://docs.plural.sh/basic-setup-and-deployment/openid-connect"
-            >
-              here
-            </A>
-            .
+            using OpenId Connect.
           </Span>,
           <Span
             margin={0}

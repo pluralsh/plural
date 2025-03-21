@@ -150,16 +150,7 @@ function DeleteShellModal({ onClose }) {
             >
               plural destroy
             </Chip>
-            before completing this action. You can learn more&nbsp;
-            <A
-              data-phid="delete-shell-learn-more"
-              inline
-              href="https://docs.plural.sh/operations/uninstall"
-              target="_blank"
-            >
-              here
-            </A>
-            .
+            before completing this action.
           </Span>
         </Flex>
 

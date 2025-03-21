@@ -98,19 +98,6 @@ export default function ClusterMetadataPanel({
           '-'
         )}
       </Prop>
-      <Prop
-        title="Docs"
-        margin={0}
-      >
-        <A
-          inline
-          href="https://docs.plural.sh/operations/uninstall"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Destroying the Cluster and Installations
-        </A>
-      </Prop>
     </InfoPanel>
   )
 }

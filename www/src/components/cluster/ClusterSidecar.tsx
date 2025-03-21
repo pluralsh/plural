@@ -72,16 +72,6 @@ export function ClusterSidecar({ cluster }: ClusterSidecarProps): ReactElement {
             '-'
           )}
         </SidecarItem>
-        <SidecarItem heading="Docs">
-          <A
-            inline
-            href="https://docs.plural.sh/operations/uninstall"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Destroying the Cluster and Installations
-          </A>
-        </SidecarItem>
       </Sidecar>
     </Flex>
   )

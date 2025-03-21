@@ -93,15 +93,7 @@ function MissingPermissionsModal({ refetch, missing }): JSX.Element {
           your cloud account: <b>{missing.join(', ')}</b>.
         </Span>
         <Span>
-          Please update your credentials in your cloud account and try
-          again.&nbsp;
-          <A
-            inline
-            href="https://docs.plural.sh/getting-started/cloud-shell-quickstart#set-up-a-cloud-provider"
-            target="_blank"
-          >
-            Learn more
-          </A>
+          Please update your credentials in your cloud account and try again.
         </Span>
       </Flex>
     </Modal>

@@ -190,7 +190,7 @@ export function OnboardingChecklist() {
               with the&nbsp;
               <A
                 inline
-                href="https://docs.plural.sh/getting-started/getting-started"
+                href="https://docs.plural.sh/getting-started/first-steps/cli-quickstart"
                 target="_blank"
                 rel="noopener noreferrer"
               >

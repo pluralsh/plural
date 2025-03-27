@@ -869,6 +869,19 @@ defmodule Core.Services.PaymentsTest do
       assert subscription.plan_id == plan.id
       refute subscription.external_id
     end
+
+    test "it will set up a plan for a user with a trial" do
+      plan = insert(:platform_plan, name: "Enterprise", enterprise: true)
+      trial = insert(:platform_plan, name: "Pro Trial", trial: true)
+      account = insert(:account)
+      insert(:platform_subscription, account: account, plan: trial)
+      user = insert(:user, account: account)
+
+      {:ok, subscription} = Payments.setup_enterprise_plan(user)
+
+      assert subscription.account_id == account.id
+      assert subscription.plan_id == plan.id
+    end
   end
 
   describe "#begin_trail/1" do

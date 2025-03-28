@@ -675,6 +675,15 @@ defmodule Core.Services.Payments do
   defp discount(amount, :yearly), do: round(9 * amount / 10) * 12
   defp discount(amount, _), do: amount
 
+  def setup_enterprise_plan(%User{} = user) do
+    case Repo.preload(user, [account: [subscription: :plan]]) do
+      %{account: %Account{} = account} ->
+        with {:ok, _} <- remove_trial(account),
+          do: setup_enterprise_plan(user.account_id)
+      _ -> setup_enterprise_plan(user.account_id)
+    end
+  end
+
   def setup_enterprise_plan(account_id) do
     plan = get_platform_plan_by_name!("Enterprise")
 

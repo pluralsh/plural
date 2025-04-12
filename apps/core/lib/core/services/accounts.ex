@@ -32,6 +32,8 @@ defmodule Core.Services.Accounts do
 
   def get_account!(id), do: Core.Repo.get!(Account, id)
 
+  def get_account(id), do: Core.Repo.get(Account, id)
+
   def get_group!(id), do: Core.Repo.get!(Group, id)
 
   def get_group_by_name(aid, name), do: Core.Repo.get_by(Group, name: name, account_id: aid)

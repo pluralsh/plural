@@ -23,6 +23,27 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  name: plural-mcp
+  {{ if .Values.service.mcp.annotations }}
+  annotations: {{ toYaml .Values.service.mcp.annotations | nindent 4 }}
+  {{ end }}
+  labels:
+    app: plural-mcp
+{{ include "plural.labels" . | indent 4 }}
+spec:
+  type: {{ .Values.service.mcp.type }}
+  ports:
+  - port: {{ .Values.mcp.port }}
+    targetPort: mcp
+    protocol: TCP
+    name: mcp
+  selector:
+    app.kubernetes.io/name: plural-api
+    app.kubernetes.io/instance: {{ .Release.Name }}
+---
+apiVersion: v1
+kind: Service
+metadata:
   name: plural-rtc
   labels:
     app: plural-rtc

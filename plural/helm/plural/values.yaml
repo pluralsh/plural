@@ -376,6 +376,9 @@ api:
 
   topologySpreadConstraints: []
 
+mcp:
+  port: 3000
+
 image:
   repository: plural
   # if empty the chart version is used
@@ -755,6 +758,10 @@ service:
   type: ClusterIP
   port: 80
 
+  mcp:
+    type: ClusterIP
+    annotations: {}
+
 ingress:
   enabled: true
   dns: app.plural.sh
@@ -769,6 +776,14 @@ ingress:
     nginx.ingress.kubernetes.io/proxy-read-timeout: '3600'
     nginx.ingress.kubernetes.io/proxy-send-timeout: '3600'
   
+  mcp:
+    enabled: false
+    dns: mcp.plural.sh
+    annotations:
+      kubernetes.io/tls-acme: "true"
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+      nginx.ingress.kubernetes.io/force-ssl-redirect: 'true'
+
 resources: {}
 
 nodeSelector: {}

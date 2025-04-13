@@ -675,6 +675,7 @@ defmodule Core.Services.Payments do
   defp discount(amount, :yearly), do: round(9 * amount / 10) * 12
   defp discount(amount, _), do: amount
 
+  @spec setup_enterprise_plan(User.t | binary) :: platform_sub_resp
   def setup_enterprise_plan(%User{} = user) do
     case Repo.preload(user, [account: [subscription: :plan]]) do
       %{account: %Account{} = account} ->
@@ -683,13 +684,23 @@ defmodule Core.Services.Payments do
       _ -> setup_enterprise_plan(user.account_id)
     end
   end
-
-  def setup_enterprise_plan(account_id) do
+  def setup_enterprise_plan(account_id) when is_binary(account_id) do
     plan = get_platform_plan_by_name!("Enterprise")
 
     %PlatformSubscription{account_id: account_id}
     |> PlatformSubscription.changeset(%{plan_id: plan.id})
     |> Core.Repo.insert()
+  end
+
+  @spec remove_enterprise_plan(binary) :: platform_sub_resp
+  def remove_enterprise_plan(account_id) do
+    Repo.get_by(PlatformSubscription, account_id: account_id)
+    |> Repo.preload([:plan])
+    |> case do
+      %PlatformSubscription{plan: %PlatformPlan{enterprise: true}} = sub ->
+        Repo.delete(sub)
+      _ -> {:error, "account #{account_id} is not on an enterprise plan"}
+    end
   end
 
   @doc """

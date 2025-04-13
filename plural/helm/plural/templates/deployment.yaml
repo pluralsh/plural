@@ -45,6 +45,9 @@ spec:
         - name: epmd
           containerPort: 4369
           protocol: TCP
+        - name: mcp
+          containerPort: {{ .Values.mcp.port }}
+          protocol: TCP
         livenessProbe:
           httpGet:
             path: /health

@@ -56,7 +56,7 @@ defimpl Core.Mcp.Serialization.Proto, for: Core.Schema.ConsoleInstance do
   def serialize(console) do
     console
     |> Map.from_struct()
-    |> Map.drop(~w(__meta__ configuration)a)
+    |> Map.take(~w(id first_notif_at second_notif_at type name status subdomain url cloud size region cluster owner)a)
     |> Core.Mcp.Serialization.Proto.serialize()
   end
 end

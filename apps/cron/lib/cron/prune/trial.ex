@@ -5,7 +5,6 @@ defmodule Cron.Prune.Trials do
   use Cron
   alias Core.Services.Payments
   alias Core.Schema.PlatformSubscription
-  require Logger
 
   def run() do
     PlatformSubscription

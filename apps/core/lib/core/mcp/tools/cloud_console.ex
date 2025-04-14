@@ -23,9 +23,8 @@ defmodule Core.MCP.Tools.CloudConsole do
   end
 
   def invoke(%{"name" => name}) do
-    with %ConsoleInstance{} = console <- Cloud.get_instance_by_name(name),
-         console = Repo.preload(console, [:cluster, owner: [account: [subscription: :plan]]]) do
-      format(console)
+    with %ConsoleInstance{} = console <- Cloud.get_instance_by_name(name) do
+      Repo.preload(console, [:cluster, owner: [account: [subscription: :plan]]])
       |> Proto.serialize()
       |> Jason.encode()
     else
@@ -33,8 +32,4 @@ defmodule Core.MCP.Tools.CloudConsole do
     end
   end
   def invoke(_), do: {:error, "email is required"}
-
-  defp format(console) do
-    Map.take(console, ~w(id type name status subdomain url cloud size region cluster owner)a)
-  end
 end

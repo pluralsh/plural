@@ -2,12 +2,14 @@ defmodule Core.MCP.Server do
   use MCPServer
   alias Core.MCP.Tools.{
     Account,
+    AccountUsers,
     Enterprise,
     CloudConsole,
+    CloudReap,
     RemoveEnterprise
   }
 
-  @tools [Account, Enterprise, CloudConsole, RemoveEnterprise]
+  @tools [Account, AccountUsers, Enterprise, CloudConsole, CloudReap, RemoveEnterprise]
   @by_name Map.new(@tools, & {&1.name(), &1})
 
   @protocol_version "2024-11-05"

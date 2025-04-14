@@ -66,7 +66,7 @@ defmodule Core.MCP.Server do
           }
         }}
       {:error, err} ->
-        {:ok, %{jsonrpc: "2.0", id: request_id, result: %{isError: true, content: [%{type: "text", text: err}]}}}
+        {:ok, %{jsonrpc: "2.0", id: request_id, result: %{isError: true, content: [%{type: "text", text: inspect(err)}]}}}
     end
   end
 end

@@ -75,4 +75,13 @@ defmodule Core.Schema.PlatformPlan do
     model
     |> cast(attrs, features())
   end
+
+  defimpl Jason.Encoder, for: Core.Schema.PlatformPlan.Features do
+    def encode(features, opts) do
+      features
+      |> Map.from_struct()
+      |> Map.take(Core.Schema.PlatformPlan.features())
+      |> Jason.encode(opts)
+    end
+  end
 end

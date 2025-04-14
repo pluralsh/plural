@@ -38,7 +38,7 @@ spec:
     protocol: TCP
     name: mcp
   selector:
-    app.kubernetes.io/name: plural-api
+    app.kubernetes.io/name: plural-mcp
     app.kubernetes.io/instance: {{ .Release.Name }}
 ---
 apiVersion: v1

@@ -8,6 +8,12 @@ defmodule Core.MCP.Router do
    pass: ["text/*"],
    json_decoder: Jason
 
+  plug Plug.SSL, rewrite_on: [
+    :x_forwarded_proto,
+    :x_forwarded_host,
+    :x_forwarded_port
+  ]
+
   plug :match
   plug :ensure_session_id
   plug :authorize

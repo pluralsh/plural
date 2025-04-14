@@ -311,6 +311,8 @@ spec:
         - secretRef:
             name: plural-env
         env:
+        - name: PLRL_IGNORE_CLUSTER
+          value: "true"
         {{ include "plural.env" . | nindent 8 }}
         ports:
         - name: http

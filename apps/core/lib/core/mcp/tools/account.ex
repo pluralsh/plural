@@ -2,6 +2,7 @@ defmodule Core.MCP.Tools.Account do
   @behaviour Core.MCP.Tool
   alias Core.Repo
   alias Core.Services.Users
+  alias Core.Mcp.Serialization.Proto
   alias Core.Schema.User
 
   def name(), do: "account"
@@ -24,7 +25,8 @@ defmodule Core.MCP.Tools.Account do
   def invoke(%{"email" => email}) do
     with %User{} = user <- Users.get_user_by_email(email) do
       user = Repo.preload(user, [account: [subscription: :plan]])
-      Jason.encode(user)
+      Proto.serialize(user)
+      |> Jason.encode()
     else
       _ -> {:ok, "no user with email #{email}"}
     end

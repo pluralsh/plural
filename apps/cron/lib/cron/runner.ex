@@ -2,13 +2,17 @@ defmodule Cron.Runner do
   use Task, restart: :transient
   require Logger
 
+  @sleep :timer.seconds(10)
+
   def start_link(_) do
     Task.start_link(&run_cron/0)
   end
 
   def run_cron() do
     module = resolve_module()
-    Logger.info "Starting cron #{module}"
+    Logger.info "Sleeping to initialize dependencies for #{@sleep} seconds first..."
+    :timer.sleep(@sleep)
+    Logger.info "Starting cron #{module}..."
     module.execute()
   after
     :init.stop()

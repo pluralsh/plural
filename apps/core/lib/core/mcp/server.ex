@@ -18,30 +18,23 @@ defmodule Core.MCP.Server do
   end
 
   @impl true
-  def handle_initialize(request_id, params) do
-    case validate_protocol_version(params["protocolVersion"]) do
-      :ok ->
-        {:ok,
-         %{
-           jsonrpc: "2.0",
-           id: request_id,
-           result: %{
-             protocolVersion: @protocol_version,
-             capabilities: %{
-               tools: %{
-                 listChanged: true
-               }
-             },
-             serverInfo: %{
-               name: "Plural MCP Server",
-               version: "0.1.0"
-             }
-           }
-         }}
-
-      {:error, reason} ->
-        {:error, reason}
-    end
+  def handle_initialize(request_id, _params) do
+    {:ok, %{
+      jsonrpc: "2.0",
+      id: request_id,
+      result: %{
+        protocolVersion: @protocol_version,
+        capabilities: %{
+          tools: %{
+            listChanged: true
+          }
+        },
+        serverInfo: %{
+          name: "Plural MCP Server",
+          version: "0.1.0"
+        }
+      }
+    }}
   end
 
   @impl true

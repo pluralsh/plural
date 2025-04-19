@@ -7,7 +7,7 @@ on:
 jobs:
   test:
     name: Test
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - uses: erlef/setup-beam@v1
@@ -48,7 +48,7 @@ jobs:
         if: always()
   publish:
     name: Build and push Plural containers
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     needs: test
     strategy:
       matrix:
@@ -128,7 +128,7 @@ jobs:
       if: always()
   publish-frontend:
     name: Build and push Plural frontend container
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     needs: test
     permissions:
       contents: 'read'
@@ -202,7 +202,7 @@ jobs:
       if: always()
   release:
     name: Create GitHub release
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     needs: [publish, publish-frontend]
     permissions:
       contents: write
@@ -229,7 +229,7 @@ jobs:
         prerelease: ${{ steps.check.outputs.RC }}
   # bump:
   #   name: Bump Chart Version
-  #   runs-on: ubuntu-20.04
+  #   runs-on: ubuntu-latest
   #   needs: [release]
   #   permissions:
   #     contents: write

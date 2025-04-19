@@ -10,7 +10,7 @@ on:
 jobs:
   build:
     name: Build image
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     permissions:
       contents: 'read'
       id-token: 'write'
@@ -72,7 +72,7 @@ jobs:
           sarif_file: 'trivy-results.sarif'
   trivy-scan:
     name: Trivy fs scan
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     permissions:
       contents: read # for actions/checkout to fetch code
       security-events: write # for github/codeql-action/upload-sarif to upload SARIF results
@@ -100,7 +100,7 @@ jobs:
           sarif_file: 'trivy-results.sarif'
   test:
     name: Unit test
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     defaults:
       run:
         shell: bash
@@ -119,7 +119,7 @@ jobs:
       - run: yarn test
   lint:
     name: Lint
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     defaults:
       run:
         shell: bash
@@ -138,7 +138,7 @@ jobs:
       - run: yarn lint
   # e2e:
   #   name: End-to-end test
-  #   runs-on: ubuntu-20.04
+  #   runs-on: ubuntu-latest
   #   env:
   #     CYPRESS_EMAIL: ${{ secrets.CYPRESS_EMAIL }}
   #     CYPRESS_PASSWORD: ${{ secrets.CYPRESS_PASSWORD }}

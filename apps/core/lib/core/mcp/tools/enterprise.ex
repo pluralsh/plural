@@ -1,6 +1,7 @@
 defmodule Core.MCP.Tools.Enterprise do
   @behaviour Core.MCP.Tool
-  alias Core.Services.{Accounts, Payments}
+  import Core.MCP.Tools.Utils
+  alias Core.Services.{Payments}
   alias Core.Schema.Account
 
   def name(), do: "add_enterprise_plan"
@@ -14,14 +15,14 @@ defmodule Core.MCP.Tools.Enterprise do
       properties: %{
         account_id: %{
           type: "string",
-          description: "The account id to add to the enterprise plan.  You can fetch the id by first fetching the users account info."
+          description: "The account id (must be a UUID) to add to the enterprise plan.  You can fetch the id by first fetching the users account info."
         }
       }
     }
   end
 
   def invoke(%{"account_id" => id}) do
-    with %Account{} = account <- Accounts.get_account(id),
+    with {:ok, %Account{} = account} <- get_account(id),
          {:ok, _} <- Payments.remove_trial(account),
          {:ok, _} <- Payments.setup_enterprise_plan(account.id) do
       {:ok, "added the account to the enterprise plan successfully"}

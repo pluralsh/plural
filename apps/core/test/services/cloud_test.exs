@@ -209,4 +209,23 @@ defmodule Core.Services.CloudTest do
       assert_receive {:event, %PubSub.ConsoleInstanceDeleted{item: ^reaped}}
     end
   end
+
+  describe "#add_oidc_binding/2" do
+    test "it will add an email to the oidc provider's bindings" do
+      inst = insert(:console_instance)
+      repo = insert(:repository, name: "console")
+      repo_inst = insert(:installation, repository: repo, user: inst.owner)
+
+      expect(HTTPoison, :post, fn _, _, _ ->
+        {:ok, %{status_code: 200, body: Jason.encode!(%{client_id: "123", client_secret: "secret"})}}
+      end)
+
+      user = insert(:user)
+
+      {:ok, provider} = Cloud.add_oidc_binding(inst.name, user.email)
+
+      assert provider.installation_id == repo_inst.id
+      assert Enum.any?(provider.bindings, & &1.user_id == user.id)
+    end
+  end
 end

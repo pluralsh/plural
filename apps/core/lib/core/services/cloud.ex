@@ -3,8 +3,8 @@ defmodule Core.Services.Cloud do
   import Core.Policies.Cloud
   alias Core.Repo
   alias Core.PubSub
-  alias Core.Services.{Accounts, Users, Repositories, Shell}
-  alias Core.Schema.{CloudCluster, PostgresCluster, ConsoleInstance, User, OIDCProvider}
+  alias Core.Services.{Accounts, Users, Repositories, Shell, OAuth}
+  alias Core.Schema.{CloudCluster, PostgresCluster, ConsoleInstance, User, OIDCProvider, Installation}
 
   @type error :: {:error, term}
   @type console_resp :: {:ok, ConsoleInstance.t} | error
@@ -119,6 +119,28 @@ defmodule Core.Services.Cloud do
     end)
     |> execute(extract: :deleted)
     |> notify(:delete, user)
+  end
+
+  @doc """
+  Adds an email directly to a cloud console's oidc provider's bindings
+  """
+  @spec add_oidc_binding(binary, binary) :: OAuth.oidc_resp
+  def add_oidc_binding(name, email) do
+    repo = Repositories.get_repository_by_name!("console")
+    with {:user, %User{} = user} <- {:user, Repo.get_by(User, email: email)},
+         {:console, %ConsoleInstance{} = inst} <- {:console, get_instance_by_name(name)},
+         %ConsoleInstance{owner: %User{id: oid} = sa} <- Repo.preload(inst, [:owner]),
+         %Installation{} = inst <- Repositories.get_installation(oid, repo.id) do
+      inst = Core.Repo.preload(inst, [oidc_provider: :bindings])
+      Repositories.upsert_oidc_provider(%{
+        auth_method: :post,
+        bindings: Shell.oidc_bindings(inst.oidc_provider, user),
+      }, inst.id, sa)
+    else
+      {:user, _} -> {:error, "could not find user with email #{email}"}
+      {:console, _} -> {:error, "could not find console with name #{name}"}
+      err -> err
+    end
   end
 
   @doc """

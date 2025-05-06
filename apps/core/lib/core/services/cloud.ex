@@ -135,6 +135,7 @@ defmodule Core.Services.Cloud do
       Repositories.upsert_oidc_provider(%{
         auth_method: :post,
         bindings: Shell.oidc_bindings(inst.oidc_provider, user),
+        redirect_uris: Shell.merge_uris(["https://console.#{name}.#{domain()}/oauth/callback"], inst.oidc_provider)
       }, inst.id, sa)
     else
       {:user, _} -> {:error, "could not find user with email #{email}"}

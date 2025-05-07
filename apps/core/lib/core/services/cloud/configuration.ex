@@ -30,7 +30,7 @@ defmodule Core.Services.Cloud.Configuration do
   end
 
   def stack_attributes(%ConsoleInstance{name: name} = inst, attrs) do
-   Map.merge(attrs, %{
+    Map.merge(attrs, %{
       name: "dedicated-#{name}",
       cluster_id: Core.conf(:mgmt_cluster),
       type: "TERRAFORM",
@@ -38,15 +38,36 @@ defmodule Core.Services.Cloud.Configuration do
       approval: false,
       configuration: %{version: "1.8"},
       git: %{ref: "main", folder: "terraform/modules/dedicated/#{inst.cloud}"},
-      environment: Enum.map([
-        region: inst.region,
-        development: String.contains?(Core.conf(:dedicated_project), "dev"),
-        cluster_name: "dedicated-#{inst.name}",
-        size: inst.size,
-        service_secrets: build(inst) |> Map.new(fn %{name: n, value: v} -> {n, v} end) |> Jason.encode!()
-      ], fn {k, v} -> %{name: "TF_VAR_#{k}", value: "#{v}"} end)
+      environment: Enum.map(stack_environment(inst), fn {k, v} -> %{name: "TF_VAR_#{k}", value: "#{v}"} end)
     })
   end
+
+  defp stack_environment(%ConsoleInstance{} = inst) do
+    [
+      region: inst.region,
+      development: String.contains?(Core.conf(:dedicated_project), "dev"),
+      cluster_name: "dedicated-#{inst.name}",
+      size: inst.size,
+      service_secrets: build(inst) |> Map.new(fn %{name: n, value: v} -> {n, v} end) |> Jason.encode!()
+    ]
+    |> add_network(inst)
+    |> add_oidc(inst)
+  end
+
+  defp add_network(env, %ConsoleInstance{network: %ConsoleInstance.Network{allowed_cidrs: [_ | _] = cidrs}}) do
+    env ++ [network_allowd_cidrs: Jason.encode!(cidrs)]
+  end
+  defp add_network(_, _), do: []
+
+  defp add_oidc(env, %ConsoleInstance{oidc: %ConsoleInstance.OIDC{issuer: issuer, client_id: client_id, client_secret: client_secret}})
+    when is_binary(issuer) and is_binary(client_id) and is_binary(client_secret) do
+    env ++ [
+      oidc_issuer: issuer,
+      oidc_client_id: client_id,
+      oidc_client_secret: client_secret
+    ]
+  end
+  defp add_oidc(_, _), do: []
 
   # defp certificate(%ConsoleInstance{postgres: %PostgresCluster{certificate: cert}}), do: cert
 

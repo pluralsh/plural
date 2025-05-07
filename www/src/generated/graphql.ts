@@ -580,6 +580,10 @@ export type ConsoleInstance = {
   insertedAt?: Maybe<Scalars['DateTime']['output']>;
   /** the name of this instance (globally unique) */
   name: Scalars['String']['output'];
+  /** the network configuration for this instance */
+  network?: Maybe<ConsoleInstanceNetwork>;
+  /** custom oidc configuration for this instance */
+  oidc?: Maybe<ConsoleInstanceOidc>;
   owner?: Maybe<User>;
   /** the region this instance is hosted in */
   region: Scalars['String']['output'];
@@ -601,6 +605,10 @@ export type ConsoleInstanceAttributes = {
   cloud: CloudProvider;
   /** the name of this instance (globally unique) */
   name: Scalars['String']['input'];
+  /** use this to add network security settings to this instance */
+  network?: InputMaybe<ConsoleNetworkAttributes>;
+  /** use this to add custom oidc configuration to this instance */
+  oidc?: InputMaybe<ConsoleOidcAttributes>;
   /** the region to deploy to (provider specific) */
   region: Scalars['String']['input'];
   /** a heuristic size of this instance */
@@ -621,6 +629,18 @@ export type ConsoleInstanceEdge = {
   node?: Maybe<ConsoleInstance>;
 };
 
+export type ConsoleInstanceNetwork = {
+  __typename?: 'ConsoleInstanceNetwork';
+  allowedCidrs?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+};
+
+export type ConsoleInstanceOidc = {
+  __typename?: 'ConsoleInstanceOidc';
+  clientId?: Maybe<Scalars['String']['output']>;
+  clientSecret?: Maybe<Scalars['String']['output']>;
+  issuer?: Maybe<Scalars['String']['output']>;
+};
+
 export enum ConsoleInstanceStatus {
   DatabaseCreated = 'DATABASE_CREATED',
   DatabaseDeleted = 'DATABASE_DELETED',
@@ -639,7 +659,19 @@ export enum ConsoleInstanceType {
 
 export type ConsoleInstanceUpdateAttributes = {
   configuration?: InputMaybe<ConsoleConfigurationUpdateAttributes>;
+  network?: InputMaybe<ConsoleNetworkAttributes>;
+  oidc?: InputMaybe<ConsoleOidcAttributes>;
   size?: InputMaybe<ConsoleSize>;
+};
+
+export type ConsoleNetworkAttributes = {
+  allowedCidrs?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+};
+
+export type ConsoleOidcAttributes = {
+  clientId?: InputMaybe<Scalars['String']['input']>;
+  clientSecret?: InputMaybe<Scalars['String']['input']>;
+  issuer?: InputMaybe<Scalars['String']['input']>;
 };
 
 export enum ConsoleSize {

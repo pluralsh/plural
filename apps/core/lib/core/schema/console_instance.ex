@@ -45,6 +45,16 @@ defmodule Core.Schema.ConsoleInstance do
       field :stack, :boolean, default: false
     end
 
+    embeds_one :network, Network, on_replace: :update do
+      field :allowed_cidrs, {:array, :string}
+    end
+
+    embeds_one :oidc, OIDC, on_replace: :update do
+      field :issuer,        :string
+      field :client_id,     :string
+      field :client_secret, EncryptedString
+    end
+
     embeds_one :configuration, Configuration, on_replace: :update do
       field :database,       :string
       field :dbuser,         :string
@@ -113,6 +123,8 @@ defmodule Core.Schema.ConsoleInstance do
     |> cast(attrs, @valid)
     |> cast_embed(:configuration, with: &configuration_changeset/2)
     |> cast_embed(:instance_status, with: &status_changeset/2)
+    |> cast_embed(:network, with: &network_changeset/2)
+    |> cast_embed(:oidc, with: &oidc_changeset/2)
     |> validate_required(@valid -- ~w(external_id name postgres_id cluster_id)a)
     |> foreign_key_constraint(:cluster_id)
     |> foreign_key_constraint(:postgres_id)
@@ -165,5 +177,16 @@ defmodule Core.Schema.ConsoleInstance do
   defp status_changeset(model, attrs) do
     model
     |> cast(attrs, ~w(db svc stack)a)
+  end
+
+  defp network_changeset(model, attrs) do
+    model
+    |> cast(attrs, ~w(allowed_cidrs)a)
+  end
+
+  defp oidc_changeset(model, attrs) do
+    model
+    |> cast(attrs, ~w(issuer client_id client_secret)a)
+    |> validate_required(~w(issuer client_id client_secret)a)
   end
 end

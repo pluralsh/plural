@@ -25,7 +25,7 @@ defmodule Core.MCP.Tools.CloudReap do
 
   def invoke(%{"name" => name}) do
     with %ConsoleInstance{} = console <- Cloud.get_instance_by_name(name),
-         {:ok, inst} <- Cloud.reap(console) do
+         {:ok, _inst} <- Cloud.reap(console) do
       res = Repo.preload(console, [:cluster, owner: [account: [subscription: :plan]]])
             |> Proto.serialize()
             |> Jason.encode!()

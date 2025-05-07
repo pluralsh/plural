@@ -9,20 +9,34 @@ defmodule GraphQl.Schema.Cloud do
   ecto_enum :console_instance_type, ConsoleInstance.Type
 
   input_object :console_instance_attributes do
-    field :type,   non_null(:console_instance_type), description: "the type of console instance"
-    field :name,   non_null(:string), description: "the name of this instance (globally unique)"
-    field :size,   non_null(:console_size), description: "a heuristic size of this instance"
-    field :cloud,  non_null(:cloud_provider), description: "the cloud provider to deploy to"
-    field :region, non_null(:string), description: "the region to deploy to (provider specific)"
+    field :type,    non_null(:console_instance_type), description: "the type of console instance"
+    field :name,    non_null(:string), description: "the name of this instance (globally unique)"
+    field :size,    non_null(:console_size), description: "a heuristic size of this instance"
+    field :cloud,   non_null(:cloud_provider), description: "the cloud provider to deploy to"
+    field :region,  non_null(:string), description: "the region to deploy to (provider specific)"
+    field :network, :console_network_attributes, description: "use this to add network security settings to this instance"
+    field :oidc,    :console_oidc_attributes,    description: "use this to add custom oidc configuration to this instance"
   end
 
   input_object :console_instance_update_attributes do
     field :size,          :console_size
     field :configuration, :console_configuration_update_attributes
+    field :network,       :console_network_attributes
+    field :oidc,          :console_oidc_attributes
   end
 
   input_object :console_configuration_update_attributes do
     field :encryption_key, :string
+  end
+
+  input_object :console_network_attributes do
+    field :allowed_cidrs, list_of(:string)
+  end
+
+  input_object :console_oidc_attributes do
+    field :issuer,        :string
+    field :client_id,     :string
+    field :client_secret, :string
   end
 
   object :console_instance do
@@ -34,6 +48,10 @@ defmodule GraphQl.Schema.Cloud do
     field :cloud,     non_null(:cloud_provider), description: "the cloud provider hosting this instance"
     field :size,      non_null(:console_size), description: "the heuristic size of this instance"
     field :region,    non_null(:string), description: "the region this instance is hosted in"
+
+    field :network, :console_instance_network, description: "the network configuration for this instance"
+    field :oidc,    :console_instance_oidc,    description: "custom oidc configuration for this instance"
+
     field :status,    non_null(:console_instance_status),
       description: "the provisioning status of this instance, liveness is fetched through the console field"
 
@@ -56,6 +74,16 @@ defmodule GraphQl.Schema.Cloud do
 
   object :cloud_regions do
     field :aws, list_of(:string)
+  end
+
+  object :console_instance_network do
+    field :allowed_cidrs, list_of(:string)
+  end
+
+  object :console_instance_oidc do
+    field :issuer,        :string
+    field :client_id,     :string
+    field :client_secret, :string
   end
 
   connection node_type: :console_instance

@@ -602,15 +602,33 @@ input ConsoleInstanceAttributes {
 
   "the region to deploy to (provider specific)"
   region: String!
+
+  "use this to add network security settings to this instance"
+  network: ConsoleNetworkAttributes
+
+  "use this to add custom oidc configuration to this instance"
+  oidc: ConsoleOidcAttributes
 }
 
 input ConsoleInstanceUpdateAttributes {
   size: ConsoleSize
   configuration: ConsoleConfigurationUpdateAttributes
+  network: ConsoleNetworkAttributes
+  oidc: ConsoleOidcAttributes
 }
 
 input ConsoleConfigurationUpdateAttributes {
   encryptionKey: String
+}
+
+input ConsoleNetworkAttributes {
+  allowedCidrs: [String]
+}
+
+input ConsoleOidcAttributes {
+  issuer: String
+  clientId: String
+  clientSecret: String
 }
 
 type ConsoleInstance {
@@ -636,6 +654,12 @@ type ConsoleInstance {
 
   "the region this instance is hosted in"
   region: String!
+
+  "the network configuration for this instance"
+  network: ConsoleInstanceNetwork
+
+  "custom oidc configuration for this instance"
+  oidc: ConsoleInstanceOidc
 
   "the provisioning status of this instance, liveness is fetched through the console field"
   status: ConsoleInstanceStatus!
@@ -663,6 +687,16 @@ type PluralCloudRegions {
 
 type CloudRegions {
   aws: [String]
+}
+
+type ConsoleInstanceNetwork {
+  allowedCidrs: [String]
+}
+
+type ConsoleInstanceOidc {
+  issuer: String
+  clientId: String
+  clientSecret: String
 }
 
 type ConsoleInstanceConnection {

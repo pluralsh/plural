@@ -198,6 +198,7 @@ defmodule Core.Services.Cloud do
       kas_api:        Core.random_alphanum(64) |> Base.encode64(),
       kas_private:    Core.random_alphanum(64) |> Base.encode64(),
       kas_redis:      Core.random_alphanum(64) |> Base.encode64(),
+      github_app_pem: Core.conf(:github_app_pem)
     })
   end
 

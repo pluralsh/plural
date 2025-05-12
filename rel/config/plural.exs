@@ -25,6 +25,10 @@ if get_env("CLOUD_SHELL_DIND_IMG") do
   config :core, :dind_img, get_env("CLOUD_SHELL_DIND_IMG")
 end
 
+if get_env("PRL_GITHUB_APP_PEM") do
+  config :core, :github_app_pem, get_env("PRL_GITHUB_APP_PEM")
+end
+
 if !get_env("PLRL_IGNORE_CLUSTER") do
 config :libcluster,
   topologies: [

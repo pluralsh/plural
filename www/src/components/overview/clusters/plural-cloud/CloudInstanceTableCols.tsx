@@ -12,22 +12,25 @@ import {
   TrashCanIcon,
 } from '@pluralsh/design-system'
 import { createColumnHelper } from '@tanstack/react-table'
+
+import { MoreMenu } from 'components/account/MoreMenu'
+
+import { ClusterAdminsModal } from 'components/cluster/ClusterAdminsModal'
 import { ProviderIcon } from 'components/utils/ProviderIcon'
+import ConsoleInstancesContext from 'contexts/ConsoleInstancesContext'
 
 import {
   ConsoleInstanceFragment,
   ConsoleInstanceStatus,
   ConsoleInstanceType,
+  useMeQuery,
 } from 'generated/graphql'
 
-import { MoreMenu } from 'components/account/MoreMenu'
-import ConsoleInstancesContext from 'contexts/ConsoleInstancesContext'
+import { upperFirst } from 'lodash'
 import { useCallback, useContext, useState } from 'react'
 import { useTheme } from 'styled-components'
-
-import { ClusterAdminsModal } from 'components/cluster/ClusterAdminsModal'
-
-import { upperFirst } from 'lodash'
+import useImpersonatedServiceAccount from '../../../../hooks/useImpersonatedServiceAccount'
+import ImpersonateServiceAccount from '../../../utils/ImpersonateServiceAccount'
 
 import { CellCaption, CellWrap } from '../SelfHostedTableCols'
 
@@ -178,6 +181,9 @@ const ColActions = columnHelper.accessor((instance) => instance, {
     const instance = getValue()
     const { refetchInstances } = useContext(ConsoleInstancesContext)
     const onClose = useCallback(() => setMenuKey(''), [])
+    const { error } = useImpersonatedServiceAccount(
+      instance?.console?.owner?.id
+    )
 
     return (
       <Flex
@@ -212,11 +218,13 @@ const ColActions = columnHelper.accessor((instance) => instance, {
             }
             leftContent={<PersonPlusIcon />}
           />
-          <ListBoxItem
-            key={MenuItemKey.EditPluralOIDCClients}
-            label="Edit Plural OIDC clients"
-            leftContent={<PeopleIcon />}
-          />
+          {!error && (
+            <ListBoxItem
+              key={MenuItemKey.EditPluralOIDCClients}
+              label="Edit Plural OIDC clients"
+              leftContent={<PeopleIcon />}
+            />
+          )}
           <ListBoxItem
             key={MenuItemKey.Delete}
             destructive

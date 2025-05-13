@@ -7,7 +7,7 @@ import { fetchToken } from '../helpers/authentication'
 import { useImpersonateServiceAccountMutation } from '../generated/graphql'
 
 // Cache tokens with service account ID as keys.
-const getImpersonatedToken = memoize((id, mutation) =>
+const getImpersonatedToken = memoize((_, mutation) =>
   mutation().then(({ data }) => data?.impersonateServiceAccount?.jwt)
 )
 
@@ -20,9 +20,18 @@ export default function useImpersonatedServiceAccount(
 ) {
   const [client, setClient] = useState<ApolloClient<unknown> | undefined>()
   const [token, setToken] = useState<any | undefined>()
+  const [impersonationError, setImpersonationError] = useState<
+    any | undefined
+  >()
   const [mutation, { error }] = useImpersonateServiceAccountMutation({
     variables: { id },
   })
+
+  useEffect(() => {
+    if (error) {
+      setImpersonationError(error)
+    }
+  }, [error])
 
   useEffect(() => {
     if (skip) {
@@ -37,11 +46,16 @@ export default function useImpersonatedServiceAccount(
     setToken(undefined)
 
     // Retrieve client matching given service account.
-    getImpersonatedToken(id, mutation).then((jwt) => {
-      setClient(getClient(jwt))
-      setToken(jwt)
-    })
+    getImpersonatedToken(id, mutation)
+      .then((jwt) => {
+        setClient(getClient(jwt))
+        setToken(jwt)
+      })
+      .catch((err) => setImpersonationError(err))
   }, [id]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  return useMemo(() => ({ client, token, error }), [client, token, error])
+  return useMemo(
+    () => ({ client, token, error: impersonationError }),
+    [client, token, impersonationError]
+  )
 }

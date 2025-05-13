@@ -181,6 +181,9 @@ const ColActions = columnHelper.accessor((instance) => instance, {
     const instance = getValue()
     const { refetchInstances } = useContext(ConsoleInstancesContext)
     const onClose = useCallback(() => setMenuKey(''), [])
+    const { error } = useImpersonatedServiceAccount(
+      instance?.console?.owner?.id
+    )
 
     return (
       <Flex
@@ -215,16 +218,13 @@ const ColActions = columnHelper.accessor((instance) => instance, {
             }
             leftContent={<PersonPlusIcon />}
           />
-          <ImpersonateServiceAccount
-            id={instance.console?.owner?.id}
-            renderIndicators={false}
-          >
+          {!error && (
             <ListBoxItem
               key={MenuItemKey.EditPluralOIDCClients}
               label="Edit Plural OIDC clients"
               leftContent={<PeopleIcon />}
             />
-          </ImpersonateServiceAccount>
+          )}
           <ListBoxItem
             key={MenuItemKey.Delete}
             destructive

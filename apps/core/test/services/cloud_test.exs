@@ -228,4 +228,37 @@ defmodule Core.Services.CloudTest do
       assert Enum.any?(provider.bindings, & &1.user_id == user.id)
     end
   end
+
+  describe "#backfill_es_password/0" do
+    test "it will backfill the es_password for all instances" do
+      oidc = insert(:oidc_provider)
+      owner = insert(:user)
+      old_config = Cloud.add_configuration(%{owner: owner}, "test", "token", oidc, owner)
+      new = for i <- 1..3 do
+        insert(:console_instance, put_in(old_config, [:configuration, :es_password], nil)
+                                  |> put_in([:configuration, :prom_password], nil)
+                                  |> Map.put(:subdomain, "dns-#{i}")
+                                  |> Map.put(:url, "https://console.#{i}.plural.sh"))
+      end
+
+      old = for i <- 1..3 do
+        insert(:console_instance, Map.put(old_config, :subdomain, "dns-old-#{i}")
+                                  |> Map.put(:url, "https://console.old-#{i}.plural.sh"))
+      end
+
+      Cloud.backfill_es_passwords()
+
+      for inst <- new do
+        assert refetch(inst).configuration.es_password
+        assert refetch(inst).configuration.prom_password
+        refute refetch(inst).configuration.es_password   == inst.configuration.es_password
+        refute refetch(inst).configuration.prom_password == inst.configuration.prom_password
+      end
+
+      for inst <- old do
+        assert refetch(inst).configuration.es_password   == inst.configuration.es_password
+        assert refetch(inst).configuration.prom_password == inst.configuration.prom_password
+      end
+    end
+  end
 end

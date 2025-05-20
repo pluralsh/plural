@@ -74,6 +74,8 @@ defmodule Core.Schema.ConsoleInstance do
       field :kas_private,    EncryptedString
       field :kas_redis,      EncryptedString
       field :github_app_pem, EncryptedString
+      field :es_password,    EncryptedString
+      field :prom_password,  EncryptedString
     end
 
     belongs_to :postgres,  PostgresCluster
@@ -166,13 +168,13 @@ defmodule Core.Schema.ConsoleInstance do
     database dbuser dbpassword erlang_secret
     subdomain jwt_secret owner_name owner_email admin_password aes_key
     encryption_key client_id client_secret plural_token
-    kas_api kas_private kas_redis github_app_pem
+    kas_api kas_private kas_redis github_app_pem es_password prom_password
   )a
 
   defp configuration_changeset(model, attrs) do
     model
     |> cast(attrs, @conf_valid)
-    |> validate_required(@conf_valid -- ~w(github_app_pem)a)
+    |> validate_required(@conf_valid -- ~w(github_app_pem es_password prom_password)a)
   end
 
   defp status_changeset(model, attrs) do

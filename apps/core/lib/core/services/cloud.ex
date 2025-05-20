@@ -157,6 +157,27 @@ defmodule Core.Services.Cloud do
     delete_instance(inst.id, owner)
   end
 
+  def backfill_es_passwords() do
+    ConsoleInstance
+    |> Repo.all()
+    |> Enum.filter(fn
+      %ConsoleInstance{configuration: %ConsoleInstance.Configuration{
+        es_password: e,
+        prom_password: p
+      }} when is_binary(e) and is_binary(p) -> false
+      _ -> true
+    end)
+    |> Enum.each(fn inst ->
+      ConsoleInstance.changeset(inst, %{
+        configuration: %{
+          es_password: Core.random_alphanum(64),
+          prom_password: Core.random_alphanum(64)
+        }
+      })
+      |> Repo.update()
+    end)
+  end
+
   defp notify_reaping(instance, field) do
     Ecto.Changeset.change(instance, %{field => Timex.now()})
     |> Repo.update()
@@ -178,7 +199,7 @@ defmodule Core.Services.Cloud do
     end
   end
 
-  defp add_configuration(attrs, name, token, %OIDCProvider{} = oidc, %User{} = user) do
+  def add_configuration(attrs, name, token, %OIDCProvider{} = oidc, %User{} = user) do
     Map.merge(attrs, %{subdomain: "#{name}.#{domain()}", url: "console.#{name}.#{domain()}"})
     |> Map.put(:configuration, %{
       aes_key:        aes_key(),
@@ -198,7 +219,9 @@ defmodule Core.Services.Cloud do
       kas_api:        Core.random_alphanum(64) |> Base.encode64(),
       kas_private:    Core.random_alphanum(64) |> Base.encode64(),
       kas_redis:      Core.random_alphanum(64) |> Base.encode64(),
-      github_app_pem: Core.conf(:github_app_pem)
+      github_app_pem: Core.conf(:github_app_pem),
+      es_password:    Core.random_alphanum(64),
+      prom_password:  Core.random_alphanum(64)
     })
   end
 

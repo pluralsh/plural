@@ -29,7 +29,6 @@ export const CLUSTERS_ROOT_CRUMB = {
 
 export const CLUSTERS_OVERVIEW_BREADCRUMBS = [
   { label: 'overview', url: '/overview' },
-  CLUSTERS_ROOT_CRUMB,
 ]
 
 export function Clusters(): ReactElement | null {

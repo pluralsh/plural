@@ -23,14 +23,12 @@ import {
   ConsoleInstanceFragment,
   ConsoleInstanceStatus,
   ConsoleInstanceType,
-  useMeQuery,
 } from 'generated/graphql'
 
-import { upperFirst } from 'lodash'
+import { capitalize } from 'lodash'
 import { useCallback, useContext, useState } from 'react'
 import { useTheme } from 'styled-components'
 import useImpersonatedServiceAccount from '../../../../hooks/useImpersonatedServiceAccount'
-import ImpersonateServiceAccount from '../../../utils/ImpersonateServiceAccount'
 
 import { CellCaption, CellWrap } from '../SelfHostedTableCols'
 
@@ -84,18 +82,22 @@ const ColInstance = columnHelper.accessor((instance) => instance.name, {
   ),
 })
 
+export function StatusChip({ status }: { status: ConsoleInstanceStatus }) {
+  return (
+    <Chip
+      css={{ width: 'max-content' }}
+      severity={getStatusSeverity(status)}
+    >
+      {statusToLabel[status]}
+    </Chip>
+  )
+}
+
 const ColStatus = columnHelper.accessor((instance) => instance.status, {
   id: 'status',
   header: 'Status',
   enableSorting: true,
-  cell: ({ getValue }) => (
-    <Chip
-      css={{ width: 'max-content' }}
-      severity={getStatusSeverity(getValue())}
-    >
-      {statusToLabel[getValue()]}
-    </Chip>
-  ),
+  cell: ({ getValue }) => <StatusChip status={getValue()} />,
 })
 
 const ColCloud = columnHelper.accessor((instance) => instance.cloud, {
@@ -118,20 +120,21 @@ const ColCloud = columnHelper.accessor((instance) => instance.cloud, {
   ),
 })
 
+export function HostingChip({ type }: { type: ConsoleInstanceType }) {
+  return (
+    <Chip
+      css={{ width: 'max-content' }}
+      severity={type === ConsoleInstanceType.Dedicated ? 'info' : 'neutral'}
+    >
+      {capitalize(type)}
+    </Chip>
+  )
+}
 const ColHosting = columnHelper.accessor((instance) => instance.type, {
   id: 'hosting',
   header: 'Hosting',
   enableSorting: true,
-  cell: ({ getValue }) => (
-    <Chip
-      css={{ width: 'max-content' }}
-      severity={
-        getValue() === ConsoleInstanceType.Dedicated ? 'info' : 'neutral'
-      }
-    >
-      {upperFirst(getValue().toLowerCase())}
-    </Chip>
-  ),
+  cell: ({ getValue }) => <HostingChip type={getValue()} />,
 })
 
 const ColRegion = columnHelper.accessor((instance) => instance.region, {

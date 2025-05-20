@@ -79,6 +79,16 @@ defmodule Core.Services.AccountsTest do
       assert binding.group_id == group.id
     end
 
+    test "non-writers cannot add themselves", %{account: account} do
+      user = insert(:user, account: account)
+      srv = insert(:user, service_account: true, account: account)
+
+      {:error, _} = Accounts.update_service_account(%{
+        name: "service account",
+        impersonation_policy: %{bindings: [%{user_id: user.id}]}
+      }, srv.id, user)
+    end
+
     test "non service accts cannot be updated", %{user: user} do
       srv = insert(:user, account: user.account)
       group = insert(:group, account: user.account)

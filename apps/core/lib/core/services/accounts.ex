@@ -384,12 +384,15 @@ defmodule Core.Services.Accounts do
     case Users.get_user(id) do
       %User{service_account: true} = srv ->
         start_transaction()
-        |> add_operation(:sa, fn _ ->
+        |> add_operation(:access, fn _ ->
           srv
           |> Core.Repo.preload([impersonation_policy: [:bindings]])
+          |> allow(user, :impersonate)
+        end)
+        |> add_operation(:sa, fn %{access: srv} ->
+          srv
           |> User.service_account_changeset(attrs)
-          |> allow(user, :create)
-          |> when_ok(:update)
+          |> Core.Repo.update()
         end)
         |> add_operation(:validate, fn %{sa: %{account_id: aid} = sa} ->
           case Core.Repo.preload(sa, impersonation_policy: :bindings) do

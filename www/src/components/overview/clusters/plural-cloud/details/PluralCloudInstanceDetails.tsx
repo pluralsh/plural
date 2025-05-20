@@ -1,4 +1,4 @@
-import { Link, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import {
   CLOUD_INSTANCES_BREADCRUMBS,
   PLURAL_CLOUD_INSTANCES_PATH_ABS,
@@ -14,13 +14,19 @@ import {
   EmptyState,
   Flex,
   IconFrame,
+  theme,
   ReturnIcon,
+  SubTab,
+  TabList,
   useSetBreadcrumbs,
+  TabPanel,
 } from '@pluralsh/design-system'
-import { ReactNode, useMemo } from 'react'
+import { ReactNode, useMemo, useRef, useState } from 'react'
 import styled, { useTheme } from 'styled-components'
 import { HostingChip, StatusChip } from '../CloudInstanceTableCols'
 import { ProviderIcon } from 'components/utils/ProviderIcon'
+import { PluralCloudInstanceDropdown } from './PluralCloudInstanceDropdown'
+import { PluralCloudInstanceMoreMenu } from './PluralCloudInstanceMoreMenu'
 
 export const INSTANCE_ID_PARAM = 'instanceId'
 
@@ -29,8 +35,19 @@ const getBreadcrumbs = (name: string, instanceId: string) => [
   { label: name, url: `${PLURAL_CLOUD_INSTANCES_PATH_ABS}/${instanceId}` },
 ]
 
+enum Tab {
+  ConsoleAccess = 'Console access',
+  InstanceWriteAccess = 'Instance write access',
+  OIDCProviders = 'OIDC providers',
+  NetworkPolicy = 'Network policy',
+}
+
 export function PluralCloudInstanceDetails() {
+  const navigate = useNavigate()
   const { instanceId } = useParams()
+  const tabStateRef = useRef<any>(null)
+  const [currentTab, setCurrentTab] = useState<Tab>(Tab.ConsoleAccess)
+
   const { data, loading, error } = useConsoleInstanceQuery({
     variables: { id: instanceId ?? '' },
     fetchPolicy: 'cache-and-network',
@@ -45,10 +62,6 @@ export function PluralCloudInstanceDetails() {
       [instance?.name, instanceId]
     )
   )
-
-  if (loading) return <LoadingIndicator />
-  if (error) return <GqlError error={error} />
-  if (!instance) return <EmptyState message="Instance not found" />
 
   return (
     <Flex
@@ -66,7 +79,12 @@ export function PluralCloudInstanceDetails() {
             tooltip="Back to all instances"
             icon={<ReturnIcon width={16} />}
           />
-          <div>TODO DROPDOWN</div>
+          <PluralCloudInstanceDropdown
+            initialId={instanceId}
+            onChange={(id) =>
+              navigate(`${PLURAL_CLOUD_INSTANCES_PATH_ABS}/${id}`)
+            }
+          />
         </Flex>
         <Flex gap="small">
           {instance?.console?.consoleUrl && (
@@ -80,42 +98,73 @@ export function PluralCloudInstanceDetails() {
               Launch Console
             </Button>
           )}
-          <div>TODO: kebab menu</div>
+          <PluralCloudInstanceMoreMenu instance={instance} />
         </Flex>
       </HeaderSC>
-      <BasicInfoCardSC>
-        <InfoCardField
-          label="instance name"
-          value={instance.name}
-        />
-
-        <InfoCardField
-          label="status"
-          value={<StatusChip status={instance.status} />}
-        />
-        <InfoCardField
-          label="cloud"
-          value={
-            <Flex gap="xsmall">
-              <IconFrame
-                size="small"
-                type="floating"
-                icon={
-                  <ProviderIcon
-                    provider={instance.cloud}
-                    width={16}
+      {!instance ? (
+        loading ? (
+          <LoadingIndicator />
+        ) : error ? (
+          <GqlError error={error} />
+        ) : (
+          <EmptyState message="Instance not found" />
+        )
+      ) : (
+        <>
+          <BasicInfoCardSC>
+            <InfoCardField
+              label="instance name"
+              value={instance.name}
+            />
+            <InfoCardField
+              label="status"
+              value={<StatusChip status={instance.status} />}
+            />
+            <InfoCardField
+              label="cloud"
+              value={
+                <Flex gap="xsmall">
+                  <IconFrame
+                    size="small"
+                    type="floating"
+                    icon={
+                      <ProviderIcon
+                        provider={instance.cloud}
+                        width={16}
+                      />
+                    }
                   />
-                }
-              />
-              {instance.cloud}
-            </Flex>
-          }
-        />
-        <InfoCardField
-          label="hosting"
-          value={<HostingChip type={instance.type} />}
-        />
-      </BasicInfoCardSC>
+                  {instance.cloud}
+                </Flex>
+              }
+            />
+            <InfoCardField
+              label="hosting"
+              value={<HostingChip type={instance.type} />}
+            />
+          </BasicInfoCardSC>
+          <TabList
+            stateRef={tabStateRef}
+            stateProps={{
+              orientation: 'horizontal',
+              selectedKey: currentTab,
+              onSelectionChange: (key) => setCurrentTab(`${key}` as Tab),
+            }}
+          >
+            {Object.values(Tab).map((value) => (
+              <SubTab key={value}>{value}</SubTab>
+            ))}
+          </TabList>
+          <TabPanel stateRef={tabStateRef}>
+            {currentTab === Tab.ConsoleAccess && <div>Console access</div>}
+            {currentTab === Tab.InstanceWriteAccess && (
+              <div>Instance write access</div>
+            )}
+            {currentTab === Tab.OIDCProviders && <div>OIDC providers</div>}
+            {currentTab === Tab.NetworkPolicy && <div>Network policy</div>}
+          </TabPanel>
+        </>
+      )}
     </Flex>
   )
 }

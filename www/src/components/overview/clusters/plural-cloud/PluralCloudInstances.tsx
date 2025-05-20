@@ -29,14 +29,7 @@ export function PluralCloudInstances() {
 
   const [showToast, setShowToast] = useState(false)
 
-  const { instances: instancesBase } = useContext(ConsoleInstancesContext)
-  const instances = useMemo(
-    () =>
-      instancesBase.filter(
-        (i) => i.status !== ConsoleInstanceStatus.DeploymentDeleted
-      ),
-    [instancesBase]
-  )
+  const { instances } = useContext(ConsoleInstancesContext)
 
   useEffect(() => {
     const id = localStorage.getItem(FINISHED_CONSOLE_INSTANCE_KEY)

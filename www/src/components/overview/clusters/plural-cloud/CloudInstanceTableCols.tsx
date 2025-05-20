@@ -167,99 +167,25 @@ const ColOwner = columnHelper.accessor((instance) => instance.owner, {
   ),
 })
 
-enum MenuItemKey {
-  EditSize = 'editSize',
-  EditOidc = 'editOidc',
-  EditPluralOIDCClients = 'editPluralOIDCClients',
-  Delete = 'delete',
-}
-
 const ColActions = columnHelper.accessor((instance) => instance, {
   id: 'actions',
   header: '',
   meta: { gridTemplate: 'max-content' },
   cell: function Cell({ getValue }) {
     const theme = useTheme()
-    const [menuKey, setMenuKey] = useState<Nullable<string>>('')
     const instance = getValue()
-    const { refetchInstances } = useContext(ConsoleInstancesContext)
-    const onClose = useCallback(() => setMenuKey(''), [])
-    const { error } = useImpersonatedServiceAccount(
-      instance?.console?.owner?.id
-    )
 
     return (
-      <Flex
-        align="center"
-        gap="small"
-        justifyContent="flex-end"
-        width="100%"
+      <Button
+        secondary
+        startIcon={<ConsoleIcon color={theme.colors['icon-default']} />}
+        as="a"
+        href={`https://${instance.url}`}
+        target="_blank"
+        rel="noopener noreferrer"
       >
-        <ConsoleInstanceOIDC instance={instance} />
-        <Button
-          secondary
-          startIcon={<ConsoleIcon color={theme.colors['icon-default']} />}
-          as="a"
-          href={`https://${instance.url}`}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Go to Console
-        </Button>
-        <MoreMenu onSelectionChange={(newKey) => setMenuKey(newKey)}>
-          <ListBoxItem
-            key={MenuItemKey.EditSize}
-            label="Edit cloud instance size"
-            leftContent={<CloudIcon />}
-          />
-          <ListBoxItem
-            key={MenuItemKey.EditOidc}
-            label={
-              <Tooltip label="Allow other team members to reconfigure this console instance">
-                <span>Edit cluster managers</span>
-              </Tooltip>
-            }
-            leftContent={<PersonPlusIcon />}
-          />
-          {!error && (
-            <ListBoxItem
-              key={MenuItemKey.EditPluralOIDCClients}
-              label="Edit Plural OIDC clients"
-              leftContent={<PeopleIcon />}
-            />
-          )}
-          <ListBoxItem
-            key={MenuItemKey.Delete}
-            destructive
-            label="Delete instance"
-            leftContent={<TrashCanIcon color="icon-danger" />}
-          />
-        </MoreMenu>
-        {/* Modals */}
-        <EditInstanceSizeModal
-          open={menuKey === MenuItemKey.EditSize}
-          onClose={onClose}
-          refetch={refetchInstances}
-          instance={instance}
-        />
-        <ClusterAdminsModal
-          open={menuKey === MenuItemKey.EditOidc}
-          onClose={onClose}
-          serviceAccount={instance.console?.owner}
-          showHeading={false}
-        />
-        <EditPluralOIDCClientsModal
-          open={menuKey === MenuItemKey.EditPluralOIDCClients}
-          onClose={onClose}
-          instance={instance}
-        />
-        <DeleteInstanceModal
-          open={menuKey === MenuItemKey.Delete}
-          onClose={onClose}
-          refetch={refetchInstances}
-          instance={instance}
-        />
-      </Flex>
+        Go to Console
+      </Button>
     )
   },
 })

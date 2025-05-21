@@ -1,5 +1,5 @@
 import { ApolloProvider } from '@apollo/client'
-import { ReactElement, useMemo } from 'react'
+import { ReactElement, ReactNode, useMemo } from 'react'
 
 import { AuthTokenContext } from '../../contexts/AuthTokenContext'
 import useImpersonatedServiceAccount from '../../hooks/useImpersonatedServiceAccount'
@@ -11,7 +11,7 @@ type ImpersonateServiceAccountProps = {
   id?: string | null
   skip?: boolean
   renderIndicators?: boolean
-  children: ReactElement
+  children: ReactNode
 }
 
 export default function ImpersonateServiceAccount({

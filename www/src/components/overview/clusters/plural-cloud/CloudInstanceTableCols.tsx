@@ -1,23 +1,15 @@
 import {
   AppIcon,
   Button,
+  CaretRightIcon,
   Chip,
-  CloudIcon,
   ConsoleIcon,
   Flex,
-  ListBoxItem,
-  PeopleIcon,
-  PersonPlusIcon,
-  Tooltip,
-  TrashCanIcon,
+  IconFrame,
 } from '@pluralsh/design-system'
 import { createColumnHelper } from '@tanstack/react-table'
 
-import { MoreMenu } from 'components/account/MoreMenu'
-
-import { ClusterAdminsModal } from 'components/cluster/ClusterAdminsModal'
 import { ProviderIcon } from 'components/utils/ProviderIcon'
-import ConsoleInstancesContext from 'contexts/ConsoleInstancesContext'
 
 import {
   ConsoleInstanceFragment,
@@ -26,16 +18,10 @@ import {
 } from 'generated/graphql'
 
 import { capitalize } from 'lodash'
-import { useCallback, useContext, useState } from 'react'
 import { useTheme } from 'styled-components'
-import useImpersonatedServiceAccount from '../../../../hooks/useImpersonatedServiceAccount'
 
 import { CellCaption, CellWrap } from '../SelfHostedTableCols'
-
-import { ConsoleInstanceOIDC } from './ConsoleInstanceOIDC'
-import { DeleteInstanceModal } from './DeleteInstance'
-import { EditInstanceSizeModal } from './EditInstance'
-import { EditPluralOIDCClientsModal } from './EditPluralOIDCClients'
+import { Link } from 'react-router-dom'
 
 const columnHelper = createColumnHelper<ConsoleInstanceFragment>()
 
@@ -176,16 +162,24 @@ const ColActions = columnHelper.accessor((instance) => instance, {
     const instance = getValue()
 
     return (
-      <Button
-        secondary
-        startIcon={<ConsoleIcon color={theme.colors['icon-default']} />}
-        as="a"
-        href={`https://${instance.url}`}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Go to Console
-      </Button>
+      <Flex gap="small">
+        <Button
+          secondary
+          small
+          startIcon={<ConsoleIcon color={theme.colors['icon-default']} />}
+          as={Link}
+          href={`https://${instance.url}`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Go to Console
+        </Button>
+        <IconFrame
+          clickable
+          tooltip="View instance details"
+          icon={<CaretRightIcon />}
+        />
+      </Flex>
     )
   },
 })

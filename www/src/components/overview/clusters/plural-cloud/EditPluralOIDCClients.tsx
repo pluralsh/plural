@@ -1,19 +1,13 @@
 import {
-  Button,
   EmptyState,
   IconFrame,
   LoopingLogo,
-  Modal,
   PencilIcon,
   PlusIcon,
   Table,
   TrashCanIcon,
 } from '@pluralsh/design-system'
-import {
-  ConsoleInstanceFragment,
-  OidcProviderFragment,
-  useOidcProvidersQuery,
-} from 'generated/graphql'
+import { OidcProviderFragment, useOidcProvidersQuery } from 'generated/graphql'
 import { useMemo, useState } from 'react'
 import { useTheme } from 'styled-components'
 
@@ -21,63 +15,15 @@ import { createColumnHelper } from '@tanstack/react-table'
 
 import { isEmpty } from 'lodash'
 
+import { mapExistingNodes } from '../../../../utils/graphql'
 import {
   DEFAULT_REACT_VIRTUAL_OPTIONS,
   useFetchPaginatedData,
 } from '../../../utils/useFetchPaginatedData'
-import { mapExistingNodes } from '../../../../utils/graphql'
-
-import ImpersonateServiceAccount from '../../../utils/ImpersonateServiceAccount'
 
 import { EditPluralOIDCClientModal } from './EditPluralOIDCClient'
 
 import { DeletePluralOIDCClientModal } from './DeletePluralOIDCClient'
-
-export function EditPluralOIDCClientsModal({
-  open,
-  onClose,
-  instance,
-}: {
-  open: boolean
-  onClose: () => void
-  instance: ConsoleInstanceFragment
-}) {
-  const theme = useTheme()
-
-  return (
-    <Modal
-      open={open}
-      onClose={onClose}
-      header={`${instance.name} - Edit Plural OIDC clients`}
-      size="large"
-    >
-      <div
-        css={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: theme.spacing.xlarge,
-        }}
-      >
-        <ImpersonateServiceAccount
-          id={instance.console?.owner?.id}
-          renderIndicators={false}
-        >
-          <EditPluralOIDCClients
-            instanceName={instance.name}
-            insideModal
-          />
-        </ImpersonateServiceAccount>
-        <Button
-          secondary
-          onClick={onClose}
-          css={{ alignSelf: 'flex-end' }}
-        >
-          Cancel
-        </Button>
-      </div>
-    </Modal>
-  )
-}
 
 type TableMetaT = {
   instanceName: string

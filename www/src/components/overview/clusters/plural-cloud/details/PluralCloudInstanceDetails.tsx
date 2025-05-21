@@ -1,12 +1,3 @@
-import { Link, useNavigate, useParams } from 'react-router-dom'
-import {
-  CLOUD_INSTANCES_BREADCRUMBS,
-  PLURAL_CLOUD_INSTANCES_PATH_ABS,
-} from '../PluralCloudInstances'
-import { useConsoleInstanceQuery } from 'generated/graphql'
-import { POLL_INTERVAL } from 'components/utils/useFetchPaginatedData'
-import LoadingIndicator from 'components/utils/LoadingIndicator'
-import { GqlError } from 'components/utils/Alert'
 import {
   ArrowTopRightIcon,
   Button,
@@ -14,17 +5,28 @@ import {
   EmptyState,
   Flex,
   IconFrame,
-  theme,
   ReturnIcon,
   SubTab,
   TabList,
-  useSetBreadcrumbs,
   TabPanel,
+  useSetBreadcrumbs,
 } from '@pluralsh/design-system'
-import { ReactNode, useMemo, useRef, useState } from 'react'
+import { GqlError } from 'components/utils/Alert'
+import ImpersonateServiceAccount from 'components/utils/ImpersonateServiceAccount'
+import LoadingIndicator from 'components/utils/LoadingIndicator'
+import { ProviderIcon } from 'components/utils/ProviderIcon'
+import { POLL_INTERVAL } from 'components/utils/useFetchPaginatedData'
+import { useConsoleInstanceQuery } from 'generated/graphql'
+import { ReactNode, Suspense, useMemo, useRef, useState } from 'react'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import styled, { useTheme } from 'styled-components'
 import { HostingChip, StatusChip } from '../CloudInstanceTableCols'
-import { ProviderIcon } from 'components/utils/ProviderIcon'
+import { EditPluralOIDCClients } from '../EditPluralOIDCClients'
+import {
+  CLOUD_INSTANCES_BREADCRUMBS,
+  PLURAL_CLOUD_INSTANCES_PATH_ABS,
+} from '../PluralCloudInstances'
+import { PluralCloudInstanceLoginSettings } from './login-settings/PluralCloudInstanceLoginSettings'
 import { PluralCloudInstanceDropdown } from './PluralCloudInstanceDropdown'
 import { PluralCloudInstanceMoreMenu } from './PluralCloudInstanceMoreMenu'
 
@@ -36,9 +38,9 @@ const getBreadcrumbs = (name: string, instanceId: string) => [
 ]
 
 enum Tab {
-  ConsoleAccess = 'Console access',
-  InstanceWriteAccess = 'Instance write access',
+  LoginSettings = 'Login settings',
   OIDCProviders = 'OIDC providers',
+  ClusterPermissions = 'Cluster permissions',
   NetworkPolicy = 'Network policy',
 }
 
@@ -46,14 +48,13 @@ export function PluralCloudInstanceDetails() {
   const navigate = useNavigate()
   const { instanceId } = useParams()
   const tabStateRef = useRef<any>(null)
-  const [currentTab, setCurrentTab] = useState<Tab>(Tab.ConsoleAccess)
+  const [currentTab, setCurrentTab] = useState<Tab>(Tab.LoginSettings)
 
   const { data, loading, error } = useConsoleInstanceQuery({
     variables: { id: instanceId ?? '' },
     fetchPolicy: 'cache-and-network',
     pollInterval: POLL_INTERVAL,
   })
-
   const instance = data?.consoleInstance
 
   useSetBreadcrumbs(
@@ -143,26 +144,38 @@ export function PluralCloudInstanceDetails() {
               value={<HostingChip type={instance.type} />}
             />
           </BasicInfoCardSC>
-          <TabList
-            stateRef={tabStateRef}
-            stateProps={{
-              orientation: 'horizontal',
-              selectedKey: currentTab,
-              onSelectionChange: (key) => setCurrentTab(`${key}` as Tab),
-            }}
-          >
-            {Object.values(Tab).map((value) => (
-              <SubTab key={value}>{value}</SubTab>
-            ))}
-          </TabList>
-          <TabPanel stateRef={tabStateRef}>
-            {currentTab === Tab.ConsoleAccess && <div>Console access</div>}
-            {currentTab === Tab.InstanceWriteAccess && (
-              <div>Instance write access</div>
-            )}
-            {currentTab === Tab.OIDCProviders && <div>OIDC providers</div>}
-            {currentTab === Tab.NetworkPolicy && <div>Network policy</div>}
-          </TabPanel>
+          <Suspense fallback={<LoadingIndicator />}>
+            <ImpersonateServiceAccount
+              id={instance?.owner?.id}
+              skip={!instance?.owner?.serviceAccount}
+            >
+              <TabList
+                stateRef={tabStateRef}
+                stateProps={{
+                  orientation: 'horizontal',
+                  selectedKey: currentTab,
+                  onSelectionChange: (key) => setCurrentTab(`${key}` as Tab),
+                }}
+                css={{ textWrap: 'nowrap' }}
+              >
+                {Object.values(Tab).map((value) => (
+                  <SubTab key={value}>{value}</SubTab>
+                ))}
+              </TabList>
+              <TabPanel stateRef={tabStateRef}>
+                {currentTab === Tab.LoginSettings && (
+                  <PluralCloudInstanceLoginSettings instanceId={instance.id} />
+                )}
+                {currentTab === Tab.ClusterPermissions && (
+                  <div>Instance write access</div>
+                )}
+                {currentTab === Tab.OIDCProviders && (
+                  <EditPluralOIDCClients instanceName={instance.name} />
+                )}
+                {currentTab === Tab.NetworkPolicy && <div>Network policy</div>}
+              </TabPanel>
+            </ImpersonateServiceAccount>
+          </Suspense>
         </>
       )}
     </Flex>

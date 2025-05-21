@@ -9,6 +9,7 @@ import { Cluster } from '../../../generated/graphql'
 import { ensureURLValidity } from '../../../utils/url'
 
 import { ClusterListElement } from './types'
+import { useNavigate } from 'react-router-dom'
 
 type ClustersListProps = Omit<ComponentProps<typeof Table>, 'data'> & {
   clusters?: (Cluster | null)[]
@@ -55,6 +56,7 @@ function fromClusterList(
 }
 
 export const ClusterList = memo(({ columns, ...props }: ClustersListProps) => {
+  const navigate = useNavigate()
   const me = useContext(CurrentUserContext)
   const { clusters } = useContext(ClustersContext)
 
@@ -68,6 +70,11 @@ export const ClusterList = memo(({ columns, ...props }: ClustersListProps) => {
       data={tableData}
       columns={columns}
       emptyStateProps={{ message: 'No self-hosted clusters found' }}
+      onRowClick={(_, { original }) =>
+        original?.id &&
+        original.accessible &&
+        navigate(`/clusters/${original?.id}`)
+      }
       {...props}
     />
   )

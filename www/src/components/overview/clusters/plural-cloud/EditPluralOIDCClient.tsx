@@ -15,6 +15,7 @@ import {
   InputMaybe,
   OidcAttributes,
   OidcAuthMethod,
+  OidcProviderBindingFragment,
   OidcProviderFragment,
   PolicyBinding,
   useCreateProviderMutation,
@@ -102,7 +103,9 @@ export function EditPluralOIDCClientModal({
 }
 
 export const bindingsToBindingAttributes = (
-  bindings: Nullable<PolicyBinding>[]
+  bindings: Nullable<
+    PolicyBinding | Pick<OidcProviderBindingFragment, 'group' | 'user'>
+  >[]
 ) =>
   bindings?.map((binding) => {
     if (binding?.group?.id) return { groupId: binding.group.id }

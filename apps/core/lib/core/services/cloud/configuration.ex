@@ -18,6 +18,8 @@ defmodule Core.Services.Cloud.Configuration do
       kas_redis
       erlang_secret
       github_app_pem
+      es_password
+      prom_password
     )a)
     |> Map.merge(%{
       postgres_url: build_pg_url(inst),

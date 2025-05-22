@@ -10,13 +10,14 @@ import {
   TabList,
   TabPanel,
   useSetBreadcrumbs,
+  WrapWithIf,
 } from '@pluralsh/design-system'
 import { GqlError } from 'components/utils/Alert'
 import ImpersonateServiceAccount from 'components/utils/ImpersonateServiceAccount'
 import LoadingIndicator from 'components/utils/LoadingIndicator'
 import { ProviderIcon } from 'components/utils/ProviderIcon'
 import { POLL_INTERVAL } from 'components/utils/useFetchPaginatedData'
-import { useConsoleInstanceQuery } from 'generated/graphql'
+import { ConsoleInstanceType, useConsoleInstanceQuery } from 'generated/graphql'
 import { ReactNode, Suspense, useMemo, useRef, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import styled, { useTheme } from 'styled-components'
@@ -49,6 +50,7 @@ enum Tab {
 export function PluralCloudInstanceDetails() {
   const navigate = useNavigate()
   const { instanceId } = useParams()
+  const [currentTab, setCurrentTab] = useState<Tab>(Tab.LoginSettings)
 
   const { data, loading, error } = useConsoleInstanceQuery({
     variables: { id: instanceId ?? '' },
@@ -147,12 +149,21 @@ export function PluralCloudInstanceDetails() {
             />
           </BasicInfoCardSC>
           <Suspense fallback={<LoadingIndicator />}>
-            <ImpersonateServiceAccount
-              id={instance?.owner?.id}
-              skip={!instance?.owner?.serviceAccount}
+            <WrapWithIf
+              condition={currentTab !== Tab.ClusterPermissions}
+              wrapper={
+                <ImpersonateServiceAccount
+                  id={instance?.owner?.id}
+                  skip={!instance?.owner?.serviceAccount}
+                />
+              }
             >
-              <SettingsViews instanceId={instance.id} />
-            </ImpersonateServiceAccount>
+              <SettingsViews
+                instanceId={instance.id}
+                currentTab={currentTab}
+                setCurrentTab={setCurrentTab}
+              />
+            </WrapWithIf>
           </Suspense>
         </>
       )}
@@ -160,9 +171,16 @@ export function PluralCloudInstanceDetails() {
   )
 }
 
-function SettingsViews({ instanceId }: { instanceId: string }) {
+function SettingsViews({
+  instanceId,
+  currentTab,
+  setCurrentTab,
+}: {
+  instanceId: string
+  currentTab: Tab
+  setCurrentTab: (tab: Tab) => void
+}) {
   const tabStateRef = useRef<any>(null)
-  const [currentTab, setCurrentTab] = useState<Tab>(Tab.LoginSettings)
 
   // have to call this again because ImpersonateServiceAccount changes its children's apollo client
   const { data, loading, error } = useConsoleInstanceQuery({
@@ -187,9 +205,16 @@ function SettingsViews({ instanceId }: { instanceId: string }) {
         }}
         css={{ textWrap: 'nowrap' }}
       >
-        {Object.values(Tab).map((value) => (
-          <SubTab key={value}>{value}</SubTab>
-        ))}
+        {Object.values(Tab)
+          // only show network policy for dedicated instances
+          .filter((value) =>
+            instance.type === ConsoleInstanceType.Dedicated
+              ? true
+              : value !== Tab.NetworkPolicy
+          )
+          .map((value) => (
+            <SubTab key={value}>{value}</SubTab>
+          ))}
       </TabList>
       <TabPanel
         stateRef={tabStateRef}

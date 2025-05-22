@@ -11,7 +11,7 @@ type ImpersonateServiceAccountProps = {
   id?: string | null
   skip?: boolean
   renderIndicators?: boolean
-  children: ReactNode
+  children?: ReactNode
 }
 
 export default function ImpersonateServiceAccount({

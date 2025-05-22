@@ -146,7 +146,7 @@ export type PaginatedResult<N> = Connection<N> & {
 
 export function mapExistingNodes<N>(connection?: Connection<N> | null) {
   if (!connection?.edges) {
-    return undefined
+    return []
   }
   const { edges } = connection
 

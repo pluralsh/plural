@@ -4127,9 +4127,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pluralsh/design-system@npm:3.75.1":
-  version: 3.75.1
-  resolution: "@pluralsh/design-system@npm:3.75.1"
+"@pluralsh/design-system@npm:3.80.1":
+  version: 3.80.1
+  resolution: "@pluralsh/design-system@npm:3.80.1"
   dependencies:
     "@floating-ui/react-dom-interactions": 0.13.3
     "@loomhq/loom-embed": 1.5.0
@@ -4148,11 +4148,11 @@ __metadata:
     babel-plugin-styled-components: 2.1.4
     chroma-js: 2.4.2
     classnames: 2.3.2
+    dayjs: 1.11.13
     highlight.js: 11.9.0
     honorable-recipe-mapper: 0.2.0
     immer: 10.0.3
     lodash-es: 4.17.21
-    moment: 2.29.4
     react-animate-height: 3.2.3
     react-aria: 3.34.3
     react-embed: 3.7.0
@@ -4175,7 +4175,7 @@ __metadata:
     react-dom: ">=18.3.1"
     react-transition-group: ">=4.4.5"
     styled-components: ">=6.1.13"
-  checksum: 21d5c62cd65666096d6065b5ff964ade97381183309fc4fc0b3cd256718e8f3d04624877f61574e6bd032876e028334eeb23b0e749bf9a5f9ed6fdce903b63a0
+  checksum: 3eb8ef3c0e6b7da0961a5e4c2067c768c2e02ac46a795a0fbd74552b763bed85c3ef8bb964f30a90e8231e25a1e9e7e2fa83733cb748692565b7f17ec3b72eca
   languageName: node
   linkType: hard
 
@@ -9522,6 +9522,13 @@ __metadata:
   dependencies:
     "@babel/runtime": ^7.21.0
   checksum: f7be01523282e9bb06c0cd2693d34f245247a29098527d4420628966a2d9aad154bd0e90a6b1cf66d37adcb769cd108cf8a7bd49d76db0fb119af5cdd13644f4
+  languageName: node
+  linkType: hard
+
+"dayjs@npm:1.11.13":
+  version: 1.11.13
+  resolution: "dayjs@npm:1.11.13"
+  checksum: f388db88a6aa93956c1f6121644e783391c7b738b73dbc54485578736565c8931bdfba4bb94e9b1535c6e509c97d5deb918bbe1ae6b34358d994de735055cca9
   languageName: node
   linkType: hard
 
@@ -20409,7 +20416,7 @@ __metadata:
     "@nivo/geo": 0.88.0
     "@nivo/line": 0.88.0
     "@octokit/core": 4.2.1
-    "@pluralsh/design-system": 3.75.1
+    "@pluralsh/design-system": 3.80.1
     "@pluralsh/eslint-config-typescript": 2.5.150
     "@pluralsh/stylelint-config": 2.0.10
     "@react-spring/web": 9.7.3

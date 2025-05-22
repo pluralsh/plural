@@ -4,10 +4,12 @@ import styled from 'styled-components'
 import LoadingIndicator from '../components/utils/LoadingIndicator'
 import {
   ConsoleInstanceFragment,
+  ConsoleInstanceStatus,
   useConsoleInstancesQuery,
 } from '../generated/graphql'
 
 import { ClustersContextProvider } from './ClustersContext'
+import { mapExistingNodes } from 'utils/graphql'
 
 type ConsoleInstancesContextType = {
   instances: ConsoleInstanceFragment[]
@@ -32,15 +34,15 @@ export function ConsoleInstancesContextProvider({ children }) {
     pollInterval: 30_000,
   })
 
-  const consoleInstancesContextValue =
-    useMemo<ConsoleInstancesContextType>(() => {
-      const instances =
-        data?.consoleInstances?.edges
-          ?.map((edge) => edge?.node)
-          .filter((node): node is ConsoleInstanceFragment => !!node) ?? []
-
-      return { instances, refetchInstances: refetch }
-    }, [data, refetch])
+  const consoleInstancesContextValue = useMemo<ConsoleInstancesContextType>(
+    () => ({
+      instances: mapExistingNodes(data?.consoleInstances).filter(
+        (i) => i.status !== ConsoleInstanceStatus.DeploymentDeleted
+      ),
+      refetchInstances: refetch,
+    }),
+    [data, refetch]
+  )
 
   if (error) return <Error>{error.message}</Error>
   if (!data && loading) return <LoadingIndicator />

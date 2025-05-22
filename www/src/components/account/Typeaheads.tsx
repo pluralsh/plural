@@ -93,6 +93,8 @@ function TagInput({
   width,
   onChange,
   dropdownFooterFixed,
+  inputStyle,
+  ...props
 }: any) {
   const [inputValue, setInputValue] = useState('')
 
@@ -101,7 +103,7 @@ function TagInput({
   useEffect(() => onChange({ target: { value: inputValue } }), [])
 
   return (
-    <TagPicker>
+    <TagPicker {...props}>
       <FormField
         label={label}
         hint={hint}
@@ -123,6 +125,7 @@ function TagInput({
           startIcon={icon}
           inputProps={{
             placeholder,
+            style: inputStyle,
           }}
         >
           {suggestions.map(({ label }) => label)}
@@ -181,6 +184,8 @@ export function BindingInput({
   placeholder = TEXT[type]?.placeholder,
   label = TEXT[type]?.label,
   dropdownFooterFixed,
+  inputStyle,
+  ...props
 }: any) {
   const client = useApolloClient()
   const [suggestions, setSuggestions] = useState([])
@@ -202,6 +207,8 @@ export function BindingInput({
       onAdd={({ value }) => add(value)}
       onChange={({ target: { value } }) => fetch(client, value, setSuggestions)}
       dropdownFooterFixed={dropdownFooterFixed}
+      inputStyle={inputStyle}
+      {...props}
     />
   )
 }

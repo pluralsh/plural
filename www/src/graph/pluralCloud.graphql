@@ -12,20 +12,30 @@ fragment ConsoleInstance on ConsoleInstance {
   console {
     id
     pingedAt
-    owner {
-      ...User
-      impersonationPolicy {
-        ...ImpersonationPolicy
-      }
-    }
+    consoleUrl
   }
   owner {
-    name
-    email
+    ...User
+    impersonationPolicy {
+      ...ImpersonationPolicy
+    }
+  }
+  oidc {
+    ...ConsoleInstanceOidc
+  }
+  network {
+    allowedCidrs
   }
   insertedAt
   updatedAt
 }
+
+fragment ConsoleInstanceOidc on ConsoleInstanceOidc {
+  clientId
+  clientSecret
+  issuer
+}
+
 query ConsoleInstance($id: ID!) {
   consoleInstance(id: $id) {
     ...ConsoleInstance

@@ -1,43 +1,27 @@
 import {
   AppIcon,
   Button,
+  CaretRightIcon,
   Chip,
-  CloudIcon,
   ConsoleIcon,
   Flex,
-  ListBoxItem,
-  PeopleIcon,
-  PersonPlusIcon,
-  Tooltip,
-  TrashCanIcon,
+  IconFrame,
 } from '@pluralsh/design-system'
 import { createColumnHelper } from '@tanstack/react-table'
 
-import { MoreMenu } from 'components/account/MoreMenu'
-
-import { ClusterAdminsModal } from 'components/cluster/ClusterAdminsModal'
 import { ProviderIcon } from 'components/utils/ProviderIcon'
-import ConsoleInstancesContext from 'contexts/ConsoleInstancesContext'
 
 import {
   ConsoleInstanceFragment,
   ConsoleInstanceStatus,
   ConsoleInstanceType,
-  useMeQuery,
 } from 'generated/graphql'
 
-import { upperFirst } from 'lodash'
-import { useCallback, useContext, useState } from 'react'
+import { capitalize } from 'lodash'
 import { useTheme } from 'styled-components'
-import useImpersonatedServiceAccount from '../../../../hooks/useImpersonatedServiceAccount'
-import ImpersonateServiceAccount from '../../../utils/ImpersonateServiceAccount'
 
 import { CellCaption, CellWrap } from '../SelfHostedTableCols'
-
-import { ConsoleInstanceOIDC } from './ConsoleInstanceOIDC'
-import { DeleteInstanceModal } from './DeleteInstance'
-import { EditInstanceSizeModal } from './EditInstance'
-import { EditPluralOIDCClientsModal } from './EditPluralOIDCClients'
+import { Link } from 'react-router-dom'
 
 const columnHelper = createColumnHelper<ConsoleInstanceFragment>()
 
@@ -84,18 +68,22 @@ const ColInstance = columnHelper.accessor((instance) => instance.name, {
   ),
 })
 
+export function StatusChip({ status }: { status: ConsoleInstanceStatus }) {
+  return (
+    <Chip
+      css={{ width: 'max-content' }}
+      severity={getStatusSeverity(status)}
+    >
+      {statusToLabel[status]}
+    </Chip>
+  )
+}
+
 const ColStatus = columnHelper.accessor((instance) => instance.status, {
   id: 'status',
   header: 'Status',
   enableSorting: true,
-  cell: ({ getValue }) => (
-    <Chip
-      css={{ width: 'max-content' }}
-      severity={getStatusSeverity(getValue())}
-    >
-      {statusToLabel[getValue()]}
-    </Chip>
-  ),
+  cell: ({ getValue }) => <StatusChip status={getValue()} />,
 })
 
 const ColCloud = columnHelper.accessor((instance) => instance.cloud, {
@@ -118,20 +106,21 @@ const ColCloud = columnHelper.accessor((instance) => instance.cloud, {
   ),
 })
 
+export function HostingChip({ type }: { type: ConsoleInstanceType }) {
+  return (
+    <Chip
+      css={{ width: 'max-content' }}
+      severity={type === ConsoleInstanceType.Dedicated ? 'info' : 'neutral'}
+    >
+      {capitalize(type)}
+    </Chip>
+  )
+}
 const ColHosting = columnHelper.accessor((instance) => instance.type, {
   id: 'hosting',
   header: 'Hosting',
   enableSorting: true,
-  cell: ({ getValue }) => (
-    <Chip
-      css={{ width: 'max-content' }}
-      severity={
-        getValue() === ConsoleInstanceType.Dedicated ? 'info' : 'neutral'
-      }
-    >
-      {upperFirst(getValue().toLowerCase())}
-    </Chip>
-  ),
+  cell: ({ getValue }) => <HostingChip type={getValue()} />,
 })
 
 const ColRegion = columnHelper.accessor((instance) => instance.region, {
@@ -164,97 +153,31 @@ const ColOwner = columnHelper.accessor((instance) => instance.owner, {
   ),
 })
 
-enum MenuItemKey {
-  EditSize = 'editSize',
-  EditOidc = 'editOidc',
-  EditPluralOIDCClients = 'editPluralOIDCClients',
-  Delete = 'delete',
-}
-
 const ColActions = columnHelper.accessor((instance) => instance, {
   id: 'actions',
   header: '',
   meta: { gridTemplate: 'max-content' },
   cell: function Cell({ getValue }) {
     const theme = useTheme()
-    const [menuKey, setMenuKey] = useState<Nullable<string>>('')
     const instance = getValue()
-    const { refetchInstances } = useContext(ConsoleInstancesContext)
-    const onClose = useCallback(() => setMenuKey(''), [])
-    const { error } = useImpersonatedServiceAccount(
-      instance?.console?.owner?.id
-    )
 
     return (
-      <Flex
-        align="center"
-        gap="small"
-        justifyContent="flex-end"
-        width="100%"
-      >
-        <ConsoleInstanceOIDC instance={instance} />
+      <Flex gap="small">
         <Button
           secondary
+          small
           startIcon={<ConsoleIcon color={theme.colors['icon-default']} />}
-          as="a"
+          as={Link}
           href={`https://${instance.url}`}
           target="_blank"
           rel="noopener noreferrer"
         >
           Go to Console
         </Button>
-        <MoreMenu onSelectionChange={(newKey) => setMenuKey(newKey)}>
-          <ListBoxItem
-            key={MenuItemKey.EditSize}
-            label="Edit cloud instance size"
-            leftContent={<CloudIcon />}
-          />
-          <ListBoxItem
-            key={MenuItemKey.EditOidc}
-            label={
-              <Tooltip label="Allow other team members to reconfigure this console instance">
-                <span>Edit cluster managers</span>
-              </Tooltip>
-            }
-            leftContent={<PersonPlusIcon />}
-          />
-          {!error && (
-            <ListBoxItem
-              key={MenuItemKey.EditPluralOIDCClients}
-              label="Edit Plural OIDC clients"
-              leftContent={<PeopleIcon />}
-            />
-          )}
-          <ListBoxItem
-            key={MenuItemKey.Delete}
-            destructive
-            label="Delete instance"
-            leftContent={<TrashCanIcon color="icon-danger" />}
-          />
-        </MoreMenu>
-        {/* Modals */}
-        <EditInstanceSizeModal
-          open={menuKey === MenuItemKey.EditSize}
-          onClose={onClose}
-          refetch={refetchInstances}
-          instance={instance}
-        />
-        <ClusterAdminsModal
-          open={menuKey === MenuItemKey.EditOidc}
-          onClose={onClose}
-          serviceAccount={instance.console?.owner}
-          showHeading={false}
-        />
-        <EditPluralOIDCClientsModal
-          open={menuKey === MenuItemKey.EditPluralOIDCClients}
-          onClose={onClose}
-          instance={instance}
-        />
-        <DeleteInstanceModal
-          open={menuKey === MenuItemKey.Delete}
-          onClose={onClose}
-          refetch={refetchInstances}
-          instance={instance}
+        <IconFrame
+          clickable
+          tooltip="View instance details"
+          icon={<CaretRightIcon />}
         />
       </Flex>
     )

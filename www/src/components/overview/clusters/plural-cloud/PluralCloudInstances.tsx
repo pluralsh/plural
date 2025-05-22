@@ -13,26 +13,23 @@ import { ConsoleInstanceStatus } from 'generated/graphql'
 import { CLUSTERS_OVERVIEW_BREADCRUMBS } from '../Clusters'
 
 import { cloudInstanceCols } from './CloudInstanceTableCols'
+import { useNavigate } from 'react-router-dom'
 
-const breadcrumbs = [
+export const PLURAL_CLOUD_INSTANCES_PATH_ABS = '/overview/clusters/plural-cloud'
+
+export const CLOUD_INSTANCES_BREADCRUMBS = [
   ...CLUSTERS_OVERVIEW_BREADCRUMBS,
-  { label: 'plural-cloud', url: '/overview/clusters/plural-cloud' },
+  { label: 'plural cloud instances', url: '/overview/clusters/plural-cloud' },
 ]
 
 export function PluralCloudInstances() {
+  useSetBreadcrumbs(CLOUD_INSTANCES_BREADCRUMBS)
   const theme = useTheme()
+  const navigate = useNavigate()
 
-  useSetBreadcrumbs(breadcrumbs)
   const [showToast, setShowToast] = useState(false)
 
-  const { instances: instancesBase } = useContext(ConsoleInstancesContext)
-  const instances = useMemo(
-    () =>
-      instancesBase.filter(
-        (i) => i.status !== ConsoleInstanceStatus.DeploymentDeleted
-      ),
-    [instancesBase]
-  )
+  const { instances } = useContext(ConsoleInstancesContext)
 
   useEffect(() => {
     const id = localStorage.getItem(FINISHED_CONSOLE_INSTANCE_KEY)
@@ -49,6 +46,7 @@ export function PluralCloudInstances() {
         data={instances}
         columns={cloudInstanceCols}
         emptyStateProps={{ message: 'No Plural Cloud instances found' }}
+        onRowClick={(_, { original }) => original?.id && navigate(original?.id)}
       />
       <Toast
         show={showToast}

@@ -9,6 +9,7 @@ export function MoreMenu({
   secondary = false,
   tertiary = false,
   floating = false,
+  buttonProps,
   ...props
 }: any) {
   const [isOpen, setIsOpen] = useState(false)
@@ -34,6 +35,7 @@ export function MoreMenu({
           floating={floating}
           small
           paddingHorizontal="xsmall"
+          {...buttonProps}
         >
           <MoreIcon color={disabled ? 'icon-disabled' : undefined} />
         </Button>

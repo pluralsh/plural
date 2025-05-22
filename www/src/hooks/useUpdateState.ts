@@ -1,8 +1,9 @@
 import isEqual from 'lodash/isEqual'
 import { useCallback, useMemo, useState } from 'react'
 
-type IsEqualFn<T = any> = (a: T, b: T) => boolean
-type IsEqualFns<T> = Partial<Record<keyof T, IsEqualFn<T[keyof T]>>>
+type IsEqualFns<T> = {
+  [K in keyof T]?: (a: T[K], b: T[K]) => boolean
+}
 
 export function useUpdateState<T extends { [key: string]: unknown }>(
   initialState: T,
@@ -36,7 +37,7 @@ export function useUpdateState<T extends { [key: string]: unknown }>(
       const isEqualFn = isEqualFns?.[key]
 
       if (isEqualFn) {
-        if (isEqualFn(value as any, initialState[key] as any)) {
+        if (!isEqualFn(value as any, initialState[key] as any)) {
           return true
         }
       } else if (!isEqual(value, initialState[key])) {

@@ -9,6 +9,8 @@ import LoadingIndicator from './utils/LoadingIndicator'
 import { UsersList } from './account/UsersList'
 import { Invites } from './account/Invites'
 import { DelinquencyToast } from './account/billing/DelinquencyNotices'
+import { INSTANCE_ID_PARAM } from './overview/clusters/plural-cloud/details/PluralCloudInstanceDetails'
+import { PLURAL_CLOUD_INSTANCES_PATH_ABS } from './overview/clusters/plural-cloud/PluralCloudInstances'
 
 const ApplicationLayout = lazy(() => import('./layout/ApplicationLayout'))
 const BreadcrumbProvider = lazy(() => import('./Breadcrumbs'))
@@ -87,6 +89,13 @@ const PluralCloudInstances = lazy(() =>
       default: module.PluralCloudInstances,
     })
   )
+)
+const PluralCloudInstanceDetails = lazy(() =>
+  import(
+    './overview/clusters/plural-cloud/details/PluralCloudInstanceDetails'
+  ).then((module) => ({
+    default: module.PluralCloudInstanceDetails,
+  }))
 )
 
 // Create cluster.
@@ -647,6 +656,10 @@ export function PluralInner() {
                     element={<PluralCloudInstances />}
                   />
                 </Route>
+                <Route
+                  path={`${PLURAL_CLOUD_INSTANCES_PATH_ABS}/:${INSTANCE_ID_PARAM}`}
+                  element={<PluralCloudInstanceDetails />}
+                />
               </Route>
               {/* CREATE CLUSTER */}
               <Route

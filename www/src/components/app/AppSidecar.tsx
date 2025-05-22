@@ -84,7 +84,7 @@ export function AppSidecar() {
       {cluster?.consoleUrl && (
         <Button
           as="a"
-          href={`${ensureURLValidity(cluster.consoleUrl)}/apps/${appName}`}
+          href={`${ensureURLValidity(cluster.consoleUrl)}`}
           target="_blank"
           rel="noopener noreferrer"
           height="max-content"

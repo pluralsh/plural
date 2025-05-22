@@ -7,13 +7,7 @@ fragment OIDCProvider on OidcProvider {
   clientSecret
   redirectUris
   bindings {
-    id
-    user {
-      ...User
-    }
-    group {
-      ...Group
-    }
+    ...OidcProviderBinding
   }
   configuration {
     issuer
@@ -25,6 +19,16 @@ fragment OIDCProvider on OidcProvider {
   invites {
     id
     email
+  }
+}
+
+fragment OidcProviderBinding on OidcProviderBinding {
+  id
+  user {
+    ...User
+  }
+  group {
+    ...Group
   }
 }
 

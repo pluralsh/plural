@@ -5709,6 +5709,8 @@ export type NotificationsQuery = { __typename?: 'RootQueryType', notifications?:
 
 export type OidcProviderFragment = { __typename?: 'OidcProvider', id: string, name?: string | null, description?: string | null, clientId: string, authMethod: OidcAuthMethod, clientSecret: string, redirectUris?: Array<string | null> | null, bindings?: Array<{ __typename?: 'OidcProviderBinding', id: string, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null, group?: { __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null } | null> | null, configuration?: { __typename?: 'OuathConfiguration', issuer?: string | null, authorizationEndpoint?: string | null, tokenEndpoint?: string | null, jwksUri?: string | null, userinfoEndpoint?: string | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null };
 
+export type OidcProviderBindingFragment = { __typename?: 'OidcProviderBinding', id: string, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null, group?: { __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null };
+
 export type OAuthInfoFragment = { __typename?: 'OauthInfo', provider: OauthProvider, authorizeUrl: string };
 
 export type OidcConsentQueryVariables = Exact<{
@@ -5845,14 +5847,16 @@ export type InvoicesQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type InvoicesQuery = { __typename?: 'RootQueryType', invoices?: { __typename?: 'InvoiceConnection', edges?: Array<{ __typename?: 'InvoiceEdge', node?: { __typename?: 'Invoice', number: string, amountDue: number, amountPaid: number, currency: string, status?: string | null, createdAt?: Date | null, hostedInvoiceUrl?: string | null, lines?: Array<{ __typename?: 'InvoiceItem', amount: number, currency: string, description?: string | null } | null> | null } | null } | null> | null } | null };
 
-export type ConsoleInstanceFragment = { __typename?: 'ConsoleInstance', id: string, name: string, subdomain: string, url: string, cloud: CloudProvider, size: ConsoleSize, region: string, status: ConsoleInstanceStatus, type: ConsoleInstanceType, deletedAt?: Date | null, insertedAt?: Date | null, updatedAt?: Date | null, console?: { __typename?: 'Cluster', id: string, pingedAt?: Date | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null } | null } | null, owner?: { __typename?: 'User', name: string, email: string } | null };
+export type ConsoleInstanceFragment = { __typename?: 'ConsoleInstance', id: string, name: string, subdomain: string, url: string, cloud: CloudProvider, size: ConsoleSize, region: string, status: ConsoleInstanceStatus, type: ConsoleInstanceType, deletedAt?: Date | null, insertedAt?: Date | null, updatedAt?: Date | null, console?: { __typename?: 'Cluster', id: string, pingedAt?: Date | null, consoleUrl?: string | null } | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null } | null, oidc?: { __typename?: 'ConsoleInstanceOidc', clientId?: string | null, clientSecret?: string | null, issuer?: string | null } | null, network?: { __typename?: 'ConsoleInstanceNetwork', allowedCidrs?: Array<string | null> | null } | null };
+
+export type ConsoleInstanceOidcFragment = { __typename?: 'ConsoleInstanceOidc', clientId?: string | null, clientSecret?: string | null, issuer?: string | null };
 
 export type ConsoleInstanceQueryVariables = Exact<{
   id: Scalars['ID']['input'];
 }>;
 
 
-export type ConsoleInstanceQuery = { __typename?: 'RootQueryType', consoleInstance?: { __typename?: 'ConsoleInstance', id: string, name: string, subdomain: string, url: string, cloud: CloudProvider, size: ConsoleSize, region: string, status: ConsoleInstanceStatus, type: ConsoleInstanceType, deletedAt?: Date | null, insertedAt?: Date | null, updatedAt?: Date | null, console?: { __typename?: 'Cluster', id: string, pingedAt?: Date | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null } | null } | null, owner?: { __typename?: 'User', name: string, email: string } | null } | null };
+export type ConsoleInstanceQuery = { __typename?: 'RootQueryType', consoleInstance?: { __typename?: 'ConsoleInstance', id: string, name: string, subdomain: string, url: string, cloud: CloudProvider, size: ConsoleSize, region: string, status: ConsoleInstanceStatus, type: ConsoleInstanceType, deletedAt?: Date | null, insertedAt?: Date | null, updatedAt?: Date | null, console?: { __typename?: 'Cluster', id: string, pingedAt?: Date | null, consoleUrl?: string | null } | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null } | null, oidc?: { __typename?: 'ConsoleInstanceOidc', clientId?: string | null, clientSecret?: string | null, issuer?: string | null } | null, network?: { __typename?: 'ConsoleInstanceNetwork', allowedCidrs?: Array<string | null> | null } | null } | null };
 
 export type ConsoleInstancesQueryVariables = Exact<{
   after?: InputMaybe<Scalars['String']['input']>;
@@ -5862,14 +5866,14 @@ export type ConsoleInstancesQueryVariables = Exact<{
 }>;
 
 
-export type ConsoleInstancesQuery = { __typename?: 'RootQueryType', consoleInstances?: { __typename?: 'ConsoleInstanceConnection', edges?: Array<{ __typename?: 'ConsoleInstanceEdge', node?: { __typename?: 'ConsoleInstance', id: string, name: string, subdomain: string, url: string, cloud: CloudProvider, size: ConsoleSize, region: string, status: ConsoleInstanceStatus, type: ConsoleInstanceType, deletedAt?: Date | null, insertedAt?: Date | null, updatedAt?: Date | null, console?: { __typename?: 'Cluster', id: string, pingedAt?: Date | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null } | null } | null, owner?: { __typename?: 'User', name: string, email: string } | null } | null } | null> | null, pageInfo: { __typename?: 'PageInfo', endCursor?: string | null, hasNextPage: boolean } } | null };
+export type ConsoleInstancesQuery = { __typename?: 'RootQueryType', consoleInstances?: { __typename?: 'ConsoleInstanceConnection', edges?: Array<{ __typename?: 'ConsoleInstanceEdge', node?: { __typename?: 'ConsoleInstance', id: string, name: string, subdomain: string, url: string, cloud: CloudProvider, size: ConsoleSize, region: string, status: ConsoleInstanceStatus, type: ConsoleInstanceType, deletedAt?: Date | null, insertedAt?: Date | null, updatedAt?: Date | null, console?: { __typename?: 'Cluster', id: string, pingedAt?: Date | null, consoleUrl?: string | null } | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null } | null, oidc?: { __typename?: 'ConsoleInstanceOidc', clientId?: string | null, clientSecret?: string | null, issuer?: string | null } | null, network?: { __typename?: 'ConsoleInstanceNetwork', allowedCidrs?: Array<string | null> | null } | null } | null } | null> | null, pageInfo: { __typename?: 'PageInfo', endCursor?: string | null, hasNextPage: boolean } } | null };
 
 export type CreateConsoleInstanceMutationVariables = Exact<{
   attributes: ConsoleInstanceAttributes;
 }>;
 
 
-export type CreateConsoleInstanceMutation = { __typename?: 'RootMutationType', createConsoleInstance?: { __typename?: 'ConsoleInstance', id: string, name: string, subdomain: string, url: string, cloud: CloudProvider, size: ConsoleSize, region: string, status: ConsoleInstanceStatus, type: ConsoleInstanceType, deletedAt?: Date | null, insertedAt?: Date | null, updatedAt?: Date | null, console?: { __typename?: 'Cluster', id: string, pingedAt?: Date | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null } | null } | null, owner?: { __typename?: 'User', name: string, email: string } | null } | null };
+export type CreateConsoleInstanceMutation = { __typename?: 'RootMutationType', createConsoleInstance?: { __typename?: 'ConsoleInstance', id: string, name: string, subdomain: string, url: string, cloud: CloudProvider, size: ConsoleSize, region: string, status: ConsoleInstanceStatus, type: ConsoleInstanceType, deletedAt?: Date | null, insertedAt?: Date | null, updatedAt?: Date | null, console?: { __typename?: 'Cluster', id: string, pingedAt?: Date | null, consoleUrl?: string | null } | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null } | null, oidc?: { __typename?: 'ConsoleInstanceOidc', clientId?: string | null, clientSecret?: string | null, issuer?: string | null } | null, network?: { __typename?: 'ConsoleInstanceNetwork', allowedCidrs?: Array<string | null> | null } | null } | null };
 
 export type UpdateConsoleInstanceMutationVariables = Exact<{
   id: Scalars['ID']['input'];
@@ -5877,14 +5881,14 @@ export type UpdateConsoleInstanceMutationVariables = Exact<{
 }>;
 
 
-export type UpdateConsoleInstanceMutation = { __typename?: 'RootMutationType', updateConsoleInstance?: { __typename?: 'ConsoleInstance', id: string, name: string, subdomain: string, url: string, cloud: CloudProvider, size: ConsoleSize, region: string, status: ConsoleInstanceStatus, type: ConsoleInstanceType, deletedAt?: Date | null, insertedAt?: Date | null, updatedAt?: Date | null, console?: { __typename?: 'Cluster', id: string, pingedAt?: Date | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null } | null } | null, owner?: { __typename?: 'User', name: string, email: string } | null } | null };
+export type UpdateConsoleInstanceMutation = { __typename?: 'RootMutationType', updateConsoleInstance?: { __typename?: 'ConsoleInstance', id: string, name: string, subdomain: string, url: string, cloud: CloudProvider, size: ConsoleSize, region: string, status: ConsoleInstanceStatus, type: ConsoleInstanceType, deletedAt?: Date | null, insertedAt?: Date | null, updatedAt?: Date | null, console?: { __typename?: 'Cluster', id: string, pingedAt?: Date | null, consoleUrl?: string | null } | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null } | null, oidc?: { __typename?: 'ConsoleInstanceOidc', clientId?: string | null, clientSecret?: string | null, issuer?: string | null } | null, network?: { __typename?: 'ConsoleInstanceNetwork', allowedCidrs?: Array<string | null> | null } | null } | null };
 
 export type DeleteConsoleInstanceMutationVariables = Exact<{
   id: Scalars['ID']['input'];
 }>;
 
 
-export type DeleteConsoleInstanceMutation = { __typename?: 'RootMutationType', deleteConsoleInstance?: { __typename?: 'ConsoleInstance', id: string, name: string, subdomain: string, url: string, cloud: CloudProvider, size: ConsoleSize, region: string, status: ConsoleInstanceStatus, type: ConsoleInstanceType, deletedAt?: Date | null, insertedAt?: Date | null, updatedAt?: Date | null, console?: { __typename?: 'Cluster', id: string, pingedAt?: Date | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null } | null } | null, owner?: { __typename?: 'User', name: string, email: string } | null } | null };
+export type DeleteConsoleInstanceMutation = { __typename?: 'RootMutationType', deleteConsoleInstance?: { __typename?: 'ConsoleInstance', id: string, name: string, subdomain: string, url: string, cloud: CloudProvider, size: ConsoleSize, region: string, status: ConsoleInstanceStatus, type: ConsoleInstanceType, deletedAt?: Date | null, insertedAt?: Date | null, updatedAt?: Date | null, console?: { __typename?: 'Cluster', id: string, pingedAt?: Date | null, consoleUrl?: string | null } | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null } | null, oidc?: { __typename?: 'ConsoleInstanceOidc', clientId?: string | null, clientSecret?: string | null, issuer?: string | null } | null, network?: { __typename?: 'ConsoleInstanceNetwork', allowedCidrs?: Array<string | null> | null } | null } | null };
 
 export type UpdateOidcProviderMutationVariables = Exact<{
   id: Scalars['ID']['input'];
@@ -6222,6 +6226,8 @@ export type UserFragment = { __typename?: 'User', id: string, name: string, emai
 
 export type ImpersonationPolicyFragment = { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null };
 
+export type ImpersonationPolicyBindingFragment = { __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null };
+
 export type GroupMemberFragment = { __typename?: 'GroupMember', id: string, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null };
 
 export type TokenFragment = { __typename?: 'PersistedToken', id?: string | null, token?: string | null, insertedAt?: Date | null };
@@ -6449,23 +6455,28 @@ export const GroupFragmentDoc = gql`
   description
 }
     `;
+export const ImpersonationPolicyBindingFragmentDoc = gql`
+    fragment ImpersonationPolicyBinding on ImpersonationPolicyBinding {
+  id
+  group {
+    id
+    name
+  }
+  user {
+    id
+    name
+    email
+  }
+}
+    `;
 export const ImpersonationPolicyFragmentDoc = gql`
     fragment ImpersonationPolicy on ImpersonationPolicy {
   id
   bindings {
-    id
-    group {
-      id
-      name
-    }
-    user {
-      id
-      name
-      email
-    }
+    ...ImpersonationPolicyBinding
   }
 }
-    `;
+    ${ImpersonationPolicyBindingFragmentDoc}`;
 export const UserFragmentDoc = gql`
     fragment User on User {
   id
@@ -6831,6 +6842,18 @@ export const InstallationRepoFragmentDoc = gql`
   category
 }
     `;
+export const OidcProviderBindingFragmentDoc = gql`
+    fragment OidcProviderBinding on OidcProviderBinding {
+  id
+  user {
+    ...User
+  }
+  group {
+    ...Group
+  }
+}
+    ${UserFragmentDoc}
+${GroupFragmentDoc}`;
 export const OidcProviderFragmentDoc = gql`
     fragment OIDCProvider on OidcProvider {
   id
@@ -6841,13 +6864,7 @@ export const OidcProviderFragmentDoc = gql`
   clientSecret
   redirectUris
   bindings {
-    id
-    user {
-      ...User
-    }
-    group {
-      ...Group
-    }
+    ...OidcProviderBinding
   }
   configuration {
     issuer
@@ -6861,8 +6878,7 @@ export const OidcProviderFragmentDoc = gql`
     email
   }
 }
-    ${UserFragmentDoc}
-${GroupFragmentDoc}`;
+    ${OidcProviderBindingFragmentDoc}`;
 export const InstallationFragmentDoc = gql`
     fragment Installation on Installation {
   id
@@ -7492,6 +7508,13 @@ export const SetupIntentFragmentDoc = gql`
   paymentMethodTypes
 }
     ${NextActionFragmentDoc}`;
+export const ConsoleInstanceOidcFragmentDoc = gql`
+    fragment ConsoleInstanceOidc on ConsoleInstanceOidc {
+  clientId
+  clientSecret
+  issuer
+}
+    `;
 export const ConsoleInstanceFragmentDoc = gql`
     fragment ConsoleInstance on ConsoleInstance {
   id
@@ -7507,22 +7530,26 @@ export const ConsoleInstanceFragmentDoc = gql`
   console {
     id
     pingedAt
-    owner {
-      ...User
-      impersonationPolicy {
-        ...ImpersonationPolicy
-      }
-    }
+    consoleUrl
   }
   owner {
-    name
-    email
+    ...User
+    impersonationPolicy {
+      ...ImpersonationPolicy
+    }
+  }
+  oidc {
+    ...ConsoleInstanceOidc
+  }
+  network {
+    allowedCidrs
   }
   insertedAt
   updatedAt
 }
     ${UserFragmentDoc}
-${ImpersonationPolicyFragmentDoc}`;
+${ImpersonationPolicyFragmentDoc}
+${ConsoleInstanceOidcFragmentDoc}`;
 export const TerraformFragmentDoc = gql`
     fragment Terraform on Terraform {
   id
@@ -12964,6 +12991,7 @@ export const namedOperations = {
     PageInfo: 'PageInfo',
     NotificationFragment: 'NotificationFragment',
     OIDCProvider: 'OIDCProvider',
+    OidcProviderBinding: 'OidcProviderBinding',
     OAuthInfo: 'OAuthInfo',
     Limit: 'Limit',
     LineItem: 'LineItem',
@@ -12980,6 +13008,7 @@ export const namedOperations = {
     SetupIntent: 'SetupIntent',
     PaymentMethod: 'PaymentMethod',
     ConsoleInstance: 'ConsoleInstance',
+    ConsoleInstanceOidc: 'ConsoleInstanceOidc',
     Recipe: 'Recipe',
     RecipeItem: 'RecipeItem',
     RecipeSection: 'RecipeSection',
@@ -13010,6 +13039,7 @@ export const namedOperations = {
     Group: 'Group',
     User: 'User',
     ImpersonationPolicy: 'ImpersonationPolicy',
+    ImpersonationPolicyBinding: 'ImpersonationPolicyBinding',
     GroupMember: 'GroupMember',
     Token: 'Token',
     TokenAudit: 'TokenAudit',

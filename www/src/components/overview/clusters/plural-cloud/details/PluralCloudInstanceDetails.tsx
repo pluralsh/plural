@@ -27,9 +27,10 @@ import {
   PLURAL_CLOUD_INSTANCES_PATH_ABS,
 } from '../PluralCloudInstances'
 import { PluralCloudInstanceLoginSettings } from './login-settings/PluralCloudInstanceLoginSettings'
+import { PluralCloudInstanceNetworkPolicy } from './network-policy/PluralCloudInstanceNetworkPolicy'
+import { PluralCloudInstanceClusterPermissions } from './PluralCloudInstanceClusterPermissions'
 import { PluralCloudInstanceDropdown } from './PluralCloudInstanceDropdown'
 import { PluralCloudInstanceMoreMenu } from './PluralCloudInstanceMoreMenu'
-import { PluralCloudInstanceClusterPermissions } from './PluralCloudInstanceClusterPermissions'
 
 export const INSTANCE_ID_PARAM = 'instanceId'
 
@@ -48,8 +49,6 @@ enum Tab {
 export function PluralCloudInstanceDetails() {
   const navigate = useNavigate()
   const { instanceId } = useParams()
-  const tabStateRef = useRef<any>(null)
-  const [currentTab, setCurrentTab] = useState<Tab>(Tab.LoginSettings)
 
   const { data, loading, error } = useConsoleInstanceQuery({
     variables: { id: instanceId ?? '' },
@@ -69,6 +68,8 @@ export function PluralCloudInstanceDetails() {
     <Flex
       gap="large"
       direction="column"
+      height="100%"
+      width="100%"
     >
       <HeaderSC>
         <Flex gap="xsmall">
@@ -150,36 +151,64 @@ export function PluralCloudInstanceDetails() {
               id={instance?.owner?.id}
               skip={!instance?.owner?.serviceAccount}
             >
-              <TabList
-                stateRef={tabStateRef}
-                stateProps={{
-                  orientation: 'horizontal',
-                  selectedKey: currentTab,
-                  onSelectionChange: (key) => setCurrentTab(`${key}` as Tab),
-                }}
-                css={{ textWrap: 'nowrap' }}
-              >
-                {Object.values(Tab).map((value) => (
-                  <SubTab key={value}>{value}</SubTab>
-                ))}
-              </TabList>
-              <TabPanel stateRef={tabStateRef}>
-                {currentTab === Tab.LoginSettings && (
-                  <PluralCloudInstanceLoginSettings instanceId={instance.id} />
-                )}
-                {currentTab === Tab.ClusterPermissions && (
-                  <PluralCloudInstanceClusterPermissions instance={instance} />
-                )}
-                {currentTab === Tab.OIDCProviders && (
-                  <EditPluralOIDCClients instanceName={instance.name} />
-                )}
-                {currentTab === Tab.NetworkPolicy && <div>Network policy</div>}
-              </TabPanel>
+              <SettingsViews instanceId={instance.id} />
             </ImpersonateServiceAccount>
           </Suspense>
         </>
       )}
     </Flex>
+  )
+}
+
+function SettingsViews({ instanceId }: { instanceId: string }) {
+  const tabStateRef = useRef<any>(null)
+  const [currentTab, setCurrentTab] = useState<Tab>(Tab.LoginSettings)
+
+  // have to call this again because ImpersonateServiceAccount changes its children's apollo client
+  const { data, loading, error } = useConsoleInstanceQuery({
+    variables: { id: instanceId ?? '' },
+    fetchPolicy: 'cache-and-network',
+    pollInterval: POLL_INTERVAL,
+  })
+  const instance = data?.consoleInstance
+
+  if (!data && loading) return <LoadingIndicator />
+  if (error) return <GqlError error={error} />
+  if (!instance) return <EmptyState message="Instance not found" />
+
+  return (
+    <>
+      <TabList
+        stateRef={tabStateRef}
+        stateProps={{
+          orientation: 'horizontal',
+          selectedKey: currentTab,
+          onSelectionChange: (key) => setCurrentTab(`${key}` as Tab),
+        }}
+        css={{ textWrap: 'nowrap' }}
+      >
+        {Object.values(Tab).map((value) => (
+          <SubTab key={value}>{value}</SubTab>
+        ))}
+      </TabList>
+      <TabPanel
+        stateRef={tabStateRef}
+        css={{ height: '100%' }}
+      >
+        {currentTab === Tab.LoginSettings && (
+          <PluralCloudInstanceLoginSettings instance={instance} />
+        )}
+        {currentTab === Tab.ClusterPermissions && (
+          <PluralCloudInstanceClusterPermissions instance={instance} />
+        )}
+        {currentTab === Tab.OIDCProviders && (
+          <EditPluralOIDCClients instanceName={instance.name} />
+        )}
+        {currentTab === Tab.NetworkPolicy && (
+          <PluralCloudInstanceNetworkPolicy instance={instance} />
+        )}
+      </TabPanel>
+    </>
   )
 }
 

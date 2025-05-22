@@ -3,10 +3,10 @@ import { GqlError } from 'components/utils/Alert'
 import { Body2BoldP } from 'components/utils/Typography'
 import {
   ConsoleInstanceDocument,
+  ConsoleInstanceFragment,
   ConsoleInstanceOidcFragment,
   OidcAuthMethod,
   OidcProviderBindingFragment,
-  useConsoleInstanceSuspenseQuery,
   useRepositorySuspenseQuery,
   useUpdateConsoleInstanceMutation,
   useUpdateOidcProviderMutation,
@@ -41,24 +41,17 @@ const BlankExternalFormState: ExternalOidcFormState = {
 }
 
 export function PluralCloudInstanceLoginSettings({
-  instanceId,
+  instance,
 }: {
-  instanceId: string
+  instance: ConsoleInstanceFragment
 }) {
   const [showToast, setShowToast] = useState(false)
   const { data: repoData, error: errorRepo } = useRepositorySuspenseQuery({
     variables: { name: 'console' },
     fetchPolicy: 'cache-and-network',
   })
-  const { data: instanceData, error: errorInstance } =
-    useConsoleInstanceSuspenseQuery({
-      variables: { id: instanceId },
-      fetchPolicy: 'cache-and-network',
-    })
 
-  const instanceExternalOidc = sanitizeExternalOidc(
-    instanceData.consoleInstance?.oidc
-  )
+  const instanceExternalOidc = sanitizeExternalOidc(instance.oidc)
 
   const installation = repoData.repository?.installation
   const pluralOidcProvider = installation?.oidcProvider
@@ -111,7 +104,7 @@ export function PluralCloudInstanceLoginSettings({
   ] = useUpdateConsoleInstanceMutation({
     awaitRefetchQueries: true,
     refetchQueries: [
-      { query: ConsoleInstanceDocument, variables: { id: instanceId } },
+      { query: ConsoleInstanceDocument, variables: { id: instance.id } },
     ],
     onCompleted: () => setShowToast(true),
   })
@@ -120,19 +113,18 @@ export function PluralCloudInstanceLoginSettings({
     if (oidcType === 'plural') {
       updatePluralOidc()
       updateExternalOidc({
-        variables: { id: instanceId, attributes: { oidc: null } },
+        variables: { id: instance.id, attributes: { oidc: null } },
       })
     } else {
       updateExternalOidc({
-        variables: { id: instanceId, attributes: { oidc: externalFormState } },
+        variables: { id: instance.id, attributes: { oidc: externalFormState } },
       })
     }
   }
 
   const mutationLoading = loadingPluralMutation || loadingExternalMutation
 
-  if (errorRepo || errorInstance)
-    return <GqlError error={errorRepo || errorInstance} />
+  if (errorRepo) return <GqlError error={errorRepo} />
 
   return (
     <LoginSettingsWrapperCardSC>

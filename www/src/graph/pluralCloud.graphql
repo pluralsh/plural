@@ -23,6 +23,9 @@ fragment ConsoleInstance on ConsoleInstance {
   oidc {
     ...ConsoleInstanceOidc
   }
+  network {
+    allowedCidrs
+  }
   insertedAt
   updatedAt
 }

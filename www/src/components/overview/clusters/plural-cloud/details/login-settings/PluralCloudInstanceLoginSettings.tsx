@@ -220,7 +220,7 @@ const LoginSettingsWrapperCardSC = styled(Card)(({ theme }) => ({
 }))
 
 // allows bindings with different ids but same user/group value to be considered equal
-const areBindingsEqual = (
+export const areBindingsEqual = (
   a: PluralOidcFormState['bindings'],
   b: PluralOidcFormState['bindings']
 ) =>

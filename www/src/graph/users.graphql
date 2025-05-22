@@ -50,16 +50,20 @@ fragment User on User {
 fragment ImpersonationPolicy on ImpersonationPolicy {
   id
   bindings {
+    ...ImpersonationPolicyBinding
+  }
+}
+
+fragment ImpersonationPolicyBinding on ImpersonationPolicyBinding {
+  id
+  group {
     id
-    group {
-      id
-      name
-    }
-    user {
-      id
-      name
-      email
-    }
+    name
+  }
+  user {
+    id
+    name
+    email
   }
 }
 

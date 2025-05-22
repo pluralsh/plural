@@ -6226,6 +6226,8 @@ export type UserFragment = { __typename?: 'User', id: string, name: string, emai
 
 export type ImpersonationPolicyFragment = { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null };
 
+export type ImpersonationPolicyBindingFragment = { __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null };
+
 export type GroupMemberFragment = { __typename?: 'GroupMember', id: string, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null };
 
 export type TokenFragment = { __typename?: 'PersistedToken', id?: string | null, token?: string | null, insertedAt?: Date | null };
@@ -6453,23 +6455,28 @@ export const GroupFragmentDoc = gql`
   description
 }
     `;
+export const ImpersonationPolicyBindingFragmentDoc = gql`
+    fragment ImpersonationPolicyBinding on ImpersonationPolicyBinding {
+  id
+  group {
+    id
+    name
+  }
+  user {
+    id
+    name
+    email
+  }
+}
+    `;
 export const ImpersonationPolicyFragmentDoc = gql`
     fragment ImpersonationPolicy on ImpersonationPolicy {
   id
   bindings {
-    id
-    group {
-      id
-      name
-    }
-    user {
-      id
-      name
-      email
-    }
+    ...ImpersonationPolicyBinding
   }
 }
-    `;
+    ${ImpersonationPolicyBindingFragmentDoc}`;
 export const UserFragmentDoc = gql`
     fragment User on User {
   id
@@ -13029,6 +13036,7 @@ export const namedOperations = {
     Group: 'Group',
     User: 'User',
     ImpersonationPolicy: 'ImpersonationPolicy',
+    ImpersonationPolicyBinding: 'ImpersonationPolicyBinding',
     GroupMember: 'GroupMember',
     Token: 'Token',
     TokenAudit: 'TokenAudit',

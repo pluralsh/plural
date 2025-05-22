@@ -29,6 +29,7 @@ import {
 import { PluralCloudInstanceLoginSettings } from './login-settings/PluralCloudInstanceLoginSettings'
 import { PluralCloudInstanceDropdown } from './PluralCloudInstanceDropdown'
 import { PluralCloudInstanceMoreMenu } from './PluralCloudInstanceMoreMenu'
+import { PluralCloudInstanceClusterPermissions } from './PluralCloudInstanceClusterPermissions'
 
 export const INSTANCE_ID_PARAM = 'instanceId'
 
@@ -167,7 +168,7 @@ export function PluralCloudInstanceDetails() {
                   <PluralCloudInstanceLoginSettings instanceId={instance.id} />
                 )}
                 {currentTab === Tab.ClusterPermissions && (
-                  <div>Instance write access</div>
+                  <PluralCloudInstanceClusterPermissions instance={instance} />
                 )}
                 {currentTab === Tab.OIDCProviders && (
                   <EditPluralOIDCClients instanceName={instance.name} />

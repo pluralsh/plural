@@ -253,6 +253,9 @@ const ImageVulnerabilities = lazy(
   () => import('./repository/packages/docker/ImageVulnerabilities')
 )
 
+// For accepting Github app installations
+const GitHubSetup = lazy(() => import('./github/GitHubSetup'))
+
 // Packages - Terraform - /terraform
 const Terraform = lazy(() => import('./repository/packages/Terraform'))
 
@@ -733,6 +736,10 @@ export function PluralInner() {
                   element={<RoadmapFeedback />}
                 />
               </Route>
+              <Route
+                path="/github/setup"
+                element={<GitHubSetup />}
+              />
               {/* --- 404 --- */}
               <Route
                 path="/*"

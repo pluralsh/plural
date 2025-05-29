@@ -26,6 +26,7 @@ defmodule Core.Services.Cloud.Configuration do
       cloud: "#{inst.cloud}",
       cluster_name: inst.name,
       size: "#{size}",
+      vmetrics_tenant: vmetrics_tenant(inst)
     })
     |> Map.put(:size, "#{size}")
     |> Enum.filter(fn {_, v} -> is_binary(v) end)
@@ -80,5 +81,11 @@ defmodule Core.Services.Cloud.Configuration do
     postgres: %PostgresCluster{host: host}
   }) do
     "postgresql://#{u}:#{p}@#{host}/#{database}"
+  end
+
+  def vmetrics_tenant(%ConsoleInstance{id: id}) do
+    # use implicit 32 bit integer from instance id to infer the tenant id (which has to be that datatype)
+    <<tenant::binary-size(4), _rest::binary>> = UUID.string_to_binary!(id)
+    "#{:binary.decode_unsigned(tenant, :big)}"
   end
 end

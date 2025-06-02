@@ -20,6 +20,7 @@ defmodule Core.Schema.Cluster do
     field :domain,        :string
     field :pinged_at,     :utc_datetime_usec
     field :service_count, :integer
+    field :cluster_count, :integer
     field :legacy,        :boolean
 
     belongs_to :owner,   User
@@ -86,7 +87,7 @@ defmodule Core.Schema.Cluster do
     from(c in query, order_by: ^order)
   end
 
-  @valid ~w(owner_id legacy account_id provider name domain console_url source git_url pinged_at service_count)a
+  @valid ~w(owner_id legacy account_id provider name domain console_url source git_url pinged_at service_count cluster_count)a
 
   def changeset(model, attrs \\ %{}) do
     model

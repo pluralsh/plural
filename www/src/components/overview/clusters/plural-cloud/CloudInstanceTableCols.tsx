@@ -168,7 +168,7 @@ const ColActions = columnHelper.accessor((instance) => instance, {
           small
           startIcon={<ConsoleIcon color={theme.colors['icon-default']} />}
           as={Link}
-          href={`https://${instance.url}`}
+          to={`https://${instance.url}`}
           target="_blank"
           rel="noopener noreferrer"
         >

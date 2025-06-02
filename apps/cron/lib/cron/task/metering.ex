@@ -10,14 +10,15 @@ defmodule Cron.Task.Metering do
     PlatformSubscription.metered()
     |> PlatformSubscription.ordered(asc: :id)
     |> Core.Repo.stream(method: :keyset)
-    |> Core.throttle(count: 50, pause: :timer.seconds(1))
-    |> Flow.from_enumerable(stages: 5, max_demand: 5)
+    |> Core.throttle(count: 100, pause: :timer.seconds(1))
+    |> Flow.from_enumerable(stages: 10, max_demand: 10)
     |> Flow.map(&deliver/1)
     |> log()
   end
 
   defp deliver(%PlatformSubscription{} = subscription) do
     Logger.info "sending usage records for account #{subscription.account_id}"
-    Payments.send_usage(subscription)
+    result = Payments.send_usage(subscription)
+    Logger.info "meter result: #{inspect(result)}"
   end
 end

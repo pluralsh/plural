@@ -8,10 +8,11 @@ defmodule Core.MCP.Server do
     CloudReap,
     RemoveEnterprise,
     AddOIDCBinding,
-    SetupTrial
+    SetupTrial,
+    ListPlans
   }
 
-  @tools [Account, AccountUsers, Enterprise, CloudConsole, CloudReap, RemoveEnterprise, AddOIDCBinding, SetupTrial]
+  @tools [Account, AccountUsers, Enterprise, CloudConsole, CloudReap, RemoveEnterprise, AddOIDCBinding, SetupTrial, ListPlans]
   @by_name Map.new(@tools, & {&1.name(), &1})
 
   @protocol_version "2024-11-05"

@@ -34,6 +34,7 @@ defmodule Core.Schema.PlatformPlan do
     field :period,       Period
     field :external_id,  :string
     field :service_plan, :string
+    field :cluster_plan, :string
 
     embeds_one :features, Features, on_replace: :update do
       boolean_fields [:vpn, :user_management, :audit, :multi_cluster, :database_management, :cd]
@@ -61,7 +62,7 @@ defmodule Core.Schema.PlatformPlan do
 
   def features(), do: __MODULE__.Features.__schema__(:fields) -- [:id]
 
-  @valid ~w(name visible cost period external_id trial service_plan)a
+  @valid ~w(name visible cost period external_id trial service_plan cluster_plan)a
 
   def changeset(schema, attrs \\ %{}) do
     schema

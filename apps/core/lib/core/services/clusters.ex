@@ -96,9 +96,9 @@ defmodule Core.Services.Clusters do
       |> Core.Repo.insert()
     end)
     |> add_operation(:cluster, fn
-      %{usage: %ClusterUsageHistory{services: svcs}} when is_integer(svcs) and svcs > 0 ->
+      %{usage: %ClusterUsageHistory{services: svcs, clusters: cls}} when is_integer(svcs) and svcs > 0 ->
         get_cluster!(id)
-        |> Cluster.changeset(%{service_count: svcs})
+        |> Cluster.changeset(%{service_count: svcs, cluster_count: cls})
         |> Core.Repo.update()
       _ -> {:ok, nil}
     end)

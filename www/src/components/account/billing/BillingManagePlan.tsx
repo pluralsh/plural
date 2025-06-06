@@ -67,7 +67,7 @@ export default function BillingManagePlan() {
 }
 
 export function ProPlanCTA({
-  onUpgrade,
+  // onUpgrade,
   onCancel,
 }: {
   onUpgrade: () => void
@@ -93,12 +93,18 @@ export function ProPlanCTA({
     </ActionBtnSC>
   ) : (
     <ActionBtnSC
-      primary
+      disabled
       width="100%"
-      onClick={onUpgrade}
     >
-      Upgrade
+      Coming soon
     </ActionBtnSC>
+    // <ActionBtnSC
+    //   primary
+    //   width="100%"
+    //   onClick={onUpgrade}
+    // >
+    //   Upgrade
+    // </ActionBtnSC>
   )
 }
 

@@ -1,4 +1,4 @@
 Mimic.copy(Core.Conduit.Broker)
-Mimic.copy(Stripe.SubscriptionItem.Usage)
+Mimic.copy(Stripe.API)
 ExUnit.configure formatters: [JUnitFormatter, ExUnit.CLIFormatter]
 ExUnit.start()

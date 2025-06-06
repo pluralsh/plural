@@ -265,6 +265,10 @@ defmodule GraphQl.Schema.Payments do
     field :quantity,  non_null(:integer)
   end
 
+  object :checkout_session do
+    field :url, :string
+  end
+
   connection node_type: :invoice
   connection node_type: :card
   connection node_type: :payment_method
@@ -397,6 +401,19 @@ defmodule GraphQl.Schema.Payments do
       middleware Authenticated
 
       safe_resolve &Payments.begin_trial/2
+    end
+
+    field :initiate_checkout, :checkout_session do
+      middleware Authenticated
+
+      safe_resolve &Payments.initiate_checkout/2
+    end
+
+    field :finalize_checkout, :platform_subscription do
+      middleware Authenticated
+      arg :session_id, non_null(:string)
+
+      safe_resolve &Payments.finalize_checkout/2
     end
 
     field :delete_platform_subscription, :account do

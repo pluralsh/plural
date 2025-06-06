@@ -247,7 +247,7 @@ defmodule Core.Services.RepositoriesTest do
       repo = insert(:repository, publisher: build(:publisher, billing_account_id: "acct_id"))
       inst = insert(:installation, repository: repo, user: user)
       sub  = insert(:subscription, installation: inst, external_id: "sub_id")
-      expect(Stripe.Subscription, :delete, fn "sub_id", [connect_account: "acct_id"] -> {:ok, %{}} end)
+      expect(Stripe.Subscription, :cancel, fn "sub_id", [connect_account: "acct_id"] -> {:ok, %{}} end)
 
       {:ok, _deleted} = Repositories.delete_installation(inst.id, user)
 

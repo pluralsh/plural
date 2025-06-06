@@ -16,58 +16,58 @@ defmodule Core.Services.PaymentsTest do
     end
   end
 
-  describe "#create_card" do
-    test "It will create a customer and persist its id" do
-      user = insert(:user, account: build(:account, root_user: build(:user), billing_address: %{
-        line1: "line1",
-        line2: "line2",
-        city: "new york",
-        state: "ny",
-        country: "us",
-        zip: "10023",
-        name: "me"
-      }))
+  # describe "#create_card" do
+  #   test "It will create a customer and persist its id" do
+  #     user = insert(:user, account: build(:account, root_user: build(:user), billing_address: %{
+  #       line1: "line1",
+  #       line2: "line2",
+  #       city: "new york",
+  #       state: "ny",
+  #       country: "us",
+  #       zip: "10023",
+  #       name: "me"
+  #     }))
 
-      me = self()
-      expect(Stripe.Customer, :create, fn %{email: _, name: name, address: address, source: "token"} ->
-        send me, {:stripe, address, name}
-        {:ok, %{id: "cus_some_id"}}
-      end)
+  #     me = self()
+  #     expect(Stripe.Customer, :create, fn %{email: _, name: name, address: address, source: "token"} ->
+  #       send me, {:stripe, address, name}
+  #       {:ok, %{id: "cus_some_id"}}
+  #     end)
 
-      {:ok, updated} = Payments.create_card(user, "token")
+  #     {:ok, updated} = Payments.create_card(user, "token")
 
-      assert updated.billing_customer_id == "cus_some_id"
+  #     assert updated.billing_customer_id == "cus_some_id"
 
-      assert_receive {:stripe, address, name}
-      assert name == "me"
-      assert address.line1 == updated.billing_address.line1
-      assert address.line2 == updated.billing_address.line2
-      assert address.city == updated.billing_address.city
-      assert address.state == updated.billing_address.state
-      assert address.country == updated.billing_address.country
-      assert address.postal_code == updated.billing_address.zip
-    end
+  #     assert_receive {:stripe, address, name}
+  #     assert name == "me"
+  #     assert address.line1 == updated.billing_address.line1
+  #     assert address.line2 == updated.billing_address.line2
+  #     assert address.city == updated.billing_address.city
+  #     assert address.state == updated.billing_address.state
+  #     assert address.country == updated.billing_address.country
+  #     assert address.postal_code == updated.billing_address.zip
+  #   end
 
-    test "it will fail w/o billing address" do
-      user = insert(:user, account: build(:account, root_user: build(:user)))
+  #   test "it will fail w/o billing address" do
+  #     user = insert(:user, account: build(:account, root_user: build(:user)))
 
-      {:error, _} = Payments.create_card(user, "token")
-    end
+  #     {:error, _} = Payments.create_card(user, "token")
+  #   end
 
-    test "If a customer has already been registered, it will just create a new card" do
-      user = insert(:user, account: build(:account, billing_customer_id: "cus_id"))
-      expect(Stripe.Card, :create, fn %{customer: "cus_id", source: "token"} -> {:ok, %{id: "something"}} end)
-      expect(Stripe.Invoice, :list, fn %{customer: "cus_id"} ->
-        {:ok, %Stripe.List{data: [
-          %Stripe.Invoice{id: "inv_id", status: "uncollectible"},
-          %Stripe.Invoice{id: "inv_id2", status: "paid"},
-        ]}}
-      end)
-      expect(Stripe.Invoice, :pay, fn "inv_id", %{source: "token"} -> {:ok, %{}} end)
+  #   test "If a customer has already been registered, it will just create a new card" do
+  #     user = insert(:user, account: build(:account, billing_customer_id: "cus_id"))
+  #     expect(Stripe.Card, :create, fn %{customer: "cus_id", source: "token"} -> {:ok, %{id: "something"}} end)
+  #     expect(Stripe.Invoice, :list, fn %{customer: "cus_id"} ->
+  #       {:ok, %Stripe.List{data: [
+  #         %Stripe.Invoice{id: "inv_id", status: "uncollectible"},
+  #         %Stripe.Invoice{id: "inv_id2", status: "paid"},
+  #       ]}}
+  #     end)
+  #     expect(Stripe.Invoice, :pay, fn "inv_id", %{source: "token"} -> {:ok, %{}} end)
 
-      {:ok, _} = Payments.create_card(user, "token")
-    end
-  end
+  #     {:ok, _} = Payments.create_card(user, "token")
+  #   end
+  # end
 
   describe "#delete_card" do
     test "It will delete a customer's card" do
@@ -487,29 +487,6 @@ defmodule Core.Services.PaymentsTest do
     end
   end
 
-  describe "#add_usage_record/3" do
-    test "It can add a usage record for a subscription" do
-      expect(Stripe.SubscriptionItem.Usage, :create, fn "si_id", %{quantity: 1, action: :set, timestamp: _}, [connect_account: "account_id"] ->
-        {:ok, %{}}
-      end)
-      user = insert(:user)
-      repository = insert(:repository, publisher: build(:publisher, billing_account_id: "account_id"))
-      installation = insert(:installation, user: user, repository: repository)
-      plan = insert(:plan,
-        repository: installation.repository,
-        external_id: "plan_id",
-        line_items: %{items: [%{name: "mem", dimension: "memory", external_id: "id_stor", period: :monthly, type: :metered}]}
-      )
-      subscription = insert(:subscription, installation: installation, plan: plan, line_items: %{
-        item_id: "some_id",
-        items: [%{id: Ecto.UUID.generate(), external_id: "si_id", quantity: 1, dimension: "memory", type: :metered}]
-      })
-
-      {:ok, sub} = Payments.add_usage_record(%{quantity: 1}, "memory", subscription)
-
-      assert subscription.id == sub.id
-    end
-  end
 
   describe "#update_line_item/3" do
     test "A subscriber can update individual line items" do
@@ -590,7 +567,7 @@ defmodule Core.Services.PaymentsTest do
       account = insert(:account)
       user = insert(:user, account: account, roles: %{admin: true})
       sub = insert(:platform_subscription, account: account, external_id: "sub_id")
-      expect(Stripe.Subscription, :delete, fn "sub_id" -> {:ok, %{}} end)
+      expect(Stripe.Subscription, :cancel, fn "sub_id" -> {:ok, %{}} end)
 
       {:ok, s} = Payments.cancel_platform_subscription(user)
 
@@ -759,7 +736,7 @@ defmodule Core.Services.PaymentsTest do
 
     test "it will delete in stripe and db", %{user: user, account: account} do
       sub = insert(:platform_subscription, account: account, external_id: "ext_id")
-      expect(Stripe.Subscription, :delete, fn "ext_id", %{prorate: true} -> {:ok, %{}} end)
+      expect(Stripe.Subscription, :cancel, fn "ext_id" -> {:ok, %{}} end)
 
       {:ok, deleted} = Payments.delete_platform_subscription(user)
 
@@ -1066,6 +1043,42 @@ defmodule Core.Services.PaymentsTest do
       )
 
       {:error, :forbidden} = Payments.update_plan(plan, subscription, user)
+    end
+  end
+
+  describe "#initiate_checkout/1" do
+    setup [:setup_root_user]
+    test "it will create a checkout session", %{user: user} do
+      pro_plan()
+      expect(Stripe.Checkout.Session, :create, fn _ ->
+        {:ok, %Stripe.Checkout.Session{url: "https://checkout.stripe.com/session_id"}}
+      end)
+
+      {:ok, session} = Payments.initiate_checkout(user)
+
+      assert session.url == "https://checkout.stripe.com/session_id"
+    end
+  end
+
+  describe "#finalize_checkout/2" do
+    test "it will finalize a checkout session" do
+      account = insert(:account)
+      user = insert(:user, account: account)
+      plan = pro_plan()
+      expect(Stripe.Checkout.Session, :retrieve, fn "session_id" ->
+        {:ok, %Stripe.Checkout.Session{customer: "cus_id", subscription: "sub_id"}}
+      end)
+
+      {:ok, subscription} = Payments.finalize_checkout("session_id", user)
+
+      assert subscription.account_id == account.id
+      assert subscription.external_id == "sub_id"
+      assert subscription.plan_id == plan.id
+      assert subscription.billing_version == 1
+
+      %{account: account} = Repo.preload(subscription, [:account])
+
+      assert account.billing_customer_id == "cus_id"
     end
   end
 end

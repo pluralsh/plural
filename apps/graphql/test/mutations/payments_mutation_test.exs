@@ -476,7 +476,7 @@ defmodule GraphQl.PaymentsMutationsTest do
     test "it can delete your subscription" do
       user = insert(:user, roles: %{admin: true})
       sub = insert(:platform_subscription, account: user.account, external_id: "ext_id")
-      expect(Stripe.Subscription, :delete, fn "ext_id", %{prorate: true} -> {:ok, %{}} end)
+      expect(Stripe.Subscription, :cancel, fn "ext_id" -> {:ok, %{}} end)
 
       {:ok, %{data: %{"deletePlatformSubscription" => %{"id" => id}}}} = run_query("""
         mutation {
@@ -549,7 +549,7 @@ defmodule GraphQl.PaymentsMutationsTest do
       account = insert(:account)
       user = insert(:user, account: account, roles: %{admin: true})
       subscription = insert(:platform_subscription, account: account, external_id: "sub_id")
-      expect(Stripe.Subscription, :delete, fn "sub_id" -> {:ok, %{}} end)
+      expect(Stripe.Subscription, :cancel, fn "sub_id" -> {:ok, %{}} end)
 
       {:ok, %{data: %{"cancelPlatformSubscription" => sub}}} = run_query("""
         mutation  {

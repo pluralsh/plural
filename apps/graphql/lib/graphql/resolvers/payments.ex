@@ -128,4 +128,10 @@ defmodule GraphQl.Resolvers.Payments do
     Users.get_publisher_by_owner!(user.id)
     |> Payments.create_publisher_account(token)
   end
+
+  def initiate_checkout(_, %{context: %{current_user: user}}),
+    do: Payments.initiate_checkout(user)
+
+  def finalize_checkout(%{session_id: session_id}, %{context: %{current_user: user}}),
+    do: Payments.finalize_checkout(session_id, user)
 end

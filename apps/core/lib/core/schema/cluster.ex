@@ -83,6 +83,10 @@ defmodule Core.Schema.Cluster do
     from(c in query, select: sum(c.service_count))
   end
 
+  def clusters(query \\ __MODULE__) do
+    from(c in query, select: sum(c.cluster_count))
+  end
+
   def ordered(query \\ __MODULE__, order \\ [asc: :name]) do
     from(c in query, order_by: ^order)
   end

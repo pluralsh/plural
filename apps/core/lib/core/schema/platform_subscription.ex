@@ -29,6 +29,7 @@ defmodule Core.Schema.PlatformSubscription do
     field :status,       Status
     field :external_id,  :string
     field :metered_id,   :string
+    field :billing_version, :integer, default: 0
 
     embeds_many :line_items, LineItem, on_replace: :delete
     belongs_to  :account,    Account
@@ -37,7 +38,7 @@ defmodule Core.Schema.PlatformSubscription do
     timestamps()
   end
 
-  @valid ~w(account_id plan_id)a
+  @valid ~w(account_id plan_id external_id billing_version)a
 
   def expired_trial(query \\ __MODULE__) do
     expiry = Timex.now() |> Timex.shift(@expiry)
@@ -48,7 +49,7 @@ defmodule Core.Schema.PlatformSubscription do
   end
 
   def metered(query \\ __MODULE__) do
-    from(s in query, where: not is_nil(s.metered_id))
+    from(s in query, where: not is_nil(s.metered_id) or s.billing_version > 0)
   end
 
   def ordered(query \\ __MODULE__, order \\ [asc: :id]) do

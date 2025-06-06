@@ -30,8 +30,7 @@ export function ContactUs({ ...props }: ButtonProps) {
 }
 
 function BillingPricingCards({
-  onCancel,
-  onUpgrade,
+  onCancel, // onUpgrade,
 }: {
   onCancel: () => void
   onUpgrade: () => void
@@ -85,12 +84,18 @@ function BillingPricingCards({
               </Button>
             ) : (
               <Button
-                primary
+                disabled
                 width="100%"
-                onClick={onUpgrade}
               >
-                Upgrade
+                Coming soon
               </Button>
+              // <Button
+              //   primary
+              //   width="100%"
+              //   onClick={onUpgrade}
+              // >
+              //   Upgrade
+              // </Button>
             )
           }
         />

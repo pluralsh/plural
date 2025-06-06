@@ -301,6 +301,10 @@ type RootMutationType {
 
   beginTrial: PlatformSubscription
 
+  initiateCheckout: CheckoutSession
+
+  finalizeCheckout(sessionId: String!): PlatformSubscription
+
   deletePlatformSubscription: Account
 
   cancelPlatformSubscription: PlatformSubscription
@@ -3248,6 +3252,10 @@ type LineItem {
 type Limit {
   dimension: String!
   quantity: Int!
+}
+
+type CheckoutSession {
+  url: String
 }
 
 type InvoiceConnection {

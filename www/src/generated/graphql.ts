@@ -374,6 +374,11 @@ export type ChatMessageAttributes = {
   role: Scalars['String']['input'];
 };
 
+export type CheckoutSession = {
+  __typename?: 'CheckoutSession';
+  url?: Maybe<Scalars['String']['output']>;
+};
+
 export type ClosureItem = {
   __typename?: 'ClosureItem';
   dep?: Maybe<Dependency>;
@@ -2930,8 +2935,10 @@ export type RootMutationType = {
   destroyCluster?: Maybe<Scalars['Boolean']['output']>;
   deviceLogin?: Maybe<DeviceLogin>;
   externalToken?: Maybe<Scalars['String']['output']>;
+  finalizeCheckout?: Maybe<PlatformSubscription>;
   followIncident?: Maybe<Follower>;
   impersonateServiceAccount?: Maybe<User>;
+  initiateCheckout?: Maybe<CheckoutSession>;
   installBundle?: Maybe<Array<Maybe<Installation>>>;
   installChart?: Maybe<ChartInstallation>;
   installRecipe?: Maybe<Array<Maybe<Installation>>>;
@@ -3411,6 +3418,11 @@ export type RootMutationTypeDestroyClusterArgs = {
   domain: Scalars['String']['input'];
   name: Scalars['String']['input'];
   provider: Provider;
+};
+
+
+export type RootMutationTypeFinalizeCheckoutArgs = {
+  sessionId: Scalars['String']['input'];
 };
 
 

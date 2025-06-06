@@ -53,7 +53,6 @@ defmodule ApiWeb.Router do
     pipe_through :api
 
     post "/email", EmailController, :email
-    post "/usage", PaymentsController, :usage_record
 
     get "/license/:key", LicenseController, :get
   end

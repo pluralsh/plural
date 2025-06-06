@@ -151,7 +151,10 @@ config :core,
   cockroach_parameters: [],
   bootstrap_ssl: true,
   intercom_salt: "intercomsalt",
-  cloud_domain: "cloud.plural.sh"
+  cloud_domain: "cloud.plural.sh",
+  base_stripe_product: "test-base",
+  metered_stripe_product: "test-metered",
+  cluster_meter_name: "pro_clusters"
 
 config :briefly,
   directory: [{:system, "TMPDIR"}, {:system, "TMP"}, {:system, "TEMP"}, "/tmp"],

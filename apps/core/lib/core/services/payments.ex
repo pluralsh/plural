@@ -65,6 +65,11 @@ defmodule Core.Services.Payments do
     |> Core.Repo.exists?()
   end
 
+  def pro_plan!() do
+    PlatformPlan.visible()
+    |> Core.Repo.get_by!(name: "Pro", period: :monthly)
+  end
+
   @doc """
   Forcibly removes an account from their current trial
   """
@@ -160,6 +165,60 @@ defmodule Core.Services.Payments do
   def list_invoices(_, _), do: {:error, "no customer for this account"}
 
   @doc """
+  Starts a stripe checkout to begin our Pro plan subscription
+  """
+  @spec initiate_checkout(User.t | Account.t) :: {:ok, Stripe.Checkout.Session.t} | error
+  def initiate_checkout(%User{} = user) do
+    force_preload(user)
+    |> Map.get(:account)
+    |> initiate_checkout()
+  end
+
+  def initiate_checkout(%Account{billing_customer_id: cus_id} = account) do
+    account = Core.Repo.preload(account, [:root_user])
+    plan = pro_plan!()
+
+    Stripe.Checkout.Session.create(%{
+      customer: cus_id,
+      customer_email: account.root_user.email,
+      payment_method_types: [:card, :us_bank_account],
+      success_url: Core.url("/account/billing?session_id={CHECKOUT_SESSION_ID}"),
+      cancel_url: Core.url("/account/billing?payment_failed=true"),
+      line_items: [
+        %{price: plan.base_price_id, quantity: 1},
+        %{price: plan.metered_price_id}
+      ]
+    })
+  end
+
+  @doc """
+  Records a new subscription for a user after a successful Stripe checkout
+  """
+  @spec finalize_checkout(binary, User.t) :: platform_sub_resp
+  def finalize_checkout(session_id, %User{} = user) do
+    %{account: account} = Repo.preload(user, [:account])
+    with {:ok, %Stripe.Checkout.Session{customer: cus_id, subscription: sub_id}}
+            when is_binary(cus_id) and is_binary(sub_id) <- Stripe.Checkout.Session.retrieve(session_id) do
+      start_transaction()
+      |> add_operation(:account, fn _ ->
+        account
+        |> Account.payment_changeset(%{billing_customer_id: cus_id})
+        |> Core.Repo.update()
+      end)
+      |> add_operation(:subscription, fn _ ->
+        plan = pro_plan!()
+        %PlatformSubscription{account_id: account.id}
+        |> PlatformSubscription.changeset(%{external_id: sub_id, plan_id: plan.id, billing_version: 1})
+        |> Core.Repo.insert()
+      end)
+      |> execute(extract: :subscription)
+    else
+      {:ok, %Stripe.Checkout.Session{}} -> {:error, "Stripe checkout did not complete successfully"}
+      {:error, _} = error -> error
+    end
+  end
+
+  @doc """
   It can list all cards attached to a customer
   """
   @spec list_cards(User.t | Account.t, map) :: {:ok, Stripe.List.t(Stripe.Card.t)} | {:error, term}
@@ -170,9 +229,10 @@ defmodule Core.Services.Payments do
     |> list_cards(opts)
   end
 
-  def list_cards(%Account{billing_customer_id: id}, opts) when not is_nil(id) do
-    Map.merge(%{customer: id}, opts)
-    |> Stripe.Card.list()
+  def list_cards(%Account{billing_customer_id: id}, _opts) when not is_nil(id) do
+    with {:ok, %Stripe.List{data: items}} <- Stripe.Customer.list_payment_methods(id, %{type: :card}) do
+      {:ok, %Stripe.List{has_more: false, data: Enum.map(items, & &1.card)}}
+    end
   end
 
   def list_cards(_, _), do: {:ok, %Stripe.List{has_more: false, data: []}}
@@ -410,7 +470,7 @@ defmodule Core.Services.Payments do
       |> when_ok(:delete)
     end)
     |> add_operation(:stripe, fn _ ->
-      Stripe.Subscription.delete(eid, connect_account: account_id)
+      Stripe.Subscription.cancel(eid, connect_account: account_id)
     end)
     |> execute(extract: :db)
   end
@@ -426,7 +486,7 @@ defmodule Core.Services.Payments do
       |> allow(user, :delete)
       |> when_ok(:delete)
     end)
-    |> add_operation(:stripe, fn _ -> Stripe.Subscription.delete(eid) end)
+    |> add_operation(:stripe, fn _ -> Stripe.Subscription.cancel(eid) end)
     |> execute(extract: :db)
   end
 
@@ -438,32 +498,16 @@ defmodule Core.Services.Payments do
     |> cancel_platform_subscription(user)
   end
 
-  def send_usage(%PlatformSubscription{metered_id: item_id, account_id: aid}) when is_binary(item_id) do
-    with services when is_integer(services) <- Clusters.services(aid) do
-      Stripe.SubscriptionItem.Usage.create(item_id, %{
-        timestamp: DateTime.utc_now() |> DateTime.to_unix(),
-        action: :set,
-        quantity: ceil(services / 5),
-      })
-    end
-  end
-  def send_usage(_), do: :ok
-
-  @doc """
-  Appends a new usage record for the given line item to stripe's api
-  """
-  @spec add_usage_record(map, atom, Subscription.t) :: {:ok, term} | error
-  def add_usage_record(params, dimension, %Subscription{} = sub) do
-    %{installation: %{repository: %{publisher: pub}}} = Core.Repo.preload(sub, [installation: [repository: :publisher]])
-    timestamp = DateTime.utc_now() |> DateTime.to_unix()
-    params    = Map.put_new(params, :action, :set)
-                |> Map.put(:timestamp, timestamp)
-    with %{external_id: id, type: :metered} <- Subscription.line_item(sub, dimension),
-         {:ok, _} <- Stripe.SubscriptionItem.Usage.create(id, params, connect_account: pub.billing_account_id) do
-      {:ok, sub}
-    else
-      {:error, _} -> {:error, :stripe_error}
-      _ -> {:error, :invalid_line_item}
+  def send_usage(%PlatformSubscription{account_id: aid} = sub) do
+    with %PlatformSubscription{account: %Account{billing_customer_id: cus_id}} <- Core.Repo.preload(sub, [:account]),
+         clusters when is_integer(clusters) <- Clusters.clusters(aid) do
+      Stripe.API.request(%{
+        event_name: "pro_clusters",
+        payload: %{
+          stripe_customer_id: cus_id,
+          quantity: clusters
+        }
+      }, :post, "/v1/billing/meter_events", %{}, api_version: "2024-06-20")
     end
   end
 
@@ -902,7 +946,7 @@ defmodule Core.Services.Payments do
     end)
     |> add_operation(:account, fn %{fetch: account} -> {:ok, %{account | subscription: nil}} end)
     |> add_operation(:stripe, fn %{db: %{external_id: ext_id}} ->
-      case Stripe.Subscription.delete(ext_id, %{prorate: true}) do
+      case Stripe.Subscription.cancel(ext_id) do
         {:ok, _} = success -> success
         {:error, %Stripe.Error{extra: %{http_status: 404}}} -> {:ok, nil}
         error -> error

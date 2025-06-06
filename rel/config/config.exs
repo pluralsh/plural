@@ -98,7 +98,10 @@ config :core,
   console_url: get_env("CONSOLE_URL"),
   mgmt_repo: get_env("CONSOLE_MGMT_REPO"),
   stack_id: get_env("CONSOLE_CLOUD_STACK_ID"),
-  cloud_domain: get_env("CONSOLE_CLOUD_DOMAIN") || "cloud.plural.sh"
+  cloud_domain: get_env("CONSOLE_CLOUD_DOMAIN") || "cloud.plural.sh",
+  base_stripe_product: get_env("STRIPE_PRO_PRODUCT"),
+  metered_stripe_product: get_env("STRIPE_PRO_CLUSTER_PRODUCT"),
+  cluster_meter_name: get_env("CLUSTER_METER_NAME") || "pro_clusters"
 
 
 if get_env("VAULT_HOST") do

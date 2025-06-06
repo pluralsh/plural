@@ -106,7 +106,9 @@ defmodule GraphQl.PaymentsQueriesTest do
   describe "cards" do
     test "You can query your own cards on your user" do
       user = insert(:user, account: build(:account, billing_customer_id: "cus_id"))
-      expect(Stripe.Card, :list, fn %{customer: "cus_id"} -> {:ok, mk_cards()} end)
+      expect(Stripe.Customer, :list_payment_methods, fn "cus_id", %{type: :card} ->
+        {:ok, mk_cards()}
+      end)
 
       {:ok, %{data: %{"me" => me}}} = run_query("""
         query {
@@ -259,7 +261,7 @@ defmodule GraphQl.PaymentsQueriesTest do
   defp mk_cards() do
     %Stripe.List{
       has_more: true,
-      data: [
+      data: Enum.map([
         %Stripe.Card{
           id: "some_id",
           brand: "amex",
@@ -276,7 +278,7 @@ defmodule GraphQl.PaymentsQueriesTest do
           exp_year: 2020,
           name: "Someone"
         }
-      ]
+      ], & %Stripe.PaymentMethod{card: &1})
     }
   end
 

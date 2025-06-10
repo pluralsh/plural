@@ -61,6 +61,7 @@ export function ChooseCloudStep() {
                 </CalloutLinkButton>
                 <CalloutLinkButton
                   secondary
+                  newTab
                   href="https://www.plural.sh/contact"
                 >
                   Contact sales

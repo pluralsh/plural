@@ -52,7 +52,7 @@ function BillingTrialBanner() {
           access.&nbsp;
           <MessageLink
             as={Link}
-            to="/account/billing?upgrade=true"
+            to="/account/billing"
           >
             Upgrade now.
           </MessageLink>

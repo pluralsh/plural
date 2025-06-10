@@ -1,7 +1,7 @@
-import { ComponentProps, useCallback, useContext, useState } from 'react'
 import { Button, Card, Chip, Modal } from '@pluralsh/design-system'
 import { Div, Flex, H3 } from 'honorable'
 import isEmpty from 'lodash/isEmpty'
+import { ComponentProps, useCallback, useContext, useState } from 'react'
 
 import SubscriptionContext from '../../../contexts/SubscriptionContext'
 
@@ -15,8 +15,8 @@ import {
 
 import { DeleteIconButton } from '../../utils/IconButtons'
 
-import PaymentForm, { PaymentFormVariant } from './PaymentForm'
 import { DelinquencyCallout } from './DelinquencyNotices'
+import PaymentForm from './PaymentForm'
 
 export enum PaymentMethodActions {
   MakeDefault = 'makeDefault',
@@ -54,10 +54,8 @@ function CardBrandToImgPath(brand: string) {
 
 export function PaymentMethod({
   method,
-  variant = PaymentFormVariant.AddCard,
 }: {
-  method: PaymentMethodFragment | null | undefined
-  variant?: PaymentFormVariant
+  method: Nullable<PaymentMethodFragment>
 }) {
   const [makeDefaultMutation, { loading: defaultLoading }] =
     useDefaultPaymentMethodMutation({
@@ -124,11 +122,7 @@ export function PaymentMethod({
         flexGrow={1}
       >
         {method.isDefault ? (
-          <Chip severity="success">
-            {variant === PaymentFormVariant.AddCard
-              ? 'Default card'
-              : 'Selected'}
-          </Chip>
+          <Chip severity="success">Default card</Chip>
         ) : (
           <Button
             small
@@ -136,12 +130,10 @@ export function PaymentMethod({
             loading={defaultLoading}
             onClick={handleMakeDefault}
           >
-            {variant === PaymentFormVariant.AddCard ? 'Make default' : 'Select'}
+            Make default
           </Button>
         )}
-        {variant === PaymentFormVariant.AddCard && (
-          <DeleteIconButton onClick={handleDelete} />
-        )}
+        <DeleteIconButton onClick={handleDelete} />
       </Flex>
     </Flex>
   )
@@ -158,10 +150,7 @@ function AddPaymentMethodModal({
       header="Add payment method"
       size="large"
     >
-      <PaymentForm
-        formVariant={PaymentFormVariant.AddCard}
-        onClose={onClose}
-      />
+      <PaymentForm onClose={onClose} />
     </Modal>
   )
 }

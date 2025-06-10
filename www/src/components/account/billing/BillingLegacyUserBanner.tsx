@@ -71,7 +71,7 @@ export default function BillingLegacyUserBanner({
             )}
           </span>
         )}{' '}
-        <Link to="/account/billing?upgrade=true">Upgrade now.</Link>
+        <Link to="/account/billing">Upgrade now.</Link>
       </Callout>
     </Wrapper>
   )

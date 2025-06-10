@@ -25,7 +25,7 @@ import {
 } from '../CreateClusterWizard'
 import { Confirm } from '../../utils/Confirm'
 
-const nameRegex = /^[a-z][a-z0-9-][a-z0-9]{4,9}$/
+const REGIONS = ['us-east-1']
 
 export function ConfigureCloudInstanceStep() {
   const theme = useTheme()
@@ -35,12 +35,14 @@ export function ConfigureCloudInstanceStep() {
   const [name, setName] = useState('')
   const [size, setSize] = useState<ConsoleSize>(ConsoleSize.Small)
   const [cloud, setCloud] = useState<CloudProvider>(CloudProvider.Aws)
-  const [region, setRegion] = useState<string>(regions[0])
+  const [region, setRegion] = useState<string>(REGIONS[0])
   const [confirm, setConfirm] = useState(false)
-  const isNameValid = nameRegex.test(name)
+
+  const [showNameError, setShowNameError] = useState(false)
+  const { isNameValid, nameErrorMessage } = validateName(name)
 
   const canSubmit = !!(
-    isNameValid &&
+    !!name &&
     size &&
     cloud &&
     (cloud === CloudProvider.Aws ? region : true)
@@ -68,7 +70,9 @@ export function ConfigureCloudInstanceStep() {
       <Button
         key="create"
         disabled={!canSubmit}
-        onClick={() => setConfirm(true)}
+        onClick={() =>
+          isNameValid ? setConfirm(true) : setShowNameError(true)
+        }
       >
         Continue
       </Button>
@@ -77,7 +81,7 @@ export function ConfigureCloudInstanceStep() {
     return () => {
       setContinueBtn(undefined)
     }
-  }, [canSubmit, loading, mutation, setContinueBtn])
+  }, [canSubmit, isNameValid, setConfirm, setShowNameError, setContinueBtn])
 
   return (
     <>
@@ -96,10 +100,9 @@ export function ConfigureCloudInstanceStep() {
         <FormFieldSC
           label="Cluster name"
           hint={
-            <FormFieldCaptionSC $name={name}>
-              Name must be between 6 and 11 characters, lowercase, alphanumeric,
-              and begin with a letter.
-            </FormFieldCaptionSC>
+            showNameError && (
+              <ValidationHintSC>{nameErrorMessage}</ValidationHintSC>
+            )
           }
         >
           <Input
@@ -147,7 +150,7 @@ export function ConfigureCloudInstanceStep() {
               selectedKey={region}
               onSelectionChange={(region) => setRegion(region as string)}
             >
-              {regions.map((region) => (
+              {REGIONS.map((region) => (
                 <ListBoxItem
                   key={region}
                   label={region}
@@ -175,15 +178,27 @@ export const FormFieldSC = styled(FormField)(({ theme }) => ({
   color: theme.colors.text,
 }))
 
-const FormFieldCaptionSC = styled.span<{
-  $name: string
-}>(({ theme, $name }) => ({
-  ...theme.partials.text.caption,
-  color: nameRegex.test($name)
-    ? theme.colors['text-success-light']
-    : $name !== ''
-    ? theme.colors['text-danger-light']
-    : theme.colors['text-light'],
+const ValidationHintSC = styled.span(({ theme }) => ({
+  color: theme.colors['text-danger-light'],
 }))
 
-const regions = ['us-east-1']
+const validateName = (name: string) => {
+  const nameValidity = {
+    length: name.length >= 4 && name.length <= 11,
+    lowercase: !/[A-Z]/.test(name),
+    alphanumeric: !!name.match(/^[a-z0-9-]+$/),
+    startsWithLetter: !!name.at(0)?.match(/[a-z]/),
+  }
+  return {
+    isNameValid: Object.values(nameValidity).every((value) => value),
+    nameErrorMessage: !nameValidity.lowercase
+      ? 'Name must be lowercase'
+      : !nameValidity.startsWithLetter
+      ? 'Name must start with a letter'
+      : !nameValidity.alphanumeric
+      ? 'Name must be alphanumeric'
+      : !nameValidity.length
+      ? 'Name must be between 4 and 11 characters'
+      : '',
+  }
+}

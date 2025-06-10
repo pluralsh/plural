@@ -180,6 +180,7 @@ defmodule Core.Services.Payments do
 
     %{
       payment_method_types: [:card, :us_bank_account],
+      mode: "subscription",
       success_url: Core.url("/account/billing?session_id={CHECKOUT_SESSION_ID}"),
       cancel_url: Core.url("/account/billing?payment_failed=true"),
       line_items: [

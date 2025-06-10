@@ -1,11 +1,11 @@
-import { Button, Card } from '@pluralsh/design-system'
+import { Button } from '@pluralsh/design-system'
 import {
   AddressElement,
   PaymentElement,
   useElements,
   useStripe,
 } from '@stripe/react-stripe-js'
-import { StripeError, StripePaymentElementOptions } from '@stripe/stripe-js'
+import { StripePaymentElementOptions } from '@stripe/stripe-js'
 import { Div, Flex } from 'honorable'
 import {
   ComponentProps,
@@ -19,38 +19,21 @@ import {
 } from 'react'
 import { type ImmerReducer, useImmerReducer } from 'use-immer'
 
-import { useNavigate } from 'react-router-dom'
-
-import isEmpty from 'lodash/isEmpty'
-
+import type { AddressAttributes } from '../../../generated/graphql'
 import {
   namedOperations,
-  useCreatePlatformSubscriptionMutation,
   useSetupIntentMutation,
 } from '../../../generated/graphql'
-import type { AddressAttributes } from '../../../generated/graphql'
 
 import { host } from '../../../helpers/hostname'
 import { ErrorMessage } from '../../utils/Alert'
 
-import PlatformPlansContext from '../../../contexts/PlatformPlansContext'
-
 import BillingError from './BillingError'
-import BillingPreview from './BillingPreview'
 import { StripeElements } from './StripeElements'
-import { PaymentMethod } from './BillingBankCards'
-import { useBillingSubscription } from './BillingSubscriptionProvider'
-import { CONFIRM_RETURN_PATH } from './hooks'
-
-export enum PaymentFormVariant {
-  Upgrade = 'UPGRADE',
-  AddCard = 'ADD_CARD',
-}
 
 enum PaymentFormState {
   CollectAddress = 'CollectAddress',
   CollectPayment = 'CollectPayment',
-  SelectUpgradePaymentMethod = 'SelectPaymentMethod',
 }
 
 type PaymentFormContextState = {
@@ -60,7 +43,6 @@ type PaymentFormContextState = {
 }
 
 type PaymentFormContextVal = PaymentFormContextState & {
-  formVariant: PaymentFormVariant
   setFormState: (state: PaymentFormState) => void
   setPlan: (plan: PlanType) => void
   setAddress: (address: AddressAttributes) => void
@@ -123,17 +105,12 @@ const paymentElementOptions: StripePaymentElementOptions = {
 }
 
 function PaymentFormProvider({
-  formVariant,
   onClose,
   children,
 }: PropsWithChildren<{
-  formVariant: PaymentFormVariant
   onClose?: Nullable<() => void>
 }>) {
-  const initialFormState =
-    formVariant === PaymentFormVariant.Upgrade
-      ? PaymentFormState.SelectUpgradePaymentMethod
-      : PaymentFormState.CollectAddress
+  const initialFormState = PaymentFormState.CollectAddress
   const [contextState, dispatch] = useImmerReducer(reducer, {
     ...defaultState,
     formState: initialFormState,
@@ -148,7 +125,6 @@ function PaymentFormProvider({
     }
 
     return {
-      formVariant,
       ...contextState,
       setFormState: (state: PaymentFormContextState['formState']) => {
         dispatch({ type: 'setFormState', payload: state })
@@ -166,7 +142,7 @@ function PaymentFormProvider({
         onClose?.()
       },
     }
-  }, [formVariant, contextState, dispatch, initialFormState, onClose])
+  }, [contextState, dispatch, initialFormState, onClose])
 
   return (
     <PaymentFormContext.Provider value={contextVal}>
@@ -176,7 +152,7 @@ function PaymentFormProvider({
 }
 
 function PaymentFormInner() {
-  const { formState, plan, setPlan, formVariant } = usePaymentForm()
+  const { formState } = usePaymentForm()
 
   return (
     <Flex
@@ -184,19 +160,6 @@ function PaymentFormInner() {
       gap="large"
       overflow="hidden"
     >
-      {formVariant === PaymentFormVariant.Upgrade && (
-        <BillingPreview
-          noCard
-          discountPreview
-          yearly={plan === 'yearly'}
-          onChange={(isYearly) => {
-            setPlan(isYearly ? 'yearly' : 'monthly')
-          }}
-        />
-      )}
-      {formState === PaymentFormState.SelectUpgradePaymentMethod && (
-        <SelectUpgradePaymentMethod />
-      )}
       <StripeElements>
         {formState === PaymentFormState.CollectAddress && (
           <Div>
@@ -221,23 +184,19 @@ function PaymentFormInner() {
 }
 
 export default function PaymentForm({
-  formVariant,
   onClose,
   ...props
 }: Omit<ComponentProps<typeof PaymentFormProvider>, 'children'> &
   ComponentProps<typeof PaymentFormInner>) {
   return (
-    <PaymentFormProvider
-      formVariant={formVariant}
-      onClose={onClose}
-    >
+    <PaymentFormProvider onClose={onClose}>
       <PaymentFormInner {...props} />
     </PaymentFormProvider>
   )
 }
 
 function Payment() {
-  const { plan, setFormState, formVariant, onClose, address } = usePaymentForm()
+  const { setFormState, onClose, address } = usePaymentForm()
 
   const [message, setMessage] = useState<string | null | undefined>()
   const [isLoading, setIsLoading] = useState(false)
@@ -327,10 +286,7 @@ function Payment() {
                 },
               },
             },
-            return_url:
-              formVariant === PaymentFormVariant.Upgrade
-                ? `${host()}${CONFIRM_RETURN_PATH}&plan=${plan}`
-                : `${host()}/account/billing/payments`,
+            return_url: `${host()}/account/billing/payments`,
           },
         })
 
@@ -349,7 +305,7 @@ function Payment() {
       }
       endSubmit()
     },
-    [address, elements, formVariant, plan, setFormState, setupIntentMut, stripe]
+    [address, elements, setFormState, setupIntentMut, stripe]
   )
 
   return (
@@ -395,9 +351,7 @@ function Payment() {
               disabled={isLoading || !stripe || !elements}
               id="submit"
             >
-              {formVariant === PaymentFormVariant.Upgrade
-                ? 'Upgrade now'
-                : 'Add card'}
+              Add card
             </Button>
           </Flex>
         </Flex>
@@ -419,7 +373,7 @@ function AddressForm({
   const loading = loadingProp || validating
   const stripe = useStripe()
   const elements = useElements()
-  const { setFormState, setAddress, formVariant, onClose } = usePaymentForm()
+  const { setFormState, setAddress, onClose } = usePaymentForm()
   const validateForm = useCallback(async () => {
     if (!elements) {
       return
@@ -520,15 +474,6 @@ function AddressForm({
         )}
 
         <Flex justify="space-between">
-          {formVariant === PaymentFormVariant.Upgrade && (
-            <Button
-              onClick={() => {
-                setFormState(PaymentFormState.SelectUpgradePaymentMethod)
-              }}
-            >
-              Go back
-            </Button>
-          )}
           <Flex
             gap="medium"
             marginLeft="auto"
@@ -559,103 +504,5 @@ function AddressForm({
         </Flex>
       </Flex>
     </form>
-  )
-}
-
-function SelectUpgradePaymentMethod() {
-  const { setFormState, plan } = usePaymentForm()
-  const { defaultPaymentMethod, paymentMethods, refetch } =
-    useBillingSubscription()
-  const [error, setError] = useState<Error | StripeError | undefined>()
-  const { proPlatformPlan, proYearlyPlatformPlan } =
-    useContext(PlatformPlansContext)
-  const navigate = useNavigate()
-  const planId =
-    plan === 'yearly' ? proYearlyPlatformPlan.id : proPlatformPlan.id
-
-  // Upgrade mutation
-  const [upgradeMutation, { loading }] = useCreatePlatformSubscriptionMutation({
-    variables: { planId },
-    refetchQueries: [namedOperations.Query.Subscription],
-    onCompleted: (result) => {
-      const clientSecret =
-        result.createPlatformSubscription?.latestInvoice?.paymentIntent
-          ?.clientSecret
-
-      if (clientSecret) {
-        // Redirect to <ConfirmPayment> with payment_intent_client_secret to confirm payment
-        navigate(
-          `${CONFIRM_RETURN_PATH}&payment_intent_client_secret=${clientSecret}`
-        )
-      } else {
-        // No payment intent, redirect to <ConfirmPayment> to verify upgrade
-        ;(refetch() as any).then(() => {
-          // Refetch BillingSubscription before showing <ConfirmPayment> to make
-          // sure isPro is fresh value
-          navigate(`${CONFIRM_RETURN_PATH}`)
-        })
-      }
-    },
-    onError: (error) => {
-      setError(error)
-    },
-  })
-
-  useEffect(() => {
-    if (isEmpty(paymentMethods)) {
-      setFormState(PaymentFormState.CollectAddress)
-    }
-  })
-
-  return (
-    <Flex
-      direction="column"
-      gap="large"
-    >
-      {!isEmpty(paymentMethods) && (
-        <Card
-          display="flex"
-          flexDirection="column"
-          maxHeight="230px"
-          overflow="auto"
-          gap="medium"
-          width="100%"
-          padding="medium"
-          fillLevel={2}
-        >
-          {paymentMethods.map((method) => (
-            <PaymentMethod
-              key={method.id}
-              variant={PaymentFormVariant.Upgrade}
-              method={method}
-            />
-          ))}
-        </Card>
-      )}
-      {error && <BillingError>Payment failed: {error.message}</BillingError>}
-      <Flex
-        gap="large"
-        justify="flex-end"
-      >
-        <Button
-          secondary
-          onClick={() => {
-            setFormState(PaymentFormState.CollectAddress)
-          }}
-        >
-          Use new payment method
-        </Button>
-        <Button
-          loading={loading}
-          disabled={loading || !defaultPaymentMethod}
-          onClick={(e) => {
-            e.preventDefault()
-            upgradeMutation()
-          }}
-        >
-          Upgrade with selected card
-        </Button>
-      </Flex>
-    </Flex>
   )
 }

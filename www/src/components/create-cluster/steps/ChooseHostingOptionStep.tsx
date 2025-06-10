@@ -15,6 +15,7 @@ import { ConsoleInstanceType } from 'generated/graphql'
 import { ButtonProps } from '@pluralsh/design-system/dist/components/Button'
 
 import { useCreateClusterContext } from '../CreateClusterWizard'
+import { Link } from 'react-router-dom'
 
 export function ChooseHostingOptionStep() {
   const { hostingOption, setHostingOption } = useCreateClusterContext()
@@ -56,7 +57,10 @@ export function ChooseHostingOptionStep() {
           >
             If you would like to create a dedicated cloud instance, please
             contact sales to inquire about upgrading to an Enterprise plan.
-            <CalloutLinkButton href="https://www.plural.sh/contact">
+            <CalloutLinkButton
+              newTab
+              href="https://www.plural.sh/contact"
+            >
               Contact sales
             </CalloutLinkButton>
           </Flex>
@@ -68,13 +72,16 @@ export function ChooseHostingOptionStep() {
 
 export function CalloutLinkButton({
   href,
+  newTab = false,
   ...props
-}: ButtonProps & { href: string }) {
+}: ButtonProps & { href: string; newTab?: boolean }) {
   return (
-    <Button
-      css={{ width: 'fit-content' }}
-      onClick={() => window.open(href, '_blank')}
-      {...props}
-    />
+    <Link
+      to={href}
+      {...(newTab && { target: '_blank', rel: 'noopener noreferrer' })}
+      css={{ width: 'fit-content', textDecoration: 'none !important' }}
+    >
+      <Button {...props} />
+    </Link>
   )
 }

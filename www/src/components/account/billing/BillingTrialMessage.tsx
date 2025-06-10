@@ -60,7 +60,7 @@ function BillingTrialMessage() {
         {message}
         <MessageLink
           as={Link}
-          to="/account/billing?upgrade=true"
+          to="/account/billing"
         >
           {isTrialExpired ? 'reactivate full access' : 'upgrade now'}
         </MessageLink>

@@ -5810,15 +5810,6 @@ export type UpdateAccountBillingMutationVariables = Exact<{
 
 export type UpdateAccountBillingMutation = { __typename?: 'RootMutationType', updateAccount?: { __typename?: 'Account', id: string } | null };
 
-export type CreatePlatformSubscriptionMutationVariables = Exact<{
-  planId: Scalars['ID']['input'];
-  billingAddress?: InputMaybe<AddressAttributes>;
-  paymentMethod?: InputMaybe<Scalars['String']['input']>;
-}>;
-
-
-export type CreatePlatformSubscriptionMutation = { __typename?: 'RootMutationType', createPlatformSubscription?: { __typename?: 'PlatformSubscription', id: string, latestInvoice?: { __typename?: 'Invoice', number: string, amountDue: number, amountPaid: number, currency: string, status?: string | null, createdAt?: Date | null, hostedInvoiceUrl?: string | null, paymentIntent?: { __typename?: 'PaymentIntent', id?: string | null, description?: string | null, clientSecret?: string | null, amount?: number | null, captureMethod?: string | null, currency?: string | null, status?: string | null, nextAction?: { __typename?: 'NextAction', type?: string | null, redirectToUrl?: { __typename?: 'RedirectToUrl', url?: string | null, returnUrl?: string | null } | null } | null } | null, lines?: Array<{ __typename?: 'InvoiceItem', amount: number, currency: string, description?: string | null } | null> | null } | null } | null };
-
 export type DowngradeToFreePlanMutationMutationVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -5839,6 +5830,18 @@ export type SetupIntentMutationVariables = Exact<{
 export type SetupIntentMutation = { __typename?: 'RootMutationType', setupIntent?: { __typename?: 'SetupIntent', id?: string | null, status?: string | null, clientSecret?: string | null, paymentMethodTypes?: Array<string | null> | null, nextAction?: { __typename?: 'NextAction', type?: string | null, redirectToUrl?: { __typename?: 'RedirectToUrl', url?: string | null, returnUrl?: string | null } | null } | null } | null };
 
 export type PaymentMethodFragment = { __typename?: 'PaymentMethod', id?: string | null, type?: string | null, isDefault?: boolean | null, card?: { __typename?: 'Card', last4: string, expMonth: number, expYear: number, name?: string | null, brand: string } | null };
+
+export type InitiateCheckoutMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type InitiateCheckoutMutation = { __typename?: 'RootMutationType', initiateCheckout?: { __typename?: 'CheckoutSession', url?: string | null } | null };
+
+export type FinalizeCheckoutMutationVariables = Exact<{
+  sessionId: Scalars['String']['input'];
+}>;
+
+
+export type FinalizeCheckoutMutation = { __typename?: 'RootMutationType', finalizeCheckout?: { __typename?: 'PlatformSubscription', id: string } | null };
 
 export type DefaultPaymentMethodMutationVariables = Exact<{
   id: Scalars['String']['input'];
@@ -9951,52 +9954,6 @@ export function useUpdateAccountBillingMutation(baseOptions?: Apollo.MutationHoo
 export type UpdateAccountBillingMutationHookResult = ReturnType<typeof useUpdateAccountBillingMutation>;
 export type UpdateAccountBillingMutationResult = Apollo.MutationResult<UpdateAccountBillingMutation>;
 export type UpdateAccountBillingMutationOptions = Apollo.BaseMutationOptions<UpdateAccountBillingMutation, UpdateAccountBillingMutationVariables>;
-export const CreatePlatformSubscriptionDocument = gql`
-    mutation CreatePlatformSubscription($planId: ID!, $billingAddress: AddressAttributes, $paymentMethod: String) {
-  createPlatformSubscription(
-    planId: $planId
-    billingAddress: $billingAddress
-    paymentMethod: $paymentMethod
-  ) {
-    id
-    latestInvoice {
-      ...Invoice
-      paymentIntent {
-        ...PaymentIntent
-      }
-    }
-  }
-}
-    ${InvoiceFragmentDoc}
-${PaymentIntentFragmentDoc}`;
-export type CreatePlatformSubscriptionMutationFn = Apollo.MutationFunction<CreatePlatformSubscriptionMutation, CreatePlatformSubscriptionMutationVariables>;
-
-/**
- * __useCreatePlatformSubscriptionMutation__
- *
- * To run a mutation, you first call `useCreatePlatformSubscriptionMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreatePlatformSubscriptionMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createPlatformSubscriptionMutation, { data, loading, error }] = useCreatePlatformSubscriptionMutation({
- *   variables: {
- *      planId: // value for 'planId'
- *      billingAddress: // value for 'billingAddress'
- *      paymentMethod: // value for 'paymentMethod'
- *   },
- * });
- */
-export function useCreatePlatformSubscriptionMutation(baseOptions?: Apollo.MutationHookOptions<CreatePlatformSubscriptionMutation, CreatePlatformSubscriptionMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreatePlatformSubscriptionMutation, CreatePlatformSubscriptionMutationVariables>(CreatePlatformSubscriptionDocument, options);
-      }
-export type CreatePlatformSubscriptionMutationHookResult = ReturnType<typeof useCreatePlatformSubscriptionMutation>;
-export type CreatePlatformSubscriptionMutationResult = Apollo.MutationResult<CreatePlatformSubscriptionMutation>;
-export type CreatePlatformSubscriptionMutationOptions = Apollo.BaseMutationOptions<CreatePlatformSubscriptionMutation, CreatePlatformSubscriptionMutationVariables>;
 export const DowngradeToFreePlanMutationDocument = gql`
     mutation DowngradeToFreePlanMutation {
   deletePlatformSubscription {
@@ -10108,6 +10065,71 @@ export function useSetupIntentMutation(baseOptions?: Apollo.MutationHookOptions<
 export type SetupIntentMutationHookResult = ReturnType<typeof useSetupIntentMutation>;
 export type SetupIntentMutationResult = Apollo.MutationResult<SetupIntentMutation>;
 export type SetupIntentMutationOptions = Apollo.BaseMutationOptions<SetupIntentMutation, SetupIntentMutationVariables>;
+export const InitiateCheckoutDocument = gql`
+    mutation InitiateCheckout {
+  initiateCheckout {
+    url
+  }
+}
+    `;
+export type InitiateCheckoutMutationFn = Apollo.MutationFunction<InitiateCheckoutMutation, InitiateCheckoutMutationVariables>;
+
+/**
+ * __useInitiateCheckoutMutation__
+ *
+ * To run a mutation, you first call `useInitiateCheckoutMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useInitiateCheckoutMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [initiateCheckoutMutation, { data, loading, error }] = useInitiateCheckoutMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useInitiateCheckoutMutation(baseOptions?: Apollo.MutationHookOptions<InitiateCheckoutMutation, InitiateCheckoutMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<InitiateCheckoutMutation, InitiateCheckoutMutationVariables>(InitiateCheckoutDocument, options);
+      }
+export type InitiateCheckoutMutationHookResult = ReturnType<typeof useInitiateCheckoutMutation>;
+export type InitiateCheckoutMutationResult = Apollo.MutationResult<InitiateCheckoutMutation>;
+export type InitiateCheckoutMutationOptions = Apollo.BaseMutationOptions<InitiateCheckoutMutation, InitiateCheckoutMutationVariables>;
+export const FinalizeCheckoutDocument = gql`
+    mutation FinalizeCheckout($sessionId: String!) {
+  finalizeCheckout(sessionId: $sessionId) {
+    id
+  }
+}
+    `;
+export type FinalizeCheckoutMutationFn = Apollo.MutationFunction<FinalizeCheckoutMutation, FinalizeCheckoutMutationVariables>;
+
+/**
+ * __useFinalizeCheckoutMutation__
+ *
+ * To run a mutation, you first call `useFinalizeCheckoutMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useFinalizeCheckoutMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [finalizeCheckoutMutation, { data, loading, error }] = useFinalizeCheckoutMutation({
+ *   variables: {
+ *      sessionId: // value for 'sessionId'
+ *   },
+ * });
+ */
+export function useFinalizeCheckoutMutation(baseOptions?: Apollo.MutationHookOptions<FinalizeCheckoutMutation, FinalizeCheckoutMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<FinalizeCheckoutMutation, FinalizeCheckoutMutationVariables>(FinalizeCheckoutDocument, options);
+      }
+export type FinalizeCheckoutMutationHookResult = ReturnType<typeof useFinalizeCheckoutMutation>;
+export type FinalizeCheckoutMutationResult = Apollo.MutationResult<FinalizeCheckoutMutation>;
+export type FinalizeCheckoutMutationOptions = Apollo.BaseMutationOptions<FinalizeCheckoutMutation, FinalizeCheckoutMutationVariables>;
 export const DefaultPaymentMethodDocument = gql`
     mutation DefaultPaymentMethod($id: String!) {
   defaultPaymentMethod(id: $id)
@@ -12911,9 +12933,10 @@ export const namedOperations = {
     UpdateProvider: 'UpdateProvider',
     DeleteProvider: 'DeleteProvider',
     UpdateAccountBilling: 'UpdateAccountBilling',
-    CreatePlatformSubscription: 'CreatePlatformSubscription',
     DowngradeToFreePlanMutation: 'DowngradeToFreePlanMutation',
     SetupIntent: 'SetupIntent',
+    InitiateCheckout: 'InitiateCheckout',
+    FinalizeCheckout: 'FinalizeCheckout',
     DefaultPaymentMethod: 'DefaultPaymentMethod',
     DeletePaymentMethod: 'DeletePaymentMethod',
     CreateConsoleInstance: 'CreateConsoleInstance',

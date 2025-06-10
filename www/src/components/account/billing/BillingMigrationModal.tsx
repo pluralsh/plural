@@ -62,7 +62,7 @@ function BillingMigrationModal() {
         </Button>
         <Button
           as={Link}
-          to="/account/billing?upgrade=true"
+          to="/account/billing"
           onClick={() => setOpen(false)}
         >
           Upgrade now

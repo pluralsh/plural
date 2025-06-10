@@ -8,15 +8,18 @@ import { EnterprisePlanCTA, ProPlanCTA } from './BillingManagePlan'
 export default function BillingPricingTable({
   onUpgrade,
   onCancel,
+  upgradeLoading,
 }: {
   onUpgrade: () => void
   onCancel: () => void
+  upgradeLoading: boolean
 }) {
   const plans = getPlans({
     proPlanCTA: (
       <ProPlanCTA
         onUpgrade={onUpgrade}
         onCancel={onCancel}
+        upgradeLoading={upgradeLoading}
       />
     ),
     enterprisePlanCTA: <EnterprisePlanCTA />,

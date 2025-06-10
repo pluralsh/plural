@@ -1,42 +1,56 @@
-import { Button, Flex } from '@pluralsh/design-system'
+import { Button, Flex, Toast } from '@pluralsh/design-system'
 
-import { useCallback, useContext, useState } from 'react'
+import { useLayoutEffect, useState } from 'react'
 
-import { useSearchParams } from 'react-router-dom'
-
-import styled, { useTheme } from 'styled-components'
-
-import SubscriptionContext from 'contexts/SubscriptionContext'
+import { useTheme } from 'styled-components'
 
 import BillingPricingCards, { ContactUs } from './BillingPricingCards'
 import BillingPricingTable from './BillingPricingTable'
-import ConfirmPayment from './ConfirmPayment'
 
+import { GqlError } from 'components/utils/Alert'
+import LoadingIndicator from 'components/utils/LoadingIndicator'
+import {
+  useFinalizeCheckoutMutation,
+  useInitiateCheckoutMutation,
+} from 'generated/graphql'
+import { useSearchParams } from 'react-router-dom'
 import BillingDowngradeModal from './BillingDowngradeModal'
-import BillingUpgradeToProfessionalModal from './BillingUpgradeToProfessionalModal'
+import { useBillingSubscription } from './BillingSubscriptionProvider'
 
 export default function BillingManagePlan() {
   const theme = useTheme()
+  const { refetch } = useBillingSubscription()
   const [searchParams, setSearchParams] = useSearchParams()
 
+  const [refetching, setRefetching] = useState(false)
+  const [showSuccessToast, setShowSuccessToast] = useState(false)
   const [downgradeModalOpen, setDowngradeModalOpen] = useState(false)
 
-  const upgradeToProfessionalModalOpen =
-    typeof searchParams.get('upgrade') === 'string'
-  const setUpgradeToProfessionalModalOpen = useCallback(
-    (isOpen) => {
-      setSearchParams((sp) => {
-        if (isOpen) {
-          sp.set('upgrade', '1')
-        } else {
-          sp.delete('upgrade')
-        }
+  const [
+    initiateCheckout,
+    { loading: initiateCheckoutLoading, error: initiateCheckoutError },
+  ] = useInitiateCheckoutMutation()
 
-        return sp
+  const [
+    finalizeCheckout,
+    { loading: finalizeCheckoutLoading, error: finalizeCheckoutError },
+  ] = useFinalizeCheckoutMutation({
+    onCompleted: () => {
+      setRefetching(true)
+      refetch().then(() => {
+        setRefetching(false)
+        setSearchParams({})
+        setShowSuccessToast(true)
       })
     },
-    [setSearchParams]
-  )
+  })
+
+  useLayoutEffect(() => {
+    const sessionId = searchParams.get('sessionId')
+    if (sessionId) finalizeCheckout({ variables: { sessionId } })
+  }, [searchParams, finalizeCheckout])
+
+  if (finalizeCheckoutLoading || refetching) return <LoadingIndicator />
 
   return (
     <Flex
@@ -44,76 +58,75 @@ export default function BillingManagePlan() {
       gap="large"
       paddingBottom={theme.spacing.xxlarge}
     >
-      <ConfirmPayment />
+      {finalizeCheckoutError && <GqlError error={finalizeCheckoutError} />}
+      {initiateCheckoutError && <GqlError error={initiateCheckoutError} />}
       <BillingPricingCards
-        onUpgrade={() => setUpgradeToProfessionalModalOpen(true)}
+        onUpgrade={() => initiateCheckout()}
+        upgradeLoading={initiateCheckoutLoading}
         onCancel={() => setDowngradeModalOpen(true)}
       />
       <BillingPricingTable
-        onUpgrade={() => setUpgradeToProfessionalModalOpen(true)}
+        onUpgrade={() => initiateCheckout()}
+        upgradeLoading={initiateCheckoutLoading}
         onCancel={() => setDowngradeModalOpen(true)}
       />
       {/* Modals */}
-      <BillingUpgradeToProfessionalModal
-        open={upgradeToProfessionalModalOpen}
-        onClose={() => setUpgradeToProfessionalModalOpen(false)}
-      />
       <BillingDowngradeModal
         open={downgradeModalOpen}
         onClose={() => setDowngradeModalOpen(false)}
       />
+      <Toast
+        position="bottom"
+        severity="success"
+        show={showSuccessToast}
+        closeTimeout={3000}
+        onClose={() => setShowSuccessToast(false)}
+      >
+        Upgraded to Pro plan!
+      </Toast>
     </Flex>
   )
 }
 
 export function ProPlanCTA({
-  // onUpgrade,
+  onUpgrade,
   onCancel,
+  upgradeLoading,
 }: {
   onUpgrade: () => void
   onCancel: () => void
+  upgradeLoading: boolean
 }) {
-  const { isProPlan, isEnterprisePlan } = useContext(SubscriptionContext)
+  const { isProPlan, isEnterprisePlan } = useBillingSubscription()
 
   return isProPlan ? (
-    <ActionBtnSC
+    <Button
       secondary
       width="100%"
       onClick={onCancel}
     >
       Cancel plan
-    </ActionBtnSC>
+    </Button>
   ) : isEnterprisePlan ? (
-    <ActionBtnSC
-      primary
+    <Button
       disabled
       width="100%"
     >
       You have an Enterprise plan
-    </ActionBtnSC>
+    </Button>
   ) : (
-    <ActionBtnSC
-      disabled
+    <Button
       width="100%"
+      onClick={onUpgrade}
+      loading={upgradeLoading}
     >
-      Coming soon
-    </ActionBtnSC>
-    // <ActionBtnSC
-    //   primary
-    //   width="100%"
-    //   onClick={onUpgrade}
-    // >
-    //   Upgrade
-    // </ActionBtnSC>
+      Upgrade
+    </Button>
   )
 }
 
 export function EnterprisePlanCTA() {
-  const { isProPlan } = useContext(SubscriptionContext)
+  const { isProPlan } = useBillingSubscription()
 
   return isProPlan ? <ContactUs /> : <ContactUs floating />
 }
-
-const ActionBtnSC = styled(Button)({
-  width: '100%',
-})

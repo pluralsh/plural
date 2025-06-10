@@ -1,18 +1,17 @@
 import { Button, Card, KeyIcon } from '@pluralsh/design-system'
 import { Flex } from 'honorable'
-import { useContext, useState } from 'react'
+import { useState } from 'react'
 
 import styled, { useTheme } from 'styled-components'
 
 import { ButtonProps } from '@pluralsh/design-system/dist/components/Button'
 
-import SubscriptionContext from '../../../contexts/SubscriptionContext'
-
-import { useGenerateLicenseKeyLazyQuery } from 'generated/graphql'
-import { EnterprisePlanCTA } from './BillingManagePlan'
-import BillingPricingCard from './BillingPricingCard'
-import { LicenseKeyModal } from './LicenseKeyModal'
 import { GqlError } from 'components/utils/Alert'
+import { useGenerateLicenseKeyLazyQuery } from 'generated/graphql'
+import { EnterprisePlanCTA, ProPlanCTA } from './BillingManagePlan'
+import BillingPricingCard from './BillingPricingCard'
+import { useBillingSubscription } from './BillingSubscriptionProvider'
+import { LicenseKeyModal } from './LicenseKeyModal'
 
 export function ContactUs({ ...props }: ButtonProps) {
   return (
@@ -30,13 +29,14 @@ export function ContactUs({ ...props }: ButtonProps) {
 }
 
 function BillingPricingCards({
-  onCancel, // onUpgrade,
+  onCancel,
+  onUpgrade,
+  upgradeLoading,
 }: {
   onCancel: () => void
   onUpgrade: () => void
+  upgradeLoading: boolean
 }) {
-  const { isProPlan, isEnterprisePlan } = useContext(SubscriptionContext)
-
   return (
     <Flex
       direction="column"
@@ -48,85 +48,29 @@ function BillingPricingCards({
           title="Pro Plan"
           subtitle="Cost based on # of clusters"
           items={[
-            {
-              label: '30 day free trial',
-              checked: true,
-            },
-            {
-              label: 'Up to 10 clusters',
-              checked: true,
-            },
-            {
-              label: 'Plural cloud hosting',
-              checked: true,
-            },
-            {
-              label: '24 hour, 99.9% SLA uptime',
-              checked: true,
-            },
+            { label: '30 day free trial', checked: true },
+            { label: 'Up to 10 clusters', checked: true },
+            { label: 'Plural cloud hosting', checked: true },
+            { label: '24 hour, 99.9% SLA uptime', checked: true },
           ]}
           callToAction={
-            isProPlan ? (
-              <Button
-                secondary
-                width="100%"
-                onClick={onCancel}
-              >
-                Cancel plan
-              </Button>
-            ) : isEnterprisePlan ? (
-              <Button
-                primary
-                disabled
-                width="100%"
-              >
-                You have an Enterprise plan
-              </Button>
-            ) : (
-              <Button
-                disabled
-                width="100%"
-              >
-                Coming soon
-              </Button>
-              // <Button
-              //   primary
-              //   width="100%"
-              //   onClick={onUpgrade}
-              // >
-              //   Upgrade
-              // </Button>
-            )
+            <ProPlanCTA
+              onUpgrade={onUpgrade}
+              onCancel={onCancel}
+              upgradeLoading={upgradeLoading}
+            />
           }
         />
         <BillingPricingCard
           title="Enterprise"
           subtitle="Custom"
           items={[
-            {
-              label: 'Pro plan perks',
-              checked: false,
-            },
-            {
-              label: 'Unlimited clusters',
-              checked: true,
-            },
-            {
-              label: 'Flexible hosting options',
-              checked: true,
-            },
-            {
-              label: '1 hour SLA',
-              checked: true,
-            },
-            {
-              label: 'Customized training',
-              checked: true,
-            },
-            {
-              label: 'Dedicated success team',
-              checked: true,
-            },
+            { label: 'Pro plan perks', checked: false },
+            { label: 'Unlimited clusters', checked: true },
+            { label: 'Flexible hosting options', checked: true },
+            { label: '1 hour SLA', checked: true },
+            { label: 'Customized training', checked: true },
+            { label: 'Dedicated success team', checked: true },
           ]}
           callToAction={<EnterprisePlanCTA />}
         />
@@ -137,8 +81,7 @@ function BillingPricingCards({
 
 function CurrentPlanCard({ onCancel }: { onCancel: () => void }) {
   const { colors } = useTheme()
-  const { subscription, isProPlan, isEnterprisePlan } =
-    useContext(SubscriptionContext)
+  const { subscription, isProPlan, isEnterprisePlan } = useBillingSubscription()
   const [licenseKey, setLicenseKey] = useState('')
   const [licenseKeyModalOpen, setLicenseKeyModalOpen] = useState(false)
   const [generateLicenseKey, { loading, error }] =

@@ -8,7 +8,9 @@ defmodule Worker.Conduit.Subscribers.Cloud do
     Logger.info "handling #{body.__struct__} for #{body.item.name}"
     case handle(body) do
       {:ok, _} -> ack(msg)
-      _ -> nack(msg)
+      err ->
+        Logger.error "Failed to handle #{body.__struct__} for #{body.item.name}: #{inspect(err)}"
+        nack(msg)
     end
   end
 

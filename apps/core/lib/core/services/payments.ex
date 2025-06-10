@@ -178,9 +178,7 @@ defmodule Core.Services.Payments do
     account = Core.Repo.preload(account, [:root_user])
     plan = pro_plan!()
 
-    Stripe.Checkout.Session.create(%{
-      customer: cus_id,
-      customer_email: account.root_user.email,
+    %{
       payment_method_types: [:card, :us_bank_account],
       success_url: Core.url("/account/billing?session_id={CHECKOUT_SESSION_ID}"),
       cancel_url: Core.url("/account/billing?payment_failed=true"),
@@ -188,8 +186,16 @@ defmodule Core.Services.Payments do
         %{price: plan.base_price_id, quantity: 1},
         %{price: plan.metered_price_id}
       ]
-    })
+    }
+    |> add_customer_details(account)
+    |> Stripe.Checkout.Session.create()
   end
+
+  defp add_customer_details(attrs, %Account{billing_customer_id: cus_id}) when is_binary(cus_id),
+    do: Map.put(attrs, :customer, cus_id)
+  defp add_customer_details(attrs, %Account{root_user: %User{email: email}}),
+    do: Map.put(attrs, :customer_email, email)
+  defp add_customer_details(attrs, _), do: attrs
 
   @doc """
   Records a new subscription for a user after a successful Stripe checkout

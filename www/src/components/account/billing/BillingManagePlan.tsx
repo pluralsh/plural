@@ -29,7 +29,12 @@ export default function BillingManagePlan() {
   const [
     initiateCheckout,
     { loading: initiateCheckoutLoading, error: initiateCheckoutError },
-  ] = useInitiateCheckoutMutation()
+  ] = useInitiateCheckoutMutation({
+    onCompleted: (data) => {
+      if (data.initiateCheckout?.url)
+        window.location.href = data.initiateCheckout.url
+    },
+  })
 
   const [
     finalizeCheckout,
@@ -46,7 +51,7 @@ export default function BillingManagePlan() {
   })
 
   useLayoutEffect(() => {
-    const sessionId = searchParams.get('sessionId')
+    const sessionId = searchParams.get('session_id')
     if (sessionId) finalizeCheckout({ variables: { sessionId } })
   }, [searchParams, finalizeCheckout])
 
@@ -98,7 +103,6 @@ export function ProPlanCTA({
   upgradeLoading: boolean
 }) {
   const { isProPlan, isEnterprisePlan } = useBillingSubscription()
-  const FEATURE_FLAG_BILLING = localStorage.getItem('plural-billing')
 
   return isProPlan ? (
     <Button
@@ -115,20 +119,13 @@ export function ProPlanCTA({
     >
       You have an Enterprise plan
     </Button>
-  ) : !!FEATURE_FLAG_BILLING ? (
+  ) : (
     <Button
       width="100%"
       onClick={onUpgrade}
       loading={upgradeLoading}
     >
       Upgrade
-    </Button>
-  ) : (
-    <Button
-      width="100%"
-      disabled
-    >
-      Coming soon
     </Button>
   )
 }

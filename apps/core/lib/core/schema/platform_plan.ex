@@ -36,8 +36,9 @@ defmodule Core.Schema.PlatformPlan do
     field :service_plan, :string
     field :cluster_plan, :string
 
-    field :base_price_id,    :string
-    field :metered_price_id, :string
+    field :base_price_id,         :string
+    field :metered_price_id,      :string
+    field :ingest_meter_price_id, :string
 
     embeds_one :features, Features, on_replace: :update do
       boolean_fields [:vpn, :user_management, :audit, :multi_cluster, :database_management, :cd]
@@ -65,7 +66,7 @@ defmodule Core.Schema.PlatformPlan do
 
   def features(), do: __MODULE__.Features.__schema__(:fields) -- [:id]
 
-  @valid ~w(name visible cost period external_id trial service_plan cluster_plan base_price_id metered_price_id)a
+  @valid ~w(name visible cost period external_id trial service_plan cluster_plan base_price_id metered_price_id ingest_meter_price_id)a
 
   def changeset(schema, attrs \\ %{}) do
     schema
@@ -77,8 +78,8 @@ defmodule Core.Schema.PlatformPlan do
 
   def price_changeset(schema, attrs) do
     schema
-    |> cast(attrs, [:base_price_id, :metered_price_id])
-    |> validate_required([:base_price_id, :metered_price_id])
+    |> cast(attrs, [:base_price_id, :metered_price_id, :ingest_meter_price_id])
+    |> validate_required([:base_price_id, :metered_price_id, :ingest_meter_price_id])
   end
 
   def features_changeset(model, attrs) do

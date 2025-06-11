@@ -20,14 +20,18 @@ defmodule Core.MCP.Tools.ModifyProPlan do
         metered_price_id: %{
           type: "string",
           description: "The metered price id (this will be a stripe price id)"
+        },
+        ingest_meter_price_id: %{
+          type: "string",
+          description: "The ingest meter price id (this will be a stripe price id)"
         }
       }
     }
   end
 
-  def invoke(%{"base_price_id" => base_price_id, "metered_price_id" => metered_price_id}) do
+  def invoke(attrs) do
     Payments.pro_plan!()
-    |> PlatformPlan.price_changeset(%{base_price_id: base_price_id, metered_price_id: metered_price_id})
+    |> PlatformPlan.price_changeset(attrs)
     |> Repo.update()
     |> case do
       {:ok, _} -> {:ok, "Pro plan updated"}

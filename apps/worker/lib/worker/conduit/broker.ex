@@ -20,5 +20,6 @@ defmodule Worker.Conduit.Broker do
     subscribe :scan, Scan, from: "plural.scan"
     subscribe :cluster, Cluster, from: "plural.cluster"
     subscribe :cloud, Cloud, from: "plural.cloud"
+    subscribe :billing, Billing, from: "plural.billing"
   end
 end

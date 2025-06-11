@@ -70,6 +70,7 @@ defmodule RtcWeb.UpgradeChannel do
     case Core.Repo.preload(socket.assigns.queue, [:cluster]) do
       %{cluster: %Cluster{} = cluster} = queue ->
         Clusters.save_usage(attrs, cluster)
+        maybe_meter(socket.assigns.user, attrs)
         {:reply, :ok, assign(socket, :queue, queue)}
       _ -> {:reply, {:error, "no cluster found"}, socket}
     end
@@ -96,8 +97,12 @@ defmodule RtcWeb.UpgradeChannel do
     case socket.assigns.buffer do
       %{last: last} when is_nil(last) or id > last ->
         push(socket, "more", %{"target" => id})
-
       _ -> :ok
     end
   end
+
+  defp maybe_meter(%{"bytes_ingested" => bytes}, user) do
+    Core.Services.Payments.defer_ingest(user, bytes)
+  end
+  defp maybe_meter(_, _), do: :ok
 end

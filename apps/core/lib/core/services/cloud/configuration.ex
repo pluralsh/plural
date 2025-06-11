@@ -20,6 +20,9 @@ defmodule Core.Services.Cloud.Configuration do
       github_app_pem
       es_password
       prom_password
+      dbuser
+      dbpassword
+      database
     )a)
     |> Map.merge(%{
       postgres_url: build_pg_url(inst),

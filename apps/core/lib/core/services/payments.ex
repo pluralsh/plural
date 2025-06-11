@@ -174,7 +174,7 @@ defmodule Core.Services.Payments do
     |> initiate_checkout()
   end
 
-  def initiate_checkout(%Account{billing_customer_id: cus_id} = account) do
+  def initiate_checkout(%Account{} = account) do
     account = Core.Repo.preload(account, [:root_user])
     plan = pro_plan!()
 
@@ -185,7 +185,8 @@ defmodule Core.Services.Payments do
       cancel_url: Core.url("/account/billing?payment_failed=true"),
       line_items: [
         %{price: plan.base_price_id, quantity: 1},
-        %{price: plan.metered_price_id}
+        %{price: plan.metered_price_id},
+        %{price: plan.ingest_meter_price_id}
       ]
     }
     |> add_customer_details(account)
@@ -505,17 +506,35 @@ defmodule Core.Services.Payments do
     |> cancel_platform_subscription(user)
   end
 
+  def defer_ingest(%User{} = user, bytes) when is_integer(bytes) and bytes > 0 do
+    Core.broker().publish(%Conduit.Message{body: {:ingest, user, bytes}}, :billing)
+  end
+  def defer_ingest(_, _), do: :ok
+
+  def meter_ingest(%User{} = user, bytes) when is_integer(bytes) do
+    case Core.Repo.preload(user, [:account]) do
+      %{account: %Account{billing_customer_id: cus_id}} when is_binary(cus_id) ->
+        send_meter(cus_id, "pro_data_ingested", bytes)
+      _ -> :ok
+    end
+  end
+  def meter_ingest(_, _), do: :ok
+
   def send_usage(%PlatformSubscription{account_id: aid} = sub) do
     with %PlatformSubscription{account: %Account{billing_customer_id: cus_id}} <- Core.Repo.preload(sub, [:account]),
          clusters when is_integer(clusters) <- Clusters.clusters(aid) do
-      Stripe.API.request(%{
-        event_name: "pro_clusters",
-        payload: %{
-          stripe_customer_id: cus_id,
-          quantity: clusters
-        }
-      }, :post, "/v1/billing/meter_events", %{}, api_version: "2024-06-20")
+      send_meter(cus_id, "pro_clusters", clusters)
     end
+  end
+
+  defp send_meter(cus_id, meter, quantity) do
+    Stripe.API.request(%{
+      event_name: meter,
+      payload: %{
+        stripe_customer_id: cus_id,
+        quantity: quantity
+      }
+    }, :post, "/v1/billing/meter_events", %{}, api_version: "2024-06-20")
   end
 
   @doc """

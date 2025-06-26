@@ -109,6 +109,14 @@ defmodule Core.Schema.ConsoleInstance do
     )
   end
 
+  def for_type(query \\ __MODULE__, type) do
+    from(c in query, where: c.type == ^type)
+  end
+
+  def stream(query \\ __MODULE__) do
+    from(c in query, order_by: [asc: :id])
+  end
+
   def provisioned(query \\ __MODULE__) do
     from(c in query, where: c.status == ^:provisioned)
   end

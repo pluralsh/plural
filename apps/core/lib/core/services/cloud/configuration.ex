@@ -26,6 +26,7 @@ defmodule Core.Services.Cloud.Configuration do
     )a)
     |> Map.merge(%{
       postgres_url: build_pg_url(inst),
+      postgres_cluster: pg_cluster(inst),
       cloud: "#{inst.cloud}",
       cluster_name: inst.name,
       size: "#{size}",
@@ -85,6 +86,10 @@ defmodule Core.Services.Cloud.Configuration do
   }) do
     "postgresql://#{u}:#{p}@#{host}/#{database}"
   end
+
+  defp pg_cluster(%ConsoleInstance{postgres: %PostgresCluster{name: name}})
+    when is_binary(name), do: name
+  defp pg_cluster(_), do: nil
 
   def vmetrics_tenant(%ConsoleInstance{id: id}) do
     # use implicit 32 bit integer from instance id to infer the tenant id (which has to be that datatype)

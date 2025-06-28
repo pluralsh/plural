@@ -4,24 +4,13 @@ defmodule Core.Services.Cloud.Workflow.Shared do
 
   alias Core.Clients.Console
   alias Core.Services.{Cloud, Users}
-  alias Core.Services.Cloud.{Poller, Configuration, Scram}
-  alias Core.Schema.{ConsoleInstance, PostgresCluster, User}
+  alias Core.Services.Cloud.{Poller, Configuration}
+  alias Core.Schema.{ConsoleInstance, User}
   alias Core.Repo
 
   require Logger
 
   @behaviour Core.Services.Cloud.Workflow
-
-  @table """
-  CREATE TABLE IF NOT EXISTS console_users (
-    usename VARCHAR(255) NOT NULL PRIMARY KEY,
-    passwd VARCHAR(500) NOT NULL
-  )
-  """
-
-  @user_insert """
-  INSERT INTO console_users (usename, passwd) values ($1, $2) ON CONFLICT (usename) DO UPDATE SET passwd = EXCLUDED.passwd
-  """
 
   def sync(%ConsoleInstance{external_id: id} = instance) when is_binary(id) do
     instance = Repo.preload(instance, [:cluster, :postgres])
@@ -49,24 +38,7 @@ defmodule Core.Services.Cloud.Workflow.Shared do
     end
   end
 
-  def up(%ConsoleInstance{status: :pending, postgres: pg, configuration: conf} = inst) do
-    with {:ok, pid} <- connect(pg),
-         {:ok, _} <- Postgrex.query(pid, "CREATE DATABASE #{conf.database}", []),
-         {:ok, _} <- Postgrex.transaction(pid, fn conn ->
-                       Postgrex.query!(conn, @table, [])
-                       Postgrex.query!(conn, @user_insert, [conf.dbuser, Scram.encrypt(conf.dbpassword)])
-                       Postgrex.query!(conn, "CREATE USER #{conf.dbuser} WITH PASSWORD '#{conf.dbpassword}'", [])
-                       Postgrex.query!(conn, "GRANT ALL ON DATABASE #{conf.database} TO #{conf.dbuser}", [])
-                     end) do
-      ConsoleInstance.changeset(inst, %{
-        instance_status: %{db: true},
-        status: :database_created,
-      })
-      |> Repo.update()
-    end
-  end
-
-  def up(%ConsoleInstance{instance_status: %{db: true}, name: name, cluster: cluster} = inst) do
+  def up(%ConsoleInstance{name: name, cluster: cluster} = inst) do
       with {:ok, id} <- Poller.repository(),
            {:ok, svc_id} <- Console.create_service(console(), cluster.external_id, %{
                               name: "console-cloud-#{name}",
@@ -93,24 +65,10 @@ defmodule Core.Services.Cloud.Workflow.Shared do
 
   def up(inst), do: {:ok, inst}
 
-  def down(%ConsoleInstance{instance_status: %{svc: false, db: true}, configuration: conf, postgres: pg} = inst) do
-    with {:ok, pid} <- connect(pg),
-         {:ok, _} <- Postgrex.query(pid, "DROP DATABASE IF EXISTS #{conf.database}", []),
-         {:ok, _} <-  Postgrex.transaction(pid, fn conn ->
-                        Postgrex.query!(conn, "DROP USER IF EXISTS #{conf.dbuser}", [])
-                      end) do
-      ConsoleInstance.changeset(inst, %{
-        instance_status: %{db: false},
-        status: :database_deleted,
-      })
-      |> Repo.update()
-    end
-  end
-
   def down(%ConsoleInstance{instance_status: %{svc: true}} = inst) do
     with {:ok, _} <- Console.delete_service(console(), inst.external_id) do
       ConsoleInstance.changeset(inst, %{
-        instance_status: %{svc: false, db: true},
+        instance_status: %{svc: false, db: false},
         status: :deployment_deleted,
       })
       |> Repo.update()
@@ -119,7 +77,8 @@ defmodule Core.Services.Cloud.Workflow.Shared do
 
   def down(inst), do: {:ok, inst}
 
-  def finalize(%ConsoleInstance{status: s, cluster: cluster, postgres: pg} = inst, :down) when s in ~w(database_deleted pending)a do
+  def finalize(%ConsoleInstance{status: s, cluster: cluster, postgres: pg} = inst, :down)
+    when s in ~w(database_deleted deployment_deleted pending)a do
     start_transaction()
     |> add_operation(:inst, fn _ -> Repo.delete(inst) end)
     |> add_operation(:cluster, fn _ -> Cloud.dec(cluster) end)
@@ -134,26 +93,4 @@ defmodule Core.Services.Cloud.Workflow.Shared do
   end
 
   def finalize(inst, _), do: {:ok, inst}
-
-  defp connect(%PostgresCluster{} = roach) do
-    uri = URI.parse(roach.url)
-    user = userinfo(uri)
-    Postgrex.start_link(
-      database: uri.path && String.trim_leading(uri.path, "/"),
-      username: user[:username],
-      password: user[:password],
-      hostname: uri.host,
-      port: uri.port,
-      ssl: Core.conf(:bootstrap_ssl)
-    )
-  end
-
-  defp userinfo(%URI{userinfo: info}) when is_binary(info) do
-    case String.split(info, ":") do
-      [user, pwd] -> %{username: user, password: pwd}
-      [user] -> %{username: user}
-      _ -> %{}
-    end
-  end
-  defp userinfo(_), do: %{}
 end

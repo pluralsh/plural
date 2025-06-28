@@ -36,7 +36,8 @@ defmodule Core.Services.Cloud.Workflow do
     Enum.reduce_while(0..20, instance, fn _, acc ->
       case down(acc) do
         {:ok, %ConsoleInstance{status: :pending} = inst} -> {:halt, inst}
-        {:ok, %ConsoleInstance{status: :database_deleted} = inst} -> {:halt, inst}
+        {:ok, %ConsoleInstance{status: status} = inst} when status in ~w(database_deleted deployment_deleted)a ->
+          {:halt, inst}
         {:ok, %ConsoleInstance{status: :stack_deleted} = inst} -> {:halt, inst}
         {:ok, inst} -> {:cont, inst}
         err ->

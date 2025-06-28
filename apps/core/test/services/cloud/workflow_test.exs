@@ -33,7 +33,6 @@ defmodule Core.Services.Cloud.WorkflowTest do
       {:ok, %{external_id: svc_id} = instance} = Workflow.provision(instance)
 
       assert instance.status == :provisioned
-      assert instance.instance_status.db
       assert instance.instance_status.svc
 
       expect(Req, :post, fn _, [graphql: {_, %{id: ^svc_id}}] ->
@@ -42,7 +41,6 @@ defmodule Core.Services.Cloud.WorkflowTest do
 
       {:ok, instance} = Workflow.deprovision(instance)
 
-      refute instance.instance_status.db
       refute instance.instance_status.svc
       refute refetch(instance)
 

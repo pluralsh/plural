@@ -21,21 +21,19 @@ defmodule Core.Services.Cloud.Workflow.Shared do
 
   def sync(_), do: :ok
 
-  def up(%ConsoleInstance{status: :deployment_created, url: url} = inst) do
+  def up(%ConsoleInstance{status: :deployment_created, external_id: id} = inst) do
     :timer.sleep(:timer.seconds(10))
-    Core.Retry.retry(fn ->
-      case {DNS.resolve(url), DNS.resolve(url, :cname)} do
-        {{:ok, [_ | _]}, _} -> mark_provisioned(inst)
-        {_, {:ok, [_ | _]}} -> mark_provisioned(inst)
-        {{:error, err}, _} -> {:error, "cannot resolve #{url}: #{inspect(err)}"}
+    Enum.reduce_while(0..120, inst, fn _, inst ->
+      console()
+      |> Console.service(id)
+      |> case do
+        {:ok, %{"status" => "HEALTHY"}} -> {:halt, mark_provisioned(inst)}
+        status ->
+          Logger.info "stack not ready yet, sleeping: #{inspect(status)}"
+          :timer.sleep(:timer.minutes(1))
+          {:cont, inst}
       end
-    end, wait: :timer.seconds(30), max: 4)
-    |> case do
-      {:ok, _} = res -> res
-      {:error, err} ->
-        Logger.info "failed to resolve dns, error: #{inspect(err)}, just going to mark anyways and assume it's a negative caching bug"
-        mark_provisioned(inst)
-    end
+    end)
   end
 
   def up(%ConsoleInstance{name: name, cluster: cluster} = inst) do

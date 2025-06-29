@@ -24,11 +24,15 @@ defmodule Core.Services.Cloud.WorkflowTest do
         size: :small
       }, user)
 
+      svc_id = Ecto.UUID.generate()
       expect(Core.Services.Cloud.Poller, :repository, fn -> {:ok, "some-id"} end)
       expect(Req, :post, fn _, [graphql: {_, %{clusterId: ^cluster_id}}] ->
-        {:ok, %Req.Response{status: 200, body: %{"data" => %{"createServiceDeployment" => %{"id" => Ecto.UUID.generate()}}}}}
+          {:ok, %Req.Response{status: 200, body: %{"data" => %{"createServiceDeployment" => %{"id" => svc_id}}}}}
       end)
-      expect(DNS, :resolve, fn _ -> {:ok, ['some-ip']} end)
+
+      expect(Req, :post, fn _, [graphql: {_, %{id: ^svc_id}}] ->
+          {:ok, %Req.Response{status: 200, body: %{"data" => %{"serviceDeployment" => %{"id" => svc_id, "status" => "HEALTHY"}}}}}
+      end)
 
       {:ok, %{external_id: svc_id} = instance} = Workflow.provision(instance)
 

@@ -15,6 +15,15 @@ defmodule Core.Clients.Console do
   }
   """
 
+  @svc_q """
+  query Service($id: ID!) {
+    serviceDeployment(id: $id) {
+      id
+      status
+    }
+  }
+  """
+
   @create_svc_q """
   mutation Create($clusterId: ID!, $attributes: ServiceDeploymentAttributes!) {
     createServiceDeployment(clusterId: $clusterId, attributes: $attributes) {
@@ -158,15 +167,23 @@ defmodule Core.Clients.Console do
     |> ignore_not_found()
   end
 
+  def service(client, id) do
+    Req.post(client, graphql: {@svc_q, %{id: id}})
+    |> query_resp("serviceDeployment")
+  end
+
   def stack(client, id) do
     Req.post(client, graphql: {@stack_q, %{id: id}})
-    |> case do
+    |> query_resp("infrastructureStack")
+  end
+
+  defp query_resp(resp, field) do
+    case resp do
       {:ok, %Req.Response{body: %{"errors" => [_ | _] = errors}}} -> {:error, errors}
-      {:ok, %Req.Response{body: %{"data" => %{"infrastructureStack" => stack}}}} ->
-        {:ok, stack}
+      {:ok, %Req.Response{body: %{"data" => %{^field => data}}}} -> {:ok, data}
       res ->
-        Logger.warn "Failed to fetch stack: #{inspect(res)}"
-        {:error, "could not fetch stack"}
+        Logger.warn "Failed to fetch #{field}: #{inspect(res)}"
+        {:error, "could not fetch #{field}"}
     end
   end
 

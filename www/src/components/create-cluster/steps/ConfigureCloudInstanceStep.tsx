@@ -33,20 +33,16 @@ export function ConfigureCloudInstanceStep() {
     useCreateClusterContext()
 
   const cloud = CloudProvider.Aws
+  const region = REGIONS[0]
+
   const [name, setName] = useState('')
   const [size, setSize] = useState<ConsoleSize>(ConsoleSize.Small)
-  const [region, setRegion] = useState<string>(REGIONS[0])
   const [confirm, setConfirm] = useState(false)
 
   const [showNameError, setShowNameError] = useState(false)
   const { isNameValid, nameErrorMessage } = validateName(name)
 
-  const canSubmit = !!(
-    !!name &&
-    size &&
-    cloud &&
-    (cloud === CloudProvider.Aws ? region : true)
-  )
+  const canSubmit = !!(name && size)
 
   const [mutation, { loading, error }] = useCreateConsoleInstanceMutation({
     variables: {
@@ -131,21 +127,6 @@ export function ConfigureCloudInstanceStep() {
               ))}
           </Select>
         </FormFieldSC>
-        {cloud === CloudProvider.Aws && (
-          <FormFieldSC label="Region">
-            <Select
-              selectedKey={region}
-              onSelectionChange={(region) => setRegion(region as string)}
-            >
-              {REGIONS.map((region) => (
-                <ListBoxItem
-                  key={region}
-                  label={region}
-                />
-              ))}
-            </Select>
-          </FormFieldSC>
-        )}
       </Flex>
       <Confirm
         open={confirm}
@@ -171,7 +152,7 @@ const ValidationHintSC = styled.span(({ theme }) => ({
 
 const validateName = (name: string) => {
   const nameValidity = {
-    length: name.length >= 4 && name.length <= 11,
+    length: name.length >= 5 && name.length <= 15,
     lowercase: !/[A-Z]/.test(name),
     alphanumeric: !!name.match(/^[a-z0-9]+$/),
     startsWithLetter: !!name.at(0)?.match(/[a-z]/),
@@ -185,7 +166,7 @@ const validateName = (name: string) => {
       : !nameValidity.alphanumeric
       ? 'Name must be alphanumeric'
       : !nameValidity.length
-      ? 'Name must be between 4 and 11 characters'
+      ? 'Name must be between 5 and 15 characters'
       : '',
   }
 }

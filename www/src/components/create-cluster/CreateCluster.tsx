@@ -210,7 +210,7 @@ const SidebarWrapperSC = styled.div(({ theme }) => ({
 
 const ContentWrapperSC = styled.div(({ theme }) => ({
   display: 'flex',
-  margin: 'auto',
+  height: 'fit-content',
   minWidth: 600,
   maxWidth: 720,
   flexDirection: 'column',

@@ -32,9 +32,9 @@ export function ConfigureCloudInstanceStep() {
   const { setCurStep, setContinueBtn, setConsoleInstanceId, hostingOption } =
     useCreateClusterContext()
 
+  const cloud = CloudProvider.Aws
   const [name, setName] = useState('')
   const [size, setSize] = useState<ConsoleSize>(ConsoleSize.Small)
-  const [cloud, setCloud] = useState<CloudProvider>(CloudProvider.Aws)
   const [region, setRegion] = useState<string>(REGIONS[0])
   const [confirm, setConfirm] = useState(false)
 
@@ -113,7 +113,7 @@ export function ConfigureCloudInstanceStep() {
                 : theme.colors['border-danger']
             }
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e) => setName(e.target.value.trim())}
           />
         </FormFieldSC>
         <FormFieldSC label="Cluster size">
@@ -129,19 +129,6 @@ export function ConfigureCloudInstanceStep() {
                   label={firstLetterUppercase(value)}
                 />
               ))}
-          </Select>
-        </FormFieldSC>
-        <FormFieldSC label="Cloud">
-          <Select
-            selectedKey={cloud}
-            onSelectionChange={(cloud) => setCloud(cloud as CloudProvider)}
-          >
-            {Object.values(CloudProvider).map((value) => (
-              <ListBoxItem
-                key={value}
-                label={value}
-              />
-            ))}
           </Select>
         </FormFieldSC>
         {cloud === CloudProvider.Aws && (
@@ -186,7 +173,7 @@ const validateName = (name: string) => {
   const nameValidity = {
     length: name.length >= 4 && name.length <= 11,
     lowercase: !/[A-Z]/.test(name),
-    alphanumeric: !!name.match(/^[a-z0-9-]+$/),
+    alphanumeric: !!name.match(/^[a-z0-9]+$/),
     startsWithLetter: !!name.at(0)?.match(/[a-z]/),
   }
   return {

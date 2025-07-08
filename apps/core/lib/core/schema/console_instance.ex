@@ -142,7 +142,7 @@ defmodule Core.Schema.ConsoleInstance do
     |> foreign_key_constraint(:owner_id)
     |> unique_constraint(:subdomain)
     |> unique_constraint(:name)
-    |> validate_format(:name, ~r/^[a-z][a-z0-9-]{4,14}$/, message: "must be an alphanumeric string between 5 and 15 characters, hyphens allowed")
+    |> validate_format(:name, ~r/^[a-z][a-z0-9]{4,14}$/, message: "must be an alphanumeric string between 5 and 15 characters")
     |> validate_region()
   end
 

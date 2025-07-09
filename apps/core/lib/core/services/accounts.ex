@@ -290,6 +290,14 @@ defmodule Core.Services.Accounts do
       |> allow(user, :create)
       |> when_ok(:insert)
     end)
+    |> add_operation(:validate, fn %{invite: invite} ->
+      with %Invite{groups: [_ | _] = groups} <- Core.Repo.preload(invite, [:groups]),
+           true <- Enum.any?(groups, & &1.account_id != aid) do
+        {:error, "you cannot invite users to groups in other accounts"}
+      else
+        _ -> {:ok, invite}
+      end
+    end)
     |> execute(extract: :invite)
     |> notify(:create, user)
   end

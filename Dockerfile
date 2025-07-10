@@ -55,12 +55,15 @@ ENV TRIVY_VERSION=v0.64.1
 
 RUN apk add --update --no-cache curl ca-certificates unzip wget openssl && \
     # download helm
+    echo "installing helm" && \
     curl -L https://get.helm.sh/helm-${HELM_VERSION}-linux-${TARGETARCH}.tar.gz | tar xz && \
     mv linux-${TARGETARCH}/helm /usr/local/bin/helm && \
     # download goon
-    curl -L https://github.com/alco/goon/releases/download/${GOON_VERSION}/goon_linux_${TARGETARCH}.tar.gz | tar xvz && \
-    mv goon /usr/local/bin/goon && \
+    # echo "installing goon" && \
+    # curl -L https://github.com/alco/goon/releases/download/${GOON_VERSION}/goon_linux_${TARGETARCH}.tar.gz | tar xvz && \
+    # mv goon /usr/local/bin/goon && \
     # download plural cli
+    echo "installing plural" && \
     curl -L https://github.com/pluralsh/plural-cli/releases/download/${CLI_VERSION}/plural-cli_${CLI_VERSION#v}_Linux_${TARGETARCH}.tar.gz | tar xvz plural && \
     mv plural /usr/local/bin/plural && \
     # download terrascan
@@ -72,6 +75,7 @@ RUN apk add --update --no-cache curl ca-certificates unzip wget openssl && \
     # tar -xf terrascan.tar.gz terrascan && rm terrascan.tar.gz && \
     # mv terrascan /usr/local/bin/terrascan && \
     # download trivy
+    echo "installing trivy" && \
     if [ "$TARGETARCH" = "amd64" ]; then \
       curl -L https://github.com/aquasecurity/trivy/releases/download/${TRIVY_VERSION}/trivy_${TRIVY_VERSION/v/}_Linux-64bit.tar.gz > trivy.tar.gz; \
     elif [ "$TARGETARCH" = "arm64" ]; then \
@@ -81,7 +85,7 @@ RUN apk add --update --no-cache curl ca-certificates unzip wget openssl && \
     mv trivy /usr/local/bin/trivy && \
     # make tools executable
     chmod +x /usr/local/bin/helm && \
-    chmod +x /usr/local/bin/goon && \
+    # chmod +x /usr/local/bin/goon && \
     chmod +x /usr/local/bin/plural && \
     # chmod +x /usr/local/bin/terrascan && \
     chmod +x /usr/local/bin/trivy
@@ -109,7 +113,7 @@ WORKDIR /opt/app
 
 COPY --from=tools /usr/local/bin/plural /usr/local/bin/plural
 COPY --from=tools /usr/local/bin/helm /usr/local/bin/helm
-COPY --from=tools /usr/local/bin/goon /usr/local/bin/goon
+# COPY --from=tools /usr/local/bin/goon /usr/local/bin/goon
 # COPY --from=tools /usr/local/bin/terrascan /usr/local/bin/terrascan
 COPY --from=tools /usr/local/bin/trivy /usr/local/bin/trivy
 COPY --from=builder /opt/built .

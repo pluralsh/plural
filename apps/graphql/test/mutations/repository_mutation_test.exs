@@ -337,8 +337,8 @@ defmodule GraphQl.RepositoryMutationsTest do
       assert provider["redirectUris"] == ["example.com"]
       assert provider["configuration"]["issuer"] == "https://oidc.plural.sh/"
 
-      [%{"group" => g}] = provider["bindings"]
-      assert g["id"] == group.id
+      assert Enum.any?(provider["bindings"], & get_in(&1, ["group", "id"]) == group.id)
+      assert Enum.any?(provider["bindings"], & get_in(&1, ["user", "id"]) == installation.user.id)
     end
 
     test "it will create an user-bound oidc provider" do
@@ -385,8 +385,8 @@ defmodule GraphQl.RepositoryMutationsTest do
       assert provider["redirectUris"] == ["example.com"]
       assert provider["configuration"]["issuer"] == "https://oidc.plural.sh/"
 
-      [%{"group" => g}] = provider["bindings"]
-      assert g["id"] == group.id
+      assert Enum.any?(provider["bindings"], & get_in(&1, ["group", "id"]) == group.id)
+      assert Enum.any?(provider["bindings"], & get_in(&1, ["user", "id"]) == user.id)
     end
   end
 

@@ -338,6 +338,29 @@ defmodule Core.Services.AccountsTest do
       assert invite.account_id == account.id
     end
 
+    test "you can invite users into an accounts groups", %{user: user, account: account} do
+      group = insert(:group, account: account)
+      {:ok, invite} = Accounts.create_invite(%{
+        email: "some@example.com",
+        invite_groups: [%{group_id: group.id}]
+      }, user)
+
+      assert invite.email == "some@example.com"
+      assert invite.secure_id
+      assert invite.account_id == account.id
+
+      %{groups: [%{id: id}]} = Core.Repo.preload(invite, [:groups])
+      assert id == group.id
+    end
+
+    test "you cannot invite users into another account's groups", %{user: user} do
+      group = insert(:group)
+      {:error, _} = Accounts.create_invite(%{
+        email: "some@example.com",
+        invite_groups: [%{group_id: group.id}]
+      }, user)
+    end
+
     test "it will not accept invalid emails", %{user: user} do
       {:error, _} = Accounts.create_invite(%{email: "invalidemail"}, user)
     end

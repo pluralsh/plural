@@ -18,6 +18,7 @@ defmodule Core.Services.Base do
       _ -> []
     end
   end
+  def find_bindings(%User{id: id}), do: [%{user_id: id}]
   def find_bindings(_), do: []
 
   def ok(val), do: {:ok, val}

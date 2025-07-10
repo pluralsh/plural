@@ -42,26 +42,26 @@ FROM alpine:3.17.0 as tools
 ARG TARGETARCH
 
 # renovate: datasource=github-releases depName=helm/helm
-ENV HELM_VERSION=v3.18.3
+ENV HELM_VERSION=v3.17.3
 
 # renovate: datasource=github-releases depName=alco/goon
 ENV GOON_VERSION=v1.1.1
 
 # renovate: datasource=github-releases depName=pluralsh/plural-cli
-ENV CLI_VERSION=v0.12.10
+ENV CLI_VERSION=v0.12.8
 
 # renovate: datasource=github-releases depName=aquasecurity/trivy
 ENV TRIVY_VERSION=v0.64.1
 
 RUN apk add --update --no-cache curl ca-certificates unzip wget openssl && \
     # download helm
-    curl -L https://get.helm.sh/helm-${HELM_VERSION}-linux-${TARGETARCH}.tar.gz | tar xvz && \
+    curl -L https://get.helm.sh/helm-${HELM_VERSION}-linux-${TARGETARCH}.tar.gz | tar xz && \
     mv linux-${TARGETARCH}/helm /usr/local/bin/helm && \
     # download goon
     curl -L https://github.com/alco/goon/releases/download/${GOON_VERSION}/goon_linux_${TARGETARCH}.tar.gz | tar xvz && \
     mv goon /usr/local/bin/goon && \
     # download plural cli
-    curl -L https://github.com/pluralsh/plural-cli/releases/download/${CLI_VERSION}/plural-cli_console_${CLI_VERSION/v/}_Linux_${TARGETARCH}.tar.gz | tar xvz plural && \
+    curl -L https://github.com/pluralsh/plural-cli/releases/download/${CLI_VERSION}/plural-cli_${CLI_VERSION#v}_Linux_${TARGETARCH}.tar.gz | tar xvz plural && \
     mv plural /usr/local/bin/plural && \
     # download terrascan
     # if [ "$TARGETARCH" = "amd64" ]; then \

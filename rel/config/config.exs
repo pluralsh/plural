@@ -101,7 +101,8 @@ config :core,
   cloud_domain: get_env("CONSOLE_CLOUD_DOMAIN") || "cloud.plural.sh",
   base_stripe_product: get_env("STRIPE_PRO_PRODUCT"),
   metered_stripe_product: get_env("STRIPE_PRO_CLUSTER_PRODUCT"),
-  cluster_meter_name: get_env("CLUSTER_METER_NAME") || "pro_clusters"
+  cluster_meter_name: get_env("CLUSTER_METER_NAME") || "pro_clusters",
+  initial_user: get_env("ADMIN_EMAIL") || "admin@plural.sh"
 
 
 if get_env("VAULT_HOST") do

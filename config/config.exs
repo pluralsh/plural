@@ -154,7 +154,8 @@ config :core,
   cloud_domain: "cloud.plural.sh",
   base_stripe_product: "test-base",
   metered_stripe_product: "test-metered",
-  cluster_meter_name: "pro_clusters"
+  cluster_meter_name: "pro_clusters",
+  initial_user: "admin@plural.sh"
 
 config :briefly,
   directory: [{:system, "TMPDIR"}, {:system, "TMP"}, {:system, "TEMP"}, "/tmp"],

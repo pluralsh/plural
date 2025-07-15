@@ -266,6 +266,30 @@ defmodule Core.Services.Cloud do
     end
   end
 
+  def ensure_console_repository() do
+    case Repositories.get_repository_by_name("console") do
+      nil -> create_console_repository()
+      %Core.Schema.Repository{} = repo -> {:ok, repo}
+    end
+  end
+
+  defp create_console_repository() do
+    with %User{} = user <- Users.get_user_by_email!(Core.conf(:initial_user)),
+         %Core.Schema.Publisher{} = publisher <- Users.get_publisher_by_owner(user.id) do
+      Repositories.create_repository(%{
+        name: "console",
+        category: :devops,
+        git_url: "https://github.com/pluralsh/console",
+        oauth_settings: %{
+          auth_method: :post,
+          uri_format: "https://{domain}/oauth/callback"
+        }
+      }, publisher.id, user)
+    else
+      _ -> {:error, "failed to create console repository"}
+    end
+  end
+
   defp aes_key() do
     :crypto.strong_rand_bytes(32)
     |> Base.url_encode64()

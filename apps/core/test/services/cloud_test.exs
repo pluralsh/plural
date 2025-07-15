@@ -261,4 +261,19 @@ defmodule Core.Services.CloudTest do
       end
     end
   end
+
+  describe "#ensure_console_repository/0" do
+    test "it will create the console repository if it doesn't exist" do
+      user = insert(:user, email: Core.conf(:initial_user))
+      insert(:publisher, owner: user)
+
+      {:ok, repo} = Cloud.ensure_console_repository()
+
+      assert repo.name == "console"
+      assert repo.category == :devops
+      assert repo.git_url == "https://github.com/pluralsh/console"
+      assert repo.oauth_settings.auth_method == :post
+      assert repo.oauth_settings.uri_format == "https://{domain}/oauth/callback"
+    end
+  end
 end

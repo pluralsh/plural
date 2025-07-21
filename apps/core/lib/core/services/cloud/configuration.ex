@@ -1,5 +1,6 @@
 defmodule Core.Services.Cloud.Configuration do
   alias Core.Schema.{ConsoleInstance, PostgresCluster}
+  alias Core.Services.Cloud
 
   def build(%ConsoleInstance{configuration: conf, size: size} = inst) do
     Map.take(conf, ~w(
@@ -30,11 +31,29 @@ defmodule Core.Services.Cloud.Configuration do
       cloud: "#{inst.cloud}",
       cluster_name: inst.name,
       size: "#{size}",
-      vmetrics_tenant: vmetrics_tenant(inst)
+      vmetrics_tenant: vmetrics_tenant(inst),
+      stage: Core.conf(:stage)
     })
+    |> Map.merge(domain_info(inst))
     |> Map.put(:size, "#{size}")
     |> Enum.filter(fn {_, v} -> is_binary(v) end)
     |> Enum.map(fn {k, v} -> %{name: k, value: v} end)
+  end
+
+  defp domain_info(%ConsoleInstance{domain_version: :v2, name: name}) do
+    %{
+      domain_version: "v2",
+      console_domain: "#{name}.console.#{Cloud.domain()}",
+      kas_domain: "#{name}.kas.#{Cloud.domain()}"
+    }
+  end
+
+  defp domain_info(%ConsoleInstance{name: name}) do
+    %{
+      domain_version: "v1",
+      console_domain: "console.#{name}.#{Cloud.domain()}",
+      kas_domain: "kas.#{name}.#{Cloud.domain()}"
+    }
   end
 
   def stack_attributes(%ConsoleInstance{name: name} = inst, attrs) do

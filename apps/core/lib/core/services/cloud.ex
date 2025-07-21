@@ -72,12 +72,12 @@ defmodule Core.Services.Cloud do
         inst -> {:ok, inst}
       end
     end)
-    |> add_operation(:oidc, fn %{install: inst, sa: sa} ->
+    |> add_operation(:oidc, fn %{install: inst, sa: sa, inst: instance} ->
       inst = Core.Repo.preload(inst, [oidc_provider: :bindings])
       Repositories.upsert_oidc_provider(%{
         auth_method: :post,
         bindings: Shell.oidc_bindings(inst.oidc_provider, user),
-        redirect_uris: Shell.merge_uris(["https://console.#{name}.#{domain()}/oauth/callback"], inst.oidc_provider)
+        redirect_uris: Shell.merge_uris([domain(instance)], inst.oidc_provider)
       }, inst.id, sa)
     end)
     |> add_operation(:instance, fn %{inst: inst, oidc: oidc, token: token, cluster: cluster, postgres: roach, sa: sa} ->
@@ -90,6 +90,9 @@ defmodule Core.Services.Cloud do
     |> execute(extract: :instance)
     |> notify(:create, user)
   end
+
+  def domain(%ConsoleInstance{name: name, domain_version: :v2}), do: "https://#{name}.console.#{domain()}/oauth/callback"
+  def domain(%ConsoleInstance{name: name}), do: "https://console.#{name}.#{domain()}/oauth/callback"
 
   @doc """
   Updates base attributes of a console instance
@@ -129,13 +132,13 @@ defmodule Core.Services.Cloud do
     repo = Repositories.get_repository_by_name!("console")
     with {:user, %User{} = user} <- {:user, Repo.get_by(User, email: email)},
          {:console, %ConsoleInstance{} = inst} <- {:console, get_instance_by_name(name)},
-         %ConsoleInstance{owner: %User{id: oid} = sa} <- Repo.preload(inst, [:owner]),
+         %ConsoleInstance{owner: %User{id: oid} = sa} = instance <- Repo.preload(inst, [:owner]),
          %Installation{} = inst <- Repositories.get_installation(oid, repo.id) do
       inst = Core.Repo.preload(inst, [oidc_provider: :bindings])
       Repositories.upsert_oidc_provider(%{
         auth_method: :post,
         bindings: Shell.oidc_bindings(inst.oidc_provider, user),
-        redirect_uris: Shell.merge_uris(["https://console.#{name}.#{domain()}/oauth/callback"], inst.oidc_provider)
+        redirect_uris: Shell.merge_uris([domain(instance)], inst.oidc_provider)
       }, inst.id, sa)
     else
       {:user, _} -> {:error, "could not find user with email #{email}"}
@@ -300,7 +303,7 @@ defmodule Core.Services.Cloud do
     |> Base.encode64()
   end
 
-  defp domain(), do: Core.conf(:cloud_domain)
+  def domain(), do: Core.conf(:cloud_domain)
 
   defp notify({:ok, %ConsoleInstance{} = inst}, :create, user),
     do: handle_notify(PubSub.ConsoleInstanceCreated, inst, actor: user)

@@ -5,6 +5,8 @@ defmodule Core.Schema.ConsoleInstance do
 
   defenum Type, shared: 0, dedicated: 1
   defenum Size, small: 0, medium: 1, large: 2
+  defenum DomainVersion, v1: 0, v2: 1
+
   defenum Status,
     pending: 0,
     database_created: 1,
@@ -34,6 +36,7 @@ defmodule Core.Schema.ConsoleInstance do
     field :cloud,         CloudCluster.Cloud
     field :size,          Size
     field :region,        :string
+    field :domain_version, DomainVersion, default: :v2
 
     field :first_notif_at,  :utc_datetime_usec
     field :second_notif_at, :utc_datetime_usec
@@ -127,7 +130,7 @@ defmodule Core.Schema.ConsoleInstance do
 
   def regions(), do: @region_map
 
-  @valid ~w(name type cloud size region status subdomain url external_id postgres_id cluster_id owner_id)a
+  @valid ~w(name type domain_version cloud size region status subdomain url external_id postgres_id cluster_id owner_id)a
 
   def changeset(model, attrs \\ %{}) do
     model

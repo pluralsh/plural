@@ -7,3 +7,5 @@ config :worker,
 config :core, start_broker: false
 config :worker, start_broker: true
 config :core, broker: Worker.Conduit.Broker
+
+config :stripity_stripe, api_key: get_env("STRIPE_SECRET")

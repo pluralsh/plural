@@ -13,7 +13,10 @@ defmodule Worker.Conduit.Subscribers.Billing do
     end
   end
 
-  def handle({:ingest, %Core.Schema.User{} = user, bytes}) when is_integer(bytes),
-    do: Payments.meter_ingest(user, bytes)
+  def handle({:ingest, %Core.Schema.User{} = user, bytes}) when is_integer(bytes) do
+    result = Payments.meter_ingest(user, bytes)
+    Logger.info("meter_ingest: #{inspect(result)}")
+    result
+  end
   def handle(_, _), do: :ok
 end

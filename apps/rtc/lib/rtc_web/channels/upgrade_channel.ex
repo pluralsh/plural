@@ -101,7 +101,7 @@ defmodule RtcWeb.UpgradeChannel do
     end
   end
 
-  defp maybe_meter(%{"bytes_ingested" => bytes}, user) do
+  defp maybe_meter(user, %{"bytes_ingested" => bytes}) do
     Core.Services.Payments.defer_ingest(user, bytes)
   end
   defp maybe_meter(_, _), do: :ok

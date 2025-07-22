@@ -1,5 +1,8 @@
 defmodule RtcWeb.UpgradeChannelTest do
   use RtcWeb.ChannelCase, async: false
+  use Mimic
+
+  setup :set_mimic_global
 
   describe "upgrade queue" do
     test "it can send and ack the next upgrade through the socket" do
@@ -47,12 +50,14 @@ defmodule RtcWeb.UpgradeChannelTest do
     test "it can receive usage history" do
       user = insert(:user)
       cluster = insert(:cluster, owner: user)
-      q    = insert(:upgrade_queue, user: user, cluster: cluster)
+      q = insert(:upgrade_queue, user: user, cluster: cluster)
+
+      expect(Core.Conduit.Broker, :publish, fn _, :billing -> :ok end)
 
       {:ok, socket} = mk_socket(user)
       {:ok, _, socket} = subscribe_and_join(socket, "queues:#{q.id}", %{})
 
-      ref = push(socket, "usage", %{"services" => 15, "clusters" => 3})
+      ref = push(socket, "usage", %{"services" => 15, "clusters" => 3, "bytes_ingested" => 1000})
       assert_reply ref, :ok, _
 
       [hist] = Core.Schema.ClusterUsageHistory.for_cluster(cluster.id) |> Core.Repo.all()

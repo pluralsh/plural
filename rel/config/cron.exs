@@ -1,4 +1,5 @@
 import Config
+import System, only: [get_env: 1]
 
 config :core, start_broker: true
 

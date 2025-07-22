@@ -581,6 +581,8 @@ export type ConsoleInstance = {
   console?: Maybe<Cluster>;
   /** the time this instance was deleted on */
   deletedAt?: Maybe<Scalars['DateTime']['output']>;
+  /** the domain of this instance */
+  domain?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
   insertedAt?: Maybe<Scalars['DateTime']['output']>;
   /** the name of this instance (globally unique) */

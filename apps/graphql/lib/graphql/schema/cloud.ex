@@ -52,6 +52,8 @@ defmodule GraphQl.Schema.Cloud do
     field :network, :console_instance_network, description: "the network configuration for this instance"
     field :oidc,    :console_instance_oidc,    description: "custom oidc configuration for this instance"
 
+    field :domain, :string, description: "the domain of this instance", resolve: &Cloud.resolve_domain/3
+
     field :status,    non_null(:console_instance_status),
       description: "the provisioning status of this instance, liveness is fetched through the console field"
 

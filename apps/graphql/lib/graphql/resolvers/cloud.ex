@@ -15,6 +15,8 @@ defmodule GraphQl.Resolvers.Cloud do
     ok(Clusters.get_cluster_by_url("https://#{url}") || Clusters.get_cluster_by_url(url))
   end
 
+  def resolve_domain(%ConsoleInstance{} = inst, _, _), do: {:ok, Cloud.fqdn(inst)}
+
   def list_instances(args, %{context: %{current_user: user}}) do
     ConsoleInstance.for_account(user.account_id)
     |> ConsoleInstance.ordered()

@@ -91,8 +91,10 @@ defmodule Core.Services.Cloud do
     |> notify(:create, user)
   end
 
-  def domain(%ConsoleInstance{name: name, domain_version: :v2}), do: "https://#{name}.console.#{domain()}/oauth/callback"
-  def domain(%ConsoleInstance{name: name}), do: "https://console.#{name}.#{domain()}/oauth/callback"
+  def fqdn(%ConsoleInstance{name: name, domain_version: :v2}), do: "#{name}.console.#{domain()}"
+  def fqdn(%ConsoleInstance{name: name}), do: "console.#{name}.#{domain()}"
+
+  def domain(%ConsoleInstance{} = inst), do: "https://#{fqdn(inst)}/oauth/callback"
 
   @doc """
   Updates base attributes of a console instance
@@ -203,7 +205,7 @@ defmodule Core.Services.Cloud do
   end
 
   def add_configuration(attrs, name, token, %OIDCProvider{} = oidc, %User{} = user) do
-    Map.merge(attrs, %{subdomain: "#{name}.#{domain()}", url: "console.#{name}.#{domain()}"})
+    Map.merge(attrs, %{subdomain: "#{name}.#{domain()}", url: "#{name}.console.#{domain()}"})
     |> Map.put(:configuration, %{
       aes_key:        aes_key(),
       encryption_key: encryption_key(),

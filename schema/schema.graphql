@@ -665,6 +665,9 @@ type ConsoleInstance {
   "custom oidc configuration for this instance"
   oidc: ConsoleInstanceOidc
 
+  "the domain of this instance"
+  domain: String
+
   "the provisioning status of this instance, liveness is fetched through the console field"
   status: ConsoleInstanceStatus!
 

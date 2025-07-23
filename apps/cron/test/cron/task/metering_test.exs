@@ -12,8 +12,11 @@ defmodule Cron.Task.MeteringTest do
       insert(:cluster, account: account, cluster_count: 2)
       insert(:cluster, account: account, cluster_count: 4)
       expect(Stripe.API, :request, fn
-        %{event_name: "pro_clusters", payload: %{stripe_customer_id: "cus_1", quantity: 6}}, :post, "/v1/billing/meter_events", %{}, [api_version: "2024-06-20"] ->
-          {:ok, "id_1"}
+        %{
+          event_name: "pro_clusters",
+          payload: %{stripe_customer_id: "cus_1", value: 6}
+        }, :post, "/v1/billing/meter_events", %{}, [api_version: "2024-06-20"] ->
+        {:ok, "id_1"}
       end)
 
       1 = Metering.run()

@@ -530,7 +530,9 @@ export type ClusterInformationAttributes = {
 export type ClusterUsageHistory = {
   __typename?: 'ClusterUsageHistory';
   account?: Maybe<Account>;
+  bytesIngested?: Maybe<Scalars['Int']['output']>;
   cluster?: Maybe<Cluster>;
+  clusters?: Maybe<Scalars['Int']['output']>;
   cpu?: Maybe<Scalars['Int']['output']>;
   insertedAt?: Maybe<Scalars['DateTime']['output']>;
   memory?: Maybe<Scalars['Int']['output']>;

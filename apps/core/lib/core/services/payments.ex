@@ -532,7 +532,7 @@ defmodule Core.Services.Payments do
       event_name: meter,
       payload: %{
         stripe_customer_id: cus_id,
-        quantity: quantity
+        value: quantity
       }
     }, :post, "/v1/billing/meter_events", %{}, api_version: "2024-06-20")
   end

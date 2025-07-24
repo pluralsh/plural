@@ -5,6 +5,7 @@ defmodule Core.Services.Clusters do
   alias Core.Policies.Account, as: AccountPolicy
   alias Core.Services.{Dns, Repositories, Users, Clusters.Transfer}
   alias Core.Schema.{Cluster, User, DnsRecord, UpgradeQueue, ClusterDependency, ClusterUsageHistory, Installation}
+  require Logger
 
   @type error :: {:error, term}
   @type cluster_resp :: {:ok, Cluster.t} | error
@@ -154,6 +155,29 @@ defmodule Core.Services.Clusters do
         |> Core.Repo.update()
       _ -> create_cluster(Map.merge(attrs, %{name: name, provider: provider}), user)
     end
+  end
+
+  @doc """
+  Pings a cluster and saves usage.  Also meters the ingest if applicable
+  """
+  @spec ping_cluster(%{cluster: map, usage: map}, User.t) :: cluster_resp
+  def ping_cluster(%{cluster: %{provider: p, name: n} = cluster, usage: usage}, %User{} = user) do
+    start_transaction()
+    |> add_operation(:cluster, fn _ ->
+      Map.put(cluster, :pinged_at, DateTime.utc_now())
+      |> upsert_cluster(p, n, user)
+    end)
+    |> add_operation(:usage, fn %{cluster: cluster} -> save_usage(usage, cluster) end)
+    |> add_operation(:meter, fn _ ->
+      case usage do
+        %{bytes_ingested: bytes} when is_integer(bytes) and bytes > 0 ->
+          Logger.info("Deferring ingest metering for #{bytes} bytes for user #{user.email}")
+          Core.Services.Payments.defer_ingest(user, bytes)
+          {:ok, %{}}
+        _ -> {:ok, %{}}
+      end
+    end)
+    |> execute(extract: :cluster)
   end
 
   @doc """

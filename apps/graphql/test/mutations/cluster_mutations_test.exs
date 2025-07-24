@@ -1,5 +1,6 @@
 defmodule GraphQl.ClusterMutationsTest do
   use Core.SchemaCase, async: true
+  use Mimic
   import GraphQl.TestHelpers
 
   describe "createCluster" do
@@ -140,6 +141,40 @@ defmodule GraphQl.ClusterMutationsTest do
       """, %{"name" => cluster.name, "email" => sa.email}, %{current_user: user})
 
       assert updated["owner"]["id"] == sa.id
+    end
+  end
+
+  describe "pingCluster" do
+    test "it can ping a cluster" do
+      user = insert(:user)
+      expect(Core.Conduit.Broker, :publish, fn _, :billing -> :ok end)
+
+      {:ok, %{data: %{"pingCluster" => pinged}}} = run_query("""
+        mutation Ping($attrs: ClusterPingAttributes!) {
+          pingCluster(attributes: $attrs) {
+            id
+            name
+            provider
+            pingedAt
+            owner { id }
+          }
+        }
+      """, %{
+        "attrs" => %{
+          "cluster" => %{"name" => "my-cluster", "provider" => "AWS"},
+          "usage" => %{"bytesIngested" => 1000, "services" => 1, "clusters" => 1}
+        }
+      }, %{current_user: user})
+
+      assert pinged["name"] == "my-cluster"
+      assert pinged["provider"] == "AWS"
+      assert pinged["pingedAt"]
+      assert pinged["owner"]["id"] == user.id
+
+      cluster = Core.Services.Clusters.get_cluster!(pinged["id"])
+
+      assert cluster.service_count == 1
+      assert cluster.cluster_count == 1
     end
   end
 end

@@ -53,5 +53,5 @@ export function useIsClusterHealthy(pingedAt?: Date | null) {
     return () => clearInterval(int)
   }, [])
 
-  return pingedAt && now.clone().subtract(2, 'minutes').isBefore(pingedAt)
+  return pingedAt && now.clone().subtract(2, 'hours').isBefore(pingedAt)
 }

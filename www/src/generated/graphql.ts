@@ -526,6 +526,22 @@ export type ClusterInformationAttributes = {
   version?: InputMaybe<Scalars['String']['input']>;
 };
 
+export type ClusterPingAttributes = {
+  /** the cluster to ping */
+  cluster: ClusterAttributes;
+  /** the usage of the cluster */
+  usage: ClusterUsageAttributes;
+};
+
+export type ClusterUsageAttributes = {
+  /** the number of bytes ingested by the cluster */
+  bytesIngested?: InputMaybe<Scalars['Int']['input']>;
+  /** the number of clusters in the cluster */
+  clusters?: InputMaybe<Scalars['Int']['input']>;
+  /** the number of services deployed on the cluster */
+  services?: InputMaybe<Scalars['Int']['input']>;
+};
+
 /** A record of the utilization in a given cluster */
 export type ClusterUsageHistory = {
   __typename?: 'ClusterUsageHistory';
@@ -2956,6 +2972,7 @@ export type RootMutationType = {
   oauthCallback?: Maybe<User>;
   oauthConsent?: Maybe<OauthResponse>;
   passwordlessLogin?: Maybe<User>;
+  pingCluster?: Maybe<Cluster>;
   pingWebhook?: Maybe<WebhookResponse>;
   /** moves up the upgrade waterline for a user */
   promote?: Maybe<User>;
@@ -3524,6 +3541,11 @@ export type RootMutationTypeOauthConsentArgs = {
 
 export type RootMutationTypePasswordlessLoginArgs = {
   token: Scalars['String']['input'];
+};
+
+
+export type RootMutationTypePingClusterArgs = {
+  attributes: ClusterPingAttributes;
 };
 
 

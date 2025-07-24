@@ -3,10 +3,11 @@ defmodule Core.Schema.ClusterUsageHistory do
   alias Core.Schema.{Account, Cluster}
 
   schema "cluster_usage_history" do
-    field :cpu,      :integer
-    field :memory,   :integer
-    field :services, :integer
-    field :clusters, :integer
+    field :cpu,            :integer
+    field :memory,         :integer
+    field :services,       :integer
+    field :clusters,       :integer
+    field :bytes_ingested, :integer
 
     belongs_to :cluster, Cluster
     belongs_to :account, Account
@@ -30,7 +31,7 @@ defmodule Core.Schema.ClusterUsageHistory do
     from(u in query, order_by: ^order)
   end
 
-  @valid ~w(cpu memory cluster_id services clusters account_id)a
+  @valid ~w(cpu memory cluster_id services clusters account_id bytes_ingested)a
 
   def changeset(model, attrs \\ %{}) do
     model

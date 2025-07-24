@@ -79,9 +79,11 @@ defmodule GraphQl.Schema.Cluster do
 
   @desc "A record of the utilization in a given cluster"
   object :cluster_usage_history do
-    field :cpu,      :integer
-    field :memory,   :integer
-    field :services, :integer
+    field :cpu,            :integer
+    field :memory,         :integer
+    field :services,       :integer
+    field :clusters,       :integer
+    field :bytes_ingested, :integer
 
     field :cluster, :cluster, resolve: dataloader(Cluster)
     field :account, :account, resolve: dataloader(Account)

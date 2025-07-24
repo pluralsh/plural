@@ -34,6 +34,7 @@ defmodule Core.Services.Cloud.Configuration do
       vmetrics_tenant: vmetrics_tenant(inst),
       stage: Core.conf(:stage)
     })
+    |> Map.merge(Map.new(add_oidc([], inst)))
     |> Map.merge(domain_info(inst))
     |> Map.put(:size, "#{size}")
     |> Enum.filter(fn {_, v} -> is_binary(v) end)
@@ -89,7 +90,7 @@ defmodule Core.Services.Cloud.Configuration do
   defp add_oidc(env, %ConsoleInstance{oidc: %ConsoleInstance.OIDC{issuer: issuer, client_id: client_id, client_secret: client_secret}})
     when is_binary(issuer) and is_binary(client_id) and is_binary(client_secret) do
     env ++ [
-      oidc_issuer: issuer,
+      oidc_issuer: Path.join(issuer, ".well-known/openid-configuration"),
       oidc_client_id: client_id,
       oidc_client_secret: client_secret
     ]

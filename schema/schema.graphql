@@ -829,6 +829,8 @@ type ClusterUsageHistory {
   cpu: Int
   memory: Int
   services: Int
+  clusters: Int
+  bytesIngested: Int
   cluster: Cluster
   account: Account
   insertedAt: DateTime

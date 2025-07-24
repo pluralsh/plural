@@ -3,6 +3,7 @@ defmodule RtcWeb.UpgradeChannel do
   alias Rtc.UpgradeBuffer
   alias Core.Schema.{Upgrade, Cluster}
   alias Core.Services.{Upgrades, Clusters}
+  require Logger
 
   @ping_interval 60 * 1000
 
@@ -69,6 +70,7 @@ defmodule RtcWeb.UpgradeChannel do
   def handle_in("usage", attrs, socket) do
     case Core.Repo.preload(socket.assigns.queue, [:cluster]) do
       %{cluster: %Cluster{} = cluster} = queue ->
+        Logger.info("usage event found for user #{socket.assigns.user.email}: #{inspect(attrs)}")
         Clusters.save_usage(attrs, cluster)
         maybe_meter(socket.assigns.user, attrs)
         {:reply, :ok, assign(socket, :queue, queue)}

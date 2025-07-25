@@ -58,4 +58,7 @@ defmodule GraphQl.Resolvers.Cluster do
 
   def transfer_ownership(%{name: n, email: e}, %{context: %{current_user: user}}),
     do: Clusters.transfer_ownership(n, e, user)
+
+  def ping_cluster(%{attributes: attrs}, %{context: %{current_user: user}}),
+    do: Clusters.ping_cluster(attrs, user)
 end

@@ -17,6 +17,17 @@ defmodule GraphQl.Schema.Cluster do
     field :domain,      :string, description: "The domain name used for applications deployed on the cluster."
   end
 
+  input_object :cluster_ping_attributes do
+    field :cluster, non_null(:cluster_attributes), description: "the cluster to ping"
+    field :usage, non_null(:cluster_usage_attributes), description: "the usage of the cluster"
+  end
+
+  input_object :cluster_usage_attributes do
+    field :bytes_ingested, :integer, description: "the number of bytes ingested by the cluster"
+    field :services, :integer, description: "the number of services deployed on the cluster"
+    field :clusters, :integer, description: "the number of clusters in the cluster"
+  end
+
   @desc "A Kubernetes cluster that can be used to deploy applications on with Plural."
   object :cluster do
     field :id,           non_null(:id), description: "The ID of the cluster."
@@ -108,6 +119,12 @@ defmodule GraphQl.Schema.Cluster do
   end
 
   object :cluster_mutations do
+    field :ping_cluster, :cluster do
+      arg :attributes, non_null(:cluster_ping_attributes), description: "The input attributes for the cluster that will be pinged."
+
+      safe_resolve &Cluster.ping_cluster/2
+    end
+
     @desc "Create a new cluster."
     field :create_cluster, :cluster do
       arg :attributes, non_null(:cluster_attributes), description: "The input attributes for the cluster that will be created."

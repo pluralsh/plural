@@ -520,6 +520,11 @@ type RootMutationType {
 
   publishLogs(id: ID!, logs: String!): TestStep
 
+  pingCluster(
+    "The input attributes for the cluster that will be pinged."
+    attributes: ClusterPingAttributes!
+  ): Cluster
+
   "Create a new cluster."
   createCluster(
     "The input attributes for the cluster that will be created."
@@ -740,6 +745,25 @@ input ClusterAttributes {
 
   "The domain name used for applications deployed on the cluster."
   domain: String
+}
+
+input ClusterPingAttributes {
+  "the cluster to ping"
+  cluster: ClusterAttributes!
+
+  "the usage of the cluster"
+  usage: ClusterUsageAttributes!
+}
+
+input ClusterUsageAttributes {
+  "the number of bytes ingested by the cluster"
+  bytesIngested: Int
+
+  "the number of services deployed on the cluster"
+  services: Int
+
+  "the number of clusters in the cluster"
+  clusters: Int
 }
 
 "A Kubernetes cluster that can be used to deploy applications on with Plural."

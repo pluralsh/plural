@@ -854,4 +854,15 @@ defmodule Core.Services.AccountsTest do
       {:error, _} = Accounts.license_key(user)
     end
   end
+
+  describe "#add_domain_mapping/2" do
+    test "it can add a domain mapping to an account" do
+      account = insert(:account)
+
+      {:ok, mapping} = Accounts.add_domain_mapping("example.com", account.id)
+
+      assert mapping.domain == "example.com"
+      assert mapping.account_id == account.id
+    end
+  end
 end

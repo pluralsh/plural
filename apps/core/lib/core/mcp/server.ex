@@ -10,7 +10,8 @@ defmodule Core.MCP.Server do
     AddOIDCBinding,
     SetupTrial,
     ListPlans,
-    ModifyProPlan
+    ModifyProPlan,
+    AddDomainMapping
   }
 
   @tools [
@@ -23,7 +24,8 @@ defmodule Core.MCP.Server do
     AddOIDCBinding,
     SetupTrial,
     ListPlans,
-    ModifyProPlan
+    ModifyProPlan,
+    AddDomainMapping
   ]
   @by_name Map.new(@tools, & {&1.name(), &1})
 

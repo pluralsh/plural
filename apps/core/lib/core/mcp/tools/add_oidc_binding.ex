@@ -9,7 +9,7 @@ defmodule Core.MCP.Tools.AddOIDCBinding do
   def schema() do
     %{
       type: "object",
-      required: ["account_id"],
+      required: ["instance_name", "email"],
       properties: %{
         instance_name: %{
           type: "string",

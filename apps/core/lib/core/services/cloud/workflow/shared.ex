@@ -48,6 +48,9 @@ defmodule Core.Services.Cloud.Workflow.Shared do
                                 version: "x.x.x",
                                 valuesFiles: ["console.yaml.liquid"]
                               },
+                              sync_config: %{
+                                delete_namespace: true
+                              }
                               repository_id: id,
                               git: %{ref: "main", folder: "helm"},
                               configuration: Configuration.build(inst),

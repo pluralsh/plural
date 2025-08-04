@@ -116,6 +116,16 @@ defmodule Core.Services.Accounts do
   end
 
   @doc """
+  Adds a domain mapping to an account, for use internally and via MCP
+  """
+  @spec add_domain_mapping(binary, binary) :: {:ok, DomainMapping.t} | {:error, term}
+  def add_domain_mapping(domain, account_id) do
+    %DomainMapping{account_id: account_id, domain: domain}
+    |> DomainMapping.changeset()
+    |> Core.Repo.insert()
+  end
+
+  @doc """
   Utility for manually updating account payment information
   """
   @spec update_payments(map, Account.t | User.t | binary) :: account_resp

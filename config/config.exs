@@ -155,8 +155,12 @@ config :core,
   base_stripe_product: "test-base",
   metered_stripe_product: "test-metered",
   cluster_meter_name: "pro_clusters",
+<<<<<<< Updated upstream
   initial_user: "admin@plural.sh",
   stage: "prod"
+=======
+  initial_user: "admin@plural.sh"
+>>>>>>> Stashed changes
 
 config :briefly,
   directory: [{:system, "TMPDIR"}, {:system, "TMP"}, {:system, "TEMP"}, "/tmp"],

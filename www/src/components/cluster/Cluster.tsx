@@ -25,7 +25,7 @@ import { ResponsiveLayoutPage } from '../utils/layout/ResponsiveLayoutPage'
 import { EditPluralOIDCClients } from '../overview/clusters/plural-cloud/EditPluralOIDCClients'
 
 import { ClusterAdminsModal } from './ClusterAdminsModal'
-import { ClusterApps } from './ClusterApps'
+import { ClusterConsole } from './ClusterConsole'
 import { ClusterDependencyModal } from './ClusterDependencyModal'
 import ClusterMetadataPanel from './ClusterMetadataPanel'
 import { ClusterPromoteModal } from './ClusterPromoteModal'
@@ -181,7 +181,7 @@ export function Cluster() {
             skip={!cluster.owner?.serviceAccount}
           >
             <>
-              <ClusterApps cluster={cluster} />
+              <ClusterConsole cluster={cluster} />
               <div
                 css={{
                   ...theme.partials.text.body1Bold,

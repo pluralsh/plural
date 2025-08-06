@@ -20,16 +20,6 @@ export function ClusterSidecar({ cluster }: ClusterSidecarProps): ReactElement {
       width={200}
       display-desktopSmall-down="none"
     >
-      {cluster.consoleUrl && (
-        <Button
-          as="a"
-          href={ensureURLValidity(cluster.consoleUrl)}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Launch Console
-        </Button>
-      )}
       <Sidecar heading="Metadata">
         <SidecarItem heading="Cluster name">{cluster.name}</SidecarItem>
         <SidecarItem heading="Status">

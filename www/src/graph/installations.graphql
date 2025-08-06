@@ -19,6 +19,8 @@ fragment Installation on Installation {
   autoUpgrade
   trackTag
   pingedAt
+  synced
+  locked
   repository {
     ...InstallationRepo
   }

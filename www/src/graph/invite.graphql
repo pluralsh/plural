@@ -2,26 +2,22 @@ fragment Invite on Invite {
   id
   secureId
   email
+  existing
   insertedAt
+  account {
+    ...Account
+  }
   user {
     ...User
+    account {
+      ...Account
+    }
   }
 }
 
 query Invite($id: String!) {
   invite(id: $id) {
-    id
-    email
-    existing
-    account {
-      ...Account
-    }
-    user {
-      ...User
-      account {
-        ...Account
-      }
-    }
+    ...Invite
   }
 }
 

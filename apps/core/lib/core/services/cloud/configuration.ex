@@ -85,7 +85,7 @@ defmodule Core.Services.Cloud.Configuration do
   defp add_network(env, %ConsoleInstance{network: %ConsoleInstance.Network{allowed_cidrs: [_ | _] = cidrs}}) do
     env ++ [network_allowd_cidrs: Jason.encode!(cidrs)]
   end
-  defp add_network(_, _), do: []
+  defp add_network(env, _), do: env
 
   defp add_oidc(env, %ConsoleInstance{oidc: %ConsoleInstance.OIDC{issuer: issuer, client_id: client_id, client_secret: client_secret}})
     when is_binary(issuer) and is_binary(client_id) and is_binary(client_secret) do
@@ -95,7 +95,7 @@ defmodule Core.Services.Cloud.Configuration do
       oidc_client_secret: client_secret
     ]
   end
-  defp add_oidc(_, _), do: []
+  defp add_oidc(env, _), do: env
 
   # defp certificate(%ConsoleInstance{postgres: %PostgresCluster{certificate: cert}}), do: cert
 

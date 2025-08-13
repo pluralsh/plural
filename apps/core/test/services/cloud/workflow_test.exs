@@ -99,6 +99,7 @@ defmodule Core.Services.Cloud.WorkflowTest do
       assert attrs.repository_id == "repo-id"
       assert attrs.git.ref == "main"
       assert attrs.git.folder == "terraform/modules/dedicated/aws"
+      refute Enum.empty?(attrs.environment)
 
       del_q = Console.queries(:stack_delete)
       expect(Req, :post, fn _, [graphql: {^del_q, %{id: ^stack_id}}] ->

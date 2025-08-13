@@ -1,5 +1,8 @@
 import {
   Button,
+  Flex,
+  IconFrame,
+  PencilIcon,
   ReturnIcon,
   SendMessageIcon,
   Stepper,
@@ -67,9 +70,7 @@ export function CreateCluster() {
   const curStepIndex = steps.findIndex((step) => step.key === curStep)
 
   const { data, error } = useConsoleInstanceQuery({
-    variables: {
-      id: consoleInstanceId ?? '',
-    },
+    variables: { id: consoleInstanceId ?? '' },
     skip: !consoleInstanceId,
     fetchPolicy: 'cache-and-network',
     pollInterval: 10_000,
@@ -114,18 +115,45 @@ export function CreateCluster() {
     ]
   )
 
+  const showClearButton =
+    cloudOption === 'cloud' &&
+    (curStep === CreateClusterStepKey.InstallCli ||
+      curStep === CreateClusterStepKey.Authentication)
+
   return (
     <CreateClusterContext.Provider value={context}>
       <MainWrapperSC>
         <SidebarWrapperSC>
-          <Button
-            css={{ width: '100%' }}
-            secondary
-            startIcon={<ReturnIcon />}
-            onClick={() => navigate('/overview/clusters/plural-cloud')}
+          <Flex
+            gap="small"
+            width="100%"
           >
-            Back home
-          </Button>
+            <Button
+              css={{ flex: 1 }}
+              secondary
+              startIcon={<ReturnIcon />}
+              onClick={() => navigate('/overview/clusters/plural-cloud')}
+            >
+              Back home
+            </Button>
+            {showClearButton && (
+              <IconFrame
+                clickable
+                type="floating"
+                size="large"
+                icon={<PencilIcon css={{ width: 16 }} />}
+                tooltip="Create a new instance (this one will continue provisioning)"
+                onClick={() => {
+                  clearCreateClusterCache()
+                  setCurStep(CreateClusterStepKey.ChooseCloud)
+                  setCloudOption('cloud')
+                  setConsoleInstanceId(null)
+                  setContinueBtn(undefined)
+                }}
+                css={{ flexShrink: 0 }}
+              />
+            )}
+          </Flex>
           <Stepper
             vertical
             steps={steps}
@@ -163,7 +191,7 @@ export function CreateCluster() {
   )
 }
 
-export function clearCreateClusterState() {
+export function clearCreateClusterCache() {
   localStorage.removeItem(`plural-${CUR_CREATE_CLUSTER_STEP_KEY}`)
   localStorage.removeItem(`plural-${CLOUD_OPTION_KEY}`)
   localStorage.removeItem(`plural-${HOSTING_OPTION_KEY}`)

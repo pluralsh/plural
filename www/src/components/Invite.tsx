@@ -1,16 +1,14 @@
 import { Button } from '@pluralsh/design-system'
-import { GqlError } from 'forge-core'
 
 import { Div, Flex, Form, P } from 'honorable'
 import { useState } from 'react'
 import { useParams } from 'react-router-dom'
 
 import {
-  type Invite as InviteT,
-  type User,
   useInviteQuery,
   useRealizeInviteMutation,
   useSignupInviteMutation,
+  InviteFragment,
 } from '../generated/graphql'
 import { setToken } from '../helpers/authentication'
 
@@ -19,28 +17,14 @@ import { LoginPortal } from './users/LoginPortal'
 import { validatePassword } from './users/PasswordValidation'
 import { ConfirmPasswordField, SetPasswordField } from './users/Signup'
 import { WelcomeHeader } from './utils/WelcomeHeader'
-
-function InvalidInvite() {
-  return (
-    <Flex
-      width="100vw"
-      height="100vh"
-      justifyContent="center"
-      alignItems="center"
-    >
-      This invite code is no longer valid
-    </Flex>
-  )
-}
+import LoadingIndicator from './utils/LoadingIndicator'
+import isEmpty from 'lodash/isEmpty'
+import { GqlError } from './utils/Alert'
 
 function ExistingInvite({
-  invite: { account },
-  id,
-  user,
+  invite: { id, account, user },
 }: {
-  invite: InviteT
-  id: any
-  user: User
+  invite: InviteFragment
 }) {
   const [mutation, { loading, error }] = useRealizeInviteMutation({
     variables: { id },
@@ -87,13 +71,11 @@ export default function Invite() {
   const [name, setName] = useState('')
   const [password, setPassword] = useState('')
   const [confirm, setConfirm] = useState('')
+
   const [mutation, { loading, error }] = useSignupInviteMutation({
     variables: {
       inviteId: inviteId ?? '',
-      attributes: {
-        name,
-        password,
-      },
+      attributes: { name, password },
     },
     onCompleted: ({ signup }) => {
       setToken(signup?.jwt)
@@ -101,31 +83,51 @@ export default function Invite() {
     },
   })
 
-  const { data, error: inviteError } = useInviteQuery({
+  const {
+    data,
+    loading: inviteLoading,
+    error: inviteError,
+  } = useInviteQuery({
     variables: { id: inviteId ?? '' },
   })
 
-  if (inviteError) return <InvalidInvite />
-  if (!data) return null
+  const invite = data?.invite
+
+  if (!data && inviteLoading) return <LoadingIndicator />
+
+  if (inviteError)
+    return (
+      <Flex
+        grow={1}
+        alignItems="center"
+        justifyContent="center"
+      >
+        <GqlError
+          error={error}
+          header="Could not load invite"
+        />
+      </Flex>
+    )
+
+  if (!invite)
+    return (
+      <Flex
+        grow={1}
+        alignItems="center"
+        justifyContent="center"
+      >
+        This invite code does not exist or is no longer valid
+      </Flex>
+    )
 
   const { disabled: passwordDisabled, error: passwordError } = validatePassword(
     password,
     confirm
   )
 
-  const isNameValid = name.length > 0
-  const submitEnabled = isNameValid && !passwordDisabled
+  if (invite.user) return <ExistingInvite invite={invite} />
 
-  if (data?.invite?.user) {
-    return (
-      <ExistingInvite
-        invite={data?.invite as InviteT}
-        id={inviteId}
-        user={data?.invite?.user as User}
-      />
-    )
-  }
-
+  const submitEnabled = !isEmpty(name) && !passwordDisabled
   const onSubmit = (e) => {
     e.preventDefault()
     if (!submitEnabled) {
@@ -140,12 +142,12 @@ export default function Invite() {
         <WelcomeHeader
           textAlign="left"
           marginBottom="xxsmall"
-        />{' '}
+        />
         <P
           body1
           color="text-xlight"
         >
-          {data.invite?.account?.name} invited you to join their Plural account.
+          {invite.account?.name} invited you to join their Plural account.
           Create an account to join.
         </P>
       </Div>
@@ -165,7 +167,7 @@ export default function Invite() {
         >
           <LabelledInput
             label="Email"
-            value={data?.invite?.email}
+            value={invite.email}
             disabled
           />
           <LabelledInput

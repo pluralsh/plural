@@ -2,7 +2,7 @@ import { useTheme } from 'styled-components'
 
 import { Button, Flex, Input, Modal } from '@pluralsh/design-system'
 import {
-  clearCreateClusterState,
+  clearCreateClusterCache,
   getUnfinishedConsoleInstanceId,
 } from 'components/create-cluster/CreateCluster'
 import { GqlError } from 'components/utils/Alert'
@@ -52,7 +52,7 @@ function DeleteInstance({
     variables: { id: instance.id },
     onCompleted: () => {
       if (instance.id === getUnfinishedConsoleInstanceId()) {
-        clearCreateClusterState()
+        clearCreateClusterCache()
       }
       onClose()
       refetch()
@@ -115,7 +115,7 @@ export function useDeleteUnfinishedInstance({
   const id = getUnfinishedConsoleInstanceId()
   const [mutation, { loading, error }] = useDeleteConsoleInstanceMutation()
   const triggerDelete = useCallback(() => {
-    clearCreateClusterState()
+    clearCreateClusterCache()
     onClear?.()
     if (id && id !== 'null' && id !== 'undefined') {
       mutation({ variables: { id } })

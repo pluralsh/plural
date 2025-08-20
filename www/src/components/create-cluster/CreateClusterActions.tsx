@@ -13,7 +13,7 @@ import {
   localSteps,
   useCreateClusterContext,
 } from './CreateClusterWizard'
-import { clearCreateClusterState } from './CreateCluster'
+import { clearCreateClusterCache } from './CreateCluster'
 
 export const FINISHED_CONSOLE_INSTANCE_KEY = 'plural-finished-console-instance'
 export const FINISHED_LOCAL_CREATE_KEY = 'plural-finished-local-create'
@@ -51,7 +51,7 @@ export function CreateClusterActions() {
     if (cloudOption === 'local') {
       localStorage.setItem(FINISHED_LOCAL_CREATE_KEY, 'true')
     }
-    clearCreateClusterState()
+    clearCreateClusterCache()
     navigate(
       `/overview/clusters/${
         cloudOption === 'local' ? 'self-hosted' : 'plural-cloud'

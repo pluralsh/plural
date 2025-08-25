@@ -22,12 +22,14 @@ import isEmpty from 'lodash/isEmpty'
 import { GqlError } from './utils/Alert'
 
 function ExistingInvite({
-  invite: { id, account, user },
+  inviteId,
+  invite: { account, user },
 }: {
+  inviteId: string
   invite: InviteFragment
 }) {
   const [mutation, { loading, error }] = useRealizeInviteMutation({
-    variables: { id },
+    variables: { id: inviteId },
     onCompleted: ({ realizeInvite }) => {
       setToken(realizeInvite?.jwt)
       ;(window as Window).location = '/'
@@ -109,7 +111,7 @@ export default function Invite() {
       </Flex>
     )
 
-  if (!invite)
+  if (!invite || !inviteId)
     return (
       <Flex
         grow={1}
@@ -125,7 +127,13 @@ export default function Invite() {
     confirm
   )
 
-  if (invite.user) return <ExistingInvite invite={invite} />
+  if (invite.user)
+    return (
+      <ExistingInvite
+        inviteId={inviteId}
+        invite={invite}
+      />
+    )
 
   const submitEnabled = !isEmpty(name) && !passwordDisabled
   const onSubmit = (e) => {

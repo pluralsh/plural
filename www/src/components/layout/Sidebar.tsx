@@ -1,18 +1,8 @@
 import {
-  ComponentProps,
-  ReactElement,
-  useCallback,
-  useContext,
-  useRef,
-  useState,
-} from 'react'
-import { Link, useLocation } from 'react-router-dom'
-import { Avatar, Menu, MenuItem } from 'honorable'
-import {
   ArrowTopRightIcon,
-  BrowseAppsIcon,
   ClusterIcon,
   CookieIcon,
+  CreditCardIcon,
   Sidebar as DSSidebar,
   DiscordIcon,
   GitHubLogoIcon,
@@ -26,15 +16,25 @@ import {
   SidebarSection,
   TerminalIcon,
 } from '@pluralsh/design-system'
-import styled, { useTheme } from 'styled-components'
 import { useClickOutside } from '@react-hooks-library/core'
+import { Avatar, Menu, MenuItem } from 'honorable'
+import {
+  ComponentProps,
+  ReactElement,
+  useCallback,
+  useContext,
+  useRef,
+  useState,
+} from 'react'
+import { Link, useLocation } from 'react-router-dom'
+import styled, { useTheme } from 'styled-components'
 
-import { getPreviousUserData } from '../../helpers/authentication'
-import { handlePreviousUserClick } from '../login/CurrentUser'
 import CurrentUserContext from '../../contexts/CurrentUserContext'
-import { useIsCurrentlyOnboarding } from '../shell/hooks/useOnboarded'
-import CreatePublisherModal from '../publisher/CreatePublisherModal'
+import { getPreviousUserData } from '../../helpers/authentication'
 import { clearLocalStorage } from '../../helpers/localStorage'
+import { handlePreviousUserClick } from '../login/CurrentUser'
+import CreatePublisherModal from '../publisher/CreatePublisherModal'
+import { useIsCurrentlyOnboarding } from '../shell/hooks/useOnboarded'
 
 import Cookiebot from '../../utils/cookiebot'
 
@@ -59,12 +59,6 @@ const MENU_ITEMS: MenuItem[] = [
     pathRegexp: /^\/(shell|oauth\/callback\/.+\/shell)/,
   },
   {
-    text: 'Marketplace',
-    icon: <BrowseAppsIcon />,
-    path: '/marketplace',
-    pathRegexp: /^\/(marketplace|installed|repository|stack)/,
-  },
-  {
     text: 'Audits',
     icon: <ListIcon />,
     path: '/audits',
@@ -73,6 +67,13 @@ const MENU_ITEMS: MenuItem[] = [
     text: 'Account',
     icon: <PeopleIcon />,
     path: '/account',
+    pathRegexp: /^\/account(\/(?!billing)[^/]*)?$/,
+  },
+  {
+    text: 'Billing',
+    icon: <CreditCardIcon />,
+    path: '/account/billing',
+    pathRegexp: /^\/account\/billing(\/.*)?$/,
   },
   // {
   //   text: 'Roadmap',
@@ -85,10 +86,8 @@ function isActiveMenuItem(
   { path, pathRegexp }: Pick<MenuItem, 'path' | 'pathRegexp'>,
   currentPath
 ) {
-  return (
-    (path === '/' ? currentPath === path : currentPath.startsWith(path)) ||
-    (pathRegexp && (currentPath.match(pathRegexp)?.length ?? 0 > 0))
-  )
+  if (pathRegexp) return currentPath.match(pathRegexp) !== null
+  return path === '/' ? currentPath === path : currentPath.startsWith(path)
 }
 
 function SidebarWrapper() {

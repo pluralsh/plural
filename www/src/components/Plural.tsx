@@ -76,6 +76,11 @@ const Clusters = lazy(() =>
     default: module.Clusters,
   }))
 )
+const AllClusters = lazy(() =>
+  import('./overview/clusters/all/AllClusters').then((module) => ({
+    default: module.AllClusters,
+  }))
+)
 const SelfHostedClusters = lazy(() =>
   import('./overview/clusters/self-hosted/SelfHostedClusters').then(
     (module) => ({
@@ -646,9 +651,13 @@ export function PluralInner() {
                     element={
                       <Navigate
                         replace
-                        to="self-hosted"
+                        to="all"
                       />
                     }
+                  />
+                  <Route
+                    path="all"
+                    element={<AllClusters />}
                   />
                   <Route
                     path="self-hosted"

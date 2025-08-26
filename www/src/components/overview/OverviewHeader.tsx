@@ -6,6 +6,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { LinkTabWrap } from '../utils/Tabs'
 
 const DIRECTORY = [
+  { path: '/overview/clusters/all', label: 'All' },
   { path: '/overview/clusters/self-hosted', label: 'Self-hosted clusters' },
   { path: '/overview/clusters/plural-cloud', label: 'Plural cloud instances' },
 ]
@@ -15,11 +16,6 @@ export default function OverviewHeader(): ReactElement {
   const navigate = useNavigate()
   const { pathname } = useLocation()
   const currentTab = DIRECTORY.find((tab) => pathname?.startsWith(tab.path))
-
-  // const [showUnfinished, setShowUnfinished] = useState(hasUnfinishedCreation())
-  // const { triggerDelete, loading } = useDeleteUnfinishedInstance({
-  //   onClear: () => setShowUnfinished(false),
-  // })
 
   return (
     <Flex justifyContent="space-between">
@@ -41,15 +37,6 @@ export default function OverviewHeader(): ReactElement {
         ))}
       </TabList>
       <Flex gap="medium">
-        {/* {showUnfinished && (
-          <Button
-            destructive
-            loading={loading}
-            onClick={triggerDelete}
-          >
-            Cancel cluster creation
-          </Button>
-        )} */}
         <Button onClick={() => navigate('/create-cluster')}>
           Create cluster
         </Button>

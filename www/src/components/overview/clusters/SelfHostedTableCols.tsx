@@ -11,12 +11,12 @@ import { A, Div } from 'honorable'
 import { Link } from 'react-router-dom'
 import styled, { useTheme } from 'styled-components'
 
-import { Source } from '../../../generated/graphql'
+import { ClusterFragment, Source } from '../../../generated/graphql'
 import { ProviderIcon } from '../../utils/ProviderIcon'
 
 import ClusterHealth from './ClusterHealth'
 import ClusterOwner from './ClusterOwner'
-import { ClusterListElement } from './types'
+import { ClusterListElement } from './clusterListUtils'
 
 const clusterExists = (row: ClusterListElement): boolean =>
   row.pingedAt !== null
@@ -40,16 +40,10 @@ const sourceDisplayNames = {
   [Source.Demo]: 'Demo',
 }
 
-export const ColCluster = columnHelper.accessor((row) => row.name, {
-  id: 'cluster',
-  meta: { gridTemplate: '3fr' },
-  enableGlobalFilter: true,
-  enableSorting: true,
-  cell: ({
-    row: {
-      original: { id, name, provider, source, accessible, pingedAt },
-    },
-  }) => (
+export function ClusterDisplay({ cluster }: { cluster: ClusterListElement }) {
+  const { id, name, provider, source, accessible, pingedAt } = cluster
+
+  return (
     <CellWrap>
       <AppIcon
         size="xxsmall"
@@ -75,7 +69,15 @@ export const ColCluster = columnHelper.accessor((row) => row.name, {
         <CellCaption>{sourceDisplayNames[source || '']}</CellCaption>
       </div>
     </CellWrap>
-  ),
+  )
+}
+
+export const ColCluster = columnHelper.accessor((row) => row.name, {
+  id: 'cluster',
+  meta: { gridTemplate: '3fr' },
+  enableGlobalFilter: true,
+  enableSorting: true,
+  cell: ({ row }) => <ClusterDisplay cluster={row.original} />,
   header: 'Cluster',
 })
 

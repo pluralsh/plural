@@ -1,5 +1,5 @@
 import { isEmpty } from 'lodash'
-import { ReactElement, useContext, useEffect, useState } from 'react'
+import { ReactElement, useContext, useEffect, useMemo, useState } from 'react'
 
 import { Button, Flex, Toast } from '@pluralsh/design-system'
 
@@ -7,7 +7,10 @@ import { Outlet } from 'react-router-dom'
 
 import ConsoleInstancesContext from 'contexts/ConsoleInstancesContext'
 
-import { FINISHED_LOCAL_CREATE_KEY } from 'components/create-cluster/CreateClusterActions'
+import {
+  FINISHED_CONSOLE_INSTANCE_KEY,
+  FINISHED_LOCAL_CREATE_KEY,
+} from 'components/create-cluster/CreateClusterActions'
 
 import { useTheme } from 'styled-components'
 
@@ -19,8 +22,22 @@ import ClustersContext from '../../../contexts/ClustersContext'
 
 import OverviewHeader from '../OverviewHeader'
 
+import CurrentUserContext from 'contexts/CurrentUserContext'
 import ClusterListEmptyState from './ClusterListEmptyState'
 import ClustersHelpSection from './ClustersHelpSection'
+
+import { ConsoleInstanceFragment } from 'generated/graphql'
+import {
+  CombinedClusterT,
+  CombinedClusterType,
+} from './all/AllClustersTableCols'
+import { ClusterListElement, fromClusterList } from './clusterListUtils'
+
+export type OverviewContextType = {
+  selfHostedClusters: ClusterListElement[]
+  cloudInstances: ConsoleInstanceFragment[]
+  combinedClusterList: CombinedClusterT[]
+}
 
 export const CLUSTERS_ROOT_CRUMB = {
   label: 'clusters',
@@ -32,17 +49,57 @@ export const CLUSTERS_OVERVIEW_BREADCRUMBS = [
 ]
 
 export function Clusters(): ReactElement | null {
-  const [showToast, setShowToast] = useState(false)
+  const { spacing } = useTheme()
+  const [showSupportToast, setShowSupportToast] = useState(false)
+  const [showPluralCloudToast, setShowPluralCloudToast] = useState(false)
+
+  const me = useContext(CurrentUserContext)
   const { clusters } = useContext(ClustersContext)
   const { instances } = useContext(ConsoleInstancesContext)
   const showEmpty = isEmpty(clusters) && isEmpty(instances)
 
+  // checks if clusters are still empty after finishing plural cloud setup
   useEffect(() => {
     if (localStorage.getItem(FINISHED_LOCAL_CREATE_KEY) === 'true') {
-      if (isEmpty(clusters)) setShowToast(true)
+      if (isEmpty(clusters)) setShowSupportToast(true)
       localStorage.removeItem(FINISHED_LOCAL_CREATE_KEY)
     }
   }, [clusters])
+
+  // shows a success toast after plural cloud instance is created
+  useEffect(() => {
+    const id = localStorage.getItem(FINISHED_CONSOLE_INSTANCE_KEY)
+
+    if (id && instances.some((i) => i.id === id)) {
+      localStorage.removeItem(FINISHED_CONSOLE_INSTANCE_KEY)
+      setShowPluralCloudToast(true)
+    }
+  }, [instances])
+
+  const ctx: OverviewContextType = useMemo(() => {
+    const selfHostedClusters = fromClusterList(clusters, me)
+    const cloudInstances = instances
+    const combinedClusterList = [
+      ...instances.map((instance) => ({
+        type: CombinedClusterType.PluralCloud as const,
+        id: instance.id,
+        name: instance.name,
+        status: instance.status,
+        owner: instance.owner,
+        consoleUrl: instance.url,
+      })),
+      ...selfHostedClusters.map((cluster) => ({
+        type: CombinedClusterType.SelfHosted as const,
+        ...cluster,
+      })),
+    ]
+
+    return {
+      selfHostedClusters,
+      cloudInstances,
+      combinedClusterList,
+    }
+  }, [clusters, me, instances])
 
   return (
     <Flex
@@ -59,13 +116,22 @@ export function Clusters(): ReactElement | null {
       ) : (
         <>
           <OverviewHeader />
-          <Outlet />
+          <Outlet context={ctx} />
         </>
       )}
       <ContactSupportToast
-        open={showToast}
-        onClose={() => setShowToast(false)}
+        open={showSupportToast}
+        onClose={() => setShowSupportToast(false)}
       />
+      <Toast
+        show={showPluralCloudToast}
+        marginBottom={spacing.xsmall}
+        severity="success"
+        position="bottom"
+        onClose={() => setShowPluralCloudToast(false)}
+      >
+        Your instance was created successfully!
+      </Toast>
     </Flex>
   )
 }

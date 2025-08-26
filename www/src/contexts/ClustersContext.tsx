@@ -3,14 +3,14 @@ import styled from 'styled-components'
 
 import LoadingIndicator from '../components/utils/LoadingIndicator'
 import {
-  Cluster,
+  ClusterFragment,
   ConsoleInstanceFragment,
   Source,
   useClustersQuery,
 } from '../generated/graphql'
 
 type ClustersContextType = {
-  clusters: Cluster[]
+  clusters: ClusterFragment[]
   refetchClusters?: () => Promise<any>
 }
 
@@ -41,7 +41,7 @@ export function ClustersContextProvider({
     const clusters =
       data?.clusters?.edges
         ?.map((edge) => edge?.node)
-        .filter((node): node is Cluster => !!node)
+        .filter((node): node is ClusterFragment => !!node)
         .filter(
           (c) =>
             c.source === Source.Default ||

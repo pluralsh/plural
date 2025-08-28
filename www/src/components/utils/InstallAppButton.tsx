@@ -21,7 +21,7 @@ import { Link } from 'react-router-dom'
 
 import ClustersContext from '../../contexts/ClustersContext'
 import { useCurrentUser } from '../../contexts/CurrentUserContext'
-import { Cluster, Provider } from '../../generated/graphql'
+import { ClusterFragment, Provider } from '../../generated/graphql'
 
 import {
   CloudShellClusterPicker,
@@ -225,7 +225,7 @@ function InstallModal({
   onClose,
   ...props
 }: Omit<InstallAppButtonProps, 'loading'> & {
-  clusters: Cluster[]
+  clusters: ClusterFragment[]
 } & ComponentProps<typeof Modal>) {
   const [clusterId, setClusterId] = useState<string | undefined>(
     !isEmpty(clusters) ? clusters[0].id : undefined

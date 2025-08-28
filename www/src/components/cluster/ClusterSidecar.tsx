@@ -1,16 +1,15 @@
+import { Sidecar, SidecarItem, Tooltip } from '@pluralsh/design-system'
 import { A, Flex } from 'honorable'
 import moment from 'moment'
-import { Button, Sidecar, SidecarItem, Tooltip } from '@pluralsh/design-system'
 import { ReactElement } from 'react'
 import { Link } from 'react-router-dom'
 
-import { Cluster } from '../../generated/graphql'
-import CopyButton from '../utils/CopyButton'
+import { ClusterFragment } from '../../generated/graphql'
 import ClusterHealth from '../overview/clusters/ClusterHealth'
-import { ensureURLValidity } from '../../utils/url'
 import ClusterOwner from '../overview/clusters/ClusterOwner'
+import CopyButton from '../utils/CopyButton'
 
-type ClusterSidecarProps = { cluster: Cluster }
+type ClusterSidecarProps = { cluster: ClusterFragment }
 
 export function ClusterSidecar({ cluster }: ClusterSidecarProps): ReactElement {
   return (

@@ -70,7 +70,7 @@ export function ClusterListEmptyState() {
 const GridWrapSC = styled.div(({ theme }) => ({
   display: 'grid',
   gridTemplateColumns: '1fr 1fr',
-  gridTemplateRows: 'auto',
+  gridTemplateRows: '300px auto',
   gap: `${theme.spacing.xlarge}px ${theme.spacing.large}px`,
 }))
 

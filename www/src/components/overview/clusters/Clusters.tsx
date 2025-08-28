@@ -50,7 +50,7 @@ export const CLUSTERS_OVERVIEW_BREADCRUMBS = [
 ]
 
 export function Clusters(): ReactElement | null {
-  const { spacing } = useTheme()
+  const { spacing, mode } = useTheme()
   const [showSupportToast, setShowSupportToast] = useState(false)
   const [showPluralCloudToast, setShowPluralCloudToast] = useState(false)
 
@@ -133,17 +133,25 @@ export function Clusters(): ReactElement | null {
           )}
         </Flex>
         <CopilotCardSC>
-          <AgentChipSC>
-            <CaptionP
-              $color="text-light"
-              css={{ fontWeight: 300 }}
-            >
-              Copilot Agent
-            </CaptionP>
-            <PaperplaneIcon />
-          </AgentChipSC>
+          <Button
+            small
+            as={Link}
+            to="https://docs.plural.sh/plural-features/plural-ai"
+            style={{
+              padding: `0 9px`,
+              borderRadius: 6,
+              borderColor:
+                mode === 'light'
+                  ? 'rgba(0, 0, 0, 0.10)'
+                  : 'rgba(255, 255, 255, 0.10)',
+            }}
+            secondary
+            endIcon={<PaperplaneIcon />}
+          >
+            <AgentButtonTextSC>Plural AI</AgentButtonTextSC>
+          </Button>
           <Body2P $color="text-xlight">
-            Access Plural AI within your instance of the Plural Console.
+            Access Plural AI within your Plural Console.
           </Body2P>
         </CopilotCardSC>
       </Flex>
@@ -229,24 +237,10 @@ const CopilotCardSC = styled(Card)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'flex-start',
-  width: 280,
+  width: 380,
   gap: theme.spacing.small,
   padding: `${theme.spacing.medium}px ${theme.spacing.large}px`,
   backgroundColor: theme.colors['fill-zero'],
-}))
-
-const AgentChipSC = styled.div(({ theme }) => ({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  padding: `${theme.spacing.xxsmall}px ${theme.spacing.xsmall}px`,
-  gap: theme.spacing.xxsmall,
-  borderRadius: theme.borderRadiuses.large,
-  border: '1px solid',
-  borderColor:
-    theme.mode === 'light'
-      ? 'rgba(0, 0, 0, 0.10)'
-      : 'rgba(255, 255, 255, 0.10)',
 }))
 
 const PaperplaneIcon = () => (
@@ -273,3 +267,12 @@ const PaperplaneIcon = () => (
     />
   </svg>
 )
+
+const AgentButtonTextSC = styled.p(({ theme }) => ({
+  margin: 0,
+  color: theme.colors['text-light'],
+  fontFamily: theme.fontFamilies.sans,
+  fontSize: 12.8,
+  fontWeight: 300,
+  letterSpacing: '0.128px',
+}))

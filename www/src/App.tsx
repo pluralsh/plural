@@ -32,7 +32,7 @@ import {
   polyfilledHonorableThemeLight,
   polyfilledStyledThemeDark,
   polyfilledStyledThemeLight,
-} from 'styles'
+} from './styles'
 import { OverlayContextProvider } from './components/layout/Overlay'
 import { CursorPositionProvider } from './components/utils/CursorPosition'
 import { INTERCOM_APP_ID } from './constants'

@@ -135,10 +135,12 @@ function SidebarMenuItem({
   )
 }
 
-const SidebarSC = styled(DSSidebar)((_) => ({
+const SidebarSC = styled(DSSidebar)(({ theme }) => ({
   flexGrow: 1,
   minHeight: 0,
   height: 'auto',
+  background: theme.colors['fill-zero'],
+  borderRight: theme.borders['fill-one'],
   overflow: 'auto',
 }))
 

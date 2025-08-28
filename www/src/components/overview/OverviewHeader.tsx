@@ -1,7 +1,7 @@
-import { Button, SubTab, TabList } from '@pluralsh/design-system'
+import { SubTab, TabList } from '@pluralsh/design-system'
 import { Flex } from 'honorable'
 import { ReactElement, useRef } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 
 import { LinkTabWrap } from '../utils/Tabs'
 
@@ -13,7 +13,6 @@ const DIRECTORY = [
 
 export default function OverviewHeader(): ReactElement {
   const tabStateRef = useRef<any>(null)
-  const navigate = useNavigate()
   const { pathname } = useLocation()
   const currentTab = DIRECTORY.find((tab) => pathname?.startsWith(tab.path))
 
@@ -36,11 +35,6 @@ export default function OverviewHeader(): ReactElement {
           </LinkTabWrap>
         ))}
       </TabList>
-      <Flex gap="medium">
-        <Button onClick={() => navigate('/create-cluster')}>
-          Create cluster
-        </Button>
-      </Flex>
     </Flex>
   )
 }

@@ -7,8 +7,10 @@ import Header from './Header'
 import Sidebar from './Sidebar'
 import Subheader from './Subheader'
 import WithApplicationUpdate from './WithApplicationUpdate'
+import { useTheme } from 'styled-components'
 
 function ApplicationLayout({ children }: any) {
+  const { colors } = useTheme()
   const isProduction = import.meta.env.MODE === 'production'
 
   return (
@@ -21,6 +23,7 @@ function ApplicationLayout({ children }: any) {
         overflow="hidden"
         flexDirection="column"
         flexGrow={1}
+        background={colors['fill-accent']}
       >
         {isProduction && (
           <WithApplicationUpdate>

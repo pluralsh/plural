@@ -1,46 +1,43 @@
-import { Button, Card, ClusterIcon, Flex } from '@pluralsh/design-system'
+import { Button, Card, Flex } from '@pluralsh/design-system'
 import { hasUnfinishedCreation } from 'components/create-cluster/CreateCluster'
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import styled, { useTheme } from 'styled-components'
+import { Link } from 'react-router-dom'
+import styled from 'styled-components'
 
+import { Body2P, Title2H1 } from 'components/utils/Typography'
+import ReactPlayer from 'react-player'
+import { ClustersHelpSection } from './ClustersHelpSection'
 import { useDeleteUnfinishedInstance } from './plural-cloud/DeleteInstance'
 
-export default function ClusterListEmptyState() {
-  const theme = useTheme()
-  const navigate = useNavigate()
-
+export function ClusterListEmptyState() {
   const [showUnfinished, setShowUnfinished] = useState(hasUnfinishedCreation())
   const { triggerDelete, loading } = useDeleteUnfinishedInstance({
     onClear: () => setShowUnfinished(false),
   })
 
   return (
-    <Card css={{ minWidth: 'fit-content' }}>
-      <Wrapper>
-        <ClusterIcon size={theme.spacing.xxxlarge} />
+    <GridWrapSC>
+      <CreateClusterCardSC>
         <Flex
           direction="column"
-          gap="xxsmall"
+          gap="small"
           textAlign="center"
-          marginTop={theme.spacing.medium}
         >
-          <span css={theme.partials.text.subtitle2}>
-            You don't have any clusters yet.
-          </span>
-          <span
-            css={{
-              ...theme.partials.text.body2,
-              color: theme.colors['text-light'],
-            }}
+          <Title2H1 css={{ fontWeight: 400 }}>
+            Create your first cluster
+          </Title2H1>
+          <Body2P
+            $color="text-light"
+            css={{ maxWidth: 450 }}
           >
             Once you create your first cluster, you will find an overview of its
             details here.
-          </span>
+          </Body2P>
         </Flex>
         <Button
-          css={{ maxWidth: 300, width: '100%' }}
-          onClick={() => navigate('/create-cluster')}
+          as={Link}
+          to="/create-cluster"
+          style={{ maxWidth: 300, width: '100%' }}
         >
           {showUnfinished ? 'Resume cluster creation' : 'Create cluster'}
         </Button>
@@ -54,17 +51,36 @@ export default function ClusterListEmptyState() {
             Cancel cluster creation
           </Button>
         )}
-      </Wrapper>
-    </Card>
+      </CreateClusterCardSC>
+      <Card css={{ overflow: 'clip', minWidth: 450 }}>
+        <ReactPlayer
+          url="https://www.youtube.com/watch?v=sEb_gflm-ME"
+          controls
+          width="100%"
+          height="100%"
+        />
+      </Card>
+      <div css={{ gridColumn: '1 / -1' }}>
+        <ClustersHelpSection />
+      </div>
+    </GridWrapSC>
   )
 }
 
-const Wrapper = styled.div(({ theme }) => ({
-  margin: 'auto',
+const GridWrapSC = styled.div(({ theme }) => ({
+  display: 'grid',
+  gridTemplateColumns: '1fr 1fr',
+  gridTemplateRows: 'auto',
+  gap: `${theme.spacing.xlarge}px ${theme.spacing.large}px`,
+}))
+
+const CreateClusterCardSC = styled(Card)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
+  justifyContent: 'center',
   alignItems: 'center',
-  maxWidth: '600px',
+  minWidth: 450,
+  background: theme.colors['fill-zero'],
   padding: `${theme.spacing.xxxlarge}px`,
   gap: `${theme.spacing.medium}px`,
 }))

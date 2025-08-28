@@ -67,6 +67,7 @@ const ColType = columnHelper.accessor(({ type }) => type, {
     const type = getValue()
     return (
       <Chip
+        css={{ whiteSpace: 'nowrap' }}
         severity={type === CombinedClusterType.PluralCloud ? 'info' : 'neutral'}
       >
         {type}

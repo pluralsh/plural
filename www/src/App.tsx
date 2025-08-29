@@ -1,44 +1,46 @@
-import 'react-toggle/style.css'
-import { Suspense, lazy } from 'react'
-import { Route, Routes } from 'react-router-dom'
 import { ApolloProvider } from '@apollo/client'
-import { IntercomProvider } from 'react-use-intercom'
-import { Grommet, ThemeType } from 'grommet'
+import { mergeDeep } from '@apollo/client/utilities'
+import { GrowthBook, GrowthBookProvider } from '@growthbook/growthbook-react'
 import {
   BreadcrumbsProvider,
   GlobalStyle,
-  honorableThemeDark,
-  honorableThemeLight,
-  styledThemeDark,
-  styledThemeLight,
   useThemeColorMode,
 } from '@pluralsh/design-system'
 import { MarkdocContextProvider } from '@pluralsh/design-system/dist/markdoc'
+import { Grommet, ThemeType } from 'grommet'
 import {
   CssBaseline,
   ThemeProvider as HonorableThemeProvider,
   mergeTheme,
 } from 'honorable'
+import mpRecipe from 'honorable-recipe-mp'
+import { Suspense, lazy } from 'react'
+import { Route, Routes } from 'react-router-dom'
+import 'react-toggle/style.css'
+import { IntercomProvider } from 'react-use-intercom'
 import styled, {
   StyleSheetManager,
   ThemeProvider as StyledThemeProvider,
 } from 'styled-components'
-import { mergeDeep } from '@apollo/client/utilities'
-import mpRecipe from 'honorable-recipe-mp'
-import { GrowthBook, GrowthBookProvider } from '@growthbook/growthbook-react'
 
 import { shouldForwardProp } from './utils/shouldForwardProp'
 
 import { PluralErrorBoundary } from './components/utils/PluralErrorBoundary'
 
-import { client } from './helpers/client'
-import { INTERCOM_APP_ID } from './constants'
-import { DEFAULT_THEME } from './theme'
-import { HistoryRouter, browserHistory } from './router'
-import { growthbook } from './helpers/growthbook'
+import {
+  polyfilledHonorableThemeDark,
+  polyfilledHonorableThemeLight,
+  polyfilledStyledThemeDark,
+  polyfilledStyledThemeLight,
+} from './styles'
 import { OverlayContextProvider } from './components/layout/Overlay'
-import NavContextProvider from './contexts/NavigationContext'
 import { CursorPositionProvider } from './components/utils/CursorPosition'
+import { INTERCOM_APP_ID } from './constants'
+import NavContextProvider from './contexts/NavigationContext'
+import { client } from './helpers/client'
+import { growthbook } from './helpers/growthbook'
+import { HistoryRouter, browserHistory } from './router'
+import { DEFAULT_THEME } from './theme'
 
 const Plural = lazy(() => import('./components/Plural'))
 const Invite = lazy(() => import('./components/Invite'))
@@ -105,7 +107,9 @@ function App() {
   const colorMode = useThemeColorMode()
 
   const honorableTheme = mergeTheme(
-    colorMode === 'light' ? honorableThemeLight : honorableThemeDark,
+    colorMode === 'light'
+      ? polyfilledHonorableThemeLight
+      : polyfilledHonorableThemeDark,
     {
       global: [
         // This provides the mp spacing props to honorable
@@ -114,7 +118,10 @@ function App() {
       ],
     }
   )
-  const styledTheme = colorMode === 'light' ? styledThemeLight : styledThemeDark
+  const styledTheme =
+    colorMode === 'light'
+      ? polyfilledStyledThemeLight
+      : polyfilledStyledThemeDark
   const mergedStyledTheme = mergeDeep(DEFAULT_THEME, styledTheme)
 
   const routes = (
@@ -182,6 +189,7 @@ function App() {
         <IntercomProvider appId={INTERCOM_APP_ID}>
           <StyleSheetManager shouldForwardProp={shouldForwardProp}>
             <HonorableThemeProvider theme={honorableTheme}>
+              {/* @ts-ignore - this will be fixed when we bump DS */}
               <StyledThemeProvider theme={mergedStyledTheme}>
                 <GrowthBookProvider
                   growthbook={growthbook as any as GrowthBook}

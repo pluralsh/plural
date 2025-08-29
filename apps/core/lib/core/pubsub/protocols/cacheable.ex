@@ -38,7 +38,8 @@ defimpl Core.PubSub.Cacheable, for: Core.PubSub.ClusterDependencyCreated do
   end
 end
 
-defimpl Core.PubSub.Cacheable, for: Core.PubSub.UserDeleted do
+
+defimpl Core.PubSub.Cacheable, for: [Core.PubSub.UserDeleted, Core.PubSub.UserCreated] do
   def cache(%{item: %{id: user_id}}), do: {:del, {:login, user_id}, nil}
 end
 

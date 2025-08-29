@@ -5,7 +5,7 @@ import { useMutation } from '@apollo/client'
 
 import subscriptionContext from '../../contexts/SubscriptionContext'
 
-import { Cluster } from '../../generated/graphql'
+import { ClusterFragment } from '../../generated/graphql'
 import { ClusterPicker } from '../utils/ClusterPicker'
 import { GqlError } from '../utils/Alert'
 
@@ -16,7 +16,7 @@ import UpgradeNeededModal from './UpgradeNeededModal'
 type ClusterDependencyModalProps = {
   open: boolean
   setOpen: Dispatch<boolean>
-  destination: Cluster
+  destination: ClusterFragment
 }
 
 export function ClusterDependencyModal({
@@ -25,7 +25,7 @@ export function ClusterDependencyModal({
   destination,
 }: ClusterDependencyModalProps) {
   const { isPaidPlan, isTrialPlan } = useContext(subscriptionContext)
-  const [source, setSource] = useState<Cluster | undefined>()
+  const [source, setSource] = useState<ClusterFragment | undefined>()
 
   const close = useCallback(() => {
     setOpen(false)
@@ -42,7 +42,7 @@ export function ClusterDependencyModal({
   )
 
   const filterSources = useCallback(
-    (s: Cluster) => {
+    (s: ClusterFragment) => {
       const d = destination
 
       return (

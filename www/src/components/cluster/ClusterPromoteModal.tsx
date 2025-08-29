@@ -4,7 +4,7 @@ import { Dispatch, useCallback, useContext, useState } from 'react'
 import isNil from 'lodash/isNil'
 import { useMutation } from '@apollo/client'
 
-import { Cluster } from '../../generated/graphql'
+import { ClusterFragment } from '../../generated/graphql'
 import { ClusterPicker } from '../utils/ClusterPicker'
 import { GqlError } from '../utils/Alert'
 import { ensureURLValidity } from '../../utils/url'
@@ -18,7 +18,7 @@ import ClustersContext from '../../contexts/ClustersContext'
 type ClusterPromoteModalProps = {
   open: boolean
   setOpen: Dispatch<boolean>
-  destination: Cluster
+  destination: ClusterFragment
 }
 
 export function ClusterPromoteModal({

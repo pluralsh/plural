@@ -53,19 +53,23 @@ export const statusToLabel = {
   [ConsoleInstanceStatus.StackDeleted]: 'Stack Deleted',
 }
 
-const ColInstance = columnHelper.accessor((instance) => instance.name, {
-  id: 'instance',
-  header: 'Instance',
-  enableSorting: true,
-  cell: ({ getValue }) => (
+export function InstanceDisplay({ name }: { name: string }) {
+  return (
     <CellWrap>
       <AppIcon
         size="xxsmall"
         icon={<ConsoleIcon />}
       />
-      {getValue()}
+      {name}
     </CellWrap>
-  ),
+  )
+}
+
+const ColInstance = columnHelper.accessor((instance) => instance.name, {
+  id: 'instance',
+  header: 'Instance',
+  enableSorting: true,
+  cell: ({ getValue }) => <InstanceDisplay name={getValue()} />,
 })
 
 export function StatusChip({ status }: { status: ConsoleInstanceStatus }) {

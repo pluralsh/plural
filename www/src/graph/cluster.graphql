@@ -24,10 +24,7 @@ fragment Cluster on Cluster {
     }
   }
   upgradeInfo {
-    installation {
-      ...Installation
-    }
-    count
+    ...UpgradeInfo
   }
   dependency {
     dependency {
@@ -36,6 +33,13 @@ fragment Cluster on Cluster {
       provider
     }
   }
+}
+
+fragment UpgradeInfo on UpgradeInfo {
+  installation {
+    ...Installation
+  }
+  count
 }
 
 query Clusters($first: Int = 100) {

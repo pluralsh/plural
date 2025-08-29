@@ -587,9 +587,7 @@ function OAuthOption({ url: { authorizeUrl, provider }, ...props }: any) {
         _hover={{ textDecoration: 'none' }}
         href={authorizeUrl}
         startIcon={
-          <Icon filter="grayscale(1)">
-            {createElement(icon, { size: 20, fullColor: true })}
-          </Icon>
+          <Icon>{createElement(icon, { size: 20, fullColor: true })}</Icon>
         }
         {...props}
       >

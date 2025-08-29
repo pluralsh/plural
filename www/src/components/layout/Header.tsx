@@ -11,8 +11,7 @@ const APP_ICON_LIGHT = '/header-logo-light.png'
 const APP_ICON_DARK = '/header-logo-dark.png'
 
 const HeaderSC = styled.div(({ theme }) => ({
-  backgroundColor:
-    theme.mode === 'light' ? theme.colors['fill-one'] : theme.colors.grey[850],
+  backgroundColor: theme.colors['fill-zero'],
   borderBottom: theme.borders.default,
 }))
 

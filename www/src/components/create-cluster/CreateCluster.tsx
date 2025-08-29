@@ -7,7 +7,6 @@ import {
   SendMessageIcon,
   Stepper,
 } from '@pluralsh/design-system'
-import { useNavigate } from 'react-router-dom'
 import styled, { useTheme } from 'styled-components'
 
 import { ReactElement, useMemo, useState } from 'react'
@@ -34,6 +33,7 @@ import {
   cloudSteps,
   localSteps,
 } from './CreateClusterWizard'
+import { Link } from 'react-router-dom'
 
 export const CUR_CREATE_CLUSTER_STEP_KEY = 'cur-create-cluster-step'
 export const CLOUD_OPTION_KEY = 'cloud-option'
@@ -43,7 +43,6 @@ const TTL_KEY = 'create-cluster-ttl'
 
 export function CreateCluster() {
   const theme = useTheme()
-  const navigate = useNavigate()
   const [curStep, setCurStep] = usePersistedState<CreateClusterStepKey>(
     CUR_CREATE_CLUSTER_STEP_KEY,
     CreateClusterStepKey.ChooseCloud,
@@ -129,10 +128,11 @@ export function CreateCluster() {
             width="100%"
           >
             <Button
-              css={{ flex: 1 }}
+              as={Link}
+              to="/overview"
               secondary
               startIcon={<ReturnIcon />}
-              onClick={() => navigate('/overview/clusters/plural-cloud')}
+              style={{ flex: 1 }}
             >
               Back home
             </Button>

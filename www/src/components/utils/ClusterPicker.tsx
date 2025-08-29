@@ -20,12 +20,19 @@ import {
 import ClustersContext from '../../contexts/ClustersContext'
 
 import { useCurrentUser } from '../../contexts/CurrentUserContext'
-import { Cluster, Maybe, Provider, UpgradeInfo } from '../../generated/graphql'
+import {
+  ClusterFragment,
+  Maybe,
+  Provider,
+  UpgradeInfoFragment,
+} from '../../generated/graphql'
 import ClusterHealth from '../overview/clusters/ClusterHealth'
 
 import { ProviderIcon } from './ProviderIcon'
 
-type ClusterPickerReadyChipProps = { upgradeInfo?: Maybe<UpgradeInfo>[] | null }
+type ClusterPickerReadyChipProps = {
+  upgradeInfo?: Maybe<UpgradeInfoFragment>[] | null
+}
 
 function ClusterPickerReadyChip({ upgradeInfo }: ClusterPickerReadyChipProps) {
   const ready = useMemo(() => isEmpty(upgradeInfo), [upgradeInfo])
@@ -42,8 +49,8 @@ function ClusterPickerReadyChip({ upgradeInfo }: ClusterPickerReadyChipProps) {
 }
 
 type ClusterPickerProps = {
-  cluster?: Cluster | null
-  setCluster?: Dispatch<Cluster | undefined>
+  cluster?: ClusterFragment | null
+  setCluster?: Dispatch<ClusterFragment | undefined>
   onChange?: (Cluster) => void
   filter?: (Cluster) => boolean
   heading?: string
@@ -94,8 +101,10 @@ export function ClusterPicker({
   )
 }
 
-type SelectBoxCluster = Pick<Cluster, 'id' | 'name'> &
-  Partial<Pick<Cluster, 'pingedAt' | 'provider' | 'upgradeInfo' | 'owner'>> & {
+type SelectBoxCluster = Pick<ClusterFragment, 'id' | 'name'> &
+  Partial<
+    Pick<ClusterFragment, 'pingedAt' | 'provider' | 'upgradeInfo' | 'owner'>
+  > & {
     icon?: ReactNode
   }
 
@@ -235,16 +244,16 @@ type CloudShellClusterPickerProps = Omit<
   'clusters'
 > & { showCliClusters?: boolean }
 
-export function clusterHasCloudShell(cluster: Cluster) {
+export function clusterHasCloudShell(cluster: ClusterFragment) {
   return !!cluster?.owner?.hasShell
 }
 
-export function userCanAdminCluster(cluster: Cluster, userId: string) {
+export function userCanAdminCluster(cluster: ClusterFragment, userId: string) {
   return cluster.owner?.id === userId || !!cluster.owner?.serviceAccount
 }
 
 export function clusterFilter(
-  cluster: Cluster,
+  cluster: ClusterFragment,
   currentUserId: string,
   { showCliClusters = false }
 ) {
@@ -269,7 +278,7 @@ export function CloudShellClusterPicker({
     () =>
       raw
         ? raw.filter((cl) => clusterFilter(cl, userId, { showCliClusters }))
-        : ([] as Cluster[]),
+        : ([] as ClusterFragment[]),
     [raw, showCliClusters, userId]
   )
 

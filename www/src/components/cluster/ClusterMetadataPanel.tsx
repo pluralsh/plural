@@ -1,10 +1,10 @@
 import { A } from 'honorable'
 import moment from 'moment'
 import { Tooltip } from '@pluralsh/design-system'
-import { Dispatch, ReactElement } from 'react'
+import { Dispatch } from 'react'
 import { Link } from 'react-router-dom'
 
-import { Cluster } from '../../generated/graphql'
+import { ClusterFragment } from '../../generated/graphql'
 import CopyButton from '../utils/CopyButton'
 import ClusterHealth from '../overview/clusters/ClusterHealth'
 import ClusterOwner from '../overview/clusters/ClusterOwner'
@@ -12,7 +12,7 @@ import { InfoPanel } from '../utils/InfoPanel'
 import Prop from '../utils/Prop'
 
 type ClusterMetadataPanelProps = {
-  cluster: Cluster
+  cluster: ClusterFragment
   open: boolean
   setOpen: Dispatch<boolean>
 }
@@ -21,7 +21,7 @@ export default function ClusterMetadataPanel({
   cluster,
   open,
   setOpen,
-}: ClusterMetadataPanelProps): ReactElement | null {
+}: ClusterMetadataPanelProps) {
   if (!open) return null
 
   return (

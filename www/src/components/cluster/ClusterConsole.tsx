@@ -1,32 +1,30 @@
-import { ReactElement } from 'react'
-
-import LoadingIndicator from '../utils/LoadingIndicator'
+import { ClusterFragment, useRepositoryQuery } from '../../generated/graphql'
 import { EmptyListMessage } from '../overview/clusters/misc'
-import { Cluster, useRepositoryQuery } from '../../generated/graphql'
+import LoadingIndicator from '../utils/LoadingIndicator'
 
-import { GqlError } from '../utils/Alert'
-import { useNavigate, useParams } from 'react-router-dom'
-import { useTheme } from 'styled-components'
 import {
-  IconFrame,
-  Flex,
+  ArrowTopRightIcon,
+  Button,
   Card,
   Chip,
+  Flex,
   GearTrainIcon,
-  Button,
-  ArrowTopRightIcon,
+  IconFrame,
 } from '@pluralsh/design-system'
-import { Body1BoldP } from '../utils/Typography'
-import { ensureURLValidity } from '../../utils/url'
+import { useNavigate, useParams } from 'react-router-dom'
+import { useTheme } from 'styled-components'
 import { ignoreEvent } from '../../utils/ignore-event'
+import { ensureURLValidity } from '../../utils/url'
+import { GqlError } from '../utils/Alert'
+import { Body1BoldP } from '../utils/Typography'
 
 const CONSOLE_APP_NAME = 'console'
 
-type ClusterAppsProps = { cluster: Cluster }
-
 export function ClusterConsole({
   cluster: { consoleUrl },
-}: ClusterAppsProps): ReactElement {
+}: {
+  cluster: ClusterFragment
+}) {
   const theme = useTheme()
   const navigate = useNavigate()
   const { clusterId } = useParams()

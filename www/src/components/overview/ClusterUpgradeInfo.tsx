@@ -1,16 +1,16 @@
-import { isEmpty } from 'lodash'
-import { Flex } from 'honorable'
 import { CaretRightIcon, Chip, IconFrame } from '@pluralsh/design-system'
+import { Flex } from 'honorable'
+import { isEmpty } from 'lodash'
 import { Link } from 'react-router-dom'
 
 import { useTheme } from 'styled-components'
 
-import { Maybe, UpgradeInfo } from '../../generated/graphql'
+import { Maybe, UpgradeInfoFragment } from '../../generated/graphql'
 import { getRepoIcon } from '../repository/misc'
 
 type ClusterUpgradeInfoProps = {
   clusterId?: Maybe<string>
-  upgradeInfo?: Maybe<Maybe<UpgradeInfo>[]>
+  upgradeInfo?: Maybe<Maybe<UpgradeInfoFragment>[]>
 }
 
 export function ClusterUpgradeInfo({

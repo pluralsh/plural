@@ -40,7 +40,7 @@ defmodule Core.Schema.Invite do
     |> foreign_key_constraint(:oidc_provider_id)
     |> foreign_key_constraint(:service_account_id)
     |> unique_constraint(:secure_id)
-    |> unique_constraint(:email)
+    |> unique_constraint(:email, message: "the user with this email has already been invited")
     |> validate_format(:email, @email_re)
     |> validate_required([:email, :account_id,  :secure_id])
   end

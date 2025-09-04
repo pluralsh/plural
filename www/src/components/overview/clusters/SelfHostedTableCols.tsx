@@ -11,11 +11,12 @@ import { A, Div } from 'honorable'
 import { Link } from 'react-router-dom'
 import styled, { useTheme } from 'styled-components'
 
-import { ClusterFragment, Source } from '../../../generated/graphql'
+import { Source } from '../../../generated/graphql'
 import { ProviderIcon } from '../../utils/ProviderIcon'
 
 import ClusterHealth from './ClusterHealth'
 import ClusterOwner from './ClusterOwner'
+import { sanitizeConsoleUrl } from './all/AllClustersTableCols'
 import { ClusterListElement } from './clusterListUtils'
 
 const clusterExists = (row: ClusterListElement): boolean =>
@@ -143,9 +144,10 @@ export const ColActions = columnHelper.accessor((row) => row.consoleUrl, {
             secondary
             startIcon={<ConsoleIcon color={theme.colors['icon-default']} />}
             as="a"
-            href={`${row.consoleUrl}`}
+            href={sanitizeConsoleUrl(row.consoleUrl)}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={(e) => e.stopPropagation()}
           >
             Go to Console
           </Button>

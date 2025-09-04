@@ -22,6 +22,7 @@ import { useTheme } from 'styled-components'
 
 import { CellCaption, CellWrap } from '../SelfHostedTableCols'
 import { Link } from 'react-router-dom'
+import { sanitizeConsoleUrl } from '../all/AllClustersTableCols'
 
 const columnHelper = createColumnHelper<ConsoleInstanceFragment>()
 
@@ -172,9 +173,10 @@ const ColActions = columnHelper.accessor((instance) => instance, {
           small
           startIcon={<ConsoleIcon color={theme.colors['icon-default']} />}
           as={Link}
-          to={`https://${instance.url}`}
+          to={sanitizeConsoleUrl(instance.url)}
           target="_blank"
           rel="noopener noreferrer"
+          onClick={(e) => e.stopPropagation()}
         >
           Go to Console
         </Button>

@@ -10,6 +10,7 @@ import {
 import styled, { CSSProp, useTheme } from 'styled-components'
 
 import { useCreateClusterContext } from '../CreateClusterWizard'
+import { sanitizeConsoleUrl } from 'components/overview/clusters/all/AllClustersTableCols'
 
 export function AuthenticationStep() {
   const theme = useTheme()
@@ -54,7 +55,7 @@ export function AuthenticationStep() {
             </span>
             <Button
               as="a"
-              href={`https://${consoleUrl}`}
+              href={sanitizeConsoleUrl(consoleUrl)}
               target="_blank"
               margin={`${theme.spacing.medium}px 0`}
               endIcon={<ArrowTopRightIcon />}

@@ -121,9 +121,10 @@ const ColActions = columnHelper.accessor((instance) => instance, {
           small
           startIcon={<ConsoleIcon color={theme.colors['icon-default']} />}
           as={Link}
-          to={`https://${instance.consoleUrl}`}
+          to={sanitizeConsoleUrl(instance.consoleUrl)}
           target="_blank"
           rel="noopener noreferrer"
+          onClick={(e) => e.stopPropagation()}
         >
           Go to Console
         </Button>
@@ -144,3 +145,6 @@ export const allClustersCols = [
   ColOwner,
   ColActions,
 ]
+
+export const sanitizeConsoleUrl = (url: Nullable<string>) =>
+  url ? `https://${url.replace(/^https?:\/\//, '')}` : ''

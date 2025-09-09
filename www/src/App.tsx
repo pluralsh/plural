@@ -1,6 +1,5 @@
 import { ApolloProvider } from '@apollo/client'
 import { mergeDeep } from '@apollo/client/utilities'
-import { GrowthBook, GrowthBookProvider } from '@growthbook/growthbook-react'
 import {
   BreadcrumbsProvider,
   GlobalStyle,
@@ -27,19 +26,18 @@ import { shouldForwardProp } from './utils/shouldForwardProp'
 
 import { PluralErrorBoundary } from './components/utils/PluralErrorBoundary'
 
+import { OverlayContextProvider } from './components/layout/Overlay'
+import { CursorPositionProvider } from './components/utils/CursorPosition'
+import { INTERCOM_APP_ID } from './constants'
+import NavContextProvider from './contexts/NavigationContext'
+import { client } from './helpers/client'
+import { HistoryRouter, browserHistory } from './router'
 import {
   polyfilledHonorableThemeDark,
   polyfilledHonorableThemeLight,
   polyfilledStyledThemeDark,
   polyfilledStyledThemeLight,
 } from './styles'
-import { OverlayContextProvider } from './components/layout/Overlay'
-import { CursorPositionProvider } from './components/utils/CursorPosition'
-import { INTERCOM_APP_ID } from './constants'
-import NavContextProvider from './contexts/NavigationContext'
-import { client } from './helpers/client'
-import { growthbook } from './helpers/growthbook'
-import { HistoryRouter, browserHistory } from './router'
 import { DEFAULT_THEME } from './theme'
 
 const Plural = lazy(() => import('./components/Plural'))
@@ -191,31 +189,27 @@ function App() {
             <HonorableThemeProvider theme={honorableTheme}>
               {/* @ts-ignore - this will be fixed when we bump DS */}
               <StyledThemeProvider theme={mergedStyledTheme}>
-                <GrowthBookProvider
-                  growthbook={growthbook as any as GrowthBook}
-                >
-                  <CursorPositionProvider>
-                    <MarkdocContextProvider value={{ variant: 'console' }}>
-                      <NavContextProvider>
-                        <OverlayContextProvider>
-                          <BreadcrumbsProvider>
-                            <CssBaseline />
-                            <GlobalStyle />
-                            <Grommet
-                              full
-                              theme={mergedStyledTheme as any as ThemeType}
-                              themeMode="dark"
-                            >
-                              <PluralErrorBoundary>
-                                <RootBoxSC>{routes}</RootBoxSC>
-                              </PluralErrorBoundary>
-                            </Grommet>
-                          </BreadcrumbsProvider>
-                        </OverlayContextProvider>
-                      </NavContextProvider>
-                    </MarkdocContextProvider>
-                  </CursorPositionProvider>
-                </GrowthBookProvider>
+                <CursorPositionProvider>
+                  <MarkdocContextProvider value={{ variant: 'console' }}>
+                    <NavContextProvider>
+                      <OverlayContextProvider>
+                        <BreadcrumbsProvider>
+                          <CssBaseline />
+                          <GlobalStyle />
+                          <Grommet
+                            full
+                            theme={mergedStyledTheme as any as ThemeType}
+                            themeMode="dark"
+                          >
+                            <PluralErrorBoundary>
+                              <RootBoxSC>{routes}</RootBoxSC>
+                            </PluralErrorBoundary>
+                          </Grommet>
+                        </BreadcrumbsProvider>
+                      </OverlayContextProvider>
+                    </NavContextProvider>
+                  </MarkdocContextProvider>
+                </CursorPositionProvider>
               </StyledThemeProvider>
             </HonorableThemeProvider>
           </StyleSheetManager>

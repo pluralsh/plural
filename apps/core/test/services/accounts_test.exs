@@ -199,6 +199,14 @@ defmodule Core.Services.AccountsTest do
 
       assert account.name == "updated"
     end
+
+    test "users cannot update domain mappings if emails are unconfirmed", %{user: user} do
+      admin = insert(:user, account: user.account, roles: %{admin: true})
+
+      {:error, _} = Accounts.update_account(%{
+        domain_mappings: [%{"domain" => "example.com"}]
+      }, admin)
+    end
   end
 
   describe "#create_group/2" do

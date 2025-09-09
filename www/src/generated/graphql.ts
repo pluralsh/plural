@@ -36,6 +36,7 @@ export type Account = {
   billingAddress?: Maybe<Address>;
   billingCustomerId?: Maybe<Scalars['String']['output']>;
   clusterCount?: Maybe<Scalars['String']['output']>;
+  consumerEmailDomains?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
   delinquentAt?: Maybe<Scalars['DateTime']['output']>;
   domainMappings?: Maybe<Array<Maybe<DomainMapping>>>;
   grandfatheredUntil?: Maybe<Scalars['DateTime']['output']>;

@@ -112,6 +112,16 @@ defmodule Core.Services.Accounts do
           do: Stripe.Customer.update(cid, stripe)
       %{db: db} -> {:ok, db}
     end)
+    |> add_operation(:domain_mappings, fn
+      %{db: %Account{domain_mappings: [_ | _] = mappings} = account} ->
+        email_domain = User.domain(user)
+        case {Enum.all?(mappings, fn %DomainMapping{domain: domain} -> domain == email_domain end), !!user.email_confirmed} do
+          {true, false} -> {:error, "you must confirm your email to modify domain mappings"}
+          {true, _} -> {:ok, account}
+          {_, _} -> {:error, "you cannot create a domain mapping that does not match your email domain"}
+        end
+      %{db: db} -> {:ok, db}
+    end)
     |> execute(extract: :db)
   end
 

@@ -94,6 +94,10 @@ defmodule GraphQl.Schema.Account do
     field :billing_address,      :address
     field :trialed,              :boolean
 
+    field :consumer_email_domains, list_of(:string), resolve: fn
+      _, _, _ -> {:ok, Core.Schema.DomainMapping.restricted()}
+    end
+
     field :icon, :string, resolve: fn
       account, _, _ -> {:ok, Core.Storage.url({account.icon, account}, :original)}
     end

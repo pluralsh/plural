@@ -46,7 +46,7 @@ defmodule Core.SchemaCase do
   end
 
   def setup_root_user(_) do
-    user = insert(:user)
+    user = insert(:user, email_confirmed: true)
     {:ok, %{user: user, account: account}} = Core.Services.Accounts.create_account(user)
     [user: %{user | account: account}, account: account]
   end

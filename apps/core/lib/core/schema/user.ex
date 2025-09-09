@@ -90,6 +90,13 @@ defmodule Core.Schema.User do
     timestamps()
   end
 
+  def domain(%__MODULE__{email: email}) do
+    case String.split(email, "@") do
+      [_, domain] -> domain
+      _ -> nil
+    end
+  end
+
   def mark_url_safe(), do: Process.put({__MODULE__, :url_safe}, true)
 
   def url_safe?(), do: !!Process.get({__MODULE__, :url_safe})

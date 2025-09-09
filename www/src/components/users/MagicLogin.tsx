@@ -1,3 +1,8 @@
+import { useApolloClient } from '@apollo/client'
+import { Divider, LoadingSpinner } from '@pluralsh/design-system'
+import { Box, Collapsible, Form, Text } from 'grommet'
+import { A, Button, Div, Flex, Icon } from 'honorable'
+import queryString from 'query-string'
 import {
   RefObject,
   createElement,
@@ -6,16 +11,11 @@ import {
   useRef,
   useState,
 } from 'react'
-import { Box, Collapsible, Form, Text } from 'grommet'
-import { Divider, LoadingSpinner } from '@pluralsh/design-system'
-import { useApolloClient } from '@apollo/client'
-import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
-import queryString from 'query-string'
-import { A, Button, Div, Flex, Icon } from 'honorable'
 import {
   GoogleReCaptchaProvider,
   useGoogleReCaptcha,
 } from 'react-google-recaptcha-v3'
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import styled, { useTheme } from 'styled-components'
 
 import {
@@ -31,13 +31,16 @@ import {
 import { WelcomeHeader } from '../utils/WelcomeHeader'
 
 import { fetchToken, setToken } from '../../helpers/authentication'
-import { Alert, AlertStatus, GqlError } from '../utils/Alert'
-import { PLURAL_MARK_WHITE } from '../constants'
 import { host } from '../../helpers/hostname'
-import { useHistory } from '../../router'
+import { PLURAL_MARK_WHITE } from '../constants'
+import { Alert, AlertStatus, GqlError } from '../utils/Alert'
 
+import { getLocalReturnUrl } from './utils'
 import { isValidEmail } from '../../utils/email'
 
+import { finishedDeviceLogin } from './DeviceLoginNotif'
+import { LabelledInput } from './LabelledInput'
+import { LOGIN_BREAKPOINT, LoginPortal } from './LoginPortal'
 import {
   METHOD_ICONS,
   saveChallenge,
@@ -45,9 +48,6 @@ import {
   wipeChallenge,
   wipeDeviceToken,
 } from './utils'
-import { finishedDeviceLogin } from './DeviceLoginNotif'
-import { LabelledInput } from './LabelledInput'
-import { LOGIN_BREAKPOINT, LoginPortal } from './LoginPortal'
 
 export function PasswordlessLogin() {
   const { token } = useParams()
@@ -120,7 +120,7 @@ export function handleOauthChallenge(client, challenge) {
 }
 
 function LoginPoller({ challenge, token, deviceToken }: any) {
-  const history = useHistory()
+  const navigate = useNavigate()
   const client = useApolloClient()
   const [success, setSuccess] = useState(false)
 
@@ -145,7 +145,7 @@ function LoginPoller({ challenge, token, deviceToken }: any) {
             if (challenge) {
               handleOauthChallenge(client, challenge)
             } else {
-              history.navigate('/')
+              navigate(getLocalReturnUrl())
             }
           }
         )
@@ -255,7 +255,6 @@ function LoginInternal() {
   const navigate = useNavigate()
   const [state, setState] = useState<LoginState>(State.Initial)
   const prevState = useRef<LoginState>(State.Initial)
-  const history = useHistory()
   const client = useApolloClient()
   const location = useLocation()
   const jwt = fetchToken()
@@ -312,7 +311,7 @@ function LoginInternal() {
         if (challenge) {
           handleOauthChallenge(client, challenge)
         } else {
-          history.navigate('/')
+          navigate(getLocalReturnUrl())
         }
       },
     })
@@ -392,7 +391,7 @@ function LoginInternal() {
       setRan(true)
       handleOauthChallenge(client, challenge)
     } else if (!deviceToken && !challenge && jwt) {
-      history.navigate('/')
+      navigate(getLocalReturnUrl())
     }
   }, [challenge, deviceToken, history, client, jwt, ran, setRan])
 

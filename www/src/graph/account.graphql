@@ -48,13 +48,20 @@ query GenerateLicenseKey {
   licenseKey
 }
 
+query DomainMappingInfo {
+  account {
+    domainMappings {
+      ...DomainMapping
+    }
+    consumerEmailDomains
+  }
+}
+
 mutation UpdateAccount($attributes: AccountAttributes!) {
   updateAccount(attributes: $attributes) {
     ...Account
     domainMappings {
-      id
-      domain
-      enableSso
+      ...DomainMapping
     }
   }
 }

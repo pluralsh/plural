@@ -1,8 +1,9 @@
 import { Flex, styledTheme } from '@pluralsh/design-system'
 
+import styled from 'styled-components'
 import { Footer, FooterBalancer } from './LoginFooter'
-import styled, { useTheme } from 'styled-components'
-import { themProviderPropTypes } from 'honorable'
+import { Suspense } from 'react'
+import LoadingIndicator from 'components/utils/LoadingIndicator'
 
 export const RIGHT_CONTENT_MAX_WIDTH = 512
 export const RIGHT_CONTENT_PAD = styledTheme.spacing.xxlarge
@@ -13,7 +14,6 @@ export const LOGIN_BREAKPOINT = `@media screen and (min-width: ${
 const HERO_IMAGE_URL = '/login-bg-img.webp'
 
 export function LoginPortal({ children }: any) {
-  const { colors } = useTheme()
   return (
     <WrapperSC>
       <Flex
@@ -32,7 +32,7 @@ export function LoginPortal({ children }: any) {
             width: '100%',
           }}
         >
-          {children}
+          <Suspense fallback={<LoadingIndicator />}>{children}</Suspense>
         </div>
         <Footer />
       </Flex>

@@ -74,6 +74,12 @@ fragment GroupMember on GroupMember {
   }
 }
 
+fragment DomainMapping on DomainMapping {
+  id
+  domain
+  enableSso
+}
+
 fragment Token on PersistedToken {
   id
   token
@@ -157,9 +163,7 @@ query Me {
         email
       }
       domainMappings {
-        id
-        domain
-        enableSso
+        ...DomainMapping
       }
     }
     publisher {

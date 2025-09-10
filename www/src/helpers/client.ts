@@ -12,7 +12,7 @@ import { apiHost } from './hostname'
 import customFetch from './uploadLink'
 import { clearLocalStorage } from './localStorage'
 import { fetchToken } from './authentication'
-import { getLoginUrlWithReturn } from 'components/users/utils'
+import { getLoginUrlWithReturn } from '../components/users/utils'
 
 const API_HOST = apiHost()
 const GQL_URL = `https://${API_HOST}/gql`

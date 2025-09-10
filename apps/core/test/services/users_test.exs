@@ -28,6 +28,26 @@ defmodule Core.Services.UsersTest do
 
       assert_receive {:event, %PubSub.UserCreated{item: ^user}}
     end
+
+    test "Users can be added to accounts with domain mappings" do
+      account = insert(:account)
+      insert(:domain_mapping, account: account, domain: "example.com")
+
+      {:ok, user} = Users.create_user(%{
+        name: "some user",
+        password: "superstrongpassword",
+        email: "something@example.com"
+      })
+
+      assert user.name == "some user"
+      assert user.email == "something@example.com"
+      assert user.password_hash
+      assert user.onboarding_checklist.status == :new
+      assert user.account_id == account.id
+      assert Timex.after?(user.email_confirm_by, Timex.now())
+
+      assert_receive {:event, %PubSub.UserCreated{item: ^user}}
+    end
   end
 
   describe "#create_publisher" do

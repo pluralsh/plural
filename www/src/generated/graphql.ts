@@ -36,6 +36,7 @@ export type Account = {
   billingAddress?: Maybe<Address>;
   billingCustomerId?: Maybe<Scalars['String']['output']>;
   clusterCount?: Maybe<Scalars['String']['output']>;
+  consumerEmailDomains?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
   delinquentAt?: Maybe<Scalars['DateTime']['output']>;
   domainMappings?: Maybe<Array<Maybe<DomainMapping>>>;
   grandfatheredUntil?: Maybe<Scalars['DateTime']['output']>;
@@ -5368,6 +5369,11 @@ export type GenerateLicenseKeyQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GenerateLicenseKeyQuery = { __typename?: 'RootQueryType', licenseKey?: string | null };
 
+export type ConsumerEmailDomainsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ConsumerEmailDomainsQuery = { __typename?: 'RootQueryType', account?: { __typename?: 'Account', consumerEmailDomains?: Array<string | null> | null } | null };
+
 export type UpdateAccountMutationVariables = Exact<{
   attributes: AccountAttributes;
 }>;
@@ -6272,6 +6278,8 @@ export type ImpersonationPolicyFragment = { __typename?: 'ImpersonationPolicy', 
 export type ImpersonationPolicyBindingFragment = { __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null };
 
 export type GroupMemberFragment = { __typename?: 'GroupMember', id: string, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null };
+
+export type DomainMappingFragment = { __typename?: 'DomainMapping', id: string, domain: string, enableSso?: boolean | null };
 
 export type TokenFragment = { __typename?: 'PersistedToken', id?: string | null, token?: string | null, insertedAt?: Date | null };
 
@@ -7935,6 +7943,13 @@ export const GroupMemberFragmentDoc = gql`
   }
 }
     ${UserFragmentDoc}`;
+export const DomainMappingFragmentDoc = gql`
+    fragment DomainMapping on DomainMapping {
+  id
+  domain
+  enableSso
+}
+    `;
 export const TokenFragmentDoc = gql`
     fragment Token on PersistedToken {
   id
@@ -8029,18 +8044,56 @@ export type GenerateLicenseKeyQueryHookResult = ReturnType<typeof useGenerateLic
 export type GenerateLicenseKeyLazyQueryHookResult = ReturnType<typeof useGenerateLicenseKeyLazyQuery>;
 export type GenerateLicenseKeySuspenseQueryHookResult = ReturnType<typeof useGenerateLicenseKeySuspenseQuery>;
 export type GenerateLicenseKeyQueryResult = Apollo.QueryResult<GenerateLicenseKeyQuery, GenerateLicenseKeyQueryVariables>;
+export const ConsumerEmailDomainsDocument = gql`
+    query ConsumerEmailDomains {
+  account {
+    consumerEmailDomains
+  }
+}
+    `;
+
+/**
+ * __useConsumerEmailDomainsQuery__
+ *
+ * To run a query within a React component, call `useConsumerEmailDomainsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useConsumerEmailDomainsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useConsumerEmailDomainsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useConsumerEmailDomainsQuery(baseOptions?: Apollo.QueryHookOptions<ConsumerEmailDomainsQuery, ConsumerEmailDomainsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ConsumerEmailDomainsQuery, ConsumerEmailDomainsQueryVariables>(ConsumerEmailDomainsDocument, options);
+      }
+export function useConsumerEmailDomainsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ConsumerEmailDomainsQuery, ConsumerEmailDomainsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ConsumerEmailDomainsQuery, ConsumerEmailDomainsQueryVariables>(ConsumerEmailDomainsDocument, options);
+        }
+export function useConsumerEmailDomainsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<ConsumerEmailDomainsQuery, ConsumerEmailDomainsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<ConsumerEmailDomainsQuery, ConsumerEmailDomainsQueryVariables>(ConsumerEmailDomainsDocument, options);
+        }
+export type ConsumerEmailDomainsQueryHookResult = ReturnType<typeof useConsumerEmailDomainsQuery>;
+export type ConsumerEmailDomainsLazyQueryHookResult = ReturnType<typeof useConsumerEmailDomainsLazyQuery>;
+export type ConsumerEmailDomainsSuspenseQueryHookResult = ReturnType<typeof useConsumerEmailDomainsSuspenseQuery>;
+export type ConsumerEmailDomainsQueryResult = Apollo.QueryResult<ConsumerEmailDomainsQuery, ConsumerEmailDomainsQueryVariables>;
 export const UpdateAccountDocument = gql`
     mutation UpdateAccount($attributes: AccountAttributes!) {
   updateAccount(attributes: $attributes) {
     ...Account
     domainMappings {
-      id
-      domain
-      enableSso
+      ...DomainMapping
     }
   }
 }
-    ${AccountFragmentDoc}`;
+    ${AccountFragmentDoc}
+${DomainMappingFragmentDoc}`;
 export type UpdateAccountMutationFn = Apollo.MutationFunction<UpdateAccountMutation, UpdateAccountMutationVariables>;
 
 /**
@@ -11861,9 +11914,7 @@ export const MeDocument = gql`
         email
       }
       domainMappings {
-        id
-        domain
-        enableSso
+        ...DomainMapping
       }
     }
     publisher {
@@ -11883,6 +11934,7 @@ export const MeDocument = gql`
 }
     ${UserFragmentDoc}
 ${AccountFragmentDoc}
+${DomainMappingFragmentDoc}
 ${PublisherFragmentDoc}
 ${RoleFragmentDoc}`;
 
@@ -12886,6 +12938,7 @@ export type UpdateVersionMutationOptions = Apollo.BaseMutationOptions<UpdateVers
 export const namedOperations = {
   Query: {
     GenerateLicenseKey: 'GenerateLicenseKey',
+    ConsumerEmailDomains: 'ConsumerEmailDomains',
     ListArtifacts: 'ListArtifacts',
     Audits: 'Audits',
     Logins: 'Logins',
@@ -13108,6 +13161,7 @@ export const namedOperations = {
     ImpersonationPolicy: 'ImpersonationPolicy',
     ImpersonationPolicyBinding: 'ImpersonationPolicyBinding',
     GroupMember: 'GroupMember',
+    DomainMapping: 'DomainMapping',
     Token: 'Token',
     TokenAudit: 'TokenAudit',
     Address: 'Address',

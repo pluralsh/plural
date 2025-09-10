@@ -12,6 +12,7 @@ import { apiHost } from './hostname'
 import customFetch from './uploadLink'
 import { clearLocalStorage } from './localStorage'
 import { fetchToken } from './authentication'
+import { getLoginUrlWithReturn } from '../components/users/utils'
 
 const API_HOST = apiHost()
 const GQL_URL = `https://${API_HOST}/gql`
@@ -45,7 +46,7 @@ export function buildClient(fetchToken) {
     if (networkError && networkError.statusCode === 401) {
       // remove cached token on 401 from the server
       clearLocalStorage()
-      window.location = '/login' as any as Location
+      window.location.href = getLoginUrlWithReturn()
     }
   })
 

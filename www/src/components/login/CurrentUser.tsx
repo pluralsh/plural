@@ -18,6 +18,7 @@ import BillingPlatformPlansProvider from '../account/billing/BillingPlatformPlan
 import BillingSubscriptionProvider from '../account/billing/BillingSubscriptionProvider'
 import { PLATFORM_PLANS_QUERY } from '../account/billing/queries'
 import LoadingIndicator from '../utils/LoadingIndicator'
+import { getLoginUrlWithReturn } from 'components/users/utils'
 
 export function handlePreviousUserClick({ jwt }: any) {
   setToken(jwt)
@@ -82,7 +83,7 @@ export function PluralProvider({ children }: any) {
   if (error || !data?.me?.id) {
     wipeToken()
 
-    return <Navigate to="/login" />
+    return <Navigate to={getLoginUrlWithReturn()} />
   }
 
   const { configuration } = data

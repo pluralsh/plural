@@ -12,11 +12,11 @@ import React, { ReactElement, createContext, useContext } from 'react'
 import { ConsoleInstanceType } from 'generated/graphql'
 
 import { AuthenticationStep } from './steps/AuthenticationStep'
+import { ChooseCloudStep } from './steps/ChooseCloudStep'
+import { ChooseHostingOptionStep } from './steps/ChooseHostingOptionStep'
 import { ConfigureCloudInstanceStep } from './steps/ConfigureCloudInstanceStep'
 import { DeployLocallyStep } from './steps/DeployLocallyStep'
-import { ChooseCloudStep } from './steps/ChooseCloudStep'
 import { InstallCliStep } from './steps/InstallCliStep'
-import { ChooseHostingOptionStep } from './steps/ChooseHostingOptionStep'
 
 export enum CreateClusterStepKey {
   ChooseCloud = 'choose-cloud',
@@ -42,8 +42,6 @@ export type CreateClusterContextType = {
   setHostingOption: (option: ConsoleInstanceType) => void
   curStep: CreateClusterStepKey
   setCurStep: (step: CreateClusterStepKey) => void
-  finishEnabled: boolean
-  setFinishEnabled: (enabled: boolean) => void
   continueBtn?: ReactElement
   setContinueBtn: (continueBtn?: ReactElement) => void
   consoleInstanceId: Nullable<string>

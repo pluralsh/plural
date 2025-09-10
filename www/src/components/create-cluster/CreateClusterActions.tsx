@@ -26,9 +26,9 @@ export function CreateClusterActions() {
     setCurStep,
     cloudOption,
     hostingOption,
-    finishEnabled,
     continueBtn,
     consoleInstanceId,
+    isCreatingInstance,
   } = useCreateClusterContext()
 
   const { isPaidPlan, isTrialPlan, isTrialExpired, isEnterprisePlan } =
@@ -103,7 +103,7 @@ export function CreateClusterActions() {
             )
           ) : (
             <Button
-              disabled={!finishEnabled}
+              disabled={isCreatingInstance}
               onClick={handleFinish}
             >
               Finish

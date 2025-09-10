@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useApolloClient, useMutation } from '@apollo/client'
-import { useLocation, useParams } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import qs from 'query-string'
 import { Box } from 'grommet'
 
@@ -13,8 +13,10 @@ import { handleOauthChallenge } from './MagicLogin'
 import { OAUTH_CALLBACK } from './queries'
 import { getChallenge, getDeviceToken } from './utils'
 import { finishedDeviceLogin } from './DeviceLoginNotif'
+import { getLocalReturnUrl } from './utils'
 
 export function OAuthCallback() {
+  const navigate = useNavigate()
   const location = useLocation()
   const client = useApolloClient()
   const { service } = useParams()
@@ -36,7 +38,7 @@ export function OAuthCallback() {
       if (challenge) {
         handleOauthChallenge(client, challenge)
       } else {
-        window.location.href = '/'
+        navigate(getLocalReturnUrl())
       }
     },
   })

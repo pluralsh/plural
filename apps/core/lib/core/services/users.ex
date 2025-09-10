@@ -6,6 +6,7 @@ defmodule Core.Services.Users do
   alias Core.Clients.ZeroSSL
   alias Core.PubSub
   alias Core.Schema.{
+    Account,
     PersistedToken,
     User,
     Publisher,
@@ -354,8 +355,15 @@ defmodule Core.Services.Users do
       |> Core.Repo.insert()
     end)
     |> add_operation(:user, fn %{pre: user} ->
-      with {:ok, %{user: user}} <- Accounts.create_account(Map.get(attrs, :account, %{}), user),
-        do: {:ok, user}
+      case Accounts.get_mapping_for_email(user.email) do
+        %DomainMapping{account: %Account{id: aid}} ->
+          user
+          |> Ecto.Changeset.change(%{account_id: aid})
+          |> Core.Repo.update()
+        _ ->
+          Accounts.create_account(Map.get(attrs, :account, %{}), user)
+          |> when_ok(& &1.user)
+      end
     end)
     |> execute(extract: :user)
     |> notify(:create)

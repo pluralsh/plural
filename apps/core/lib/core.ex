@@ -4,6 +4,12 @@ defmodule Core do
 
   @chars String.codepoints("abcdefghijklmnopqrstuvwxyz")
 
+  def priv_file!(filename) do
+    :code.priv_dir(:core)
+    |> Path.join(filename)
+    |> File.read!()
+  end
+
   def conf(key), do: Application.get_env(:core, key)
 
   def env(var, :int, default) do

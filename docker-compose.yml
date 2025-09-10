@@ -6,6 +6,10 @@ services:
     - 5432:5432
     environment:
       POSTGRES_PASSWORD: postgres
+    command:
+      - "postgres"
+      - "-c"
+      - "wal_level=logical"
     volumes:
     - database_data:/var/lib/postgresql/data
   cloud:

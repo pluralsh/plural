@@ -1,8 +1,6 @@
-import { useMutation } from '@apollo/client'
 import { Button, Flex, SendMessageIcon, Toast } from '@pluralsh/design-system'
-import { Box } from 'grommet'
 import { useCallback, useContext, useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 
 import { useTheme } from 'styled-components'
 
@@ -12,16 +10,24 @@ import { Alert, AlertStatus, GqlError } from '../utils/Alert'
 import LoadingIndicator from '../utils/LoadingIndicator'
 
 import { LoginPortal } from './LoginPortal'
-import { CREATE_RESET_TOKEN, REALIZE_TOKEN } from './queries'
-import { ResetTokenType } from './types'
+
+import {
+  ResetTokenType,
+  useCreateResetTokenMutation,
+  useRealizeResetTokenMutation,
+} from 'generated/graphql'
+
+export const FROM_EMAIL_CONFIRMATION_KEY = 'fromEmailConfirmation'
 
 export function EmailConfirmed() {
-  const { id } = useParams()
-  const [mutation, { data, error }] = useMutation(REALIZE_TOKEN, {
+  const { id = '' } = useParams()
+  const navigate = useNavigate()
+
+  const [mutation, { data, error }] = useRealizeResetTokenMutation({
     variables: { id, attributes: {} },
     onCompleted: () => {
       setTimeout(() => {
-        ;(window as Window).location = '/'
+        navigate(`/account/edit?${FROM_EMAIL_CONFIRMATION_KEY}=true`)
       }, 2000)
     },
   })
@@ -32,7 +38,8 @@ export function EmailConfirmed() {
 
   return (
     <LoginPortal>
-      <Box
+      <Flex
+        direction="column"
         gap="small"
         width="400px"
       >
@@ -50,7 +57,7 @@ export function EmailConfirmed() {
             error={error}
           />
         )}
-      </Box>
+      </Flex>
     </LoginPortal>
   )
 }
@@ -59,8 +66,8 @@ export function VerifyEmailConfirmed() {
   const theme = useTheme()
   const [open, setOpen] = useState(true)
   const me = useContext(CurrentUserContext)
-  const [mutation] = useMutation(CREATE_RESET_TOKEN, {
-    variables: { attributes: { email: me.email, type: ResetTokenType.EMAIL } },
+  const [mutation] = useCreateResetTokenMutation({
+    variables: { attributes: { email: me.email, type: ResetTokenType.Email } },
     onCompleted: () => setOpen(false),
   })
   const isCurrentlyOnboarding = useIsCurrentlyOnboarding()

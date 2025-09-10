@@ -2,20 +2,18 @@ import {
   ArrowTopRightIcon,
   Button,
   Callout,
-  Checkbox,
   Codeline,
   Flex,
   WrapWithIf,
 } from '@pluralsh/design-system'
-import styled, { CSSProp, useTheme } from 'styled-components'
+import styled, { useTheme } from 'styled-components'
 
-import { useCreateClusterContext } from '../CreateClusterWizard'
 import { sanitizeConsoleUrl } from 'components/overview/clusters/all/AllClustersTableCols'
+import { useCreateClusterContext } from '../CreateClusterWizard'
 
 export function AuthenticationStep() {
   const theme = useTheme()
-  const { consoleUrl, isCreatingInstance, finishEnabled, setFinishEnabled } =
-    useCreateClusterContext()
+  const { consoleUrl, isCreatingInstance } = useCreateClusterContext()
 
   return (
     <div css={{ position: 'relative' }}>
@@ -71,21 +69,6 @@ export function AuthenticationStep() {
           <Codeline css={{ background: theme.colors['fill-two'] }}>
             plural up --cloud
           </Codeline>
-          <Checkbox
-            small
-            checked={finishEnabled}
-            onChange={(e) => setFinishEnabled(e.target.checked)}
-            css={
-              {
-                '& .label': {
-                  userSelect: 'none',
-                },
-              } as CSSProp
-            }
-          >
-            I successfully authenticated my cloud instance locally.
-            <span css={{ color: theme.colors['text-danger'] }}>*</span>
-          </Checkbox>
         </Flex>
       </WrapWithIf>
     </div>

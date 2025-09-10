@@ -126,18 +126,6 @@ export const DELETE_CARD = gql`
   ${AccountFragment}
 `
 
-export const CREATE_RESET_TOKEN = gql`
-  mutation Reset($attributes: ResetTokenAttributes!) {
-    createResetToken(attributes: $attributes)
-  }
-`
-
-export const REALIZE_TOKEN = gql`
-  mutation Realize($id: ID!, $attributes: ResetTokenRealization!) {
-    realizeResetToken(id: $id, attributes: $attributes)
-  }
-`
-
 export const LIST_KEYS = gql`
   query Keys($cursor: String) {
     publicKeys(after: $cursor, first: 20) {

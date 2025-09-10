@@ -1,6 +1,6 @@
-import { Div, Flex, Form, Span } from 'honorable'
 import {
   Button,
+  Callout,
   Chip,
   ContentCard,
   FormField,
@@ -8,23 +8,33 @@ import {
   PageTitle,
   ValidatedInput,
 } from '@pluralsh/design-system'
-import { useContext, useMemo, useState } from 'react'
+import { Div, Flex, Form, Span } from 'honorable'
+import {
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useState,
+} from 'react'
 import { useTheme } from 'styled-components'
 
-import { useUpdateState } from '../../hooks/useUpdateState'
 import CurrentUserContext from '../../contexts/CurrentUserContext'
-import { notNil, notNilAnd } from '../../utils/ts-notNil'
-import SaveButton from '../utils/SaveButton'
-import { GqlError } from '../utils/Alert'
-import { DeleteIconButton } from '../utils/IconButtons'
-import { List, ListItem } from '../utils/List'
 import {
   Account,
   DomainMapping,
+  useConsumerEmailDomainsSuspenseQuery,
   useUpdateAccountMutation,
 } from '../../generated/graphql'
+import { useUpdateState } from '../../hooks/useUpdateState'
 import { removeTypename } from '../../utils/removeTypename'
+import { notNil, notNilAnd } from '../../utils/ts-notNil'
+import { GqlError } from '../utils/Alert'
+import { DeleteIconButton } from '../utils/IconButtons'
+import { List, ListItem } from '../utils/List'
+import SaveButton from '../utils/SaveButton'
 
+import { FROM_EMAIL_CONFIRMATION_KEY } from 'components/users/EmailConfirmation'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { Confirm } from '../utils/Confirm'
 
 type DomainMappingFuncProps = {
@@ -108,15 +118,20 @@ function toFormState(account: Pick<Account, 'name' | 'domainMappings'>) {
 }
 
 export function AccountAttributes() {
-  const { account } = useContext(CurrentUserContext)
+  const user = useContext(CurrentUserContext)
+  const canEdit = useCanEdit()
+  const navigate = useNavigate()
+  const [searchParams, setSearchParams] = useSearchParams()
+  const { data: consumerEmailData } = useConsumerEmailDomainsSuspenseQuery()
+  const [showDomainMappingCallout, setShowDomainMappingCallout] =
+    useState(false)
+  const curUserDomain = user.email.split('@')[1]
 
   const {
     state: formState,
     hasUpdates,
     update: updateFormState,
-  } = useUpdateState(toFormState(account))
-
-  const [domain, setDomain] = useState('')
+  } = useUpdateState(toFormState(user.account))
 
   const sortedDomainMappings = useMemo(
     () =>
@@ -128,6 +143,12 @@ export function AccountAttributes() {
             .localeCompare(`${m2?.domain} || ''`.toLowerCase())
         ),
     [formState.domainMappings]
+  )
+
+  const [domain, setDomain] = useState(
+    sortedDomainMappings?.some((m) => m?.domain === curUserDomain)
+      ? ''
+      : curUserDomain
   )
 
   const [mutation, { loading, error }] = useUpdateAccountMutation({
@@ -145,14 +166,14 @@ export function AccountAttributes() {
   const addDomain = (d: string) => {
     const newDomains = [
       { domain: d },
-      ...(account?.domainMappings?.map(removeTypename) || []),
+      ...(user.account?.domainMappings?.map(removeTypename) || []),
     ]
 
     mutation({ variables: { attributes: { domainMappings: newDomains } } })
   }
 
   const rmDomain = (d?: string) => {
-    const newDomains = (account?.domainMappings || [])
+    const newDomains = (user.account?.domainMappings || [])
       .filter(notNilAnd((mapping) => mapping?.domain !== d))
       .map(removeTypename)
 
@@ -164,6 +185,38 @@ export function AccountAttributes() {
     addDomain(domain)
     setDomain('')
   }
+
+  useLayoutEffect(() => {
+    // only run this logic if we're coming from email confirmation
+    if (!!user && searchParams.get(FROM_EMAIL_CONFIRMATION_KEY) === 'true') {
+      const consumerDomains =
+        consumerEmailData?.account?.consumerEmailDomains ?? []
+      // if user is on a consumer domain, on an already-mapped domain, or is not an admin, they should just land on the home page
+      if (
+        consumerDomains.includes(curUserDomain) ||
+        sortedDomainMappings.some(
+          (mapping) => mapping?.domain === curUserDomain
+        ) ||
+        !canEdit
+      ) {
+        navigate('/overview')
+      } else {
+        setSearchParams({})
+        setShowDomainMappingCallout(true)
+      }
+    }
+  }, [
+    user,
+    searchParams,
+    consumerEmailData,
+    curUserDomain,
+    sortedDomainMappings,
+    domain,
+    canEdit,
+    navigate,
+    setSearchParams,
+    setShowDomainMappingCallout,
+  ])
 
   return (
     <Form
@@ -184,7 +237,7 @@ export function AccountAttributes() {
           error={!!error}
         />
       </PageTitle>
-      <ContentCard overflowY={undefined}>
+      <ContentCard>
         <Flex
           flexDirection="column"
           gap="large"
@@ -202,6 +255,12 @@ export function AccountAttributes() {
               updateFormState({ name: value })
             }
           />
+          {showDomainMappingCallout && (
+            <Callout title="Configure domain mapping">
+              We see you're using a work email. Please add a domain mapping to
+              ensure all members of your organization can access your account.
+            </Callout>
+          )}
           <FormField
             label="Domain mappings"
             hint="Register email domains to automatically add users to your
@@ -253,4 +312,9 @@ export function AccountAttributes() {
       </ContentCard>
     </Form>
   )
+}
+
+function useCanEdit() {
+  const user = useContext(CurrentUserContext)
+  return !!user.roles?.admin || user.id === user.account?.rootUser?.id
 }

@@ -1,11 +1,8 @@
-import { Callout, Checkbox, Codeline, Flex } from '@pluralsh/design-system'
-import { CSSProp, useTheme } from 'styled-components'
-
-import { useCreateClusterContext } from '../CreateClusterWizard'
+import { Callout, Codeline, Flex } from '@pluralsh/design-system'
+import { useTheme } from 'styled-components'
 
 export function DeployLocallyStep() {
   const theme = useTheme()
-  const { finishEnabled, setFinishEnabled } = useCreateClusterContext()
 
   return (
     <Flex
@@ -41,21 +38,6 @@ export function DeployLocallyStep() {
           </a>
         </span>
       </Flex>
-      <Checkbox
-        small
-        checked={finishEnabled}
-        onChange={(e) => setFinishEnabled(e.target.checked)}
-        css={
-          {
-            '& .label': {
-              userSelect: 'none',
-            },
-          } as CSSProp
-        }
-      >
-        The `plural up` command has finished running.
-        <span css={{ color: theme.colors['text-danger'] }}>*</span>
-      </Checkbox>
     </Flex>
   )
 }

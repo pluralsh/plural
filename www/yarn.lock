@@ -3452,26 +3452,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@growthbook/growthbook-react@npm:0.17.0":
-  version: 0.17.0
-  resolution: "@growthbook/growthbook-react@npm:0.17.0"
-  dependencies:
-    "@growthbook/growthbook": ^0.27.0
-  peerDependencies:
-    react: ^16.8.0-0 || ^17.0.0-0 || ^18.0.0-0
-  checksum: 6dae04e8fe545ba3a21a54195b9437d2ad3d5219a378f5fdcbaf23982143b1289d459314d121d9b8352d2e7642146b3c60b312883a71560f9b144bb754405f06
-  languageName: node
-  linkType: hard
-
-"@growthbook/growthbook@npm:0.27.0, @growthbook/growthbook@npm:^0.27.0":
-  version: 0.27.0
-  resolution: "@growthbook/growthbook@npm:0.27.0"
-  dependencies:
-    dom-mutator: ^0.5.0
-  checksum: a2eedf19f520530d663112b050d29d755fd2b2042edf492a6aabf5e7341fad9d3bef2ef526315b63523542ce0ef525dde252a88a25284bee4e8409c774559576
-  languageName: node
-  linkType: hard
-
 "@hapi/hoek@npm:^9.0.0, @hapi/hoek@npm:^9.3.0":
   version: 9.3.0
   resolution: "@hapi/hoek@npm:9.3.0"
@@ -9882,13 +9862,6 @@ __metadata:
     "@babel/runtime": ^7.8.7
     csstype: ^3.0.2
   checksum: 863ba9e086f7093df3376b43e74ce4422571d404fc9828bf2c56140963d5edf0e56160f9b2f3bb61b282c07f8fc8134f023c98fd684bddcb12daf7b0f14d951c
-  languageName: node
-  linkType: hard
-
-"dom-mutator@npm:^0.5.0":
-  version: 0.5.0
-  resolution: "dom-mutator@npm:0.5.0"
-  checksum: 4092ce53c8c97937359d395887fadf055f886998d49d3441a39a88e3cbda05b14142ca81c60a32ef45c910651e756c42ec0c768d3778ba9501076242d8abf875
   languageName: node
   linkType: hard
 
@@ -20410,8 +20383,6 @@ __metadata:
     "@graphql-codegen/typescript": 4.0.1
     "@graphql-codegen/typescript-operations": 4.0.1
     "@graphql-codegen/typescript-react-apollo": 4.1.0
-    "@growthbook/growthbook": 0.27.0
-    "@growthbook/growthbook-react": 0.17.0
     "@nivo/core": 0.88.0
     "@nivo/geo": 0.88.0
     "@nivo/line": 0.88.0

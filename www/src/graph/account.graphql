@@ -48,11 +48,8 @@ query GenerateLicenseKey {
   licenseKey
 }
 
-query DomainMappingInfo {
+query ConsumerEmailDomains {
   account {
-    domainMappings {
-      ...DomainMapping
-    }
     consumerEmailDomains
   }
 }

@@ -5369,10 +5369,10 @@ export type GenerateLicenseKeyQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GenerateLicenseKeyQuery = { __typename?: 'RootQueryType', licenseKey?: string | null };
 
-export type DomainMappingInfoQueryVariables = Exact<{ [key: string]: never; }>;
+export type ConsumerEmailDomainsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type DomainMappingInfoQuery = { __typename?: 'RootQueryType', account?: { __typename?: 'Account', consumerEmailDomains?: Array<string | null> | null, domainMappings?: Array<{ __typename?: 'DomainMapping', id: string, domain: string, enableSso?: boolean | null } | null> | null } | null };
+export type ConsumerEmailDomainsQuery = { __typename?: 'RootQueryType', account?: { __typename?: 'Account', consumerEmailDomains?: Array<string | null> | null } | null };
 
 export type UpdateAccountMutationVariables = Exact<{
   attributes: AccountAttributes;
@@ -8044,48 +8044,45 @@ export type GenerateLicenseKeyQueryHookResult = ReturnType<typeof useGenerateLic
 export type GenerateLicenseKeyLazyQueryHookResult = ReturnType<typeof useGenerateLicenseKeyLazyQuery>;
 export type GenerateLicenseKeySuspenseQueryHookResult = ReturnType<typeof useGenerateLicenseKeySuspenseQuery>;
 export type GenerateLicenseKeyQueryResult = Apollo.QueryResult<GenerateLicenseKeyQuery, GenerateLicenseKeyQueryVariables>;
-export const DomainMappingInfoDocument = gql`
-    query DomainMappingInfo {
+export const ConsumerEmailDomainsDocument = gql`
+    query ConsumerEmailDomains {
   account {
-    domainMappings {
-      ...DomainMapping
-    }
     consumerEmailDomains
   }
 }
-    ${DomainMappingFragmentDoc}`;
+    `;
 
 /**
- * __useDomainMappingInfoQuery__
+ * __useConsumerEmailDomainsQuery__
  *
- * To run a query within a React component, call `useDomainMappingInfoQuery` and pass it any options that fit your needs.
- * When your component renders, `useDomainMappingInfoQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useConsumerEmailDomainsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useConsumerEmailDomainsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useDomainMappingInfoQuery({
+ * const { data, loading, error } = useConsumerEmailDomainsQuery({
  *   variables: {
  *   },
  * });
  */
-export function useDomainMappingInfoQuery(baseOptions?: Apollo.QueryHookOptions<DomainMappingInfoQuery, DomainMappingInfoQueryVariables>) {
+export function useConsumerEmailDomainsQuery(baseOptions?: Apollo.QueryHookOptions<ConsumerEmailDomainsQuery, ConsumerEmailDomainsQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<DomainMappingInfoQuery, DomainMappingInfoQueryVariables>(DomainMappingInfoDocument, options);
+        return Apollo.useQuery<ConsumerEmailDomainsQuery, ConsumerEmailDomainsQueryVariables>(ConsumerEmailDomainsDocument, options);
       }
-export function useDomainMappingInfoLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<DomainMappingInfoQuery, DomainMappingInfoQueryVariables>) {
+export function useConsumerEmailDomainsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ConsumerEmailDomainsQuery, ConsumerEmailDomainsQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<DomainMappingInfoQuery, DomainMappingInfoQueryVariables>(DomainMappingInfoDocument, options);
+          return Apollo.useLazyQuery<ConsumerEmailDomainsQuery, ConsumerEmailDomainsQueryVariables>(ConsumerEmailDomainsDocument, options);
         }
-export function useDomainMappingInfoSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<DomainMappingInfoQuery, DomainMappingInfoQueryVariables>) {
+export function useConsumerEmailDomainsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<ConsumerEmailDomainsQuery, ConsumerEmailDomainsQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<DomainMappingInfoQuery, DomainMappingInfoQueryVariables>(DomainMappingInfoDocument, options);
+          return Apollo.useSuspenseQuery<ConsumerEmailDomainsQuery, ConsumerEmailDomainsQueryVariables>(ConsumerEmailDomainsDocument, options);
         }
-export type DomainMappingInfoQueryHookResult = ReturnType<typeof useDomainMappingInfoQuery>;
-export type DomainMappingInfoLazyQueryHookResult = ReturnType<typeof useDomainMappingInfoLazyQuery>;
-export type DomainMappingInfoSuspenseQueryHookResult = ReturnType<typeof useDomainMappingInfoSuspenseQuery>;
-export type DomainMappingInfoQueryResult = Apollo.QueryResult<DomainMappingInfoQuery, DomainMappingInfoQueryVariables>;
+export type ConsumerEmailDomainsQueryHookResult = ReturnType<typeof useConsumerEmailDomainsQuery>;
+export type ConsumerEmailDomainsLazyQueryHookResult = ReturnType<typeof useConsumerEmailDomainsLazyQuery>;
+export type ConsumerEmailDomainsSuspenseQueryHookResult = ReturnType<typeof useConsumerEmailDomainsSuspenseQuery>;
+export type ConsumerEmailDomainsQueryResult = Apollo.QueryResult<ConsumerEmailDomainsQuery, ConsumerEmailDomainsQueryVariables>;
 export const UpdateAccountDocument = gql`
     mutation UpdateAccount($attributes: AccountAttributes!) {
   updateAccount(attributes: $attributes) {
@@ -12941,7 +12938,7 @@ export type UpdateVersionMutationOptions = Apollo.BaseMutationOptions<UpdateVers
 export const namedOperations = {
   Query: {
     GenerateLicenseKey: 'GenerateLicenseKey',
-    DomainMappingInfo: 'DomainMappingInfo',
+    ConsumerEmailDomains: 'ConsumerEmailDomains',
     ListArtifacts: 'ListArtifacts',
     Audits: 'Audits',
     Logins: 'Logins',

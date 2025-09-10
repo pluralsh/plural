@@ -8,7 +8,7 @@ export const obscure = (token) => token.substring(0, 9) + 'x'.repeat(15)
 
 const CHALLENGE_KEY = 'oauth-challenge'
 const DEVICE_TOKEN_KEY = 'device-token'
-const RETURN_TO_KEY = `return-to`
+export const RETURN_TO_KEY = `return-to`
 
 export const saveChallenge = (challenge) =>
   localStorage.setItem(CHALLENGE_KEY, challenge)

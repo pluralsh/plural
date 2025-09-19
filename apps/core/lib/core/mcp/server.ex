@@ -11,7 +11,8 @@ defmodule Core.MCP.Server do
     SetupTrial,
     ListPlans,
     ModifyProPlan,
-    AddDomainMapping
+    AddDomainMapping,
+    DeleteUser
   }
 
   @tools [
@@ -25,7 +26,8 @@ defmodule Core.MCP.Server do
     SetupTrial,
     ListPlans,
     ModifyProPlan,
-    AddDomainMapping
+    AddDomainMapping,
+    DeleteUser
   ]
   @by_name Map.new(@tools, & {&1.name(), &1})
 

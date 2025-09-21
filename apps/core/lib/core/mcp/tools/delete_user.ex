@@ -1,6 +1,5 @@
 defmodule Core.MCP.Tools.DeleteUser do
   @behaviour Core.MCP.Tool
-  import Core.MCP.Tools.Utils
   alias Core.Services.Accounts
 
   def name(), do: "delete_user"
@@ -11,7 +10,7 @@ defmodule Core.MCP.Tools.DeleteUser do
     type: "object",
     required: ["email"],
     properties: %{
-      account_id: %{
+      email: %{
         type: "string",
         description: "The email of the user you want to delete"
       }

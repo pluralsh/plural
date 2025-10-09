@@ -30,18 +30,22 @@ defmodule Core.Services.Metrics do
     offset    = Keyword.get(opts, :offset, @default_offset)
     precision = Keyword.get(opts, :precision, @default_precision)
 
-    Docker.repo_query(offset, precision)
-    |> Influx.query(params: %{repository: repo})
-    |> response()
+    with {:ok, _} <- validate_intervals([offset, precision]) do
+      Docker.repo_query(offset, precision)
+      |> Influx.query(params: %{repository: repo})
+      |> response()
+    end
   end
 
   def query_docker_pulls_for_tag(repo, tag, opts \\ []) do
     offset    = Keyword.get(opts, :offset, @default_offset)
     precision = Keyword.get(opts, :precision, @default_precision)
 
-    Docker.tag_query(offset, precision)
-    |> Influx.query(params: %{repository: repo, tag: tag})
-    |> response()
+    with {:ok, _} <- validate_intervals([offset, precision]) do
+      Docker.tag_query(offset, precision)
+      |> Influx.query(params: %{repository: repo, tag: tag})
+      |> response()
+    end
   end
 
   def response(%{results: [%{series: series} | _]}) do
@@ -79,4 +83,13 @@ defmodule Core.Services.Metrics do
   end
 
   defp parse_value([time, val]), do: %{time: Timex.parse!(time, "{ISO:Extended}"), value: val}
+
+  defp valid_interval?(interval), do: String.match?(interval, ~r/^[0-9]+[smhd]$/)
+
+  defp validate_intervals(intervals) do
+    case Enum.find(intervals, &!valid_interval?(&1)) do
+      interval when is_binary(interval) -> {:error, "Invalid interval format: #{interval}"}
+      _ -> {:ok, intervals}
+    end
+  end
 end

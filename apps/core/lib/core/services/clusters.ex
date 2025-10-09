@@ -99,7 +99,7 @@ defmodule Core.Services.Clusters do
   Saves a usage record for a given cluster
   """
   @spec save_usage(map, Cluster.t) :: {:ok, ClusterUsageHistory.t} | error
-  def save_usage(attrs, %Cluster{id: id, account_id: account_id}) do
+  def save_usage(%{} = attrs, %Cluster{id: id, account_id: account_id}) do
     start_transaction()
     |> add_operation(:usage, fn _ ->
       %ClusterUsageHistory{cluster_id: id, account_id: account_id}
@@ -115,6 +115,7 @@ defmodule Core.Services.Clusters do
     end)
     |> execute(extract: :usage)
   end
+  def save_usage(nil, %Cluster{id: id, account_id: account_id}), do: {:ok, nil}
 
   @doc """
   Transfers ownership of a cluster to a new user.  This has three main components:
@@ -161,15 +162,15 @@ defmodule Core.Services.Clusters do
   Pings a cluster and saves usage.  Also meters the ingest if applicable
   """
   @spec ping_cluster(%{cluster: map, usage: map}, User.t) :: cluster_resp
-  def ping_cluster(%{cluster: %{provider: p, name: n} = cluster, usage: usage}, %User{} = user) do
+  def ping_cluster(%{cluster: %{provider: p, name: n} = cluster} = attrs, %User{} = user) do
     start_transaction()
     |> add_operation(:cluster, fn _ ->
       Map.put(cluster, :pinged_at, DateTime.utc_now())
       |> upsert_cluster(p, n, user)
     end)
-    |> add_operation(:usage, fn %{cluster: cluster} -> save_usage(usage, cluster) end)
+    |> add_operation(:usage, fn %{cluster: cluster} -> save_usage(attrs[:usage], cluster) end)
     |> add_operation(:meter, fn _ ->
-      case usage do
+      case attrs[:usage] do
         %{bytes_ingested: bytes} when is_integer(bytes) and bytes > 0 ->
           Logger.info("Deferring ingest metering for #{bytes} bytes for user #{user.email}")
           Core.Services.Payments.defer_ingest(user, bytes)

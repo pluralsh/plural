@@ -752,7 +752,7 @@ input ClusterPingAttributes {
   cluster: ClusterAttributes!
 
   "the usage of the cluster"
-  usage: ClusterUsageAttributes!
+  usage: ClusterUsageAttributes
 }
 
 input ClusterUsageAttributes {

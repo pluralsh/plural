@@ -531,7 +531,7 @@ export type ClusterPingAttributes = {
   /** the cluster to ping */
   cluster: ClusterAttributes;
   /** the usage of the cluster */
-  usage: ClusterUsageAttributes;
+  usage?: InputMaybe<ClusterUsageAttributes>;
 };
 
 export type ClusterUsageAttributes = {

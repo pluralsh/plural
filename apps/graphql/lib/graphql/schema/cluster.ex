@@ -19,7 +19,7 @@ defmodule GraphQl.Schema.Cluster do
 
   input_object :cluster_ping_attributes do
     field :cluster, non_null(:cluster_attributes), description: "the cluster to ping"
-    field :usage, non_null(:cluster_usage_attributes), description: "the usage of the cluster"
+    field :usage, :cluster_usage_attributes, description: "the usage of the cluster"
   end
 
   input_object :cluster_usage_attributes do

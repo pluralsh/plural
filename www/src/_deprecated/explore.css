@@ -1,7 +1,0 @@
-.category-header .hoverable {
-  opacity: 0;
-}
-
-.category-header:hover .hoverable {
-  opacity: 1 !important;
-}

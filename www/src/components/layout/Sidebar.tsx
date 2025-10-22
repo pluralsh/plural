@@ -75,11 +75,6 @@ const MENU_ITEMS: MenuItem[] = [
     path: '/account/billing',
     pathRegexp: /^\/account\/billing(\/.*)?$/,
   },
-  // {
-  //   text: 'Roadmap',
-  //   icon: <CompassIcon />,
-  //   path: '/roadmap',
-  // },
 ]
 
 function isActiveMenuItem(

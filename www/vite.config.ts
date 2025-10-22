@@ -41,13 +41,5 @@ export default mergeConfig(
       outDir: 'build',
       sourcemap: process.env.NODE_ENV !== 'production', // Seems to cause JavaScript heap out of memory errors on build
     },
-    resolve: {
-      alias: {
-        process: 'process/browser',
-        stream: 'stream-browserify',
-        zlib: 'browserify-zlib',
-        util: 'util',
-      },
-    },
   })
 )

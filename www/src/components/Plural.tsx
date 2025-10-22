@@ -20,16 +20,6 @@ const OAuthCallback = lazy(() => import('./shell/OAuthCallback'))
 const Publisher = lazy(() => import('./publisher/Publisher'))
 const Stack = lazy(() => import('./stack/Stack'))
 const StackApps = lazy(() => import('./stack/StackApps'))
-const Roadmap = lazy(() => import('./roadmap/Roadmap'))
-const RoadmapRoadmap = lazy(() => import('./roadmap/RoadmapRoadmap'))
-const RoadmapChangelog = lazy(() => import('./roadmap/RoadmapChangelog'))
-const RoadmapApplicationRequests = lazy(
-  () => import('./roadmap/RoadmapApplicationRequests')
-)
-const RoadmapFeatureRequests = lazy(
-  () => import('./roadmap/RoadmapFeatureRequests')
-)
-const RoadmapFeedback = lazy(() => import('./roadmap/RoadmapFeedback'))
 const BillingLayout = lazy(() => import('./account/billing/BillingLayout'))
 const BillingManagePlan = lazy(
   () => import('./account/billing/BillingManagePlan')
@@ -718,32 +708,6 @@ export function PluralInner() {
                     element={<AppDocs />}
                   />
                 </Route>
-              </Route>
-              {/* --- ROADMAP --- */}
-              <Route
-                path="/roadmap/*"
-                element={<Roadmap />}
-              >
-                <Route
-                  index
-                  element={<RoadmapRoadmap />}
-                />
-                <Route
-                  path="changelog"
-                  element={<RoadmapChangelog />}
-                />
-                <Route
-                  path="application-requests"
-                  element={<RoadmapApplicationRequests />}
-                />
-                <Route
-                  path="feature-requests"
-                  element={<RoadmapFeatureRequests />}
-                />
-                <Route
-                  path="feedback"
-                  element={<RoadmapFeedback />}
-                />
               </Route>
               <Route
                 path="/github/setup"

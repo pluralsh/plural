@@ -129,6 +129,7 @@ export const ColActions = columnHelper.accessor((row) => row.consoleUrl, {
       <ActionsWrap>
         {!row.owner?.hasShell && row.accessible && (
           <Button
+            small
             secondary
             startIcon={<TerminalIcon color={theme.colors['icon-default']} />}
             as="a"
@@ -141,6 +142,7 @@ export const ColActions = columnHelper.accessor((row) => row.consoleUrl, {
         )}
         {row.consoleUrl && (
           <Button
+            small
             secondary
             startIcon={<ConsoleIcon color={theme.colors['icon-default']} />}
             as="a"

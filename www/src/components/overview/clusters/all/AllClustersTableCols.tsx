@@ -115,7 +115,11 @@ const ColActions = columnHelper.accessor((instance) => instance, {
     const instance = getValue()
 
     return (
-      <Flex gap="small" justify="flex-end" width="100%">
+      <Flex
+        gap="small"
+        justify="flex-end"
+        width="100%"
+      >
         {(instance.type === CombinedClusterType.SelfHosted ||
           instance.status === ConsoleInstanceStatus.Provisioned) && (
           <Button

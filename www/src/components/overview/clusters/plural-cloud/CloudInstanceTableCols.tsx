@@ -167,19 +167,21 @@ const ColActions = columnHelper.accessor((instance) => instance, {
     const instance = getValue()
 
     return (
-      <Flex gap="small">
-        <Button
-          secondary
-          small
-          startIcon={<ConsoleIcon color={theme.colors['icon-default']} />}
-          as={Link}
-          to={sanitizeConsoleUrl(instance.url)}
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={(e) => e.stopPropagation()}
-        >
-          Go to Console
-        </Button>
+      <Flex gap="small" justify="flex-end" width="100%">
+        {instance.status === ConsoleInstanceStatus.Provisioned && (
+          <Button
+            secondary
+            small
+            startIcon={<ConsoleIcon />}
+            as={Link}
+            to={sanitizeConsoleUrl(instance.url)}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e) => e.stopPropagation()}
+          >
+            Go to Console
+          </Button>
+        )}
         <IconFrame
           clickable
           tooltip="View instance details"

@@ -154,7 +154,6 @@ query Me {
     loginMethod
     hasInstallations
     hasShell
-    intercomId
     account {
       ...Account
       rootUser {

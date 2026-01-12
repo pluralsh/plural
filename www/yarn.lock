@@ -9870,6 +9870,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"es-set-tostringtag@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "es-set-tostringtag@npm:2.1.0"
+  dependencies:
+    es-errors: ^1.3.0
+    get-intrinsic: ^1.2.6
+    has-tostringtag: ^1.0.2
+    hasown: ^2.0.2
+  checksum: 789f35de4be3dc8d11fdcb91bc26af4ae3e6d602caa93299a8c45cf05d36cc5081454ae2a6d3afa09cceca214b76c046e4f8151e092e6fc7feeb5efb9e794fc6
+  languageName: node
+  linkType: hard
+
 "es-shim-unscopables@npm:^1.0.2":
   version: 1.0.2
   resolution: "es-shim-unscopables@npm:1.0.2"
@@ -11129,13 +11141,15 @@ __metadata:
   linkType: hard
 
 "form-data@npm:^4.0.0":
-  version: 4.0.1
-  resolution: "form-data@npm:4.0.1"
+  version: 4.0.4
+  resolution: "form-data@npm:4.0.4"
   dependencies:
     asynckit: ^0.4.0
     combined-stream: ^1.0.8
+    es-set-tostringtag: ^2.1.0
+    hasown: ^2.0.2
     mime-types: ^2.1.12
-  checksum: ccee458cd5baf234d6b57f349fe9cc5f9a2ea8fd1af5ecda501a18fd1572a6dd3bf08a49f00568afd995b6a65af34cb8dec083cf9d582c4e621836499498dd84
+  checksum: 9b7788836df9fa5a6999e0c02515b001946b2a868cfe53f026c69e2c537a2ff9fbfb8e9d2b678744628f3dc7a2d6e14e4e45dfaf68aa6239727f0bdb8ce0abf2
   languageName: node
   linkType: hard
 
@@ -15924,16 +15938,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-use-intercom@npm:5.1.4":
-  version: 5.1.4
-  resolution: "react-use-intercom@npm:5.1.4"
-  peerDependencies:
-    react: ">=16.8.0"
-    react-dom: ">=16.8.0"
-  checksum: fdf17fbb2e7fa01035e05f3c868070c3a3ab93416dfecb9d002a6450eef98727c4df110d0d2d32bde59088f2056c340cfd03202397b92f7c1d7fd5d7c3ec15d5
-  languageName: node
-  linkType: hard
-
 "react-use-measure@npm:2.1.1":
   version: 2.1.1
   resolution: "react-use-measure@npm:2.1.1"
@@ -19826,7 +19830,6 @@ __metadata:
     react-spinners: 0.13.8
     react-toggle: 4.1.3
     react-transition-group: 4.4.5
-    react-use-intercom: 5.1.4
     react-virtualized-auto-sizer: 1.0.20
     react-window: 1.8.9
     react-window-reversed: 1.4.1

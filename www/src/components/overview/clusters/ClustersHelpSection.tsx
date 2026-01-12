@@ -7,12 +7,9 @@ import {
   SendMessageIcon,
 } from '@pluralsh/design-system'
 import { ReactElement } from 'react'
-import { useIntercom } from 'react-use-intercom'
 import styled from 'styled-components'
 
 export function ClustersHelpSection(): ReactElement {
-  const { show } = useIntercom()
-
   return (
     <ResourcesCard>
       <div className="header">Helpful resources</div>
@@ -21,7 +18,7 @@ export function ClustersHelpSection(): ReactElement {
           secondary
           startIcon={<DocumentIcon />}
           forwardedAs="a"
-          href="https://docs.plural.sh/getting-started/"
+          href="https://docs.plural.sh/getting-started/first-steps"
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -36,13 +33,6 @@ export function ClustersHelpSection(): ReactElement {
           rel="noopener noreferrer"
         >
           Contact sales
-        </ResourcesButton>
-        <ResourcesButton
-          secondary
-          startIcon={<LifePreserverIcon />}
-          onClick={() => show()}
-        >
-          Chat on Intercom
         </ResourcesButton>
       </Flex>
     </ResourcesCard>

@@ -60,7 +60,7 @@ export function getProviderIconUrl(
 
 export function ProviderIcon({
   provider,
-  width,
+  width = 16,
 }: {
   provider: string
   width: number

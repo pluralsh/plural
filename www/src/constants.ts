@@ -9,5 +9,3 @@ export enum LocalStorageKeys {
   BrowserHistory = 'browser-history',
   BillingMigrationModalOpen = 'billing-migration-modal-open',
 }
-
-export const INTERCOM_APP_ID = 'p127zb9y' as const

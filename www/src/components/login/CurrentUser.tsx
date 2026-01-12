@@ -1,7 +1,6 @@
 import { useQuery } from '@apollo/client'
 import { useEffect } from 'react'
 import { Navigate, useLocation } from 'react-router-dom'
-import { useIntercom } from 'react-use-intercom'
 
 import { ConsoleInstancesContextProvider } from '../../contexts/ConsoleInstancesContext'
 
@@ -58,20 +57,7 @@ export function PluralProvider({ children }: any) {
     pollInterval: 60_000,
   })
 
-  const { boot, update } = useIntercom()
-
   useNotificationSubscription()
-
-  useEffect(() => {
-    if (!data?.me) return
-    const { me } = data
-
-    boot({ name: me.name, email: me.email, userId: me.intercomId || me.id })
-  }, [data, boot])
-
-  useEffect(() => {
-    if (data && data.me) update()
-  }, [location, data, update])
 
   if (
     (!data && loading) ||

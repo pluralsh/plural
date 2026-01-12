@@ -60,10 +60,7 @@
         padding-right: 24px;
       }
       .header-logo {
-        width: 249px;
-        height: 40px;
-        margin-left: auto;
-        margin-right: auto;
+        height: 48px;
       }
       .company-info {
         font-family: monospace;
@@ -118,12 +115,14 @@
       }
     </style>
   </head>
-  <body bgcolor="#171A21" style="background-color: #171A21">
-    <div class="email-full-container" bgcolor="#171A21" style="background-color: #171A21">
+  <body style="background-color: #171A21">
+    <div class="email-full-container" style="background-color: #171A21">
     <div class="email-container margin-horizontal-auto">
       <div class="margin-horizontal-auto">
         <div class="flex margin-horizontal-auto fit-content">
-          <img alt="Plural app" src="https://app.plural.sh/plural-email-header@2x.png" width="249" height="40" class="header-logo" />
+          <a href="https://plural.sh" target="_blank">
+            <img alt="Plural" src="https://app.plural.sh/plural-email-header@2x.png" class="header-logo" />
+          </a>
         </div>
       </div>
       <div class="content-container margin-horizontal-auto">
@@ -133,9 +132,9 @@
       </div>
       <div class="margin-horizontal-auto fit-content">
         <div class="company-info margin-horizontal-auto text-align-center fit-content">
-          <div>© Plural 2022</div>
-          <div>19 W 24th St FL 3</div>
-          <div>New York, NY 10010</div>
+          <div>© Plural 2025</div>
+          <div>1460 Broadway Fl 11</div>
+          <div>New York, NY 10036</div>
         </div>
         <div class="margin-horizontal-auto flex fit-content">
           <a href="https://github.com/pluralsh/plural" target="_blank">

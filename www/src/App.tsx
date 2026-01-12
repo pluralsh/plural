@@ -16,7 +16,6 @@ import mpRecipe from 'honorable-recipe-mp'
 import { Suspense, lazy } from 'react'
 import { Route, Routes } from 'react-router-dom'
 import 'react-toggle/style.css'
-import { IntercomProvider } from 'react-use-intercom'
 import styled, {
   StyleSheetManager,
   ThemeProvider as StyledThemeProvider,
@@ -28,7 +27,6 @@ import { PluralErrorBoundary } from './components/utils/PluralErrorBoundary'
 
 import { OverlayContextProvider } from './components/layout/Overlay'
 import { CursorPositionProvider } from './components/utils/CursorPosition'
-import { INTERCOM_APP_ID } from './constants'
 import NavContextProvider from './contexts/NavigationContext'
 import { client } from './helpers/client'
 import { HistoryRouter, browserHistory } from './router'
@@ -184,36 +182,34 @@ function App() {
   return (
     <Suspense>
       <ApolloProvider client={client}>
-        <IntercomProvider appId={INTERCOM_APP_ID}>
-          <StyleSheetManager shouldForwardProp={shouldForwardProp}>
-            <HonorableThemeProvider theme={honorableTheme}>
-              {/* @ts-ignore - this will be fixed when we bump DS */}
-              <StyledThemeProvider theme={mergedStyledTheme}>
-                <CursorPositionProvider>
-                  <MarkdocContextProvider value={{ variant: 'console' }}>
-                    <NavContextProvider>
-                      <OverlayContextProvider>
-                        <BreadcrumbsProvider>
-                          <CssBaseline />
-                          <GlobalStyle />
-                          <Grommet
-                            full
-                            theme={mergedStyledTheme as any as ThemeType}
-                            themeMode="dark"
-                          >
-                            <PluralErrorBoundary>
-                              <RootBoxSC>{routes}</RootBoxSC>
-                            </PluralErrorBoundary>
-                          </Grommet>
-                        </BreadcrumbsProvider>
-                      </OverlayContextProvider>
-                    </NavContextProvider>
-                  </MarkdocContextProvider>
-                </CursorPositionProvider>
-              </StyledThemeProvider>
-            </HonorableThemeProvider>
-          </StyleSheetManager>
-        </IntercomProvider>
+        <StyleSheetManager shouldForwardProp={shouldForwardProp}>
+          <HonorableThemeProvider theme={honorableTheme}>
+            {/* @ts-ignore - this will be fixed when we bump DS */}
+            <StyledThemeProvider theme={mergedStyledTheme}>
+              <CursorPositionProvider>
+                <MarkdocContextProvider value={{ variant: 'console' }}>
+                  <NavContextProvider>
+                    <OverlayContextProvider>
+                      <BreadcrumbsProvider>
+                        <CssBaseline />
+                        <GlobalStyle />
+                        <Grommet
+                          full
+                          theme={mergedStyledTheme as any as ThemeType}
+                          themeMode="dark"
+                        >
+                          <PluralErrorBoundary>
+                            <RootBoxSC>{routes}</RootBoxSC>
+                          </PluralErrorBoundary>
+                        </Grommet>
+                      </BreadcrumbsProvider>
+                    </OverlayContextProvider>
+                  </NavContextProvider>
+                </MarkdocContextProvider>
+              </CursorPositionProvider>
+            </StyledThemeProvider>
+          </HonorableThemeProvider>
+        </StyleSheetManager>
       </ApolloProvider>
     </Suspense>
   )

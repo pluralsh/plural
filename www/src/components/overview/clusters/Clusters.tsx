@@ -16,8 +16,6 @@ import styled, { useTheme } from 'styled-components'
 
 import { ToastSeverity } from '@pluralsh/design-system/dist/components/Toast'
 
-import { useIntercom } from 'react-use-intercom'
-
 import ClustersContext from '../../../contexts/ClustersContext'
 
 import OverviewHeader from '../OverviewHeader'
@@ -25,7 +23,7 @@ import OverviewHeader from '../OverviewHeader'
 import CurrentUserContext from 'contexts/CurrentUserContext'
 
 import { StackedText } from 'components/utils/StackedText'
-import { Body2P, CaptionP } from 'components/utils/Typography'
+import { Body2P } from 'components/utils/Typography'
 import { ConsoleInstanceFragment } from 'generated/graphql'
 import {
   CombinedClusterT,
@@ -192,7 +190,6 @@ function ContactSupportToast({
   onClose: () => void
 }) {
   const theme = useTheme()
-  const intercom = useIntercom()
 
   return (
     <Toast
@@ -220,7 +217,15 @@ function ContactSupportToast({
           If you had trouble completing the steps to create a cluster, reach out
           to us for support.
         </span>
-        <Button onClick={intercom.show}>Contact team</Button>
+        <Button
+          as={Link}
+          target="_blank"
+          rel="noopener noreferrer"
+          to="https://www.plural.sh/contact"
+          style={{ textDecoration: 'none', color: theme.colors.text }}
+        >
+          Contact team
+        </Button>
       </Flex>
     </Toast>
   )

@@ -92,10 +92,7 @@ export function CreateCluster() {
       consoleUrl: data?.consoleInstance?.url,
       isCreatingInstance:
         !!consoleInstanceId &&
-        !(
-          data?.consoleInstance?.console?.pingedAt &&
-          data.consoleInstance.status === ConsoleInstanceStatus.Provisioned
-        ),
+        data?.consoleInstance?.status !== ConsoleInstanceStatus.Provisioned,
     }),
     [
       curStep,

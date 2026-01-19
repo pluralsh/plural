@@ -94,7 +94,7 @@ export function ConfigureCloudInstanceStep() {
           to deploy. It will run in the background as you proceed.
         </Callout>
         <FormFieldSC
-          label="Cluster name"
+          label="Instance name"
           hint={
             showNameError && (
               <ValidationHintSC>{nameErrorMessage}</ValidationHintSC>
@@ -102,7 +102,7 @@ export function ConfigureCloudInstanceStep() {
           }
         >
           <Input
-            placeholder="Enter cluster name"
+            placeholder="Enter instance name"
             borderColor={
               name === '' || isNameValid
                 ? undefined
@@ -112,7 +112,7 @@ export function ConfigureCloudInstanceStep() {
             onChange={(e) => setName(e.target.value.trim())}
           />
         </FormFieldSC>
-        <FormFieldSC label="Cluster size">
+        <FormFieldSC label="Instance size">
           <Select
             selectedKey={size}
             onSelectionChange={(size) => setSize(size as ConsoleSize)}
@@ -131,11 +131,11 @@ export function ConfigureCloudInstanceStep() {
       <Confirm
         open={confirm}
         error={error}
-        title={`Create cluster`}
-        text={`Would you like to proceed with cluster creation?`}
+        title="Create cloud instance"
+        text="Would you like to proceed with cloud instance creation?"
         submit={() => mutation()}
         close={() => setConfirm(false)}
-        label="Create cluster"
+        label="Create cloud instance"
         loading={loading}
       />
     </>

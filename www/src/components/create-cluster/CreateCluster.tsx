@@ -166,7 +166,7 @@ export function CreateCluster() {
         </SidebarWrapperSC>
         <ContentWrapperSC>
           <ContentHeaderSC>
-            <span css={theme.partials.text.title2}>Create Cluster</span>
+            <span css={theme.partials.text.title2}>Create Plural instance</span>
             <Button
               secondary
               startIcon={<SendMessageIcon />}

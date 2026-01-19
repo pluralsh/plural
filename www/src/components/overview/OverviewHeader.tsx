@@ -7,7 +7,7 @@ import { LinkTabWrap } from '../utils/Tabs'
 
 const DIRECTORY = [
   { path: '/overview/clusters/all', label: 'All' },
-  { path: '/overview/clusters/self-hosted', label: 'Self-hosted clusters' },
+  { path: '/overview/clusters/self-hosted', label: 'Self-hosted instances' },
   { path: '/overview/clusters/plural-cloud', label: 'Plural cloud instances' },
 ]
 

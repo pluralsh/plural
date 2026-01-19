@@ -24,7 +24,7 @@ export function SelfHostedClusters() {
     <Table
       data={selfHostedClusters}
       columns={columns}
-      emptyStateProps={{ message: 'No self-hosted clusters found' }}
+      emptyStateProps={{ message: 'No self-hosted instances found' }}
       onRowClick={(_, { original }: Row<ClusterListElement>) =>
         original.accessible && navigate(`/clusters/${original.id}`)
       }

@@ -47,13 +47,13 @@ type MenuItem = {
 
 const MENU_ITEMS: MenuItem[] = [
   {
-    text: 'Clusters',
+    text: 'Management planes',
     icon: <ClusterIcon />,
     path: '/overview',
     pathRegexp: /^\/(overview|clusters|apps)/,
   },
   {
-    text: 'Cloud Shell',
+    text: 'Cloud shell',
     icon: <TerminalIcon />,
     path: '/shell',
     pathRegexp: /^\/(shell|oauth\/callback\/.+\/shell)/,

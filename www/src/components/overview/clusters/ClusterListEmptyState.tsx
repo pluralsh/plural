@@ -24,13 +24,13 @@ export function ClusterListEmptyState() {
           textAlign="center"
         >
           <Title2H1 css={{ fontWeight: 400 }}>
-            Create your first cluster
+            Create your first Plural instance
           </Title2H1>
           <Body2P
             $color="text-light"
             css={{ maxWidth: 450 }}
           >
-            Once you create your first cluster, you will find an overview of its
+            Once you create your first management plane, you will find an overview of its
             details here.
           </Body2P>
         </Flex>
@@ -39,7 +39,7 @@ export function ClusterListEmptyState() {
           to="/create-cluster"
           style={{ maxWidth: 300, width: '100%' }}
         >
-          {showUnfinished ? 'Resume cluster creation' : 'Create cluster'}
+          {showUnfinished ? 'Resume instance creation' : 'Create new Plural instance'}
         </Button>
         {showUnfinished && (
           <Button
@@ -48,7 +48,7 @@ export function ClusterListEmptyState() {
             css={{ maxWidth: 300, width: '100%' }}
             onClick={triggerDelete}
           >
-            Cancel cluster creation
+            Cancel instance creation
           </Button>
         )}
       </CreateClusterCardSC>

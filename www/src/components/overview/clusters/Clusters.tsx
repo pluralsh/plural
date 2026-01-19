@@ -115,7 +115,7 @@ export function Clusters(): ReactElement | null {
             first="Welcome to Plural"
             firstPartialType="title2"
             firstColor="text"
-            second="To get started with Plural, create your first management cluster."
+            second="To get started with Plural, create your first management plane."
             secondPartialType="body2"
             gap="small"
             css={{ '& *': { fontWeight: 400, fontFamily: 'Inter' } }}
@@ -126,7 +126,7 @@ export function Clusters(): ReactElement | null {
               as={Link}
               to="/create-cluster"
             >
-              Create cluster
+              Create new Plural instance
             </Button>
           )}
         </Flex>

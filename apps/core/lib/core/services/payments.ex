@@ -212,8 +212,9 @@ defmodule Core.Services.Payments do
     end
   end
 
-  def finalize_checkout(%Stripe.Checkout.Session{customer: cus_id, subscription: sub_id}, %User{} = user) when is_binary(cus_id) and is_binary(sub_id) do
-    %{account: account} = Repo.preload(user, [:account])
+  def finalize_checkout(%Stripe.Checkout.Session{customer: cus_id, subscription: sub_id}, %User{} = user)
+      when is_binary(cus_id) and is_binary(sub_id) do
+    %{account: account} = Repo.preload(user, [account: :subscription])
     start_transaction()
     |> add_operation(:account, fn _ ->
       account
@@ -222,9 +223,16 @@ defmodule Core.Services.Payments do
     end)
     |> add_operation(:subscription, fn _ ->
       plan = pro_plan!()
-      %PlatformSubscription{account_id: account.id}
-      |> PlatformSubscription.changeset(%{external_id: sub_id, plan_id: plan.id, billing_version: 1})
-      |> Core.Repo.insert()
+      case account.subscription do
+        %PlatformSubscription{} = sub -> sub
+        nil -> %PlatformSubscription{account_id: account.id}
+      end
+      |> PlatformSubscription.changeset(%{
+        external_id: sub_id,
+        plan_id: plan.id,
+        billing_version: 1
+      })
+      |> Core.Repo.insert_or_update()
     end)
     |> execute(extract: :subscription)
   end

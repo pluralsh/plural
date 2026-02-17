@@ -1080,6 +1080,27 @@ defmodule Core.Services.PaymentsTest do
 
       assert account.billing_customer_id == "cus_id"
     end
+
+    test "it will finalize even if a subscription exists" do
+      account = insert(:account)
+      user = insert(:user, account: account)
+      insert(:platform_subscription, account: account)
+      plan = pro_plan()
+      expect(Stripe.Checkout.Session, :retrieve, fn "session_id" ->
+        {:ok, %Stripe.Checkout.Session{customer: "cus_id", subscription: "sub_id"}}
+      end)
+
+      {:ok, subscription} = Payments.finalize_checkout("session_id", user)
+
+      assert subscription.account_id == account.id
+      assert subscription.external_id == "sub_id"
+      assert subscription.plan_id == plan.id
+      assert subscription.billing_version == 1
+
+      %{account: account} = Repo.preload(subscription, [:account])
+
+      assert account.billing_customer_id == "cus_id"
+    end
   end
 
   describe "#backfill_subscription/3" do

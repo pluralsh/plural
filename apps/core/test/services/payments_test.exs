@@ -1081,4 +1081,21 @@ defmodule Core.Services.PaymentsTest do
       assert account.billing_customer_id == "cus_id"
     end
   end
+
+  describe "#backfill_subscription/3" do
+    test "it will backfill a subscription for a user" do
+      account = insert(:account)
+      user = insert(:user, account: account)
+      plan = pro_plan()
+
+      {:ok, subscription} = Payments.backfill_subscription(user.email, "cus_id", "sub_id")
+
+      assert subscription.account_id == account.id
+      assert subscription.external_id == "sub_id"
+      assert subscription.plan_id == plan.id
+      assert subscription.billing_version == 1
+
+      assert refetch(account).billing_customer_id == "cus_id"
+    end
+  end
 end

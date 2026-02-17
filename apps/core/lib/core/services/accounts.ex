@@ -18,6 +18,8 @@ defmodule Core.Services.Accounts do
     RoleBinding,
     ImpersonationPolicyBinding,
     DnsAccessPolicyBinding,
+    PlatformPlan,
+    PlatformSubscription,
   }
 
   @type error :: {:error, term}
@@ -304,6 +306,12 @@ defmodule Core.Services.Accounts do
         _ -> {:ok, nil}
       end
     end)
+    |> add_operation(:limit, fn _ ->
+      case users_exceeded?(user) do
+        true -> {:error, "your account has reached the maximum number of users for its plan, please upgrade your plan"}
+        _ -> {:ok, user}
+      end
+    end)
     |> add_operation(:invite, fn %{check: user_id} ->
       %Invite{account_id: aid, user_id: user_id}
       |> Invite.changeset(attributes)
@@ -320,6 +328,29 @@ defmodule Core.Services.Accounts do
     end)
     |> execute(extract: :invite)
     |> notify(:create, user)
+  end
+
+  @doc """
+  Determines if a user's account has exceeded the maximum number of users for its plan
+  """
+  @spec users_exceeded?(User.t | Account.t) :: boolean
+  def users_exceeded?(%User{} = user) do
+    Repo.preload(user, [account: [subscription: :plan]])
+    |> Map.get(:account)
+    |> users_exceeded?()
+  end
+
+  def users_exceeded?(%Account{} = account) do
+    case Repo.preload(account, [subscription: :plan]) do
+      %Account{subscription: %PlatformSubscription{plan: %PlatformPlan{maximum_users: max}}} when is_integer(max) ->
+        account_users(account) >= max
+      _ -> false
+    end
+  end
+
+  def account_users(%Account{id: aid}) do
+    User.for_account(aid)
+    |> Repo.aggregate(:count, :id)
   end
 
   def delete_invite(id, %User{} = user) do

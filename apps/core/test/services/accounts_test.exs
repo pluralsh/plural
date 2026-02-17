@@ -369,6 +369,12 @@ defmodule Core.Services.AccountsTest do
       }, user)
     end
 
+    test "you cannot invite users if your account has reached the maximum number of users for its plan", %{user: user, account: account} do
+      plan = insert(:platform_plan, maximum_users: 1)
+      insert(:platform_subscription, account: account, plan: plan)
+      {:error, _} = Accounts.create_invite(%{email: "some@example.com"}, user)
+    end
+
     test "it will not accept invalid emails", %{user: user} do
       {:error, _} = Accounts.create_invite(%{email: "invalidemail"}, user)
     end

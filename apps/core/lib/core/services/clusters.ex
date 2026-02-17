@@ -115,7 +115,7 @@ defmodule Core.Services.Clusters do
     end)
     |> execute(extract: :usage)
   end
-  def save_usage(nil, %Cluster{id: id, account_id: account_id}), do: {:ok, nil}
+  def save_usage(nil, %Cluster{}), do: {:ok, nil}
 
   @doc """
   Transfers ownership of a cluster to a new user.  This has three main components:

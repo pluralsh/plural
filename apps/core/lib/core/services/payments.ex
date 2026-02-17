@@ -3,7 +3,7 @@ defmodule Core.Services.Payments do
   import Core.Policies.Payments
 
   alias Core.PubSub
-  alias Core.Services.{Repositories, Accounts, Clusters}
+  alias Core.Services.{Repositories, Accounts, Clusters, Users}
   alias Core.Schema.{
     Publisher,
     Account,
@@ -202,27 +202,68 @@ defmodule Core.Services.Payments do
   @doc """
   Records a new subscription for a user after a successful Stripe checkout
   """
-  @spec finalize_checkout(binary, User.t) :: platform_sub_resp
-  def finalize_checkout(session_id, %User{} = user) do
+  @spec finalize_checkout(binary | Stripe.Checkout.Session.t, User.t) :: platform_sub_resp
+  def finalize_checkout(session_id, %User{} = user) when is_binary(session_id) do
+    case Stripe.Checkout.Session.retrieve(session_id) do
+      {:ok, %Stripe.Checkout.Session{customer: cus_id, subscription: sub_id} = session} when is_binary(cus_id) and is_binary(sub_id) ->
+        finalize_checkout(session, user)
+      {:ok, %Stripe.Checkout.Session{}} -> {:error, "Stripe checkout did not complete successfully"}
+      {:error, _} = error -> error
+    end
+  end
+
+  def finalize_checkout(%Stripe.Checkout.Session{customer: cus_id, subscription: sub_id}, %User{} = user) when is_binary(cus_id) and is_binary(sub_id) do
     %{account: account} = Repo.preload(user, [:account])
-    with {:ok, %Stripe.Checkout.Session{customer: cus_id, subscription: sub_id}}
-            when is_binary(cus_id) and is_binary(sub_id) <- Stripe.Checkout.Session.retrieve(session_id) do
+    start_transaction()
+    |> add_operation(:account, fn _ ->
+      account
+      |> Account.payment_changeset(%{billing_customer_id: cus_id})
+      |> Core.Repo.update()
+    end)
+    |> add_operation(:subscription, fn _ ->
+      plan = pro_plan!()
+      %PlatformSubscription{account_id: account.id}
+      |> PlatformSubscription.changeset(%{external_id: sub_id, plan_id: plan.id, billing_version: 1})
+      |> Core.Repo.insert()
+    end)
+    |> execute(extract: :subscription)
+  end
+
+  def finalize_checkout(_, _), do: {:error, "could not find user and session for this checkout"}
+
+  @doc """
+  same as finalize_checkout/2, but for a Stripe.Checkout.Session that doesn't have the user passed in, fetches via the email
+  on the associated stripe customer
+  """
+  @spec finalize_checkout(Stripe.Checkout.Session.t) :: platform_sub_resp
+  def finalize_checkout(%Stripe.Checkout.Session{customer: cus_id} = session) do
+    case Stripe.Customer.retrieve(cus_id) do
+      {:ok, %Stripe.Customer{email: email}} when is_binary(email) ->
+        finalize_checkout(session, Users.get_user_by_email(email))
+      {:error, _} = error -> error
+    end
+  end
+
+  def backfill_subscription(email, customer_id, subscription_id) do
+    with %User{account: %Account{} = account} <- Users.get_user_by_email(email) |> Repo.preload([:account]) do
       start_transaction()
       |> add_operation(:account, fn _ ->
-        account
-        |> Account.payment_changeset(%{billing_customer_id: cus_id})
+        Account.payment_changeset(account, %{billing_customer_id: customer_id})
         |> Core.Repo.update()
       end)
       |> add_operation(:subscription, fn _ ->
         plan = pro_plan!()
         %PlatformSubscription{account_id: account.id}
-        |> PlatformSubscription.changeset(%{external_id: sub_id, plan_id: plan.id, billing_version: 1})
+        |> PlatformSubscription.changeset(%{
+          external_id: subscription_id,
+          plan_id: plan.id,
+          billing_version: 1,
+        })
         |> Core.Repo.insert()
       end)
       |> execute(extract: :subscription)
     else
-      {:ok, %Stripe.Checkout.Session{}} -> {:error, "Stripe checkout did not complete successfully"}
-      {:error, _} = error -> error
+      _ -> {:error, "no user found for email #{email}"}
     end
   end
 

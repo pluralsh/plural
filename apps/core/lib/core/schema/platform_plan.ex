@@ -40,6 +40,9 @@ defmodule Core.Schema.PlatformPlan do
     field :metered_price_id,      :string
     field :ingest_meter_price_id, :string
 
+    field :maximum_users,    :integer
+    field :maximum_clusters, :integer
+
     embeds_one :features, Features, on_replace: :update do
       boolean_fields [:vpn, :user_management, :audit, :multi_cluster, :database_management, :cd]
     end
@@ -66,7 +69,21 @@ defmodule Core.Schema.PlatformPlan do
 
   def features(), do: __MODULE__.Features.__schema__(:fields) -- [:id]
 
-  @valid ~w(name visible cost period external_id trial service_plan cluster_plan base_price_id metered_price_id ingest_meter_price_id)a
+  @valid ~w(
+    name
+    visible
+    cost
+    period
+    external_id
+    trial
+    service_plan
+    cluster_plan
+    base_price_id
+    metered_price_id
+    ingest_meter_price_id
+    maximum_users
+    maximum_clusters
+  )a
 
   def changeset(schema, attrs \\ %{}) do
     schema

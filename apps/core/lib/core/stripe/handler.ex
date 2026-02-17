@@ -12,8 +12,11 @@ defmodule Core.Stripe.Handler do
   def handle_event(%Stripe.Event{type: "invoice.payment_failed", data: %{object: %Stripe.Invoice{customer: id}}}),
     do: Payments.toggle_delinquent(id)
 
-  def handle_event(%Stripe.Event{type: "invoice.payment_succeeded", data: %{object: %Stripe.Invoice{customer: id}}}),
+  def handle_event(%Stripe.Event{type: event, data: %{object: %Stripe.Invoice{customer: id}}}) when event in ~w(invoice.payment_succeeded invoice.paid),
     do: Payments.toggle_delinquent(id, nil)
+
+  def handle_event(%Stripe.Event{type: "checkout.session.completed", data: %{object: %Stripe.Checkout.Session{} = session}}),
+    do: Payments.finalize_checkout(session)
 
   def handle_event(_), do: :ok
 

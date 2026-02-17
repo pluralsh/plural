@@ -12,7 +12,8 @@ defmodule Core.MCP.Server do
     ListPlans,
     ModifyProPlan,
     AddDomainMapping,
-    DeleteUser
+    DeleteUser,
+    WireSubscription
   }
 
   @tools [
@@ -27,7 +28,8 @@ defmodule Core.MCP.Server do
     ListPlans,
     ModifyProPlan,
     AddDomainMapping,
-    DeleteUser
+    DeleteUser,
+    WireSubscription
   ]
   @by_name Map.new(@tools, & {&1.name(), &1})
 

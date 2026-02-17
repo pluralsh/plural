@@ -90,15 +90,17 @@ defmodule GraphQl.Schema.Payments do
   end
 
   object :platform_plan do
-    field :id,             non_null(:id)
-    field :name,           non_null(:string)
-    field :visible,        non_null(:boolean)
-    field :cost,           non_null(:integer)
-    field :period,         non_null(:payment_period)
-    field :enterprise,     :boolean
-    field :trial,          :boolean
-    field :features,       :plan_features
-    field :line_items,     list_of(:platform_plan_item)
+    field :id,               non_null(:id)
+    field :name,             non_null(:string)
+    field :visible,          non_null(:boolean)
+    field :cost,             non_null(:integer)
+    field :period,           non_null(:payment_period)
+    field :enterprise,       :boolean
+    field :trial,            :boolean
+    field :features,         :plan_features
+    field :maximum_users,    :integer
+    field :maximum_clusters, :integer
+    field :line_items,       list_of(:platform_plan_item)
 
     timestamps()
   end

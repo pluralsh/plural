@@ -3135,6 +3135,8 @@ type PlatformPlan {
   enterprise: Boolean
   trial: Boolean
   features: PlanFeatures
+  maximumUsers: Int
+  maximumClusters: Int
   lineItems: [PlatformPlanItem]
   insertedAt: DateTime
   updatedAt: DateTime

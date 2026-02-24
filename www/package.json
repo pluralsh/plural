@@ -27,7 +27,7 @@
     "graphql:codegen": "graphql-codegen --config codegen.yml"
   },
   "engines": {
-    "node": "18.16.0"
+    "node": ">=20.0.0"
   },
   "packageManager": "yarn@3.6.0",
   "dependencies": {
@@ -61,7 +61,7 @@
     "honorable": "1.0.0-beta.17",
     "honorable-recipe-mp": "0.4.0",
     "honorable-theme-default": "1.0.0-beta.5",
-    "lodash": "4.17.21",
+    "lodash": "4.17.23",
     "memoize-one": "6.0.0",
     "moment": "2.29.4",
     "phoenix": "1.7.3",
@@ -78,11 +78,10 @@
     "react-piano-keys": "1.2.1",
     "react-player": "2.12.0",
     "react-resize-detector": "9.1.0",
-    "react-router-dom": "6.18.0",
+    "react-router-dom": "6.30.3",
     "react-sage": "0.3.16",
     "react-script-hook": "1.7.2",
     "react-spinners": "0.13.8",
-    "react-toggle": "4.1.3",
     "react-transition-group": "4.4.5",
     "react-virtualized-auto-sizer": "1.0.20",
     "react-window": "1.8.9",
@@ -118,8 +117,8 @@
     "@types/uuid": "9.0.7",
     "@typescript-eslint/eslint-plugin": "8.18.2",
     "@typescript-eslint/parser": "8.18.2",
-    "@vitejs/plugin-basic-ssl": "1.0.2",
-    "@vitejs/plugin-react": "4.2.1",
+    "@vitejs/plugin-basic-ssl": "2.1.4",
+    "@vitejs/plugin-react": "5.1.4",
     "@vitest/ui": "1.1.0",
     "concurrently": "8.1.0",
     "eslint": "9.17.0",
@@ -137,16 +136,15 @@
     "react-error-boundary": "4.0.11",
     "rollup-plugin-polyfill-node": "0.12.0",
     "serve": "14.2.4",
-    "source-map-explorer": "2.5.3",
     "stylelint": "15.11.0",
     "stylelint-config-prettier": "9.0.5",
     "typescript": "5.6.2",
-    "vite": "6.0.6",
+    "vite": "6.4.1",
     "vite-bundle-visualizer": "1.2.1",
     "vite-plugin-pwa": "0.21.1",
     "vite-plugin-rewrite-all": "1.0.2",
     "vite-tsconfig-paths": "5.1.4",
-    "vitest": "2.1.8"
+    "vitest": "2.1.9"
   },
   "lint-staged": {
     "./src/**/*.{js,jsx,ts,tsx,graphql,md}": "prettier --write"

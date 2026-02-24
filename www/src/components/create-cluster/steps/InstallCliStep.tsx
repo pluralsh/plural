@@ -13,8 +13,8 @@ export function InstallCliStep() {
     >
       {cloudOption === 'cloud' && (
         <Callout title="The next two steps are in your local terminal">
-          This will help to setup and properly configure the management plane and
-          Plural Cloud instance with your local environment.
+          This will help to setup and properly configure the management plane
+          and Plural Cloud instance with your local environment.
         </Callout>
       )}
       <CliInstallationBaseInfo />

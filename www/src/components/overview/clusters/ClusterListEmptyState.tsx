@@ -30,8 +30,8 @@ export function ClusterListEmptyState() {
             $color="text-light"
             css={{ maxWidth: 450 }}
           >
-            Once you create your first management plane, you will find an overview of its
-            details here.
+            Once you create your first management plane, you will find an
+            overview of its details here.
           </Body2P>
         </Flex>
         <Button
@@ -39,7 +39,9 @@ export function ClusterListEmptyState() {
           to="/create-cluster"
           style={{ maxWidth: 300, width: '100%' }}
         >
-          {showUnfinished ? 'Resume instance creation' : 'Create new Plural instance'}
+          {showUnfinished
+            ? 'Resume instance creation'
+            : 'Create new Plural instance'}
         </Button>
         {showUnfinished && (
           <Button

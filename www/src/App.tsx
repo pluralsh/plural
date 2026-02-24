@@ -15,7 +15,6 @@ import {
 import mpRecipe from 'honorable-recipe-mp'
 import { Suspense, lazy } from 'react'
 import { Route, Routes } from 'react-router-dom'
-import 'react-toggle/style.css'
 import styled, {
   StyleSheetManager,
   ThemeProvider as StyledThemeProvider,

@@ -3,8 +3,10 @@ import { defineConfig } from 'vitest/config'
 // https://vitest.dev/config/
 export default defineConfig({
   test: {
-    deps: {
-      inline: ['@pluralsh/design-system'],
+    server: {
+      deps: {
+        inline: ['@pluralsh/design-system'],
+      },
     },
     globals: true,
     environment: 'jsdom',

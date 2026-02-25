@@ -119,7 +119,7 @@
     "@typescript-eslint/parser": "8.18.2",
     "@vitejs/plugin-basic-ssl": "2.1.4",
     "@vitejs/plugin-react": "5.1.4",
-    "@vitest/ui": "1.1.0",
+    "@vitest/ui": "3.2.4",
     "concurrently": "8.1.0",
     "eslint": "9.17.0",
     "eslint-config-pluralsh": "3.1.0",
@@ -144,7 +144,7 @@
     "vite-plugin-pwa": "0.21.1",
     "vite-plugin-rewrite-all": "1.0.2",
     "vite-tsconfig-paths": "5.1.4",
-    "vitest": "2.1.9"
+    "vitest": "3.2.4"
   },
   "lint-staged": {
     "./src/**/*.{js,jsx,ts,tsx,graphql,md}": "prettier --write"

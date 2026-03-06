@@ -1,4 +1,4 @@
-.PHONY: help
+.PHONY: help up-docker down-docker up-docker-www test-docker-www build-docker-www
 
 GCP_PROJECT ?= pluralsh
 APP_NAME ?= plural
@@ -12,6 +12,21 @@ COCKROACH_VSN ?= v24.1.3
 
 help:
 	@perl -nle'print $& if m{^[a-zA-Z_-]+:.*?## .*$$}' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+
+up-docker: ## start root dependencies via docker compose (db, cache, queue, etc.)
+	docker compose -f docker-compose.yml up -d
+
+down-docker: ## stop and remove root dependencies docker compose stack
+	docker compose -f docker-compose.yml down
+
+up-docker-www: ## build and serve www via docker compose
+	$(MAKE) --directory www --no-print-directory up-docker
+
+test-docker-www: ## run www tests in docker
+	$(MAKE) --directory www --no-print-directory test-docker
+
+build-docker-www: ## build www docker image via compose
+	$(MAKE) --directory www --no-print-directory build-docker
 
 build: ## Build the Docker image
 ifeq ($(APP_NAME), www)

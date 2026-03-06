@@ -1,0 +1,69 @@
+services:
+  db:
+    image: postgres:14
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: postgres
+    command:
+      - "postgres"
+      - "-c"
+      - "wal_level=logical"
+    volumes:
+      - database_data:/var/lib/postgresql/data
+  cloud:
+    image: postgres:14
+    restart: always
+    ports:
+      - 5433:5432
+    environment:
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - cld_db_data:/var/lib/postgresql/data
+  rabbit:
+    image: rabbitmq:3-management
+    hostname: "rabbit1"
+    environment:
+      RABBITMQ_ERLANG_COOKIE: "SWQOKODSQALRPCLNMEQG"
+      RABBITMQ_DEFAULT_USER: "rabbitmq"
+      RABBITMQ_DEFAULT_PASS: "rabbitmq"
+      RABBITMQ_DEFAULT_VHOST: "/"
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+  influxdb:
+    image: influxdb:1.8
+    volumes:
+      # Mount for influxdb data directory and configuration
+      - influxdb:/var/lib/influxdb
+    environment:
+      - INFLUXDB_HTTP_AUTH_ENABLED=true
+      - INFLUXDB_ADMIN_USER=forge
+      - INFLUXDB_ADMIN_PASSWORD=forgepwd
+      - INFLUXDB_DB=plural
+    ports:
+      - "8086:8086"
+  # chartmuseum:
+  #   image: chartmuseum/chartmuseum:latest
+  #   volumes:
+  #   - ${HOME}/.gcp:/home/chartmuseum/.gcp:ro
+  #   restart: always
+  #   environment:
+  #     PORT: 8080
+  #     DEBUG: 1
+  #     DEPTH: 1
+  #     STORAGE: google
+  #     CONTEXT_PATH: '/cm'
+  #     STORAGE_GOOGLE_BUCKET: "mguarino-charts"
+  #     STORAGE_GOOGLE_PREFIX: ""
+  #     GOOGLE_APPLICATION_CREDENTIALS: "/home/chartmuseum/.gcp/key.json"
+  #   ports:
+  #   - 8080:8080
+volumes:
+  database_data:
+    driver: local
+  cld_db_data:
+    driver: local
+  influxdb:
+    driver: local

@@ -1,4 +1,4 @@
-.PHONY: help up-docker down-docker up-docker-www test-docker-www build-docker-www
+.PHONY: help up-docker down-docker up-docker-www test-docker-www build-docker-www testup testdown test-docker
 
 GCP_PROJECT ?= pluralsh
 APP_NAME ?= plural
@@ -18,6 +18,12 @@ up-docker: ## start root dependencies via docker compose (db, cache, queue, etc.
 
 down-docker: ## stop and remove root dependencies docker compose stack
 	docker compose -f docker-compose.yml down
+
+test-docker: ## run backend tests in docker
+	@docker compose -f docker-compose.test.yml up --build --abort-on-container-exit --exit-code-from backend-test; \
+	status=$$?; \
+	docker compose down; \
+	exit $$status
 
 up-docker-www: ## build and serve www via docker compose
 	$(MAKE) --directory www --no-print-directory up-docker

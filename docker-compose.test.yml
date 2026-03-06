@@ -60,10 +60,42 @@ services:
   #     GOOGLE_APPLICATION_CREDENTIALS: "/home/chartmuseum/.gcp/key.json"
   #   ports:
   #   - 8080:8080
+  backend-test:
+    build:
+      context: .
+      dockerfile: dockerfiles/Dockerfile.test
+    working_dir: /app
+    volumes:
+      - .:/app
+      - mix_deps:/app/deps
+      - mix_build:/app/_build
+    environment:
+      MIX_ENV: test
+      DB_HOST: db
+      RABBITMQ_HOST: rabbit
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USER: rabbitmq
+      RABBITMQ_PASSWORD: rabbitmq
+      INFLUXDB_HOST: influxdb
+      INFLUXDB_PORT: 8086
+      CLOUD_DB_HOST: cloud
+    depends_on:
+      - db
+      - cloud
+      - rabbit
+      - influxdb
+    entrypoint:
+      - "/bin/sh"
+      - "-c"
+    command: ${BACKEND_TEST_CMD:-"mix deps.get && mix compile"}
 volumes:
   database_data:
     driver: local
   cld_db_data:
     driver: local
   influxdb:
+    driver: local
+  mix_deps:
+    driver: local
+  mix_build:
     driver: local

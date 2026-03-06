@@ -1,0 +1,10 @@
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: build
+    working_dir: /app
+    ports:
+      - "3001:3001"
+    command: sh -c "yarn build && yarn preview --host 0.0.0.0 --port 3001"

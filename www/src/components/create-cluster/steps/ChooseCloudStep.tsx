@@ -29,7 +29,6 @@ export function ChooseCloudStep() {
           selected={cloudOption === 'local'}
           onClick={() => setCloudOption('local')}
           icon={<CloudIcon size={40} />}
-          chip={<Chip>Free Plan</Chip>}
           header="Deploy Yourself"
           description="Host your management plane in your own cloud."
         />
@@ -37,7 +36,6 @@ export function ChooseCloudStep() {
           selected={cloudOption === 'cloud'}
           onClick={() => setCloudOption('cloud')}
           icon={<ConsoleIcon size={40} />}
-          chip={<Chip severity="info">Pro Plan</Chip>}
           header="Use Plural Cloud"
           description="Host your management plane in a Plural Cloud instance."
         />

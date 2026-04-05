@@ -107,6 +107,7 @@ defmodule GraphQl.Schema.Cluster do
   object :cluster_queries do
     @desc "Get a cluster by its ID."
     field :cluster, :cluster do
+      middleware Authenticated
       arg :id, non_null(:id), description: "The ID of the cluster."
 
       resolve &Cluster.resolve_cluster/2
@@ -114,12 +115,14 @@ defmodule GraphQl.Schema.Cluster do
 
     @desc "Get a list of clusters owned by the current account."
     connection field :clusters, node_type: :cluster do
+      middleware Authenticated
       resolve &Cluster.list_clusters/2
     end
   end
 
   object :cluster_mutations do
     field :ping_cluster, :cluster do
+      middleware Authenticated
       arg :attributes, non_null(:cluster_ping_attributes), description: "The input attributes for the cluster that will be pinged."
 
       safe_resolve &Cluster.ping_cluster/2
@@ -127,6 +130,7 @@ defmodule GraphQl.Schema.Cluster do
 
     @desc "Create a new cluster."
     field :create_cluster, :cluster do
+      middleware Authenticated
       arg :attributes, non_null(:cluster_attributes), description: "The input attributes for the cluster that will be created."
 
       safe_resolve &Cluster.create_cluster/2
@@ -134,6 +138,7 @@ defmodule GraphQl.Schema.Cluster do
 
     @desc "adds a dependency for this cluster to gate future upgrades"
     field :create_cluster_dependency, :cluster_dependency do
+      middleware Authenticated
       middleware Differentiate, feature: :multi_cluster
       arg :source_id, non_null(:id)
       arg :dest_id,   non_null(:id)
@@ -143,6 +148,7 @@ defmodule GraphQl.Schema.Cluster do
 
     @desc "deletes a dependency for this cluster and potentially disables promotions entirely"
     field :delete_cluster_dependency, :cluster_dependency do
+      middleware Authenticated
       # middleware Differentiate, feature: :multi_cluster
       arg :source_id, non_null(:id)
       arg :dest_id,   non_null(:id)
@@ -152,11 +158,13 @@ defmodule GraphQl.Schema.Cluster do
 
     @desc "moves up the upgrade waterline for a user"
     field :promote, :user do
+      middleware Authenticated
       safe_resolve &Cluster.promote/2
     end
 
     @desc "transfers ownership of a cluster to a service account"
     field :transfer_ownership, :cluster do
+      middleware Authenticated
       arg :name,  non_null(:string)
       arg :email, non_null(:string)
 
@@ -165,6 +173,7 @@ defmodule GraphQl.Schema.Cluster do
 
     @desc "Delete a cluster."
     field :delete_cluster, :cluster do
+      middleware Authenticated
       arg :name,     non_null(:string), description: "The name of the cluster."
       arg :provider, non_null(:provider), description: "The cluster's cloud provider."
 

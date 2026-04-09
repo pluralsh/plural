@@ -5,6 +5,8 @@ defmodule GraphQl.ShellMutationsTest do
   alias Core.Services.Shell.Pods
   alias GoogleApi.CloudResourceManager.V3.Api.Projects
 
+  @moduletag :skip
+
   describe "createShell" do
     test "it will create a new shell instance" do
       %{email: e} = user = insert(:user, roles: %{admin: true})

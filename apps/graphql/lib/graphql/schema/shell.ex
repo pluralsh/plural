@@ -235,6 +235,7 @@ defmodule GraphQl.Schema.Shell do
   object :shell_mutations do
     field :create_shell, :cloud_shell do
       middleware Authenticated
+      middleware GraphQl.Middleware.Deprecate
       arg :attributes, non_null(:cloud_shell_attributes)
 
       safe_resolve &Shell.create_shell/2
@@ -242,12 +243,14 @@ defmodule GraphQl.Schema.Shell do
 
     field :setup_shell, :cloud_shell do
       middleware Authenticated
+      middleware GraphQl.Middleware.Deprecate
 
       safe_resolve &Shell.setup_shell/2
     end
 
     field :update_shell, :cloud_shell do
       middleware Authenticated
+      middleware GraphQl.Middleware.Deprecate
       arg :attributes, non_null(:cloud_shell_attributes)
 
       safe_resolve &Shell.update_shell/2
@@ -255,6 +258,7 @@ defmodule GraphQl.Schema.Shell do
 
     field :update_shell_configuration, :boolean do
       middleware Authenticated
+      middleware GraphQl.Middleware.Deprecate
       arg :context, non_null(:map)
 
       safe_resolve &Shell.update_shell_configuration/2
@@ -262,6 +266,7 @@ defmodule GraphQl.Schema.Shell do
 
     field :install_bundle, list_of(:installation) do
       middleware Authenticated
+      middleware GraphQl.Middleware.Deprecate
       arg :context, non_null(:context_attributes)
       arg :oidc,    non_null(:boolean)
       arg :repo,    non_null(:string)
@@ -272,6 +277,7 @@ defmodule GraphQl.Schema.Shell do
 
     field :install_stack_shell, list_of(:recipe) do
       middleware Authenticated
+      middleware GraphQl.Middleware.Deprecate
       arg :name, non_null(:string)
       arg :oidc, non_null(:boolean)
       arg :context, non_null(:context_attributes)
@@ -281,22 +287,26 @@ defmodule GraphQl.Schema.Shell do
 
     field :reboot_shell, :cloud_shell do
       middleware Authenticated
+      middleware GraphQl.Middleware.Deprecate
       safe_resolve &Shell.reboot/2
     end
 
     field :delete_shell, :cloud_shell do
       middleware Authenticated
+      middleware GraphQl.Middleware.Deprecate
       safe_resolve &Shell.delete_shell/2
     end
 
     field :create_demo_project, :demo_project do
       middleware Authenticated
+      middleware GraphQl.Middleware.Deprecate
 
       safe_resolve &Shell.create_demo_project/2
     end
 
     field :transfer_demo_project, :demo_project do
       middleware Authenticated
+      middleware GraphQl.Middleware.Deprecate
       arg :organization_id, non_null(:string)
 
       safe_resolve &Shell.transfer_demo_project/2
@@ -304,16 +314,19 @@ defmodule GraphQl.Schema.Shell do
 
     field :delete_demo_project, :demo_project do
       middleware Authenticated
+      middleware GraphQl.Middleware.Deprecate
       safe_resolve &Shell.delete_demo_project/2
     end
 
     field :stop_shell, :boolean do
       middleware Authenticated
+      middleware GraphQl.Middleware.Deprecate
       safe_resolve &Shell.stop/2
     end
 
     field :restart_shell, :boolean do
       middleware Authenticated
+      middleware GraphQl.Middleware.Deprecate
       safe_resolve &Shell.restart/2
     end
   end

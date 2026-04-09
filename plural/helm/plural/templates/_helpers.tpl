@@ -96,12 +96,6 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 plural-migration-{{ .Values.global.tag | default .Values.image.tag | default .Chart.AppVersion | sha256sum | trunc 8 }}
 {{- end -}}
 
-{{- define "plural.wait-for-migration" -}}
-- name: wait-for-pg
-  image: gcr.io/pluralsh/library/busybox:1.35.0
-  imagePullPolicy: IfNotPresent
-  command: [ "/bin/sh", "-c", "until nc -zv plural-plural 5432 -w1; do echo 'waiting for db'; sleep 1; done" ]
-{{- end -}}
 
 {{- define "plural.imageTag" -}}
 {{ .Values.global.tag | default .Values.image.tag | default .Chart.AppVersion }}

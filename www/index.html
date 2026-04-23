@@ -143,6 +143,28 @@
         background-color: #f3f5f7;
       }
     </style>
+    <!-- Cookiebot overrides -->
+    <style>
+      @media (max-width: 1280px) {
+        div#CybotCookiebotDialog {
+          transform: scale(0.8) translate(-60%, -45%) !important;
+        }
+      }
+      @media (min-width: 1280px) {
+        div#CybotCookiebotDialog {
+          transform-origin: top;
+          scale: 65%;
+        }
+      }
+      /* Hide Cookiebot Swift banner branding */
+      /* Branding on the banner */
+      a#CybotCookiebotDialogPoweredbyCybot,
+      div#CybotCookiebotDialogPoweredByText,
+      #CookiebotWidget .CookiebotWidget-body .CookiebotWidget-main-logo,
+      #CybotCookiebotDialogHeader {
+        display: none !important;
+      }
+    </style>
     <!-- Cookiebot MUST BE FIRST script -->
     <script
       id="Cookiebot"

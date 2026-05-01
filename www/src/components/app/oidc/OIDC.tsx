@@ -44,14 +44,18 @@ import {
 } from '../../../generated/graphql'
 
 export function UrlsInput({ uriFormat = '', urls, setUrls }: any) {
-  const [baseScheme, basePath] = ['https://', '/oauth2/callback']
+  const [baseScheme, basePath] = ['https://', '/oauth/callback']
   const [value, setValue] = useState('')
-  const [scheme = baseScheme, path = basePath] = uriFormat
+  const [scheme, path] = uriFormat
     .split('{domain}')
     .filter((v) => !!v)
 
   const addUrl = useCallback(() => {
     let url: string
+
+    if (value.trim().length === 0) {
+      return
+    }
 
     // Check if uriFormat is valid and contains {domain}
     if (uriFormat && uriFormat.includes('{domain}')) {
@@ -61,7 +65,7 @@ export function UrlsInput({ uriFormat = '', urls, setUrls }: any) {
       url = `${scheme}${value}${path}`
     }
 
-    if (url === `${baseScheme}${basePath}`) {
+    if (url === `${scheme}${path}`) {
       return
     }
 

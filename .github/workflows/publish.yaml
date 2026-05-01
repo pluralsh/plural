@@ -89,7 +89,7 @@ jobs:
       run: gcloud auth configure-docker -q
     - name: installing plural
       id: plrl
-      uses: pluralsh/setup-plural@v0.1.9
+      uses: pluralsh/setup-plural@v2
       with:
         email: gh-actions@plural.sh
     - name: Login to plural registry
@@ -97,7 +97,7 @@ jobs:
       with:
         registry: dkr.plural.sh
         username: gh-actions@plural.sh
-        password: ${{ secrets.PLURAL_ACCESS_TOKEN }}
+        password: ${{ steps.plrl.outputs.token }}
     - name: Login to GHCR
       uses: docker/login-action@v2
       with:
@@ -166,7 +166,7 @@ jobs:
       run: gcloud auth configure-docker -q
     - name: installing plural
       id: plrl
-      uses: pluralsh/setup-plural@v0.1.9
+      uses: pluralsh/setup-plural@v2
       with:
         email: gh-actions@plural.sh
     - name: Login to plural registry
@@ -174,7 +174,7 @@ jobs:
       with:
         registry: dkr.plural.sh
         username: gh-actions@plural.sh
-        password: ${{ secrets.PLURAL_ACCESS_TOKEN }}
+        password: ${{ steps.plrl.outputs.token }}
     - name: Login to GHCR
       uses: docker/login-action@v2
       with:

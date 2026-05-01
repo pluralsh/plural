@@ -44,17 +44,24 @@ import {
 } from '../../../generated/graphql'
 
 export function UrlsInput({ uriFormat = '', urls, setUrls }: any) {
-  const [baseScheme, basePath] = ['https://', '/oauth2/callback']
+  const [baseScheme, basePath] = ['https://', '/oauth/callback']
   const [value, setValue] = useState('')
-  const [scheme = baseScheme, path = basePath] = uriFormat
-    .split('{domain}')
-    .filter((v) => !!v)
+  console.log('uriFormat', uriFormat)
+  const [scheme, path] = uriFormat.split('{domain}').filter((v) => !!v)
 
   const addUrl = useCallback(() => {
-    const url = uriFormat ? uriFormat.replace('{domain}', value) : value
+    let url: string
+    const trimmed = value.trim()
 
-    if (url === `${baseScheme}${basePath}`) {
+    if (trimmed.length === 0) {
       return
+    }
+
+    // Check if uriFormat is valid and contains {domain}
+    if (uriFormat && uriFormat.includes('{domain}')) {
+      url = uriFormat.replace('{domain}', trimmed)
+    } else {
+      url = trimmed
     }
 
     if (urls.indexOf(url) > -1) {
@@ -63,7 +70,17 @@ export function UrlsInput({ uriFormat = '', urls, setUrls }: any) {
 
     setUrls([...urls, url])
     setValue('')
-  }, [urls, value, setValue, setUrls, uriFormat, basePath, baseScheme])
+  }, [
+    urls,
+    value,
+    setValue,
+    setUrls,
+    uriFormat,
+    basePath,
+    baseScheme,
+    scheme,
+    path,
+  ])
 
   const removeUrl = useCallback(
     (url) => setUrls(urls.filter((item) => item !== url)),

@@ -46,27 +46,22 @@ import {
 export function UrlsInput({ uriFormat = '', urls, setUrls }: any) {
   const [baseScheme, basePath] = ['https://', '/oauth/callback']
   const [value, setValue] = useState('')
-  const [scheme, path] = uriFormat
-    .split('{domain}')
-    .filter((v) => !!v)
+  console.log('uriFormat', uriFormat)
+  const [scheme, path] = uriFormat.split('{domain}').filter((v) => !!v)
 
   const addUrl = useCallback(() => {
     let url: string
+    const trimmed = value.trim()
 
-    if (value.trim().length === 0) {
+    if (trimmed.length === 0) {
       return
     }
 
     // Check if uriFormat is valid and contains {domain}
     if (uriFormat && uriFormat.includes('{domain}')) {
-      url = uriFormat.replace('{domain}', value)
+      url = uriFormat.replace('{domain}', trimmed)
     } else {
-      // Fallback to constructing URL with scheme and path
-      url = `${scheme}${value}${path}`
-    }
-
-    if (url === `${scheme}${path}`) {
-      return
+      url = trimmed
     }
 
     if (urls.indexOf(url) > -1) {
@@ -75,7 +70,17 @@ export function UrlsInput({ uriFormat = '', urls, setUrls }: any) {
 
     setUrls([...urls, url])
     setValue('')
-  }, [urls, value, setValue, setUrls, uriFormat, basePath, baseScheme, scheme, path])
+  }, [
+    urls,
+    value,
+    setValue,
+    setUrls,
+    uriFormat,
+    basePath,
+    baseScheme,
+    scheme,
+    path,
+  ])
 
   const removeUrl = useCallback(
     (url) => setUrls(urls.filter((item) => item !== url)),

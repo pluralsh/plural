@@ -51,7 +51,15 @@ export function UrlsInput({ uriFormat = '', urls, setUrls }: any) {
     .filter((v) => !!v)
 
   const addUrl = useCallback(() => {
-    const url = uriFormat ? uriFormat.replace('{domain}', value) : value
+    let url: string
+
+    // Check if uriFormat is valid and contains {domain}
+    if (uriFormat && uriFormat.includes('{domain}')) {
+      url = uriFormat.replace('{domain}', value)
+    } else {
+      // Fallback to constructing URL with scheme and path
+      url = `${scheme}${value}${path}`
+    }
 
     if (url === `${baseScheme}${basePath}`) {
       return
@@ -63,7 +71,7 @@ export function UrlsInput({ uriFormat = '', urls, setUrls }: any) {
 
     setUrls([...urls, url])
     setValue('')
-  }, [urls, value, setValue, setUrls, uriFormat, basePath, baseScheme])
+  }, [urls, value, setValue, setUrls, uriFormat, basePath, baseScheme, scheme, path])
 
   const removeUrl = useCallback(
     (url) => setUrls(urls.filter((item) => item !== url)),

@@ -27,7 +27,7 @@ asdf plugin add elixir
 asdf install
 ```
 
-asdf can be finnicky when instlalling erlang with mac, in which case you can reshim it like so from homebrew:
+asdf can be finnicky when installing erlang with mac, in which case you can reshim it like so from homebrew:
 
 ```sh
 brew install erlang@24

@@ -408,16 +408,14 @@ function LoginInternal() {
   })
 
   const isPasswordLogin =
-    state === State.PwdLogin ||
-    state === State.PwdLogin_CheckingPwd
+    state === State.PwdLogin || state === State.PwdLogin_CheckingPwd
   const disableSubmit = isPasswordLogin
     ? password.length === 0 || isVerifyingCaptcha || !executeRecaptcha
     : !isValidEmail(email)
   const recaptchaErrorMessage = captchaError
   const recaptchaHintMessage =
     recaptchaErrorMessage ||
-    ((isPasswordLogin && !executeRecaptcha) &&
-      'Loading reCAPTCHA...')
+    (isPasswordLogin && !executeRecaptcha && 'Loading reCAPTCHA...')
   const passwordHint = passwordErrorMsg || recaptchaHintMessage
   const passwordError = !!passwordErrorMsg || !!recaptchaErrorMessage
   const submitPasswordLogin = useCallback(async () => {

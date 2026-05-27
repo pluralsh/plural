@@ -403,29 +403,24 @@ function LoginInternal() {
 
   const loginMethod = loginMethodData?.loginMethod
 
-  const { data: oAuthData } = useOauthUrlsQuery({
-    variables: { host: host() },
-  })
+  const { data: oAuthData } = useOauthUrlsQuery({ variables: { host: host() } })
 
   const isPasswordLogin =
     state === State.PwdLogin || state === State.PwdLogin_CheckingPwd
   const disableSubmit = isPasswordLogin
     ? password.length === 0 || isVerifyingCaptcha || !executeRecaptcha
     : !isValidEmail(email)
-  const recaptchaErrorMessage = captchaError
-  const recaptchaHintMessage = recaptchaErrorMessage
-    ? recaptchaErrorMessage
+  const hintMessage = captchaError
+    ? captchaError
     : isPasswordLogin && !executeRecaptcha
-      ? 'Loading reCAPTCHA...'
-      : undefined
-  const passwordHint = passwordErrorMsg || recaptchaHintMessage
-  const passwordError = !!passwordErrorMsg || !!recaptchaErrorMessage
+    ? 'Loading reCAPTCHA...'
+    : undefined
+  const passwordHint = passwordErrorMsg || hintMessage
+  const passwordError = !!passwordErrorMsg || !!captchaError
+
   const submitPasswordLogin = useCallback(async () => {
     const captcha = await handleReCaptchaVerify()
-
-    if (!captcha) {
-      return
-    }
+    if (!captcha) return
 
     setState(State.PwdLogin_CheckingPwd)
     loginMutation({

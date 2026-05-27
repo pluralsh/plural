@@ -413,9 +413,11 @@ function LoginInternal() {
     ? password.length === 0 || isVerifyingCaptcha || !executeRecaptcha
     : !isValidEmail(email)
   const recaptchaErrorMessage = captchaError
-  const recaptchaHintMessage =
-    recaptchaErrorMessage ||
-    (isPasswordLogin && !executeRecaptcha && 'Loading reCAPTCHA...')
+  const recaptchaHintMessage = recaptchaErrorMessage
+    ? recaptchaErrorMessage
+    : isPasswordLogin && !executeRecaptcha
+      ? 'Loading reCAPTCHA...'
+      : undefined
   const passwordHint = passwordErrorMsg || recaptchaHintMessage
   const passwordError = !!passwordErrorMsg || !!recaptchaErrorMessage
   const submitPasswordLogin = useCallback(async () => {

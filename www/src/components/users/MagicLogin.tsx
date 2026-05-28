@@ -16,7 +16,7 @@ import {
   useGoogleReCaptcha,
 } from 'react-google-recaptcha-v3'
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
-import styled, { useTheme } from 'styled-components'
+import styled from 'styled-components'
 
 import {
   AcceptLoginDocument,
@@ -216,7 +216,6 @@ type LoginState =
   | 'Initial'
   | 'CheckEmail'
   | 'CheckingEmail'
-  | 'PwdLogin_CheckPwd'
   | 'PwdLogin_CheckingPwd'
   | 'PwdLogin'
   | 'PasswordlessLogin'
@@ -227,7 +226,6 @@ const State = {
   CheckEmail: 'CheckEmail',
   CheckingEmail: 'CheckingEmail',
   PwdLogin: 'PwdLogin',
-  PwdLogin_CheckPwd: 'PwdLogin_CheckPwd',
   PwdLogin_CheckingPwd: 'PwdLogin_CheckingPwd',
   PasswordlessLogin: 'PasswordlessLogin',
   Signup: 'Signup',
@@ -251,7 +249,6 @@ export function Login() {
 }
 
 function LoginInternal() {
-  const theme = useTheme()
   const navigate = useNavigate()
   const [state, setState] = useState<LoginState>(State.Initial)
   const prevState = useRef<LoginState>(State.Initial)
@@ -268,16 +265,28 @@ function LoginInternal() {
   const emailRef = useRef<HTMLElement>()
 
   const { executeRecaptcha } = useGoogleReCaptcha()
-  const [captcha, setCaptcha] = useState('')
+  const [isVerifyingCaptcha, setIsVerifyingCaptcha] = useState(false)
+  const [captchaError, setCaptchaError] = useState<string>()
   const handleReCaptchaVerify = useCallback(async () => {
-    if (!executeRecaptcha) return
+    if (!executeRecaptcha) {
+      setCaptchaError('reCAPTCHA is still loading. Please try again.')
 
-    setCaptcha(await executeRecaptcha('login'))
-  }, [executeRecaptcha, setCaptcha])
+      return undefined
+    }
 
-  useEffect(() => {
-    handleReCaptchaVerify()
-  }, [handleReCaptchaVerify])
+    setIsVerifyingCaptcha(true)
+    setCaptchaError(undefined)
+
+    try {
+      return await executeRecaptcha('login')
+    } catch (_) {
+      setCaptchaError('Unable to verify reCAPTCHA. Please try again.')
+
+      return undefined
+    } finally {
+      setIsVerifyingCaptcha(false)
+    }
+  }, [executeRecaptcha])
 
   useEffect(() => {
     setInputFocus(emailRef)
@@ -299,12 +308,6 @@ function LoginInternal() {
 
   const [loginMutation, { loading: loginMLoading, error: loginMError }] =
     useLoginMutation({
-      variables: {
-        email,
-        password,
-        deviceToken: typeof deviceToken === 'string' ? deviceToken : undefined,
-        captcha,
-      },
       onCompleted: ({ login }) => {
         setToken(login?.jwt)
         if (deviceToken) finishedDeviceLogin()
@@ -326,10 +329,6 @@ function LoginInternal() {
           getLoginMethod()
           setState(State.CheckingEmail)
           break
-        case State.PwdLogin_CheckPwd:
-          loginMutation()
-          setState(State.PwdLogin_CheckingPwd)
-          break
         case State.PwdLogin:
           setInputFocus(passwordRef)
           break
@@ -338,7 +337,7 @@ function LoginInternal() {
       }
     }
     prevState.current = state
-  }, [getLoginMethod, loginMutation, state])
+  }, [getLoginMethod, state])
 
   useEffect(() => {
     if (state === State.Signup) {
@@ -404,17 +403,42 @@ function LoginInternal() {
 
   const loginMethod = loginMethodData?.loginMethod
 
-  const { data: oAuthData } = useOauthUrlsQuery({
-    variables: { host: host() },
-  })
+  const { data: oAuthData } = useOauthUrlsQuery({ variables: { host: host() } })
 
   const isPasswordLogin =
-    state === State.PwdLogin ||
-    state === State.PwdLogin_CheckingPwd ||
-    state === State.PwdLogin_CheckPwd
+    state === State.PwdLogin || state === State.PwdLogin_CheckingPwd
   const disableSubmit = isPasswordLogin
-    ? password.length === 0 || !captcha
+    ? password.length === 0 || isVerifyingCaptcha || !executeRecaptcha
     : !isValidEmail(email)
+  const hintMessage = captchaError
+    ? captchaError
+    : isPasswordLogin && !executeRecaptcha
+    ? 'Loading reCAPTCHA...'
+    : undefined
+  const passwordHint = passwordErrorMsg || hintMessage
+  const passwordError = !!passwordErrorMsg || !!captchaError
+
+  const submitPasswordLogin = useCallback(async () => {
+    const captcha = await handleReCaptchaVerify()
+    if (!captcha) return
+
+    setState(State.PwdLogin_CheckingPwd)
+    loginMutation({
+      variables: {
+        email,
+        password,
+        deviceToken: typeof deviceToken === 'string' ? deviceToken : undefined,
+        captcha,
+      },
+    }).catch(() => undefined)
+  }, [
+    deviceToken,
+    email,
+    handleReCaptchaVerify,
+    loginMutation,
+    password,
+    setState,
+  ])
 
   const onSubmit = useCallback(
     (e) => {
@@ -424,7 +448,7 @@ function LoginInternal() {
       }
       switch (state) {
         case State.PwdLogin:
-          setState(State.PwdLogin_CheckPwd)
+          submitPasswordLogin()
           break
         case State.Initial:
           setState(State.CheckEmail)
@@ -433,10 +457,10 @@ function LoginInternal() {
           break
       }
     },
-    [disableSubmit, state]
+    [disableSubmit, state, submitPasswordLogin]
   )
 
-  const loading = loginMethodLoading || loginMLoading
+  const loading = loginMethodLoading || loginMLoading || isVerifyingCaptcha
 
   // This is to ensure that if both login token and login challenge are
   // available, user will not see the login view while oauth challenge
@@ -519,26 +543,13 @@ function LoginInternal() {
                       forgot your password?
                     </A>
                   }
-                  hint={passwordErrorMsg}
-                  error={!!passwordErrorMsg}
+                  hint={passwordHint}
+                  error={passwordError}
                   value={password}
                   onChange={setPassword}
                   placeholder="Enter password"
                 />
               </Collapsible>
-              {!captcha && (
-                <div
-                  css={{
-                    ...theme.partials.text.inlineLink,
-                    textAlign: 'end',
-                    cursor: 'pointer',
-                    marginBottom: theme.spacing.xsmall,
-                  }}
-                  onClick={handleReCaptchaVerify}
-                >
-                  verify reCAPTCHA
-                </div>
-              )}
               <Button
                 type="submit"
                 width="100%"

@@ -24,8 +24,9 @@ defmodule GraphQl.Schema.Cluster do
 
   input_object :cluster_usage_attributes do
     field :bytes_ingested, :integer, description: "the number of bytes ingested by the cluster"
-    field :services, :integer, description: "the number of services deployed on the cluster"
-    field :clusters, :integer, description: "the number of clusters in the cluster"
+    field :services,       :integer, description: "the number of services deployed on the cluster"
+    field :clusters,       :integer, description: "the number of clusters in the cluster"
+    field :tokens,         :integer, description: "the number of tokens used by the cluster"
   end
 
   @desc "A Kubernetes cluster that can be used to deploy applications on with Plural."

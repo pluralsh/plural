@@ -764,6 +764,9 @@ input ClusterUsageAttributes {
 
   "the number of clusters in the cluster"
   clusters: Int
+
+  "the number of tokens used by the cluster"
+  tokens: Int
 }
 
 "A Kubernetes cluster that can be used to deploy applications on with Plural."

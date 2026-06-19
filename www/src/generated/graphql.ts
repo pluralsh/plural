@@ -541,6 +541,8 @@ export type ClusterUsageAttributes = {
   clusters?: InputMaybe<Scalars['Int']['input']>;
   /** the number of services deployed on the cluster */
   services?: InputMaybe<Scalars['Int']['input']>;
+  /** the number of tokens used by the cluster */
+  tokens?: InputMaybe<Scalars['Int']['input']>;
 };
 
 /** A record of the utilization in a given cluster */

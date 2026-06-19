@@ -1,7 +1,6 @@
 # Contributing
 From opening a bug report to creating a pull request: every contribution is appreciated and welcome.
 
-
 ## Development
 
 Plural's server side is written in elixir, and exposes a graphql api. The frontend is in react, all code lives in this single repo and common development tasks can be done using the Makefile at the root of the repo.
@@ -19,26 +18,12 @@ In chrome, you may get a warning saying "Your connection is not private". To res
 
 ### Developing Server
 
-To make changes to the server codebase, you'll want to [install elixir](https://elixir-lang.org/install.html) on your machine. For mac desktops, we do this via [asdf](https://asdf-vm.com/guide/getting-started.html), which can be done simply at the root of the repo like so:
+To make changes to the server codebase, you'll want to [install elixir](https://elixir-lang.org/install.html) on your machine. For mac desktops, we do this via [mise](https://mise.jdx.dev/README.html), which can be done simply at the root of the repo like so:
 
 ```sh
-asdf plugin add erlang
-asdf plugin add elixir
-asdf install
+export KERL_CONFIGURE_OPTIONS="--with-ssl=$(brew --prefix openssl)" # optional when you need to overwrite openssl on Mac
+mise install
 ```
-
-asdf can be finnicky when installing erlang with mac, in which case you can reshim it like so from homebrew:
-
-```sh
-brew install erlang@24
-cp -r /opt/homebrew/opt/erlang@24/lib/erlang ~/.asdf/installs/erlang/24.3.4.13
-asdf reshim erlang 24.3.4.13
-```
-
-<!-- >
-  Remove this line if irrelevant in the future
-</!-->
-In case you're running into this error: `configure: error: cannot find required auxiliary files: install-sh config.guess config.sub` you may consider this [GitHub issue](https://github.com/asdf-vm/asdf-erlang/issues/195#issuecomment-815999279) then re-run `asdf install`.
 
 All server dependencies are managed via [docker-compose](https://www.docker.com/):
 
@@ -101,10 +86,6 @@ You'll need to send an email to see them, which you can use the iex repl to do f
 
 To actually write an email, you'll want to modify the templates in `apps/email/lib/email_web/templates/email` and the layout is in `apps/email/lib/email_web/templates/layout/email.html.eex`
 
-## Adding a new application to the marketplace
-
-See docs on our [docs site](https://docs.plural.sh/applications/adding-new-application) for how to add applications to the marketplace.
-
 ## Bug Bounty Program
 
 Plural likes to work with the security community to find vulnerabilities in order to keep our businesses and customers safe.
@@ -155,3 +136,5 @@ Any activities conducted in a manner consistent with this policy will be conside
 ### Rewards
 Please submit to support@plural.sh to participate in bug bounty program 
 
+
+(apologies for the annoying legalese)

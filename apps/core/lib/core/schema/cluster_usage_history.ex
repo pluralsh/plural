@@ -8,6 +8,7 @@ defmodule Core.Schema.ClusterUsageHistory do
     field :services,       :integer
     field :clusters,       :integer
     field :bytes_ingested, :integer
+    field :tokens,         :integer
 
     belongs_to :cluster, Cluster
     belongs_to :account, Account
@@ -31,7 +32,7 @@ defmodule Core.Schema.ClusterUsageHistory do
     from(u in query, order_by: ^order)
   end
 
-  @valid ~w(cpu memory cluster_id services clusters account_id bytes_ingested)a
+  @valid ~w(cpu memory cluster_id services clusters account_id bytes_ingested tokens)a
 
   def changeset(model, attrs \\ %{}) do
     model

@@ -322,7 +322,13 @@ export function ProviderForm({
   )
 }
 
-export function CreateProvider({ installation }: any) {
+export function CreateProvider({
+  installation,
+  embedded = false,
+}: {
+  installation: any
+  embedded?: boolean
+}) {
   const settings = installation.repository.oauthSettings || {}
   const [attributes, setAttributes] = useState({
     redirectUris: [],
@@ -348,13 +354,15 @@ export function CreateProvider({ installation }: any) {
   })
 
   return (
-    <Div paddingBottom="large">
-      <PageTitle
-        heading="OpenID connect users"
-        paddingTop="medium"
-      >
-        <AppHeaderActions />
-      </PageTitle>
+    <Div paddingBottom={embedded ? undefined : 'large'}>
+      {!embedded && (
+        <PageTitle
+          heading="OpenID connect users"
+          paddingTop="medium"
+        >
+          <AppHeaderActions />
+        </PageTitle>
+      )}
       {error && (
         <GqlError
           error={error}
@@ -380,8 +388,17 @@ enum ModalSelection {
   CreateGroup,
 }
 
-export function UpdateProvider({ installation }: any) {
-  const { refetch } = useContext(AppContext)
+export function UpdateProvider({
+  installation,
+  embedded = false,
+  refetch,
+}: {
+  installation: any
+  embedded?: boolean
+  refetch?: () => void
+}) {
+  const { refetch: refetchFromContext } = useContext(AppContext)
+  const refetchInstallation = refetch ?? refetchFromContext
 
   const provider = useMemo(
     () => installation.oidcProvider,
@@ -413,13 +430,15 @@ export function UpdateProvider({ installation }: any) {
   })
 
   return (
-    <Div paddingBottom="large">
-      <PageTitle
-        heading="OpenID connect users"
-        paddingTop="medium"
-      >
-        <AppHeaderActions />
-      </PageTitle>
+    <Div paddingBottom={embedded ? undefined : 'large'}>
+      {!embedded && (
+        <PageTitle
+          heading="OpenID connect users"
+          paddingTop="medium"
+        >
+          <AppHeaderActions />
+        </PageTitle>
+      )}
       {error && (
         <GqlError
           error={error}
@@ -444,7 +463,7 @@ export function UpdateProvider({ installation }: any) {
             <InviteUserModal
               onClose={() => setSelectedModal(ModalSelection.None)}
               onInvite={() => {
-                refetch?.()
+                refetchInstallation?.()
                 setSelectedModal(ModalSelection.None)
               }}
               oidcProviderId={provider?.id}

@@ -26,7 +26,6 @@ import { ResponsiveLayoutPage } from '../utils/layout/ResponsiveLayoutPage'
 import { EditPluralOIDCClients } from '../overview/clusters/plural-cloud/EditPluralOIDCClients'
 
 import { ClusterAdminsModal } from './ClusterAdminsModal'
-import { ClusterConsole } from './ClusterConsole'
 import { ClusterDependencyModal } from './ClusterDependencyModal'
 import ClusterMetadataPanel from './ClusterMetadataPanel'
 import { ClusterOpenIdConnectUsers } from './ClusterOpenIdConnectUsers'
@@ -239,7 +238,6 @@ export function Cluster() {
             skip={!cluster.owner?.serviceAccount}
           >
             <>
-              <ClusterConsole cluster={cluster} />
               <ClusterSettingsTabs clusterName={cluster.name} />
             </>
           </ImpersonateServiceAccount>

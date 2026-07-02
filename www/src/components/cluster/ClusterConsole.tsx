@@ -6,13 +6,9 @@ import {
   ArrowTopRightIcon,
   Button,
   Card,
-  Chip,
   Flex,
-  GearTrainIcon,
   IconFrame,
 } from '@pluralsh/design-system'
-import { useNavigate, useParams } from 'react-router-dom'
-import { useTheme } from 'styled-components'
 import { ignoreEvent } from '../../utils/ignore-event'
 import { ensureURLValidity } from '../../utils/url'
 import { GqlError } from '../utils/Alert'
@@ -25,9 +21,6 @@ export function ClusterConsole({
 }: {
   cluster: ClusterFragment
 }) {
-  const theme = useTheme()
-  const navigate = useNavigate()
-  const { clusterId } = useParams()
   const { data, loading, error } = useRepositoryQuery({
     variables: { name: CONSOLE_APP_NAME },
   })
@@ -75,25 +68,7 @@ export function ClusterConsole({
         type="floating"
       />
       <Body1BoldP>{console.name}</Body1BoldP>
-      <Chip
-        severity={console.installation?.synced ? 'success' : 'warning'}
-        size={'small'}
-      >
-        {console.installation?.synced ? 'Synced' : 'Pending Sync'}
-      </Chip>
-      {console.installation?.locked && <Chip>Locked</Chip>}
       <Flex grow={1} />
-      <Button
-        floating
-        small
-        startIcon={<GearTrainIcon />}
-        onClick={(e) => {
-          ignoreEvent(e)
-          navigate(`/apps/${clusterId}/${console.name}`)
-        }}
-      >
-        Settings
-      </Button>
       {url && (
         <Button
           endIcon={<ArrowTopRightIcon size={14} />}

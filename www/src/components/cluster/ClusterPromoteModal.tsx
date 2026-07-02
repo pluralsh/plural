@@ -158,10 +158,7 @@ function ClusterPromoteModalInternal({
                 hint={hint(destination.upgradeInfo?.length)}
                 disabled
               />
-              <ClusterUpgradeInfo
-                clusterId={destination.id}
-                upgradeInfo={destination.upgradeInfo}
-              />
+              <ClusterUpgradeInfo upgradeInfo={destination.upgradeInfo} />
               <Div
                 caption
                 color="text-danger-light"

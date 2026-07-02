@@ -4,16 +4,17 @@ import {
   EmptyState,
   PersonPlusIcon,
   RocketIcon,
+  SubTab,
+  TabList,
+  TabPanel,
   WarningOutlineIcon,
   useSetBreadcrumbs,
 } from '@pluralsh/design-system'
 import { Div, Flex } from 'honorable'
-import { useContext, useEffect, useMemo, useState } from 'react'
+import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import { CLUSTERS_ROOT_CRUMB } from 'components/overview/clusters/Clusters'
-
-import { useTheme } from 'styled-components'
 
 import ClustersContext from '../../contexts/ClustersContext'
 import CurrentUserContext from '../../contexts/CurrentUserContext'
@@ -28,12 +29,70 @@ import { ClusterAdminsModal } from './ClusterAdminsModal'
 import { ClusterConsole } from './ClusterConsole'
 import { ClusterDependencyModal } from './ClusterDependencyModal'
 import ClusterMetadataPanel from './ClusterMetadataPanel'
+import { ClusterOpenIdConnectUsers } from './ClusterOpenIdConnectUsers'
 import { ClusterPromoteModal } from './ClusterPromoteModal'
 import { ClusterSidecar } from './ClusterSidecar'
 import { CollapsibleButton } from './misc'
+import { useRepositoryQuery } from '../../generated/graphql'
+
+enum Tab {
+  OpenIdConnectUsers = 'OpenID connect users',
+  OIDCProviders = 'OIDC providers',
+}
+
+function ClusterSettingsTabs({ clusterName }: { clusterName: string }) {
+  const tabStateRef = useRef<any>(null)
+  const { data } = useRepositoryQuery({ variables: { name: 'console' } })
+  const showOpenIdConnectUsers = !!data?.repository?.oauthSettings
+  const tabs = useMemo(() => {
+    const items: Tab[] = []
+
+    if (showOpenIdConnectUsers) items.push(Tab.OpenIdConnectUsers)
+    items.push(Tab.OIDCProviders)
+
+    return items
+  }, [showOpenIdConnectUsers])
+  const [currentTab, setCurrentTab] = useState<Tab>(Tab.OpenIdConnectUsers)
+  const defaultTabSet = useRef(false)
+
+  useEffect(() => {
+    if (showOpenIdConnectUsers && !defaultTabSet.current) {
+      setCurrentTab(Tab.OpenIdConnectUsers)
+      defaultTabSet.current = true
+    } else if (!tabs.includes(currentTab)) {
+      setCurrentTab(tabs[0])
+    }
+  }, [currentTab, showOpenIdConnectUsers, tabs])
+
+  return (
+    <>
+      <TabList
+        stateRef={tabStateRef}
+        stateProps={{
+          orientation: 'horizontal',
+          selectedKey: currentTab,
+          onSelectionChange: (key) => setCurrentTab(`${key}` as Tab),
+        }}
+        css={{ textWrap: 'nowrap' }}
+      >
+        {tabs.map((tab) => (
+          <SubTab key={tab}>{tab}</SubTab>
+        ))}
+      </TabList>
+      <TabPanel
+        stateRef={tabStateRef}
+        css={{ height: '100%' }}
+      >
+        {currentTab === Tab.OpenIdConnectUsers && <ClusterOpenIdConnectUsers />}
+        {currentTab === Tab.OIDCProviders && (
+          <EditPluralOIDCClients instanceName={clusterName} />
+        )}
+      </TabPanel>
+    </>
+  )
+}
 
 export function Cluster() {
-  const theme = useTheme()
   const [dependencyOpen, setDependencyOpen] = useState(false)
   const [promoteOpen, setPromoteOpen] = useState(false)
   const [adminsOpen, setAdminsOpen] = useState(false)
@@ -149,7 +208,6 @@ export function Cluster() {
                 target="_blank"
                 rel="noopener noreferrer"
                 height="max-content"
-                display-desktopSmall-up="none"
               >
                 Launch Console
               </Button>
@@ -182,15 +240,7 @@ export function Cluster() {
           >
             <>
               <ClusterConsole cluster={cluster} />
-              <div
-                css={{
-                  ...theme.partials.text.body1Bold,
-                  marginTop: theme.spacing.medium,
-                }}
-              >
-                Plural OIDC clients
-              </div>
-              <EditPluralOIDCClients instanceName={cluster.name} />
+              <ClusterSettingsTabs clusterName={cluster.name} />
             </>
           </ImpersonateServiceAccount>
         </Flex>

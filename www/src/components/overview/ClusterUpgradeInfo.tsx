@@ -1,7 +1,6 @@
-import { CaretRightIcon, Chip, IconFrame } from '@pluralsh/design-system'
+import { Chip, IconFrame } from '@pluralsh/design-system'
 import { Flex } from 'honorable'
 import { isEmpty } from 'lodash'
-import { Link } from 'react-router-dom'
 
 import { useTheme } from 'styled-components'
 
@@ -9,12 +8,10 @@ import { Maybe, UpgradeInfoFragment } from '../../generated/graphql'
 import { getRepoIcon } from '../repository/misc'
 
 type ClusterUpgradeInfoProps = {
-  clusterId?: Maybe<string>
   upgradeInfo?: Maybe<Maybe<UpgradeInfoFragment>[]>
 }
 
 export function ClusterUpgradeInfo({
-  clusterId,
   upgradeInfo,
 }: ClusterUpgradeInfoProps) {
   const theme = useTheme()
@@ -72,16 +69,6 @@ export function ClusterUpgradeInfo({
             >
               {upgrade?.count} pending
             </Chip>
-            <IconFrame
-              clickable
-              size="medium"
-              icon={<CaretRightIcon />}
-              as={Link}
-              to={`/apps/${clusterId}/${repository?.name}`}
-              textValue="Go to app settings"
-              tooltip
-              type="tertiary"
-            />
           </Flex>
         )
       })}

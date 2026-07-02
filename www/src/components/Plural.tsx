@@ -100,28 +100,9 @@ const CreateCluster = lazy(() =>
   }))
 )
 
-// Cluster and app.
+// Cluster.
 const Cluster = lazy(() =>
   import('./cluster/Cluster').then((module) => ({ default: module.Cluster }))
-)
-const App = lazy(() =>
-  import('./app/App').then((module) => ({ default: module.App }))
-)
-const Upgrade = lazy(() =>
-  import('./app/upgrade/Upgrade').then((module) => ({
-    default: module.Upgrade,
-  }))
-)
-const OIDC = lazy(() =>
-  import('./app/oidc/OIDC').then((module) => ({ default: module.OIDC }))
-)
-const Uninstall = lazy(() =>
-  import('./app/uninstall/Uninstall').then((module) => ({
-    default: module.Uninstall,
-  }))
-)
-const AppDocs = lazy(() =>
-  import('./app/docs/AppDocs').then((module) => ({ default: module.AppDocs }))
 )
 
 const PluralProvider = lazy(() =>
@@ -673,42 +654,6 @@ export function PluralInner() {
                 path="/clusters/:clusterId/"
                 element={<Cluster />}
               />
-              {/* CLUSTER APPS  */}
-              <Route
-                path="/apps/:clusterId/:appName"
-                element={<App />}
-              >
-                <Route
-                  index
-                  element={
-                    <Navigate
-                      replace
-                      to="upgrade"
-                    />
-                  }
-                />
-                <Route
-                  path="upgrade"
-                  element={<Upgrade />}
-                />
-                <Route
-                  path="oidc"
-                  element={<OIDC />}
-                />
-                <Route
-                  path="uninstall"
-                  element={<Uninstall />}
-                />
-                <Route
-                  path="docs"
-                  element={<AppDocs />}
-                >
-                  <Route
-                    path=":docName"
-                    element={<AppDocs />}
-                  />
-                </Route>
-              </Route>
               <Route
                 path="/github/setup"
                 element={<GitHubSetup />}

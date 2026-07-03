@@ -13,6 +13,28 @@ fragment FileContent on FileContent {
   path
 }
 
+fragment ClusterConsoleRepository on Repository {
+  id
+  name
+  oauthSettings {
+    uriFormat
+    authMethod
+  }
+  installation {
+    id
+    oidcProvider {
+      ...OIDCProvider
+    }
+    repository {
+      id
+      oauthSettings {
+        uriFormat
+        authMethod
+      }
+    }
+  }
+}
+
 fragment Repo on Repository {
   id
   name
@@ -112,6 +134,12 @@ fragment Integration on Integration {
   }
   publisher {
     ...Publisher
+  }
+}
+
+query ClusterConsoleRepository {
+  repository(name: "console") {
+    ...ClusterConsoleRepository
   }
 }
 

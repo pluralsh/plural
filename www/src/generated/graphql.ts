@@ -6024,6 +6024,8 @@ export type CategoryFragment = { __typename?: 'CategoryInfo', category?: Categor
 
 export type FileContentFragment = { __typename?: 'FileContent', content: string, path: string };
 
+export type ClusterConsoleRepositoryFragment = { __typename?: 'Repository', id: string, name: string, oauthSettings?: { __typename?: 'OauthSettings', uriFormat: string, authMethod: OidcAuthMethod } | null, installation?: { __typename?: 'Installation', id: string, oidcProvider?: { __typename?: 'OidcProvider', id: string, name?: string | null, description?: string | null, clientId: string, authMethod: OidcAuthMethod, clientSecret: string, redirectUris?: Array<string | null> | null, bindings?: Array<{ __typename?: 'OidcProviderBinding', id: string, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null, group?: { __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null } | null> | null, configuration?: { __typename?: 'OuathConfiguration', issuer?: string | null, authorizationEndpoint?: string | null, tokenEndpoint?: string | null, jwksUri?: string | null, userinfoEndpoint?: string | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null } | null, repository?: { __typename?: 'Repository', id: string, oauthSettings?: { __typename?: 'OauthSettings', uriFormat: string, authMethod: OidcAuthMethod } | null } | null } | null };
+
 export type RepoFragment = { __typename?: 'Repository', id: string, name: string, notes?: string | null, description?: string | null, documentation?: string | null, icon?: string | null, darkIcon?: string | null, private?: boolean | null, trending?: boolean | null, verified?: boolean | null, category?: Category | null, docs?: Array<{ __typename?: 'FileContent', content: string, path: string } | null> | null, oauthSettings?: { __typename?: 'OauthSettings', uriFormat: string, authMethod: OidcAuthMethod } | null, publisher?: { __typename?: 'Publisher', id?: string | null, name: string, phone?: string | null, avatar?: string | null, description?: string | null, backgroundColor?: string | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null, address?: { __typename?: 'Address', line1?: string | null, line2?: string | null, city?: string | null, country?: string | null, state?: string | null, zip?: string | null } | null } | null, recipes?: Array<{ __typename?: 'Recipe', name: string, provider?: Provider | null, description?: string | null } | null> | null };
 
 export type RepositoryFragment = { __typename?: 'Repository', id: string, name: string, icon?: string | null, darkIcon?: string | null, installation?: { __typename?: 'Installation', pingedAt?: Date | null, synced?: boolean | null, locked?: boolean | null } | null };
@@ -6033,6 +6035,11 @@ export type MarketplaceRepositoryFragment = { __typename?: 'Repository', id: str
 export type DependenciesFragment = { __typename?: 'Dependencies', wait?: boolean | null, application?: boolean | null, providers?: Array<Provider | null> | null, secrets?: Array<string | null> | null, providerWirings?: Map<string, unknown> | null, outputs?: Map<string, unknown> | null, dependencies?: Array<{ __typename?: 'Dependency', name?: string | null, repo?: string | null, type?: DependencyType | null, version?: string | null, optional?: boolean | null } | null> | null, wirings?: { __typename?: 'Wirings', terraform?: Map<string, unknown> | null, helm?: Map<string, unknown> | null } | null };
 
 export type IntegrationFragment = { __typename?: 'Integration', id: string, name: string, icon?: string | null, sourceUrl?: string | null, description?: string | null, tags?: Array<{ __typename?: 'Tag', tag: string } | null> | null, publisher?: { __typename?: 'Publisher', id?: string | null, name: string, phone?: string | null, avatar?: string | null, description?: string | null, backgroundColor?: string | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null, address?: { __typename?: 'Address', line1?: string | null, line2?: string | null, city?: string | null, country?: string | null, state?: string | null, zip?: string | null } | null } | null };
+
+export type ClusterConsoleRepositoryQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ClusterConsoleRepositoryQuery = { __typename?: 'RootQueryType', repository?: { __typename?: 'Repository', id: string, name: string, oauthSettings?: { __typename?: 'OauthSettings', uriFormat: string, authMethod: OidcAuthMethod } | null, installation?: { __typename?: 'Installation', id: string, oidcProvider?: { __typename?: 'OidcProvider', id: string, name?: string | null, description?: string | null, clientId: string, authMethod: OidcAuthMethod, clientSecret: string, redirectUris?: Array<string | null> | null, bindings?: Array<{ __typename?: 'OidcProviderBinding', id: string, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null, group?: { __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null } | null> | null, configuration?: { __typename?: 'OuathConfiguration', issuer?: string | null, authorizationEndpoint?: string | null, tokenEndpoint?: string | null, jwksUri?: string | null, userinfoEndpoint?: string | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null } | null, repository?: { __typename?: 'Repository', id: string, oauthSettings?: { __typename?: 'OauthSettings', uriFormat: string, authMethod: OidcAuthMethod } | null } | null } | null } | null };
 
 export type RepositoryQueryVariables = Exact<{
   id?: InputMaybe<Scalars['ID']['input']>;
@@ -7779,6 +7786,29 @@ export const CategoryFragmentDoc = gql`
   count
 }
     `;
+export const ClusterConsoleRepositoryFragmentDoc = gql`
+    fragment ClusterConsoleRepository on Repository {
+  id
+  name
+  oauthSettings {
+    uriFormat
+    authMethod
+  }
+  installation {
+    id
+    oidcProvider {
+      ...OIDCProvider
+    }
+    repository {
+      id
+      oauthSettings {
+        uriFormat
+        authMethod
+      }
+    }
+  }
+}
+    ${OidcProviderFragmentDoc}`;
 export const RepositoryFragmentDoc = gql`
     fragment Repository on Repository {
   id
@@ -10826,6 +10856,45 @@ export type ListStacksQueryHookResult = ReturnType<typeof useListStacksQuery>;
 export type ListStacksLazyQueryHookResult = ReturnType<typeof useListStacksLazyQuery>;
 export type ListStacksSuspenseQueryHookResult = ReturnType<typeof useListStacksSuspenseQuery>;
 export type ListStacksQueryResult = Apollo.QueryResult<ListStacksQuery, ListStacksQueryVariables>;
+export const ClusterConsoleRepositoryDocument = gql`
+    query ClusterConsoleRepository {
+  repository(name: "console") {
+    ...ClusterConsoleRepository
+  }
+}
+    ${ClusterConsoleRepositoryFragmentDoc}`;
+
+/**
+ * __useClusterConsoleRepositoryQuery__
+ *
+ * To run a query within a React component, call `useClusterConsoleRepositoryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useClusterConsoleRepositoryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useClusterConsoleRepositoryQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useClusterConsoleRepositoryQuery(baseOptions?: Apollo.QueryHookOptions<ClusterConsoleRepositoryQuery, ClusterConsoleRepositoryQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ClusterConsoleRepositoryQuery, ClusterConsoleRepositoryQueryVariables>(ClusterConsoleRepositoryDocument, options);
+      }
+export function useClusterConsoleRepositoryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ClusterConsoleRepositoryQuery, ClusterConsoleRepositoryQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ClusterConsoleRepositoryQuery, ClusterConsoleRepositoryQueryVariables>(ClusterConsoleRepositoryDocument, options);
+        }
+export function useClusterConsoleRepositorySuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<ClusterConsoleRepositoryQuery, ClusterConsoleRepositoryQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<ClusterConsoleRepositoryQuery, ClusterConsoleRepositoryQueryVariables>(ClusterConsoleRepositoryDocument, options);
+        }
+export type ClusterConsoleRepositoryQueryHookResult = ReturnType<typeof useClusterConsoleRepositoryQuery>;
+export type ClusterConsoleRepositoryLazyQueryHookResult = ReturnType<typeof useClusterConsoleRepositoryLazyQuery>;
+export type ClusterConsoleRepositorySuspenseQueryHookResult = ReturnType<typeof useClusterConsoleRepositorySuspenseQuery>;
+export type ClusterConsoleRepositoryQueryResult = Apollo.QueryResult<ClusterConsoleRepositoryQuery, ClusterConsoleRepositoryQueryVariables>;
 export const RepositoryDocument = gql`
     query Repository($id: ID, $name: String) {
   repository(id: $id, name: $name) {
@@ -12973,6 +13042,7 @@ export const namedOperations = {
     ListRecipes: 'ListRecipes',
     GetStack: 'GetStack',
     ListStacks: 'ListStacks',
+    ClusterConsoleRepository: 'ClusterConsoleRepository',
     Repository: 'Repository',
     Repositories: 'Repositories',
     MarketplaceRepositories: 'MarketplaceRepositories',
@@ -13141,6 +13211,7 @@ export const namedOperations = {
     ApplyLock: 'ApplyLock',
     Category: 'Category',
     FileContent: 'FileContent',
+    ClusterConsoleRepository: 'ClusterConsoleRepository',
     Repo: 'Repo',
     Repository: 'Repository',
     MarketplaceRepository: 'MarketplaceRepository',

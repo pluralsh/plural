@@ -78,12 +78,6 @@ export default function ClusterMetadataPanel({
         </Prop>
       )}
       <Prop
-        title="Acked"
-        margin={0}
-      >
-        {cluster.queue?.acked || '-'}
-      </Prop>
-      <Prop
         title="Last pinged"
         margin={0}
       >

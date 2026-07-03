@@ -4,16 +4,17 @@ import {
   EmptyState,
   PersonPlusIcon,
   RocketIcon,
+  SubTab,
+  TabList,
+  TabPanel,
   WarningOutlineIcon,
   useSetBreadcrumbs,
 } from '@pluralsh/design-system'
 import { Div, Flex } from 'honorable'
-import { useContext, useEffect, useMemo, useState } from 'react'
+import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import { CLUSTERS_ROOT_CRUMB } from 'components/overview/clusters/Clusters'
-
-import { useTheme } from 'styled-components'
 
 import ClustersContext from '../../contexts/ClustersContext'
 import CurrentUserContext from '../../contexts/CurrentUserContext'
@@ -25,15 +26,103 @@ import { ResponsiveLayoutPage } from '../utils/layout/ResponsiveLayoutPage'
 import { EditPluralOIDCClients } from '../overview/clusters/plural-cloud/EditPluralOIDCClients'
 
 import { ClusterAdminsModal } from './ClusterAdminsModal'
-import { ClusterConsole } from './ClusterConsole'
 import { ClusterDependencyModal } from './ClusterDependencyModal'
 import ClusterMetadataPanel from './ClusterMetadataPanel'
+import { ClusterLoginSettings } from './ClusterLoginSettings'
 import { ClusterPromoteModal } from './ClusterPromoteModal'
 import { ClusterSidecar } from './ClusterSidecar'
 import { CollapsibleButton } from './misc'
+import LoadingIndicator from '../utils/LoadingIndicator'
+import {
+  ClusterConsoleRepositoryFragment,
+  useClusterConsoleRepositoryQuery,
+} from '../../generated/graphql'
+import { GqlError } from 'components/utils/Alert'
+
+enum Tab {
+  LoginSettings = 'Login settings',
+  OIDCProviders = 'OIDC providers',
+}
+
+function ClusterSettingsTabs({ clusterName }: { clusterName: string }) {
+  const { data, loading, error, refetch } = useClusterConsoleRepositoryQuery()
+
+  if (!data && loading) return <LoadingIndicator />
+
+  if (error) return <GqlError error={error} />
+
+  return (
+    <ClusterSettingsTabsContent
+      clusterName={clusterName}
+      showLoginSettings={!!data?.repository?.oauthSettings}
+      repository={data?.repository ?? undefined}
+      refetch={refetch}
+    />
+  )
+}
+
+function ClusterSettingsTabsContent({
+  clusterName,
+  showLoginSettings,
+  repository,
+  refetch,
+}: {
+  clusterName: string
+  showLoginSettings: boolean
+  repository?: ClusterConsoleRepositoryFragment
+  refetch: () => void
+}) {
+  const tabStateRef = useRef<any>(null)
+  const tabs = useMemo(() => {
+    const items: Tab[] = []
+
+    if (showLoginSettings) items.push(Tab.LoginSettings)
+    items.push(Tab.OIDCProviders)
+
+    return items
+  }, [showLoginSettings])
+  const [currentTab, setCurrentTab] = useState(() => tabs[0])
+
+  useEffect(() => {
+    if (!tabs.includes(currentTab)) {
+      setCurrentTab(tabs[0])
+    }
+  }, [currentTab, tabs])
+
+  return (
+    <>
+      <TabList
+        stateRef={tabStateRef}
+        stateProps={{
+          orientation: 'horizontal',
+          selectedKey: currentTab,
+          onSelectionChange: (key) => setCurrentTab(`${key}` as Tab),
+        }}
+        css={{ textWrap: 'nowrap' }}
+      >
+        {tabs.map((tab) => (
+          <SubTab key={tab}>{tab}</SubTab>
+        ))}
+      </TabList>
+      <TabPanel
+        stateRef={tabStateRef}
+        css={{ height: '100%' }}
+      >
+        {currentTab === Tab.LoginSettings && (
+          <ClusterLoginSettings
+            repository={repository}
+            refetch={refetch}
+          />
+        )}
+        {currentTab === Tab.OIDCProviders && (
+          <EditPluralOIDCClients instanceName={clusterName} />
+        )}
+      </TabPanel>
+    </>
+  )
+}
 
 export function Cluster() {
-  const theme = useTheme()
   const [dependencyOpen, setDependencyOpen] = useState(false)
   const [promoteOpen, setPromoteOpen] = useState(false)
   const [adminsOpen, setAdminsOpen] = useState(false)
@@ -149,7 +238,6 @@ export function Cluster() {
                 target="_blank"
                 rel="noopener noreferrer"
                 height="max-content"
-                display-desktopSmall-up="none"
               >
                 Launch Console
               </Button>
@@ -181,16 +269,7 @@ export function Cluster() {
             skip={!cluster.owner?.serviceAccount}
           >
             <>
-              <ClusterConsole cluster={cluster} />
-              <div
-                css={{
-                  ...theme.partials.text.body1Bold,
-                  marginTop: theme.spacing.medium,
-                }}
-              >
-                Plural OIDC clients
-              </div>
-              <EditPluralOIDCClients instanceName={cluster.name} />
+              <ClusterSettingsTabs clusterName={cluster.name} />
             </>
           </ImpersonateServiceAccount>
         </Flex>

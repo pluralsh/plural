@@ -7,7 +7,6 @@ import {
   InfoOutlineIcon,
   Input,
   ListBoxFooter,
-  PageTitle,
   PeoplePlusIcon,
   PersonPlusIcon,
   Toast,
@@ -16,17 +15,8 @@ import {
 import { Box } from 'grommet'
 import { Button, Div, Flex, P, Span } from 'honorable'
 import isEqual from 'lodash/isEqual'
-import {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-import { AppContext, useAppContext } from '../../../contexts/AppContext'
 import usePrevious from '../../../hooks/usePrevious'
 import { deepUpdate, updateCache } from '../../../utils/graphql'
 import InviteUserModal from '../../account/invite/InviteUserModal'
@@ -37,7 +27,6 @@ import { REPO_Q } from '../../repository/packages/queries'
 import { GqlError } from '../../utils/Alert'
 import CreateGroupModal from '../../utils/group/CreateGroupModal'
 import ImpersonateServiceAccount from '../../utils/ImpersonateServiceAccount'
-import { AppHeaderActions } from '../AppHeaderActions'
 import {
   useCreateProviderMutation,
   useUpdateProviderMutation,
@@ -322,7 +311,13 @@ export function ProviderForm({
   )
 }
 
-export function CreateProvider({ installation }: any) {
+export function CreateProvider({
+  installation,
+  refetch,
+}: {
+  installation: any
+  refetch?: () => void
+}) {
   const settings = installation.repository.oauthSettings || {}
   const [attributes, setAttributes] = useState({
     redirectUris: [],
@@ -334,6 +329,7 @@ export function CreateProvider({ installation }: any) {
       installationId: installation.id,
       attributes: { ...attributes, bindings: bindings.map(sanitize) },
     },
+    onCompleted: () => refetch?.(),
     update: (cache, { data }) =>
       updateCache(cache, {
         query: REPO_Q,
@@ -348,13 +344,7 @@ export function CreateProvider({ installation }: any) {
   })
 
   return (
-    <Div paddingBottom="large">
-      <PageTitle
-        heading="OpenID connect users"
-        paddingTop="medium"
-      >
-        <AppHeaderActions />
-      </PageTitle>
+    <Div>
       {error && (
         <GqlError
           error={error}
@@ -380,9 +370,13 @@ enum ModalSelection {
   CreateGroup,
 }
 
-export function UpdateProvider({ installation }: any) {
-  const { refetch } = useContext(AppContext)
-
+export function UpdateProvider({
+  installation,
+  refetch,
+}: {
+  installation: any
+  refetch?: () => void
+}) {
   const provider = useMemo(
     () => installation.oidcProvider,
     [installation.oidcProvider]
@@ -413,13 +407,7 @@ export function UpdateProvider({ installation }: any) {
   })
 
   return (
-    <Div paddingBottom="large">
-      <PageTitle
-        heading="OpenID connect users"
-        paddingTop="medium"
-      >
-        <AppHeaderActions />
-      </PageTitle>
+    <Div>
       {error && (
         <GqlError
           error={error}
@@ -463,20 +451,4 @@ export function UpdateProvider({ installation }: any) {
       </ImpersonateServiceAccount>
     </Div>
   )
-}
-
-export function OIDC() {
-  const navigate = useNavigate()
-  const { installation } = useAppContext()
-  const { appName: name } = useParams()
-
-  useEffect(() => {
-    if (!installation) navigate(-1)
-  }, [name, installation, navigate])
-
-  if (!installation) return null
-  if (installation.oidcProvider)
-    return <UpdateProvider installation={installation} />
-
-  return <CreateProvider installation={installation} />
 }

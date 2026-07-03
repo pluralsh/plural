@@ -48,7 +48,6 @@ export function ClusterSidecar({ cluster }: ClusterSidecarProps): ReactElement {
             </A>
           </SidecarItem>
         )}
-        <SidecarItem heading="Acked">{cluster.queue?.acked || '-'}</SidecarItem>
         <SidecarItem heading="Last pinged">
           {cluster.pingedAt ? (
             <Tooltip

@@ -28,7 +28,7 @@ import { EditPluralOIDCClients } from '../overview/clusters/plural-cloud/EditPlu
 import { ClusterAdminsModal } from './ClusterAdminsModal'
 import { ClusterDependencyModal } from './ClusterDependencyModal'
 import ClusterMetadataPanel from './ClusterMetadataPanel'
-import { ClusterOpenIdConnectUsers } from './ClusterOpenIdConnectUsers'
+import { ClusterLoginSettings } from './ClusterLoginSettings'
 import { ClusterPromoteModal } from './ClusterPromoteModal'
 import { ClusterSidecar } from './ClusterSidecar'
 import { CollapsibleButton } from './misc'
@@ -39,7 +39,7 @@ import {
 } from '../../generated/graphql'
 
 enum Tab {
-  OpenIdConnectUsers = 'OpenID connect users',
+  LoginSettings = 'Login settings',
   OIDCProviders = 'OIDC providers',
 }
 
@@ -51,7 +51,7 @@ function ClusterSettingsTabs({ clusterName }: { clusterName: string }) {
   return (
     <ClusterSettingsTabsContent
       clusterName={clusterName}
-      showOpenIdConnectUsers={!!data?.repository?.oauthSettings}
+      showLoginSettings={!!data?.repository?.oauthSettings}
       repository={data?.repository ?? undefined}
       refetch={refetch}
     />
@@ -60,12 +60,12 @@ function ClusterSettingsTabs({ clusterName }: { clusterName: string }) {
 
 function ClusterSettingsTabsContent({
   clusterName,
-  showOpenIdConnectUsers,
+  showLoginSettings,
   repository,
   refetch,
 }: {
   clusterName: string
-  showOpenIdConnectUsers: boolean
+  showLoginSettings: boolean
   repository?: ClusterConsoleRepositoryFragment
   refetch: () => void
 }) {
@@ -73,11 +73,11 @@ function ClusterSettingsTabsContent({
   const tabs = useMemo(() => {
     const items: Tab[] = []
 
-    if (showOpenIdConnectUsers) items.push(Tab.OpenIdConnectUsers)
+    if (showLoginSettings) items.push(Tab.LoginSettings)
     items.push(Tab.OIDCProviders)
 
     return items
-  }, [showOpenIdConnectUsers])
+  }, [showLoginSettings])
   const [currentTab, setCurrentTab] = useState(() => tabs[0])
 
   useEffect(() => {
@@ -105,8 +105,8 @@ function ClusterSettingsTabsContent({
         stateRef={tabStateRef}
         css={{ height: '100%' }}
       >
-        {currentTab === Tab.OpenIdConnectUsers && (
-          <ClusterOpenIdConnectUsers
+        {currentTab === Tab.LoginSettings && (
+          <ClusterLoginSettings
             repository={repository}
             refetch={refetch}
           />

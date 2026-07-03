@@ -7,7 +7,7 @@ import { GqlError } from '../utils/Alert'
 import LoadingIndicator from '../utils/LoadingIndicator'
 import { CreateProvider, UpdateProvider } from '../app/oidc/OIDC'
 
-export function ClusterOpenIdConnectUsers({
+export function ClusterLoginSettings({
   repository: repositoryProp,
   refetch: refetchProp,
 }: {
@@ -23,7 +23,7 @@ export function ClusterOpenIdConnectUsers({
   if (error)
     return (
       <GqlError
-        header="Could not fetch OpenID connect settings"
+        header="Could not fetch login settings"
         error={error}
       />
     )

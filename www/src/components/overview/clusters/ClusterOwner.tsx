@@ -1,4 +1,5 @@
 import { AppIcon } from '@pluralsh/design-system'
+import { TRUNCATE } from 'components/utils/Truncate'
 import { Div, Flex } from 'honorable'
 
 type ClusterOwnerProps = {
@@ -24,10 +25,13 @@ export default function ClusterOwner({
         url={avatar || undefined}
         size="xxsmall"
       />
-      <Div width="100%">
+      <Div
+        width="100%"
+        minWidth={0}
+      >
         <Div
           body2
-          whiteSpace="nowrap"
+          css={TRUNCATE}
         >
           {name}
         </Div>

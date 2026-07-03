@@ -15,13 +15,7 @@ import {
 import { Box } from 'grommet'
 import { Button, Div, Flex, P, Span } from 'honorable'
 import isEqual from 'lodash/isEqual'
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import usePrevious from '../../../hooks/usePrevious'
 import { deepUpdate, updateCache } from '../../../utils/graphql'
@@ -376,7 +370,6 @@ export function UpdateProvider({
   installation: any
   refetch?: () => void
 }) {
-
   const provider = useMemo(
     () => installation.oidcProvider,
     [installation.oidcProvider]

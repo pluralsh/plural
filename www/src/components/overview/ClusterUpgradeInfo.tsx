@@ -11,9 +11,7 @@ type ClusterUpgradeInfoProps = {
   upgradeInfo?: Maybe<Maybe<UpgradeInfoFragment>[]>
 }
 
-export function ClusterUpgradeInfo({
-  upgradeInfo,
-}: ClusterUpgradeInfoProps) {
+export function ClusterUpgradeInfo({ upgradeInfo }: ClusterUpgradeInfoProps) {
   const theme = useTheme()
 
   if (isEmpty(upgradeInfo)) return null

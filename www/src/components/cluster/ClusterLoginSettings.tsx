@@ -49,5 +49,10 @@ export function ClusterLoginSettings({
     )
   }
 
-  return <CreateProvider installation={installation} refetch={refetchInstallation} />
+  return (
+    <CreateProvider
+      installation={installation}
+      refetch={refetchInstallation}
+    />
+  )
 }

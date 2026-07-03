@@ -37,6 +37,7 @@ import {
   ClusterConsoleRepositoryFragment,
   useClusterConsoleRepositoryQuery,
 } from '../../generated/graphql'
+import { GqlError } from 'components/utils/Alert'
 
 enum Tab {
   LoginSettings = 'Login settings',
@@ -44,9 +45,11 @@ enum Tab {
 }
 
 function ClusterSettingsTabs({ clusterName }: { clusterName: string }) {
-  const { data, loading, refetch } = useClusterConsoleRepositoryQuery()
+  const { data, loading, error, refetch } = useClusterConsoleRepositoryQuery()
 
   if (!data && loading) return <LoadingIndicator />
+
+  if (error) return <GqlError error={error} />
 
   return (
     <ClusterSettingsTabsContent

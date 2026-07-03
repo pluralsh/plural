@@ -1,15 +1,24 @@
-import { useRepositoryQuery } from '../../generated/graphql'
+import {
+  ClusterConsoleRepositoryFragment,
+  useClusterConsoleRepositoryQuery,
+} from '../../generated/graphql'
 import { EmptyListMessage } from '../overview/clusters/misc'
 import { GqlError } from '../utils/Alert'
 import LoadingIndicator from '../utils/LoadingIndicator'
 import { CreateProvider, UpdateProvider } from '../app/oidc/OIDC'
 
-const CONSOLE_APP_NAME = 'console'
-
-export function ClusterOpenIdConnectUsers() {
-  const { data, loading, error, refetch } = useRepositoryQuery({
-    variables: { name: CONSOLE_APP_NAME },
+export function ClusterOpenIdConnectUsers({
+  repository: repositoryProp,
+  refetch: refetchProp,
+}: {
+  repository?: ClusterConsoleRepositoryFragment
+  refetch?: () => void
+} = {}) {
+  const { data, loading, error, refetch } = useClusterConsoleRepositoryQuery({
+    skip: !!repositoryProp,
   })
+  const repository = repositoryProp ?? data?.repository
+  const refetchInstallation = refetchProp ?? refetch
 
   if (error)
     return (
@@ -19,9 +28,9 @@ export function ClusterOpenIdConnectUsers() {
       />
     )
 
-  if (!data && loading) return <LoadingIndicator />
+  if (!repositoryProp && !data && loading) return <LoadingIndicator />
 
-  const installation = data?.repository?.installation
+  const installation = repository?.installation
 
   if (!installation) {
     return (
@@ -35,7 +44,7 @@ export function ClusterOpenIdConnectUsers() {
     return (
       <UpdateProvider
         installation={installation}
-        refetch={refetch}
+        refetch={refetchInstallation}
       />
     )
   }

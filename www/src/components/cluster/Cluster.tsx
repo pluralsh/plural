@@ -32,7 +32,11 @@ import { ClusterOpenIdConnectUsers } from './ClusterOpenIdConnectUsers'
 import { ClusterPromoteModal } from './ClusterPromoteModal'
 import { ClusterSidecar } from './ClusterSidecar'
 import { CollapsibleButton } from './misc'
-import { useRepositoryQuery } from '../../generated/graphql'
+import LoadingIndicator from '../utils/LoadingIndicator'
+import {
+  ClusterConsoleRepositoryFragment,
+  useClusterConsoleRepositoryQuery,
+} from '../../generated/graphql'
 
 enum Tab {
   OpenIdConnectUsers = 'OpenID connect users',
@@ -40,9 +44,32 @@ enum Tab {
 }
 
 function ClusterSettingsTabs({ clusterName }: { clusterName: string }) {
+  const { data, loading, refetch } = useClusterConsoleRepositoryQuery()
+
+  if (!data && loading) return <LoadingIndicator />
+
+  return (
+    <ClusterSettingsTabsContent
+      clusterName={clusterName}
+      showOpenIdConnectUsers={!!data?.repository?.oauthSettings}
+      repository={data?.repository ?? undefined}
+      refetch={refetch}
+    />
+  )
+}
+
+function ClusterSettingsTabsContent({
+  clusterName,
+  showOpenIdConnectUsers,
+  repository,
+  refetch,
+}: {
+  clusterName: string
+  showOpenIdConnectUsers: boolean
+  repository?: ClusterConsoleRepositoryFragment
+  refetch: () => void
+}) {
   const tabStateRef = useRef<any>(null)
-  const { data } = useRepositoryQuery({ variables: { name: 'console' } })
-  const showOpenIdConnectUsers = !!data?.repository?.oauthSettings
   const tabs = useMemo(() => {
     const items: Tab[] = []
 
@@ -51,17 +78,13 @@ function ClusterSettingsTabs({ clusterName }: { clusterName: string }) {
 
     return items
   }, [showOpenIdConnectUsers])
-  const [currentTab, setCurrentTab] = useState<Tab>(Tab.OpenIdConnectUsers)
-  const defaultTabSet = useRef(false)
+  const [currentTab, setCurrentTab] = useState(() => tabs[0])
 
   useEffect(() => {
-    if (showOpenIdConnectUsers && !defaultTabSet.current) {
-      setCurrentTab(Tab.OpenIdConnectUsers)
-      defaultTabSet.current = true
-    } else if (!tabs.includes(currentTab)) {
+    if (!tabs.includes(currentTab)) {
       setCurrentTab(tabs[0])
     }
-  }, [currentTab, showOpenIdConnectUsers, tabs])
+  }, [currentTab, tabs])
 
   return (
     <>
@@ -82,7 +105,12 @@ function ClusterSettingsTabs({ clusterName }: { clusterName: string }) {
         stateRef={tabStateRef}
         css={{ height: '100%' }}
       >
-        {currentTab === Tab.OpenIdConnectUsers && <ClusterOpenIdConnectUsers />}
+        {currentTab === Tab.OpenIdConnectUsers && (
+          <ClusterOpenIdConnectUsers
+            repository={repository}
+            refetch={refetch}
+          />
+        )}
         {currentTab === Tab.OIDCProviders && (
           <EditPluralOIDCClients instanceName={clusterName} />
         )}

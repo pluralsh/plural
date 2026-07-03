@@ -311,7 +311,13 @@ export function ProviderForm({
   )
 }
 
-export function CreateProvider({ installation }: { installation: any }) {
+export function CreateProvider({
+  installation,
+  refetch,
+}: {
+  installation: any
+  refetch?: () => void
+}) {
   const settings = installation.repository.oauthSettings || {}
   const [attributes, setAttributes] = useState({
     redirectUris: [],
@@ -323,6 +329,7 @@ export function CreateProvider({ installation }: { installation: any }) {
       installationId: installation.id,
       attributes: { ...attributes, bindings: bindings.map(sanitize) },
     },
+    onCompleted: () => refetch?.(),
     update: (cache, { data }) =>
       updateCache(cache, {
         query: REPO_Q,

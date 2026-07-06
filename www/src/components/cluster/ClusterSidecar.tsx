@@ -17,6 +17,10 @@ export function ClusterSidecar({ cluster }: ClusterSidecarProps): ReactElement {
       gap="large"
       direction="column"
       width={200}
+      flexShrink={0}
+      alignSelf="flex-start"
+      maxHeight="100%"
+      overflowY="auto"
       display-desktopSmall-down="none"
     >
       <Sidecar heading="Metadata">

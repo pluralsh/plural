@@ -13,7 +13,7 @@ import {
   Tooltip,
 } from '@pluralsh/design-system'
 import { Box } from 'grommet'
-import { Button, Div, Flex, P, Span } from 'honorable'
+import { Button, Flex, P, Span } from 'honorable'
 import isEqual from 'lodash/isEqual'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
@@ -174,6 +174,8 @@ export function ProviderForm({
       flexDirection="column"
       gap="large"
       padding="xlarge"
+      maxHeight="100%"
+      overflowY="auto"
     >
       <Flex
         gap="medium"
@@ -344,7 +346,7 @@ export function CreateProvider({
   })
 
   return (
-    <Div>
+    <>
       {error && (
         <GqlError
           error={error}
@@ -360,7 +362,7 @@ export function CreateProvider({
         onSave={() => mutation()}
         loading={loading}
       />
-    </Div>
+    </>
   )
 }
 
@@ -407,7 +409,7 @@ export function UpdateProvider({
   })
 
   return (
-    <Div>
+    <>
       {error && (
         <GqlError
           error={error}
@@ -449,6 +451,6 @@ export function UpdateProvider({
           )}
         </>
       </ImpersonateServiceAccount>
-    </Div>
+    </>
   )
 }

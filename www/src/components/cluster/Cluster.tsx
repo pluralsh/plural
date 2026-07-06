@@ -90,7 +90,13 @@ function ClusterSettingsTabsContent({
   }, [currentTab, tabs])
 
   return (
-    <>
+    <Flex
+      direction="column"
+      gap="medium"
+      grow={1}
+      minHeight={0}
+      overflow="hidden"
+    >
       <TabList
         stateRef={tabStateRef}
         stateProps={{
@@ -106,7 +112,15 @@ function ClusterSettingsTabsContent({
       </TabList>
       <TabPanel
         stateRef={tabStateRef}
-        css={{ height: '100%' }}
+        as={
+          <Flex
+            direction="column"
+            grow={1}
+            minHeight={0}
+            minWidth={0}
+            overflow="hidden"
+          />
+        }
       >
         {currentTab === Tab.LoginSettings && (
           <ClusterLoginSettings
@@ -118,7 +132,7 @@ function ClusterSettingsTabsContent({
           <EditPluralOIDCClients instanceName={clusterName} />
         )}
       </TabPanel>
-    </>
+    </Flex>
   )
 }
 
@@ -167,6 +181,7 @@ export function Cluster() {
       <Flex
         direction="column"
         grow={1}
+        minHeight={0}
       >
         <Flex
           gap="large"

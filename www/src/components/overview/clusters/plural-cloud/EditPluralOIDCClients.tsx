@@ -130,6 +130,7 @@ export function EditPluralOIDCClients({
         display: 'flex',
         flexDirection: 'column',
         position: 'relative',
+        maxHeight: '100%',
         overflow: 'auto',
       }}
     >

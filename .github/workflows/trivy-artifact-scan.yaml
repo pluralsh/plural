@@ -30,6 +30,8 @@
 #           scan-type: 'fs'
 #           scan-ref: 'plural'
 #           hide-progress: false
+#           skip-dirs: './utils'
+#           skip-files: '**/*.yaml,**/*.yml,**/*.tgz'
 #           format: 'sarif'
 #           output: 'trivy-results.sarif'
 #           security-checks: 'vuln,secret,config'

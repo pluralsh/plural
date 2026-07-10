@@ -57,6 +57,9 @@ defmodule GraphQl.Schema.Cloud do
     field :status,    non_null(:console_instance_status),
       description: "the provisioning status of this instance, liveness is fetched through the console field"
 
+    field :details, :console_instance_details, description: "the details of this instance, this is an expensive query and should be fetched lazily",
+      resolve: &Cloud.resolve_details/3
+
     field :deleted_at, :datetime, description: "the time this instance was deleted on"
 
     field :console, :cluster, resolve: &Cloud.resolve_cluster/3
@@ -86,6 +89,10 @@ defmodule GraphQl.Schema.Cloud do
     field :issuer,        :string
     field :client_id,     :string
     field :client_secret, :string
+  end
+
+  object :console_instance_details do
+    field :aws_assume_role, :string
   end
 
   connection node_type: :console_instance

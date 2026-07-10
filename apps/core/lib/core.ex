@@ -95,4 +95,8 @@ defmodule Core do
       r
     end)
   end
+
+  def deep_get(%{} = map, [key]), do: Map.get(map, key)
+  def deep_get(%{} = map, [key | keys]), do: deep_get(Map.get(map, key), keys)
+  def deep_get(_, _), do: nil
 end

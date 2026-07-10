@@ -20,6 +20,7 @@ defmodule Core.Clients.Console do
     serviceDeployment(id: $id) {
       id
       status
+      cluster { name handle metadata }
     }
   }
   """

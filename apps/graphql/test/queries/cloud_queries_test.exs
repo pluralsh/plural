@@ -1,6 +1,8 @@
 defmodule GraphQl.CloudQueriesTest do
   use Core.SchemaCase, async: true
+  use Mimic
   import GraphQl.TestHelpers
+  alias Core.Clients.Console
 
   describe "cloudSettings" do
     test "it can list supported regions" do
@@ -69,6 +71,38 @@ defmodule GraphQl.CloudQueriesTest do
 
       assert found["id"] == instance.id
       assert found["console"]["id"] == cluster.id
+    end
+
+    test "it can resolve console instance details" do
+      user = insert(:user)
+      instance = insert(:console_instance, owner: insert(:user, account: user.account), type: :shared)
+      client = :console
+
+      expect(Console, :new, fn _, _ -> client end)
+      expect(Console, :service, fn ^client, id ->
+        assert id == instance.external_id
+
+        {:ok,
+         %{
+           "cluster" => %{
+             "metadata" => %{
+               "iam" => %{"bedrock" => "arn:aws:iam::123456789012:role/shared"}
+             }
+           }
+         }}
+      end)
+
+      {:ok, %{data: %{"consoleInstance" => found}}} = run_query("""
+        query Get($id: ID!) {
+          consoleInstance(id: $id) {
+            id
+            details { awsAssumeRole }
+          }
+        }
+      """, %{"id" => instance.id}, %{current_user: user})
+
+      assert found["id"] == instance.id
+      assert found["details"]["awsAssumeRole"] == "arn:aws:iam::123456789012:role/shared"
     end
 
     test "you cannot describe console instances you cannot see" do

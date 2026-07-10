@@ -17,6 +17,8 @@ defmodule GraphQl.Resolvers.Cloud do
 
   def resolve_domain(%ConsoleInstance{} = inst, _, _), do: {:ok, Cloud.fqdn(inst)}
 
+  def resolve_details(%ConsoleInstance{} = inst, _, _), do: Cloud.Details.details(inst)
+
   def list_instances(args, %{context: %{current_user: user}}) do
     ConsoleInstance.for_account(user.account_id)
     |> ConsoleInstance.ordered()

@@ -602,6 +602,8 @@ export type ConsoleInstance = {
   console?: Maybe<Cluster>;
   /** the time this instance was deleted on */
   deletedAt?: Maybe<Scalars['DateTime']['output']>;
+  /** the details of this instance, this is an expensive query and should be fetched lazily */
+  details?: Maybe<ConsoleInstanceDetails>;
   /** the domain of this instance */
   domain?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
@@ -649,6 +651,11 @@ export type ConsoleInstanceConnection = {
   __typename?: 'ConsoleInstanceConnection';
   edges?: Maybe<Array<Maybe<ConsoleInstanceEdge>>>;
   pageInfo: PageInfo;
+};
+
+export type ConsoleInstanceDetails = {
+  __typename?: 'ConsoleInstanceDetails';
+  awsAssumeRole?: Maybe<Scalars['String']['output']>;
 };
 
 export type ConsoleInstanceEdge = {

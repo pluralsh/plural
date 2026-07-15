@@ -7,7 +7,7 @@
     "build": "tsc && vite build",
     "build:staging": "tsc && vite build --mode staging",
     "preview": "vite preview",
-    "analyze": "vite build && rollup-plugin-visualizer --filename stats.html --gzip --brotli",
+    "analyze": "tsc && ANALYZE=true vite build",
     "start": "vite",
     "start:dev-api": "vite --mode dev-api",
     "start:prod": "yarn build:staging && serve -s -p 3001 build",

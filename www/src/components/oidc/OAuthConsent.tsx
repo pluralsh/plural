@@ -27,7 +27,7 @@ function Icon({
   darkIcon: Nullable<string>
 }) {
   const dark = useTheme().mode !== 'light'
-  const src = dark ? darkIcon ?? icon : icon
+  const src = dark ? (darkIcon ?? icon) : icon
 
   return src ? (
     <IconFrame
@@ -49,7 +49,7 @@ const getChallenge = (parsedQueryString: ParsedQuery): string => {
   const challenge = parsedQueryString.consent_challenge
 
   if (Array.isArray(challenge)) {
-    return !isEmpty(challenge) ? challenge[0] ?? '' : ''
+    return !isEmpty(challenge) ? (challenge[0] ?? '') : ''
   }
 
   return challenge ?? ''

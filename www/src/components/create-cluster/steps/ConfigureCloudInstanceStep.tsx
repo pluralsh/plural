@@ -162,11 +162,11 @@ const validateName = (name: string) => {
     nameErrorMessage: !nameValidity.lowercase
       ? 'Name must be lowercase'
       : !nameValidity.startsWithLetter
-      ? 'Name must start with a letter'
-      : !nameValidity.alphanumeric
-      ? 'Name must be alphanumeric'
-      : !nameValidity.length
-      ? 'Name must be between 5 and 15 characters'
-      : '',
+        ? 'Name must start with a letter'
+        : !nameValidity.alphanumeric
+          ? 'Name must be alphanumeric'
+          : !nameValidity.length
+            ? 'Name must be between 5 and 15 characters'
+            : '',
   }
 }

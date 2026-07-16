@@ -9,8 +9,7 @@ export function RepositoryActions() {
   const repository = useRepositoryContext()
 
   const recipes = repository?.recipes?.filter((recipe) => !!recipe) as
-    | RecipeSubset[]
-    | undefined
+    RecipeSubset[] | undefined
 
   return (
     <InstallAppButton

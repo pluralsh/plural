@@ -413,8 +413,8 @@ function LoginInternal() {
   const hintMessage = captchaError
     ? captchaError
     : isPasswordLogin && !executeRecaptcha
-    ? 'Loading reCAPTCHA...'
-    : undefined
+      ? 'Loading reCAPTCHA...'
+      : undefined
   const passwordHint = passwordErrorMsg || hintMessage
   const passwordError = !!passwordErrorMsg || !!captchaError
 

@@ -103,9 +103,8 @@ function ProviderSelection({ data }) {
 
               // HACK to navigate the onboarding on staging environments
               if (import.meta.env.MODE !== 'production' && devToken) {
-                ;(
-                  window as Window
-                ).location = `/oauth/callback/${provider.toLowerCase()}/shell?code=abcd`
+                ;(window as Window).location =
+                  `/oauth/callback/${provider.toLowerCase()}/shell?code=abcd`
 
                 return
               }

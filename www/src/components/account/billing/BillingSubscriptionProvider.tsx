@@ -23,9 +23,7 @@ type BillingSubscriptionProviderPropsType = {
 
 function useExtractPaymentMethods(
   methodsConnection:
-    | SubscriptionAccountFragment['paymentMethods']
-    | null
-    | undefined
+    SubscriptionAccountFragment['paymentMethods'] | null | undefined
 ) {
   const { paymentMethods, defaultPaymentMethod } = useMemo(() => {
     const result = (methodsConnection?.edges || [])?.reduce(

@@ -86,11 +86,11 @@ const PluralCloudInstances = lazy(() =>
   )
 )
 const PluralCloudInstanceDetails = lazy(() =>
-  import(
-    './overview/clusters/plural-cloud/details/PluralCloudInstanceDetails'
-  ).then((module) => ({
-    default: module.PluralCloudInstanceDetails,
-  }))
+  import('./overview/clusters/plural-cloud/details/PluralCloudInstanceDetails').then(
+    (module) => ({
+      default: module.PluralCloudInstanceDetails,
+    })
+  )
 )
 
 // Create cluster.

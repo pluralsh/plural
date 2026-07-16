@@ -108,9 +108,7 @@ interface GCPCloudProvider {
 }
 
 type CloudProviderBase =
-  | AzureCloudProvider
-  | AWSCloudProvider
-  | GCPCloudProvider
+  AzureCloudProvider | AWSCloudProvider | GCPCloudProvider
 
 interface CloudProps {
   type?: CloudType

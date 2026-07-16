@@ -4,6 +4,7 @@ import basicSsl from '@vitejs/plugin-basic-ssl'
 import tsconfigPaths from 'vite-tsconfig-paths'
 import pluginRewriteAll from 'vite-plugin-rewrite-all'
 import { VitePWA } from 'vite-plugin-pwa'
+import { visualizer } from 'rollup-plugin-visualizer'
 
 import vitestConfig from './vitest.config'
 
@@ -29,6 +30,16 @@ export default mergeConfig(
       }),
       tsconfigPaths(),
       pluginRewriteAll(), // Fix 404 error for urls with dots in their path
+      ...(process.env.ANALYZE
+        ? [
+            visualizer({
+              filename: 'stats.html',
+              gzipSize: true,
+              brotliSize: true,
+              open: false,
+            }),
+          ]
+        : []),
     ],
     server: {
       port: 3001,

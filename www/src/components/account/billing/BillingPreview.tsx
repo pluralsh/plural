@@ -196,8 +196,8 @@ function BillingPreview({
           {discountPreview
             ? renderAnnualDiscountSwitch()
             : !isProPlan && !isEnterprisePlan
-            ? renderProfessionalSwitch()
-            : null}
+              ? renderProfessionalSwitch()
+              : null}
         </Flex>
         <Div
           marginTop="large"

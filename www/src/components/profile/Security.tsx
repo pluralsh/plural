@@ -91,8 +91,8 @@ function UpdatePassword({ cancel }: any) {
           !pass
             ? null
             : pass !== password
-            ? { error: true, message: 'passwords do not match' }
-            : { error: false, message: 'passwords match!' }
+              ? { error: true, message: 'passwords do not match' }
+              : { error: false, message: 'passwords match!' }
         }
       />
       <div

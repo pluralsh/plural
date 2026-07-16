@@ -10,8 +10,7 @@ import { POLL_INTERVAL } from './useFetchPaginatedData'
 type FetchSliceOptions = {
   keyPath: string[]
   virtualSlice:
-    | { start: VirtualItem | undefined; end: VirtualItem | undefined }
-    | undefined
+    { start: VirtualItem | undefined; end: VirtualItem | undefined } | undefined
   pageSize: number
 }
 

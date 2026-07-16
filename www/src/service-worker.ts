@@ -22,9 +22,9 @@ const isSameOrigin = (url) => url.origin === self.location.origin
 const shouldCache = (pathname) =>
   Boolean(
     pathname.endsWith('.png') ||
-      pathname.endsWith('.svg') ||
-      pathname.endsWith('.jpg') ||
-      pathname.endsWith('.woff2')
+    pathname.endsWith('.svg') ||
+    pathname.endsWith('.jpg') ||
+    pathname.endsWith('.woff2')
   )
 
 // An example runtime caching route for requests that aren't handled by the

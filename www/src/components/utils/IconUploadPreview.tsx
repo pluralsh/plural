@@ -15,8 +15,8 @@ const IconUploadPreviewSC = styled.div<{
     $mode === 'light'
       ? styledThemeLight.colors
       : $mode === 'dark'
-      ? styledThemeDark.colors
-      : theme.colors
+        ? styledThemeDark.colors
+        : theme.colors
 
   return {
     display: 'flex',

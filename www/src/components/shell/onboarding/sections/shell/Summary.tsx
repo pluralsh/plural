@@ -107,7 +107,7 @@ function RepositorySummaryUnstyled({ ...props }) {
             <P body1>
               {scm?.provider === ScmProvider.Demo
                 ? 'Demo'
-                : scm?.org?.name ?? 'User'}
+                : (scm?.org?.name ?? 'User')}
             </P>
           </div>
         </div>

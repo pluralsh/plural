@@ -31,8 +31,10 @@ interface UserSettingsProps {
   onUpdate: DispatchWithoutAction
 }
 
-interface UserSettingsActionsProps
-  extends Omit<UserSettingsProps, 'user' | 'onCreateGroup' | 'bindings'> {
+interface UserSettingsActionsProps extends Omit<
+  UserSettingsProps,
+  'user' | 'onCreateGroup' | 'bindings'
+> {
   changed: boolean
   loading?: boolean
 }

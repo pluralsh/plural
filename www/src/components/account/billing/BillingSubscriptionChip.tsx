@@ -25,10 +25,10 @@ function BillingSubscriptionChip() {
         {isTrialPlan
           ? 'Free trial'
           : isEnterprisePlan
-          ? 'Custom'
-          : isProPlan
-          ? 'Professional'
-          : 'Open-source'}
+            ? 'Custom'
+            : isProPlan
+              ? 'Professional'
+              : 'Open-source'}
       </Chip>
     </Link>
   )

@@ -14,8 +14,7 @@ type BaseProps = {
   version: 'setup' | 'payment'
   clientSecret?: string | null
   onComplete?:
-    | ((intent: SetupIntent) => void)
-    | ((intent: PaymentIntent) => void)
+    ((intent: SetupIntent) => void) | ((intent: PaymentIntent) => void)
   onError?: (e: CombinedError) => void
 }
 

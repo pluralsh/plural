@@ -220,8 +220,8 @@ function SidebarUnstyled({ refetch, ...props }) {
       hasPreselectedApp
         ? setView(SidebarView.Installer)
         : hasInstalledApps
-        ? setView(SidebarView.Installed)
-        : undefined,
+          ? setView(SidebarView.Installed)
+          : undefined,
     [hasInstalledApps, hasPreselectedApp]
   )
   useEffect(

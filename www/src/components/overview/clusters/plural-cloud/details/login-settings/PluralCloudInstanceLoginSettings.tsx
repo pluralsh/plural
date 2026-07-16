@@ -142,7 +142,7 @@ export function PluralCloudInstanceLoginSettings({
             onChange={(isChecked) =>
               updateForm({
                 externalFormState: isChecked
-                  ? instanceExternalOidc ?? BlankExternalFormState
+                  ? (instanceExternalOidc ?? BlankExternalFormState)
                   : null,
               })
             }

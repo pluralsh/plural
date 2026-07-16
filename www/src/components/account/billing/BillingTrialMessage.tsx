@@ -35,8 +35,8 @@ function BillingTrialMessage() {
       isTrialExpired
         ? 'Free trial expired. '
         : isTrialExpiringSoon
-        ? 'Free trial expiring soon. '
-        : `Free trial expires in ${daysUntilTrialExpires} days. `,
+          ? 'Free trial expiring soon. '
+          : `Free trial expires in ${daysUntilTrialExpires} days. `,
     [isTrialExpired, isTrialExpiringSoon, daysUntilTrialExpires]
   )
 

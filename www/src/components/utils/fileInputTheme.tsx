@@ -18,8 +18,8 @@ export const fileInputTheme = ({
         color: error
           ? theme.colors['border-error']
           : selected
-          ? theme.colors['border-success']
-          : theme.colors['border-input'],
+            ? theme.colors['border-success']
+            : theme.colors['border-input'],
       },
       background: {
         color: theme.colors['fill-one-hover'],
@@ -48,8 +48,8 @@ export const fileInputTheme = ({
       color: error
         ? theme.colors['border-error']
         : selected
-        ? theme.colors['border-success']
-        : theme.colors['border-input'],
+          ? theme.colors['border-success']
+          : theme.colors['border-input'],
     },
     icons: {
       remove: CloseIcon,

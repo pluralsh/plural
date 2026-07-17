@@ -8,13 +8,7 @@ import {
 } from '@pluralsh/design-system'
 import { createColumnHelper } from '@tanstack/react-table'
 
-import {
-  ClusterFragment,
-  ConsoleInstanceStatus,
-  UserFragment,
-} from 'generated/graphql'
-
-import { useTheme } from 'styled-components'
+import { ConsoleInstanceStatus, UserFragment } from 'generated/graphql'
 
 import { Link } from 'react-router-dom'
 import ClusterHealth from '../ClusterHealth'
@@ -111,7 +105,6 @@ const ColActions = columnHelper.accessor((instance) => instance, {
   header: '',
   meta: { gridTemplate: 'max-content' },
   cell: function Cell({ getValue }) {
-    const theme = useTheme()
     const instance = getValue()
 
     return (

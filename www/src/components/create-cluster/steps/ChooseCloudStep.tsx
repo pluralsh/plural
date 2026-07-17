@@ -1,10 +1,4 @@
-import {
-  Callout,
-  Chip,
-  CloudIcon,
-  ConsoleIcon,
-  Flex,
-} from '@pluralsh/design-system'
+import { Callout, CloudIcon, ConsoleIcon, Flex } from '@pluralsh/design-system'
 import { CloudOption } from 'components/shell/onboarding/sections/cloud/CloudOption'
 
 import { useBillingSubscription } from 'components/account/billing/BillingSubscriptionProvider'

@@ -38,7 +38,7 @@ function usePersistedState<T>(
       }
       const item = localStorage.getItem(itemKey)
       if (item) return parser(JSON.parse(item))
-    } catch (error) {
+    } catch (_error) {
       console.log('Error on localStorage.getItem of', key)
     }
 

@@ -19,7 +19,6 @@ export function LicenseKeyModal({
 }: ComponentPropsWithoutRef<typeof Modal> & { licenseKey: string }) {
   const {
     partials: { text },
-    spacing,
   } = useTheme()
   const [showKey, setShowKey] = useState(false)
   const { copied, handleCopy } = useCopy(licenseKey, 2000)

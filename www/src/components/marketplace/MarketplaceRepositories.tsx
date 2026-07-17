@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { Button, Div, Flex, FlexProps, H1, Hr } from 'honorable'
 import {
-  ArrowTopRightIcon,
   BrowseAppsIcon,
   Chip,
   EmptyState,

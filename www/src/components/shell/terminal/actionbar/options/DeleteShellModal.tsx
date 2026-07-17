@@ -6,7 +6,7 @@ import {
   Modal,
   WarningIcon,
 } from '@pluralsh/design-system'
-import { A, Button, Flex, Span } from 'honorable'
+import { Button, Flex, Span } from 'honorable'
 import { useCallback, useContext, useState } from 'react'
 
 import { useTheme } from 'styled-components'

@@ -1,7 +1,6 @@
 import {
   ClipboardEvent,
   ComponentPropsWithoutRef,
-  ComponentPropsWithRef,
   FormEvent,
   KeyboardEvent,
   RefObject,

@@ -1,4 +1,4 @@
-import { Ref, forwardRef, useCallback, useEffect, useState } from 'react'
+import { Ref, forwardRef } from 'react'
 import { CheckIcon, CopyIcon, IconFrame } from '@pluralsh/design-system'
 import { useCopy } from 'hooks/useCopy'
 

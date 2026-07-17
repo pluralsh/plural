@@ -1,6 +1,5 @@
 import { useQuery } from '@apollo/client'
-import { useEffect } from 'react'
-import { Navigate, useLocation } from 'react-router-dom'
+import { Navigate } from 'react-router-dom'
 
 import { ConsoleInstancesContextProvider } from '../../contexts/ConsoleInstancesContext'
 
@@ -26,8 +25,6 @@ export function handlePreviousUserClick({ jwt }: any) {
 }
 
 export function PluralProvider({ children }: any) {
-  const location = useLocation()
-
   const { loading, error, data } = useMeQuery({
     fetchPolicy: 'network-only',
     pollInterval: 60_000,

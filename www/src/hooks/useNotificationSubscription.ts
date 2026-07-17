@@ -24,7 +24,7 @@ export function useNotificationSubscription() {
           update: (prev) =>
             appendConnection(prev, notification, 'notifications'),
         })
-      } catch (error) {
+      } catch (_error) {
         //
       }
 
@@ -35,7 +35,7 @@ export function useNotificationSubscription() {
           update: (prev) =>
             appendConnection(prev, notification, 'notifications'),
         })
-      } catch (error) {
+      } catch (_error) {
         //
       }
 

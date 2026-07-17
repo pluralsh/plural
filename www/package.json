@@ -17,11 +17,11 @@
     "test:ui": "vitest --ui",
     "lint": "concurrently \"yarn lint:format\" \"yarn lint:js\" \"yarn lint:css\"",
     "lint:format": "prettier --check ./src",
-    "lint:js": "eslint",
+    "lint:js": "eslint ./src",
     "lint:css": "stylelint src/**/*.css",
     "fix": "yarn fix:format && yarn fix:js && yarn fix:css",
     "fix:format": "prettier --write ./src",
-    "fix:js": "eslint --fix",
+    "fix:js": "eslint ./src --fix",
     "fix:css": "stylelint src/**/*.css --fix",
     "unimported": "npx unimported",
     "graphql:codegen": "graphql-codegen --config codegen.yml"

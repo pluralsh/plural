@@ -150,7 +150,6 @@ const ItemWrapper = memo(
     const item = items[index]
     const sizeCallback = useCallback(() => {
       rowRef && setSize(index, rowRef.getBoundingClientRect().height)
-       
     }, [rowRef, index])
 
     useEffect(() => {

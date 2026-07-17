@@ -25,7 +25,7 @@
     "fix:css": "stylelint src/**/*.css --fix",
     "unimported": "npx unimported",
     "graphql:codegen": "graphql-codegen --config codegen.yml",
-    "postinstall": "cd .. && ./www/node_modules/.bin/husky install www/.husky"
+    "postinstall": "node ./scripts/husky-install.cjs"
   },
   "engines": {
     "node": ">=20.0.0"

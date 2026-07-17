@@ -1,4 +1,4 @@
-FROM node:20-slim as build
+FROM node:20-slim AS build
 
 WORKDIR /app
 
@@ -6,6 +6,10 @@ COPY package.json ./package.json
 COPY yarn.lock ./yarn.lock
 COPY .yarn ./.yarn
 COPY .yarnrc.yml ./.yarnrc.yml
+COPY scripts/husky-install.cjs ./scripts/husky-install.cjs
+
+# Skip husky git hooks setup during image builds (no .git in the build context).
+ENV HUSKY=0
 
 RUN yarn install --immutable
 

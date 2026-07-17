@@ -130,7 +130,6 @@ function ClusterProviderIcon({
   icon?: ReactNode
 }) {
   return icon ? (
-    // eslint-disable-next-line react/jsx-no-useless-fragment
     <>{icon}</>
   ) : provider ? (
     <ProviderIcon

@@ -3,7 +3,6 @@ import {
   Card,
   DocumentIcon,
   Flex,
-  LifePreserverIcon,
   SendMessageIcon,
 } from '@pluralsh/design-system'
 import { ReactElement } from 'react'

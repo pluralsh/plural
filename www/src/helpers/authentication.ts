@@ -26,7 +26,7 @@ export function getPreviousUserData() {
         localStorage.getItem(LocalStorageKeys.AuthPreviousUserData) as string
       ) || null
     )
-  } catch (error) {
+  } catch (_error) {
     return null
   }
 }

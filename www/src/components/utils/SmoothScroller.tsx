@@ -150,7 +150,7 @@ const ItemWrapper = memo(
     const item = items[index]
     const sizeCallback = useCallback(() => {
       rowRef && setSize(index, rowRef.getBoundingClientRect().height)
-      // eslint-disable-next-line react-hooks/exhaustive-deps
+       
     }, [rowRef, index])
 
     useEffect(() => {

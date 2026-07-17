@@ -237,7 +237,7 @@ function SettingsViews({
   )
 }
 
-const HeaderSC = styled.div(({ theme }) => ({
+const HeaderSC = styled.div(() => ({
   display: 'flex',
   justifyContent: 'space-between',
   alignItems: 'center',

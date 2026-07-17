@@ -28,7 +28,7 @@ const DIRECTORY = [
     label: 'Curl',
     command:
       "VSN=$(curl --silent -qI https://github.com/pluralsh/plural-cli/releases/latest | awk -F '/' '/^location/ {print  substr($NF, 1, length($NF)-1)}')\n" +
-      "curl -L -o plural.tgz 'https://github.com/pluralsh/plural-cli/releases/download/${VSN}/plural-cli_${VSN#v}_Darwin_arm64.tar.gz'\n" + // eslint-disable-line no-template-curly-in-string
+      "curl -L -o plural.tgz 'https://github.com/pluralsh/plural-cli/releases/download/${VSN}/plural-cli_${VSN#v}_Darwin_arm64.tar.gz'\n" +
       'tar -xvf plural.tgz\n' +
       'chmod +x plural\n' +
       'mv plural /usr/local/bin/plural',

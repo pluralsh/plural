@@ -18,7 +18,6 @@ import {
 } from 'generated/graphql'
 
 import { capitalize } from 'lodash'
-import { useTheme } from 'styled-components'
 
 import { CellCaption, CellWrap } from '../SelfHostedTableCols'
 import { Link } from 'react-router-dom'
@@ -163,7 +162,6 @@ const ColActions = columnHelper.accessor((instance) => instance, {
   header: '',
   meta: { gridTemplate: 'max-content' },
   cell: function Cell({ getValue }) {
-    const theme = useTheme()
     const instance = getValue()
 
     return (

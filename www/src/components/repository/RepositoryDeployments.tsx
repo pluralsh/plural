@@ -19,7 +19,6 @@ import LoadingIndicator from '../utils/LoadingIndicator'
 import { DEPLOYMENTS_QUERY, ROLLOUT_SUB } from './queries'
 import { RepositoryActions } from './misc'
 
-// eslint-disable-next-line
 const MAX_UUID = 0xffffffffffffffffffffffffffffffff
 
 function progress(cursor) {

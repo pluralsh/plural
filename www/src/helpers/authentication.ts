@@ -1,15 +1,136 @@
 import { LocalStorageKeys } from '../constants'
 
+const ENC_PREFIX = 'enc.v1.'
+
+/** In-memory cache so fetchToken/setToken stay synchronous for Apollo. */
+let cachedToken: string | null = null
+
+function bytesToBase64(bytes: Uint8Array): string {
+  let binary = ''
+  for (let i = 0; i < bytes.length; i++) {
+    binary += String.fromCharCode(bytes[i])
+  }
+  return btoa(binary)
+}
+
+function base64ToBytes(value: string): Uint8Array {
+  const binary = atob(value)
+  const bytes = new Uint8Array(binary.length)
+  for (let i = 0; i < binary.length; i++) {
+    bytes[i] = binary.charCodeAt(i)
+  }
+  return bytes
+}
+
+let encryptionKeyPromise: Promise<CryptoKey> | null = null
+
+function getEncryptionKey(): Promise<CryptoKey> {
+  if (!encryptionKeyPromise) {
+    encryptionKeyPromise = (async () => {
+      const material = await crypto.subtle.importKey(
+        'raw',
+        new TextEncoder().encode(`plural-www:${window.location.origin}`),
+        'PBKDF2',
+        false,
+        ['deriveKey']
+      )
+
+      return crypto.subtle.deriveKey(
+        {
+          name: 'PBKDF2',
+          salt: new TextEncoder().encode('plural-auth-token-v1'),
+          iterations: 100_000,
+          hash: 'SHA-256',
+        },
+        material,
+        { name: 'AES-GCM', length: 256 },
+        false,
+        ['encrypt', 'decrypt']
+      )
+    })()
+  }
+
+  return encryptionKeyPromise
+}
+
+async function encryptToken(token: string): Promise<string> {
+  const key = await getEncryptionKey()
+  const iv = crypto.getRandomValues(new Uint8Array(12))
+  const ciphertext = await crypto.subtle.encrypt(
+    { name: 'AES-GCM', iv },
+    key,
+    new TextEncoder().encode(token)
+  )
+  const packed = new Uint8Array(iv.length + ciphertext.byteLength)
+  packed.set(iv, 0)
+  packed.set(new Uint8Array(ciphertext), iv.length)
+  return `${ENC_PREFIX}${bytesToBase64(packed)}`
+}
+
+async function decryptToken(payload: string): Promise<string> {
+  const packed = base64ToBytes(payload.slice(ENC_PREFIX.length))
+  const iv = packed.slice(0, 12)
+  const ciphertext = packed.slice(12)
+  const key = await getEncryptionKey()
+  const plaintext = await crypto.subtle.decrypt(
+    { name: 'AES-GCM', iv },
+    key,
+    ciphertext
+  )
+  return new TextDecoder().decode(plaintext)
+}
+
+async function persistEncrypted(token: string): Promise<void> {
+  const encrypted = await encryptToken(token)
+  localStorage.setItem(LocalStorageKeys.AuthToken, encrypted)
+}
+
+/**
+ * Load any persisted auth token into memory before the app renders.
+ * Migrates legacy plaintext tokens to encrypted storage.
+ */
+export async function hydrateAuthToken(): Promise<void> {
+  const raw = localStorage.getItem(LocalStorageKeys.AuthToken)
+  if (!raw) {
+    cachedToken = null
+    return
+  }
+
+  if (!raw.startsWith(ENC_PREFIX)) {
+    cachedToken = raw
+    try {
+      await persistEncrypted(raw)
+    } catch {
+      // Keep the legacy plaintext token readable if encryption fails.
+    }
+    return
+  }
+
+  try {
+    cachedToken = await decryptToken(raw)
+  } catch {
+    cachedToken = null
+    localStorage.removeItem(LocalStorageKeys.AuthToken)
+  }
+}
+
 export function wipeToken() {
+  cachedToken = null
   localStorage.removeItem(LocalStorageKeys.AuthToken)
 }
 
 export function fetchToken() {
-  return localStorage.getItem(LocalStorageKeys.AuthToken)
+  return cachedToken
 }
 
 export function setToken(token) {
-  localStorage.setItem(LocalStorageKeys.AuthToken, token)
+  if (!token) {
+    wipeToken()
+    return
+  }
+
+  cachedToken = token
+  void persistEncrypted(token)
 }
 
 export function setPreviousUserData(userData) {

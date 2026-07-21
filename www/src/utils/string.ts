@@ -1,10 +1,24 @@
 export const obfuscate = (str) =>
   `${str.substring(0, 5)}${'*'.repeat(str.length - 5)}`
 
-export function isValidUrl(url) {
-  return !/^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/.test(
-    url
-  )
+/**
+ * Returns true when `url` is NOT a valid URL (call sites use this as a form error flag).
+ * Uses the URL constructor instead of a backtracking regex to avoid ReDoS.
+ */
+export function isValidUrl(url: string): boolean {
+  if (!url) return true
+
+  try {
+    const candidate = /^[a-z][a-z0-9+.-]*:/i.test(url) ? url : `https://${url}`
+    const parsed = new URL(candidate)
+
+    // Match previous regex intent: require a dotted hostname (rejects "localhost", etc.)
+    if (!parsed.hostname.includes('.')) return true
+
+    return false
+  } catch {
+    return true
+  }
 }
 
 export function generateString(len: number): string {

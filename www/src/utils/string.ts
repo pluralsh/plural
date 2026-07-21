@@ -12,8 +12,13 @@ export function isValidUrl(url: string): boolean {
     const candidate = /^[a-z][a-z0-9+.-]*:/i.test(url) ? url : `https://${url}`
     const parsed = new URL(candidate)
 
-    // Match previous regex intent: require a dotted hostname (rejects "localhost", etc.)
-    if (!parsed.hostname.includes('.')) return true
+    // Match previous regex intent: HTTP(S) only and a dotted hostname.
+    if (
+      !['http:', 'https:'].includes(parsed.protocol) ||
+      !parsed.hostname.includes('.')
+    ) {
+      return true
+    }
 
     return false
   } catch {

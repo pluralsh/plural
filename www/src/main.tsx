@@ -10,7 +10,11 @@ const container = document.getElementById('root') as Element
 const root = createRoot(container)
 
 async function boot() {
-  await hydrateAuthToken()
+  try {
+    await hydrateAuthToken()
+  } catch {
+    // Start logged out if hydration fails for any unexpected reason.
+  }
   root.render(<App />)
   serviceWorker.register({})
 }

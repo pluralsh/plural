@@ -8,6 +8,7 @@ describe('string utils', () => {
       expect(isValidUrl('not a url')).toBe(true)
       expect(isValidUrl('localhost')).toBe(true)
       expect(isValidUrl('http://localhost')).toBe(true)
+      expect(isValidUrl('ftp://example.com')).toBe(true)
     })
 
     it('accepts dotted hostnames with or without a scheme', () => {

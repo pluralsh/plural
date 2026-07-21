@@ -5,6 +5,12 @@ const ENC_PREFIX = 'enc.v1.'
 /** In-memory cache so fetchToken/setToken stay synchronous for Apollo. */
 let cachedToken: string | null = null
 
+/**
+ * Monotonic generation so async encrypt writes cannot clobber a newer
+ * setToken()/wipeToken() (or an older write finishing last).
+ */
+let tokenGeneration = 0
+
 function bytesToBase64(bytes: Uint8Array): string {
   let binary = ''
   for (let i = 0; i < bytes.length; i++) {
@@ -80,17 +86,36 @@ async function decryptToken(payload: string): Promise<string> {
   return new TextDecoder().decode(plaintext)
 }
 
-async function persistEncrypted(token: string): Promise<void> {
+async function persistEncrypted(
+  token: string,
+  generation: number
+): Promise<void> {
   const encrypted = await encryptToken(token)
+  // Drop stale writes that lost a race with wipeToken()/setToken().
+  if (generation !== tokenGeneration) return
   localStorage.setItem(LocalStorageKeys.AuthToken, encrypted)
+}
+
+function queuePersist(token: string, generation: number): void {
+  void persistEncrypted(token, generation).catch(() => {
+    // Crypto/storage may be unavailable; keep the in-memory token for this session.
+  })
 }
 
 /**
  * Load any persisted auth token into memory before the app renders.
  * Migrates legacy plaintext tokens to encrypted storage.
+ * Never throws — storage failures leave the app logged out.
  */
 export async function hydrateAuthToken(): Promise<void> {
-  const raw = localStorage.getItem(LocalStorageKeys.AuthToken)
+  let raw: string | null
+  try {
+    raw = localStorage.getItem(LocalStorageKeys.AuthToken)
+  } catch {
+    cachedToken = null
+    return
+  }
+
   if (!raw) {
     cachedToken = null
     return
@@ -98,8 +123,9 @@ export async function hydrateAuthToken(): Promise<void> {
 
   if (!raw.startsWith(ENC_PREFIX)) {
     cachedToken = raw
+    const generation = ++tokenGeneration
     try {
-      await persistEncrypted(raw)
+      await persistEncrypted(raw, generation)
     } catch {
       // Keep the legacy plaintext token readable if encryption fails.
     }
@@ -108,15 +134,25 @@ export async function hydrateAuthToken(): Promise<void> {
 
   try {
     cachedToken = await decryptToken(raw)
+    tokenGeneration += 1
   } catch {
     cachedToken = null
-    localStorage.removeItem(LocalStorageKeys.AuthToken)
+    try {
+      localStorage.removeItem(LocalStorageKeys.AuthToken)
+    } catch {
+      // Ignore storage removal failures.
+    }
   }
 }
 
 export function wipeToken() {
+  tokenGeneration += 1
   cachedToken = null
-  localStorage.removeItem(LocalStorageKeys.AuthToken)
+  try {
+    localStorage.removeItem(LocalStorageKeys.AuthToken)
+  } catch {
+    // Ignore storage removal failures.
+  }
 }
 
 export function fetchToken() {
@@ -129,8 +165,9 @@ export function setToken(token) {
     return
   }
 
+  const generation = ++tokenGeneration
   cachedToken = token
-  void persistEncrypted(token)
+  queuePersist(token, generation)
 }
 
 export function setPreviousUserData(userData) {

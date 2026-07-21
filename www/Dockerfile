@@ -17,8 +17,8 @@ COPY . ./
 
 RUN yarn run build
 
-# production environment
-FROM nginxinc/nginx-unprivileged:1.23.3-alpine
+# production environment (Alpine 3.24 base picks up fixed curl/libexpat)
+FROM nginxinc/nginx-unprivileged:1.30.4-alpine3.24
 
 WORKDIR /usr/share/nginx/html
 # Copy static assets from builder stage

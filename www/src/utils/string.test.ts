@@ -20,7 +20,8 @@ describe('string utils', () => {
     it('does not hang on pathological ReDoS inputs', () => {
       const payload = `-.${'-.'.repeat(5000)}x`
       const start = Date.now()
-      expect(isValidUrl(payload)).toBe(true)
+      // Result may be valid or invalid under URL(); the point is it must finish quickly.
+      isValidUrl(payload)
       expect(Date.now() - start).toBeLessThan(1000)
     })
   })

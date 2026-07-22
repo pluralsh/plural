@@ -37,21 +37,21 @@ RUN \
   tar -xzf ${APP_NAME}.tar.gz && \
   rm ${APP_NAME}.tar.gz
 
-FROM alpine:3.17.0 as tools
+FROM alpine:3.21.7 as tools
 
 ARG TARGETARCH
 
 # renovate: datasource=github-releases depName=helm/helm
-ENV HELM_VERSION=v3.17.3
+ENV HELM_VERSION=v3.21.3
 
 # renovate: datasource=github-releases depName=alco/goon
 ENV GOON_VERSION=v1.1.1
 
 # renovate: datasource=github-releases depName=pluralsh/plural-cli
-ENV CLI_VERSION=v0.12.8
+ENV CLI_VERSION=v0.12.59
 
 # renovate: datasource=github-releases depName=aquasecurity/trivy
-ENV TRIVY_VERSION=v0.69.3
+ENV TRIVY_VERSION=v0.72.0
 
 RUN apk add --update --no-cache curl ca-certificates unzip wget openssl && \
     # download helm
@@ -90,7 +90,7 @@ RUN apk add --update --no-cache curl ca-certificates unzip wget openssl && \
     # chmod +x /usr/local/bin/terrascan && \
     chmod +x /usr/local/bin/trivy
 
-FROM erlang:24.3.4.6-alpine
+FROM erlang:24.3.4.17-alpine
 
 # The name of your application/release (required)
 ARG APP_NAME

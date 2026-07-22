@@ -1,0 +1,17 @@
+# Residuals that need a deferred Elixir/Distillery upgrade (beyond #1497's Elixir 1.13-safe bumps).
+# absinthe 1.10.2 needs Elixir ~> 1.17; tesla 1.18.3 needs ~> 1.14; postgrex 0.22.2 needs ~> 1.15 + newer Ecto.
+CVE-2026-42793
+CVE-2026-43967
+CVE-2026-48594
+CVE-2026-48595
+CVE-2026-48596
+CVE-2026-48597
+CVE-2026-48598
+CVE-2026-32687
+
+# hackney 4.x / decimal 3.0 also blocked; Console stays on hackney 1.25.x as well.
+CVE-2026-47071
+CVE-2026-47075
+CVE-2026-47076
+CVE-2026-47069
+CVE-2026-32686

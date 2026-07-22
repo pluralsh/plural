@@ -74,7 +74,7 @@ defmodule Api.MixProject do
       {:jason, "~> 1.0"},
       {:guardian, "~> 1.2.1"},
       {:cors_plug, "~> 2.0"},
-      {:plug_cowboy, "~> 2.6.0", override: true},
+      {:plug_cowboy, "~> 2.8.1", override: true},
       {:reverse_proxy_plug, "~> 2.1.1"},
       {:libcluster, "~> 3.3.1"},
       {:prometheus_ex, "~> 3.0"},

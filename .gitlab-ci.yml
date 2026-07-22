@@ -23,7 +23,7 @@ stages:
 
 build:
   stage: test
-  image: gcr.io/pluralsh/circleci/elixir:1.9.4
+  image: hexpm/elixir:1.19.4-erlang-28.5-alpine-3.23.4
   cache:
     key: ${CI_COMMIT_REF_SLUG}
     paths:

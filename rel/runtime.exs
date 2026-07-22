@@ -159,3 +159,93 @@ config :openai,
 
 
 config :tzdata, :autoupdate, :disabled
+
+case System.get_env("RELEASE_NAME") || System.get_env("APP_NAME") do
+  "plural" ->
+    config :core, start_broker: true
+    config :rtc, start_broker: false
+
+    config :core, Core.Guardian,
+      issuer: "plural",
+      secret_key: get_env("JWT_SECRET")
+
+    config :stripity_stripe, api_key: get_env("STRIPE_SECRET")
+
+    config :api, ApiWeb.Endpoint,
+      secret_key_base: get_env("SECRET_KEY_BASE")
+
+    if get_env("CLOUD_SHELL_IMG") do
+      config :core, :cloud_shell_img, get_env("CLOUD_SHELL_IMG")
+    end
+
+    if get_env("CLOUD_SHELL_SYSBOX_IMG") do
+      config :core, :cloud_shell_sysbox_img, get_env("CLOUD_SHELL_SYSBOX_IMG")
+    end
+
+    if get_env("CLOUD_SHELL_DIND_IMG") do
+      config :core, :dind_img, get_env("CLOUD_SHELL_DIND_IMG")
+    end
+
+    if get_env("PRL_GITHUB_APP_PEM") do
+      config :core, :github_app_pem, get_env("PRL_GITHUB_APP_PEM")
+    end
+
+    if !get_env("PLRL_IGNORE_CLUSTER") do
+      config :libcluster,
+        topologies: [
+          api: [
+            strategy: Cluster.Strategy.Kubernetes,
+            config: [
+              mode: :ip,
+              kubernetes_node_basename: "plural",
+              kubernetes_selector: "app=plural-api",
+              kubernetes_namespace: get_env("NAMESPACE"),
+              polling_interval: 10_000
+            ]
+          ]
+        ]
+    end
+
+  "rtc" ->
+    config :rtc, RtcWeb.Endpoint,
+      url: [host: get_env("HOST"), port: 80],
+      check_origin: ["//#{get_env("HOST")}", "//plural-rtc"],
+      secret_key_base: get_env("SECRET_KEY_BASE"),
+      server: true
+
+    config :core, broker: Rtc.Conduit.Broker
+    config :core, start_broker: false
+    config :rtc, start_broker: true
+
+    config :libcluster,
+      topologies: [
+        rtc: [
+          strategy: Cluster.Strategy.Kubernetes,
+          config: [
+            mode: :ip,
+            kubernetes_node_basename: "rtc",
+            kubernetes_selector: "app=plural-rtc",
+            kubernetes_namespace: get_env("NAMESPACE"),
+            polling_interval: 10_000
+          ]
+        ]
+      ]
+
+  "worker" ->
+    config :worker,
+      registry: get_env("DKR_DNS")
+
+    config :core, start_broker: false
+    config :worker, start_broker: true
+    config :core, broker: Worker.Conduit.Broker
+
+    config :stripity_stripe, api_key: get_env("STRIPE_SECRET")
+
+  "cron" ->
+    config :core, start_broker: true
+
+    config :stripity_stripe, api_key: get_env("STRIPE_SECRET")
+
+  _ ->
+    :ok
+end

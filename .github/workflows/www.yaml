@@ -62,6 +62,7 @@ jobs:
           output: 'trivy-results.sarif'
           security-checks: 'vuln,secret'
           ignore-unfixed: true
+          trivyignores: '.trivyignore'
            #severity: 'CRITICAL,HIGH'
         # env:
         #   TRIVY_SKIP_DB_UPDATE: true
@@ -90,6 +91,7 @@ jobs:
           output: 'trivy-results.sarif'
           security-checks: 'vuln,secret'
           ignore-unfixed: true
+          trivyignores: '.trivyignore'
           #severity: 'CRITICAL,HIGH'
         # env:
         #   TRIVY_SKIP_DB_UPDATE: true

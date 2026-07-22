@@ -1,0 +1,9 @@
+# Residuals after Elixir/Console upgrade (PR #1499).
+# hackney 4.x needs httpoison 3.x and a broader HTTP-client migration; Console also stays on 1.25.x.
+CVE-2026-47071
+CVE-2026-47075
+CVE-2026-47076
+CVE-2026-47069
+
+# decimal 3.0 needs ecto ~> 3.14 and absinthe_phoenix still constrains decimal ~> 1.0 or ~> 2.0.
+CVE-2026-32686

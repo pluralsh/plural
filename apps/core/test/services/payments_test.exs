@@ -58,10 +58,10 @@ defmodule Core.Services.PaymentsTest do
   #     user = insert(:user, account: build(:account, billing_customer_id: "cus_id"))
   #     expect(Stripe.Card, :create, fn %{customer: "cus_id", source: "token"} -> {:ok, %{id: "something"}} end)
   #     expect(Stripe.Invoice, :list, fn %{customer: "cus_id"} ->
-  #       {:ok, %Stripe.List{data: [
-  #         %Stripe.Invoice{id: "inv_id", status: "uncollectible"},
-  #         %Stripe.Invoice{id: "inv_id2", status: "paid"},
-  #       ]}}
+  #       {:ok, struct(Stripe.List, data: [
+  #         struct(Stripe.Invoice, id: "inv_id", status: "uncollectible"),
+  #         struct(Stripe.Invoice, id: "inv_id2", status: "paid"),
+  #       ])}
   #     end)
   #     expect(Stripe.Invoice, :pay, fn "inv_id", %{source: "token"} -> {:ok, %{}} end)
 
@@ -333,7 +333,7 @@ defmodule Core.Services.PaymentsTest do
         ]
       )
 
-      expect(Stripe.Customer, :create, fn _ -> {:ok, %Stripe.Customer{id: "cus_id"}} end)
+      expect(Stripe.Customer, :create, fn _ -> {:ok, struct(Stripe.Customer, id: "cus_id")} end)
       expect(Stripe.Subscription, :create, fn %{
         customer: "cus_id",
         items: [%{plan: "id_user", quantity: 2}, %{plan: "id_cluster", quantity: 0}]
@@ -764,7 +764,7 @@ defmodule Core.Services.PaymentsTest do
     test "it can detach a payment method from the customer" do
       account = insert(:account, billing_customer_id: "cus_id")
       user = admin_user(account)
-      expect(Stripe.PaymentMethod, :detach, fn %{payment_method: "card"} -> {:ok, %Stripe.PaymentMethod{id: "card"}} end)
+      expect(Stripe.PaymentMethod, :detach, fn %{payment_method: "card"} -> {:ok, struct(Stripe.PaymentMethod, id: "card")} end)
 
       {:ok, _} = Payments.delete_payment_method("card", user)
     end
@@ -782,7 +782,7 @@ defmodule Core.Services.PaymentsTest do
       account = insert(:account, billing_customer_id: "cus_id")
       user = admin_user(account)
       expect(Stripe.Customer, :update, fn "cus_id", %{invoice_settings: %{default_payment_method: "card"}} ->
-        {:ok, %Stripe.Customer{id: "cus_id"}}
+        {:ok, struct(Stripe.Customer, id: "cus_id")}
       end)
 
       {:ok, _} = Payments.default_payment_method(user, "card")
@@ -1051,7 +1051,7 @@ defmodule Core.Services.PaymentsTest do
     test "it will create a checkout session", %{user: user} do
       pro_plan()
       expect(Stripe.Checkout.Session, :create, fn _ ->
-        {:ok, %Stripe.Checkout.Session{url: "https://checkout.stripe.com/session_id"}}
+        {:ok, struct(Stripe.Checkout.Session, url: "https://checkout.stripe.com/session_id")}
       end)
 
       {:ok, session} = Payments.initiate_checkout(user)
@@ -1066,7 +1066,7 @@ defmodule Core.Services.PaymentsTest do
       user = insert(:user, account: account)
       plan = pro_plan()
       expect(Stripe.Checkout.Session, :retrieve, fn "session_id" ->
-        {:ok, %Stripe.Checkout.Session{customer: "cus_id", subscription: "sub_id"}}
+        {:ok, struct(Stripe.Checkout.Session, customer: "cus_id", subscription: "sub_id")}
       end)
 
       {:ok, subscription} = Payments.finalize_checkout("session_id", user)
@@ -1087,7 +1087,7 @@ defmodule Core.Services.PaymentsTest do
       insert(:platform_subscription, account: account)
       plan = pro_plan()
       expect(Stripe.Checkout.Session, :retrieve, fn "session_id" ->
-        {:ok, %Stripe.Checkout.Session{customer: "cus_id", subscription: "sub_id"}}
+        {:ok, struct(Stripe.Checkout.Session, customer: "cus_id", subscription: "sub_id")}
       end)
 
       {:ok, subscription} = Payments.finalize_checkout("session_id", user)

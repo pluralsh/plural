@@ -30,25 +30,25 @@ defmodule GraphQl.AccountQueriesTest do
       insert(:platform_subscription, account: account, external_id: "sub_id")
 
       expect(Stripe.Subscription, :retrieve, fn "sub_id", [expand: ["latest_invoice.payment_intent"]] ->
-        {:ok, %Stripe.Subscription{latest_invoice: %Stripe.Invoice{
-          payment_intent: %Stripe.PaymentIntent{client_secret: "secret"}
-        }}}
+        {:ok, struct(Stripe.Subscription, latest_invoice: struct(Stripe.Invoice,
+          payment_intent: struct(Stripe.PaymentIntent, client_secret: "secret")
+        ))}
       end)
       expect(Stripe.PaymentMethod, :list, fn %{customer: "cus_id"}, [expand: ["data.customer"]] ->
-        {:ok, %Stripe.List{data: [
-          %Stripe.PaymentMethod{
+        {:ok, struct(Stripe.List, data: [
+          struct(Stripe.PaymentMethod,
             id: "pay_id",
-            customer: %Stripe.Customer{invoice_settings: %{default_payment_method: "pay_id"}},
-            card: %Stripe.Card{
+            customer: struct(Stripe.Customer, invoice_settings: %{default_payment_method: "pay_id"}),
+            card: struct(Stripe.Card,
               id: "some_id",
               brand: "amex",
               last4: "0123",
               exp_month: 1,
               exp_year: 2020,
               name: "Someone"
-            }
-          }
-        ]}}
+            )
+          )
+        ])}
       end)
 
       {:ok, %{data: %{"account" => acc}}} = run_query("""

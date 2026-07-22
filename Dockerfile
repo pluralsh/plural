@@ -104,4 +104,4 @@ COPY --from=builder /opt/app/_build/prod/rel/${APP_NAME} .
 
 USER plural
 
-CMD trap 'exit' INT; /opt/app/bin/${APP_NAME} start
+CMD exec /opt/app/bin/${APP_NAME} start

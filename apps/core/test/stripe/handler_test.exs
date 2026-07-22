@@ -5,7 +5,10 @@ defmodule Core.Stripe.HandlerTest do
   describe "customer.subscription.created" do
     test "it will persist stripe status" do
       sub = insert(:platform_subscription, external_id: "sub_id")
-      event = %Stripe.Event{type: "customer.subscription.created", data: %{object: %Stripe.Subscription{id: "sub_id", status: "active"}}}
+      event = struct(Stripe.Event,
+        type: "customer.subscription.created",
+        data: %{object: struct(Stripe.Subscription, id: "sub_id", status: "active")}
+      )
 
       {:ok, updated} = Handler.handle_event(event)
 
@@ -18,7 +21,10 @@ defmodule Core.Stripe.HandlerTest do
     test "it will mark a delinquent account as undelinquent" do
       account = insert(:account, delinquent_at: Timex.now(), billing_customer_id: "cus_id")
       sub = insert(:platform_subscription, account: account)
-      event = %Stripe.Event{type: "invoice.payment_succeeded", data: %{object: %Stripe.Invoice{customer: "cus_id"}}}
+      event = struct(Stripe.Event,
+        type: "invoice.payment_succeeded",
+        data: %{object: struct(Stripe.Invoice, customer: "cus_id")}
+      )
 
       {:ok, updated} = Handler.handle_event(event)
 
@@ -32,7 +38,10 @@ defmodule Core.Stripe.HandlerTest do
     test "it will mark an account as delinquent" do
       account = insert(:account, billing_customer_id: "cus_id")
       sub = insert(:platform_subscription, account: account)
-      event = %Stripe.Event{type: "invoice.payment_failed", data: %{object: %Stripe.Invoice{customer: "cus_id"}}}
+      event = struct(Stripe.Event,
+        type: "invoice.payment_failed",
+        data: %{object: struct(Stripe.Invoice, customer: "cus_id")}
+      )
 
       {:ok, updated} = Handler.handle_event(event)
 
@@ -43,7 +52,10 @@ defmodule Core.Stripe.HandlerTest do
 
     test "it will ignore already delinquent accounts" do
       account = insert(:account, delinquent_at: Timex.now(), billing_customer_id: "cus_id")
-      event = %Stripe.Event{type: "invoice.payment_failed", data: %{object: %Stripe.Invoice{customer: "cus_id"}}}
+      event = struct(Stripe.Event,
+        type: "invoice.payment_failed",
+        data: %{object: struct(Stripe.Invoice, customer: "cus_id")}
+      )
 
       {:ok, updated} = Handler.handle_event(event)
 

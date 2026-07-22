@@ -1,4 +1,5 @@
 ExUnit.configure formatters: [JUnitFormatter, ExUnit.CLIFormatter]
+ExUnit.configure(assert_receive_timeout: 1_000)
 ExUnit.start()
 Ecto.Adapters.SQL.Sandbox.mode(Core.Repo, :manual)
 Mimic.copy(Mojito)

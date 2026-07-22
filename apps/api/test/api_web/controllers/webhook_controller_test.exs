@@ -27,7 +27,7 @@ defmodule ApiWeb.WebhookControllerTest do
 
   describe "#stripe/2" do
     test "it can receive a stripe webhook", %{conn: conn} do
-      payload = Poison.encode!(%Stripe.Event{type: "invoice.created", object: "event", data: %{object: %Stripe.Invoice{object: "invoice"}}})
+      payload = Poison.encode!(struct(Stripe.Event, type: "invoice.created", object: "event", data: %{object: struct(Stripe.Invoice, object: "invoice")}))
       ts = "#{:os.system_time(:seconds)}"
 
       conn
@@ -38,7 +38,7 @@ defmodule ApiWeb.WebhookControllerTest do
     end
 
     test "invalid signatures are not verified", %{conn: conn} do
-      payload = Poison.encode!(%Stripe.Event{type: "invoice.created", object: "event", data: %{object: %Stripe.Invoice{object: "invoice"}}})
+      payload = Poison.encode!(struct(Stripe.Event, type: "invoice.created", object: "event", data: %{object: struct(Stripe.Invoice, object: "invoice")}))
       ts = "#{:os.system_time(:seconds)}"
 
       conn

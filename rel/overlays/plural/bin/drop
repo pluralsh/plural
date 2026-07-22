@@ -1,4 +1,8 @@
 #!/bin/sh
 set -eu
 cd -P -- "$(dirname -- "$0")"
-exec ./plural eval "Piazza.Ecto.ReleaseTasks.drop([])"
+if [ "$#" -eq 0 ]; then
+  exec ./plural eval "Piazza.Ecto.ReleaseTasks.drop([])"
+fi
+quoted=$(printf '"%s",' "$@" | sed 's/,$//')
+exec ./plural eval "Piazza.Ecto.ReleaseTasks.drop([${quoted}])"

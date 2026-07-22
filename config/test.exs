@@ -5,7 +5,8 @@ config :core, Core.Repo,
   password: "postgres",
   database: "forge_test",
   hostname: "localhost",
-  pool: Ecto.Adapters.SQL.Sandbox
+  pool: Ecto.Adapters.SQL.Sandbox,
+  pool_size: System.schedulers_online() * 2
 
 config :core, Core.Influx,
   database: "plural",

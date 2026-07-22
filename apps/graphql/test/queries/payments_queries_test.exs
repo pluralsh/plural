@@ -235,68 +235,68 @@ defmodule GraphQl.PaymentsQueriesTest do
   end
 
   defp mk_invoices() do
-    %Stripe.List{
+    struct(Stripe.List,
       has_more: true,
       data: [
-        %Stripe.Invoice{
+        struct(Stripe.Invoice,
           id: "stripe-id-1",
           number: "some-number",
           amount_due: 0,
           amount_paid: 10,
           currency: "usd",
           lines: mk_invoice_items()
-        },
-        %Stripe.Invoice{
+        ),
+        struct(Stripe.Invoice,
           id: "stripe-id-2",
           number: "some-number",
           amount_due: 10,
           amount_paid: 10,
           currency: "usd",
           lines: mk_invoice_items()
-        }
+        )
       ]
-    }
+    )
   end
 
   defp mk_cards() do
-    %Stripe.List{
+    struct(Stripe.List,
       has_more: true,
       data: Enum.map([
-        %Stripe.Card{
+        struct(Stripe.Card,
           id: "some_id",
           brand: "amex",
           last4: "0123",
           exp_month: 1,
           exp_year: 2020,
           name: "Someone"
-        },
-        %Stripe.Card{
+        ),
+        struct(Stripe.Card,
           id: "some_id",
           brand: "amex",
           last4: "0123",
           exp_month: 1,
           exp_year: 2020,
           name: "Someone"
-        }
-      ], & %Stripe.PaymentMethod{card: &1})
-    }
+        )
+      ], &struct(Stripe.PaymentMethod, card: &1))
+    )
   end
 
   defp mk_invoice_items() do
-    %Stripe.List{
+    struct(Stripe.List,
       has_more: false,
       data: [
-        %Stripe.LineItem{
+        struct(Stripe.LineItem,
           amount: 10,
           currency: "usd",
           description: "Some line item"
-        },
-        %Stripe.LineItem{
+        ),
+        struct(Stripe.LineItem,
           amount: 10,
           currency: "usd",
           description: "Some line item"
-        }
+        )
       ]
-    }
+    )
   end
 end

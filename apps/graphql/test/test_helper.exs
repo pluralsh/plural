@@ -28,4 +28,5 @@ Mimic.copy(GoogleApi.IAM.V1.Api.Projects)
 Mimic.copy(Core.Clients.Vault)
 
 ExUnit.configure formatters: [JUnitFormatter, ExUnit.CLIFormatter]
+ExUnit.configure(assert_receive_timeout: 1_000)
 ExUnit.start()

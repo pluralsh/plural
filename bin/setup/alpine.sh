@@ -5,5 +5,5 @@ apk add --no-cache --update --virtual=build gcc musl-dev libffi-dev openssl-dev 
 apk del build
 addgroup --gid 10001 app
 adduser -D -h /home/plural -u 10001 -G app plural
-chown plural:app /opt/app
 mkdir -p /opt/app/data
+chown -R plural:app /opt/app

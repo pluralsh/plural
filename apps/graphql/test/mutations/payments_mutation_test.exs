@@ -81,7 +81,7 @@ defmodule GraphQl.PaymentsMutationsTest do
     test "It can delete a user's registered card" do
       account = insert(:account, billing_customer_id: "cus_id")
       user = admin_user(account)
-      expect(Stripe.PaymentMethod, :detach, fn %{payment_method: "card"} -> {:ok, %Stripe.PaymentMethod{id: "card"}} end)
+      expect(Stripe.PaymentMethod, :detach, fn %{payment_method: "card"} -> {:ok, struct(Stripe.PaymentMethod, id: "card")} end)
 
       {:ok, %{data: %{"deletePaymentMethod" => deleted}}} = run_query("""
         mutation deletePaymentMethod($id: ID!) {
@@ -422,7 +422,7 @@ defmodule GraphQl.PaymentsMutationsTest do
       account = insert(:account, billing_customer_id: "cus_id", user_count: 2, cluster_count: 0)
       user = insert(:user, roles: %{admin: true}, account: account)
       expect(Stripe.Customer, :update, fn "cus_id", %{invoice_settings: %{default_payment_method: "pay_id"}} ->
-        {:ok, %Stripe.Customer{}}
+        {:ok, struct(Stripe.Customer)}
       end)
 
       {:ok, %{data: %{"defaultPaymentMethod" => true}}} = run_query("""
@@ -564,8 +564,8 @@ defmodule GraphQl.PaymentsMutationsTest do
   describe "setupIntent" do
     setup [:setup_root_user]
     test "It will create a customer and persist its id", %{user: %{email: email} = user} do
-      expect(Stripe.Customer, :create, fn %{email: ^email} -> {:ok, %Stripe.Customer{id: "cus_id"}} end)
-      expect(Stripe.SetupIntent, :create, fn %{customer: "cus_id"} -> {:ok, %Stripe.SetupIntent{client_secret: "sec"}} end)
+      expect(Stripe.Customer, :create, fn %{email: ^email} -> {:ok, struct(Stripe.Customer, id: "cus_id")} end)
+      expect(Stripe.SetupIntent, :create, fn %{customer: "cus_id"} -> {:ok, struct(Stripe.SetupIntent, client_secret: "sec")} end)
 
       {:ok, %{data: %{"setupIntent" => result}}} = run_query("""
         mutation {

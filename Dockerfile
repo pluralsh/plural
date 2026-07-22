@@ -97,7 +97,6 @@ ARG APP_NAME
 ARG GIT_COMMIT
 
 RUN apk update && \
-    apk upgrade --no-cache && \
     apk add --no-cache \
       bash \
       curl \

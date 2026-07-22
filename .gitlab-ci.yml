@@ -23,12 +23,17 @@ stages:
 
 build:
   stage: test
-  image: gcr.io/pluralsh/circleci/elixir:1.9.4
+  # Align with Dockerfile / .tool-versions (Elixir 1.13.4). Bandit 1.11+ needs this.
+  image: hexpm/elixir:1.13.4-erlang-24.3-alpine-3.17.0
   cache:
     key: ${CI_COMMIT_REF_SLUG}
     paths:
     - _build
     - deps
+  before_script:
+  - apk add --no-cache git build-base curl wget ca-certificates bash
+  - mix local.hex --force
+  - mix local.rebar --force
   script:
   - wget -O plural.o 'https://app.plural.sh/artifacts/plural/plural?platform=linux&arch=amd64'
   - mkdir bin
@@ -38,8 +43,6 @@ build:
   - mv linux-amd64/helm bin/helm && chmod +x bin/helm
   - export PATH="$(pwd)/bin:$PATH"
   - make testup
-  - mix local.hex --force
-  - mix local.rebar --force
   - mix deps.get
   - mix test
 

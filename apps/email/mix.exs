@@ -39,9 +39,8 @@ defmodule Email.MixProject do
       config_path: "../../config/config.exs",
       deps_path: "../../deps",
       lockfile: "../../mix.lock",
-      elixir: "~> 1.7",
+      elixir: "~> 1.16",
       elixirc_paths: elixirc_paths(Mix.env()),
-      compilers: [:phoenix] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       deps: deps(),
@@ -68,16 +67,17 @@ defmodule Email.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:phoenix, "~> 1.6.0"},
-      {:phoenix_html, "~> 3.2.0"},
+      {:phoenix, "~> 1.7"},
+      {:phoenix_html, "~> 3.3"},
+      {:phoenix_view, "~> 2.0"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
-      {:phoenix_live_dashboard, "~> 0.5.3"},
-      {:telemetry_metrics, "~> 0.6.1"},
-      {:telemetry_poller, "~> 1.0.0"},
+      {:phoenix_live_dashboard, "~> 0.8"},
+      {:telemetry_metrics, "~> 0.6"},
+      {:telemetry_poller, "~> 1.0"},
       {:bamboo_phoenix, "~> 1.0"},
       {:gettext, "~> 0.20"},
       {:jason, "~> 1.0"},
-      {:plug_cowboy, "~> 2.6.0"},
+      {:plug_cowboy, "~> 2.8.1"},
 
       {:core, in_umbrella: true}
     ]

@@ -35,8 +35,10 @@ defmodule Plural.MixProject do
     [
       apps_path: "apps",
       version: version(),
+      elixir: "~> 1.16",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
+      releases: releases(),
       test_coverage: [tool: ExCoveralls],
       preferred_cli_env: [
         coveralls: :test,
@@ -47,15 +49,76 @@ defmodule Plural.MixProject do
     ]
   end
 
+  defp releases do
+    [
+      plural: [
+        include_executables_for: [:unix],
+        runtime_config_path: "rel/runtime.exs",
+        overlays: "rel/overlays/plural",
+        applications: [
+          runtime_tools: :permanent,
+          api: :permanent,
+          core: :permanent,
+          email: :permanent,
+          graphql: :permanent
+        ]
+      ],
+      rtc: [
+        include_executables_for: [:unix],
+        runtime_config_path: "rel/runtime.exs",
+        applications: [
+          runtime_tools: :permanent,
+          rtc: :permanent,
+          core: :permanent,
+          graphql: :permanent
+        ]
+      ],
+      worker: [
+        include_executables_for: [:unix],
+        runtime_config_path: "rel/runtime.exs",
+        applications: [
+          runtime_tools: :permanent,
+          worker: :permanent,
+          core: :permanent,
+          email: :permanent
+        ]
+      ],
+      cron: [
+        include_executables_for: [:unix],
+        runtime_config_path: "rel/runtime.exs",
+        applications: [
+          runtime_tools: :permanent,
+          cron: :permanent,
+          core: :permanent,
+          email: :permanent
+        ]
+      ]
+    ]
+  end
+
   defp deps do
     [
-      {:distillery, "~> 2.1"},
-      {:x509, "~> 0.8.5"},
-      {:shards, "~> 1.0"},
-      {:ecto, "~> 3.9.0", override: true},
-      {:hackney, "~> 1.18.1", override: true},
-      {:absinthe_plug, "~> 1.5.8", git: "https://github.com/absinthe-graphql/absinthe_plug.git", commit: "3a984cc341ebb32c79e7ae58b4ebd116d5c62f9e", override: true},
-      {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
+      {:x509, "~> 0.9"},
+      {:shards, "~> 1.1"},
+      {:ecto, "~> 3.12.0", override: true},
+      {:ecto_sql, "~> 3.12.0", override: true},
+      {:postgrex, "~> 0.22", override: true},
+      {:hackney, "~> 1.21", override: true},
+      {:mint, "~> 1.9", override: true},
+      {:tesla, "~> 1.18", override: true},
+      {:bandit, "~> 1.12", override: true},
+      {:jose, "~> 1.11", override: true},
+      {:plug, "~> 1.18", override: true},
+      {:plug_cowboy, "~> 2.8", override: true},
+      {:cowboy, "~> 2.15", override: true},
+      {:cowlib, "~> 2.16", override: true},
+      {:absinthe, "~> 1.10", override: true},
+      {:rabbit_common, "~> 4.2", override: true},
+      {:absinthe_plug, "~> 1.5.8",
+       git: "https://github.com/absinthe-graphql/absinthe_plug.git",
+       commit: "3a984cc341ebb32c79e7ae58b4ebd116d5c62f9e",
+       override: true},
+      {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
       {:sobelow, "~> 0.8", only: :dev},
       {:excoveralls, "~> 0.10", only: :test},
       {:junit_formatter, "~> 3.3", only: [:test]}

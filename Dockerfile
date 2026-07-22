@@ -1,41 +1,28 @@
-FROM bitwalker/alpine-elixir:1.13.4 AS builder
+ARG ELIXIR_VERSION=1.19.4
+ARG OTP_VERSION=28.5
+ARG OS_VARIANT=alpine
+ARG OS_VERSION=3.23.4
+ARG RUNNER_IMAGE=alpine:3.23.4
 
-# The following are build arguments used to change variable parts of the image.
-# The name of your application/release (required)
+FROM hexpm/elixir:${ELIXIR_VERSION}-erlang-${OTP_VERSION}-${OS_VARIANT}-${OS_VERSION} AS builder
+
 ARG APP_NAME
-# The environment to build with
 ARG MIX_ENV=prod
 
 ENV APP_NAME=${APP_NAME} \
     MIX_ENV=${MIX_ENV}
 
-# By convention, /opt is typically used for applications
 WORKDIR /opt/app
 
-# This step installs all the build tools we'll need
-RUN apk update --allow-untrusted && \
-  apk upgrade --no-cache && \
-  apk add --no-cache \
-    git \
-    build-base && \
+RUN apk update && apk upgrade --no-cache && \
+  apk add --no-cache git build-base curl ca-certificates && \
   mix local.rebar --force && \
   mix local.hex --force
 
-# This copies our app source code into the build container
 COPY . .
-
-# needed so that we can get the app version from the git tag
 RUN git config --global --add safe.directory '/opt/app'
-
 RUN mix do deps.get, compile
-
-RUN \
-  mkdir -p /opt/built && \
-  mix distillery.release --name ${APP_NAME} && \
-  cp _build/${MIX_ENV}/rel/${APP_NAME}/releases/*/${APP_NAME}.tar.gz /opt/built && \
-  cd /opt/built && \
-  tar -xzf ${APP_NAME}.tar.gz && \
-  rm ${APP_NAME}.tar.gz
+RUN mix release ${APP_NAME}
 
 FROM alpine:3.21.7 as tools
 
@@ -90,32 +77,31 @@ RUN apk add --update --no-cache curl ca-certificates unzip wget openssl && \
     # chmod +x /usr/local/bin/terrascan && \
     chmod +x /usr/local/bin/trivy
 
-FROM erlang:24.3.4.17-alpine
+ARG RUNNER_IMAGE=alpine:3.23.4
+FROM ${RUNNER_IMAGE}
 
-# The name of your application/release (required)
 ARG APP_NAME
 ARG GIT_COMMIT
-
-RUN apk update && \
-    apk add --no-cache \
-      bash \
-      curl \
-      busybox \
-      openssl-dev \
-      ca-certificates \
-      git
-
-ENV REPLACE_OS_VARS=true \
-    APP_NAME=${APP_NAME} \
-    GIT_COMMIT=${GIT_COMMIT}
+ARG OS_VARIANT=alpine
 
 WORKDIR /opt/app
 
+COPY bin/setup/${OS_VARIANT}.sh /opt/app/bin/setup.sh
+RUN /bin/sh /opt/app/bin/setup.sh && rm /opt/app/bin/setup.sh
+
+ENV REPLACE_OS_VARS=true \
+    APP_NAME=${APP_NAME} \
+    GIT_COMMIT=${GIT_COMMIT} \
+    MIX_ENV=prod \
+    LANG=en_US.UTF-8 \
+    LANGUAGE=en_US:en \
+    LC_ALL=en_US.UTF-8
+
 COPY --from=tools /usr/local/bin/plural /usr/local/bin/plural
 COPY --from=tools /usr/local/bin/helm /usr/local/bin/helm
-# COPY --from=tools /usr/local/bin/goon /usr/local/bin/goon
-# COPY --from=tools /usr/local/bin/terrascan /usr/local/bin/terrascan
 COPY --from=tools /usr/local/bin/trivy /usr/local/bin/trivy
-COPY --from=builder /opt/built .
+COPY --from=builder /opt/app/_build/prod/rel/${APP_NAME} .
 
-CMD trap 'exit' INT; /opt/app/bin/${APP_NAME} foreground
+USER plural
+
+CMD trap 'exit' INT; /opt/app/bin/${APP_NAME} start

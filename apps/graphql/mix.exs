@@ -39,7 +39,7 @@ defmodule Graphql.MixProject do
       config_path: "../../config/config.exs",
       deps_path: "../../deps",
       lockfile: "../../mix.lock",
-      elixir: "~> 1.9",
+      elixir: "~> 1.16",
       start_permanent: Mix.env() == :prod,
       elixirc_paths: elixirc_paths(Mix.env()),
       deps: deps(),
@@ -60,10 +60,10 @@ defmodule Graphql.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:absinthe, "~> 1.7.5"},
-      {:absinthe_relay, "~> 1.5.2"},
-      {:absinthe_plug, "~> 1.5.8"},
-      {:dataloader, "== 1.0.10", override: true},
+      {:absinthe, "~> 1.10"},
+      {:absinthe_relay, "~> 1.5"},
+      {:absinthe_plug, "~> 1.5"},
+      {:dataloader, "~> 2.0"},
       {:apq, "~> 1.2.1"},
       {:hammer, "~> 6.1"},
 

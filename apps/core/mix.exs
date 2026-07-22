@@ -118,7 +118,7 @@ defmodule Core.MixProject do
       {:stripity_stripe, "~> 3.2"},
       {:conduit, "~> 0.12"},
       {:conduit_amqp, "~> 0.6.3"},
-      {:rabbit_common, "~> 3.11.24", override: true},
+      {:rabbit_common, "3.12.14", override: true},
       {:amqp, "~> 3.2", override: true},
       {:mime, "~> 1.2"},
       {:ex_image_info, "~> 0.2.4"},

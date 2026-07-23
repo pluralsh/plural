@@ -53,7 +53,21 @@ defmodule Plural.MixProject do
       {:x509, "~> 0.8.5"},
       {:shards, "~> 1.0"},
       {:ecto, "~> 3.9.0", override: true},
-      {:hackney, "~> 1.18.1", override: true},
+      # Security bumps (Elixir 1.13-compatible fixed versions where possible)
+      {:hackney, "~> 1.25.0", override: true},
+      {:mint, ">= 1.9.0 and < 1.9.2", override: true},
+      {:tesla, ">= 1.11.0 and < 1.11.2", override: true},
+      {:bandit, "~> 1.11.1", override: true},
+      {:hpax, "1.0.3", override: true},
+      {:jose, ">= 1.11.7 and < 1.11.11", override: true},
+      {:plug, "~> 1.18.2", override: true},
+      {:plug_cowboy, "~> 2.8.1", override: true},
+      {:cowboy, "~> 2.15.0", override: true},
+      {:cowlib, "~> 2.16.1", override: true},
+      {:absinthe, "1.7.10", override: true},
+      # Keep postgrex on ecto_sql 3.9's declared range (~> 0.16 or ~> 1.0).
+      # CVE-2026-32687 needs postgrex 0.22.2 + a newer Ecto stack (Elixir upgrade).
+      {:rabbit_common, "3.12.14", override: true},
       {:absinthe_plug, "~> 1.5.8", git: "https://github.com/absinthe-graphql/absinthe_plug.git", commit: "3a984cc341ebb32c79e7ae58b4ebd116d5c62f9e", override: true},
       {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
       {:sobelow, "~> 0.8", only: :dev},

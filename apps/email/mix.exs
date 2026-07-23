@@ -77,7 +77,7 @@ defmodule Email.MixProject do
       {:bamboo_phoenix, "~> 1.0"},
       {:gettext, "~> 0.20"},
       {:jason, "~> 1.0"},
-      {:plug_cowboy, "~> 2.6.0"},
+      {:plug_cowboy, "~> 2.8.1"},
 
       {:core, in_umbrella: true}
     ]

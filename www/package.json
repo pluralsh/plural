@@ -144,6 +144,7 @@
     "@babel/core": "7.29.7",
     "@babel/runtime": "7.29.7",
     "@graphql-codegen/plugin-helpers": "6.3.0",
+    "brace-expansion@^1": "1.1.16",
     "schema-utils/ajv": "6.15.0",
     "ip-address": "10.1.1",
     "js-cookie": "3.0.7",

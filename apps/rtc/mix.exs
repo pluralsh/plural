@@ -76,7 +76,7 @@ defmodule Rtc.MixProject do
       {:telemetry_poller, "~> 1.0.0"},
       {:gettext, "~> 0.20"},
       {:jason, "~> 1.0"},
-      {:plug_cowboy, "~> 2.6.0", override: true},
+      {:plug_cowboy, "~> 2.8.1", override: true},
       {:absinthe_phoenix, "~> 2.0.2"},
       {:libcluster, "~> 3.3.1"},
       {:prometheus_ex, "~> 3.0"},

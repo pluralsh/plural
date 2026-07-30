@@ -15,3 +15,6 @@ CVE-2026-47075
 CVE-2026-47076
 CVE-2026-47069
 CVE-2026-32686
+
+# req fixed only in 0.6.1 (Elixir ~> 1.14); project is on Elixir 1.13
+CVE-2026-49755

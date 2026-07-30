@@ -18,3 +18,6 @@ CVE-2026-32686
 
 # req fixed only in 0.6.1 (Elixir ~> 1.14); project is on Elixir 1.13
 CVE-2026-49755
+
+# brace-expansion: 1.1.17 / 2.1.3 / 5.0.9 pinned; GHSA only lists fixed as 5.0.8 so scanners still flag 1.x/2.x backports
+CVE-2026-14257

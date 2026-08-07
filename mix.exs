@@ -62,7 +62,7 @@ defmodule Plural.MixProject do
       {:jose, ">= 1.11.7 and < 1.11.11", override: true},
       {:plug, "~> 1.18.2", override: true},
       {:plug_cowboy, "~> 2.8.1", override: true},
-      {:cowboy, "~> 2.15.0", override: true},
+      {:cowboy, "~> 2.16.0", override: true},
       {:cowlib, "~> 2.16.1", override: true},
       {:absinthe, "1.7.10", override: true},
       # Keep postgrex on ecto_sql 3.9's declared range (~> 0.16 or ~> 1.0).

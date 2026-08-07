@@ -5782,13 +5782,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@remix-run/router@npm:1.23.3":
-  version: 1.23.3
-  resolution: "@remix-run/router@npm:1.23.3"
-  checksum: 10/a12ae9994bf017d47392ce2be24252b4e2281f4b27eac78f0e9b48afa5f522be9c0ec64b85db013ded1fff140d9512b97ac8ea5dd182138dcd6d3ded3136cbf6
-  languageName: node
-  linkType: hard
-
 "@repeaterjs/repeater@npm:^3.0.4, @repeaterjs/repeater@npm:^3.0.6":
   version: 3.0.6
   resolution: "@repeaterjs/repeater@npm:3.0.6"
@@ -8705,6 +8698,13 @@ __metadata:
   version: 2.0.0
   resolution: "convert-source-map@npm:2.0.0"
   checksum: 10/c987be3ec061348cdb3c2bfb924bec86dea1eacad10550a85ca23edb0fe3556c3a61c7399114f3331ccb3499d7fd0285ab24566e5745929412983494c3926e15
+  languageName: node
+  linkType: hard
+
+"cookie@npm:^1.0.1":
+  version: 1.1.1
+  resolution: "cookie@npm:1.1.1"
+  checksum: 10/85538153054791155cf4d38d2e807e3b9382d71bf71d92fc46fca348515ea574049d0d9ef8eb84d2d54a681ad1d7a7316b1989b901dace50a6c0f4c3858dbdb2
   languageName: node
   linkType: hard
 
@@ -11899,10 +11899,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ip-address@npm:10.1.1":
-  version: 10.1.1
-  resolution: "ip-address@npm:10.1.1"
-  checksum: 10/4289c1cd06eed843df627e0b8041f49a76b3683879dd1703aebf72b68071ee51b3e866a6ef5826a78c8222d78d3996d59c6e92ad44f2379660b63a47e8f7782c
+"ip-address@npm:10.2.2":
+  version: 10.2.2
+  resolution: "ip-address@npm:10.2.2"
+  checksum: 10/351c470d323d874b79c5525d1701a4a4d1d41eb77806702a64d328100903b6a949ed2d31b833f54ec8068deff408142e2a5823f0c9a142d26f8f1da0117de773
   languageName: node
   linkType: hard
 
@@ -15552,27 +15552,31 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-router-dom@npm:6.30.4":
-  version: 6.30.4
-  resolution: "react-router-dom@npm:6.30.4"
+"react-router-dom@npm:7.18.0":
+  version: 7.18.0
+  resolution: "react-router-dom@npm:7.18.0"
   dependencies:
-    "@remix-run/router": "npm:1.23.3"
-    react-router: "npm:6.30.4"
+    react-router: "npm:7.18.0"
   peerDependencies:
-    react: ">=16.8"
-    react-dom: ">=16.8"
-  checksum: 10/e220abac766bb9bcc56a99b78d30d99745cae3618f84baa92bd6ec481eccb6afb12c724d49dc68e6f870b70ff449f751f20f4aa33f1896d3f7d3bda8e47a6ce1
+    react: ">=18"
+    react-dom: ">=18"
+  checksum: 10/7725f261e308d2a8131c3857db828820e0f0db3e64ae86b84c8fdf309e112f4373ca5625a66a68105fd16f2159f558563440fd82487fa3818988a69956c851bf
   languageName: node
   linkType: hard
 
-"react-router@npm:6.30.4":
-  version: 6.30.4
-  resolution: "react-router@npm:6.30.4"
+"react-router@npm:7.18.0":
+  version: 7.18.0
+  resolution: "react-router@npm:7.18.0"
   dependencies:
-    "@remix-run/router": "npm:1.23.3"
+    cookie: "npm:^1.0.1"
+    set-cookie-parser: "npm:^2.6.0"
   peerDependencies:
-    react: ">=16.8"
-  checksum: 10/59c1b64a210cde2f1d069ffc47dce2d58991bd4d81bb0743e22ba7c6b742e63ebbdc976c42c3a3ebd90bf38a2f05258bd0efa82c162b259be000d39787716043
+    react: ">=18"
+    react-dom: ">=18"
+  peerDependenciesMeta:
+    react-dom:
+      optional: true
+  checksum: 10/a69b5502a3549de56adce7ba87ae02ac5b052da49eae261124824dd963d047218795706c780e019f366961a7a1e073417a96b295b743f6f57d2a30c68fd78d61
   languageName: node
   linkType: hard
 
@@ -16836,6 +16840,13 @@ __metadata:
   bin:
     serve: build/main.js
   checksum: 10/5ed677e260b21eb6c3f04d5d109f258a06272881d91cbb71a6e2dae6045653d59ae535c94644c017b03db5b472e35523cda287328feaa1d629d4674960ceaa86
+  languageName: node
+  linkType: hard
+
+"set-cookie-parser@npm:^2.6.0":
+  version: 2.7.2
+  resolution: "set-cookie-parser@npm:2.7.2"
+  checksum: 10/4b6f5ec4e3fa1aef471d9207117704d217ba6bb6443400b41f5ea945c4a7f6fc08e405a122c1a32b4ebde41f06dea75e02c2af87cee9abb27f3e3fe911e5839b
   languageName: node
   linkType: hard
 
@@ -18408,10 +18419,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"undici@npm:^7.25.0":
-  version: 7.28.0
-  resolution: "undici@npm:7.28.0"
-  checksum: 10/154423b280d623278a61decb437f8a7e581fb18b8c95556ef956b32a58cd668eadbb812d28e20678cb2dc545a566f35a3afc0962307ca801da30f4741117986d
+"undici@npm:7.29.0":
+  version: 7.29.0
+  resolution: "undici@npm:7.29.0"
+  checksum: 10/ca73639071bdcbc41e57be1800847fa18f86f8fbf7a5641ff9899f7bbb6f5cecdd593e225f5fd94e31703dcbfaea4a722a3b81cab90c5c4e2b406aec1ae55732
   languageName: node
   linkType: hard
 
@@ -19612,7 +19623,7 @@ __metadata:
     react-piano-keys: "npm:1.2.1"
     react-player: "npm:2.12.0"
     react-resize-detector: "npm:9.1.0"
-    react-router-dom: "npm:6.30.4"
+    react-router-dom: "npm:7.18.0"
     react-sage: "npm:0.3.16"
     react-script-hook: "npm:1.7.2"
     react-spinners: "npm:0.13.8"

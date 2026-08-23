@@ -1,4 +1,9 @@
-FROM bitwalker/alpine-elixir:1.13.4 AS builder
+# hexpm does not publish an Elixir 1.13.4 image for OTP 24.3.4.17. Build
+# Elixir against the exact OTP/Alpine runtime so packaged OTP NIFs share its OpenSSL ABI.
+FROM erlang:24.3.4.17-alpine@sha256:1daf47836e296006a28d88a550ffb27093c080c0ee5ebb9114ee4dafce901eac AS builder
+
+ARG ELIXIR_VERSION=1.13.4
+ARG ELIXIR_SHA256=95daf2dd3052e6ca7d4d849457eaaba09de52d65ca38d6933c65bc1cdf6b8579
 
 # The following are build arguments used to change variable parts of the image.
 # The name of your application/release (required)
@@ -6,8 +11,7 @@ ARG APP_NAME
 # The environment to build with
 ARG MIX_ENV=prod
 
-ENV APP_NAME=${APP_NAME} \
-    MIX_ENV=${MIX_ENV}
+ENV MIX_ENV=${MIX_ENV}
 
 # By convention, /opt is typically used for applications
 WORKDIR /opt/app
@@ -16,8 +20,14 @@ WORKDIR /opt/app
 RUN apk update --allow-untrusted && \
   apk upgrade --no-cache && \
   apk add --no-cache \
+    curl \
     git \
     build-base && \
+  curl -fsSL -o elixir.tar.gz https://github.com/elixir-lang/elixir/archive/refs/tags/v${ELIXIR_VERSION}.tar.gz && \
+  echo "${ELIXIR_SHA256}  elixir.tar.gz" | sha256sum -c - && \
+  tar -xzf elixir.tar.gz && \
+  make -C elixir-${ELIXIR_VERSION} install && \
+  rm -rf elixir.tar.gz elixir-${ELIXIR_VERSION} && \
   mix local.rebar --force && \
   mix local.hex --force
 
@@ -28,6 +38,8 @@ COPY . .
 RUN git config --global --add safe.directory '/opt/app'
 
 RUN mix do deps.get, compile
+
+ENV APP_NAME=${APP_NAME}
 
 RUN \
   mkdir -p /opt/built && \
@@ -90,7 +102,7 @@ RUN apk add --update --no-cache curl ca-certificates unzip wget openssl && \
     # chmod +x /usr/local/bin/terrascan && \
     chmod +x /usr/local/bin/trivy
 
-FROM erlang:24.3.4.17-alpine
+FROM erlang:24.3.4.17-alpine@sha256:1daf47836e296006a28d88a550ffb27093c080c0ee5ebb9114ee4dafce901eac
 
 # The name of your application/release (required)
 ARG APP_NAME

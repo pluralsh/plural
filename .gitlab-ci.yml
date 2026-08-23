@@ -60,6 +60,7 @@ build-plural:
   - master
   script:
   - make build APP_NAME=plural GIT_COMMIT=$CI_COMMIT_SHORT_SHA
+  - make smoke-image APP_NAME=plural
   - make push APP_NAME=plural
 
 build-rtc:
@@ -69,6 +70,7 @@ build-rtc:
   - master
   script:
   - make build APP_NAME=rtc GIT_COMMIT=$CI_COMMIT_SHORT_SHA
+  - make smoke-image APP_NAME=rtc
   - make push APP_NAME=rtc
 
 build-cron:
@@ -78,6 +80,7 @@ build-cron:
   - master  
   script:
   - make build APP_NAME=cron GIT_COMMIT=$CI_COMMIT_SHORT_SHA
+  - make smoke-image APP_NAME=cron
   - make push APP_NAME=cron
 
 build-worker:
@@ -87,6 +90,7 @@ build-worker:
   - master
   script:
   - make build APP_NAME=worker GIT_COMMIT=$CI_COMMIT_SHORT_SHA
+  - make smoke-image APP_NAME=worker
   - make push APP_NAME=worker
 
 build-www:

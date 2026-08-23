@@ -1,4 +1,4 @@
-.PHONY: help up-docker down-docker up-docker-www test-docker-www build-docker-www testup testdown test-docker
+.PHONY: help up-docker down-docker up-docker-www test-docker-www build-docker-www testup testdown test-docker smoke-image
 
 GCP_PROJECT ?= pluralsh
 APP_NAME ?= plural
@@ -8,6 +8,7 @@ DKR_HOST ?= dkr.plural.sh
 dep ?= forge-core
 GIT_COMMIT ?= abe123
 TARGETARCH ?= amd64
+SMOKE_IMAGE ?= $(APP_NAME):$(APP_VSN)
 COCKROACH_VSN ?= v24.1.3
 
 help:
@@ -50,6 +51,9 @@ else
 		-t $(DKR_HOST)/plural/$(APP_NAME):$(APP_VSN) .
 endif
 
+smoke-image: ## initialize the packaged crypto NIF in a final root image
+	./bin/smoke-image "$(SMOKE_IMAGE)"
+
 deploy: ## deploy artifacts to plural
 	cd plural && plural apply
 
@@ -66,6 +70,9 @@ ifeq ($(APP_NAME), www)
 	docker push gcr.io/$(GCP_PROJECT)/plural-www:$(APP_VSN)
 	docker push $(DKR_HOST)/plural/plural-www:$(APP_VSN)
 else
+ifneq ($(filter $(APP_NAME),plural cron worker rtc),)
+	$(MAKE) --no-print-directory smoke-image SMOKE_IMAGE=$(APP_NAME):$(APP_VSN)
+endif
 	docker push gcr.io/$(GCP_PROJECT)/$(APP_NAME):$(APP_VSN)
 	docker push $(DKR_HOST)/plural/${APP_NAME}:$(APP_VSN)
 endif

@@ -1,0 +1,16 @@
+#!/usr/bin/env sh
+# Verify the packaged OTP crypto NIF in the exact final image artifact.
+set -eu
+
+if [ "$#" -ne 1 ]; then
+  echo "usage: $0 IMAGE" >&2
+  exit 64
+fi
+
+docker run --rm \
+  --platform "${DOCKER_PLATFORM:-linux/amd64}" \
+  --entrypoint /bin/sh \
+  -e POD_IP=127.0.0.1 \
+  -e ERLANG_COOKIE=crypto-smoke-cookie \
+  "$1" \
+  -ec 'exec "/opt/app/bin/${APP_NAME:?APP_NAME is required}" eval "case Application.ensure_all_started(:crypto) do {:ok, _} -> :ok; error -> raise \"failed to initialize crypto: #{inspect(error)}\" end"'

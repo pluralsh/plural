@@ -109,7 +109,8 @@ jobs:
       with:
         context: "."
         file: "./Dockerfile"
-        push: true
+        push: false
+        load: true
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
         platforms: linux/amd64
@@ -118,6 +119,13 @@ jobs:
         build-args: |
           APP_NAME=${{ matrix.app }}
           GIT_COMMIT=${{ github.sha }}
+    - name: Smoke test ${{ matrix.app }} image
+      run: ./bin/smoke-image '${{ fromJSON(steps.meta.outputs.json).tags[0] }}'
+    - name: Push smoke-tested ${{ matrix.app }} image
+      run: |
+        for tag in ${{ steps.meta.outputs.tags }}; do
+          docker push "$tag"
+        done
     - name: slack webhook
       uses: 8398a7/action-slack@v3
       with:

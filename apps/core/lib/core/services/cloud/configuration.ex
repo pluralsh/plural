@@ -63,7 +63,7 @@ defmodule Core.Services.Cloud.Configuration do
       cluster_id: Core.conf(:mgmt_cluster),
       type: "TERRAFORM",
       manageState: true,
-      approval: false,
+      approval: true,
       configuration: %{version: "1.8"},
       git: %{ref: "main", folder: "terraform/modules/dedicated/#{inst.cloud}"},
       environment: Enum.map(stack_environment(inst), fn {k, v} -> %{name: "TF_VAR_#{k}", value: "#{v}"} end)

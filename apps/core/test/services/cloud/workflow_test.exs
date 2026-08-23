@@ -97,6 +97,7 @@ defmodule Core.Services.Cloud.WorkflowTest do
       assert attrs.project_id == "proj-id"
       assert attrs.actor_id == "me-id"
       assert attrs.repository_id == "repo-id"
+      assert attrs.approval
       assert attrs.git.ref == "main"
       assert attrs.git.folder == "terraform/modules/dedicated/aws"
       refute Enum.empty?(attrs.environment)

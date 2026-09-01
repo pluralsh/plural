@@ -1,6 +1,6 @@
 defmodule Core.Schema.User do
   use Piazza.Ecto.Schema, derive_json: false
-  use Arc.Ecto.Schema
+  use Waffle.Ecto.Schema
   alias Core.Schema.{
     Address,
     Publisher,

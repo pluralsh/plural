@@ -1,41 +1,31 @@
-FROM bitwalker/alpine-elixir:1.13.4 AS builder
+ARG ELIXIR_VERSION=1.19.4
+ARG OTP_VERSION=28.5
+ARG OS_VARIANT=alpine
+ARG OS_VERSION=3.23.4
+ARG RUNNER_IMAGE=alpine:3.23.4
 
-# The following are build arguments used to change variable parts of the image.
-# The name of your application/release (required)
-ARG APP_NAME
-# The environment to build with
+FROM hexpm/elixir:${ELIXIR_VERSION}-erlang-${OTP_VERSION}-${OS_VARIANT}-${OS_VERSION} AS builder
+
 ARG MIX_ENV=prod
 
-ENV APP_NAME=${APP_NAME} \
-    MIX_ENV=${MIX_ENV}
+ENV MIX_ENV=${MIX_ENV}
 
-# By convention, /opt is typically used for applications
 WORKDIR /opt/app
 
-# This step installs all the build tools we'll need
-RUN apk update --allow-untrusted && \
-  apk upgrade --no-cache && \
-  apk add --no-cache \
-    git \
-    build-base && \
+RUN apk update && apk upgrade --no-cache && \
+  apk add --no-cache git build-base curl ca-certificates && \
   mix local.rebar --force && \
   mix local.hex --force
 
-# This copies our app source code into the build container
 COPY . .
 
-# needed so that we can get the app version from the git tag
 RUN git config --global --add safe.directory '/opt/app'
 
 RUN mix do deps.get, compile
 
-RUN \
-  mkdir -p /opt/built && \
-  mix distillery.release --name ${APP_NAME} && \
-  cp _build/${MIX_ENV}/rel/${APP_NAME}/releases/*/${APP_NAME}.tar.gz /opt/built && \
-  cd /opt/built && \
-  tar -xzf ${APP_NAME}.tar.gz && \
-  rm ${APP_NAME}.tar.gz
+ARG APP_NAME
+ENV APP_NAME=${APP_NAME}
+RUN mix release ${APP_NAME}
 
 FROM alpine:3.21.7 as tools
 
@@ -54,27 +44,12 @@ ENV CLI_VERSION=v0.12.59
 ENV TRIVY_VERSION=v0.72.0
 
 RUN apk add --update --no-cache curl ca-certificates unzip wget openssl && \
-    # download helm
     echo "installing helm" && \
     curl -L https://get.helm.sh/helm-${HELM_VERSION}-linux-${TARGETARCH}.tar.gz | tar xz && \
     mv linux-${TARGETARCH}/helm /usr/local/bin/helm && \
-    # download goon
-    # echo "installing goon" && \
-    # curl -L https://github.com/alco/goon/releases/download/${GOON_VERSION}/goon_linux_${TARGETARCH}.tar.gz | tar xvz && \
-    # mv goon /usr/local/bin/goon && \
-    # download plural cli
     echo "installing plural" && \
     curl -L https://github.com/pluralsh/plural-cli/releases/download/${CLI_VERSION}/plural-cli_${CLI_VERSION#v}_Linux_${TARGETARCH}.tar.gz | tar xvz plural && \
     mv plural /usr/local/bin/plural && \
-    # download terrascan
-    # if [ "$TARGETARCH" = "amd64" ]; then \
-    #   curl -L https://github.com/accurics/terrascan/releases/download/${TERRASCAN_VERSION}/terrascan_${TERRASCAN_VERSION/v/}_Linux_x86_64.tar.gz > terrascan.tar.gz; \
-    # else \
-    #   curl -L https://github.com/accurics/terrascan/releases/download/${TERRASCAN_VERSION}/terrascan_${TERRASCAN_VERSION/v/}_Linux_${TARGETARCH}.tar.gz > terrascan.tar.gz; \
-    # fi && \
-    # tar -xf terrascan.tar.gz terrascan && rm terrascan.tar.gz && \
-    # mv terrascan /usr/local/bin/terrascan && \
-    # download trivy
     echo "installing trivy" && \
     if [ "$TARGETARCH" = "amd64" ]; then \
       curl -L https://github.com/aquasecurity/trivy/releases/download/${TRIVY_VERSION}/trivy_${TRIVY_VERSION/v/}_Linux-64bit.tar.gz > trivy.tar.gz; \
@@ -83,16 +58,12 @@ RUN apk add --update --no-cache curl ca-certificates unzip wget openssl && \
     fi && \
     tar -xf trivy.tar.gz trivy && rm trivy.tar.gz && \
     mv trivy /usr/local/bin/trivy && \
-    # make tools executable
     chmod +x /usr/local/bin/helm && \
-    # chmod +x /usr/local/bin/goon && \
     chmod +x /usr/local/bin/plural && \
-    # chmod +x /usr/local/bin/terrascan && \
     chmod +x /usr/local/bin/trivy
 
-FROM erlang:24.3.4.6-alpine
+FROM ${RUNNER_IMAGE}
 
-# The name of your application/release (required)
 ARG APP_NAME
 ARG GIT_COMMIT
 
@@ -103,19 +74,22 @@ RUN apk update && \
       busybox \
       openssl-dev \
       ca-certificates \
-      git
+      git \
+      libstdc++ \
+      ncurses-libs
 
-ENV REPLACE_OS_VARS=true \
-    APP_NAME=${APP_NAME} \
-    GIT_COMMIT=${GIT_COMMIT}
+ENV APP_NAME=${APP_NAME} \
+    GIT_COMMIT=${GIT_COMMIT} \
+    MIX_ENV=prod \
+    LANG=en_US.UTF-8 \
+    LANGUAGE=en_US:en \
+    LC_ALL=en_US.UTF-8
 
 WORKDIR /opt/app
 
 COPY --from=tools /usr/local/bin/plural /usr/local/bin/plural
 COPY --from=tools /usr/local/bin/helm /usr/local/bin/helm
-# COPY --from=tools /usr/local/bin/goon /usr/local/bin/goon
-# COPY --from=tools /usr/local/bin/terrascan /usr/local/bin/terrascan
 COPY --from=tools /usr/local/bin/trivy /usr/local/bin/trivy
-COPY --from=builder /opt/built .
+COPY --from=builder /opt/app/_build/prod/rel/${APP_NAME} .
 
-CMD trap 'exit' INT; /opt/app/bin/${APP_NAME} foreground
+CMD trap 'exit' INT; /opt/app/bin/${APP_NAME} start

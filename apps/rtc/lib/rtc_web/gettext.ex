@@ -20,5 +20,5 @@ defmodule RtcWeb.Gettext do
 
   See the [Gettext Docs](https://hexdocs.pm/gettext) for detailed usage.
   """
-  use Gettext, otp_app: :rtc
+  use Gettext.Backend, otp_app: :rtc
 end

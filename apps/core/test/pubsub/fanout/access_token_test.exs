@@ -20,7 +20,7 @@ defmodule Core.PubSub.Fanout.AccessTokenTest do
 
       assert token.id == id
       assert Timex.now()
-             |> Timex.set(minutes: 0, seconds: 0, millisecond: {0, 6})
+             |> Timex.set(minute: 0, second: 0, microsecond: {0, 6})
              |> Timex.equal?(ts)
       assert ip == found_ip
     end

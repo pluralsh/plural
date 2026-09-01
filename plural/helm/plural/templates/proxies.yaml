@@ -58,7 +58,7 @@ spec:
   target: deployment/plural-api
   shConfig:
     command: /opt/app/bin/plural
-    args: [remote_console]
+    args: [remote]
 ---
 apiVersion: platform.plural.sh/v1alpha1
 kind: Proxy
@@ -71,7 +71,7 @@ spec:
   target: deployment/plural-rtc
   shConfig:
     command: /opt/app/bin/rtc
-    args: [remote_console]
+    args: [remote]
 ---
 apiVersion: platform.plural.sh/v1alpha1
 kind: Proxy
@@ -84,4 +84,4 @@ spec:
   target: deployment/plural-worker
   shConfig:
     command: /opt/app/bin/worker
-    args: [remote_console]
+    args: [remote]

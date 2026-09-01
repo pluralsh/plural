@@ -12,12 +12,13 @@ defmodule Cron.Digest.Base do
   """
   @spec grouped([Notification.t]) :: Flow.t
   def grouped(notifications, opts \\ []) do
-    Flow.from_enumerable(notifications, opts)
-    |> Flow.group_by(& &1.user_id)
-    |> Flow.map(fn {user_id, notifs} ->
+    notifications
+    |> Enum.group_by(& &1.user_id)
+    |> Enum.map(fn {user_id, notifs} ->
       notif_groups = Enum.group_by(notifs, & &1.repository_id)
       compile(user_id, notif_groups)
     end)
+    |> Flow.from_enumerable(opts)
   end
 
   @doc """

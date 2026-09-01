@@ -15,15 +15,13 @@ config :core, hostname: host
 config :email, host: "https://#{host}"
 config :core, host: "https://#{host}"
 
-config :arc,
-  storage: Arc.Storage.GCS,
+config :waffle,
+  storage: Waffle.Storage.Google.CloudStorage,
   bucket: get_env("BUCKET")
 
 config :core, Core.Guardian,
   issuer: "plural",
   secret_key: get_env("JWT_SECRET")
-
-
 
 if get_env("POSTGRES_URL") do
   config :core, Core.Repo,
@@ -105,7 +103,6 @@ config :core,
   initial_user: get_env("ADMIN_EMAIL") || "admin@plural.sh",
   stage: get_env("PLURAL_STAGE") || "prod"
 
-
 if get_env("VAULT_HOST") do
   config :core, vault: get_env("VAULT_HOST")
 end
@@ -122,7 +119,6 @@ config :workos,
   client_id: get_env("WORKOS_CLIENT_ID"),
   api_key: get_env("WORKOS_API_KEY")
 
-
 provider = case get_env("PROVIDER") || "google" do
   "google" -> :gcp
   "gcp" -> :gcp
@@ -136,7 +132,7 @@ end
 
 if provider != :gcp do
   config :goth, disabled: true
-  config :arc, storage: Arc.Storage.S3
+  config :waffle, storage: Waffle.Storage.S3
 end
 
 if org_id = get_env("GCP_ORG_ID") do
@@ -157,5 +153,28 @@ config :core,
 config :openai,
   token: get_env("OPENAI_BEARER_TOKEN")
 
-
 config :tzdata, :autoupdate, :disabled
+
+config :rtc, RtcWeb.Endpoint,
+  url: [host: get_env("HOST"), port: 80],
+  check_origin: ["//#{get_env("HOST")}", "//plural-rtc"],
+  secret_key_base: get_env("SECRET_KEY_BASE"),
+  server: true
+
+config :core, broker: Rtc.Conduit.Broker
+config :core, start_broker: false
+config :rtc, start_broker: true
+
+config :libcluster,
+  topologies: [
+    rtc: [
+      strategy: Cluster.Strategy.Kubernetes,
+      config: [
+        mode: :ip,
+        kubernetes_node_basename: "rtc",
+        kubernetes_selector: "app=plural-rtc",
+        kubernetes_namespace: get_env("NAMESPACE"),
+        polling_interval: 10_000
+      ]
+    ]
+  ]

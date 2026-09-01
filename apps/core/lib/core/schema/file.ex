@@ -1,6 +1,6 @@
 defmodule Core.Schema.File do
   use Piazza.Ecto.Schema
-  use Arc.Ecto.Schema
+  use Waffle.Ecto.Schema
 
   alias Core.Schema.IncidentMessage
 

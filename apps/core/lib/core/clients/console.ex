@@ -116,7 +116,7 @@ defmodule Core.Clients.Console do
       {:ok, %Req.Response{body: %{"data" => %{"clusters" => %{"edges" => edges}}}}} ->
         {:ok, Enum.map(edges, & &1["node"])}
       res ->
-        Logger.warn "Failed to fetch clusters: #{inspect(res)}"
+        Logger.warning "Failed to fetch clusters: #{inspect(res)}"
         {:error, "could not fetch clusters"}
     end
   end
@@ -183,7 +183,7 @@ defmodule Core.Clients.Console do
       {:ok, %Req.Response{body: %{"errors" => [_ | _] = errors}}} -> {:error, errors}
       {:ok, %Req.Response{body: %{"data" => %{^field => data}}}} -> {:ok, data}
       res ->
-        Logger.warn "Failed to fetch #{field}: #{inspect(res)}"
+        Logger.warning "Failed to fetch #{field}: #{inspect(res)}"
         {:error, "could not fetch #{field}"}
     end
   end
@@ -196,7 +196,7 @@ defmodule Core.Clients.Console do
     case body[field] do
       %{"id" => id} -> {:ok, id}
       err ->
-        Logger.warn "invalid console gql response: #{inspect(err)}"
+        Logger.warning "invalid console gql response: #{inspect(err)}"
         {:error, "#{field} query failed"}
     end
   end
@@ -206,10 +206,8 @@ defmodule Core.Clients.Console do
     {:error, "console error"}
   end
 
-  defp with_gql(url) do
-    case String.ends_with?(url, "/gql") do
-      true -> url
-      _ -> "#{url}/gql"
-    end
+  defp with_gql(url) when is_binary(url) do
+    if String.ends_with?(url, "/gql"), do: url, else: "#{url}/gql"
   end
+  defp with_gql(_), do: nil
 end

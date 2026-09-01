@@ -1,0 +1,19 @@
+#!/bin/sh
+set -eu
+
+cd -P -- "$(dirname -- "$0")"
+
+rel=""
+for candidate in ${APP_NAME:-} plural rtc worker cron; do
+  if [ -n "$candidate" ] && [ -x "./$candidate" ]; then
+    rel="./$candidate"
+    break
+  fi
+done
+
+if [ -z "$rel" ]; then
+  echo "could not find Mix release binary in $(pwd)" >&2
+  exit 1
+fi
+
+exec "$rel" eval "Piazza.Ecto.ReleaseTasks.drop([])"

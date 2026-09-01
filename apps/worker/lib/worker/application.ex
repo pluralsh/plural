@@ -26,7 +26,14 @@ defmodule Worker.Application do
 
   def broker() do
     case Worker.conf(:start_broker) do
-      true -> [{Worker.Conduit.Broker, []}, Core.Services.Cloud.Poller]
+      true -> [{Worker.Conduit.Broker, []}] ++ cloud_poller()
+      _ -> []
+    end
+  end
+
+  defp cloud_poller() do
+    case Core.conf(:console_url) do
+      url when is_binary(url) and url != "" -> [Core.Services.Cloud.Poller]
       _ -> []
     end
   end

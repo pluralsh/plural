@@ -1,5 +1,5 @@
 defmodule ApiWeb.FallbackController do
-  use Phoenix.Controller
+  use Phoenix.Controller, formats: [html: "View", json: "View"]
   require Logger
 
   def call(conn, {:error, error}) do

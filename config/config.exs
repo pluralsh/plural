@@ -46,6 +46,8 @@ config :logger, :console,
 
 config :phoenix, :json_library, Jason
 
+config :tesla, disable_deprecated_builder_warning: true
+
 config :reverse_proxy_plug, :http_client, ReverseProxyPlug.HTTPClient.Adapters.HTTPoison
 
 config :core, Core.Guardian,
@@ -63,8 +65,8 @@ config :botanist,
 config :core, :connection_draining,
   shutdown_delay_ms: 1
 
-config :arc,
-  storage: Arc.Storage.GCS,
+config :waffle,
+  storage: Waffle.Storage.Google.CloudStorage,
   bucket: "forge-assets"
 
 config :stripity_stripe,

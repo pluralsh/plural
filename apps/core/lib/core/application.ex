@@ -3,10 +3,14 @@ defmodule Core.Application do
 
   def start(_type, _args) do
     if Application.get_env(:sentry, :dsn) do
-      Logger.add_backend(Sentry.LoggerBackend)
+      :logger.add_handler(:sentry_logger, Sentry.LoggerHandler, %{
+        config: %{metadata: [:file, :line]}
+      })
     end
 
-    Cloudflare.Client.init()
+    if Application.get_env(:cloudflare, :auth_token) not in [nil, ""] do
+      Cloudflare.Client.init()
+    end
 
     children = [
       Core.Repo,

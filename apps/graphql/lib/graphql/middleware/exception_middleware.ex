@@ -15,7 +15,7 @@ defmodule GraphQl.ExceptionMiddleware do
   rescue
     error ->
       if ExceptionHandler.capture(error) do
-        Sentry.capture_exception(error, __STACKTRACE__)
+        Sentry.capture_exception(error, stacktrace: __STACKTRACE__)
       end
       Logger.error(Exception.format(:error, error, __STACKTRACE__))
       Absinthe.Resolution.put_result(resolution, {:error, ExceptionHandler.message(error)})

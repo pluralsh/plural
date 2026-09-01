@@ -1,0 +1,200 @@
+# Local Mix-release stack (api / rtc / worker).
+# Does not replace Helm. libcluster, GCS, Cloudflare, Stripe, Hydra,
+# chartmuseum, and the www frontend are stubbed or unused.
+#
+#   make stack-up
+#
+# Build images one APP_NAME at a time (parallel `mix deps.get` can fail Hex DNS).
+#
+# Cron is a Kubernetes CronJob in prod, not a long-running service:
+#   docker compose -f docker-compose.stack.yml run --rm -e CRON=Prune.Queues cron
+#
+# API: http://localhost:4000/health
+# RTC: http://localhost:4001/health
+# Rabbit UI: http://localhost:15672  (rabbitmq / rabbitmq)
+
+x-release-env: &release-env
+  HOST: localhost
+  POD_IP: 127.0.0.1
+  ERLANG_COOKIE: localcookie
+  PLRL_IGNORE_CLUSTER: "true"
+  PROVIDER: kind
+  DBSSL: "false"
+  POSTGRES_URL: postgresql://postgres:postgres@db:5432/plural
+  POSTGRES_PASSWORD: postgres
+  DBHOST: db
+  RABBIT_USERNAME: rabbitmq
+  RABBIT_PASSWORD: rabbitmq
+  RABBIT_NAMESPACE: rabbitmq
+  INFLUX_PAASSWORD: forgepwd
+  JWT_SECRET: local-jwt-secret
+  SECRET_KEY_BASE: 1rkd5+lxJbdTadyxW7qF/n1fNzKPV010PKf8SEGmUrXwMw0iAZyoyZgWEwr6nmCJ
+  AES_KEY: 1HdFP1DuK7xkkcEBne41yAwUY8NSfJnYfGVylYYCS2U=
+  BUCKET: local-bucket
+  NAMESPACE: local
+  GIT_COMMIT: local
+
+services:
+  db:
+    image: postgres:14
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: plural
+    command:
+      - postgres
+      - -c
+      - wal_level=logical
+    volumes:
+      - stack_db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d plural"]
+      interval: 2s
+      timeout: 5s
+      retries: 20
+
+  rabbit:
+    image: rabbitmq:3-management
+    hostname: rabbit1
+    environment:
+      RABBITMQ_DEFAULT_USER: rabbitmq
+      RABBITMQ_DEFAULT_PASS: rabbitmq
+      RABBITMQ_DEFAULT_VHOST: /
+    ports:
+      - "15672:15672"
+    networks:
+      default:
+        aliases:
+          - rabbitmq.rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 5s
+      timeout: 10s
+      retries: 20
+
+  influxdb:
+    image: influxdb:1.8
+    environment:
+      INFLUXDB_HTTP_AUTH_ENABLED: "true"
+      INFLUXDB_ADMIN_USER: admin
+      INFLUXDB_ADMIN_PASSWORD: forgepwd
+      INFLUXDB_DB: plural
+    volumes:
+      - stack_influx:/var/lib/influxdb
+    networks:
+      default:
+        aliases:
+          - influxdb.influx
+
+  migrate:
+    image: plural-stack-plural
+    build: &plural-build
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_NAME: plural
+        TARGETARCH: amd64
+        GIT_COMMIT: local
+    environment:
+      <<: *release-env
+    depends_on:
+      db:
+        condition: service_healthy
+    # Helm's /opt/app/bin/migrate also runs Botanist seeds (admin user, hydra, …).
+    # Local compose only applies Ecto migrations so the API can boot without Hydra.
+    command: ["/opt/app/bin/plural", "eval", "Piazza.Ecto.ReleaseTasks.migrate([])"]
+    restart: "no"
+
+  api:
+    image: plural-stack-plural
+    build: *plural-build
+    environment:
+      <<: *release-env
+    ports:
+      - "4000:4000"
+    depends_on:
+      db:
+        condition: service_healthy
+      rabbit:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:4000/health"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 20s
+    restart: unless-stopped
+
+  rtc:
+    image: plural-stack-rtc
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_NAME: rtc
+        TARGETARCH: amd64
+        GIT_COMMIT: local
+    environment:
+      <<: *release-env
+    ports:
+      - "4001:4000"
+    depends_on:
+      db:
+        condition: service_healthy
+      rabbit:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:4000/health"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 20s
+    restart: unless-stopped
+
+  worker:
+    image: plural-stack-worker
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_NAME: worker
+        TARGETARCH: amd64
+        GIT_COMMIT: local
+    environment:
+      <<: *release-env
+    depends_on:
+      db:
+        condition: service_healthy
+      rabbit:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    restart: unless-stopped
+
+  cron:
+    profiles: ["cron"]
+    image: plural-stack-cron
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_NAME: cron
+        TARGETARCH: amd64
+        GIT_COMMIT: local
+    environment:
+      <<: *release-env
+    depends_on:
+      db:
+        condition: service_healthy
+      rabbit:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    restart: "no"
+
+volumes:
+  stack_db:
+  stack_influx:

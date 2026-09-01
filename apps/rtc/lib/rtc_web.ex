@@ -19,10 +19,12 @@ defmodule RtcWeb do
 
   def controller do
     quote do
-      use Phoenix.Controller, namespace: RtcWeb
+      use Phoenix.Controller,
+        namespace: RtcWeb,
+        formats: [html: "View", json: "View"]
 
       import Plug.Conn
-      import RtcWeb.Gettext
+      use Gettext, backend: RtcWeb.Gettext
       alias RtcWeb.Router.Helpers, as: Routes
     end
   end
@@ -54,7 +56,7 @@ defmodule RtcWeb do
   def channel do
     quote do
       use Phoenix.Channel
-      import RtcWeb.Gettext
+      use Gettext, backend: RtcWeb.Gettext
     end
   end
 
@@ -67,7 +69,7 @@ defmodule RtcWeb do
       import Phoenix.View
 
       import RtcWeb.ErrorHelpers
-      import RtcWeb.Gettext
+      use Gettext, backend: RtcWeb.Gettext
       alias RtcWeb.Router.Helpers, as: Routes
     end
   end

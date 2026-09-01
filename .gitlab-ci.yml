@@ -23,8 +23,8 @@ stages:
 
 build:
   stage: test
-  # Align with Dockerfile / .tool-versions (Elixir 1.13.4). Bandit 1.11+ needs this.
-  image: hexpm/elixir:1.13.4-erlang-24.3-alpine-3.17.0
+  # Align with Dockerfile / .tool-versions (Elixir 1.19.4 / OTP 28.5).
+  image: hexpm/elixir:1.19.4-erlang-28.5-alpine-3.23.4
   cache:
     key: ${CI_COMMIT_REF_SLUG}
     paths:

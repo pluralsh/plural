@@ -14,7 +14,7 @@ spec:
       containers:
       - name: migrator
         image: "{{ .Values.global.registry }}/{{ .Values.image.repository }}:{{ include "plural.imageTag" . }}"
-        command: ["/opt/app/bin/plural",  "migrate"]
+        command: ["/opt/app/bin/migrate"]
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         envFrom:
         - secretRef:

@@ -1,6 +1,6 @@
 defmodule Core.Schema.Version do
   use Piazza.Ecto.Schema
-  use Arc.Ecto.Schema
+  use Waffle.Ecto.Schema
   alias Core.Schema.{
     Chart,
     Dependencies,

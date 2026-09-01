@@ -1,4 +1,4 @@
-.PHONY: help up-docker down-docker up-docker-www test-docker-www build-docker-www testup testdown test-docker
+.PHONY: help up-docker down-docker up-docker-www test-docker-www build-docker-www testup testdown test-docker stack-up stack-down
 
 GCP_PROJECT ?= pluralsh
 APP_NAME ?= plural
@@ -18,6 +18,16 @@ up-docker: ## start root dependencies via docker compose (db, cache, queue, etc.
 
 down-docker: ## stop and remove root dependencies docker compose stack
 	docker compose -f docker-compose.yml down
+
+stack-up: ## build Mix-release images sequentially, then run api/rtc/worker/cron
+	docker build --build-arg APP_NAME=plural --build-arg TARGETARCH=$(TARGETARCH) --build-arg GIT_COMMIT=local -t plural-stack-plural .
+	docker build --build-arg APP_NAME=rtc --build-arg TARGETARCH=$(TARGETARCH) --build-arg GIT_COMMIT=local -t plural-stack-rtc .
+	docker build --build-arg APP_NAME=worker --build-arg TARGETARCH=$(TARGETARCH) --build-arg GIT_COMMIT=local -t plural-stack-worker .
+	docker build --build-arg APP_NAME=cron --build-arg TARGETARCH=$(TARGETARCH) --build-arg GIT_COMMIT=local -t plural-stack-cron .
+	docker compose -f docker-compose.stack.yml up -d
+
+stack-down: ## stop the local Mix-release stack
+	docker compose -f docker-compose.stack.yml down
 
 test-docker: ## run backend tests in docker
 	@docker compose -f docker-compose.test.yml up --build --abort-on-container-exit --exit-code-from backend-test; \

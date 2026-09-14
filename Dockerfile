@@ -56,7 +56,7 @@ ENV TRIVY_VERSION=v0.74.0
 RUN apk add --update --no-cache curl ca-certificates unzip wget openssl && \
     # download helm
     echo "installing helm" && \
-    curl -L https://get.helm.sh/helm-${HELM_VERSION}-linux-${TARGETARCH}.tar.gz | tar xz && \
+    curl -fL --retry 5 --retry-all-errors --retry-delay 2 https://get.helm.sh/helm-${HELM_VERSION}-linux-${TARGETARCH}.tar.gz | tar xz && \
     mv linux-${TARGETARCH}/helm /usr/local/bin/helm && \
     # download goon
     # echo "installing goon" && \
@@ -64,7 +64,7 @@ RUN apk add --update --no-cache curl ca-certificates unzip wget openssl && \
     # mv goon /usr/local/bin/goon && \
     # download plural cli
     echo "installing plural" && \
-    curl -L https://github.com/pluralsh/plural-cli/releases/download/${CLI_VERSION}/plural-cli_${CLI_VERSION#v}_Linux_${TARGETARCH}.tar.gz | tar xvz plural && \
+    curl -fL --retry 5 --retry-all-errors --retry-delay 2 https://github.com/pluralsh/plural-cli/releases/download/${CLI_VERSION}/plural-cli_${CLI_VERSION#v}_Linux_${TARGETARCH}.tar.gz | tar xvz plural && \
     mv plural /usr/local/bin/plural && \
     # download terrascan
     # if [ "$TARGETARCH" = "amd64" ]; then \
@@ -77,9 +77,9 @@ RUN apk add --update --no-cache curl ca-certificates unzip wget openssl && \
     # download trivy
     echo "installing trivy" && \
     if [ "$TARGETARCH" = "amd64" ]; then \
-      curl -L https://github.com/aquasecurity/trivy/releases/download/${TRIVY_VERSION}/trivy_${TRIVY_VERSION/v/}_Linux-64bit.tar.gz > trivy.tar.gz; \
+      curl -fL --retry 5 --retry-all-errors --retry-delay 2 https://github.com/aquasecurity/trivy/releases/download/${TRIVY_VERSION}/trivy_${TRIVY_VERSION/v/}_Linux-64bit.tar.gz > trivy.tar.gz; \
     elif [ "$TARGETARCH" = "arm64" ]; then \
-      curl -L https://github.com/aquasecurity/trivy/releases/download/${TRIVY_VERSION}/trivy_${TRIVY_VERSION/v/}_Linux-ARM64.tar.gz > trivy.tar.gz; \
+      curl -fL --retry 5 --retry-all-errors --retry-delay 2 https://github.com/aquasecurity/trivy/releases/download/${TRIVY_VERSION}/trivy_${TRIVY_VERSION/v/}_Linux-ARM64.tar.gz > trivy.tar.gz; \
     fi && \
     tar -xf trivy.tar.gz trivy && rm trivy.tar.gz && \
     mv trivy /usr/local/bin/trivy && \

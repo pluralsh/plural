@@ -61,6 +61,26 @@ vulnerabilities:
     expired_at: 2026-12-31
     statement: Vendored grpc in Trivy v0.74.0; drop when upstream ships a patched binary
 
+  # decode-uri-component 0.5.0 is ESM-only. query-string 5.x/7.x (CJS) stay on
+  # 0.2.2; the query-string 8 line is already on 0.5.0.
+  - id: CVE-2026-45822
+    purls:
+      - "pkg:npm/decode-uri-component@0.2.2"
+    expired_at: 2026-12-31
+    statement: CJS query-string 5/7 cannot take ESM 0.5.0
+
+  # Remaining react-router MEDIUMs are fixed only in v7.18.
+  - id: CVE-2026-53666
+    purls:
+      - "pkg:npm/react-router"
+    expired_at: 2026-12-31
+    statement: Fix requires react-router 7.18; v7 migration is out of scope
+  - id: CVE-2026-53669
+    purls:
+      - "pkg:npm/react-router"
+    expired_at: 2026-12-31
+    statement: Fix requires react-router 7.18; v7 migration is out of scope
+
   # Helm v3.22.0 / Trivy v0.74.0 still vendor golang.org/x/crypto v0.55.0 and
   # containerd v2.3.3. Fixed only in newer upstream binaries.
   - id: CVE-2026-56855

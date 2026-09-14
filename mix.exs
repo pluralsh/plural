@@ -64,6 +64,7 @@ defmodule Plural.MixProject do
       {:plug_cowboy, "~> 2.8.1", override: true},
       {:cowboy, "~> 2.15.0", override: true},
       {:cowlib, "~> 2.16.1", override: true},
+      {:phoenix, "1.6.17", override: true},
       {:absinthe, "1.7.10", override: true},
       # Keep postgrex on ecto_sql 3.9's declared range (~> 0.16 or ~> 1.0).
       # CVE-2026-32687 needs postgrex 0.22.2 + a newer Ecto stack (Elixir upgrade).

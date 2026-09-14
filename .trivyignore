@@ -18,3 +18,16 @@ CVE-2026-32686
 
 # req fixed only in 0.6.1 (Elixir ~> 1.14); project is on Elixir 1.13
 CVE-2026-49755
+CVE-2026-43966
+
+# Bundled aquasecurity/trivy v0.74.0 still vendors google.golang.org/grpc v1.82.1.
+# No newer Trivy release includes the patched grpc; do not rebuild Trivy in this repo.
+CVE-2026-84304
+CVE-2026-84445
+CVE-2026-84303
+
+# Helm v3.22.0 / Trivy v0.74.0 still vendor golang.org/x/crypto v0.55.0 and
+# containerd v2.3.3. Fixed only in newer upstream binaries.
+CVE-2026-56855
+CVE-2026-78662
+CVE-2026-53495

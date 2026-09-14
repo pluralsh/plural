@@ -53,44 +53,42 @@ ENV CLI_VERSION=v0.12.65
 # renovate: datasource=github-releases depName=aquasecurity/trivy
 ENV TRIVY_VERSION=v0.74.0
 
-RUN apk add --update --no-cache curl ca-certificates unzip wget openssl
-
-# Save archives to disk first. `curl | tar` hides curl's exit code in /bin/sh
-# (no pipefail), so GitHub 504s were extracted as empty tarballs.
-RUN set -eux; \
-    curl -fL --retry 8 --retry-all-errors --retry-delay 5 --retry-max-time 120 \
-      "https://github.com/helm/helm/releases/download/${HELM_VERSION}/helm-${HELM_VERSION}-linux-${TARGETARCH}.tar.gz" \
-      -o /tmp/helm.tar.gz; \
-    tar -xzf /tmp/helm.tar.gz -C /tmp; \
-    mv "/tmp/linux-${TARGETARCH}/helm" /usr/local/bin/helm; \
-    chmod +x /usr/local/bin/helm; \
-    rm -rf /tmp/helm.tar.gz "/tmp/linux-${TARGETARCH}"
-
-RUN set -eux; \
-    curl -fL --retry 8 --retry-all-errors --retry-delay 5 --retry-max-time 120 \
-      "https://github.com/pluralsh/plural-cli/releases/download/${CLI_VERSION}/plural-cli_${CLI_VERSION#v}_Linux_${TARGETARCH}.tar.gz" \
-      -o /tmp/plural-cli.tar.gz; \
-    tar -xzf /tmp/plural-cli.tar.gz -C /tmp plural; \
-    mv /tmp/plural /usr/local/bin/plural; \
-    chmod +x /usr/local/bin/plural; \
-    rm -f /tmp/plural-cli.tar.gz
-
-RUN set -eux; \
+RUN apk add --update --no-cache curl ca-certificates unzip wget openssl && \
+    # download helm
+    echo "installing helm" && \
+    curl -L https://get.helm.sh/helm-${HELM_VERSION}-linux-${TARGETARCH}.tar.gz | tar xz && \
+    mv linux-${TARGETARCH}/helm /usr/local/bin/helm && \
+    # download goon
+    # echo "installing goon" && \
+    # curl -L https://github.com/alco/goon/releases/download/${GOON_VERSION}/goon_linux_${TARGETARCH}.tar.gz | tar xvz && \
+    # mv goon /usr/local/bin/goon && \
+    # download plural cli
+    echo "installing plural" && \
+    curl -L https://github.com/pluralsh/plural-cli/releases/download/${CLI_VERSION}/plural-cli_${CLI_VERSION#v}_Linux_${TARGETARCH}.tar.gz | tar xvz plural && \
+    mv plural /usr/local/bin/plural && \
+    # download terrascan
+    # if [ "$TARGETARCH" = "amd64" ]; then \
+    #   curl -L https://github.com/accurics/terrascan/releases/download/${TERRASCAN_VERSION}/terrascan_${TERRASCAN_VERSION/v/}_Linux_x86_64.tar.gz > terrascan.tar.gz; \
+    # else \
+    #   curl -L https://github.com/accurics/terrascan/releases/download/${TERRASCAN_VERSION}/terrascan_${TERRASCAN_VERSION/v/}_Linux_${TARGETARCH}.tar.gz > terrascan.tar.gz; \
+    # fi && \
+    # tar -xf terrascan.tar.gz terrascan && rm terrascan.tar.gz && \
+    # mv terrascan /usr/local/bin/terrascan && \
+    # download trivy
+    echo "installing trivy" && \
     if [ "$TARGETARCH" = "amd64" ]; then \
-      trivy_asset="trivy_${TRIVY_VERSION#v}_Linux-64bit.tar.gz"; \
+      curl -L https://github.com/aquasecurity/trivy/releases/download/${TRIVY_VERSION}/trivy_${TRIVY_VERSION/v/}_Linux-64bit.tar.gz > trivy.tar.gz; \
     elif [ "$TARGETARCH" = "arm64" ]; then \
-      trivy_asset="trivy_${TRIVY_VERSION#v}_Linux-ARM64.tar.gz"; \
-    else \
-      echo "unsupported TARGETARCH=${TARGETARCH}"; \
-      exit 1; \
-    fi; \
-    curl -fL --retry 8 --retry-all-errors --retry-delay 5 --retry-max-time 120 \
-      "https://github.com/aquasecurity/trivy/releases/download/${TRIVY_VERSION}/${trivy_asset}" \
-      -o /tmp/trivy.tar.gz; \
-    tar -xzf /tmp/trivy.tar.gz -C /tmp trivy; \
-    mv /tmp/trivy /usr/local/bin/trivy; \
-    chmod +x /usr/local/bin/trivy; \
-    rm -f /tmp/trivy.tar.gz
+      curl -L https://github.com/aquasecurity/trivy/releases/download/${TRIVY_VERSION}/trivy_${TRIVY_VERSION/v/}_Linux-ARM64.tar.gz > trivy.tar.gz; \
+    fi && \
+    tar -xf trivy.tar.gz trivy && rm trivy.tar.gz && \
+    mv trivy /usr/local/bin/trivy && \
+    # make tools executable
+    chmod +x /usr/local/bin/helm && \
+    # chmod +x /usr/local/bin/goon && \
+    chmod +x /usr/local/bin/plural && \
+    # chmod +x /usr/local/bin/terrascan && \
+    chmod +x /usr/local/bin/trivy
 
 FROM erlang:24.3.4.6-alpine
 

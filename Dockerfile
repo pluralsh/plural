@@ -42,16 +42,16 @@ FROM alpine:3.21.7 as tools
 ARG TARGETARCH
 
 # renovate: datasource=github-releases depName=helm/helm
-ENV HELM_VERSION=v3.21.3
+ENV HELM_VERSION=v3.22.0
 
 # renovate: datasource=github-releases depName=alco/goon
 ENV GOON_VERSION=v1.1.1
 
 # renovate: datasource=github-releases depName=pluralsh/plural-cli
-ENV CLI_VERSION=v0.12.59
+ENV CLI_VERSION=v0.12.65
 
 # renovate: datasource=github-releases depName=aquasecurity/trivy
-ENV TRIVY_VERSION=v0.72.0
+ENV TRIVY_VERSION=v0.74.0
 
 RUN apk add --update --no-cache curl ca-certificates unzip wget openssl && \
     # download helm
@@ -100,10 +100,17 @@ RUN apk update && \
     apk add --no-cache \
       bash \
       curl \
-      busybox \
+      busybox=1.35.0-r18 \
+      ssl_client=1.35.0-r18 \
       openssl-dev \
       ca-certificates \
-      git
+      git \
+      musl=1.2.3-r4 \
+      musl-utils=1.2.3-r4 \
+      ncurses=6.3_p20220521-r1 \
+      ncurses-libs=6.3_p20220521-r1 \
+      ncurses-terminfo=6.3_p20220521-r1 \
+      ncurses-terminfo-base=6.3_p20220521-r1
 
 ENV REPLACE_OS_VARS=true \
     APP_NAME=${APP_NAME} \

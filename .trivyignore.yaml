@@ -1,0 +1,109 @@
+# Scoped Trivy exceptions. YAML is required for paths and expired_at;
+# CI must pass this file via trivyignores / --ignorefile.
+vulnerabilities:
+  # Residuals that need a deferred Elixir/Distillery upgrade (beyond #1497's
+  # Elixir 1.13-safe bumps). absinthe 1.10.2 needs Elixir ~> 1.17; tesla 1.18.3
+  # needs ~> 1.14; postgrex 0.22.2 needs ~> 1.15 + newer Ecto.
+  - id: CVE-2026-42793
+    statement: Blocked on Elixir/OTP upgrade
+  - id: CVE-2026-43967
+    statement: Blocked on Elixir/OTP upgrade
+  - id: CVE-2026-48594
+    statement: Blocked on Elixir/OTP upgrade
+  - id: CVE-2026-48595
+    statement: Blocked on Elixir/OTP upgrade
+  - id: CVE-2026-48596
+    statement: Blocked on Elixir/OTP upgrade
+  - id: CVE-2026-48597
+    statement: Blocked on Elixir/OTP upgrade
+  - id: CVE-2026-48598
+    statement: Blocked on Elixir/OTP upgrade
+  - id: CVE-2026-32687
+    statement: Blocked on Elixir/OTP upgrade
+
+  # hackney 4.x / decimal 3.0 also blocked; Console stays on hackney 1.25.x.
+  - id: CVE-2026-47071
+    statement: Blocked on hackney 4.x / decimal 3.0
+  - id: CVE-2026-47075
+    statement: Blocked on hackney 4.x / decimal 3.0
+  - id: CVE-2026-47076
+    statement: Blocked on hackney 4.x / decimal 3.0
+  - id: CVE-2026-47069
+    statement: Blocked on hackney 4.x / decimal 3.0
+  - id: CVE-2026-32686
+    statement: Blocked on hackney 4.x / decimal 3.0
+
+  # req fixed only in 0.6.1 (Elixir ~> 1.14); project is on Elixir 1.13.
+  # cowlib 2.20 (cowboy 2.16+) does not compile on OTP 24.
+  - id: CVE-2026-49755
+    statement: req 0.6.1 needs Elixir ~> 1.14
+  - id: CVE-2026-43966
+    statement: Newer cowlib does not compile on OTP 24
+
+  # Bundled aquasecurity/trivy v0.74.0 still vendors google.golang.org/grpc
+  # v1.82.1. No newer Trivy release includes the patched grpc.
+  - id: CVE-2026-84304
+    paths:
+      - "usr/local/bin/trivy"
+      - "/usr/local/bin/trivy"
+    expired_at: 2026-12-31
+    statement: Vendored grpc in Trivy v0.74.0; drop when upstream ships a patched binary
+  - id: CVE-2026-84445
+    paths:
+      - "usr/local/bin/trivy"
+      - "/usr/local/bin/trivy"
+    expired_at: 2026-12-31
+    statement: Vendored grpc in Trivy v0.74.0; drop when upstream ships a patched binary
+  - id: CVE-2026-84303
+    paths:
+      - "usr/local/bin/trivy"
+      - "/usr/local/bin/trivy"
+    expired_at: 2026-12-31
+    statement: Vendored grpc in Trivy v0.74.0; drop when upstream ships a patched binary
+
+  # decode-uri-component 0.5.0 is ESM-only. query-string 5.x/7.x (CJS) stay on
+  # 0.2.2; the query-string 8 line is already on 0.5.0.
+  - id: CVE-2026-45822
+    purls:
+      - "pkg:npm/decode-uri-component@0.2.2"
+    expired_at: 2026-12-31
+    statement: CJS query-string 5/7 cannot take ESM 0.5.0
+
+  # Remaining react-router MEDIUMs are fixed only in v7.18.
+  - id: CVE-2026-53666
+    purls:
+      - "pkg:npm/react-router@6.30.6"
+    expired_at: 2026-12-31
+    statement: Fix requires react-router 7.18; v7 migration is out of scope
+  - id: CVE-2026-53669
+    purls:
+      - "pkg:npm/react-router@6.30.6"
+    expired_at: 2026-12-31
+    statement: Fix requires react-router 7.18; v7 migration is out of scope
+
+  # Helm v3.22.0 / Trivy v0.74.0 still vendor golang.org/x/crypto v0.55.0 and
+  # containerd v2.3.3. Fixed only in newer upstream binaries.
+  - id: CVE-2026-56855
+    paths:
+      - "usr/local/bin/helm"
+      - "/usr/local/bin/helm"
+      - "usr/local/bin/trivy"
+      - "/usr/local/bin/trivy"
+    expired_at: 2026-12-31
+    statement: Vendored x/crypto in Helm v3.22.0 and Trivy v0.74.0
+  - id: CVE-2026-78662
+    paths:
+      - "usr/local/bin/helm"
+      - "/usr/local/bin/helm"
+      - "usr/local/bin/trivy"
+      - "/usr/local/bin/trivy"
+    expired_at: 2026-12-31
+    statement: Vendored x/crypto in Helm v3.22.0 and Trivy v0.74.0
+  - id: CVE-2026-53495
+    paths:
+      - "usr/local/bin/helm"
+      - "/usr/local/bin/helm"
+      - "usr/local/bin/trivy"
+      - "/usr/local/bin/trivy"
+    expired_at: 2026-12-31
+    statement: Vendored containerd in Helm v3.22.0 and Trivy v0.74.0

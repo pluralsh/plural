@@ -26,7 +26,7 @@ config :core, Core.Guardian,
 if get_env("POSTGRES_URL") do
   config :core, Core.Repo,
     url: get_env("POSTGRES_URL"),
-    ssl: String.to_existing_atom(get_env("DBSSL") || "true"),
+    ssl: if(get_env("DBSSL") == "false", do: false, else: [verify: :verify_none]),
     pool_size: 5
 else
   config :core, Core.Repo,
@@ -34,7 +34,7 @@ else
     username: "plural",
     password: get_env("POSTGRES_PASSWORD"),
     hostname: get_env("DBHOST") || "plural-postgresql",
-    ssl: String.to_existing_atom(get_env("DBSSL") || "false"),
+    ssl: if(get_env("DBSSL") == "true", do: [verify: :verify_none], else: false),
     pool_size: 5
 end
 

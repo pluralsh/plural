@@ -56,18 +56,18 @@ defmodule ApiWeb.Plugs.ReverseProxyTest do
     end
   end
 
-  test "propagates a binary upstream response while excluding hop-by-hop headers" do
+  test "streams a binary upstream response while excluding hop-by-hop headers" do
     conn = conn(:get, "/cm/example/charts/sample-1.0.0.tgz")
-    opts = ReverseProxyPlug.init(response_mode: :buffer, upstream: "http://chartmuseum:8080")
+    opts = ReverseProxyPlug.init(upstream: "http://chartmuseum:8080")
 
     conn =
       ReverseProxyPlug.response(
         {:ok,
-         %{
-           status_code: 206,
-           headers: [{"content-type", "application/gzip"}, {"connection", "close"}],
-           body: <<0, 1, 2, 3>>
-         }},
+         [
+           {:status, 206},
+           {:headers, [{"content-type", "application/gzip"}, {"connection", "close"}]},
+           {:chunk, <<0, 1, 2, 3>>}
+         ]},
         conn,
         opts
       )

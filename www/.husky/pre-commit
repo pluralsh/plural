@@ -3,4 +3,4 @@
 
 echo Running pre-commit hook
 cd www
-yarn lint-staged
+node .yarn/releases/yarn-4.17.1.cjs lint-staged

@@ -16,12 +16,31 @@ defmodule ApiWeb.Plugs.ReverseProxy do
 
     HTTPoison.request(%HTTPoison.Request{
       method: method,
-      url: url,
-      body: ReverseProxyPlug.read_body(conn),
+      url: request_url(url, conn.query_string),
+      body: request_body(method, conn),
       headers: proxy_headers(conn, url),
       options: proxy_opts(opts)
     })
     |> ReverseProxyPlug.response(conn, opts)
+  end
+
+  # HTTPoison expects a body, not the `{body, conn}` tuple returned by
+  # ReverseProxyPlug.read_body/1. Reads are intentionally bodyless.
+  def request_body(method, _conn) when method in [:get, :head], do: ""
+
+  def request_body(_method, conn) do
+    conn
+    |> ReverseProxyPlug.read_body()
+    |> elem(0)
+  end
+
+  def request_url(url, ""), do: url
+
+  def request_url(url, query_string) do
+    uri = URI.parse(url)
+    query = Enum.reject([uri.query, query_string], &(&1 in [nil, ""])) |> Enum.join("&")
+
+    URI.to_string(%{uri | query: query})
   end
 
   def proxy_headers(conn, url) do
@@ -33,7 +52,7 @@ defmodule ApiWeb.Plugs.ReverseProxy do
       {header, _} when header not in @ignore_headers -> true
       _ -> false
     end)
-    |> List.keyreplace("host", 0, {"host", "#{host}:#{port}"})
+    |> List.keystore("host", 0, {"host", "#{host}:#{port}"})
   end
 
   def proxy_opts(opts) do

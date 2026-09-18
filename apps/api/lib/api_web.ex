@@ -19,11 +19,13 @@ defmodule ApiWeb do
 
   def controller do
     quote do
-      use Phoenix.Controller, namespace: ApiWeb
+      use Phoenix.Controller,
+        namespace: ApiWeb,
+        formats: [html: "View", json: "View"]
 
       import Plug.Conn
-      import ApiWeb.Gettext
       import ApiWeb.Helpers
+      use Gettext, backend: ApiWeb.Gettext
       alias ApiWeb.Router.Helpers, as: Routes
 
       action_fallback ApiWeb.FallbackController
@@ -43,7 +45,7 @@ defmodule ApiWeb do
       use Phoenix.HTML
 
       import ApiWeb.ErrorHelpers
-      import ApiWeb.Gettext
+      use Gettext, backend: ApiWeb.Gettext
       alias ApiWeb.Router.Helpers, as: Routes
     end
   end
@@ -59,7 +61,7 @@ defmodule ApiWeb do
   def channel do
     quote do
       use Phoenix.Channel
-      import ApiWeb.Gettext
+      use Gettext, backend: ApiWeb.Gettext
     end
   end
 

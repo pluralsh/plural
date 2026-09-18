@@ -19,10 +19,12 @@ defmodule EmailWeb do
 
   def controller do
     quote do
-      use Phoenix.Controller, namespace: EmailWeb
+      use Phoenix.Controller,
+        namespace: EmailWeb,
+        formats: [html: "View", json: "View"]
 
       import Plug.Conn
-      import EmailWeb.Gettext
+      use Gettext, backend: EmailWeb.Gettext
       alias EmailWeb.Router.Helpers, as: Routes
     end
   end
@@ -54,7 +56,7 @@ defmodule EmailWeb do
   def channel do
     quote do
       use Phoenix.Channel
-      import EmailWeb.Gettext
+      use Gettext, backend: EmailWeb.Gettext
     end
   end
 
@@ -67,7 +69,7 @@ defmodule EmailWeb do
       import Phoenix.View
 
       import EmailWeb.ErrorHelpers
-      import EmailWeb.Gettext
+      use Gettext, backend: EmailWeb.Gettext
       alias EmailWeb.Router.Helpers, as: Routes
     end
   end

@@ -20,5 +20,5 @@ defmodule EmailWeb.Gettext do
 
   See the [Gettext Docs](https://hexdocs.pm/gettext) for detailed usage.
   """
-  use Gettext, otp_app: :email
+  use Gettext.Backend, otp_app: :email
 end

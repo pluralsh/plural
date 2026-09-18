@@ -35,10 +35,17 @@ defmodule Plural.MixProject do
     [
       apps_path: "apps",
       version: version(),
+      elixir: "~> 1.16",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
-      test_coverage: [tool: ExCoveralls],
-      preferred_cli_env: [
+      releases: releases(),
+      test_coverage: [tool: ExCoveralls]
+    ]
+  end
+
+  def cli do
+    [
+      preferred_envs: [
         coveralls: :test,
         "coveralls.detail": :test,
         "coveralls.post": :test,
@@ -47,29 +54,56 @@ defmodule Plural.MixProject do
     ]
   end
 
+  defp releases do
+    [
+      plural: release(:plural, [
+        runtime_tools: :permanent,
+        api: :permanent,
+        core: :permanent,
+        email: :permanent,
+        graphql: :permanent
+      ]),
+      rtc: release(:rtc, [
+        runtime_tools: :permanent,
+        rtc: :permanent,
+        core: :permanent,
+        graphql: :permanent
+      ]),
+      worker: release(:worker, [
+        runtime_tools: :permanent,
+        worker: :permanent,
+        core: :permanent,
+        email: :permanent
+      ]),
+      cron: release(:cron, [
+        runtime_tools: :permanent,
+        cron: :permanent,
+        core: :permanent,
+        email: :permanent
+      ])
+    ]
+  end
+
+  defp release(name, applications) do
+    [
+      include_executables_for: [:unix],
+      runtime_config_path: "rel/runtime/#{name}.exs",
+      applications: applications
+    ]
+  end
+
   defp deps do
     [
-      {:distillery, "~> 2.1"},
-      {:x509, "~> 0.8.5"},
+      {:ecto, "~> 3.13", override: true},
+      {:decimal, "~> 3.0", override: true},
+      {:hackney, "~> 4.0", override: true},
+      {:poison, "~> 6.0", override: true},
+      {:httpoison, "~> 3.0", github: "pluralsh/httpoison", branch: "fix-certs", commit: "75f6305ce8c89b39d12574008e596785d65d4d1c", override: true},
+      {:x509, "~> 0.9.2"},
+      {:req, "~> 0.7.2", override: true},
       {:shards, "~> 1.0"},
-      {:ecto, "~> 3.9.0", override: true},
-      # Security bumps (Elixir 1.13-compatible fixed versions where possible)
-      {:hackney, "~> 1.25.0", override: true},
-      {:mint, ">= 1.9.0 and < 1.9.2", override: true},
-      {:tesla, ">= 1.11.0 and < 1.11.2", override: true},
-      {:bandit, "~> 1.11.1", override: true},
-      {:hpax, "1.0.3", override: true},
-      {:jose, ">= 1.11.7 and < 1.11.11", override: true},
-      {:plug, "~> 1.18.2", override: true},
-      {:plug_cowboy, "~> 2.8.1", override: true},
-      {:cowboy, "~> 2.15.0", override: true},
-      {:cowlib, "~> 2.16.1", override: true},
-      {:phoenix, "1.6.17", override: true},
-      {:absinthe, "1.7.10", override: true},
-      # Keep postgrex on ecto_sql 3.9's declared range (~> 0.16 or ~> 1.0).
-      # CVE-2026-32687 needs postgrex 0.22.2 + a newer Ecto stack (Elixir upgrade).
-      {:rabbit_common, "3.12.14", override: true},
-      {:absinthe_plug, "~> 1.5.8", git: "https://github.com/absinthe-graphql/absinthe_plug.git", commit: "3a984cc341ebb32c79e7ae58b4ebd116d5c62f9e", override: true},
+      {:goth, "~> 1.4", git: "https://github.com/pluralsh/goth.git", branch: "plrl-cleanup", commit: "4958159d1e9acec2154590ecacc732ecd58f8312", override: true},
+      {:absinthe_plug, "~> 1.5", git: "https://github.com/absinthe-graphql/absinthe_plug.git", commit: "3a984cc341ebb32c79e7ae58b4ebd116d5c62f9e", override: true},
       {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
       {:sobelow, "~> 0.8", only: :dev},
       {:excoveralls, "~> 0.10", only: :test},

@@ -15,20 +15,18 @@ config :core, hostname: host
 config :email, host: "https://#{host}"
 config :core, host: "https://#{host}"
 
-config :arc,
-  storage: Arc.Storage.GCS,
+config :waffle,
+  storage: Waffle.Storage.Google.CloudStorage,
   bucket: get_env("BUCKET")
 
 config :core, Core.Guardian,
   issuer: "plural",
   secret_key: get_env("JWT_SECRET")
 
-
-
 if get_env("POSTGRES_URL") do
   config :core, Core.Repo,
     url: get_env("POSTGRES_URL"),
-    ssl: String.to_existing_atom(get_env("DBSSL") || "true"),
+    ssl: if(get_env("DBSSL") == "false", do: false, else: [verify: :verify_none]),
     pool_size: 5
 else
   config :core, Core.Repo,
@@ -36,7 +34,7 @@ else
     username: "plural",
     password: get_env("POSTGRES_PASSWORD"),
     hostname: get_env("DBHOST") || "plural-postgresql",
-    ssl: String.to_existing_atom(get_env("DBSSL") || "false"),
+    ssl: if(get_env("DBSSL") == "true", do: [verify: :verify_none], else: false),
     pool_size: 5
 end
 
@@ -105,7 +103,6 @@ config :core,
   initial_user: get_env("ADMIN_EMAIL") || "admin@plural.sh",
   stage: get_env("PLURAL_STAGE") || "prod"
 
-
 if get_env("VAULT_HOST") do
   config :core, vault: get_env("VAULT_HOST")
 end
@@ -122,7 +119,6 @@ config :workos,
   client_id: get_env("WORKOS_CLIENT_ID"),
   api_key: get_env("WORKOS_API_KEY")
 
-
 provider = case get_env("PROVIDER") || "google" do
   "google" -> :gcp
   "gcp" -> :gcp
@@ -136,7 +132,7 @@ end
 
 if provider != :gcp do
   config :goth, disabled: true
-  config :arc, storage: Arc.Storage.S3
+  config :waffle, storage: Waffle.Storage.S3
 end
 
 if org_id = get_env("GCP_ORG_ID") do
@@ -157,5 +153,8 @@ config :core,
 config :openai,
   token: get_env("OPENAI_BEARER_TOKEN")
 
-
 config :tzdata, :autoupdate, :disabled
+
+config :core, start_broker: true
+
+config :stripity_stripe, api_key: get_env("STRIPE_SECRET")

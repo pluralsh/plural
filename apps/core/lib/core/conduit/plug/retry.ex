@@ -71,13 +71,13 @@ defmodule Core.Conduit.Plug.Retry do
   end
 
   defp log_error(:nack, _, wait_time) do
-    Logger.warn("Message will be retried in #{wait_time}ms because it was nacked")
+    Logger.warning("Message will be retried in #{wait_time}ms because it was nacked")
   end
 
   defp log_error(error, stacktrace, wait_time) do
     formatted_error = Exception.format(:error, error, stacktrace)
 
-    Logger.warn([
+    Logger.warning([
       "Message will be retried in #{wait_time}ms because an exception was raised\n",
       formatted_error
     ])

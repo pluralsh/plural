@@ -4,14 +4,28 @@ config :core, Core.Repo,
   username: "postgres",
   password: "postgres",
   database: "forge_test",
-  hostname: "localhost",
+  hostname: System.get_env("DB_HOST") || "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
 
 config :core, Core.Influx,
   database: "plural",
-  host: "localhost",
+  host: System.get_env("INFLUXDB_HOST") || "localhost",
   auth: [method: :basic, username: "forge", password: "forgepwd"],
   port: 8086
+
+rabbit_host = System.get_env("RABBITMQ_HOST") || "localhost"
+
+config :core, Core.Conduit.Broker,
+  adapter: ConduitAMQP,
+  url: "amqp://rabbitmq:rabbitmq@#{rabbit_host}"
+
+config :rtc, Rtc.Conduit.Broker,
+  adapter: ConduitAMQP,
+  url: "amqp://rabbitmq:rabbitmq@#{rabbit_host}"
+
+config :worker, Worker.Conduit.Broker,
+  adapter: ConduitAMQP,
+  url: "amqp://rabbitmq:rabbitmq@#{rabbit_host}"
 
 config :api, ApiWeb.Endpoint,
   http: [port: 4002],
@@ -21,7 +35,7 @@ config :rtc, RtcWeb.Endpoint,
   http: [port: 4002],
   server: false
 
-config :logger, level: :warn
+config :logger, level: :warning
 
 path = __ENV__.file |> Path.dirname()
 

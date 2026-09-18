@@ -1,6 +1,6 @@
 defmodule Core.Schema.TestStep do
   use Piazza.Ecto.Schema
-  use Arc.Ecto.Schema
+  use Waffle.Ecto.Schema
   alias Core.Schema.Test
 
   schema "test_steps" do

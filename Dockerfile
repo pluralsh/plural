@@ -1,41 +1,31 @@
-FROM bitwalker/alpine-elixir:1.13.4 AS builder
+ARG ELIXIR_VERSION=1.19.4
+ARG OTP_VERSION=28.5
+ARG OS_VARIANT=alpine
+ARG OS_VERSION=3.23.4
+ARG RUNNER_IMAGE=alpine:3.23.4
 
-# The following are build arguments used to change variable parts of the image.
-# The name of your application/release (required)
-ARG APP_NAME
-# The environment to build with
+FROM hexpm/elixir:${ELIXIR_VERSION}-erlang-${OTP_VERSION}-${OS_VARIANT}-${OS_VERSION} AS builder
+
 ARG MIX_ENV=prod
 
-ENV APP_NAME=${APP_NAME} \
-    MIX_ENV=${MIX_ENV}
+ENV MIX_ENV=${MIX_ENV}
 
-# By convention, /opt is typically used for applications
 WORKDIR /opt/app
 
-# This step installs all the build tools we'll need
-RUN apk update --allow-untrusted && \
-  apk upgrade --no-cache && \
-  apk add --no-cache \
-    git \
-    build-base && \
+RUN apk update && apk upgrade --no-cache && \
+  apk add --no-cache git build-base curl ca-certificates && \
   mix local.rebar --force && \
   mix local.hex --force
 
-# This copies our app source code into the build container
 COPY . .
 
-# needed so that we can get the app version from the git tag
 RUN git config --global --add safe.directory '/opt/app'
 
 RUN mix do deps.get, compile
 
-RUN \
-  mkdir -p /opt/built && \
-  mix distillery.release --name ${APP_NAME} && \
-  cp _build/${MIX_ENV}/rel/${APP_NAME}/releases/*/${APP_NAME}.tar.gz /opt/built && \
-  cd /opt/built && \
-  tar -xzf ${APP_NAME}.tar.gz && \
-  rm ${APP_NAME}.tar.gz
+ARG APP_NAME
+ENV APP_NAME=${APP_NAME}
+RUN mix release ${APP_NAME}
 
 FROM alpine:3.21.7 as tools
 
@@ -85,9 +75,8 @@ RUN apk add --update --no-cache curl ca-certificates unzip wget openssl && \
     chmod +x /usr/local/bin/helm /usr/local/bin/plural /usr/local/bin/trivy && \
     rm -f /tmp/helm.tar.gz /tmp/plural-cli.tar.gz /tmp/trivy.tar.gz
 
-FROM erlang:24.3.4.6-alpine
+FROM ${RUNNER_IMAGE}
 
-# The name of your application/release (required)
 ARG APP_NAME
 ARG GIT_COMMIT
 
@@ -95,29 +84,25 @@ RUN apk update && \
     apk add --no-cache \
       bash \
       curl \
-      busybox=1.35.0-r18 \
-      ssl_client=1.35.0-r18 \
+      busybox \
       openssl-dev \
       ca-certificates \
       git \
-      musl=1.2.3-r4 \
-      musl-utils=1.2.3-r4 \
-      ncurses=6.3_p20220521-r1 \
-      ncurses-libs=6.3_p20220521-r1 \
-      ncurses-terminfo=6.3_p20220521-r1 \
-      ncurses-terminfo-base=6.3_p20220521-r1
+      libstdc++ \
+      ncurses-libs
 
-ENV REPLACE_OS_VARS=true \
-    APP_NAME=${APP_NAME} \
-    GIT_COMMIT=${GIT_COMMIT}
+ENV APP_NAME=${APP_NAME} \
+    GIT_COMMIT=${GIT_COMMIT} \
+    MIX_ENV=prod \
+    LANG=en_US.UTF-8 \
+    LANGUAGE=en_US:en \
+    LC_ALL=en_US.UTF-8
 
 WORKDIR /opt/app
 
 COPY --from=tools /usr/local/bin/plural /usr/local/bin/plural
 COPY --from=tools /usr/local/bin/helm /usr/local/bin/helm
-# COPY --from=tools /usr/local/bin/goon /usr/local/bin/goon
-# COPY --from=tools /usr/local/bin/terrascan /usr/local/bin/terrascan
 COPY --from=tools /usr/local/bin/trivy /usr/local/bin/trivy
-COPY --from=builder /opt/built .
+COPY --from=builder /opt/app/_build/prod/rel/${APP_NAME} .
 
-CMD trap 'exit' INT; /opt/app/bin/${APP_NAME} foreground
+CMD trap 'exit' INT; /opt/app/bin/${APP_NAME} start

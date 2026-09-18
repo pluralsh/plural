@@ -38,7 +38,7 @@ defmodule Core.Services.Cloud.Poller do
     case Console.repo(client, Core.conf(:mgmt_repo)) do
       {:ok, id} -> {:noreply, %{state | repo: id}}
       err ->
-        Logger.warn "failed to find mgmt repo: #{inspect(err)}"
+        Logger.warning "failed to find mgmt repo: #{inspect(err)}"
         {:noreply, state}
     end
   end
@@ -47,7 +47,7 @@ defmodule Core.Services.Cloud.Poller do
     case Console.project(client, Core.conf(:dedicated_project)) do
       {:ok, id} -> {:noreply, %{state | project: id}}
       err ->
-        Logger.warn "failed to find dedicated project: #{inspect(err)}"
+        Logger.warning "failed to find dedicated project: #{inspect(err)}"
         {:noreply, state}
     end
   end
@@ -66,7 +66,7 @@ defmodule Core.Services.Cloud.Poller do
          {:ok, pgs} <- Jason.decode(v) do
       Enum.each(pgs, fn {k, v} -> upsert_pg(k, v) end)
     else
-      err -> Logger.warn "failed to fetch cluster info: #{inspect(err)}"
+      err -> Logger.warning "failed to fetch cluster info: #{inspect(err)}"
     end
     {:noreply, state}
   end

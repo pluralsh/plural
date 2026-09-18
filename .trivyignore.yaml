@@ -33,13 +33,6 @@ vulnerabilities:
   - id: CVE-2026-32686
     statement: Blocked on hackney 4.x / decimal 3.0
 
-  # req fixed only in 0.6.1 (Elixir ~> 1.14); project is on Elixir 1.13.
-  # cowlib 2.20 (cowboy 2.16+) does not compile on OTP 24.
-  - id: CVE-2026-49755
-    statement: req 0.6.1 needs Elixir ~> 1.14
-  - id: CVE-2026-43966
-    statement: Newer cowlib does not compile on OTP 24
-
   # Bundled aquasecurity/trivy v0.74.0 still vendors google.golang.org/grpc
   # v1.82.1. No newer Trivy release includes the patched grpc.
   - id: CVE-2026-84304
@@ -68,18 +61,6 @@ vulnerabilities:
       - "pkg:npm/decode-uri-component@0.2.2"
     expired_at: 2026-12-31
     statement: CJS query-string 5/7 cannot take ESM 0.5.0
-
-  # Remaining react-router MEDIUMs are fixed only in v7.18.
-  - id: CVE-2026-53666
-    purls:
-      - "pkg:npm/react-router@6.30.6"
-    expired_at: 2026-12-31
-    statement: Fix requires react-router 7.18; v7 migration is out of scope
-  - id: CVE-2026-53669
-    purls:
-      - "pkg:npm/react-router@6.30.6"
-    expired_at: 2026-12-31
-    statement: Fix requires react-router 7.18; v7 migration is out of scope
 
   # Helm v3.22.0 / Trivy v0.74.0 still vendor golang.org/x/crypto v0.55.0 and
   # containerd v2.3.3. Fixed only in newer upstream binaries.

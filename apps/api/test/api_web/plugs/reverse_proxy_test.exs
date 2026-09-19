@@ -78,6 +78,62 @@ defmodule ApiWeb.Plugs.ReverseProxyTest do
     assert get_resp_header(conn, "connection") == []
   end
 
+  test "streams an HTTPoison async chart response" do
+    conn = conn(:get, "/cm/example/charts/sample-1.0.0.tgz")
+    opts = ReverseProxyPlug.init(upstream: "http://chartmuseum:8080")
+    id = self()
+
+    send(self(), %HTTPoison.AsyncStatus{id: id, code: 206})
+
+    send(
+      self(),
+      %HTTPoison.AsyncHeaders{
+        id: id,
+        headers: [{"content-type", "application/gzip"}, {"connection", "close"}]
+      }
+    )
+
+    send(self(), %HTTPoison.AsyncChunk{id: id, chunk: <<0, 1, 2, 3>>})
+    send(self(), %HTTPoison.AsyncEnd{id: id})
+
+    conn = ReverseProxy.response({:ok, %HTTPoison.AsyncResponse{id: id}}, conn, opts)
+
+    assert conn.status == 206
+    assert conn.resp_body == <<0, 1, 2, 3>>
+    assert get_resp_header(conn, "content-type") == ["application/gzip"]
+    assert get_resp_header(conn, "connection") == []
+  end
+
+  test "returns a gateway error for an async upstream failure before headers" do
+    conn = conn(:get, "/cm/example/charts/sample-1.0.0.tgz")
+    opts = ReverseProxyPlug.init(upstream: "http://chartmuseum:8080")
+    id = self()
+
+    send(self(), %HTTPoison.Error{id: id, reason: :econnrefused})
+
+    conn = ReverseProxy.response({:ok, %HTTPoison.AsyncResponse{id: id}}, conn, opts)
+
+    assert conn.status == 502
+    assert conn.resp_body == ""
+  end
+
+  test "does not double-send when an async upstream failure follows a chunk" do
+    conn = conn(:get, "/cm/example/charts/sample-1.0.0.tgz")
+    opts = ReverseProxyPlug.init(upstream: "http://chartmuseum:8080")
+    id = self()
+
+    send(self(), %HTTPoison.AsyncStatus{id: id, code: 200})
+    send(self(), %HTTPoison.AsyncHeaders{id: id, headers: []})
+    send(self(), %HTTPoison.AsyncChunk{id: id, chunk: "chart"})
+    send(self(), %HTTPoison.Error{id: id, reason: :closed})
+
+    conn = ReverseProxy.response({:ok, %HTTPoison.AsyncResponse{id: id}}, conn, opts)
+
+    assert conn.status == 200
+    assert conn.resp_body == "chart"
+    assert conn.state == :chunked
+  end
+
   test "returns a safe gateway error for upstream failures" do
     conn = conn(:get, "/cm/example/charts/sample-1.0.0.tgz")
     opts = ReverseProxyPlug.init(upstream: "http://chartmuseum:8080")

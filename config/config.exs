@@ -54,7 +54,7 @@ config :core, Core.Guardian,
   issuer: "app.plural.sh",
   secret_key: "forge_secret"
 
-config :core, :chartmuseum, "http://localhost:8080"
+config :core, :chartmuseum, System.get_env("CHARTMUSEUM_URL") || "http://localhost:8080"
 
 config :core, Core.Services.Payments,
   application_fee: 5

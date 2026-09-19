@@ -15,6 +15,7 @@ variables:
   DOCKER_TLS_CERTDIR: "/certs"
   DOCKER_TLS_VERIFY: 1
   DOCKER_CERT_PATH: "$DOCKER_TLS_CERTDIR/client"
+  CHARTMUSEUM_URL: "http://docker:8080"
 
 stages:
 - test

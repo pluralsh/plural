@@ -21,8 +21,21 @@ defmodule ApiWeb.Plugs.ReverseProxy do
       headers: proxy_headers(conn, url),
       options: proxy_opts(opts)
     })
-    |> ReverseProxyPlug.response(conn, opts)
+    |> response(conn, opts)
   end
+
+  # ReverseProxyPlug's HTTPoison adapter converts an AsyncResponse into an
+  # Enumerable stream before handing it to `response/3`. Requests made here
+  # bypass that adapter so we need to do the same conversion ourselves.
+  def response({:ok, %HTTPoison.AsyncResponse{id: id}}, conn, opts) do
+    {:ok, async_response_stream(id)}
+    |> ReverseProxyPlug.response(
+      conn,
+      Keyword.put(opts, :error_callback, &async_error_response/2)
+    )
+  end
+
+  def response(result, conn, opts), do: ReverseProxyPlug.response(result, conn, opts)
 
   # HTTPoison expects a body, not the `{body, conn}` tuple returned by
   # ReverseProxyPlug.read_body/1. Reads are intentionally bodyless.
@@ -60,5 +73,41 @@ defmodule ApiWeb.Plugs.ReverseProxy do
     |> Keyword.put_new(:timeout, :infinity)
     |> Keyword.put_new(:recv_timeout, :infinity)
     |> Keyword.put_new(:stream_to, self())
+  end
+
+  defp async_response_stream(id) do
+    Stream.unfold(id, fn id ->
+      receive do
+        %HTTPoison.AsyncStatus{id: ^id, code: code} ->
+          {{:status, code}, id}
+
+        %HTTPoison.AsyncHeaders{id: ^id, headers: headers} ->
+          {{:headers, headers}, id}
+
+        %HTTPoison.AsyncChunk{id: ^id, chunk: chunk} ->
+          {{:chunk, chunk}, id}
+
+        %HTTPoison.Error{id: ^id, reason: reason} ->
+          {{:error, %ReverseProxyPlug.HTTPClient.Error{id: id, reason: reason}}, nil}
+
+        %HTTPoison.AsyncRedirect{id: ^id, to: to} ->
+          {{:error, %ReverseProxyPlug.HTTPClient.Error{id: id, reason: {:redirect, to}}}, nil}
+
+        %HTTPoison.AsyncEnd{id: ^id} ->
+          nil
+      end
+    end)
+  end
+
+  defp async_error_response(_error, %{state: state} = conn) when state in [:chunked, :sent],
+    do: conn
+
+  defp async_error_response(error, conn) do
+    status =
+      if error.reason in ReverseProxyPlug.get_timeout_error_reasons(),
+        do: 504,
+        else: 502
+
+    Plug.Conn.send_resp(conn, status, "")
   end
 end

@@ -44,26 +44,26 @@ services:
     - INFLUXDB_DB=plural
     ports:
     - "8086:8086"
-  # chartmuseum:
-  #   image: chartmuseum/chartmuseum:latest
-  #   volumes:
-  #   - ${HOME}/.gcp:/home/chartmuseum/.gcp:ro
-  #   restart: always
-  #   environment:
-  #     PORT: 8080
-  #     DEBUG: 1
-  #     DEPTH: 1
-  #     STORAGE: google
-  #     CONTEXT_PATH: '/cm'
-  #     STORAGE_GOOGLE_BUCKET: "mguarino-charts"
-  #     STORAGE_GOOGLE_PREFIX: ""
-  #     GOOGLE_APPLICATION_CREDENTIALS: "/home/chartmuseum/.gcp/key.json"
-  #   ports:
-  #   - 8080:8080
+  chartmuseum:
+    image: ghcr.io/helm/chartmuseum:v0.16.6
+    restart: always
+    user: "0:0"
+    environment:
+      PORT: 8080
+      DEPTH: 1
+      STORAGE: local
+      STORAGE_LOCAL_ROOTDIR: /charts
+      CONTEXT_PATH: /cm
+    volumes:
+    - chartmuseum_data:/charts
+    ports:
+    - "8080:8080"
 volumes:
   database_data:
     driver: local
   cld_db_data:
     driver: local
   influxdb:
+    driver: local
+  chartmuseum_data:
     driver: local

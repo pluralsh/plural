@@ -451,7 +451,9 @@ defmodule Core.Services.Payments do
   """
   @spec latest_invoice(PlatformSubscription.t) :: {:ok, Stripe.Invoice.t} | error
   def latest_invoice(%PlatformSubscription{external_id: id}) when is_binary(id) do
-    case Stripe.Subscription.retrieve(id, expand: ["latest_invoice.payment_intent"]) do
+    case Stripe.Subscription.retrieve(id,
+           expand: ["latest_invoice.payments.data.payment.payment_intent"]
+         ) do
       {:ok, %Stripe.Subscription{latest_invoice: invoice}} -> {:ok, invoice}
       error -> error
     end
@@ -621,7 +623,7 @@ defmodule Core.Services.Payments do
   end
 
   def create_card(%Account{billing_customer_id: cus_id} = account, source, _) do
-    with {:ok, _} <- Stripe.Card.create(%{customer: cus_id, source: source}),
+    with {:ok, _} <- Stripe.PaymentSource.create(cus_id, %{source: source}),
          {:ok, _} <- pay_outstanding_invoices(cus_id, source),
       do: {:ok, account}
   end
@@ -642,7 +644,7 @@ defmodule Core.Services.Payments do
   @spec delete_card(binary, User.t) :: {:ok, User.t} | {:error, term}
   def delete_card(id, %User{} = user) do
     with %{account: %Account{billing_customer_id: cus_id} = account} when not is_nil(cus_id) <- force_preload(user),
-         {:ok, _} <- Stripe.Card.delete(id, %{customer: cus_id}) do
+         {:ok, _} <- Stripe.Source.detach(cus_id, id) do
       {:ok, account}
     else
       %User{} -> {:error, :invalid_argument}

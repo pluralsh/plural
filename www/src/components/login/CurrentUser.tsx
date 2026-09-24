@@ -43,24 +43,16 @@ export function PluralProvider({ children }: any) {
     error: platformPlansError,
   } = useQuery(PLATFORM_PLANS_QUERY)
 
-  const {
-    data: subscriptionData,
-    loading: subscriptionLoading,
-    error: subscriptionError,
-    refetch: subscriptionRefetch,
-  } = useSubscriptionQuery({
-    errorPolicy: 'all',
-    fetchPolicy: 'network-only',
-    pollInterval: 60_000,
-  })
+  const { data: subscriptionData, refetch: subscriptionRefetch } =
+    useSubscriptionQuery({
+      errorPolicy: 'all',
+      fetchPolicy: 'network-only',
+      pollInterval: 60_000,
+    })
 
   useNotificationSubscription()
 
-  if (
-    (!data && loading) ||
-    (!platformPlansData && platformPlansLoading) ||
-    (!subscriptionData && subscriptionLoading)
-  )
+  if ((!data && loading) || (!platformPlansData && platformPlansLoading))
     return <LoadingIndicator />
 
   if (error || !data?.me?.id) {
@@ -80,7 +72,6 @@ export function PluralProvider({ children }: any) {
         >
           <BillingSubscriptionProvider
             data={subscriptionData}
-            error={subscriptionError}
             refetch={subscriptionRefetch}
           >
             <ConsoleInstancesContextProvider>

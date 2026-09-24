@@ -69,10 +69,27 @@ defmodule Core.Services.PaymentsTest do
   #   end
   # end
 
+  describe "#create_card" do
+    test "attaches a source to an existing Stripe customer" do
+      user = insert(:user, account: build(:account, billing_customer_id: "cus_id"))
+
+      expect(Stripe.PaymentSource, :create, fn "cus_id", %{source: "token"} ->
+        {:ok, %{id: "card_id"}}
+      end)
+
+      expect(Stripe.Invoice, :list, fn %{customer: "cus_id"} ->
+        {:ok, %Stripe.List{data: []}}
+      end)
+
+      assert {:ok, account} = Payments.create_card(user, "token")
+      assert account.id == user.account.id
+    end
+  end
+
   describe "#delete_card" do
     test "It will delete a customer's card" do
       user = insert(:user, account: build(:account, billing_customer_id: "cus_id"))
-      expect(Stripe.Card, :delete, fn "card", %{customer: "cus_id"} -> {:ok, %{id: "bogus"}} end)
+      expect(Stripe.Source, :detach, fn "cus_id", "card" -> {:ok, %{id: "bogus"}} end)
 
       {:ok, updated} = Payments.delete_card("card", user)
 

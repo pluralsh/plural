@@ -29,10 +29,22 @@ defmodule GraphQl.AccountQueriesTest do
       user    = admin_user(account)
       insert(:platform_subscription, account: account, external_id: "sub_id")
 
-      expect(Stripe.Subscription, :retrieve, fn "sub_id", [expand: ["latest_invoice.payment_intent"]] ->
-        {:ok, %Stripe.Subscription{latest_invoice: %Stripe.Invoice{
-          payment_intent: %Stripe.PaymentIntent{client_secret: "secret"}
-        }}}
+      expect(Stripe.Subscription, :retrieve, fn
+        "sub_id", [expand: ["latest_invoice.payments.data.payment.payment_intent"]] ->
+        {:ok, %Stripe.Subscription{
+          latest_invoice: %Stripe.Invoice{
+            payments: %Stripe.List{
+              data: [
+                %Stripe.InvoicePayment{
+                  is_default: true,
+                  payment: %{
+                    payment_intent: %Stripe.PaymentIntent{client_secret: "secret"}
+                  }
+                }
+              ]
+            }
+          }
+        }}
       end)
       expect(Stripe.PaymentMethod, :list, fn %{customer: "cus_id"}, [expand: ["data.customer"]] ->
         {:ok, %Stripe.List{data: [

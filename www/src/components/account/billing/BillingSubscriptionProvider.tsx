@@ -1,6 +1,5 @@
 import { ReactNode, useContext, useMemo } from 'react'
 import moment from 'moment'
-import { ApolloError } from '@apollo/client'
 
 import SubscriptionContext, {
   SubscriptionContextType,
@@ -12,11 +11,8 @@ import {
   SubscriptionQuery,
 } from '../../../generated/graphql'
 
-import BillingError from './BillingError'
-
 type BillingSubscriptionProviderPropsType = {
   data?: SubscriptionQuery
-  error?: ApolloError
   refetch: () => Promise<any>
   children: ReactNode
 }
@@ -60,7 +56,6 @@ function useExtractPaymentMethods(
 
 function BillingSubscriptionProvider({
   data,
-  error,
   refetch,
   children,
 }: BillingSubscriptionProviderPropsType) {
@@ -133,12 +128,6 @@ function BillingSubscriptionProvider({
       refetch,
     }
   }, [data?.account, defaultPaymentMethod, paymentMethods, refetch])
-
-  // Query could error if not allowed to fetch paymentMethods, but still return
-  // the rest of the account data, so don't show error unless no data was received.
-  if (error && !data) {
-    return <BillingError>{`${error.name}: ${error.message}`}</BillingError>
-  }
 
   return (
     <SubscriptionContext.Provider value={subscriptionContextValue}>

@@ -3,6 +3,7 @@ defmodule Core.Services.Dns do
   import Core.Policies.Dns
 
   alias Core.Schema.{DnsDomain, DnsRecord, User}
+  alias Core.Clients.Cloudflare, as: CloudflareClient
   alias Core.Services.Accounts
   alias Cloudflare.DnsRecord, as: Record
   require Logger
@@ -140,10 +141,10 @@ defmodule Core.Services.Dns do
     |> add_operation(:external, fn
       %{fetch: nil, record: record} ->
         cloudflare_record(record)
-        |> Record.create(params: [zone_id: zone_id()])
+        |> Record.create(cloudflare_opts())
         |> extract_id()
       %{record: %{external_id: id} = record} ->
-        Record.update(id, cloudflare_record(record), params: [zone_id: zone_id()])
+        Record.update(id, cloudflare_record(record), cloudflare_opts())
         |> extract_id()
     end)
     |> add_operation(:hydrate, fn %{record: r, external: id} ->
@@ -163,7 +164,7 @@ defmodule Core.Services.Dns do
       |> when_ok(:delete)
     end)
     |> add_operation(:external, fn %{record: r} ->
-      Record.delete(r.external_id, params: [zone_id: zone_id()])
+      Record.delete(r.external_id, cloudflare_opts())
       |> case do
         {:ok, %{body: %{"result" => %{"id" => id}}}} -> {:ok, id}
         {:ok, %Tesla.Env{status: 404}} -> {:ok, nil}
@@ -202,4 +203,6 @@ defmodule Core.Services.Dns do
   end
 
   defp zone_id(), do: Core.conf(:cloudflare_zone)
+
+  defp cloudflare_opts(), do: [params: [zone_id: zone_id()], client: CloudflareClient]
 end

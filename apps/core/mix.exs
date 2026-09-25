@@ -112,7 +112,7 @@ defmodule Core.MixProject do
       {:hackney, "~> 4.0", override: true},
       {:tzdata, "~> 1.1.0", override: true},
       {:prometheus_ex, "~> 3.0"},
-      {:stripity_stripe, "3.2.0"},
+      {:stripity_stripe, "3.3.2"},
       {:conduit, "~> 0.12"},
       {:conduit_amqp, "~> 0.6.3"},
       {:amqp, "~> 4.0", override: true},

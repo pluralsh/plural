@@ -134,7 +134,7 @@ defmodule GraphQl.Schema.Payments do
     field :currency,           non_null(:string)
     field :status,             :string
     field :hosted_invoice_url, :string
-    field :payment_intent,     :payment_intent
+    field :payment_intent,     :payment_intent, resolve: &Payments.invoice_payment_intent/3
     field :created_at,  :datetime, resolve: fn %{created: created}, _, _ ->
       {:ok, Timex.from_unix(created)}
     end

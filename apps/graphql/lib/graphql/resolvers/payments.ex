@@ -22,6 +22,19 @@ defmodule GraphQl.Resolvers.Payments do
 
   def latest_invoice(subscription), do: Payments.latest_invoice(subscription)
 
+  def invoice_payment_intent(%Stripe.Invoice{payments: %Stripe.List{data: payments}}, _, _) do
+    intent =
+      payments
+      |> Enum.sort_by(fn
+        %Stripe.InvoicePayment{is_default: true} -> 0
+        _ -> 1
+      end)
+      |> Enum.find_value(&extract_payment_intent/1)
+
+    {:ok, intent}
+  end
+  def invoice_payment_intent(_, _, _), do: {:ok, nil}
+
   def list_invoices(args, %{context: %{current_user: user}}) do
     Payments.list_invoices(user, to_stripe_args(args))
     |> to_connection()
@@ -66,6 +79,18 @@ defmodule GraphQl.Resolvers.Payments do
     |> move_value([:first], [:limit])
     |> Map.take(~w(starting_after limit)a)
   end
+
+  defp extract_payment_intent(%Stripe.InvoicePayment{
+         payment: %{payment_intent: %Stripe.PaymentIntent{} = intent}
+       }),
+       do: intent
+
+  defp extract_payment_intent(%Stripe.InvoicePayment{
+         payment: %{"payment_intent" => %Stripe.PaymentIntent{} = intent}
+       }),
+       do: intent
+
+  defp extract_payment_intent(_), do: nil
 
   defp build_edges(items) do
     Enum.reduce(items, {[], nil}, fn %{id: id} = node, {l, _} ->

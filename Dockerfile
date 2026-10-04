@@ -41,7 +41,7 @@ ENV GOON_VERSION=v1.1.1
 ENV CLI_VERSION=v0.12.65
 
 # renovate: datasource=github-releases depName=aquasecurity/trivy
-ENV TRIVY_VERSION=v0.74.0
+ENV TRIVY_VERSION=v0.75.0
 
 RUN apk add --update --no-cache curl ca-certificates unzip wget openssl && \
     echo "installing helm" && \

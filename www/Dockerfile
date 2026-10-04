@@ -17,8 +17,12 @@ COPY . ./
 
 RUN yarn run build
 
-# production environment (Alpine 3.24 base picks up fixed curl/libexpat)
+# production environment
 FROM nginxinc/nginx-unprivileged:1.30.4-alpine3.24
+
+USER root
+RUN apk add --no-cache --upgrade 'libexpat>=2.8.5-r0'
+USER 101
 
 WORKDIR /usr/share/nginx/html
 # Copy static assets from builder stage

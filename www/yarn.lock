@@ -11919,10 +11919,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ip-address@npm:10.3.1":
-  version: 10.3.1
-  resolution: "ip-address@npm:10.3.1"
-  checksum: 10/cc0d5b9953acb4114990a3887e0701f8fe843903811f982cf2856cd307c5fb6cdca426ad16c39a1f4950091935c8be4d42631a443f797a96626cce161fffed41
+"ip-address@npm:10.5.1":
+  version: 10.5.1
+  resolution: "ip-address@npm:10.5.1"
+  checksum: 10/5809efd2c8c09e03dc4df104cf0eb6ff81478255e782839fca66a52fbfd39f06636b68c68957f8930ce648a51acf5232df6174f0cd5b4c447775bc2e20f47077
   languageName: node
   linkType: hard
 
@@ -14164,10 +14164,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"moment@npm:2.30.1":
-  version: 2.30.1
-  resolution: "moment@npm:2.30.1"
-  checksum: 10/ae42d876d4ec831ef66110bdc302c0657c664991e45cf2afffc4b0f6cd6d251dde11375c982a5c0564ccc0fa593fc564576ddceb8c8845e87c15f58aa6baca69
+"moment@npm:2.31.0":
+  version: 2.31.0
+  resolution: "moment@npm:2.31.0"
+  checksum: 10/fd3708d46f820c64fe1e064a60747533a55ee0aefd944490e18f08b2a83a5b6418bb4f42e1de47ef1f1a29f450c7ac41edd1fa6f940db30ded247c9717301b9f
   languageName: node
   linkType: hard
 
@@ -18428,10 +18428,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"undici@npm:7.29.0":
-  version: 7.29.0
-  resolution: "undici@npm:7.29.0"
-  checksum: 10/ca73639071bdcbc41e57be1800847fa18f86f8fbf7a5641ff9899f7bbb6f5cecdd593e225f5fd94e31703dcbfaea4a722a3b81cab90c5c4e2b406aec1ae55732
+"undici@npm:7.29.1":
+  version: 7.29.1
+  resolution: "undici@npm:7.29.1"
+  checksum: 10/8b9eaf83615e96f83826c9b6b129bd378c26f750f183e931df89bf07dfae24a39736b3648c16c25904e59e34f9e151e7a852c82ef0f1fb8e8a1297c52ff3170c
   languageName: node
   linkType: hard
 
@@ -19615,7 +19615,7 @@ __metadata:
     lint-staged: "npm:15.5.2"
     lodash: "npm:4.18.1"
     memoize-one: "npm:6.0.0"
-    moment: "npm:2.30.1"
+    moment: "npm:2.31.0"
     phoenix: "npm:1.8.9"
     pluralsh-absinthe-socket-apollo-link: "npm:0.2.0"
     prettier: "npm:3.9.5"

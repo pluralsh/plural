@@ -125,6 +125,16 @@ defmodule Core.Services.UsersTest do
       {:error, "could not fetch refresh token"} = Users.authorize_refresh(old.token)
     end
 
+    test "it cannot refresh tokens past the configured lifetime" do
+      user = insert(:user)
+      old = insert(:refresh_token,
+        user: user,
+        inserted_at: Timex.shift(Timex.now(), days: -8)
+      )
+
+      {:error, "could not fetch refresh token"} = Users.authorize_refresh(old.token)
+    end
+
     test "it fails if the token does not exist" do
       {:error, "could not fetch refresh token"} = Users.authorize_refresh("not-a-token")
     end

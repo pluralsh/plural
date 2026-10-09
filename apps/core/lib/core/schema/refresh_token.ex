@@ -16,8 +16,17 @@ defmodule Core.Schema.RefreshToken do
     from(rt in query, where: rt.inserted_at <= ^expiry or (not is_nil(rt.expires_at) and rt.expires_at <= ^Timex.now()))
   end
 
-  def expired?(%__MODULE__{expires_at: %DateTime{} = at}), do: Timex.before?(at, Timex.now())
-  def expired?(_), do: false
+  def expired?(%__MODULE__{expires_at: %DateTime{} = at} = token) do
+    Timex.before?(at, Timex.now()) or age_expired?(token)
+  end
+  def expired?(%__MODULE__{} = token), do: age_expired?(token)
+  def expired?(_), do: true
+
+  defp age_expired?(%__MODULE__{inserted_at: inserted_at}) when not is_nil(inserted_at) do
+    cutoff = Timex.now() |> Timex.subtract(expiry())
+    Timex.compare(inserted_at, cutoff) != 1
+  end
+  defp age_expired?(_), do: false
 
   def replacement_expiry(), do: Timex.now() |> Timex.shift(hours: 2)
 

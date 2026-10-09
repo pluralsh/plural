@@ -80,10 +80,9 @@ export const onErrorHandler: ErrorHandler = ({
           forward(operation).subscribe(subscriber)
         } catch (err) {
           observer.error(err)
-          if (
-            (err as { networkError?: NetworkError } | null)?.networkError
-              ?.message === 'Failed to fetch'
-          ) {
+          // Keep credentials on transient transport/server failures; only clear
+          // the session when refresh credentials are actually rejected.
+          if (isTransientRefreshFailure(err)) {
             return
           }
           logoutToLogin()
@@ -100,4 +99,17 @@ export const onErrorHandler: ErrorHandler = ({
 export function logoutToLogin() {
   clearLocalStorage()
   window.location.href = getLoginUrlWithReturn()
+}
+
+export function isTransientRefreshFailure(err: unknown): boolean {
+  const networkError = (
+    err as { networkError?: NetworkError & { statusCode?: number } } | null
+  )?.networkError
+
+  if (!networkError) return false
+  if (networkError.message === 'Failed to fetch') return true
+
+  const statusCode = networkError.statusCode
+
+  return typeof statusCode === 'number' && statusCode >= 500
 }

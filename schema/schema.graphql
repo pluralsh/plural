@@ -7,9 +7,9 @@ schema {
 type RootQueryType {
   me: User
 
-  user(id: ID!): User
-
   refresh(token: String!): User
+
+  user(id: ID!): User
 
   loginMethod(email: String!, host: String): LoginMethodResponse
 
@@ -3516,17 +3516,6 @@ type User {
   updatedAt: DateTime
 }
 
-type RefreshToken {
-  id: ID!
-
-  "the token to use to request a refresh"
-  token: String!
-
-  insertedAt: DateTime
-
-  updatedAt: DateTime
-}
-
 type Roles {
   admin: Boolean
 }
@@ -3698,6 +3687,17 @@ type PersistedTokenConnection {
 type PublicKeyConnection {
   pageInfo: PageInfo!
   edges: [PublicKeyEdge]
+}
+
+type RefreshToken {
+  id: ID!
+
+  "the token to use to request a refresh"
+  token: String!
+
+  insertedAt: DateTime
+
+  updatedAt: DateTime
 }
 
 type PersistedTokenAuditConnection {

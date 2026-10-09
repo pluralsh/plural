@@ -127,12 +127,14 @@ defmodule GraphQl.AccountMutationTest do
           impersonateServiceAccount(email: $email) {
             id
             jwt
+            refreshToken { token }
           }
         }
       """, %{"email" => sa.email}, %{current_user: user})
 
       assert imp["id"] == sa.id
       assert imp["jwt"]
+      refute imp["refreshToken"]
     end
   end
 

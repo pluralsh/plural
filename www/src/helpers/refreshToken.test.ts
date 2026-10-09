@@ -24,7 +24,7 @@ vi.mock('../generated/graphql', () => ({
   RefreshDocument: {},
 }))
 
-import { getRefreshedToken } from './refreshToken'
+import { getRefreshedToken, isTransientRefreshFailure } from './refreshToken'
 
 describe('getRefreshedToken', () => {
   beforeEach(() => {
@@ -81,5 +81,33 @@ describe('getRefreshedToken', () => {
     await getRefreshedToken()
 
     expect(mocks.query).toHaveBeenCalledTimes(2)
+  })
+})
+
+describe('isTransientRefreshFailure', () => {
+  it('treats transport and 5xx failures as transient', () => {
+    expect(
+      isTransientRefreshFailure({
+        networkError: { message: 'Failed to fetch' },
+      })
+    ).toBe(true)
+    expect(
+      isTransientRefreshFailure({
+        networkError: { message: 'Service Unavailable', statusCode: 503 },
+      })
+    ).toBe(true)
+  })
+
+  it('does not treat credential rejections as transient', () => {
+    expect(
+      isTransientRefreshFailure({
+        graphQLErrors: [{ message: 'could not fetch refresh token' }],
+      })
+    ).toBe(false)
+    expect(
+      isTransientRefreshFailure({
+        networkError: { message: 'Unauthorized', statusCode: 401 },
+      })
+    ).toBe(false)
   })
 })

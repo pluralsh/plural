@@ -60,6 +60,8 @@
         padding-right: 24px;
       }
       .header-logo {
+        display: block;
+        width: 196px;
         height: 48px;
       }
       .company-info {
@@ -121,7 +123,7 @@
       <div class="margin-horizontal-auto">
         <div class="flex margin-horizontal-auto fit-content">
           <a href="https://plural.sh" target="_blank">
-            <img alt="Plural" src="https://app.plural.sh/plural-email-header@2x.png" class="header-logo" />
+            <img alt="Plural" src="https://app.plural.sh/plural-email-header@2x.png" class="header-logo" width="196" height="48" style="display: block; width: 196px; height: 48px; max-width: 196px;" />
           </a>
         </div>
       </div>

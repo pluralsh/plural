@@ -206,6 +206,13 @@ defmodule GraphQl.Resolvers.User do
     |> activate_token(args)
   end
 
+  def refresh(%{token: token}, _) do
+    Users.authorize_refresh(token)
+    |> with_jwt()
+  end
+
+  def logout(_, %{context: %{current_user: user}}), do: Users.logout_user(user)
+
   def signup_user(%{invite_id: id, attributes: attrs} = args, _) when is_binary(id) do
     Map.put(attrs, :account, args[:account] || %{})
     |> Accounts.realize_invite(id)
@@ -320,8 +327,10 @@ defmodule GraphQl.Resolvers.User do
   end
 
   def with_jwt({:ok, user}) do
-    with {:ok, token, _} <- Core.Guardian.encode_and_sign(user),
-        do: {:ok, %{user | jwt: token}}
+    with {:ok, user} <- Users.ensure_refresh_token(user),
+         {:ok, token, _} <- Core.Guardian.encode_and_sign(user) do
+      {:ok, %{user | jwt: token}}
+    end
   end
   def with_jwt(error), do: error
 

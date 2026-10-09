@@ -9,6 +9,8 @@ type RootQueryType {
 
   user(id: ID!): User
 
+  refresh(token: String!): User
+
   loginMethod(email: String!, host: String): LoginMethodResponse
 
   resetToken(id: ID!): ResetToken
@@ -226,6 +228,8 @@ type RootQueryType {
 
 type RootMutationType {
   login(email: String!, password: String!, deviceToken: String, captcha: String!): User
+
+  logout: User
 
   deviceLogin: DeviceLogin
 
@@ -3488,6 +3492,8 @@ type User {
 
   jwt: String
 
+  refreshToken: RefreshToken
+
   intercomId: String
 
   hasInstallations: Boolean
@@ -3504,6 +3510,17 @@ type User {
   demoed: Boolean
 
   cards(after: String, first: Int, before: String, last: Int): CardConnection
+
+  insertedAt: DateTime
+
+  updatedAt: DateTime
+}
+
+type RefreshToken {
+  id: ID!
+
+  "the token to use to request a refresh"
+  token: String!
 
   insertedAt: DateTime
 

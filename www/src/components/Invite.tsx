@@ -10,7 +10,7 @@ import {
   useSignupInviteMutation,
   InviteFragment,
 } from '../generated/graphql'
-import { setToken } from '../helpers/authentication'
+import { setAuthFromUser } from '../helpers/authentication'
 
 import { LabelledInput } from './users/LabelledInput'
 import { LoginPortal } from './users/LoginPortal'
@@ -31,7 +31,7 @@ function ExistingInvite({
   const [mutation, { loading, error }] = useRealizeInviteMutation({
     variables: { id: inviteId },
     onCompleted: ({ realizeInvite }) => {
-      setToken(realizeInvite?.jwt)
+      setAuthFromUser(realizeInvite)
       ;(window as Window).location = '/'
     },
   })
@@ -80,7 +80,7 @@ export default function Invite() {
       attributes: { name, password },
     },
     onCompleted: ({ signup }) => {
-      setToken(signup?.jwt)
+      setAuthFromUser(signup)
       ;(window as Window).location = '/'
     },
   })

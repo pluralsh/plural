@@ -234,6 +234,24 @@ mutation Login(
     captcha: $captcha
   ) {
     jwt
+    refreshToken {
+      token
+    }
+  }
+}
+
+query Refresh($token: String!) {
+  refresh(token: $token) {
+    jwt
+    refreshToken {
+      token
+    }
+  }
+}
+
+mutation Logout {
+  logout {
+    id
   }
 }
 
@@ -250,6 +268,9 @@ mutation ImpersonateServiceAccount($id: ID, $email: String) {
   impersonateServiceAccount(id: $id, email: $email) {
     jwt
     email
+    refreshToken {
+      token
+    }
   }
 }
 
@@ -295,18 +316,27 @@ mutation Signup(
   ) {
     jwt
     onboarding
+    refreshToken {
+      token
+    }
   }
 }
 
 mutation PasswordlessLogin($token: String!) {
   passwordlessLogin(token: $token) {
     jwt
+    refreshToken {
+      token
+    }
   }
 }
 
 mutation PollLoginToken($token: String!, $deviceToken: String) {
   loginToken(token: $token, deviceToken: $deviceToken) {
     jwt
+    refreshToken {
+      token
+    }
   }
 }
 

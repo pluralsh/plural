@@ -51,8 +51,11 @@ config :tesla, disable_deprecated_builder_warning: true
 config :reverse_proxy_plug, :http_client, ReverseProxyPlug.HTTPClient.Adapters.HTTPoison
 
 config :core, Core.Guardian,
+  ttl: {30, :minutes},
   issuer: "app.plural.sh",
   secret_key: "forge_secret"
+
+config :core, :refresh_token_expiry, 7
 
 config :core, :chartmuseum, System.get_env("CHARTMUSEUM_URL") || "http://localhost:8080"
 

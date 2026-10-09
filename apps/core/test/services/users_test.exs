@@ -62,6 +62,92 @@ defmodule Core.Services.UsersTest do
     end
   end
 
+  describe "#authorize_refresh/1" do
+    test "it rotates the refresh token and returns the user with a new one" do
+      user = insert(:user)
+      old = insert(:refresh_token, user: user)
+      keep = insert(:refresh_token, user: user)
+
+      {:ok, hydrated} = Users.authorize_refresh(old.token)
+
+      assert hydrated.id == user.id
+      assert hydrated.refresh_token.user_id == user.id
+      assert hydrated.refresh_token.token
+      refute hydrated.refresh_token.token == old.token
+
+      persisted = Users.get_refresh_token(old.token)
+      assert persisted
+      assert persisted.expires_at
+      assert Timex.after?(persisted.expires_at, Timex.now())
+      assert Timex.before?(persisted.expires_at, Timex.shift(Timex.now(), hours: 2, minutes: 5))
+      refute Users.get_refresh_token(hydrated.refresh_token.token).expires_at
+      assert refetch(keep)
+
+      {:ok, again} = Users.authorize_refresh(hydrated.refresh_token.token)
+      assert again.refresh_token.token != hydrated.refresh_token.token
+      assert Users.get_refresh_token(hydrated.refresh_token.token).expires_at
+    end
+
+    test "concurrent tabs can still refresh the prior token during the grace period" do
+      user = insert(:user)
+      old = insert(:refresh_token, user: user)
+
+      {:ok, first} = Users.authorize_refresh(old.token)
+      {:ok, second} = Users.authorize_refresh(old.token)
+
+      assert first.refresh_token.token != old.token
+      assert second.refresh_token.token != old.token
+      assert second.refresh_token.token != first.refresh_token.token
+
+      persisted = Users.get_refresh_token(old.token)
+      assert persisted.expires_at
+      assert Users.get_refresh_token(first.refresh_token.token)
+      assert Users.get_refresh_token(second.refresh_token.token)
+    end
+
+    test "reusing a rotated token does not extend its grace period" do
+      user = insert(:user)
+      expires_at = Timex.shift(Timex.now(), hours: 1)
+      old = insert(:refresh_token, user: user, expires_at: expires_at)
+
+      {:ok, hydrated} = Users.authorize_refresh(old.token)
+
+      persisted = Users.get_refresh_token(old.token)
+      assert Timex.equal?(persisted.expires_at, expires_at, :seconds)
+      refute hydrated.refresh_token.token == old.token
+      assert Users.get_refresh_token(hydrated.refresh_token.token)
+    end
+
+    test "it cannot refresh after the grace period expires" do
+      user = insert(:user)
+      old = insert(:refresh_token, user: user, expires_at: Timex.shift(Timex.now(), hours: -1))
+
+      {:error, "could not fetch refresh token"} = Users.authorize_refresh(old.token)
+    end
+
+    test "it fails if the token does not exist" do
+      {:error, "could not fetch refresh token"} = Users.authorize_refresh("not-a-token")
+    end
+
+    test "it fails if no token is provided" do
+      {:error, "no refresh token provided"} = Users.authorize_refresh(nil)
+    end
+  end
+
+  describe "#logout_user/1" do
+    test "it wipes refresh tokens for the user" do
+      user = insert(:user)
+      insert(:refresh_token, user: user)
+      insert(:refresh_token, user: user)
+      keep = insert(:refresh_token)
+
+      {:ok, _} = Users.logout_user(user)
+
+      refute Core.Schema.RefreshToken.for_user(user.id) |> Core.Repo.exists?()
+      assert refetch(keep)
+    end
+  end
+
   describe "#update_user/2" do
     test "Users can update themselves" do
       {:ok, user} = Users.create_user(%{
@@ -86,6 +172,20 @@ defmodule Core.Services.UsersTest do
 
       {:error, _} = Users.update_user(%{password: "anewstrongpassword", confirm: "whoops"}, user)
       {:ok, _} = Users.update_user(%{password: "anewstrongpassword", confirm: "superstrongpassword"}, user)
+    end
+
+    test "password updates wipe refresh tokens" do
+      {:ok, user} = Users.create_user(%{
+        name: "some user",
+        password: "superstrongpassword",
+        email: "something@example.com"
+      })
+      insert(:refresh_token, user: user)
+      insert(:refresh_token, user: user)
+
+      {:ok, _} = Users.update_user(%{password: "anewstrongpassword", confirm: "superstrongpassword"}, user)
+
+      refute Core.Schema.RefreshToken.for_user(user.id) |> Core.Repo.exists?()
     end
 
     test "email change is properly detected" do
@@ -431,6 +531,16 @@ defmodule Core.Services.UsersTest do
       {:ok, _} = Users.login_user(user.email, "a long password")
 
       refute refetch(token)
+    end
+
+    test "password reset wipes refresh tokens" do
+      token = insert(:reset_token)
+      insert(:refresh_token, user: token.user)
+      insert(:refresh_token, user: token.user)
+
+      {:ok, user} = Users.realize_reset_token(token.external_id, %{password: "a long password"})
+
+      refute Core.Schema.RefreshToken.for_user(user.id) |> Core.Repo.exists?()
     end
 
     test "it will confirm an email for email tokens" do

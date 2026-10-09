@@ -1,6 +1,6 @@
 import { LocalStorageKeys } from '../constants'
 
-import { wipeToken } from './authentication'
+import { wipeRefreshToken, wipeToken } from './authentication'
 
 export const ONBOARDING_CHECKLIST_LOCAL_STORAGE_KEY =
   LocalStorageKeys.OnboardingChecklist
@@ -20,6 +20,7 @@ export enum EXPIRATION_NOTICE_STATE {
 // Clears the user related local storage keys during logout.
 function clearLocalStorage(): void {
   wipeToken()
+  wipeRefreshToken()
   localStorage.removeItem(LocalStorageKeys.AuthPreviousUserData)
   localStorage.removeItem(LocalStorageKeys.BrowserHistory)
   localStorage.removeItem(LocalStorageKeys.LegacyExpirationNotice)

@@ -8,7 +8,7 @@ import { useTheme } from 'styled-components'
 import { useOauthUrlsQuery, useSignupMutation } from '../../generated/graphql'
 import { WelcomeHeader } from '../utils/WelcomeHeader'
 import { HubSpot } from '../utils/HubSpot'
-import { fetchToken, setToken } from '../../helpers/authentication'
+import { fetchToken, setAuthFromUser } from '../../helpers/authentication'
 import { GqlError } from '../utils/Alert'
 
 import { host } from '../../helpers/hostname'
@@ -105,7 +105,7 @@ export function Signup() {
       if (deviceToken) {
         finishedDeviceLogin()
       }
-      setToken(signup?.jwt)
+      setAuthFromUser(signup)
       history.navigate('/')
     },
   })

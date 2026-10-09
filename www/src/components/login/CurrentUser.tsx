@@ -8,7 +8,9 @@ import PluralConfigurationContext from '../../contexts/PluralConfigurationContex
 import { useMeQuery, useSubscriptionQuery } from '../../generated/graphql'
 import {
   setPreviousUserData,
+  setRefreshToken,
   setToken,
+  wipeRefreshToken,
   wipeToken,
 } from '../../helpers/authentication'
 import { useNotificationSubscription } from '../../hooks/useNotificationSubscription'
@@ -18,8 +20,9 @@ import { PLATFORM_PLANS_QUERY } from '../account/billing/queries'
 import LoadingIndicator from '../utils/LoadingIndicator'
 import { getLoginUrlWithReturn } from 'components/users/utils'
 
-export function handlePreviousUserClick({ jwt }: any) {
+export function handlePreviousUserClick({ jwt, refreshToken }: any) {
   setToken(jwt)
+  if (refreshToken) setRefreshToken(refreshToken)
   setPreviousUserData(null)
   window.location.reload()
 }
@@ -57,6 +60,7 @@ export function PluralProvider({ children }: any) {
 
   if (error || !data?.me?.id) {
     wipeToken()
+    wipeRefreshToken()
 
     return <Navigate to={getLoginUrlWithReturn()} />
   }

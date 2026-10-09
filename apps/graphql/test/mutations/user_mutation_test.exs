@@ -17,6 +17,7 @@ defmodule GraphQl.UserMutationTest do
           login(email: $email, password: $password, captcha: $captcha) {
             id
             jwt
+            refreshToken { id token }
           }
         }
       """, %{
@@ -27,6 +28,8 @@ defmodule GraphQl.UserMutationTest do
 
       assert found["id"] == user.id
       assert found["jwt"]
+      assert found["refreshToken"]["token"]
+      assert Core.Schema.RefreshToken.for_user(user.id) |> Core.Repo.exists?()
     end
 
     test "it will validate captchas" do
@@ -131,6 +134,23 @@ defmodule GraphQl.UserMutationTest do
 
       assert found["id"] == user.id
       assert refetch(token).active
+    end
+  end
+
+  describe "logout" do
+    test "it wipes refresh tokens for the current user" do
+      user = insert(:user)
+      insert(:refresh_token, user: user)
+      insert(:refresh_token, user: user)
+
+      {:ok, %{data: %{"logout" => logged_out}}} = run_query("""
+        mutation {
+          logout { id }
+        }
+      """, %{}, %{current_user: user})
+
+      assert logged_out["id"] == user.id
+      refute Core.Schema.RefreshToken.for_user(user.id) |> Core.Repo.exists?()
     end
   end
 

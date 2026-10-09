@@ -4,7 +4,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import qs from 'query-string'
 import { Box } from 'grommet'
 
-import { setToken } from '../../helpers/authentication'
+import { setAuthFromUser } from '../../helpers/authentication'
 import { host } from '../../helpers/hostname'
 import { GqlError } from '../utils/Alert'
 import LoadingIndicator from '../utils/LoadingIndicator'
@@ -31,7 +31,7 @@ export function OAuthCallback() {
       deviceToken,
     },
     onCompleted: ({ oauthCallback }) => {
-      setToken(oauthCallback.jwt)
+      setAuthFromUser(oauthCallback)
       if (deviceToken) finishedDeviceLogin()
       const challenge = getChallenge()
 

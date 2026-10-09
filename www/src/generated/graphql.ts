@@ -2593,6 +2593,15 @@ export type RedirectToUrl = {
   url?: Maybe<Scalars['String']['output']>;
 };
 
+export type RefreshToken = {
+  __typename?: 'RefreshToken';
+  id: Scalars['ID']['output'];
+  insertedAt?: Maybe<Scalars['DateTime']['output']>;
+  /** the token to use to request a refresh */
+  token: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['DateTime']['output']>;
+};
+
 /** The release status of a repository, defaults to ALPHA, GA if it is ready for general consumption */
 export enum ReleaseStatus {
   Alpha = 'ALPHA',
@@ -2981,6 +2990,7 @@ export type RootMutationType = {
   linkPublisher?: Maybe<Publisher>;
   login?: Maybe<User>;
   loginToken?: Maybe<User>;
+  logout?: Maybe<User>;
   oauthCallback?: Maybe<User>;
   oauthConsent?: Maybe<OauthResponse>;
   passwordlessLogin?: Maybe<User>;
@@ -3910,6 +3920,7 @@ export type RootQueryType = {
   publishers?: Maybe<PublisherConnection>;
   recipe?: Maybe<Recipe>;
   recipes?: Maybe<RecipeConnection>;
+  refresh?: Maybe<User>;
   repositories?: Maybe<RepositoryConnection>;
   /** Get an application by its ID or name. */
   repository?: Maybe<Repository>;
@@ -4310,6 +4321,11 @@ export type RootQueryTypeRecipesArgs = {
   provider?: InputMaybe<Provider>;
   repositoryId?: InputMaybe<Scalars['ID']['input']>;
   repositoryName?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type RootQueryTypeRefreshArgs = {
+  token: Scalars['String']['input'];
 };
 
 
@@ -5127,6 +5143,7 @@ export type User = {
   phone?: Maybe<Scalars['String']['output']>;
   provider?: Maybe<Provider>;
   publisher?: Maybe<Publisher>;
+  refreshToken?: Maybe<RefreshToken>;
   roles?: Maybe<Roles>;
   serviceAccount?: Maybe<Scalars['Boolean']['output']>;
   trustRelationships?: Maybe<Array<Maybe<OidcTrustRelationship>>>;
@@ -5687,14 +5704,14 @@ export type SignupInviteMutationVariables = Exact<{
 }>;
 
 
-export type SignupInviteMutation = { __typename?: 'RootMutationType', signup?: { __typename?: 'User', jwt?: string | null } | null };
+export type SignupInviteMutation = { __typename?: 'RootMutationType', signup?: { __typename?: 'User', jwt?: string | null, refreshToken?: { __typename?: 'RefreshToken', token: string } | null } | null };
 
 export type RealizeInviteMutationVariables = Exact<{
   id: Scalars['String']['input'];
 }>;
 
 
-export type RealizeInviteMutation = { __typename?: 'RootMutationType', realizeInvite?: { __typename?: 'User', jwt?: string | null } | null };
+export type RealizeInviteMutation = { __typename?: 'RootMutationType', realizeInvite?: { __typename?: 'User', jwt?: string | null, refreshToken?: { __typename?: 'RefreshToken', token: string } | null } | null };
 
 export type DeleteInviteMutationVariables = Exact<{
   id: Scalars['ID']['input'];
@@ -6358,7 +6375,19 @@ export type LoginMutationVariables = Exact<{
 }>;
 
 
-export type LoginMutation = { __typename?: 'RootMutationType', login?: { __typename?: 'User', jwt?: string | null } | null };
+export type LoginMutation = { __typename?: 'RootMutationType', login?: { __typename?: 'User', jwt?: string | null, refreshToken?: { __typename?: 'RefreshToken', token: string } | null } | null };
+
+export type RefreshQueryVariables = Exact<{
+  token: Scalars['String']['input'];
+}>;
+
+
+export type RefreshQuery = { __typename?: 'RootQueryType', refresh?: { __typename?: 'User', jwt?: string | null, refreshToken?: { __typename?: 'RefreshToken', token: string } | null } | null };
+
+export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type LogoutMutation = { __typename?: 'RootMutationType', logout?: { __typename?: 'User', id: string } | null };
 
 export type CreateServiceAccountMutationVariables = Exact<{
   attributes: ServiceAccountAttributes;
@@ -6373,7 +6402,7 @@ export type ImpersonateServiceAccountMutationVariables = Exact<{
 }>;
 
 
-export type ImpersonateServiceAccountMutation = { __typename?: 'RootMutationType', impersonateServiceAccount?: { __typename?: 'User', jwt?: string | null, email: string } | null };
+export type ImpersonateServiceAccountMutation = { __typename?: 'RootMutationType', impersonateServiceAccount?: { __typename?: 'User', jwt?: string | null, email: string, refreshToken?: { __typename?: 'RefreshToken', token: string } | null } | null };
 
 export type CreateAccessTokenMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -6418,14 +6447,14 @@ export type SignupMutationVariables = Exact<{
 }>;
 
 
-export type SignupMutation = { __typename?: 'RootMutationType', signup?: { __typename?: 'User', jwt?: string | null, onboarding?: OnboardingState | null } | null };
+export type SignupMutation = { __typename?: 'RootMutationType', signup?: { __typename?: 'User', jwt?: string | null, onboarding?: OnboardingState | null, refreshToken?: { __typename?: 'RefreshToken', token: string } | null } | null };
 
 export type PasswordlessLoginMutationVariables = Exact<{
   token: Scalars['String']['input'];
 }>;
 
 
-export type PasswordlessLoginMutation = { __typename?: 'RootMutationType', passwordlessLogin?: { __typename?: 'User', jwt?: string | null } | null };
+export type PasswordlessLoginMutation = { __typename?: 'RootMutationType', passwordlessLogin?: { __typename?: 'User', jwt?: string | null, refreshToken?: { __typename?: 'RefreshToken', token: string } | null } | null };
 
 export type PollLoginTokenMutationVariables = Exact<{
   token: Scalars['String']['input'];
@@ -6433,7 +6462,7 @@ export type PollLoginTokenMutationVariables = Exact<{
 }>;
 
 
-export type PollLoginTokenMutation = { __typename?: 'RootMutationType', loginToken?: { __typename?: 'User', jwt?: string | null } | null };
+export type PollLoginTokenMutation = { __typename?: 'RootMutationType', loginToken?: { __typename?: 'User', jwt?: string | null, refreshToken?: { __typename?: 'RefreshToken', token: string } | null } | null };
 
 export type OauthUrlsQueryVariables = Exact<{
   host?: InputMaybe<Scalars['String']['input']>;
@@ -9437,6 +9466,9 @@ export const SignupInviteDocument = gql`
     mutation SignupInvite($attributes: UserAttributes!, $inviteId: String!) {
   signup(attributes: $attributes, inviteId: $inviteId) {
     jwt
+    refreshToken {
+      token
+    }
   }
 }
     `;
@@ -9471,6 +9503,9 @@ export const RealizeInviteDocument = gql`
     mutation RealizeInvite($id: String!) {
   realizeInvite(id: $id) {
     jwt
+    refreshToken {
+      token
+    }
   }
 }
     `;
@@ -12403,6 +12438,9 @@ export const LoginDocument = gql`
     captcha: $captcha
   ) {
     jwt
+    refreshToken {
+      token
+    }
   }
 }
     `;
@@ -12435,6 +12473,84 @@ export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginM
 export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
 export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
 export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
+export const RefreshDocument = gql`
+    query Refresh($token: String!) {
+  refresh(token: $token) {
+    jwt
+    refreshToken {
+      token
+    }
+  }
+}
+    `;
+
+/**
+ * __useRefreshQuery__
+ *
+ * To run a query within a React component, call `useRefreshQuery` and pass it any options that fit your needs.
+ * When your component renders, `useRefreshQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useRefreshQuery({
+ *   variables: {
+ *      token: // value for 'token'
+ *   },
+ * });
+ */
+export function useRefreshQuery(baseOptions: Apollo.QueryHookOptions<RefreshQuery, RefreshQueryVariables> & ({ variables: RefreshQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<RefreshQuery, RefreshQueryVariables>(RefreshDocument, options);
+      }
+export function useRefreshLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<RefreshQuery, RefreshQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<RefreshQuery, RefreshQueryVariables>(RefreshDocument, options);
+        }
+// @ts-ignore
+export function useRefreshSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<RefreshQuery, RefreshQueryVariables>): Apollo.UseSuspenseQueryResult<RefreshQuery, RefreshQueryVariables>;
+export function useRefreshSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<RefreshQuery, RefreshQueryVariables>): Apollo.UseSuspenseQueryResult<RefreshQuery | undefined, RefreshQueryVariables>;
+export function useRefreshSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<RefreshQuery, RefreshQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<RefreshQuery, RefreshQueryVariables>(RefreshDocument, options);
+        }
+export type RefreshQueryHookResult = ReturnType<typeof useRefreshQuery>;
+export type RefreshLazyQueryHookResult = ReturnType<typeof useRefreshLazyQuery>;
+export type RefreshSuspenseQueryHookResult = ReturnType<typeof useRefreshSuspenseQuery>;
+export type RefreshQueryResult = Apollo.QueryResult<RefreshQuery, RefreshQueryVariables>;
+export const LogoutDocument = gql`
+    mutation Logout {
+  logout {
+    id
+  }
+}
+    `;
+export type LogoutMutationFn = Apollo.MutationFunction<LogoutMutation, LogoutMutationVariables>;
+
+/**
+ * __useLogoutMutation__
+ *
+ * To run a mutation, you first call `useLogoutMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useLogoutMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [logoutMutation, { data, loading, error }] = useLogoutMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useLogoutMutation(baseOptions?: Apollo.MutationHookOptions<LogoutMutation, LogoutMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<LogoutMutation, LogoutMutationVariables>(LogoutDocument, options);
+      }
+export type LogoutMutationHookResult = ReturnType<typeof useLogoutMutation>;
+export type LogoutMutationResult = Apollo.MutationResult<LogoutMutation>;
+export type LogoutMutationOptions = Apollo.BaseMutationOptions<LogoutMutation, LogoutMutationVariables>;
 export const CreateServiceAccountDocument = gql`
     mutation CreateServiceAccount($attributes: ServiceAccountAttributes!) {
   createServiceAccount(attributes: $attributes) {
@@ -12477,6 +12593,9 @@ export const ImpersonateServiceAccountDocument = gql`
   impersonateServiceAccount(id: $id, email: $email) {
     jwt
     email
+    refreshToken {
+      token
+    }
   }
 }
     `;
@@ -12689,6 +12808,9 @@ export const SignupDocument = gql`
   signup(attributes: $attributes, account: $account, deviceToken: $deviceToken) {
     jwt
     onboarding
+    refreshToken {
+      token
+    }
   }
 }
     `;
@@ -12724,6 +12846,9 @@ export const PasswordlessLoginDocument = gql`
     mutation PasswordlessLogin($token: String!) {
   passwordlessLogin(token: $token) {
     jwt
+    refreshToken {
+      token
+    }
   }
 }
     `;
@@ -12757,6 +12882,9 @@ export const PollLoginTokenDocument = gql`
     mutation PollLoginToken($token: String!, $deviceToken: String) {
   loginToken(token: $token, deviceToken: $deviceToken) {
     jwt
+    refreshToken {
+      token
+    }
   }
 }
     `;
@@ -13220,6 +13348,7 @@ export const namedOperations = {
     ListTokens: 'ListTokens',
     ListKeys: 'ListKeys',
     GetEabCredential: 'GetEabCredential',
+    Refresh: 'Refresh',
     LoginMethod: 'LoginMethod',
     OauthUrls: 'OauthUrls',
     ResetToken: 'ResetToken',
@@ -13287,6 +13416,7 @@ export const namedOperations = {
     PublishLogs: 'PublishLogs',
     DevLogin: 'DevLogin',
     Login: 'Login',
+    Logout: 'Logout',
     CreateServiceAccount: 'CreateServiceAccount',
     ImpersonateServiceAccount: 'ImpersonateServiceAccount',
     CreateAccessToken: 'CreateAccessToken',

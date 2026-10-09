@@ -130,6 +130,8 @@ defmodule GraphQl.Schema.User do
       _, _, _ -> {:error, "forbidden"}
     end
 
+    field :refresh_token, :refresh_token
+
     field :intercom_id, :string, resolve: fn
       %{id: id} = user, _, %{context: %{current_user: %{id: id}}} ->
         {:ok, Schema.User.intercom_id(user)}
@@ -347,6 +349,13 @@ defmodule GraphQl.Schema.User do
   connection node_type: :webhook
   connection node_type: :persisted_token
   connection node_type: :public_key
+  object :refresh_token do
+    field :id,    non_null(:id)
+    field :token, non_null(:string), description: "the token to use to request a refresh"
+
+    timestamps()
+  end
+
   connection node_type: :persisted_token_audit
   connection node_type: :key_backup
 
@@ -354,6 +363,13 @@ defmodule GraphQl.Schema.User do
     field :me, :user do
       middleware Authenticated, :external
       resolve fn _, %{context: %{current_user: user}} -> {:ok, user} end
+    end
+
+    field :refresh, :user do
+      middleware AllowJwt
+      arg :token, non_null(:string)
+
+      resolve &User.refresh/2
     end
 
     field :user, :user do
@@ -481,6 +497,12 @@ defmodule GraphQl.Schema.User do
       middleware Captcha
 
       safe_resolve &User.login_user/2
+    end
+
+    field :logout, :user do
+      middleware Authenticated
+
+      safe_resolve &User.logout/2
     end
 
     field :device_login, :device_login do

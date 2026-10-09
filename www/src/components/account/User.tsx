@@ -15,9 +15,10 @@ import {
   useUpdateUserMutation,
 } from '../../generated/graphql'
 import {
+  fetchRefreshToken,
   fetchToken,
+  setAuthFromUser,
   setPreviousUserData,
-  setToken,
 } from '../../helpers/authentication'
 import { canEdit } from '../../utils/account'
 import UserSettingsModal from '../users/settings/UserSettingsModal'
@@ -190,8 +191,12 @@ export function ServiceAccount({ user, update }: any) {
   const [mutation, { error }] = useImpersonateServiceAccountMutation({
     variables: { id: user.id },
     update: (_cache, { data }) => {
-      setPreviousUserData({ me, jwt: fetchToken() })
-      setToken(data?.impersonateServiceAccount?.jwt)
+      setPreviousUserData({
+        me,
+        jwt: fetchToken(),
+        refreshToken: fetchRefreshToken(),
+      })
+      setAuthFromUser(data?.impersonateServiceAccount)
       ;(window as Window).location = '/'
     },
   })

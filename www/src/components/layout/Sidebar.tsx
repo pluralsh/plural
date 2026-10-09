@@ -30,6 +30,7 @@ import { Link, useLocation } from 'react-router-dom'
 import styled, { useTheme } from 'styled-components'
 
 import CurrentUserContext from '../../contexts/CurrentUserContext'
+import { useLogoutMutation } from '../../generated/graphql'
 import { getPreviousUserData } from '../../helpers/authentication'
 import { clearLocalStorage } from '../../helpers/localStorage'
 import { handlePreviousUserClick } from '../login/CurrentUser'
@@ -199,10 +200,15 @@ function Sidebar(props: Omit<ComponentProps<typeof DSSidebar>, '$variant'>) {
   })
 
   const switchPrevious = () => handlePreviousUserClick(previousUserData)
+  const [logoutMutation] = useLogoutMutation()
 
   function handleLogout() {
-    clearLocalStorage()
-    ;(window as Window).location = '/'
+    logoutMutation()
+      .catch(() => undefined)
+      .finally(() => {
+        clearLocalStorage()
+        ;(window as Window).location = '/'
+      })
   }
 
   return (

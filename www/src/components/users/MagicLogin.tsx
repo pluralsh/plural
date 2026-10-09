@@ -30,7 +30,7 @@ import {
 
 import { WelcomeHeader } from '../utils/WelcomeHeader'
 
-import { fetchToken, setToken } from '../../helpers/authentication'
+import { fetchToken, setAuthFromUser } from '../../helpers/authentication'
 import { host } from '../../helpers/hostname'
 import { PLURAL_MARK_WHITE } from '../constants'
 import { Alert, AlertStatus, GqlError } from '../utils/Alert'
@@ -131,24 +131,18 @@ function LoginPoller({ challenge, token, deviceToken }: any) {
           mutation: PollLoginTokenDocument,
           variables: { token, deviceToken },
         })
-        .then(
-          ({
-            data: {
-              loginToken: { jwt },
-            },
-          }) => {
-            setToken(jwt)
-            setSuccess(true)
+        .then(({ data: { loginToken } }) => {
+          setAuthFromUser(loginToken)
+          setSuccess(true)
 
-            if (deviceToken) finishedDeviceLogin()
+          if (deviceToken) finishedDeviceLogin()
 
-            if (challenge) {
-              handleOauthChallenge(client, challenge)
-            } else {
-              navigate(getLocalReturnUrl())
-            }
+          if (challenge) {
+            handleOauthChallenge(client, challenge)
+          } else {
+            navigate(getLocalReturnUrl())
           }
-        )
+        })
     }, 2000)
 
     return () => clearInterval(interval)
@@ -309,7 +303,7 @@ function LoginInternal() {
   const [loginMutation, { loading: loginMLoading, error: loginMError }] =
     useLoginMutation({
       onCompleted: ({ login }) => {
-        setToken(login?.jwt)
+        setAuthFromUser(login)
         if (deviceToken) finishedDeviceLogin()
         if (challenge) {
           handleOauthChallenge(client, challenge)

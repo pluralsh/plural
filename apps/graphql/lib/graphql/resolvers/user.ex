@@ -206,6 +206,13 @@ defmodule GraphQl.Resolvers.User do
     |> activate_token(args)
   end
 
+  def refresh(%{token: token}, _) do
+    Users.authorize_refresh(token)
+    |> with_jwt()
+  end
+
+  def logout(_, %{context: %{current_user: user}}), do: Users.logout_user(user)
+
   def signup_user(%{invite_id: id, attributes: attrs} = args, _) when is_binary(id) do
     Map.put(attrs, :account, args[:account] || %{})
     |> Accounts.realize_invite(id)
@@ -319,11 +326,22 @@ defmodule GraphQl.Resolvers.User do
     Enum.at(@colors, rem(integral, length(@colors)))
   end
 
-  def with_jwt({:ok, user}) do
-    with {:ok, token, _} <- Core.Guardian.encode_and_sign(user),
-        do: {:ok, %{user | jwt: token}}
+  def with_jwt(res, opts \\ [])
+  def with_jwt({:ok, user}, opts) do
+    with {:ok, user} <- maybe_ensure_refresh_token(user, opts),
+         {:ok, token, _} <- Core.Guardian.encode_and_sign(user) do
+      {:ok, %{user | jwt: token}}
+    end
   end
-  def with_jwt(error), do: error
+  def with_jwt(error, _), do: error
+
+  # Impersonation must not mint refresh tokens: refresh only identifies the
+  # service account and would outlive removal from the impersonation policy.
+  defp maybe_ensure_refresh_token(user, opts) do
+    if Keyword.get(opts, :refresh, true),
+      do: Users.ensure_refresh_token(user),
+      else: {:ok, %{user | refresh_token: nil}}
+  end
 
   def activate_token({:ok, %User{} = user}, %{device_token: token}) when is_binary(token) do
     with {:ok, _} <- Users.activate_login_token(token, user),

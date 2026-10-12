@@ -204,6 +204,9 @@ export const OAUTH_CALLBACK = gql`
       onboarding
       id
       email
+      refreshToken {
+        token
+      }
     }
   }
 `
@@ -214,6 +217,9 @@ export const SSO_CALLBACK = gql`
       jwt
       id
       email
+      refreshToken {
+        token
+      }
     }
   }
 `

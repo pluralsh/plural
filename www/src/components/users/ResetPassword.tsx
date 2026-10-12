@@ -8,7 +8,7 @@ import {
   useResetTokenQuery,
 } from '../../generated/graphql'
 
-import { wipeToken } from '../../helpers/authentication'
+import { wipeRefreshToken, wipeToken } from '../../helpers/authentication'
 
 import { Alert, AlertStatus, GqlError } from '../utils/Alert'
 
@@ -28,6 +28,7 @@ export function ResetPassword() {
       variables: { id: id ?? '', attributes: { password } },
       onCompleted: () => {
         wipeToken()
+        wipeRefreshToken()
         window.location = '/login' as any as Location
       },
     })

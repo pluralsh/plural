@@ -20,12 +20,14 @@ defmodule Core.Services.Users do
     EabCredential,
     DomainMapping,
     UserEvent,
-    OIDCTrustRelationship
+    OIDCTrustRelationship,
+    RefreshToken
   }
 
   @type error :: {:error, term}
   @type user_resp :: {:ok, User.t} | error
   @type trust_resp :: {:ok, OIDCTrustRelationship.t} | error
+  @type refresh_token_resp :: {:ok, RefreshToken.t} | error
 
   @ttl :timer.hours(12)
 
@@ -82,6 +84,73 @@ defmodule Core.Services.Users do
 
   @spec get_login_token(binary) :: LoginToken.t | nil
   def get_login_token(token), do: Core.Repo.get_by(LoginToken, token: token)
+
+  @spec get_refresh_token(binary) :: RefreshToken.t | nil
+  def get_refresh_token(token), do: Core.Repo.get_by(RefreshToken, token: token)
+
+  @spec create_refresh_token(User.t) :: refresh_token_resp
+  def create_refresh_token(%User{id: user_id}) do
+    %RefreshToken{user_id: user_id}
+    |> RefreshToken.changeset()
+    |> Core.Repo.insert()
+  end
+
+  @doc """
+  Ensures the user has a refresh token attached (creates one if missing).
+  """
+  @spec ensure_refresh_token(User.t) :: user_resp
+  def ensure_refresh_token(%User{refresh_token: %RefreshToken{}} = user), do: {:ok, user}
+  def ensure_refresh_token(%User{} = user) do
+    with {:ok, token} <- create_refresh_token(user) do
+      {:ok, %{user | refresh_token: token}}
+    end
+  end
+
+  @doc """
+  Determines if a user can refresh their jwt and returns the user back if so.
+
+  The prior refresh token is kept valid for a short grace period so concurrent
+  tabs can still refresh if they race with rotation.
+  """
+  @spec authorize_refresh(binary) :: user_resp
+  def authorize_refresh(token) when is_binary(token) do
+    start_transaction()
+    |> add_operation(:token, fn _ ->
+      case Core.Repo.preload(get_refresh_token(token), [:user]) do
+        %RefreshToken{user: %User{}} = rt ->
+          if RefreshToken.expired?(rt),
+            do: {:error, "could not fetch refresh token"},
+            else: {:ok, rt}
+        _ -> {:error, "could not fetch refresh token"}
+      end
+    end)
+    |> add_operation(:user, fn %{token: token} -> {:ok, token.user} end)
+    |> add_operation(:refresh, fn %{user: user} -> create_refresh_token(user) end)
+    |> add_operation(:hydrated, fn %{refresh: token, user: user} ->
+      {:ok, %{user | refresh_token: token}}
+    end)
+    |> add_operation(:retire, fn %{token: token} ->
+      token
+      |> RefreshToken.retire()
+      |> Core.Repo.update()
+    end)
+    |> execute(extract: :hydrated)
+  end
+  def authorize_refresh(_), do: {:error, "no refresh token provided"}
+
+  @doc """
+  Wipes all active refresh tokens for the given user
+  """
+  @spec logout_user(User.t) :: user_resp
+  def logout_user(%User{} = user) do
+    wipe_refresh_tokens(user)
+    {:ok, user}
+  end
+
+  defp wipe_refresh_tokens(%User{id: user_id}) do
+    RefreshToken.for_user(user_id)
+    |> Core.Repo.delete_all()
+  end
 
   @doc """
   Fetches a user from an auth token, handles:
@@ -399,7 +468,19 @@ defmodule Core.Services.Users do
     |> allow(user, :edit)
     |> when_ok(&validate_pwd(&1, attrs, user))
     |> when_ok(:update)
+    |> maybe_wipe_refresh_tokens(attrs)
     |> notify(:update, user)
+  end
+
+  defp maybe_wipe_refresh_tokens({:ok, %User{} = user}, attrs) do
+    if password_in_attrs?(attrs), do: wipe_refresh_tokens(user)
+    {:ok, user}
+  end
+  defp maybe_wipe_refresh_tokens(error, _), do: error
+
+  defp password_in_attrs?(attrs) do
+    pwd = attrs[:password] || attrs["password"]
+    is_binary(pwd) and byte_size(pwd) > 0
   end
 
   @spec update_user(map, binary, User.t) :: user_resp
@@ -538,9 +619,10 @@ defmodule Core.Services.Users do
   """
   @spec realize_reset_token(ResetToken.t, map) :: user_resp
   def realize_reset_token(%ResetToken{type: :password, user: %User{} = user}, %{password: pwd}) do
-    user
-    |> User.changeset(%{password: pwd})
-    |> Core.Repo.update()
+    with {:ok, user} <- user |> User.changeset(%{password: pwd}) |> Core.Repo.update() do
+      wipe_refresh_tokens(user)
+      {:ok, user}
+    end
   end
 
   def realize_reset_token(%ResetToken{type: :email, user: %User{} = user}, _) do

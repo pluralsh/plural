@@ -20,8 +20,11 @@ config :waffle,
   bucket: get_env("BUCKET")
 
 config :core, Core.Guardian,
+  ttl: {30, :minutes},
   issuer: "plural",
   secret_key: get_env("JWT_SECRET")
+
+config :core, :refresh_token_expiry, 7
 
 if get_env("POSTGRES_URL") do
   config :core, Core.Repo,
@@ -159,8 +162,11 @@ config :core, start_broker: true
 config :rtc, start_broker: false
 
 config :core, Core.Guardian,
+  ttl: {30, :minutes},
   issuer: "plural",
   secret_key: get_env("JWT_SECRET")
+
+config :core, :refresh_token_expiry, 7
 
 config :stripity_stripe, api_key: get_env("STRIPE_SECRET")
 

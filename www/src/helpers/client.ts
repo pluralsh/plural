@@ -10,9 +10,8 @@ import { createAbsintheSocketLink } from 'pluralsh-absinthe-socket-apollo-link'
 
 import { apiHost } from './hostname'
 import customFetch from './uploadLink'
-import { clearLocalStorage } from './localStorage'
 import { fetchToken } from './authentication'
-import { getLoginUrlWithReturn } from '../components/users/utils'
+import { onErrorHandler } from './refreshToken'
 
 const API_HOST = apiHost()
 const GQL_URL = `https://${API_HOST}/gql`
@@ -42,13 +41,7 @@ export function buildClient(fetchToken) {
     }
   })
 
-  const resetToken = onError(({ networkError }: any) => {
-    if (networkError && networkError.statusCode === 401) {
-      // remove cached token on 401 from the server
-      clearLocalStorage()
-      window.location.href = getLoginUrlWithReturn()
-    }
-  })
+  const errorLink = onError(onErrorHandler)
 
   const socket = new PhoenixSocket(WS_URI, {
     params: () => {
@@ -72,7 +65,7 @@ export function buildClient(fetchToken) {
       )
     },
     socketLink,
-    retryLink.concat(resetToken).concat(httpLink)
+    retryLink.concat(errorLink).concat(httpLink)
   )
 
   const client = new ApolloClient({

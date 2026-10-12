@@ -47,6 +47,7 @@ defmodule Core.Schema.User do
     field :password_hash,   :string
     field :password,        :string, virtual: true
     field :jwt,             :string, virtual: true
+    field :refresh_token,   :string, virtual: true
     field :external,        :boolean, virtual: true, default: false
     field :service_account, :boolean, default: false
     field :demoed,          :boolean, default: false

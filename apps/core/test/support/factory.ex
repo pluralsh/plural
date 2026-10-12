@@ -119,6 +119,13 @@ defmodule Core.Factory do
     }
   end
 
+  def refresh_token_factory do
+    %Schema.RefreshToken{
+      user: build(:user),
+      token: sequence(:refresh, &"rt-#{&1}")
+    }
+  end
+
   def docker_repository_factory do
     %Schema.DockerRepository{
       name: sequence(:dkr_repo, &"dkr-#{&1}"),

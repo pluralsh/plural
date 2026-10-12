@@ -183,6 +183,10 @@ crons:
   cronModule: Prune.Passwordless
   crontab: "10 0 * * *"
   envVars: []
+- cronName: plrl-prune-refresh-tokens
+  cronModule: Prune.RefreshTokens
+  crontab: "0 * * * *"
+  envVars: []
 - cronName: plrl-prune-queues
   cronModule: Prune.Queues
   crontab: "15 */3 * * *"

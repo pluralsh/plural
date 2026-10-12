@@ -4,7 +4,7 @@ import { useApolloClient, useMutation } from '@apollo/client'
 import { useLocation, useNavigate } from 'react-router-dom'
 import qs from 'query-string'
 
-import { setToken } from '../../helpers/authentication'
+import { setAuthFromUser } from '../../helpers/authentication'
 import { GqlError } from '../utils/Alert'
 import LoadingIndicator from '../utils/LoadingIndicator'
 
@@ -24,7 +24,7 @@ export function SSOCallback() {
   const [mutation, { error, loading }] = useMutation(SSO_CALLBACK, {
     variables: { code, deviceToken },
     onCompleted: (result) => {
-      setToken(result.ssoCallback.jwt)
+      setAuthFromUser(result.ssoCallback)
       if (deviceToken) finishedDeviceLogin()
       const challenge = getChallenge()
 

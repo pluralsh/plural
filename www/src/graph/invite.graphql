@@ -30,12 +30,18 @@ mutation CreateInvite($attributes: InviteAttributes!) {
 mutation SignupInvite($attributes: UserAttributes!, $inviteId: String!) {
   signup(attributes: $attributes, inviteId: $inviteId) {
     jwt
+    refreshToken {
+      token
+    }
   }
 }
 
 mutation RealizeInvite($id: String!) {
   realizeInvite(id: $id) {
     jwt
+    refreshToken {
+      token
+    }
   }
 }
 

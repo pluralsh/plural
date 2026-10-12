@@ -571,4 +571,66 @@ defmodule GraphQl.UserQueriesTest do
       assert found.id == user.id
     end
   end
+
+  describe "refresh" do
+    test "it can generate a new jwt for a user w/ a refresh token" do
+      user = insert(:user)
+      token = insert(:refresh_token, user: user)
+
+      {:ok, %{data: %{"refresh" => found}}} = run_query("""
+        query Refresh($token: String!) {
+          refresh(token: $token) {
+            id
+            jwt
+            refreshToken { token }
+          }
+        }
+      """, %{"token" => token.token})
+
+      assert found["id"] == user.id
+      assert found["jwt"]
+      assert found["refreshToken"]["token"]
+      refute found["refreshToken"]["token"] == token.token
+      assert Core.Services.Users.get_refresh_token(token.token).expires_at
+      assert Core.Services.Users.get_refresh_token(found["refreshToken"]["token"])
+    end
+
+    test "concurrent tabs can reuse a rotated refresh token during the grace period" do
+      user = insert(:user)
+      token = insert(:refresh_token, user: user)
+
+      {:ok, %{data: %{"refresh" => found}}} = run_query("""
+        query Refresh($token: String!) {
+          refresh(token: $token) {
+            jwt
+            refreshToken { token }
+          }
+        }
+      """, %{"token" => token.token})
+
+      {:ok, %{data: %{"refresh" => raced}}} = run_query("""
+        query Refresh($token: String!) {
+          refresh(token: $token) {
+            jwt
+            refreshToken { token }
+          }
+        }
+      """, %{"token" => token.token})
+
+      assert raced["refreshToken"]["token"]
+      refute raced["refreshToken"]["token"] == token.token
+      refute raced["refreshToken"]["token"] == found["refreshToken"]["token"]
+    end
+
+    test "it cannot refresh after the grace period expires" do
+      user = insert(:user)
+      token = insert(:refresh_token, user: user, expires_at: Timex.shift(Timex.now(), hours: -1))
+
+      {:ok, %{errors: [_ | _]}} = run_query("""
+        query Refresh($token: String!) {
+          refresh(token: $token) { jwt }
+        }
+      """, %{"token" => token.token})
+    end
+  end
 end

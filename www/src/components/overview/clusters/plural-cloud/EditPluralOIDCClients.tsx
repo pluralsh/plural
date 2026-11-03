@@ -5,7 +5,6 @@ import {
   PencilIcon,
   PlusIcon,
   Table,
-  TrashCanIcon,
 } from '@pluralsh/design-system'
 import { OidcProviderFragment, useOidcProvidersQuery } from 'generated/graphql'
 import { useMemo, useState } from 'react'
@@ -16,6 +15,7 @@ import { createColumnHelper } from '@tanstack/react-table'
 import { isEmpty } from 'lodash'
 
 import { mapExistingNodes } from '../../../../utils/graphql'
+import { DeleteIconButton } from '../../../utils/IconButtons'
 import {
   DEFAULT_REACT_VIRTUAL_OPTIONS,
   useFetchPaginatedData,
@@ -73,13 +73,14 @@ const columns = [
         <div css={{ display: 'flex', gap: theme.spacing.small }}>
           <IconFrame
             clickable
+            size="small"
+            tooltip="Edit"
             onClick={() => setEditOpen(true)}
             icon={<PencilIcon />}
           />
-          <IconFrame
-            clickable
+          <DeleteIconButton
+            tooltip="Delete"
             onClick={() => setDeleteOpen(true)}
-            icon={<TrashCanIcon color="icon-danger" />}
           />
           <EditPluralOIDCClientModal
             open={editOpen}
@@ -158,11 +159,9 @@ export function EditPluralOIDCClients({
           reactTableOptions={{
             meta: { instanceName, insideModal, refetch } as TableMetaT,
           }}
-          style={{
-            border: 'none',
-            borderBottomLeftRadius: 0,
-            borderBottomRightRadius: 0,
-          }}
+          border="none"
+          borderBottomLeftRadius={0}
+          borderBottomRightRadius={0}
           css={{
             td: {
               backgroundColor:

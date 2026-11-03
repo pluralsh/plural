@@ -1,12 +1,12 @@
 import {
   Chip,
   ClusterIcon,
+  Flex,
   FormField,
   ListBoxItem,
   Select,
   WrapWithIf,
 } from '@pluralsh/design-system'
-import { Flex } from 'honorable'
 import { isEmpty } from 'lodash'
 import {
   ComponentProps,
@@ -41,7 +41,7 @@ function ClusterPickerReadyChip({ upgradeInfo }: ClusterPickerReadyChipProps) {
     <Chip
       severity={ready ? 'success' : 'danger'}
       size="small"
-      hue="lightest"
+      fillLevel={3}
     >
       {ready ? 'Ready' : 'Pending'}
     </Chip>
@@ -143,7 +143,7 @@ function ClusterProviderIcon({
 
 function ClusterPickerBase({
   clusterId,
-  clusters,
+  clusters = [],
   onChange,
   heading,
   hint,
@@ -154,7 +154,6 @@ function ClusterPickerBase({
   size = 'medium',
   disabled = false,
 }: ClusterPickerInnerProps) {
-  clusters = clusters || []
   const cluster = useMemo(
     () => clusters?.find((cl) => clusterId === cl.id),
     [clusterId, clusters]

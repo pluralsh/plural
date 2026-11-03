@@ -124,6 +124,35 @@ defmodule GraphQl.ClusterMutationsTest do
       assert promo["id"] == user.id
       assert refetch(user).upgrade_to > user.upgrade_to
     end
+
+    test "it can promote a cluster owned by an impersonable service account" do
+      user = insert(:user)
+      sa = bound_service_account(user, upgrade_to: uuid(0))
+      cluster = insert(:cluster, owner: sa)
+
+      {:ok, %{data: %{"promote" => promo}}} = run_query("""
+        mutation Promote($id: ID!) {
+          promote(clusterId: $id) { id }
+        }
+      """, %{"id" => cluster.id}, %{current_user: user})
+
+      assert promo["id"] == sa.id
+      assert refetch(sa).upgrade_to > sa.upgrade_to
+    end
+
+    test "it can't promote clusters you can't access" do
+      user = insert(:user)
+      sa = bound_service_account(user, upgrade_to: uuid(0))
+      cluster = insert(:cluster, owner: sa)
+
+      {:ok, %{errors: [_ | _]}} = run_query("""
+        mutation Promote($id: ID!) {
+          promote(clusterId: $id) { id }
+        }
+      """, %{"id" => cluster.id}, %{current_user: insert(:user, account: user.account)})
+
+      assert refetch(sa).upgrade_to == sa.upgrade_to
+    end
   end
 
   describe "transferOwnership" do

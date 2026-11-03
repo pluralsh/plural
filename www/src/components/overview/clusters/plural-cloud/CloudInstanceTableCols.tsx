@@ -181,7 +181,7 @@ const ColActions = columnHelper.accessor((instance) => instance, {
             rel="noopener noreferrer"
             onClick={(e) => e.stopPropagation()}
           >
-            Go to Console
+            Open
           </Button>
         )}
         <IconFrame

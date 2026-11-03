@@ -1,55 +1,41 @@
-import { Button, Div, Flex, P } from 'honorable'
-import moment from 'moment'
-import { ReactNode, useCallback, useState } from 'react'
-import { createColumnHelper } from '@tanstack/react-table'
-
 import {
+  Button,
   Codeline,
   DownloadIcon,
   EmptyState,
+  Flex,
   IconFrame,
   Modal,
-  PageTitle,
   Table,
   Tooltip,
 } from '@pluralsh/design-system'
-
+import { createColumnHelper } from '@tanstack/react-table'
 import isEmpty from 'lodash/isEmpty'
-
+import moment from 'moment'
+import { useState } from 'react'
 import styled from 'styled-components'
 
-import { Confirm } from '../utils/Confirm'
-import { DeleteIconButton } from '../utils/IconButtons'
-import LoadingIndicator from '../utils/LoadingIndicator'
-import {
-  KeyBackupFragment,
-  KeyBackupsDocument,
-  useDeleteKeyBackupMutation,
-  useKeyBackupsQuery,
-} from '../../generated/graphql'
+import { KeyBackupFragment, useKeyBackupsQuery } from '../../generated/graphql'
+import { mapExistingNodes } from '../../utils/graphql'
 import { GqlError } from '../utils/Alert'
-import {
-  mapExistingNodes,
-  removeConnection,
-  updateCache,
-} from '../../utils/graphql'
-import useOnOff from '../../hooks/useOnOff'
-import { ShellType, useShellType } from '../../hooks/useShellType'
+import LoadingIndicator from '../utils/LoadingIndicator'
+import { Body1P, Body2P, CaptionP } from '../utils/Typography'
+import { SubpageHeader } from '../utils/layout/SubpageLayout'
 
 const columnHelper = createColumnHelper<KeyBackupFragment>()
 
-const BareUl = styled.ul((_) => ({
+const BareUl = styled.ul({
   margin: 0,
   padding: 0,
-  maxWidth: '400px',
-}))
+  maxWidth: 400,
+})
 
-const BareLi = styled.li((_) => ({
+const BareLi = styled.li({
   margin: 0,
   padding: 0,
   listStyle: 'none',
   maxWidth: 'max-content',
-}))
+})
 
 const columns = [
   columnHelper.accessor((key) => key.name, {
@@ -63,6 +49,7 @@ const columns = [
       <BareUl>
         {info.getValue()?.map((repo) => (
           <Tooltip
+            key={repo}
             placement="top-start"
             label={repo}
           >
@@ -71,7 +58,7 @@ const columns = [
         ))}
       </BareUl>
     ),
-    header: 'Respositories',
+    header: 'Repositories',
     meta: { truncate: true },
   }),
   columnHelper.accessor((key) => key.digest, {
@@ -81,7 +68,7 @@ const columns = [
         placement="top-start"
         label={info.getValue()}
       >
-        <Div maxWidth="max-content">{info.getValue()}</Div>
+        <div css={{ maxWidth: 'max-content' }}>{info.getValue()}</div>
       </Tooltip>
     ),
     header: 'Digest',
@@ -91,110 +78,63 @@ const columns = [
     id: 'createdOn',
     cell: (info) => {
       const date = moment(info.getValue())
-      const formattedDate = date.format('MM/DD/YY')
-      const formattedTime = date.format('h:mma')
 
       return (
         <Flex direction="column">
-          <P body2>{formattedDate}</P>
-          <P
-            caption
-            color="text-light"
+          <Body2P as="span">{date.format('MM/DD/YY')}</Body2P>
+          <CaptionP
+            as="span"
+            $color="text-light"
           >
-            {formattedTime}
-          </P>
+            {date.format('h:mma')}
+          </CaptionP>
         </Flex>
       )
     },
     header: 'Created on',
   }),
-  columnHelper.accessor(() => null, {
+  columnHelper.display({
     id: 'actions',
-    cell: ({ row: { original: _ } }) => (
-      <Flex
-        flexDirection="row"
-        gap="xxsmall"
-      >
-        <LocalSyncButton />
-        {/* Disable until delete mutation works */}
-        {/* <DeleteKeyBackup name={original.name} /> */}
-      </Flex>
-    ),
+    cell: () => <LocalSyncButton />,
     header: '',
   }),
 ]
 
-export function DeleteKeyBackup({ name }) {
-  const [confirm, setConfirm] = useState(false)
-  const [mutation, { loading, error, reset }] = useDeleteKeyBackupMutation({
-    variables: { name },
-    onCompleted: () => {
-      setConfirm(false)
-    },
-    update: (cache, { data }) =>
-      updateCache(cache, {
-        query: KeyBackupsDocument,
-        variables: {},
-        update: (prev) =>
-          removeConnection(prev, data?.deleteKeyBackup, 'keyBackups'),
-      }),
-  })
-  const open = useCallback(() => {
-    setConfirm(true)
-  }, [])
-  const close = useCallback(() => {
-    reset()
-    setConfirm(false)
-  }, [reset])
-
+function CliCommandModal({
+  open,
+  onClose,
+  header,
+  action,
+  command,
+}: {
+  open: boolean
+  onClose: () => void
+  header: string
+  action: string
+  command: string
+}) {
   return (
-    <Div onClick={(e) => e.stopPropagation()}>
-      <DeleteIconButton
-        onClick={open}
-        textValue="Delete key backup"
-        tooltip
-      />
-      <div>
-        <Confirm
-          close={close}
-          destructive
-          label="Confirm delete"
-          loading={loading}
-          open={confirm}
-          submit={() => mutation()}
-          title="Delete encryption key backup"
-          text={
-            <Flex
-              direction="column"
-              gap="medium"
-            >
-              <P>
-                Are you sure you want to delete the encryption key backup:{' '}
-                {name}?
-              </P>
-              {error && <GqlError error={error} />}
-            </Flex>
-          }
-        />
-      </div>
-    </Div>
+    <Modal
+      open={open}
+      onClose={onClose}
+      header={header}
+      size="large"
+    >
+      <Flex
+        direction="column"
+        gap="medium"
+      >
+        <Body1P>
+          To {action}, run this command in the Plural CLI on your local machine:
+        </Body1P>
+        <Codeline>{command}</Codeline>
+      </Flex>
+    </Modal>
   )
 }
 
-const shellToHelpSuffix: Record<ShellType, ReactNode> = {
-  cli: <>run this command in the Plural CLI on your local machine:</>,
-  cloud: <>run this command inside of the cloud shell:</>,
-  unknown: (
-    <>
-      run the command below on either your local machine or inside of the cloud
-      shell, depending on your workspace setup:
-    </>
-  ),
-}
-
 function LocalSyncButton() {
-  const openState = useOnOff(false)
-  const shellType = useShellType()
+  const [open, setOpen] = useState(false)
 
   return (
     <>
@@ -202,115 +142,87 @@ function LocalSyncButton() {
         textValue="Sync locally"
         tooltip
         clickable
-        onClick={openState.setOn}
+        onClick={() => setOpen(true)}
         icon={<DownloadIcon />}
       />
-      <Modal
-        open={openState.on}
-        onClose={openState.setOff}
+      <CliCommandModal
+        open={open}
+        onClose={() => setOpen(false)}
         header="Sync encryption keys locally"
-        size="large"
-      >
-        <Flex
-          direction="column"
-          gap="medium"
-        >
-          <P body1>
-            To sync your encryption keys locally,{' '}
-            {shellToHelpSuffix[shellType] || shellToHelpSuffix.unknown}
-          </P>
-          <Codeline>plural crypto backups restore</Codeline>
-        </Flex>
-      </Modal>
+        action="sync your encryption keys locally"
+        command="plural crypto backups restore"
+      />
     </>
   )
 }
 
 function CreateKeyButton() {
-  const openState = useOnOff(false)
-  const shellType = useShellType()
+  const [open, setOpen] = useState(false)
 
   return (
     <>
       <Button
         secondary
-        onClick={openState.setOn}
+        onClick={() => setOpen(true)}
       >
         Create key backup
       </Button>
-      <Modal
-        open={openState.on}
-        onClose={openState.setOff}
+      <CliCommandModal
+        open={open}
+        onClose={() => setOpen(false)}
         header="Create encryption key"
-        size="large"
-      >
-        <Flex
-          direction="column"
-          gap="medium"
-        >
-          <P body1>
-            To create new encryption key backups,{' '}
-            {shellToHelpSuffix[shellType] || shellToHelpSuffix.unknown}
-          </P>
-          <Codeline>plural crypto backups create</Codeline>
-        </Flex>
-      </Modal>
+        action="create new encryption key backups"
+        command="plural crypto backups create"
+      />
     </>
   )
 }
 
 export function KeyBackups() {
-  const { data, error } = useKeyBackupsQuery({
-    pollInterval: 10000,
-  })
+  const { data, error } = useKeyBackupsQuery({ pollInterval: 10000 })
 
   const keyBackups = mapExistingNodes(data?.keyBackups)?.sort((a, b) =>
-    a.name === b.name ? 0 : a.name < b.name ? -1 : 1
+    a.name.localeCompare(b.name)
   )
 
   if (error) return <GqlError error={error} />
-
   if (!keyBackups) return <LoadingIndicator />
 
   return (
-    <Div marginBottom="large">
-      <PageTitle
-        heading={
-          <>
-            <div>Encryption keys</div>
-            <P
-              body2
-              maxWidth={450}
-              color="text-light"
+    <Flex
+      direction="column"
+      height="100%"
+    >
+      <SubpageHeader
+        title={
+          <Flex
+            direction="column"
+            gap="xxsmall"
+          >
+            Encryption keys
+            <Body2P
+              as="span"
+              $color="text-light"
+              css={{ maxWidth: 450 }}
             >
               Secure cloud backups of the machine-local AES encryption keys for
               your installation repositories.
-            </P>
-          </>
+            </Body2P>
+          </Flex>
         }
-        justifyContent="flex-start"
       >
-        <Flex
-          flexGrow={1}
-          flexShrink={1}
-          alignItems="flex-start"
-          justifyContent="flex-end"
-        >
-          <CreateKeyButton />
-        </Flex>
-      </PageTitle>
-      <Flex overflow="hidden">
-        {!isEmpty(keyBackups) ? (
-          <Table
-            loose
-            data={keyBackups}
-            columns={columns}
-            maxHeight="100%"
-          />
-        ) : (
-          <EmptyState message="You do not have any encryption key backups yet." />
-        )}
-      </Flex>
-    </Div>
+        <CreateKeyButton />
+      </SubpageHeader>
+      {!isEmpty(keyBackups) ? (
+        <Table
+          loose
+          data={keyBackups}
+          columns={columns}
+          maxHeight="100%"
+        />
+      ) : (
+        <EmptyState message="You do not have any encryption key backups yet." />
+      )}
+    </Flex>
   )
 }

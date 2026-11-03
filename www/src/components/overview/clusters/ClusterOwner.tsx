@@ -1,6 +1,6 @@
-import { AppIcon } from '@pluralsh/design-system'
+import { AppIcon, Flex } from '@pluralsh/design-system'
 import { TRUNCATE } from 'components/utils/Truncate'
-import { Div, Flex } from 'honorable'
+import { Body2P, CaptionP } from 'components/utils/Typography'
 
 type ClusterOwnerProps = {
   name?: string | null
@@ -25,30 +25,29 @@ export default function ClusterOwner({
         url={avatar || undefined}
         size="xxsmall"
       />
-      <Div
-        width="100%"
-        minWidth={0}
-      >
-        <Div
-          body2
+      <div css={{ width: '100%', minWidth: 0 }}>
+        <Body2P
+          as="div"
           css={TRUNCATE}
         >
           {name}
-        </Div>
+        </Body2P>
         <Flex>
-          <Div
-            caption
-            color="text-xlight"
-            whiteSpace="nowrap"
-            overflow="hidden"
-            textOverflow="ellipsis"
-            flexGrow={1}
-            width={0}
+          <CaptionP
+            as="div"
+            $color="text-xlight"
+            css={{
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              flexGrow: 1,
+              width: 0,
+            }}
           >
             {email}
-          </Div>
+          </CaptionP>
         </Flex>
-      </Div>
+      </div>
     </Flex>
   )
 }

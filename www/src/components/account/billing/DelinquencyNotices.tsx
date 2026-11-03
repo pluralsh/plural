@@ -1,5 +1,10 @@
-import { Button, Callout, CalloutProps, Toast } from '@pluralsh/design-system'
-import { A, Flex, P } from 'honorable'
+import {
+  Button,
+  Callout,
+  CalloutProps,
+  Flex,
+  Toast,
+} from '@pluralsh/design-system'
 import { useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { useTheme } from 'styled-components'
@@ -7,6 +12,7 @@ import { useTheme } from 'styled-components'
 import { LocalStorageKeys } from '../../../constants'
 import { InvoiceFragment } from '../../../generated/graphql'
 import usePersistedState from '../../../hooks/usePersistedState'
+import { Body2P } from '../../utils/Typography'
 
 import { useBillingSubscription } from './BillingSubscriptionProvider'
 
@@ -41,13 +47,13 @@ export function DelinquencyCallout({
       {invoiceLink ? (
         <>
           Complete your payment{' '}
-          <A
+          <a
             href={invoiceLink}
             target="_blank"
             rel="noopener noreferrer"
           >
             here
-          </A>{' '}
+          </a>{' '}
           to retain full account access.
         </>
       ) : (
@@ -92,18 +98,17 @@ export function DelinquencyToast() {
         direction="column"
         gap="small"
       >
-        <P
-          body2
-          color="text-xlight"
-        >
+        <Body2P $color="text-xlight">
           Update payment information to retain full account access.
-        </P>
+        </Body2P>
         <Flex>
           <Button
             primary
             as={Link}
-            textDecoration="none !important"
-            color={`${theme.colors.text} !important`}
+            css={{
+              textDecoration: 'none !important',
+              color: `${theme.colors.text} !important`,
+            }}
             to="/account/billing/payments"
             onClick={() => {
               onClose()

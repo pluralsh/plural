@@ -1,9 +1,16 @@
 import { useEffect, useState } from 'react'
 import { Modal } from '@pluralsh/design-system'
 
+import { wipeDeviceToken } from './utils'
+
 const LOGIN_KEY = 'dli-key'
 
-export const finishedDeviceLogin = () => localStorage.setItem(LOGIN_KEY, 'true')
+// Device tokens are single-use; a leftover one would make the next signup or
+// OAuth login fail when the backend can't activate it.
+export const finishedDeviceLogin = () => {
+  wipeDeviceToken()
+  localStorage.setItem(LOGIN_KEY, 'true')
+}
 
 export const deviceLoginCompleted = () => localStorage.getItem(LOGIN_KEY)
 

@@ -1,10 +1,9 @@
 import { useMutation, useQuery } from '@apollo/client'
-import { Box } from 'grommet'
-import { Div, Span, Text } from 'honorable'
 import moment from 'moment'
 import { useState } from 'react'
 
-import { InfoIcon, PageTitle, Tooltip } from '@pluralsh/design-system'
+import { Flex } from '@pluralsh/design-system'
+import { useTheme } from 'styled-components'
 
 import isEmpty from 'lodash/isEmpty'
 
@@ -19,7 +18,10 @@ import { StandardScroller } from '../utils/SmoothScroller'
 import { DeleteIconButton } from '../utils/IconButtons'
 
 import LoadingIndicator from '../utils/LoadingIndicator'
+import { Body1P, Body2P, CaptionP, SpanSC } from '../utils/Typography'
+import { SubpageHeader } from '../utils/layout/SubpageLayout'
 
+import { InfoTooltip } from './InfoTooltip'
 import { ListItem } from './ListItem'
 
 const TOOLTIP =
@@ -39,39 +41,40 @@ function PublicKey({ pubkey: key, first, last }: any) {
         first={first}
         last={last}
       >
-        <Box
-          flex="grow"
+        <Flex
+          direction="column"
+          grow={1}
           gap="xsmall"
         >
-          <Box
+          <Flex
             direction="row"
             align="center"
             gap="small"
           >
-            <Span
-              body1
-              fontWeight="600"
+            <Body1P
+              as="span"
+              css={{ fontWeight: 600 }}
             >
               {key.name}
-            </Span>
-          </Box>
-          <Span color="text-light">{key.digest.toLowerCase()}</Span>
-        </Box>
-        <Box
-          flex={false}
+            </Body1P>
+          </Flex>
+          <SpanSC $color="text-light">{key.digest.toLowerCase()}</SpanSC>
+        </Flex>
+        <Flex
+          flex="0 0 auto"
           direction="row"
           align="center"
           gap="small"
         >
-          <Text
-            color="text-xlight"
-            caption
+          <CaptionP
+            as="span"
+            $color="text-xlight"
             style={{ whiteSpace: 'nowrap' }}
           >
             added on {moment(key.insertedAt).format('lll')}
-          </Text>
+          </CaptionP>
           <DeleteIconButton onClick={() => setConfirm(true)} />
-        </Box>
+        </Flex>
       </ListItem>
       <Confirm
         open={confirm}
@@ -88,34 +91,29 @@ function PublicKey({ pubkey: key, first, last }: any) {
 }
 
 export function PublicKeys() {
+  const theme = useTheme()
   const [listRef, setListRef] = useState<any>(null)
   const { data, loading, fetchMore } = useQuery(LIST_KEYS)
 
   if (!data) return <LoadingIndicator />
 
-  const { edges, pageInfo } = data.publicKeys
+  const { edges, pageInfo } = data.publicKeys ?? {}
 
   return (
-    <Div marginBottom="large">
-      <PageTitle
-        heading="Public keys"
-        justifyContent="flex-start"
+    <div css={{ marginBottom: theme.spacing.large }}>
+      <SubpageHeader
+        title={
+          <>
+            Public keys
+            <InfoTooltip label={TOOLTIP} />
+          </>
+        }
+      />
+      <Flex
+        direction="column"
+        width="100%"
+        height="100%"
       >
-        <Tooltip
-          width="315px"
-          label={TOOLTIP}
-        >
-          <Box
-            flex={false}
-            pad="6px"
-            round="xxsmall"
-            hoverIndicator="fill-two"
-          >
-            <InfoIcon />
-          </Box>
-        </Tooltip>
-      </PageTitle>
-      <Box fill>
         {edges?.length ? (
           <StandardScroller
             listRef={listRef}
@@ -131,9 +129,9 @@ export function PublicKeys() {
               />
             )}
             loading={loading}
-            hasNextPage={pageInfo.hasNextPage}
-            loadNextPage={
-              pageInfo.hasNextPage &&
+            hasNextPage={pageInfo?.hasNextPage}
+            loadNextPage={() =>
+              pageInfo?.hasNextPage &&
               fetchMore({
                 variables: { cursor: pageInfo.endCursor },
                 updateQuery: (prev, { fetchMoreResult: { publicKeys } }) =>
@@ -142,9 +140,9 @@ export function PublicKeys() {
             }
           />
         ) : (
-          <Span>You do not have any public keys yet.</Span>
+          <Body2P>You do not have any public keys yet.</Body2P>
         )}
-      </Box>
-    </Div>
+      </Flex>
+    </div>
   )
 }

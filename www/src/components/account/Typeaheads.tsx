@@ -107,7 +107,7 @@ function TagInput({
       <FormField
         label={label}
         hint={hint}
-        width={width}
+        css={{ width }}
       >
         <ComboBox
           aria-label={label}

@@ -93,6 +93,41 @@ defmodule GraphQl.AccountQueriesTest do
   describe "groups" do
     setup [:setup_root_user]
 
+    test "it returns member counts for each group", %{user: user, account: account} do
+      [g1, g2] = insert_list(2, :group, account: account)
+      insert_list(2, :group_member, group: g1)
+
+      {:ok, %{data: %{"groups" => found}}} = run_query("""
+        query {
+          groups(first: 5) {
+            edges { node { id memberCount } }
+          }
+        }
+      """, %{}, %{current_user: user})
+
+      counts = from_connection(found) |> Map.new(& {&1["id"], &1["memberCount"]})
+      assert counts[g1.id] == 2
+      assert counts[g2.id] == 0
+    end
+
+    test "it can fetch a group in your account by id", %{user: user, account: account} do
+      group = insert(:group, account: account)
+
+      {:ok, %{data: %{"group" => found}}} = run_query("""
+        query Group($id: ID!) { group(id: $id) { id name } }
+      """, %{"id" => group.id}, %{current_user: user})
+
+      assert found["id"] == group.id
+    end
+
+    test "it can't fetch groups in other accounts", %{user: user} do
+      group = insert(:group)
+
+      {:ok, %{errors: [_ | _]}} = run_query("""
+        query Group($id: ID!) { group(id: $id) { id } }
+      """, %{"id" => group.id}, %{current_user: user})
+    end
+
     test "it can list groups for a account", %{user: user, account: account} do
       groups = insert_list(3, :group, account: account)
       {:ok, %{data: %{"groups" => found}}} = run_query("""

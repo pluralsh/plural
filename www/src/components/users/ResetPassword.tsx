@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { Form } from 'grommet'
-import { Button, Flex, H1 } from 'honorable'
+import { Button, Flex } from '@pluralsh/design-system'
+import { useTheme } from 'styled-components'
 
 import {
   useRealizeResetTokenMutation,
@@ -11,6 +11,7 @@ import {
 import { wipeRefreshToken, wipeToken } from '../../helpers/authentication'
 
 import { Alert, AlertStatus, GqlError } from '../utils/Alert'
+import { Title1H1 } from '../utils/Typography'
 
 import { validatePassword } from './PasswordValidation'
 
@@ -19,6 +20,7 @@ import { LabelledInput } from './LabelledInput'
 import { ConfirmPasswordField, SetPasswordField } from './Signup'
 
 export function ResetPassword() {
+  const theme = useTheme()
   const { id } = useParams()
   const [password, setPassword] = useState('')
   const [confirm, setConfirm] = useState('')
@@ -46,13 +48,14 @@ export function ResetPassword() {
 
   return (
     <LoginPortal>
-      <H1
-        title1
-        textAlign="center"
-        marginBottom="xlarge"
+      <Title1H1
+        css={{
+          textAlign: 'center',
+          marginBottom: theme.spacing.xlarge,
+        }}
       >
         Reset password
-      </H1>
+      </Title1H1>
       {realized && realized.realizeResetToken && (
         <Alert
           status={AlertStatus.SUCCESS}
@@ -66,16 +69,14 @@ export function ResetPassword() {
           error={error}
         />
       )}
-      <Form onSubmit={onSubmit}>
+      <form onSubmit={onSubmit}>
         <Flex
-          flexDirection="column"
+          direction="column"
           marginBottom="small"
           gap="small"
         >
           <LabelledInput
-            width="100%"
             label="Email"
-            name="email"
             disabled
             value={data.resetToken?.user.email}
           />
@@ -98,7 +99,7 @@ export function ResetPassword() {
         >
           Reset password
         </Button>
-      </Form>
+      </form>
     </LoginPortal>
   )
 }

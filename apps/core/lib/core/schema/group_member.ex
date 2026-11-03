@@ -13,6 +13,14 @@ defmodule Core.Schema.GroupMember do
     from(m in query, where: m.group_id == ^group_id)
   end
 
+  def counts(query \\ __MODULE__, group_ids) do
+    from(m in query,
+      where: m.group_id in ^group_ids,
+      group_by: m.group_id,
+      select: {m.group_id, count(m.id)}
+    )
+  end
+
   def for_user(query \\ __MODULE__, user_id) do
     from(m in query, where: m.user_id == ^user_id)
   end

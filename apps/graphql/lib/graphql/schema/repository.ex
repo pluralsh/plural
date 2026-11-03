@@ -503,6 +503,7 @@ defmodule GraphQl.Schema.Repository do
     field :create_oidc_provider, :oidc_provider do
       middleware Authenticated, :external
       arg :installation_id, :id, description: "The installation ID this provider will be bound to"
+      arg :cluster_id,      :id, description: "create the provider for this cluster's owner instead of the current user"
       arg :attributes,      non_null(:oidc_attributes)
 
       safe_resolve &Repository.create_oidc_provider/2

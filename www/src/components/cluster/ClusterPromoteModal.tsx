@@ -1,12 +1,13 @@
-import { ArrowLeftIcon, Button, Modal } from '@pluralsh/design-system'
-import { Div, Flex } from 'honorable'
+import { ArrowLeftIcon, Button, Flex, Modal } from '@pluralsh/design-system'
 import { Dispatch, useCallback, useContext, useState } from 'react'
 import isNil from 'lodash/isNil'
 import { useMutation } from '@apollo/client'
+import styled from 'styled-components'
 
 import { ClusterFragment } from '../../generated/graphql'
 import { ClusterPicker } from '../utils/ClusterPicker'
 import { GqlError } from '../utils/Alert'
+import { Subtitle2H1 } from '../utils/Typography'
 import { ensureURLValidity } from '../../utils/url'
 
 import { DELETE_CLUSTER_DEPENDENCY, PROMOTE } from '../overview/queries'
@@ -109,7 +110,7 @@ function ClusterPromoteModalInternal({
                 <Button
                   onClick={close}
                   as="a"
-                  href={ensureURLValidity(destination.consoleUrl)}
+                  href={ensureURLValidity(destination.consoleUrl) ?? undefined}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -119,7 +120,7 @@ function ClusterPromoteModalInternal({
             ) : (
               <Button
                 disabled={!destination.dependency}
-                onClick={mutation}
+                onClick={() => mutation()}
                 loading={loading}
               >
                 Promote
@@ -134,9 +135,9 @@ function ClusterPromoteModalInternal({
           gap="xlarge"
           overflow="hidden"
         >
-          <Div subtitle2>
+          <Subtitle2H1 as="div">
             {finished ? 'Cluster promotion complete' : 'Cluster promotion'}
-          </Div>
+          </Subtitle2H1>
           {error && (
             <GqlError
               header="Something went wrong"
@@ -159,20 +160,14 @@ function ClusterPromoteModalInternal({
                 disabled
               />
               <ClusterUpgradeInfo upgradeInfo={destination.upgradeInfo} />
-              <Div
-                caption
-                color="text-danger-light"
-                cursor="pointer"
-                marginTop="minus-large"
-                textDecoration="underline"
-                _hover={{ color: 'red.100' }}
+              <DisablePromotionsSC
                 onClick={() => {
                   close()
                   setDeactivating(true)
                 }}
               >
                 Disable promotions
-              </Div>
+              </DisablePromotionsSC>
             </>
           )}
         </Flex>
@@ -193,3 +188,14 @@ function ClusterPromoteModalInternal({
     </>
   )
 }
+
+const DisablePromotionsSC = styled.div(({ theme }) => ({
+  ...theme.partials.text.caption,
+  color: theme.colors['text-danger-light'],
+  cursor: 'pointer',
+  marginTop: theme.spacing['minus-large'],
+  textDecoration: 'underline',
+  '&:hover': {
+    color: theme.colors.red[100],
+  },
+}))

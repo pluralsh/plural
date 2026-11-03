@@ -1,7 +1,6 @@
 import { ComponentProps, useCallback, useEffect, useRef, useState } from 'react'
-import { Form } from 'grommet'
-import { Link, useLocation } from 'react-router-dom'
-import { A, Button, Div, Flex, P } from 'honorable'
+import { useLocation } from 'react-router-dom'
+import { Button } from '@pluralsh/design-system'
 
 import { useTheme } from 'styled-components'
 
@@ -9,7 +8,9 @@ import { useOauthUrlsQuery, useSignupMutation } from '../../generated/graphql'
 import { WelcomeHeader } from '../utils/WelcomeHeader'
 import { HubSpot } from '../utils/HubSpot'
 import { fetchToken, setAuthFromUser } from '../../helpers/authentication'
+import { authlessClient } from '../../helpers/authlessClient'
 import { GqlError } from '../utils/Alert'
+import { Body2P, CaptionP } from '../utils/Typography'
 
 import { host } from '../../helpers/hostname'
 import { useHistory } from '../../router'
@@ -22,18 +23,14 @@ import {
 } from './PasswordValidation'
 import { getDeviceToken } from './utils'
 import { finishedDeviceLogin } from './DeviceLoginNotif'
-import { FlexAtBreak, OAuthOptions } from './MagicLogin'
-import { LOGIN_BREAKPOINT, LoginPortal } from './LoginPortal'
+import { InlineLinkSC } from '../utils/Typography'
+import { OAuthOptions } from './MagicLogin'
+import { LoginPortal } from './LoginPortal'
 import { LabelledInput } from './LabelledInput'
 
 function PasswordErrorMsg({ errorCode }: { errorCode: PasswordErrorCode }) {
   return (
-    <P
-      caption
-      color="text-error"
-    >
-      {PasswordErrorMessage[errorCode]}
-    </P>
+    <CaptionP $color="text-danger">{PasswordErrorMessage[errorCode]}</CaptionP>
   )
 }
 
@@ -92,9 +89,9 @@ export function Signup() {
   const [account, setAccount] = useState('')
   const [confirm, setConfirm] = useState('')
   const deviceToken = getDeviceToken()
-  const accountInputRef = useRef<HTMLElement>()
-  const emailRef = useRef<HTMLElement>()
+  const nameRef = useRef<HTMLDivElement>(null)
   const [mutation, { loading, error }] = useSignupMutation({
+    client: authlessClient,
     variables: {
       attributes: { email, password, name },
       account: { name: account },
@@ -112,11 +109,8 @@ export function Signup() {
   const { data } = useOauthUrlsQuery({ variables: { host: host() } })
 
   useEffect(() => {
-    const ref = email ? accountInputRef : emailRef
-
-    ref?.current?.querySelector('input')?.focus()
     // Only set focus on first render
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    nameRef.current?.querySelector('input')?.focus()
   }, [])
 
   useEffect(() => {
@@ -146,56 +140,44 @@ export function Signup() {
   return (
     <LoginPortal>
       <HubSpot />
-      <WelcomeHeader marginBottom="xxlarge" />
-      <Form onSubmit={onSubmit}>
+      <div css={{ marginBottom: theme.spacing.xxlarge }}>
+        <WelcomeHeader />
+      </div>
+      <form onSubmit={onSubmit}>
         {!showEmailError && !accountError && !emailError && error && (
-          <Div marginBottom="medium">
+          <div css={{ marginBottom: theme.spacing.medium }}>
             <GqlError
               error={error}
               header="Signup failed"
             />
-          </Div>
+          </div>
         )}
         <LabelledInput
-          ref={emailRef}
+          ref={nameRef}
+          label="Full name"
+          value={name}
+          onChange={setName}
+          placeholder="Enter full name"
+          inputProps={{ autoComplete: 'name' }}
+        />
+        <LabelledInput
           label="Email address"
           value={email}
           onChange={setEmail}
           placeholder="Enter email address"
           hint={emailError}
           error={!!emailError}
+          inputProps={{ type: 'email', autoComplete: 'email' }}
         />
-        <Flex
-          flexWrap="wrap"
-          width="100%"
-          columnGap={theme.spacing.medium}
-          flexBasis="100%"
-        >
-          <FlexAtBreak>
-            <LabelledInput
-              ref={accountInputRef}
-              width="100%"
-              label="Company name"
-              value={account}
-              onChange={setAccount}
-              placeholder="Enter company name"
-              hint={accountError}
-              error={!!accountError}
-            />
-          </FlexAtBreak>
-          <FlexAtBreak>
-            <LabelledInput
-              {...{
-                [LOGIN_BREAKPOINT]: { flex: '1 0' },
-              }}
-              width="100%"
-              label="Username"
-              value={name}
-              onChange={setName}
-              placeholder="Enter username"
-            />
-          </FlexAtBreak>
-        </Flex>
+        <LabelledInput
+          label="Company name"
+          value={account}
+          onChange={setAccount}
+          placeholder="Enter company name"
+          hint={accountError}
+          error={!!accountError}
+          inputProps={{ autoComplete: 'organization' }}
+        />
         <SetPasswordField
           value={password}
           onChange={setPassword}
@@ -216,22 +198,16 @@ export function Signup() {
         >
           Create account
         </Button>
-      </Form>
+      </form>
       <OAuthOptions oauthUrls={data?.oauthUrls} />
-      <P
-        body2
-        textAlign="center"
-        marginTop="medium"
+      <Body2P
+        css={{
+          textAlign: 'center',
+          marginTop: theme.spacing.medium,
+        }}
       >
-        Already have an account?{' '}
-        <A
-          as={Link}
-          inline
-          to="/login"
-        >
-          Login
-        </A>
-      </P>
+        Already have an account? <InlineLinkSC to="/login">Log in</InlineLinkSC>
+      </Body2P>
     </LoginPortal>
   )
 }

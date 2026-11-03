@@ -21,7 +21,10 @@ export const DEFAULT_PAGE_SIZE = 100
 export const POLL_INTERVAL = 10_000
 
 type GenericQueryHook<TQueryType, TVariables extends OperationVariables> = (
-  baseOptions: QueryHookOptions<TQueryType, TVariables>
+  baseOptions: QueryHookOptions<TQueryType, TVariables> & {
+    variables: TVariables
+    skip?: boolean
+  }
 ) => QueryResult<TQueryType, TVariables> & {
   fetchMore: (options: any) => Promise<any>
 }

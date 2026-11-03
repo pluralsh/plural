@@ -21,7 +21,12 @@ export const getDeviceToken = () => localStorage.getItem(DEVICE_TOKEN_KEY)
 export const wipeDeviceToken = () => localStorage.removeItem(DEVICE_TOKEN_KEY)
 
 export function getLoginUrlWithReturn() {
-  const returnPath = window.location.pathname + window.location.search
+  const { pathname, search } = window.location
+  const returnPath = pathname + search
+
+  // Keep login params (e.g. deviceToken, login_challenge) on the URL instead of
+  // turning the login page into its own post-login destination.
+  if (pathname === '/login') return returnPath
   if (returnPath) localStorage.setItem(RETURN_TO_KEY, returnPath)
 
   return '/login'

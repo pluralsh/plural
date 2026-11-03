@@ -1,11 +1,11 @@
 import {
   AppIcon,
+  Button,
   Chip,
+  Flex,
   GraphQLToast,
   ListBoxItem,
 } from '@pluralsh/design-system'
-import { Box } from 'grommet'
-import { Button, Span } from 'honorable'
 import { useContext, useMemo, useState } from 'react'
 
 import CurrentUserContext from '../../contexts/CurrentUserContext'
@@ -22,8 +22,8 @@ import {
 } from '../../helpers/authentication'
 import { canEdit } from '../../utils/account'
 import UserSettingsModal from '../users/settings/UserSettingsModal'
-import { ProviderIcon } from '../utils/ProviderIcon'
 import DeleteUserModal from '../utils/user/DeleteUserModal'
+import { Body2P } from '../utils/Typography'
 
 import { EditServiceAccount } from './CreateServiceAccount'
 import { MoreMenu } from './MoreMenu'
@@ -32,10 +32,13 @@ import { hasRbac } from './utils'
 export function UserInfo({
   user: { email, name, avatar },
   hue = 'lighter',
+  fill,
   ...box
 }: any) {
   return (
-    <Box
+    <Flex
+      {...(fill && { width: '100%' })}
+      {...(fill === true && { height: '100%' })}
       {...box}
       direction="row"
       gap="small"
@@ -48,16 +51,19 @@ export function UserInfo({
         size="xsmall"
         hue={hue}
       />
-      <Box align="start">
-        <Span fontWeight="bold">{name}</Span>
-        <Span
-          color="text-light"
-          body2
+      <Flex
+        direction="column"
+        align="flex-start"
+      >
+        <span css={{ fontWeight: 'bold' }}>{name}</span>
+        <Body2P
+          as="span"
+          $color="text-light"
         >
           {email}
-        </Span>
-      </Box>
-    </Box>
+        </Body2P>
+      </Flex>
+    </Flex>
   )
 }
 
@@ -131,33 +137,28 @@ export function User({ user, update }: any) {
 
   return (
     <>
-      <Box
-        fill="horizontal"
+      <Flex
+        width="100%"
         direction="row"
         align="center"
+        cursor="pointer"
         onClick={() => setSettingsOpen(true)}
       >
         <UserInfo
           fill="horizontal"
           user={user}
         />
-        <Box
-          flex={false}
+        <Flex
+          flex="0 0 auto"
           direction="row"
-          gap="24px"
+          gap="large"
           align="center"
           onClick={(event) => event.stopPropagation()}
         >
-          {user.provider && (
-            <ProviderIcon
-              provider={user.provider}
-              width={25}
-            />
-          )}
           {user.roles?.admin && (
             <Chip
               size="medium"
-              hue="lighter"
+              fillLevel={2}
             >
               Admin
             </Chip>
@@ -172,8 +173,8 @@ export function User({ user, update }: any) {
               onSettingsClick={() => setSettingsOpen(true)}
             />
           )}
-        </Box>
-      </Box>
+        </Flex>
+      </Flex>
       {settingsOpen && (
         <UserSettingsModal
           user={user}
@@ -203,8 +204,8 @@ export function ServiceAccount({ user, update }: any) {
 
   return (
     <>
-      <Box
-        fill="horizontal"
+      <Flex
+        width="100%"
         direction="row"
         align="center"
       >
@@ -212,18 +213,12 @@ export function ServiceAccount({ user, update }: any) {
           user={user}
           fill="horizontal"
         />
-        <Box
-          flex={false}
+        <Flex
+          flex="0 0 auto"
           direction="row"
-          gap="24px"
+          gap="large"
           align="center"
         >
-          {user.provider && (
-            <ProviderIcon
-              provider={user.provider}
-              width={25}
-            />
-          )}
           <Button
             small
             secondary
@@ -237,13 +232,12 @@ export function ServiceAccount({ user, update }: any) {
               update={update}
             />
           )}
-        </Box>
-      </Box>
+        </Flex>
+      </Flex>
       {error && (
         <GraphQLToast
           marginBottom="medium"
           marginRight="xxxxlarge"
-          // @ts-expect-error
           error={error}
           header="Failed to impersonate"
         />

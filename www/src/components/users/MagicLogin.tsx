@@ -1,7 +1,5 @@
 import { useApolloClient } from '@apollo/client'
-import { Divider, LoadingSpinner } from '@pluralsh/design-system'
-import { Box, Collapsible, Form, Text } from 'grommet'
-import { A, Button, Div, Flex, Icon } from 'honorable'
+import { Button, Divider, Flex, LoadingSpinner } from '@pluralsh/design-system'
 import queryString from 'query-string'
 import {
   RefObject,
@@ -15,8 +13,8 @@ import {
   GoogleReCaptchaProvider,
   useGoogleReCaptcha,
 } from 'react-google-recaptcha-v3'
-import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
-import styled from 'styled-components'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import styled, { useTheme } from 'styled-components'
 
 import {
   AcceptLoginDocument,
@@ -31,9 +29,16 @@ import {
 import { WelcomeHeader } from '../utils/WelcomeHeader'
 
 import { fetchToken, setAuthFromUser } from '../../helpers/authentication'
+import { authlessClient } from '../../helpers/authlessClient'
 import { host } from '../../helpers/hostname'
 import { PLURAL_MARK_WHITE } from '../constants'
 import { Alert, AlertStatus, GqlError } from '../utils/Alert'
+import {
+  Body2P,
+  InlineLinkButtonSC,
+  InlineLinkSC,
+  Subtitle1H1,
+} from '../utils/Typography'
 
 import { getLocalReturnUrl } from './utils'
 import { isValidEmail } from '../../utils/email'
@@ -52,6 +57,7 @@ import {
 export function PasswordlessLogin() {
   const { token } = useParams()
   const [mutation, { error, loading, data }] = usePasswordlessLoginMutation({
+    client: authlessClient,
     variables: { token: token ?? '' },
   })
 
@@ -61,8 +67,12 @@ export function PasswordlessLogin() {
 
   return (
     <LoginPortal>
-      <Box gap="medium">
-        <Box
+      <Flex
+        direction="column"
+        gap="medium"
+      >
+        <Flex
+          direction="column"
           gap="xsmall"
           align="center"
         >
@@ -70,15 +80,10 @@ export function PasswordlessLogin() {
             src={PLURAL_MARK_WHITE}
             width="45px"
           />
-          <Text size="large">Passwordless Login</Text>
-        </Box>
+          <Subtitle1H1 as="p">Passwordless Login</Subtitle1H1>
+        </Flex>
         {loading && (
-          <Text
-            size="small"
-            color="dark-3"
-          >
-            Validating your login token...
-          </Text>
+          <Body2P $color="text-light">Validating your login token...</Body2P>
         )}
         {error && (
           <GqlError
@@ -93,7 +98,7 @@ export function PasswordlessLogin() {
             description="Navigate back to wherever you initiated the login to begin using plural."
           />
         )}
-      </Box>
+      </Flex>
     </LoginPortal>
   )
 }
@@ -126,7 +131,7 @@ function LoginPoller({ challenge, token, deviceToken }: any) {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      client
+      authlessClient
         .mutate({
           mutation: PollLoginTokenDocument,
           variables: { token, deviceToken },
@@ -146,7 +151,7 @@ function LoginPoller({ challenge, token, deviceToken }: any) {
     }, 2000)
 
     return () => clearInterval(interval)
-  }, [token, challenge, deviceToken, history, client])
+  }, [token, challenge, deviceToken, navigate, client])
 
   if (success) {
     return (
@@ -174,35 +179,30 @@ function sortOauthUrls(a, b) {
 }
 
 export function OAuthOptions({ oauthUrls }: any) {
+  const theme = useTheme()
+
   return (
-    <Div marginBottom="medium">
+    <div css={{ marginBottom: theme.spacing.medium }}>
       {oauthUrls && (
         <>
           <Divider
             text="Or continue with"
             color="text-xlight"
             backgroundColor="border"
-            marginVertical="large"
-            overline
+            marginTop="large"
+            marginBottom="large"
           />
-          <Flex
-            direction="row"
-            gap="large"
-            justify="space-between"
-            wrap="wrap"
-            flexWrap="wrap"
-          >
+          <OAuthGridSC>
             {[...oauthUrls].sort(sortOauthUrls).map((url) => (
               <OAuthOption
                 key={url.provider}
                 url={url}
-                flexGrow={1}
               />
             ))}
-          </Flex>
+          </OAuthGridSC>
         </>
       )}
-    </Div>
+    </div>
   )
 }
 
@@ -243,6 +243,7 @@ export function Login() {
 }
 
 function LoginInternal() {
+  const theme = useTheme()
   const navigate = useNavigate()
   const [state, setState] = useState<LoginState>(State.Initial)
   const prevState = useRef<LoginState>(State.Initial)
@@ -255,8 +256,8 @@ function LoginInternal() {
   )
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const passwordRef = useRef<HTMLElement>()
-  const emailRef = useRef<HTMLElement>()
+  const passwordRef = useRef<HTMLDivElement>(null)
+  const emailRef = useRef<HTMLDivElement>(null)
 
   const { executeRecaptcha } = useGoogleReCaptcha()
   const [isVerifyingCaptcha, setIsVerifyingCaptcha] = useState(false)
@@ -293,7 +294,7 @@ function LoginInternal() {
       loading: loginMethodLoading,
       error: loginMethodError,
     },
-  ] = useLoginMethodLazyQuery()
+  ] = useLoginMethodLazyQuery({ client: authlessClient })
   const getLoginMethod = useCallback(() => {
     loginMethodQuery({
       variables: { email, host: host() },
@@ -302,6 +303,7 @@ function LoginInternal() {
 
   const [loginMutation, { loading: loginMLoading, error: loginMError }] =
     useLoginMutation({
+      client: authlessClient,
       onCompleted: ({ login }) => {
         setAuthFromUser(login)
         if (deviceToken) finishedDeviceLogin()
@@ -335,6 +337,7 @@ function LoginInternal() {
 
   useEffect(() => {
     if (state === State.Signup) {
+      if (typeof deviceToken === 'string') saveDeviceToken(deviceToken)
       navigate('/signup', { state: { email } })
     }
   })
@@ -386,18 +389,20 @@ function LoginInternal() {
     } else if (!deviceToken && !challenge && jwt) {
       navigate(getLocalReturnUrl())
     }
-  }, [challenge, deviceToken, history, client, jwt, ran, setRan])
+  }, [challenge, deviceToken, navigate, client, jwt, ran, setRan])
 
   useEffect(() => {
     if (state === State.CheckingEmail && loginMethodError) {
-      if (deviceToken) saveDeviceToken(deviceToken)
       setState(State.Signup)
     }
-  }, [deviceToken, loginMethodError, state])
+  }, [loginMethodError, state])
 
   const loginMethod = loginMethodData?.loginMethod
 
-  const { data: oAuthData } = useOauthUrlsQuery({ variables: { host: host() } })
+  const { data: oAuthData } = useOauthUrlsQuery({
+    client: authlessClient,
+    variables: { host: host() },
+  })
 
   const isPasswordLogin =
     state === State.PwdLogin || state === State.PwdLogin_CheckingPwd
@@ -473,27 +478,29 @@ function LoginInternal() {
 
   return (
     <LoginPortal>
-      <Div>
-        <WelcomeHeader marginBottom="xlarge" />
+      <div>
+        <div css={{ marginBottom: theme.spacing.xlarge }}>
+          <WelcomeHeader />
+        </div>
         {state === State.PasswordlessLogin && (
-          <Div>
+          <div>
             <LoginPoller
               token={loginMethod?.token}
               challenge={challenge}
               deviceToken={deviceToken}
             />
-          </Div>
+          </div>
         )}
         {state !== State.PasswordlessLogin && (
           <>
-            <Form onSubmit={onSubmit}>
+            <form onSubmit={onSubmit}>
               {loginError && (
-                <Div marginBottom="medium">
+                <div css={{ marginBottom: theme.spacing.medium }}>
                   <GqlError
                     error={loginError}
                     header="Login Failed"
                   />
-                </Div>
+                </div>
               )}
               <LabelledInput
                 ref={emailRef}
@@ -504,30 +511,25 @@ function LoginInternal() {
                 placeholder="Enter email address"
                 caption={
                   isPasswordLogin ? (
-                    <A
-                      inline
+                    <InlineLinkButtonSC
+                      type="button"
                       onClick={() => {
                         setEmail('')
                         setState(State.Initial)
                       }}
                     >
                       change email
-                    </A>
+                    </InlineLinkButtonSC>
                   ) : null
                 }
               />
-              <Collapsible
-                open={state === State.PwdLogin}
-                direction="vertical"
-              >
+              {state === State.PwdLogin && (
                 <LabelledInput
                   ref={passwordRef}
                   label="Password"
                   type="password"
                   caption={
-                    <A
-                      inline
-                      as={Link}
+                    <InlineLinkSC
                       to="/password-reset"
                       onClick={(e) => {
                         e.preventDefault()
@@ -535,7 +537,7 @@ function LoginInternal() {
                       }}
                     >
                       forgot your password?
-                    </A>
+                    </InlineLinkSC>
                   }
                   hint={passwordHint}
                   error={passwordError}
@@ -543,7 +545,7 @@ function LoginInternal() {
                   onChange={setPassword}
                   placeholder="Enter password"
                 />
-              </Collapsible>
+              )}
               <Button
                 type="submit"
                 width="100%"
@@ -552,11 +554,27 @@ function LoginInternal() {
               >
                 {isPasswordLogin ? 'Log in' : 'Continue'}
               </Button>
-            </Form>
+            </form>
             {!deviceToken && <OAuthOptions oauthUrls={oAuthData?.oauthUrls} />}
+            <Body2P
+              $color="text-light"
+              css={{ textAlign: 'center' }}
+            >
+              Don&apos;t have an account?{' '}
+              <InlineLinkSC
+                to="/signup"
+                state={{ email }}
+                onClick={() => {
+                  if (typeof deviceToken === 'string')
+                    saveDeviceToken(deviceToken)
+                }}
+              >
+                Sign up for Plural
+              </InlineLinkSC>
+            </Body2P>
           </>
         )}
-      </Div>
+      </div>
     </LoginPortal>
   )
 }
@@ -567,36 +585,31 @@ const providerToName = {
   gitlab: 'GitLab',
 }
 
-export const FlexAtBreak = styled.div((_) => ({
-  width: '100%',
+const OAuthGridSC = styled.div(({ theme }) => ({
+  display: 'grid',
+  gap: theme.spacing.small,
   [LOGIN_BREAKPOINT]: {
-    flex: '1 0',
-    width: 'auto',
+    gridAutoFlow: 'column',
+    gridAutoColumns: 'minmax(0, 1fr)',
   },
 }))
 
-function OAuthOption({ url: { authorizeUrl, provider }, ...props }: any) {
+function OAuthOption({ url: { authorizeUrl, provider } }: any) {
   const icon = METHOD_ICONS[provider]
 
   provider = provider.toLowerCase()
 
   return (
-    <FlexAtBreak>
-      <Button
-        data-phid={`signup-${provider}`}
-        width="100%"
-        height={48}
-        secondary
-        as={A}
-        _hover={{ textDecoration: 'none' }}
-        href={authorizeUrl}
-        startIcon={
-          <Icon>{createElement(icon, { size: 20, fullColor: true })}</Icon>
-        }
-        {...props}
-      >
-        {providerToName[provider]}
-      </Button>
-    </FlexAtBreak>
+    <Button
+      data-phid={`signup-${provider}`}
+      width="100%"
+      height={44}
+      secondary
+      as="a"
+      href={authorizeUrl}
+      startIcon={createElement(icon, { size: 20, fullColor: true })}
+    >
+      {providerToName[provider]}
+    </Button>
   )
 }

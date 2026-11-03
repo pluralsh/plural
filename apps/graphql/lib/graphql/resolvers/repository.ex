@@ -1,6 +1,6 @@
 defmodule GraphQl.Resolvers.Repository do
   use GraphQl.Resolvers.Base, model: Core.Schema.Repository
-  alias Core.Services.{Repositories, Users, OAuth}
+  alias Core.Services.{Repositories, Users, OAuth, Clusters}
   alias Core.Schema.{
     Installation,
     Integration,
@@ -207,6 +207,10 @@ defmodule GraphQl.Resolvers.Repository do
 
   def create_oidc_provider(%{attributes: attrs, installation_id: id}, %{context: %{current_user: user}})
     when is_binary(id), do: Repositories.create_oidc_provider(attrs, id, user)
+  def create_oidc_provider(%{attributes: attrs, cluster_id: id}, %{context: %{current_user: user}}) when is_binary(id) do
+    with {:ok, %{owner: owner}} <- Clusters.authorize(id, user),
+      do: OAuth.create_oidc_provider(attrs, owner, user)
+  end
   def create_oidc_provider(%{attributes: attrs}, %{context: %{current_user: user}}),
     do: OAuth.create_oidc_provider(attrs, user)
 

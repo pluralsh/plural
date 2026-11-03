@@ -4,6 +4,14 @@ defmodule GraphQl.Resolvers.Account do
   alias Core.Schema.{Group, GroupMember, Role, RoleBinding, IntegrationWebhook, WebhookLog, OAuthIntegration, DomainMapping, Invite, PlatformPlan}
   alias Core.Services.Accounts
 
+  def data(args) do
+    Dataloader.Ecto.new(Core.Repo,
+      query: &query/2,
+      default_params: filter_context(args),
+      run_batch: &run_batch/5
+    )
+  end
+
   def query(Group, _), do: Group
   def query(Role, _), do: Role
   def query(RoleBinding, _), do: RoleBinding
@@ -84,6 +92,23 @@ defmodule GraphQl.Resolvers.Account do
 
   def resolve_role(%{id: id}, %{context: %{current_user: user}}),
     do: Accessible.accessible(id, user, :role)
+
+  def resolve_group(%{id: id}, %{context: %{current_user: user}}),
+    do: Accessible.accessible(id, user, :group)
+
+  def run_batch(_, _, :member_count, groups, repo_opts) do
+    ids = Enum.map(groups, & &1.id)
+    counts =
+      GroupMember.counts(ids)
+      |> Core.Repo.all(repo_opts)
+      |> Map.new()
+
+    Enum.map(ids, & [Map.get(counts, &1, 0)])
+  end
+
+  def run_batch(queryable, query, col, inputs, repo_opts) do
+    Dataloader.Ecto.run_batch(Core.Repo, queryable, query, col, inputs, repo_opts)
+  end
 
   def resolve_invite(%{id: secure_id}, _),
     do: {:ok, Accounts.get_invite(secure_id)}

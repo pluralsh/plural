@@ -238,6 +238,18 @@ export type AzureShellCredentialsAttributes = {
   tenantId: Scalars['String']['input'];
 };
 
+/** usage for an account, read back from stripe's billing meters */
+export type BillingUsage = {
+  __typename?: 'BillingUsage';
+  /** clusters currently counted for billing */
+  clusterCount: Scalars['Int']['output'];
+  endTime: Scalars['DateTime']['output'];
+  meters: Array<MeterUsage>;
+  startTime: Scalars['DateTime']['output'];
+  /** users in the account, which aren't billed */
+  userCount: Scalars['Int']['output'];
+};
+
 export type BindingAttributes = {
   groupId?: InputMaybe<Scalars['ID']['input']>;
   id?: InputMaybe<Scalars['ID']['input']>;
@@ -436,12 +448,16 @@ export type Cluster = {
   /** The ID of the cluster. */
   id: Scalars['ID']['output'];
   insertedAt?: Maybe<Scalars['DateTime']['output']>;
+  /** the cluster owner's installation of a repository, authorized through the owner's impersonation policy */
+  installation?: Maybe<Installation>;
   /** whether this is a legacy OSS cluster */
   legacy?: Maybe<Scalars['Boolean']['output']>;
   /** whether any installation in the cluster has been locked */
   locked?: Maybe<Scalars['Boolean']['output']>;
   /** The name of the cluster. */
   name: Scalars['String']['output'];
+  /** oidc providers owned by the cluster's owner, authorized through the owner's impersonation policy */
+  oidcProviders?: Maybe<OidcProviderConnection>;
   /** The user that owns the cluster. */
   owner?: Maybe<User>;
   /** The last time the cluster was pinged. */
@@ -461,6 +477,21 @@ export type Cluster = {
   upgradeInfo?: Maybe<Array<Maybe<UpgradeInfo>>>;
   /** CPU/Memory history for this cluster */
   usageHistory?: Maybe<Array<Maybe<ClusterUsageHistory>>>;
+};
+
+
+/** A Kubernetes cluster that can be used to deploy applications on with Plural. */
+export type ClusterInstallationArgs = {
+  repository: Scalars['String']['input'];
+};
+
+
+/** A Kubernetes cluster that can be used to deploy applications on with Plural. */
+export type ClusterOidcProvidersArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
 };
 
 
@@ -1133,6 +1164,7 @@ export type Group = {
   global?: Maybe<Scalars['Boolean']['output']>;
   id: Scalars['ID']['output'];
   insertedAt?: Maybe<Scalars['DateTime']['output']>;
+  memberCount?: Maybe<Scalars['Int']['output']>;
   name: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
 };
@@ -1753,6 +1785,14 @@ export enum MessageEntityType {
   Emoji = 'EMOJI',
   Mention = 'MENTION'
 }
+
+export type MeterUsage = {
+  __typename?: 'MeterUsage';
+  buckets: Array<UsageBucket>;
+  meter: UsageMeter;
+  /** the sum of every bucket in the range */
+  total: Scalars['Float']['output'];
+};
 
 export type Metric = {
   __typename?: 'Metric';
@@ -2996,7 +3036,7 @@ export type RootMutationType = {
   passwordlessLogin?: Maybe<User>;
   pingCluster?: Maybe<Cluster>;
   pingWebhook?: Maybe<WebhookResponse>;
-  /** moves up the upgrade waterline for a user */
+  /** moves up the upgrade waterline for a user, or for the owner of the given cluster */
   promote?: Maybe<User>;
   provisionDomain?: Maybe<DnsDomain>;
   publishLogs?: Maybe<TestStep>;
@@ -3180,6 +3220,7 @@ export type RootMutationTypeCreateOauthIntegrationArgs = {
 
 export type RootMutationTypeCreateOidcProviderArgs = {
   attributes: OidcAttributes;
+  clusterId?: InputMaybe<Scalars['ID']['input']>;
   installationId?: InputMaybe<Scalars['ID']['input']>;
 };
 
@@ -3578,6 +3619,11 @@ export type RootMutationTypePingWebhookArgs = {
 };
 
 
+export type RootMutationTypePromoteArgs = {
+  clusterId?: InputMaybe<Scalars['ID']['input']>;
+};
+
+
 export type RootMutationTypeProvisionDomainArgs = {
   name: Scalars['String']['input'];
 };
@@ -3858,6 +3904,8 @@ export type RootQueryType = {
   account?: Maybe<Account>;
   auditMetrics?: Maybe<Array<Maybe<GeoMetric>>>;
   audits?: Maybe<AuditConnection>;
+  /** daily usage from stripe's billing meters, defaulting to the last 30 days of every meter */
+  billingUsage?: Maybe<BillingUsage>;
   categories?: Maybe<Array<Maybe<CategoryInfo>>>;
   category?: Maybe<CategoryInfo>;
   chart?: Maybe<Chart>;
@@ -3883,6 +3931,7 @@ export type RootQueryType = {
   dockerRepositories?: Maybe<DockerRepositoryConnection>;
   eabCredential?: Maybe<EabCredential>;
   eabCredentials?: Maybe<Array<Maybe<EabCredential>>>;
+  group?: Maybe<Group>;
   groupMembers?: Maybe<GroupMemberConnection>;
   groups?: Maybe<GroupConnection>;
   helpQuestion?: Maybe<Scalars['String']['output']>;
@@ -3965,6 +4014,13 @@ export type RootQueryTypeAuditsArgs = {
   before?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type RootQueryTypeBillingUsageArgs = {
+  endTime?: InputMaybe<Scalars['DateTime']['input']>;
+  meters?: InputMaybe<Array<UsageMeter>>;
+  startTime?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
 
@@ -4100,6 +4156,11 @@ export type RootQueryTypeDockerRepositoriesArgs = {
 export type RootQueryTypeEabCredentialArgs = {
   cluster: Scalars['String']['input'];
   provider: Provider;
+};
+
+
+export type RootQueryTypeGroupArgs = {
+  id: Scalars['ID']['input'];
 };
 
 
@@ -5110,6 +5171,21 @@ export enum UpgradeType {
   Deploy = 'DEPLOY'
 }
 
+/** a day of usage aggregated by stripe for one billing meter */
+export type UsageBucket = {
+  __typename?: 'UsageBucket';
+  endTime: Scalars['DateTime']['output'];
+  startTime: Scalars['DateTime']['output'];
+  value: Scalars['Float']['output'];
+};
+
+export enum UsageMeter {
+  /** clusters reported for billing */
+  Clusters = 'CLUSTERS',
+  /** bytes of telemetry data ingested */
+  Ingest = 'INGEST'
+}
+
 export type User = {
   __typename?: 'User';
   account: Account;
@@ -5587,8 +5663,9 @@ export type CreateDomainMutationVariables = Exact<{
 export type CreateDomainMutation = { __typename?: 'RootMutationType', provisionDomain?: { __typename?: 'DnsDomain', id: string, name: string, insertedAt?: Date | null, creator?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null, accessPolicy?: { __typename?: 'DnsAccessPolicy', id: string, bindings?: Array<{ __typename?: 'PolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null } | null };
 
 export type GroupMembersQueryVariables = Exact<{
-  cursor?: InputMaybe<Scalars['String']['input']>;
   id: Scalars['ID']['input'];
+  first?: InputMaybe<Scalars['Int']['input']>;
+  after?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
@@ -5634,7 +5711,8 @@ export type DeleteGroupMutation = { __typename?: 'RootMutationType', deleteGroup
 
 export type GroupsQueryVariables = Exact<{
   q?: InputMaybe<Scalars['String']['input']>;
-  cursor?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  after?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
@@ -5858,12 +5936,17 @@ export type CardFragment = { __typename?: 'Card', last4: string, expMonth: numbe
 
 export type PlatformPlanFragment = { __typename?: 'PlatformPlan', id: string, name: string, cost: number, period: PaymentPeriod, enterprise?: boolean | null, trial?: boolean | null, features?: { __typename?: 'PlanFeatures', vpn?: boolean | null, userManagement?: boolean | null, audit?: boolean | null } | null, lineItems?: Array<{ __typename?: 'PlatformPlanItem', name: string, dimension: LineItemDimension, cost: number, period: PaymentPeriod } | null> | null };
 
-export type SubscriptionAccountFragment = { __typename?: 'Account', id: string, billingCustomerId?: string | null, grandfatheredUntil?: Date | null, delinquentAt?: Date | null, userCount?: string | null, clusterCount?: string | null, trialed?: boolean | null, availableFeatures?: { __typename?: 'PlanFeatures', userManagement?: boolean | null, audit?: boolean | null } | null, subscription?: { __typename?: 'PlatformSubscription', id: string, trialUntil?: Date | null, plan?: { __typename?: 'PlatformPlan', id: string, name: string, cost: number, period: PaymentPeriod, enterprise?: boolean | null, trial?: boolean | null, features?: { __typename?: 'PlanFeatures', vpn?: boolean | null, userManagement?: boolean | null, audit?: boolean | null } | null, lineItems?: Array<{ __typename?: 'PlatformPlanItem', name: string, dimension: LineItemDimension, cost: number, period: PaymentPeriod } | null> | null } | null } | null, billingAddress?: { __typename?: 'Address', name?: string | null, line1?: string | null, line2?: string | null, zip?: string | null, state?: string | null, city?: string | null, country?: string | null } | null, paymentMethods?: { __typename?: 'PaymentMethodConnection', edges?: Array<{ __typename?: 'PaymentMethodEdge', node?: { __typename?: 'PaymentMethod', id?: string | null, type?: string | null, isDefault?: boolean | null, card?: { __typename?: 'Card', last4: string, expMonth: number, expYear: number, name?: string | null, brand: string } | null } | null } | null> | null } | null };
+export type SubscriptionAccountFragment = { __typename?: 'Account', id: string, billingCustomerId?: string | null, grandfatheredUntil?: Date | null, delinquentAt?: Date | null, userCount?: string | null, clusterCount?: string | null, trialed?: boolean | null, availableFeatures?: { __typename?: 'PlanFeatures', userManagement?: boolean | null, audit?: boolean | null } | null, subscription?: { __typename?: 'PlatformSubscription', id: string, trialUntil?: Date | null, insertedAt?: Date | null, plan?: { __typename?: 'PlatformPlan', id: string, name: string, cost: number, period: PaymentPeriod, enterprise?: boolean | null, trial?: boolean | null, features?: { __typename?: 'PlanFeatures', vpn?: boolean | null, userManagement?: boolean | null, audit?: boolean | null } | null, lineItems?: Array<{ __typename?: 'PlatformPlanItem', name: string, dimension: LineItemDimension, cost: number, period: PaymentPeriod } | null> | null } | null } | null, billingAddress?: { __typename?: 'Address', name?: string | null, line1?: string | null, line2?: string | null, zip?: string | null, state?: string | null, city?: string | null, country?: string | null } | null, paymentMethods?: { __typename?: 'PaymentMethodConnection', edges?: Array<{ __typename?: 'PaymentMethodEdge', node?: { __typename?: 'PaymentMethod', id?: string | null, type?: string | null, isDefault?: boolean | null, card?: { __typename?: 'Card', last4: string, expMonth: number, expYear: number, name?: string | null, brand: string } | null } | null } | null> | null } | null };
 
 export type SubscriptionQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type SubscriptionQuery = { __typename?: 'RootQueryType', account?: { __typename?: 'Account', id: string, billingCustomerId?: string | null, grandfatheredUntil?: Date | null, delinquentAt?: Date | null, userCount?: string | null, clusterCount?: string | null, trialed?: boolean | null, availableFeatures?: { __typename?: 'PlanFeatures', userManagement?: boolean | null, audit?: boolean | null } | null, subscription?: { __typename?: 'PlatformSubscription', id: string, trialUntil?: Date | null, plan?: { __typename?: 'PlatformPlan', id: string, name: string, cost: number, period: PaymentPeriod, enterprise?: boolean | null, trial?: boolean | null, features?: { __typename?: 'PlanFeatures', vpn?: boolean | null, userManagement?: boolean | null, audit?: boolean | null } | null, lineItems?: Array<{ __typename?: 'PlatformPlanItem', name: string, dimension: LineItemDimension, cost: number, period: PaymentPeriod } | null> | null } | null } | null, billingAddress?: { __typename?: 'Address', name?: string | null, line1?: string | null, line2?: string | null, zip?: string | null, state?: string | null, city?: string | null, country?: string | null } | null, paymentMethods?: { __typename?: 'PaymentMethodConnection', edges?: Array<{ __typename?: 'PaymentMethodEdge', node?: { __typename?: 'PaymentMethod', id?: string | null, type?: string | null, isDefault?: boolean | null, card?: { __typename?: 'Card', last4: string, expMonth: number, expYear: number, name?: string | null, brand: string } | null } | null } | null> | null } | null } | null };
+export type SubscriptionQuery = { __typename?: 'RootQueryType', account?: { __typename?: 'Account', id: string, billingCustomerId?: string | null, grandfatheredUntil?: Date | null, delinquentAt?: Date | null, userCount?: string | null, clusterCount?: string | null, trialed?: boolean | null, availableFeatures?: { __typename?: 'PlanFeatures', userManagement?: boolean | null, audit?: boolean | null } | null, subscription?: { __typename?: 'PlatformSubscription', id: string, trialUntil?: Date | null, insertedAt?: Date | null, plan?: { __typename?: 'PlatformPlan', id: string, name: string, cost: number, period: PaymentPeriod, enterprise?: boolean | null, trial?: boolean | null, features?: { __typename?: 'PlanFeatures', vpn?: boolean | null, userManagement?: boolean | null, audit?: boolean | null } | null, lineItems?: Array<{ __typename?: 'PlatformPlanItem', name: string, dimension: LineItemDimension, cost: number, period: PaymentPeriod } | null> | null } | null } | null, billingAddress?: { __typename?: 'Address', name?: string | null, line1?: string | null, line2?: string | null, zip?: string | null, state?: string | null, city?: string | null, country?: string | null } | null, paymentMethods?: { __typename?: 'PaymentMethodConnection', edges?: Array<{ __typename?: 'PaymentMethodEdge', node?: { __typename?: 'PaymentMethod', id?: string | null, type?: string | null, isDefault?: boolean | null, card?: { __typename?: 'Card', last4: string, expMonth: number, expYear: number, name?: string | null, brand: string } | null } | null } | null> | null } | null } | null };
+
+export type SubscriptionBillingPeriodQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type SubscriptionBillingPeriodQuery = { __typename?: 'RootQueryType', account?: { __typename?: 'Account', id: string, subscription?: { __typename?: 'PlatformSubscription', id: string, latestInvoice?: { __typename?: 'Invoice', createdAt?: Date | null } | null } | null } | null };
 
 export type UpdateAccountBillingMutationVariables = Exact<{
   attributes: AccountAttributes;
@@ -5923,6 +6006,15 @@ export type InvoicesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type InvoicesQuery = { __typename?: 'RootQueryType', invoices?: { __typename?: 'InvoiceConnection', edges?: Array<{ __typename?: 'InvoiceEdge', node?: { __typename?: 'Invoice', number: string, amountDue: number, amountPaid: number, currency: string, status?: string | null, createdAt?: Date | null, hostedInvoiceUrl?: string | null, lines?: Array<{ __typename?: 'InvoiceItem', amount: number, currency: string, description?: string | null } | null> | null } | null } | null> | null } | null };
+
+export type BillingUsageQueryVariables = Exact<{
+  startTime?: InputMaybe<Scalars['DateTime']['input']>;
+  endTime?: InputMaybe<Scalars['DateTime']['input']>;
+  meters?: InputMaybe<Array<UsageMeter> | UsageMeter>;
+}>;
+
+
+export type BillingUsageQuery = { __typename?: 'RootQueryType', billingUsage?: { __typename?: 'BillingUsage', startTime: Date, endTime: Date, clusterCount: number, userCount: number, meters: Array<{ __typename?: 'MeterUsage', meter: UsageMeter, total: number, buckets: Array<{ __typename?: 'UsageBucket', startTime: Date, endTime: Date, value: number }> }> } | null };
 
 export type ConsoleInstanceFragment = { __typename?: 'ConsoleInstance', id: string, name: string, subdomain: string, url: string, cloud: CloudProvider, size: ConsoleSize, region: string, status: ConsoleInstanceStatus, type: ConsoleInstanceType, deletedAt?: Date | null, insertedAt?: Date | null, updatedAt?: Date | null, console?: { __typename?: 'Cluster', id: string, pingedAt?: Date | null, consoleUrl?: string | null } | null, owner?: { __typename?: 'User', id: string, name: string, email: string, avatar?: string | null, provider?: Provider | null, demoed?: boolean | null, onboarding?: OnboardingState | null, emailConfirmed?: boolean | null, emailConfirmBy?: Date | null, backgroundColor?: string | null, serviceAccount?: boolean | null, hasInstallations?: boolean | null, hasShell?: boolean | null, impersonationPolicy?: { __typename?: 'ImpersonationPolicy', id: string, bindings?: Array<{ __typename?: 'ImpersonationPolicyBinding', id: string, group?: { __typename?: 'Group', id: string, name: string } | null, user?: { __typename?: 'User', id: string, name: string, email: string } | null } | null> | null } | null, onboardingChecklist?: { __typename?: 'OnboardingChecklist', dismissed?: boolean | null, status?: OnboardingChecklistState | null } | null, invites?: Array<{ __typename?: 'Invite', id: string, email?: string | null } | null> | null, roles?: { __typename?: 'Roles', admin?: boolean | null } | null, groups?: Array<{ __typename?: 'Group', id: string, name: string, global?: boolean | null, description?: string | null } | null> | null } | null, oidc?: { __typename?: 'ConsoleInstanceOidc', clientId?: string | null, clientSecret?: string | null, issuer?: string | null } | null, network?: { __typename?: 'ConsoleInstanceNetwork', allowedCidrs?: Array<string | null> | null } | null };
 
@@ -7597,6 +7689,7 @@ export const SubscriptionAccountFragmentDoc = gql`
   subscription {
     id
     trialUntil
+    insertedAt
     plan {
       ...PlatformPlan
     }
@@ -9040,8 +9133,8 @@ export type CreateDomainMutationHookResult = ReturnType<typeof useCreateDomainMu
 export type CreateDomainMutationResult = Apollo.MutationResult<CreateDomainMutation>;
 export type CreateDomainMutationOptions = Apollo.BaseMutationOptions<CreateDomainMutation, CreateDomainMutationVariables>;
 export const GroupMembersDocument = gql`
-    query GroupMembers($cursor: String, $id: ID!) {
-  groupMembers(groupId: $id, after: $cursor, first: 20) {
+    query GroupMembers($id: ID!, $first: Int = 20, $after: String) {
+  groupMembers(groupId: $id, first: $first, after: $after) {
     pageInfo {
       ...PageInfo
     }
@@ -9067,8 +9160,9 @@ ${GroupMemberFragmentDoc}`;
  * @example
  * const { data, loading, error } = useGroupMembersQuery({
  *   variables: {
- *      cursor: // value for 'cursor'
  *      id: // value for 'id'
+ *      first: // value for 'first'
+ *      after: // value for 'after'
  *   },
  * });
  */
@@ -9260,8 +9354,8 @@ export type DeleteGroupMutationHookResult = ReturnType<typeof useDeleteGroupMuta
 export type DeleteGroupMutationResult = Apollo.MutationResult<DeleteGroupMutation>;
 export type DeleteGroupMutationOptions = Apollo.BaseMutationOptions<DeleteGroupMutation, DeleteGroupMutationVariables>;
 export const GroupsDocument = gql`
-    query Groups($q: String, $cursor: String) {
-  groups(q: $q, first: 20, after: $cursor) {
+    query Groups($q: String, $first: Int = 20, $after: String) {
+  groups(q: $q, first: $first, after: $after) {
     pageInfo {
       ...PageInfo
     }
@@ -9288,7 +9382,8 @@ ${GroupFragmentDoc}`;
  * const { data, loading, error } = useGroupsQuery({
  *   variables: {
  *      q: // value for 'q'
- *      cursor: // value for 'cursor'
+ *      first: // value for 'first'
+ *      after: // value for 'after'
  *   },
  * });
  */
@@ -10156,6 +10251,54 @@ export type SubscriptionQueryHookResult = ReturnType<typeof useSubscriptionQuery
 export type SubscriptionLazyQueryHookResult = ReturnType<typeof useSubscriptionLazyQuery>;
 export type SubscriptionSuspenseQueryHookResult = ReturnType<typeof useSubscriptionSuspenseQuery>;
 export type SubscriptionQueryResult = Apollo.QueryResult<SubscriptionQuery, SubscriptionQueryVariables>;
+export const SubscriptionBillingPeriodDocument = gql`
+    query SubscriptionBillingPeriod {
+  account {
+    id
+    subscription {
+      id
+      latestInvoice {
+        createdAt
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useSubscriptionBillingPeriodQuery__
+ *
+ * To run a query within a React component, call `useSubscriptionBillingPeriodQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSubscriptionBillingPeriodQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSubscriptionBillingPeriodQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useSubscriptionBillingPeriodQuery(baseOptions?: Apollo.QueryHookOptions<SubscriptionBillingPeriodQuery, SubscriptionBillingPeriodQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<SubscriptionBillingPeriodQuery, SubscriptionBillingPeriodQueryVariables>(SubscriptionBillingPeriodDocument, options);
+      }
+export function useSubscriptionBillingPeriodLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SubscriptionBillingPeriodQuery, SubscriptionBillingPeriodQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<SubscriptionBillingPeriodQuery, SubscriptionBillingPeriodQueryVariables>(SubscriptionBillingPeriodDocument, options);
+        }
+// @ts-ignore
+export function useSubscriptionBillingPeriodSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<SubscriptionBillingPeriodQuery, SubscriptionBillingPeriodQueryVariables>): Apollo.UseSuspenseQueryResult<SubscriptionBillingPeriodQuery, SubscriptionBillingPeriodQueryVariables>;
+export function useSubscriptionBillingPeriodSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<SubscriptionBillingPeriodQuery, SubscriptionBillingPeriodQueryVariables>): Apollo.UseSuspenseQueryResult<SubscriptionBillingPeriodQuery | undefined, SubscriptionBillingPeriodQueryVariables>;
+export function useSubscriptionBillingPeriodSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<SubscriptionBillingPeriodQuery, SubscriptionBillingPeriodQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<SubscriptionBillingPeriodQuery, SubscriptionBillingPeriodQueryVariables>(SubscriptionBillingPeriodDocument, options);
+        }
+export type SubscriptionBillingPeriodQueryHookResult = ReturnType<typeof useSubscriptionBillingPeriodQuery>;
+export type SubscriptionBillingPeriodLazyQueryHookResult = ReturnType<typeof useSubscriptionBillingPeriodLazyQuery>;
+export type SubscriptionBillingPeriodSuspenseQueryHookResult = ReturnType<typeof useSubscriptionBillingPeriodSuspenseQuery>;
+export type SubscriptionBillingPeriodQueryResult = Apollo.QueryResult<SubscriptionBillingPeriodQuery, SubscriptionBillingPeriodQueryVariables>;
 export const UpdateAccountBillingDocument = gql`
     mutation UpdateAccountBilling($attributes: AccountAttributes!) {
   updateAccount(attributes: $attributes) {
@@ -10478,6 +10621,63 @@ export type InvoicesQueryHookResult = ReturnType<typeof useInvoicesQuery>;
 export type InvoicesLazyQueryHookResult = ReturnType<typeof useInvoicesLazyQuery>;
 export type InvoicesSuspenseQueryHookResult = ReturnType<typeof useInvoicesSuspenseQuery>;
 export type InvoicesQueryResult = Apollo.QueryResult<InvoicesQuery, InvoicesQueryVariables>;
+export const BillingUsageDocument = gql`
+    query BillingUsage($startTime: DateTime, $endTime: DateTime, $meters: [UsageMeter!]) {
+  billingUsage(startTime: $startTime, endTime: $endTime, meters: $meters) {
+    startTime
+    endTime
+    clusterCount
+    userCount
+    meters {
+      meter
+      total
+      buckets {
+        startTime
+        endTime
+        value
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useBillingUsageQuery__
+ *
+ * To run a query within a React component, call `useBillingUsageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useBillingUsageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useBillingUsageQuery({
+ *   variables: {
+ *      startTime: // value for 'startTime'
+ *      endTime: // value for 'endTime'
+ *      meters: // value for 'meters'
+ *   },
+ * });
+ */
+export function useBillingUsageQuery(baseOptions?: Apollo.QueryHookOptions<BillingUsageQuery, BillingUsageQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<BillingUsageQuery, BillingUsageQueryVariables>(BillingUsageDocument, options);
+      }
+export function useBillingUsageLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<BillingUsageQuery, BillingUsageQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<BillingUsageQuery, BillingUsageQueryVariables>(BillingUsageDocument, options);
+        }
+// @ts-ignore
+export function useBillingUsageSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<BillingUsageQuery, BillingUsageQueryVariables>): Apollo.UseSuspenseQueryResult<BillingUsageQuery, BillingUsageQueryVariables>;
+export function useBillingUsageSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<BillingUsageQuery, BillingUsageQueryVariables>): Apollo.UseSuspenseQueryResult<BillingUsageQuery | undefined, BillingUsageQueryVariables>;
+export function useBillingUsageSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<BillingUsageQuery, BillingUsageQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<BillingUsageQuery, BillingUsageQueryVariables>(BillingUsageDocument, options);
+        }
+export type BillingUsageQueryHookResult = ReturnType<typeof useBillingUsageQuery>;
+export type BillingUsageLazyQueryHookResult = ReturnType<typeof useBillingUsageLazyQuery>;
+export type BillingUsageSuspenseQueryHookResult = ReturnType<typeof useBillingUsageSuspenseQuery>;
+export type BillingUsageQueryResult = Apollo.QueryResult<BillingUsageQuery, BillingUsageQueryVariables>;
 export const ConsoleInstanceDocument = gql`
     query ConsoleInstance($id: ID!) {
   consoleInstance(id: $id) {
@@ -13325,8 +13525,10 @@ export const namedOperations = {
     OIDCConsent: 'OIDCConsent',
     OIDCProviders: 'OIDCProviders',
     Subscription: 'Subscription',
+    SubscriptionBillingPeriod: 'SubscriptionBillingPeriod',
     Cards: 'Cards',
     Invoices: 'Invoices',
+    BillingUsage: 'BillingUsage',
     ConsoleInstance: 'ConsoleInstance',
     ConsoleInstances: 'ConsoleInstances',
     GetRecipe: 'GetRecipe',

@@ -47,7 +47,7 @@ function BillingTrialBanner() {
       >
         <Message>
           Your free trial {isTrialExpired ? 'has expired' : 'is expiring soon'}.
-          Upgrade to Plural Professional to&nbsp;
+          Upgrade to Plural Pro to&nbsp;
           {isTrialExpired ? 'reactivate' : 'maintain'} full feature
           access.&nbsp;
           <MessageLink

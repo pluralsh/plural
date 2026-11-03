@@ -1,10 +1,11 @@
 import { useCallback, useContext, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useMutation } from '@apollo/client'
-import { Div, Flex } from 'honorable'
-import { Button, Modal } from '@pluralsh/design-system'
+import { Button, Flex, Modal } from '@pluralsh/design-system'
 
 import SubscriptionContext from '../../../contexts/SubscriptionContext'
+import { PLURAL_CLOUD_INSTANCES_PATH_ABS } from '../../overview/clusters/plural-cloud/PluralCloudInstances'
+import { Body1P } from '../../utils/Typography'
 
 import { DOWNGRADE_TO_FREE_PLAN_MUTATION } from './queries'
 
@@ -13,25 +14,6 @@ import BillingError from './BillingError'
 type BillingDowngradeModalPropsType = {
   open: boolean
   onClose: () => void
-}
-
-function Success() {
-  return (
-    <>
-      <Div>You've successfully downgraded to the free plan.</Div>
-      <Flex
-        justify="flex-end"
-        marginTop="large"
-      >
-        <Button
-          as={Link}
-          to="/marketplace"
-        >
-          Explore the app
-        </Button>
-      </Flex>
-    </>
-  )
 }
 
 function BillingDowngradeModal({
@@ -57,32 +39,62 @@ function BillingDowngradeModal({
       })
   }, [downgradeMutation, refetchSubscription])
 
+  const handleClose = useCallback(() => {
+    setError(undefined)
+    onClose()
+  }, [onClose])
+
   return (
     <Modal
       open={open}
-      onClose={onClose}
+      onClose={handleClose}
       header="Downgrade to free"
-      size="large"
+      actions={
+        <Flex gap="medium">
+          {error || !isProPlan ? (
+            <>
+              <Button
+                secondary
+                onClick={handleClose}
+              >
+                Close
+              </Button>
+              {!error && (
+                <Button
+                  as={Link}
+                  to={PLURAL_CLOUD_INSTANCES_PATH_ABS}
+                >
+                  Go to control planes
+                </Button>
+              )}
+            </>
+          ) : (
+            <>
+              <Button
+                secondary
+                onClick={handleClose}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handleDowngrade}
+                loading={loading}
+              >
+                Downgrade
+              </Button>
+            </>
+          )}
+        </Flex>
+      }
     >
       {error ? (
         <BillingError>{error.message}</BillingError>
-      ) : !isProPlan ? (
-        <Success />
       ) : (
-        <>
-          <Div>Are you certain you want to downgrade to the free plan?</Div>
-          <Flex
-            justify="flex-end"
-            marginTop="xxlarge"
-          >
-            <Button
-              onClick={handleDowngrade}
-              loading={loading}
-            >
-              Downgrade
-            </Button>
-          </Flex>
-        </>
+        <Body1P>
+          {isProPlan
+            ? 'Are you certain you want to downgrade to the free plan?'
+            : "You've successfully downgraded to the free plan."}
+        </Body1P>
       )}
     </Modal>
   )

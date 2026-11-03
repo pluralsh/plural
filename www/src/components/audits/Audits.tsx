@@ -1,13 +1,12 @@
 import { memo, useCallback, useMemo } from 'react'
-import { Box } from 'grommet'
-import { Link } from 'react-router-dom'
-import { A, Div } from 'honorable'
-import { Date, PageTitle, Table } from '@pluralsh/design-system'
+import { Date, Flex, Table } from '@pluralsh/design-system'
 import { createColumnHelper } from '@tanstack/react-table'
 import isEmpty from 'lodash/isEmpty'
 
 import { extendConnection, mapExistingNodes } from '../../utils/graphql'
 import LoadingIndicator from '../utils/LoadingIndicator'
+import { Body2P, CaptionP, InlineLinkSC } from '../utils/Typography'
+import { SubpageHeader } from '../utils/layout/SubpageLayout'
 
 import { useAuditsQuery } from '../../generated/graphql'
 
@@ -27,25 +26,21 @@ const columns = [
 
       return (
         <>
-          {link && (
-            <A
-              inline
-              as={Link}
-              to={link}
-            >
-              {text}
-            </A>
+          {link ? (
+            <InlineLinkSC to={link}>{text}</InlineLinkSC>
+          ) : (
+            text && <span>{text}</span>
           )}
-          <Div
-            caption
-            color="text-xlight"
+          <CaptionP
+            as="div"
+            $color="text-xlight"
           >
             {a.action}
-          </Div>
+          </CaptionP>
         </>
       )
     },
-    header: 'Package / Action',
+    header: 'Resource / Action',
   }),
   COLUMN_HELPER.accessor((audit) => audit.actor, {
     id: 'actor',
@@ -74,9 +69,6 @@ const columns = [
   }),
 ]
 
-const versionLink = ({ chart, terraform }) =>
-  chart ? `/charts/${chart.id}` : `/terraform/${terraform.id}`
-
 function resourceInfo({
   version,
   group,
@@ -87,31 +79,27 @@ function resourceInfo({
 }: any) {
   if (version) {
     return {
-      link: versionLink(version),
+      link: null,
       text: `Version{${
         version.chart ? version.chart.name : version.terraform.name
       }:${version.version}}`,
     }
   }
 
-  if (group)
-    return { link: '/accounts/edit/groups', text: `Group{${group.name}}` }
-  if (role) return { link: '/accounts/edit/roles', text: `Role{${role.name}}` }
+  if (group) return { link: '/account/groups', text: `Group{${group.name}}` }
+  if (role) return { link: '/account/roles', text: `Role{${role.name}}` }
   if (integrationWebhook)
-    return {
-      link: `/webhooks/${integrationWebhook.id}`,
-      text: `Webhook{${integrationWebhook.name}}`,
-    }
+    return { link: null, text: `Webhook{${integrationWebhook.name}}` }
   if (image) {
     return {
-      link: `/dkr/img/${image.id}`,
+      link: null,
       text: `Docker{${image.dockerRepository.name}:${image.tag}}`,
     }
   }
 
   if (repository)
     return {
-      link: `/repository/${repository.name}`,
+      link: null,
       text: `Repository{${repository.name}}`,
     }
 
@@ -128,7 +116,7 @@ const AuditsTable = memo(({ audits, fetchMoreOnBottomReached }: any) =>
       maxHeight="calc(100vh - 244px)"
     />
   ) : (
-    <>You do not have any audit logs yet.</>
+    <Body2P>You do not have any audit logs yet.</Body2P>
   )
 )
 
@@ -164,12 +152,16 @@ export function Audits() {
   if (!data) return <LoadingIndicator />
 
   return (
-    <Box fill>
-      <PageTitle heading="Audit logs" />
+    <Flex
+      direction="column"
+      width="100%"
+      height="100%"
+    >
+      <SubpageHeader title="Audit logs" />
       <AuditsTable
         audits={audits}
         fetchMoreOnBottomReached={fetchMoreOnBottomReached}
       />
-    </Box>
+    </Flex>
   )
 }

@@ -1,16 +1,16 @@
-import { Ref, forwardRef, useEffect, useState } from 'react'
-import { Button, ButtonProps } from 'honorable'
-
-import { Tooltip } from '@pluralsh/design-system'
+import { useEffect, useState } from 'react'
+import { Button, type ButtonProps, Tooltip } from '@pluralsh/design-system'
+import styled from 'styled-components'
 
 type CopyableButtonProps = ButtonProps & {
   copyText?: string
 }
 
-function CopyableButtonRef(
-  { copyText, onClick, ...props }: CopyableButtonProps,
-  ref: Ref<any>
-) {
+export default function CopyableButton({
+  copyText,
+  onClick,
+  ...props
+}: CopyableButtonProps) {
   const [copied, setCopied] = useState(false)
 
   useEffect(() => {
@@ -36,15 +36,12 @@ function CopyableButtonRef(
       onOpenChange={(open) => {
         if (!open && copied) setCopied(false)
       }}
-      zIndex={1000}
+      style={{ zIndex: 1000 }}
       manualOpen={copied}
     >
-      <Button
-        ref={ref}
-        border="1px solid border-input"
-        borderRadius="medium"
-        onClick={(...args) => {
-          if (onClick) onClick(...args)
+      <CopyableButtonSC
+        onClick={(e) => {
+          onClick?.(e)
           handleCopy()
         }}
         {...props}
@@ -53,6 +50,7 @@ function CopyableButtonRef(
   )
 }
 
-const CopyableButton = forwardRef(CopyableButtonRef)
-
-export default CopyableButton
+const CopyableButtonSC = styled(Button)(({ theme }) => ({
+  border: `1px solid ${theme.colors['border-input']}`,
+  borderRadius: theme.borderRadiuses.medium,
+}))

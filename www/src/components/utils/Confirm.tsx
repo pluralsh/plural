@@ -1,9 +1,9 @@
 import { ReactNode } from 'react'
 import { ApolloError } from '@apollo/client'
-import { Div } from 'honorable'
 import { Button, Modal } from '@pluralsh/design-system'
 
 import { GqlError } from './Alert'
+import { Body1P } from './Typography'
 
 type ConfirmProps = {
   open: boolean
@@ -60,12 +60,12 @@ export function Confirm({
           header="Something went wrong"
         />
       ) : (
-        <Div
-          body1
-          color="text"
+        <Body1P
+          as="div"
+          $color="text"
         >
           {text}
-        </Div>
+        </Body1P>
       )}
     </Modal>
   )

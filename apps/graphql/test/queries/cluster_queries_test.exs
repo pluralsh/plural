@@ -3,6 +3,28 @@ defmodule GraphQl.ClusterQueriesTest do
   import GraphQl.TestHelpers
 
   describe "cluster" do
+    test "users who can impersonate the owner can read its installations and oidc providers" do
+      user = insert(:user)
+      sa = bound_service_account(user)
+      cluster = insert(:cluster, owner: sa)
+      repo = insert(:repository, name: "console")
+      inst = insert(:installation, user: sa, repository: repo)
+      provider = insert(:oidc_provider, owner: sa, installation: nil)
+      insert(:oidc_provider, owner: user, installation: nil)
+
+      {:ok, %{data: %{"cluster" => found}}} = run_query("""
+        query Cluster($id: ID!) {
+          cluster(id: $id) {
+            installation(repository: "console") { id }
+            oidcProviders(first: 5) { edges { node { id } } }
+          }
+        }
+      """, %{"id" => cluster.id}, %{current_user: user})
+
+      assert found["installation"]["id"] == inst.id
+      assert from_connection(found["oidcProviders"]) |> ids_equal([provider])
+    end
+
     test "it can fetch a cluster by id" do
       user = insert(:user)
       cluster = insert(:cluster, owner: user)

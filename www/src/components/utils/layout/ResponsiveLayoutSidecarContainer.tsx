@@ -1,12 +1,19 @@
-import { Div } from 'honorable'
+import { Flex, type FlexProps } from '@pluralsh/design-system'
+import styled from 'styled-components'
 
-export function ResponsiveLayoutSidecarContainer(props: any) {
+const SidecarContainerSC = styled(Flex)(({ theme }) => ({
+  [`@media (max-width: ${theme.breakpoints.desktop - 1}px)`]: {
+    display: 'none',
+  },
+}))
+
+export function ResponsiveLayoutSidecarContainer(props: FlexProps) {
   return (
-    <Div
+    <SidecarContainerSC
+      direction="column"
       marginLeft="xlarge"
-      display-desktop-down="none"
       width={200}
-      flexShrink={0}
+      shrink={0}
       {...props}
     />
   )

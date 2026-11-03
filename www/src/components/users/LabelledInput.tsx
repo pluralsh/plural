@@ -1,30 +1,45 @@
-import { forwardRef } from 'react'
-import { FormField } from '@pluralsh/design-system'
-import { Input } from 'honorable'
+import { type ComponentProps, type ReactNode, type Ref } from 'react'
+import { FormField, Input } from '@pluralsh/design-system'
+import styled from 'styled-components'
 
-export const LabelledInput = forwardRef(
-  (
-    {
-      label,
-      value,
-      onChange,
-      placeholder,
-      type,
-      caption,
-      hint,
-      error = undefined,
-      required = false,
-      disabled = false,
-      inputProps,
-      ...props
-    }: any,
-    ref
-  ) => (
-    <FormField
+type LabelledInputProps = {
+  label?: string
+  value?: Nullable<string>
+  onChange?: (value: string) => void
+  placeholder?: string
+  type?: string
+  caption?: ReactNode
+  hint?: ReactNode
+  error?: boolean
+  required?: boolean
+  disabled?: boolean
+  inputProps?: Partial<ComponentProps<typeof Input>>
+  ref?: Ref<HTMLDivElement>
+} & Omit<
+  ComponentProps<typeof FormField>,
+  'label' | 'onChange' | 'children' | 'ref'
+>
+
+export function LabelledInput({
+  ref,
+  label,
+  value,
+  onChange,
+  placeholder,
+  type,
+  caption,
+  hint,
+  error = undefined,
+  required = false,
+  disabled = false,
+  inputProps,
+  ...props
+}: LabelledInputProps) {
+  return (
+    <FormFieldSC
       label={label}
       caption={caption}
       hint={hint}
-      marginBottom="small"
       error={error}
       required={required}
       {...props}
@@ -41,6 +56,10 @@ export const LabelledInput = forwardRef(
         disabled={disabled}
         {...inputProps}
       />
-    </FormField>
+    </FormFieldSC>
   )
-)
+}
+
+const FormFieldSC = styled(FormField)(({ theme }) => ({
+  marginBottom: theme.spacing.small,
+}))

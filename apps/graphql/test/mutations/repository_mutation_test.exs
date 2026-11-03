@@ -341,6 +341,30 @@ defmodule GraphQl.RepositoryMutationsTest do
       assert Enum.any?(provider["bindings"], & get_in(&1, ["user", "id"]) == installation.user.id)
     end
 
+    test "it will create an oidc provider for a cluster's owner" do
+      user = insert(:user)
+      sa = bound_service_account(user)
+      cluster = insert(:cluster, owner: sa)
+      expect(HTTPoison, :post, fn _, _, _ ->
+        {:ok, %{status_code: 200, body: Jason.encode!(%{client_id: "123", client_secret: "secret"})}}
+      end)
+
+      {:ok, %{data: %{"createOidcProvider" => provider}}} = run_query("""
+        mutation Create($id: ID!, $attributes: OidcAttributes!) {
+          createOidcProvider(clusterId: $id, attributes: $attributes) {
+            id
+            bindings { user { id } }
+          }
+        }
+      """, %{"id" => cluster.id, "attributes" => %{
+        "authMethod" => "BASIC",
+        "redirectUris" => ["example.com"]
+      }}, %{current_user: user})
+
+      assert Core.Repo.get(Core.Schema.OIDCProvider, provider["id"]).owner_id == sa.id
+      assert Enum.map(provider["bindings"], & &1["user"]["id"]) == [user.id]
+    end
+
     test "it will create an user-bound oidc provider" do
       user = insert(:user)
       account = insert(:account)

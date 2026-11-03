@@ -23,7 +23,7 @@ const ChartTooltipContentSC = styled(Card).attrs(() => ({
     flexDirection: 'row',
     alignItems: 'center',
     gap: theme.spacing.xsmall,
-    transform: `translate(-50%, calc(-${theme.spacing.small}px - 100%))`,
+    transform: `translate(-50%, calc(-${theme.spacingPx.small}px - 100%))`,
   },
 }))
 const ChartTooltipSwatchSC = styled.div.attrs(() => ({

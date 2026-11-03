@@ -4,21 +4,24 @@ import styled from 'styled-components'
 import { Footer, FooterBalancer } from './LoginFooter'
 import { Suspense } from 'react'
 import LoadingIndicator from 'components/utils/LoadingIndicator'
+import { MobiusHero } from './MobiusHero'
 
-export const RIGHT_CONTENT_MAX_WIDTH = 512
-export const RIGHT_CONTENT_PAD = styledTheme.spacing.xxlarge
+export const RIGHT_CONTENT_MAX_WIDTH = 400
+export const RIGHT_CONTENT_PAD = styledTheme.spacingPx.xxlarge
 export const LOGIN_BREAKPOINT = `@media screen and (min-width: ${
   RIGHT_CONTENT_MAX_WIDTH + RIGHT_CONTENT_PAD * 2
 }px)`
 
-const HERO_IMAGE_URL = '/login-bg-img.webp'
+// Below this width the hero is hidden and the form takes the whole screen
+const HERO_BREAKPOINT = '@media screen and (max-width: 999px)'
 
 export function LoginPortal({ children }: any) {
   return (
     <WrapperSC>
       <Flex
         direction="column"
-        flex={1}
+        flex="1 1 440px"
+        minWidth={0}
         height="100vh"
         overflow="auto"
         paddingLeft={RIGHT_CONTENT_PAD}
@@ -36,39 +39,23 @@ export function LoginPortal({ children }: any) {
         </div>
         <Footer />
       </Flex>
-      <HeroSC />
+      <HeroWrapperSC>
+        <MobiusHero />
+      </HeroWrapperSC>
     </WrapperSC>
   )
 }
 
-const WrapperSC = styled.div({
-  display: 'grid',
-  gridTemplateColumns: '50% 50%',
-  gridTemplateRows: '1fr',
+const WrapperSC = styled.div(({ theme }) => ({
+  display: 'flex',
   height: '100vh',
   width: '100vw',
   overflow: 'hidden',
-})
-const HeroSC = styled.div(({ theme }) => ({
-  background: theme.colors['fill-accent'],
-  position: 'relative',
-  '&::before': {
-    content: '""',
-    position: 'absolute',
-    inset: 40,
-    backgroundImage:
-      'radial-gradient(circle, rgba(255, 255, 255, 0.1) 1px, transparent 1px)',
-    backgroundSize: '20px 20px',
-    zIndex: 1,
-  },
-  '&::after': {
-    content: '""',
-    position: 'absolute',
-    inset: 0,
-    backgroundImage: `url(${HERO_IMAGE_URL})`,
-    backgroundSize: '80%',
-    backgroundPosition: 'center',
-    backgroundRepeat: 'no-repeat',
-    zIndex: 2,
-  },
+  background: theme.colors['fill-zero'],
 }))
+const HeroWrapperSC = styled.div({
+  display: 'flex',
+  flex: '1.25 1 520px',
+  minWidth: 0,
+  [HERO_BREAKPOINT]: { display: 'none' },
+})

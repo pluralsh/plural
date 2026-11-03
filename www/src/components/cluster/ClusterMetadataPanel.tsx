@@ -1,8 +1,6 @@
-import { A } from 'honorable'
 import moment from 'moment'
 import { Tooltip } from '@pluralsh/design-system'
 import { Dispatch } from 'react'
-import { Link } from 'react-router-dom'
 
 import { ClusterFragment } from '../../generated/graphql'
 import CopyButton from '../utils/CopyButton'
@@ -10,6 +8,7 @@ import ClusterHealth from '../overview/clusters/ClusterHealth'
 import ClusterOwner from '../overview/clusters/ClusterOwner'
 import { InfoPanel } from '../utils/InfoPanel'
 import Prop from '../utils/Prop'
+import { InlineLinkSC } from '../utils/Typography'
 
 type ClusterMetadataPanelProps = {
   cluster: ClusterFragment
@@ -68,13 +67,9 @@ export default function ClusterMetadataPanel({
           title="Promotion source"
           margin={0}
         >
-          <A
-            inline
-            as={Link}
-            to={`/clusters/${cluster.dependency.dependency?.id}`}
-          >
+          <InlineLinkSC to={`/clusters/${cluster.dependency.dependency?.id}`}>
             {cluster.dependency.dependency?.name}
-          </A>
+          </InlineLinkSC>
         </Prop>
       )}
       <Prop

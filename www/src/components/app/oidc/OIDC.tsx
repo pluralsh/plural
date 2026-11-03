@@ -1,8 +1,10 @@
 import {
+  Button,
   Card,
   CheckIcon,
   Chip,
   Codeline,
+  Flex,
   FormField,
   InfoOutlineIcon,
   Input,
@@ -12,19 +14,17 @@ import {
   Toast,
   Tooltip,
 } from '@pluralsh/design-system'
-import { Box } from 'grommet'
-import { Button, Flex, P, Span } from 'honorable'
 import isEqual from 'lodash/isEqual'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useTheme } from 'styled-components'
 
 import usePrevious from '../../../hooks/usePrevious'
-import { deepUpdate, updateCache } from '../../../utils/graphql'
 import InviteUserModal from '../../account/invite/InviteUserModal'
 import { BindingInput, fetchGroups, fetchUsers } from '../../account/Typeaheads'
 import { sanitize } from '../../account/utils'
 import { AuthMethod } from '../../oidc/types'
-import { REPO_Q } from '../../repository/packages/queries'
 import { GqlError } from '../../utils/Alert'
+import { Body2P, SpanSC } from '../../utils/Typography'
 import CreateGroupModal from '../../utils/group/CreateGroupModal'
 import ImpersonateServiceAccount from '../../utils/ImpersonateServiceAccount'
 import {
@@ -77,14 +77,14 @@ export function UrlsInput({ uriFormat = '', urls, setUrls }: any) {
   )
 
   return (
-    <Box
+    <Flex
+      direction="column"
       gap="small"
-      fill="horizontal"
+      width="100%"
     >
-      <Box
-        flex={false}
-        fill="horizontal"
-        direction="row"
+      <Flex
+        flexShrink={0}
+        width="100%"
         align="center"
       >
         <Input
@@ -92,7 +92,6 @@ export function UrlsInput({ uriFormat = '', urls, setUrls }: any) {
           prefix={scheme}
           suffix={path}
           width="100%"
-          borderRadius="normal"
           placeholder={uriFormat ? 'Enter a domain' : 'Enter a redirect url'}
           onChange={({ target: { value } }) => setValue(value)}
         />
@@ -103,7 +102,7 @@ export function UrlsInput({ uriFormat = '', urls, setUrls }: any) {
         >
           Add
         </Button>
-      </Box>
+      </Flex>
       <Flex
         align="stretch"
         wrap="wrap"
@@ -113,7 +112,7 @@ export function UrlsInput({ uriFormat = '', urls, setUrls }: any) {
           <Chip
             key={i}
             size="small"
-            hue="lighter"
+            fillLevel={2}
             clickable
             closeButton
             onClick={() => removeUrl(url)}
@@ -122,7 +121,7 @@ export function UrlsInput({ uriFormat = '', urls, setUrls }: any) {
           </Chip>
         ))}
       </Flex>
-    </Box>
+    </Flex>
   )
 }
 
@@ -138,6 +137,7 @@ export function ProviderForm({
   onCreateGroup,
   loading,
 }: any) {
+  const theme = useTheme()
   const settings = repository.oauthSettings || {}
   const [toast, setToast] = useState<any>(null)
   const [dirty, setDirty] = useState(false)
@@ -170,12 +170,14 @@ export function ProviderForm({
 
   return (
     <Card
-      display="flex"
-      flexDirection="column"
-      gap="large"
-      padding="xlarge"
       maxHeight="100%"
       overflowY="auto"
+      css={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: theme.spacing.large,
+        padding: theme.spacing.xlarge,
+      }}
     >
       <Flex
         gap="medium"
@@ -183,13 +185,13 @@ export function ProviderForm({
       >
         <FormField
           label="Client ID"
-          width="calc(66.666% - 16px)"
+          style={{ width: 'calc(66.666% - 16px)' }}
         >
           <Codeline>{attributes.clientId}</Codeline>
         </FormField>
         <FormField
           label="Client secret"
-          width="33.333%"
+          style={{ width: '33.333%' }}
         >
           <Codeline displayText="••••••••••">
             {attributes.clientSecret}
@@ -209,7 +211,7 @@ export function ProviderForm({
               size="small"
               icon={<InfoOutlineIcon color="icon-xlight" />}
             >
-              <Span color="text-primary-disabled">{invite.email}</Span>
+              <SpanSC $color="text-primary-disabled">{invite.email}</SpanSC>
             </Chip>
           </Tooltip>
         ))}
@@ -226,7 +228,7 @@ export function ProviderForm({
               onClick={onInvite}
               leftContent={<PersonPlusIcon color="icon-info" />}
             >
-              <Span color="action-link-inline">Invite new user</Span>
+              <SpanSC $color="action-link-inline">Invite new user</SpanSC>
             </ListBoxFooter>
           )
         }
@@ -250,7 +252,7 @@ export function ProviderForm({
               onClick={onCreateGroup}
               leftContent={<PeoplePlusIcon color="icon-info" />}
             >
-              <Span color="action-link-inline">Create new group</Span>
+              <SpanSC $color="action-link-inline">Create new group</SpanSC>
             </ListBoxFooter>
           )
         }
@@ -281,20 +283,13 @@ export function ProviderForm({
         >
           Save
         </Button>
-        {dirty && (
-          <P
-            body2
-            color="text-xlight"
-          >
-            Unsaved changes
-          </P>
-        )}
+        {dirty && <Body2P $color="text-xlight">Unsaved changes</Body2P>}
         {!dirty && !loading && saved && (
           <Flex
             gap="xsmall"
-            color="text-xlight"
+            color={theme.colors['text-xlight']}
           >
-            <P body2>Saved</P>
+            <Body2P>Saved</Body2P>
             <CheckIcon size={12} />
           </Flex>
         )}
@@ -332,17 +327,6 @@ export function CreateProvider({
       attributes: { ...attributes, bindings: bindings.map(sanitize) },
     },
     onCompleted: () => refetch?.(),
-    update: (cache, { data }) =>
-      updateCache(cache, {
-        query: REPO_Q,
-        variables: { repositoryId: installation.repository.id },
-        update: (prev) =>
-          deepUpdate(
-            prev,
-            'repository.installation.oidcProvider',
-            () => data?.createOidcProvider
-          ),
-      }),
   })
 
   return (

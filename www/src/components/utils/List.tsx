@@ -1,15 +1,14 @@
 import styled from 'styled-components'
-import { Card, CardProps } from '@pluralsh/design-system'
+import { Card, type CardProps } from '@pluralsh/design-system'
 import {
-  ReactNode,
+  type CSSProperties,
+  type ComponentPropsWithRef,
   createContext,
-  forwardRef,
   useContext,
   useMemo,
 } from 'react'
-import { Ul } from 'honorable'
 
-type Hue = Required<CardProps>['hue']
+type Hue = 'default' | 'lighter' | 'lightest'
 
 const ListContext = createContext<{ hue: Hue }>({ hue: 'default' })
 
@@ -30,12 +29,18 @@ const hueToBorderColor: Record<Hue | 'none', string> = {
   lightest: 'border-fill-three',
 }
 
+export const hueToFillLevel = {
+  default: 1,
+  lighter: 2,
+  lightest: 3,
+} as const satisfies Record<Hue, CardProps['fillLevel']>
+
 const ListItemInner = styled(LiBare)<{
   $last?: boolean
   $hue?: string
   $first?: boolean
 }>(({ theme, $last = false, $hue = 'default' }) => ({
-  padding: `${theme.spacing.xsmall}px ${theme.spacing.medium}px`,
+  padding: `${theme.spacingPx.xsmall}px ${theme.spacingPx.medium}px`,
   borderBottomStyle: $last ? 'none' : 'solid',
   borderColor: theme.colors[hueToBorderColor[$hue]] || 'transparent',
   borderWidth: '1px',
@@ -45,63 +50,62 @@ const ListItemInner = styled(LiBare)<{
   },
 }))
 
-type ListItemProps = any & {
-  first: boolean
-  last: boolean
-  children: ReactNode
+type ListItemProps = ComponentPropsWithRef<'li'> & {
+  first?: boolean
+  last?: boolean
 }
 
-const ListItem = forwardRef<HTMLLIElement, ListItemProps>(
-  ({ first, last, ...props }, ref) => {
-    const { hue } = useContext(ListContext)
+function ListItem({ first, last, ...props }: ListItemProps) {
+  const { hue } = useContext(ListContext)
 
-    return (
-      <ListItemInner
-        ref={ref}
-        $first={first}
-        $last={last}
-        $hue={hue}
-        {...props}
-      />
-    )
-  }
-)
+  return (
+    <ListItemInner
+      $first={first}
+      $last={last}
+      $hue={hue}
+      {...props}
+    />
+  )
+}
 
-type ListProps = any & {
+type ListProps = Omit<CardProps, 'fillLevel'> & {
   hue?: Hue
-  children: ReactNode
+  position?: CSSProperties['position']
 }
 
-const List = forwardRef<HTMLDivElement, ListProps>(
-  ({ hue = 'default', children, ...props }, ref) => {
-    const listContext = useMemo(
-      () => ({
-        hue,
-      }),
-      [hue]
-    )
+function List({ hue = 'default', position, children, ...props }: ListProps) {
+  const listContext = useMemo(
+    () => ({
+      hue,
+    }),
+    [hue]
+  )
 
-    return (
-      <ListContext.Provider value={listContext}>
-        <Card
-          ref={ref}
-          hue={hue}
-          display="flex"
-          alignItems="top"
-          flexDirection="column"
-          cornerSize="large"
-          padding={0}
-          margin={0}
-          flexGrow={1}
-          {...props}
-          overflow="hidden"
-          as={Ul}
-        >
-          {children}
-        </Card>
-      </ListContext.Provider>
-    )
-  }
+  return (
+    <ListContext.Provider value={listContext}>
+      <ListCardSC
+        forwardedAs="ul"
+        fillLevel={hueToFillLevel[hue]}
+        cornerSize="large"
+        {...props}
+        overflow="hidden"
+        $position={position}
+      >
+        {children}
+      </ListCardSC>
+    </ListContext.Provider>
+  )
+}
+
+const ListCardSC = styled(Card)<{ $position?: CSSProperties['position'] }>(
+  ({ $position }) => ({
+    display: 'flex',
+    flexDirection: 'column',
+    padding: 0,
+    margin: 0,
+    flexGrow: 1,
+    ...($position ? { position: $position } : {}),
+  })
 )
 
 export { List, ListItem, ListContext, hueToBorderColor }

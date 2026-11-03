@@ -1,6 +1,11 @@
-import { Div } from 'honorable'
-import styled from 'styled-components'
+import { Flex, type FlexProps } from '@pluralsh/design-system'
 
-export const SideNavOffset = styled(Div)(({ theme }) => ({
-  marginLeft: -theme.spacing.medium,
-}))
+export function SideNavOffset(props: FlexProps) {
+  return (
+    <Flex
+      direction="column"
+      marginLeft="minus-medium"
+      {...props}
+    />
+  )
+}

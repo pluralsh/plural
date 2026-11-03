@@ -1,5 +1,4 @@
 import { SearchIcon } from '@pluralsh/design-system'
-import { Div } from 'honorable'
 import { useCallback, useEffect, useState } from 'react'
 
 import { UsersDocument, useUsersQuery } from '../../generated/graphql'
@@ -53,10 +52,7 @@ export function UsersList() {
         onChange={({ target: { value } }) => setQ(value)}
         flexGrow={0}
       />
-      <Div
-        flexGrow={1}
-        width="100%"
-      >
+      <div css={{ flexGrow: 1, width: '100%' }}>
         {!data && !dataCache ? (
           <LoadingIndicator />
         ) : (
@@ -89,7 +85,7 @@ export function UsersList() {
             placeholder={Placeholder}
           />
         )}
-      </Div>
+      </div>
     </List>
   )
 }

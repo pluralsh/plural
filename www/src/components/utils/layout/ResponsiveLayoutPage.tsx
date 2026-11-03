@@ -1,13 +1,21 @@
-import { Flex, FlexProps } from 'honorable'
+import { Flex, type FlexProps } from '@pluralsh/design-system'
 
-export function ResponsiveLayoutPage({ children, ...props }: FlexProps) {
+type ResponsiveLayoutPageProps = Omit<FlexProps, 'padding'> & {
+  padding?: FlexProps['padding'] | 0
+}
+
+export function ResponsiveLayoutPage({
+  children,
+  padding = 'large',
+  ...props
+}: ResponsiveLayoutPageProps) {
   return (
     <Flex
       height="100%"
       width="100%"
       overflowY="hidden"
-      padding="large"
-      flexGrow={1}
+      padding={padding === 0 ? 'none' : padding}
+      grow={1}
       {...props}
     >
       {children}

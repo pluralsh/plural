@@ -1,0 +1,6 @@
+export const CUR_CREATE_CLUSTER_STEP_KEY = 'cur-create-cluster-step'
+export const CLOUD_OPTION_KEY = 'cloud-option'
+export const HOSTING_OPTION_KEY = 'hosting-option'
+export const CUR_CONSOLE_INSTANCE_KEY = 'cur-console-instance-id'
+export const SETUP_GUIDE_OPEN_KEY = 'create-cluster-setup-guide-open'
+export const CREATE_CLUSTER_TTL_KEY = 'create-cluster-ttl'

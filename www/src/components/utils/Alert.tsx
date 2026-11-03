@@ -1,10 +1,8 @@
-import { Callout } from '@pluralsh/design-system'
-import { GraphQLErrors } from '@apollo/client/errors'
+import { ApolloError } from '@apollo/client'
+import { Callout, type CalloutProps } from '@pluralsh/design-system'
 import { ReactNode } from 'react'
-import {
-  CalloutProps,
-  CalloutSeverity,
-} from '@pluralsh/design-system/dist/components/Callout'
+
+type CalloutSeverity = NonNullable<CalloutProps['severity']>
 
 type Status = 'er' | 'su' | 'in'
 
@@ -25,7 +23,7 @@ export function GqlError({
   error,
   ...props
 }: {
-  error?: { graphQLErrors: GraphQLErrors }
+  error?: Pick<ApolloError, 'graphQLErrors'>
 } & Omit<AlertProps, 'status' | 'description'>) {
   return (
     <Alert

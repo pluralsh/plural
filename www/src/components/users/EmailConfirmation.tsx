@@ -5,7 +5,6 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { useTheme } from 'styled-components'
 
 import CurrentUserContext from '../../contexts/CurrentUserContext'
-import { useIsCurrentlyOnboarding } from '../shell/hooks/useOnboarded'
 import { Alert, AlertStatus, GqlError } from '../utils/Alert'
 import LoadingIndicator from '../utils/LoadingIndicator'
 
@@ -70,12 +69,10 @@ export function VerifyEmailConfirmed() {
     variables: { attributes: { email: me.email, type: ResetTokenType.Email } },
     onCompleted: () => setOpen(false),
   })
-  const isCurrentlyOnboarding = useIsCurrentlyOnboarding()
 
   const close = useCallback(() => setOpen(false), [setOpen])
 
-  if (me.emailConfirmed || me.serviceAccount || !open || isCurrentlyOnboarding)
-    return null
+  if (me.emailConfirmed || me.serviceAccount || !open) return null
 
   return (
     <Toast

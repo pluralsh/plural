@@ -1,18 +1,12 @@
 import { ApolloProvider } from '@apollo/client'
-import { mergeDeep } from '@apollo/client/utilities'
 import {
   BreadcrumbsProvider,
   GlobalStyle,
+  MarkdocContextProvider,
+  styledThemeDark,
+  styledThemeLight,
   useThemeColorMode,
 } from '@pluralsh/design-system'
-import { MarkdocContextProvider } from '@pluralsh/design-system/dist/markdoc'
-import { Grommet, ThemeType } from 'grommet'
-import {
-  CssBaseline,
-  ThemeProvider as HonorableThemeProvider,
-  mergeTheme,
-} from 'honorable'
-import mpRecipe from 'honorable-recipe-mp'
 import { Suspense, lazy } from 'react'
 import { Route, Routes } from 'react-router-dom'
 import styled, {
@@ -27,15 +21,9 @@ import { PluralErrorBoundary } from './components/utils/PluralErrorBoundary'
 import { OverlayContextProvider } from './components/layout/Overlay'
 import { CursorPositionProvider } from './components/utils/CursorPosition'
 import NavContextProvider from './contexts/NavigationContext'
+import { useThemePreferenceSync } from './components/profile/themePreference'
 import { client } from './helpers/client'
 import { HistoryRouter, browserHistory } from './router'
-import {
-  polyfilledHonorableThemeDark,
-  polyfilledHonorableThemeLight,
-  polyfilledStyledThemeDark,
-  polyfilledStyledThemeLight,
-} from './styles'
-import { DEFAULT_THEME } from './theme'
 
 const Plural = lazy(() => import('./components/Plural'))
 const Invite = lazy(() => import('./components/Invite'))
@@ -101,114 +89,81 @@ const RootBoxSC = styled.div(({ theme }) => ({
 function App() {
   const colorMode = useThemeColorMode()
 
-  const honorableTheme = mergeTheme(
-    colorMode === 'light'
-      ? polyfilledHonorableThemeLight
-      : polyfilledHonorableThemeDark,
-    {
-      global: [
-        // This provides the mp spacing props to honorable
-        // DEPRECATED in favor of the semantic spacing system
-        mpRecipe(),
-      ],
-    }
-  )
-  const styledTheme =
-    colorMode === 'light'
-      ? polyfilledStyledThemeLight
-      : polyfilledStyledThemeDark
-  const mergedStyledTheme = mergeDeep(DEFAULT_THEME, styledTheme)
+  useThemePreferenceSync()
+  const styledTheme = colorMode === 'light' ? styledThemeLight : styledThemeDark
 
   const routes = (
-    <HistoryRouter history={browserHistory}>
-      <Routes>
-        <Route
-          path="/reset-password/:id"
-          element={<ResetPassword />}
-        />
-        <Route
-          path="/password-reset"
-          element={<RequestPasswordReset />}
-        />
-        <Route
-          path="/confirm-email/:id"
-          element={<EmailConfirmed />}
-        />
-        <Route
-          path="/invite/:inviteId"
-          element={<Invite />}
-        />
-        <Route
-          path="/passwordless-login/:token"
-          element={<PasswordlessLogin />}
-        />
-        <Route
-          path="/oauth/callback/github/shell"
-          element={<Plural />}
-        />
-        <Route
-          path="/oauth/callback/gitlab/shell"
-          element={<Plural />}
-        />
-        <Route
-          path="/oauth/callback/:service"
-          element={<OAuthCallback />}
-        />
-        <Route
-          path="/sso/callback"
-          element={<SSOCallback />}
-        />
-        <Route
-          path="/login"
-          element={<Login />}
-        />
-        <Route
-          path="/signup"
-          element={<Signup />}
-        />
-        <Route
-          path="/oauth/consent"
-          element={<OAuthConsent />}
-        />
-        <Route
-          path="*"
-          element={<Plural />}
-        />
-      </Routes>
-    </HistoryRouter>
+    <Routes>
+      <Route
+        path="/reset-password/:id"
+        element={<ResetPassword />}
+      />
+      <Route
+        path="/password-reset"
+        element={<RequestPasswordReset />}
+      />
+      <Route
+        path="/confirm-email/:id"
+        element={<EmailConfirmed />}
+      />
+      <Route
+        path="/invite/:inviteId"
+        element={<Invite />}
+      />
+      <Route
+        path="/passwordless-login/:token"
+        element={<PasswordlessLogin />}
+      />
+      <Route
+        path="/oauth/callback/:service"
+        element={<OAuthCallback />}
+      />
+      <Route
+        path="/sso/callback"
+        element={<SSOCallback />}
+      />
+      <Route
+        path="/login"
+        element={<Login />}
+      />
+      <Route
+        path="/signup"
+        element={<Signup />}
+      />
+      <Route
+        path="/oauth/consent"
+        element={<OAuthConsent />}
+      />
+      <Route
+        path="*"
+        element={<Plural />}
+      />
+    </Routes>
   )
 
   return (
     <Suspense>
       <ApolloProvider client={client}>
-        <StyleSheetManager shouldForwardProp={shouldForwardProp}>
-          <HonorableThemeProvider theme={honorableTheme}>
-            {/* @ts-ignore - this will be fixed when we bump DS */}
-            <StyledThemeProvider theme={mergedStyledTheme}>
+        <HistoryRouter history={browserHistory}>
+          <StyleSheetManager shouldForwardProp={shouldForwardProp}>
+            <StyledThemeProvider theme={styledTheme}>
               <CursorPositionProvider>
                 <MarkdocContextProvider value={{ variant: 'console' }}>
                   <NavContextProvider>
                     <OverlayContextProvider>
                       <BreadcrumbsProvider>
-                        <CssBaseline />
                         <GlobalStyle />
-                        <Grommet
-                          full
-                          theme={mergedStyledTheme as any as ThemeType}
-                          themeMode="dark"
-                        >
-                          <PluralErrorBoundary>
-                            <RootBoxSC>{routes}</RootBoxSC>
-                          </PluralErrorBoundary>
-                        </Grommet>
+                        <PluralErrorBoundary>
+                          <RootBoxSC>{routes}</RootBoxSC>
+                        </PluralErrorBoundary>
                       </BreadcrumbsProvider>
                     </OverlayContextProvider>
                   </NavContextProvider>
                 </MarkdocContextProvider>
               </CursorPositionProvider>
             </StyledThemeProvider>
-          </HonorableThemeProvider>
-        </StyleSheetManager>
+          </StyleSheetManager>
+        </HistoryRouter>
       </ApolloProvider>
     </Suspense>
   )

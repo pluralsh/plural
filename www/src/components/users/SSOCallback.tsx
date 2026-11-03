@@ -1,10 +1,11 @@
-import { Box } from 'grommet'
 import { useEffect } from 'react'
 import { useApolloClient, useMutation } from '@apollo/client'
+import { Flex } from '@pluralsh/design-system'
 import { useLocation, useNavigate } from 'react-router-dom'
 import qs from 'query-string'
 
 import { setAuthFromUser } from '../../helpers/authentication'
+import { authlessClient } from '../../helpers/authlessClient'
 import { GqlError } from '../utils/Alert'
 import LoadingIndicator from '../utils/LoadingIndicator'
 
@@ -22,6 +23,7 @@ export function SSOCallback() {
   const deviceToken = getDeviceToken()
 
   const [mutation, { error, loading }] = useMutation(SSO_CALLBACK, {
+    client: authlessClient,
     variables: { code, deviceToken },
     onCompleted: (result) => {
       setAuthFromUser(result.ssoCallback)
@@ -43,7 +45,8 @@ export function SSOCallback() {
   if (loading) return <LoadingIndicator />
 
   return error ? (
-    <Box
+    <Flex
+      direction="column"
       height="100vh"
       width="100vw"
       align="center"
@@ -53,6 +56,6 @@ export function SSOCallback() {
         error={error}
         header="Failed to log in"
       />
-    </Box>
+    </Flex>
   ) : null
 }

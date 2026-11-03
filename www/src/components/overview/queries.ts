@@ -67,19 +67,6 @@ export const CLUSTERS = gql`
   ${ImpersonationPolicy}
 `
 
-export const CREATE_CLUSTER_DEPENDENCY = gql`
-  mutation Create($source: ID!, $dest: ID!) {
-    createClusterDependency(sourceId: $source, destId: $dest) {
-      cluster {
-        id
-      }
-      dependency {
-        id
-      }
-    }
-  }
-`
-
 export const DELETE_CLUSTER_DEPENDENCY = gql`
   mutation Delete($source: ID!, $dest: ID!) {
     deleteClusterDependency(sourceId: $source, destId: $dest) {

@@ -1,16 +1,20 @@
 import { useLocation, useNavigate } from 'react-router-dom'
 import queryString, { ParsedQuery } from 'query-string'
-import { ArrowRightLeftIcon, Button, IconFrame } from '@pluralsh/design-system'
+import {
+  ArrowRightLeftIcon,
+  Button,
+  Flex,
+  IconFrame,
+} from '@pluralsh/design-system'
 import { useCallback } from 'react'
-import { A, Flex, Span } from 'honorable'
 import StartCase from 'lodash/startCase'
-import { useTheme } from 'styled-components'
+import styled, { useTheme } from 'styled-components'
 
 import { isEmpty } from 'lodash'
 
 import { LoginPortal } from '../users/LoginPortal'
 import { GqlError } from '../utils/Alert'
-import { PLURAL_MARK, PLURAL_MARK_WHITE } from '../constants'
+import { PLURAL_LOGOMARK_WHITE } from '../constants'
 import {
   useConsentMutation,
   useMeQuery,
@@ -18,6 +22,12 @@ import {
 } from '../../generated/graphql'
 import { clearLocalStorage } from '../../helpers/localStorage'
 import LoadingIndicator from '../utils/LoadingIndicator'
+import {
+  Body1P,
+  CaptionP,
+  InlineLinkButtonSC,
+  Title1H1,
+} from '../utils/Typography'
 
 function Icon({
   icon,
@@ -38,12 +48,44 @@ function Icon({
           height="48px"
         />
       }
-      width="64px"
-      height="64px"
+      style={{ width: 64, height: 64 }}
       type="floating"
     />
   ) : null
 }
+
+// Plural apps that sign in through Plural share its mark on their own color
+const APP_TILE_COLORS: Record<string, string> = {
+  plural: '#4A51F2',
+  console: '#66C7FF',
+}
+
+function AppTile({ name }: { name: string }) {
+  return (
+    <AppTileSC
+      role="img"
+      aria-label={StartCase(name)}
+      $color={APP_TILE_COLORS[name]}
+    >
+      <img
+        src={PLURAL_LOGOMARK_WHITE}
+        alt=""
+        width={30}
+        height={31}
+      />
+    </AppTileSC>
+  )
+}
+
+const AppTileSC = styled.div<{ $color: string }>(({ theme, $color }) => ({
+  width: 64,
+  height: 64,
+  borderRadius: theme.borderRadiuses.large,
+  background: $color,
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+}))
 
 const getChallenge = (parsedQueryString: ParsedQuery): string => {
   const challenge = parsedQueryString.consent_challenge
@@ -95,19 +137,24 @@ export function OAuthConsent() {
       >
         <Flex
           direction="row"
+          align="center"
           gap="large"
         >
-          <Icon
-            icon={PLURAL_MARK}
-            darkIcon={PLURAL_MARK_WHITE}
-          />
+          <AppTile name="plural" />
           {repository && (
             <>
-              <ArrowRightLeftIcon size={18} />
-              <Icon
-                icon={repository.icon}
-                darkIcon={repository.darkIcon}
+              <ArrowRightLeftIcon
+                size={18}
+                color="icon-light"
               />
+              {APP_TILE_COLORS[repository.name] ? (
+                <AppTile name={repository.name} />
+              ) : (
+                <Icon
+                  icon={repository.icon}
+                  darkIcon={repository.darkIcon}
+                />
+              )}
             </>
           )}
         </Flex>
@@ -118,22 +165,23 @@ export function OAuthConsent() {
           gap="xsmall"
           paddingTop="medium"
         >
-          <Span
-            title1
-            size="medium"
-            textAlign="center"
+          <Title1H1
+            as="span"
+            css={{ textAlign: 'center' }}
           >
             {repository?.name
               ? `${StartCase(repository.name)} requires access`
               : 'Access required'}
-          </Span>
-          <Span
-            body1
-            color="text-light"
-            textAlign="center"
+          </Title1H1>
+          <Body1P
+            as="span"
+            $color="text-light"
+            css={{ textAlign: 'center' }}
           >
-            Click "Allow" below to allow access to your profile.
-          </Span>
+            {repository?.name
+              ? `Allow ${StartCase(repository.name)} to access your Plural profile.`
+              : 'Click "Allow" below to allow access to your profile.'}
+          </Body1P>
         </Flex>
         <Flex
           gap="small"
@@ -155,19 +203,16 @@ export function OAuthConsent() {
             Allow
           </Button>
 
-          <Span
-            caption
-            color="text-xlight"
-            textAlign="center"
+          <CaptionP
+            as="span"
+            $color="text-xlight"
+            css={{ textAlign: 'center' }}
           >
             You are currently signed in as {userData?.me?.email}.&nbsp;
-            <A
-              inline
-              onClick={logout}
-            >
+            <InlineLinkButtonSC onClick={logout}>
               Wrong account?
-            </A>
-          </Span>
+            </InlineLinkButtonSC>
+          </CaptionP>
         </Flex>
       </Flex>
     </LoginPortal>

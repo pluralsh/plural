@@ -1,24 +1,27 @@
-import { Flex } from 'honorable'
+import { Flex, type FlexProps } from '@pluralsh/design-system'
+import styled from 'styled-components'
 
-import { forwardRef } from 'react'
+const ContentContainerSC = styled(Flex)(({ theme }) => ({
+  [`@media (min-width: ${theme.breakpoints.desktopLarge}px)`]: {
+    maxWidth: 896,
+    width: 896,
+  },
+}))
 
-export const ResponsiveLayoutContentContainer = forwardRef(
-  (props: any, ref) => (
-    <Flex
+export function ResponsiveLayoutContentContainer(props: FlexProps) {
+  return (
+    <ContentContainerSC
       direction="column"
-      flexGrow={1}
-      flexShrink={1}
+      grow={1}
+      shrink={1}
       height="100%"
       minWidth={0}
       minHeight={0}
       maxHeight="100%"
       width={896}
-      maxWidth-desktopLarge-up={896}
-      width-desktopLarge-up={896}
       overflowY="auto"
       overflowX="hidden"
-      ref={ref}
       {...props}
     />
   )
-)
+}

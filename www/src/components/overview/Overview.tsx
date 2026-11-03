@@ -1,5 +1,7 @@
-import { Flex } from 'honorable'
-import { ReactElement } from 'react'
+import { Flex } from '@pluralsh/design-system'
+import { ReactElement, Suspense } from 'react'
+
+import LoadingIndicator from '../utils/LoadingIndicator'
 import { Outlet } from 'react-router-dom'
 
 export function Overview(): ReactElement {
@@ -10,7 +12,9 @@ export function Overview(): ReactElement {
       padding="large"
       overflowY="auto"
     >
-      <Outlet />
+      <Suspense fallback={<LoadingIndicator />}>
+        <Outlet />
+      </Suspense>
     </Flex>
   )
 }

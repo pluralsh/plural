@@ -92,13 +92,13 @@ const TableBodySC = styled.tbody(({ theme }) => ({
 
 const TableHeaderCellSC = styled.th(({ theme }) => ({
   ...theme.partials.text.subtitle2,
-  padding: `${theme.spacing.xlarge}px ${theme.spacing.large}px`,
+  padding: `${theme.spacingPx.xlarge}px ${theme.spacingPx.large}px`,
   textAlign: 'left',
 }))
 
 const TableCellSC = styled.td(({ theme }) => ({
   ...theme.partials.text.body2,
-  padding: `${theme.spacing.medium}px ${theme.spacing.large}px`,
+  padding: `${theme.spacingPx.medium}px ${theme.spacingPx.large}px`,
   color: theme.colors['text-xlight'],
   whiteSpace: 'pre-wrap',
 }))

@@ -67,6 +67,18 @@ defmodule GraphQl.Schema.Cluster do
     field :account, :account, resolve: dataloader(Account), description: "The account that the cluster belongs to."
     field :queue,   :upgrade_queue, resolve: dataloader(Upgrade), description: "The upgrade queue for applications running on the cluster."
 
+    @desc "the cluster owner's installation of a repository, authorized through the owner's impersonation policy"
+    field :installation, :installation do
+      arg :repository, non_null(:string), description: "the name of the repository, eg console"
+
+      resolve &Cluster.installation/3
+    end
+
+    @desc "oidc providers owned by the cluster's owner, authorized through the owner's impersonation policy"
+    connection field :oidc_providers, node_type: :oidc_provider do
+      resolve &Cluster.oidc_providers/3
+    end
+
     timestamps()
   end
 
@@ -157,9 +169,11 @@ defmodule GraphQl.Schema.Cluster do
       safe_resolve &Cluster.delete_dependency/2
     end
 
-    @desc "moves up the upgrade waterline for a user"
+    @desc "moves up the upgrade waterline for a user, or for the owner of the given cluster"
     field :promote, :user do
       middleware Authenticated
+      arg :cluster_id, :id, description: "promote this cluster's owner instead of the current user"
+
       safe_resolve &Cluster.promote/2
     end
 

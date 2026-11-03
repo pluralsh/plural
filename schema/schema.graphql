@@ -51,6 +51,9 @@ type RootQueryType {
 
   invoices(after: String, first: Int, before: String, last: Int): InvoiceConnection
 
+  "daily usage from stripe's billing meters, defaulting to the last 30 days of every meter"
+  billingUsage(startTime: DateTime, endTime: DateTime, meters: [UsageMeter!]): BillingUsage
+
   "Get an application by its ID or name."
   repository(
     "The ID of the application."
@@ -123,6 +126,8 @@ type RootQueryType {
   groupMembers(after: String, first: Int, before: String, last: Int, groupId: ID!): GroupMemberConnection
 
   role(id: ID!): Role
+
+  group(id: ID!): Group
 
   roles(after: String, first: Int, before: String, last: Int, q: String, userId: ID): RoleConnection
 
@@ -339,6 +344,9 @@ type RootMutationType {
     "The installation ID this provider will be bound to"
     installationId: ID
 
+    "create the provider for this cluster's owner instead of the current user"
+    clusterId: ID
+
     attributes: OidcAttributes!
   ): OidcProvider
 
@@ -541,8 +549,11 @@ type RootMutationType {
   "deletes a dependency for this cluster and potentially disables promotions entirely"
   deleteClusterDependency(sourceId: ID!, destId: ID!): ClusterDependency
 
-  "moves up the upgrade waterline for a user"
-  promote: User
+  "moves up the upgrade waterline for a user, or for the owner of the given cluster"
+  promote(
+    "promote this cluster's owner instead of the current user"
+    clusterId: ID
+  ): User
 
   "transfers ownership of a cluster to a service account"
   transferOwnership(name: String!, email: String!): Cluster
@@ -835,6 +846,15 @@ type Cluster {
 
   "The upgrade queue for applications running on the cluster."
   queue: UpgradeQueue
+
+  "the cluster owner's installation of a repository, authorized through the owner's impersonation policy"
+  installation(
+    "the name of the repository, eg console"
+    repository: String!
+  ): Installation
+
+  "oidc providers owned by the cluster's owner, authorized through the owner's impersonation policy"
+  oidcProviders(after: String, first: Int, before: String, last: Int): OidcProviderConnection
 
   insertedAt: DateTime
 
@@ -1860,6 +1880,7 @@ type Group {
   name: String!
   global: Boolean
   description: String
+  memberCount: Int
   insertedAt: DateTime
   updatedAt: DateTime
 }
@@ -3302,6 +3323,45 @@ type Limit {
 
 type CheckoutSession {
   url: String
+}
+
+enum UsageMeter {
+  "bytes of telemetry data ingested"
+  INGEST
+
+  "clusters reported for billing"
+  CLUSTERS
+}
+
+"a day of usage aggregated by stripe for one billing meter"
+type UsageBucket {
+  startTime: DateTime!
+  endTime: DateTime!
+  value: Float!
+}
+
+type MeterUsage {
+  meter: UsageMeter!
+
+  "the sum of every bucket in the range"
+  total: Float!
+
+  buckets: [UsageBucket!]!
+}
+
+"usage for an account, read back from stripe's billing meters"
+type BillingUsage {
+  startTime: DateTime!
+
+  endTime: DateTime!
+
+  meters: [MeterUsage!]!
+
+  "clusters currently counted for billing"
+  clusterCount: Int!
+
+  "users in the account, which aren't billed"
+  userCount: Int!
 }
 
 type InvoiceConnection {

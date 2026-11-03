@@ -1,7 +1,11 @@
 import { useQuery } from '@apollo/client'
-import { Div, Flex } from 'honorable'
 import isEmpty from 'lodash/isEmpty'
-import { EmptyState, PageTitle, SearchIcon } from '@pluralsh/design-system'
+import {
+  EmptyState,
+  Flex,
+  RobotIcon,
+  SearchIcon,
+} from '@pluralsh/design-system'
 import { useCallback, useContext, useEffect, useState } from 'react'
 
 import { Placeholder } from '../utils/Placeholder'
@@ -23,14 +27,22 @@ import { USERS_Q } from './queries'
 import { CreateServiceAccount } from './CreateServiceAccount'
 import { ServiceAccount } from './User'
 import BillingLegacyUserBanner from './billing/BillingLegacyUserBanner'
-import BillingFeatureBlockBanner from './billing/BillingFeatureBlockBanner'
+import { UpgradeGate } from './UpgradeGate'
+import { SubpageHeader } from '../utils/layout/SubpageLayout'
+
+const SAMPLE_SERVICE_ACCOUNT_ROWS = [
+  'prod-cluster',
+  'prod-cluster-2',
+  'beta-cluster',
+  'dev-cluster',
+].map((name) => ({ name, caption: 'demo@plural.sh' }))
 
 function Header({ q, setQ }: any) {
   return (
     <ListInput
       width="100%"
       value={q}
-      placeholder="Search a user"
+      placeholder="Search a service account"
       startIcon={<SearchIcon color="text-light" />}
       onChange={({ target: { value } }) => setQ(value)}
       flexGrow={0}
@@ -63,10 +75,7 @@ function ServiceAccountsInner({ q, data, loading, fetchMore }: any) {
   const { edges, pageInfo } = data?.users || dataCache?.users || {}
 
   return (
-    <Div
-      flexGrow={1}
-      width="100%"
-    >
+    <div css={{ flexGrow: 1, width: '100%' }}>
       {edges?.length > 0 ? (
         <StandardScroller
           listRef={listRef}
@@ -107,7 +116,7 @@ function ServiceAccountsInner({ q, data, loading, fetchMore }: any) {
           <CreateServiceAccount q={q} />
         </EmptyState>
       )}
-    </Div>
+    </div>
   )
 }
 
@@ -127,9 +136,9 @@ export function ServiceAccounts() {
       flexDirection="column"
       maxHeight="100%"
     >
-      <PageTitle heading="Service accounts">
+      <SubpageHeader title="Service accounts">
         <CreateServiceAccount q={q} />
-      </PageTitle>
+      </SubpageHeader>
       <BillingLegacyUserBanner feature="service accounts" />
       <BillingTrialBanner />
       {isAvailable ? (
@@ -146,10 +155,13 @@ export function ServiceAccounts() {
           />
         </List>
       ) : (
-        <BillingFeatureBlockBanner
-          feature="service acccounts"
+        <UpgradeGate
+          feature="service accounts"
           description="Create assumable identities that enable multiple people to manage Plural installations."
-          placeholderImageURL="/placeholders/service-accounts.png"
+          searchPlaceholder="Search a service account"
+          rowIcon={<RobotIcon />}
+          rowAction="Impersonate"
+          rows={SAMPLE_SERVICE_ACCOUNT_ROWS}
         />
       )}
     </Flex>

@@ -1,8 +1,7 @@
 import { useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
-import { Form } from 'grommet'
-import { A, Button, Div, Flex, H1, P, Span } from 'honorable'
-import { SuccessIcon } from '@pluralsh/design-system'
+import { useLocation } from 'react-router-dom'
+import { Button, Flex, SuccessIcon } from '@pluralsh/design-system'
+import { useTheme } from 'styled-components'
 
 import {
   ResetTokenType,
@@ -10,11 +9,14 @@ import {
 } from '../../generated/graphql'
 import { isValidEmail } from '../../utils/email'
 import { GqlError } from '../utils/Alert'
+import { SpanSC, Title1H1 } from '../utils/Typography'
 
 import { LoginPortal } from './LoginPortal'
 import { LabelledInput } from './LabelledInput'
+import { InlineLinkSC } from '../utils/Typography'
 
 export function RequestPasswordReset() {
+  const theme = useTheme()
   const location = useLocation()
   const [attributes, setAttributes] = useState({
     email: location?.state?.email || '',
@@ -41,32 +43,33 @@ export function RequestPasswordReset() {
         <RequestResetSuccess />
       ) : (
         <>
-          <H1
-            title1
-            textAlign="center"
-            marginBottom="xlarge"
+          <Title1H1
+            css={{
+              textAlign: 'center',
+              marginBottom: theme.spacing.xlarge,
+            }}
           >
             Reset password
-          </H1>
+          </Title1H1>
           {gqlError && (
-            <Div marginBottom="medium">
+            <div css={{ marginBottom: theme.spacing.medium }}>
               <GqlError
                 header="Failed!"
                 error={error}
               />
-            </Div>
+            </div>
           )}
-          <Form onSubmit={onSubmit}>
+          <form onSubmit={onSubmit}>
             <LabelledInput
-              width="100%"
               value={attributes.email}
               label="Email"
-              name="email"
               placeholder="your email"
               onChange={(email) => setAttributes({ ...attributes, email })}
               hint={
                 invalidEmail ? (
-                  <Span color="text-danger-light">Invalid email address</Span>
+                  <SpanSC $color="text-danger-light">
+                    Invalid email address
+                  </SpanSC>
                 ) : undefined
               }
               inputProps={{ error: invalidEmail }}
@@ -79,7 +82,7 @@ export function RequestPasswordReset() {
             >
               Reset Password
             </Button>
-          </Form>
+          </form>
         </>
       )}
     </LoginPortal>
@@ -87,11 +90,13 @@ export function RequestPasswordReset() {
 }
 
 function RequestResetSuccess() {
+  const theme = useTheme()
+
   return (
     <Flex
-      flexDirection="column"
-      alignItems="center"
-      justifyContent="center"
+      direction="column"
+      align="center"
+      justify="center"
       textAlign="center"
     >
       <SuccessIcon
@@ -99,17 +104,11 @@ function RequestResetSuccess() {
         size={32}
         marginBottom="large"
       />
-      <Div marginBottom="xlarge">
-        <H1 title1>Password reset email sent</H1>
-        <P>Check your email to continue the process.</P>
-      </Div>
-      <A
-        inline
-        as={Link}
-        to="/login"
-      >
-        Back to login
-      </A>
+      <div css={{ marginBottom: theme.spacing.xlarge }}>
+        <Title1H1>Password reset email sent</Title1H1>
+        <p>Check your email to continue the process.</p>
+      </div>
+      <InlineLinkSC to="/login">Back to login</InlineLinkSC>
     </Flex>
   )
 }

@@ -1136,4 +1136,85 @@ defmodule Core.Services.PaymentsTest do
       assert refetch(account).billing_customer_id == "cus_id"
     end
   end
+
+  describe "#meter_usage/4" do
+    test "it reads daily buckets from stripe over whole utc days, following pagination" do
+      account = insert(:account, billing_customer_id: "cus_id")
+      day = 86_400
+      start = DateTime.to_unix(~U[2026-10-01 00:00:00Z])
+      stub(Stripe.Billing.Meter, :list, fn _, _ -> {:ok, %Stripe.List{data: mk_meters(), has_more: false}} end)
+      expect(Stripe.Billing.MeterEventSummary, :list, 2, fn
+        "mtr_ingest", %{customer: "cus_id", start_time: ^start, end_time: end_time, value_grouping_window: :day} = params, _ ->
+          assert end_time == start + 3 * day
+          case params do
+            %{starting_after: "sum_2"} ->
+              {:ok, %Stripe.List{has_more: false, data: [mk_summary("sum_1", start, 5)]}}
+            _ ->
+              {:ok, %Stripe.List{has_more: true, data: [mk_summary("sum_3", start + 2 * day, 7), mk_summary("sum_2", start + day, nil)]}}
+          end
+      end)
+
+      {:ok, buckets} = Payments.meter_usage(account, :ingest, ~U[2026-10-01 13:45:00Z], ~U[2026-10-03 08:00:00Z])
+
+      assert Enum.map(buckets, & &1.value) == [5, 0, 7]
+      assert Enum.map(buckets, & &1.start_time) ==
+        [~U[2026-10-01 00:00:00Z], ~U[2026-10-02 00:00:00Z], ~U[2026-10-03 00:00:00Z]]
+    end
+
+    test "accounts without a stripe customer have no usage" do
+      account = insert(:account, billing_customer_id: nil)
+
+      {:ok, []} = Payments.meter_usage(account, :ingest, ~U[2026-10-01 00:00:00Z], ~U[2026-10-02 00:00:00Z])
+    end
+
+    test "it errors when the meter doesn't exist in stripe" do
+      account = insert(:account, billing_customer_id: "cus_id")
+      stub(Stripe.Billing.Meter, :list, fn _, _ -> {:ok, %Stripe.List{data: [], has_more: false}} end)
+
+      {:error, _} = Payments.meter_usage(account, :clusters, ~U[2026-10-01 00:00:00Z], ~U[2026-10-02 00:00:00Z])
+    end
+  end
+
+  describe "#billing_usage/4" do
+    test "billing admins can fetch usage for every meter with account counts" do
+      account = insert(:account, billing_customer_id: "cus_id", cluster_count: 3, user_count: 12)
+      user = insert(:user, account: account, roles: %{admin: true})
+      stub(Stripe.Billing.Meter, :list, fn _, _ -> {:ok, %Stripe.List{data: mk_meters(), has_more: false}} end)
+      stub(Stripe.Billing.MeterEventSummary, :list, fn
+        "mtr_ingest", _, _ -> {:ok, %Stripe.List{has_more: false, data: [mk_summary("a", 0, 10), mk_summary("b", 86_400, 15)]}}
+        "mtr_clusters", _, _ -> {:ok, %Stripe.List{has_more: false, data: [mk_summary("c", 0, 3)]}}
+      end)
+
+      {:ok, usage} = Payments.billing_usage(user, ~U[2026-10-01 00:00:00Z], ~U[2026-10-31 00:00:00Z], [:ingest, :clusters])
+
+      assert usage.cluster_count == 3
+      assert usage.user_count == 12
+      assert [%{meter: :ingest, total: 25}, %{meter: :clusters, total: 3}] = usage.meters
+    end
+
+    test "users without billing access can't see usage" do
+      account = insert(:account, billing_customer_id: "cus_id")
+      user = insert(:user, account: account)
+
+      {:error, :forbidden} = Payments.billing_usage(user, ~U[2026-10-01 00:00:00Z], ~U[2026-10-31 00:00:00Z], [:ingest])
+    end
+
+    test "it rejects inverted or oversized ranges" do
+      user = insert(:user, roles: %{admin: true})
+
+      {:error, _} = Payments.billing_usage(user, ~U[2026-10-31 00:00:00Z], ~U[2026-10-01 00:00:00Z], [:ingest])
+      {:error, _} = Payments.billing_usage(user, ~U[2024-01-01 00:00:00Z], ~U[2026-10-01 00:00:00Z], [:ingest])
+    end
+  end
+
+  defp mk_meters() do
+    [
+      %Stripe.Billing.Meter{id: "mtr_ingest", event_name: "pro_data_ingested"},
+      %Stripe.Billing.Meter{id: "mtr_clusters", event_name: "pro_clusters"}
+    ]
+  end
+
+  defp mk_summary(id, start, value) do
+    %Stripe.Billing.MeterEventSummary{id: id, start_time: start, end_time: start + 86_400, aggregated_value: value}
+  end
 end

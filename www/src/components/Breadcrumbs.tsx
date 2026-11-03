@@ -1,6 +1,6 @@
 import { useContext, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Anchor, Box, Text } from 'grommet'
+import { Flex } from '@pluralsh/design-system'
 
 import { lookahead } from '../utils/array'
 
@@ -8,28 +8,27 @@ import BreadcrumbsContext, {
   BreadcrumbsContextType,
 } from '../contexts/BreadcrumbsContext'
 
+import { Body2BoldP, Body2P, InlineLinkButtonSC } from './utils/Typography'
+
 function CrumbLink({ crumb: { url, text, disable } }: any) {
   const navigate = useNavigate()
 
   // TODO: new design does not cover the "disabled" state. Should it be removed?
   if (disable) {
     return (
-      <Text
-        size="small"
-        color="dark-6"
+      <Body2P
+        as="span"
+        $color="text-xlight"
       >
         {text}
-      </Text>
+      </Body2P>
     )
   }
 
   return (
-    <Anchor
-      size="small"
-      onClick={() => navigate(url)}
-    >
+    <InlineLinkButtonSC onClick={() => navigate(url)}>
       {text}
-    </Anchor>
+    </InlineLinkButtonSC>
   )
 }
 
@@ -46,37 +45,37 @@ export function Breadcrumbs() {
             key={crumb.url + crumb.text}
             crumb={crumb}
           />,
-          <Text
+          <Body2P
+            as="span"
             key={`${crumb.url + crumb.text}next`}
-            size="small"
           >
             /
-          </Text>,
+          </Body2P>,
         ]
       }
 
       return (
-        <Text
+        <Body2BoldP
+          as="span"
           key={crumb.url + crumb.text}
-          size="small"
-          weight={700}
         >
           {crumb.text}
-        </Text>
+        </Body2BoldP>
       )
     }) as any as any[]
   ).flat()
 
   return (
-    <Box
-      flex={false}
+    <Flex
+      flex="0 0 auto"
       direction="row"
       gap="xsmall"
       align="center"
-      pad={{ right: 'small', left: '1px' }}
+      paddingRight="small"
+      paddingLeft="1px"
     >
       {children}
-    </Box>
+    </Flex>
   )
 }
 

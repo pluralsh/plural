@@ -1,13 +1,15 @@
 import { useContext } from 'react'
 import { Link } from 'react-router-dom'
-import { Button, Modal } from '@pluralsh/design-system'
-import { A, Flex, Img, P } from 'honorable'
+import { Button, Flex, Modal } from '@pluralsh/design-system'
+import { useTheme } from 'styled-components'
 
 import usePersistedState from '../../../hooks/usePersistedState'
 import SubscriptionContext from '../../../contexts/SubscriptionContext'
 import { LocalStorageKeys } from '../../../constants'
+import { Body2P, InlineA } from '../../utils/Typography'
 
 function BillingMigrationModal() {
+  const theme = useTheme()
   const { isGrandfathered, isPaidPlan } = useContext(SubscriptionContext)
   const [open, setOpen] = usePersistedState(
     LocalStorageKeys.BillingMigrationModalOpen,
@@ -20,15 +22,12 @@ function BillingMigrationModal() {
       open={open}
       onClose={() => setOpen(false)}
     >
-      <Img
+      <img
         src="/sam_profile_picture.png"
         width={92}
         alt="Sam Weaver"
       />
-      <P
-        body2
-        marginTop="medium"
-      >
+      <Body2P css={{ marginTop: theme.spacing.medium }}>
         We're excited to launch our new Pro tier pricing! Our Pro tier is
         designed around enabling teams to collaborate in Plural without the need
         to become an Enterprise customer.
@@ -40,15 +39,11 @@ function BillingMigrationModal() {
         <br />
         <br />
         Read more about our new pricing plan on{' '}
-        <A
-          inline
-          href="https://www.plural.sh/blog/changes-to-plurals-pricing/"
-          target="_blank"
-        >
+        <InlineA href="https://www.plural.sh/blog/changes-to-plurals-pricing/">
           our blog
-        </A>
+        </InlineA>
         .
-      </P>
+      </Body2P>
       <Flex
         justify="flex-end"
         marginTop="large"

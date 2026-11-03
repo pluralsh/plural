@@ -6,31 +6,41 @@ import { Link } from 'react-router-dom'
 
 import SubscriptionContext from '../../../contexts/SubscriptionContext'
 
-function BillingSubscriptionChip() {
+function BillingSubscriptionChip({
+  size,
+  asLink = true,
+}: {
+  size?: 'small'
+  asLink?: boolean
+}) {
   const { isProPlan, isEnterprisePlan, isTrialPlan } =
     useContext(SubscriptionContext)
 
-  return (
+  const chip = (
+    <Chip
+      severity={
+        isTrialPlan || isEnterprisePlan || isProPlan ? 'info' : 'neutral'
+      }
+      fillLevel={2}
+      {...(size === 'small' ? { size: 'small' } : { css: { height: 32 } })}
+    >
+      {isEnterprisePlan
+        ? 'Enterprise'
+        : isProPlan || isTrialPlan
+          ? 'Pro'
+          : 'Free'}
+    </Chip>
+  )
+
+  return asLink ? (
     <Link
       to="/account/billing"
       style={{ textDecoration: 'none' }}
     >
-      <Chip
-        severity={
-          isTrialPlan || isEnterprisePlan || isProPlan ? 'info' : 'neutral'
-        }
-        fillLevel={2}
-        height={32}
-      >
-        {isTrialPlan
-          ? 'Free trial'
-          : isEnterprisePlan
-            ? 'Custom'
-            : isProPlan
-              ? 'Professional'
-              : 'Open-source'}
-      </Chip>
+      {chip}
     </Link>
+  ) : (
+    chip
   )
 }
 

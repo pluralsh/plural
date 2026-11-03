@@ -3,30 +3,16 @@ import {
   useLocation,
   useNavigate,
 } from 'react-router-dom'
-import {
-  type NavigationContextLinkProps,
-  NavigationContextProvider,
-} from '@pluralsh/design-system'
-import { ReactNode, Ref, forwardRef } from 'react'
+import { NavigationContextProvider } from '@pluralsh/design-system'
+import { ComponentProps, ReactNode, useMemo } from 'react'
 
-function LinkRef(
-  { href, ...props }: NavigationContextLinkProps,
-  ref: Ref<any>
-) {
+function Link({ href, ...props }: ComponentProps<'a'>) {
   return (
     <ReactRouterLink
-      ref={ref}
       to={href ?? ''}
       {...props}
     />
   )
-}
-const Link = forwardRef(LinkRef)
-
-function usePathname() {
-  const loc = useLocation()
-
-  return loc.pathname
 }
 
 export default function AppNavContextProvider({
@@ -34,20 +20,19 @@ export default function AppNavContextProvider({
 }: {
   children: ReactNode
 }) {
-  return (
-    <NavigationContextProvider
-      value={{
-        Link,
-        usePathname,
-        useNavigate: () => {
-          const navigate = useNavigate()
+  const { pathname } = useLocation()
+  const navigate = useNavigate()
+  const value = useMemo(
+    () => ({
+      Link,
+      pathname,
+      navigate: (loc?: string) => navigate(loc ?? ''),
+    }),
+    [pathname, navigate]
+  )
 
-          return (loc) => {
-            navigate(loc ?? '')
-          }
-        },
-      }}
-    >
+  return (
+    <NavigationContextProvider value={value}>
       {children}
     </NavigationContextProvider>
   )

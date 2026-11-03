@@ -5,7 +5,7 @@ import {
   Modal,
   Select,
 } from '@pluralsh/design-system'
-import { FormFieldSC } from 'components/create-cluster/steps/ConfigureCloudInstanceStep'
+import { FormFieldSC } from 'components/create-cluster/shared'
 import {
   ConsoleInstanceFragment,
   ConsoleSize,

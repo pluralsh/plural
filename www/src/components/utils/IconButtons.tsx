@@ -3,18 +3,37 @@ import {
   IconFrameProps,
   TrashCanIcon,
 } from '@pluralsh/design-system'
-import { forwardRef } from 'react'
+import { Ref } from 'react'
+import { useTheme } from 'styled-components'
 
-export const DeleteIconButton = forwardRef<
-  HTMLDivElement,
-  Partial<IconFrameProps>
->(({ size, clickable, textValue, ...props }, ref) => (
-  <IconFrame
-    ref={ref}
-    size={size || 'medium'}
-    clickable={clickable === undefined ? true : clickable}
-    icon={<TrashCanIcon color="icon-danger" />}
-    textValue={textValue || 'Delete'}
-    {...props}
-  />
-))
+export const DeleteIconButton = ({
+  size,
+  clickable,
+  textValue,
+  disabled,
+  ref,
+  ...props
+}: Partial<IconFrameProps> & { disabled?: boolean } & {
+  ref?: Ref<HTMLDivElement>
+}) => {
+  const theme = useTheme()
+
+  return (
+    <IconFrame
+      ref={ref}
+      size={size || 'small'}
+      clickable={disabled ? false : clickable === undefined ? true : clickable}
+      icon={
+        <TrashCanIcon
+          color={
+            disabled
+              ? theme.colors['text-disabled']
+              : theme.colors['icon-danger']
+          }
+        />
+      }
+      textValue={textValue || 'Delete'}
+      {...props}
+    />
+  )
+}

@@ -3,6 +3,6 @@ import 'regenerator-runtime/runtime'
 import styled from 'styled-components'
 
 // Polyfill fetch
-global.fetch = fetch
+globalThis.fetch = fetch
 
-global.styled = styled
+globalThis.styled = styled

@@ -29,7 +29,7 @@ function UserLimitModalUnstyled({ onClose }): ReactElement {
     >
       <div className="message">
         You have reached your user limit for the Open-source plan. Upgrade to
-        Plural Professional to add additional users.
+        Plural Pro to add additional users.
       </div>
     </Modal>
   )

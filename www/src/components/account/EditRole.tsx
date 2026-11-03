@@ -1,5 +1,4 @@
-import { Button } from 'honorable'
-import { Modal } from '@pluralsh/design-system'
+import { Button, Modal } from '@pluralsh/design-system'
 import { useMemo, useState } from 'react'
 import uniqWith from 'lodash/uniqWith'
 import isEqual from 'lodash/isEqual'

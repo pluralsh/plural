@@ -271,6 +271,33 @@ defmodule GraphQl.Schema.Payments do
     field :url, :string
   end
 
+  enum :usage_meter do
+    value :ingest, description: "bytes of telemetry data ingested"
+    value :clusters, description: "clusters reported for billing"
+  end
+
+  @desc "a day of usage aggregated by stripe for one billing meter"
+  object :usage_bucket do
+    field :start_time, non_null(:datetime)
+    field :end_time,   non_null(:datetime)
+    field :value,      non_null(:float)
+  end
+
+  object :meter_usage do
+    field :meter,   non_null(:usage_meter)
+    field :total,   non_null(:float), description: "the sum of every bucket in the range"
+    field :buckets, non_null(list_of(non_null(:usage_bucket)))
+  end
+
+  @desc "usage for an account, read back from stripe's billing meters"
+  object :billing_usage do
+    field :start_time,    non_null(:datetime)
+    field :end_time,      non_null(:datetime)
+    field :meters,        non_null(list_of(non_null(:meter_usage)))
+    field :cluster_count, non_null(:integer), description: "clusters currently counted for billing"
+    field :user_count,    non_null(:integer), description: "users in the account, which aren't billed"
+  end
+
   connection node_type: :invoice
   connection node_type: :card
   connection node_type: :payment_method
@@ -302,6 +329,16 @@ defmodule GraphQl.Schema.Payments do
 
     connection field :invoices, node_type: :invoice do
       resolve &Payments.list_invoices/2
+    end
+
+    @desc "daily usage from stripe's billing meters, defaulting to the last 30 days of every meter"
+    field :billing_usage, :billing_usage do
+      middleware Authenticated
+      arg :start_time, :datetime
+      arg :end_time,   :datetime
+      arg :meters,     list_of(non_null(:usage_meter))
+
+      resolve &Payments.billing_usage/2
     end
   end
 

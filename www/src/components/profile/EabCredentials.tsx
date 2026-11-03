@@ -1,8 +1,7 @@
 import { useMutation, useQuery } from '@apollo/client'
-import { Box } from 'grommet'
 import { useState } from 'react'
-import { Date, InfoIcon, PageTitle, Tooltip } from '@pluralsh/design-system'
-import { Div, Span } from 'honorable'
+import { Date, Flex } from '@pluralsh/design-system'
+import { useTheme } from 'styled-components'
 
 import { updateCache } from '../../utils/graphql'
 import { Confirm } from '../utils/Confirm'
@@ -11,6 +10,10 @@ import { obscure } from '../users/utils'
 import { Table, TableData, TableRow } from '../utils/Table'
 import { DeleteIconButton } from '../utils/IconButtons'
 import LoadingIndicator from '../utils/LoadingIndicator'
+import { SubpageHeader } from '../utils/layout/SubpageLayout'
+import { Body2P } from '../utils/Typography'
+
+import { InfoTooltip } from './InfoTooltip'
 
 const TOOLTIP =
   'EAB credentials are used to generate an ACME account for certificate issuance in your clusters. ' +
@@ -64,6 +67,7 @@ function EabCredential({ credential, last }: any) {
 }
 
 export function EabCredentials() {
+  const theme = useTheme()
   const { data } = useQuery(EAB_CREDENTIALS, {
     fetchPolicy: 'cache-and-network',
   })
@@ -71,32 +75,26 @@ export function EabCredentials() {
   if (!data) return <LoadingIndicator />
 
   return (
-    <Div marginBottom="large">
-      <PageTitle
-        heading="EAB credentials"
-        justifyContent="flex-start"
+    <div css={{ marginBottom: theme.spacing.large }}>
+      <SubpageHeader
+        title={
+          <>
+            EAB credentials
+            <InfoTooltip label={TOOLTIP} />
+          </>
+        }
+      />
+      <Flex
+        direction="column"
+        width="100%"
+        height="100%"
       >
-        <Tooltip
-          width="315px"
-          label={TOOLTIP}
-        >
-          <Box
-            flex={false}
-            pad="6px"
-            round="xxsmall"
-            hoverIndicator="fill-two"
-          >
-            <InfoIcon />
-          </Box>
-        </Tooltip>
-      </PageTitle>
-      <Box fill>
         {data.eabCredentials?.length ? (
           <Table
             headers={['Key ID', 'HMAC key', 'Cluster', 'Created']}
             sizes={['27%', '27%', '26%', '20%']}
             background="fill-one"
-            border="1px solid border"
+            border={theme.borders.default}
           >
             {data.eabCredentials.map((c, i, a) => (
               <EabCredential
@@ -107,9 +105,9 @@ export function EabCredentials() {
             ))}
           </Table>
         ) : (
-          <Span>You do not have any EAB credentials keys yet.</Span>
+          <Body2P>You do not have any EAB credentials yet.</Body2P>
         )}
-      </Box>
-    </Div>
+      </Flex>
+    </div>
   )
 }

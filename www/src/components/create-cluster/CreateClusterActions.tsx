@@ -1,116 +1,30 @@
-import { Button, Divider, Flex } from '@pluralsh/design-system'
-import { useTheme } from 'styled-components'
-
-import { useNavigate } from 'react-router-dom'
-
-import { useBillingSubscription } from 'components/account/billing/BillingSubscriptionProvider'
-
-import { ConsoleInstanceType } from 'generated/graphql'
-
-import {
-  CreateClusterStepKey,
-  cloudSteps,
-  localSteps,
-  useCreateClusterContext,
-} from './CreateClusterWizard'
-import { clearCreateClusterCache } from './CreateCluster'
+import { ReactNode } from 'react'
+import styled from 'styled-components'
 
 export const FINISHED_CONSOLE_INSTANCE_KEY = 'plural-finished-console-instance'
 export const FINISHED_LOCAL_CREATE_KEY = 'plural-finished-local-create'
 
-export function CreateClusterActions() {
-  const theme = useTheme()
-  const navigate = useNavigate()
-  const {
-    curStep,
-    setCurStep,
-    cloudOption,
-    hostingOption,
-    continueBtn,
-    consoleInstanceId,
-    isCreatingInstance,
-  } = useCreateClusterContext()
-
-  const { isPaidPlan, isTrialPlan, isTrialExpired, isEnterprisePlan } =
-    useBillingSubscription()
-  const disableContinue =
-    cloudOption === 'cloud' &&
-    ((!isPaidPlan && !isTrialPlan) ||
-      (isTrialPlan && isTrialExpired) ||
-      (!isEnterprisePlan && hostingOption === ConsoleInstanceType.Dedicated))
-
-  const steps = cloudOption === 'local' ? localSteps : cloudSteps
-  const curStepIndex = steps.findIndex((step) => step.key === curStep)
-  const prevStep = steps[curStepIndex - 1]?.key
-  const nextStep = steps[curStepIndex + 1]?.key
-
-  const handleFinish = () => {
-    if (consoleInstanceId) {
-      localStorage.setItem(FINISHED_CONSOLE_INSTANCE_KEY, consoleInstanceId)
-    }
-    if (cloudOption === 'local') {
-      localStorage.setItem(FINISHED_LOCAL_CREATE_KEY, 'true')
-    }
-    clearCreateClusterCache()
-    navigate(
-      `/overview/clusters/${
-        cloudOption === 'local' ? 'self-hosted' : 'plural-cloud'
-      }`
-    )
-  }
-
+export function CreateClusterActions({
+  start,
+  children,
+}: {
+  start?: ReactNode
+  children?: ReactNode
+}) {
   return (
-    <>
-      <Divider
-        backgroundColor={theme.colors.border}
-        margin={`${theme.spacing.large}px 0`}
-      />
-      <Flex
-        gap="medium"
-        justifyContent="space-between"
-        alignItems="center"
-      >
-        <Button
-          secondary
-          as="a"
-          href="https://docs.plural.sh/"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Read docs
-        </Button>
-        <Flex gap="medium">
-          {prevStep &&
-            !(
-              cloudOption === 'cloud' &&
-              curStep === CreateClusterStepKey.InstallCli
-            ) && (
-              <Button
-                secondary
-                onClick={() => setCurStep(prevStep)}
-              >
-                Back
-              </Button>
-            )}
-          {nextStep ? (
-            continueBtn || (
-              <Button
-                disabled={disableContinue}
-                onClick={() => setCurStep(nextStep)}
-              >
-                Continue
-              </Button>
-            )
-          ) : (
-            <Button
-              disabled={isCreatingInstance}
-              onClick={handleFinish}
-            >
-              Finish
-            </Button>
-          )}
-        </Flex>
-      </Flex>
-    </>
+    <ActionsSC>
+      <div>{start}</div>
+      <div className="end">{children}</div>
+    </ActionsSC>
   )
 }
+
+const ActionsSC = styled.div(({ theme }) => ({
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  gap: theme.spacing.medium,
+  marginTop: 'auto',
+  padding: `${theme.spacing.small} 0 ${theme.spacing.xlarge}`,
+  '.end': { display: 'flex', gap: theme.spacing.small },
+}))

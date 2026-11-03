@@ -1,72 +1,40 @@
-import { useMemo, useRef, useState } from 'react'
-
 import lookup from 'country-code-lookup'
-import { Box } from 'grommet'
+import { Card, Flex } from '@pluralsh/design-system'
+import { useMemo } from 'react'
+import { useTheme } from 'styled-components'
 
-import { Card, PageTitle, SubTab, TabList } from '@pluralsh/design-system'
-
+import { useAuditMetricsQuery } from '../../generated/graphql'
 import { Chloropleth } from '../utils/Chloropleth'
-
-import {
-  useAuditMetricsQuery,
-  useLoginMetricsQuery,
-} from '../../generated/graphql'
-
-const DIRECTORY = [
-  { key: 'audit-logs', label: 'Audit logs' },
-  { key: 'logins', label: 'Logins' },
-]
+import { SubpageHeader } from '../utils/layout/SubpageLayout'
 
 export function AuditChloropleth() {
-  const [selectedKey, setSelectedKey] = useState<any>('audit-logs')
-  const tabStateRef = useRef<any>(null)
-
-  const query = useMemo(
+  const theme = useTheme()
+  const { data } = useAuditMetricsQuery({ fetchPolicy: 'cache-and-network' })
+  const metrics = useMemo(
     () =>
-      selectedKey === 'logins' ? useLoginMetricsQuery : useAuditMetricsQuery,
-    [selectedKey]
+      (data?.auditMetrics ?? []).map((metric) => ({
+        id: lookup.byIso(metric?.country ?? '')?.iso3,
+        value: metric?.count,
+      })),
+    [data]
   )
-  const { data }: { data: any } = query({
-    fetchPolicy: 'cache-and-network',
-  })
 
   if (!data) return null
 
-  const results = data.auditMetrics || data.loginMetrics
-  const metrics = results.map(({ country, count }) => ({
-    // @ts-expect-error
-    id: lookup.byIso(country).iso3,
-    value: count,
-  }))
-
   return (
-    <Box fill>
-      <PageTitle heading="Geodistribution">
-        <TabList
-          stateRef={tabStateRef}
-          stateProps={{
-            orientation: 'horizontal',
-            selectedKey,
-            onSelectionChange: setSelectedKey,
-          }}
-        >
-          {DIRECTORY.map(({ label, key }) => (
-            <SubTab
-              key={key}
-              textValue={label}
-            >
-              {label}
-            </SubTab>
-          ))}
-        </TabList>
-      </PageTitle>
+    <Flex
+      direction="column"
+      width="100%"
+      height="100%"
+    >
+      <SubpageHeader title="Geodistribution" />
       <Card
         height="450px"
         overflow="hidden"
-        padding="medium"
+        css={{ padding: theme.spacing.medium }}
       >
         <Chloropleth data={metrics} />
       </Card>
-    </Box>
+    </Flex>
   )
 }

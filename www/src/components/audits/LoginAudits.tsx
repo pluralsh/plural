@@ -1,12 +1,12 @@
-import { Box } from 'grommet'
 import { memo, useCallback, useMemo } from 'react'
-import { Date, IconFrame, PageTitle, Table } from '@pluralsh/design-system'
+import { Date, Flex, IconFrame, Table } from '@pluralsh/design-system'
 import { createColumnHelper } from '@tanstack/react-table'
 import isEmpty from 'lodash/isEmpty'
-import { Flex } from 'honorable'
 
 import { extendConnection, mapExistingNodes } from '../../utils/graphql'
 import LoadingIndicator from '../utils/LoadingIndicator'
+import { Body2P } from '../utils/Typography'
+import { SubpageHeader } from '../utils/layout/SubpageLayout'
 
 import { useLoginsQuery } from '../../generated/graphql'
 
@@ -33,29 +33,33 @@ const columns = [
     cell: (owner: any) => <AuditUser user={owner.getValue()} />,
     header: 'Owner',
   }),
-  COLUMN_HELPER.accessor((login) => login, {
+  COLUMN_HELPER.accessor((login) => login.repository, {
     id: 'repo',
-    cell: (login: any) => (
-      <Flex gap="xsmall">
-        {(login.getValue().repository?.darkIcon ||
-          login.getValue().repository?.icon) && (
-          <IconFrame
-            size="small"
-            icon={
-              <img
-                src={
-                  login.getValue().repository?.darkIcon ||
-                  login.getValue().repository?.icon
-                }
-                width="24px"
-                height="24px"
-              />
-            }
-          />
-        )}
-        {login.getValue().repository?.name}
-      </Flex>
-    ),
+    cell: (repository: any) => {
+      const repo = repository.getValue()
+      const icon = repo?.darkIcon || repo?.icon
+
+      return (
+        <Flex
+          gap="xsmall"
+          align="center"
+        >
+          {icon && (
+            <IconFrame
+              size="small"
+              icon={
+                <img
+                  src={icon}
+                  width="24px"
+                  height="24px"
+                />
+              }
+            />
+          )}
+          {repo?.name}
+        </Flex>
+      )
+    },
     header: 'Repository',
   }),
   COLUMN_HELPER.accessor((login) => login, {
@@ -85,7 +89,7 @@ const LoginAuditsTable = memo(({ logins, fetchMoreOnBottomReached }: any) =>
       maxHeight="calc(100vh - 244px)"
     />
   ) : (
-    <>You do not have any user logins yet.</>
+    <Body2P>You do not have any user logins yet.</Body2P>
   )
 )
 
@@ -124,12 +128,16 @@ export function LoginAudits() {
   if (!data) return <LoadingIndicator />
 
   return (
-    <Box fill>
-      <PageTitle heading="Logins" />
+    <Flex
+      direction="column"
+      width="100%"
+      height="100%"
+    >
+      <SubpageHeader title="Logins" />
       <LoginAuditsTable
         logins={logins}
         fetchMoreOnBottomReached={fetchMoreOnBottomReached}
       />
-    </Box>
+    </Flex>
   )
 }

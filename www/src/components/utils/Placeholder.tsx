@@ -1,11 +1,14 @@
-import { Box } from 'grommet'
+import styled from 'styled-components'
 
 export function Placeholder() {
-  return (
-    <Box
-      flex={false}
-      height="50px"
-      pad="small"
-    />
-  )
+  return <PlaceholderSC />
 }
+
+const PlaceholderSC = styled.div(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  flex: '0 0 auto',
+  boxSizing: 'border-box',
+  height: 50,
+  padding: theme.spacing.small,
+}))

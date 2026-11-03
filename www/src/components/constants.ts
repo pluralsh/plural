@@ -4,6 +4,7 @@ export const PLURAL_WORD = '/plural-white-word.png'
 export const PLURAL_MARK = '/plural-logo.png'
 export const PLURAL_MARK_WHITE = '/plural-white.png'
 export const PLURAL_FULL_LOGO_WHITE = '/plural-full-logo-white.svg'
+export const PLURAL_LOGOMARK_WHITE = '/logos/plural-logomark-only-white.svg'
 export const LOGIN_SIDEBAR_IMAGE = '/login-sidebar.jpg'
 
 export const DEFAULT_CHART_ICON = '/chart.png'

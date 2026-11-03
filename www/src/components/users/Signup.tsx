@@ -1,6 +1,6 @@
 import { ComponentProps, useCallback, useEffect, useRef, useState } from 'react'
 import { useLocation } from 'react-router-dom'
-import { Button, Flex } from '@pluralsh/design-system'
+import { Button } from '@pluralsh/design-system'
 
 import { useTheme } from 'styled-components'
 
@@ -23,7 +23,7 @@ import {
 import { getDeviceToken } from './utils'
 import { finishedDeviceLogin } from './DeviceLoginNotif'
 import { InlineLinkSC } from '../utils/Typography'
-import { FlexAtBreak, OAuthOptions } from './MagicLogin'
+import { OAuthOptions } from './MagicLogin'
 import { LoginPortal } from './LoginPortal'
 import { LabelledInput } from './LabelledInput'
 
@@ -88,8 +88,7 @@ export function Signup() {
   const [account, setAccount] = useState('')
   const [confirm, setConfirm] = useState('')
   const deviceToken = getDeviceToken()
-  const accountInputRef = useRef<HTMLDivElement>(null)
-  const emailRef = useRef<HTMLDivElement>(null)
+  const nameRef = useRef<HTMLDivElement>(null)
   const [mutation, { loading, error }] = useSignupMutation({
     variables: {
       attributes: { email, password, name },
@@ -108,11 +107,8 @@ export function Signup() {
   const { data } = useOauthUrlsQuery({ variables: { host: host() } })
 
   useEffect(() => {
-    const ref = email ? accountInputRef : emailRef
-
-    ref?.current?.querySelector('input')?.focus()
     // Only set focus on first render
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    nameRef.current?.querySelector('input')?.focus()
   }, [])
 
   useEffect(() => {
@@ -155,40 +151,31 @@ export function Signup() {
           </div>
         )}
         <LabelledInput
-          ref={emailRef}
+          ref={nameRef}
+          label="Full name"
+          value={name}
+          onChange={setName}
+          placeholder="Enter full name"
+          inputProps={{ autoComplete: 'name' }}
+        />
+        <LabelledInput
           label="Email address"
           value={email}
           onChange={setEmail}
           placeholder="Enter email address"
           hint={emailError}
           error={!!emailError}
+          inputProps={{ type: 'email', autoComplete: 'email' }}
         />
-        <Flex
-          wrap="wrap"
-          width="100%"
-          columnGap={theme.spacing.medium}
-          basis="100%"
-        >
-          <FlexAtBreak>
-            <LabelledInput
-              ref={accountInputRef}
-              label="Company name"
-              value={account}
-              onChange={setAccount}
-              placeholder="Enter company name"
-              hint={accountError}
-              error={!!accountError}
-            />
-          </FlexAtBreak>
-          <FlexAtBreak>
-            <LabelledInput
-              label="Username"
-              value={name}
-              onChange={setName}
-              placeholder="Enter username"
-            />
-          </FlexAtBreak>
-        </Flex>
+        <LabelledInput
+          label="Company name"
+          value={account}
+          onChange={setAccount}
+          placeholder="Enter company name"
+          hint={accountError}
+          error={!!accountError}
+          inputProps={{ autoComplete: 'organization' }}
+        />
         <SetPasswordField
           value={password}
           onChange={setPassword}
@@ -217,7 +204,7 @@ export function Signup() {
           marginTop: theme.spacing.medium,
         }}
       >
-        Already have an account? <InlineLinkSC to="/login">Login</InlineLinkSC>
+        Already have an account? <InlineLinkSC to="/login">Log in</InlineLinkSC>
       </Body2P>
     </LoginPortal>
   )

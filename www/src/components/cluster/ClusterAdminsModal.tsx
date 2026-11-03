@@ -78,13 +78,13 @@ function ClusterAdmins({
           as="div"
           $color="text-light"
         >
-          Bind users to the service account owning this cluster. This will allow
-          users to do low level git operations to this cluster.
+          Bind users to the service account that owns this cluster. Bound users
+          can manage the cluster&apos;s settings, including its OIDC provider.
         </Body2P>
       )}
       <BindingInput
         type="user"
-        hint="Users that can administer this cluster"
+        hint="Users that can manage this cluster's settings"
         bindings={bindings
           .filter(({ user }) => !!user)
           .map(({ user: { email } }) => email)}
@@ -116,7 +116,7 @@ function ClusterAdmins({
       />
       <BindingInput
         type="group"
-        hint="Groups that can administer this cluster"
+        hint="Groups that can manage this cluster's settings"
         bindings={bindings
           .filter(({ group }) => !!group)
           .map(({ group: { name } }) => name)}

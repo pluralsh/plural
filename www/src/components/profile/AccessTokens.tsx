@@ -198,7 +198,8 @@ function AccessToken({ token, first, last }: any) {
           >
             <Button
               secondary
-              startIcon={<CopyIcon size={15} />}
+              small
+              startIcon={<CopyIcon size={12} />}
             >
               Copy key
             </Button>

@@ -158,11 +158,12 @@ function startMobius(
 ) {
   const ctx = canvas.getContext('2d')
 
-  if (!ctx) return () => {}
+  if (!ctx) return null
 
-  const reduced = window.matchMedia?.(
-    '(prefers-reduced-motion: reduce)'
-  ).matches
+  const motionQuery = window.matchMedia?.('(prefers-reduced-motion: reduce)')
+  // With reduced motion the scene is drawn as a still frame, without pointer
+  // or jitter movement
+  let still = !!motionQuery?.matches
   const strip: Particle[] = []
   const halo: Particle[] = []
   const field: FieldParticle[] = []
@@ -203,8 +204,11 @@ function startMobius(
 
   let dpr = 1
   let placed = false
+  // False while the hero is hidden (e.g. display: none on narrow screens)
+  let shown = false
 
   const resize = () => {
+    shown = canvas.clientWidth > 0 && canvas.clientHeight > 0
     dpr = Math.min(window.devicePixelRatio || 1, 2)
     const w = Math.max(1, Math.round(canvas.clientWidth * dpr))
     const h = Math.max(1, Math.round(canvas.clientHeight * dpr))
@@ -216,13 +220,6 @@ function startMobius(
     }
   }
 
-  resize()
-
-  const observer =
-    typeof ResizeObserver !== 'undefined' ? new ResizeObserver(resize) : null
-
-  observer?.observe(canvas)
-
   // Springs a particle toward its home position and pushes it away from the
   // pointer with a slight swirl
   const physics = (
@@ -232,9 +229,13 @@ function startMobius(
     spring: number,
     rad: number
   ) => {
-    if (!placed) {
+    if (!placed || still) {
       q.x = hx
       q.y = hy
+      q.vx = 0
+      q.vy = 0
+
+      return
     }
     q.vx += (hx - q.x) * spring
     q.vy += (hy - q.y) * spring
@@ -264,16 +265,15 @@ function startMobius(
   let t = 0
   let last = performance.now()
   let raf = 0
+  let looping = false
   const visible: Particle[] = []
 
-  const tick = (now: number) => {
-    raf = requestAnimationFrame(tick)
-
+  const draw = (now: number) => {
     const dt = Math.min(now - last, 50) / 1000
     const { bg, ramp, field: fieldColor, haloBack, haloFront } = palette.current
 
     last = now
-    if (!reduced) {
+    if (!still) {
       ang += dt * 0.3
       t += dt
     }
@@ -373,11 +373,56 @@ function startMobius(
     placed = true
   }
 
-  raf = requestAnimationFrame(tick)
+  const tick = (now: number) => {
+    raf = requestAnimationFrame(tick)
+    draw(now)
+  }
 
-  return () => {
+  // Runs the frame loop only while the hero is visible and motion is allowed;
+  // otherwise draws at most a single still frame
+  const update = () => {
     cancelAnimationFrame(raf)
-    observer?.disconnect()
+    looping = shown && !still
+    if (looping) {
+      last = performance.now()
+      raf = requestAnimationFrame(tick)
+    } else if (shown) {
+      raf = requestAnimationFrame(draw)
+    }
+  }
+
+  const onResize = () => {
+    const wasShown = shown
+
+    resize()
+    if (shown !== wasShown || (shown && still)) update()
+  }
+
+  const onMotionChange = (e: MediaQueryListEvent) => {
+    still = e.matches
+    placed = false
+    update()
+  }
+
+  resize()
+  update()
+
+  const observer =
+    typeof ResizeObserver !== 'undefined' ? new ResizeObserver(onResize) : null
+
+  observer?.observe(canvas)
+  motionQuery?.addEventListener?.('change', onMotionChange)
+
+  return {
+    // Repaints a still frame, e.g. after a theme change
+    redraw: () => {
+      if (!looping) update()
+    },
+    stop: () => {
+      cancelAnimationFrame(raf)
+      observer?.disconnect()
+      motionQuery?.removeEventListener?.('change', onMotionChange)
+    },
   }
 }
 
@@ -415,9 +460,11 @@ export function MobiusHero() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const mouse = useRef<Mouse>({ x: -9999, y: -9999, inside: false })
   const palette = useRef<Palette>(getPalette(theme))
+  const scene = useRef<ReturnType<typeof startMobius>>(null)
 
   useEffect(() => {
     palette.current = getPalette(theme)
+    scene.current?.redraw()
   }, [theme])
 
   const quote = TESTIMONIALS[useQuoteIndex(TESTIMONIALS.length)]
@@ -427,7 +474,12 @@ export function MobiusHero() {
 
     if (!canvas) return
 
-    return startMobius(canvas, mouse.current, palette)
+    scene.current = startMobius(canvas, mouse.current, palette)
+
+    return () => {
+      scene.current?.stop()
+      scene.current = null
+    }
   }, [])
 
   const onPointerMove = (e: React.PointerEvent) => {

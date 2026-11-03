@@ -88,8 +88,7 @@ export function Signup() {
   const [account, setAccount] = useState('')
   const [confirm, setConfirm] = useState('')
   const deviceToken = getDeviceToken()
-  const accountInputRef = useRef<HTMLDivElement>(null)
-  const emailRef = useRef<HTMLDivElement>(null)
+  const nameRef = useRef<HTMLDivElement>(null)
   const [mutation, { loading, error }] = useSignupMutation({
     variables: {
       attributes: { email, password, name },
@@ -108,11 +107,8 @@ export function Signup() {
   const { data } = useOauthUrlsQuery({ variables: { host: host() } })
 
   useEffect(() => {
-    const ref = email ? accountInputRef : emailRef
-
-    ref?.current?.querySelector('input')?.focus()
     // Only set focus on first render
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    nameRef.current?.querySelector('input')?.focus()
   }, [])
 
   useEffect(() => {
@@ -155,6 +151,7 @@ export function Signup() {
           </div>
         )}
         <LabelledInput
+          ref={nameRef}
           label="Full name"
           value={name}
           onChange={setName}
@@ -162,7 +159,6 @@ export function Signup() {
           inputProps={{ autoComplete: 'name' }}
         />
         <LabelledInput
-          ref={emailRef}
           label="Email address"
           value={email}
           onChange={setEmail}
@@ -172,7 +168,6 @@ export function Signup() {
           inputProps={{ type: 'email', autoComplete: 'email' }}
         />
         <LabelledInput
-          ref={accountInputRef}
           label="Company name"
           value={account}
           onChange={setAccount}

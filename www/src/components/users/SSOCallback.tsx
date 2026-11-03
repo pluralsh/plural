@@ -5,6 +5,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import qs from 'query-string'
 
 import { setAuthFromUser } from '../../helpers/authentication'
+import { authlessClient } from '../../helpers/authlessClient'
 import { GqlError } from '../utils/Alert'
 import LoadingIndicator from '../utils/LoadingIndicator'
 
@@ -22,6 +23,7 @@ export function SSOCallback() {
   const deviceToken = getDeviceToken()
 
   const [mutation, { error, loading }] = useMutation(SSO_CALLBACK, {
+    client: authlessClient,
     variables: { code, deviceToken },
     onCompleted: (result) => {
       setAuthFromUser(result.ssoCallback)

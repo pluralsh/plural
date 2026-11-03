@@ -5,6 +5,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import qs from 'query-string'
 
 import { setAuthFromUser } from '../../helpers/authentication'
+import { authlessClient } from '../../helpers/authlessClient'
 import { host } from '../../helpers/hostname'
 import { GqlError } from '../utils/Alert'
 import LoadingIndicator from '../utils/LoadingIndicator'
@@ -24,6 +25,7 @@ export function OAuthCallback() {
   const deviceToken = getDeviceToken()
 
   const [mutation, { error, loading }] = useMutation(OAUTH_CALLBACK, {
+    client: authlessClient,
     variables: {
       code,
       host: host(),

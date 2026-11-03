@@ -29,6 +29,7 @@ import {
 import { WelcomeHeader } from '../utils/WelcomeHeader'
 
 import { fetchToken, setAuthFromUser } from '../../helpers/authentication'
+import { authlessClient } from '../../helpers/authlessClient'
 import { host } from '../../helpers/hostname'
 import { PLURAL_MARK_WHITE } from '../constants'
 import { Alert, AlertStatus, GqlError } from '../utils/Alert'
@@ -56,6 +57,7 @@ import {
 export function PasswordlessLogin() {
   const { token } = useParams()
   const [mutation, { error, loading, data }] = usePasswordlessLoginMutation({
+    client: authlessClient,
     variables: { token: token ?? '' },
   })
 
@@ -129,7 +131,7 @@ function LoginPoller({ challenge, token, deviceToken }: any) {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      client
+      authlessClient
         .mutate({
           mutation: PollLoginTokenDocument,
           variables: { token, deviceToken },
@@ -149,7 +151,7 @@ function LoginPoller({ challenge, token, deviceToken }: any) {
     }, 2000)
 
     return () => clearInterval(interval)
-  }, [token, challenge, deviceToken, history, client])
+  }, [token, challenge, deviceToken, navigate, client])
 
   if (success) {
     return (
@@ -292,7 +294,7 @@ function LoginInternal() {
       loading: loginMethodLoading,
       error: loginMethodError,
     },
-  ] = useLoginMethodLazyQuery()
+  ] = useLoginMethodLazyQuery({ client: authlessClient })
   const getLoginMethod = useCallback(() => {
     loginMethodQuery({
       variables: { email, host: host() },
@@ -301,6 +303,7 @@ function LoginInternal() {
 
   const [loginMutation, { loading: loginMLoading, error: loginMError }] =
     useLoginMutation({
+      client: authlessClient,
       onCompleted: ({ login }) => {
         setAuthFromUser(login)
         if (deviceToken) finishedDeviceLogin()
@@ -334,6 +337,7 @@ function LoginInternal() {
 
   useEffect(() => {
     if (state === State.Signup) {
+      if (typeof deviceToken === 'string') saveDeviceToken(deviceToken)
       navigate('/signup', { state: { email } })
     }
   })
@@ -385,18 +389,20 @@ function LoginInternal() {
     } else if (!deviceToken && !challenge && jwt) {
       navigate(getLocalReturnUrl())
     }
-  }, [challenge, deviceToken, history, client, jwt, ran, setRan])
+  }, [challenge, deviceToken, navigate, client, jwt, ran, setRan])
 
   useEffect(() => {
     if (state === State.CheckingEmail && loginMethodError) {
-      if (deviceToken) saveDeviceToken(deviceToken)
       setState(State.Signup)
     }
-  }, [deviceToken, loginMethodError, state])
+  }, [loginMethodError, state])
 
   const loginMethod = loginMethodData?.loginMethod
 
-  const { data: oAuthData } = useOauthUrlsQuery({ variables: { host: host() } })
+  const { data: oAuthData } = useOauthUrlsQuery({
+    client: authlessClient,
+    variables: { host: host() },
+  })
 
   const isPasswordLogin =
     state === State.PwdLogin || state === State.PwdLogin_CheckingPwd
@@ -558,6 +564,10 @@ function LoginInternal() {
               <InlineLinkSC
                 to="/signup"
                 state={{ email }}
+                onClick={() => {
+                  if (typeof deviceToken === 'string')
+                    saveDeviceToken(deviceToken)
+                }}
               >
                 Sign up for Plural
               </InlineLinkSC>

@@ -8,6 +8,7 @@ import { useOauthUrlsQuery, useSignupMutation } from '../../generated/graphql'
 import { WelcomeHeader } from '../utils/WelcomeHeader'
 import { HubSpot } from '../utils/HubSpot'
 import { fetchToken, setAuthFromUser } from '../../helpers/authentication'
+import { authlessClient } from '../../helpers/authlessClient'
 import { GqlError } from '../utils/Alert'
 import { Body2P, CaptionP } from '../utils/Typography'
 
@@ -90,6 +91,7 @@ export function Signup() {
   const deviceToken = getDeviceToken()
   const nameRef = useRef<HTMLDivElement>(null)
   const [mutation, { loading, error }] = useSignupMutation({
+    client: authlessClient,
     variables: {
       attributes: { email, password, name },
       account: { name: account },

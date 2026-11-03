@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
-import styled, { DefaultTheme, useTheme } from 'styled-components'
+import { styledThemeDark } from '@pluralsh/design-system'
+import styled, { ThemeProvider } from 'styled-components'
 
 import { TESTIMONIALS } from './testimonials'
 
@@ -7,8 +8,8 @@ const QUOTE_INTERVAL_MS = 7000
 const LENS_SIZE = 160
 const PIXEL_SIZE = 3
 
-// Shading ramps for the strip, from shadow to highlight
-const RAMP_DARK = [
+// Shading ramp for the strip, from shadow to highlight
+const RAMP = [
   '#262A33',
   '#303540',
   '#3D424D',
@@ -20,25 +21,14 @@ const RAMP_DARK = [
   '#C5C9D2',
   '#EEF0F1',
 ]
-const RAMP_LIGHT = [
-  '#E3E4E7',
-  '#DDDFE3',
-  '#C5C9D2',
-  '#AEB3C0',
-  '#9FA3F9',
-  '#747AF6',
-  '#5D63F4',
-  '#4A51F2',
-  '#3A3FB8',
-  '#2B30A0',
-]
 
-type Palette = {
-  bg: string
-  ramp: string[]
-  field: string
-  haloBack: string
-  haloFront: string
+// The hero is always dark, whatever the app's color mode
+const PALETTE = {
+  bg: styledThemeDark.colors['fill-one'],
+  ramp: RAMP,
+  field: '#5D626F',
+  haloBack: '#303540',
+  haloFront: '#454954',
 }
 
 type Particle = {
@@ -151,11 +141,7 @@ function place(q: Particle, t: number, e: number) {
   q.nz = nr * su
 }
 
-function startMobius(
-  canvas: HTMLCanvasElement,
-  mouse: Mouse,
-  palette: { current: Palette }
-) {
+function startMobius(canvas: HTMLCanvasElement, mouse: Mouse) {
   const ctx = canvas.getContext('2d')
 
   if (!ctx) return null
@@ -265,12 +251,11 @@ function startMobius(
   let t = 0
   let last = performance.now()
   let raf = 0
-  let looping = false
   const visible: Particle[] = []
 
   const draw = (now: number) => {
     const dt = Math.min(now - last, 50) / 1000
-    const { bg, ramp, field: fieldColor, haloBack, haloFront } = palette.current
+    const { bg, ramp, field: fieldColor, haloBack, haloFront } = PALETTE
 
     last = now
     if (!still) {
@@ -382,8 +367,7 @@ function startMobius(
   // otherwise draws at most a single still frame
   const update = () => {
     cancelAnimationFrame(raf)
-    looping = shown && !still
-    if (looping) {
+    if (shown && !still) {
       last = performance.now()
       raf = requestAnimationFrame(tick)
     } else if (shown) {
@@ -413,28 +397,10 @@ function startMobius(
   observer?.observe(canvas)
   motionQuery?.addEventListener?.('change', onMotionChange)
 
-  return {
-    // Repaints a still frame, e.g. after a theme change
-    redraw: () => {
-      if (!looping) update()
-    },
-    stop: () => {
-      cancelAnimationFrame(raf)
-      observer?.disconnect()
-      motionQuery?.removeEventListener?.('change', onMotionChange)
-    },
-  }
-}
-
-function getPalette(theme: DefaultTheme): Palette {
-  const light = theme.mode === 'light'
-
-  return {
-    bg: theme.colors['fill-one'],
-    ramp: light ? RAMP_LIGHT : RAMP_DARK,
-    field: light ? theme.colors['border-input'] : '#5D626F',
-    haloBack: light ? theme.colors['border-fill-two'] : '#303540',
-    haloFront: light ? theme.colors['border-fill-three'] : '#454954',
+  return () => {
+    cancelAnimationFrame(raf)
+    observer?.disconnect()
+    motionQuery?.removeEventListener?.('change', onMotionChange)
   }
 }
 
@@ -456,17 +422,8 @@ function useQuoteIndex(count: number) {
 }
 
 export function MobiusHero() {
-  const theme = useTheme()
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const mouse = useRef<Mouse>({ x: -9999, y: -9999, inside: false })
-  const palette = useRef<Palette>(getPalette(theme))
-  const scene = useRef<ReturnType<typeof startMobius>>(null)
-
-  useEffect(() => {
-    palette.current = getPalette(theme)
-    scene.current?.redraw()
-  }, [theme])
-
   const quote = TESTIMONIALS[useQuoteIndex(TESTIMONIALS.length)]
 
   useEffect(() => {
@@ -474,12 +431,7 @@ export function MobiusHero() {
 
     if (!canvas) return
 
-    scene.current = startMobius(canvas, mouse.current, palette)
-
-    return () => {
-      scene.current?.stop()
-      scene.current = null
-    }
+    return startMobius(canvas, mouse.current) ?? undefined
   }, [])
 
   const onPointerMove = (e: React.PointerEvent) => {
@@ -496,29 +448,31 @@ export function MobiusHero() {
   }
 
   return (
-    <HeroSC aria-label="Customer stories">
-      <CardSC
-        onPointerMove={onPointerMove}
-        onPointerEnter={onPointerMove}
-        onPointerLeave={() => {
-          mouse.current.inside = false
-        }}
-      >
-        <canvas
-          ref={canvasRef}
-          aria-hidden="true"
-        />
-        {quote && (
-          <figure aria-live="polite">
-            <blockquote>“{quote.text}”</blockquote>
-            <figcaption>
-              <span className="role">{quote.role}</span>
-              <span className="company">{quote.company}</span>
-            </figcaption>
-          </figure>
-        )}
-      </CardSC>
-    </HeroSC>
+    <ThemeProvider theme={styledThemeDark}>
+      <HeroSC aria-label="Customer stories">
+        <CardSC
+          onPointerMove={onPointerMove}
+          onPointerEnter={onPointerMove}
+          onPointerLeave={() => {
+            mouse.current.inside = false
+          }}
+        >
+          <canvas
+            ref={canvasRef}
+            aria-hidden="true"
+          />
+          {quote && (
+            <figure aria-live="polite">
+              <blockquote>“{quote.text}”</blockquote>
+              <figcaption>
+                <span className="role">{quote.role}</span>
+                <span className="company">{quote.company}</span>
+              </figcaption>
+            </figure>
+          )}
+        </CardSC>
+      </HeroSC>
+    </ThemeProvider>
   )
 }
 

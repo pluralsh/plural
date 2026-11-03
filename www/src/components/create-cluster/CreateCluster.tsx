@@ -1,72 +1,80 @@
-import {
-  Button,
-  Flex,
-  IconFrame,
-  PencilIcon,
-  ReturnIcon,
-  SendMessageIcon,
-  Stepper,
-} from '@pluralsh/design-system'
-import styled, { useTheme } from 'styled-components'
+import { useSetBreadcrumbs } from '@pluralsh/design-system'
+import { useCallback, useEffect, useMemo } from 'react'
+import { useNavigate } from 'react-router-dom'
 
-import { ReactElement, useMemo, useState } from 'react'
-
-import OnboardingCard from 'components/shell/onboarding/OnboardingCard'
-
+import { PLURAL_CLOUD_INSTANCES_PATH_ABS } from 'components/overview/clusters/plural-cloud/PluralCloudInstances'
+import { GqlError } from 'components/utils/Alert'
 import {
   ConsoleInstanceStatus,
-  ConsoleInstanceType,
   useConsoleInstanceQuery,
 } from 'generated/graphql'
-
-import { GqlError } from 'components/utils/Alert'
-
 import usePersistedState from 'hooks/usePersistedState'
 
-import { ConsoleCreationStatus } from './ConsoleCreationStatus'
-import { CreateClusterActions } from './CreateClusterActions'
+import {
+  CLOUD_OPTION_KEY,
+  CREATE_CLUSTER_TTL_KEY,
+  CUR_CONSOLE_INSTANCE_KEY,
+  CUR_CREATE_CLUSTER_STEP_KEY,
+  HOSTING_OPTION_KEY,
+  SETUP_GUIDE_OPEN_KEY,
+} from './constants'
+import {
+  FINISHED_CONSOLE_INSTANCE_KEY,
+  FINISHED_LOCAL_CREATE_KEY,
+} from './CreateClusterActions'
 import {
   CloudOption,
+  CREATE_CLUSTER_STEPS,
   CreateClusterContext,
   CreateClusterContextType,
   CreateClusterStepKey,
-  cloudSteps,
-  localSteps,
+  isCreateClusterStepKey,
 } from './CreateClusterWizard'
-import { Link } from 'react-router-dom'
+import { SetupFlowLayout, SetupStepStatus } from './SetupFlowLayout'
+import { BuildStep } from './steps/BuildStep'
+import { InstanceStep } from './steps/InstanceStep'
+import { OpenConsoleStep } from './steps/OpenConsoleStep'
 
-export const CUR_CREATE_CLUSTER_STEP_KEY = 'cur-create-cluster-step'
-export const CLOUD_OPTION_KEY = 'cloud-option'
-export const HOSTING_OPTION_KEY = 'hosting-option'
-export const CUR_CONSOLE_INSTANCE_KEY = 'cur-console-instance-id'
-const TTL_KEY = 'create-cluster-ttl'
+export {
+  CLOUD_OPTION_KEY,
+  CUR_CONSOLE_INSTANCE_KEY,
+  CUR_CREATE_CLUSTER_STEP_KEY,
+  HOSTING_OPTION_KEY,
+} from './constants'
+
+const TTL = { key: CREATE_CLUSTER_TTL_KEY }
+
+const STEP_COMPONENTS = {
+  [CreateClusterStepKey.Instance]: InstanceStep,
+  [CreateClusterStepKey.Build]: BuildStep,
+  [CreateClusterStepKey.OpenConsole]: OpenConsoleStep,
+}
 
 export function CreateCluster() {
-  const theme = useTheme()
-  const [curStep, setCurStep] = usePersistedState<CreateClusterStepKey>(
+  const navigate = useNavigate()
+  const [persistedStep, setCurStep] = usePersistedState<CreateClusterStepKey>(
     CUR_CREATE_CLUSTER_STEP_KEY,
-    CreateClusterStepKey.ChooseCloud,
-    { key: TTL_KEY }
+    CreateClusterStepKey.Instance,
+    TTL
   )
-  const [cloudOption, setCloudOption] = usePersistedState<CloudOption>(
+  const [persistedCloudOption, setCloudOption] = usePersistedState<CloudOption>(
     CLOUD_OPTION_KEY,
-    'local',
-    { key: TTL_KEY }
+    'cloud',
+    TTL
   )
-  const [hostingOption, setHostingOption] =
-    usePersistedState<ConsoleInstanceType>(
-      HOSTING_OPTION_KEY,
-      ConsoleInstanceType.Shared,
-      { key: TTL_KEY }
-    )
-  const [finishEnabled, setFinishEnabled] = useState(false)
-  const [continueBtn, setContinueBtn] = useState<ReactElement | undefined>()
   const [consoleInstanceId, setConsoleInstanceId] = usePersistedState<
     Nullable<string>
-  >(CUR_CONSOLE_INSTANCE_KEY, null, { key: TTL_KEY })
+  >(CUR_CONSOLE_INSTANCE_KEY, null, TTL)
+  const [guideOpen, setGuideOpen] = usePersistedState(
+    SETUP_GUIDE_OPEN_KEY,
+    false
+  )
 
-  const steps = cloudOption === 'local' ? localSteps : cloudSteps
-  const curStepIndex = steps.findIndex((step) => step.key === curStep)
+  const curStep = isCreateClusterStepKey(persistedStep)
+    ? persistedStep
+    : CreateClusterStepKey.Instance
+  const cloudOption: CloudOption =
+    persistedCloudOption === 'local' ? 'local' : 'cloud'
 
   const { data, error } = useConsoleInstanceQuery({
     variables: { id: consoleInstanceId ?? '' },
@@ -74,6 +82,39 @@ export function CreateCluster() {
     fetchPolicy: 'cache-and-network',
     pollInterval: 10_000,
   })
+  const consoleInstance = data?.consoleInstance
+  const isProvisioned =
+    consoleInstance?.status === ConsoleInstanceStatus.Provisioned
+
+  useEffect(() => {
+    if (consoleInstanceId && curStep === CreateClusterStepKey.Instance)
+      setCurStep(CreateClusterStepKey.Build)
+    else if (isProvisioned && curStep === CreateClusterStepKey.Build)
+      setCurStep(CreateClusterStepKey.OpenConsole)
+  }, [consoleInstanceId, isProvisioned, curStep, setCurStep])
+
+  const cancel = useCallback(() => {
+    clearCreateClusterCache()
+    navigate(PLURAL_CLOUD_INSTANCES_PATH_ABS)
+  }, [navigate])
+
+  const startOver = useCallback(() => {
+    setConsoleInstanceId(null)
+    setCurStep(CreateClusterStepKey.Instance)
+  }, [setConsoleInstanceId, setCurStep])
+
+  const finish = useCallback(() => {
+    if (consoleInstanceId)
+      localStorage.setItem(FINISHED_CONSOLE_INSTANCE_KEY, consoleInstanceId)
+    if (cloudOption === 'local')
+      localStorage.setItem(FINISHED_LOCAL_CREATE_KEY, 'true')
+    clearCreateClusterCache()
+    navigate(
+      cloudOption === 'local'
+        ? '/overview/clusters/self-hosted'
+        : PLURAL_CLOUD_INSTANCES_PATH_ABS
+    )
+  }, [cloudOption, consoleInstanceId, navigate])
 
   const context: CreateClusterContextType = useMemo(
     () => ({
@@ -81,111 +122,103 @@ export function CreateCluster() {
       setCurStep,
       cloudOption,
       setCloudOption,
-      hostingOption,
-      setHostingOption,
-      finishEnabled,
-      setFinishEnabled,
-      continueBtn,
-      setContinueBtn,
       consoleInstanceId,
       setConsoleInstanceId,
-      consoleUrl: data?.consoleInstance?.url,
-      isCreatingInstance:
-        !!consoleInstanceId &&
-        data?.consoleInstance?.status !== ConsoleInstanceStatus.Provisioned,
+      consoleInstance,
+      isProvisioned,
+      cancel,
+      finish,
+      startOver,
     }),
     [
       curStep,
       setCurStep,
       cloudOption,
       setCloudOption,
-      hostingOption,
-      setHostingOption,
-      finishEnabled,
-      continueBtn,
       consoleInstanceId,
       setConsoleInstanceId,
-      data?.consoleInstance?.url,
-      data?.consoleInstance?.console?.pingedAt,
-      data?.consoleInstance?.status,
+      consoleInstance,
+      isProvisioned,
+      cancel,
+      finish,
+      startOver,
     ]
   )
 
-  const showClearButton =
-    cloudOption === 'cloud' &&
-    (curStep === CreateClusterStepKey.InstallCli ||
-      curStep === CreateClusterStepKey.Authentication)
+  const instanceName = consoleInstance?.name
+  const showInstanceCrumb =
+    !!instanceName && curStep !== CreateClusterStepKey.Instance
+
+  useSetBreadcrumbs(
+    useMemo(
+      () => [
+        { label: 'plural cloud', url: '/' },
+        { label: 'instances', url: PLURAL_CLOUD_INSTANCES_PATH_ABS },
+        showInstanceCrumb
+          ? { label: instanceName, url: '' }
+          : { label: 'create', url: '' },
+      ],
+      [instanceName, showInstanceCrumb]
+    )
+  )
+
+  const statuses: Record<CreateClusterStepKey, SetupStepStatus> = {
+    [CreateClusterStepKey.Instance]: consoleInstanceId ? 'complete' : 'pending',
+    [CreateClusterStepKey.Build]: isProvisioned
+      ? 'complete'
+      : consoleInstanceId
+        ? 'in-progress'
+        : 'pending',
+    [CreateClusterStepKey.OpenConsole]: 'pending',
+  }
+  const reachable: Record<CreateClusterStepKey, boolean> = {
+    [CreateClusterStepKey.Instance]: !consoleInstanceId,
+    [CreateClusterStepKey.Build]: !!consoleInstanceId,
+    [CreateClusterStepKey.OpenConsole]: isProvisioned,
+  }
+  const { title, subtitle } = getStepHeader(curStep, instanceName)
+  const StepComponent = STEP_COMPONENTS[curStep]
 
   return (
     <CreateClusterContext.Provider value={context}>
-      <MainWrapperSC>
-        <SidebarWrapperSC>
-          <Flex
-            gap="small"
-            width="100%"
-          >
-            <Button
-              as={Link}
-              to="/overview"
-              secondary
-              startIcon={<ReturnIcon />}
-              style={{ flex: 1 }}
-            >
-              Back home
-            </Button>
-            {showClearButton && (
-              <IconFrame
-                clickable
-                type="floating"
-                size="large"
-                icon={<PencilIcon css={{ width: 16 }} />}
-                tooltip="Create a new instance (this one will continue provisioning)"
-                onClick={() => {
-                  clearCreateClusterCache()
-                  setCurStep(CreateClusterStepKey.ChooseCloud)
-                  setCloudOption('cloud')
-                  setConsoleInstanceId(null)
-                  setContinueBtn(undefined)
-                }}
-                css={{ flexShrink: 0 }}
-              />
-            )}
-          </Flex>
-          <Stepper
-            vertical
-            steps={steps}
-            stepIndex={curStepIndex}
-          />
-          {error ? (
-            <GqlError error={error} />
-          ) : (
-            data?.consoleInstance && (
-              <ConsoleCreationStatus consoleInstance={data.consoleInstance} />
-            )
-          )}
-        </SidebarWrapperSC>
-        <ContentWrapperSC>
-          <ContentHeaderSC>
-            <span css={theme.partials.text.title2}>Create Plural instance</span>
-            <Button
-              secondary
-              startIcon={<SendMessageIcon />}
-              as="a"
-              href="https://www.plural.sh/contact"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Contact sales
-            </Button>
-          </ContentHeaderSC>
-          <OnboardingCard title={steps[curStepIndex]?.stepTitle}>
-            {steps[curStepIndex]?.component}
-            <CreateClusterActions />
-          </OnboardingCard>
-        </ContentWrapperSC>
-      </MainWrapperSC>
+      <SetupFlowLayout
+        title={title}
+        subtitle={subtitle}
+        navLabel="Create instance steps"
+        steps={CREATE_CLUSTER_STEPS.map(({ key, label }) => ({
+          key,
+          label,
+          status: statuses[key],
+          reachable: reachable[key],
+        }))}
+        curStep={curStep}
+        onStepChange={setCurStep}
+        guideOpen={guideOpen}
+        setGuideOpen={setGuideOpen}
+        banner={error && <GqlError error={error} />}
+      >
+        <StepComponent />
+      </SetupFlowLayout>
     </CreateClusterContext.Provider>
   )
+}
+
+function getStepHeader(
+  step: CreateClusterStepKey,
+  name: Nullable<string>
+): { title: string; subtitle?: string } {
+  switch (step) {
+    case CreateClusterStepKey.Build:
+      return {
+        title: `Building ${name ?? 'your instance'}`,
+        subtitle:
+          'This takes a few minutes. You can close this tab and check progress from Instances.',
+      }
+    case CreateClusterStepKey.OpenConsole:
+      return { title: 'Your console is ready' }
+    default:
+      return { title: 'Create instance' }
+  }
 }
 
 export function clearCreateClusterCache() {
@@ -210,40 +243,3 @@ export function getUnfinishedConsoleInstanceId() {
     .getItem(`plural-${CUR_CONSOLE_INSTANCE_KEY}`)
     ?.replace(/"/g, '')
 }
-
-const MainWrapperSC = styled.div(({ theme }) => ({
-  display: 'flex',
-  justifyContent: 'space-between',
-  gap: theme.spacing.xlarge,
-  padding: theme.spacing.large,
-  height: '100%',
-  overflow: 'auto',
-  '&::after': {
-    // makes the spacing look a little nicer
-    content: '""',
-    flex: 0.35,
-  },
-}))
-
-const SidebarWrapperSC = styled.div(({ theme }) => ({
-  display: 'flex',
-  width: 300,
-  height: 'min-content',
-  flexDirection: 'column',
-  gap: theme.spacing.xlarge,
-}))
-
-const ContentWrapperSC = styled.div(({ theme }) => ({
-  display: 'flex',
-  height: 'fit-content',
-  minWidth: 600,
-  maxWidth: 720,
-  flexDirection: 'column',
-  gap: theme.spacing.xlarge,
-}))
-
-const ContentHeaderSC = styled.div({
-  display: 'flex',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-})

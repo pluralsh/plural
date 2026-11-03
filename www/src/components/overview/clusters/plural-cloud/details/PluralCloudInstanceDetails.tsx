@@ -33,8 +33,6 @@ import { PluralCloudInstanceClusterPermissions } from './PluralCloudInstanceClus
 import { PluralCloudInstanceDropdown } from './PluralCloudInstanceDropdown'
 import { PluralCloudInstanceMoreMenu } from './PluralCloudInstanceMoreMenu'
 
-export const INSTANCE_ID_PARAM = 'instanceId'
-
 const getBreadcrumbs = (name: string, instanceId: string) => [
   ...CLOUD_INSTANCES_BREADCRUMBS,
   { label: name, url: `${PLURAL_CLOUD_INSTANCES_PATH_ABS}/${instanceId}` },

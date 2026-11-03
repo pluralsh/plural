@@ -1,47 +1,37 @@
-import { TabPanel, useSetBreadcrumbs } from '@pluralsh/design-system'
-import { useMemo, useRef } from 'react'
-import { Outlet, useParams } from 'react-router-dom'
+import { PageCard, useSetBreadcrumbs } from '@pluralsh/design-system'
+import { useContext, useMemo } from 'react'
+import { useParams } from 'react-router-dom'
 
-import { Flex } from 'honorable'
+import CurrentUserContext from '../../contexts/CurrentUserContext'
+import { SubpageLayout } from '../utils/layout/SubpageLayout'
 
-import { ResponsiveLayoutContentContainer } from '../utils/layout/ResponsiveLayoutContentContainer'
-import { ResponsiveLayoutPage } from '../utils/layout/ResponsiveLayoutPage'
-import { ResponsiveLayoutSidenavContainer } from '../utils/layout/ResponsiveLayoutSidenavContainer'
+const DIRECTORY = [
+  { path: '/account/edit', label: 'General' },
+  { path: '/account/users', label: 'Users' },
+  { path: '/account/service-accounts', label: 'Service accounts' },
+  { path: '/account/groups', label: 'Groups' },
+  { path: '/account/roles', label: 'Roles' },
+  { path: '/account/domains', label: 'DNS domains' },
+]
 
-import AccountSideNav from './AccountSidenav'
-
-export type DomainMappingProps = {
-  __typename?: 'DomainMapping'
-  id?: string
-  domain?: string
-  enableSso?: boolean
-}
-export type RootUser = {
-  __typename?: 'User'
-  id?: 'string'
-}
-export type Account = {
-  __typename: 'Account'
-  id?: string
-  rootUser?: RootUser
-  name?: string
-  domainMappings?: DomainMappingProps[]
-  backgroundColor?: string
-  billingCustomerId?: string
+const CRUMB_LABELS: Record<string, string> = {
+  edit: 'general',
+  'service-accounts': 'service accounts',
+  domains: 'dns domains',
 }
 
 export function Account() {
-  const tabStateRef = useRef<any>()
-
+  const me = useContext(CurrentUserContext)
+  const orgName = me.account?.name || ''
   const params = useParams()
   const subPath = params?.['*']?.split?.('/')[0]
   const breadcrumbs = useMemo(
     () => [
-      { label: 'account', url: '/account' },
+      { label: 'organization', url: '/account' },
       ...(subPath
         ? [
             {
-              label: subPath === 'edit' ? 'attributes' : subPath,
+              label: CRUMB_LABELS[subPath] ?? subPath,
               url: `/account/${subPath}`,
             },
           ]
@@ -53,25 +43,17 @@ export function Account() {
   useSetBreadcrumbs(breadcrumbs)
 
   return (
-    <ResponsiveLayoutPage padding={0}>
-      <ResponsiveLayoutSidenavContainer
-        marginLeft="large"
-        marginTop="large"
-      >
-        <AccountSideNav tabStateRef={tabStateRef} />
-      </ResponsiveLayoutSidenavContainer>
-      <Flex
-        grow={1}
-        overflowY="auto"
-        padding="large"
-      >
-        <TabPanel
-          as={<ResponsiveLayoutContentContainer overflow="visible" />}
-          stateRef={tabStateRef}
-        >
-          <Outlet />
-        </TabPanel>
-      </Flex>
-    </ResponsiveLayoutPage>
+    <SubpageLayout
+      directory={DIRECTORY}
+      tile={
+        <PageCard
+          heading={orgName}
+          icon={{
+            name: orgName,
+            initials: orgName.charAt(0).toUpperCase() || '?',
+          }}
+        />
+      }
+    />
   )
 }

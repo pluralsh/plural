@@ -12,6 +12,7 @@ import { ConsoleInstanceFragment } from 'generated/graphql'
 import { Row } from '@tanstack/react-table'
 
 export const PLURAL_CLOUD_INSTANCES_PATH_ABS = '/overview/clusters/plural-cloud'
+export const INSTANCE_ID_PARAM = 'instanceId'
 
 export const CLOUD_INSTANCES_BREADCRUMBS = [
   ...CLUSTERS_OVERVIEW_BREADCRUMBS,

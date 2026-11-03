@@ -1,46 +1,40 @@
-import { ExtendTheme, Input, InputProps } from 'honorable'
-import { forwardRef, useContext } from 'react'
-import { useTheme } from 'styled-components'
+import { Input } from '@pluralsh/design-system'
+import { ComponentProps, useContext } from 'react'
+import styled from 'styled-components'
 
 import { ListContext, hueToBorderColor } from './List'
 
-const ListInput = forwardRef<HTMLDivElement, InputProps>(
-  ({ ...props }, ref) => {
-    const theme = useTheme()
-    const { hue } = useContext(ListContext)
-    const bRad = theme.borderRadiuses.large - 2
+export default function ListInput(props: ComponentProps<typeof Input>) {
+  const { hue } = useContext(ListContext)
 
-    const themeExtension: any = {
-      Input: {
-        Root: [
-          {
-            position: 'relative',
-            border: 'none',
-            borderBottomStyle: 'solid',
-            borderColor: theme.colors[hueToBorderColor[hue]] || 'transparent',
-            borderWidth: '1px',
-            borderRadius: 0,
-            '&:focus-within': {
-              outline: 'none',
-            },
-            '&:focus-within:after': {
-              borderRadius: `${bRad}px ${bRad}px 0 0`,
-              ...theme.partials.focus.insetAbsolute,
-            },
-          },
-        ],
-      },
-    }
+  return (
+    <ListInputSC
+      $hue={hue}
+      {...props}
+    />
+  )
+}
 
-    return (
-      <ExtendTheme theme={themeExtension}>
-        <Input
-          ref={ref}
-          {...props}
-        />
-      </ExtendTheme>
-    )
+const ListInputSC = styled(Input)<{ $hue: keyof typeof hueToBorderColor }>(({
+  theme,
+  $hue,
+}) => {
+  const bRad = theme.borderRadiuses.large - 2
+
+  return {
+    position: 'relative',
+    border: 'none',
+    borderBottomStyle: 'solid',
+    borderColor: theme.colors[hueToBorderColor[$hue]] || 'transparent',
+    borderWidth: '1px',
+    borderRadius: 0,
+    '&:focus-within': {
+      outline: 'none',
+      borderColor: theme.colors[hueToBorderColor[$hue]] || 'transparent',
+    },
+    '&:focus-within:after': {
+      borderRadius: `${bRad}px ${bRad}px 0 0`,
+      ...theme.partials.focus.insetAbsolute,
+    },
   }
-)
-
-export default ListInput
+})

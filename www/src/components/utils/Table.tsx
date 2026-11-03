@@ -1,10 +1,18 @@
-import { Flex, P, Span } from 'honorable'
-import { createContext, useContext, useMemo } from 'react'
+import { Flex, type FlexProps } from '@pluralsh/design-system'
+import { type ReactNode, createContext, useContext, useMemo } from 'react'
 import toUpper from 'lodash/toUpper'
+import styled, { useTheme } from 'styled-components'
 
-const TableContext = createContext<any>({})
+import { OverlineH1, SpanSC } from './Typography'
 
-function HeaderItem({ label, index }: any) {
+type TableContextT = {
+  sizes: FlexProps['width'][]
+  background?: string
+}
+
+const TableContext = createContext<TableContextT>({ sizes: [] })
+
+function HeaderItem({ label, index }: { label: ReactNode; index: number }) {
   const { sizes } = useContext(TableContext)
 
   return (
@@ -12,24 +20,30 @@ function HeaderItem({ label, index }: any) {
       width={sizes[index]}
       align="center"
     >
-      <Span fontWeight="600">{label}</Span>
+      <HeaderLabelSC>{label}</HeaderLabelSC>
     </Flex>
   )
 }
 
-export function TableRow({ children, suffix, last, ...flex }: any) {
+type TableRowProps = FlexProps & {
+  children: ReactNode[]
+  suffix?: ReactNode
+  last?: boolean
+}
+
+export function TableRow({ children, suffix, last, ...flex }: TableRowProps) {
+  const theme = useTheme()
   const { sizes } = useContext(TableContext)
 
   const len = children.length
 
   return (
     <Flex
-      px={0.75}
-      py={0.75}
+      padding="small"
       direction="row"
       width="100%"
       align="center"
-      borderBottom={last ? null : '1px solid border'}
+      borderBottom={last ? undefined : theme.borders.default}
       {...flex}
     >
       {children.map((child, i) => (
@@ -39,7 +53,7 @@ export function TableRow({ children, suffix, last, ...flex }: any) {
           align="center"
           direction="row"
         >
-          <Flex flexGrow={1}>{child}</Flex>
+          <Flex grow={1}>{child}</Flex>
           {i === len - 1 ? suffix : null}
         </Flex>
       ))}
@@ -47,8 +61,15 @@ export function TableRow({ children, suffix, last, ...flex }: any) {
   )
 }
 
-export function TableData({ children }: any) {
-  return <Span color="text-light">{children}</Span>
+export function TableData({ children }: { children?: ReactNode }) {
+  return <SpanSC $color="text-light">{children}</SpanSC>
+}
+
+type TableProps = FlexProps & {
+  sizes: FlexProps['width'][]
+  headers: string[]
+  background?: string
+  heading?: string
 }
 
 export function Table({
@@ -58,7 +79,8 @@ export function Table({
   background,
   heading,
   ...flex
-}: any) {
+}: TableProps) {
+  const theme = useTheme()
   const value = useMemo(
     () => ({
       sizes,
@@ -70,25 +92,26 @@ export function Table({
   return (
     <Flex
       direction="column"
-      border="1px solid border"
-      borderRadius="large"
-      background={background}
+      border={theme.borders.default}
+      borderRadius={theme.borderRadiuses.large}
+      background={
+        background ? (theme.colors[background] ?? background) : undefined
+      }
       {...flex}
     >
       <TableContext.Provider value={value}>
         {heading && (
-          <P
-            overline
-            color="text-xlight"
-            padding={16}
+          <OverlineH1
+            as="p"
+            $color="text-xlight"
+            css={{ padding: theme.spacing.medium }}
           >
             {toUpper(heading)}
-          </P>
+          </OverlineH1>
         )}
         <Flex
-          borderBottom="1px solid border"
-          px={0.75}
-          py={0.75}
+          borderBottom={theme.borders.default}
+          padding="small"
           align="center"
         >
           {headers.map((label, index) => (
@@ -104,3 +127,7 @@ export function Table({
     </Flex>
   )
 }
+
+const HeaderLabelSC = styled.span({
+  fontWeight: 600,
+})

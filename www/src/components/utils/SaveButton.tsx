@@ -1,9 +1,12 @@
-import { ButtonProps, Flex } from 'honorable'
-import { Button, CheckIcon } from '@pluralsh/design-system'
+import {
+  Button,
+  type ButtonProps,
+  CheckIcon,
+  Flex,
+  usePrevious,
+} from '@pluralsh/design-system'
 import { ReactNode, useEffect, useState } from 'react'
 import { useTheme } from 'styled-components'
-
-import usePrevious from '../../hooks/usePrevious'
 
 export type SaveButtonProps = ButtonProps & {
   dirty?: boolean
@@ -43,7 +46,7 @@ export default function SaveButton({
   }, [loading, error])
 
   return (
-    <Flex flexDirection={position === 'left' ? 'row' : 'row-reverse'}>
+    <Flex direction={position === 'left' ? 'row' : 'row-reverse'}>
       <Button
         type="submit"
         loading={loading}
@@ -56,9 +59,9 @@ export default function SaveButton({
         <Flex
           marginRight={position === 'right' ? 'medium' : 0}
           marginLeft={position === 'left' ? 'medium' : 0}
-          alignItems="center"
-          body2
+          align="center"
           color={theme.colors['text-xlight']}
+          css={{ ...theme.partials.text.body2 }}
         >
           {dirty ? (
             <>Unsaved changes</>

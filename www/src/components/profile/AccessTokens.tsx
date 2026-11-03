@@ -1,22 +1,18 @@
 import { useMutation, useQuery } from '@apollo/client'
-import { Box } from 'grommet'
-import { Button, Div, Span } from 'honorable'
 import moment from 'moment'
 import { useState } from 'react'
 import lookup from 'country-code-lookup'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import {
+  Button,
   CopyIcon,
   Flex,
   EmptyState,
   GraphIcon,
   IconFrame,
-  InfoIcon,
   ListIcon,
   Modal,
-  PageTitle,
   Toast,
-  Tooltip,
 } from '@pluralsh/design-system'
 
 import { Placeholder } from '../utils/Placeholder'
@@ -42,7 +38,10 @@ import { Chloropleth } from '../utils/Chloropleth'
 import { Confirm } from '../utils/Confirm'
 import { DeleteIconButton } from '../utils/IconButtons'
 import LoadingIndicator from '../utils/LoadingIndicator'
+import { Body2P, SpanSC } from '../utils/Typography'
+import { SubpageHeader } from '../utils/layout/SubpageLayout'
 
+import { InfoTooltip } from './InfoTooltip'
 import { ListItem } from './ListItem'
 
 const TOOLTIP =
@@ -57,16 +56,15 @@ function TokenAudits({ token }: any) {
 
   if (!data) return null
 
-  const {
-    audits: { pageInfo, edges },
-  } = data.token
+  const { pageInfo, edges } = data.token?.audits ?? {}
 
-  if (edges.length === 0) {
+  if (!edges?.length) {
     return <>Token has yet to be used</>
   }
 
   return (
-    <Box
+    <Flex
+      direction="column"
       height="60vh"
       width="80vw"
     >
@@ -76,7 +74,11 @@ function TokenAudits({ token }: any) {
         width="100%"
         height="100%"
       >
-        <Box fill>
+        <Flex
+          direction="column"
+          width="100%"
+          height="100%"
+        >
           <StandardScroller
             listRef={listRef}
             setListRef={setListRef}
@@ -106,9 +108,9 @@ function TokenAudits({ token }: any) {
               })
             }
           />
-        </Box>
+        </Flex>
       </Table>
-    </Box>
+    </Flex>
   )
 }
 
@@ -120,9 +122,8 @@ function TokenMetrics({ token }: any) {
 
   if (!data) return null
 
-  const metrics = data.token.metrics.map(({ country, count }) => ({
-    // @ts-expect-error
-    id: lookup.byIso(country).iso3,
+  const metrics = (data.token?.metrics ?? []).map(({ country, count }) => ({
+    id: lookup.byIso(country)?.iso3,
     value: count,
   }))
 
@@ -132,15 +133,15 @@ function TokenMetrics({ token }: any) {
       gap="large"
       overflow="hidden"
     >
-      <Span
-        body2
-        color="text-xlight"
+      <Body2P
+        as="span"
+        $color="text-xlight"
       >
         USAGE METRICS
-      </Span>
-      <Div height="400px">
+      </Body2P>
+      <div css={{ height: 400 }}>
         <Chloropleth data={metrics} />
-      </Div>
+      </div>
     </Flex>
   )
 }
@@ -167,17 +168,18 @@ function AccessToken({ token, first, last }: any) {
         first={first}
         last={last}
       >
-        <Box
-          fill="horizontal"
+        <Flex
+          direction="column"
+          width="100%"
           gap="xsmall"
         >
-          <Span fontWeight="bold">{obscure(token.token)}</Span>
-          <Span color="text-light">
+          <span css={{ fontWeight: 'bold' }}>{obscure(token.token)}</span>
+          <SpanSC $color="text-light">
             Created {moment(token.insertedAt).fromNow()}
-          </Span>
-        </Box>
-        <Box
-          flex={false}
+          </SpanSC>
+        </Flex>
+        <Flex
+          flex="0 0 auto"
           width="35%"
           align="center"
           direction="row"
@@ -185,13 +187,7 @@ function AccessToken({ token, first, last }: any) {
           gap="small"
         >
           {displayCopyBanner && (
-            <Toast
-              severity="success"
-              marginBottom="medium"
-              marginRight="xxxxlarge"
-            >
-              Access token copied successfully.
-            </Toast>
+            <Toast severity="success">Access token copied successfully.</Toast>
           )}
           <CopyToClipboard
             text={token.token}
@@ -209,9 +205,10 @@ function AccessToken({ token, first, last }: any) {
           </CopyToClipboard>
           <>
             <IconFrame
-              textValue=""
+              textValue="Usage metrics"
+              tooltip
               clickable
-              size="medium"
+              size="small"
               icon={<GraphIcon />}
               onClick={() => setGraph(true)}
             />
@@ -226,9 +223,10 @@ function AccessToken({ token, first, last }: any) {
           </>
           <>
             <IconFrame
-              textValue=""
+              textValue="Audit logs"
+              tooltip
               clickable
-              size="medium"
+              size="small"
               icon={<ListIcon />}
               onClick={() => setAudits(true)}
             />
@@ -241,7 +239,7 @@ function AccessToken({ token, first, last }: any) {
             </Modal>
           </>
           <DeleteIconButton onClick={() => setConfirm(true)} />
-        </Box>
+        </Flex>
       </ListItem>
       <Confirm
         open={confirm}
@@ -272,62 +270,39 @@ export function AccessTokens() {
 
   if (!data) return <LoadingIndicator />
 
-  const { edges, pageInfo } = data.tokens
+  const { edges, pageInfo } = data.tokens ?? {}
+  const createToken = () => {
+    setDisplayNewBanner(true)
+    setTimeout(() => setDisplayNewBanner(false), 1000)
+    mutation()
+  }
 
   return (
     <Flex
-      flexDirection="column"
-      flexShrink="0"
+      direction="column"
+      shrink={0}
       height="100%"
       overflow="hidden"
     >
-      <PageTitle heading="Access tokens">
-        <Flex
-          direction="row"
-          align="center"
-          overflow="auto"
-          flexGrow={1}
+      <SubpageHeader
+        title={
+          <>
+            Access tokens
+            <InfoTooltip label={TOOLTIP} />
+          </>
+        }
+      >
+        <Button
+          secondary
+          onClick={createToken}
+          loading={loading}
         >
-          <Tooltip
-            width="315px"
-            label={TOOLTIP}
-          >
-            <Box
-              flex={false}
-              pad="6px"
-              round="xxsmall"
-              hoverIndicator="fill-two"
-            >
-              <InfoIcon />
-            </Box>
-          </Tooltip>
-          <Box
-            flex
-            align="end"
-          >
-            {displayNewBanner && (
-              <Toast
-                severity="success"
-                marginBottom="medium"
-                marginRight="xxxxlarge"
-              >
-                New access token created.
-              </Toast>
-            )}
-            <Button
-              secondary
-              onClick={() => {
-                setDisplayNewBanner(true)
-                setTimeout(() => setDisplayNewBanner(false), 1000)
-                mutation()
-              }}
-              loading={loading}
-            >
-              Create access token
-            </Button>
-          </Box>
-        </Flex>
-      </PageTitle>
+          Create access token
+        </Button>
+      </SubpageHeader>
+      {displayNewBanner && (
+        <Toast severity="success">New access token created.</Toast>
+      )}
       <Flex height="100%">
         {edges?.length ? (
           <StandardScroller
@@ -344,9 +319,9 @@ export function AccessTokens() {
             )}
             loading={loadingTokens}
             placeholder={Placeholder}
-            hasNextPage={pageInfo.hasNextPage}
-            loadNextPage={
-              pageInfo.hasNextPage &&
+            hasNextPage={pageInfo?.hasNextPage}
+            loadNextPage={() =>
+              pageInfo?.hasNextPage &&
               fetchMore({
                 variables: { cursor: pageInfo.endCursor },
                 updateQuery: (prev, { fetchMoreResult: { tokens } }) =>
@@ -357,11 +332,7 @@ export function AccessTokens() {
         ) : (
           <EmptyState message="Looks like you don't have any access tokens yet.">
             <Button
-              onClick={() => {
-                setDisplayNewBanner(true)
-                setTimeout(() => setDisplayNewBanner(false), 1000)
-                mutation()
-              }}
+              onClick={createToken}
               loading={loading}
             >
               Create access token

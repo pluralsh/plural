@@ -1,9 +1,7 @@
-import { Button, Card, Chip, Modal } from '@pluralsh/design-system'
-import { Div, Flex, H3 } from 'honorable'
+import { Button, Card, Chip, Flex, Modal } from '@pluralsh/design-system'
 import isEmpty from 'lodash/isEmpty'
-import { ComponentProps, useCallback, useContext, useState } from 'react'
-
-import SubscriptionContext from '../../../contexts/SubscriptionContext'
+import { ComponentProps, useState } from 'react'
+import { useTheme } from 'styled-components'
 
 import {
   InvoiceFragment,
@@ -13,43 +11,30 @@ import {
   useDeletePaymentMethodMutation,
 } from '../../../generated/graphql'
 
+import { GqlError } from '../../utils/Alert'
 import { DeleteIconButton } from '../../utils/IconButtons'
+import { Body1P, Body2P } from '../../utils/Typography'
 
 import { DelinquencyCallout } from './DelinquencyNotices'
 import PaymentForm from './PaymentForm'
 
-export enum PaymentMethodActions {
-  MakeDefault = 'makeDefault',
-  Remove = 'remove',
-  Select = 'select',
+const CARD_BRANDS: Record<string, { name: string; icon: string }> = {
+  mastercard: { name: 'Mastercard', icon: 'mastercard.svg' },
+  visa: { name: 'Visa', icon: 'visa.svg' },
+  amex: { name: 'American Express', icon: 'amex.svg' },
+  diners: { name: 'Diners Club', icon: 'diners.svg' },
+  unionpay: { name: 'UnionPay', icon: 'unionpay.svg' },
+  jcb: { name: 'JCB', icon: 'jcb.svg' },
+  discover: { name: 'Discover', icon: 'discover.svg' },
 }
 
-function CardBrandToDisplayName(brand: string) {
-  const lookup = {
-    mastercard: 'Mastercard',
-    visa: 'Visa',
-    amex: 'American Express',
-    diners: 'Diners Club',
-    unionpay: 'UnionPay',
-    jcb: 'JCB',
-    discover: 'Discover',
+function cardBrand(brand: string) {
+  const known = CARD_BRANDS[brand.toLowerCase()]
+
+  return {
+    name: known?.name ?? 'Card',
+    icon: `/payment_icons/${known?.icon ?? 'default.svg'}`,
   }
-
-  return `${lookup[brand.toLowerCase()] || 'default.svg'}`
-}
-
-function CardBrandToImgPath(brand: string) {
-  const lookup = {
-    mastercard: 'mastercard.svg',
-    visa: 'visa.svg',
-    amex: 'amex.svg',
-    diners: 'diners.svg',
-    unionpay: 'unionpay.svg',
-    jcb: 'jcb.svg',
-    discover: 'discover.svg',
-  }
-
-  return `/payment_icons/${lookup[brand.toLowerCase()] || 'default.svg'}`
 }
 
 export function PaymentMethod({
@@ -57,83 +42,80 @@ export function PaymentMethod({
 }: {
   method: Nullable<PaymentMethodFragment>
 }) {
-  const [makeDefaultMutation, { loading: defaultLoading }] =
+  const [makeDefault, { loading: defaultLoading, error: defaultError }] =
     useDefaultPaymentMethodMutation({
       variables: { id: method?.id || '' },
       refetchQueries: [namedOperations.Query.Subscription],
+      awaitRefetchQueries: true,
     })
-  const [deleteCardMutation, { loading: _deleteLoading }] =
+  const [deleteMethod, { loading: deleteLoading, error: deleteError }] =
     useDeletePaymentMethodMutation({
       variables: { id: method?.id || '' },
       refetchQueries: [namedOperations.Query.Subscription],
+      awaitRefetchQueries: true,
     })
-
-  const handleDelete = useCallback(() => {
-    deleteCardMutation()
-  }, [deleteCardMutation])
-  const handleMakeDefault = useCallback(() => {
-    makeDefaultMutation()
-  }, [makeDefaultMutation])
 
   if (!method?.card) {
     return null
   }
   const { card } = method
+  const brand = cardBrand(card.brand)
+  const error = defaultError || deleteError
 
   return (
     <Flex
-      direction="row"
-      gap="medium"
-      align="center"
+      direction="column"
+      gap="small"
     >
+      {error && <GqlError error={error} />}
       <Flex
+        gap="medium"
         align="center"
-        gap="small"
       >
         <Flex
           align="center"
-          justify="center"
+          gap="small"
         >
           <img
-            width="48px"
-            src={CardBrandToImgPath(card.brand)}
+            width={48}
+            src={brand.icon}
+            alt={brand.name}
           />
+          <Flex
+            direction="column"
+            gap="xxxsmall"
+          >
+            <Body1P css={{ fontWeight: 600 }}>
+              {brand.name} ending in {card.last4}
+            </Body1P>
+            <Body2P $color="text-xlight">
+              Expires {card.expMonth.toString().padStart(2, '0')}/{card.expYear}
+            </Body2P>
+          </Flex>
         </Flex>
         <Flex
-          direction="column"
-          gap="xxxsmall"
+          gap="small"
+          align="center"
+          justify="flex-end"
+          grow={1}
         >
-          <Div
-            fontWeight={600}
-            body1
-          >
-            {CardBrandToDisplayName(card.brand)} ending in {card.last4}
-          </Div>
-          <Div color="text-xlight">
-            Expires {card.expMonth.toString().padStart(2, '0')}/{card.expYear}
-          </Div>
+          {method.isDefault ? (
+            <Chip severity="success">Default card</Chip>
+          ) : (
+            <Button
+              small
+              secondary
+              loading={defaultLoading}
+              onClick={() => makeDefault()}
+            >
+              Make default
+            </Button>
+          )}
+          <DeleteIconButton
+            tooltip="Delete"
+            onClick={deleteLoading ? undefined : () => deleteMethod()}
+          />
         </Flex>
-      </Flex>
-      <Flex
-        direction="row"
-        gap="small"
-        align="center"
-        justify="flex-end"
-        flexGrow={1}
-      >
-        {method.isDefault ? (
-          <Chip severity="success">Default card</Chip>
-        ) : (
-          <Button
-            small
-            secondary
-            loading={defaultLoading}
-            onClick={handleMakeDefault}
-          >
-            Make default
-          </Button>
-        )}
-        <DeleteIconButton onClick={handleDelete} />
       </Flex>
     </Flex>
   )
@@ -155,32 +137,6 @@ function AddPaymentMethodModal({
   )
 }
 
-export function BillingAddress() {
-  const subscription = useContext(SubscriptionContext)
-  const { billingAddress } = subscription
-
-  return billingAddress ? (
-    <Flex
-      direction="column"
-      body2
-      marginBottom="xlarge"
-    >
-      <H3
-        subtitle2
-        marginBottom="xsmall"
-      >
-        Billing address
-      </H3>
-      {billingAddress?.line1 && <Div>{billingAddress.line1}</Div>}
-      {billingAddress?.line2 && <Div>{billingAddress.line2}</Div>}
-      {billingAddress?.city && <Div>{billingAddress.city}</Div>}
-      {billingAddress?.state && <Div>{billingAddress.state}</Div>}
-      {billingAddress?.zip && <Div>{billingAddress.zip}</Div>}
-      {billingAddress?.country && <Div>{billingAddress.country}</Div>}
-    </Flex>
-  ) : null
-}
-
 function BillingBankCards({
   paymentMethods,
   invoices,
@@ -188,53 +144,31 @@ function BillingBankCards({
   paymentMethods: (PaymentMethodFragment | null | undefined)[]
   invoices?: (InvoiceFragment | null | undefined)[]
 }) {
+  const theme = useTheme()
   const [addPayment, setAddPayment] = useState(false)
 
   return (
     <Card
-      display="flex"
-      flexDirection="column"
-      alignItems="start"
-      padding="medium"
+      css={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: theme.spacing.medium,
+        padding: theme.spacing.medium,
+      }}
     >
-      <Div
-        width="100%"
-        marginBottom="medium"
-      >
-        <DelinquencyCallout invoices={invoices} />
-      </Div>
-      <Flex
-        direction="column"
-        gap="medium"
-        width="100%"
-      >
-        {isEmpty(paymentMethods) ? (
-          <Div color="text-xlight">No payment method saved</Div>
-        ) : (
-          <Flex
-            direction="column"
-            gap="medium"
-            width="100%"
-          >
-            {paymentMethods.map((paymentMethod) => (
-              <PaymentMethod
-                key={paymentMethod?.id}
-                method={paymentMethod}
-              />
-            ))}
-          </Flex>
-        )}
-      </Flex>
-      <Flex
-        width="100%"
-        justifyContent="center"
-      >
-        <Button
-          onClick={() => setAddPayment(true)}
-          marginTop="medium"
-        >
-          Add payment method
-        </Button>
+      <DelinquencyCallout invoices={invoices} />
+      {isEmpty(paymentMethods) ? (
+        <Body2P $color="text-xlight">No payment method saved</Body2P>
+      ) : (
+        paymentMethods.map((paymentMethod) => (
+          <PaymentMethod
+            key={paymentMethod?.id}
+            method={paymentMethod}
+          />
+        ))
+      )}
+      <Flex justify="center">
+        <Button onClick={() => setAddPayment(true)}>Add payment method</Button>
       </Flex>
       <AddPaymentMethodModal
         open={addPayment}

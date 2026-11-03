@@ -31,6 +31,34 @@ defmodule Core.Services.OAuthTest do
     end
   end
 
+  describe "#create_oidc_provider/3" do
+    test "it creates a provider owned by an impersonable service account with its bindings" do
+      user = insert(:user)
+      sa = bound_service_account(user)
+      expect(HTTPoison, :post, fn _, _, _ ->
+        {:ok, %{status_code: 200, body: Jason.encode!(%{client_id: "123", client_secret: "secret"})}}
+      end)
+
+      {:ok, oidc} = OAuth.create_oidc_provider(%{
+        redirect_uris: ["https://example.com"],
+        auth_method: :basic
+      }, sa, user)
+
+      assert oidc.owner_id == sa.id
+      assert Enum.map(oidc.bindings, & &1.user_id) == [user.id]
+    end
+
+    test "it won't create a provider for a service account you can't impersonate" do
+      user = insert(:user)
+      sa = bound_service_account(user)
+
+      {:error, _} = OAuth.create_oidc_provider(%{
+        redirect_uris: ["https://example.com"],
+        auth_method: :basic
+      }, sa, insert(:user, account: user.account))
+    end
+  end
+
   describe "#update_oidc_provider/2" do
     test "you can update your own providers" do
       user = insert(:user)
@@ -46,6 +74,21 @@ defmodule Core.Services.OAuthTest do
 
       assert updated.id == oidc.id
       assert updated.auth_method == :basic
+    end
+
+    test "users who can impersonate the owning service account can update its providers" do
+      user = insert(:user)
+      oidc = insert(:oidc_provider, owner: bound_service_account(user))
+      expect(HTTPoison, :put, fn _, _, _ ->
+        {:ok, %{status_code: 200, body: Jason.encode!(%{client_id: "123", client_secret: "secret"})}}
+      end)
+
+      {:ok, updated} = OAuth.update_oidc_provider(%{
+        redirect_uris: ["https://example.com"],
+        auth_method: :basic
+      }, oidc.id, user)
+
+      assert updated.id == oidc.id
     end
 
     test "others cannot update your provider" do

@@ -1,6 +1,5 @@
 import { useCallback, useContext, useMemo, useState } from 'react'
-import { Button } from 'honorable'
-import { Modal } from '@pluralsh/design-system'
+import { Button, Modal } from '@pluralsh/design-system'
 import uniqWith from 'lodash/uniqWith'
 import isEqual from 'lodash/isEqual'
 
@@ -91,7 +90,7 @@ export function CreateRole({ q }: any) {
       </Modal>
       <BillingFeatureBlockModal
         open={blockModalVisible}
-        message="Upgrade to Plural Professional to create a role."
+        message="Upgrade to Plural Pro to create a role."
         onClose={() => setBlockModalVisible(false)}
       />
     </>

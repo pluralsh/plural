@@ -55,6 +55,12 @@ defmodule GraphQl.Resolvers.Payments do
   def resolve_platform_subscription(_, %{context: %{current_user: %User{account_id: id}}}),
     do: {:ok, Payments.get_platform_subscription_by_account!(id)}
 
+  def billing_usage(args, %{context: %{current_user: user}}) do
+    end_at = args[:end_time] || DateTime.utc_now()
+    start_at = args[:start_time] || DateTime.add(end_at, -30, :day)
+    Payments.billing_usage(user, start_at, end_at, args[:meters] || [:ingest, :clusters])
+  end
+
   def list_cards(%User{id: uid} = user, args, %{context: %{current_user: %User{id: uid}}}) do
     Payments.list_cards(user, to_stripe_args(args))
     |> to_connection()

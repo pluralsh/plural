@@ -1,7 +1,5 @@
 import { useApolloClient } from '@apollo/client'
-import { Divider, LoadingSpinner } from '@pluralsh/design-system'
-import { Box, Collapsible, Form, Text } from 'grommet'
-import { A, Button, Div, Flex, Icon } from 'honorable'
+import { Button, Divider, Flex, LoadingSpinner } from '@pluralsh/design-system'
 import queryString from 'query-string'
 import {
   RefObject,
@@ -15,8 +13,8 @@ import {
   GoogleReCaptchaProvider,
   useGoogleReCaptcha,
 } from 'react-google-recaptcha-v3'
-import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
-import styled from 'styled-components'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import styled, { useTheme } from 'styled-components'
 
 import {
   AcceptLoginDocument,
@@ -34,6 +32,12 @@ import { fetchToken, setAuthFromUser } from '../../helpers/authentication'
 import { host } from '../../helpers/hostname'
 import { PLURAL_MARK_WHITE } from '../constants'
 import { Alert, AlertStatus, GqlError } from '../utils/Alert'
+import {
+  Body2P,
+  InlineLinkButtonSC,
+  InlineLinkSC,
+  Subtitle1H1,
+} from '../utils/Typography'
 
 import { getLocalReturnUrl } from './utils'
 import { isValidEmail } from '../../utils/email'
@@ -61,8 +65,12 @@ export function PasswordlessLogin() {
 
   return (
     <LoginPortal>
-      <Box gap="medium">
-        <Box
+      <Flex
+        direction="column"
+        gap="medium"
+      >
+        <Flex
+          direction="column"
           gap="xsmall"
           align="center"
         >
@@ -70,15 +78,10 @@ export function PasswordlessLogin() {
             src={PLURAL_MARK_WHITE}
             width="45px"
           />
-          <Text size="large">Passwordless Login</Text>
-        </Box>
+          <Subtitle1H1 as="p">Passwordless Login</Subtitle1H1>
+        </Flex>
         {loading && (
-          <Text
-            size="small"
-            color="dark-3"
-          >
-            Validating your login token...
-          </Text>
+          <Body2P $color="text-light">Validating your login token...</Body2P>
         )}
         {error && (
           <GqlError
@@ -93,7 +96,7 @@ export function PasswordlessLogin() {
             description="Navigate back to wherever you initiated the login to begin using plural."
           />
         )}
-      </Box>
+      </Flex>
     </LoginPortal>
   )
 }
@@ -174,35 +177,35 @@ function sortOauthUrls(a, b) {
 }
 
 export function OAuthOptions({ oauthUrls }: any) {
+  const theme = useTheme()
+
   return (
-    <Div marginBottom="medium">
+    <div css={{ marginBottom: theme.spacing.medium }}>
       {oauthUrls && (
         <>
           <Divider
             text="Or continue with"
             color="text-xlight"
             backgroundColor="border"
-            marginVertical="large"
-            overline
+            marginTop="large"
+            marginBottom="large"
           />
           <Flex
             direction="row"
             gap="large"
             justify="space-between"
             wrap="wrap"
-            flexWrap="wrap"
           >
             {[...oauthUrls].sort(sortOauthUrls).map((url) => (
               <OAuthOption
                 key={url.provider}
                 url={url}
-                flexGrow={1}
               />
             ))}
           </Flex>
         </>
       )}
-    </Div>
+    </div>
   )
 }
 
@@ -243,6 +246,7 @@ export function Login() {
 }
 
 function LoginInternal() {
+  const theme = useTheme()
   const navigate = useNavigate()
   const [state, setState] = useState<LoginState>(State.Initial)
   const prevState = useRef<LoginState>(State.Initial)
@@ -255,8 +259,8 @@ function LoginInternal() {
   )
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const passwordRef = useRef<HTMLElement>()
-  const emailRef = useRef<HTMLElement>()
+  const passwordRef = useRef<HTMLDivElement>(null)
+  const emailRef = useRef<HTMLDivElement>(null)
 
   const { executeRecaptcha } = useGoogleReCaptcha()
   const [isVerifyingCaptcha, setIsVerifyingCaptcha] = useState(false)
@@ -473,27 +477,29 @@ function LoginInternal() {
 
   return (
     <LoginPortal>
-      <Div>
-        <WelcomeHeader marginBottom="xlarge" />
+      <div>
+        <div css={{ marginBottom: theme.spacing.xlarge }}>
+          <WelcomeHeader />
+        </div>
         {state === State.PasswordlessLogin && (
-          <Div>
+          <div>
             <LoginPoller
               token={loginMethod?.token}
               challenge={challenge}
               deviceToken={deviceToken}
             />
-          </Div>
+          </div>
         )}
         {state !== State.PasswordlessLogin && (
           <>
-            <Form onSubmit={onSubmit}>
+            <form onSubmit={onSubmit}>
               {loginError && (
-                <Div marginBottom="medium">
+                <div css={{ marginBottom: theme.spacing.medium }}>
                   <GqlError
                     error={loginError}
                     header="Login Failed"
                   />
-                </Div>
+                </div>
               )}
               <LabelledInput
                 ref={emailRef}
@@ -504,30 +510,25 @@ function LoginInternal() {
                 placeholder="Enter email address"
                 caption={
                   isPasswordLogin ? (
-                    <A
-                      inline
+                    <InlineLinkButtonSC
+                      type="button"
                       onClick={() => {
                         setEmail('')
                         setState(State.Initial)
                       }}
                     >
                       change email
-                    </A>
+                    </InlineLinkButtonSC>
                   ) : null
                 }
               />
-              <Collapsible
-                open={state === State.PwdLogin}
-                direction="vertical"
-              >
+              {state === State.PwdLogin && (
                 <LabelledInput
                   ref={passwordRef}
                   label="Password"
                   type="password"
                   caption={
-                    <A
-                      inline
-                      as={Link}
+                    <InlineLinkSC
                       to="/password-reset"
                       onClick={(e) => {
                         e.preventDefault()
@@ -535,7 +536,7 @@ function LoginInternal() {
                       }}
                     >
                       forgot your password?
-                    </A>
+                    </InlineLinkSC>
                   }
                   hint={passwordHint}
                   error={passwordError}
@@ -543,7 +544,7 @@ function LoginInternal() {
                   onChange={setPassword}
                   placeholder="Enter password"
                 />
-              </Collapsible>
+              )}
               <Button
                 type="submit"
                 width="100%"
@@ -552,11 +553,11 @@ function LoginInternal() {
               >
                 {isPasswordLogin ? 'Log in' : 'Continue'}
               </Button>
-            </Form>
+            </form>
             {!deviceToken && <OAuthOptions oauthUrls={oAuthData?.oauthUrls} />}
           </>
         )}
-      </Div>
+      </div>
     </LoginPortal>
   )
 }
@@ -575,7 +576,7 @@ export const FlexAtBreak = styled.div((_) => ({
   },
 }))
 
-function OAuthOption({ url: { authorizeUrl, provider }, ...props }: any) {
+function OAuthOption({ url: { authorizeUrl, provider } }: any) {
   const icon = METHOD_ICONS[provider]
 
   provider = provider.toLowerCase()
@@ -587,13 +588,9 @@ function OAuthOption({ url: { authorizeUrl, provider }, ...props }: any) {
         width="100%"
         height={48}
         secondary
-        as={A}
-        _hover={{ textDecoration: 'none' }}
+        as="a"
         href={authorizeUrl}
-        startIcon={
-          <Icon>{createElement(icon, { size: 20, fullColor: true })}</Icon>
-        }
-        {...props}
+        startIcon={createElement(icon, { size: 20, fullColor: true })}
       >
         {providerToName[provider]}
       </Button>

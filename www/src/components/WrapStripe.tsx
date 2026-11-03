@@ -16,7 +16,7 @@ export const useStripeAppearance = () => {
       variables: {
         fontFamily: theme.fontFamilies.sans,
         fontSizeBase: `${theme.partials.text.body2.fontSize}px`,
-        spacingUnit: `${theme.spacing.xxsmall}px`,
+        spacingUnit: `${theme.spacingPx.xxsmall}px`,
         borderRadius: `${theme.borderRadiuses.medium}px`,
         colorPrimary: theme.colors['fill-primary'],
         colorBackground: theme.colors['fill-one'],
@@ -25,9 +25,9 @@ export const useStripeAppearance = () => {
         colorDanger: theme.colors['text-danger'],
         colorSuccess: theme.colors['text-success'],
         colorWarning: theme.colors['text-warning'],
-        spacingGridRow: `${theme.spacing.medium}px`,
-        spacingGridColumn: `${theme.spacing.medium}px`,
-        spacingTab: `${theme.spacing.medium}px`,
+        spacingGridRow: `${theme.spacingPx.medium}px`,
+        spacingGridColumn: `${theme.spacingPx.medium}px`,
+        spacingTab: `${theme.spacingPx.medium}px`,
       },
       rules: {
         '.Label, .Input': {
@@ -36,7 +36,7 @@ export const useStripeAppearance = () => {
         },
         '.Label': {
           fontWeight: `${theme.partials.text.body2Bold.fontWeight}`,
-          marginBottom: `${theme.spacing.xsmall}px`,
+          marginBottom: `${theme.spacingPx.xsmall}px`,
         },
         '.Input, .Dropdown': {
           boxShadow: 'none',

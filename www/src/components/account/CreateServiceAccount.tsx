@@ -1,8 +1,8 @@
 import { Dispatch, useCallback, useContext, useState } from 'react'
 import { useMutation } from '@apollo/client'
-import { Box } from 'grommet'
-import { Button, Div } from 'honorable'
 import {
+  Button,
+  Flex,
   ListBoxItem,
   Modal,
   Tooltip,
@@ -39,8 +39,10 @@ function ServiceAccountForm({
   ...box
 }: any) {
   return (
-    <Box
-      fill
+    <Flex
+      direction="column"
+      width="100%"
+      height="100%"
       gap="medium"
       {...box}
     >
@@ -90,7 +92,7 @@ function ServiceAccountForm({
           )
         }
       />
-    </Box>
+    </Flex>
   )
 }
 
@@ -153,7 +155,7 @@ export function EditServiceAccount({ user, update }: any) {
         if (isAvailable) setEdit(true)
       },
       disabledTooltip: !isAvailable
-        ? 'Upgrade to Plural Professional to manage service accounts.'
+        ? 'Upgrade to Plural Pro to manage service accounts.'
         : undefined,
       props: {
         disabled: !isAvailable,
@@ -165,7 +167,7 @@ export function EditServiceAccount({ user, update }: any) {
         if (isAvailable) setConfirm(true)
       },
       disabledTooltip: !isAvailable
-        ? 'Upgrade to Plural Professional to manage service accounts.'
+        ? 'Upgrade to Plural Pro to manage service accounts.'
         : undefined,
       props: {
         destructive: true,
@@ -239,8 +241,9 @@ export function EditServiceAccount({ user, update }: any) {
         }
         size="large"
       >
-        <Box
-          flex={false}
+        <Flex
+          direction="column"
+          flex="0 0 auto"
           gap="small"
         >
           <ServiceAccountForm
@@ -250,7 +253,7 @@ export function EditServiceAccount({ user, update }: any) {
             bindings={bindings}
             setBindings={setBindings}
           />
-        </Box>
+        </Flex>
       </Modal>
     </>
   )
@@ -293,7 +296,7 @@ export function CreateServiceAccount({ q }: any) {
 
   return (
     <>
-      <Div>
+      <div>
         <Button
           secondary
           onClick={() =>
@@ -304,7 +307,7 @@ export function CreateServiceAccount({ q }: any) {
         >
           Create service account
         </Button>
-      </Div>
+      </div>
 
       {/* Modals */}
       <Modal
@@ -335,8 +338,9 @@ export function CreateServiceAccount({ q }: any) {
           </>
         }
       >
-        <Box
-          flex={false}
+        <Flex
+          direction="column"
+          flex="0 0 auto"
           gap="small"
         >
           <ServiceAccountForm
@@ -346,11 +350,11 @@ export function CreateServiceAccount({ q }: any) {
             bindings={bindings}
             setBindings={setBindings}
           />
-        </Box>
+        </Flex>
       </Modal>
       <BillingFeatureBlockModal
         open={blockModalVisible}
-        message="Upgrade to Plural Professional to create a service account."
+        message="Upgrade to Plural Pro to create a service account."
         onClose={() => setBlockModalVisible(false)}
       />
     </>

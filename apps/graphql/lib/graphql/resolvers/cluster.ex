@@ -1,7 +1,7 @@
 defmodule GraphQl.Resolvers.Cluster do
   use GraphQl.Resolvers.Base, model: Core.Schema.Cluster
-  alias Core.Services.Clusters
-  alias Core.Schema.{DeferredUpdate, ClusterDependency, ClusterUsageHistory}
+  alias Core.Services.{Clusters, Repositories}
+  alias Core.Schema.{DeferredUpdate, ClusterDependency, ClusterUsageHistory, OIDCProvider}
 
   def query(ClusterDependency, _), do: ClusterDependency
   def query(_, _), do: Cluster
@@ -48,6 +48,27 @@ defmodule GraphQl.Resolvers.Cluster do
     |> ok()
   end
 
+  def installation(cluster, %{repository: name}, %{context: %{current_user: user}}) do
+    with {:ok, %{owner_id: owner_id}} <- Clusters.authorize(cluster, user) do
+      case Repositories.get_repository_by_name(name) do
+        %{id: repo_id} -> {:ok, Repositories.get_installation(owner_id, repo_id)}
+        nil -> {:ok, nil}
+      end
+    end
+  end
+
+  def oidc_providers(cluster, args, %{context: %{current_user: user}}) do
+    with {:ok, %{owner_id: owner_id}} <- Clusters.authorize(cluster, user) do
+      OIDCProvider.for_owner(owner_id)
+      |> OIDCProvider.ordered()
+      |> paginate(args)
+    end
+  end
+
+  def promote(%{cluster_id: id}, %{context: %{current_user: user}}) when is_binary(id) do
+    with {:ok, %{owner: owner}} <- Clusters.authorize(id, user),
+      do: Clusters.promote(owner)
+  end
   def promote(_, %{context: %{current_user: user}}), do: Clusters.promote(user)
 
   def create_cluster(%{attributes: attrs}, %{context: %{current_user: user}}),

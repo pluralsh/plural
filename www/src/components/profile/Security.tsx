@@ -1,14 +1,11 @@
 import { useMutation, useQuery } from '@apollo/client'
-import { Span } from 'honorable'
 import {
   Button,
-  ContentCard,
-  PageTitle,
+  PadlockLockedIcon,
   StatusOkIcon,
   ValidatedInput,
 } from '@pluralsh/design-system'
 import { createElement, useContext, useState } from 'react'
-import { Password } from 'forge-core'
 
 import styled, { useTheme } from 'styled-components'
 
@@ -16,6 +13,8 @@ import { METHOD_ICONS } from '../users/utils'
 import { host } from '../../helpers/hostname'
 import CurrentUserContext from '../../contexts/CurrentUserContext'
 import { OAUTH_URLS, UPDATE_USER } from '../users/queries'
+import { SubpageCard, SubpageHeader } from '../utils/layout/SubpageLayout'
+import { Body2BoldP, Body2P } from '../utils/Typography'
 
 import { LoginMethod as Method } from './types'
 
@@ -25,16 +24,8 @@ function Section({ header, description, children }: any) {
   return (
     <div>
       <div css={{ marginBottom: theme.spacing.small }}>
-        <div
-          css={{
-            ...theme.partials.text.body1Bold,
-          }}
-        >
-          {header}
-        </div>
-        {description && (
-          <div css={{ color: theme.colors['text-light'] }}>{description}</div>
-        )}
+        <Body2BoldP>{header}</Body2BoldP>
+        {description && <Body2P $color="text-light">{description}</Body2P>}
       </div>
       {children}
     </div>
@@ -133,7 +124,6 @@ const LoginMethodSC = styled.button<{ $active }>(
     width: '100%',
     minHeight: 44,
     borderRadius: theme.borderRadiuses.large,
-    hoverIndicator: 'fill-one-hover',
     background: active
       ? theme.colors['fill-one-selected']
       : theme.colors['fill-one'],
@@ -141,7 +131,7 @@ const LoginMethodSC = styled.button<{ $active }>(
       background: theme.colors['fill-one-hover'],
     },
     alignItems: 'center',
-    padding: `${theme.spacing.small}px ${theme.spacing.medium}px`,
+    padding: `${theme.spacingPx.small}px ${theme.spacingPx.medium}px`,
   })
 )
 
@@ -153,7 +143,7 @@ function LoginMethod({ icon, name, onClick, active }: any) {
     >
       {icon}
       <div css={{ flexGrow: 1 }}>
-        <Span>{name}</Span>
+        <span>{name}</span>
       </div>
       {active && (
         <StatusOkIcon
@@ -179,16 +169,18 @@ function LoginMethods() {
         display: 'flex',
         flexDirection: 'column',
         gap: theme.spacing.small,
-        marginBottom: theme.spacing.large,
       }}
     >
       {data.oauthUrls.map(({ provider, authorizeUrl }, i) => (
         <LoginMethod
           key={i}
-          icon={createElement(METHOD_ICONS[provider], {
-            size: '20px',
-            color: theme.colors['icon-default'],
-          })}
+          icon={
+            METHOD_ICONS[provider] &&
+            createElement(METHOD_ICONS[provider], {
+              size: 20,
+              color: theme.colors['icon-default'],
+            })
+          }
           active={me.loginMethod === provider}
           name={`Login with ${provider.toLowerCase()}`}
           onClick={() => (window.location = authorizeUrl)}
@@ -196,9 +188,9 @@ function LoginMethods() {
       ))}
       <LoginMethod
         icon={
-          <Password
-            size="20px"
-            color={theme.colors['icon-default']}
+          <PadlockLockedIcon
+            size={20}
+            color="icon-default"
           />
         }
         active={me.loginMethod === Method.PASSWORD}
@@ -219,35 +211,28 @@ export function Security() {
 
   return (
     <div css={{ paddingBottom: theme.spacing.large }}>
-      <PageTitle heading="Security" />
-      <ContentCard overflowY={undefined}>
-        <div
-          css={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: theme.spacing.medium,
-          }}
-        >
-          <Section header="Password">
-            {!pass && (
+      <SubpageHeader title="Security" />
+      <SubpageCard>
+        <Section header="Password">
+          {!pass && (
+            <div>
               <Button
-                alignSelf="start"
                 secondary
                 onClick={() => setPass(true)}
               >
                 Change password
               </Button>
-            )}
-            {pass && <UpdatePassword cancel={() => setPass(false)} />}
-          </Section>
-          <Section
-            header="Login methods"
-            description="Choose one method to login with."
-          >
-            <LoginMethods />
-          </Section>
-        </div>
-      </ContentCard>
+            </div>
+          )}
+          {pass && <UpdatePassword cancel={() => setPass(false)} />}
+        </Section>
+        <Section
+          header="Login methods"
+          description="Choose one method to login with."
+        >
+          <LoginMethods />
+        </Section>
+      </SubpageCard>
     </div>
   )
 }

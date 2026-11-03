@@ -1,8 +1,12 @@
 import { useLocation, useNavigate } from 'react-router-dom'
 import queryString, { ParsedQuery } from 'query-string'
-import { ArrowRightLeftIcon, Button, IconFrame } from '@pluralsh/design-system'
+import {
+  ArrowRightLeftIcon,
+  Button,
+  Flex,
+  IconFrame,
+} from '@pluralsh/design-system'
 import { useCallback } from 'react'
-import { A, Flex, Span } from 'honorable'
 import StartCase from 'lodash/startCase'
 import { useTheme } from 'styled-components'
 
@@ -18,6 +22,12 @@ import {
 } from '../../generated/graphql'
 import { clearLocalStorage } from '../../helpers/localStorage'
 import LoadingIndicator from '../utils/LoadingIndicator'
+import {
+  Body1P,
+  CaptionP,
+  InlineLinkButtonSC,
+  Title1H1,
+} from '../utils/Typography'
 
 function Icon({
   icon,
@@ -38,8 +48,7 @@ function Icon({
           height="48px"
         />
       }
-      width="64px"
-      height="64px"
+      style={{ width: 64, height: 64 }}
       type="floating"
     />
   ) : null
@@ -118,22 +127,21 @@ export function OAuthConsent() {
           gap="xsmall"
           paddingTop="medium"
         >
-          <Span
-            title1
-            size="medium"
-            textAlign="center"
+          <Title1H1
+            as="span"
+            css={{ textAlign: 'center' }}
           >
             {repository?.name
               ? `${StartCase(repository.name)} requires access`
               : 'Access required'}
-          </Span>
-          <Span
-            body1
-            color="text-light"
-            textAlign="center"
+          </Title1H1>
+          <Body1P
+            as="span"
+            $color="text-light"
+            css={{ textAlign: 'center' }}
           >
             Click "Allow" below to allow access to your profile.
-          </Span>
+          </Body1P>
         </Flex>
         <Flex
           gap="small"
@@ -155,19 +163,16 @@ export function OAuthConsent() {
             Allow
           </Button>
 
-          <Span
-            caption
-            color="text-xlight"
-            textAlign="center"
+          <CaptionP
+            as="span"
+            $color="text-xlight"
+            css={{ textAlign: 'center' }}
           >
             You are currently signed in as {userData?.me?.email}.&nbsp;
-            <A
-              inline
-              onClick={logout}
-            >
+            <InlineLinkButtonSC onClick={logout}>
               Wrong account?
-            </A>
-          </Span>
+            </InlineLinkButtonSC>
+          </CaptionP>
         </Flex>
       </Flex>
     </LoginPortal>

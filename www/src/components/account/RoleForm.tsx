@@ -47,34 +47,44 @@ function PermissionToggle({
       <div
         css={{
           display: 'flex',
-          flexDirection: 'column',
+          alignItems: 'center',
+          gap: theme.spacing.medium,
           width: '100%',
         }}
       >
-        <h4
-          className="stuff"
+        <div
           css={{
-            ...theme.partials.text.body1Bold,
-            margin: 0,
+            display: 'flex',
+            flexDirection: 'column',
+            flexGrow: 1,
+            minWidth: 0,
           }}
         >
-          {permission.toLowerCase()}
-        </h4>
-        <p
-          css={{
-            ...theme.partials.text.body2,
-            color: theme.colors['text-light'],
-            margin: 0,
-          }}
-          color="text-light"
-        >
-          {description}
-        </p>
+          <h4
+            className="stuff"
+            css={{
+              ...theme.partials.text.body1Bold,
+              margin: 0,
+            }}
+          >
+            {permission.toLowerCase()}
+          </h4>
+          <p
+            css={{
+              ...theme.partials.text.body2,
+              color: theme.colors['text-light'],
+              margin: 0,
+            }}
+            color="text-light"
+          >
+            {description}
+          </p>
+        </div>
+        <Switch
+          checked={!!attributes.permissions.find((perm) => perm === permission)}
+          onChange={(checked) => toggle(checked)}
+        />
       </div>
-      <Switch
-        checked={!!attributes.permissions.find((perm) => perm === permission)}
-        onChange={(checked) => toggle(checked)}
-      />
     </ListItem>
   )
 }

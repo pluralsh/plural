@@ -36,7 +36,7 @@ export function Chloropleth({ data }) {
       theme={{ text: { fill: theme.colors.text } }}
       features={countries.features}
       label="properties.name"
-      valueFormat=".2s"
+      valueFormat=",d"
       domain={[0, maximum + 1]}
       colors={colors}
       unknownColor={theme.colors['fill-two']}

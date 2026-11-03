@@ -2,8 +2,6 @@ import { Switch } from '@pluralsh/design-system'
 import { ReactElement, useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 
-import { Div } from 'honorable'
-
 import {
   Group,
   GroupConnection,
@@ -106,19 +104,19 @@ function UserSettingsUnstyled({
             user={user}
           />
         </div>
-        <Div alignSelf="flex-start">
+        <div css={{ alignSelf: 'flex-start' }}>
           <Switch
             checked={!!isAdmin}
             onChange={(checked) => setAdmin(checked)}
           >
             Admin
           </Switch>
-        </Div>
+        </div>
       </div>
       <GroupBindingsComboBox
         onViewMore={() =>
           fetchMore({
-            variables: { cursor: groupsQuery?.groups?.pageInfo?.endCursor },
+            variables: { after: groupsQuery?.groups?.pageInfo?.endCursor },
             updateQuery: (prev, { fetchMoreResult: { groups } }) =>
               extendConnection(prev, groups, 'groups'),
           })

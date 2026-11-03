@@ -1,5 +1,4 @@
-import { SubTab, TabList } from '@pluralsh/design-system'
-import { Flex } from 'honorable'
+import { Flex, SubTab, TabList } from '@pluralsh/design-system'
 import { ReactElement, useRef } from 'react'
 import { useLocation } from 'react-router-dom'
 

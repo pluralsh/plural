@@ -1,18 +1,24 @@
-import { Div, H1 } from 'honorable'
+import { Flex, type FlexProps } from '@pluralsh/design-system'
+import { type CSSProperties } from 'react'
+
+import { Title1H1 } from './Typography'
+
+type WelcomeHeaderProps = Omit<FlexProps, 'textAlign'> & {
+  heading?: string
+  textAlign?: CSSProperties['textAlign']
+}
 
 export function WelcomeHeader({
   heading = 'Welcome to Plural',
   textAlign = 'center',
   ...props
-}: any) {
+}: WelcomeHeaderProps) {
   return (
-    <Div {...props}>
-      <H1
-        title1
-        textAlign={textAlign}
-      >
-        {heading}
-      </H1>
-    </Div>
+    <Flex
+      direction="column"
+      {...props}
+    >
+      <Title1H1 css={{ textAlign }}>{heading}</Title1H1>
+    </Flex>
   )
 }

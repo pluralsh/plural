@@ -2,8 +2,6 @@ import { Button, Flex, Toast } from '@pluralsh/design-system'
 
 import { useLayoutEffect, useState } from 'react'
 
-import { useTheme } from 'styled-components'
-
 import BillingPricingCards, { ContactUs } from './BillingPricingCards'
 import BillingPricingTable from './BillingPricingTable'
 
@@ -15,10 +13,10 @@ import {
 } from 'generated/graphql'
 import { useSearchParams } from 'react-router-dom'
 import BillingDowngradeModal from './BillingDowngradeModal'
+import { BillingPlanSummary } from './BillingPlanDetails'
 import { useBillingSubscription } from './BillingSubscriptionProvider'
 
 export default function BillingManagePlan() {
-  const theme = useTheme()
   const { refetch } = useBillingSubscription()
   const [searchParams, setSearchParams] = useSearchParams()
 
@@ -61,10 +59,11 @@ export default function BillingManagePlan() {
     <Flex
       direction="column"
       gap="large"
-      paddingBottom={theme.spacing.xxlarge}
+      paddingBottom="xxlarge"
     >
       {finalizeCheckoutError && <GqlError error={finalizeCheckoutError} />}
       {initiateCheckoutError && <GqlError error={initiateCheckoutError} />}
+      <BillingPlanSummary />
       <BillingPricingCards
         onUpgrade={() => initiateCheckout()}
         upgradeLoading={initiateCheckoutLoading}

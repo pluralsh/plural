@@ -1,13 +1,16 @@
-import { Flex } from 'honorable'
+import { Flex } from '@pluralsh/design-system'
 import { ReactNode } from 'react'
+import { useTheme } from 'styled-components'
 
 function BillingError({ children }: { children?: ReactNode }) {
+  const theme = useTheme()
+
   return (
     <Flex
       flexGrow={1}
       align="center"
       justify="center"
-      body2
+      css={{ ...theme.partials.text.body2 }}
     >
       {children ? (
         <>An error occured: {children}</>

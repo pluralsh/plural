@@ -1,8 +1,8 @@
-import { Button } from '@pluralsh/design-system'
+import { Button, Flex } from '@pluralsh/design-system'
 
-import { Div, Flex, Form, P } from 'honorable'
 import { useState } from 'react'
 import { useParams } from 'react-router-dom'
+import { useTheme } from 'styled-components'
 
 import {
   useInviteQuery,
@@ -20,6 +20,7 @@ import { WelcomeHeader } from './utils/WelcomeHeader'
 import LoadingIndicator from './utils/LoadingIndicator'
 import isEmpty from 'lodash/isEmpty'
 import { GqlError } from './utils/Alert'
+import { Body1P } from './utils/Typography'
 
 function ExistingInvite({
   inviteId,
@@ -39,7 +40,7 @@ function ExistingInvite({
   return (
     <LoginPortal>
       <Flex
-        flexDirection="column"
+        direction="column"
         gap="medium"
       >
         {error && (
@@ -48,13 +49,10 @@ function ExistingInvite({
             header="Something went wrong!"
           />
         )}
-        <P
-          body1
-          color="text-xlight"
-        >
+        <Body1P $color="text-xlight">
           {account?.name} invited you to join their Plural account. Joining will
           remove {user?.email} from the {user?.account?.name} account.
-        </P>
+        </Body1P>
         <Button
           onClick={() => mutation()}
           loading={loading}
@@ -69,6 +67,7 @@ function ExistingInvite({
 }
 
 export default function Invite() {
+  const theme = useTheme()
   const { inviteId } = useParams()
   const [name, setName] = useState('')
   const [password, setPassword] = useState('')
@@ -101,8 +100,8 @@ export default function Invite() {
     return (
       <Flex
         grow={1}
-        alignItems="center"
-        justifyContent="center"
+        align="center"
+        justify="center"
       >
         <GqlError
           error={error}
@@ -115,8 +114,8 @@ export default function Invite() {
     return (
       <Flex
         grow={1}
-        alignItems="center"
-        justifyContent="center"
+        align="center"
+        justify="center"
       >
         This invite code does not exist or is no longer valid
       </Flex>
@@ -146,30 +145,26 @@ export default function Invite() {
 
   return (
     <LoginPortal>
-      <Div marginBottom="xlarge">
-        <WelcomeHeader
-          textAlign="left"
-          marginBottom="xxsmall"
-        />
-        <P
-          body1
-          color="text-xlight"
-        >
+      <div css={{ marginBottom: theme.spacing.xlarge }}>
+        <div css={{ marginBottom: theme.spacing.xxsmall }}>
+          <WelcomeHeader textAlign="left" />
+        </div>
+        <Body1P $color="text-xlight">
           {invite.account?.name} invited you to join their Plural account.
           Create an account to join.
-        </P>
-      </Div>
-      <Form onSubmit={onSubmit}>
+        </Body1P>
+      </div>
+      <form onSubmit={onSubmit}>
         {error && (
-          <Div marginBottom="large">
+          <div css={{ marginBottom: theme.spacing.large }}>
             <GqlError
               header="Signup failed"
               error={error}
             />
-          </Div>
+          </div>
         )}
         <Flex
-          flexDirection="column"
+          direction="column"
           gap="small"
           marginBottom="small"
         >
@@ -205,7 +200,7 @@ export default function Invite() {
         >
           Sign up
         </Button>
-      </Form>
+      </form>
     </LoginPortal>
   )
 }

@@ -4,10 +4,8 @@ import {
   CaretRightIcon,
   ConsoleIcon,
   IconFrame,
-  TerminalIcon,
 } from '@pluralsh/design-system'
 import { createColumnHelper } from '@tanstack/react-table'
-import { A, Div } from 'honorable'
 import { Link } from 'react-router-dom'
 import styled, { useTheme } from 'styled-components'
 
@@ -35,6 +33,11 @@ export const CellCaption = styled.div(({ theme }) => ({
   color: theme.colors['text-xlight'],
 }))
 
+const ClusterLinkSC = styled(Link)(({ theme }) => ({
+  color: theme.colors.text,
+  whiteSpace: 'nowrap',
+}))
+
 const sourceDisplayNames = {
   [Source.Default]: 'CLI',
   [Source.Shell]: 'Cloud shell',
@@ -57,15 +60,9 @@ export function ClusterDisplay({ cluster }: { cluster: ClusterListElement }) {
       />
       <div>
         {accessible && clusterExists({ pingedAt } as ClusterListElement) ? (
-          <A
-            as={Link}
-            to={`/clusters/${id}`}
-            whiteSpace="nowrap"
-          >
-            {name}
-          </A>
+          <ClusterLinkSC to={`/clusters/${id}`}>{name}</ClusterLinkSC>
         ) : (
-          <Div whiteSpace="nowrap">{name}</Div>
+          <div css={{ whiteSpace: 'nowrap' }}>{name}</div>
         )}
         <CellCaption>{sourceDisplayNames[source || '']}</CellCaption>
       </div>
@@ -127,19 +124,6 @@ export const ColActions = columnHelper.accessor((row) => row.consoleUrl, {
 
     return (
       <ActionsWrap>
-        {!row.owner?.hasShell && row.accessible && (
-          <Button
-            small
-            secondary
-            startIcon={<TerminalIcon color={theme.colors['icon-default']} />}
-            as="a"
-            href={`/shell?user=${row.owner?.id}`}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Cloud shell
-          </Button>
-        )}
         {row.consoleUrl && (
           <Button
             small

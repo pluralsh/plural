@@ -72,7 +72,7 @@ const InviteUserActions = styled(InviteUserActionsUnstyled)(({ theme }) => ({
   flexDirection: 'row',
   justifyContent: 'space-between',
   gap: theme.spacing.medium,
-  padding: `${theme.spacing.xsmall}px 0`,
+  padding: `${theme.spacingPx.xsmall}px 0`,
 }))
 
 function InviteUserActionsUnstyled({
@@ -266,7 +266,7 @@ function InviteUserUnstyled({
       <GroupBindingsComboBox
         onViewMore={() =>
           fetchMore({
-            variables: { cursor: groupsQuery?.groups?.pageInfo?.endCursor },
+            variables: { after: groupsQuery?.groups?.pageInfo?.endCursor },
             updateQuery: (prev, { fetchMoreResult: { groups } }) =>
               extendConnection(prev, groups, 'groups'),
           })

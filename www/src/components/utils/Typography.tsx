@@ -1,6 +1,7 @@
 import { SemanticColorKey } from '@pluralsh/design-system'
 import { ComponentPropsWithRef, ReactNode } from 'react'
 import styled from 'styled-components'
+import { Link } from 'react-router-dom'
 
 type TextProps = {
   $color?: SemanticColorKey
@@ -31,8 +32,16 @@ export const CaptionP = styled.p<TextProps>(({ theme, $color }) => ({
   ...theme.partials.text.caption,
   color: $color && theme.colors[$color],
 }))
+export const BadgeLabelP = styled.p<TextProps>(({ theme, $color }) => ({
+  margin: 0,
+  ...theme.partials.text.badgeLabel,
+  color: $color && theme.colors[$color],
+}))
 export const StrongSC = styled.strong<TextProps>(({ theme, $color }) => ({
   margin: 0,
+  color: $color && theme.colors[$color],
+}))
+export const SpanSC = styled.span<TextProps>(({ theme, $color }) => ({
   color: $color && theme.colors[$color],
 }))
 export const OverlineH1 = styled.h1<TextProps>(({ theme, $color }) => ({
@@ -59,6 +68,16 @@ export const Title2H1 = styled.h1<TextProps>(({ theme, $color }) => ({
   margin: 0,
   ...theme.partials.text.title2,
   color: $color && theme.colors[$color],
+}))
+
+export const InlineLinkSC = styled(Link)(({ theme }) => ({
+  ...theme.partials.text.inlineLink,
+}))
+
+export const InlineLinkButtonSC = styled.button(({ theme }) => ({
+  ...theme.partials.reset.button,
+  ...theme.partials.text.inlineLink,
+  cursor: 'pointer',
 }))
 
 const StandardUrlSC = styled.a(({ theme }) => ({

@@ -49,13 +49,12 @@ export default function BillingLegacyUserBanner({
             {feature ? (
               <>
                 You may still use existing {feature} but creating new and
-                editing existing {feature} requires a Plural Professional Plan.
+                editing existing {feature} requires a Plural Pro Plan.
               </>
             ) : (
               <>
                 You may still use existing roles, groups, and service accounts
-                but creating new and editing requires a Plural Professional
-                Plan.
+                but creating new and editing requires a Plural Pro Plan.
               </>
             )}
           </span>

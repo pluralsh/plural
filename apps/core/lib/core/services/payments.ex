@@ -1,5 +1,6 @@
 defmodule Core.Services.Payments do
   use Core.Services.Base
+  use Nebulex.Caching
   import Core.Policies.Payments
 
   alias Core.PubSub
@@ -18,6 +19,9 @@ defmodule Core.Services.Payments do
   }
 
   @user_limit 5
+  @meter_api_version "2024-06-20"
+  @usage_meters %{ingest: "pro_data_ingested", clusters: "pro_clusters"}
+  @day_seconds 86_400
 
   @type usage_dimension :: :user | :cluster
   @type error :: {:error, term}
@@ -565,7 +569,7 @@ defmodule Core.Services.Payments do
   def meter_ingest(%User{} = user, bytes) when is_integer(bytes) do
     case Core.Repo.preload(user, [:account]) do
       %{account: %Account{billing_customer_id: cus_id}} when is_binary(cus_id) ->
-        send_meter(cus_id, "pro_data_ingested", bytes)
+        send_meter(cus_id, @usage_meters.ingest, bytes)
       _ -> :ok
     end
   end
@@ -574,7 +578,7 @@ defmodule Core.Services.Payments do
   def send_usage(%PlatformSubscription{account_id: aid} = sub) do
     with %PlatformSubscription{account: %Account{billing_customer_id: cus_id}} <- Core.Repo.preload(sub, [:account]),
          clusters when is_integer(clusters) <- Clusters.clusters(aid) do
-      send_meter(cus_id, "pro_clusters", clusters)
+      send_meter(cus_id, @usage_meters.clusters, clusters)
     end
   end
 
@@ -585,8 +589,112 @@ defmodule Core.Services.Payments do
         stripe_customer_id: cus_id,
         value: quantity
       }
-    }, :post, "/v1/billing/meter_events", %{}, api_version: "2024-06-20")
+    }, :post, "/v1/billing/meter_events", %{}, api_version: @meter_api_version)
   end
+
+  @type usage_meter :: :ingest | :clusters
+  @type usage_bucket :: %{start_time: DateTime.t, end_time: DateTime.t, value: number}
+  @type billing_usage :: %{
+    start_time: DateTime.t,
+    end_time: DateTime.t,
+    meters: [%{meter: usage_meter, total: number, buckets: [usage_bucket]}],
+    cluster_count: integer,
+    user_count: integer
+  }
+
+  @max_usage_days 366
+
+  @doc """
+  Billing usage for the user's account over a time range: the stripe meter series for each
+  requested meter, plus the account's current cluster and user counts.  Requires billing access.
+  """
+  @spec billing_usage(User.t, DateTime.t, DateTime.t, [usage_meter]) :: {:ok, billing_usage} | error
+  def billing_usage(%User{} = user, %DateTime{} = start_at, %DateTime{} = end_at, meters) do
+    with :ok <- validate_usage_range(start_at, end_at),
+         {:ok, account} <- allow_billing(user),
+         {:ok, usage} <- usage_for_meters(account, Enum.uniq(meters), start_at, end_at) do
+      {:ok, %{
+        start_time: start_at,
+        end_time: end_at,
+        meters: usage,
+        cluster_count: account.cluster_count || 0,
+        user_count: account.user_count || 0
+      }}
+    end
+  end
+
+  defp usage_for_meters(account, meters, start_at, end_at) do
+    Enum.reduce_while(meters, {:ok, []}, fn meter, {:ok, acc} ->
+      case meter_usage(account, meter, start_at, end_at) do
+        {:ok, buckets} ->
+          total = Enum.reduce(buckets, 0, & &1.value + &2)
+          {:cont, {:ok, acc ++ [%{meter: meter, total: total, buckets: buckets}]}}
+        error -> {:halt, error}
+      end
+    end)
+  end
+
+  defp validate_usage_range(start_at, end_at) do
+    cond do
+      DateTime.compare(start_at, end_at) != :lt -> {:error, "start time must be before end time"}
+      DateTime.diff(end_at, start_at, :day) > @max_usage_days -> {:error, "usage can span at most #{@max_usage_days} days"}
+      true -> :ok
+    end
+  end
+
+  @doc """
+  Daily usage for one of the stripe billing meters we report to, read back from stripe so
+  it matches what the customer is invoiced for.  The range is widened to whole UTC days, as
+  stripe requires for daily summaries.  Accounts without a stripe customer have no usage.
+  """
+  @spec meter_usage(Account.t, usage_meter, DateTime.t, DateTime.t) :: {:ok, [usage_bucket]} | error
+  def meter_usage(%Account{billing_customer_id: cus_id}, meter, %DateTime{} = start_at, %DateTime{} = end_at)
+      when is_binary(cus_id) and is_map_key(@usage_meters, meter) do
+    with {:ok, meter_id} <- meter_id(@usage_meters[meter]) do
+      list_meter_summaries(meter_id, %{
+        customer: cus_id,
+        start_time: start_of_day(start_at),
+        end_time: start_of_day(end_at) + @day_seconds,
+        value_grouping_window: :day,
+        limit: 100
+      })
+    end
+  end
+  def meter_usage(%Account{}, _, _, _), do: {:ok, []}
+
+  defp list_meter_summaries(meter_id, params, acc \\ []) do
+    case Stripe.Billing.MeterEventSummary.list(meter_id, params, api_version: @meter_api_version) do
+      {:ok, %Stripe.List{data: data, has_more: more}} ->
+        acc = acc ++ data
+        case {more, List.last(data)} do
+          {true, %{id: last}} -> list_meter_summaries(meter_id, Map.put(params, :starting_after, last), acc)
+          _ -> {:ok, Enum.map(acc, &to_usage_bucket/1) |> Enum.sort_by(& &1.start_time, DateTime)}
+        end
+      error -> error
+    end
+  end
+
+  defp to_usage_bucket(%{start_time: s, end_time: e, aggregated_value: v}),
+    do: %{start_time: DateTime.from_unix!(s), end_time: DateTime.from_unix!(e), value: v || 0}
+
+  defp start_of_day(%DateTime{} = dt) do
+    dt
+    |> DateTime.to_unix()
+    |> then(& &1 - rem(&1, @day_seconds))
+  end
+
+  @decorate cacheable(cache: Core.Cache, key: {:stripe_meter, event_name}, opts: [ttl: :timer.hours(24)], match: &cache_meter?/1)
+  defp meter_id(event_name) do
+    with {:ok, %Stripe.List{data: meters}} <- Stripe.Billing.Meter.list(%{status: :active, limit: 100}, api_version: @meter_api_version) do
+      case Enum.find(meters, & &1.event_name == event_name) do
+        %{id: id} -> {:ok, id}
+        _ -> {:error, "no active stripe meter for #{event_name}"}
+      end
+    end
+  end
+
+  defp cache_meter?({:ok, _}), do: true
+  defp cache_meter?(_), do: false
 
   @doc """
   Creates a stripe customer with the given source and user email, saves

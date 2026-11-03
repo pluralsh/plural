@@ -1,8 +1,6 @@
 import { useQuery } from '@apollo/client'
-import { Box } from 'grommet'
 import isEmpty from 'lodash/isEmpty'
-import { Flex } from 'honorable'
-import { EmptyState, PageTitle, SearchIcon } from '@pluralsh/design-system'
+import { EmptyState, Flex, SearchIcon } from '@pluralsh/design-system'
 import { useContext, useState } from 'react'
 
 import { Placeholder } from '../utils/Placeholder'
@@ -32,7 +30,8 @@ import { Info } from './Info'
 import { EditRole } from './EditRole'
 import { CreateRole } from './CreateRole'
 import BillingLegacyUserBanner from './billing/BillingLegacyUserBanner'
-import BillingFeatureBlockBanner from './billing/BillingFeatureBlockBanner'
+import { SAMPLE_GROUP_ROWS, UpgradeGate } from './UpgradeGate'
+import { SubpageHeader } from '../utils/layout/SubpageLayout'
 
 function Header({ q, setQ }: any) {
   return (
@@ -63,8 +62,8 @@ function Role({ role, q }: any) {
   })
 
   return (
-    <Box
-      fill="horizontal"
+    <Flex
+      width="100%"
       direction="row"
     >
       <Info
@@ -72,10 +71,10 @@ function Role({ role, q }: any) {
         description={role.description || 'no description'}
       />
       <>
-        <Box
-          flex={false}
+        <Flex
+          flex="0 0 auto"
           direction="row"
-          gap="24px"
+          gap="large"
           align="center"
         >
           {editable && (
@@ -85,7 +84,7 @@ function Role({ role, q }: any) {
             />
           )}
           <DeleteIconButton onClick={() => setConfirm(true)} />
-        </Box>
+        </Flex>
         <Confirm
           open={confirm}
           text="Deleting roles cannot be undone."
@@ -96,7 +95,7 @@ function Role({ role, q }: any) {
           error={error}
         />
       </>
-    </Box>
+    </Flex>
   )
 }
 
@@ -112,9 +111,11 @@ function RolesInner({ q }: any) {
   const { edges, pageInfo } = data.roles
 
   return (
-    <Box
-      fill
-      pad={{ bottom: 'small' }}
+    <Flex
+      direction="column"
+      width="100%"
+      height="100%"
+      paddingBottom="small"
     >
       {edges?.length ? (
         <StandardScroller
@@ -156,7 +157,7 @@ function RolesInner({ q }: any) {
           <CreateRole q={q} />
         </EmptyState>
       )}
-    </Box>
+    </Flex>
   )
 }
 
@@ -171,10 +172,9 @@ export function Roles() {
       flexDirection="column"
       maxHeight="100%"
     >
-      <PageTitle heading="Roles">
-        {' '}
+      <SubpageHeader title="Roles">
         <CreateRole q={q} />
-      </PageTitle>
+      </SubpageHeader>
       <BillingLegacyUserBanner feature="roles" />
       <BillingTrialBanner />
       {isAvailable ? (
@@ -186,10 +186,11 @@ export function Roles() {
           <RolesInner q={q} />
         </List>
       ) : (
-        <BillingFeatureBlockBanner
+        <UpgradeGate
           feature="roles"
           description="Define granular permissions for your organization’s users and apply them to groups or individuals."
-          placeholderImageURL="/placeholders/roles.png"
+          searchPlaceholder="Search a role"
+          rows={SAMPLE_GROUP_ROWS}
         />
       )}
     </Flex>

@@ -1,4 +1,4 @@
-import { Button } from '@pluralsh/design-system'
+import { Button, Callout, Flex } from '@pluralsh/design-system'
 import {
   AddressElement,
   PaymentElement,
@@ -6,10 +6,10 @@ import {
   useStripe,
 } from '@stripe/react-stripe-js'
 import { StripePaymentElementOptions } from '@stripe/stripe-js'
-import { Div, Flex } from 'honorable'
 import {
   ComponentProps,
   PropsWithChildren,
+  SyntheticEvent,
   createContext,
   useCallback,
   useContext,
@@ -17,6 +17,7 @@ import {
   useMemo,
   useState,
 } from 'react'
+import { useTheme } from 'styled-components'
 import { type ImmerReducer, useImmerReducer } from 'use-immer'
 
 import type { AddressAttributes } from '../../../generated/graphql'
@@ -29,7 +30,7 @@ import { host } from '../../../helpers/hostname'
 import { ErrorMessage } from '../../utils/Alert'
 
 import BillingError from './BillingError'
-import { StripeElements } from './StripeElements'
+import { StripeElements, useStripeConfigured } from './StripeElements'
 
 enum PaymentFormState {
   CollectAddress = 'CollectAddress',
@@ -47,7 +48,7 @@ type PaymentFormContextVal = PaymentFormContextState & {
   setPlan: (plan: PlanType) => void
   setAddress: (address: AddressAttributes) => void
   resetForm: () => void
-  onClose: (e?: Event) => void
+  onClose: (e?: SyntheticEvent) => void
 }
 
 export type PlanType = 'yearly' | 'monthly'
@@ -152,7 +153,34 @@ function PaymentFormProvider({
 }
 
 function PaymentFormInner() {
-  const { formState } = usePaymentForm()
+  const theme = useTheme()
+  const { formState, onClose } = usePaymentForm()
+  const stripeConfigured = useStripeConfigured()
+
+  if (!stripeConfigured) {
+    return (
+      <Flex
+        direction="column"
+        gap="large"
+      >
+        <Callout
+          severity="warning"
+          title="Card payments are unavailable"
+        >
+          Payment processing isn't configured for this environment. Contact
+          support to add a payment method.
+        </Callout>
+        <Flex justify="flex-end">
+          <Button
+            secondary
+            onClick={onClose}
+          >
+            Close
+          </Button>
+        </Flex>
+      </Flex>
+    )
+  }
 
   return (
     <Flex
@@ -162,20 +190,19 @@ function PaymentFormInner() {
     >
       <StripeElements>
         {formState === PaymentFormState.CollectAddress && (
-          <Div>
-            <Div
-              fontWeight="bold"
-              marginBottom="medium"
+          <div>
+            <div
+              css={{ fontWeight: 'bold', marginBottom: theme.spacing.medium }}
             >
               Billing information
-            </Div>
+            </div>
             <Flex
               flexDirection="column"
               gap="xlarge"
             >
               <AddressForm />
             </Flex>
-          </Div>
+          </div>
         )}
         {formState === PaymentFormState.CollectPayment && <Payment />}
       </StripeElements>
@@ -385,23 +412,6 @@ function AddressForm({
 
   const disableSubmit = !stripe || !elements || !addressComplete || loading
 
-  /* Temporarily disabling default address form filling, since we don't currently
-  have a way for customers to change the billing address on their account or even
-  know what their current billing address is. */
-
-  // const defaultAddress = useMemo(() => ({
-  //   name: billingAddress?.name ?? '',
-  //   address: {
-  //     line1: billingAddress?.line1 ?? '',
-  //     line2: billingAddress?.line2 ?? '',
-  //     city: billingAddress?.city ?? '',
-  //     state: billingAddress?.state ?? '',
-  //     country: billingAddress?.country ?? '',
-  //     postal_code: billingAddress?.zip ?? '',
-  //   },
-  // }),
-  // [billingAddress])
-
   const handleSubmit = useCallback(
     async (event) => {
       event.preventDefault()
@@ -454,11 +464,7 @@ function AddressForm({
         gap="xlarge"
       >
         <AddressElement
-          options={{
-            mode: 'billing',
-            /* Temporarily disabled: See note above */
-            // defaultValues: defaultAddress,
-          }}
+          options={{ mode: 'billing' }}
           onChange={(event) => {
             setAddressComplete(event.complete)
             if (event.complete) {
@@ -485,8 +491,8 @@ function AddressForm({
               Cancel
             </Button>
             {/* Wrap the button so you can still validate the form on click while disabled */}
-            <Div
-              marginLeft="auto"
+            <div
+              css={{ marginLeft: 'auto' }}
               onClick={() => {
                 validateForm()
               }}
@@ -499,7 +505,7 @@ function AddressForm({
               >
                 Continue to payment
               </Button>
-            </Div>
+            </div>
           </Flex>
         </Flex>
       </Flex>

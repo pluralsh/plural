@@ -111,7 +111,7 @@ function DeletePluralOIDCClient({
           destructive
           disabled={confirmText !== provider?.name}
           loading={loading}
-          onClick={mutation}
+          onClick={() => mutation()}
         >
           Delete
         </Button>

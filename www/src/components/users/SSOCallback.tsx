@@ -1,6 +1,6 @@
-import { Box } from 'grommet'
 import { useEffect } from 'react'
 import { useApolloClient, useMutation } from '@apollo/client'
+import { Flex } from '@pluralsh/design-system'
 import { useLocation, useNavigate } from 'react-router-dom'
 import qs from 'query-string'
 
@@ -43,7 +43,8 @@ export function SSOCallback() {
   if (loading) return <LoadingIndicator />
 
   return error ? (
-    <Box
+    <Flex
+      direction="column"
       height="100vh"
       width="100vw"
       align="center"
@@ -53,6 +54,6 @@ export function SSOCallback() {
         error={error}
         header="Failed to log in"
       />
-    </Box>
+    </Flex>
   ) : null
 }

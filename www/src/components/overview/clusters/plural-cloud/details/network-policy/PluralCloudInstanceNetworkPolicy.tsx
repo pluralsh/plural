@@ -89,9 +89,9 @@ function NetworkPolicyEmptyState({
 }: {
   onAddCidrRules: () => void
 }) {
-  const { spacing } = useTheme()
+  const { spacingPx } = useTheme()
   return (
-    <Card css={{ padding: `${spacing.xxxlarge}px` }}>
+    <Card css={{ padding: `${spacingPx.xxxlarge}px` }}>
       <Flex
         gap="medium"
         direction="column"
@@ -110,7 +110,7 @@ function NetworkPolicyEmptyState({
           </Body2P>
         </div>
         <Button
-          marginTop={spacing.xsmall}
+          marginTop="xsmall"
           startIcon={<PencilIcon />}
           onClick={onAddCidrRules}
         >

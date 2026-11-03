@@ -2,6 +2,7 @@ import {
   Button,
   ClusterIcon,
   EmptyState,
+  Flex,
   PersonPlusIcon,
   RocketIcon,
   SubTab,
@@ -10,9 +11,9 @@ import {
   WarningOutlineIcon,
   useSetBreadcrumbs,
 } from '@pluralsh/design-system'
-import { Div, Flex } from 'honorable'
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
+import styled from 'styled-components'
 
 import { CLUSTERS_ROOT_CRUMB } from 'components/overview/clusters/Clusters'
 
@@ -26,7 +27,6 @@ import { ResponsiveLayoutPage } from '../utils/layout/ResponsiveLayoutPage'
 import { EditPluralOIDCClients } from '../overview/clusters/plural-cloud/EditPluralOIDCClients'
 
 import { ClusterAdminsModal } from './ClusterAdminsModal'
-import { ClusterDependencyModal } from './ClusterDependencyModal'
 import ClusterMetadataPanel from './ClusterMetadataPanel'
 import { ClusterLoginSettings } from './ClusterLoginSettings'
 import { ClusterPromoteModal } from './ClusterPromoteModal'
@@ -43,6 +43,14 @@ enum Tab {
   LoginSettings = 'Login settings',
   OIDCProviders = 'OIDC providers',
 }
+
+const MetadataButtonSC = styled(Button)(({ theme }) => ({
+  '&&': {
+    [`@media (min-width: ${theme.breakpoints.desktopSmall}px)`]: {
+      display: 'none',
+    },
+  },
+}))
 
 function ClusterSettingsTabs({ clusterName }: { clusterName: string }) {
   const { data, loading, error, refetch } = useClusterConsoleRepositoryQuery()
@@ -137,7 +145,6 @@ function ClusterSettingsTabsContent({
 }
 
 export function Cluster() {
-  const [dependencyOpen, setDependencyOpen] = useState(false)
   const [promoteOpen, setPromoteOpen] = useState(false)
   const [adminsOpen, setAdminsOpen] = useState(false)
   const [metadataOpen, setMetadataOpen] = useState(false)
@@ -187,7 +194,7 @@ export function Cluster() {
           gap="large"
           marginBottom="medium"
         >
-          <Div flexGrow={1}>
+          <div css={{ flexGrow: 1 }}>
             <ClusterPicker
               cluster={cluster}
               setCluster={setCluster}
@@ -200,22 +207,9 @@ export function Cluster() {
                 </Flex>
               }
             />
-          </Div>
+          </div>
           <Flex gap="medium">
-            {!!cluster && !cluster.dependency ? (
-              <>
-                <CollapsibleButton
-                  label="Set up promotions"
-                  icon={<RocketIcon />}
-                  onClick={() => setDependencyOpen(true)}
-                />
-                <ClusterDependencyModal
-                  open={dependencyOpen}
-                  setOpen={setDependencyOpen}
-                  destination={cluster}
-                />
-              </>
-            ) : (
+            {cluster.dependency && (
               <>
                 <CollapsibleButton
                   label="Promote"
@@ -249,7 +243,7 @@ export function Cluster() {
             {cluster.consoleUrl && (
               <Button
                 as="a"
-                href={ensureURLValidity(cluster.consoleUrl)}
+                href={ensureURLValidity(cluster.consoleUrl) ?? undefined}
                 target="_blank"
                 rel="noopener noreferrer"
                 height="max-content"
@@ -258,14 +252,13 @@ export function Cluster() {
               </Button>
             )}
 
-            <Button
+            <MetadataButtonSC
               secondary
               height="max-content"
               onClick={() => setMetadataOpen(true)}
-              display-desktopSmall-up="none"
             >
               Metadata
-            </Button>
+            </MetadataButtonSC>
             <ClusterMetadataPanel
               cluster={cluster}
               open={metadataOpen}

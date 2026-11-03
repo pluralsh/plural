@@ -559,9 +559,10 @@ defmodule Core.Services.Repositories do
       |> Hydra.create_client()
     end)
     |> add_operation(:oidc_provider, fn
-      %{installation: %{id: id}, client: %{client_id: cid, client_secret: secret}} ->
+      %{installation: %{id: id} = inst, client: %{client_id: cid, client_secret: secret}} ->
+        %{user: owner} = Core.Repo.preload(inst, [:user])
         attrs = Map.merge(attrs, %{client_id: cid, client_secret: secret})
-                |> add_bindings(find_bindings(user))
+                |> add_bindings(find_bindings(owner))
         %OIDCProvider{installation_id: id}
         |> OIDCProvider.changeset(attrs)
         |> Core.Repo.insert()

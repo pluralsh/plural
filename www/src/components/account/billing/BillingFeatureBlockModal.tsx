@@ -20,7 +20,7 @@ const ActionsWrap = styled.div({
 })
 
 export default function BillingFeatureBlockModal({
-  message = 'Upgrade to Plural Professional to use this feature.',
+  message = 'Upgrade to Plural Pro to use this feature.',
   open = false,
   onClose,
 }: BillingFeatureBlockModalProps) {

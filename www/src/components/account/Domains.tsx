@@ -1,15 +1,14 @@
 import { useQuery } from '@apollo/client'
-import { Box } from 'grommet'
-import { Flex, Span } from 'honorable'
 import moment from 'moment'
 import {
   AppIcon,
+  Flex,
   ListBoxItem,
   Modal,
-  PageTitle,
   SearchIcon,
 } from '@pluralsh/design-system'
 import { useCallback, useMemo, useState } from 'react'
+import { useTheme } from 'styled-components'
 import isEqual from 'lodash/isEqual'
 import uniqWith from 'lodash/uniqWith'
 
@@ -25,6 +24,7 @@ import { Table, TableData, TableRow } from '../utils/Table'
 import ListInput from '../utils/ListInput'
 import { List } from '../utils/List'
 import { Confirm } from '../utils/Confirm'
+import { SpanSC } from '../utils/Typography'
 import {
   DnsRecordFragment,
   useDeleteDomainMutation,
@@ -32,6 +32,7 @@ import {
 } from '../../generated/graphql'
 
 import LoadingIndicator from '../utils/LoadingIndicator'
+import { SubpageHeader } from '../utils/layout/SubpageLayout'
 
 import { DNS_DOMAINS } from './queries'
 import { Actions } from './Actions'
@@ -223,7 +224,7 @@ function Domain({
     >
       <TableData>{node.name}</TableData>
       <TableData>
-        <Box
+        <Flex
           direction="row"
           gap="xsmall"
           align="center"
@@ -234,8 +235,8 @@ function Domain({
             size="xxsmall"
             spacing={node?.creator?.avatar ? 'none' : undefined}
           />
-          <Span color="text-light">{node.creator?.name}</Span>
-        </Box>
+          <SpanSC $color="text-light">{node.creator?.name}</SpanSC>
+        </Flex>
       </TableData>
       <TableData>{moment(node.insertedAt).format('lll')}</TableData>
     </TableRow>
@@ -243,6 +244,7 @@ function Domain({
 }
 
 function DomainsInner({ q, setDomainSelected }: any) {
+  const theme = useTheme()
   const [listRef, setListRef] = useState<any>(null)
   const [domain, setDomain] = useState<any>(null)
   const { data, loading, fetchMore } = useQuery(DNS_DOMAINS, {
@@ -285,11 +287,15 @@ function DomainsInner({ q, setDomainSelected }: any) {
           headers={['Name', 'Creator', 'Created On']}
           sizes={['33%', '33%', '33%']}
           background="fill-one"
-          border="1px solid border"
+          border={theme.borders.default}
           width="100%"
           height="calc(100% - 16px)"
         >
-          <Box fill>
+          <Flex
+            direction="column"
+            width="100%"
+            height="100%"
+          >
             <StandardScroller
               listRef={listRef}
               setListRef={setListRef}
@@ -314,10 +320,12 @@ function DomainsInner({ q, setDomainSelected }: any) {
                 })
               }
             />
-          </Box>
+          </Flex>
         </Table>
       ) : (
-        <Span padding="medium">You do not have any domains set yet.</Span>
+        <span css={{ padding: theme.spacing.medium }}>
+          You do not have any domains set yet.
+        </span>
       )}
     </Flex>
   )
@@ -333,7 +341,7 @@ export function Domains() {
       flexDirection="column"
       maxHeight="100%"
     >
-      <PageTitle heading="Domains" />
+      <SubpageHeader title="DNS domains" />
       <List>
         {!domainSelected && (
           <Header

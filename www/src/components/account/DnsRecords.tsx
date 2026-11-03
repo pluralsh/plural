@@ -1,9 +1,8 @@
 import { useQuery } from '@apollo/client'
-import { Box } from 'grommet'
-import { Button, Div, Flex, Span } from 'honorable'
 import moment from 'moment'
 import { useState } from 'react'
-import { AppIcon, ArrowLeftIcon } from '@pluralsh/design-system'
+import { AppIcon, ArrowLeftIcon, Button, Flex } from '@pluralsh/design-system'
+import { useTheme } from 'styled-components'
 
 import { Placeholder } from '../utils/Placeholder'
 import {
@@ -17,12 +16,14 @@ import { StandardScroller } from '../utils/SmoothScroller'
 import { Table, TableData, TableRow } from '../utils/Table'
 import { ProviderIcon } from '../utils/ProviderIcon'
 import { Confirm } from '../utils/Confirm'
+import { Body2P, CaptionP, SpanSC } from '../utils/Typography'
 
 import { useDeleteDnsRecordMutation } from '../../generated/graphql'
 
 import { DNS_RECORDS } from './queries'
 
 function DeleteRecord({ record, domain }: any) {
+  const theme = useTheme()
   const [confirm, setConfirm] = useState(false)
   const [mutation, { loading, error }] = useDeleteDnsRecordMutation({
     variables: { name: record.name, type: record.type },
@@ -42,7 +43,7 @@ function DeleteRecord({ record, domain }: any) {
     <>
       <DeleteIconButton
         onClick={() => setConfirm(true)}
-        marginLeft="small"
+        css={{ marginLeft: theme.spacing.small }}
       />
       <Confirm
         open={confirm}
@@ -59,6 +60,7 @@ function DeleteRecord({ record, domain }: any) {
 }
 
 export function DnsRecords({ domain, setDomain }: any) {
+  const theme = useTheme()
   const [listRef, setListRef] = useState<any>(null)
   const { data, loading, fetchMore } = useQuery(DNS_RECORDS, {
     variables: { id: domain.id },
@@ -74,11 +76,14 @@ export function DnsRecords({ domain, setDomain }: any) {
   } = data.dnsDomain
 
   return (
-    <Box fill>
+    <Flex
+      direction="column"
+      width="100%"
+      height="100%"
+    >
       <Flex margin="xxxsmall">
         <Button
           tertiary
-          textDecoration="none"
           onClick={(e) => {
             e.preventDefault()
             setDomain(null)
@@ -93,11 +98,15 @@ export function DnsRecords({ domain, setDomain }: any) {
         headers={['Name', 'Type', 'Cluster', 'Created', 'Creator']}
         sizes={['40%', '80px', '20%', '120px', '20%']}
         background="fill-one"
-        border="1px solid border"
+        border={theme.borders.default}
         width="100%"
         height="100%"
       >
-        <Box fill>
+        <Flex
+          direction="column"
+          width="100%"
+          height="100%"
+        >
           <StandardScroller
             listRef={listRef}
             setListRef={setListRef}
@@ -119,8 +128,8 @@ export function DnsRecords({ domain, setDomain }: any) {
                 <TableData>{node.name}</TableData>
                 <TableData>{node.type}</TableData>
                 <TableData>
-                  <Box
-                    flex={false}
+                  <Flex
+                    flex="0 0 auto"
                     direction="row"
                     gap="xsmall"
                     align="center"
@@ -129,27 +138,27 @@ export function DnsRecords({ domain, setDomain }: any) {
                       provider={node.provider}
                       width={30}
                     />
-                    <Span color="text-light">{node.cluster}</Span>
-                  </Box>
-                </TableData>
-                <TableData>
-                  <Flex direction="column">
-                    <Div
-                      body2
-                      color="text-light"
-                    >
-                      {moment(node.insertedAt).format('ll')}
-                    </Div>
-                    <Div
-                      caption
-                      color="text-xlight"
-                    >
-                      {moment(node.insertedAt).format('LT')}
-                    </Div>
+                    <SpanSC $color="text-light">{node.cluster}</SpanSC>
                   </Flex>
                 </TableData>
                 <TableData>
-                  <Box
+                  <Flex direction="column">
+                    <Body2P
+                      as="div"
+                      $color="text-light"
+                    >
+                      {moment(node.insertedAt).format('ll')}
+                    </Body2P>
+                    <CaptionP
+                      as="div"
+                      $color="text-xlight"
+                    >
+                      {moment(node.insertedAt).format('LT')}
+                    </CaptionP>
+                  </Flex>
+                </TableData>
+                <TableData>
+                  <Flex
                     direction="row"
                     gap="xsmall"
                     align="center"
@@ -160,8 +169,8 @@ export function DnsRecords({ domain, setDomain }: any) {
                       size="xxsmall"
                       spacing={node?.creator?.avatar ? 'none' : undefined}
                     />
-                    <Span color="text-light">{node.creator?.name}</Span>
-                  </Box>
+                    <SpanSC $color="text-light">{node.creator?.name}</SpanSC>
+                  </Flex>
                 </TableData>
               </TableRow>
             )}
@@ -176,8 +185,8 @@ export function DnsRecords({ domain, setDomain }: any) {
               })
             }
           />
-        </Box>
+        </Flex>
       </Table>
-    </Box>
+    </Flex>
   )
 }

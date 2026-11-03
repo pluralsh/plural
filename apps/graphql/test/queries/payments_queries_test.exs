@@ -176,6 +176,35 @@ defmodule GraphQl.PaymentsQueriesTest do
     end
   end
 
+  describe "billingUsage" do
+    test "it returns stripe meter usage and account counts" do
+      account = insert(:account, billing_customer_id: "cus_id", cluster_count: 2, user_count: 7)
+      user = insert(:user, account: account, roles: %{admin: true})
+      stub(Stripe.Billing.Meter, :list, fn _, _ ->
+        {:ok, %Stripe.List{has_more: false, data: [%Stripe.Billing.Meter{id: "mtr_ingest", event_name: "pro_data_ingested"}]}}
+      end)
+      expect(Stripe.Billing.MeterEventSummary, :list, fn "mtr_ingest", %{customer: "cus_id"}, _ ->
+        {:ok, %Stripe.List{has_more: false, data: [
+          %Stripe.Billing.MeterEventSummary{id: "s", start_time: 1_759_276_800, end_time: 1_759_363_200, aggregated_value: 1024}
+        ]}}
+      end)
+
+      {:ok, %{data: %{"billingUsage" => usage}}} = run_query("""
+        query Usage($start: DateTime, $end: DateTime) {
+          billingUsage(startTime: $start, endTime: $end, meters: [INGEST]) {
+            clusterCount
+            userCount
+            meters { meter total buckets { startTime value } }
+          }
+        }
+      """, %{"start" => "2026-10-01T00:00:00Z", "end" => "2026-10-02T00:00:00Z"}, %{current_user: user})
+
+      assert usage["clusterCount"] == 2
+      assert usage["userCount"] == 7
+      assert [%{"meter" => "INGEST", "total" => 1024.0, "buckets" => [%{"value" => 1024.0}]}] = usage["meters"]
+    end
+  end
+
   describe "invoices" do
     test "it will fail if not customer id" do
       account = insert(:account)

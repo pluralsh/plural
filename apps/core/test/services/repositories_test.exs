@@ -202,6 +202,26 @@ defmodule Core.Services.RepositoriesTest do
       assert updated.context.some == "value"
     end
 
+    test "users who can impersonate a service account can update its installations" do
+      user = insert(:user)
+      inst = insert(:installation, user: bound_service_account(user))
+
+      {:ok, updated} = Repositories.update_installation(%{context: %{some: "value"}}, inst.id, user)
+
+      assert updated.context.some == "value"
+    end
+
+    test "users outside a service account's impersonation policy can't update its installations" do
+      user = insert(:user)
+      inst = insert(:installation, user: bound_service_account(user))
+
+      {:error, _} = Repositories.update_installation(
+        %{context: %{some: "value"}},
+        inst.id,
+        insert(:user, account: user.account)
+      )
+    end
+
     test "updates to track tags propagate to package installations" do
       %{user: user, repository: repo} = inst = insert(:installation)
 

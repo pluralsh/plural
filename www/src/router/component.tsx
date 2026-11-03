@@ -1,6 +1,7 @@
 import { History as BrowserHistory, Location } from 'history'
 import {
   ReactNode,
+  startTransition,
   useCallback,
   useLayoutEffect,
   useMemo,
@@ -30,7 +31,7 @@ function HistoryRouter({
   const setStateWrapper = useCallback(
     (state) => {
       pluralHistory.push(pathBuilder(state?.location))
-      setState(state)
+      startTransition(() => setState(state))
     },
     [pluralHistory, pathBuilder]
   )

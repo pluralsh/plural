@@ -1,15 +1,17 @@
 import { useMemo } from 'react'
-import { H2 } from 'honorable'
+import { useTheme } from 'styled-components'
 
 import { useInvoicesQuery } from '../../../generated/graphql'
 
 import LoadingIndicator from '../../utils/LoadingIndicator'
+import { Subtitle1H1 } from '../../utils/Typography'
 
 import BillingBankCards from './BillingBankCards'
 import BillingInvoices from './BillingInvoices'
 import { useBillingSubscription } from './BillingSubscriptionProvider'
 
 function BillingPayments() {
+  const theme = useTheme()
   const { billingCustomerId, paymentMethods } = useBillingSubscription()
   const { data: invoicesData, loading: invoicesLoading } = useInvoicesQuery()
 
@@ -32,25 +34,27 @@ function BillingPayments() {
 
   return (
     <>
-      <H2
-        subtitle1
-        marginBottom="medium"
+      <Subtitle1H1
+        as="h2"
+        css={{ marginBottom: theme.spacing.medium }}
       >
         Payment info
-      </H2>
+      </Subtitle1H1>
       <BillingBankCards
         paymentMethods={paymentMethods}
         invoices={invoicesWithIds}
       />
       {billingCustomerId && invoicesWithIds && (
         <>
-          <H2
-            subtitle1
-            marginTop="xlarge"
-            marginBottom="medium"
+          <Subtitle1H1
+            as="h2"
+            css={{
+              marginTop: theme.spacing.xlarge,
+              marginBottom: theme.spacing.medium,
+            }}
           >
             Invoices
-          </H2>
+          </Subtitle1H1>
           <BillingInvoices invoices={invoicesWithIds} />
         </>
       )}

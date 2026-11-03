@@ -7,7 +7,6 @@ import {
   useRef,
   useState,
 } from 'react'
-import { Box } from 'grommet'
 import { VariableSizeList } from 'react-window-reversed'
 import {
   FixedSizeList as FixedList,
@@ -15,7 +14,7 @@ import {
 } from 'react-window'
 import Autosizer from 'react-virtualized-auto-sizer'
 import memoize from 'memoize-one'
-import { CellMeasurer } from 'forge-core'
+import { useTheme } from 'styled-components'
 
 class SmartLoader extends PureComponent<any> {
   _listRef: any = null
@@ -146,6 +145,7 @@ const ItemWrapper = memo(
     index,
     ...props
   }: any) => {
+    const theme = useTheme()
     const [rowRef, setRowRef] = useState<HTMLDivElement | null>(null)
     const item = items[index]
     const sizeCallback = useCallback(() => {
@@ -154,36 +154,38 @@ const ItemWrapper = memo(
 
     useEffect(() => {
       sizeCallback()
-    }, [sizeCallback, width, item, index])
+    }, [sizeCallback, width, item, index, refreshKey])
+
+    useEffect(() => {
+      if (!rowRef) return
+      const observer = new ResizeObserver(() => sizeCallback())
+
+      observer.observe(rowRef)
+
+      return () => observer.disconnect()
+    }, [rowRef, sizeCallback])
 
     return (
-      <CellMeasurer
-        refreshKey={refreshKey}
-        index={index}
-        setSize={setSize}
-      >
-        {({ registerChild }) => (
-          <div style={style}>
-            <Box
-              className={refreshKey}
-              ref={(ref) => {
-                registerChild(ref)
-                setRowRef(ref)
-              }}
-              margin={index === 0 ? { bottom: 'small' } : undefined}
-            >
-              <Item
-                index={index}
-                items={items}
-                setSize={sizeCallback}
-                isItemLoaded={isItemLoaded}
-                placeholder={placeholder}
-                mapper={mapper}
-              />
-            </Box>
-          </div>
-        )}
-      </CellMeasurer>
+      <div style={style}>
+        <div
+          className={refreshKey}
+          ref={setRowRef}
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            ...(index === 0 ? { marginBottom: theme.spacing.small } : {}),
+          }}
+        >
+          <Item
+            index={index}
+            items={items}
+            setSize={sizeCallback}
+            isItemLoaded={isItemLoaded}
+            placeholder={placeholder}
+            mapper={mapper}
+          />
+        </div>
+      </div>
     )
   },
   areEqual

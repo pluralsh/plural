@@ -2,6 +2,7 @@ import { useMutation } from '@apollo/client'
 import {
   Button,
   Chip,
+  Flex,
   InfoOutlineIcon,
   ListBoxFooter,
   Modal,
@@ -9,7 +10,6 @@ import {
   PersonPlusIcon,
   Tooltip,
 } from '@pluralsh/design-system'
-import { Div, Flex, Span } from 'honorable'
 import {
   DispatchWithoutAction,
   ReactElement,
@@ -26,6 +26,7 @@ import { UPDATE_SERVICE_ACCOUNT } from '../account/queries'
 import { BindingInput } from '../account/Typeaheads'
 import { sanitize } from '../account/utils'
 import { GqlError } from '../utils/Alert'
+import { Body2P, SpanSC } from '../utils/Typography'
 import CreateGroup from '../utils/group/CreateGroup'
 
 import UpgradeNeededModal from './UpgradeNeededModal'
@@ -73,13 +74,13 @@ function ClusterAdmins({
         />
       )}
       {showHeading && (
-        <Div
-          body2
-          color="text-light"
+        <Body2P
+          as="div"
+          $color="text-light"
         >
           Bind users to the service account owning this cluster. This will allow
           users to do low level git operations to this cluster.
-        </Div>
+        </Body2P>
       )}
       <BindingInput
         type="user"
@@ -94,7 +95,7 @@ function ClusterAdmins({
               size="small"
               icon={<InfoOutlineIcon color="icon-xlight" />}
             >
-              <Span color="text-primary-disabled">{invite?.email}</Span>
+              <SpanSC $color="text-primary-disabled">{invite?.email}</SpanSC>
             </Chip>
           </Tooltip>
         ))}
@@ -109,7 +110,7 @@ function ClusterAdmins({
             onClick={onInvite}
             leftContent={<PersonPlusIcon color="icon-info" />}
           >
-            <Span color="action-link-inline">Invite new user</Span>
+            <SpanSC $color="action-link-inline">Invite new user</SpanSC>
           </ListBoxFooter>
         }
       />
@@ -130,7 +131,7 @@ function ClusterAdmins({
             onClick={onGroupCreate}
             leftContent={<PeoplePlusIcon color="icon-info" />}
           >
-            <Span color="action-link-inline">Create new group</Span>
+            <SpanSC $color="action-link-inline">Create new group</SpanSC>
           </ListBoxFooter>
         }
       />

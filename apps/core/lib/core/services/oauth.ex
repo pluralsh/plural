@@ -22,8 +22,15 @@ defmodule Core.Services.OAuth do
   Creates a new oidc provider for a given installation, enabling a log-in with plural experience
   """
   @spec create_oidc_provider(map, User.t) :: oidc_resp
-  def create_oidc_provider(attrs, %User{id: id} = user) do
+  def create_oidc_provider(attrs, %User{} = user), do: create_oidc_provider(attrs, user, user)
+
+  @doc """
+  Creates an oidc provider owned by `owner` (eg a cluster's service account) on behalf of `actor`
+  """
+  @spec create_oidc_provider(map, User.t, User.t) :: oidc_resp
+  def create_oidc_provider(attrs, %User{id: id} = owner, %User{} = actor) do
     start_transaction()
+    |> add_operation(:owner, fn _ -> allow(%OIDCProvider{owner_id: id}, actor, :create) end)
     |> add_operation(:client, fn _ ->
       Map.take(attrs, [:redirect_uris])
       |> Map.put(:scope, @oidc_scopes)
@@ -34,11 +41,10 @@ defmodule Core.Services.OAuth do
     |> add_operation(:oidc_provider, fn
       %{client: %{client_id: cid, client_secret: secret}} ->
         attrs = Map.merge(attrs, %{client_id: cid, client_secret: secret})
-                |> add_bindings(find_bindings(user))
+                |> add_bindings(find_bindings(owner))
         %OIDCProvider{owner_id: id}
         |> OIDCProvider.changeset(attrs)
-        |> allow(user, :create)
-        |> when_ok(:insert)
+        |> Core.Repo.insert()
     end)
     |> execute(extract: :oidc_provider)
     |> notify(:create)

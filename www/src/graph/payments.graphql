@@ -136,6 +136,7 @@ fragment SubscriptionAccount on Account {
   subscription {
     id
     trialUntil
+    insertedAt
     plan {
       ...PlatformPlan
     }
@@ -161,6 +162,18 @@ fragment SubscriptionAccount on Account {
 query Subscription {
   account {
     ...SubscriptionAccount
+  }
+}
+
+query SubscriptionBillingPeriod {
+  account {
+    id
+    subscription {
+      id
+      latestInvoice {
+        createdAt
+      }
+    }
   }
 }
 
@@ -241,6 +254,28 @@ query Invoices {
     edges {
       node {
         ...Invoice
+      }
+    }
+  }
+}
+
+query BillingUsage(
+  $startTime: DateTime
+  $endTime: DateTime
+  $meters: [UsageMeter!]
+) {
+  billingUsage(startTime: $startTime, endTime: $endTime, meters: $meters) {
+    startTime
+    endTime
+    clusterCount
+    userCount
+    meters {
+      meter
+      total
+      buckets {
+        startTime
+        endTime
+        value
       }
     }
   }

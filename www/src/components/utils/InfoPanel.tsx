@@ -1,6 +1,6 @@
-import { CloseIcon, IconFrame, Modal } from '@pluralsh/design-system'
-import { Div, Flex, Span } from 'honorable'
+import { CloseIcon, Flex, IconFrame, Modal } from '@pluralsh/design-system'
 import { ReactNode } from 'react'
+import styled from 'styled-components'
 
 type InfoPanelProps = {
   title: string
@@ -24,34 +24,37 @@ export function InfoPanel({
       open
       onOpenChange={onClose}
     >
-      <Div borderBottom="1px solid border-fill-two">
+      <HeaderSC>
         <Flex
           align="center"
           justify="space-between"
         >
-          <Span
-            fontSize={18}
-            fontWeight={500}
-            lineHeight="24px"
-          >
-            {title}
-          </Span>
+          <TitleSC>{title}</TitleSC>
           <IconFrame
             clickable
             icon={<CloseIcon />}
             onClick={(_) => onClose()}
           />
         </Flex>
-      </Div>
+      </HeaderSC>
       <Flex
         direction="column"
         overflowY="auto"
-        gap={contentGap}
-        padding={contentPadding}
         height={contentHeight}
+        css={{ gap: contentGap, padding: contentPadding }}
       >
         {children}
       </Flex>
     </Modal>
   )
 }
+
+const HeaderSC = styled.div(({ theme }) => ({
+  borderBottom: `1px solid ${theme.colors['border-fill-two']}`,
+}))
+
+const TitleSC = styled.span({
+  fontSize: 18,
+  fontWeight: 500,
+  lineHeight: '24px',
+})

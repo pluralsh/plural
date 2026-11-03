@@ -3,9 +3,9 @@ import {
   Card,
   DocumentIcon,
   EmptyState,
+  Flex,
   Table,
 } from '@pluralsh/design-system'
-import { Div, Flex } from 'honorable'
 import moment from 'moment'
 import { createColumnHelper } from '@tanstack/react-table'
 
@@ -15,6 +15,9 @@ import isEmpty from 'lodash/isEmpty'
 import { InvoiceFragment } from '../../../generated/graphql'
 
 const columnHelper = createColumnHelper<InvoiceFragment & { id: string }>()
+
+const formatCents = (cents: number) =>
+  (cents / 100).toLocaleString('en-US', { style: 'currency', currency: 'USD' })
 
 const columns = [
   columnHelper.accessor((row) => row.createdAt, {
@@ -26,13 +29,13 @@ const columns = [
   columnHelper.accessor((row) => row.amountDue, {
     id: 'amountDue',
     enableSorting: true,
-    cell: (info) => `$${(info.getValue() / 100).toFixed(2)}`,
+    cell: (info) => formatCents(info.getValue()),
     header: () => <>Amount due</>,
   }),
   columnHelper.accessor((row) => row.amountPaid, {
     id: 'amountPaid',
     enableSorting: true,
-    cell: (info) => `$${(info.getValue() / 100).toFixed(2)}`,
+    cell: (info) => formatCents(info.getValue()),
     header: () => <>Amount paid</>,
   }),
   columnHelper.accessor((row) => row.status, {
@@ -50,19 +53,18 @@ const columns = [
       >
         <Button
           as="a"
-          href={info.getValue()}
+          href={info.getValue() ?? undefined}
           target="_blank"
-          rel="noopener noreferer"
+          rel="noopener noreferrer"
           secondary
           small
-          padding={0}
           startIcon={<DocumentIcon />}
         >
           View/pay invoice
         </Button>
       </Flex>
     ),
-    header: () => <Div />,
+    header: () => <div />,
   }),
 ]
 

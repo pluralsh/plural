@@ -46,7 +46,7 @@ function UpgradeNeededModal({
       style={{ padding: 0 }}
     >
       <Wrap>
-        <Message>Upgrade to Plural Professional to access {feature}.</Message>
+        <Message>Upgrade to Plural Pro to access {feature}.</Message>
         <Button
           alignSelf="flex-end"
           onClick={() => navigate('/account/billing')}

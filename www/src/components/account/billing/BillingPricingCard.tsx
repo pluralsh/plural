@@ -1,6 +1,8 @@
-import { Div, Flex } from 'honorable'
-import { CheckIcon, PlusIcon } from '@pluralsh/design-system'
+import { CheckIcon, Flex, PlusIcon } from '@pluralsh/design-system'
 import { ReactNode } from 'react'
+import { useTheme } from 'styled-components'
+
+import { OverlineH1, Subtitle1H1 } from '../../utils/Typography'
 
 type BillingPricingCardPropsType = {
   title: string
@@ -20,28 +22,32 @@ function BillingPricingCard({
   callToAction,
   selected,
 }: BillingPricingCardPropsType) {
+  const theme = useTheme()
+
   return (
     <Flex
       direction="column"
       flexGrow={1}
-      backgroundColor="fill-one"
+      backgroundColor={theme.colors['fill-one']}
       padding="large"
-      borderRadius="large"
-      border={`1px solid ${selected ? 'border-fill-two' : 'border'}`}
+      borderRadius={theme.borderRadiuses.large}
+      border={`1px solid ${
+        selected ? theme.colors['border-fill-two'] : theme.colors.border
+      }`}
     >
-      <Div subtitle1>{title}</Div>
-      <Div
-        overline
-        color="text-xlight"
-        marginTop="xsmall"
+      <Subtitle1H1 as="div">{title}</Subtitle1H1>
+      <OverlineH1
+        as="div"
+        $color="text-xlight"
+        css={{ marginTop: theme.spacing.xsmall }}
       >
         {subtitle}
-      </Div>
+      </OverlineH1>
       <Flex
         direction="column"
         gap="xsmall"
         marginTop="large"
-        color="text-xlight"
+        color={theme.colors['text-xlight']}
       >
         {items.map((item) => (
           <Flex
@@ -61,11 +67,11 @@ function BillingPricingCard({
                 size={12}
               />
             )}
-            <Div>{item.label}</Div>
+            <div>{item.label}</div>
           </Flex>
         ))}
       </Flex>
-      <Div flexGrow={1} />
+      <div css={{ flexGrow: 1 }} />
       <Flex
         marginTop="xxlarge"
         align="center"

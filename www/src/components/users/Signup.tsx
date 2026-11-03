@@ -1,7 +1,6 @@
 import { ComponentProps, useCallback, useEffect, useRef, useState } from 'react'
-import { Form } from 'grommet'
-import { Link, useLocation } from 'react-router-dom'
-import { A, Button, Div, Flex, P } from 'honorable'
+import { useLocation } from 'react-router-dom'
+import { Button, Flex } from '@pluralsh/design-system'
 
 import { useTheme } from 'styled-components'
 
@@ -10,6 +9,7 @@ import { WelcomeHeader } from '../utils/WelcomeHeader'
 import { HubSpot } from '../utils/HubSpot'
 import { fetchToken, setAuthFromUser } from '../../helpers/authentication'
 import { GqlError } from '../utils/Alert'
+import { Body2P, CaptionP } from '../utils/Typography'
 
 import { host } from '../../helpers/hostname'
 import { useHistory } from '../../router'
@@ -22,18 +22,14 @@ import {
 } from './PasswordValidation'
 import { getDeviceToken } from './utils'
 import { finishedDeviceLogin } from './DeviceLoginNotif'
+import { InlineLinkSC } from '../utils/Typography'
 import { FlexAtBreak, OAuthOptions } from './MagicLogin'
-import { LOGIN_BREAKPOINT, LoginPortal } from './LoginPortal'
+import { LoginPortal } from './LoginPortal'
 import { LabelledInput } from './LabelledInput'
 
 function PasswordErrorMsg({ errorCode }: { errorCode: PasswordErrorCode }) {
   return (
-    <P
-      caption
-      color="text-error"
-    >
-      {PasswordErrorMessage[errorCode]}
-    </P>
+    <CaptionP $color="text-danger">{PasswordErrorMessage[errorCode]}</CaptionP>
   )
 }
 
@@ -92,8 +88,8 @@ export function Signup() {
   const [account, setAccount] = useState('')
   const [confirm, setConfirm] = useState('')
   const deviceToken = getDeviceToken()
-  const accountInputRef = useRef<HTMLElement>()
-  const emailRef = useRef<HTMLElement>()
+  const accountInputRef = useRef<HTMLDivElement>(null)
+  const emailRef = useRef<HTMLDivElement>(null)
   const [mutation, { loading, error }] = useSignupMutation({
     variables: {
       attributes: { email, password, name },
@@ -146,15 +142,17 @@ export function Signup() {
   return (
     <LoginPortal>
       <HubSpot />
-      <WelcomeHeader marginBottom="xxlarge" />
-      <Form onSubmit={onSubmit}>
+      <div css={{ marginBottom: theme.spacing.xxlarge }}>
+        <WelcomeHeader />
+      </div>
+      <form onSubmit={onSubmit}>
         {!showEmailError && !accountError && !emailError && error && (
-          <Div marginBottom="medium">
+          <div css={{ marginBottom: theme.spacing.medium }}>
             <GqlError
               error={error}
               header="Signup failed"
             />
-          </Div>
+          </div>
         )}
         <LabelledInput
           ref={emailRef}
@@ -166,15 +164,14 @@ export function Signup() {
           error={!!emailError}
         />
         <Flex
-          flexWrap="wrap"
+          wrap="wrap"
           width="100%"
           columnGap={theme.spacing.medium}
-          flexBasis="100%"
+          basis="100%"
         >
           <FlexAtBreak>
             <LabelledInput
               ref={accountInputRef}
-              width="100%"
               label="Company name"
               value={account}
               onChange={setAccount}
@@ -185,10 +182,6 @@ export function Signup() {
           </FlexAtBreak>
           <FlexAtBreak>
             <LabelledInput
-              {...{
-                [LOGIN_BREAKPOINT]: { flex: '1 0' },
-              }}
-              width="100%"
               label="Username"
               value={name}
               onChange={setName}
@@ -216,22 +209,16 @@ export function Signup() {
         >
           Create account
         </Button>
-      </Form>
+      </form>
       <OAuthOptions oauthUrls={data?.oauthUrls} />
-      <P
-        body2
-        textAlign="center"
-        marginTop="medium"
+      <Body2P
+        css={{
+          textAlign: 'center',
+          marginTop: theme.spacing.medium,
+        }}
       >
-        Already have an account?{' '}
-        <A
-          as={Link}
-          inline
-          to="/login"
-        >
-          Login
-        </A>
-      </P>
+        Already have an account? <InlineLinkSC to="/login">Login</InlineLinkSC>
+      </Body2P>
     </LoginPortal>
   )
 }

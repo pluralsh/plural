@@ -1,10 +1,10 @@
-import { PageTitle, SubTab, TabList, TabPanel } from '@pluralsh/design-system'
-import { Box } from 'grommet'
-import { Flex } from 'honorable'
+import { Flex, SubTab, TabList, TabPanel } from '@pluralsh/design-system'
 import { useMemo, useRef } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
 
 import { LinkTabWrap } from '../utils/Tabs'
+
+import { SubpageHeader } from '../utils/layout/SubpageLayout'
 
 import InviteUserButton from './invite/InviteUserButton'
 
@@ -39,9 +39,9 @@ export function Users() {
       flexDirection="column"
       maxHeight="100%"
     >
-      <PageTitle heading="Users">
+      <SubpageHeader title="Users">
         <Flex
-          alignItems="flex-end"
+          align="center"
           gap="medium"
         >
           <TabList
@@ -63,19 +63,19 @@ export function Users() {
           </TabList>
           <InviteUserButton onInvite={refetchInvites.current} />
         </Flex>
-      </PageTitle>
+      </SubpageHeader>
       <TabPanel
         as={
-          <Box
-            fill
+          <Flex
+            direction="column"
+            width="100%"
+            height="100%"
             gap="medium"
           />
         }
         stateRef={tabStateRef}
       >
         <Outlet context={outletContext} />
-        {/* {selectedKey === 'Users' && <UsersList />}
-        {selectedKey === 'Invites' && <Invites />} */}
       </TabPanel>
     </Flex>
   )

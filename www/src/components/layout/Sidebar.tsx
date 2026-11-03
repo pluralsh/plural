@@ -1,26 +1,20 @@
 import {
-  ArrowTopRightIcon,
+  Avatar,
   ClusterIcon,
   CookieIcon,
   CreditCardIcon,
-  Sidebar as DSSidebar,
-  DiscordIcon,
-  GitHubLogoIcon,
+  Flex,
+  HelpIcon,
   ListIcon,
   LogoutIcon,
-  MarketPlusIcon,
   PeopleIcon,
   PersonIcon,
-  ScrollIcon,
-  SidebarItem,
-  SidebarSection,
-  TerminalIcon,
+  Tooltip,
+  WrapWithIf,
 } from '@pluralsh/design-system'
-import { useClickOutside } from '@react-hooks-library/core'
-import { Avatar, Menu, MenuItem } from 'honorable'
 import {
-  ComponentProps,
   ReactElement,
+  use,
   useCallback,
   useContext,
   useRef,
@@ -33,11 +27,26 @@ import CurrentUserContext from '../../contexts/CurrentUserContext'
 import { useLogoutMutation } from '../../generated/graphql'
 import { getPreviousUserData } from '../../helpers/authentication'
 import { clearLocalStorage } from '../../helpers/localStorage'
-import { handlePreviousUserClick } from '../login/CurrentUser'
-import CreatePublisherModal from '../publisher/CreatePublisherModal'
-import { useIsCurrentlyOnboarding } from '../shell/hooks/useOnboarded'
-
+import { useOutsideClick } from '../../hooks/useOutsideClick'
 import Cookiebot from '../../utils/cookiebot'
+import BillingSubscriptionChip from '../account/billing/BillingSubscriptionChip'
+import { handlePreviousUserClick } from '../login/CurrentUser'
+
+import {
+  SIDEBAR_EXPANDED_WIDTH,
+  SIDEBAR_WIDTH,
+  SidebarContext,
+  SidebarProvider,
+} from './sidebar/SidebarContext'
+import {
+  SidebarItem,
+  sidebarItemFills,
+  sidebarItemLayout,
+} from './sidebar/SidebarItem'
+import { SidebarSection } from './sidebar/SidebarSection'
+
+const CONSOLE_LOGO_LIGHT = '/console-logo.png'
+const CONSOLE_LOGO_DARK = '/console-logo-white.png'
 
 type MenuItem = {
   text: string
@@ -46,163 +55,127 @@ type MenuItem = {
   pathRegexp?: RegExp
 }
 
-const MENU_ITEMS: MenuItem[] = [
-  {
-    text: 'Management planes',
-    icon: <ClusterIcon />,
-    path: '/overview',
-    pathRegexp: /^\/(overview|clusters|apps)/,
-  },
-  {
-    text: 'Cloud shell',
-    icon: <TerminalIcon />,
-    path: '/shell',
-    pathRegexp: /^\/(shell|oauth\/callback\/.+\/shell)/,
-  },
-  {
-    text: 'Audits',
-    icon: <ListIcon />,
-    path: '/audits',
-  },
-  {
-    text: 'Account',
-    icon: <PeopleIcon />,
-    path: '/account',
-    pathRegexp: /^\/account(\/(?!billing)[^/]*)?$/,
-  },
-  {
-    text: 'Billing',
-    icon: <CreditCardIcon />,
-    path: '/account/billing',
-    pathRegexp: /^\/account\/billing(\/.*)?$/,
-  },
-]
+function isActiveMenuItem({ path, pathRegexp }: MenuItem, pathname: string) {
+  if (pathRegexp) return pathRegexp.test(pathname)
 
-function isActiveMenuItem(
-  { path, pathRegexp }: Pick<MenuItem, 'path' | 'pathRegexp'>,
-  currentPath
-) {
-  if (pathRegexp) return currentPath.match(pathRegexp) !== null
-  return path === '/' ? currentPath === path : currentPath.startsWith(path)
+  return path === '/' ? pathname === path : pathname.startsWith(path)
 }
 
-function SidebarWrapper() {
-  const isCurrentlyOnboarding = useIsCurrentlyOnboarding()
-
+export default function Sidebar() {
   return (
-    <Sidebar
-      variant="app"
-      style={isCurrentlyOnboarding ? { display: 'none' } : undefined}
-    />
+    <SidebarProvider>
+      <SidebarContent />
+    </SidebarProvider>
   )
 }
 
-const FlexGrow1 = styled.div((_) => ({
-  display: 'flex',
-  flexGrow: 1,
-}))
+function SidebarContent() {
+  const theme = useTheme()
+  const { isExpanded, setIsExpanded } = use(SidebarContext)
+  const { pathname } = useLocation()
 
-function SidebarMenuItem({
-  tooltip,
-  href,
-  className,
-  children,
-  ...props
-}: {
-  tooltip: string
-  href?: string
-  className?: string
-  children: JSX.Element
-}) {
+  const menuItems: MenuItem[] = [
+    {
+      text: 'Home',
+      icon: (
+        <SidebarLogoSC
+          src={theme.mode === 'light' ? CONSOLE_LOGO_LIGHT : CONSOLE_LOGO_DARK}
+          alt="Plural Cloud"
+        />
+      ),
+      path: '/',
+    },
+    {
+      text: 'Control planes',
+      icon: <ClusterIcon />,
+      path: '/overview',
+      pathRegexp: /^\/(overview|clusters|apps|create-cluster)/,
+    },
+    { text: 'Audits', icon: <ListIcon />, path: '/audits' },
+    {
+      text: 'Organization',
+      icon: <PeopleIcon />,
+      path: '/account',
+      pathRegexp: /^\/account(?!\/billing)(\/.*)?$/,
+    },
+    {
+      text: 'Billing',
+      icon: <CreditCardIcon />,
+      path: '/account/billing',
+      pathRegexp: /^\/account\/billing(\/.*)?$/,
+    },
+  ]
+
   return (
-    <SidebarItem
-      as={href ? 'a' : undefined}
-      target="_blank"
-      clickable
-      tooltip={tooltip}
-      href={href}
-      height={32}
-      width={32}
-      className={className}
-      {...props}
-    >
-      {children}
-    </SidebarItem>
+    <SidebarSC $isExpanded={isExpanded}>
+      <SidebarSection grow={1}>
+        {menuItems.map((item) => (
+          <SidebarItem
+            asLink
+            key={item.path}
+            to={item.path}
+            data-phid={`sidebar-item-${item.text.replace(/\s/g, '').toLowerCase()}`}
+            tooltip={item.text}
+            expandedLabel={item.text}
+            active={isActiveMenuItem(item, pathname)}
+          >
+            {item.icon}
+          </SidebarItem>
+        ))}
+        <Flex grow={1} />
+        <SidebarItem
+          onClick={() =>
+            window.open('https://docs.plural.sh', '_blank', 'noopener')
+          }
+          tooltip="Help and docs"
+          expandedLabel="Help and docs"
+        >
+          <HelpIcon />
+        </SidebarItem>
+        <ProfileMenu />
+      </SidebarSection>
+      <ToggleRowSC>
+        <WrapWithIf
+          condition={!isExpanded}
+          wrapper={
+            <Tooltip
+              label="Expand sidebar"
+              placement="right"
+              css={{ whiteSpace: 'nowrap' }}
+            />
+          }
+        >
+          <ToggleButtonSC
+            type="button"
+            $isExpanded={isExpanded}
+            aria-label={isExpanded ? undefined : 'Expand sidebar'}
+            onClick={(e) => {
+              e.stopPropagation()
+              setIsExpanded((expanded) => !expanded)
+            }}
+          >
+            <ToggleChevronIcon direction={isExpanded ? 'left' : 'right'} />
+            {isExpanded ? 'Collapse' : null}
+          </ToggleButtonSC>
+        </WrapWithIf>
+      </ToggleRowSC>
+    </SidebarSC>
   )
 }
 
-const SidebarSC = styled(DSSidebar)(({ theme }) => ({
-  flexGrow: 1,
-  minHeight: 0,
-  height: 'auto',
-  background: theme.colors['fill-zero'],
-  borderRight: theme.borders['fill-one'],
-  overflow: 'auto',
-}))
-
-// const NotificationsCountSC = styled.div(({ theme }) => ({
-//   display: 'flex',
-//   alignItems: 'center',
-//   justifyContent: 'center',
-//   color: theme.colors['text-always-white'],
-//   backgroundColor: theme.colors['icon-danger-critical'],
-//   borderRadius: '50%',
-//   fontSize: 10,
-//   height: 15,
-//   width: 15,
-//   position: 'absolute',
-//   left: 16,
-//   top: 2,
-//   userSelect: 'none',
-// }))
-
-function Sidebar(props: Omit<ComponentProps<typeof DSSidebar>, '$variant'>) {
-  const menuItemRef = useRef<HTMLDivElement>(null)
-  const menuRef = useRef<HTMLDivElement>(null)
-  const [isMenuOpen, setIsMenuOpened] = useState(false)
-  const [collapsed, _setCollapsed] = useState(true)
-  // const [isNotificationsPanelOpen, setIsNotificationsPanelOpen] =
-  //   useState(false)
-  const [isCreatePublisherModalOpen, setIsCreatePublisherModalOpen] =
-    useState(false)
-  const sidebarWidth = collapsed ? 65 : 256 - 32 // 64 + 1px border
-  const previousUserData = getPreviousUserData()
+function ProfileMenu() {
   const theme = useTheme()
   const me = useContext(CurrentUserContext)
-  const menuItems = MENU_ITEMS.filter(
-    (item) => item.path !== '/shell' || me.hasShell
-  )
-  const { pathname } = useLocation()
-  const active = useCallback(
-    (menuItem: Parameters<typeof isActiveMenuItem>[0]) =>
-      isActiveMenuItem(menuItem, pathname),
-    [pathname]
-  )
-  // const [readNotifications] = useReadNotificationsMutation()
-  // const notificationsCount = useNotificationsCount() ?? 0
-  // const notificationsLabel = `${
-  //   notificationsCount > 0 ? `${notificationsCount} ` : ''
-  // } Notifications`
-  // const toggleNotificationPanel = useCallback(
-  //   (open) => {
-  //     setIsNotificationsPanelOpen(open)
-  //     if (!open) {
-  //       readNotifications()
-  //     }
-  //   },
-  //   [setIsNotificationsPanelOpen, readNotifications]
-  // )
-
-  useClickOutside(menuRef, (event) => {
-    if (!menuItemRef.current?.contains(event.target as any)) {
-      setIsMenuOpened(false)
-    }
-  })
-
-  const switchPrevious = () => handlePreviousUserClick(previousUserData)
+  const { isExpanded } = use(SidebarContext)
+  const [isOpen, setIsOpen] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
+  const previousUser = getPreviousUserData()
   const [logoutMutation] = useLogoutMutation()
+  const close = useCallback(() => setIsOpen(false), [])
 
-  function handleLogout() {
+  useOutsideClick(ref, close)
+
+  const handleLogout = () => {
     logoutMutation()
       .catch(() => undefined)
       .finally(() => {
@@ -211,186 +184,295 @@ function Sidebar(props: Omit<ComponentProps<typeof DSSidebar>, '$variant'>) {
       })
   }
 
+  if (!me) return null
+
   return (
-    <>
-      <SidebarSC {...props}>
-        <SidebarSection
-          grow={1}
-          shrink={1}
+    <ProfileWrapperSC
+      ref={ref}
+      $isExpanded={isExpanded}
+    >
+      <WrapWithIf
+        condition={!isExpanded && !isOpen}
+        wrapper={
+          <Tooltip
+            label="Profile"
+            placement="right"
+            css={{ whiteSpace: 'nowrap' }}
+          />
+        }
+      >
+        <ProfileButtonSC
+          type="button"
+          aria-haspopup="menu"
+          aria-expanded={isOpen}
+          aria-label="Open profile menu"
+          $isExpanded={isExpanded}
+          $isOpen={isOpen}
+          onClick={() => setIsOpen((open) => !open)}
         >
-          {/* --- MENU ITEMS --- */}
-          {menuItems.map((item, i) => {
-            const isActive = active(item)
-
-            return (
-              <SidebarItem
-                data-phid={`sidebar-item-${item.text
-                  .split(' ')
-                  .join('')
-                  .toLowerCase()}`}
-                key={i}
-                clickable
-                tooltip={item.text}
-                className={`sidebar-${item.text}`}
-                style={{
-                  outline: isActive
-                    ? `1px solid ${theme.colors['border-fill-two']}`
-                    : undefined,
-                }}
-                as={Link}
-                to={item.path}
-                active={isActive}
-              >
-                {item.icon}
-              </SidebarItem>
-            )
-          })}
-          <FlexGrow1 />
-
-          {/* --- SOCIAL --- */}
-          <SidebarMenuItem
-            data-phid="sidebar-item-discord"
-            tooltip="Discord"
-            className="sidebar-discord"
-            href="https://discord.gg/pluralsh"
-          >
-            <DiscordIcon />
-          </SidebarMenuItem>
-          <SidebarMenuItem
-            data-phid="sidebar-item-github"
-            tooltip="GitHub"
-            className="sidebar-github"
-            href="https://github.com/pluralsh/plural"
-          >
-            <GitHubLogoIcon />
-          </SidebarMenuItem>
-
-          {/* --- NOTIFICATIONS BELL --- */}
-          {/* <SidebarItem */}
-          {/*  clickable */}
-          {/*  label={notificationsLabel} */}
-          {/*  tooltip={notificationsLabel} */}
-          {/*  className="sidebar-notifications" */}
-          {/*  onClick={(event) => { */}
-          {/*    event.stopPropagation() */}
-          {/*    toggleNotificationPanel(!isNotificationsPanelOpen) */}
-          {/*  }} */}
-          {/*  active={isNotificationsPanelOpen} */}
-          {/*  css={{ */}
-          {/*    position: 'relative', */}
-          {/*  }} */}
-          {/* > */}
-          {/*  <BellIcon /> */}
-          {/*  {notificationsCount > 0 && ( */}
-          {/*    <NotificationsCountSC> */}
-          {/*      {notificationsCount > 99 ? '!' : notificationsCount} */}
-          {/*    </NotificationsCountSC> */}
-          {/*  )} */}
-          {/* </SidebarItem> */}
-
-          {/* --- USER -- */}
-          <SidebarItem
-            data-phid="sidebar-item-user"
-            ref={menuItemRef}
-            className="sidebar-menu"
-            active={isMenuOpen}
-            clickable
-            collapsed
-            onClick={(e) => {
-              e.stopPropagation()
-              setIsMenuOpened((x) => !x)
-            }}
+          <Avatar
+            name={me.name ?? undefined}
+            src={me.avatar ?? undefined}
+            size={24}
             css={{
-              paddingLeft: theme.spacing.xxsmall,
+              flexShrink: 0,
+              ...(!me.avatar && {
+                backgroundColor: theme.colors['fill-three'],
+                border: theme.borders.input,
+                fontSize: '0.625rem',
+                ...(theme.mode === 'light' && { color: theme.colors.text }),
+              }),
             }}
-          >
-            <Avatar
-              name={me.name}
-              src={me.avatar}
-              size={32}
-            />
-          </SidebarItem>
-        </SidebarSection>
-      </SidebarSC>
-
-      {/* --- MENU --- */}
-      {isMenuOpen && (
-        <Menu
-          ref={menuRef}
-          zIndex={999}
-          position="absolute"
-          bottom={8}
-          minWidth="175px"
-          left={sidebarWidth + 8}
-          border="1px solid border"
-          onClick={() => setIsMenuOpened(false)}
-        >
-          <MenuItem
+          />
+          {isExpanded && <span className="name">{me.name}</span>}
+        </ProfileButtonSC>
+      </WrapWithIf>
+      {isOpen && (
+        <MenuSC role="menu">
+          <MenuIdentitySC>
+            <span className="name">{me.name}</span>
+            <span className="email">{me.email}</span>
+          </MenuIdentitySC>
+          <MenuDividerSC />
+          <MenuItemSC
             as={Link}
             to="/profile"
-            color="inherit"
-            textDecoration="none"
+            onClick={close}
           >
-            <PersonIcon css={{ marginRight: theme.spacing.medium }} />
+            <PersonIcon size={16} />
             My profile
-          </MenuItem>
-          <MenuItem
-            color="inherit"
-            textDecoration="none"
-            onClick={() => {
-              Cookiebot?.show()
-            }}
+          </MenuItemSC>
+          <MenuItemSC
+            as={Link}
+            to="/account/edit"
+            onClick={close}
           >
-            <CookieIcon marginRight="small" />
-            Cookie settings
-          </MenuItem>
-          <MenuItem
-            as="a"
-            href="https://docs.plural.sh"
-            target="_blank"
-            rel="noopener noreferrer"
-            color="inherit"
-            textDecoration="none"
-          >
-            <ScrollIcon css={{ marginRight: theme.spacing.medium }} />
-            Docs
-            <FlexGrow1 />
-            <ArrowTopRightIcon />
-          </MenuItem>
-          <MenuItem onClick={() => setIsCreatePublisherModalOpen(true)}>
-            <MarketPlusIcon css={{ marginRight: theme.spacing.medium }} />
-            Create a publisher
-          </MenuItem>
-          {!!previousUserData && (
-            <MenuItem onClick={switchPrevious}>
-              <LogoutIcon css={{ marginRight: theme.spacing.medium }} />
-              Log back as {previousUserData.me.email}
-            </MenuItem>
+            <PeopleIcon size={16} />
+            <MenuOrgLabelSC>
+              Organization
+              {me.account?.name && (
+                <MenuSecondaryTextSC>{me.account.name}</MenuSecondaryTextSC>
+              )}
+            </MenuOrgLabelSC>
+            <BillingSubscriptionChip
+              size="small"
+              asLink={false}
+            />
+          </MenuItemSC>
+          <MenuDividerSC />
+          {Cookiebot?.consent?.necessary && (
+            <MenuItemSC
+              type="button"
+              onClick={() => Cookiebot?.show()}
+            >
+              <CookieIcon size={16} />
+              Cookie settings
+            </MenuItemSC>
           )}
-          <MenuItem
+          {previousUser && (
+            <MenuItemSC
+              type="button"
+              onClick={() => handlePreviousUserClick(previousUser)}
+            >
+              <LogoutIcon size={16} />
+              Switch back
+            </MenuItemSC>
+          )}
+          <MenuDividerSC />
+          <MenuItemSC
+            type="button"
             onClick={handleLogout}
-            color={theme.colors['icon-danger']}
           >
-            <LogoutIcon css={{ marginRight: theme.spacing.medium }} />
+            <LogoutIcon size={16} />
             Logout
-          </MenuItem>
-        </Menu>
+          </MenuItemSC>
+        </MenuSC>
       )}
-
-      {/* --- NOTIFICATIONS PANEL --- */}
-      {/* <NotificationsPanelOverlay */}
-      {/*  leftOffset={sidebarWidth} */}
-      {/*  isOpen={isNotificationsPanelOpen} */}
-      {/*  setIsOpen={toggleNotificationPanel} */}
-      {/* /> */}
-
-      {/* --- CREATE PUBLISHER MODAL --- */}
-      <CreatePublisherModal
-        open={isCreatePublisherModalOpen}
-        onClose={() => setIsCreatePublisherModalOpen(false)}
-      />
-    </>
+    </ProfileWrapperSC>
   )
 }
 
-export default SidebarWrapper
+function ToggleChevronIcon({ direction }: { direction: 'left' | 'right' }) {
+  const { colors } = useTheme()
+  const color = colors['icon-xlight']
+
+  return (
+    <svg
+      width={16}
+      height={16}
+      viewBox="0 0 16 16"
+      fill="none"
+    >
+      <rect
+        x={0.5}
+        y={0.5}
+        width={15}
+        height={15}
+        rx={3}
+        stroke={color}
+      />
+      <path
+        d={
+          direction === 'left'
+            ? 'M8.65332 3.80762L4.90332 7.55762L4.46191 8L4.90332 8.44238L8.65332 12.1924L9.53809 11.3076L6.23047 8L9.53809 4.69238L8.65332 3.80762Z'
+            : 'M7.34668 12.1924L11.0967 8.44238L11.5381 8L11.0967 7.55762L7.34668 3.80762L6.46191 4.69238L9.76953 8L6.46191 11.3076L7.34668 12.1924Z'
+        }
+        fill={color}
+      />
+    </svg>
+  )
+}
+
+const SidebarSC = styled.nav<{ $isExpanded: boolean }>(
+  ({ theme, $isExpanded }) => {
+    const width = $isExpanded ? SIDEBAR_EXPANDED_WIDTH : SIDEBAR_WIDTH
+
+    return {
+      position: 'relative',
+      zIndex: theme.zIndexes.base + 1,
+      display: 'flex',
+      flexDirection: 'column',
+      flexShrink: 0,
+      height: '100%',
+      transition: 'width 0.2s ease-in-out',
+      width,
+      minWidth: width,
+      maxWidth: width,
+      backgroundColor: theme.colors['fill-accent'],
+      borderRight: theme.borders.default,
+    }
+  }
+)
+
+const SidebarLogoSC = styled.img({
+  width: 24,
+  height: 24,
+  objectFit: 'contain',
+  margin: '0 -4px',
+})
+
+const ToggleRowSC = styled.div({ height: 40, width: '100%' })
+
+const ToggleButtonSC = styled.button<{ $isExpanded: boolean }>(
+  ({ theme, $isExpanded }) => ({
+    ...theme.partials.reset.button,
+    ...theme.partials.text.body2,
+    width: '100%',
+    height: '100%',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: $isExpanded ? 'flex-start' : 'center',
+    gap: theme.spacing.xsmall,
+    padding: $isExpanded ? `0 ${theme.spacing.medium}` : theme.spacing.small,
+    whiteSpace: 'nowrap',
+    color: theme.colors['text-xlight'],
+    cursor: 'pointer',
+    '&:hover': { background: sidebarItemFills(theme).hover },
+    '&:focus-visible': { outline: theme.borders['outline-focused'] },
+  })
+)
+
+const ProfileWrapperSC = styled.div<{ $isExpanded: boolean }>(
+  ({ $isExpanded }) => ({
+    position: 'relative',
+    display: 'flex',
+    flexDirection: 'column',
+    alignSelf: $isExpanded ? 'stretch' : 'center',
+  })
+)
+
+const ProfileButtonSC = styled.button<{
+  $isExpanded: boolean
+  $isOpen: boolean
+}>(({ theme, $isExpanded, $isOpen }) => {
+  const fills = sidebarItemFills(theme)
+
+  return {
+    ...theme.partials.reset.button,
+    ...theme.partials.text.body2,
+    ...sidebarItemLayout(theme, $isExpanded),
+    boxSizing: 'border-box',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: $isExpanded ? 'flex-start' : 'center',
+    gap: theme.spacing.small,
+    borderRadius: theme.borderRadiuses.medium,
+    color: theme.colors['text-light'],
+    cursor: 'pointer',
+    background: $isOpen ? fills.selected : 'transparent',
+    '&:hover': { background: fills.hover },
+    '&:focus-visible': { outline: theme.borders['outline-focused'] },
+    '.name': {
+      minWidth: 0,
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      whiteSpace: 'nowrap',
+    },
+  }
+})
+
+const MenuSC = styled.div(({ theme }) => ({
+  position: 'absolute',
+  bottom: 0,
+  left: `calc(100% + ${theme.spacing.medium} + ${theme.spacing.xsmall})`,
+  zIndex: theme.zIndexes.modal,
+  width: 260,
+  padding: theme.spacing.xxsmall,
+  background: theme.colors['fill-two'],
+  border: theme.borders['fill-two'],
+  borderRadius: theme.borderRadiuses.large,
+  boxShadow: theme.boxShadows.modal,
+  display: 'flex',
+  flexDirection: 'column',
+}))
+
+const MenuItemSC = styled.button(({ theme }) => ({
+  ...theme.partials.reset.button,
+  ...theme.partials.text.body2,
+  display: 'flex',
+  alignItems: 'center',
+  gap: theme.spacing.small,
+  padding: `${theme.spacing.xsmall} ${theme.spacing.small}`,
+  borderRadius: theme.borderRadiuses.medium,
+  color: theme.colors.text,
+  textDecoration: 'none',
+  cursor: 'pointer',
+  '&:hover': { background: theme.colors['fill-two-hover'] },
+}))
+
+const MenuIdentitySC = styled.div(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: theme.spacing.xxxsmall,
+  padding: `${theme.spacing.xsmall} ${theme.spacing.small}`,
+  minWidth: 0,
+  '.name': { ...theme.partials.text.body2Bold, color: theme.colors.text },
+  '.email': {
+    ...theme.partials.text.caption,
+    color: theme.colors['text-xlight'],
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+}))
+
+const MenuOrgLabelSC = styled.span({
+  display: 'flex',
+  flexDirection: 'column',
+  flex: 1,
+  minWidth: 0,
+})
+
+const MenuSecondaryTextSC = styled.span(({ theme }) => ({
+  ...theme.partials.text.caption,
+  color: theme.colors['text-xlight'],
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  whiteSpace: 'nowrap',
+}))
+
+const MenuDividerSC = styled.div(({ theme }) => ({
+  height: 1,
+  margin: `${theme.spacing.xxsmall} 0`,
+  background: theme.colors['border-fill-two'],
+}))

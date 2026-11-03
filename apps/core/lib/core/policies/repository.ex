@@ -75,6 +75,11 @@ defmodule Core.Policies.Repository do
   def can?(%User{id: user_id}, %Installation{user_id: user_id}, action) when action in [:edit, :access],
     do: :continue
 
+  def can?(%User{} = user, %Installation{} = inst, action) when action in [:edit, :access] do
+    %{user: owner} = Core.Repo.preload(inst, [:user])
+    impersonates?(user, owner)
+  end
+
   def can?(%User{} = user, %Installation{} = inst, :create) do
     %{repository: repo} = Core.Repo.preload(inst, [:repository])
     check_rbac(user, :install, repository: repo.name, account: user.account)

@@ -5,6 +5,12 @@ import { Elements } from '@stripe/react-stripe-js'
 import PluralConfigurationContext from '../../../contexts/PluralConfigurationContext'
 import { useStripeAppearance } from '../../WrapStripe'
 
+export function useStripeConfigured() {
+  const { stripePublishableKey } = useContext(PluralConfigurationContext)
+
+  return !!stripePublishableKey
+}
+
 export function StripeElements({
   clientSecret,
   children,
@@ -12,11 +18,10 @@ export function StripeElements({
   const { stripePublishableKey } = useContext(PluralConfigurationContext)
 
   const appearance = useStripeAppearance()
-  const stripePromise = useMemo(() => {
-    if (stripePublishableKey) {
-      return loadStripe(stripePublishableKey)
-    }
-  }, [stripePublishableKey])
+  const stripePromise = useMemo(
+    () => (stripePublishableKey ? loadStripe(stripePublishableKey) : null),
+    [stripePublishableKey]
+  )
 
   const elementsOptions = useMemo(
     () =>
@@ -27,10 +32,6 @@ export function StripeElements({
       }) satisfies StripeElementsOptions,
     [appearance]
   )
-
-  if (!stripePromise) {
-    return <>{children}</>
-  }
 
   return (
     <Elements

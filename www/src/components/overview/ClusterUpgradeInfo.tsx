@@ -1,11 +1,10 @@
-import { Chip, IconFrame } from '@pluralsh/design-system'
-import { Flex } from 'honorable'
+import { Chip, Flex, IconFrame } from '@pluralsh/design-system'
 import { isEmpty } from 'lodash'
 
 import { useTheme } from 'styled-components'
 
 import { Maybe, UpgradeInfoFragment } from '../../generated/graphql'
-import { getRepoIcon } from '../repository/misc'
+import { getRepoIcon } from '../../utils/getRepoIcon'
 
 type ClusterUpgradeInfoProps = {
   upgradeInfo?: Maybe<Maybe<UpgradeInfoFragment>[]>
@@ -18,8 +17,8 @@ export function ClusterUpgradeInfo({ upgradeInfo }: ClusterUpgradeInfoProps) {
 
   return (
     <Flex
-      backgroundColor="fill-two"
-      borderRadius="large"
+      backgroundColor={theme.colors['fill-two']}
+      borderRadius={theme.borderRadiuses.large}
       direction="column"
     >
       {upgradeInfo?.map((upgrade, i) => {
@@ -30,12 +29,16 @@ export function ClusterUpgradeInfo({ upgradeInfo }: ClusterUpgradeInfoProps) {
             key={upgrade?.installation?.id}
             align="center"
             borderBottom={
-              i + 1 === upgradeInfo?.length ? '' : '1px solid border-fill-two'
+              i + 1 === upgradeInfo?.length
+                ? ''
+                : `1px solid ${theme.colors['border-fill-two']}`
             }
             gap="medium"
             grow={1}
-            paddingHorizontal="medium"
-            paddingVertical="small"
+            paddingLeft="medium"
+            paddingRight="medium"
+            paddingTop="small"
+            paddingBottom="small"
           >
             <IconFrame
               icon={
@@ -54,14 +57,13 @@ export function ClusterUpgradeInfo({ upgradeInfo }: ClusterUpgradeInfoProps) {
               }}
             />
             <Flex
-              body2
-              bold
               grow={1}
+              css={{ ...theme.partials.text.body2Bold }}
             >
               {repository?.name}
             </Flex>
             <Chip
-              hue="lightest"
+              fillLevel={3}
               severity="warning"
               size="small"
             >

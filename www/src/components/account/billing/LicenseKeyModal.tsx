@@ -56,10 +56,10 @@ export function LicenseKeyModal({
         <span css={text.body2Bold}>License key</span>
         <Input
           type={showKey ? 'text' : 'password'}
-          caretColor="transparent"
+          inputProps={{ style: { caretColor: 'transparent' } }}
           endIcon={
             <IconFrame
-              padding={0}
+              style={{ padding: 0 }}
               clickable
               onClick={() => setShowKey(!showKey)}
               tooltip={showKey ? 'Hide' : 'Show'}

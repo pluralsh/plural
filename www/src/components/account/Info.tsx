@@ -1,14 +1,16 @@
-import { Box } from 'grommet'
-import { Span } from 'honorable'
+import { Flex } from '@pluralsh/design-system'
+
+import { SpanSC } from '../utils/Typography'
 
 export function Info({ text, description, ...box }: any) {
   return (
-    <Box
-      fill="horizontal"
+    <Flex
+      direction="column"
+      width="100%"
       {...box}
     >
-      <Span fontWeight="bold">{text}</Span>
-      <Span color="text-light">{description}</Span>
-    </Box>
+      <span css={{ fontWeight: 'bold' }}>{text}</span>
+      <SpanSC $color="text-light">{description}</SpanSC>
+    </Flex>
   )
 }

@@ -93,7 +93,7 @@ const CreateGroupActions = styled(CreateGroupActionsUnstyled)(({ theme }) => ({
   flexDirection: 'row',
   justifyContent: 'space-between',
   gap: theme.spacing.medium,
-  padding: `${theme.spacing.small}px 0 ${theme.spacing.xsmall}px 0`,
+  padding: `${theme.spacingPx.small}px 0 ${theme.spacingPx.xsmall}px 0`,
 }))
 
 function CreateGroupActionsUnstyled({

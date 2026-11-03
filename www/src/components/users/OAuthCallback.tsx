@@ -1,8 +1,8 @@
 import { useEffect } from 'react'
 import { useApolloClient, useMutation } from '@apollo/client'
+import { Flex } from '@pluralsh/design-system'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import qs from 'query-string'
-import { Box } from 'grommet'
 
 import { setAuthFromUser } from '../../helpers/authentication'
 import { host } from '../../helpers/hostname'
@@ -50,7 +50,8 @@ export function OAuthCallback() {
   if (loading) return <LoadingIndicator />
 
   return error ? (
-    <Box
+    <Flex
+      direction="column"
       height="100vh"
       width="100vw"
       align="center"
@@ -60,6 +61,6 @@ export function OAuthCallback() {
         error={error}
         header="Failed to log in"
       />
-    </Box>
+    </Flex>
   ) : null
 }

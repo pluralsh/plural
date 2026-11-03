@@ -1,15 +1,15 @@
-import { Box } from 'grommet'
-import { Span } from 'honorable'
+import { Flex } from '@pluralsh/design-system'
 
 import { formatLocation } from '../../utils/geo'
+import { SpanSC } from '../utils/Typography'
 
 export function Location({ ip, city, country }: any) {
-  if (!ip) return <Span>n/a</Span>
+  if (!ip) return <span>n/a</span>
 
   return (
-    <Box>
-      {country && <Span>{formatLocation(country, city)}</Span>}
-      <Span color="text-xlight">{ip}</Span>
-    </Box>
+    <Flex direction="column">
+      {country && <span>{formatLocation(country, city)}</span>}
+      <SpanSC $color="text-xlight">{ip}</SpanSC>
+    </Flex>
   )
 }

@@ -1,19 +1,25 @@
-import { Sidecar, SidecarItem, Tooltip } from '@pluralsh/design-system'
-import { A, Flex } from 'honorable'
+import { Flex, Sidecar, SidecarItem, Tooltip } from '@pluralsh/design-system'
 import moment from 'moment'
 import { ReactElement } from 'react'
-import { Link } from 'react-router-dom'
+import styled from 'styled-components'
 
 import { ClusterFragment } from '../../generated/graphql'
 import ClusterHealth from '../overview/clusters/ClusterHealth'
 import ClusterOwner from '../overview/clusters/ClusterOwner'
 import CopyButton from '../utils/CopyButton'
+import { InlineLinkSC } from '../utils/Typography'
 
 type ClusterSidecarProps = { cluster: ClusterFragment }
 
+const SidecarSC = styled(Flex)(({ theme }) => ({
+  [`@media (max-width: ${theme.breakpoints.desktopSmall - 1}px)`]: {
+    display: 'none',
+  },
+}))
+
 export function ClusterSidecar({ cluster }: ClusterSidecarProps): ReactElement {
   return (
-    <Flex
+    <SidecarSC
       gap="large"
       direction="column"
       width={200}
@@ -21,7 +27,6 @@ export function ClusterSidecar({ cluster }: ClusterSidecarProps): ReactElement {
       alignSelf="flex-start"
       maxHeight="100%"
       overflowY="auto"
-      display-desktopSmall-down="none"
     >
       <Sidecar heading="Metadata">
         <SidecarItem heading="Cluster name">{cluster.name}</SidecarItem>
@@ -43,13 +48,9 @@ export function ClusterSidecar({ cluster }: ClusterSidecarProps): ReactElement {
         </SidecarItem>
         {!!cluster.dependency && (
           <SidecarItem heading="Promotion source">
-            <A
-              inline
-              as={Link}
-              to={`/clusters/${cluster.dependency.dependency?.id}`}
-            >
+            <InlineLinkSC to={`/clusters/${cluster.dependency.dependency?.id}`}>
               {cluster.dependency.dependency?.name}
-            </A>
+            </InlineLinkSC>
           </SidecarItem>
         )}
         <SidecarItem heading="Last pinged">
@@ -65,6 +66,6 @@ export function ClusterSidecar({ cluster }: ClusterSidecarProps): ReactElement {
           )}
         </SidecarItem>
       </Sidecar>
-    </Flex>
+    </SidecarSC>
   )
 }

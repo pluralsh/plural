@@ -1,30 +1,27 @@
 import { Suspense, lazy } from 'react'
-import { Navigate, Outlet, Route, Routes, useMatch } from 'react-router-dom'
+import { Navigate, Outlet, Route, Routes } from 'react-router-dom'
 
-import { useHistory } from '../router'
-
+import BreadcrumbProvider from './Breadcrumbs'
+import ApplicationLayout from './layout/ApplicationLayout'
+import { PluralProvider } from './login/CurrentUser'
 import { WrapStripe } from './WrapStripe'
 import { LegacyExpirationNotice } from './login/LegacyExpiration'
 import LoadingIndicator from './utils/LoadingIndicator'
 import { UsersList } from './account/UsersList'
 import { Invites } from './account/Invites'
 import { DelinquencyToast } from './account/billing/DelinquencyNotices'
-import { INSTANCE_ID_PARAM } from './overview/clusters/plural-cloud/details/PluralCloudInstanceDetails'
-import { PLURAL_CLOUD_INSTANCES_PATH_ABS } from './overview/clusters/plural-cloud/PluralCloudInstances'
+import {
+  INSTANCE_ID_PARAM,
+  PLURAL_CLOUD_INSTANCES_PATH_ABS,
+} from './overview/clusters/plural-cloud/PluralCloudInstances'
 
-const ApplicationLayout = lazy(() => import('./layout/ApplicationLayout'))
-const BreadcrumbProvider = lazy(() => import('./Breadcrumbs'))
-const CloudShell = lazy(() => import('./shell/Shell'))
-const Marketplace = lazy(() => import('./marketplace/Marketplace'))
-const OAuthCallback = lazy(() => import('./shell/OAuthCallback'))
-const Publisher = lazy(() => import('./publisher/Publisher'))
-const Stack = lazy(() => import('./stack/Stack'))
-const StackApps = lazy(() => import('./stack/StackApps'))
+const Home = lazy(() => import('./home/Home'))
 const BillingLayout = lazy(() => import('./account/billing/BillingLayout'))
 const BillingManagePlan = lazy(
   () => import('./account/billing/BillingManagePlan')
 )
 const BillingPayments = lazy(() => import('./account/billing/BillingPayments'))
+const BillingUsage = lazy(() => import('./account/billing/usage/BillingUsage'))
 const AccessTokens = lazy(() =>
   import('./profile/AccessTokens').then((module) => ({
     default: module.AccessTokens,
@@ -50,11 +47,6 @@ const AuditDirectory = lazy(() =>
 )
 const Audits = lazy(() =>
   import('./audits/Audits').then((module) => ({ default: module.Audits }))
-)
-const ChecklistProvider = lazy(() =>
-  import('./shell/onboarding/checklist/Checklist').then((module) => ({
-    default: module.ChecklistProvider,
-  }))
 )
 
 // Overview.
@@ -105,11 +97,6 @@ const Cluster = lazy(() =>
   import('./cluster/Cluster').then((module) => ({ default: module.Cluster }))
 )
 
-const PluralProvider = lazy(() =>
-  import('./login/CurrentUser').then((module) => ({
-    default: module.PluralProvider,
-  }))
-)
 const DeviceLoginNotif = lazy(() =>
   import('./users/DeviceLoginNotif').then((module) => ({
     default: module.DeviceLoginNotif,
@@ -126,9 +113,14 @@ const EabCredentials = lazy(() =>
 const Groups = lazy(() =>
   import('./account/Groups').then((module) => ({ default: module.Groups }))
 )
-const LoginAudits = lazy(() =>
-  import('./audits/LoginAudits').then((module) => ({
-    default: module.LoginAudits,
+const GroupCreate = lazy(() =>
+  import('./account/groups/GroupEditOrCreate').then((module) => ({
+    default: module.GroupCreate,
+  }))
+)
+const GroupEdit = lazy(() =>
+  import('./account/groups/GroupEditOrCreate').then((module) => ({
+    default: module.GroupEdit,
   }))
 )
 const MyProfile = lazy(() =>
@@ -139,14 +131,24 @@ const MyProfile = lazy(() =>
 const Profile = lazy(() =>
   import('./profile/Profile').then((module) => ({ default: module.Profile }))
 )
-const PublicKeys = lazy(() =>
-  import('./profile/PublicKeys').then((module) => ({
-    default: module.PublicKeys,
+const Appearance = lazy(() =>
+  import('./profile/Appearance').then((module) => ({
+    default: module.Appearance,
   }))
 )
 const KeyBackups = lazy(() =>
   import('./profile/KeyBackups').then((module) => ({
     default: module.KeyBackups,
+  }))
+)
+const LoginAudits = lazy(() =>
+  import('./audits/LoginAudits').then((module) => ({
+    default: module.LoginAudits,
+  }))
+)
+const PublicKeys = lazy(() =>
+  import('./profile/PublicKeys').then((module) => ({
+    default: module.PublicKeys,
   }))
 )
 const Roles = lazy(() =>
@@ -169,107 +171,14 @@ const VerifyEmailConfirmed = lazy(() =>
   }))
 )
 
-/** Repository - /repository/:name * */
-const Repository = lazy(() => import('./repository/Repository'))
-const RepositoryArtifacts = lazy(
-  () => import('./repository/RepositoryArtifacts')
-)
-const RepositoryDeployments = lazy(
-  () => import('./repository/RepositoryDeployments')
-)
-const RepositoryDescription = lazy(
-  () => import('./repository/RepositoryDescription')
-)
-const RepositoryEdit = lazy(() => import('./repository/RepositoryEdit'))
-const RepositoryPackages = lazy(() => import('./repository/RepositoryPackages'))
-const RepositoryPackagesDocker = lazy(
-  () => import('./repository/RepositoryPackagesDocker')
-)
-const RepositoryPackagesHelm = lazy(
-  () => import('./repository/RepositoryPackagesHelm')
-)
-const RepositoryPackagesTerraform = lazy(
-  () => import('./repository/RepositoryPackagesTerraform')
-)
-const RepositoryTests = lazy(() => import('./repository/RepositoryTests'))
-
-// Packages - Helm - /charts
-const Chart = lazy(() => import('./repository/packages/Chart'))
-const PackageReadme = lazy(
-  () => import('./repository/packages/helm/PackageReadme')
-)
-const PackageConfiguration = lazy(
-  () => import('./repository/packages/helm/PackageConfiguration')
-)
-const PackageDependencies = lazy(
-  () => import('./repository/packages/helm/PackageDependencies')
-)
-const PackageSecurity = lazy(
-  () => import('./repository/packages/helm/PackageSecurity')
-)
-const PackageUpdateQueue = lazy(
-  () => import('./repository/packages/helm/PackageUpdateQueue')
-)
-
-// Packages - Docker - /dkr/img
-const Docker = lazy(() =>
-  import('./repository/packages/Docker').then((module) => ({
-    default: module.Docker,
-  }))
-)
-const DockerRepository = lazy(() =>
-  import('./repository/packages/Docker').then((module) => ({
-    default: module.DockerRepository,
-  }))
-)
-const ImagePullMetrics = lazy(
-  () => import('./repository/packages/docker/ImagePullMetrics')
-)
-const ImageVulnerabilities = lazy(
-  () => import('./repository/packages/docker/ImageVulnerabilities')
-)
-
 // For accepting Github app installations
 const GitHubSetup = lazy(() => import('./github/GitHubSetup'))
 
-// Packages - Terraform - /terraform
-const Terraform = lazy(() => import('./repository/packages/Terraform'))
-
-// TODO: Deprecated or unused features
-// const OauthCreator = lazy(() => import('../_deprecated/components/integrations/OauthCreator').then(module => ({ default: module.OauthCreator })))
-// const OnboardingChecklist = lazy(() => import('./shell/onboarding/checklist/Checklist').then(module => ({ default: module.OnboardingChecklist })))
-// const DockerRepository = lazy(() => import('../_deprecated/components/repos/Docker').then(module => ({ default: module.DockerRepository })))
-// const IntegrationPage = lazy(() => import('../_deprecated/components/repos/Integrations').then(module => ({ default: module.IntegrationPage })))
-// const EditAccount = lazy(() => import('./users/EditAccount').then(module => ({ default: module.EditAccount })))
-// const UpgradeQueue = lazy(() => import('./clusters/UpgradeQueue').then(module => ({ default: module.UpgradeQueue })))
-// const UpgradeQueues = lazy(() => import('./clusters/UpgradeQueues').then(module => ({ default: module.UpgradeQueues })))
-// function EditBilling(props) {
-//   return (
-//     <EditAccount
-//       {...props}
-//       billing
-//     />
-//   )
-// }
-
-// Weird judo to get around inability to match oauth callback
-// routes as subroutes passed from App.js.
-// If anyone knows a better way around this, I'm all ears.
-// - Klink
-function OAuthOrFallback() {
-  const history = useHistory()
-  const shellOAuthMatch = useMatch('/oauth/callback/:provider/shell')
-
-  if (shellOAuthMatch) {
-    return <OAuthCallback provider={shellOAuthMatch.params.provider} />
-  }
-
+function Fallback() {
   return (
     <Navigate
-      // @ts-expect-error
-      shellOAuthMatch={shellOAuthMatch}
       replace
-      to={history.pop('/overview')}
+      to="/"
     />
   )
 }
@@ -278,34 +187,19 @@ export function PluralInner() {
   return (
     <WrapStripe>
       <BreadcrumbProvider>
-        <ChecklistProvider>
-          <ApplicationLayout>
-            <DelinquencyToast />
-            <LegacyExpirationNotice />
+        <ApplicationLayout>
+          <DelinquencyToast />
+          <LegacyExpirationNotice />
+          <Suspense fallback={null}>
             <VerifyEmailConfirmed />
             <DeviceLoginNotif />
+          </Suspense>
+          <Suspense fallback={<LoadingIndicator />}>
             <Routes>
-              {/* --- OAUTH --- */}
-              {/* TODO: Enable if route will be used by the app */}
-              {/* <Route */}
-              {/*  path="/oauth/accept/:service" */}
-              {/*  element={<OauthCreator />} */}
-              {/* /> */}
-              {/* --- APPLICATIONS --- */}
               <Route
-                path="/marketplace"
-                element={<Marketplace />}
+                index
+                element={<Home />}
               />
-              <Route
-                path="/installed"
-                element={<Marketplace installed />}
-              />
-              {/* --- REPOSITORIES --- */}
-              {/* TODO: Enable if route will be accessible within the app */}
-              {/* <Route */}
-              {/*  path="/repositories/:id/integrations" */}
-              {/*  element={<IntegrationPage />} */}
-              {/* /> */}
               {/* --- PROFILE --- */}
               <Route
                 path="/profile"
@@ -323,6 +217,10 @@ export function PluralInner() {
                 <Route
                   path="me"
                   element={<Profile />}
+                />
+                <Route
+                  path="appearance"
+                  element={<Appearance />}
                 />
                 <Route
                   path="security"
@@ -345,143 +243,6 @@ export function PluralInner() {
                   element={<EabCredentials />}
                 />
               </Route>
-              {/* --- REPOSITORY --- */}
-              <Route
-                path="/repository/:name/*"
-                element={<Repository />}
-              >
-                <Route
-                  index
-                  element={<RepositoryDescription />}
-                />
-                <Route
-                  path="packages"
-                  element={<RepositoryPackages />}
-                >
-                  <Route
-                    index
-                    element={
-                      <Navigate
-                        replace
-                        to="helm"
-                      />
-                    }
-                  />
-                  <Route
-                    path="helm"
-                    element={<RepositoryPackagesHelm />}
-                  />
-                  <Route
-                    path="terraform"
-                    element={<RepositoryPackagesTerraform />}
-                  />
-                  <Route
-                    path="docker"
-                    element={<RepositoryPackagesDocker />}
-                  />
-                </Route>
-                <Route
-                  path="tests"
-                  element={<RepositoryTests />}
-                />
-                <Route
-                  path="deployments"
-                  element={<RepositoryDeployments />}
-                />
-                <Route
-                  path="artifacts"
-                  element={<RepositoryArtifacts />}
-                />
-                <Route
-                  path="edit"
-                  element={<RepositoryEdit />}
-                />
-              </Route>
-              {/* --- STACK --- */}
-              <Route
-                path="/stack/:name"
-                element={<Stack />}
-              >
-                <Route
-                  index
-                  element={<StackApps />}
-                />
-              </Route>
-              {/* --- HELM CHARTS --- */}
-              <Route
-                path="/charts/:id"
-                element={<Chart />}
-              >
-                <Route
-                  index
-                  element={<PackageReadme />}
-                />
-                <Route
-                  path="configuration"
-                  element={<PackageConfiguration />}
-                />
-                <Route
-                  path="dependencies"
-                  element={<PackageDependencies />}
-                />
-                <Route
-                  path="security"
-                  element={<PackageSecurity />}
-                />
-                <Route
-                  path="updatequeue"
-                  element={<PackageUpdateQueue />}
-                />
-              </Route>
-              {/* --- TERRAFORM CHARTS --- */}
-              <Route
-                path="/terraform/:tfId"
-                element={<Terraform />}
-              >
-                <Route
-                  index
-                  element={<PackageReadme />}
-                />
-                <Route
-                  path="configuration"
-                  element={<PackageConfiguration />}
-                />
-                <Route
-                  path="dependencies"
-                  element={<PackageDependencies />}
-                />
-                <Route
-                  path="security"
-                  element={<PackageSecurity />}
-                />
-                <Route
-                  path="updatequeue"
-                  element={<PackageUpdateQueue />}
-                />
-              </Route>
-              {/* --- DOCKER --- */}
-              <Route
-                path="/dkr/repo/:id"
-                element={<DockerRepository />}
-              />
-              <Route
-                path="/dkr/img/:id"
-                element={<Docker />}
-              >
-                <Route
-                  index
-                  element={<ImagePullMetrics />}
-                />
-                <Route
-                  path="vulnerabilities"
-                  element={<ImageVulnerabilities />}
-                />
-              </Route>
-              {/* --- SHELL --- */}
-              <Route
-                path="/shell"
-                element={<CloudShell />}
-              />
               {/* --- ACCOUNT --- */}
               <Route
                 path="/account/*"
@@ -504,11 +265,6 @@ export function PluralInner() {
                     index
                     element={<AccountAttributes />}
                   />
-                  {/* TODO: Enable if route will be accessible within the app */}
-                  {/* <Route */}
-                  {/*  path=":section/*" */}
-                  {/*  element={<EditAccount />} */}
-                  {/* /> */}
                 </Route>
                 <Route
                   path="users"
@@ -528,6 +284,14 @@ export function PluralInner() {
                   element={<Groups />}
                 />
                 <Route
+                  path="groups/create"
+                  element={<GroupCreate />}
+                />
+                <Route
+                  path="groups/:groupId"
+                  element={<GroupEdit />}
+                />
+                <Route
                   path="service-accounts"
                   element={<ServiceAccounts />}
                 />
@@ -539,25 +303,24 @@ export function PluralInner() {
                   path="domains"
                   element={<Domains />}
                 />
-                <Route
-                  path="billing"
-                  element={<BillingLayout />}
-                >
-                  <Route
-                    index
-                    element={<BillingManagePlan />}
-                  />
-                  <Route
-                    path="payments"
-                    element={<BillingPayments />}
-                  />
-                </Route>
               </Route>
-              {/* TODO: Enable if route will be accessible within the app */}
-              {/* <Route */}
-              {/*  path="/account/billing/:section" */}
-              {/*  element={<EditBilling />} */}
-              {/* /> */}
+              <Route
+                path="/account/billing"
+                element={<BillingLayout />}
+              >
+                <Route
+                  index
+                  element={<BillingManagePlan />}
+                />
+                <Route
+                  path="usage"
+                  element={<BillingUsage />}
+                />
+                <Route
+                  path="payments"
+                  element={<BillingPayments />}
+                />
+              </Route>
               <Route
                 path="/audits/*"
                 element={<AuditDirectory />}
@@ -584,21 +347,6 @@ export function PluralInner() {
                   element={<AuditChloropleth />}
                 />
               </Route>
-              {/* --- PUBLISHER --- */}
-              <Route
-                path="/publisher/:id"
-                element={<Publisher />}
-              />
-              {/* --- UPGRADES --- */}
-              {/* TODO: Enable if route will be accessible within the app */}
-              {/* <Route */}
-              {/*  path="/upgrades/:id" */}
-              {/*  element={<UpgradeQueue />} */}
-              {/* /> */}
-              {/* <Route */}
-              {/*  path="/upgrades" */}
-              {/*  element={<UpgradeQueues />} */}
-              {/* /> */}
               {/* --- Overview --- */}
               <Route
                 path="/overview"
@@ -661,11 +409,11 @@ export function PluralInner() {
               {/* --- 404 --- */}
               <Route
                 path="/*"
-                element={<OAuthOrFallback />}
+                element={<Fallback />}
               />
             </Routes>
-          </ApplicationLayout>
-        </ChecklistProvider>
+          </Suspense>
+        </ApplicationLayout>
       </BreadcrumbProvider>
     </WrapStripe>
   )

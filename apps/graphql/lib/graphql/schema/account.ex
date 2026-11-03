@@ -160,6 +160,10 @@ defmodule GraphQl.Schema.Account do
     field :global,      :boolean
     field :description, :string
 
+    field :member_count, :integer, resolve: fn group, _, %{context: %{loader: loader}} ->
+      manual_dataloader(loader, Account, {:one, Core.Schema.Group}, member_count: group)
+    end
+
     timestamps()
   end
 
@@ -278,6 +282,13 @@ defmodule GraphQl.Schema.Account do
       arg :id, non_null(:id)
 
       safe_resolve &Account.resolve_role/2
+    end
+
+    field :group, :group do
+      middleware Authenticated
+      arg :id, non_null(:id)
+
+      safe_resolve &Account.resolve_group/2
     end
 
     connection field :roles, node_type: :role do

@@ -71,7 +71,7 @@ function DeleteUserUnstyled({
           To confirm, type "<b>{user.name}</b>" in the box below
         </div>
         <Input
-          borderColor="border-danger"
+          error
           onChange={({ target: { value } }) =>
             value === user.name ? setConfirmed(true) : setConfirmed(false)
           }
@@ -93,7 +93,7 @@ function DeleteUserUnstyled({
           destructive
           disabled={!confirmed || loading}
           loading={loading}
-          onClick={deleteUser}
+          onClick={() => deleteUser()}
         >
           Delete
         </Button>

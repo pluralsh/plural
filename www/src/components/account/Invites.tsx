@@ -1,9 +1,7 @@
 import { useQuery } from '@apollo/client'
 import moment from 'moment'
 import { useEffect, useState } from 'react'
-import { Div, Flex, Text } from 'honorable'
-import { useTheme } from 'styled-components'
-import { SearchIcon } from '@pluralsh/design-system'
+import { Flex, SearchIcon } from '@pluralsh/design-system'
 
 import { useOutletContext } from 'react-router-dom'
 
@@ -24,6 +22,7 @@ import LoadingIndicator from '../utils/LoadingIndicator'
 import { Confirm } from '../utils/Confirm'
 
 import { useDeleteInviteMutation } from '../../generated/graphql'
+import { Body1BoldP, CaptionP } from '../utils/Typography'
 
 import { INVITES_Q } from './queries'
 import { inviteLink } from './utils'
@@ -60,7 +59,7 @@ function DeleteInvite({ invite }: any) {
 }
 
 function InviteLink({ invite }: any) {
-  if (!invite.secureId) return <Div>Email sent to user</Div>
+  if (!invite.secureId) return <div>Email sent to user</div>
 
   return (
     <CopyableButton
@@ -74,7 +73,6 @@ function InviteLink({ invite }: any) {
 }
 
 function Invite(invite: any) {
-  const theme = useTheme()
   const { email, insertedAt } = invite
 
   return (
@@ -84,18 +82,18 @@ function Invite(invite: any) {
       gap="large"
       alignItems="center"
     >
-      <Text
-        {...(theme.partials.text.body1Bold as any)}
-        flexGrow={1}
+      <Body1BoldP
+        as="span"
+        css={{ flexGrow: 1 }}
       >
         {email}
-      </Text>
-      <Text
-        caption
-        color="text-xlight"
+      </Body1BoldP>
+      <CaptionP
+        as="span"
+        $color="text-xlight"
       >
         {`Created ${moment(insertedAt).format('lll')}`}
-      </Text>
+      </CaptionP>
       <InviteLink invite={invite} />
       <DeleteInvite invite={invite} />
     </Flex>
@@ -136,10 +134,7 @@ export function Invites() {
         onChange={({ target: { value } }) => setQ(value)}
         flexGrow={0}
       />
-      <Div
-        flexGrow={1}
-        width="100%"
-      >
+      <div css={{ flexGrow: 1, width: '100%' }}>
         {!data && !dataCache ? (
           <LoadingIndicator />
         ) : (
@@ -169,7 +164,7 @@ export function Invites() {
             }
           />
         )}
-      </Div>
+      </div>
     </List>
   )
 }

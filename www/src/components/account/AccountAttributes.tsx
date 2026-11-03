@@ -2,13 +2,11 @@ import {
   Button,
   Callout,
   Chip,
-  ContentCard,
+  Flex,
   FormField,
   Input,
-  PageTitle,
   ValidatedInput,
 } from '@pluralsh/design-system'
-import { Div, Flex, Form, Span } from 'honorable'
 import { useContext, useLayoutEffect, useMemo, useState } from 'react'
 import { useTheme } from 'styled-components'
 
@@ -26,6 +24,7 @@ import { GqlError } from '../utils/Alert'
 import { DeleteIconButton } from '../utils/IconButtons'
 import { List, ListItem } from '../utils/List'
 import SaveButton from '../utils/SaveButton'
+import { SubpageCard, SubpageHeader } from '../utils/layout/SubpageLayout'
 
 import { FROM_EMAIL_CONFIRMATION_KEY } from 'components/users/EmailConfirmation'
 import { useNavigate, useSearchParams } from 'react-router-dom'
@@ -54,15 +53,12 @@ function DomainMappingFunc({
         last={last}
       >
         <Flex
-          gap={theme.spacing.medium}
+          gap="medium"
           alignItems="center"
         >
-          <Div
-            fill="horizontal"
-            flexGrow={1}
-          >
-            <Span fontWeight="bold">{mapping.domain}</Span>
-          </Div>
+          <div css={{ width: '100%', flexGrow: 1 }}>
+            <span css={{ fontWeight: 'bold' }}>{mapping.domain}</span>
+          </div>
           <Flex
             flexDirection="row"
             alignItems="center"
@@ -71,8 +67,10 @@ function DomainMappingFunc({
             {mapping.enableSso && (
               <Chip
                 severity="neutral"
-                backgroundColor="fill-three"
-                borderColor="border-input"
+                css={{
+                  backgroundColor: theme.colors['fill-three'],
+                  borderColor: theme.colors['border-input'],
+                }}
               >
                 SSO
               </Chip>
@@ -81,7 +79,6 @@ function DomainMappingFunc({
               onClick={() => {
                 setConfirm(true)
               }}
-              hue="lighter"
             />
           </Flex>
         </Flex>
@@ -112,6 +109,7 @@ function toFormState(account: Pick<Account, 'name' | 'domainMappings'>) {
 }
 
 export function AccountAttributes() {
+  const theme = useTheme()
   const user = useContext(CurrentUserContext)
   const canEdit = useCanEdit()
   const navigate = useNavigate()
@@ -193,7 +191,7 @@ export function AccountAttributes() {
         ) ||
         !canEdit
       ) {
-        navigate('/overview')
+        navigate('/')
       } else {
         setSearchParams({})
         setShowDomainMappingCallout(true)
@@ -213,98 +211,90 @@ export function AccountAttributes() {
   ])
 
   return (
-    <Form
+    <form
       onSubmit={(event) => {
         event.preventDefault()
         if (hasUpdates) {
           mutation()
         }
       }}
-      display="flex"
-      flexDirection="column"
-      paddingBottom="large"
+      css={{
+        display: 'flex',
+        flexDirection: 'column',
+        paddingBottom: theme.spacing.large,
+      }}
     >
-      <PageTitle heading="Account attributes">
+      <SubpageHeader title="General">
         <SaveButton
           dirty={hasUpdates}
           loading={loading}
           error={!!error}
         />
-      </PageTitle>
-      <ContentCard>
-        <Flex
-          flexDirection="column"
-          gap="large"
-        >
-          {error && (
-            <GqlError
-              error={error}
-              header="Something went wrong"
-            />
-          )}
-          <ValidatedInput
-            label="Account name"
-            value={formState.name}
-            onChange={({ target: { value } }) =>
-              updateFormState({ name: value })
-            }
+      </SubpageHeader>
+      <SubpageCard>
+        {error && (
+          <GqlError
+            error={error}
+            header="Something went wrong"
           />
-          {showDomainMappingCallout && (
-            <Callout title="Configure domain mapping">
-              We see you're using a work email. Please add a domain mapping to
-              ensure all members of your organization can access your account.
-            </Callout>
-          )}
-          <FormField
-            label="Domain mappings"
-            hint="Register email domains to automatically add users to your
-                      account"
-          >
-            <Flex gap="medium">
-              <Div flexGrow={1}>
-                <Input
-                  value={domain}
-                  width="100%"
-                  placeholder="enter an email domain"
-                  onKeyDown={(event) => {
-                    if (event.key === 'Enter') {
-                      event.preventDefault()
-                      handleAddDomain()
-                    }
-                  }}
-                  onChange={({ target: { value } }) => setDomain(value)}
-                />
-              </Div>
-              <Div>
-                <Button
-                  secondary
-                  type="button"
-                  disabled={!domain}
-                  onClick={() => {
+        )}
+        <ValidatedInput
+          label="Organization name"
+          value={formState.name}
+          onChange={({ target: { value } }) => updateFormState({ name: value })}
+        />
+        {showDomainMappingCallout && (
+          <Callout title="Configure email domains">
+            We see you're using a work email. Please add a domain mapping to
+            ensure all members of your organization can access your account.
+          </Callout>
+        )}
+        <FormField
+          label="Email domains"
+          hint="Register email domains to automatically add users to your account"
+        >
+          <Flex gap="small">
+            <div css={{ flexGrow: 1 }}>
+              <Input
+                value={domain}
+                width="100%"
+                placeholder="enter an email domain"
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter') {
+                    event.preventDefault()
                     handleAddDomain()
-                  }}
-                >
-                  Add
-                </Button>
-              </Div>
-            </Flex>
-          </FormField>
-          {sortedDomainMappings.length > 0 && (
-            <List hue="lighter">
-              {sortedDomainMappings.map((mapping, i) => (
-                <DomainMappingFunc
-                  key={mapping?.domain}
-                  mapping={mapping}
-                  first={i === 0}
-                  last={i === sortedDomainMappings.length - 1}
-                  remove={() => rmDomain(mapping?.domain)}
-                />
-              ))}
-            </List>
-          )}
-        </Flex>
-      </ContentCard>
-    </Form>
+                  }
+                }}
+                onChange={({ target: { value } }) => setDomain(value)}
+              />
+            </div>
+            <Button
+              secondary
+              type="button"
+              disabled={!domain}
+              onClick={() => {
+                handleAddDomain()
+              }}
+            >
+              Add
+            </Button>
+          </Flex>
+        </FormField>
+        {sortedDomainMappings.length > 0 && (
+          <List hue="lighter">
+            {sortedDomainMappings.map((mapping, i) => (
+              <DomainMappingFunc
+                key={mapping?.domain}
+                mapping={mapping}
+                first={i === 0}
+                last={i === sortedDomainMappings.length - 1}
+                remove={() => rmDomain(mapping?.domain)}
+              />
+            ))}
+          </List>
+        )}
+      </SubpageCard>
+    </form>
   )
 }
 

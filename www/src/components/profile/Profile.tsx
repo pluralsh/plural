@@ -1,92 +1,88 @@
 import { useMutation } from '@apollo/client'
-import { Box, Stack } from 'grommet'
-import { Div, Flex, P } from 'honorable'
 import {
   AppIcon,
   Button,
   Chip,
-  ContentCard,
-  PageTitle,
+  Flex,
   ValidatedInput,
 } from '@pluralsh/design-system'
-import { useContext, useEffect, useState } from 'react'
-import { useFilePicker } from 'react-sage'
-import { useTheme } from 'styled-components'
+import { ChangeEvent, ReactNode, useContext, useRef, useState } from 'react'
+import styled, { useTheme } from 'styled-components'
 
 import CurrentUserContext from '../../contexts/CurrentUserContext'
 import { UPDATE_USER } from '../users/queries'
+import { SubpageCard, SubpageHeader } from '../utils/layout/SubpageLayout'
 import { getProviderIconUrl } from '../utils/ProviderIcon'
+import { Body2BoldP } from '../utils/Typography'
 
-function Attribute({ header, children }: any) {
+function Attribute({
+  header,
+  children,
+}: {
+  header: string
+  children: ReactNode
+}) {
   return (
-    <Box
+    <Flex
+      direction="column"
       gap="small"
-      basis="1/2"
     >
-      <P fontWeight="bold">{header}</P>
-      <Box
+      <Body2BoldP>{header}</Body2BoldP>
+      <Flex
         direction="row"
         gap="small"
         align="end"
       >
         {children}
-      </Box>
-    </Box>
+      </Flex>
+    </Flex>
   )
 }
 
 export function Profile() {
   const theme = useTheme()
-  const { files, onClick, HiddenFileInput } = useFilePicker({})
+  const fileInputRef = useRef<HTMLInputElement>(null)
   const me = useContext(CurrentUserContext)
   const [name, setName] = useState(me.name)
   const [email, setEmail] = useState(me.email)
-  const [avatarConst, setAvatar] = useState(me.avatar)
-  const [avatarFile, setAvatarFile] = useState<any>()
+  const [avatar, setAvatar] = useState(me.avatar)
+  const [avatarFile, setAvatarFile] = useState<File | null>()
   const [mutation, { loading }] = useMutation(UPDATE_USER, {
     variables: { attributes: { name, email, avatar: avatarFile } },
   })
 
-  const url = getProviderIconUrl(me?.provider || '', theme.mode)
-  let avatar: string | undefined
+  const onFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
 
-  if (avatarConst) {
-    avatar = avatarConst
+    if (file) {
+      setAvatar(URL.createObjectURL(file))
+      setAvatarFile(file)
+    }
   }
 
-  useEffect(() => {
-    if (files && files.length > 0) {
-      setAvatar(URL.createObjectURL(files[0]))
-      setAvatarFile(files[0])
-    }
-  }, [files])
-
   return (
-    <Div paddingBottom="large">
-      <PageTitle heading="Profile" />
-      <ContentCard overflowY={undefined}>
-        <Box
-          gap="large"
-          margin={{ bottom: 'medium' }}
+    <ProfileSC>
+      <SubpageHeader title="Profile" />
+      <SubpageCard>
+        <Flex
+          gap="xlarge"
           direction="row"
         >
           <Attribute header="Profile picture">
-            <Stack
-              anchor="bottom-right"
-              style={{ height: '96px', width: '96px' }}
+            <AppIcon
+              name={name}
+              url={avatar}
+              spacing={avatar ? 'none' : undefined}
+              size="medium"
+            />
+            <Flex
+              direction="column"
+              gap="xsmall"
             >
-              <AppIcon
-                name={name}
-                url={avatar}
-                spacing={avatar ? 'none' : undefined}
-                size="medium"
-              />
-            </Stack>
-            <Box gap="xsmall">
               <Button
                 small
                 secondary
-                onClick={onClick}
+                onClick={() => fileInputRef.current?.click()}
               >
                 {avatar ? 'Switch' : 'Upload'}
               </Button>
@@ -102,57 +98,52 @@ export function Profile() {
                   Delete
                 </Button>
               )}
-            </Box>
-            <HiddenFileInput
+            </Flex>
+            <input
+              ref={fileInputRef}
+              type="file"
               accept=".jpg, .jpeg, .png"
-              multiple={false}
+              css={{ display: 'none' }}
+              onChange={onFileChange}
             />
           </Attribute>
           {me.provider && (
             <Attribute header="Provider">
               <AppIcon
-                url={url}
+                url={getProviderIconUrl(me.provider, theme.mode)}
                 alt={me.provider}
               />
             </Attribute>
           )}
-        </Box>
-        <Box gap="small">
-          <ValidatedInput
-            label="Full name"
-            width="100%"
-            value={name}
-            onChange={({ target: { value } }) => setName(value)}
-          />
-          <ValidatedInput
-            label="Email address"
-            width="100%"
-            value={email}
-            onChange={({ target: { value } }) => setEmail(value)}
-            endIcon={
-              me.emailConfirmed ? null : (
-                <Chip
-                  size="small"
-                  hue="lighter"
-                >
-                  Pending verification
-                </Chip>
-              )
-            }
-          />
-        </Box>
-        <Flex
-          justifyContent="flex-end"
-          marginTop="small"
-        >
-          <Button
-            onClick={() => mutation()}
-            loading={loading}
-          >
-            Save
-          </Button>
         </Flex>
-      </ContentCard>
-    </Div>
+        <ValidatedInput
+          label="Full name"
+          width="100%"
+          value={name}
+          onChange={({ target: { value } }) => setName(value)}
+        />
+        <ValidatedInput
+          label="Email address"
+          width="100%"
+          value={email}
+          onChange={({ target: { value } }) => setEmail(value)}
+          endIcon={
+            me.emailConfirmed ? null : (
+              <Chip size="small">Pending verification</Chip>
+            )
+          }
+        />
+        <Button
+          onClick={() => mutation()}
+          loading={loading}
+        >
+          Save
+        </Button>
+      </SubpageCard>
+    </ProfileSC>
   )
 }
+
+const ProfileSC = styled.div(({ theme }) => ({
+  paddingBottom: theme.spacing.large,
+}))

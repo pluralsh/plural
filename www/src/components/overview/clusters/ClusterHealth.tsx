@@ -1,8 +1,10 @@
-import { Chip, InfoOutlineIcon, Tooltip } from '@pluralsh/design-system'
-import { CardHue } from '@pluralsh/design-system/dist/components/Card'
-import { Flex } from 'honorable'
+import { Chip, Flex, InfoOutlineIcon, Tooltip } from '@pluralsh/design-system'
 import moment from 'moment'
 import { useEffect, useState } from 'react'
+
+import { hueToFillLevel } from '../../utils/List'
+
+type CardHue = keyof typeof hueToFillLevel
 
 type QueueHealthProps = {
   pingedAt?: Date | null
@@ -25,14 +27,14 @@ export default function ClusterHealth({
       <Chip
         severity={pinged ? (healthy ? 'success' : 'danger') : 'warning'}
         size={size}
-        hue={hue}
+        fillLevel={hue && hueToFillLevel[hue]}
       >
         {pinged ? (healthy ? 'Healthy' : 'Unhealthy') : 'Pending'}
       </Chip>
       {pinged && !healthy && showTooltip && (
         <Tooltip
           label="Clusters that have recently been destroyed will show as Unhealthy while resources are cleaned up. All references should be removed within 24 hours."
-          width={350}
+          style={{ width: 350 }}
         >
           <InfoOutlineIcon
             color="icon-default"

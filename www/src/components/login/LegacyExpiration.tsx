@@ -1,5 +1,4 @@
-import { Button, Modal, Toast } from '@pluralsh/design-system'
-import { A, Flex, P } from 'honorable'
+import { Button, Flex, Modal, Toast } from '@pluralsh/design-system'
 import moment from 'moment'
 import { ComponentProps, useContext, useState } from 'react'
 import { Link } from 'react-router-dom'
@@ -7,6 +6,7 @@ import { Link } from 'react-router-dom'
 import SubscriptionContext from '../../contexts/SubscriptionContext'
 import { LocalStorageKeys } from '../../constants'
 import { EXPIRATION_NOTICE_STATE } from '../../helpers/localStorage'
+import { Body1P, InlineA, InlineLinkSC } from '../utils/Typography'
 
 export function LegacyExpirationNotice() {
   const { isProPlan, isEnterprisePlan, account } =
@@ -66,26 +66,17 @@ function ExpiredModal() {
         gap="medium"
         direction="column"
       >
-        <P body1>Your legacy user feature access has expired.</P>
-        <P body1>
+        <Body1P>Your legacy user feature access has expired.</Body1P>
+        <Body1P>
           Upgrade to Plural professional to add 5+ users and retain access to
           Roles, Groups, Service accounts, and VPN clients. Current settings
           will continue to function but can not to be updated.
-        </P>
-        <P body1>
+        </Body1P>
+        <Body1P>
           Thank you for being one of our early adopters. If you have any
           questions or feedback please reach out via{' '}
-          <A
-            as={Link}
-            inline
-            target="_blank"
-            rel="noopener noreferrer"
-            to="https://discord.gg/pluralsh"
-          >
-            discord
-          </A>
-          .
-        </P>
+          <InlineA href="https://discord.gg/pluralsh">discord</InlineA>.
+        </Body1P>
       </Flex>
     </Modal>
   )
@@ -117,14 +108,12 @@ function ExpirationToast({
   }
   const messageClosing = (
     <>
-      Upgrade to Plural Professional to add more than 5 users and retain access
-      to Roles, Groups, Service accounts, and VPN clients.
+      Upgrade to Plural Pro to add more than 5 users and retain access to Roles,
+      Groups, Service accounts, and VPN clients.
     </>
   )
   const plansLink = (
-    <A
-      inline
-      as={Link}
+    <InlineLinkSC
       to="/account/billing"
       onClick={() => {
         setCloseTimeout(0)
@@ -132,7 +121,7 @@ function ExpirationToast({
       }}
     >
       Review plans
-    </A>
+    </InlineLinkSC>
   )
 
   const [showToast] = useState(

@@ -190,19 +190,14 @@ export function OAuthOptions({ oauthUrls }: any) {
             marginTop="large"
             marginBottom="large"
           />
-          <Flex
-            direction="row"
-            gap="large"
-            justify="space-between"
-            wrap="wrap"
-          >
+          <OAuthGridSC>
             {[...oauthUrls].sort(sortOauthUrls).map((url) => (
               <OAuthOption
                 key={url.provider}
                 url={url}
               />
             ))}
-          </Flex>
+          </OAuthGridSC>
         </>
       )}
     </div>
@@ -555,6 +550,18 @@ function LoginInternal() {
               </Button>
             </form>
             {!deviceToken && <OAuthOptions oauthUrls={oAuthData?.oauthUrls} />}
+            <Body2P
+              $color="text-light"
+              css={{ textAlign: 'center' }}
+            >
+              Don&apos;t have an account?{' '}
+              <InlineLinkSC
+                to="/signup"
+                state={{ email }}
+              >
+                Sign up for Plural
+              </InlineLinkSC>
+            </Body2P>
           </>
         )}
       </div>
@@ -568,11 +575,12 @@ const providerToName = {
   gitlab: 'GitLab',
 }
 
-export const FlexAtBreak = styled.div((_) => ({
-  width: '100%',
+const OAuthGridSC = styled.div(({ theme }) => ({
+  display: 'grid',
+  gap: theme.spacing.small,
   [LOGIN_BREAKPOINT]: {
-    flex: '1 0',
-    width: 'auto',
+    gridAutoFlow: 'column',
+    gridAutoColumns: 'minmax(0, 1fr)',
   },
 }))
 
@@ -582,18 +590,16 @@ function OAuthOption({ url: { authorizeUrl, provider } }: any) {
   provider = provider.toLowerCase()
 
   return (
-    <FlexAtBreak>
-      <Button
-        data-phid={`signup-${provider}`}
-        width="100%"
-        height={48}
-        secondary
-        as="a"
-        href={authorizeUrl}
-        startIcon={createElement(icon, { size: 20, fullColor: true })}
-      >
-        {providerToName[provider]}
-      </Button>
-    </FlexAtBreak>
+    <Button
+      data-phid={`signup-${provider}`}
+      width="100%"
+      height={44}
+      secondary
+      as="a"
+      href={authorizeUrl}
+      startIcon={createElement(icon, { size: 20, fullColor: true })}
+    >
+      {providerToName[provider]}
+    </Button>
   )
 }

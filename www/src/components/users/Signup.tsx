@@ -1,6 +1,6 @@
 import { ComponentProps, useCallback, useEffect, useRef, useState } from 'react'
 import { useLocation } from 'react-router-dom'
-import { Button, Flex } from '@pluralsh/design-system'
+import { Button } from '@pluralsh/design-system'
 
 import { useTheme } from 'styled-components'
 
@@ -23,7 +23,7 @@ import {
 import { getDeviceToken } from './utils'
 import { finishedDeviceLogin } from './DeviceLoginNotif'
 import { InlineLinkSC } from '../utils/Typography'
-import { FlexAtBreak, OAuthOptions } from './MagicLogin'
+import { OAuthOptions } from './MagicLogin'
 import { LoginPortal } from './LoginPortal'
 import { LabelledInput } from './LabelledInput'
 
@@ -155,6 +155,13 @@ export function Signup() {
           </div>
         )}
         <LabelledInput
+          label="Full name"
+          value={name}
+          onChange={setName}
+          placeholder="Enter full name"
+          inputProps={{ autoComplete: 'name' }}
+        />
+        <LabelledInput
           ref={emailRef}
           label="Email address"
           value={email}
@@ -162,33 +169,18 @@ export function Signup() {
           placeholder="Enter email address"
           hint={emailError}
           error={!!emailError}
+          inputProps={{ type: 'email', autoComplete: 'email' }}
         />
-        <Flex
-          wrap="wrap"
-          width="100%"
-          columnGap={theme.spacing.medium}
-          basis="100%"
-        >
-          <FlexAtBreak>
-            <LabelledInput
-              ref={accountInputRef}
-              label="Company name"
-              value={account}
-              onChange={setAccount}
-              placeholder="Enter company name"
-              hint={accountError}
-              error={!!accountError}
-            />
-          </FlexAtBreak>
-          <FlexAtBreak>
-            <LabelledInput
-              label="Username"
-              value={name}
-              onChange={setName}
-              placeholder="Enter username"
-            />
-          </FlexAtBreak>
-        </Flex>
+        <LabelledInput
+          ref={accountInputRef}
+          label="Company name"
+          value={account}
+          onChange={setAccount}
+          placeholder="Enter company name"
+          hint={accountError}
+          error={!!accountError}
+          inputProps={{ autoComplete: 'organization' }}
+        />
         <SetPasswordField
           value={password}
           onChange={setPassword}
@@ -217,7 +209,7 @@ export function Signup() {
           marginTop: theme.spacing.medium,
         }}
       >
-        Already have an account? <InlineLinkSC to="/login">Login</InlineLinkSC>
+        Already have an account? <InlineLinkSC to="/login">Log in</InlineLinkSC>
       </Body2P>
     </LoginPortal>
   )

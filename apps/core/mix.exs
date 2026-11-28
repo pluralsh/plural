@@ -119,7 +119,7 @@ defmodule Core.MixProject do
       {:rabbit_common, "~> 4.0", override: true},
       {:mime, "~> 2.0"},
       {:ex_image_info, "~> 0.2.4"},
-      {:instream, "~> 1.0"},
+      {:instream, "~> 2.0"},
       {:swarm, "~> 3.4.0"},
       {:poison, "~> 6.0", override: true},
       {:cloudflare, "~> 0.2"},
